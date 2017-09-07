@@ -1,0 +1,20 @@
+language: groovy
+sudo: false
+
+jdk:
+- oraclejdk8
+
+script: ./gradlew build
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer

@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'maven'
+    id 'com.enonic.defaults' version '1.0.3'
+    id 'com.enonic.xp.base' version '1.0.7'
+    id 'com.moowork.gulp' version '1.2.0'
+}
+
+repositories {
+    jcenter()
+    xp.enonicRepo()
+}
+
+node {
+    download = true
+    version = '6.9.2'
+}
+
+ext {
+    resourcesDir = file( 'src/main/resources' )
+    buildResourcesDir = file( "${buildDir}/resources/main" )
+}
+
+task gulpAll( type: GulpTask, dependsOn: npmInstall ) {
+    description = 'Build UI resources (css, etc).'
+    inputs.dir 'src/main/resources'
+    outputs.dir 'build/resources/main'
+    args = ['all']
+}
+
+jar.dependsOn += gulpAll
+jar.outputs.dir "${buildDir}/resources/main"
+
+task cleanNode( type: Delete ) {
+    delete += 'node_modules'
+}
