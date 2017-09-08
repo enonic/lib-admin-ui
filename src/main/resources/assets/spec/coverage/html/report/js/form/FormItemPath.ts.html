@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/form/FormItemPath.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/form/</a> FormItemPath.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">76.92% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>60/78</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">45.45% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>10/22</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">66.67% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>18/27</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">75.68% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>56/74</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">400×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">200×</span>
+<span class="cline-any cline-yes">200×</span>
+<span class="cline-any cline-yes">200×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">200×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">202×</span>
+<span class="cline-any cline-yes">202×</span>
+<span class="cline-any cline-yes">202×</span>
+<span class="cline-any cline-yes">312×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">312×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">202×</span>
+<span class="cline-any cline-yes">202×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">111×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">200×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">204×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">312×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">312×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">204×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>form </span>{
+&nbsp;
+    export class FormItemPath {
+&nbsp;
+        private static DEFAULT_ELEMENT_DIVIDER:string = '.';
+&nbsp;
+        public static ROOT:FormItemPath = new FormItemPath([], FormItemPath.DEFAULT_ELEMENT_DIVIDER, true );
+&nbsp;
+        private elementDivider:string;
+&nbsp;
+        private absolute:boolean;
+&nbsp;
+        private elements:FormItemPathElement[];
+&nbsp;
+        private refString:string;
+&nbsp;
+        static fromString(s:string, elementDivider?:string) {
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (elementDivider == null) {
+                elementDivider = FormItemPath.DEFAULT_ELEMENT_DIVIDER;
+            }
+            let absolute:boolean = s.charAt(0) === elementDivider;
+            let elements:string[] = s.split(elementDivider);
+            elements = FormItemPath.removeEmptyElements(elements);
+            let pathElements:FormItemPathElement[] = [];
+            elements.forEach((str:string) =&gt; {
+                pathElements.push(FormItemPathElement.fromString(str));
+            });
+            return new FormItemPath(pathElements, elementDivider, absolute);
+        }
+&nbsp;
+        static fromParent(parent:FormItemPath, ...childElements:FormItemPathElement[]) {
+&nbsp;
+            let elements:FormItemPathElement[] = parent.elements.slice(0);
+            childElements.forEach((element:FormItemPathElement) =&gt; {
+                elements.push(element);
+            });
+&nbsp;
+            return new FormItemPath(elements, parent.elementDivider, parent.isAbsolute());
+        }
+&nbsp;
+        private static removeEmptyElements(elements:string[]):string[] {
+            let filteredElements:string[] = [];
+            elements.forEach((element:string) =&gt; {
+                <span class="missing-if-branch" title="else path not taken" >E</span>if (element.length &gt; 0) {
+                    filteredElements.push(element);
+                }
+            });
+            return filteredElements;
+        }
+&nbsp;
+        constructor(elements:FormItemPathElement[], elementDivider?:string, absolute?:boolean) {
+            this.elementDivider = elementDivider != null ? elementDivider : <span class="branch-1 cbranch-no" title="branch not covered" >FormItemPath.DEFAULT_ELEMENT_DIVIDER;</span>
+            this.absolute = absolute == null ? <span class="branch-0 cbranch-no" title="branch not covered" >true </span>: absolute;
+            elements.forEach((element:FormItemPathElement, index:number) =&gt; {
+                <span class="missing-if-branch" title="if path not taken" >I</span>if (element == null) {
+<span class="cstat-no" title="statement not covered" >                    throw new Error('Path element was null at index: ' + index);</span>
+                } else <span class="missing-if-branch" title="if path not taken" >I</span>if (element.getName().length === 0) {
+<span class="cstat-no" title="statement not covered" >                    throw new Error('Path element was empty string at index: ' + index);</span>
+                }
+            });
+            this.elements = elements;
+            this.refString = (this.absolute ? this.elementDivider : '') + this.elements.join(this.elementDivider);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        newWithoutFirstElement():FormItemPath {</span>
+<span class="cstat-no" title="statement not covered" >            let arr = this.elements;</span>
+<span class="cstat-no" title="statement not covered" >            arr.shift();</span>
+<span class="cstat-no" title="statement not covered" >            return new FormItemPath(arr);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        elementCount():number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.getElements().length;</span>
+        }
+&nbsp;
+        getElements():FormItemPathElement[] {
+            return this.elements;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getElement(index:number)</span>:FormItemPathElement {
+<span class="cstat-no" title="statement not covered" >            return this.elements[index];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getFirstElement():FormItemPathElement {</span>
+<span class="cstat-no" title="statement not covered" >            return this.elements[0];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getLastElement():FormItemPathElement {</span>
+<span class="cstat-no" title="statement not covered" >            return this.elements[this.elements.length-1];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hasParent():boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.elements.length &gt; 0;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getParentPath():FormItemPath {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.elements.length &lt; 1) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let parentElemements:FormItemPathElement[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            this.elements.forEach(<span class="fstat-no" title="function not covered" >(element:FormItemPathElement, index:number)</span>=&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (index &lt; this.elements.length - 1) {</span>
+<span class="cstat-no" title="statement not covered" >                    parentElemements.push(element);</span>
+                }
+            });
+<span class="cstat-no" title="statement not covered" >            return new FormItemPath(parentElemements);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toString() {</span>
+<span class="cstat-no" title="statement not covered" >            return this.refString;</span>
+        }
+&nbsp;
+        isAbsolute():boolean {
+            return this.absolute;
+        }
+    }
+&nbsp;
+    export class FormItemPathElement {
+&nbsp;
+        private name:string;
+&nbsp;
+        constructor(name:string) {
+            this.name = name;
+        }
+&nbsp;
+        getName():string {
+            return this.name;
+        }
+&nbsp;
+        toString():string {
+            return this.name;
+        }
+&nbsp;
+        static fromString(str:string) {
+            return new FormItemPathElement(str);
+        }
+    }
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

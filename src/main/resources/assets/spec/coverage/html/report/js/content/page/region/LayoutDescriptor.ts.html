@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/page/region/LayoutDescriptor.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/content/page/region/</a> LayoutDescriptor.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">46% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>23/50</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.33% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">35.29% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/17</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">37.21% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>16/43</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>page.<span class="branch-1 cbranch-no" title="branch not covered" ></span>region </span>{
+&nbsp;
+    export class LayoutDescriptor extends api.content.page.Descriptor implements api.Cloneable {
+        private regions: RegionDescriptor[];
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(builder: LayoutDescriptorBuilder)</span> {
+<span class="cstat-no" title="statement not covered" >            super(builder);</span>
+<span class="cstat-no" title="statement not covered" >            this.regions = builder.regions;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getRegions(): RegionDescriptor[] {</span>
+<span class="cstat-no" title="statement not covered" >            return this.regions;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public clone(): LayoutDescriptor {</span>
+<span class="cstat-no" title="statement not covered" >            return new LayoutDescriptorBuilder(this).build();</span>
+        }
+    }
+&nbsp;
+    export class LayoutDescriptorBuilder extends api.content.page.DescriptorBuilder {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        regions: RegionDescriptor[] = [];</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(source?: LayoutDescriptor)</span> {
+<span class="cstat-no" title="statement not covered" >            super(source);</span>
+<span class="cstat-no" title="statement not covered" >            if (source) {</span>
+<span class="cstat-no" title="statement not covered" >                this.regions = source.getRegions();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public fromJson(json: LayoutDescriptorJson)</span>: LayoutDescriptorBuilder {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setKey(api.content.page.DescriptorKey.fromString(json.key));</span>
+<span class="cstat-no" title="statement not covered" >            this.setName(new api.content.page.DescriptorName(json.name));</span>
+<span class="cstat-no" title="statement not covered" >            this.setDisplayName(json.displayName);</span>
+<span class="cstat-no" title="statement not covered" >            this.setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null);</span>
+<span class="cstat-no" title="statement not covered" >            for (let i = 0; i &lt; json.regions.length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >                let region = new RegionDescriptorBuilder().fromJson(json.regions[i]).build();</span>
+<span class="cstat-no" title="statement not covered" >                this.regions.push(region);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setKey(value: api.content.page.DescriptorKey)</span>: LayoutDescriptorBuilder {
+<span class="cstat-no" title="statement not covered" >            this.key = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setName(value: api.content.page.DescriptorName)</span>: LayoutDescriptorBuilder {
+<span class="cstat-no" title="statement not covered" >            this.name = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setDisplayName(value: string)</span>: LayoutDescriptorBuilder {
+<span class="cstat-no" title="statement not covered" >            this.displayName = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setConfig(value: api.form.Form)</span>: LayoutDescriptorBuilder {
+<span class="cstat-no" title="statement not covered" >            this.config = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public addRegion(value: RegionDescriptor)</span>: LayoutDescriptorBuilder {
+<span class="cstat-no" title="statement not covered" >            this.regions.push(value);</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public build(): LayoutDescriptor {</span>
+<span class="cstat-no" title="statement not covered" >            return new LayoutDescriptor(this);</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

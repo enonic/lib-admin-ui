@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/notify/Message.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/notify/</a> Message.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">53.85% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>28/52</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">27.78% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>5/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">26.32% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>5/19</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">58.14% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>25/43</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.</span>notify {
+&nbsp;
+    export enum Type {
+        INFO,
+        ERROR,
+        WARNING,
+        ACTION,
+        SUCCESS
+    }
+&nbsp;
+    export class Action {
+        private name: string;
+        private handler: {():void};
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(name: string, handler: {():void})</span> {
+<span class="cstat-no" title="statement not covered" >            this.name = name;</span>
+<span class="cstat-no" title="statement not covered" >            this.handler = handler;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getName(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.name;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getHandler(): {():void} {</span>
+<span class="cstat-no" title="statement not covered" >            return this.handler;</span>
+        }
+    }
+&nbsp;
+    export class Message {
+        private type: Type;
+        private text: string;
+        private actions: Action[];
+        private autoHide: boolean;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(type: Type, text: string, <span class="cstat-no" title="statement not covered" >autoHide: boolean = true)</span></span> {
+<span class="cstat-no" title="statement not covered" >            this.type = type;</span>
+<span class="cstat-no" title="statement not covered" >            this.text = text;</span>
+<span class="cstat-no" title="statement not covered" >            this.actions = [];</span>
+<span class="cstat-no" title="statement not covered" >            this.autoHide = autoHide;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getType(): Type {</span>
+<span class="cstat-no" title="statement not covered" >            return this.type;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getText(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.text;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getActions(): Action[] {</span>
+<span class="cstat-no" title="statement not covered" >            return this.actions;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getAutoHide(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.autoHide;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addAction(name: string, handler: () =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.actions.push(new Action(name, handler));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static newSuccess(text: string, <span class="cstat-no" title="statement not covered" >autoHide: boolean = true)</span></span>: Message {
+<span class="cstat-no" title="statement not covered" >            return new Message(Type.SUCCESS, text, autoHide);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static newInfo(text: string, <span class="cstat-no" title="statement not covered" >autoHide: boolean = true)</span></span>: Message {
+<span class="cstat-no" title="statement not covered" >            return new Message(Type.INFO, text, autoHide);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static newError(text: string, <span class="cstat-no" title="statement not covered" >autoHide: boolean = true)</span></span>: Message {
+<span class="cstat-no" title="statement not covered" >            return new Message(Type.ERROR, text, autoHide);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static newWarning(text: string, <span class="cstat-no" title="statement not covered" >autoHide: boolean = true)</span></span>: Message {
+<span class="cstat-no" title="statement not covered" >            return new Message(Type.WARNING, text, autoHide);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static newAction(text: string, <span class="cstat-no" title="statement not covered" >autoHide: boolean = true)</span></span>: Message {
+<span class="cstat-no" title="statement not covered" >            return new Message(Type.ACTION, text, autoHide);</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

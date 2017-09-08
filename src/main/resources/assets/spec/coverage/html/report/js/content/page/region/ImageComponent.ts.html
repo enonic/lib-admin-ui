@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/page/region/ImageComponent.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/content/page/region/</a> ImageComponent.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">38.71% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>36/93</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">10.53% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/38</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/24</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.72% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>29/86</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>page.<span class="branch-1 cbranch-no" title="branch not covered" ></span>region </span>{
+&nbsp;
+    import Form = api.form.Form;
+    import FormBuilder = api.form.FormBuilder;
+    import OccurrencesBuilder = api.form.OccurrencesBuilder;
+    import TextLine = api.form.inputtype.text.TextLine;
+    import TextArea = api.form.inputtype.text.TextArea;
+    import PropertyTree = api.data.PropertyTree;
+    import PropertyEvent = api.data.PropertyEvent;
+&nbsp;
+    export class ImageComponent extends Component implements api.Equitable, api.Cloneable {
+&nbsp;
+        public static PROPERTY_IMAGE: string = 'image';
+&nbsp;
+        public static PROPERTY_CONFIG: string = 'config';
+&nbsp;
+        public static debug: boolean = false;
+&nbsp;
+        private disableEventForwarding: boolean;
+&nbsp;
+        private image: api.content.ContentId;
+&nbsp;
+        private config: PropertyTree;
+&nbsp;
+        private form: Form;
+&nbsp;
+        private configChangedHandler: (event: PropertyEvent) =&gt; void;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(builder: ImageComponentBuilder)</span> {
+<span class="cstat-no" title="statement not covered" >            super(builder);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.image = builder.image;</span>
+<span class="cstat-no" title="statement not covered" >            this.config = builder.config;</span>
+<span class="cstat-no" title="statement not covered" >            this.configChangedHandler = <span class="fstat-no" title="function not covered" >(event: PropertyEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (ImageComponent.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.debug('ImageComponent[' + this.getPath().toString() + '].config.onChanged: ', event);</span>
+                }
+<span class="cstat-no" title="statement not covered" >                if (!this.disableEventForwarding) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.notifyPropertyValueChanged(ImageComponent.PROPERTY_CONFIG);</span>
+                }
+            };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.config.onChanged(this.configChangedHandler);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let formBuilder = new FormBuilder();</span>
+<span class="cstat-no" title="statement not covered" >            formBuilder.addFormItem(new api.form.InputBuilder().</span>
+                setName('caption').
+                setInputType(TextArea.getName()).
+                setLabel('Caption').
+                setOccurrences(new OccurrencesBuilder().setMinimum(0).setMaximum(1).build()).
+                build());
+<span class="cstat-no" title="statement not covered" >            this.form = formBuilder.build();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setDisableEventForwarding(value: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.disableEventForwarding = value;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getImage(): api.content.ContentId {</span>
+<span class="cstat-no" title="statement not covered" >            return this.image;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getForm(): api.form.Form {</span>
+<span class="cstat-no" title="statement not covered" >            return this.form;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getConfig(): PropertyTree {</span>
+<span class="cstat-no" title="statement not covered" >            return this.config;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setImage(contentId: api.content.ContentId, name: string)</span> {
+<span class="cstat-no" title="statement not covered" >            let oldValue = this.image;</span>
+<span class="cstat-no" title="statement not covered" >            this.image = contentId;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setName(name ? new ComponentName(name) : this.getType().getDefaultName());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.equals(oldValue, contentId)) {</span>
+<span class="cstat-no" title="statement not covered" >                this.notifyPropertyChanged(ImageComponent.PROPERTY_IMAGE);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hasImage(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return !!this.image;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        doReset() {</span>
+<span class="cstat-no" title="statement not covered" >            this.setImage(null, null);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isEmpty(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return !this.image;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toJson(): ComponentTypeWrapperJson {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let json: ImageComponentJson = &lt;ImageComponentJson&gt;super.toComponentJson();</span>
+<span class="cstat-no" title="statement not covered" >            json.image = this.image != null ? this.image.toString() : null;</span>
+<span class="cstat-no" title="statement not covered" >            json.config = this.config != null ? this.config.toJson() : null;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return &lt;ComponentTypeWrapperJson&gt; {</span>
+                ImageComponent: json
+            };
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        equals(o: api.Equitable)</span>: boolean {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ImageComponent)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let other = &lt;ImageComponent&gt;o;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!super.equals(o)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.equals(this.image, other.image)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.equals(this.config, other.config)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return true;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        clone(): ImageComponent {</span>
+<span class="cstat-no" title="statement not covered" >            return new ImageComponentBuilder(this).build();</span>
+        }
+    }
+&nbsp;
+    export class ImageComponentBuilder extends ComponentBuilder&lt;ImageComponent&gt; {
+&nbsp;
+        image: api.content.ContentId;
+&nbsp;
+        config: PropertyTree;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(source?: ImageComponent)</span> {
+<span class="cstat-no" title="statement not covered" >            super(source);</span>
+<span class="cstat-no" title="statement not covered" >            if (source) {</span>
+<span class="cstat-no" title="statement not covered" >                this.image = source.getImage();</span>
+<span class="cstat-no" title="statement not covered" >                this.config = source.getConfig() ? source.getConfig().copy() : null;</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.config = new PropertyTree();</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.setType(ImageComponentType.get());</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setImage(value: api.content.ContentId)</span>: ImageComponentBuilder {
+<span class="cstat-no" title="statement not covered" >            this.image = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setConfig(value: PropertyTree)</span>: ImageComponentBuilder {
+<span class="cstat-no" title="statement not covered" >            this.config = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public fromJson(json: ImageComponentJson, region: Region)</span>: ImageComponentBuilder {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (json.image) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setImage(new api.content.ContentId(json.image));</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setName(json.name ? new ComponentName(json.name) : null);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (json.config) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setConfig(PropertyTree.fromJson(json.config));</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setParent(region);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public build(): ImageComponent {</span>
+<span class="cstat-no" title="statement not covered" >            return new ImageComponent(this);</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

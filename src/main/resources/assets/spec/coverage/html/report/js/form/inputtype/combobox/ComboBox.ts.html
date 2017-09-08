@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/form/inputtype/combobox/ComboBox.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/form/inputtype/combobox/</a> ComboBox.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">32.61% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>30/92</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">15.38% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/26</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">16.67% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>5/30</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">28.74% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>25/87</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>form.<span class="branch-1 cbranch-no" title="branch not covered" ></span>inputtype.<span class="branch-1 cbranch-no" title="branch not covered" ></span>combobox </span>{
+&nbsp;
+    import PropertyArray = api.data.PropertyArray;
+    import Property = api.data.Property;
+    import Value = api.data.Value;
+    import ValueType = api.data.ValueType;
+    import ValueTypes = api.data.ValueTypes;
+    import SelectedOption = api.ui.selector.combobox.SelectedOption;
+    import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
+    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
+    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
+&nbsp;
+    export class ComboBox extends api.form.inputtype.support.BaseInputTypeManagingAdd&lt;string&gt; {
+&nbsp;
+        private context: api.form.inputtype.InputTypeViewContext;
+&nbsp;
+        private comboBoxOptions: ComboBoxOption[];
+&nbsp;
+        private comboBox: api.ui.selector.combobox.ComboBox&lt;string&gt;;
+&nbsp;
+        private selectedOptionsView: api.ui.selector.combobox.SelectedOptionsView&lt;string&gt;;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(context: api.form.inputtype.InputTypeViewContext)</span> {
+<span class="cstat-no" title="statement not covered" >            super('');</span>
+<span class="cstat-no" title="statement not covered" >            this.context = context;</span>
+<span class="cstat-no" title="statement not covered" >            this.readConfig(context.inputConfig);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; })</span>: void {
+<span class="cstat-no" title="statement not covered" >            let options: ComboBoxOption[] = [];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let optionValues = inputConfig['option'] || [];</span>
+<span class="cstat-no" title="statement not covered" >            let l = optionValues.length;</span>
+<span class="cstat-no" title="statement not covered" >            let optionValue;</span>
+<span class="cstat-no" title="statement not covered" >            for (let i = 0; i &lt; l; i++) {</span>
+<span class="cstat-no" title="statement not covered" >                optionValue = optionValues[i];</span>
+<span class="cstat-no" title="statement not covered" >                options.push({label: optionValue['value'], value: optionValue['@value']});</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.comboBoxOptions = options;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getComboBox(): api.ui.selector.combobox.ComboBox&lt;string&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return this.comboBox;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        availableSizeChanged() {</span>
+            // console.log('ComboBox.availableSizeChanged(' + this.getEl().getWidth() + 'x' + this.getEl().getWidth() + ')');
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getValueType(): ValueType {</span>
+<span class="cstat-no" title="statement not covered" >            return ValueTypes.STRING;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        newInitialValue(): Value {</span>
+<span class="cstat-no" title="statement not covered" >            return null;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        layout(input: api.form.Input, propertyArray: PropertyArray)</span>: wemQ.Promise&lt;void&gt; {
+<span class="cstat-no" title="statement not covered" >            if (!ValueTypes.STRING.equals(propertyArray.getType())) {</span>
+<span class="cstat-no" title="statement not covered" >                propertyArray.convertValues(ValueTypes.STRING);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            super.layout(input, propertyArray);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.selectedOptionsView = new api.ui.selector.combobox.BaseSelectedOptionsView&lt;string&gt;();</span>
+<span class="cstat-no" title="statement not covered" >            this.comboBox = this.createComboBox(input, propertyArray);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.comboBoxOptions.forEach(<span class="fstat-no" title="function not covered" >(option: ComboBoxOption)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.comboBox.addOption({value: option.value, displayValue: option.label});</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.comboBox);</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(&lt;api.dom.Element&gt; this.selectedOptionsView);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setLayoutInProgress(false);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return wemQ&lt;void&gt;(null);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean)</span>: Q.Promise&lt;void&gt; {
+<span class="cstat-no" title="statement not covered" >            let superPromise = super.update(propertyArray, unchangedOnly);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!unchangedOnly || !this.comboBox.isDirty()) {</span>
+<span class="cstat-no" title="statement not covered" >                return superPromise.then(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                    this.comboBox.setValue(this.getValueFromPropertyArray(propertyArray));</span>
+                });
+            } else {
+<span class="cstat-no" title="statement not covered" >                return superPromise;</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        reset() {</span>
+<span class="cstat-no" title="statement not covered" >            this.comboBox.resetBaseValues();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        createComboBox(input: api.form.Input, propertyArray: PropertyArray)</span>: api.ui.selector.combobox.ComboBox&lt;string&gt; {
+<span class="cstat-no" title="statement not covered" >            let comboBox = new api.ui.selector.combobox.ComboBox&lt;string&gt;(name, {</span>
+                filter: this.comboBoxFilter,
+                selectedOptionsView: this.selectedOptionsView,
+                maximumOccurrences: input.getOccurrences().getMaximum(),
+                optionDisplayValueViewer: new ComboBoxDisplayValueViewer(),
+                hideComboBoxWhenMaxReached: true,
+                value: this.getValueFromPropertyArray(propertyArray)
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            comboBox.onOptionFilterInputValueChanged(<span class="fstat-no" title="function not covered" >(event: api.ui.selector.OptionFilterInputValueChangedEvent&lt;string&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.comboBox.setFilterArgs({searchString: event.getNewValue()});</span>
+            });
+<span class="cstat-no" title="statement not covered" >            comboBox.onOptionSelected(<span class="fstat-no" title="function not covered" >(event: SelectedOptionEvent&lt;string&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.ignorePropertyChange = true;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                const option = event.getSelectedOption();</span>
+<span class="cstat-no" title="statement not covered" >                let value = new Value(option.getOption().value, ValueTypes.STRING);</span>
+<span class="cstat-no" title="statement not covered" >                if (option.getIndex() &gt;= 0) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.getPropertyArray().set(option.getIndex(), value);</span>
+                } else {
+<span class="cstat-no" title="statement not covered" >                    this.getPropertyArray().add(value);</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.ignorePropertyChange = false;</span>
+<span class="cstat-no" title="statement not covered" >                this.validate(false);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.fireFocusSwitchEvent(event);</span>
+            });
+<span class="cstat-no" title="statement not covered" >            comboBox.onOptionDeselected(<span class="fstat-no" title="function not covered" >(event: SelectedOptionEvent&lt;string&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.ignorePropertyChange = true;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.getPropertyArray().remove(event.getSelectedOption().getIndex());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.ignorePropertyChange = false;</span>
+<span class="cstat-no" title="statement not covered" >                this.validate(false);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return comboBox;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        giveFocus(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.comboBox.maximumOccurrencesReached()) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return this.comboBox.giveFocus();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        valueBreaksRequiredContract(value: Value)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            return value.isNull() || !value.getType().equals(ValueTypes.STRING) || !this.isExistingValue(value.getString());</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private isExistingValue(value: string)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            return this.comboBoxOptions.some(<span class="fstat-no" title="function not covered" >(option: ComboBoxOption)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return option.value === value;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private comboBoxFilter(item: api.ui.selector.Option&lt;string&gt;, args: any)</span> {
+<span class="cstat-no" title="statement not covered" >            return !(args &amp;&amp; args.searchString &amp;&amp; item.displayValue.toUpperCase().indexOf(args.searchString.toUpperCase()) === -1);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected getNumberOfValids(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.getPropertyArray().getSize();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onFocus(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.comboBox.onFocus(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unFocus(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.comboBox.unFocus(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onBlur(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.comboBox.onBlur(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unBlur(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.comboBox.unBlur(listener);</span>
+        }
+&nbsp;
+    }
+&nbsp;
+    api.form.inputtype.InputTypeManager.register(new api.Class('ComboBox', ComboBox));
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/app/browse/BrowseItem.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/app/browse/</a> BrowseItem.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">46.81% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>22/47</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">23.08% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/13</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">43.18% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>19/44</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>app.<span class="branch-1 cbranch-no" title="branch not covered" ></span>browse </span>{
+&nbsp;
+    export class BrowseItem&lt;M extends api.Equitable&gt; implements api.Equitable {
+&nbsp;
+        private model: M;
+&nbsp;
+        private id: string;
+&nbsp;
+        private displayName: string;
+&nbsp;
+        private path: string;
+&nbsp;
+        private iconUrl: string;
+&nbsp;
+        private iconClass: string;
+&nbsp;
+        private renderable: boolean;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(model: M)</span> {
+<span class="cstat-no" title="statement not covered" >            this.model = model;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setId(value: string)</span>: api.app.browse.BrowseItem&lt;M&gt; {
+<span class="cstat-no" title="statement not covered" >            this.id = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setDisplayName(value: string)</span>: api.app.browse.BrowseItem&lt;M&gt; {
+<span class="cstat-no" title="statement not covered" >            this.displayName = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setPath(value: string)</span>: api.app.browse.BrowseItem&lt;M&gt; {
+<span class="cstat-no" title="statement not covered" >            this.path = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setIconUrl(value: string)</span>: api.app.browse.BrowseItem&lt;M&gt; {
+<span class="cstat-no" title="statement not covered" >            this.iconUrl = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setIconClass(iconClass: string)</span>: api.app.browse.BrowseItem&lt;M&gt; {
+<span class="cstat-no" title="statement not covered" >            this.iconClass = iconClass;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setRenderable(value: boolean)</span>: api.app.browse.BrowseItem&lt;M&gt; {
+<span class="cstat-no" title="statement not covered" >            this.renderable = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getIconClass(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.iconClass;</span>
+        }
+<span class="fstat-no" title="function not covered" >        getModel(): M {</span>
+<span class="cstat-no" title="statement not covered" >            return this.model;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getId(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.id;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getDisplayName(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.displayName;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPath(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.path;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getIconUrl(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.iconUrl;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isRenderable(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.renderable;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toViewItem(): api.app.view.ViewItem&lt;M&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return new api.app.view.ViewItem&lt;M&gt;(this.model)</span>
+                .setIconUrl(this.iconUrl)
+                .setIconClass(this.iconClass)
+                .setDisplayName(this.displayName)
+                .setPath(this.path)
+                .setRenderable(this.isRenderable());
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        equals(o: api.Equitable)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, BrowseItem)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let other = &lt;BrowseItem&lt;M&gt;&gt; o;</span>
+<span class="cstat-no" title="statement not covered" >            return this.model.equals(other.model) &amp;&amp;</span>
+                   this.displayName === other.displayName &amp;&amp;
+                   this.path === other.path &amp;&amp;
+                   this.iconUrl === other.iconUrl &amp;&amp; this.iconClass === other.iconClass;
+        }
+    }
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

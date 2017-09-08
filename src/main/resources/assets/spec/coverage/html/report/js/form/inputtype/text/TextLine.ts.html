@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/form/inputtype/text/TextLine.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/form/inputtype/text/</a> TextLine.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">83.87% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>52/62</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">60.53% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>23/38</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">88.89% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>16/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">82.14% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>46/56</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">50×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">56×</span>
+<span class="cline-any cline-yes">56×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">60×</span>
+<span class="cline-any cline-yes">58×</span>
+<span class="cline-any cline-yes">58×</span>
+<span class="cline-any cline-yes">58×</span>
+<span class="cline-any cline-yes">58×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>form.<span class="branch-1 cbranch-no" title="branch not covered" ></span>inputtype.</span>text {
+&nbsp;
+    import support = api.form.inputtype.support;
+    import Property = api.data.Property;
+    import Value = api.data.Value;
+    import ValueType = api.data.ValueType;
+    import ValueTypes = api.data.ValueTypes;
+&nbsp;
+    export class TextLine extends support.BaseInputTypeNotManagingAdd&lt;string&gt; {
+&nbsp;
+        private regexpStr: string;
+        private regexp: RegExp;
+&nbsp;
+        constructor(config: api.form.inputtype.InputTypeViewContext) {
+            super(config);
+            this.readConfig(config.inputConfig);
+        }
+&nbsp;
+        private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
+            let regexpConfig = inputConfig &amp;&amp; inputConfig['regexp'] &amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >inputConfig['regexp'][0];</span>
+            let regexp = regexpConfig &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >regexpConfig['value'];</span>
+            this.regexpStr = regexp || null;
+        }
+&nbsp;
+        getValueType(): ValueType {
+            return ValueTypes.STRING;
+        }
+&nbsp;
+        newInitialValue(): Value {
+            return super.newInitialValue() || new Value('', ValueTypes.STRING);
+        }
+&nbsp;
+        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (!ValueTypes.STRING.equals(property.getType())) {
+<span class="cstat-no" title="statement not covered" >                property.convertValueType(ValueTypes.STRING);</span>
+            }
+&nbsp;
+            let inputEl = api.ui.text.TextInput.middle(undefined, property.getString());
+            inputEl.setName(this.getInput().getName() + '-' + index);
+&nbsp;
+            inputEl.onValueChanged((event: api.ValueChangedEvent) =&gt; {
+                let isValid = this.isValid(event.getNewValue(), inputEl);
+                let value = isValid ? ValueTypes.STRING.newValue(event.getNewValue()) : <span class="branch-1 cbranch-no" title="branch not covered" >this.newInitialValue();</span>
+                this.notifyOccurrenceValueChanged(inputEl, value);
+                inputEl.updateValidationStatusOnUserInput(isValid);
+            });
+            return inputEl;
+        }
+&nbsp;
+        updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
+            let input = &lt;api.ui.text.TextInput&gt; occurrence;
+&nbsp;
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (!unchangedOnly || <span class="branch-1 cbranch-no" title="branch not covered" >!input.isDirty())</span> {
+                input.setValue(property.getString());
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        resetInputOccurrenceElement(occurrence: api.dom.Element)</span> {
+<span class="cstat-no" title="statement not covered" >            let input = &lt;api.ui.text.TextInput&gt; occurrence;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            input.resetBaseValues();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        availableSizeChanged() {</span>
+            // must be implemented by children
+        }
+&nbsp;
+        valueBreaksRequiredContract(value: Value): boolean {
+            return value.isNull() || !value.getType().equals(ValueTypes.STRING) ||
+                   api.util.StringHelper.isBlank(value.getString());
+        }
+&nbsp;
+        hasInputElementValidUserInput(inputElement: api.dom.Element) {
+            let textInput = &lt;api.ui.text.TextInput&gt;inputElement;
+            return this.isValid(textInput.getValue(), textInput, true);
+        }
+&nbsp;
+        private isValid(value: string, textInput: api.ui.text.TextInput, silent: boolean = false): boolean {
+            let parent = textInput.getParentElement();
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (!this.regexpStr || <span class="branch-1 cbranch-no" title="branch not covered" >api.util.StringHelper.isEmpty(value))</span> {
+                parent.removeClass('valid-regexp').removeClass('invalid-regexp');
+                return true;
+            }
+<span class="cstat-no" title="statement not covered" >            if (!this.regexp) {</span>
+<span class="cstat-no" title="statement not covered" >                this.regexp = new RegExp(this.regexpStr);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let valid = this.regexp.test(value);</span>
+<span class="cstat-no" title="statement not covered" >            if (!silent) {</span>
+<span class="cstat-no" title="statement not covered" >                parent.toggleClass('valid-regexp', valid);</span>
+<span class="cstat-no" title="statement not covered" >                parent.toggleClass('invalid-regexp', !valid);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return valid;</span>
+        }
+&nbsp;
+        static getName(): api.form.InputTypeName {
+            return new api.form.InputTypeName('TextLine', false);
+        }
+&nbsp;
+    }
+&nbsp;
+    api.form.inputtype.InputTypeManager.register(new api.Class(TextLine.getName().getName(), TextLine));
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

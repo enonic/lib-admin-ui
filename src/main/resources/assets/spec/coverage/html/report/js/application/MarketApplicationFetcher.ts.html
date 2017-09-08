@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/application/MarketApplicationFetcher.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/application/</a> MarketApplicationFetcher.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">21.62% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>8/37</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">10% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>2/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">30% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>3/10</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">18.18% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>6/33</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>application </span>{
+&nbsp;
+    export class MarketApplicationsFetcher {
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        static fetchChildren(version: string, installedApplications: Application[], <span class="cstat-no" title="statement not covered" >from: number = 0,</span></span></span>
+<span class="cstat-no" title="statement not covered" >                             size: number = -1)</span>: wemQ.Promise&lt;MarketApplicationResponse&gt; {
+<span class="cstat-no" title="statement not covered" >            return new api.application.ListMarketApplicationsRequest()</span>
+                .setStart(from)
+                .setCount(size)
+                .setVersion(version)
+                .sendAndParse()
+                .then(<span class="fstat-no" title="function not covered" >(response: MarketApplicationResponse)</span>=&gt; {
+<span class="cstat-no" title="statement not covered" >                    let applications = response.getApplications();</span>
+<span class="cstat-no" title="statement not covered" >                    applications.forEach(<span class="fstat-no" title="function not covered" >(marketApp)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                        for (let i = 0; i &lt; installedApplications.length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >                            if (marketApp.getAppKey().equals(installedApplications[i].getApplicationKey())) {</span>
+<span class="cstat-no" title="statement not covered" >                                if (this.installedAppCanBeUpdated(marketApp, installedApplications[i])) {</span>
+<span class="cstat-no" title="statement not covered" >                                    marketApp.setStatus(MarketAppStatus.OLDER_VERSION_INSTALLED);</span>
+                                } else {
+<span class="cstat-no" title="statement not covered" >                                    marketApp.setStatus(MarketAppStatus.INSTALLED);</span>
+                                }
+<span class="cstat-no" title="statement not covered" >                                break;</span>
+                            }
+                        }
+                    });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    return response;</span>
+                });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static installedAppCanBeUpdated(marketApp: MarketApplication, installedApp: Application)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            return this.compareVersionNumbers(marketApp.getLatestVersion(), installedApp.getVersion()) &gt; 0;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private static compareVersionNumbers(v1: string, v2: string)</span>: number {
+<span class="cstat-no" title="statement not covered" >            let v1parts = v1.split('.').map(<span class="fstat-no" title="function not covered" >(el)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return parseInt(el, 10);</span>
+            });
+<span class="cstat-no" title="statement not covered" >            let v2parts = v2.split('.').map(<span class="fstat-no" title="function not covered" >(el)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return parseInt(el, 10);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            for (let i = 0; i &lt; v1parts.length; ++i) {</span>
+<span class="cstat-no" title="statement not covered" >                if (v2parts.length === i) {</span>
+<span class="cstat-no" title="statement not covered" >                    return 1;</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (v1parts[i] === v2parts[i]) {</span>
+<span class="cstat-no" title="statement not covered" >                    continue;</span>
+                }
+<span class="cstat-no" title="statement not covered" >                if (v1parts[i] &gt; v2parts[i]) {</span>
+<span class="cstat-no" title="statement not covered" >                    return 1;</span>
+                }
+<span class="cstat-no" title="statement not covered" >                return -1;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (v1parts.length !== v2parts.length) {</span>
+<span class="cstat-no" title="statement not covered" >                return -1;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return 0;</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

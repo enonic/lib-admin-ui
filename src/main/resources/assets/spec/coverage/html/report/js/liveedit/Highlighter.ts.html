@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/liveedit/Highlighter.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/liveedit/</a> Highlighter.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">28% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>21/75</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">15.38% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/26</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>18/72</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>liveedit </span>{
+&nbsp;
+    export enum HighlighterMode {
+        RECTANGLE,
+        CROSSHAIR
+    }
+&nbsp;
+    export class Highlighter extends api.dom.Element {
+&nbsp;
+        private rectangle: api.dom.Element;
+&nbsp;
+        private path: api.dom.Element;
+&nbsp;
+        private static INSTANCE: Highlighter;
+&nbsp;
+        private lastHighlightedItemView: ItemView;
+&nbsp;
+        private mode: HighlighterMode;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(type?: HighlighterMode)</span> {
+            // Needs to be a SVG element as the css has pointer-events:none
+            // CSS pointer-events only works for SVG in IE
+<span class="cstat-no" title="statement not covered" >            let svgCls = api.StyleHelper.getCls('highlighter');</span>
+<span class="cstat-no" title="statement not covered" >            let html = `&lt;svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="${svgCls}" style="top:-5000px;left:-5000px"&gt;</span>
+                           &lt;rect width="150" height="150"/&gt;
+                           &lt;path d=""/&gt;
+                       &lt;/svg&gt;`;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            super(new api.dom.ElementFromHelperBuilder().</span>
+            setHelper(api.dom.Element.fromString(html).getEl()).
+            setLoadExistingChildren(true));
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setMode(type || HighlighterMode.RECTANGLE);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.rectangle = this.getChildren()[0];</span>
+<span class="cstat-no" title="statement not covered" >            this.path = this.getChildren()[1];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            api.dom.Body.get().appendChild(this);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static get(): Highlighter {</span>
+<span class="cstat-no" title="statement not covered" >            if (!Highlighter.INSTANCE) {</span>
+<span class="cstat-no" title="statement not covered" >                Highlighter.INSTANCE = new Highlighter();</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return Highlighter.INSTANCE;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        highlightItemView(itemView: ItemView)</span>: void {
+<span class="cstat-no" title="statement not covered" >            if (!itemView) {</span>
+<span class="cstat-no" title="statement not covered" >                this.hide();</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let dimensions = itemView.getEl().getDimensions();</span>
+<span class="cstat-no" title="statement not covered" >            let style = itemView.getType().getConfig().getHighlighterStyle();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!!itemView.getPageView() &amp;&amp; itemView.getPageView().hasToolbarContainer()) {</span>
+<span class="cstat-no" title="statement not covered" >                dimensions.top = dimensions.top - itemView.getPageView().getEditorToolbarHeight();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.resize(dimensions, this.preProcessStyle(style, itemView.isEmpty()));</span>
+<span class="cstat-no" title="statement not covered" >            this.show();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.lastHighlightedItemView = itemView;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        highlightElement(dimensions: ElementDimensions, style: HighlighterStyle)</span>: void {
+<span class="cstat-no" title="statement not covered" >            this.resize(dimensions, style);</span>
+<span class="cstat-no" title="statement not covered" >            this.show();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        updateLastHighlightedItemView() {</span>
+<span class="cstat-no" title="statement not covered" >            this.highlightItemView(this.lastHighlightedItemView);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setMode(mode: HighlighterMode)</span>: Highlighter {
+<span class="cstat-no" title="statement not covered" >            if (this.mode != null) {</span>
+<span class="cstat-no" title="statement not covered" >                this.getEl().removeClass(HighlighterMode[this.mode].toLowerCase());</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.mode = mode;</span>
+<span class="cstat-no" title="statement not covered" >            if (mode != null) {</span>
+<span class="cstat-no" title="statement not covered" >                this.getEl().addClass(HighlighterMode[mode].toLowerCase());</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isViewInsideSelectedContainer(itemView: ItemView)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            if (!this.lastHighlightedItemView) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this.lastHighlightedItemView.isContainer() &amp;&amp;</span>
+                    itemView.isChildOfItemView(this.lastHighlightedItemView);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSelectedView(): ItemView {</span>
+<span class="cstat-no" title="statement not covered" >            return this.lastHighlightedItemView;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unselect() {</span>
+<span class="cstat-no" title="statement not covered" >            this.hide();</span>
+<span class="cstat-no" title="statement not covered" >            this.lastHighlightedItemView = null;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected preProcessStyle(style: HighlighterStyle, isEmptyView: boolean)</span>: HighlighterStyle {
+<span class="cstat-no" title="statement not covered" >            return {</span>
+                stroke: 'rgba(0, 0, 0, 1)',
+                strokeDasharray: style.strokeDasharray,
+                fill: 'transparent'
+            };
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private resize(dimensions: ElementDimensions, style: HighlighterStyle)</span>: void {
+<span class="cstat-no" title="statement not covered" >            let w = Math.round(dimensions.width);</span>
+<span class="cstat-no" title="statement not covered" >            let h = Math.round(dimensions.height);</span>
+<span class="cstat-no" title="statement not covered" >            let strokeW;</span>
+<span class="cstat-no" title="statement not covered" >            let top = Math.round(dimensions.top);</span>
+<span class="cstat-no" title="statement not covered" >            let left = Math.round(dimensions.left);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            switch (this.mode) {</span>
+            case HighlighterMode.RECTANGLE:
+<span class="cstat-no" title="statement not covered" >                this.rectangle.getEl()</span>
+                    .setAttribute('width', w + '')
+                    .setAttribute('height', h + '')
+                    .setStroke(style.stroke)
+                    .setStrokeDasharray(style.strokeDasharray)
+                    .setFill(style.fill);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.getEl().setWidthPx(w).setHeightPx(h).setTopPx(top).setLeftPx(left);</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case HighlighterMode.CROSSHAIR:
+<span class="cstat-no" title="statement not covered" >                let bodyEl = api.dom.Body.get().getEl();</span>
+<span class="cstat-no" title="statement not covered" >                let screenH = bodyEl.getHeight();</span>
+<span class="cstat-no" title="statement not covered" >                let screenW = bodyEl.getWidth();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                strokeW = parseInt(window.getComputedStyle(this.path.getHTMLElement(), null).getPropertyValue('stroke-width'), 10);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.path.getEl()</span>
+                    .setAttribute('d',
+                    this.generatePath(left + strokeW / 2, top + strokeW / 2,
+                        w - strokeW, h - strokeW,
+                        screenW - strokeW, screenH - strokeW))
+                    .setStroke(style.stroke)
+                    .setStrokeDasharray(style.strokeDasharray)
+                    .setFill('transparent');
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.rectangle.getEl()</span>
+                    .setAttribute('width', w + '')
+                    .setAttribute('height', h + '')
+                    .setAttribute('x', left + '')
+                    .setAttribute('y', top + '')
+                    .setStroke(style.stroke)
+                    .setFill(style.fill);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.getEl().setWidthPx(screenW).setHeightPx(screenH).setTopPx(0).setLeftPx(0);</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private generatePath(x: number, y: number, w: number, h: number, screenW: number, screenH: number)</span>: string {
+<span class="cstat-no" title="statement not covered" >            return `M ${x} 0 v ${screenH} m ${w} 0 v -${screenH} M ${screenW} ${y} h -${screenW} m 0 ${h} h ${screenW}`;</span>
+        }
+&nbsp;
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

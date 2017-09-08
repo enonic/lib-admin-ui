@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/ui/panel/PanelStrip.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/ui/panel/</a> PanelStrip.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25.2% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>31/123</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">5.77% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/52</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">12.5% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/32</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">23.08% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>27/117</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>ui.<span class="branch-1 cbranch-no" title="branch not covered" ></span>panel </span>{
+&nbsp;
+    export class PanelStrip extends Panel {
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >panels: Panel[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >headers: api.dom.H2El[] = [];</span>
+&nbsp;
+        private scrollable: api.dom.Element;
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >offset: number = 0;</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >panelShown: Panel = null;</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >panelShownListeners: {(event: PanelShownEvent):void}[] = [];</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(scrollable?: api.dom.Element, className?: string)</span> {
+<span class="cstat-no" title="statement not covered" >            super('panel-strip' + (className ? ' ' + className : ''));</span>
+<span class="cstat-no" title="statement not covered" >            if (scrollable) {</span>
+<span class="cstat-no" title="statement not covered" >                this.scrollable = scrollable;</span>
+<span class="cstat-no" title="statement not covered" >                this.scrollable.addClass('panel-strip-scrollable');</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.scrollable = this;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.onShown(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.updateLastPanelHeight();</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private countExistingChildren(index: number)</span>: number {
+<span class="cstat-no" title="statement not covered" >            let count = Math.min(this.panels.length, index);</span>
+<span class="cstat-no" title="statement not covered" >            for (let i = 0; i &lt; Math.min(this.headers.length, index); i++) {</span>
+<span class="cstat-no" title="statement not covered" >                if(this.headers[i]) {</span>
+<span class="cstat-no" title="statement not covered" >                    count++;</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            return count;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        insertPanel(panel: Panel, index: number, header?: string </span>): number {
+<span class="cstat-no" title="statement not covered" >            panel.setDoOffset(false);</span>
+<span class="cstat-no" title="statement not covered" >            let previousChildrenIndex = this.countExistingChildren(index);</span>
+<span class="cstat-no" title="statement not covered" >            let headerEl;</span>
+<span class="cstat-no" title="statement not covered" >            if (header) {</span>
+<span class="cstat-no" title="statement not covered" >                headerEl = new api.dom.H2El('panel-strip-panel-header');</span>
+<span class="cstat-no" title="statement not covered" >                headerEl.getEl().setInnerHtml(header);</span>
+<span class="cstat-no" title="statement not covered" >                this.insertChild(headerEl, previousChildrenIndex);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.panels.splice(index, 0, panel);</span>
+<span class="cstat-no" title="statement not covered" >            this.headers.splice(index, 0, headerEl);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (header) {</span>
+<span class="cstat-no" title="statement not covered" >                this.insertChild(panel, previousChildrenIndex + 1);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.insertChild(panel, previousChildrenIndex);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.isVisible()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.updateLastPanelHeight();</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return index;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPanels(): Panel[] {</span>
+<span class="cstat-no" title="statement not covered" >            return this.panels;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getScrollable(): api.dom.Element {</span>
+<span class="cstat-no" title="statement not covered" >            return this.scrollable;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setScrollOffset(offset: number)</span>: PanelStrip {
+<span class="cstat-no" title="statement not covered" >            this.offset = offset;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getScrollOffset(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.offset;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private updateLastPanelHeight() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.getSize() === 0) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.getSize() &gt; 1) {</span>
+                // restore the one before last panel's height if needed
+<span class="cstat-no" title="statement not covered" >                let beforeLastEl = this.getPanel(this.getSize() - 2).getEl();</span>
+<span class="cstat-no" title="statement not covered" >                let originalHeight = beforeLastEl.getData('originalHeight');</span>
+<span class="cstat-no" title="statement not covered" >                if (originalHeight) {</span>
+<span class="cstat-no" title="statement not covered" >                    beforeLastEl.setHeight(originalHeight);</span>
+                }
+            }
+            // set the last panel height equal to that of the scrollable
+<span class="cstat-no" title="statement not covered" >            let lastEl = this.getPanel(this.getSize() - 1).getEl();</span>
+<span class="cstat-no" title="statement not covered" >            if (!lastEl.getData('originalHeight')) {</span>
+<span class="cstat-no" title="statement not covered" >                lastEl.setData('originalHeight', lastEl.getHTMLElement().style.height || 'auto');</span>
+            }
+<span class="cstat-no" title="statement not covered" >            lastEl.setHeightPx(this.scrollable.getEl().getHeight());</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        removePanel(panelToRemove: Panel, <span class="cstat-no" title="statement not covered" >checkCanRemovePanel: boolean = true)</span></span>: number {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let index: number = this.getPanelIndex(panelToRemove);</span>
+<span class="cstat-no" title="statement not covered" >            if (index &lt; 0 || checkCanRemovePanel &amp;&amp; !this.canRemovePanel(panelToRemove)) {</span>
+<span class="cstat-no" title="statement not covered" >                return -1;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.removeChild(panelToRemove);</span>
+<span class="cstat-no" title="statement not covered" >            this.removeChild(this.getHeader(index));</span>
+<span class="cstat-no" title="statement not covered" >            this.panels.splice(index, 1);</span>
+<span class="cstat-no" title="statement not covered" >            this.headers.splice(index, 1);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.isEmpty()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.panelShown = null;</span>
+            } else <span class="cstat-no" title="statement not covered" >if (panelToRemove === this.getPanelShown()) {</span>
+                // show either panel that has the same index now or the last panel
+<span class="cstat-no" title="statement not covered" >                this.showPanelByIndex(Math.min(index, this.getSize() - 1));</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.isVisible() &amp;&amp; index === this.getSize() &amp;&amp; !this.isEmpty()) {</span>
+                // update if last panel was removed and there are still left
+<span class="cstat-no" title="statement not covered" >                this.updateLastPanelHeight();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return index;</span>
+        }
+&nbsp;
+        /*
+         * Override this method to decide whether given panel at given index can be removed or not. Default is true.
+         */
+<span class="fstat-no" title="function not covered" >        canRemovePanel(panel: Panel)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            return true;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isEmpty(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.panels.length === 0;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSize(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.panels.length;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPanel(index: number)</span>: Panel {
+<span class="cstat-no" title="statement not covered" >            return this.panels[index];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getHeader(index: number)</span>: api.dom.H2El {
+<span class="cstat-no" title="statement not covered" >            return this.headers[index];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPanelShown(): Panel {</span>
+<span class="cstat-no" title="statement not covered" >            return this.panelShown;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPanelShownIndex(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.getPanelIndex(this.panelShown);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPanelIndex&lt;T extends Panel&gt;(panel: T)</span>: number {
+<span class="cstat-no" title="statement not covered" >            let size = this.getSize();</span>
+<span class="cstat-no" title="statement not covered" >            for (let i = 0; i &lt; size; i++) {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.panels[i] === panel) {</span>
+<span class="cstat-no" title="statement not covered" >                    return i;</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            return -1;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        showPanel(panel: Panel)</span> {
+<span class="cstat-no" title="statement not covered" >            let index = this.getPanelIndex(panel);</span>
+<span class="cstat-no" title="statement not covered" >            if (index &gt; -1) {</span>
+<span class="cstat-no" title="statement not covered" >                this.showPanelByIndex(index);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        showPanelByIndex(index: number)</span> {
+<span class="cstat-no" title="statement not covered" >            let panelToShow = this.getPanel(index);</span>
+<span class="cstat-no" title="statement not covered" >            if (panelToShow == null) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            wemjq(this.scrollable.getHTMLElement()).animate({</span>
+                scrollTop: index === 0 ? 0 : this.getScroll() - this.offset +
+                                            panelToShow.getEl().getOffsetToParent().top -
+                                            this.headers[index].getEl().getHeightWithBorder()
+            }, {
+                duration: 500,
+                complete: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    this.notifyPanelShown(panelToShow, index, this.getPanelShown());</span>
+<span class="cstat-no" title="statement not covered" >                    this.panelShown = panelToShow;</span>
+                }
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getScroll(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.scrollable.getHTMLElement().scrollTop;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setScroll(scrollTop: number)</span> {
+<span class="cstat-no" title="statement not covered" >            this.scrollable.getHTMLElement().scrollTop = scrollTop;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onPanelShown(listener: (event: PanelShownEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.panelShownListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unPanelShown(listener: (event: PanelShownEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.panelShownListeners = this.panelShownListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: (event: PanelShownEvent) =&gt; void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return  listener !== currentListener;</span>
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private notifyPanelShown(panel: Panel, panelIndex: number, previousPanel: Panel)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            this.panelShownListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: PanelShownEvent) =&gt; void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener.call(this, new PanelShownEvent(panel, panelIndex, previousPanel));</span>
+            });
+        }
+&nbsp;
+    }
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

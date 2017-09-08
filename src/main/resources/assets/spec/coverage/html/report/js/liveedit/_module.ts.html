@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/liveedit/_module.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/liveedit/</a> _module.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/0</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">///&lt;reference path='LiveEditModel.ts' /&gt;
+///&lt;reference path='ItemType.ts' /&gt;
+///&lt;reference path='CreateItemViewConfig.ts' /&gt;
+///&lt;reference path='ItemTypeConfig.ts' /&gt;
+///&lt;reference path='RegionItemType.ts' /&gt;
+///&lt;reference path='InitializeLiveEditEvent.ts' /&gt;
+///&lt;reference path='SkipLiveEditReloadConfirmationEvent.ts' /&gt;
+///&lt;reference path='ComponentItemType.ts' /&gt;
+///&lt;reference path='PageItemType.ts' /&gt;
+///&lt;reference path='ContentItemType.ts' /&gt;
+///&lt;reference path='Shader.ts' /&gt;
+///&lt;reference path='Highlighter.ts' /&gt;
+///&lt;reference path='SelectedHighlighter.ts' /&gt;
+///&lt;reference path='Cursor.ts' /&gt;
+///&lt;reference path='ItemViewId.ts' /&gt;
+///&lt;reference path='ItemViewIdProducer.ts' /&gt;
+///&lt;reference path='RepeatNextItemViewIdProducer.ts' /&gt;
+///&lt;reference path='ItemView.ts' /&gt;
+///&lt;reference path='ItemViewAddedEvent.ts' /&gt;
+///&lt;reference path='ItemViewRemovedEvent.ts' /&gt;
+///&lt;reference path='ItemViewSelectedEvent.ts' /&gt;
+///&lt;reference path='ItemViewDeselectedEvent.ts' /&gt;
+///&lt;reference path='ItemViewContextMenuTitle.ts' /&gt;
+///&lt;reference path='ComponentViewContextMenuTitle.ts' /&gt;
+///&lt;reference path='ContentViewContextMenuTitle.ts' /&gt;
+///&lt;reference path='PageViewContextMenuTitle.ts' /&gt;
+///&lt;reference path='RegionViewContextMenuTitle.ts' /&gt;
+///&lt;reference path='ItemViewContextMenu.ts' /&gt;
+///&lt;reference path='ItemViewContextMenuPosition.ts' /&gt;
+///&lt;reference path='RegionView.ts' /&gt;
+///&lt;reference path='RegionComponentViewer.ts' /&gt;
+///&lt;reference path='ItemViewPlaceholder.ts' /&gt;
+///&lt;reference path='DragPlaceholder.ts' /&gt;
+///&lt;reference path='RegionPlaceholder.ts' /&gt;
+///&lt;reference path='ComponentView.ts' /&gt;
+///&lt;reference path='ContentBasedComponentView.ts' /&gt;
+///&lt;reference path='PagePlaceholder.ts' /&gt;
+///&lt;reference path='PagePlaceholderInfoBlock.ts' /&gt;
+///&lt;reference path='PageView.ts' /&gt;
+///&lt;reference path='ContentView.ts' /&gt;
+&nbsp;
+///&lt;reference path='PageLockedEvent.ts' /&gt;
+///&lt;reference path='PageUnlockedEvent.ts' /&gt;
+///&lt;reference path='PageUnloadedEvent.ts' /&gt;
+///&lt;reference path='PageTextModeStartedEvent.ts' /&gt;
+///&lt;reference path='ComponentViewDragStartedEvent.ts' /&gt;
+///&lt;reference path='ComponentViewDraggingStoppedEvent.ts' /&gt;
+///&lt;reference path='ComponentViewDragCanceledEvent.ts' /&gt;
+///&lt;reference path='ComponentViewDragDroppedEventEvent.ts' /&gt;
+///&lt;reference path='PageSelectedEvent.ts' /&gt;
+///&lt;reference path='RegionSelectedEvent.ts' /&gt;
+///&lt;reference path='ComponentAddedEvent.ts' /&gt;
+///&lt;reference path='ComponentRemovedEvent.ts' /&gt;
+///&lt;reference path='ComponentResetEvent.ts' /&gt;
+///&lt;reference path='ComponentDuplicatedEvent.ts' /&gt;
+///&lt;reference path='ComponentLoadedEvent.ts' /&gt;
+///&lt;reference path='FragmentComponentLoadedEvent.ts' /&gt;
+///&lt;reference path='FragmentLoadErrorEvent.ts' /&gt;
+///&lt;reference path='FragmentComponentReloadRequiredEvent.ts' /&gt;
+///&lt;reference path='Position.ts' /&gt;
+///&lt;reference path='LiveEditPageViewReadyEvent.ts' /&gt;
+///&lt;reference path='DragAndDrop.ts' /&gt;
+///&lt;reference path='LiveEditPageInitializationErrorEvent.ts' /&gt;
+///&lt;reference path='ComponentInspectedEvent.ts' /&gt;
+///&lt;reference path='PageInspectedEvent.ts' /&gt;
+///&lt;reference path='LiveEditPageDialogCreatedEvent.ts' /&gt;
+&nbsp;
+///&lt;reference path='ComponentFragmentCreatedEvent.ts' /&gt;
+///&lt;reference path='ShowWarningLiveEditEvent.ts' /&gt;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

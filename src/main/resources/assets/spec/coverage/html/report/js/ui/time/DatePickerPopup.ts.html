@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/ui/time/DatePickerPopup.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/ui/time/</a> DatePickerPopup.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25.71% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>18/70</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">37.5% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/8</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">27.78% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>5/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>13/65</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>ui.<span class="branch-1 cbranch-no" title="branch not covered" ></span>time </span>{
+&nbsp;
+    export class DatePickerPopupBuilder {
+&nbsp;
+        calendar: Calendar;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setCalendar(value: Calendar)</span>: DatePickerPopupBuilder {
+<span class="cstat-no" title="statement not covered" >            this.calendar = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getCalendar(): Calendar {</span>
+<span class="cstat-no" title="statement not covered" >            return this.calendar;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        build(): DatePickerPopup {</span>
+<span class="cstat-no" title="statement not covered" >            return new DatePickerPopup(this);</span>
+        }
+&nbsp;
+    }
+&nbsp;
+    export class DatePickerPopup extends api.dom.DivEl {
+&nbsp;
+        private prevYear: api.dom.AEl;
+        private year: api.dom.SpanEl;
+        private nextYear: api.dom.AEl;
+        private prevMonth: api.dom.AEl;
+        private month: api.dom.SpanEl;
+        private nextMonth: api.dom.AEl;
+        private calendar: Calendar;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(builder: DatePickerPopupBuilder)</span> {
+<span class="cstat-no" title="statement not covered" >            super('date-picker-dialog');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let yearContainer = new api.dom.H2El('year-container');</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(yearContainer);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.prevYear = new api.dom.AEl('prev');</span>
+<span class="cstat-no" title="statement not covered" >            this.prevYear.onClicked(<span class="fstat-no" title="function not covered" >(e: MouseEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.calendar.previousYear();</span>
+<span class="cstat-no" title="statement not covered" >                e.stopPropagation();</span>
+<span class="cstat-no" title="statement not covered" >                e.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            });
+<span class="cstat-no" title="statement not covered" >            yearContainer.appendChild(this.prevYear);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.year = new api.dom.SpanEl();</span>
+<span class="cstat-no" title="statement not covered" >            yearContainer.appendChild(this.year);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.nextYear = new api.dom.AEl('next');</span>
+<span class="cstat-no" title="statement not covered" >            this.nextYear.onClicked(<span class="fstat-no" title="function not covered" >(e: MouseEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.calendar.nextYear();</span>
+<span class="cstat-no" title="statement not covered" >                e.stopPropagation();</span>
+<span class="cstat-no" title="statement not covered" >                e.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            });
+<span class="cstat-no" title="statement not covered" >            yearContainer.appendChild(this.nextYear);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let monthContainer = new api.dom.H5El('month-container');</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(monthContainer);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.prevMonth = new api.dom.AEl('prev');</span>
+<span class="cstat-no" title="statement not covered" >            this.prevMonth.onClicked(<span class="fstat-no" title="function not covered" >(e: MouseEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.calendar.previousMonth();</span>
+<span class="cstat-no" title="statement not covered" >                e.stopPropagation();</span>
+<span class="cstat-no" title="statement not covered" >                e.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            });
+<span class="cstat-no" title="statement not covered" >            monthContainer.appendChild(this.prevMonth);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.month = new api.dom.SpanEl();</span>
+<span class="cstat-no" title="statement not covered" >            monthContainer.appendChild(this.month);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.nextMonth = new api.dom.AEl('next');</span>
+<span class="cstat-no" title="statement not covered" >            this.nextMonth.onClicked(<span class="fstat-no" title="function not covered" >(e: MouseEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.calendar.nextMonth();</span>
+<span class="cstat-no" title="statement not covered" >                e.stopPropagation();</span>
+<span class="cstat-no" title="statement not covered" >                e.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            });
+<span class="cstat-no" title="statement not covered" >            monthContainer.appendChild(this.nextMonth);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.calendar = builder.getCalendar() || new CalendarBuilder().build();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.year.setHtml(this.calendar.getYear().toString());</span>
+<span class="cstat-no" title="statement not covered" >            this.month.setHtml(MonthsOfYear.getByNumberCode(this.calendar.getMonth()).getFullName());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.calendar.onShownMonthChanged(<span class="fstat-no" title="function not covered" >(month: number, year: number)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.month.setHtml(MonthsOfYear.getByNumberCode(month).getFullName());</span>
+<span class="cstat-no" title="statement not covered" >                this.year.setHtml(year.toString());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.calendar);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSelectedDate(): Date {</span>
+<span class="cstat-no" title="statement not covered" >            return this.calendar.getSelectedDate();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setSelectedDate(date: Date, silent?: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.calendar.selectDate(date, silent);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onSelectedDateChanged(listener: (event: SelectedDateChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.calendar.onSelectedDateChanged(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unSelectedDateChanged(listener: (event: SelectedDateChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.calendar.unSelectedDateChanged(listener);</span>
+        }
+    }
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

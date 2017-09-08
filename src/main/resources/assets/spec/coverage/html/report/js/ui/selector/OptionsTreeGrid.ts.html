@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/ui/selector/OptionsTreeGrid.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/ui/selector/</a> OptionsTreeGrid.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">22.58% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>28/124</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">6.25% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/48</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">11.43% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/35</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">21.05% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>24/114</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>ui.<span class="branch-1 cbranch-no" title="branch not covered" ></span>selector </span>{
+    import TreeNode = api.ui.treegrid.TreeNode;
+    import TreeGrid = api.ui.treegrid.TreeGrid;
+    import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
+    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
+&nbsp;
+    export class OptionsTreeGrid&lt;OPTION_DISPLAY_VALUE&gt; extends TreeGrid&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt; {
+&nbsp;
+        static MAX_FETCH_SIZE: number = 10;
+        private loader: OptionDataLoader&lt;OPTION_DISPLAY_VALUE&gt;;
+        private treeDataHelper: OptionDataHelper&lt;OPTION_DISPLAY_VALUE&gt;;
+        private readonlyChecker: (optionToCheck: OPTION_DISPLAY_VALUE) =&gt; boolean;
+        private isSelfLoading: boolean;
+        private defaultOption: OPTION_DISPLAY_VALUE;
+        private isDefaultOptionActive: boolean;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(columns: api.ui.grid.GridColumn&lt;any&gt;[],</span>
+                    gridOptions: api.ui.grid.GridOptions&lt;any&gt;,
+                    loader: OptionDataLoader&lt;OPTION_DISPLAY_VALUE&gt;,
+                    treeDataHelper: OptionDataHelper&lt;OPTION_DISPLAY_VALUE&gt;) {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let builder: TreeGridBuilder&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt; =</span>
+                new TreeGridBuilder&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt;().setColumns(columns)
+                    .setOptions(gridOptions)
+                    .setPartialLoadEnabled(true)
+                    .setLoadBufferSize(20)// rows count
+                    .setAutoLoad(false)
+                    .prependClasses('dropdown-tree-grid')
+                    .setRowHeight(45)
+                    .setHotkeysEnabled(true)
+                    .disableMultipleSelection(true)
+                    .setShowToolbar(false);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            builder.getOptions().setDataItemColumnValueExtractor(builder.nodeExtractor);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            super(builder);</span>
+<span class="cstat-no" title="statement not covered" >            this.loader = loader;</span>
+<span class="cstat-no" title="statement not covered" >            this.treeDataHelper = treeDataHelper;</span>
+<span class="cstat-no" title="statement not covered" >            this.isSelfLoading = true;</span>
+<span class="cstat-no" title="statement not covered" >            this.highlightingEnabled = false;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.initEventHandlers();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setOptions(options: Option&lt;OPTION_DISPLAY_VALUE&gt;[])</span> {
+<span class="cstat-no" title="statement not covered" >            this.isSelfLoading = false;</span>
+<span class="cstat-no" title="statement not covered" >            this.getGrid().getDataView().setItems(this.dataToTreeNodes(options, this.getRoot().getCurrentRoot()), 'dataId');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setReadonlyChecker(checker: (optionToCheck: OPTION_DISPLAY_VALUE) =&gt; boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.readonlyChecker = checker;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        queryScrollable(): api.dom.Element {</span>
+<span class="cstat-no" title="statement not covered" >            let gridClasses = (' ' + this.getGrid().getEl().getClass()).replace(/\s/g, '.');</span>
+<span class="cstat-no" title="statement not covered" >            let viewport = api.dom.Element.fromString(gridClasses + ' .slick-viewport', false);</span>
+<span class="cstat-no" title="statement not covered" >            return viewport;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        reload(parentNodeData?: Option&lt;OPTION_DISPLAY_VALUE&gt;)</span>: wemQ.Promise&lt;void&gt; {
+<span class="cstat-no" title="statement not covered" >            return super.reload(parentNodeData).then(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                if (this.defaultOption &amp;&amp; !this.isDefaultOptionActive) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.scrollToDefaultOption(this.getRoot().getCurrentRoot(), 0);</span>
+<span class="cstat-no" title="statement not covered" >                    this.isDefaultOptionActive = true;</span>
+                }
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private initEventHandlers() {</span></span>
+<span class="cstat-no" title="statement not covered" >            let onBecameActive = <span class="fstat-no" title="function not covered" >(active: boolean)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (active) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.getGrid().resizeCanvas();</span>
+<span class="cstat-no" title="statement not covered" >                    this.unActiveChanged(onBecameActive);</span>
+                }
+            };
+            // update columns when grid becomes active for the first time
+<span class="cstat-no" title="statement not covered" >            this.onActiveChanged(onBecameActive);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, <span class="fstat-no" title="function not covered" >(item: ResponsiveItem)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.isInRenderingView()) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.getGrid().resizeCanvas();</span>
+                }
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hasChildren(option: Option&lt;OPTION_DISPLAY_VALUE&gt;)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            if (!this.isSelfLoading) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return this.treeDataHelper.hasChildren(option.displayValue);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getDataId(option: Option&lt;OPTION_DISPLAY_VALUE&gt;)</span>: string {
+<span class="cstat-no" title="statement not covered" >            return this.treeDataHelper.getDataId(option.displayValue);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isEmptyNode(node: TreeNode&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt;)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            return !node.getData().displayValue;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        fetch(node: TreeNode&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt;, dataId?: string)</span>: wemQ.Promise&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt; {
+<span class="cstat-no" title="statement not covered" >            return this.loader.fetch(node).then(<span class="fstat-no" title="function not covered" >(data: OPTION_DISPLAY_VALUE)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return this.optionDataToTreeNodeOption(data);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        fetchChildren(parentNode?: TreeNode&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt;)</span>: wemQ.Promise&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;[]&gt; {
+<span class="cstat-no" title="statement not covered" >            this.isSelfLoading = true;</span>
+<span class="cstat-no" title="statement not covered" >            parentNode = parentNode ? parentNode : this.getRoot().getCurrentRoot();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let from = parentNode.getChildren().length;</span>
+<span class="cstat-no" title="statement not covered" >            if (from &gt; 0 &amp;&amp; !parentNode.getChildren()[from - 1].getData().displayValue) {</span>
+<span class="cstat-no" title="statement not covered" >                parentNode.getChildren().pop();</span>
+<span class="cstat-no" title="statement not covered" >                from--;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this.loader.fetchChildren(parentNode, from, OptionsTreeGrid.MAX_FETCH_SIZE).then(</span>
+<span class="fstat-no" title="function not covered" >                (loadedData: OptionDataLoaderData&lt;OPTION_DISPLAY_VALUE&gt;)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    let newOptions = this.optionsDataToTreeNodeOption(loadedData.getData());</span>
+<span class="cstat-no" title="statement not covered" >                    let options = parentNode.getChildren().map(<span class="fstat-no" title="function not covered" >(el)</span> =&gt; <span class="cstat-no" title="statement not covered" >el.getData())</span>.slice(0, from).concat(newOptions);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    parentNode.setMaxChildren(loadedData.getTotalHits());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    return this.loader.checkReadonly(loadedData.getData()).then(<span class="fstat-no" title="function not covered" >(readonlyIds: string[])</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                        newOptions.forEach(<span class="fstat-no" title="function not covered" >(option: Option&lt;OPTION_DISPLAY_VALUE&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                            const markedReadonly = readonlyIds.some(<span class="fstat-no" title="function not covered" >(id: string)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                                if (this.treeDataHelper.getDataId(option.displayValue) === id) {</span>
+<span class="cstat-no" title="statement not covered" >                                    option.readOnly = true;</span>
+<span class="cstat-no" title="statement not covered" >                                    return true;</span>
+                                }
+                            });
+<span class="cstat-no" title="statement not covered" >                            if (!markedReadonly) {</span>
+<span class="cstat-no" title="statement not covered" >                                if (this.readonlyChecker &amp;&amp; this.readonlyChecker(option.displayValue)) {</span>
+<span class="cstat-no" title="statement not covered" >                                    option.readOnly = true;</span>
+                                }
+                            }
+                        });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                        if (from + loadedData.getHits() &lt; loadedData.getTotalHits()) {</span>
+<span class="cstat-no" title="statement not covered" >                            options.push(this.makeEmptyData());</span>
+                        }
+<span class="cstat-no" title="statement not covered" >                        return options;</span>
+                    });
+                });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        presetDefaultOption(data: OPTION_DISPLAY_VALUE)</span> {
+<span class="cstat-no" title="statement not covered" >            this.defaultOption = data;</span>
+<span class="cstat-no" title="statement not covered" >            this.isDefaultOptionActive = false;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private scrollToDefaultOption(parentNode: TreeNode&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt;, startFrom: number)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            const length = parentNode.getChildren().length;</span>
+<span class="cstat-no" title="statement not covered" >            const defaultOptionId = this.treeDataHelper.getDataId(this.defaultOption);</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >            for (let i = startFrom; i &lt; length; i++) {</span></span>
+<span class="cstat-no" title="statement not covered" >                const child = parentNode.getChildren()[i];</span>
+<span class="cstat-no" title="statement not covered" >                const childOption = child.getData().displayValue;</span>
+<span class="cstat-no" title="statement not covered" >                if (childOption) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (this.treeDataHelper.getDataId(childOption) == defaultOptionId) {</span>
+<span class="cstat-no" title="statement not covered" >                        this.scrollToRow(this.getGrid().getDataView().getRowById(child.getId()), true); </span>// found target data node
+<span class="cstat-no" title="statement not covered" >                        return;</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    if (this.treeDataHelper.isDescendingPath(this.defaultOption, childOption)) {</span>
+                        // found ancestor of target data node
+<span class="cstat-no" title="statement not covered" >                        this.expandNode(child).then(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                            this.scrollToDefaultOption(child, 0); </span>// expand target data node ancestor and keep searching
+                        });
+<span class="cstat-no" title="statement not covered" >                        return;</span>
+                    }
+                }
+            }
+&nbsp;
+            // if reached here  - no matches were found, need to load more children
+<span class="cstat-no" title="statement not covered" >            this.fetchBatchOfChildren(parentNode);</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private fetchBatchOfChildren(parentNode: TreeNode&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt;)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            const length = parentNode.getChildren().length;</span>
+<span class="cstat-no" title="statement not covered" >            const from = parentNode.getChildren()[length - 1].getData().displayValue ? length : length - 1;</span>
+<span class="cstat-no" title="statement not covered" >            if (from &lt; parentNode.getMaxChildren()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.fetchChildren(parentNode).then(<span class="fstat-no" title="function not covered" >(children: Option&lt;OPTION_DISPLAY_VALUE&gt;[])</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    let fetchedChildrenNodes = this.dataToTreeNodes(children, parentNode);</span>
+<span class="cstat-no" title="statement not covered" >                    parentNode.setChildren(fetchedChildrenNodes);</span>
+<span class="cstat-no" title="statement not covered" >                    this.initData(this.getRoot().getCurrentRoot().treeToList());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    this.scrollToDefaultOption(parentNode, from);</span>
+                });
+            }
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private optionsDataToTreeNodeOption(data: OPTION_DISPLAY_VALUE[])</span>: Option&lt;OPTION_DISPLAY_VALUE&gt;[] {</span>
+<span class="cstat-no" title="statement not covered" >            return data.map(<span class="fstat-no" title="function not covered" >(item)</span> =&gt; <span class="cstat-no" title="statement not covered" >this.optionDataToTreeNodeOption(item))</span>;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private optionDataToTreeNodeOption(data: OPTION_DISPLAY_VALUE)</span>: Option&lt;OPTION_DISPLAY_VALUE&gt; {
+<span class="cstat-no" title="statement not covered" >            return {</span>
+                value: this.treeDataHelper.getDataId(data),
+                displayValue: data
+            };
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private makeEmptyData(): Option&lt;OPTION_DISPLAY_VALUE&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return {</span>
+                value: null,
+                displayValue: null
+            };
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected handleItemMetadata(row: number)</span> {
+<span class="cstat-no" title="statement not covered" >            let node = this.getItem(row);</span>
+<span class="cstat-no" title="statement not covered" >            if (this.isEmptyNode(node)) {</span>
+<span class="cstat-no" title="statement not covered" >                return {cssClasses: 'empty-node'};</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (node.getData().readOnly) {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.treeDataHelper.getDataId(node.getData().displayValue) !=</span>
+                    this.treeDataHelper.getDataId(this.defaultOption)) {
+<span class="cstat-no" title="statement not covered" >                    return {cssClasses: "readonly' title='This content is read-only'"};</span>
+                } else {
+<span class="cstat-no" title="statement not covered" >                    return {cssClasses: "active readonly' title='This content is read-only'"};</span>
+                }
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return null;</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

@@ -12,6 +12,14 @@ repositories {
     xp.enonicRepo()
 }
 
+
+group = 'com.enonic.lib'
+version = '1.0.0-SNAPSHOT'
+
+jar {
+    baseName = 'lib-admin-ui'
+}
+
 node {
     download = true
     version = '6.9.2'
@@ -20,6 +28,11 @@ node {
 ext {
     resourcesDir = file( 'src/main/resources' )
     buildResourcesDir = file( "${buildDir}/resources/main" )
+}
+
+task copySrcFromXp( type: Copy ) {
+    from '../xp-master/modules/admin/admin-ui/src/main/resources/web'
+    into 'src/main/resources/assets'
 }
 
 task gulpAll( type: GulpTask, dependsOn: npmInstall ) {

@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/form/inputtype/support/InputOccurrenceView.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/form/inputtype/support/</a> InputOccurrenceView.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">77.01% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>67/87</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">46.67% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>14/30</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">68.18% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>15/22</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">75.61% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>62/82</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">72×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">72×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">56×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">90×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>form.<span class="branch-1 cbranch-no" title="branch not covered" ></span>inputtype.<span class="branch-1 cbranch-no" title="branch not covered" ></span>support </span>{
+&nbsp;
+    import Property = api.data.Property;
+    import PropertyArray = api.data.PropertyArray;
+    import Value = api.data.Value;
+    import PropertyValueChangedEvent = api.data.PropertyValueChangedEvent;
+&nbsp;
+    export class InputOccurrenceView extends api.form.FormItemOccurrenceView {
+&nbsp;
+        private inputOccurrence: InputOccurrence;
+&nbsp;
+        private property: Property;
+&nbsp;
+        private inputTypeView: BaseInputTypeNotManagingAdd&lt;any&gt;;
+&nbsp;
+        private inputElement: api.dom.Element;
+&nbsp;
+        private removeButtonEl: api.dom.AEl;
+&nbsp;
+        private dragControl: api.dom.DivEl;
+&nbsp;
+        private requiredContractBroken: boolean;
+&nbsp;
+        private propertyValueChangedHandler: (event: PropertyValueChangedEvent) =&gt; void;
+&nbsp;
+        public static debug: boolean = false;
+&nbsp;
+        constructor(inputOccurrence: InputOccurrence, baseInputTypeView: BaseInputTypeNotManagingAdd&lt;any&gt;, property: Property) {
+            super('input-occurrence-view', inputOccurrence);
+&nbsp;
+            this.inputTypeView = baseInputTypeView;
+            this.inputElement = this.inputTypeView.createInputOccurrenceElement(inputOccurrence.getIndex(), property);
+&nbsp;
+            this.requiredContractBroken = this.inputTypeView.valueBreaksRequiredContract(property != null ? property.getValue() : <span class="branch-1 cbranch-no" title="branch not covered" >null)</span>;
+&nbsp;
+            let ignorePropertyChange = false;
+            this.inputTypeView.onOccurrenceValueChanged((occurrence: api.dom.Element, value: api.data.Value) =&gt; {
+                // check if this is our occurrence because all views will receive occurrence value changed event
+                <span class="missing-if-branch" title="else path not taken" >E</span>if (this.inputElement === occurrence) {
+                    <span class="missing-if-branch" title="if path not taken" >I</span>if (InputOccurrenceView.debug) {
+<span class="cstat-no" title="statement not covered" >                        console.debug('InputOccurrenceView: onOccurrenceValueChanged ', occurrence, value);</span>
+                    }
+                    ignorePropertyChange = true;
+                    this.property.setValue(value);
+                    this.inputTypeView.validate(false);
+                    ignorePropertyChange = false;
+                }
+            });
+&nbsp;
+            this.propertyValueChangedHandler = <span class="fstat-no" title="function not covered" >(event: PropertyValueChangedEvent)</span> =&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let newStateOfRequiredContractBroken = this.inputTypeView.valueBreaksRequiredContract(event.getNewValue());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (this.requiredContractBroken !== newStateOfRequiredContractBroken) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.requiredContractBroken = newStateOfRequiredContractBroken;</span>
+<span class="cstat-no" title="statement not covered" >                    this.inputTypeView.notifyRequiredContractBroken(newStateOfRequiredContractBroken, inputOccurrence.getIndex());</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (!ignorePropertyChange) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (InputOccurrenceView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                        console.debug('InputOccurrenceView: propertyValueChanged', property);</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    this.inputTypeView.updateInputOccurrenceElement(this.inputElement, property, true);</span>
+                }
+            };
+&nbsp;
+            this.registerProperty(property);
+&nbsp;
+            this.inputOccurrence = inputOccurrence;
+&nbsp;
+            this.dragControl = new api.dom.DivEl('drag-control');
+            this.appendChild(this.dragControl);
+&nbsp;
+            this.removeButtonEl = new api.dom.AEl('remove-button');
+            this.appendChild(this.removeButtonEl);
+            this.removeButtonEl.onClicked(<span class="fstat-no" title="function not covered" >(event: MouseEvent)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                this.notifyRemoveButtonClicked();</span>
+<span class="cstat-no" title="statement not covered" >                event.stopPropagation();</span>
+<span class="cstat-no" title="statement not covered" >                event.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            });
+&nbsp;
+            let inputWrapper = new api.dom.DivEl('input-wrapper');
+            this.appendChild(inputWrapper);
+&nbsp;
+            inputWrapper.appendChild(this.inputElement);
+&nbsp;
+            this.refresh();
+        }
+&nbsp;
+        update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise&lt;void&gt; {
+            let property = propertyArray.get(this.inputOccurrence.getIndex());
+&nbsp;
+            this.registerProperty(property);
+&nbsp;
+            this.inputTypeView.updateInputOccurrenceElement(this.inputElement, property, unchangedOnly);
+&nbsp;
+            return wemQ&lt;void&gt;(null);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        reset() {</span>
+<span class="cstat-no" title="statement not covered" >            this.inputTypeView.resetInputOccurrenceElement(this.inputElement);</span>
+        }
+&nbsp;
+        private registerProperty(property: Property) {
+            if (this.property) {
+                <span class="missing-if-branch" title="if path not taken" >I</span>if (InputOccurrenceView.debug) {
+<span class="cstat-no" title="statement not covered" >                    console.debug('InputOccurrenceView.registerProperty: unregister old property', this.property);</span>
+                }
+                this.property.unPropertyValueChanged(this.propertyValueChangedHandler);
+            }
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (property) {
+                <span class="missing-if-branch" title="if path not taken" >I</span>if (InputOccurrenceView.debug) {
+<span class="cstat-no" title="statement not covered" >                    console.debug('InputOccurrenceView.registerProperty: register new property', property);</span>
+                }
+                property.onPropertyValueChanged(this.propertyValueChangedHandler);
+            }
+            this.property = property;
+        }
+&nbsp;
+        refresh() {
+&nbsp;
+            if (this.inputOccurrence.oneAndOnly()) {
+                this.addClass('single-occurrence').removeClass('multiple-occurrence');
+            } else {
+                this.addClass('multiple-occurrence').removeClass('single-occurrence');
+            }
+&nbsp;
+            this.removeButtonEl.setVisible(this.inputOccurrence.isRemoveButtonRequiredStrict());
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getDataPath(): api.data.PropertyPath {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this.property.getPath();</span>
+        }
+&nbsp;
+        getIndex(): number {
+            return this.inputOccurrence.getIndex();
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getInputElement(): api.dom.Element {</span>
+<span class="cstat-no" title="statement not covered" >            return this.inputElement;</span>
+        }
+&nbsp;
+        hasValidUserInput(): boolean {
+            return this.inputTypeView.hasInputElementValidUserInput(this.inputElement);
+        }
+&nbsp;
+        giveFocus(): boolean {
+            return this.inputElement.giveFocus();
+        }
+&nbsp;
+        onFocus(listener: (event: FocusEvent) =&gt; void) {
+            this.inputElement.onFocus(listener);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unFocus(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.inputElement.unFocus(listener);</span>
+        }
+&nbsp;
+        onBlur(listener: (event: FocusEvent) =&gt; void) {
+            this.inputElement.onBlur(listener);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unBlur(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.inputElement.unBlur(listener);</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

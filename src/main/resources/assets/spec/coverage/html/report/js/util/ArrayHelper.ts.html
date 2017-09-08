@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/util/ArrayHelper.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/util/</a> ArrayHelper.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.33% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>15/45</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">16.67% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">28.57% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">30.23% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>13/43</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>util </span>{
+&nbsp;
+    export class ArrayHelper {
+&nbsp;
+        static moveElement(oldIndex: number, newIndex: number, array: any[]) {
+&nbsp;
+            let element = array.splice(oldIndex, 1)[0];
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (newIndex &gt;= array.length) {
+                array[newIndex] = element;
+            } else {
+<span class="cstat-no" title="statement not covered" >                array.splice(newIndex, 0, element);</span>
+            }
+&nbsp;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static addUnique(value: any, array: any[])</span> {
+<span class="cstat-no" title="statement not covered" >            if (array.indexOf(value) === -1) {</span>
+<span class="cstat-no" title="statement not covered" >                array.push(value);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static removeValue(value: any, array: any[])</span> {
+<span class="cstat-no" title="statement not covered" >            let index = array.indexOf(value);</span>
+<span class="cstat-no" title="statement not covered" >            if (index &gt; -1) {</span>
+<span class="cstat-no" title="statement not covered" >                array.splice(index, 1);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static removeDuplicates&lt;T&gt;(array: T[], keyFunction: (item: T)=&gt; string)</span>: T[] {
+<span class="cstat-no" title="statement not covered" >            let seen = {};</span>
+<span class="cstat-no" title="statement not covered" >            return array.filter(<span class="fstat-no" title="function not covered" >(item)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let key = keyFunction(item);</span>
+<span class="cstat-no" title="statement not covered" >                if (!seen.hasOwnProperty(key)) {</span>
+<span class="cstat-no" title="statement not covered" >                    seen[key] = true;</span>
+<span class="cstat-no" title="statement not covered" >                    return true;</span>
+                }
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static difference&lt;T&gt;(left: T[], right: T[], equals: (valueLeft: T, valueRight: T) =&gt; boolean)</span>: T[] {
+<span class="cstat-no" title="statement not covered" >            return left.filter(<span class="fstat-no" title="function not covered" >(value)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                for (let i = 0; i &lt; right.length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (equals(value, right[i])) {</span>
+<span class="cstat-no" title="statement not covered" >                        return false;</span>
+                    }
+                }
+<span class="cstat-no" title="statement not covered" >                return true;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static intersection&lt;T&gt;(left: T[], right: T[], equals: (valueLeft: T, valueRight: T) =&gt; boolean)</span>: T[] {
+<span class="cstat-no" title="statement not covered" >            return left.filter(<span class="fstat-no" title="function not covered" >(value)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                for (let i = 0; i &lt; right.length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (equals(value, right[i])) {</span>
+<span class="cstat-no" title="statement not covered" >                        return true;</span>
+                    }
+                }
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static findElementByFieldValue&lt;T&gt;(array: Array&lt;T&gt;, field: string, value: any)</span>: T {
+<span class="cstat-no" title="statement not covered" >            let result: T = null;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            array.every(<span class="fstat-no" title="function not covered" >(element: T)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (element[field] === value) {</span>
+<span class="cstat-no" title="statement not covered" >                    result = element;</span>
+<span class="cstat-no" title="statement not covered" >                    return false;</span>
+                }
+<span class="cstat-no" title="statement not covered" >                return true;</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return result;</span>
+        }
+    }
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

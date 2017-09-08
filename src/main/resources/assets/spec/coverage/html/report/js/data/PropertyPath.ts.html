@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/data/PropertyPath.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/data/</a> PropertyPath.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">90.36% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>75/83</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">72.73% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>16/22</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">89.66% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>26/29</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">89.74% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>70/78</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">122×</span>
+<span class="cline-any cline-yes">122×</span>
+<span class="cline-any cline-yes">142×</span>
+<span class="cline-any cline-yes">128×</span>
+<span class="cline-any cline-yes">122×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">354×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">177×</span>
+<span class="cline-any cline-yes">177×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">125×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">523×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">516×</span>
+<span class="cline-any cline-yes">516×</span>
+<span class="cline-any cline-yes">834×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">833×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">514×</span>
+<span class="cline-any cline-yes">514×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">110×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">82×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">188×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">79×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">79×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">438×</span>
+<span class="cline-any cline-yes">438×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">944×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">114×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">834×</span>
+<span class="cline-any cline-yes">824×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">132×</span>
+<span class="cline-any cline-yes">128×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>data </span>{
+&nbsp;
+    export class PropertyPath implements api.Equitable {
+&nbsp;
+        private static ELEMENT_DIVIDER: string = '.';
+&nbsp;
+        public static ROOT: PropertyPath = new PropertyPath([], true);
+&nbsp;
+        private absolute: boolean;
+&nbsp;
+        private elements: PropertyPathElement[];
+&nbsp;
+        private refString: string;
+&nbsp;
+        static fromString(s: string) {
+            let absolute: boolean = s.charAt(0) === PropertyPath.ELEMENT_DIVIDER;
+            let dataPathElements = s.split(PropertyPath.ELEMENT_DIVIDER).
+                filter((element: string) =&gt; !!element).                         // filter empty elements
+                map((element: string) =&gt; PropertyPathElement.fromString(element));  // map string to DataPathElement
+            return new PropertyPath(dataPathElements, absolute);
+        }
+&nbsp;
+        static fromParent(parent: PropertyPath, ...childElements: PropertyPathElement[]) {
+&nbsp;
+            let elements: PropertyPathElement[] = parent.elements.slice(0).concat(childElements);
+            return new PropertyPath(elements, parent.isAbsolute());
+        }
+&nbsp;
+        static fromPathElement(element: PropertyPathElement) {
+&nbsp;
+            return new PropertyPath([element], true);
+        }
+&nbsp;
+        constructor(elements: PropertyPathElement[], absolute: boolean = true) {
+&nbsp;
+            this.absolute = absolute;
+            elements.forEach((element: PropertyPathElement, index: number) =&gt; {
+                if (element == null) {
+                    throw new Error('Path element was null at index: ' + index);
+                } else if (element.getName().length === 0) {
+                    throw new Error('Path element was empty string at index: ' + index);
+                }
+            });
+            this.elements = elements;
+            this.refString = (this.absolute ? PropertyPath.ELEMENT_DIVIDER : '') + this.elements.join(PropertyPath.ELEMENT_DIVIDER);
+        }
+&nbsp;
+        removeFirstPathElement(): PropertyPath {
+            api.util.assert(this.elements.length &gt; 1,
+                'Cannot create new path without first path element when path does not contain more than one element');
+            return new PropertyPath(this.elements.slice(1), this.absolute);
+        }
+&nbsp;
+        elementCount(): number {
+            return this.getElements().length;
+        }
+&nbsp;
+        getElements(): PropertyPathElement[] {
+            return this.elements;
+        }
+&nbsp;
+        getElement(index: number): PropertyPathElement {
+            return this.elements[index];
+        }
+&nbsp;
+        getFirstElement(): PropertyPathElement {
+            return this.elements[0];
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getLastElement(): PropertyPathElement {</span>
+<span class="cstat-no" title="statement not covered" >            return this.elements[this.elements.length - 1];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hasParent(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.elements.length &gt; 0;</span>
+        }
+&nbsp;
+        getParentPath(): PropertyPath {
+&nbsp;
+            if (this.elements.length &lt; 1) {
+                return null;
+            }
+            return new PropertyPath(this.elements.slice(0, -1));
+        }
+&nbsp;
+        toString() {
+            return this.refString;
+        }
+&nbsp;
+        isAbsolute(): boolean {
+            return this.absolute;
+        }
+&nbsp;
+        asRelative(): PropertyPath {
+            return new PropertyPath(this.elements, false);
+        }
+&nbsp;
+        isRoot(): boolean {
+            return this.elementCount() === 0;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        equals(o: Equitable)</span>: boolean {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PropertyPath)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let other = &lt;PropertyPath&gt;o;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return true;</span>
+        }
+    }
+&nbsp;
+    export class PropertyPathElement {
+&nbsp;
+        private name: string;
+&nbsp;
+        private index: number;
+&nbsp;
+        constructor(name: string, index: number) {
+            this.name = name;
+            this.index = index;
+        }
+&nbsp;
+        getName(): string {
+            return this.name;
+        }
+&nbsp;
+        getIndex(): number {
+            return this.index;
+        }
+&nbsp;
+        toString(): string {
+            if (this.index === 0) {
+                return this.name;
+            } else {
+                return this.name + '[' + this.index + ']';
+            }
+        }
+&nbsp;
+        static fromString(str: string) {
+            if (str.indexOf('[') === -1) {
+                return new PropertyPathElement(str, 0);
+            }
+            let name = str.substring(0, str.indexOf('['));
+            let index = parseInt(str.substring(str.indexOf('[') + 1, str.indexOf(']')), 10);
+            return new PropertyPathElement(name, index);
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

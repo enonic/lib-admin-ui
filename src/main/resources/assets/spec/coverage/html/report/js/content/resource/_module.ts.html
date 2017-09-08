@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/resource/_module.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/content/resource/</a> _module.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/0</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">///&lt;reference path='ContentSummaryRequest.ts' /&gt;
+///&lt;reference path='MoveAllowedTargetsRequest.ts' /&gt;
+///&lt;reference path='ContentSummaryPreLoader.ts' /&gt;
+///&lt;reference path='ContentSummaryLoader.ts' /&gt;
+///&lt;reference path='FragmentContentSummaryRequest.ts' /&gt;
+///&lt;reference path='FragmentContentSummaryLoader.ts' /&gt;
+///&lt;reference path='MoveContentSummaryLoader.ts' /&gt;
+///&lt;reference path='ContentResourceRequest.ts' /&gt;
+///&lt;reference path='ApplyContentPermissionsRequest.ts' /&gt;
+///&lt;reference path='GetContentByIdRequest.ts' /&gt;
+///&lt;reference path='GetContentSummaryByIdRequest' /&gt;
+///&lt;reference path='GetContentSummaryByIds' /&gt;
+///&lt;reference path='GetContentByPathRequest.ts' /&gt;
+///&lt;reference path='GetContentPermissionsByIdRequest.ts' /&gt;
+///&lt;reference path='GetContentPermissionsByIdsRequest.ts' /&gt;
+///&lt;reference path='GetPermittedActionsRequest.ts' /&gt;
+///&lt;reference path='GetContentRootPermissionsRequest.ts' /&gt;
+///&lt;reference path='GetContentAttachmentsRequest.ts' /&gt;
+///&lt;reference path='CreateContentRequest.ts' /&gt;
+///&lt;reference path='OrderContentRequest.ts' /&gt;
+///&lt;reference path='OrderChildContentRequest.ts' /&gt;
+///&lt;reference path='UpdateContentRequest.ts' /&gt;
+///&lt;reference path='DuplicateContentRequest.ts' /&gt;
+///&lt;reference path='MoveContentRequest.ts' /&gt;
+///&lt;reference path='ListContentByIdRequest.ts' /&gt;
+///&lt;reference path='isContentReadOnlyRequest.ts' /&gt;
+///&lt;reference path='ListContentByPathRequest.ts' /&gt;
+///&lt;reference path='DeleteContentRequest.ts' /&gt;
+///&lt;reference path='BatchContentRequest.ts' /&gt;
+///&lt;reference path='ContentQueryRequest.ts' /&gt;
+///&lt;reference path='ContentSelectorQueryRequest.ts' /&gt;
+///&lt;reference path='SetActiveContentVersionRequest.ts' /&gt;
+///&lt;reference path='UpdateContentRequest.ts' /&gt;
+///&lt;reference path='PublishContentRequest.ts' /&gt;
+///&lt;reference path='UnpublishContentRequest.ts' /&gt;
+///&lt;reference path='ResolvePublishDependenciesRequest.ts' /&gt;
+///&lt;reference path='CompareContentRequest.ts' /&gt;
+///&lt;reference path='GetPublishStatusesRequest.ts' /&gt;
+///&lt;reference path='ContentSummaryFetcher.ts' /&gt;
+///&lt;reference path='ContentSummaryAndCompareStatusFetcher.ts' /&gt;
+///&lt;reference path='GetActiveContentVersionsRequest.ts' /&gt;
+///&lt;reference path='GetContentVersionsRequest.ts' /&gt;
+///&lt;reference path='GetContentVersionsForViewRequest.ts' /&gt;
+///&lt;reference path='GetNearestSiteRequest.ts' /&gt;
+///&lt;reference path='ContentsExistRequest.ts' /&gt;
+///&lt;reference path='WidgetDescriptorResourceRequest.ts' /&gt;
+///&lt;reference path='GetWidgetsByInterfaceRequest.ts' /&gt;
+///&lt;reference path='ResolveDependenciesRequest.ts' /&gt;
+///&lt;reference path='GetDescendantsOfContentsRequest.ts' /&gt;
+///&lt;reference path='GetEffectivePermissionsRequest.ts' /&gt;
+///&lt;reference path='GetContentIdsByParentRequest.ts' /&gt;
+///&lt;reference path='UndoPendingDeleteContentRequest.ts' /&gt;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

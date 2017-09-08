@@ -1,0 +1,1910 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/page/PageModel.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/content/page/</a> PageModel.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25.76% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>76/295</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">2.24% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/134</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">7.69% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/78</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">24.91% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>71/285</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>page </span>{
+&nbsp;
+    import PropertyTree = api.data.PropertyTree;
+    import ComponentPropertyChangedEvent = api.content.page.region.ComponentPropertyChangedEvent;
+&nbsp;
+    export class SetController {
+&nbsp;
+        eventSource: any;
+&nbsp;
+        descriptor: PageDescriptor;
+&nbsp;
+        regions: api.content.page.region.Regions;
+&nbsp;
+        config: PropertyTree;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(eventSource: any)</span> {
+<span class="cstat-no" title="statement not covered" >            this.eventSource = eventSource;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setDescriptor(value: PageDescriptor)</span>: SetController {
+<span class="cstat-no" title="statement not covered" >            this.descriptor = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setRegions(value: api.content.page.region.Regions)</span>: SetController {
+<span class="cstat-no" title="statement not covered" >            this.regions = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setConfig(value: PropertyTree)</span>: SetController {
+<span class="cstat-no" title="statement not covered" >            this.config = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+    }
+&nbsp;
+    export class SetTemplate {
+&nbsp;
+        eventSource: any;
+&nbsp;
+        template: PageTemplate;
+&nbsp;
+        descriptor: PageDescriptor;
+&nbsp;
+        regions: api.content.page.region.Regions;
+&nbsp;
+        config: PropertyTree;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(eventSource: any)</span> {
+<span class="cstat-no" title="statement not covered" >            this.eventSource = eventSource;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setTemplate(template: PageTemplate, descriptor: PageDescriptor)</span>: SetTemplate {
+<span class="cstat-no" title="statement not covered" >            this.template = template;</span>
+<span class="cstat-no" title="statement not covered" >            this.descriptor = descriptor;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setRegions(value: api.content.page.region.Regions)</span>: SetTemplate {
+<span class="cstat-no" title="statement not covered" >            this.regions = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setConfig(value: PropertyTree)</span>: SetTemplate {
+<span class="cstat-no" title="statement not covered" >            this.config = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+    }
+&nbsp;
+    export class PageModel {
+&nbsp;
+        public static PROPERTY_REGIONS: string = 'regions';
+&nbsp;
+        public static PROPERTY_TEMPLATE: string = 'template';
+&nbsp;
+        public static PROPERTY_CONTROLLER: string = 'controller';
+&nbsp;
+        public static PROPERTY_CONFIG: string = 'config';
+&nbsp;
+        private liveEditModel: api.liveedit.LiveEditModel;
+&nbsp;
+        private defaultTemplate: PageTemplate;
+&nbsp;
+        private defaultTemplateDescriptor: PageDescriptor;
+&nbsp;
+        private mode: PageMode;
+&nbsp;
+        private controller: PageDescriptor;
+&nbsp;
+        private template: PageTemplate;
+&nbsp;
+        private templateDescriptor: PageDescriptor;
+&nbsp;
+        private regions: api.content.page.region.Regions;
+&nbsp;
+        private fragment: api.content.page.region.Component;
+&nbsp;
+        private config: PropertyTree;
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >pageModeChangedListeners: {(event: PageModeChangedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >propertyChangedListeners: {(event: api.PropertyChangedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >componentPropertyChangedListeners: {(event: ComponentPropertyChangedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >customizeChangedListeners: {(value: boolean): void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >resetListeners: {():void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >ignorePropertyChanges: boolean = false;</span>
+&nbsp;
+        private componentPropertyChangedEventHandler: (event: ComponentPropertyChangedEvent) =&gt; void;
+&nbsp;
+        private regionsChangedEventHandler: () =&gt; void;
+&nbsp;
+        private configPropertyChangedHandler: () =&gt; void;
+&nbsp;
+        private customized: boolean;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(liveEditModel: api.liveedit.LiveEditModel, defaultTemplate: PageTemplate, defaultTemplateDescriptor: PageDescriptor,</span>
+                    pageMode: api.content.page.PageMode) {
+<span class="cstat-no" title="statement not covered" >            this.liveEditModel = liveEditModel;</span>
+<span class="cstat-no" title="statement not covered" >            this.defaultTemplate = defaultTemplate;</span>
+<span class="cstat-no" title="statement not covered" >            this.defaultTemplateDescriptor = defaultTemplateDescriptor;</span>
+<span class="cstat-no" title="statement not covered" >            this.mode = pageMode;</span>
+<span class="cstat-no" title="statement not covered" >            this.customized = liveEditModel.getContent().isPage() &amp;&amp; liveEditModel.getContent().getPage().isCustomized();</span>
+<span class="cstat-no" title="statement not covered" >            this.fragment = liveEditModel.getContent().getPage() ? liveEditModel.getContent().getPage().getFragment() : null;</span>
+<span class="cstat-no" title="statement not covered" >            this.configPropertyChangedHandler = <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                if (!this.ignorePropertyChanges) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (this.mode === PageMode.AUTOMATIC) {</span>
+<span class="cstat-no" title="statement not covered" >                        let setTemplate = new SetTemplate(this).setTemplate(this.defaultTemplate, this.defaultTemplateDescriptor);</span>
+<span class="cstat-no" title="statement not covered" >                        this.setTemplate(setTemplate, true);</span>
+                    }
+                }
+            };
+<span class="cstat-no" title="statement not covered" >            this.regionsChangedEventHandler = <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                if (!this.ignorePropertyChanges) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (this.mode === PageMode.AUTOMATIC) {</span>
+<span class="cstat-no" title="statement not covered" >                        let setTemplate = new SetTemplate(this).setTemplate(this.defaultTemplate, this.defaultTemplateDescriptor);</span>
+<span class="cstat-no" title="statement not covered" >                        this.setTemplate(setTemplate);</span>
+                    }
+                }
+            };
+<span class="cstat-no" title="statement not covered" >            this.componentPropertyChangedEventHandler = <span class="fstat-no" title="function not covered" >(event: ComponentPropertyChangedEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (!this.isPageTemplate() &amp;&amp; this.getMode() === PageMode.AUTOMATIC) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.initializePageFromDefault(this);</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.componentPropertyChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: ComponentPropertyChangedEvent) =&gt; void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    listener(event);</span>
+                });
+            };
+        }
+&nbsp;
+        /**
+         * Whether to ignore changes happening with properties (regions, properties) or not.
+         */
+<span class="fstat-no" title="function not covered" >        setIgnorePropertyChanges(value: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.ignorePropertyChanges = value;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        initializePageFromDefault(eventSource?: any)</span> {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let skip = false;</span>
+<span class="cstat-no" title="statement not covered" >            if (this.hasTemplate()) {</span>
+<span class="cstat-no" title="statement not covered" >                skip = true;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            if (this.hasController()) {</span>
+<span class="cstat-no" title="statement not covered" >                skip = true;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!skip) {</span>
+<span class="cstat-no" title="statement not covered" >                let setTemplate = new SetTemplate(eventSource).setTemplate(this.defaultTemplate, this.defaultTemplateDescriptor);</span>
+<span class="cstat-no" title="statement not covered" >                this.setTemplate(setTemplate);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setCustomized(value: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            const oldValue = this.customized;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.customized = value;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (oldValue !== value) {</span>
+<span class="cstat-no" title="statement not covered" >                this.notifyCustomizeChanged(this.customized);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        reset(eventSource?: any)</span> {
+<span class="cstat-no" title="statement not covered" >            if (this.isPageTemplate() || !this.defaultTemplate) {</span>
+<span class="cstat-no" title="statement not covered" >                let setController = new SetController(eventSource).</span>
+                    setDescriptor(null).
+                    setConfig(new PropertyTree()).
+                    setRegions(api.content.page.region.Regions.create().build());
+<span class="cstat-no" title="statement not covered" >                this.setController(setController);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.setAutomaticTemplate(eventSource);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setCustomized(false);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.notifyReset();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private setMode(value: PageMode)</span> {
+<span class="cstat-no" title="statement not covered" >            let oldValue = this.mode;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.mode = value;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.mode !== oldValue) {</span>
+<span class="cstat-no" title="statement not covered" >                this.notifyPageModeChanged(oldValue, this.mode);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setController(setController: SetController)</span>: PageModel {
+<span class="cstat-no" title="statement not covered" >            let oldControllerKey = this.controller ? this.controller.getKey() : null;</span>
+<span class="cstat-no" title="statement not covered" >            let newControllerKey = setController.descriptor ? setController.descriptor.getKey() : null;</span>
+<span class="cstat-no" title="statement not covered" >            let controllerChanged = !api.ObjectHelper.equals(oldControllerKey, newControllerKey);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setControllerData(setController);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setMode(setController.descriptor ? PageMode.FORCED_CONTROLLER : PageMode.NO_CONTROLLER);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!this.isPageTemplate()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setCustomized(true);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!oldControllerKey &amp;&amp; this.templateDescriptor) {</span>
+<span class="cstat-no" title="statement not covered" >                oldControllerKey = this.templateDescriptor.getKey();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.template = null;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (controllerChanged) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setIgnorePropertyChanges(true);</span>
+<span class="cstat-no" title="statement not covered" >                this.notifyPropertyChanged(PageModel.PROPERTY_CONTROLLER, oldControllerKey, newControllerKey, setController.eventSource);</span>
+<span class="cstat-no" title="statement not covered" >                this.setIgnorePropertyChanges(false);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        initController(setController: SetController)</span>: PageModel {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setControllerData(setController);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private setControllerData(setController: SetController)</span> {
+<span class="cstat-no" title="statement not covered" >            this.controller = setController.descriptor;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (setController.config) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setConfig(setController.config, setController.eventSource);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            if (setController.regions) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setRegions(setController.regions, setController.eventSource);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.regions &amp;&amp; setController.descriptor) {</span>
+<span class="cstat-no" title="statement not covered" >                this.regions.changeRegionsTo(setController.descriptor.getRegions());</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.fragment) {</span>
+<span class="cstat-no" title="statement not covered" >                this.unregisterFragmentListeners(this.fragment);</span>
+<span class="cstat-no" title="statement not covered" >                this.registerFragmentListeners(this.fragment);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setTemplateContoller() {</span>
+<span class="cstat-no" title="statement not covered" >            this.setController(</span>
+                new SetController(this).
+                setDescriptor(this.templateDescriptor || this.getDefaultPageDescriptor())
+            );
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setAutomaticTemplate(eventSource?: any, <span class="cstat-no" title="statement not covered" >ignoreRegionChanges: boolean = false)</span></span>: PageModel {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let config = this.defaultTemplate.hasConfig() ?</span>
+                         this.defaultTemplate.getConfig().copy() :
+                         new PropertyTree();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let regions = this.defaultTemplate.hasRegions() ?</span>
+                          this.defaultTemplate.getRegions().clone() :
+                          api.content.page.region.Regions.create().build();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let setTemplate = new SetTemplate(eventSource).</span>
+                setTemplate(null, this.defaultTemplateDescriptor).
+                setRegions(regions).
+                setConfig(config);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setTemplate(setTemplate, ignoreRegionChanges);</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setTemplate(setTemplate: SetTemplate, <span class="cstat-no" title="statement not covered" >ignoreRegionChanges: boolean = false)</span></span>: PageModel {
+<span class="cstat-no" title="statement not covered" >            let oldTemplateKey = this.template ? this.template.getKey() : null;</span>
+<span class="cstat-no" title="statement not covered" >            let newTemplateKey = setTemplate.template ? setTemplate.template.getKey() : null;</span>
+<span class="cstat-no" title="statement not covered" >            let templateOrModeChanged = !api.ObjectHelper.equals(oldTemplateKey, newTemplateKey) || this.hasController();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (setTemplate.template) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setMode(PageMode.FORCED_TEMPLATE);</span>
+            } else <span class="cstat-no" title="statement not covered" >if (this.getMode() !== PageMode.FRAGMENT) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setMode(PageMode.AUTOMATIC);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setTemplateData(setTemplate, ignoreRegionChanges);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (templateOrModeChanged) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setIgnorePropertyChanges(true);</span>
+<span class="cstat-no" title="statement not covered" >                this.notifyPropertyChanged(PageModel.PROPERTY_TEMPLATE, oldTemplateKey, newTemplateKey, setTemplate.eventSource);</span>
+<span class="cstat-no" title="statement not covered" >                this.setIgnorePropertyChanges(false);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.controller = null;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        initTemplate(setTemplate: SetTemplate, <span class="cstat-no" title="statement not covered" >ignoreRegionChanges: boolean = false)</span></span>: PageModel {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setTemplateData(setTemplate, ignoreRegionChanges);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private setTemplateData(setTemplate: SetTemplate, <span class="cstat-no" title="statement not covered" >ignoreRegionChanges: boolean = false)</span></span> {
+<span class="cstat-no" title="statement not covered" >            this.template = setTemplate.template;</span>
+<span class="cstat-no" title="statement not covered" >            this.templateDescriptor = setTemplate.descriptor;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (setTemplate.config) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setConfig(setTemplate.config, setTemplate.eventSource);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            if (setTemplate.regions) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setRegions(setTemplate.regions, setTemplate.eventSource, ignoreRegionChanges);</span>
+            } else <span class="cstat-no" title="statement not covered" >if (setTemplate.template &amp;&amp; setTemplate.template.hasRegions()) {</span>
+                // copy regions to avoid modifying defaultTemplate regions
+<span class="cstat-no" title="statement not covered" >                this.setRegions(setTemplate.template.getRegions().clone(), setTemplate.eventSource, ignoreRegionChanges);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.regions) {</span>
+<span class="cstat-no" title="statement not covered" >                let regions = setTemplate.descriptor ? setTemplate.descriptor.getRegions() : [];</span>
+<span class="cstat-no" title="statement not covered" >                this.regions.changeRegionsTo(regions);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setRegions(value: api.content.page.region.Regions, eventOrigin?: any, <span class="cstat-no" title="statement not covered" >ignoreRegionChanges: boolean = false)</span></span>: PageModel {
+<span class="cstat-no" title="statement not covered" >            let oldValue = this.regions;</span>
+<span class="cstat-no" title="statement not covered" >            if (oldValue) {</span>
+<span class="cstat-no" title="statement not covered" >                this.unregisterRegionsListeners(oldValue);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.regions = value;</span>
+<span class="cstat-no" title="statement not covered" >            this.registerRegionsListeners(this.regions);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setIgnorePropertyChanges(true);</span>
+<span class="cstat-no" title="statement not covered" >            if (!ignoreRegionChanges) {</span>
+<span class="cstat-no" title="statement not covered" >                this.notifyPropertyChanged(PageModel.PROPERTY_REGIONS, oldValue, value, eventOrigin);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.setIgnorePropertyChanges(false);</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setConfig(value: PropertyTree, eventOrigin?: any)</span>: PageModel {
+<span class="cstat-no" title="statement not covered" >            let oldValue = this.config;</span>
+<span class="cstat-no" title="statement not covered" >            if (oldValue) {</span>
+<span class="cstat-no" title="statement not covered" >                oldValue.unChanged(this.configPropertyChangedHandler);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.config = value;</span>
+<span class="cstat-no" title="statement not covered" >            this.config.onChanged(this.configPropertyChangedHandler);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setIgnorePropertyChanges(true);</span>
+<span class="cstat-no" title="statement not covered" >            this.notifyPropertyChanged(PageModel.PROPERTY_CONFIG, oldValue, value, eventOrigin);</span>
+<span class="cstat-no" title="statement not covered" >            this.setIgnorePropertyChanges(false);</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+        /**
+         * Automatic:           Content has no Page set. PageTemplate is automatically solved.
+         *                      return: null;
+         *
+         * ForcedTemplate:      Content has a Page set with at Page.template set
+         *
+         * ForcedController:    Content has a Page set with at Page.controller set
+         *
+         * NoController:        Content is:
+         *                      1. PageTemplate with no controller set
+         *                      2. Content that has no Page set and no any template that can be used as default
+         *                      3. Content that has a Page set with at Page.template set but template was deleted
+         *                         or updated to not support content's type
+         */
+<span class="fstat-no" title="function not covered" >        getPage(): Page {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.mode === PageMode.AUTOMATIC) {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            } else <span class="cstat-no" title="statement not covered" >if (this.mode === PageMode.FORCED_TEMPLATE) {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let regionsUnchanged = this.defaultTemplate.getRegions().equals(this.regions);</span>
+<span class="cstat-no" title="statement not covered" >                let regions = regionsUnchanged ? null : this.regions;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let configUnchanged = this.defaultTemplate.getConfig().equals(this.config);</span>
+<span class="cstat-no" title="statement not covered" >                let config = configUnchanged ? null : this.config;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                return new PageBuilder().</span>
+                    setTemplate(this.getTemplateKey()).
+                    setRegions(regions).
+                    setConfig(config).
+                    setCustomized(this.isCustomized()).
+                    setFragment(this.fragment).
+                    build();
+            } else <span class="cstat-no" title="statement not covered" >if (this.mode === PageMode.FORCED_CONTROLLER) {</span>
+<span class="cstat-no" title="statement not covered" >                return new PageBuilder().</span>
+                    setController(this.controller.getKey()).
+                    setRegions(this.regions).
+                    setConfig(this.config).
+                    setCustomized(this.isCustomized()).
+                    setFragment(this.fragment).
+                    build();
+            } else <span class="cstat-no" title="statement not covered" >if (this.mode === PageMode.NO_CONTROLLER) {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.contentHasNonRenderableTemplateSet()) {</span>
+<span class="cstat-no" title="statement not covered" >                    return new PageBuilder().</span>
+                        setTemplate(this.liveEditModel.getContent().getPage().getTemplate()).setFragment(this.fragment).
+                        build();
+                } else {
+<span class="cstat-no" title="statement not covered" >                    return null;</span>
+                }
+            } else <span class="cstat-no" title="statement not covered" >if (this.mode === PageMode.FRAGMENT) {</span>
+<span class="cstat-no" title="statement not covered" >                return new PageBuilder().setRegions(null).setConfig(this.config).setCustomized(this.isCustomized()).setFragment(</span>
+                    this.fragment).build();
+            } else {
+<span class="cstat-no" title="statement not covered" >                throw new Error('Page mode not supported: ' + this.mode);</span>
+            }
+&nbsp;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getDefaultPageTemplate(): PageTemplate {</span>
+<span class="cstat-no" title="statement not covered" >            return this.defaultTemplate;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getDefaultPageDescriptor(): PageDescriptor {</span>
+<span class="cstat-no" title="statement not covered" >            return this.defaultTemplateDescriptor;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getMode(): PageMode {</span>
+<span class="cstat-no" title="statement not covered" >            return this.mode;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isPageTemplate(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.liveEditModel.getContent().isPageTemplate();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hasController(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return !!this.controller;</span>
+        }
+&nbsp;
+        /**
+         * Return page descriptor depending on page mode
+         */
+<span class="fstat-no" title="function not covered" >        getDescriptor(): PageDescriptor {</span>
+<span class="cstat-no" title="statement not covered" >            let descriptor: PageDescriptor;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!this.isPageTemplate()) {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.mode === PageMode.FORCED_TEMPLATE) {</span>
+<span class="cstat-no" title="statement not covered" >                    return this.templateDescriptor;</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (this.mode === PageMode.AUTOMATIC) {</span>
+<span class="cstat-no" title="statement not covered" >                    return this.defaultTemplateDescriptor;</span>
+                }
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this.controller;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getController(): PageDescriptor {</span>
+<span class="cstat-no" title="statement not covered" >            return this.controller;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setControllerDescriptor(controller: PageDescriptor)</span> {
+<span class="cstat-no" title="statement not covered" >            this.controller = controller;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hasTemplate(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return !!this.template;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hasDefaultPageTemplate(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return !!this.defaultTemplate;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getTemplateKey(): PageTemplateKey {</span>
+<span class="cstat-no" title="statement not covered" >            return this.template ? this.template.getKey() : null;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getTemplate(): PageTemplate {</span>
+<span class="cstat-no" title="statement not covered" >            return this.template;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getRegions(): api.content.page.region.Regions {</span>
+<span class="cstat-no" title="statement not covered" >            return this.regions;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getConfig(): PropertyTree {</span>
+<span class="cstat-no" title="statement not covered" >            return this.config;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isCustomized(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.customized;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private contentHasNonRenderableTemplateSet() {</span>
+<span class="cstat-no" title="statement not covered" >            return !this.isPageTemplate() &amp;&amp; (this.mode === PageMode.NO_CONTROLLER) &amp;&amp;</span>
+                   this.liveEditModel.getContent().getPage() &amp;&amp;
+                   this.liveEditModel.getContent().getPage().getTemplate();
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private registerRegionsListeners(regions: api.content.page.region.Regions)</span> {
+<span class="cstat-no" title="statement not covered" >            regions.onComponentPropertyChanged(this.componentPropertyChangedEventHandler);</span>
+<span class="cstat-no" title="statement not covered" >            regions.onChanged(this.regionsChangedEventHandler);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private unregisterRegionsListeners(regions: api.content.page.region.Regions)</span> {
+<span class="cstat-no" title="statement not covered" >            regions.unComponentPropertyChanged(this.componentPropertyChangedEventHandler);</span>
+<span class="cstat-no" title="statement not covered" >            regions.unChanged(this.regionsChangedEventHandler);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private registerFragmentListeners(fragment: api.content.page.region.Component)</span> {
+<span class="cstat-no" title="statement not covered" >            fragment.onPropertyChanged(this.componentPropertyChangedEventHandler);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private unregisterFragmentListeners(fragment: api.content.page.region.Component)</span> {
+<span class="cstat-no" title="statement not covered" >            fragment.unPropertyChanged(this.componentPropertyChangedEventHandler);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onPageModeChanged(listener: (event: PageModeChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.pageModeChangedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unPageModeChanged(listener: (event: PageModeChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.pageModeChangedListeners =</span>
+                this.pageModeChangedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: PageModeChangedEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    return listener !== curr;</span>
+                });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyPageModeChanged(oldValue: PageMode, newValue: PageMode)</span> {
+<span class="cstat-no" title="statement not covered" >            let event = new PageModeChangedEvent(oldValue, newValue);</span>
+<span class="cstat-no" title="statement not covered" >            this.pageModeChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: PageModeChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onPropertyChanged(listener: (event: api.PropertyChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.propertyChangedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unPropertyChanged(listener: (event: api.PropertyChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.propertyChangedListeners = this.propertyChangedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: api.PropertyChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyPropertyChanged(property: string, oldValue: any, newValue: any, origin: any)</span> {
+<span class="cstat-no" title="statement not covered" >            let event = new api.PropertyChangedEvent(property, oldValue, newValue, origin);</span>
+<span class="cstat-no" title="statement not covered" >            this.propertyChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: api.PropertyChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onComponentPropertyChangedEvent(listener: (event: ComponentPropertyChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.componentPropertyChangedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unComponentPropertyChangedEvent(listener: (event: ComponentPropertyChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.componentPropertyChangedListeners =</span>
+                this.componentPropertyChangedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: ComponentPropertyChangedEvent) =&gt; void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    return listener !== curr;</span>
+                });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onCustomizeChanged(listener: (value: boolean) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.customizeChangedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unCustomizeChanged(listener: (value: boolean) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.customizeChangedListeners = this.customizeChangedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (value: boolean) =&gt; void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyCustomizeChanged(value: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.customizeChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (value: boolean)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(value);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onReset(listener: ()=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.resetListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unReset(listener: ()=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.resetListeners = this.resetListeners.filter(<span class="fstat-no" title="function not covered" >(curr: ()=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyReset() {</span>
+<span class="cstat-no" title="statement not covered" >            this.resetListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: ()=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener();</span>
+            });
+        }
+&nbsp;
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

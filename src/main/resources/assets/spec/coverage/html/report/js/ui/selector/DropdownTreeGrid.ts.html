@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/ui/selector/DropdownTreeGrid.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/ui/selector/</a> DropdownTreeGrid.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">41.51% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>22/53</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">16.67% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">38.3% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>18/47</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>ui.<span class="branch-1 cbranch-no" title="branch not covered" ></span>selector </span>{
+&nbsp;
+    import Item = api.item.Item;
+&nbsp;
+    import ElementHelper = api.dom.ElementHelper;
+    import ValidationRecordingViewer = api.form.ValidationRecordingViewer;
+&nbsp;
+    import Grid = api.ui.grid.Grid;
+    import GridOptions = api.ui.grid.GridOptions;
+    import GridColumn = api.ui.grid.GridColumn;
+    import GridOptionsBuilder = api.ui.grid.GridOptionsBuilder;
+    import DataView = api.ui.grid.DataView;
+    import KeyBinding = api.ui.KeyBinding;
+    import KeyBindings = api.ui.KeyBindings;
+&nbsp;
+    import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
+    import TreeGridToolbarActions = api.ui.treegrid.actions.TreeGridToolbarActions;
+    import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
+    import AppHelper = api.util.AppHelper;
+    import DataChangedEvent = api.ui.treegrid.DataChangedEvent;
+    import TreeNode = api.ui.treegrid.TreeNode;
+    import TreeNodeBuilder = api.ui.treegrid.TreeNodeBuilder;
+    import TreeRoot = api.ui.treegrid.TreeRoot;
+    import Element = api.dom.Element;
+&nbsp;
+    export class DropdownTreeGrid&lt;OPTION_DISPLAY_VALUE&gt; extends DropdownGrid&lt;OPTION_DISPLAY_VALUE&gt; {
+&nbsp;
+        private optionsTreeGrid: OptionsTreeGrid&lt;OPTION_DISPLAY_VALUE&gt;;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(config: DropdownGridConfig&lt;OPTION_DISPLAY_VALUE&gt;)</span> {
+<span class="cstat-no" title="statement not covered" >            super(config);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        expandActiveRow() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!this.hasActiveRow()) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.optionsTreeGrid.expandRow(this.getActiveRow());</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        collapseActiveRow() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!this.hasActiveRow()) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.optionsTreeGrid.collapseRow(this.getActiveRow());</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        reload(): wemQ.Promise&lt;void&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return this.optionsTreeGrid.reload();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setReadonlyChecker(checker: (optionToCheck: OPTION_DISPLAY_VALUE) =&gt; boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.optionsTreeGrid.setReadonlyChecker(checker);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        presetDefaultOption(data: OPTION_DISPLAY_VALUE)</span> {
+<span class="cstat-no" title="statement not covered" >            this.optionsTreeGrid.presetDefaultOption(data);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setOptions(options: Option&lt;OPTION_DISPLAY_VALUE&gt;[])</span> {
+<span class="cstat-no" title="statement not covered" >            this.optionsTreeGrid.setOptions(options);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected initGridAndData() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.filter) {</span>
+                // TODO
+                // this.getGridData().setFilter(this.filter);
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.optionsTreeGrid = new OptionsTreeGrid(this.createColumns(),</span>
+                this.createOptions(),
+                this.config.optionDataLoader,
+                this.config.optionDataHelper);
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        protected initGridEventListeners() {</span></span>
+<span class="cstat-no" title="statement not covered" >            this.getGrid().subscribeOnClick(<span class="fstat-no" title="function not covered" >(e, args)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                const elem = new ElementHelper(e.target);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (!elem.hasClass('expand collapse')) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.notifyRowSelection(args.row);</span>
+<span class="cstat-no" title="statement not covered" >                    e.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >                    return false;</span>
+                }
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        protected createColumns(): api.ui.grid.GridColumn&lt;any&gt;[] {</span></span>
+<span class="cstat-no" title="statement not covered" >            let columnFormatter =</span>
+<span class="fstat-no" title="function not covered" >                (row: number, cell: number, value: OPTION_DISPLAY_VALUE, columnDef: any, node: TreeNode&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt;)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    if (value &amp;&amp; node.getData().displayValue) {</span>
+<span class="cstat-no" title="statement not covered" >                        this.optionDisplayValueViewer.setObject(value);</span>
+<span class="cstat-no" title="statement not covered" >                        return this.optionDisplayValueViewer.toString();</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    return '';</span>
+                };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return [</span>
+                new api.ui.grid.GridColumnBuilder().setId('option').setName('Options').setField('displayValue').setFormatter(
+                    columnFormatter).build()
+            ];
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getElement(): Element {</span>
+<span class="cstat-no" title="statement not covered" >            return this.optionsTreeGrid;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getGrid(): api.ui.grid.Grid&lt;TreeNode&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt;&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return this.optionsTreeGrid.getGrid();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected getGridData(): api.ui.grid.DataView&lt;TreeNode&lt;Option&lt;OPTION_DISPLAY_VALUE&gt;&gt;&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return this.optionsTreeGrid.getGrid().getDataView();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getOptionByRow(rowIndex: number)</span>: Option&lt;OPTION_DISPLAY_VALUE&gt; {
+<span class="cstat-no" title="statement not covered" >            return this.getGridData().getItem(rowIndex).getData();</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

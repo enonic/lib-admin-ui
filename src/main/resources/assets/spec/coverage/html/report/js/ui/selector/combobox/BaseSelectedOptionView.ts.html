@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/ui/selector/combobox/BaseSelectedOptionView.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/ui/selector/combobox/</a> BaseSelectedOptionView.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">51.16% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>22/43</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.33% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">41.18% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>7/17</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">44.74% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>17/38</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>ui.<span class="branch-1 cbranch-no" title="branch not covered" ></span>selector.<span class="branch-1 cbranch-no" title="branch not covered" ></span>combobox </span>{
+&nbsp;
+    export class BaseSelectedOptionView&lt;T&gt; extends api.dom.DivEl implements SelectedOptionView&lt;T&gt; {
+&nbsp;
+        private option: api.ui.selector.Option&lt;T&gt;;
+&nbsp;
+        private optionValueEl: api.dom.DivEl;
+&nbsp;
+        private removeClickedListeners: {(): void;}[] = [];
+&nbsp;
+        private editable: boolean = true;
+&nbsp;
+        constructor(option: api.ui.selector.Option&lt;T&gt;) {
+            super('selected-option');
+&nbsp;
+            this.option = option;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setOption(option: api.ui.selector.Option&lt;T&gt;)</span> {
+<span class="cstat-no" title="statement not covered" >            if (this.optionValueEl) {</span>
+<span class="cstat-no" title="statement not covered" >                this.optionValueEl.getEl().setInnerHtml(option.displayValue.toString());</span>
+            }
+        }
+&nbsp;
+        getOption(): api.ui.selector.Option&lt;T&gt; {
+            return this.option;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        doRender(): wemQ.Promise&lt;boolean&gt; {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let removeButtonEl = new api.dom.AEl('remove');</span>
+<span class="cstat-no" title="statement not covered" >            this.optionValueEl = new api.dom.DivEl('option-value');</span>
+<span class="cstat-no" title="statement not covered" >            if (this.option) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setOption(this.option);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            removeButtonEl.onClicked(<span class="fstat-no" title="function not covered" >(event: Event)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.notifyRemoveClicked();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                event.stopPropagation();</span>
+<span class="cstat-no" title="statement not covered" >                event.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.appendChildren&lt;api.dom.Element&gt;(removeButtonEl, this.optionValueEl);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return wemQ(true);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected notifyRemoveClicked() {</span>
+<span class="cstat-no" title="statement not covered" >            this.removeClickedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener();</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onRemoveClicked(listener: {(): void;})</span> {
+<span class="cstat-no" title="statement not covered" >            this.removeClickedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unRemoveClicked(listener: {(): void;})</span> {
+<span class="cstat-no" title="statement not covered" >            this.removeClickedListeners = this.removeClickedListeners.filter(<span class="fstat-no" title="function not covered" >function (curr: {(): void;})</span> {</span>
+<span class="cstat-no" title="statement not covered" >                return curr !== listener;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setEditable(editable: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.editable = editable;</span>
+<span class="cstat-no" title="statement not covered" >            this.toggleClass('readonly', !editable);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isEditable(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.editable;</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

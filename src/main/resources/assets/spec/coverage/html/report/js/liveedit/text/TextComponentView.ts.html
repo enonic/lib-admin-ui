@@ -1,0 +1,1580 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/liveedit/text/TextComponentView.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/liveedit/text/</a> TextComponentView.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20.44% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>56/274</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">2.21% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/136</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">8.93% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>5/56</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">19.16% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>50/261</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>liveedit.<span class="branch-1 cbranch-no" title="branch not covered" ></span>text </span>{
+&nbsp;
+    import RoleKeys = api.security.RoleKeys;
+    declare var CONFIG;
+&nbsp;
+    import ComponentView = api.liveedit.ComponentView;
+    import RegionView = api.liveedit.RegionView;
+    import TextComponent = api.content.page.region.TextComponent;
+&nbsp;
+    import LinkModalDialog = api.util.htmlarea.dialog.LinkModalDialog;
+    import AnchorModalDialog = api.util.htmlarea.dialog.AnchorModalDialog;
+    import HtmlAreaAnchor = api.util.htmlarea.dialog.HtmlAreaAnchor;
+    import HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
+    import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
+    import ModalDialog = api.util.htmlarea.dialog.ModalDialog;
+    import Promise = Q.Promise;
+&nbsp;
+    export class TextComponentViewBuilder extends ComponentViewBuilder&lt;TextComponent&gt; {
+<span class="fstat-no" title="function not covered" >        constructor() {</span>
+<span class="cstat-no" title="statement not covered" >            super();</span>
+<span class="cstat-no" title="statement not covered" >            this.setType(TextItemType.get());</span>
+        }
+    }
+&nbsp;
+    export class TextComponentView extends ComponentView&lt;TextComponent&gt; {
+&nbsp;
+        protected component: TextComponent;
+&nbsp;
+        private rootElement: api.dom.Element;
+&nbsp;
+        private htmlAreaEditor: HtmlAreaEditor;
+&nbsp;
+        private isInitializingEditor: boolean;
+&nbsp;
+        private focusOnInit: boolean;
+&nbsp;
+        private editorContainer: api.dom.DivEl;
+&nbsp;
+        public static debug: boolean = false;
+&nbsp;
+        private static DEFAULT_TEXT: string = '';
+&nbsp;
+        private static EDITOR_FOCUSED_CLASS: string = 'editor-focused';
+&nbsp;
+        // special handling for click to allow dblclick event without triggering 2 clicks before it
+        public static DBL_CLICK_TIMEOUT: number = 250;
+        private singleClickTimer: number;
+        private lastClicked: number;
+&nbsp;
+        private modalDialog: ModalDialog;
+        private currentDialogConfig: any;
+&nbsp;
+        private authRequest: Promise&lt;void&gt;;
+        private editableSourceCode: boolean;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(builder: TextComponentViewBuilder)</span> {
+<span class="cstat-no" title="statement not covered" >            super(builder.setPlaceholder(new TextPlaceholder()).setViewer(new TextComponentViewer()).setComponent(builder.component));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.addTextContextMenuActions();</span>
+<span class="cstat-no" title="statement not covered" >            this.lastClicked = 0;</span>
+<span class="cstat-no" title="statement not covered" >            this.liveEditModel = builder.parentRegionView.getLiveEditModel();</span>
+<span class="cstat-no" title="statement not covered" >            this.isInitializingEditor = false;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.addClassEx('text-view');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.initializeRootElement();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.rootElement.getHTMLElement().onpaste = this.handlePasteEvent.bind(this);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.authRequest =</span>
+                new api.security.auth.IsAuthenticatedRequest().sendAndParse().then(<span class="fstat-no" title="function not covered" >(loginResult: api.security.auth.LoginResult)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    this.editableSourceCode = loginResult.getPrincipals().some(<span class="fstat-no" title="function not covered" >principal </span>=&gt; <span class="cstat-no" title="statement not covered" >RoleKeys.ADMIN.equals(principal) ||</span></span>
+                                                                                            RoleKeys.CMS_ADMIN.equals(principal) ||
+                                                                                            RoleKeys.CMS_EXPERT.equals(principal));
+                });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.onAdded(<span class="fstat-no" title="function not covered" >() =&gt; { // is triggered on item insert or move</span></span>
+<span class="cstat-no" title="statement not covered" >                if (api.BrowserHelper.isFirefox() &amp;&amp; !!tinymce.activeEditor) {</span>
+<span class="cstat-no" title="statement not covered" >                    tinymce.activeEditor.fire('blur');</span>
+                }
+<span class="cstat-no" title="statement not covered" >                this.focusOnInit = true;</span>
+<span class="cstat-no" title="statement not covered" >                this.addClass(TextComponentView.EDITOR_FOCUSED_CLASS);</span>
+<span class="cstat-no" title="statement not covered" >                if (!this.isEditorReady()) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.initEditor();</span>
+                } else <span class="cstat-no" title="statement not covered" >if (this.htmlAreaEditor) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.reInitEditor(); </span>// on added, inline editor losses its root element of the editable area
+                }
+<span class="cstat-no" title="statement not covered" >                this.unhighlight();</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.getPageView().appendContainerForTextToolbar();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.onRemoved(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.destroyEditor();</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let handleDialogCreated = <span class="fstat-no" title="function not covered" >(event)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.currentDialogConfig === event.getConfig()) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.modalDialog = event.getModalDialog();</span>
+                }
+            };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.onMouseLeave(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                if (this.getEl().hasClass(TextComponentView.EDITOR_FOCUSED_CLASS)) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.processEditorValue();</span>
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            api.liveedit.LiveEditPageDialogCreatedEvent.on(handleDialogCreated.bind(this));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private reInitEditor() {</span>
+<span class="cstat-no" title="statement not covered" >            this.destroyEditor();</span>
+<span class="cstat-no" title="statement not covered" >            this.editorContainer.remove();</span>
+<span class="cstat-no" title="statement not covered" >            this.editorContainer = null;</span>
+<span class="cstat-no" title="statement not covered" >            this.htmlAreaEditor = null;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getContent(): api.content.ContentSummary {</span>
+<span class="cstat-no" title="statement not covered" >            return this.liveEditModel.getContent();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getContentPath(): api.content.ContentPath {</span>
+<span class="cstat-no" title="statement not covered" >            return this.liveEditModel.getContent().getPath();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getApplicationKeys(): api.application.ApplicationKey[] {</span>
+<span class="cstat-no" title="statement not covered" >            return this.liveEditModel.getSiteModel().getSite().getApplicationKeys();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private isAllTextSelected(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.rootElement.getHTMLElement().innerText.trim() === window['getSelection']().toString();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private handlePasteEvent() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.isAllTextSelected()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.rootElement.getHTMLElement().innerHTML = '';</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        highlight() {</span>
+<span class="cstat-no" title="statement not covered" >            let isDragging = DragAndDrop.get().isDragging();</span>
+<span class="cstat-no" title="statement not covered" >            if (!this.isEditMode() &amp;&amp; !isDragging) {</span>
+<span class="cstat-no" title="statement not covered" >                super.highlight();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unhighlight() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!this.isEditMode()) {</span>
+<span class="cstat-no" title="statement not covered" >                super.unhighlight();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private initializeRootElement() {</span>
+<span class="cstat-no" title="statement not covered" >            for (let i = 0; i &lt; this.getChildren().length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >                let child = this.getChildren()[i];</span>
+<span class="cstat-no" title="statement not covered" >                if (child.getEl().getTagName().toUpperCase() === 'SECTION') {</span>
+<span class="cstat-no" title="statement not covered" >                    this.rootElement = child;</span>
+                    // convert image urls in text component for web
+<span class="cstat-no" title="statement not covered" >                    child.setHtml(HTMLAreaHelper.prepareImgSrcsInValueForEdit(child.getHtml()), false);</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            if (!this.rootElement) {</span>
+                // create it in case of new component
+<span class="cstat-no" title="statement not covered" >                this.rootElement = new api.dom.SectionEl();</span>
+<span class="cstat-no" title="statement not covered" >                this.prependChild(this.rootElement);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private doHandleDbClick(event: MouseEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            if (this.isEditMode() &amp;&amp; this.isActive()) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.focusOnInit = true;</span>
+<span class="cstat-no" title="statement not covered" >            this.startPageTextEditMode();</span>
+<span class="cstat-no" title="statement not covered" >            if (this.htmlAreaEditor) {</span>
+<span class="cstat-no" title="statement not covered" >                this.htmlAreaEditor.focus();</span>
+<span class="cstat-no" title="statement not covered" >                this.addClass(TextComponentView.EDITOR_FOCUSED_CLASS);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            api.liveedit.Highlighter.get().hide();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private doHandleClick(event: MouseEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            if (this.isEditMode()) {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.isActive()) {</span>
+<span class="cstat-no" title="statement not covered" >                    return;</span>
+                }
+<span class="cstat-no" title="statement not covered" >                if (this.htmlAreaEditor) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.htmlAreaEditor.focus();</span>
+                }
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            super.handleClick(event);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        handleClick(event: MouseEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            if (TextComponentView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.group('Handling click [' + this.getId() + '] at ' + new Date().getTime());</span>
+<span class="cstat-no" title="statement not covered" >                console.log(event);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            event.stopPropagation();</span>
+<span class="cstat-no" title="statement not covered" >            if (event.which === 3) { // right click</span>
+<span class="cstat-no" title="statement not covered" >                event.preventDefault();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.isEditMode() &amp;&amp; this.isActive()) {</span>
+<span class="cstat-no" title="statement not covered" >                if (TextComponentView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('Is in text edit mode, not handling click');</span>
+<span class="cstat-no" title="statement not covered" >                    console.groupEnd();</span>
+                }
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let timeSinceLastClick = new Date().getTime() - this.lastClicked;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (timeSinceLastClick &gt; TextComponentView.DBL_CLICK_TIMEOUT) {</span>
+<span class="cstat-no" title="statement not covered" >                this.singleClickTimer = setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                    if (TextComponentView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                        console.log('no dblclick occured during ' + TextComponentView.DBL_CLICK_TIMEOUT + 'ms, notifying click', this);</span>
+<span class="cstat-no" title="statement not covered" >                        console.groupEnd();</span>
+                    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    this.doHandleClick(event);</span>
+                }, TextComponentView.DBL_CLICK_TIMEOUT);
+&nbsp;
+            } else {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (TextComponentView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('dblclick occured after ' + timeSinceLastClick + 'ms, notifying dbl click', this);</span>
+                    // end the group started by the first click first
+<span class="cstat-no" title="statement not covered" >                    console.groupEnd();</span>
+                }
+<span class="cstat-no" title="statement not covered" >                clearTimeout(this.singleClickTimer);</span>
+<span class="cstat-no" title="statement not covered" >                this.doHandleDbClick(event);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.lastClicked = new Date().getTime();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isEditMode(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.hasClass('edit-mode');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isActive(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.hasClass('active');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setEditMode(flag: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            if (!flag) {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.htmlAreaEditor) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.processEditorValue();</span>
+                }
+<span class="cstat-no" title="statement not covered" >                this.removeClass(TextComponentView.EDITOR_FOCUSED_CLASS);</span>
+<span class="cstat-no" title="statement not covered" >                this.triggerEventInActiveEditorForFirefox('blur');</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.toggleClass('edit-mode', flag);</span>
+<span class="cstat-no" title="statement not covered" >            this.setDraggable(!flag);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (flag) {</span>
+<span class="cstat-no" title="statement not covered" >                if (!this.isEditorReady()) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.initEditor();</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (this.component.isEmpty()) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (this.htmlAreaEditor) {</span>
+<span class="cstat-no" title="statement not covered" >                        this.htmlAreaEditor.setContent(TextComponentView.DEFAULT_TEXT);</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    this.rootElement.setHtml(TextComponentView.DEFAULT_TEXT, false);</span>
+<span class="cstat-no" title="statement not covered" >                    this.selectText();</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.triggerEventInActiveEditorForFirefox('focus');</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private triggerEventInActiveEditorForFirefox(eventName: string)</span> {
+<span class="cstat-no" title="statement not covered" >            if (api.BrowserHelper.isFirefox()) {</span>
+<span class="cstat-no" title="statement not covered" >                let activeEditor = tinymce.activeEditor;</span>
+<span class="cstat-no" title="statement not covered" >                if (activeEditor) {</span>
+<span class="cstat-no" title="statement not covered" >                    activeEditor.fire(eventName);</span>
+                }
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private onFocusHandler(e: FocusEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            this.addClass(TextComponentView.EDITOR_FOCUSED_CLASS);</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private onBlurHandler(e: FocusEvent)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            this.removeClass(TextComponentView.EDITOR_FOCUSED_CLASS);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.collapseEditorMenuItems();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                if (!this.anyEditorHasFocus()) {</span>
+<span class="cstat-no" title="statement not covered" >                    let pageView = this.getPageView();</span>
+<span class="cstat-no" title="statement not covered" >                    if (pageView.isTextEditMode()) {</span>
+<span class="cstat-no" title="statement not covered" >                        pageView.setTextEditMode(false);</span>
+                        // preventing mouse click event that triggered blur from further processing in ItemView
+<span class="cstat-no" title="statement not covered" >                        pageView.setNextClickDisabled(true);</span>
+&nbsp;
+                        // enable mouse click handling if click's target was not ItemView
+<span class="cstat-no" title="statement not covered" >                        setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" ></span>pageView.setNextClickDisabled(false),</span> 200);</span>
+                    }
+                }
+            }, 50);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private onKeydownHandler(e: KeyboardEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            let saveShortcut = (e.keyCode === 83 &amp;&amp; (e.ctrlKey || e.metaKey));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (saveShortcut) { //Cmd-S</span>
+<span class="cstat-no" title="statement not covered" >                this.processEditorValue();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (e.keyCode === 27 || saveShortcut) { // esc or Cmd-S</span>
+<span class="cstat-no" title="statement not covered" >                this.closePageTextEditMode();</span>
+<span class="cstat-no" title="statement not covered" >                this.removeClass(TextComponentView.EDITOR_FOCUSED_CLASS);</span>
+            } else <span class="cstat-no" title="statement not covered" >if ((e.altKey) &amp;&amp; e.keyCode === 9) { // alt+tab for OSX</span>
+<span class="cstat-no" title="statement not covered" >                let nextFocusable = api.dom.FormEl.getNextFocusable(this, '.xp-page-editor-text-view', true);</span>
+<span class="cstat-no" title="statement not covered" >                if (nextFocusable) {</span>
+<span class="cstat-no" title="statement not covered" >                    wemjq(nextFocusable.getHTMLElement()).simulate('click');</span>
+<span class="cstat-no" title="statement not covered" >                    nextFocusable.giveFocus();</span>
+                } else {
+<span class="cstat-no" title="statement not covered" >                    this.htmlAreaEditor.fire('blur');</span>
+                }
+            }
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private initEditor(): void {</span></span>
+<span class="cstat-no" title="statement not covered" >            if (this.authRequest.isFulfilled()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.doInitEditor();</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.authRequest.then(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                    if (!this.isEditorReady()) {</span>
+<span class="cstat-no" title="statement not covered" >                        this.doInitEditor();</span>
+                    }
+                });
+            }
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private doInitEditor() {</span></span>
+<span class="cstat-no" title="statement not covered" >            this.isInitializingEditor = true;</span>
+<span class="cstat-no" title="statement not covered" >            let assetsUri = CONFIG.assetsUri;</span>
+<span class="cstat-no" title="statement not covered" >            let id = this.getId().replace(/\./g, '_');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.addClass(id);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!this.editorContainer) {</span>
+<span class="cstat-no" title="statement not covered" >                this.editorContainer = new api.dom.DivEl('tiny-mce-here');</span>
+<span class="cstat-no" title="statement not covered" >                this.appendChild(this.editorContainer);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            new HTMLAreaBuilder().</span>
+                setSelector('div.' + id + ' .tiny-mce-here').
+                setAssetsUri(assetsUri).
+                setInline(true).
+                onCreateDialog(<span class="fstat-no" title="function not covered" >event </span>=&gt; {
+<span class="cstat-no" title="statement not covered" >                this.currentDialogConfig = event.getConfig();</span>
+            }).setFocusHandler(this.onFocusHandler.bind(this)).setBlurHandler(this.onBlurHandler.bind(this)).setKeydownHandler(
+                this.onKeydownHandler.bind(this)).setFixedToolbarContainer('.mce-toolbar-container').setContent(
+                this.getContent()).setEditableSourceCode(this.editableSourceCode).setContentPath(this.getContentPath()).setApplicationKeys(
+                this.getApplicationKeys()).createEditor().then(this.handleEditorCreated.bind(this));
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private handleEditorCreated(editor: HtmlAreaEditor)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            this.htmlAreaEditor = editor;</span>
+<span class="cstat-no" title="statement not covered" >            if (this.component.getText()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.htmlAreaEditor.setContent(HTMLAreaHelper.prepareImgSrcsInValueForEdit(this.component.getText()));</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.htmlAreaEditor.setContent(TextComponentView.DEFAULT_TEXT);</span>
+<span class="cstat-no" title="statement not covered" >                this.htmlAreaEditor.selection.select(this.htmlAreaEditor.getBody(), true);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            if (this.focusOnInit) {</span>
+<span class="cstat-no" title="statement not covered" >                if (api.BrowserHelper.isFirefox()) {</span>
+<span class="cstat-no" title="statement not covered" >                    setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                        this.forceEditorFocus();</span>
+                    }, 100);
+                } else {
+<span class="cstat-no" title="statement not covered" >                    this.forceEditorFocus();</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            this.focusOnInit = false;</span>
+<span class="cstat-no" title="statement not covered" >            this.isInitializingEditor = false;</span>
+<span class="cstat-no" title="statement not covered" >            HTMLAreaHelper.updateImageAlignmentBehaviour(editor);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private forceEditorFocus() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.htmlAreaEditor) {</span>
+<span class="cstat-no" title="statement not covered" >                this.htmlAreaEditor.focus();</span>
+<span class="cstat-no" title="statement not covered" >                wemjq(this.htmlAreaEditor.getElement()).simulate('click');</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.startPageTextEditMode();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private collapseEditorMenuItems() {</span>
+<span class="cstat-no" title="statement not covered" >            wemjq('.mce-menubtn.mce-active').click();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private anyEditorHasFocus(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            let textItemViews = this.getPageView().getItemViewsByType(api.liveedit.text.TextItemType.get());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let editorFocused = textItemViews.some(<span class="fstat-no" title="function not covered" >(view: ItemView)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return view.getEl().hasClass(TextComponentView.EDITOR_FOCUSED_CLASS);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let dialogVisible = !!this.modalDialog &amp;&amp; this.modalDialog.isVisible();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return editorFocused || dialogVisible;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private processEditorValue() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!this.htmlAreaEditor) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.isEditorEmpty()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.component.setText(TextComponentView.DEFAULT_TEXT);</span>
+                // copy editor content over to the root html element
+<span class="cstat-no" title="statement not covered" >                this.rootElement.getHTMLElement().innerHTML = TextComponentView.DEFAULT_TEXT;</span>
+            } else {
+                // copy editor raw content (without any processing!) over to the root html element
+<span class="cstat-no" title="statement not covered" >                this.rootElement.getHTMLElement().innerHTML = this.htmlAreaEditor.getContent({format: 'raw'});</span>
+                // but save processed text to the component
+<span class="cstat-no" title="statement not covered" >                this.component.setText(HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.htmlAreaEditor));</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private isEditorEmpty(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            let editorContent = this.htmlAreaEditor.getContent();</span>
+<span class="cstat-no" title="statement not covered" >            return editorContent.trim() === '' || editorContent === '&lt;h2&gt;&amp;nbsp;&lt;/h2&gt;';</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private destroyEditor(): void {</span>
+<span class="cstat-no" title="statement not covered" >            let editor = this.htmlAreaEditor;</span>
+<span class="cstat-no" title="statement not covered" >            if (editor) {</span>
+<span class="cstat-no" title="statement not covered" >                try {</span>
+<span class="cstat-no" title="statement not covered" >                    editor.destroy(false);</span>
+                } catch (e) {
+                    //error thrown in FF on tab close - XP-2624
+                }
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private selectText() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.htmlAreaEditor) {</span>
+<span class="cstat-no" title="statement not covered" >                this.htmlAreaEditor.selection.select(this.htmlAreaEditor.getBody(), true);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private startPageTextEditMode() {</span>
+<span class="cstat-no" title="statement not covered" >            let pageView = this.getPageView();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (pageView.hasSelectedView()) {</span>
+<span class="cstat-no" title="statement not covered" >                pageView.getSelectedView().deselect();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!pageView.isTextEditMode()) {</span>
+<span class="cstat-no" title="statement not covered" >                pageView.setTextEditMode(true);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.giveFocus();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private closePageTextEditMode() {</span>
+<span class="cstat-no" title="statement not covered" >            let pageView = this.getPageView();</span>
+<span class="cstat-no" title="statement not covered" >            if (pageView.isTextEditMode()) {</span>
+<span class="cstat-no" title="statement not covered" >                pageView.setTextEditMode(false);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        giveFocus() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!this.isEditMode()) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return this.rootElement.giveFocus();</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private addTextContextMenuActions() {</span></span>
+<span class="cstat-no" title="statement not covered" >            this.addContextMenuActions([</span>
+                new api.ui.Action('Edit').onExecuted(<span class="fstat-no" title="function not covered" >() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    this.startPageTextEditMode();</span>
+<span class="cstat-no" title="statement not covered" >                    this.focusOnInit = true;</span>
+<span class="cstat-no" title="statement not covered" >                    this.forceEditorFocus();</span>
+                })
+            ]);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private isEditorReady(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return !!this.htmlAreaEditor || this.isInitializingEditor;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        extractText(): string {</span>
+<span class="cstat-no" title="statement not covered" >            if(this.htmlAreaEditor) {</span>
+<span class="cstat-no" title="statement not covered" >                return this.htmlAreaEditor.getContent({format: 'text'}).trim();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return wemjq(this.getHTMLElement()).text().trim();</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

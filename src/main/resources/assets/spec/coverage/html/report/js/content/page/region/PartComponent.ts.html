@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/page/region/PartComponent.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/content/page/region/</a> PartComponent.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">53.85% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>21/39</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">42.86% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">43.75% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>14/32</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>page.<span class="branch-1 cbranch-no" title="branch not covered" ></span>region </span>{
+&nbsp;
+    import PropertyTree = api.data.PropertyTree;
+&nbsp;
+    export class PartComponent extends DescriptorBasedComponent implements api.Equitable, api.Cloneable {
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(builder: PartComponentBuilder)</span> {
+<span class="cstat-no" title="statement not covered" >            super(builder);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toJson(): ComponentTypeWrapperJson {</span>
+<span class="cstat-no" title="statement not covered" >            let json: PartComponentJson = &lt;PartComponentJson&gt;super.toComponentJson();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return &lt;ComponentTypeWrapperJson&gt; {</span>
+                PartComponent: json
+            };
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isEmpty(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return !this.hasDescriptor();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        equals(o: api.Equitable)</span>: boolean {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PartComponent)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return super.equals(o);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        clone(): PartComponent {</span>
+<span class="cstat-no" title="statement not covered" >            return new PartComponentBuilder(this).build();</span>
+        }
+    }
+&nbsp;
+    export class PartComponentBuilder extends DescriptorBasedComponentBuilder&lt;PartComponent&gt; {
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(source?: PartComponent)</span> {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            super(source);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setType(PartComponentType.get());</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public fromJson(json: PartComponentJson, region: Region)</span>: PartComponentBuilder {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (json.descriptor) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setDescriptor(api.content.page.DescriptorKey.fromString(json.descriptor));</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.setName(json.name ? new ComponentName(json.name) : null);</span>
+<span class="cstat-no" title="statement not covered" >            if (json.config) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setConfig(PropertyTree.fromJson(json.config));</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.setParent(region);</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public build(): PartComponent {</span>
+<span class="cstat-no" title="statement not covered" >            return new PartComponent(this);</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

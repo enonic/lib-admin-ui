@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/ui/uploader/FileUploaderEl.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/ui/uploader/</a> FileUploaderEl.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">28.57% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>14/49</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">12.5% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/24</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.33% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">22.73% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>10/44</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>ui.<span class="branch-1 cbranch-no" title="branch not covered" ></span>uploader </span>{
+&nbsp;
+    import Button = api.ui.button.Button;
+    import CloseButton = api.ui.button.CloseButton;
+    import Element = api.dom.Element;
+    import SelectionItem = api.app.browse.SelectionItem;
+&nbsp;
+    export class FileUploaderEl&lt;MODEL extends api.Equitable&gt; extends UploaderEl&lt;MODEL&gt; {
+&nbsp;
+        protected contentId: string;
+&nbsp;
+        static FILE_NAME_DELIMITER: string = '/';
+&nbsp;
+<span class="fstat-no" title="function not covered" >        doSetValue(value: string, silent?: boolean)</span>: UploaderEl&lt;MODEL&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (UploaderEl.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.log('Setting new uploader value', value, this);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let result = this.getItems(value);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.appendNewItems(result.newItems);</span>
+<span class="cstat-no" title="statement not covered" >            this.refreshVisibility();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >         resetValues(value: string)</span> {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let result = this.getItems(value);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.removeAllChildrenExceptGiven(result.existingItems);</span>
+<span class="cstat-no" title="statement not covered" >            this.appendNewItems(result.newItems);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.refreshVisibility();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setContentId(contentId: string)</span> {
+<span class="cstat-no" title="statement not covered" >            this.contentId = contentId;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected initHandler() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.config.disabled) {</span>
+<span class="cstat-no" title="statement not covered" >                if (UploaderEl.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('Skipping init, because of config.disabled = true', this);</span>
+                }
+            } else {
+<span class="cstat-no" title="statement not covered" >                if (UploaderEl.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('Initing uploader', this);</span>
+                }
+<span class="cstat-no" title="statement not covered" >                if (!this.uploader &amp;&amp; this.config.url) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.uploader = this.initUploader();</span>
+                }
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private refreshVisibility() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.config.showResult) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setResultVisible();</span>
+<span class="cstat-no" title="statement not covered" >                this.getDefaultDropzoneContainer().setVisible(false);</span>
+<span class="cstat-no" title="statement not covered" >                this.getDropzone().setVisible(false);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.setDefaultDropzoneVisible();</span>
+            }
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private getItems(value: string)</span> : {existingItems:Element[], newItems:Element[]} {</span>
+<span class="cstat-no" title="statement not covered" >            let newItems: Element[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let existingItems:Element[] = [];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.parseValues(value).forEach(<span class="fstat-no" title="function not covered" >(parsedValue: string)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (parsedValue) {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    let newValues = parsedValue.split(FileUploaderEl.FILE_NAME_DELIMITER);</span>
+<span class="cstat-no" title="statement not covered" >                    newValues.forEach(<span class="fstat-no" title="function not covered" >(curValue)</span> =&gt; {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                        let existingItem = this.getExistingItem(curValue);</span>
+<span class="cstat-no" title="statement not covered" >                        if (!existingItem) {</span>
+<span class="cstat-no" title="statement not covered" >                            newItems.push(this.createResultItem(curValue));</span>
+                        } else {
+<span class="cstat-no" title="statement not covered" >                            existingItems.push(existingItem);</span>
+                        }
+                    });
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return {existingItems, newItems};</span>
+        }
+&nbsp;
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

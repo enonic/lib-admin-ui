@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/form/inputtype/upload/MediaUploader.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../../index.html">all files</a> / <a href="index.html">js/content/form/inputtype/upload/</a> MediaUploader.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">24.06% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>32/133</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">9.8% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>5/51</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">16.22% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/37</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20.97% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>26/124</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>form.<span class="branch-1 cbranch-no" title="branch not covered" ></span>inputtype.<span class="branch-1 cbranch-no" title="branch not covered" ></span>upload </span>{
+&nbsp;
+    import Property = api.data.Property;
+    import Value = api.data.Value;
+    import ValueType = api.data.ValueType;
+    import ValueTypes = api.data.ValueTypes;
+    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
+&nbsp;
+    export interface MediaUploaderConfigAllowType {
+        name: string;
+        extensions: string;
+    }
+&nbsp;
+    export class MediaUploader extends api.form.inputtype.support.BaseInputTypeSingleOccurrence&lt;string&gt; {
+        private config: api.content.form.inputtype.ContentInputTypeViewContext;
+        private mediaUploaderEl: api.ui.uploader.MediaUploaderEl;
+        private uploaderWrapper: api.dom.DivEl;
+        private svgImage: api.dom.ImgEl;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(config: api.content.form.inputtype.ContentInputTypeViewContext)</span> {
+<span class="cstat-no" title="statement not covered" >            super(config, 'media-uploader');</span>
+<span class="cstat-no" title="statement not covered" >            this.config = config;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getContext(): api.content.form.inputtype.ContentInputTypeViewContext {</span>
+<span class="cstat-no" title="statement not covered" >            return &lt;api.content.form.inputtype.ContentInputTypeViewContext&gt;super.getContext();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getValueType(): ValueType {</span>
+<span class="cstat-no" title="statement not covered" >            return ValueTypes.STRING;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        newInitialValue(): Value {</span>
+<span class="cstat-no" title="statement not covered" >            return ValueTypes.STRING.newNullValue();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        layoutProperty(input: api.form.Input, property: Property)</span>: wemQ.Promise&lt;void&gt; {
+<span class="cstat-no" title="statement not covered" >            if (!ValueTypes.STRING.equals(property.getType()) &amp;&amp; !ValueTypes.DATA.equals(property.getType())) {</span>
+<span class="cstat-no" title="statement not covered" >                property.convertValueType(ValueTypes.STRING);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.mediaUploaderEl = this.createUploader(property);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.uploaderWrapper = this.createUploaderWrapper(property);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.updateProperty(property).done();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.mediaUploaderEl.onUploadStarted(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.uploaderWrapper.removeClass('empty');</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.mediaUploaderEl.onFileUploaded(<span class="fstat-no" title="function not covered" >(event: api.ui.uploader.FileUploadedEvent&lt;api.content.Content&gt;)</span> =&gt; {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let content = event.getUploadItem().getModel();</span>
+<span class="cstat-no" title="statement not covered" >                let value = this.mediaUploaderEl.getMediaValue(content);</span>
+<span class="cstat-no" title="statement not covered" >                let fileName = value.getString();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.mediaUploaderEl.setFileName(fileName);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                switch (property.getType()) {</span>
+                case ValueTypes.DATA:
+<span class="cstat-no" title="statement not covered" >                    property.getPropertySet().setProperty('attachment', 0, value);</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                case ValueTypes.STRING:
+<span class="cstat-no" title="statement not covered" >                    property.setValue(ValueTypes.STRING.newValue(fileName));</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                api.notify.showFeedback(`"${fileName}" uploaded`);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.manageSVGImageIfPresent(content);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.mediaUploaderEl.onUploadFailed(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.mediaUploaderEl.setProgressVisible(false);</span>
+<span class="cstat-no" title="statement not covered" >                this.uploaderWrapper.addClass('empty');</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.mediaUploaderEl.onUploadReset(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.mediaUploaderEl.setFileName('');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                switch (property.getType()) {</span>
+                case ValueTypes.DATA:
+<span class="cstat-no" title="statement not covered" >                    property.getPropertySet().setProperty('attachment', 0, ValueTypes.STRING.newNullValue());</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                case ValueTypes.STRING:
+<span class="cstat-no" title="statement not covered" >                    property.setValue(ValueTypes.STRING.newNullValue());</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.uploaderWrapper);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.createSvgImageWrapperIfNeeded();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return wemQ&lt;void&gt;(null);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        validate(<span class="cstat-no" title="statement not covered" >silent: boolean = true)</span></span>: api.form.inputtype.InputValidationRecording {
+<span class="cstat-no" title="statement not covered" >            return new api.form.inputtype.InputValidationRecording();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        updateProperty(property: Property, unchangedOnly?: boolean)</span>: wemQ.Promise&lt;void&gt; {
+<span class="cstat-no" title="statement not covered" >            if ((!unchangedOnly || !this.mediaUploaderEl.isDirty()) &amp;&amp; this.getContext().content.getContentId()) {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.mediaUploaderEl.setValue(this.getContext().content.getContentId().toString());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (property.hasNonNullValue()) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.mediaUploaderEl.setFileName(this.getFileNameFromProperty(property));</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            return wemQ&lt;void&gt;(null);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        reset() {</span>
+<span class="cstat-no" title="statement not covered" >            this.mediaUploaderEl.resetBaseValues();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private manageSVGImageIfPresent(content: api.content.Content)</span> {
+<span class="cstat-no" title="statement not covered" >            if (content.getType().isVectorMedia()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.addClass('with-svg-image');</span>
+<span class="cstat-no" title="statement not covered" >                let imgUrl = new api.content.util.ContentImageUrlResolver().setContentId(</span>
+                    this.getContext().content.getContentId()).setTimestamp(
+                    content.getModifiedTime()).resolve();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.svgImage.setSrc(imgUrl);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.removeClass('with-svg-image');</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private deleteContent(property: Property)</span> {
+<span class="cstat-no" title="statement not covered" >            let contentId = this.getContext().content.getContentId();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            new api.content.resource.GetContentByIdRequest(contentId).sendAndParse().then(<span class="fstat-no" title="function not covered" >(content: api.content.Content)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let deleteRequest = new api.content.resource.DeleteContentRequest();</span>
+<span class="cstat-no" title="statement not covered" >                deleteRequest.addContentPath(content.getPath());</span>
+<span class="cstat-no" title="statement not covered" >                deleteRequest.sendAndParseWithPolling().then(<span class="fstat-no" title="function not covered" >(message: string)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    api.notify.showSuccess(message);</span>
+                }).catch(<span class="fstat-no" title="function not covered" >(reason: any)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    if (reason &amp;&amp; reason.message) {</span>
+<span class="cstat-no" title="statement not covered" >                        api.notify.showError(reason.message);</span>
+                    } else {
+<span class="cstat-no" title="statement not covered" >                        api.notify.showError('Content could not be deleted.');</span>
+                    }
+                }).done();
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getFileNameFromProperty(property: Property)</span>: string {
+<span class="cstat-no" title="statement not covered" >            if (property.getValue() != null) {</span>
+<span class="cstat-no" title="statement not covered" >                switch (property.getType()) {</span>
+                case ValueTypes.DATA:
+<span class="cstat-no" title="statement not covered" >                    return property.getPropertySet().getString('attachment');</span>
+                case ValueTypes.STRING:
+<span class="cstat-no" title="statement not covered" >                    return property.getValue().getString();</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            return '';</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getFileExtensionFromFileName(fileName: string)</span>: string {
+<span class="cstat-no" title="statement not covered" >            return fileName.split('.').pop();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private propertyAlreadyHasAttachment(property: Property)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            return (property.getValue() != null &amp;&amp;</span>
+                    property.getType() === ValueTypes.DATA &amp;&amp;
+                    !api.util.StringHelper.isEmpty(property.getPropertySet().getString('attachment')));
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getAllowTypeFromFileName(fileName: string)</span>: MediaUploaderConfigAllowType[] {
+<span class="cstat-no" title="statement not covered" >            return [{name: 'Media', extensions: this.getFileExtensionFromFileName(fileName)}];</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private createSvgImageWrapperIfNeeded() {</span></span>
+<span class="cstat-no" title="statement not covered" >            if (this.config.formContext.getContentTypeName().isVectorMedia()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.svgImage = new api.dom.ImgEl();</span>
+<span class="cstat-no" title="statement not covered" >                this.addClass('with-svg-image');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let content = this.config.formContext.getPersistedContent();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let imgUrl = new api.content.util.ContentImageUrlResolver().setContentId(</span>
+                    this.getContext().content.getContentId()).setTimestamp(
+                    content.getModifiedTime()).resolve();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.svgImage.setSrc(imgUrl);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.appendChild(new api.dom.DivEl('svg-image-wrapper').appendChild(this.svgImage));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.svgImage.onLoaded(<span class="fstat-no" title="function not covered" >(event: UIEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    this.mediaUploaderEl.setResultVisible(true); </span>// need to call it manually as svg images are uploaded too quickly
+                });
+            }
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private createUploaderWrapper(property: Property)</span>: api.dom.DivEl {</span>
+<span class="cstat-no" title="statement not covered" >            let wrapper = new api.dom.DivEl('uploader-wrapper');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let uploadButton = new api.ui.button.Button();</span>
+<span class="cstat-no" title="statement not covered" >            uploadButton.addClass('upload-button');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            uploadButton.onClicked(<span class="fstat-no" title="function not covered" >(event: MouseEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (property.hasNullValue()) {</span>
+<span class="cstat-no" title="statement not covered" >                    return;</span>
+                }
+<span class="cstat-no" title="statement not covered" >                this.mediaUploaderEl.showFileSelectionDialog();</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            wrapper.appendChild(this.mediaUploaderEl);</span>
+<span class="cstat-no" title="statement not covered" >            wrapper.appendChild(uploadButton);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return wrapper;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createUploader(property: Property)</span>: api.ui.uploader.MediaUploaderEl {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let predefinedAllowTypes;</span>
+<span class="cstat-no" title="statement not covered" >            let attachmentFileName = this.getFileNameFromProperty(property);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.propertyAlreadyHasAttachment(property)) {</span>
+<span class="cstat-no" title="statement not covered" >                predefinedAllowTypes = this.getAllowTypeFromFileName(attachmentFileName);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let allowTypesConfig: MediaUploaderConfigAllowType[] = predefinedAllowTypes || (&lt;any&gt;(this.config.inputConfig)).allowTypes ||</span>
+                [];
+<span class="cstat-no" title="statement not covered" >            let allowTypes = allowTypesConfig.map(<span class="fstat-no" title="function not covered" >(allowType: MediaUploaderConfigAllowType)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return {title: allowType.name, extensions: allowType.extensions};</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let hideDropZone = (&lt;any&gt;(this.config.inputConfig)).hideDropZone;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return new api.ui.uploader.MediaUploaderEl({</span>
+                params: {
+                    content: this.getContext().content.getContentId().toString()
+                },
+                operation: api.ui.uploader.MediaUploaderElOperation.update,
+                allowTypes: allowTypes,
+                name: this.getContext().input.getName(),
+                maximumOccurrences: 1,
+                allowMultiSelection: false,
+                hideDefaultDropZone: hideDropZone != null ? hideDropZone : true,
+                deferred: true,
+                hasUploadButton: false
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onFocus(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.mediaUploaderEl.onFocus(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unFocus(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.mediaUploaderEl.unFocus(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onBlur(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.mediaUploaderEl.onBlur(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unBlur(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.mediaUploaderEl.unBlur(listener);</span>
+        }
+    }
+    api.form.inputtype.InputTypeManager.register(new api.Class('MediaUploader', MediaUploader));
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../../sorter.js"></script>
+</body>
+</html>

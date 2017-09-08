@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/page/PageDescriptorResourceRequest.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/content/page/</a> PageDescriptorResourceRequest.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">50% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>11/22</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">30% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/10</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">44.44% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/9</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">41.18% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>7/17</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>page </span>{
+&nbsp;
+    export class PageDescriptorResourceRequest&lt;JSON_TYPE, PARSED_TYPE&gt; extends api.rest.ResourceRequest&lt;JSON_TYPE, PARSED_TYPE&gt; {
+&nbsp;
+        private resourcePath: api.rest.Path;
+&nbsp;
+        cache: PageDescriptorCache;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor() {</span>
+<span class="cstat-no" title="statement not covered" >            super();</span>
+<span class="cstat-no" title="statement not covered" >            this.cache = PageDescriptorCache.get();</span>
+<span class="cstat-no" title="statement not covered" >            this.resourcePath = api.rest.Path.fromParent(super.getRestPath(), 'content', 'page', 'descriptor');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getResourcePath(): api.rest.Path {</span>
+<span class="cstat-no" title="statement not covered" >            return this.resourcePath;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        fromJsonToPageDescriptor(json: api.content.page.PageDescriptorJson, <span class="cstat-no" title="statement not covered" >ignoreCache: boolean = false)</span></span>: PageDescriptor {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let pageDescriptor = new api.content.page.PageDescriptorBuilder().fromJson(json).build();</span>
+<span class="cstat-no" title="statement not covered" >            if(!ignoreCache) {</span>
+<span class="cstat-no" title="statement not covered" >                this.cache.put(pageDescriptor);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return  pageDescriptor;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        fromJsonToPageDescriptors(json: PageDescriptorsJson)</span>: PageDescriptor[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return json.descriptors.map(<span class="fstat-no" title="function not covered" >(descriptorJson: PageDescriptorJson)</span>=&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return this.fromJsonToPageDescriptor(descriptorJson);</span>
+            });
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

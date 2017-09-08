@@ -1,0 +1,3365 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/data/PropertySet.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/data/</a> PropertySet.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">48.05% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>259/539</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">28.87% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>41/142</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">34.09% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>60/176</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">47.62% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>250/525</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856
+857
+858
+859
+860
+861
+862
+863
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873
+874
+875
+876
+877
+878
+879
+880
+881
+882
+883
+884
+885
+886
+887
+888
+889
+890
+891
+892
+893
+894
+895
+896
+897
+898
+899
+900
+901
+902
+903
+904
+905
+906
+907
+908
+909
+910
+911
+912
+913
+914
+915
+916
+917
+918
+919
+920
+921
+922
+923
+924
+925
+926
+927
+928
+929
+930
+931
+932
+933
+934
+935
+936
+937
+938
+939
+940
+941
+942
+943
+944
+945
+946
+947
+948
+949
+950
+951
+952
+953
+954
+955
+956
+957
+958
+959
+960
+961
+962
+963
+964
+965
+966
+967
+968
+969
+970
+971
+972
+973
+974
+975
+976
+977
+978
+979
+980
+981
+982
+983
+984
+985
+986
+987
+988
+989
+990
+991
+992
+993
+994
+995
+996
+997
+998
+999
+1000
+1001
+1002
+1003
+1004
+1005
+1006
+1007
+1008
+1009
+1010
+1011
+1012
+1013
+1014
+1015
+1016
+1017
+1018
+1019
+1020
+1021
+1022
+1023
+1024
+1025
+1026
+1027
+1028
+1029
+1030
+1031
+1032
+1033
+1034
+1035
+1036
+1037
+1038
+1039
+1040
+1041
+1042
+1043
+1044
+1045
+1046
+1047
+1048
+1049
+1050
+1051
+1052
+1053
+1054
+1055
+1056
+1057
+1058
+1059
+1060
+1061
+1062
+1063
+1064
+1065
+1066
+1067
+1068
+1069
+1070
+1071
+1072
+1073
+1074
+1075
+1076
+1077
+1078
+1079
+1080
+1081
+1082
+1083
+1084
+1085
+1086
+1087
+1088
+1089
+1090
+1091
+1092
+1093
+1094
+1095
+1096
+1097
+1098
+1099
+1100
+1101</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">396×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-yes">790×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">395×</span>
+<span class="cline-any cline-yes">23×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">257×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">185×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">510×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">225×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">225×</span>
+<span class="cline-any cline-yes">225×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">225×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">280×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">280×</span>
+<span class="cline-any cline-yes">280×</span>
+<span class="cline-any cline-yes">280×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">297×</span>
+<span class="cline-any cline-yes">297×</span>
+<span class="cline-any cline-yes">280×</span>
+<span class="cline-any cline-yes">280×</span>
+<span class="cline-any cline-yes">280×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">297×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">82×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">762×</span>
+<span class="cline-any cline-yes">562×</span>
+<span class="cline-any cline-yes">200×</span>
+<span class="cline-any cline-yes">101×</span>
+<span class="cline-any cline-yes">101×</span>
+<span class="cline-any cline-yes">101×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">96×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">99×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">99×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">98×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">99×</span>
+<span class="cline-any cline-yes">99×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">99×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">734×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">505×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">505×</span>
+<span class="cline-any cline-yes">505×</span>
+<span class="cline-any cline-yes">505×</span>
+<span class="cline-any cline-yes">505×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">819×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">819×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">254×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">790×</span>
+<span class="cline-any cline-yes">790×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">790×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">254×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">253×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">254×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">23×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23×</span>
+<span class="cline-any cline-yes">23×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">159×</span>
+<span class="cline-any cline-yes">159×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">159×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">159×</span>
+<span class="cline-any cline-yes">159×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">87×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">33×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>data </span>{
+    /* tslint:disable:max-line-length */
+&nbsp;
+    import Reference = api.util.Reference;
+    import BinaryReference = api.util.BinaryReference;
+    import GeoPoint = api.util.GeoPoint;
+    import LocalTime = api.util.LocalTime;
+&nbsp;
+    /**
+     * A PropertySet manages a set of properties. The properties are grouped in arrays by name ([[Property.name]]).
+     *
+     * The PropertySet provides several functions for both creation, updating and getting property values of a certain type (see [[ValueTypes]]).
+     * Instead of repeating the documentation for each type, here is an overview of the functions which exists for each [[ValueType]]
+     * (replace Xxx with one of the value types).
+     *
+     * * addXxx(name, value) : Property
+     * &gt; Creates a new property with the given name and value, and adds it to this PropertySet.
+     * Returns the added property.
+     *
+     * * addXxxs(name: string, values:Xxx[]) : Property[]
+     * &gt; Creates new properties with the given name and values, and adds them to this PropertySet.
+     * Returns an array of the added properties.
+     *
+     * * setXxx(name: string, value: Xxx, index: number) : Property
+     * &gt; On the root PropertySet: In this PropertySet; creates a new property with given name, index and value or updates existing with given value.
+     * Returns the created or updated property.
+     *
+     * * setXxxByPath(path: any, value: Xxx) : Property
+     * &gt; Creates a new property at given path (relative to this PropertySet) with given value or updates existing with given value. path can either be a string or [[PropertyPath]].
+     * Returns the created or updated property.
+     *
+     * * getXxx(identifier: string, index: number): Xxx
+     * &gt; Gets a property value of type Xxx with given identifier and optional index. If index is given, then the identifier is understood
+     *  as the name of the property and it will be retrieved from this PropertySet. If the index is omitted the identifier is understood
+     *  as a relative path (to this PropertySet) of the property.
+     *
+     * * getXxxs(name: string): Xxx[]
+     * &gt; Gets property values of type Xxx with the given name. Returns an array of type Xxx.
+     *
+     *
+     * @see [[PropertyArray]]
+     * @see [[Property]]
+     */
+    export class PropertySet implements api.Equitable {
+&nbsp;
+        public static debug: boolean = false;
+&nbsp;
+        private tree: PropertyTree = null;
+&nbsp;
+        /**
+         * The property that this PropertySet is the value of.
+         * Required to be set, except for the root PropertySet of a PropertyTree where it will always be null.
+         */
+        private property: Property = null;
+&nbsp;
+        private propertyArrayByName: {[s: string]: PropertyArray;} = {};
+&nbsp;
+        /**
+         * If true, do not add property if it's value is null.
+         */
+        private skipNulls: boolean = false;
+&nbsp;
+        private changedListeners: {(event: PropertyEvent): void}[] = [];
+&nbsp;
+        private propertyAddedListeners: {(event: PropertyAddedEvent): void}[] = [];
+&nbsp;
+        private propertyRemovedListeners: {(event: PropertyRemovedEvent): void}[] = [];
+&nbsp;
+        private propertyIndexChangedListeners: {(event: PropertyIndexChangedEvent): void}[] = [];
+&nbsp;
+        private propertyValueChangedListeners: {(event: PropertyValueChangedEvent): void}[] = [];
+&nbsp;
+        private propertyAddedEventHandler: (event: PropertyAddedEvent) =&gt; void;
+&nbsp;
+        private propertyRemovedEventHandler: (event: PropertyRemovedEvent) =&gt; void;
+&nbsp;
+        private propertyIndexChangedEventHandler: (event: PropertyIndexChangedEvent) =&gt; void;
+&nbsp;
+        private propertyValueChangedEventHandler: (event: PropertyValueChangedEvent) =&gt; void;
+&nbsp;
+        constructor(tree?: PropertyTree) {
+            this.tree = tree;
+&nbsp;
+            this.propertyAddedEventHandler = (event) =&gt; {
+                this.forwardPropertyAddedEvent(event);
+            };
+            this.propertyRemovedEventHandler = (event) =&gt; {
+                this.forwardPropertyRemovedEvent(event);
+            };
+            this.propertyIndexChangedEventHandler = <span class="fstat-no" title="function not covered" >(event)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                this.forwardPropertyIndexChangedEvent(event);</span>
+            };
+            this.propertyValueChangedEventHandler = (event) =&gt; {
+                this.forwardPropertyValueChangedEvent(event);
+            };
+        }
+&nbsp;
+        /**
+         * Application protected. Not to be used outside module.
+         */
+        setContainerProperty(value: Property) {
+            this.property = value;
+        }
+&nbsp;
+        /**
+         * Whether this PropertySet is attached to a [[PropertyTree]] or not.
+         * @returns {boolean} true if it's not attached to a [[PropertyTree]].
+         */
+        isDetached(): boolean {
+            return !this.tree;
+        }
+&nbsp;
+        getTree(): PropertyTree {
+            return this.tree;
+        }
+&nbsp;
+        /**
+         * Application protected. Not to be used outside module.
+         */
+<span class="fstat-no" title="function not covered" >        attachToTree(tree: PropertyTree)</span> {
+<span class="cstat-no" title="statement not covered" >            this.tree = tree;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (property.hasNonNullValue() &amp;&amp; property.getType().equals(ValueTypes.DATA)) {</span>
+<span class="cstat-no" title="statement not covered" >                    property.getPropertySet().attachToTree(tree);</span>
+                }
+            });
+        }
+&nbsp;
+        addPropertyArray(array: PropertyArray) {
+            api.util.assertState(this.tree === array.getTree(),
+                'Added PropertyArray must be attached to the same PropertyTree as this PropertySet');
+            api.util.assert(this === array.getParent(), 'propertyArray must have this PropertySet as parent');
+            this.propertyArrayByName[array.getName()] = array;
+&nbsp;
+            this.registerPropertyArrayListeners(array);
+        }
+&nbsp;
+        addProperty(name: string, value: Value): Property {
+&nbsp;
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (this.skipNulls &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >value.isNull())</span> {
+<span class="cstat-no" title="statement not covered" >                this.skipNulls = false;</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+&nbsp;
+            let array = this.getOrCreatePropertyArray(name, value.getType());
+            let property = array.add(value);
+            return property;
+        }
+&nbsp;
+        setPropertyByPath(path: any, value: Value): Property {
+            if (api.ObjectHelper.iFrameSafeInstanceOf(path, PropertyPath)) {
+                return this.doSetProperty(&lt;PropertyPath&gt;path, value);
+            } else {
+                return this.doSetProperty(PropertyPath.fromString(path.toString()), value);
+            }
+        }
+&nbsp;
+        private doSetProperty(path: PropertyPath, value: Value): Property {
+            let firstPathElement = path.getFirstElement();
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (path.elementCount() &gt; 1) {
+<span class="cstat-no" title="statement not covered" >                let propertySet = this.getOrCreateSet(firstPathElement.getName(), firstPathElement.getIndex());</span>
+<span class="cstat-no" title="statement not covered" >                return propertySet.setPropertyByPath(path.removeFirstPathElement(), value);</span>
+            } else {
+                return this.setProperty(firstPathElement.getName(), firstPathElement.getIndex(), value);
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getOrCreateSet(name: string, index: number)</span>: PropertySet {
+<span class="cstat-no" title="statement not covered" >            let existingProperty = this.getProperty(name, index);</span>
+<span class="cstat-no" title="statement not covered" >            if (!existingProperty) {</span>
+<span class="cstat-no" title="statement not covered" >                let newSet = this.tree ? new PropertySet(this.tree) : new PropertySet();</span>
+<span class="cstat-no" title="statement not covered" >                this.setProperty(name, index, new Value(newSet, ValueTypes.DATA));</span>
+<span class="cstat-no" title="statement not covered" >                return newSet;</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                return existingProperty.getPropertySet();</span>
+            }
+        }
+&nbsp;
+        setProperty(name: string, index: number, value: Value): Property {
+&nbsp;
+            let array = this.getOrCreatePropertyArray(name, value.getType());
+            return array.set(index, value);
+        }
+&nbsp;
+        private getOrCreatePropertyArray(name: string, type: ValueType): PropertyArray {
+&nbsp;
+            let array = this.propertyArrayByName[name];
+            if (!array) {
+                array = PropertyArray.create().setParent(this).setName(name).setType(type).build();
+                this.propertyArrayByName[name] = array;
+                this.registerPropertyArrayListeners(array);
+            }
+            return array;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        removeProperties(properties: Property[])</span> {
+<span class="cstat-no" title="statement not covered" >            properties.forEach(<span class="fstat-no" title="function not covered" >(property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.removeProperty(property.getName(), property.getIndex());</span>
+            });
+        }
+&nbsp;
+        removeProperty(name: string, index: number) {
+            let array: PropertyArray = this.propertyArrayByName[name];
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (array) {
+                array.remove(index);
+            }
+            if (!array || array.isEmpty()) {
+                delete this.propertyArrayByName[name];
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isEmpty(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            let isEmpty: boolean = true;</span>
+            // tslint:disable-next-line:forin
+<span class="cstat-no" title="statement not covered" >            for (const name in this.propertyArrayByName) {</span>
+<span class="cstat-no" title="statement not covered" >                if (!isEmpty) {</span>
+<span class="cstat-no" title="statement not covered" >                    return isEmpty;</span>
+                }
+<span class="cstat-no" title="statement not covered" >                if (this.propertyArrayByName.hasOwnProperty(name)) {</span>
+<span class="cstat-no" title="statement not covered" >                    let propertyArray: PropertyArray = this.propertyArrayByName[name];</span>
+<span class="cstat-no" title="statement not covered" >                    propertyArray.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                        if (!isEmpty) {</span>
+<span class="cstat-no" title="statement not covered" >                            return;</span>
+                        }
+<span class="cstat-no" title="statement not covered" >                        let type = property.getType();</span>
+<span class="cstat-no" title="statement not covered" >                        if (property.hasNullValue()) {</span>
+<span class="cstat-no" title="statement not covered" >                            return;</span>
+                        }
+<span class="cstat-no" title="statement not covered" >                        if (type.equals(api.data.ValueTypes.STRING) &amp;&amp; property.getValue().getString() === '') {</span>
+<span class="cstat-no" title="statement not covered" >                            return;</span>
+                        }
+<span class="cstat-no" title="statement not covered" >                        if (type.equals(api.data.ValueTypes.BOOLEAN) &amp;&amp; property.getValue().getBoolean() === false) {</span>
+<span class="cstat-no" title="statement not covered" >                            return;</span>
+                        }
+<span class="cstat-no" title="statement not covered" >                        if (type.equals(api.data.ValueTypes.DATA) &amp;&amp; !property.getValue().getPropertySet().isEmpty()) {</span>
+<span class="cstat-no" title="statement not covered" >                            return;</span>
+                        }
+<span class="cstat-no" title="statement not covered" >                        isEmpty = false;</span>
+                    });
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            return isEmpty;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        removeEmptyValues() {</span>
+<span class="cstat-no" title="statement not covered" >            this.doRemoveEmptyValues(this);</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private doRemoveEmptyValues(propertySet: api.data.PropertySet)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            let toRemove = [];</span>
+<span class="cstat-no" title="statement not covered" >            propertySet.forEach(<span class="fstat-no" title="function not covered" >(property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let type = property.getType();</span>
+<span class="cstat-no" title="statement not covered" >                if (property.hasNullValue()) {</span>
+<span class="cstat-no" title="statement not covered" >                    toRemove.push(property);</span>
+                } else <span class="cstat-no" title="statement not covered" >if (type.equals(api.data.ValueTypes.STRING) &amp;&amp; (property.getValue().getString() === '')) {</span>
+<span class="cstat-no" title="statement not covered" >                    toRemove.push(property);</span>
+                } else <span class="cstat-no" title="statement not covered" >if (type.equals(api.data.ValueTypes.DATA)) {</span>
+<span class="cstat-no" title="statement not covered" >                    let propertySetValue = property.getValue().getPropertySet();</span>
+<span class="cstat-no" title="statement not covered" >                    this.doRemoveEmptyValues(propertySetValue);</span>
+<span class="cstat-no" title="statement not covered" >                    if (propertySetValue.isEmpty()) {</span>
+<span class="cstat-no" title="statement not covered" >                        toRemove.push(property);</span>
+                    }
+                } else <span class="cstat-no" title="statement not covered" >if (type.equals(api.data.ValueTypes.BOOLEAN) &amp;&amp; (property.getValue().getBoolean() === false)) {</span>
+<span class="cstat-no" title="statement not covered" >                    toRemove.push(property);</span>
+                }
+            });
+<span class="cstat-no" title="statement not covered" >            this.removeProperties(toRemove);</span>
+<span class="cstat-no" title="statement not covered" >            this.removeEmptyArrays(propertySet);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private removeEmptyArrays(propertySet: PropertySet)</span> {
+<span class="cstat-no" title="statement not covered" >            api.ObjectHelper.objectPropertyIterator(propertySet.propertyArrayByName, <span class="fstat-no" title="function not covered" >(name: string, propertyArray: PropertyArray)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (propertyArray.isEmpty()) {</span>
+<span class="cstat-no" title="statement not covered" >                    delete propertySet.propertyArrayByName[name];</span>
+                }
+            });
+        }
+&nbsp;
+        /**
+         * Returns the number of child properties in this PropertySet (grand children and so on is not counted).
+         */
+        getSize(): number {
+            let size = 0;
+            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) =&gt; {
+                size += propertyArray.getSize();
+            });
+&nbsp;
+            return size;
+        }
+&nbsp;
+        /**
+         * Counts the number of child properties having the given name (grand children and so on is not counted).
+         */
+<span class="fstat-no" title="function not covered" >        countProperties(name: string)</span>: number {
+<span class="cstat-no" title="statement not covered" >            let array = this.propertyArrayByName[name];</span>
+<span class="cstat-no" title="statement not covered" >            if (!array) {</span>
+<span class="cstat-no" title="statement not covered" >                return 0;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return array.getSize();</span>
+        }
+&nbsp;
+        /**
+         * @returns {PropertyPath} The [[PropertyPath]] that this PropertySet is a value of.
+         */
+        getPropertyPath(): PropertyPath {
+            return !this.property ? PropertyPath.ROOT : this.property.getPath();
+        }
+&nbsp;
+        /**
+         * * getProperty() - If no arguments are given then this PropertySet's Property is returned.
+         * * getProperty(name: string, index: number) - If name and index are given then property with that name and index is returned.
+         * * getProperty(path: string) - If a path as string is given then property with that path is returned.
+         * * getProperty(path: PropertyPath ) - If a path as [[PropertyPath]] is given then property with that path is returned.
+         *
+         * @param identifier
+         * @param index
+         * @returns {Property}
+         */
+        getProperty(identifier?: any, index?: number): Property {
+&nbsp;
+            if (identifier == null &amp;&amp; index == null) {
+                return this.property;
+            } else if (index != null) {
+                Property.checkName(identifier);
+                let array = this.propertyArrayByName[identifier];
+                if (!array) {
+                    return null;
+                }
+                return array.get(index);
+            } else {
+                return this.getPropertyByPath(identifier);
+            }
+        }
+&nbsp;
+        private getPropertyByPath(path: any): Property {
+&nbsp;
+            if (api.ObjectHelper.iFrameSafeInstanceOf(path, PropertyPath)) {
+                return this.doGetPropertyByPath(&lt;PropertyPath&gt;path);
+            } else {
+                return this.doGetPropertyByPath(PropertyPath.fromString(path.toString()));
+            }
+        }
+&nbsp;
+        private doGetPropertyByPath(path: PropertyPath): Property {
+&nbsp;
+            let firstElement = path.getFirstElement();
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (path.elementCount() &gt; 1) {
+<span class="cstat-no" title="statement not covered" >                let property = this.getProperty(firstElement.getName(), firstElement.getIndex());</span>
+<span class="cstat-no" title="statement not covered" >                if (!property) {</span>
+<span class="cstat-no" title="statement not covered" >                    return null;</span>
+                }
+<span class="cstat-no" title="statement not covered" >                let propertySet = property.getPropertySet();</span>
+<span class="cstat-no" title="statement not covered" >                return propertySet.getPropertyByPath(path.removeFirstPathElement());</span>
+            } else {
+                return this.getProperty(firstElement.getName(), firstElement.getIndex());
+            }
+        }
+&nbsp;
+        getPropertyArray(name: string): PropertyArray {
+            return this.propertyArrayByName[name];
+        }
+&nbsp;
+        /**
+         * Calls the given callback for each property in the set.
+         */
+        forEach(callback: (property: Property, index?: number) =&gt; void) {
+            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) =&gt; {
+                propertyArray.forEach((property: Property, index: number) =&gt; {
+                    callback(property, index);
+                });
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        reset() {</span>
+<span class="cstat-no" title="statement not covered" >            this.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                property.reset();</span>
+            });
+        }
+&nbsp;
+        /**
+         * Calls the given callback for each property with the given name.
+         */
+<span class="fstat-no" title="function not covered" >        forEachProperty(propertyName: string, callback: (property: Property, index?: number) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(propertyName);</span>
+<span class="cstat-no" title="statement not covered" >            if (array) {</span>
+<span class="cstat-no" title="statement not covered" >                array.forEach(callback);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public isNotNull(identifier: any, index?: number)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            let property = this.getProperty(identifier, index);</span>
+<span class="cstat-no" title="statement not covered" >            if (property == null) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return !property.hasNullValue();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public isNull(identifier: any, index?: number)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            return !this.isNotNull(identifier, index);</span>
+        }
+&nbsp;
+        public equals(o: Equitable): boolean {
+&nbsp;
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PropertySet)) {
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+            let other = &lt;PropertySet&gt;o;
+&nbsp;
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (!api.ObjectHelper.mapEquals(this.propertyArrayByName, other.propertyArrayByName)) {
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+            return true;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public diff(other: PropertySet)</span>: PropertyTreeDiff {
+<span class="cstat-no" title="statement not covered" >            let checkedProperties: String[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let diff = this.doDiff(other, checkedProperties);</span>
+            // run inverse diff to find properties, which were added to the original set
+<span class="cstat-no" title="statement not covered" >            let inverseDiff = other.doDiff(this, checkedProperties);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            diff.added = diff.added.concat(inverseDiff.removed);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return diff;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private doDiff(other: PropertySet, <span class="cstat-no" title="statement not covered" >checkedProperties: String[] = [])</span></span>: PropertyTreeDiff {
+<span class="cstat-no" title="statement not covered" >            let added = [];</span>
+<span class="cstat-no" title="statement not covered" >            let removed = [];</span>
+<span class="cstat-no" title="statement not covered" >            let modified = [];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.forEach(<span class="fstat-no" title="function not covered" >(property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (checkedProperties.indexOf(property.getPath().toString()) === -1) {</span>
+<span class="cstat-no" title="statement not covered" >                    let type = property.getType();</span>
+<span class="cstat-no" title="statement not covered" >                    let otherProperty = other.getProperty(property.getName(), property.getIndex());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    if (!otherProperty) {</span>
+<span class="cstat-no" title="statement not covered" >                        removed.push(property);</span>
+                    } else <span class="cstat-no" title="statement not covered" >if (!type.equals(api.data.ValueTypes.DATA)) {</span>
+<span class="cstat-no" title="statement not covered" >                        if (!property.equals(otherProperty)) {</span>
+<span class="cstat-no" title="statement not covered" >                            modified.push({</span>
+                                oldValue: property,
+                                newValue: otherProperty
+                            });
+                        }
+<span class="cstat-no" title="statement not covered" >                        checkedProperties.push(property.getPath().toString());</span>
+                    } else {
+<span class="cstat-no" title="statement not covered" >                        let propertySetValue = property.getValue().getPropertySet();</span>
+<span class="cstat-no" title="statement not covered" >                        let diff = propertySetValue.doDiff(otherProperty.getValue().getPropertySet(), checkedProperties);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                        added = added.concat(diff.added);</span>
+<span class="cstat-no" title="statement not covered" >                        removed = removed.concat(diff.removed);</span>
+<span class="cstat-no" title="statement not covered" >                        modified = modified.concat(diff.modified);</span>
+                    }
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return {</span>
+                added: added,
+                removed: removed,
+                modified: modified
+            };
+        }
+&nbsp;
+        /**
+         * Copies this PropertySet (deep copy).
+         * @param destinationTree The [[PropertyTree]] that the copied PropertySet will be attached to.
+         * @returns {api.data.PropertySet}
+         */
+        copy(destinationTree: PropertyTree): PropertySet {
+&nbsp;
+            let copy = new PropertySet(destinationTree);
+&nbsp;
+            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, <span class="fstat-no" title="function not covered" >(name: string, sourcePropertyArray: PropertyArray)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                let propertyArrayCopy = sourcePropertyArray.copy(copy);</span>
+<span class="cstat-no" title="statement not covered" >                copy.addPropertyArray(propertyArrayCopy);</span>
+            });
+&nbsp;
+            return copy;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toJson(): PropertyArrayJson[] {</span>
+<span class="cstat-no" title="statement not covered" >            let jsonArray: PropertyArrayJson[] = [];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, <span class="fstat-no" title="function not covered" >(name: string, propertyArray: PropertyArray)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                jsonArray.push(propertyArray.toJson());</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return jsonArray;</span>
+        }
+&nbsp;
+        private registerPropertyArrayListeners(array: PropertyArray) {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (PropertySet.debug) {
+<span class="cstat-no" title="statement not covered" >                console.debug('PropertySet[' + this.getPropertyPath().toString() + '].registerPropertyArrayListeners: ' + array.getName());</span>
+            }
+&nbsp;
+            array.onPropertyAdded(this.propertyAddedEventHandler);
+            array.onPropertyRemoved(this.propertyRemovedEventHandler);
+            array.onPropertyIndexChanged(this.propertyIndexChangedEventHandler);
+            array.onPropertyValueChanged(this.propertyValueChangedEventHandler);
+        }
+&nbsp;
+        // Currently not used, because we do not remove arrays
+<span class="fstat-no" title="function not covered" >        private unregisterPropertyArrayListeners(array: PropertyArray)</span> {
+<span class="cstat-no" title="statement not covered" >            array.unPropertyAdded(this.propertyAddedEventHandler);</span>
+<span class="cstat-no" title="statement not covered" >            array.unPropertyRemoved(this.propertyRemovedEventHandler);</span>
+<span class="cstat-no" title="statement not covered" >            array.unPropertyIndexChanged(this.propertyIndexChangedEventHandler);</span>
+<span class="cstat-no" title="statement not covered" >            array.unPropertyValueChanged(this.propertyValueChangedEventHandler);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onChanged(listener: {(event: PropertyEvent): void;})</span> {
+<span class="cstat-no" title="statement not covered" >            this.changedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unChanged(listener: {(event: PropertyEvent): void;})</span> {
+<span class="cstat-no" title="statement not covered" >            this.changedListeners = this.changedListeners.filter(<span class="fstat-no" title="function not covered" >(curr)</span> =&gt; <span class="cstat-no" title="statement not covered" >(curr !== listener))</span>;</span>
+        }
+&nbsp;
+        private notifyChangedListeners(event: PropertyEvent) {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (PropertySet.debug) {
+<span class="cstat-no" title="statement not covered" >                console.debug('PropertySet[' + this.getPropertyPath().toString() + '].notifyChangedListeners: ' +</span>
+                              event.toString());
+            }
+            this.changedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener)</span> =&gt; <span class="cstat-no" title="statement not covered" >listener(event))</span>;
+        }
+&nbsp;
+        /**
+         * Register a listener-function to be called when a [[Property]] has been added to this PropertySet or any below.
+         * @param listener
+         * @see [[PropertyAddedEvent]]
+         */
+        onPropertyAdded(listener: {(event: PropertyAddedEvent): void;}) {
+            this.propertyAddedListeners.push(listener);
+        }
+&nbsp;
+        /**
+         * Deregister a listener-function.
+         * @param listener
+         * @see [[PropertyAddedEvent]]
+         */
+        unPropertyAdded(listener: {(event: PropertyAddedEvent): void;}) {
+            this.propertyAddedListeners = this.propertyAddedListeners.filter((curr) =&gt; (curr !== listener));
+        }
+&nbsp;
+        private forwardPropertyAddedEvent(event: PropertyAddedEvent) {
+            this.propertyAddedListeners.forEach((listener) =&gt; listener(event));
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (PropertySet.debug) {
+<span class="cstat-no" title="statement not covered" >                console.debug('PropertySet[' + this.getPropertyPath().toString() + '].forwardPropertyAddedEvent: ' +</span>
+                              event.toString());
+            }
+            this.notifyChangedListeners(event);
+        }
+&nbsp;
+        /**
+         * Register a listener-function to be called when a [[Property]] has been removed from this PropertySet or any below.
+         * @param listener
+         * @see [[PropertyRemovedEvent]]
+         */
+        onPropertyRemoved(listener: {(event: PropertyRemovedEvent): void;}) {
+            this.propertyRemovedListeners.push(listener);
+        }
+&nbsp;
+        /**
+         * Deregister a listener-function.
+         * @param listener
+         * @see [[PropertyRemovedEvent]]
+         */
+        unPropertyRemoved(listener: {(event: PropertyRemovedEvent): void;}) {
+            this.propertyRemovedListeners = this.propertyRemovedListeners.filter((curr) =&gt; (curr !== listener));
+        }
+&nbsp;
+        private forwardPropertyRemovedEvent(event: PropertyRemovedEvent) {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (PropertySet.debug) {
+<span class="cstat-no" title="statement not covered" >                console.debug('PropertySet[' + this.getPropertyPath().toString() + '].forwardPropertyRemovedEvent: ' +</span>
+                              event.toString());
+            }
+            this.propertyRemovedListeners.forEach((listener) =&gt; listener(event));
+            this.notifyChangedListeners(event);
+        }
+&nbsp;
+        /**
+         * Register a listener-function to be called when the [[Property.index]] in this this PropertySet or any below has changed.
+         * @param listener
+         * @see [[PropertyRemovedEvent]]
+         */
+        onPropertyIndexChanged(listener: {(event: PropertyIndexChangedEvent): void;}) {
+            this.propertyIndexChangedListeners.push(listener);
+        }
+&nbsp;
+        /**
+         * Deregister a listener-function.
+         * @param listener
+         * @see [[PropertyIndexChangedEvent]]
+         */
+        unPropertyIndexChanged(listener: {(event: PropertyIndexChangedEvent): void;}) {
+            this.propertyIndexChangedListeners = this.propertyIndexChangedListeners.filter((curr) =&gt; (curr !== listener));
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private forwardPropertyIndexChangedEvent(event: PropertyIndexChangedEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            if (PropertySet.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.debug('PropertySet[' + this.getPropertyPath().toString() + '].forwardPropertyIndexChangedEvent: ' +</span>
+                              event.toString());
+            }
+<span class="cstat-no" title="statement not covered" >            this.propertyIndexChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener)</span> =&gt; <span class="cstat-no" title="statement not covered" >listener(event))</span>;</span>
+<span class="cstat-no" title="statement not covered" >            this.notifyChangedListeners(event);</span>
+        }
+&nbsp;
+        /**
+         * Register a listener-function to be called when the [[Property.value]] in this this PropertySet or any below has changed.
+         * @param listener
+         * @see [[PropertyValueChangedEvent]]
+         */
+        onPropertyValueChanged(listener: {(event: PropertyValueChangedEvent): void;}) {
+            this.propertyValueChangedListeners.push(listener);
+        }
+&nbsp;
+        /**
+         * Deregister a listener-function.
+         * @param listener
+         * @see [[PropertyValueChangedEvent]]
+         */
+        unPropertyValueChanged(listener: {(event: PropertyValueChangedEvent): void;}) {
+            this.propertyValueChangedListeners = this.propertyValueChangedListeners.filter((curr) =&gt; (curr !== listener));
+        }
+&nbsp;
+        private forwardPropertyValueChangedEvent(event: PropertyValueChangedEvent) {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (PropertySet.debug) {
+<span class="cstat-no" title="statement not covered" >                console.debug('PropertySet[' + this.getPropertyPath().toString() + '].forwardPropertyValueChangedEvent: ' +</span>
+                              event.toString());
+            }
+            this.propertyValueChangedListeners.forEach((listener) =&gt; listener(event));
+            this.notifyChangedListeners(event);
+        }
+&nbsp;
+        // PropertySet methods
+&nbsp;
+        /**
+         * Creates a new PropertySet attached to the same [[PropertyTree]] as this PropertySet.
+         * The PropertySet is not added to the tree.
+         * @returns {PropertySet}
+         */
+        newSet(): PropertySet {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (!this.tree) {
+<span class="cstat-no" title="statement not covered" >                throw new Error('The PropertySet must be attached to a PropertyTree before this method can be invoked. Use PropertySet constructor with no arguments instead.');</span>
+            }
+            return this.tree.newPropertySet();
+        }
+&nbsp;
+        /**
+         * Creates
+         * @param name
+         * @param value optional
+         * @returns {PropertySet}
+         */
+        addPropertySet(name: string, value?: PropertySet): PropertySet {
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (!value) {
+                <span class="missing-if-branch" title="if path not taken" >I</span>if (!this.tree) {
+<span class="cstat-no" title="statement not covered" >                    throw new Error('The PropertySet must be attached to a PropertyTree before this method can be invoked. Use PropertySet constructor with no arguments instead.');</span>
+                }
+                value = this.tree.newPropertySet();
+            }
+            this.addProperty(name, new Value(value, ValueTypes.DATA));
+            return value;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setPropertySet(name: string, index: number, value: PropertySet)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setProperty(name, index, new Value(value, ValueTypes.DATA));</span>
+        }
+&nbsp;
+        setPropertySetByPath(path: any, value: PropertySet): Property {
+            return this.setPropertyByPath(path, new Value(value, ValueTypes.DATA));
+        }
+&nbsp;
+        getPropertySet(identifier: any, index?: number): PropertySet {
+            let property = this.getProperty(identifier, index);
+            return !property ? null : property.getPropertySet();
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPropertySets(name: string)</span>: PropertySet[] {
+<span class="cstat-no" title="statement not covered" >            let values: PropertySet[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getPropertySet());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // string methods
+&nbsp;
+        addString(name: string, value: string): Property {
+            return this.addProperty(name, new Value(value, ValueTypes.STRING));
+        }
+&nbsp;
+        addStrings(name: string, values: string[]): Property[] {
+&nbsp;
+            let properties: Property[] = [];
+            values.forEach((value: string) =&gt; {
+                properties.push(this.addString(name, value));
+            });
+            return properties;
+        }
+&nbsp;
+        setString(name: string, index: number, value: string): Property {
+            return this.setProperty(name, index, new Value(value, ValueTypes.STRING));
+        }
+&nbsp;
+        setStringByPath(path: any, value: string): Property {
+            return this.setPropertyByPath(path, new Value(value, ValueTypes.STRING));
+        }
+&nbsp;
+        getString(identifier: string, index?: number): string {
+            let property = this.getProperty(identifier, index);
+            return !property ? null : property.getString();
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getStrings(name: string)</span>: string[] {
+<span class="cstat-no" title="statement not covered" >            let values: string[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getString());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // long methods
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addLong(name: string, value: number)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.addProperty(name, new Value(value, ValueTypes.LONG));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addLongs(name: string, values: number[])</span>: Property[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let properties: Property[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            values.forEach(<span class="fstat-no" title="function not covered" >(value: number)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                properties.push(this.addLong(name, value));</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return properties;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setLong(name: string, index: number, value: number)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setProperty(name, index, new Value(value, ValueTypes.LONG));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setLongByPath(path: any, value: number)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setPropertyByPath(path, new Value(value, ValueTypes.LONG));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getLong(identifier: string, index?: number)</span>: number {
+<span class="cstat-no" title="statement not covered" >            let property = this.getProperty(identifier, index);</span>
+<span class="cstat-no" title="statement not covered" >            return !property ? null : property.getLong();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getLongs(name: string)</span>: number[] {
+<span class="cstat-no" title="statement not covered" >            let values: number[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getLong());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // double methods
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addDouble(name: string, value: number)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.addProperty(name, new Value(value, ValueTypes.DOUBLE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addDoubles(name: string, values: number[])</span>: Property[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let properties: Property[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            values.forEach(<span class="fstat-no" title="function not covered" >(value: number)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                properties.push(this.addDouble(name, value));</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return properties;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setDouble(name: string, index: number, value: number)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setProperty(name, index, new Value(value, ValueTypes.DOUBLE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setDoubleByPath(path: any, value: number)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setPropertyByPath(path, new Value(value, ValueTypes.DOUBLE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getDouble(identifier: string, index?: number)</span>: number {
+<span class="cstat-no" title="statement not covered" >            let property = this.getProperty(identifier, index);</span>
+<span class="cstat-no" title="statement not covered" >            return !property ? null : property.getDouble();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getDoubles(name: string)</span>: number[] {
+<span class="cstat-no" title="statement not covered" >            let values: number[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getDouble());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // boolean methods
+&nbsp;
+        addBoolean(name: string, value: boolean): Property {
+            return this.addProperty(name, new Value(value, ValueTypes.BOOLEAN));
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addBooleans(name: string, values: boolean[])</span>: Property[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let properties: Property[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            values.forEach(<span class="fstat-no" title="function not covered" >(value: boolean)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                properties.push(this.addBoolean(name, value));</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return properties;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setBoolean(name: string, index: number, value: boolean)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setProperty(name, index, new Value(value, ValueTypes.BOOLEAN));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setBooleanByPath(path: any, value: boolean)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setPropertyByPath(path, new Value(value, ValueTypes.BOOLEAN));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getBoolean(identifier: string, index?: number)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            let property = this.getProperty(identifier, index);</span>
+<span class="cstat-no" title="statement not covered" >            return !property ? null : property.getBoolean();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getBooleans(name: string)</span>: boolean[] {
+<span class="cstat-no" title="statement not covered" >            let values: boolean[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getBoolean());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // reference methods
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addReference(name: string, value: Reference)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.addProperty(name, new Value(value, ValueTypes.REFERENCE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addReferences(name: string, values: Reference[])</span>: Property[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let properties: Property[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            values.forEach(<span class="fstat-no" title="function not covered" >(value: Reference)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                properties.push(this.addReference(name, value));</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return properties;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setReference(name: string, index: number, value: Reference)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setProperty(name, index, new Value(value, ValueTypes.REFERENCE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setReferenceByPath(path: any, value: Reference)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setPropertyByPath(path, new Value(value, ValueTypes.REFERENCE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getReference(identifier: string, index?: number)</span>: Reference {
+<span class="cstat-no" title="statement not covered" >            let property = this.getProperty(identifier, index);</span>
+<span class="cstat-no" title="statement not covered" >            return !property ? null : property.getReference();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getReferences(name: string)</span>: Reference[] {
+<span class="cstat-no" title="statement not covered" >            let values: Reference[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getReference());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // binary reference methods
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addBinaryReference(name: string, value: BinaryReference)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.addProperty(name, new Value(value, ValueTypes.BINARY_REFERENCE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addBinaryReferences(name: string, values: BinaryReference[])</span>: Property[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let properties: Property[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            values.forEach(<span class="fstat-no" title="function not covered" >(value: BinaryReference)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                properties.push(this.addBinaryReference(name, value));</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return properties;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setBinaryReference(name: string, index: number, value: BinaryReference)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setProperty(name, index, new Value(value, ValueTypes.BINARY_REFERENCE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setBinaryReferenceByPath(path: any, value: BinaryReference)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setPropertyByPath(path, new Value(value, ValueTypes.BINARY_REFERENCE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getBinaryReference(identifier: string, index?: number)</span>: BinaryReference {
+<span class="cstat-no" title="statement not covered" >            let property = this.getProperty(identifier, index);</span>
+<span class="cstat-no" title="statement not covered" >            return !property ? null : property.getBinaryReference();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getBinaryReferences(name: string)</span>: BinaryReference[] {
+<span class="cstat-no" title="statement not covered" >            let values: BinaryReference[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getBinaryReference());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // geo point methods
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addGeoPoint(name: string, value: GeoPoint)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.addProperty(name, new Value(value, ValueTypes.GEO_POINT));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addGeoPoints(name: string, values: GeoPoint[])</span>: Property[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let properties: Property[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            values.forEach(<span class="fstat-no" title="function not covered" >(value: GeoPoint)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                properties.push(this.addGeoPoint(name, value));</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return properties;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setGeoPoint(name: string, index: number, value: GeoPoint)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setProperty(name, index, new Value(value, ValueTypes.GEO_POINT));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setGeoPointByPath(path: any, value: GeoPoint)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setPropertyByPath(path, new Value(value, ValueTypes.GEO_POINT));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getGeoPoint(identifier: string, index?: number)</span>: GeoPoint {
+<span class="cstat-no" title="statement not covered" >            let property = this.getProperty(identifier, index);</span>
+<span class="cstat-no" title="statement not covered" >            return !property ? null : property.getGeoPoint();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getGeoPoints(name: string)</span>: GeoPoint[] {
+<span class="cstat-no" title="statement not covered" >            let values: GeoPoint[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getGeoPoint());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // local date methods
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addLocalDate(name: string, value: api.util.LocalDate)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.addProperty(name, new Value(value, ValueTypes.LOCAL_DATE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addLocalDates(name: string, values: api.util.LocalDate[])</span>: Property[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let properties: Property[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            values.forEach(<span class="fstat-no" title="function not covered" >(value: api.util.LocalDate)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                properties.push(this.addLocalDate(name, value));</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return properties;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setLocalDate(name: string, index: number, value: api.util.LocalDate)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setProperty(name, index, new Value(value, ValueTypes.LOCAL_DATE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setLocalDateByPath(path: any, value: api.util.LocalDate)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setPropertyByPath(path, new Value(value, ValueTypes.LOCAL_DATE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getLocalDate(identifier: string, index?: number)</span>: api.util.LocalDate {
+<span class="cstat-no" title="statement not covered" >            let property = this.getProperty(identifier, index);</span>
+<span class="cstat-no" title="statement not covered" >            return !property ? null : property.getLocalDate();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getLocalDates(name: string)</span>: api.util.LocalDate[] {
+<span class="cstat-no" title="statement not covered" >            let values: api.util.LocalDate[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getLocalDate());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // local date time methods
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addLocalDateTime(name: string, value: api.util.LocalDateTime)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.addProperty(name, new Value(value, ValueTypes.LOCAL_DATE_TIME));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addLocalDateTimes(name: string, values: api.util.LocalDateTime[])</span>: Property[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let properties: Property[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            values.forEach(<span class="fstat-no" title="function not covered" >(value: api.util.LocalDateTime)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                properties.push(this.addLocalDateTime(name, value));</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return properties;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setLocalDateTime(name: string, index: number, value: api.util.LocalDateTime)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setProperty(name, index, new Value(value, ValueTypes.LOCAL_DATE_TIME));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setLocalDateTimeByPath(path: any, value: api.util.LocalDateTime)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setPropertyByPath(path, new Value(value, ValueTypes.LOCAL_DATE_TIME));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getLocalDateTime(identifier: string, index?: number)</span>: api.util.LocalDateTime {
+<span class="cstat-no" title="statement not covered" >            let property = this.getProperty(identifier, index);</span>
+<span class="cstat-no" title="statement not covered" >            return !property ? null : property.getLocalDateTime();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getLocalDateTimes(name: string)</span>: api.util.LocalDateTime[] {
+<span class="cstat-no" title="statement not covered" >            let values: api.util.LocalDateTime[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getLocalDateTime());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // local time methods
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addLocalTime(name: string, value: LocalTime)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.addProperty(name, new Value(value, ValueTypes.LOCAL_TIME));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addLocalTimes(name: string, values: LocalTime[])</span>: Property[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let properties: Property[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            values.forEach(<span class="fstat-no" title="function not covered" >(value: LocalTime)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                properties.push(this.addLocalTime(name, value));</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return properties;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setLocalTime(name: string, index: number, value: LocalTime)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setProperty(name, index, new Value(value, ValueTypes.LOCAL_TIME));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setLocalTimeByPath(path: any, value: LocalTime)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setPropertyByPath(path, new Value(value, ValueTypes.LOCAL_TIME));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getLocalTime(identifier: string, index?: number)</span>: LocalTime {
+<span class="cstat-no" title="statement not covered" >            let property = this.getProperty(identifier, index);</span>
+<span class="cstat-no" title="statement not covered" >            return !property ? null : property.getLocalTime();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getLocalTimes(name: string)</span>: LocalTime[] {
+<span class="cstat-no" title="statement not covered" >            let values: LocalTime[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getLocalTime());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // date time methods
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addDateTime(name: string, value: api.util.DateTime)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.addProperty(name, new Value(value, ValueTypes.DATE_TIME));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addDateTimes(name: string, values: api.util.DateTime[])</span>: Property[] {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let properties: Property[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            values.forEach(<span class="fstat-no" title="function not covered" >(value: api.util.DateTime)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                properties.push(this.addDateTime(name, value));</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return properties;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setDateTime(name: string, index: number, value: api.util.DateTime)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setProperty(name, index, new Value(value, ValueTypes.DATE_TIME));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setDateTimeByPath(path: any, value: api.util.DateTime)</span>: Property {
+<span class="cstat-no" title="statement not covered" >            return this.setPropertyByPath(path, new Value(value, ValueTypes.DATE_TIME));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getDateTime(identifier: string, index?: number)</span>: api.util.DateTime {
+<span class="cstat-no" title="statement not covered" >            let property = this.getProperty(identifier, index);</span>
+<span class="cstat-no" title="statement not covered" >            return !property ? null : property.getDateTime();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getDateTimes(name: string)</span>: api.util.DateTime[] {
+<span class="cstat-no" title="statement not covered" >            let values: api.util.DateTime[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            let array = this.getPropertyArray(name);</span>
+<span class="cstat-no" title="statement not covered" >            array.forEach(<span class="fstat-no" title="function not covered" >(property: Property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                values.push(property.getDateTime());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return values;</span>
+        }
+&nbsp;
+        // TODO: Add methods for each type
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

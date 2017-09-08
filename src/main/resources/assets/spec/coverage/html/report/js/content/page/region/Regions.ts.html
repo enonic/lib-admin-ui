@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/page/region/Regions.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/content/page/region/</a> Regions.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">27.33% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>44/161</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">12.5% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/32</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">10% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/60</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25.32% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>39/154</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>page.<span class="branch-1 cbranch-no" title="branch not covered" ></span>region </span>{
+&nbsp;
+    export class Regions implements api.Equitable {
+&nbsp;
+        public static debug: boolean = false;
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >regionByName: {[s:string] : Region;} = {};</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >changedListeners: {(event: RegionsChangedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >componentPropertyChangedListeners: {(event: ComponentPropertyChangedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >regionChangedListeners: {(event: RegionChangedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >regionAddedListeners: {(event: RegionAddedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >regionRemovedListeners: {(event: RegionRemovedEvent):void}[] = [];</span>
+&nbsp;
+        private regionChangedEventHandler: (event: any) =&gt; void;
+&nbsp;
+        private componentPropertyChangedEventHandler: (event: any) =&gt; void;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(builder: RegionsBuilder)</span> {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.regionChangedEventHandler = <span class="fstat-no" title="function not covered" >(event)</span> =&gt; <span class="cstat-no" title="statement not covered" >this.notifyRegionChanged(event.getPath());</span></span>
+<span class="cstat-no" title="statement not covered" >            this.componentPropertyChangedEventHandler = <span class="fstat-no" title="function not covered" >(event)</span> =&gt; <span class="cstat-no" title="statement not covered" >this.forwardComponentPropertyChangedEvent(event);</span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            builder.regions.forEach(<span class="fstat-no" title="function not covered" >(region: Region)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.regionByName[region.getName()] != null) {</span>
+<span class="cstat-no" title="statement not covered" >                    throw new Error('Regions must be unique by name, duplicate found: ' + region.getName());</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.addRegion(region);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        mergeRegions(descriptorRegions: RegionDescriptor[], parent: LayoutComponent)</span>: Regions {
+<span class="cstat-no" title="statement not covered" >            return new LayoutRegionsMerger().merge(this, descriptorRegions, parent);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addRegion(region: Region)</span> {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.regionByName[region.getName()] = region;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.notifyRegionAdded(region.getPath());</span>
+<span class="cstat-no" title="statement not covered" >            this.registerRegionListeners(region);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private registerRegionListeners(region: Region)</span> {
+<span class="cstat-no" title="statement not covered" >            region.onChanged(this.regionChangedEventHandler);</span>
+<span class="cstat-no" title="statement not covered" >            region.onComponentPropertyChangedEvent(this.componentPropertyChangedEventHandler);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private unregisterRegionListeners(region: Region)</span> {
+<span class="cstat-no" title="statement not covered" >            region.unChanged(this.regionChangedEventHandler);</span>
+<span class="cstat-no" title="statement not covered" >            region.unComponentPropertyChangedEvent(this.componentPropertyChangedEventHandler);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        removeRegions(regions: Region[])</span> {
+<span class="cstat-no" title="statement not covered" >            regions.forEach(<span class="fstat-no" title="function not covered" >(region: Region)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                delete this.regionByName[region.getName()];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.notifyRegionRemoved(region.getPath());</span>
+<span class="cstat-no" title="statement not covered" >                this.unregisterRegionListeners(region);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getRegions(): Region[] {</span>
+<span class="cstat-no" title="statement not covered" >            let regions = [];</span>
+<span class="cstat-no" title="statement not covered" >            for (const name in this.regionByName) {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.regionByName.hasOwnProperty(name)) {</span>
+<span class="cstat-no" title="statement not covered" >                    regions.push(this.regionByName[name]);</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            return regions;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getRegionByName(name: string)</span>: Region {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this.regionByName[name];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getComponent(path: ComponentPath)</span>: Component {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let first: ComponentPathRegionAndComponent = path.getFirstLevel();</span>
+<span class="cstat-no" title="statement not covered" >            let region = this.getRegionByName(first.getRegionName());</span>
+<span class="cstat-no" title="statement not covered" >            let component = region.getComponentByIndex(first.getComponentIndex());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (path.numberOfLevels() === 1) {</span>
+<span class="cstat-no" title="statement not covered" >                return component;</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                if (!api.ObjectHelper.iFrameSafeInstanceOf(component, LayoutComponent)) {</span>
+<span class="cstat-no" title="statement not covered" >                    throw new Error('Expected component to be a LayoutComponent: ' + api.ClassHelper.getClassName(component));</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let layoutComponent = &lt;LayoutComponent&gt; component;</span>
+<span class="cstat-no" title="statement not covered" >                return layoutComponent.getComponent(path.removeFirstLevel());</span>
+            }
+        }
+&nbsp;
+        /**
+         * Keeps existing regions (including components) if they are listed in given regionDescriptors.
+         * Removes others and adds those missing.
+         * @param regionDescriptors
+         */
+<span class="fstat-no" title="function not covered" >        changeRegionsTo(regionDescriptors: RegionDescriptor[])</span> {
+&nbsp;
+            // Remove regions not existing in regionDescriptors
+<span class="cstat-no" title="statement not covered" >            let regionsToRemove: Region[] = this.getRegions().</span>
+                filter(<span class="fstat-no" title="function not covered" >(region: Region, index: number)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    return !regionDescriptors.</span>
+                        some(<span class="fstat-no" title="function not covered" >(regionDescriptor: RegionDescriptor)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                            return regionDescriptor.getName() === region.getName();</span>
+                        });
+                });
+<span class="cstat-no" title="statement not covered" >            this.removeRegions(regionsToRemove);</span>
+&nbsp;
+            // Add missing regions
+<span class="cstat-no" title="statement not covered" >            regionDescriptors.forEach(<span class="fstat-no" title="function not covered" >(regionDescriptor: RegionDescriptor)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let region = this.getRegionByName(regionDescriptor.getName());</span>
+<span class="cstat-no" title="statement not covered" >                if (!region) {</span>
+<span class="cstat-no" title="statement not covered" >                    region = Region.create().</span>
+                        setName(regionDescriptor.getName()).
+                        build();
+<span class="cstat-no" title="statement not covered" >                    this.addRegion(region);</span>
+                }
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public toJson(): RegionJson[] {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let regionJsons: RegionJson[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            this.getRegions().forEach(<span class="fstat-no" title="function not covered" >(region: Region)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                regionJsons.push(region.toJson());</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return regionJsons;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        equals(o: api.Equitable)</span>: boolean {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Regions)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let other = &lt;Regions&gt;o;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let thisRegions = this.getRegions();</span>
+<span class="cstat-no" title="statement not covered" >            let otherRegions = other.getRegions();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.arrayEquals(thisRegions, otherRegions)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return true;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        clone(): Regions {</span>
+<span class="cstat-no" title="statement not covered" >            return new RegionsBuilder(this).build();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onChanged(listener: (event: BaseRegionChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.changedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unChanged(listener: (event: BaseRegionChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.changedListeners =</span>
+            this.changedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: BaseRegionChangedEvent) =&gt; void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyChanged(event: RegionsChangedEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            if (Regions.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.debug('Regions.notifyChanged');</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.changedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: RegionsChangedEvent) =&gt; void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onComponentPropertyChanged(listener: (event: ComponentPropertyChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.componentPropertyChangedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unComponentPropertyChanged(listener: (event: ComponentPropertyChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.componentPropertyChangedListeners =</span>
+            this.componentPropertyChangedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: ComponentPropertyChangedEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private forwardComponentPropertyChangedEvent(event: ComponentPropertyChangedEvent)</span>: void {
+<span class="cstat-no" title="statement not covered" >            this.componentPropertyChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: ComponentPropertyChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onRegionChanged(listener: (event: RegionChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.regionChangedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unRegionChanged(listener: (event: RegionChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.regionChangedListeners =</span>
+            this.regionChangedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: RegionChangedEvent) =&gt; void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyRegionChanged(regionPath: RegionPath)</span>: void {
+<span class="cstat-no" title="statement not covered" >            let event = new RegionChangedEvent(regionPath);</span>
+<span class="cstat-no" title="statement not covered" >            if (Regions.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.debug('Regions.notifyRegionChanged: ' + event.getRegionPath().toString());</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.regionChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: RegionChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+<span class="cstat-no" title="statement not covered" >            this.notifyChanged(event);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onRegionAdded(listener: (event: RegionAddedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.regionAddedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unRegionAdded(listener: (event: RegionAddedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.regionAddedListeners =</span>
+            this.regionAddedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: RegionAddedEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyRegionAdded(regionPath: RegionPath)</span> {
+<span class="cstat-no" title="statement not covered" >            let event = new RegionAddedEvent(regionPath);</span>
+<span class="cstat-no" title="statement not covered" >            if (Regions.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.debug('Regions.notifyRegionAdded: ' + event.getRegionPath().toString());</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.regionAddedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: RegionAddedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+<span class="cstat-no" title="statement not covered" >            this.notifyChanged(event);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onRegionRemoved(listener: (event: RegionRemovedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.regionRemovedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unRegionRemoved(listener: (event: RegionRemovedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.regionRemovedListeners =</span>
+            this.regionRemovedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: RegionRemovedEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyRegionRemoved(regionPath: RegionPath)</span> {
+<span class="cstat-no" title="statement not covered" >            let event = new RegionRemovedEvent(regionPath);</span>
+<span class="cstat-no" title="statement not covered" >            if (Regions.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.debug('Regions.notifyRegionRemoved: ' + event.getRegionPath().toString());</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.regionRemovedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: RegionRemovedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+<span class="cstat-no" title="statement not covered" >            this.notifyChanged(event);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static create(): RegionsBuilder {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return new RegionsBuilder();</span>
+        }
+    }
+&nbsp;
+    export class RegionsBuilder {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        regions: Region[] = [];</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(source?: Regions)</span> {
+<span class="cstat-no" title="statement not covered" >            if (source) {</span>
+<span class="cstat-no" title="statement not covered" >                source.getRegions().forEach(<span class="fstat-no" title="function not covered" >(region: Region)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    this.regions.push(region.clone());</span>
+                });
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        fromJson(regionsJson: RegionJson[], parent: LayoutComponent)</span>: RegionsBuilder {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            regionsJson.forEach(<span class="fstat-no" title="function not covered" >(regionJson: RegionJson)</span> =&gt; {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let region = Region.create().</span>
+                    setName(regionJson.name).
+                    setParent(parent).
+                    build();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                regionJson.components.forEach(<span class="fstat-no" title="function not covered" >(componentJson: ComponentTypeWrapperJson, componentIndex: number)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    let component: Component = ComponentFactory.createFromJson(componentJson, componentIndex, region);</span>
+<span class="cstat-no" title="statement not covered" >                    region.addComponent(component);</span>
+                });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.addRegion(region);</span>
+            });
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addRegion(value: Region)</span>: RegionsBuilder {
+<span class="cstat-no" title="statement not covered" >            this.regions.push(value);</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public build(): Regions {</span>
+<span class="cstat-no" title="statement not covered" >            return new Regions(this);</span>
+        }
+    }
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

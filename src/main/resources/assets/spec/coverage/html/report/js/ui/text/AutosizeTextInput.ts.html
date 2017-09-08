@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/ui/text/AutosizeTextInput.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/ui/text/</a> AutosizeTextInput.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">28.95% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>11/38</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.33% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">24.14% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>7/29</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>ui.<span class="branch-1 cbranch-no" title="branch not covered" ></span>text </span>{
+&nbsp;
+    export class AutosizeTextInput extends TextInput {
+&nbsp;
+        private attendant: api.dom.Element;
+        private clone: api.dom.Element;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(className?: string, <span class="cstat-no" title="statement not covered" >size: string = TextInput.MIDDLE,</span> originalValue?: string)</span> {
+<span class="cstat-no" title="statement not covered" >            super(className, size, originalValue);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.addClass('autosize');</span>
+&nbsp;
+            // Create &lt;div&gt; element with the same styles as this text input.
+            // This clone &lt;div&gt; is displayed as inline element so its width matches to its text length.
+            // Then input width will be updated according to text length from the div.
+<span class="cstat-no" title="statement not covered" >            this.clone = new api.dom.DivEl().addClass('autosize-clone').addClass(this.getEl().getAttribute('class'));</span>
+            // In order to have styles of clone div calculated it has to be in DOM.
+            // Attendant element wraps the clone and has zero height
+            // so it has calculated styles but isn't shown on a page.
+            // Much more the attendant is displayed as block element and will be placed after this input.
+            // Therefore it will have the maximum possible length.
+<span class="cstat-no" title="statement not covered" >            this.attendant = new api.dom.DivEl().addClass('autosize-attendant');</span>
+<span class="cstat-no" title="statement not covered" >            this.attendant.appendChild(this.clone);</span>
+&nbsp;
+            // Update input after input has been shown.
+<span class="cstat-no" title="statement not covered" >            this.onShown(<span class="fstat-no" title="function not covered" >(event)</span> =&gt; <span class="cstat-no" title="statement not covered" >this.updateSize())</span>;</span>
+&nbsp;
+            // Update input width according to current text length.
+<span class="cstat-no" title="statement not covered" >            this.onValueChanged(<span class="fstat-no" title="function not covered" >(event)</span> =&gt; <span class="cstat-no" title="statement not covered" >this.updateSize())</span>;</span>
+&nbsp;
+            // Update input width according to current page size.
+<span class="cstat-no" title="statement not covered" >            api.dom.WindowDOM.get().onResized(<span class="fstat-no" title="function not covered" >(event: UIEvent)</span> =&gt; <span class="cstat-no" title="statement not covered" >this.updateSize(),</span> this);</span>
+            // Update input width according to current panel size.
+<span class="cstat-no" title="statement not covered" >            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, <span class="fstat-no" title="function not covered" >(item)</span> =&gt; <span class="cstat-no" title="statement not covered" >this.updateSize())</span>;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static large(className?: string, originalValue?: string)</span>: AutosizeTextInput {
+<span class="cstat-no" title="statement not covered" >            return new AutosizeTextInput(className, TextInput.LARGE, originalValue);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static middle(className?: string, originalValue?: string)</span>: AutosizeTextInput {
+<span class="cstat-no" title="statement not covered" >            return new AutosizeTextInput(className, TextInput.MIDDLE, originalValue);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private updateSize() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!this.isVisible()) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let inputEl = this.getEl();</span>
+<span class="cstat-no" title="statement not covered" >            let cloneEl = this.clone.getEl();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            cloneEl.setFontSize(inputEl.getFontSize()).</span>
+                setPaddingLeft(inputEl.getPaddingLeft() + 'px').
+                setPaddingRight(inputEl.getPaddingRight() + 'px');
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.attendant.insertAfterEl(this);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            cloneEl.setInnerHtml(this.getValue());</span>
+            // Set input width to text length from the clone &lt;div&gt;
+            // or to maximum possible width corresponding to attendant width.
+<span class="cstat-no" title="statement not covered" >            if (cloneEl.getWidthWithBorder() &gt; this.attendant.getEl().getWidth()) {</span>
+<span class="cstat-no" title="statement not covered" >                inputEl.setWidth('100%');</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                inputEl.setWidthPx(cloneEl.getWidthWithBorder());</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.attendant.remove();</span>
+        }
+&nbsp;
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

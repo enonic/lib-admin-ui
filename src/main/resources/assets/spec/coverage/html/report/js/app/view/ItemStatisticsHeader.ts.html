@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/app/view/ItemStatisticsHeader.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/app/view/</a> ItemStatisticsHeader.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">26.53% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>13/49</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">13.64% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/22</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">40% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/10</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>9/45</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>app.<span class="branch-1 cbranch-no" title="branch not covered" ></span>view </span>{
+&nbsp;
+    export class ItemStatisticsHeader&lt;M extends api.Equitable&gt; extends api.dom.DivEl {
+&nbsp;
+        private browseItem: ViewItem&lt;M&gt;;
+&nbsp;
+        private iconEl: api.dom.Element;
+&nbsp;
+        private headerTitleEl: api.dom.H1El;
+&nbsp;
+        private headerPathEl: api.dom.H4El;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor() {</span>
+<span class="cstat-no" title="statement not covered" >            super('header');</span>
+<span class="cstat-no" title="statement not covered" >            this.headerTitleEl = new api.dom.H1El('title');</span>
+<span class="cstat-no" title="statement not covered" >            this.headerPathEl = new api.dom.H4El('path');</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.headerTitleEl);</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.headerPathEl);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setItem(item: ViewItem&lt;M&gt;)</span> {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.iconEl) {</span>
+<span class="cstat-no" title="statement not covered" >                this.iconEl.remove();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (item) {</span>
+<span class="cstat-no" title="statement not covered" >                this.iconEl = this.createIconEl(item);</span>
+<span class="cstat-no" title="statement not covered" >                this.prependChild(this.iconEl);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let displayName = item.getDisplayName() || '';</span>
+<span class="cstat-no" title="statement not covered" >                this.headerTitleEl.getEl().setInnerHtml(displayName).setAttribute('title', displayName);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.headerPathEl.removeChildren();</span>
+<span class="cstat-no" title="statement not covered" >                if (item.getPath()) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.appendToHeaderPath(item.getPath(), 'parent-path');</span>
+<span class="cstat-no" title="statement not covered" >                    this.appendToHeaderPath(item.getPathName(), 'path-name');</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            this.browseItem = item;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setIconUrl(value: string)</span> {
+<span class="cstat-no" title="statement not covered" >            if (this.iconEl) {</span>
+<span class="cstat-no" title="statement not covered" >                this.iconEl.remove();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let size = this.browseItem.getIconSize() || 64;</span>
+<span class="cstat-no" title="statement not covered" >            let icon: HTMLImageElement = api.util.loader.ImageLoader.get(value + '?size=size', size, size);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.iconEl = &lt;api.dom.ImgEl&gt; new api.dom.Element(new api.dom.NewElementBuilder().setTagName('img').setHelper(</span>
+                new api.dom.ImgHelper(icon)));
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.prependChild(this.iconEl);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setHeaderSubtitle(value: string, className: string)</span> {
+<span class="cstat-no" title="statement not covered" >            this.headerPathEl.removeChildren();</span>
+<span class="cstat-no" title="statement not covered" >            this.appendToHeaderPath(value, className);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createIconEl(item: ViewItem&lt;M&gt;)</span> {
+<span class="cstat-no" title="statement not covered" >            let iconEl: api.dom.Element;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (item.getIconUrl()) {</span>
+<span class="cstat-no" title="statement not covered" >                let size = item.getIconSize() || 64;</span>
+<span class="cstat-no" title="statement not covered" >                let icon: HTMLImageElement = api.util.loader.ImageLoader.get(item.getIconUrl() + '?size=size', size, size);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                iconEl = &lt;api.dom.ImgEl&gt; new api.dom.Element(new api.dom.NewElementBuilder().</span>
+                    setTagName('img').
+                    setHelper(new api.dom.ImgHelper(icon)));
+            } else {
+<span class="cstat-no" title="statement not covered" >                iconEl = new api.dom.DivEl(item.getIconClass());</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            iconEl.addClass('font-icon-default');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return iconEl;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private appendToHeaderPath(value: string, className: string)</span> {
+<span class="cstat-no" title="statement not covered" >            let pathName = new api.dom.SpanEl(className);</span>
+<span class="cstat-no" title="statement not covered" >            pathName.getEl().setInnerHtml(value);</span>
+<span class="cstat-no" title="statement not covered" >            this.headerPathEl.appendChild(pathName);</span>
+        }
+    }
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

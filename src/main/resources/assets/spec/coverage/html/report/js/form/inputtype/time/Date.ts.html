@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/form/inputtype/time/Date.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/form/inputtype/time/</a> Date.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">47.73% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>21/44</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">19.23% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>5/26</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">40% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/15</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">39.47% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>15/38</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>form.<span class="branch-1 cbranch-no" title="branch not covered" ></span>inputtype.<span class="branch-1 cbranch-no" title="branch not covered" ></span>time </span>{
+&nbsp;
+    import support = api.form.inputtype.support;
+&nbsp;
+    import Property = api.data.Property;
+    import Value = api.data.Value;
+    import ValueType = api.data.ValueType;
+    import ValueTypes = api.data.ValueTypes;
+&nbsp;
+    /**
+     * Uses [[api.data.ValueType]] [[api.data.ValueTypeLocalDate]].
+     */
+    export class Date extends support.BaseInputTypeNotManagingAdd&lt;Date&gt; {
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(config: api.form.inputtype.InputTypeViewContext)</span> {
+<span class="cstat-no" title="statement not covered" >            super(config);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getValueType(): ValueType {</span>
+<span class="cstat-no" title="statement not covered" >            return ValueTypes.LOCAL_DATE;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        newInitialValue(): Value {</span>
+<span class="cstat-no" title="statement not covered" >            return super.newInitialValue() || ValueTypes.LOCAL_DATE.newNullValue();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        createInputOccurrenceElement(index: number, property: Property)</span>: api.dom.Element {
+<span class="cstat-no" title="statement not covered" >            if (!ValueTypes.LOCAL_DATE.equals(property.getType())) {</span>
+<span class="cstat-no" title="statement not covered" >                property.convertValueType(ValueTypes.LOCAL_DATE);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let datePickerBuilder = new api.ui.time.DatePickerBuilder();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!property.hasNullValue()) {</span>
+<span class="cstat-no" title="statement not covered" >                let date = property.getLocalDate();</span>
+<span class="cstat-no" title="statement not covered" >                datePickerBuilder.</span>
+                    setSelectedDate(date.toDate()).
+                    setYear(date.getYear()).
+                    setMonth(date.getMonth());
+            }
+<span class="cstat-no" title="statement not covered" >            let datePicker = datePickerBuilder.build();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            datePicker.onSelectedDateChanged(<span class="fstat-no" title="function not covered" >(event: api.ui.time.SelectedDateChangedEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let value = new Value(event.getDate() != null ? api.util.LocalDate.fromDate(event.getDate()) : null,</span>
+                    ValueTypes.LOCAL_DATE);
+<span class="cstat-no" title="statement not covered" >                this.notifyOccurrenceValueChanged(datePicker, value);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return datePicker;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly?: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            let datePicker = &lt;api.ui.time.DatePicker&gt; occurrence;</span>
+<span class="cstat-no" title="statement not covered" >            if (!unchangedOnly || !datePicker.isDirty()) {</span>
+<span class="cstat-no" title="statement not covered" >                let date = property.hasNonNullValue() ? property.getLocalDate().toDate() : null;</span>
+<span class="cstat-no" title="statement not covered" >                datePicker.setSelectedDate(date);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        resetInputOccurrenceElement(occurrence: api.dom.Element)</span> {
+<span class="cstat-no" title="statement not covered" >            let input = &lt;api.ui.time.DatePicker&gt; occurrence;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            input.resetBase();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        valueBreaksRequiredContract(value: Value)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            return value.isNull() || !value.getType().equals(ValueTypes.LOCAL_DATE);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hasInputElementValidUserInput(inputElement: api.dom.Element)</span> {
+<span class="cstat-no" title="statement not covered" >            let datePicker = &lt;api.ui.time.DatePicker&gt;inputElement;</span>
+<span class="cstat-no" title="statement not covered" >            return datePicker.isValid();</span>
+        }
+    }
+    api.form.inputtype.InputTypeManager.register(new api.Class('Date', Date));
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

@@ -1,0 +1,1361 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/ui/tab/TabMenu.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/ui/tab/</a> TabMenu.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">23.39% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>58/248</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">4.76% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/63</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">5.41% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/74</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">22.78% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>54/237</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>ui.<span class="branch-1 cbranch-no" title="branch not covered" ></span>tab </span>{
+&nbsp;
+    import AppHelper = api.util.AppHelper;
+    export class TabMenu extends api.dom.DivEl implements api.ui.Navigator {
+&nbsp;
+        private tabMenuButton: TabMenuButton;
+&nbsp;
+        private menuEl: api.dom.UlEl;
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >menuVisible: boolean = false;</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >tabs: TabMenuItem[] = [];</span>
+&nbsp;
+        private selectedTab: number;
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >hideOnItemClick: boolean = true;</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >navigationItemAddedListeners: {(event: NavigatorEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >navigationItemRemovedListeners: {(event: NavigatorEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >navigationItemSelectedListeners: {(event: NavigatorEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >navigationItemDeselectedListeners: {(event: NavigatorEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >enabled: boolean = true;</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >focusIndex: number = -1;</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(className?: string)</span> {
+<span class="cstat-no" title="statement not covered" >            super('tab-menu' + (className ? ' ' + className : ''));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.initTabMenuButton();</span>
+<span class="cstat-no" title="statement not covered" >            this.menuEl = new api.dom.UlEl('menu');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.tabMenuButton);</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.menuEl);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.initListeners();</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private initTabMenuButton() {</span></span>
+<span class="cstat-no" title="statement not covered" >            this.tabMenuButton = this.createTabMenuButton();</span>
+<span class="cstat-no" title="statement not covered" >            this.tabMenuButton.hide();</span>
+<span class="cstat-no" title="statement not covered" >            this.tabMenuButton.addClass('tab-menu-button');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.tabMenuButton.onClicked(<span class="fstat-no" title="function not covered" >(event: MouseEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.enabled) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.toggleMenu();</span>
+                }
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private initListeners() {</span></span>
+<span class="cstat-no" title="statement not covered" >            AppHelper.focusInOut(this, <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.hideMenu();</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.onClicked(<span class="fstat-no" title="function not covered" >(e: MouseEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.enabled) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.handleClick(e);</span>
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.menuEl.onKeyDown(<span class="fstat-no" title="function not covered" >(event: KeyboardEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.isKeyNext(event)) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.focusNextTab();</span>
+                } else <span class="cstat-no" title="statement not covered" >if (this.isKeyPrevious(event)) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.focusPreviousTab();</span>
+                } else <span class="cstat-no" title="statement not covered" >if (KeyHelper.isApplyKey(event)) {</span>
+<span class="cstat-no" title="statement not covered" >                    const tab = this.tabs[this.focusIndex];</span>
+<span class="cstat-no" title="statement not covered" >                    if (tab) {</span>
+<span class="cstat-no" title="statement not covered" >                        tab.select();</span>
+                    }
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (KeyHelper.isEscKey(event) &amp;&amp; this.isMenuVisible()) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.hideMenu();</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                AppHelper.lockEvent(event);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        giveFocusToMenu(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            const first = this.tabs[0];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (first) {</span>
+<span class="cstat-no" title="statement not covered" >                this.focusIndex = 0;</span>
+<span class="cstat-no" title="statement not covered" >                return first.giveFocus();</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return false;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        returnFocusFromMenu(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.giveFocus();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        focusNextTab() {</span>
+<span class="cstat-no" title="statement not covered" >            const tabIndex = this.focusIndex + 1;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (tabIndex &lt; this.tabs.length) {</span>
+<span class="cstat-no" title="statement not covered" >                this.tabs[tabIndex].giveFocus();</span>
+<span class="cstat-no" title="statement not covered" >                this.focusIndex = tabIndex;</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        focusPreviousTab() {</span>
+<span class="cstat-no" title="statement not covered" >            const tabIndex = this.focusIndex - 1;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (tabIndex &gt;= 0) {</span>
+<span class="cstat-no" title="statement not covered" >                this.tabs[tabIndex].giveFocus();</span>
+<span class="cstat-no" title="statement not covered" >                this.focusIndex = tabIndex;</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.returnFocusFromMenu();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isKeyNext(event: KeyboardEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            return KeyHelper.isArrowRightKey(event);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isKeyPrevious(event: KeyboardEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            KeyHelper.isArrowLeftKey(event);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setEnabled(enabled: boolean)</span>: TabMenu {
+<span class="cstat-no" title="statement not covered" >            this.enabled = enabled;</span>
+<span class="cstat-no" title="statement not covered" >            this.toggleClass('disabled', !enabled);</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected createTabMenuButton(): TabMenuButton {</span>
+<span class="cstat-no" title="statement not covered" >            return new TabMenuButton();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected setButtonLabel(value: string)</span>: TabMenu {
+<span class="cstat-no" title="statement not covered" >            this.tabMenuButton.setLabel(value);</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected handleClick(e: MouseEvent)</span> {
+            // menu itself was clicked so do nothing
+<span class="cstat-no" title="statement not covered" >            e.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >            e.stopPropagation();</span>
+<span class="cstat-no" title="statement not covered" >            new HideTabMenuEvent(this).fire();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setButtonClass(cls: string)</span>: TabMenu {
+<span class="cstat-no" title="statement not covered" >            this.tabMenuButton.addClass(cls);</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setHideOnItemClick(hide: boolean)</span>: TabMenu {
+<span class="cstat-no" title="statement not covered" >            this.hideOnItemClick = hide;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getTabMenuButtonEl(): TabMenuButton {</span>
+<span class="cstat-no" title="statement not covered" >            return this.tabMenuButton;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getMenuEl(): api.dom.UlEl {</span>
+<span class="cstat-no" title="statement not covered" >            return this.menuEl;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private toggleMenu() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!this.menuVisible) {</span>
+<span class="cstat-no" title="statement not covered" >                this.showMenu();</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.hideMenu();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected hideMenu() {</span>
+<span class="cstat-no" title="statement not covered" >            this.menuEl.hide();</span>
+<span class="cstat-no" title="statement not covered" >            this.menuVisible = false;</span>
+<span class="cstat-no" title="statement not covered" >            this.removeClass('expanded');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected showMenu() {</span>
+<span class="cstat-no" title="statement not covered" >            this.menuEl.show();</span>
+<span class="cstat-no" title="statement not covered" >            this.menuVisible = true;</span>
+<span class="cstat-no" title="statement not covered" >            this.addClass('expanded');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isMenuVisible(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.menuVisible;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        insertNavigationItem(tab: TabMenuItem, index: number)</span> {
+<span class="cstat-no" title="statement not covered" >            this.tabs.splice(index, 0, tab);</span>
+<span class="cstat-no" title="statement not covered" >            tab.setIndex(index);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.tabs.slice(index+1).forEach(<span class="fstat-no" title="function not covered" >(slicedTab:TabBarItem)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                slicedTab.setIndex(slicedTab.getIndex() + 1);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (tab.isVisibleInMenu()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.menuEl.insertChild(tab, index);</span>
+<span class="cstat-no" title="statement not covered" >                this.tabMenuButton.show();</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.initializeNewItemEvents(tab);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        addNavigationItem(tab: TabMenuItem)</span> {
+<span class="cstat-no" title="statement not covered" >            this.insertNavigationItem(tab, this.tabs.length);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        prependNavigationItem(tab: TabMenuItem)</span> {
+<span class="cstat-no" title="statement not covered" >            this.tabs.unshift(tab);</span>
+<span class="cstat-no" title="statement not covered" >            this.tabs.forEach(<span class="fstat-no" title="function not covered" >(curTab: TabMenuItem)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                curTab.setIndex(curTab.getIndex() + 1);</span>
+            });
+<span class="cstat-no" title="statement not covered" >            tab.setIndex(0);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (tab.isVisibleInMenu()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.menuEl.prependChild(tab);</span>
+<span class="cstat-no" title="statement not covered" >                this.tabMenuButton.show();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.initializeNewItemEvents(tab);</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private initializeNewItemEvents(tab: TabMenuItem)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            tab.onSelected(<span class="fstat-no" title="function not covered" >(event: TabItemSelectedEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.selectNavigationItem(event.getTab().getIndex());</span>
+<span class="cstat-no" title="statement not covered" >                if (this.hideOnItemClick) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.hideMenu();</span>
+                }
+            });
+<span class="cstat-no" title="statement not covered" >            tab.onLabelChanged(<span class="fstat-no" title="function not covered" >(event: TabItemLabelChangedEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.setButtonLabel(event.getNewValue());</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.notifyTabAddedListeners(tab);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isEmpty(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.tabs.length === 0;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSize(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.tabs.length;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        countVisible(): number {</span>
+<span class="cstat-no" title="statement not covered" >            let size = 0;</span>
+<span class="cstat-no" title="statement not covered" >            this.tabs.forEach(<span class="fstat-no" title="function not covered" >(tab: TabMenuItem)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (tab.isVisibleInMenu()) {</span>
+<span class="cstat-no" title="statement not covered" >                    size++;</span>
+                }
+            });
+<span class="cstat-no" title="statement not covered" >            return size;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSelectedNavigationItem(): TabMenuItem {</span>
+<span class="cstat-no" title="statement not covered" >            return this.tabs[this.selectedTab];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSelectedIndex(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.selectedTab;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getNavigationItem(tabIndex: number)</span>: TabMenuItem {
+<span class="cstat-no" title="statement not covered" >            return this.tabs[tabIndex];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getNavigationItems(): TabMenuItem[] {</span>
+<span class="cstat-no" title="statement not covered" >            return this.tabs;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        removeNavigationItem(tab: TabMenuItem)</span> {
+<span class="cstat-no" title="statement not covered" >            tab.remove();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.tabs.splice(tab.getIndex(), 1);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.isEmpty()) {</span>
+                // if there are no tabs set selected index to negative value
+<span class="cstat-no" title="statement not covered" >                this.selectedTab = -1;</span>
+            } else <span class="cstat-no" title="statement not covered" >if (tab.getIndex() &lt; this.selectedTab) {</span>
+                // if removed tab was before selected tab than decrement selected index
+<span class="cstat-no" title="statement not covered" >                this.selectedTab--;</span>
+            } else <span class="cstat-no" title="statement not covered" >if (tab.getIndex() &gt; this.getSize() - 1 &amp;&amp; this.selectedTab !== 0) {</span>
+                // if selected index is more than tabs amount set last index as selected
+<span class="cstat-no" title="statement not covered" >                this.selectedTab = this.getSize() - 1;</span>
+            }
+&nbsp;
+            // update indexes for tabs that have been after the removed tab
+<span class="cstat-no" title="statement not covered" >            for (let i = tab.getIndex(); i &lt; this.tabs.length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >                this.tabs[i].setIndex(i);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.countVisible() === 0) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setButtonLabel('');</span>
+<span class="cstat-no" title="statement not covered" >                this.tabMenuButton.hide();</span>
+<span class="cstat-no" title="statement not covered" >                this.hideMenu();</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                let newTab = this.getSelectedNavigationItem();</span>
+<span class="cstat-no" title="statement not covered" >                if (newTab) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.setButtonLabel(newTab.getLabel());</span>
+<span class="cstat-no" title="statement not covered" >                    this.updateActiveTab(newTab.getIndex());</span>
+<span class="cstat-no" title="statement not covered" >                    this.selectNavigationItem(newTab.getIndex());</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            this.notifyTabRemovedListeners(tab);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        removeNavigationItems() {</span>
+<span class="cstat-no" title="statement not covered" >            this.tabs.forEach(<span class="fstat-no" title="function not covered" >(tab: TabMenuItem)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                tab.remove();</span>
+<span class="cstat-no" title="statement not covered" >                this.notifyTabRemovedListeners(tab);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.countVisible() === 0) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setButtonLabel('');</span>
+<span class="cstat-no" title="statement not covered" >                this.tabMenuButton.hide();</span>
+<span class="cstat-no" title="statement not covered" >                this.hideMenu();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.selectedTab = -1;</span>
+<span class="cstat-no" title="statement not covered" >            this.tabs = [];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        resetItemsVisibility() {</span>
+<span class="cstat-no" title="statement not covered" >            let items = this.getNavigationItems();</span>
+<span class="cstat-no" title="statement not covered" >            if (!!items) {</span>
+<span class="cstat-no" title="statement not covered" >                items.forEach(<span class="fstat-no" title="function not covered" >item </span>=&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    if (!item.isVisibleInMenu()) {</span>
+<span class="cstat-no" title="statement not covered" >                        item.setVisibleInMenu(true);</span>
+                    }
+                });
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        updateActiveTab(tabIndex: number)</span> {
+<span class="cstat-no" title="statement not covered" >            this.tabs.forEach(<span class="fstat-no" title="function not covered" >(tab: TabMenuItem, index: number)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let activate = (tabIndex === index);</span>
+<span class="cstat-no" title="statement not covered" >                tab.setActive(activate);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        selectNavigationItem(tabIndex: number)</span> {
+<span class="cstat-no" title="statement not covered" >            if (tabIndex &lt; 0 || tabIndex &gt;= this.getSize() || this.selectedTab === tabIndex) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.selectedTab = tabIndex;</span>
+<span class="cstat-no" title="statement not covered" >            let selectedTab = this.getNavigationItem(tabIndex);</span>
+<span class="cstat-no" title="statement not covered" >            this.setButtonLabel(selectedTab.getLabel());</span>
+<span class="cstat-no" title="statement not covered" >            this.updateActiveTab(tabIndex);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.notifyTabSelectedListeners(selectedTab);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        deselectNavigationItem() {</span>
+<span class="cstat-no" title="statement not covered" >            let selectedTab = this.getSelectedNavigationItem();</span>
+<span class="cstat-no" title="statement not covered" >            this.selectedTab = -1;</span>
+<span class="cstat-no" title="statement not covered" >            this.updateActiveTab(this.selectedTab);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.notifyTabDeselectedListeners(selectedTab);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onNavigationItemAdded(listener: (event: NavigatorEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.navigationItemAddedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onNavigationItemRemoved(listener: (event: NavigatorEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.navigationItemRemovedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onNavigationItemSelected(listener: (event: NavigatorEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.navigationItemSelectedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onNavigationItemDeselected(listener: (event: NavigatorEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.navigationItemDeselectedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unNavigationItemAdded(listener: (event: NavigatorEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.navigationItemAddedListeners =</span>
+            this.navigationItemAddedListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: (event: NavigatorEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== currentListener;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unNavigationItemRemoved(listener: (event: NavigatorEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.navigationItemRemovedListeners =</span>
+            this.navigationItemRemovedListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: (event: NavigatorEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== currentListener;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unNavigationItemSelected(listener: (event: NavigatorEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.navigationItemSelectedListeners =</span>
+            this.navigationItemSelectedListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: (event: NavigatorEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== currentListener;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unNavigationItemDeselected(listener: (event: NavigatorEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.navigationItemDeselectedListeners =</span>
+            this.navigationItemDeselectedListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: (event: NavigatorEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== currentListener;</span>
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private notifyTabAddedListeners(tab: TabMenuItem)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            this.navigationItemAddedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: NavigatorEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener.call(this, new NavigatorEvent(tab));</span>
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private notifyTabRemovedListeners(tab: TabMenuItem)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            this.navigationItemRemovedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: NavigatorEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener.call(this, new NavigatorEvent(tab));</span>
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private notifyTabSelectedListeners(tab: TabMenuItem)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            this.navigationItemSelectedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: NavigatorEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener.call(this, new NavigatorEvent(tab));</span>
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private notifyTabDeselectedListeners(tab: TabMenuItem)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            this.navigationItemDeselectedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: NavigatorEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener.call(this, new NavigatorEvent(tab));</span>
+            });
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

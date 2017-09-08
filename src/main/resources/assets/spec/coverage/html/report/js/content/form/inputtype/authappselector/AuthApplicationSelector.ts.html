@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/form/inputtype/authappselector/AuthApplicationSelector.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../../index.html">all files</a> / <a href="index.html">js/content/form/inputtype/authappselector/</a> AuthApplicationSelector.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">23.89% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>27/113</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">13.89% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>5/36</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">18.18% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/33</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20.39% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>21/103</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>site.<span class="branch-1 cbranch-no" title="branch not covered" ></span>inputtype.<span class="branch-1 cbranch-no" title="branch not covered" ></span>authappselector </span>{
+&nbsp;
+    import PropertyTree = api.data.PropertyTree;
+    import Property = api.data.Property;
+    import PropertyArray = api.data.PropertyArray;
+    import PropertySet = api.data.PropertySet;
+    import FormView = api.form.FormView;
+    import FormValidityChangedEvent = api.form.FormValidityChangedEvent;
+    import Value = api.data.Value;
+    import ValueType = api.data.ValueType;
+    import ValueTypes = api.data.ValueTypes;
+    import SelectedOption = api.ui.selector.combobox.SelectedOption;
+    import Application = api.application.Application;
+    import ApplicationKey = api.application.ApplicationKey;
+    import SiteConfig = api.content.site.SiteConfig;
+    import GetApplicationRequest = api.application.GetApplicationRequest;
+    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
+    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
+    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
+    import SiteConfigProvider = api.content.site.inputtype.siteconfigurator.SiteConfigProvider;
+&nbsp;
+    export class AuthApplicationSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd&lt;Application&gt; {
+&nbsp;
+        private context: api.form.inputtype.InputTypeViewContext;
+&nbsp;
+        private comboBox: AuthApplicationComboBox;
+&nbsp;
+        private siteConfigProvider: SiteConfigProvider;
+&nbsp;
+        private formContext: api.content.form.ContentFormContext;
+&nbsp;
+        private readOnly: boolean;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(config: api.content.form.inputtype.ContentInputTypeViewContext)</span> {
+<span class="cstat-no" title="statement not covered" >            super('site-configurator');</span>
+<span class="cstat-no" title="statement not covered" >            this.context = config;</span>
+<span class="cstat-no" title="statement not covered" >            this.readConfig(config.inputConfig);</span>
+<span class="cstat-no" title="statement not covered" >            this.formContext = config.formContext;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getValueType(): ValueType {</span>
+<span class="cstat-no" title="statement not covered" >            return ValueTypes.DATA;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        newInitialValue(): Value {</span>
+<span class="cstat-no" title="statement not covered" >            return null;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; })</span>: void {
+<span class="cstat-no" title="statement not covered" >            let readOnlyConfig = inputConfig['readOnly'] &amp;&amp; inputConfig['readOnly'][0];</span>
+<span class="cstat-no" title="statement not covered" >            let readOnlyValue = readOnlyConfig &amp;&amp; readOnlyConfig['value'];</span>
+<span class="cstat-no" title="statement not covered" >            this.readOnly = readOnlyValue === 'true';</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        layout(input: api.form.Input, propertyArray: PropertyArray)</span>: wemQ.Promise&lt;void&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            super.layout(input, propertyArray);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.siteConfigProvider = new SiteConfigProvider(propertyArray);</span>
+<span class="cstat-no" title="statement not covered" >            this.comboBox = this.createComboBox(input, this.siteConfigProvider);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.comboBox);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setLayoutInProgress(false);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return wemQ&lt;void&gt;(null);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean)</span>: Q.Promise&lt;void&gt; {
+<span class="cstat-no" title="statement not covered" >            let superPromise = super.update(propertyArray, unchangedOnly);</span>
+<span class="cstat-no" title="statement not covered" >            this.siteConfigProvider.setPropertyArray(propertyArray);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.siteConfigProvider.setPropertyArray(propertyArray);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!unchangedOnly || !this.comboBox.isDirty()) {</span>
+<span class="cstat-no" title="statement not covered" >                return superPromise.then(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                    this.comboBox.setValue(this.getValueFromPropertyArray(propertyArray));</span>
+                });
+            } else {
+<span class="cstat-no" title="statement not covered" >                return superPromise;</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        reset() {</span>
+<span class="cstat-no" title="statement not covered" >            this.comboBox.resetBaseValues();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private saveToSet(siteConfig: SiteConfig, index: number)</span> {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let propertySet = this.getPropertyArray().get(index).getPropertySet();</span>
+<span class="cstat-no" title="statement not covered" >            if (!propertySet) {</span>
+<span class="cstat-no" title="statement not covered" >                propertySet = this.getPropertyArray().addSet();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let config = siteConfig.getConfig();</span>
+<span class="cstat-no" title="statement not covered" >            let appKey = siteConfig.getApplicationKey();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            propertySet.setStringByPath('applicationKey', appKey.toString());</span>
+<span class="cstat-no" title="statement not covered" >            propertySet.setPropertySetByPath('config', config);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected getValueFromPropertyArray(propertyArray: api.data.PropertyArray)</span>: string {
+<span class="cstat-no" title="statement not covered" >            return propertyArray.getProperties().map(<span class="fstat-no" title="function not covered" >(property)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (property.hasNonNullValue()) {</span>
+<span class="cstat-no" title="statement not covered" >                    let siteConfig = SiteConfig.create().fromData(property.getPropertySet()).build();</span>
+<span class="cstat-no" title="statement not covered" >                    return siteConfig.getApplicationKey().toString();</span>
+                }
+            }).join(';');
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private createComboBox(input: api.form.Input, siteConfigProvider: SiteConfigProvider)</span>: AuthApplicationComboBox {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let value = this.getValueFromPropertyArray(this.getPropertyArray());</span>
+<span class="cstat-no" title="statement not covered" >            let siteConfigFormsToDisplay = value.split(';');</span>
+<span class="cstat-no" title="statement not covered" >            let comboBox = new AuthApplicationComboBox(input.getOccurrences().getMaximum() || 0, siteConfigProvider,</span>
+                this.formContext, value, this.readOnly);
+&nbsp;
+            // creating selected option might involve property changes
+<span class="cstat-no" title="statement not covered" >            comboBox.onBeforeOptionCreated(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" ></span>this.ignorePropertyChange = true)</span>;</span>
+<span class="cstat-no" title="statement not covered" >            comboBox.onAfterOptionCreated(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" ></span>this.ignorePropertyChange = false)</span>;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            const forcedValidate = <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.ignorePropertyChange = false;</span>
+<span class="cstat-no" title="statement not covered" >                this.validate(false);</span>
+            };
+<span class="cstat-no" title="statement not covered" >            const saveAndForceValidate = <span class="fstat-no" title="function not covered" >(selectedOption: SelectedOption&lt;Application&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                const view: AuthApplicationSelectedOptionView = &lt;AuthApplicationSelectedOptionView&gt; selectedOption.getOptionView();</span>
+<span class="cstat-no" title="statement not covered" >                this.saveToSet(view.getSiteConfig(), selectedOption.getIndex());</span>
+<span class="cstat-no" title="statement not covered" >                forcedValidate();</span>
+            };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            comboBox.onOptionDeselected(<span class="fstat-no" title="function not covered" >(event: SelectedOptionEvent&lt;Application&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.ignorePropertyChange = true;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.getPropertyArray().remove(event.getSelectedOption().getIndex());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                forcedValidate();</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            comboBox.onOptionSelected(<span class="fstat-no" title="function not covered" >(event: SelectedOptionEvent&lt;Application&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.fireFocusSwitchEvent(event);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.ignorePropertyChange = true;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                const selectedOption = event.getSelectedOption();</span>
+<span class="cstat-no" title="statement not covered" >                const key = selectedOption.getOption().displayValue.getApplicationKey();</span>
+<span class="cstat-no" title="statement not covered" >                if (key) {</span>
+<span class="cstat-no" title="statement not covered" >                    saveAndForceValidate(selectedOption);</span>
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            comboBox.onOptionMoved(<span class="fstat-no" title="function not covered" >(selectedOption: SelectedOption&lt;Application&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.ignorePropertyChange = true;</span>
+<span class="cstat-no" title="statement not covered" >                saveAndForceValidate(selectedOption);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            comboBox.onSiteConfigFormDisplayed(<span class="fstat-no" title="function not covered" >(applicationKey: ApplicationKey, formView: FormView)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let indexToRemove = siteConfigFormsToDisplay.indexOf(applicationKey.toString());</span>
+<span class="cstat-no" title="statement not covered" >                if (indexToRemove !== -1) {</span>
+<span class="cstat-no" title="statement not covered" >                    siteConfigFormsToDisplay.splice(indexToRemove, 1);</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                formView.onValidityChanged(<span class="fstat-no" title="function not covered" >(event: FormValidityChangedEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    this.validate(false);</span>
+                });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.validate(false);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return comboBox;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        displayValidationErrors(value: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.comboBox.getSelectedOptionViews().forEach(<span class="fstat-no" title="function not covered" >(view: AuthApplicationSelectedOptionView)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                view.getFormView().displayValidationErrors(value);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected getNumberOfValids(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.comboBox.countSelected();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        validate(<span class="cstat-no" title="statement not covered" >silent: boolean = true)</span></span>: api.form.inputtype.InputValidationRecording {
+<span class="cstat-no" title="statement not covered" >            let recording = new api.form.inputtype.InputValidationRecording();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.comboBox.getSelectedOptionViews().forEach(<span class="fstat-no" title="function not covered" >(view: AuthApplicationSelectedOptionView)</span> =&gt; {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let validationRecording = view.getFormView().validate(true);</span>
+<span class="cstat-no" title="statement not covered" >                if (!validationRecording.isMinimumOccurrencesValid()) {</span>
+<span class="cstat-no" title="statement not covered" >                    recording.setBreaksMinimumOccurrences(true);</span>
+                }
+<span class="cstat-no" title="statement not covered" >                if (!validationRecording.isMaximumOccurrencesValid()) {</span>
+<span class="cstat-no" title="statement not covered" >                    recording.setBreaksMaximumOccurrences(true);</span>
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return super.validate(silent, recording);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        giveFocus(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.comboBox.maximumOccurrencesReached()) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return this.comboBox.giveFocus();</span>
+        }
+    }
+&nbsp;
+    api.form.inputtype.InputTypeManager.register(new api.Class('AuthApplicationSelector', AuthApplicationSelector));
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../../sorter.js"></script>
+</body>
+</html>

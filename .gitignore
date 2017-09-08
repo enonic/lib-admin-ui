@@ -16,3 +16,5 @@ npm-debug.log
 .tmp
 generated-java
 node_modules/
+_all.*
+src/main/resources/spec/coverage

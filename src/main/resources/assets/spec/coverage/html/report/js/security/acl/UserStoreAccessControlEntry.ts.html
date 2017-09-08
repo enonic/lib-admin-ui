@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/security/acl/UserStoreAccessControlEntry.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/security/acl/</a> UserStoreAccessControlEntry.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">50% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>18/36</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">30% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/10</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">45.45% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>15/33</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>security.<span class="branch-1 cbranch-no" title="branch not covered" ></span>acl </span>{
+&nbsp;
+    export class UserStoreAccessControlEntry implements api.Equitable {
+&nbsp;
+        private principal: Principal;
+&nbsp;
+        private access: UserStoreAccess;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(principal: Principal, access?: UserStoreAccess)</span> {
+<span class="cstat-no" title="statement not covered" >            api.util.assertNotNull(principal, 'principal not set');</span>
+            //    api.util.assertNotNull(access, 'access not set');
+<span class="cstat-no" title="statement not covered" >            this.principal = principal;</span>
+<span class="cstat-no" title="statement not covered" >            this.access = access;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPrincipal(): Principal {</span>
+<span class="cstat-no" title="statement not covered" >            return this.principal;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getAccess(): UserStoreAccess {</span>
+<span class="cstat-no" title="statement not covered" >            return this.access;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setAccess(value: string)</span>: UserStoreAccessControlEntry {
+<span class="cstat-no" title="statement not covered" >            this.access = UserStoreAccess[value];</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPrincipalKey(): PrincipalKey {</span>
+<span class="cstat-no" title="statement not covered" >            return this.principal.getKey();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPrincipalDisplayName(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.principal.getDisplayName();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPrincipalTypeName(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.principal.getTypeName();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        equals(o: api.Equitable)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, UserStoreAccessControlEntry)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let other = &lt;UserStoreAccessControlEntry&gt;o;</span>
+<span class="cstat-no" title="statement not covered" >            return this.principal.equals(other.getPrincipal()) &amp;&amp;</span>
+                   this.access === other.access;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getId(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.principal.getKey().toString();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toString(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.principal.getKey().toString() + '[' + UserStoreAccess[this.access] + ']';</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toJson(): api.security.acl.UserStoreAccessControlEntryJson {</span>
+<span class="cstat-no" title="statement not covered" >            return {</span>
+                principal: this.principal.toJson(),
+                access: UserStoreAccess[this.access]
+            };
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static fromJson(json: api.security.acl.UserStoreAccessControlEntryJson)</span>: UserStoreAccessControlEntry {
+<span class="cstat-no" title="statement not covered" >            return new UserStoreAccessControlEntry(Principal.fromJson(json.principal), UserStoreAccess[json.access.toUpperCase()]);</span>
+        }
+    }
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/form/set/FormSetOccurrenceView.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/form/set/</a> FormSetOccurrenceView.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">76.81% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>106/138</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">64.29% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>18/28</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">52.94% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>27/51</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">75.76% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>100/132</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">73×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">73×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">55×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">54×</span>
+<span class="cline-any cline-yes">54×</span>
+<span class="cline-any cline-yes">126×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">54×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-yes">87×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>form </span>{
+&nbsp;
+    import PropertySet = api.data.PropertySet;
+    import PropertyArray = api.data.PropertyArray;
+&nbsp;
+    export class FormSetOccurrenceView extends FormItemOccurrenceView {
+&nbsp;
+        protected formItemViews: FormItemView[] = [];
+&nbsp;
+        protected validityChangedListeners: {(event: RecordingValidityChangedEvent): void}[] = [];
+&nbsp;
+        protected removeButton: api.dom.AEl;
+&nbsp;
+        protected label: FormOccurrenceDraggableLabel;
+&nbsp;
+        protected currentValidationState: ValidationRecording;
+&nbsp;
+        protected formItemLayer: FormItemLayer;
+&nbsp;
+        protected propertySet: PropertySet;
+&nbsp;
+        protected formSetOccurrencesContainer: api.dom.DivEl;
+&nbsp;
+        protected occurrenceContainerClassName: string;
+&nbsp;
+        constructor(className: string, formItemOccurrence: FormItemOccurrence&lt;FormItemOccurrenceView&gt;) {
+            super(className, formItemOccurrence);
+        }
+&nbsp;
+        public layout(<span class="missing-if-branch" title="if path not taken" >I</span>validate: boolean = true): wemQ.Promise&lt;void&gt; {
+&nbsp;
+            let deferred = wemQ.defer&lt;void&gt;();
+&nbsp;
+            this.removeChildren();
+&nbsp;
+            this.removeButton = new api.dom.AEl('remove-button');
+            this.appendChild(this.removeButton);
+            this.removeButton.onClicked(<span class="fstat-no" title="function not covered" >(event: MouseEvent)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                this.notifyRemoveButtonClicked();</span>
+<span class="cstat-no" title="statement not covered" >                event.stopPropagation();</span>
+<span class="cstat-no" title="statement not covered" >                event.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            });
+&nbsp;
+            this.label = new FormOccurrenceDraggableLabel(this.getFormSet().getLabel(), this.getFormSet().getOccurrences());
+            this.appendChild(this.label);
+&nbsp;
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (this.getFormSet().getHelpText()) {
+                this.helpText = new HelpTextContainer(this.getFormSet().getHelpText());
+&nbsp;
+                this.helpText.onHelpTextToggled(<span class="fstat-no" title="function not covered" >(show)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    this.formItemLayer.toggleHelpText(show);</span>
+                });
+&nbsp;
+                this.label.appendChild(this.helpText.getToggler());
+                this.appendChild(this.helpText.getHelpText());
+&nbsp;
+                this.toggleHelpText(this.getFormSet().isHelpTextOn());
+            }
+&nbsp;
+            this.initValidationMessageBlock();
+&nbsp;
+            this.formSetOccurrencesContainer = new api.dom.DivEl(this.occurrenceContainerClassName);
+            this.appendChild(this.formSetOccurrencesContainer);
+&nbsp;
+            let layoutPromise: wemQ.Promise&lt;FormItemView[]&gt; = this.formItemLayer.setFormItems(this.getFormItems()).setParentElement(
+                this.formSetOccurrencesContainer).setParent(this).layout(this.propertySet, validate);
+&nbsp;
+            layoutPromise.then((formItemViews: FormItemView[]) =&gt; {
+&nbsp;
+                this.formItemViews = formItemViews;
+                <span class="missing-if-branch" title="if path not taken" >I</span>if (validate) {
+<span class="cstat-no" title="statement not covered" >                    this.validate(true);</span>
+                }
+&nbsp;
+                this.subscribeOnItemEvents();
+&nbsp;
+                this.refresh();
+                deferred.resolve(null);
+            }).catch(<span class="fstat-no" title="function not covered" >(reason: any)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                api.DefaultErrorHandler.handle(reason);</span>
+            }).done();
+&nbsp;
+            return deferred.promise;
+        }
+&nbsp;
+        protected initValidationMessageBlock() {
+            // must be implemented by children
+        }
+&nbsp;
+        getDataPath(): api.data.PropertyPath {
+            return this.propertySet.getProperty().getPath();
+        }
+&nbsp;
+        validate(<span class="missing-if-branch" title="if path not taken" >I</span>silent: boolean = true): ValidationRecording {
+&nbsp;
+            let allRecordings = new ValidationRecording();
+&nbsp;
+            this.formItemViews.forEach((formItemView: FormItemView) =&gt; {
+                let currRecording = formItemView.validate(silent);
+                allRecordings.flatten(currRecording);
+            });
+&nbsp;
+            this.extraValidation(allRecordings);
+&nbsp;
+            if (!silent) {
+                if (allRecordings.validityChanged(this.currentValidationState)) {
+                    this.notifyValidityChanged(new RecordingValidityChangedEvent(allRecordings, this.resolveValidationRecordingPath()));
+                }
+            }
+            this.currentValidationState = allRecordings;
+            return allRecordings;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected extraValidation(validationRecording: ValidationRecording)</span> {
+            // must be implemented by children
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected subscribeOnItemEvents() {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected getFormSet(): FormSet {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected getFormItems(): FormItem[] {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor');</span>
+        }
+&nbsp;
+        toggleHelpText(show?: boolean): any {
+            this.formItemLayer.toggleHelpText(show);
+            return super.toggleHelpText(show);
+        }
+&nbsp;
+        update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise&lt;void&gt; {
+            let set = propertyArray.getSet(this.formItemOccurrence.getIndex());
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (!set) {
+<span class="cstat-no" title="statement not covered" >                set = propertyArray.addSet();</span>
+            }
+            this.ensureSelectionArrayExists(set);
+            this.propertySet = set;
+            return this.formItemLayer.update(this.propertySet, unchangedOnly);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hasValidUserInput(): boolean {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let result = true;</span>
+<span class="cstat-no" title="statement not covered" >            this.formItemViews.forEach(<span class="fstat-no" title="function not covered" >(formItemView: FormItemView)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (!formItemView.hasValidUserInput()) {</span>
+<span class="cstat-no" title="statement not covered" >                    result = false;</span>
+                }
+            });
+<span class="cstat-no" title="statement not covered" >            return result;</span>
+        }
+&nbsp;
+        protected ensureSelectionArrayExists(propertyArraySet: PropertySet) {
+            // override if needed to add default selection to property set
+        }
+&nbsp;
+        showContainer(show: boolean) {
+            if (show) {
+                this.formSetOccurrencesContainer.show();
+            } else {
+                this.formSetOccurrencesContainer.hide();
+            }
+        }
+&nbsp;
+        refresh() {
+&nbsp;
+            if (!this.formItemOccurrence.oneAndOnly()) {
+                this.label.addClass('drag-control');
+            } else {
+                this.label.removeClass('drag-control');
+            }
+&nbsp;
+            this.removeButton.setVisible(this.formItemOccurrence.isRemoveButtonRequired());
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public reset() {</span>
+<span class="cstat-no" title="statement not covered" >            return this.formItemLayer.reset();</span>
+        }
+&nbsp;
+        protected resolveValidationRecordingPath(): ValidationRecordingPath {
+            return new ValidationRecordingPath(this.getDataPath(), null);
+        }
+&nbsp;
+        getValidationRecording(): ValidationRecording {
+            return this.currentValidationState;
+        }
+&nbsp;
+        getFormItemViews(): FormItemView[] {
+            return this.formItemViews;
+        }
+&nbsp;
+        giveFocus() {
+            let focusGiven = false;
+            this.getFormItemViews().forEach((formItemView: FormItemView) =&gt; {
+                <span class="missing-if-branch" title="if path not taken" >I</span>if (!focusGiven &amp;&amp; formItemView.giveFocus()) {
+<span class="cstat-no" title="statement not covered" >                    focusGiven = true;</span>
+                }
+            });
+            return focusGiven;
+        }
+&nbsp;
+        onEditContentRequest(listener: (content: api.content.ContentSummary) =&gt; void) {
+            this.formItemViews.forEach((formItemView: FormItemView) =&gt; {
+                formItemView.onEditContentRequest(listener);
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unEditContentRequest(listener: (content: api.content.ContentSummary) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.formItemViews.forEach(<span class="fstat-no" title="function not covered" >(formItemView: FormItemView)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                formItemView.unEditContentRequest(listener);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public displayValidationErrors(value: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.formItemViews.forEach(<span class="fstat-no" title="function not covered" >(view: FormItemView)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                view.displayValidationErrors(value);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setHighlightOnValidityChange(highlight: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.formItemViews.forEach(<span class="fstat-no" title="function not covered" >(view: FormItemView)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                view.setHighlightOnValidityChange(highlight);</span>
+            });
+        }
+&nbsp;
+        onValidityChanged(listener: (event: RecordingValidityChangedEvent)=&gt;void) {
+            this.validityChangedListeners.push(listener);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unValidityChanged(listener: (event: RecordingValidityChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.validityChangedListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: (event: RecordingValidityChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return listener === currentListener;</span>
+            });
+        }
+&nbsp;
+        protected notifyValidityChanged(event: RecordingValidityChangedEvent) {
+            this.validityChangedListeners.forEach((listener: (event: RecordingValidityChangedEvent)=&gt;void) =&gt; {
+                listener(event);
+            });
+        }
+&nbsp;
+        onFocus(listener: (event: FocusEvent) =&gt; void) {
+            this.formItemViews.forEach(<span class="fstat-no" title="function not covered" >(formItemView)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                formItemView.onFocus(listener);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unFocus(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.formItemViews.forEach(<span class="fstat-no" title="function not covered" >(formItemView)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                formItemView.unFocus(listener);</span>
+            });
+        }
+&nbsp;
+        onBlur(listener: (event: FocusEvent) =&gt; void) {
+            this.formItemViews.forEach(<span class="fstat-no" title="function not covered" >(formItemView)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                formItemView.onBlur(listener);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unBlur(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.formItemViews.forEach(<span class="fstat-no" title="function not covered" >(formItemView)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                formItemView.unBlur(listener);</span>
+            });
+        }
+    }
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

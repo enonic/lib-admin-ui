@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/application/MarketApplication.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/application/</a> MarketApplication.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">34.88% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>45/129</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">12.9% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/31</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20.69% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/29</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">32.8% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>41/125</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>application </span>{
+&nbsp;
+    import ApplicationKey = api.application.ApplicationKey;
+&nbsp;
+    export class MarketApplication {
+&nbsp;
+        private appKey: ApplicationKey;
+        private displayName: string;
+        private name: string;
+        private description: string;
+        private iconUrl: string;
+        private url: string;
+        private latestVersion: string;
+        private versions: Object;
+        private <span class="cstat-no" title="statement not covered" >status: MarketAppStatus = MarketAppStatus.NOT_INSTALLED;</span>
+        private <span class="cstat-no" title="statement not covered" >progress: number = 0;</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(builder: MarketApplicationBuilder)</span> {
+<span class="cstat-no" title="statement not covered" >            this.displayName = builder.displayName;</span>
+<span class="cstat-no" title="statement not covered" >            this.name = builder.name;</span>
+<span class="cstat-no" title="statement not covered" >            this.description = builder.description;</span>
+<span class="cstat-no" title="statement not covered" >            this.iconUrl = builder.iconUrl;</span>
+<span class="cstat-no" title="statement not covered" >            this.url = builder.url;</span>
+<span class="cstat-no" title="statement not covered" >            this.latestVersion = builder.latestVersion;</span>
+<span class="cstat-no" title="statement not covered" >            this.versions = builder.versions;</span>
+<span class="cstat-no" title="statement not covered" >            this.appKey = builder.appKey;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static fromJson(appKey: string, json: api.application.json.MarketApplicationJson)</span>: MarketApplication {
+<span class="cstat-no" title="statement not covered" >            return new MarketApplicationBuilder().fromJson(appKey, json).build();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static fromJsonArray(appsObj: Object)</span>: MarketApplication[] {
+<span class="cstat-no" title="statement not covered" >            const array: MarketApplication[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            for (const name in appsObj) {</span>
+<span class="cstat-no" title="statement not covered" >                if (appsObj.hasOwnProperty(name)) {</span>
+<span class="cstat-no" title="statement not covered" >                    array.push(MarketApplication.fromJson(name, &lt;api.application.json.MarketApplicationJson&gt;appsObj[name]));</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            return array;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public isEmpty(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return !this.displayName &amp;&amp; !this.url;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getDisplayName(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.displayName;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getName(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.name;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getDescription(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.description;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getIconUrl(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.iconUrl;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getUrl(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.url;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getLatestVersion(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.latestVersion;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getLatestVersionDownloadUrl(): string {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.getLatestVersion()) {</span>
+<span class="cstat-no" title="statement not covered" >                return this.getVersions()[this.getLatestVersion()]['applicationUrl'];</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getVersions(): Object {</span>
+<span class="cstat-no" title="statement not covered" >            return this.versions;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setStatus(status: MarketAppStatus)</span> {
+<span class="cstat-no" title="statement not covered" >            this.status = status;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getStatus(): MarketAppStatus {</span>
+<span class="cstat-no" title="statement not covered" >            return this.status;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setProgress(progress: number)</span> {
+<span class="cstat-no" title="statement not covered" >            this.progress = progress;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getProgress(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.progress;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getAppKey(): ApplicationKey {</span>
+<span class="cstat-no" title="statement not covered" >            return this.appKey;</span>
+        }
+    }
+&nbsp;
+    export enum MarketAppStatus {
+        NOT_INSTALLED,
+        INSTALLED,
+        INSTALLING,
+        OLDER_VERSION_INSTALLED,
+        UNKNOWN
+    }
+&nbsp;
+    export class MarketAppStatusFormatter {
+&nbsp;
+        public static statusInstallCssClass: string = 'install';
+        public static statusInstalledCssClass: string = 'installed';
+        public static statusInstallingCssClass: string = 'installing';
+        public static statusUpdateCssClass: string = 'update';
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static formatStatus(appStatus: MarketAppStatus, progress?: number)</span>: string {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let status;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            switch (appStatus) {</span>
+            case MarketAppStatus.NOT_INSTALLED:
+<span class="cstat-no" title="statement not covered" >                status = 'Install';</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case MarketAppStatus.INSTALLED:
+<span class="cstat-no" title="statement not covered" >                status = 'Installed';</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case MarketAppStatus.INSTALLING:
+<span class="cstat-no" title="statement not covered" >                status = new api.ui.ProgressBar(progress).toString();</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case MarketAppStatus.OLDER_VERSION_INSTALLED:
+<span class="cstat-no" title="statement not covered" >                status = 'Update';</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case MarketAppStatus.UNKNOWN:
+<span class="cstat-no" title="statement not covered" >                status = 'Unknown';</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            default:
+<span class="cstat-no" title="statement not covered" >                status = 'Unknown';</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!!MarketAppStatus[status]) {</span>
+<span class="cstat-no" title="statement not covered" >                return 'Unknown';</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return status;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static getStatusCssClass(appStatus: MarketAppStatus)</span>: string {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let cssClass;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            switch (appStatus) {</span>
+            case MarketAppStatus.NOT_INSTALLED:
+<span class="cstat-no" title="statement not covered" >                cssClass = MarketAppStatusFormatter.statusInstallCssClass;</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case MarketAppStatus.INSTALLED:
+<span class="cstat-no" title="statement not covered" >                cssClass = MarketAppStatusFormatter.statusInstalledCssClass;</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case MarketAppStatus.INSTALLING:
+<span class="cstat-no" title="statement not covered" >                cssClass = MarketAppStatusFormatter.statusInstallingCssClass;</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case MarketAppStatus.OLDER_VERSION_INSTALLED:
+<span class="cstat-no" title="statement not covered" >                cssClass = MarketAppStatusFormatter.statusUpdateCssClass;</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case MarketAppStatus.UNKNOWN:
+<span class="cstat-no" title="statement not covered" >                cssClass = 'unknown';</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            default:
+<span class="cstat-no" title="statement not covered" >                cssClass = 'Unknown';</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!!MarketAppStatus[status]) {</span>
+<span class="cstat-no" title="statement not covered" >                return 'unknown';</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return cssClass;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static formatPerformedAction(appStatus: MarketAppStatus)</span>: string {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let performedOperation;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            switch (appStatus) {</span>
+            case MarketAppStatus.NOT_INSTALLED:
+<span class="cstat-no" title="statement not covered" >                performedOperation = 'installed';</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case MarketAppStatus.OLDER_VERSION_INSTALLED:
+<span class="cstat-no" title="statement not covered" >                performedOperation = 'updated';</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            default:
+<span class="cstat-no" title="statement not covered" >                performedOperation = 'installed';</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return performedOperation;</span>
+        }
+    }
+&nbsp;
+    export class MarketApplicationBuilder {
+&nbsp;
+        displayName: string;
+        name: string;
+        description: string;
+        iconUrl: string;
+        url: string;
+        latestVersion: string;
+        versions: Object;
+        status: string;
+        appKey: ApplicationKey;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public fromJson(appKey: string, json: api.application.json.MarketApplicationJson)</span>: MarketApplicationBuilder {
+<span class="cstat-no" title="statement not covered" >            this.appKey = ApplicationKey.fromString(appKey);</span>
+<span class="cstat-no" title="statement not covered" >            this.displayName = json.displayName;</span>
+<span class="cstat-no" title="statement not covered" >            this.description = json.description;</span>
+<span class="cstat-no" title="statement not covered" >            this.iconUrl = json.iconUrl;</span>
+<span class="cstat-no" title="statement not covered" >            this.url = json.url;</span>
+<span class="cstat-no" title="statement not covered" >            this.latestVersion = json.latestVersion;</span>
+<span class="cstat-no" title="statement not covered" >            this.versions = json.versions;</span>
+<span class="cstat-no" title="statement not covered" >            this.name = json.name;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setLatestVersion(latestVersion: string)</span>: MarketApplicationBuilder {
+<span class="cstat-no" title="statement not covered" >            this.latestVersion = latestVersion;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public build(): MarketApplication {</span>
+<span class="cstat-no" title="statement not covered" >            return new MarketApplication(this);</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

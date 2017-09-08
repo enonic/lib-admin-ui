@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/app/ServerEventsConnection.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/app/</a> ServerEventsConnection.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">19.38% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>25/129</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">3.7% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>2/54</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">8.82% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>3/34</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">18.85% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>23/122</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>app </span>{
+&nbsp;
+    import EventJson = api.event.EventJson;
+&nbsp;
+    export class ServerEventsConnection {
+        private static INSTANCE: ServerEventsConnection;
+&nbsp;
+        private static KEEP_ALIVE_TIME: number = 30 * 1000;
+&nbsp;
+        private ws: WebSocket;
+        private reconnectInterval: number;
+        private <span class="cstat-no" title="statement not covered" >serverEventReceivedListeners: {(event: api.event.Event):void}[] = [];</span>
+        private <span class="cstat-no" title="statement not covered" >connectionLostListeners: {():void}[] = [];</span>
+        private <span class="cstat-no" title="statement not covered" >connectionRestoredListeners: {():void}[] = [];</span>
+        private <span class="cstat-no" title="statement not covered" >connected: boolean = false;</span>
+        private disconnectTimeoutHandle: number;
+        private <span class="cstat-no" title="statement not covered" >keepConnected: boolean = false;</span>
+        private downTime: number;
+        private keepAliveIntervalId: number;
+&nbsp;
+        public static debug: boolean = false;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(<span class="cstat-no" title="statement not covered" >reconnectIntervalSeconds: number = 5)</span></span> {
+<span class="cstat-no" title="statement not covered" >            this.ws = null;</span>
+<span class="cstat-no" title="statement not covered" >            this.reconnectInterval = reconnectIntervalSeconds * 1000;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static getInstance(): ServerEventsConnection {</span>
+<span class="cstat-no" title="statement not covered" >            if (!ServerEventsConnection.INSTANCE) {</span>
+<span class="cstat-no" title="statement not covered" >                ServerEventsConnection.INSTANCE = new ServerEventsConnection();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return ServerEventsConnection.INSTANCE;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public connect() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!WebSocket) {</span>
+<span class="cstat-no" title="statement not covered" >                console.warn('ServerEventsConnection: WebSockets not supported. Server events disabled.');</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let wsUrl = api.util.UriHelper.joinPath(this.getWebSocketUriPrefix(), api.util.UriHelper.getAdminUriPrefix(), 'event');</span>
+<span class="cstat-no" title="statement not covered" >            this.keepConnected = true;</span>
+<span class="cstat-no" title="statement not covered" >            this.doConnect(wsUrl);</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private doConnect(wsUrl: string)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            this.ws = new WebSocket(wsUrl, 'text');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.ws.addEventListener('close', <span class="fstat-no" title="function not covered" >(ev: CloseEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                clearInterval(this.keepAliveIntervalId);</span>
+<span class="cstat-no" title="statement not covered" >                if (ServerEventsConnection.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    let m = 'ServerEventsConnection: connection closed to ' + wsUrl;</span>
+<span class="cstat-no" title="statement not covered" >                    if (this.downTime &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >                        m += '\nUptime: ' + (new Date().getTime() - this.downTime);</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    console.warn(m);</span>
+<span class="cstat-no" title="statement not covered" >                    this.downTime = new Date().getTime();</span>
+                }
+<span class="cstat-no" title="statement not covered" >                this.disconnectTimeoutHandle = setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                    if (this.connected) {</span>
+<span class="cstat-no" title="statement not covered" >                        if (this.keepConnected) {</span>
+<span class="cstat-no" title="statement not covered" >                            this.notifyConnectionLost();</span>
+                        }
+<span class="cstat-no" title="statement not covered" >                        this.connected = !this.connected;</span>
+                    }
+                }, this.reconnectInterval + 1000);
+&nbsp;
+                // attempt to reconnect
+<span class="cstat-no" title="statement not covered" >                if (this.keepConnected) {</span>
+<span class="cstat-no" title="statement not covered" >                    setTimeout(<span class="fstat-no" title="function not covered" >()=&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                        if (this.keepConnected) {</span>
+<span class="cstat-no" title="statement not covered" >                            this.doConnect(wsUrl);</span>
+                        }
+                    }, this.reconnectInterval);
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.ws.addEventListener('error', <span class="fstat-no" title="function not covered" >(ev: ErrorEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (ServerEventsConnection.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.error('ServerEventsConnection: Unable to connect to server web socket on ' + wsUrl, ev);</span>
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.ws.addEventListener('message', <span class="fstat-no" title="function not covered" >(remoteEvent: any)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let jsonEvent = &lt;api.event.NodeEventJson&gt; JSON.parse(remoteEvent.data);</span>
+<span class="cstat-no" title="statement not covered" >                if (ServerEventsConnection.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.debug('ServerEventsConnection: Server event [' + jsonEvent.type + ']', jsonEvent);</span>
+                }
+<span class="cstat-no" title="statement not covered" >                this.handleServerEvent(jsonEvent);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.ws.addEventListener('open', <span class="fstat-no" title="function not covered" >(event: Event)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (ServerEventsConnection.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    let m = 'ServerEventsConnection: connection opened to ' + wsUrl;</span>
+<span class="cstat-no" title="statement not covered" >                    if (this.downTime &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >                        m += '\nDowntime: ' + (new Date().getTime() - this.downTime);</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    console.log(m);</span>
+<span class="cstat-no" title="statement not covered" >                    this.downTime = new Date().getTime();</span>
+                }
+<span class="cstat-no" title="statement not covered" >                clearTimeout(this.disconnectTimeoutHandle);</span>
+<span class="cstat-no" title="statement not covered" >                this.keepAliveIntervalId = setInterval(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                    if (this.connected) {</span>
+<span class="cstat-no" title="statement not covered" >                        this.ws.send('KeepAlive');</span>
+<span class="cstat-no" title="statement not covered" >                        if (ServerEventsConnection.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                            console.log('ServerEventsConnection: Sending Keep Alive message');</span>
+                        }
+                    }
+                }, ServerEventsConnection.KEEP_ALIVE_TIME);
+<span class="cstat-no" title="statement not covered" >                if (!this.connected) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.notifyConnectionRestored();</span>
+<span class="cstat-no" title="statement not covered" >                    this.connected = !this.connected;</span>
+                }
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public disconnect() {</span>
+<span class="cstat-no" title="statement not covered" >            this.keepConnected = false;</span>
+<span class="cstat-no" title="statement not covered" >            if (this.ws) {</span>
+<span class="cstat-no" title="statement not covered" >                this.ws.close();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public isConnected(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.ws.readyState === WebSocket.OPEN;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private handleServerEvent(eventJson: api.event.NodeEventJson)</span>: void {
+<span class="cstat-no" title="statement not covered" >            let clientEvent: api.event.Event = this.translateServerEvent(eventJson);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (clientEvent) {</span>
+<span class="cstat-no" title="statement not covered" >                this.notifyServerEvent(clientEvent);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private translateServerEvent(eventJson: EventJson)</span>: api.event.Event {
+<span class="cstat-no" title="statement not covered" >            let eventType = eventJson.type;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (eventType === 'application') {</span>
+<span class="cstat-no" title="statement not covered" >                return api.application.ApplicationEvent.fromJson(&lt;api.application.ApplicationEventJson&gt;eventJson);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            if (eventType.indexOf('node.') === 0) {</span>
+<span class="cstat-no" title="statement not covered" >                let event;</span>
+<span class="cstat-no" title="statement not covered" >                if (api.content.event.ContentServerEvent.is(&lt;api.event.NodeEventJson&gt;eventJson)) {</span>
+<span class="cstat-no" title="statement not covered" >                    event = api.content.event.ContentServerEvent.fromJson(&lt;api.event.NodeEventJson&gt;eventJson);</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (api.security.event.PrincipalServerEvent.is(&lt;api.event.NodeEventJson&gt;eventJson)) {</span>
+<span class="cstat-no" title="statement not covered" >                    event = api.security.event.PrincipalServerEvent.fromJson(&lt;api.event.NodeEventJson&gt;eventJson);</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (event &amp;&amp; event.getNodeChange()) {</span>
+<span class="cstat-no" title="statement not covered" >                    return event;</span>
+                }
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return null;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getWebSocketUriPrefix(): string {</span>
+<span class="cstat-no" title="statement not covered" >            let loc = window.location;</span>
+<span class="cstat-no" title="statement not covered" >            let newUri;</span>
+<span class="cstat-no" title="statement not covered" >            if (loc.protocol === 'https:') {</span>
+<span class="cstat-no" title="statement not covered" >                newUri = 'wss:';</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                newUri = 'ws:';</span>
+            }
+<span class="cstat-no" title="statement not covered" >            newUri += '//' + loc.host;</span>
+<span class="cstat-no" title="statement not covered" >            return newUri;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private notifyServerEvent(serverEvent: api.event.Event)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            this.serverEventReceivedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: api.event.Event)=&gt;void)</span>=&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener.call(this, serverEvent);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onServerEvent(listener: (event: api.event.Event) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.serverEventReceivedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unServerEvent(listener: (event: api.event.Event) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.serverEventReceivedListeners =</span>
+                this.serverEventReceivedListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: (event: api.event.Event)=&gt;void)</span>=&gt; {
+<span class="cstat-no" title="statement not covered" >                    return currentListener !== listener;</span>
+                });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private notifyConnectionLost() {</span></span>
+<span class="cstat-no" title="statement not covered" >            this.connectionLostListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: any) =&gt; void)</span> =&gt;  {</span>
+<span class="cstat-no" title="statement not covered" >                listener.call(this);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onConnectionLost(listener: () =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.connectionLostListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unConnectionLost(listener: () =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.connectionLostListeners =</span>
+                this.connectionLostListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: () =&gt; void)</span> =&gt;  {
+<span class="cstat-no" title="statement not covered" >                    return currentListener !== listener;</span>
+                });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private notifyConnectionRestored() {</span></span>
+<span class="cstat-no" title="statement not covered" >            this.connectionRestoredListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: any) =&gt; void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener.call(this);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onConnectionRestored(listener: () =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.connectionRestoredListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unConnectionRestored(listener: () =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.connectionRestoredListeners =</span>
+                this.connectionRestoredListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: () =&gt; void)</span> =&gt;  {
+<span class="cstat-no" title="statement not covered" >                    return currentListener !== listener;</span>
+                });
+        }
+&nbsp;
+    }
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

@@ -1,0 +1,2543 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/util/htmlarea/dialog/ImageModalDialog.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/util/htmlarea/dialog/</a> ImageModalDialog.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">17.91% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>84/469</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">3.57% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/112</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">7.07% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>7/99</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">17.23% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>76/441</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>util.<span class="branch-1 cbranch-no" title="branch not covered" ></span>htmlarea.<span class="branch-1 cbranch-no" title="branch not covered" ></span>dialog </span>{
+&nbsp;
+    import FormItemBuilder = api.ui.form.FormItemBuilder;
+    import FormItem = api.ui.form.FormItem;
+    import Validators = api.ui.form.Validators;
+    import FileUploadedEvent = api.ui.uploader.FileUploadedEvent;
+    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
+    import FileUploadProgressEvent = api.ui.uploader.FileUploadProgressEvent;
+    import FileUploadCompleteEvent = api.ui.uploader.FileUploadCompleteEvent;
+    import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
+    import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
+    import Action = api.ui.Action;
+    import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
+    import ContentSummary = api.content.ContentSummary;
+    import Content = api.content.Content;
+&nbsp;
+    export class ImageModalDialog extends ModalDialog {
+&nbsp;
+        private imagePreviewContainer: api.dom.DivEl;
+        private imageCaptionField: FormItem;
+        private imageAltTextField: FormItem;
+        private imageUploaderEl: api.content.image.ImageUploaderEl;
+        private imageElement: HTMLImageElement;
+        private content: api.content.ContentSummary;
+        private imageSelector: api.content.ContentComboBox;
+        private progress: api.ui.ProgressBar;
+        private error: api.dom.DivEl;
+        private image: api.dom.ImgEl;
+        private elementContainer: HTMLElement;
+        private callback: Function;
+        private imageToolbar: ImageToolbar;
+        private imagePreviewScrollHandler: ImagePreviewScrollHandler;
+        private imageLoadMask: api.ui.mask.LoadMask;
+        private dropzoneContainer: api.ui.uploader.DropzoneContainer;
+        private imageSelectorFormItem: FormItem;
+&nbsp;
+        static imagePrefix: string = 'image://';
+        static maxImageWidth: number = 640;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(config: HtmlAreaImage, content: api.content.ContentSummary)</span> {
+<span class="cstat-no" title="statement not covered" >            super(config.editor, 'Insert Image', 'image-modal-dialog');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.elementContainer = config.container;</span>
+<span class="cstat-no" title="statement not covered" >            this.content = content;</span>
+<span class="cstat-no" title="statement not covered" >            this.callback = config.callback;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.initLoader();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (config.element) {</span>
+<span class="cstat-no" title="statement not covered" >                this.imageElement = &lt;HTMLImageElement&gt;config.element;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.loadImage();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.setImageFieldValues(this.imageCaptionField, this.getCaption());</span>
+<span class="cstat-no" title="statement not covered" >                this.setImageFieldValues(this.imageAltTextField, this.getAltText());</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private setImageFieldValues(field: FormItem, value: string)</span> {
+            (&lt;api.dom.InputEl&gt;<span class="cstat-no" title="statement not covered" >field.getInput()).setValue(value);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private initLoader() {</span>
+<span class="cstat-no" title="statement not covered" >            let loader = this.imageSelector.getLoader();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            loader.setContentPath(this.content.getPath());</span>
+<span class="cstat-no" title="statement not covered" >            loader.setAllowedContentTypeNames([api.schema.content.ContentTypeName.IMAGE, api.schema.content.ContentTypeName.MEDIA_VECTOR]);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.imageUploaderEl.setParams({</span>
+                parent: this.content.getContentId().toString()
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private loadImage() {</span></span>
+<span class="cstat-no" title="statement not covered" >            let loader = this.imageSelector.getLoader();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let singleLoadListener = <span class="fstat-no" title="function not covered" >(event: api.util.loader.event.LoadedDataEvent&lt;api.content.ContentSummary&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let imageContent = this.getImageContent(event.getData());</span>
+<span class="cstat-no" title="statement not covered" >                if (imageContent) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.imageSelector.setValue(imageContent.getId());</span>
+<span class="cstat-no" title="statement not covered" >                    this.createImgElForExistingImage(imageContent);</span>
+<span class="cstat-no" title="statement not covered" >                    this.previewImage();</span>
+<span class="cstat-no" title="statement not covered" >                    this.imageSelectorFormItem.addClass('selected-item-preview');</span>
+                }
+<span class="cstat-no" title="statement not covered" >                loader.unLoadedData(singleLoadListener);</span>
+            };
+<span class="cstat-no" title="statement not covered" >            loader.onLoadedData(singleLoadListener);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            loader.load();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected getMainFormItems(): FormItem[] {</span>
+<span class="cstat-no" title="statement not covered" >            this.imageSelectorFormItem = this.createImageSelector('imageId');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.addUploaderAndPreviewControls();</span>
+<span class="cstat-no" title="statement not covered" >            this.setFirstFocusField(this.imageSelectorFormItem.getInput());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.imageCaptionField = this.createFormItem('caption', 'Caption', null);</span>
+<span class="cstat-no" title="statement not covered" >            this.imageAltTextField = this.createFormItem('altText', 'Alternative text', null);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.imageCaptionField.addClass('caption').hide();</span>
+<span class="cstat-no" title="statement not covered" >            this.imageAltTextField.addClass('alttext').hide();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return [</span>
+                this.imageSelectorFormItem,
+                this.imageCaptionField,
+                this.imageAltTextField
+            ];
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private createImageSelector(id: string)</span>: FormItem {</span>
+<span class="cstat-no" title="statement not covered" >            let imageSelector = api.content.ContentComboBox.create().setMaximumOccurrences(1).build();</span>
+<span class="cstat-no" title="statement not covered" >            let formItem = this.createFormItem(id, 'Image', Validators.required, api.util.StringHelper.EMPTY_STRING,</span>
+                    &lt;api.dom.FormItemEl&gt;imageSelector);
+<span class="cstat-no" title="statement not covered" >            let imageSelectorComboBox = imageSelector.getComboBox();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            imageSelector.getComboBox().getInput().setPlaceholder('Type to search or drop image here...');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.imageSelector = imageSelector;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            formItem.addClass('image-selector');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            imageSelectorComboBox.onOptionSelected(<span class="fstat-no" title="function not covered" >(event: SelectedOptionEvent&lt;api.content.ContentSummary&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let imageContent = event.getSelectedOption().getOption().displayValue;</span>
+<span class="cstat-no" title="statement not covered" >                if (!imageContent.getContentId()) {</span>
+<span class="cstat-no" title="statement not covered" >                    return;</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.imageLoadMask.show();</span>
+<span class="cstat-no" title="statement not covered" >                this.createImgElForNewImage(imageContent);</span>
+<span class="cstat-no" title="statement not covered" >                this.previewImage();</span>
+<span class="cstat-no" title="statement not covered" >                formItem.addClass('selected-item-preview');</span>
+<span class="cstat-no" title="statement not covered" >                this.setAltTextFieldValue(imageContent.getDisplayName());</span>
+<span class="cstat-no" title="statement not covered" >                this.fetchImageCaption(imageContent).then(<span class="fstat-no" title="function not covered" >value </span>=&gt; <span class="cstat-no" title="statement not covered" >this.setCaptionFieldValue(value))</span>.catch(</span>
+<span class="fstat-no" title="function not covered" >                    (reason: any)</span> =&gt; <span class="cstat-no" title="statement not covered" >api.DefaultErrorHandler.handle(reason))</span>.done();
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            imageSelectorComboBox.onOptionDeselected(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                formItem.removeClass('selected-item-preview');</span>
+<span class="cstat-no" title="statement not covered" >                this.displayValidationErrors(false);</span>
+<span class="cstat-no" title="statement not covered" >                this.removePreview();</span>
+<span class="cstat-no" title="statement not covered" >                this.imageToolbar.remove();</span>
+<span class="cstat-no" title="statement not covered" >                this.imageCaptionField.hide();</span>
+<span class="cstat-no" title="statement not covered" >                this.imageAltTextField.hide();</span>
+<span class="cstat-no" title="statement not covered" >                this.imageUploaderEl.show();</span>
+<span class="cstat-no" title="statement not covered" >                this.imagePreviewScrollHandler.toggleScrollButtons();</span>
+<span class="cstat-no" title="statement not covered" >                api.ui.responsive.ResponsiveManager.fireResizeEvent();</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return formItem;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private addUploaderAndPreviewControls() {</span></span>
+<span class="cstat-no" title="statement not covered" >            let imageSelectorContainer = this.imageSelectorFormItem.getInput().getParentElement();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            imageSelectorContainer.appendChild(this.imageUploaderEl = this.createImageUploader());</span>
+<span class="cstat-no" title="statement not covered" >            this.initDragAndDropUploaderEvents();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.createImagePreviewContainer();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let scrollBarWrapperDiv = new api.dom.DivEl('preview-panel-scrollbar-wrapper');</span>
+<span class="cstat-no" title="statement not covered" >            scrollBarWrapperDiv.appendChild(this.imagePreviewContainer);</span>
+<span class="cstat-no" title="statement not covered" >            let scrollNavigationWrapperDiv = new api.dom.DivEl('preview-panel-scroll-navigation-wrapper');</span>
+<span class="cstat-no" title="statement not covered" >            scrollNavigationWrapperDiv.appendChild(scrollBarWrapperDiv);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            wemjq(scrollNavigationWrapperDiv.getHTMLElement()).insertAfter(imageSelectorContainer.getHTMLElement());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewScrollHandler = new ImagePreviewScrollHandler(this.imagePreviewContainer);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.imageLoadMask = new api.ui.mask.LoadMask(this.imagePreviewContainer);</span>
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewContainer.appendChild(this.imageLoadMask);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, <span class="fstat-no" title="function not covered" >(item: api.ui.responsive.ResponsiveItem)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.resetPreviewContainerMaxHeight();</span>
+<span class="cstat-no" title="statement not covered" >                this.imagePreviewScrollHandler.toggleScrollButtons();</span>
+<span class="cstat-no" title="statement not covered" >                this.imagePreviewScrollHandler.setMarginRight();</span>
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private getImageContent(images: api.content.ContentSummary[])</span>: api.content.ContentSummary {</span>
+<span class="cstat-no" title="statement not covered" >            let filteredImages = images.filter(<span class="fstat-no" title="function not covered" >(image: api.content.ContentSummary)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return this.imageElement.src.indexOf(image.getId()) &gt; 0;</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return filteredImages.length &gt; 0 ? filteredImages[0] : null;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createImgElForExistingImage(imageContent: api.content.ContentSummary)</span> {
+<span class="cstat-no" title="statement not covered" >            this.image = this.createImgElForPreview(imageContent, true);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createImgElForNewImage(imageContent: api.content.ContentSummary)</span> {
+<span class="cstat-no" title="statement not covered" >            this.image = this.createImgElForPreview(imageContent, false);</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private previewImage() {</span></span>
+<span class="cstat-no" title="statement not covered" >            this.imageToolbar = new ImageToolbar(this.image, this.imageLoadMask);</span>
+<span class="cstat-no" title="statement not covered" >            this.imageToolbar.onCroppingChanged(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.imagePreviewScrollHandler.resetScrollPosition();</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.image.onLoaded(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.imageLoadMask.hide();</span>
+<span class="cstat-no" title="statement not covered" >                this.imagePreviewContainer.removeClass('upload');</span>
+<span class="cstat-no" title="statement not covered" >                wemjq(this.imageToolbar.getHTMLElement()).insertBefore(</span>
+                    this.imagePreviewContainer.getHTMLElement().parentElement.parentElement);
+<span class="cstat-no" title="statement not covered" >                api.ui.responsive.ResponsiveManager.fireResizeEvent();</span>
+<span class="cstat-no" title="statement not covered" >                if (this.getCaptionFieldValue() === '') {</span>
+<span class="cstat-no" title="statement not covered" >                    this.imageCaptionField.getEl().scrollIntoView();</span>
+<span class="cstat-no" title="statement not covered" >                    this.imageCaptionField.getInput().giveFocus();</span>
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.hideUploadMasks();</span>
+<span class="cstat-no" title="statement not covered" >            this.imageCaptionField.show();</span>
+<span class="cstat-no" title="statement not covered" >            this.imageAltTextField.show();</span>
+<span class="cstat-no" title="statement not covered" >            this.imageUploaderEl.hide();</span>
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewContainer.insertChild(this.image, 0);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createImgElForPreview(imageContent: api.content.ContentSummary, <span class="cstat-no" title="statement not covered" >isExistingImg: boolean = false)</span></span>: api.dom.ImgEl {
+<span class="cstat-no" title="statement not covered" >            let imgSrcAttr = isExistingImg</span>
+                ? new api.dom.ElementHelper(this.imageElement).getAttribute('src')
+                : this.generateDefaultImgSrc(imageContent.getContentId().toString());
+<span class="cstat-no" title="statement not covered" >            let imgDataSrcAttr = isExistingImg</span>
+                ? new api.dom.ElementHelper(this.imageElement).getAttribute('data-src')
+                : ImageModalDialog.imagePrefix + imageContent.getContentId().toString();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let imageEl = new api.dom.ImgEl(imgSrcAttr);</span>
+<span class="cstat-no" title="statement not covered" >            imageEl.getEl().setAttribute('alt', imageContent.getDisplayName());</span>
+<span class="cstat-no" title="statement not covered" >            imageEl.getEl().setAttribute('data-src', imgDataSrcAttr);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let imageAlignment = isExistingImg ? (this.imageElement.style.textAlign ||</span>
+                                                  this.imageElement.parentElement.style.cssFloat) : 'justify';
+<span class="cstat-no" title="statement not covered" >            imageEl.getHTMLElement().style.textAlign = imageAlignment;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return imageEl;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private generateDefaultImgSrc(contentId: string)</span>: string {
+<span class="cstat-no" title="statement not covered" >            return new api.content.util.ContentImageUrlResolver().setContentId(new api.content.ContentId(contentId)).setScaleWidth(</span>
+                true).setSize(
+                ImageModalDialog.maxImageWidth).resolve();
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private removePreview() {</span>
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewContainer.removeChild(this.image);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        show() {</span>
+<span class="cstat-no" title="statement not covered" >            super.show();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.imageUploaderEl.show();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createImagePreviewContainer() {</span>
+<span class="cstat-no" title="statement not covered" >            let imagePreviewContainer = new api.dom.DivEl('content-item-preview-panel');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.progress = new api.ui.ProgressBar();</span>
+<span class="cstat-no" title="statement not covered" >            imagePreviewContainer.appendChild(this.progress);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.error = new api.dom.DivEl('error');</span>
+<span class="cstat-no" title="statement not covered" >            imagePreviewContainer.appendChild(this.error);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewContainer = imagePreviewContainer;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.resetPreviewContainerMaxHeight();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private resetPreviewContainerMaxHeight() {</span>
+            //limiting image modal dialog height up to screen size except padding on top and bottom
+            //so 340 is 300px content of image modal dialog except preview container + 20*2 from top and bottom of screen
+<span class="cstat-no" title="statement not covered" >            let maxImagePreviewHeight = wemjq(window).height() - 340;</span>
+<span class="cstat-no" title="statement not covered" >            new api.dom.ElementHelper(this.imagePreviewContainer.getHTMLElement()).setMaxHeightPx(maxImagePreviewHeight);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getCaption(): string {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.imageElement) {</span>
+<span class="cstat-no" title="statement not covered" >                return wemjq(this.imageElement.parentElement).children('figcaption').text();</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                return api.util.StringHelper.EMPTY_STRING;</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getAltText(): string {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.imageElement) {</span>
+<span class="cstat-no" title="statement not covered" >                return this.imageElement.alt;</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                return api.util.StringHelper.EMPTY_STRING;</span>
+            }
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private createImageUploader(): api.content.image.ImageUploaderEl {</span></span>
+<span class="cstat-no" title="statement not covered" >            let uploader = new api.content.image.ImageUploaderEl({</span>
+                operation: api.ui.uploader.MediaUploaderElOperation.create,
+                name: 'image-selector-upload-dialog',
+                showResult: false,
+                maximumOccurrences: 1,
+                allowMultiSelection: false,
+                deferred: true,
+                showCancel: false,
+                selfIsDropzone: false
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.dropzoneContainer = new api.ui.uploader.DropzoneContainer(true);</span>
+<span class="cstat-no" title="statement not covered" >            this.dropzoneContainer.hide();</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.dropzoneContainer);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            uploader.addDropzone(this.dropzoneContainer.getDropzone().getId());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            uploader.hide();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            uploader.onUploadStarted(<span class="fstat-no" title="function not covered" >(event: FileUploadStartedEvent&lt;Content&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.hideUploadMasks();</span>
+<span class="cstat-no" title="statement not covered" >                this.imagePreviewContainer.addClass('upload');</span>
+<span class="cstat-no" title="statement not covered" >                this.showProgress();</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            uploader.onUploadProgress(<span class="fstat-no" title="function not covered" >(event: FileUploadProgressEvent&lt;Content&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let item = event.getUploadItem();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                this.setProgress(item.getProgress());</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            uploader.onFileUploaded(<span class="fstat-no" title="function not covered" >(event: FileUploadedEvent&lt;Content&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let item = event.getUploadItem();</span>
+<span class="cstat-no" title="statement not covered" >                let createdContent = item.getModel();</span>
+&nbsp;
+                //new api.content.ContentUpdatedEvent(this.contentId).fire();
+<span class="cstat-no" title="statement not covered" >                this.imageSelector.setContent(createdContent);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            uploader.onUploadFailed(<span class="fstat-no" title="function not covered" >(event: FileUploadFailedEvent&lt;Content&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.showError('Upload failed');</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return uploader;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private initDragAndDropUploaderEvents() {</span></span>
+<span class="cstat-no" title="statement not covered" >            let dragOverEl;</span>
+<span class="cstat-no" title="statement not covered" >            this.onDragEnter(<span class="fstat-no" title="function not covered" >(event: DragEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.imageUploaderEl.isEnabled()) {</span>
+<span class="cstat-no" title="statement not covered" >                    let target = &lt;HTMLElement&gt; event.target;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    if (!!dragOverEl || dragOverEl === this.getHTMLElement()) {</span>
+<span class="cstat-no" title="statement not covered" >                        this.dropzoneContainer.show();</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    dragOverEl = target;</span>
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.imageUploaderEl.onDropzoneDragLeave(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" ></span>this.dropzoneContainer.hide())</span>;</span>
+<span class="cstat-no" title="statement not covered" >            this.imageUploaderEl.onDropzoneDrop(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" ></span>this.dropzoneContainer.hide())</span>;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private setProgress(value: number)</span> {
+<span class="cstat-no" title="statement not covered" >            this.progress.setValue(value);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private showProgress() {</span>
+<span class="cstat-no" title="statement not covered" >            this.progress.show();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private hideUploadMasks() {</span>
+<span class="cstat-no" title="statement not covered" >            this.progress.hide();</span>
+<span class="cstat-no" title="statement not covered" >            this.error.hide();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private showError(text: string)</span> {
+<span class="cstat-no" title="statement not covered" >            this.progress.hide();</span>
+<span class="cstat-no" title="statement not covered" >            this.error.setHtml(text).show();</span>
+<span class="cstat-no" title="statement not covered" >            this.error.show();</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        protected initializeActions() {</span></span>
+<span class="cstat-no" title="statement not covered" >            let submitAction = new api.ui.Action(this.imageElement ? 'Update' : 'Insert');</span>
+<span class="cstat-no" title="statement not covered" >            this.setSubmitAction(submitAction);</span>
+<span class="cstat-no" title="statement not covered" >            this.addAction(submitAction.onExecuted(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.displayValidationErrors(true);</span>
+<span class="cstat-no" title="statement not covered" >                if (this.validate()) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.createImageTag();</span>
+<span class="cstat-no" title="statement not covered" >                    this.close();</span>
+                }
+            }));
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            super.initializeActions();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getCaptionFieldValue() {</span>
+<span class="cstat-no" title="statement not covered" >            return (&lt;api.dom.InputEl&gt;this.imageCaptionField.getInput()).getValue().trim();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private setCaptionFieldValue(value: string)</span> {
+            (&lt;api.dom.InputEl&gt;<span class="cstat-no" title="statement not covered" >this.imageCaptionField.getInput()).setValue(value);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getAltTextFieldValue() {</span>
+<span class="cstat-no" title="statement not covered" >            return (&lt;api.dom.InputEl&gt;this.imageAltTextField.getInput()).getValue().trim();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private setAltTextFieldValue(value: string)</span> {
+            (&lt;api.dom.InputEl&gt;<span class="cstat-no" title="statement not covered" >this.imageAltTextField.getInput()).setValue(value);</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private fetchImageCaption(imageContent: ContentSummary)</span>: wemQ.Promise&lt;string&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return new api.content.resource.GetContentByIdRequest(imageContent.getContentId()).sendAndParse()</span>
+                .then(<span class="fstat-no" title="function not covered" >(content: api.content.Content)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    return this.getDescriptionFromImageContent(content) || content.getProperty('caption').getString() || '';</span>
+                });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getDescriptionFromImageContent(imageContent: Content)</span>: string {
+<span class="cstat-no" title="statement not covered" >            let imageInfoMixin = new api.schema.mixin.MixinName('media:imageInfo');</span>
+<span class="cstat-no" title="statement not covered" >            let imageInfoData = imageContent.getExtraData(imageInfoMixin);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!imageInfoData.getData()) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let descriptionProperty = imageInfoData.getData().getProperty('description');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (descriptionProperty) {</span>
+<span class="cstat-no" title="statement not covered" >                let description = descriptionProperty.getString();</span>
+<span class="cstat-no" title="statement not covered" >                if (description) {</span>
+<span class="cstat-no" title="statement not covered" >                    return description;</span>
+                }
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return null;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private isImageWiderThanEditor() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!!this.getEditor()['editorContainer']) {</span>
+<span class="cstat-no" title="statement not covered" >                return (this.image.getHTMLElement()['width'] &gt; this.getEditor()['editorContainer'].clientWidth);</span>
+            } else <span class="cstat-no" title="statement not covered" >if (!!this.getEditor() &amp;&amp; this.getEditor()['inline'] === true) {</span>
+<span class="cstat-no" title="statement not covered" >                return (this.image.getHTMLElement()['width'] &gt; this.getEditor()['bodyElement'].clientWidth);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return true;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createFigureElement() {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let figure = api.dom.ElementHelper.fromName('figure');</span>
+<span class="cstat-no" title="statement not covered" >            let figCaption = api.dom.ElementHelper.fromName('figcaption');</span>
+<span class="cstat-no" title="statement not covered" >            figCaption.setText(this.getCaptionFieldValue());</span>
+<span class="cstat-no" title="statement not covered" >            figCaption.setAttribute('style', 'text-align: left');</span>
+<span class="cstat-no" title="statement not covered" >            this.image.setId('__mcenew');</span>
+            (&lt;HTMLImageElement&gt;<span class="cstat-no" title="statement not covered" >this.image.getHTMLElement()).alt = this.getAltTextFieldValue();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            figure.appendChildren([(&lt;api.dom.ImgEl&gt;this.image).getEl().getHTMLElement(), figCaption.getHTMLElement()]);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return figure;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createImageTag(): void {</span>
+<span class="cstat-no" title="statement not covered" >            let figure = this.createFigureElement();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            api.util.htmlarea.editor.HTMLAreaHelper.updateImageParentAlignment(this.image.getHTMLElement());</span>
+<span class="cstat-no" title="statement not covered" >            this.setImageWidthConstraint();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let img = this.callback(figure.getHTMLElement());</span>
+<span class="cstat-no" title="statement not covered" >            api.util.htmlarea.editor.HTMLAreaHelper.changeImageParentAlignmentOnImageAlignmentChange(img);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private setImageWidthConstraint() {</span>
+<span class="cstat-no" title="statement not covered" >            let keepImageSize = this.isImageInOriginalSize(this.image.getHTMLElement());</span>
+<span class="cstat-no" title="statement not covered" >            this.image.getHTMLElement().style['width'] = (this.isImageWiderThanEditor() || !keepImageSize) ? '100%' : 'auto';</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private isImageInOriginalSize(image: HTMLElement)</span> {
+<span class="cstat-no" title="statement not covered" >            return image.getAttribute('data-src').indexOf('keepSize=true') &gt; 0;</span>
+        }
+    }
+&nbsp;
+    export class ImageToolbar extends api.ui.toolbar.Toolbar {
+&nbsp;
+        private image: api.dom.ImgEl;
+&nbsp;
+        private justifyButton: api.ui.button.ActionButton;
+&nbsp;
+        private alignLeftButton: api.ui.button.ActionButton;
+&nbsp;
+        private centerButton: api.ui.button.ActionButton;
+&nbsp;
+        private alignRightButton: api.ui.button.ActionButton;
+&nbsp;
+        private keepOriginalSizeCheckbox: api.ui.Checkbox;
+&nbsp;
+        private imageCroppingSelector: ImageCroppingSelector;
+&nbsp;
+        private imageLoadMask: api.ui.mask.LoadMask;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(image: api.dom.ImgEl, imageLoadMask: api.ui.mask.LoadMask)</span> {
+<span class="cstat-no" title="statement not covered" >            super('image-toolbar');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.image = image;</span>
+<span class="cstat-no" title="statement not covered" >            this.imageLoadMask = imageLoadMask;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            super.addElement(this.justifyButton = this.createJustifiedButton());</span>
+<span class="cstat-no" title="statement not covered" >            super.addElement(this.alignLeftButton = this.createLeftAlignedButton());</span>
+<span class="cstat-no" title="statement not covered" >            super.addElement(this.centerButton = this.createCenteredButton());</span>
+<span class="cstat-no" title="statement not covered" >            super.addElement(this.alignRightButton = this.createRightAlignedButton());</span>
+<span class="cstat-no" title="statement not covered" >            super.addElement(this.keepOriginalSizeCheckbox = this.createKeepOriginalSizeCheckbox());</span>
+<span class="cstat-no" title="statement not covered" >            super.addElement(this.imageCroppingSelector = this.createImageCroppingSelector());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.initKeepSizeCheckbox();</span>
+<span class="cstat-no" title="statement not covered" >            this.initActiveButton();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createJustifiedButton(): api.ui.button.ActionButton {</span>
+<span class="cstat-no" title="statement not covered" >            return this.createAlignmentButton('icon-paragraph-justify');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createLeftAlignedButton(): api.ui.button.ActionButton {</span>
+<span class="cstat-no" title="statement not covered" >            return this.createAlignmentButton('icon-paragraph-left');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createCenteredButton(): api.ui.button.ActionButton {</span>
+<span class="cstat-no" title="statement not covered" >            return this.createAlignmentButton('icon-paragraph-center');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private createRightAlignedButton(): api.ui.button.ActionButton {</span>
+<span class="cstat-no" title="statement not covered" >            return this.createAlignmentButton('icon-paragraph-right');</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private createAlignmentButton(iconClass: string)</span>: api.ui.button.ActionButton {</span>
+<span class="cstat-no" title="statement not covered" >            let action: Action = new Action('');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            action.setIconClass(iconClass);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let button = new api.ui.button.ActionButton(action);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            action.onExecuted(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.resetActiveButton();</span>
+<span class="cstat-no" title="statement not covered" >                button.addClass('active');</span>
+<span class="cstat-no" title="statement not covered" >                this.image.getHTMLElement().style.textAlign = this.getImageAlignment();</span>
+<span class="cstat-no" title="statement not covered" >                api.ui.responsive.ResponsiveManager.fireResizeEvent();</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return button;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private createKeepOriginalSizeCheckbox(): api.ui.Checkbox {</span></span>
+<span class="cstat-no" title="statement not covered" >            let keepOriginalSizeCheckbox = api.ui.Checkbox.create().build();</span>
+<span class="cstat-no" title="statement not covered" >            keepOriginalSizeCheckbox.addClass('keep-size-check');</span>
+<span class="cstat-no" title="statement not covered" >            keepOriginalSizeCheckbox.onValueChanged(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.imageLoadMask.show();</span>
+<span class="cstat-no" title="statement not covered" >                this.rebuildImgSrcParams();</span>
+<span class="cstat-no" title="statement not covered" >                this.rebuildImgDataSrcParams();</span>
+<span class="cstat-no" title="statement not covered" >                api.ui.responsive.ResponsiveManager.fireResizeEvent();</span>
+            });
+<span class="cstat-no" title="statement not covered" >            keepOriginalSizeCheckbox.setLabel('Keep original size');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return keepOriginalSizeCheckbox;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private createImageCroppingSelector(): ImageCroppingSelector {</span></span>
+<span class="cstat-no" title="statement not covered" >            let imageCroppingSelector: ImageCroppingSelector = new ImageCroppingSelector();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.initSelectedCropping(imageCroppingSelector);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            imageCroppingSelector.onOptionSelected(<span class="fstat-no" title="function not covered" >(event: OptionSelectedEvent&lt;ImageCroppingOption&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.imageLoadMask.show();</span>
+<span class="cstat-no" title="statement not covered" >                this.rebuildImgSrcParams();</span>
+<span class="cstat-no" title="statement not covered" >                this.rebuildImgDataSrcParams();</span>
+<span class="cstat-no" title="statement not covered" >                api.ui.responsive.ResponsiveManager.fireResizeEvent();</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return imageCroppingSelector;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private initSelectedCropping(imageCroppingSelector: ImageCroppingSelector)</span> {
+<span class="cstat-no" title="statement not covered" >            let imgSrc: string = this.image.getEl().getAttribute('src');</span>
+<span class="cstat-no" title="statement not covered" >            let scalingApplied: boolean = imgSrc.indexOf('scale=') &gt; 0;</span>
+<span class="cstat-no" title="statement not covered" >            if (scalingApplied) {</span>
+<span class="cstat-no" title="statement not covered" >                let scaleParamValue = api.util.UriHelper.decodeUrlParams(imgSrc.replace('&amp;amp;', '&amp;'))['scale'];</span>
+<span class="cstat-no" title="statement not covered" >                let scaleOption = ImageCroppingOptions.getOptionByProportion(scaleParamValue);</span>
+<span class="cstat-no" title="statement not covered" >                if (!!scaleOption) {</span>
+<span class="cstat-no" title="statement not covered" >                    imageCroppingSelector.selectOption(imageCroppingSelector.getOptionByValue(scaleOption.getName()));</span>
+                }
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private initActiveButton() {</span>
+<span class="cstat-no" title="statement not covered" >            let alignment = this.image.getHTMLElement().style.textAlign;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            switch (alignment) {</span>
+            case 'justify':
+<span class="cstat-no" title="statement not covered" >                this.justifyButton.addClass('active');</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case 'left':
+<span class="cstat-no" title="statement not covered" >                this.alignLeftButton.addClass('active');</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case 'center':
+<span class="cstat-no" title="statement not covered" >                this.centerButton.addClass('active');</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case 'right':
+<span class="cstat-no" title="statement not covered" >                this.alignRightButton.addClass('active');</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            default:
+<span class="cstat-no" title="statement not covered" >                this.justifyButton.addClass('active');</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private resetActiveButton() {</span>
+<span class="cstat-no" title="statement not covered" >            this.justifyButton.removeClass('active');</span>
+<span class="cstat-no" title="statement not covered" >            this.alignLeftButton.removeClass('active');</span>
+<span class="cstat-no" title="statement not covered" >            this.centerButton.removeClass('active');</span>
+<span class="cstat-no" title="statement not covered" >            this.alignRightButton.removeClass('active');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private initKeepSizeCheckbox() {</span>
+<span class="cstat-no" title="statement not covered" >            this.keepOriginalSizeCheckbox.setChecked(this.image.getEl().getAttribute('data-src').indexOf('keepSize=true') &gt; 0);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getImageAlignment(): string {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.justifyButton.hasClass('active')) {</span>
+<span class="cstat-no" title="statement not covered" >                return 'justify';</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.alignLeftButton.hasClass('active')) {</span>
+<span class="cstat-no" title="statement not covered" >                return 'left';</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.centerButton.hasClass('active')) {</span>
+<span class="cstat-no" title="statement not covered" >                return 'center';</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.alignRightButton.hasClass('active')) {</span>
+<span class="cstat-no" title="statement not covered" >                return 'right';</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return 'justify';</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private rebuildImgSrcParams() {</span>
+<span class="cstat-no" title="statement not covered" >            let imgSrc = this.image.getEl().getAttribute('src');</span>
+<span class="cstat-no" title="statement not covered" >            let newSrc = api.util.UriHelper.trimUrlParams(imgSrc);</span>
+<span class="cstat-no" title="statement not covered" >            let isCroppingSelected: boolean = !!this.imageCroppingSelector.getSelectedOption();</span>
+<span class="cstat-no" title="statement not covered" >            let keepOriginalSizeChecked: boolean = this.keepOriginalSizeCheckbox.isChecked();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (isCroppingSelected) {</span>
+<span class="cstat-no" title="statement not covered" >                let imageCroppingOption: ImageCroppingOption = this.imageCroppingSelector.getSelectedOption().displayValue;</span>
+<span class="cstat-no" title="statement not covered" >                newSrc = newSrc + '?scale=' + imageCroppingOption.getProportionString() +</span>
+                         (keepOriginalSizeChecked ? '' : '&amp;size=640');
+            } else {
+<span class="cstat-no" title="statement not covered" >                newSrc = newSrc + (keepOriginalSizeChecked ? '?scaleWidth=true' : '?size=640&amp;scaleWidth=true');</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.image.getEl().setAttribute('src', newSrc);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private rebuildImgDataSrcParams() {</span>
+<span class="cstat-no" title="statement not covered" >            let dataSrc = this.image.getEl().getAttribute('data-src');</span>
+<span class="cstat-no" title="statement not covered" >            let newDataSrc = api.util.UriHelper.trimUrlParams(dataSrc);</span>
+<span class="cstat-no" title="statement not covered" >            let isCroppingSelected: boolean = !!this.imageCroppingSelector.getSelectedOption();</span>
+<span class="cstat-no" title="statement not covered" >            let keepOriginalSizeChecked: boolean = this.keepOriginalSizeCheckbox.isChecked();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (isCroppingSelected) {</span>
+<span class="cstat-no" title="statement not covered" >                let imageCroppingOption: ImageCroppingOption = this.imageCroppingSelector.getSelectedOption().displayValue;</span>
+<span class="cstat-no" title="statement not covered" >                newDataSrc = newDataSrc + '?scale=' + imageCroppingOption.getProportionString() +</span>
+                             (keepOriginalSizeChecked ? '&amp;keepSize=true' : '&amp;size=640');
+            } else {
+<span class="cstat-no" title="statement not covered" >                newDataSrc = newDataSrc + (keepOriginalSizeChecked ? '?keepSize=true' : '');</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.image.getEl().setAttribute('data-src', newDataSrc);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onCroppingChanged(listener: (event: OptionSelectedEvent&lt;ImageCroppingOption&gt;) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.imageCroppingSelector.onOptionSelected(listener);</span>
+        }
+&nbsp;
+    }
+&nbsp;
+    export class ImagePreviewScrollHandler {
+&nbsp;
+        private imagePreviewContainer: api.dom.DivEl;
+&nbsp;
+        private scrollDownButton: api.dom.Element;
+        private scrollUpButton: api.dom.Element;
+        private scrollBarWidth: number;
+        private scrollBarRemoveTimeoutId: number;
+        private scrolling: boolean;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(imagePreviewContainer: api.dom.DivEl)</span> {
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewContainer = imagePreviewContainer;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.initializeImageScrollNavigation();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewContainer.onScroll(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.toggleScrollButtons();</span>
+<span class="cstat-no" title="statement not covered" >                this.showScrollBar();</span>
+<span class="cstat-no" title="statement not covered" >                this.removeScrollBarOnTimeout();</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private initializeImageScrollNavigation() {</span>
+<span class="cstat-no" title="statement not covered" >            this.scrollDownButton = this.createScrollButton('down');</span>
+<span class="cstat-no" title="statement not covered" >            this.scrollUpButton = this.createScrollButton('up');</span>
+<span class="cstat-no" title="statement not covered" >            this.initScrollbarWidth();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private isScrolledToTop(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            let element = this.imagePreviewContainer.getHTMLElement();</span>
+<span class="cstat-no" title="statement not covered" >            return element.scrollTop === 0;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private isScrolledToBottom(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            let element = this.imagePreviewContainer.getHTMLElement();</span>
+<span class="cstat-no" title="statement not covered" >            return (element.scrollHeight - element.scrollTop) === element.clientHeight;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private createScrollButton(direction: string)</span>: api.dom.Element {</span>
+<span class="cstat-no" title="statement not covered" >            let scrollAreaDiv = new api.dom.DivEl(direction === 'up' ? 'scroll-up-div' : 'scroll-down-div');</span>
+<span class="cstat-no" title="statement not covered" >            let imageEl = new api.dom.ImgEl(api.util.UriHelper.getAdminUri('common/images/icons/512x512/arrow_' + direction + '.png'));</span>
+<span class="cstat-no" title="statement not covered" >            let scrollTop = (direction === 'up' ? '-=50' : '+=50');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            scrollAreaDiv.appendChild(imageEl);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            imageEl.onClicked(<span class="fstat-no" title="function not covered" >(event)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                event.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >                wemjq(this.imagePreviewContainer.getHTMLElement()).animate({scrollTop: scrollTop}, 400);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            imageEl.onMouseOver(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.scrolling = true;</span>
+<span class="cstat-no" title="statement not covered" >                this.scrollImagePreview(direction);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            imageEl.onMouseOut(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.scrolling = false;</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            direction === 'up'</span>
+                ? wemjq(scrollAreaDiv.getHTMLElement()).insertBefore(this.imagePreviewContainer.getHTMLElement().parentElement)
+                : wemjq(scrollAreaDiv.getHTMLElement()).insertAfter(this.imagePreviewContainer.getHTMLElement().parentElement);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            scrollAreaDiv.hide();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return scrollAreaDiv;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private initScrollbarWidth() {</span>
+<span class="cstat-no" title="statement not covered" >            let outer = document.createElement('div');</span>
+<span class="cstat-no" title="statement not covered" >            outer.style.visibility = 'hidden';</span>
+<span class="cstat-no" title="statement not covered" >            outer.style.width = '100px';</span>
+<span class="cstat-no" title="statement not covered" >            outer.style.msOverflowStyle = 'scrollbar'; </span>// needed for WinJS apps
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            document.body.appendChild(outer);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let widthNoScroll = outer.offsetWidth;</span>
+            // force scrollbars
+<span class="cstat-no" title="statement not covered" >            outer.style.overflow = 'scroll';</span>
+&nbsp;
+            // add innerdiv
+<span class="cstat-no" title="statement not covered" >            let inner = document.createElement('div');</span>
+<span class="cstat-no" title="statement not covered" >            inner.style.width = '100%';</span>
+<span class="cstat-no" title="statement not covered" >            outer.appendChild(inner);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let widthWithScroll = inner.offsetWidth;</span>
+&nbsp;
+            // remove divs
+<span class="cstat-no" title="statement not covered" >            outer.parentNode.removeChild(outer);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.scrollBarWidth = widthNoScroll - widthWithScroll;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private scrollImagePreview(direction: string, <span class="cstat-no" title="statement not covered" >scrollBy: number = 2)</span></span> {</span>
+<span class="cstat-no" title="statement not covered" >            let scrollByPx = (direction === 'up' ? '-=' : '+=') + Math.round(scrollBy) + 'px';</span>
+<span class="cstat-no" title="statement not covered" >            let delta = 0.05;</span>
+<span class="cstat-no" title="statement not covered" >            wemjq(this.imagePreviewContainer.getHTMLElement()).animate({scrollTop: scrollByPx}, 1, <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                if (this.scrolling) {</span>
+                    // If we want to keep scrolling, call the scrollContent function again:
+<span class="cstat-no" title="statement not covered" >                    this.scrollImagePreview(direction, scrollBy + delta); </span>  // Increase scroll height by delta on each iteration
+                                                                            // to emulate scrolling speed up effect
+                }
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setMarginRight() {</span>
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewContainer.getEl().setMarginRight('');</span>
+<span class="cstat-no" title="statement not covered" >            if (this.scrollDownButton.isVisible() || this.scrollUpButton.isVisible()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.imagePreviewContainer.getEl().setMarginRight('-' + this.scrollBarWidth + 'px');</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toggleScrollButtons() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.isScrolledToBottom()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.scrollDownButton.hide();</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.scrollDownButton.show();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.isScrolledToTop()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.scrollUpButton.hide();</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.scrollUpButton.show();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        resetScrollPosition() {</span>
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewContainer.getEl().setScrollTop(0);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private showScrollBar() {</span>
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewContainer.getHTMLElement().parentElement.style.marginRight = '-' + this.scrollBarWidth + 'px';</span>
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewContainer.getEl().setMarginRight('');</span>
+<span class="cstat-no" title="statement not covered" >            this.imagePreviewContainer.getHTMLElement().style.overflowY = 'auto';</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private removeScrollBarOnTimeout() {</span></span>
+<span class="cstat-no" title="statement not covered" >            if (!!this.scrollBarRemoveTimeoutId) {</span>
+<span class="cstat-no" title="statement not covered" >                window.clearTimeout(this.scrollBarRemoveTimeoutId);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.scrollBarRemoveTimeoutId = window.setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.imagePreviewContainer.getHTMLElement().parentElement.style.marginRight = '';</span>
+<span class="cstat-no" title="statement not covered" >                this.imagePreviewContainer.getEl().setMarginRight('-' + this.scrollBarWidth + 'px');</span>
+<span class="cstat-no" title="statement not covered" >                this.imagePreviewContainer.getHTMLElement().style.overflowY = 'auto';</span>
+            }, 500);
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

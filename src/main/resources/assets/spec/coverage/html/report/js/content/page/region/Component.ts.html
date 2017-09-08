@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/page/region/Component.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/content/page/region/</a> Component.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">38.17% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>50/131</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">16.67% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/24</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">11.11% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/54</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">35.71% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>45/126</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>page.<span class="branch-1 cbranch-no" title="branch not covered" ></span>region </span>{
+&nbsp;
+    export class Component implements api.Equitable, api.Cloneable {
+&nbsp;
+        public static PROPERTY_NAME: string = 'name';
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >index: number = -1;</span>
+&nbsp;
+        private name: ComponentName;
+&nbsp;
+        private parent: Region;
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >changedListeners: {(event: ComponentChangedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >propertyChangedListeners: {(event: ComponentPropertyChangedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >propertyValueChangedListeners: {(event: ComponentPropertyValueChangedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >resetListeners: {(event: ComponentResetEvent):void}[] = [];</span>
+&nbsp;
+        private type: ComponentType;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(builder: ComponentBuilder&lt;any&gt;)</span> {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.name = builder.name;</span>
+<span class="cstat-no" title="statement not covered" >            this.index = builder.index;</span>
+<span class="cstat-no" title="statement not covered" >            this.parent = builder.parent;</span>
+<span class="cstat-no" title="statement not covered" >            this.type = builder.type;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setParent(parent: Region)</span> {
+<span class="cstat-no" title="statement not covered" >            this.parent = parent;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setIndex(value: number)</span> {
+<span class="cstat-no" title="statement not covered" >            this.index = value;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getIndex(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.index;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getType(): ComponentType {</span>
+<span class="cstat-no" title="statement not covered" >            return this.type;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hasPath(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.parent &amp;&amp; this.index &gt;= 0;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPath(): ComponentPath {</span>
+<span class="cstat-no" title="statement not covered" >            return this.hasPath() ? ComponentPath.fromRegionPathAndComponentIndex(this.parent.getPath(), this.index) : null;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getName(): ComponentName {</span>
+<span class="cstat-no" title="statement not covered" >            return this.name;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setName(newValue: ComponentName)</span> {
+<span class="cstat-no" title="statement not covered" >            let oldValue = this.name;</span>
+<span class="cstat-no" title="statement not covered" >            this.name = newValue;</span>
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.equals(oldValue, newValue)) {</span>
+<span class="cstat-no" title="statement not covered" >                this.notifyPropertyChanged(Component.PROPERTY_NAME);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        doReset() {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritors');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        reset() {</span>
+<span class="cstat-no" title="statement not covered" >            this.doReset();</span>
+<span class="cstat-no" title="statement not covered" >            this.notifyResetEvent();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isEmpty(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritors');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getParent(): Region {</span>
+<span class="cstat-no" title="statement not covered" >            return this.parent;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        duplicate(): Component {</span>
+<span class="cstat-no" title="statement not covered" >            let duplicateName = this.getName();</span>
+<span class="cstat-no" title="statement not covered" >            let duplicatedComponent = this.clone();</span>
+<span class="cstat-no" title="statement not covered" >            duplicatedComponent.setName(duplicateName);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return duplicatedComponent;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        remove() {</span>
+<span class="cstat-no" title="statement not covered" >            this.parent.removeComponent(this);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toJson(): ComponentTypeWrapperJson {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toString(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return 'Component[' + (this.name ? this.name.toString() : '') + ']';</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toComponentJson(): ComponentJson {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return {</span>
+                name: this.name ? this.name.toString() : null
+            };
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        equals(o: api.Equitable)</span>: boolean {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Component)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let other = &lt;Component&gt;o;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!api.ObjectHelper.equals(this.name, other.name)) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return true;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        clone(): Component {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritors');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onChanged(listener: (event: ComponentChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.changedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unChanged(listener: (event: ComponentChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.changedListeners =</span>
+            this.changedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: ComponentPropertyChangedEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyChangedEvent(event: ComponentChangedEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            this.changedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: ComponentChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onReset(listener: (event: ComponentResetEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.resetListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unReset(listener: (event: ComponentResetEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.resetListeners = this.resetListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: ComponentResetEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyResetEvent() {</span>
+<span class="cstat-no" title="statement not covered" >            let event = new ComponentResetEvent(this.getPath());</span>
+<span class="cstat-no" title="statement not covered" >            this.resetListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: ComponentResetEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+        /**
+         * Observe when a property of Component have been reassigned.
+         */
+<span class="fstat-no" title="function not covered" >        onPropertyChanged(listener: (event: ComponentPropertyChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.propertyChangedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unPropertyChanged(listener: (event: ComponentPropertyChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.propertyChangedListeners =</span>
+            this.propertyChangedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: ComponentPropertyChangedEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        notifyPropertyChanged(propertyName: string)</span> {
+<span class="cstat-no" title="statement not covered" >            let event = ComponentPropertyChangedEvent.create().setComponent(this).setPropertyName(propertyName).build();</span>
+<span class="cstat-no" title="statement not covered" >            this.propertyChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: ComponentPropertyChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+<span class="cstat-no" title="statement not covered" >            this.notifyChangedEvent(event);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        forwardComponentPropertyChangedEvent(event: ComponentPropertyChangedEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            this.propertyChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: ComponentPropertyChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+        /**
+         * Observe when a property of Component have changed (happens only for mutable objects).
+         */
+<span class="fstat-no" title="function not covered" >        onPropertyValueChanged(listener: (event: ComponentPropertyValueChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.propertyValueChangedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unPropertyValueChanged(listener: (event: ComponentPropertyValueChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.propertyValueChangedListeners =</span>
+            this.propertyValueChangedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: ComponentPropertyValueChangedEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                return listener !== curr;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        notifyPropertyValueChanged(propertyName: string)</span> {
+<span class="cstat-no" title="statement not covered" >            let event = new ComponentPropertyValueChangedEvent(this.getPath(), propertyName);</span>
+<span class="cstat-no" title="statement not covered" >            this.propertyValueChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: ComponentPropertyValueChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+<span class="cstat-no" title="statement not covered" >            this.notifyChangedEvent(event);</span>
+        }
+    }
+&nbsp;
+    export class ComponentBuilder&lt;COMPONENT extends Component&gt; {
+&nbsp;
+        name: ComponentName;
+&nbsp;
+        index: number;
+&nbsp;
+        parent: Region;
+&nbsp;
+        type: ComponentType;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(source?: Component)</span> {
+<span class="cstat-no" title="statement not covered" >            if (source) {</span>
+<span class="cstat-no" title="statement not covered" >                this.name = source.getName();</span>
+<span class="cstat-no" title="statement not covered" >                this.parent = source.getParent();</span>
+<span class="cstat-no" title="statement not covered" >                this.index = source.getIndex();</span>
+<span class="cstat-no" title="statement not covered" >                this.type = source.getType();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setIndex(value: number)</span>: ComponentBuilder&lt;COMPONENT&gt; {
+<span class="cstat-no" title="statement not covered" >            this.index = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setName(value: ComponentName)</span>: ComponentBuilder&lt;COMPONENT&gt; {
+<span class="cstat-no" title="statement not covered" >            this.name = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setParent(value: Region)</span>: ComponentBuilder&lt;COMPONENT&gt; {
+<span class="cstat-no" title="statement not covered" >            this.parent = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setType(value: ComponentType)</span>: ComponentBuilder&lt;COMPONENT&gt; {
+<span class="cstat-no" title="statement not covered" >            this.type = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public build(): COMPONENT {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor');</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

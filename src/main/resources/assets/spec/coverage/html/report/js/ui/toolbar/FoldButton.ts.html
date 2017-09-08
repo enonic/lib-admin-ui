@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/ui/toolbar/FoldButton.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/ui/toolbar/</a> FoldButton.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.33% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>20/60</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">16.67% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">23.53% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/17</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">29.63% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>16/54</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>ui.<span class="branch-1 cbranch-no" title="branch not covered" ></span>toolbar </span>{
+&nbsp;
+    export class FoldButton extends api.dom.DivEl {
+&nbsp;
+        private span: api.dom.SpanEl;
+        private dropdown: api.dom.DivEl;
+        private <span class="cstat-no" title="statement not covered" >widthCache: number[] = [];</span>
+        private hostElement: api.dom.Element;
+        private static expandedCls: string = 'expanded';
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(<span class="cstat-no" title="statement not covered" >caption: string = 'Actions',</span> hostElement?: api.dom.Element)</span> {
+<span class="cstat-no" title="statement not covered" >            super();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.addClass('fold-button');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.dropdown = new api.dom.DivEl('dropdown', api.StyleHelper.COMMON_PREFIX);</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.dropdown);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.span = new api.dom.SpanEl('fold-label');</span>
+<span class="cstat-no" title="statement not covered" >            this.span.setHtml(caption);</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.span);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (hostElement) {</span>
+<span class="cstat-no" title="statement not covered" >                this.hostElement = hostElement;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            (hostElement || this).onClicked(this.onButtonClicked.bind(this));</span>
+<span class="cstat-no" title="statement not covered" >            this.dropdown.onClicked(this.onMenuClicked.bind(this));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private toggle() {</span>
+<span class="cstat-no" title="statement not covered" >            this.toggleClass(FoldButton.expandedCls);</span>
+<span class="cstat-no" title="statement not covered" >            if (this.hostElement) {</span>
+<span class="cstat-no" title="statement not covered" >                this.hostElement.toggleClass(FoldButton.expandedCls);</span>
+            }
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private onButtonClicked(e: MouseEvent)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            let onBodyClicked = <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.collapse();</span>
+<span class="cstat-no" title="statement not covered" >                api.dom.Body.get().unClicked(onBodyClicked);</span>
+            };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.toggle();</span>
+<span class="cstat-no" title="statement not covered" >            if (this.hasClass(FoldButton.expandedCls)) {</span>
+<span class="cstat-no" title="statement not covered" >                api.dom.Body.get().onClicked(onBodyClicked);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            e.stopPropagation();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private onMenuClicked(e: MouseEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            this.collapse();</span>
+<span class="cstat-no" title="statement not covered" >            e.stopPropagation();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public collapse() {</span>
+<span class="cstat-no" title="statement not covered" >            this.removeClass(FoldButton.expandedCls);</span>
+<span class="cstat-no" title="statement not covered" >            if (this.hostElement) {</span>
+<span class="cstat-no" title="statement not covered" >                this.hostElement.removeClass(FoldButton.expandedCls);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        push(element: api.dom.Element, width: number)</span> {
+<span class="cstat-no" title="statement not covered" >            this.dropdown.prependChild(element);</span>
+<span class="cstat-no" title="statement not covered" >            this.widthCache.unshift(width);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        pop(): api.dom.Element {</span>
+<span class="cstat-no" title="statement not covered" >            let top = this.dropdown.getFirstChild();</span>
+<span class="cstat-no" title="statement not covered" >            this.dropdown.removeChild(top);</span>
+<span class="cstat-no" title="statement not covered" >            this.widthCache.shift();</span>
+<span class="cstat-no" title="statement not covered" >            return top;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setLabel(label: string)</span> {
+<span class="cstat-no" title="statement not covered" >            this.span.setHtml(label);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getDropdown(): api.dom.DivEl {</span>
+<span class="cstat-no" title="statement not covered" >            return this.dropdown;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getNextButtonWidth(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.widthCache[0];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getButtonsCount(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.dropdown.getChildren().length;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isEmpty(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.dropdown.getChildren().length === 0;</span>
+        }
+&nbsp;
+    }
+&nbsp;
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

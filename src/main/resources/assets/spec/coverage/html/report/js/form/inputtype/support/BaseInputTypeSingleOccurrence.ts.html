@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/form/inputtype/support/BaseInputTypeSingleOccurrence.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/form/inputtype/support/</a> BaseInputTypeSingleOccurrence.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">72.73% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>64/88</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">44.44% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>8/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">37.5% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>15/40</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">71.95% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>59/82</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">24×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>form.<span class="branch-1 cbranch-no" title="branch not covered" ></span>inputtype.<span class="branch-1 cbranch-no" title="branch not covered" ></span>support </span>{
+&nbsp;
+    import Property = api.data.Property;
+    import PropertyArray = api.data.PropertyArray;
+    import Value = api.data.Value;
+    import ValueType = api.data.ValueType;
+    import InputTypeView = api.form.inputtype.InputTypeView;
+&nbsp;
+    export class BaseInputTypeSingleOccurrence&lt;RAW_VALUE_TYPE&gt; extends api.dom.DivEl implements InputTypeView&lt;RAW_VALUE_TYPE&gt; {
+&nbsp;
+        private context: api.form.inputtype.InputTypeViewContext;
+&nbsp;
+        protected input: api.form.Input;
+&nbsp;
+        private property: Property;
+&nbsp;
+        private propertyListener: (event: api.data.PropertyValueChangedEvent) =&gt; void;
+&nbsp;
+        protected ignorePropertyChange: boolean;
+&nbsp;
+        private inputValidityChangedListeners: {(event: api.form.inputtype.InputValidityChangedEvent) : void}[] = [];
+&nbsp;
+        private inputValueChangedListeners: {(event: api.form.inputtype.ValueChangedEvent): void}[] = [];
+&nbsp;
+        constructor(ctx: api.form.inputtype.InputTypeViewContext, className?: string) {
+            super('input-type-view' + ( className ? <span class="branch-0 cbranch-no" title="branch not covered" >' ' + className </span>: ''));
+            api.util.assertNotNull(ctx, 'CONTEXT cannot be null');
+            this.context = ctx;
+&nbsp;
+            this.propertyListener = <span class="fstat-no" title="function not covered" >(event: api.data.PropertyValueChangedEvent)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                if (!this.ignorePropertyChange) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.updateProperty(event.getProperty(), true).done();</span>
+                }
+            };
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        availableSizeChanged() {</span>
+            // must be implemented by children
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public getContext(): api.form.inputtype.InputTypeViewContext {</span>
+<span class="cstat-no" title="statement not covered" >            return this.context;</span>
+        }
+&nbsp;
+        getElement(): api.dom.Element {
+            return this;
+        }
+&nbsp;
+        isManagingAdd(): boolean {
+            return true;
+        }
+&nbsp;
+        layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise&lt;void&gt; {
+            let property = propertyArray.get(0);
+            this.registerProperty(property);
+&nbsp;
+            this.layoutProperty(input, this.property);
+            return wemQ&lt;void&gt;(null);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        layoutProperty(input: api.form.Input, property: Property)</span>: wemQ.Promise&lt;void&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));</span>
+        }
+&nbsp;
+        update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise&lt;void&gt; {
+            let property = propertyArray.get(0);
+            this.registerProperty(property);
+&nbsp;
+            return this.updateProperty(this.property, unchangedOnly);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        reset() {</span>
+<span class="cstat-no" title="statement not covered" >            throw Error('Must be implemented in inheritors');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        updateProperty(property: Property, unchangedOnly?: boolean)</span>: wemQ.Promise&lt;void&gt; {
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));</span>
+        }
+&nbsp;
+        protected registerProperty(property: Property) {
+            if (this.property) {
+                this.property.unPropertyValueChanged(this.propertyListener);
+            }
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (property) {
+                property.onPropertyValueChanged(this.propertyListener);
+            }
+            this.property = property;
+        }
+&nbsp;
+        protected saveToProperty(value: Value) {
+            this.ignorePropertyChange = true;
+            this.property.setValue(value);
+            this.validate(false);
+            this.ignorePropertyChange = false;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getProperty(): Property {</span>
+<span class="cstat-no" title="statement not covered" >            return this.property;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getValueType(): ValueType {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        newInitialValue(): Value {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        displayValidationErrors(value: boolean)</span> {
+            // must be implemented by children
+        }
+&nbsp;
+        hasValidUserInput(): boolean {
+            return true;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        validate(<span class="cstat-no" title="statement not covered" >silent: boolean = true)</span></span>: api.form.inputtype.InputValidationRecording {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected notifyValidityChanged(event: api.form.inputtype.InputValidityChangedEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            this.inputValidityChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: api.form.inputtype.InputValidityChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+        onValidityChanged(listener: (event: api.form.inputtype.InputValidityChangedEvent)=&gt;void) {
+            this.inputValidityChangedListeners.push(listener);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unValidityChanged(listener: (event: api.form.inputtype.InputValidityChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.inputValidityChangedListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: (event: api.form.inputtype.InputValidityChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return listener === currentListener;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onValueChanged(listener: (event: api.form.inputtype.ValueChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.inputValueChangedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unValueChanged(listener: (event: api.form.inputtype.ValueChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.inputValueChangedListeners = this.inputValueChangedListeners.filter(<span class="fstat-no" title="function not covered" >(curr)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return curr !== listener;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected notifyValueChanged(event: api.form.inputtype.ValueChangedEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            this.inputValueChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: api.form.inputtype.ValueChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onFocus(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unFocus(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onBlur(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unBlur(listener: (event: FocusEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));</span>
+        }
+&nbsp;
+        onEditContentRequest(listener: (content: api.content.ContentSummary) =&gt; void) {
+            // Adapter for InputTypeView method, to be implemented on demand in inheritors
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unEditContentRequest(listener: (content: api.content.ContentSummary) =&gt; void)</span> {
+            // Adapter for InputTypeView method, to be implemented on demand in inheritors
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

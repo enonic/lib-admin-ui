@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/dom/InputEl.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/dom/</a> InputEl.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">67.31% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>35/52</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">41.67% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>5/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">42.11% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>8/19</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">65.31% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>32/49</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-yes">74×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>dom </span>{
+&nbsp;
+    export class InputEl extends FormInputEl {
+&nbsp;
+        constructor(className?: string, type?: string, prefix?: string, originalValue?: string) {
+            super('input', className, prefix, originalValue);
+            this.setType(type || <span class="branch-1 cbranch-no" title="branch not covered" >'text')</span>;
+&nbsp;
+            this.onInput(this.handleInput.bind(this));
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected handleInput() {</span>
+<span class="cstat-no" title="statement not covered" >            this.refreshDirtyState();</span>
+<span class="cstat-no" title="statement not covered" >            this.refreshValueChanged();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getName(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.getEl().getAttribute('name');</span>
+        }
+&nbsp;
+        setName(value: string): InputEl {
+            this.getEl().setAttribute('name', value);
+            return this;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getType(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.getEl().getAttribute('type');</span>
+        }
+&nbsp;
+        setType(type: string): InputEl {
+            this.getEl().setAttribute('type', type);
+            return this;
+        }
+&nbsp;
+        setPlaceholder(value: string): InputEl {
+            this.getEl().setAttribute('placeholder', value);
+            return this;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPlaceholder(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.getEl().getAttribute('placeholder');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPattern(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.getEl().getAttribute('pattern');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setPattern(pattern: string)</span>: InputEl {
+<span class="cstat-no" title="statement not covered" >            this.getEl().setAttribute('pattern', pattern);</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        reset() {</span>
+<span class="cstat-no" title="statement not covered" >            this.getEl().setValue('');</span>
+        }
+&nbsp;
+        /**
+         * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Forms_in_HTML
+         * @returns {boolean}
+         */
+<span class="fstat-no" title="function not covered" >        isValid(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            let validity: ValidityState = (&lt;HTMLInputElement&gt; this.getHTMLElement()).validity;</span>
+<span class="cstat-no" title="statement not covered" >            return validity &amp;&amp; validity.valid;</span>
+        }
+&nbsp;
+        /**
+         * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Forms_in_HTML
+         * @returns {boolean}
+         */
+<span class="fstat-no" title="function not covered" >        validate(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return (&lt;HTMLInputElement&gt; this.getHTMLElement()).checkValidity();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setRequired(required: boolean)</span>: InputEl {
+<span class="cstat-no" title="statement not covered" >            if (required) {</span>
+<span class="cstat-no" title="statement not covered" >                this.getEl().setAttribute('required', 'required');</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.getEl().removeAttribute('required');</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isRequired(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.getEl().hasAttribute('required');</span>
+        }
+&nbsp;
+        setReadOnly(readOnly: boolean) {
+            super.setReadOnly(readOnly);
+&nbsp;
+            if (readOnly) {
+                this.getEl().setAttribute('readonly', 'readonly');
+            } else {
+                this.getEl().removeAttribute('readonly');
+            }
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

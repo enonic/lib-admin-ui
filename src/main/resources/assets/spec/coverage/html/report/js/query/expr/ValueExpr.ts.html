@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/query/expr/ValueExpr.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/query/expr/</a> ValueExpr.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">45.71% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>16/35</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">21.43% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">28.57% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">40.63% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>13/32</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>query.<span class="branch-1 cbranch-no" title="branch not covered" ></span>expr </span>{
+&nbsp;
+    export class ValueExpr implements Expression {
+&nbsp;
+        private value: api.data.Value;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(value: api.data.Value)</span> {
+<span class="cstat-no" title="statement not covered" >            this.value = value;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getValue(): api.data.Value {</span>
+<span class="cstat-no" title="statement not covered" >            return this.value;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static stringValue(value: string)</span>: ValueExpr {
+<span class="cstat-no" title="statement not covered" >            return new ValueExpr(new api.data.Value(value, api.data.ValueTypes.STRING));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toString() {</span>
+<span class="cstat-no" title="statement not covered" >            let type: api.data.ValueType = this.value.getType();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (type === api.data.ValueTypes.DOUBLE) {</span>
+<span class="cstat-no" title="statement not covered" >                return this.value.getString();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (type === api.data.ValueTypes.DATE_TIME) {</span>
+<span class="cstat-no" title="statement not covered" >                return this.typecastFunction('dateTime', this.value.getString());</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (type === api.data.ValueTypes.GEO_POINT) {</span>
+<span class="cstat-no" title="statement not covered" >                return this.typecastFunction('geoPoint', this.value.getString());</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this.quoteString(this.value.getString());</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private typecastFunction(name: string, argument: string)</span>: string {
+<span class="cstat-no" title="statement not covered" >            return name + '(' + this.quoteString(argument) + ')';</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private quoteString(value: string)</span>: string {
+<span class="cstat-no" title="statement not covered" >            if (value.indexOf(`'`) &gt; -1) {</span>
+<span class="cstat-no" title="statement not covered" >                return `"${value}"`;</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                return `'${value}'`;</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static string(value: string)</span>: ValueExpr {
+<span class="cstat-no" title="statement not covered" >            return new ValueExpr(new api.data.Value(value, api.data.ValueTypes.STRING));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static number(value: Number)</span>: ValueExpr {
+<span class="cstat-no" title="statement not covered" >            return new ValueExpr(new api.data.Value(value, api.data.ValueTypes.DOUBLE));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static dateTime(value: Date)</span>: ValueExpr {
+<span class="cstat-no" title="statement not covered" >            return new ValueExpr(new api.data.Value(value, api.data.ValueTypes.DATE_TIME));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static geoPoint(value: string)</span>: ValueExpr {
+<span class="cstat-no" title="statement not covered" >            return new ValueExpr(new api.data.Value(value, api.data.ValueTypes.GEO_POINT));</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

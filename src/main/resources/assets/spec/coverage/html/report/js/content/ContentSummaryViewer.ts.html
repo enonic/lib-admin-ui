@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/ContentSummaryViewer.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/content/</a> ContentSummaryViewer.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">44.44% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>12/27</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">11.76% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>2/17</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.33% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>3/9</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">39.13% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>9/23</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content </span>{
+&nbsp;
+    export class ContentSummaryViewer extends api.ui.NamesAndIconViewer&lt;ContentSummary&gt; {
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor() {</span>
+<span class="cstat-no" title="statement not covered" >            super('content-summary-viewer');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        resolveDisplayName(object: ContentSummary)</span>: string {
+<span class="cstat-no" title="statement not covered" >            let contentName = object.getName();</span>
+<span class="cstat-no" title="statement not covered" >            let invalid = !object.isValid() || !object.getDisplayName() || contentName.isUnnamed();</span>
+<span class="cstat-no" title="statement not covered" >            let pendingDelete = object.getContentState().isPendingDelete();</span>
+<span class="cstat-no" title="statement not covered" >            this.toggleClass('invalid', invalid);</span>
+<span class="cstat-no" title="statement not covered" >            this.toggleClass('pending-delete', pendingDelete);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return object.getDisplayName();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        resolveUnnamedDisplayName(object: ContentSummary)</span>: string {
+<span class="cstat-no" title="statement not covered" >            return object.getType() ? object.getType().getLocalName() : '';</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        resolveSubName(object: ContentSummary, <span class="cstat-no" title="statement not covered" >relativePath: boolean = false)</span></span>: string {
+<span class="cstat-no" title="statement not covered" >            let contentName = object.getName();</span>
+<span class="cstat-no" title="statement not covered" >            if (relativePath) {</span>
+<span class="cstat-no" title="statement not covered" >                return !contentName.isUnnamed() ? object.getName().toString() :</span>
+                       api.content.ContentUnnamed.prettifyUnnamed();
+            } else {
+<span class="cstat-no" title="statement not covered" >                return !contentName.isUnnamed() ? object.getPath().toString() :</span>
+                                                  ContentPath.fromParent(object.getPath().getParentPath(),
+                                                      api.content.ContentUnnamed.prettifyUnnamed()).toString();
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        resolveSubTitle(object: ContentSummary)</span>: string {
+<span class="cstat-no" title="statement not covered" >            return object.getPath().toString();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        resolveIconUrl(object: ContentSummary)</span>: string {
+<span class="cstat-no" title="statement not covered" >            return new api.content.util.ContentIconUrlResolver().setContent(object).resolve();</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

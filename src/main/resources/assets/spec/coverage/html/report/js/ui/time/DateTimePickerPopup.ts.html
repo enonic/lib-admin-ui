@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/ui/time/DateTimePickerPopup.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/ui/time/</a> DateTimePickerPopup.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">47.69% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>31/65</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">30% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/10</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">19.23% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>5/26</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">43.33% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>26/60</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>ui.<span class="branch-1 cbranch-no" title="branch not covered" ></span>time </span>{
+&nbsp;
+    import Timezone = api.util.Timezone;
+&nbsp;
+    export class DateTimePickerPopupBuilder {
+&nbsp;
+        hours: number;
+&nbsp;
+        minutes: number;
+&nbsp;
+        calendar: Calendar;
+&nbsp;
+        timezone: Timezone;
+&nbsp;
+        // use local timezone if timezone value is not initialized
+<span class="cstat-no" title="statement not covered" >        useLocalTimezoneIfNotPresent: boolean = false;</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setHours(value: number)</span>: DateTimePickerPopupBuilder {
+<span class="cstat-no" title="statement not covered" >            this.hours = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getHours(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.hours;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setMinutes(value: number)</span>: DateTimePickerPopupBuilder {
+<span class="cstat-no" title="statement not covered" >            this.minutes = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getMinutes(): number {</span>
+<span class="cstat-no" title="statement not covered" >            return this.minutes;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setCalendar(value: Calendar)</span>: DateTimePickerPopupBuilder {
+<span class="cstat-no" title="statement not covered" >            this.calendar = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getCalendar(): Calendar {</span>
+<span class="cstat-no" title="statement not covered" >            return this.calendar;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setTimezone(value: Timezone)</span>: DateTimePickerPopupBuilder {
+<span class="cstat-no" title="statement not covered" >            this.timezone = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setUseLocalTimezoneIfNotPresent(value: boolean)</span>: DateTimePickerPopupBuilder {
+<span class="cstat-no" title="statement not covered" >            this.useLocalTimezoneIfNotPresent = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isUseLocalTimezoneIfNotPresent(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.useLocalTimezoneIfNotPresent;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getTimezone(): Timezone {</span>
+<span class="cstat-no" title="statement not covered" >            return this.timezone;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        build(): DateTimePickerPopup {</span>
+<span class="cstat-no" title="statement not covered" >            return new DateTimePickerPopup(this);</span>
+        }
+&nbsp;
+    }
+&nbsp;
+    export class DateTimePickerPopup extends api.dom.DivEl {
+&nbsp;
+        private datePickerPopup: DatePickerPopup;
+&nbsp;
+        private timePickerPopup: TimePickerPopup;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(builder: DateTimePickerPopupBuilder)</span> {
+<span class="cstat-no" title="statement not covered" >            super('date-time-dialog');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.datePickerPopup = new DatePickerPopupBuilder().</span>
+                setCalendar(builder.getCalendar()).
+                build();
+<span class="cstat-no" title="statement not covered" >            this.timePickerPopup = new TimePickerPopupBuilder().</span>
+                setHours(builder.getHours()).
+                setTimezone(builder.timezone).
+                setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent).
+                setMinutes(builder.getMinutes()).
+                build();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.appendChildren(&lt;api.dom.Element&gt;this.datePickerPopup, &lt;api.dom.Element&gt;this.timePickerPopup);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSelectedDate(): Date {</span>
+<span class="cstat-no" title="statement not covered" >            return this.datePickerPopup.getSelectedDate();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onSelectedDateChanged(listener: (event: SelectedDateChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.datePickerPopup.onSelectedDateChanged(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unSelectedDateChanged(listener: (event: SelectedDateChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.datePickerPopup.unSelectedDateChanged(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSelectedTime(): { hour: number; minute: number } {</span>
+<span class="cstat-no" title="statement not covered" >            return this.timePickerPopup.getSelectedTime();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onSelectedTimeChanged(listener: (hours: number, minutes: number) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.timePickerPopup.onSelectedTimeChanged(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unSelectedTimeChanged(listener: (hours: number, minutes: number) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.timePickerPopup.unSelectedTimeChanged(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSelectedDateTime(): Date {</span>
+<span class="cstat-no" title="statement not covered" >            let date = this.getSelectedDate();</span>
+<span class="cstat-no" title="statement not covered" >            let time = this.getSelectedTime();</span>
+<span class="cstat-no" title="statement not covered" >            if (!date || !time) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.hour, time.minute);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setSelectedTime(hours: number, minutes: number, silent?: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.timePickerPopup.setSelectedTime(hours, minutes, silent);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setSelectedDate(date: Date, silent?: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.datePickerPopup.setSelectedDate(date, silent);</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

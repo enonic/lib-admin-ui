@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/site/SiteModel.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/content/site/</a> SiteModel.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">30.39% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>31/102</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">13.64% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/22</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">9.76% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/41</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">28.87% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>28/97</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>site </span>{
+&nbsp;
+    import ApplicationKey = api.application.ApplicationKey;
+    import ApplicationEvent = api.application.ApplicationEvent;
+    import ApplicationEventType = api.application.ApplicationEventType;
+&nbsp;
+    export class SiteModel {
+&nbsp;
+        private site: api.content.site.Site;
+&nbsp;
+        private siteConfigs: SiteConfig[];
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >applicationAddedListeners: {(event: ApplicationAddedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >applicationRemovedListeners: {(event: ApplicationRemovedEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >propertyChangedListeners: {(event: api.PropertyChangedEvent):void}[] = [];</span>
+&nbsp;
+        private applicationPropertyAddedListener: (event: api.data.PropertyAddedEvent) =&gt; void;
+&nbsp;
+        private applicationPropertyRemovedListener: (event: api.data.PropertyRemovedEvent) =&gt; void;
+&nbsp;
+        private applicationGlobalEventsListener: (event: ApplicationEvent) =&gt; void;
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >applicationUnavailableListeners: {(applicationEvent: ApplicationEvent):void}[] = [];</span>
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >applicationStartedListeners: {(applicationEvent: ApplicationEvent): void}[] = [];</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(site: Site)</span> {
+<span class="cstat-no" title="statement not covered" >            this.initApplicationPropertyListeners();</span>
+<span class="cstat-no" title="statement not covered" >            this.setup(site);</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private initApplicationPropertyListeners() {</span></span>
+<span class="cstat-no" title="statement not covered" >            this.applicationPropertyAddedListener = <span class="fstat-no" title="function not covered" >(event: api.data.PropertyAddedEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let property: api.data.Property = event.getProperty();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (property.getPath().toString().indexOf('.siteConfig') === 0 &amp;&amp; property.getName() === 'config') {</span>
+<span class="cstat-no" title="statement not covered" >                    let siteConfig: SiteConfig = api.content.site.SiteConfig.create().fromData(property.getParent()).build();</span>
+<span class="cstat-no" title="statement not covered" >                    if (!this.siteConfigs) {</span>
+<span class="cstat-no" title="statement not covered" >                        this.siteConfigs = [];</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    this.siteConfigs.push(siteConfig);</span>
+<span class="cstat-no" title="statement not covered" >                    this.notifyApplicationAdded(siteConfig);</span>
+                }
+            };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.applicationPropertyRemovedListener = <span class="fstat-no" title="function not covered" >(event: api.data.PropertyRemovedEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let property: api.data.Property = event.getProperty();</span>
+<span class="cstat-no" title="statement not covered" >                if (property.getName() === 'siteConfig') {</span>
+<span class="cstat-no" title="statement not covered" >                    let applicationKey = ApplicationKey.fromString(property.getPropertySet().getString('applicationKey'));</span>
+<span class="cstat-no" title="statement not covered" >                    this.siteConfigs = this.siteConfigs.filter(<span class="fstat-no" title="function not covered" >(siteConfig: SiteConfig)</span> =&gt;</span>
+<span class="cstat-no" title="statement not covered" >                        !siteConfig.getApplicationKey().equals(applicationKey)</span>
+                    );
+<span class="cstat-no" title="statement not covered" >                    this.notifyApplicationRemoved(applicationKey);</span>
+                }
+            };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.applicationGlobalEventsListener = <span class="fstat-no" title="function not covered" >(event: ApplicationEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (ApplicationEventType.STOPPED === event.getEventType()) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.notifyApplicationUnavailable(event);</span>
+                } else <span class="cstat-no" title="statement not covered" >if (ApplicationEventType.STARTED === event.getEventType()) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.notifyApplicationStarted(event);</span>
+                }
+            };
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private setup(site: Site)</span> {
+<span class="cstat-no" title="statement not covered" >            this.site = site;</span>
+<span class="cstat-no" title="statement not covered" >            this.siteConfigs = site.getSiteConfigs();</span>
+<span class="cstat-no" title="statement not covered" >            this.site.getContentData().onPropertyAdded(this.applicationPropertyAddedListener);</span>
+<span class="cstat-no" title="statement not covered" >            this.site.getContentData().onPropertyRemoved(this.applicationPropertyRemovedListener);</span>
+<span class="cstat-no" title="statement not covered" >            ApplicationEvent.on(this.applicationGlobalEventsListener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        update(site: Site)</span> {
+<span class="cstat-no" title="statement not covered" >            if (this.site) {</span>
+<span class="cstat-no" title="statement not covered" >                this.site.getContentData().unPropertyAdded(this.applicationPropertyAddedListener);</span>
+<span class="cstat-no" title="statement not covered" >                this.site.getContentData().unPropertyRemoved(this.applicationPropertyRemovedListener);</span>
+<span class="cstat-no" title="statement not covered" >                ApplicationEvent.un(this.applicationGlobalEventsListener);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (site) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setup(site);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSite(): Site {</span>
+<span class="cstat-no" title="statement not covered" >            return this.site;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSiteId(): api.content.ContentId {</span>
+<span class="cstat-no" title="statement not covered" >            return this.site.getContentId();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getApplicationKeys(): ApplicationKey[] {</span>
+<span class="cstat-no" title="statement not covered" >            return this.siteConfigs.map(<span class="fstat-no" title="function not covered" >(sc: SiteConfig)</span> =&gt; <span class="cstat-no" title="statement not covered" >sc.getApplicationKey())</span>;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onPropertyChanged(listener: (event: api.PropertyChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.propertyChangedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unPropertyChanged(listener: (event: api.PropertyChangedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.propertyChangedListeners =</span>
+                this.propertyChangedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: api.PropertyChangedEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    return listener !== curr;</span>
+                });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyPropertyChanged(property: string, oldValue: any, newValue: any, source: any)</span> {
+<span class="cstat-no" title="statement not covered" >            let event = new api.PropertyChangedEvent(property, oldValue, newValue, source);</span>
+<span class="cstat-no" title="statement not covered" >            this.propertyChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: api.PropertyChangedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onApplicationAdded(listener: (event: ApplicationAddedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.applicationAddedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unApplicationAdded(listener: (event: ApplicationAddedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.applicationAddedListeners =</span>
+            this.applicationAddedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: ApplicationAddedEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    return listener !== curr;</span>
+                });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyApplicationAdded(siteConfig: SiteConfig)</span> {
+<span class="cstat-no" title="statement not covered" >            let event = new ApplicationAddedEvent(siteConfig);</span>
+<span class="cstat-no" title="statement not covered" >            this.applicationAddedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: ApplicationAddedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onApplicationRemoved(listener: (event: ApplicationRemovedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.applicationRemovedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unApplicationRemoved(listener: (event: ApplicationRemovedEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.applicationRemovedListeners =</span>
+            this.applicationRemovedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (event: ApplicationRemovedEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    return listener !== curr;</span>
+                });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyApplicationRemoved(applicationKey: ApplicationKey)</span> {
+<span class="cstat-no" title="statement not covered" >            let event = new ApplicationRemovedEvent(applicationKey);</span>
+<span class="cstat-no" title="statement not covered" >            this.applicationRemovedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: ApplicationRemovedEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(event);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onApplicationUnavailable(listener: (applicationEvent: ApplicationEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.applicationUnavailableListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unApplicationUnavailable(listener: (applicationEvent: ApplicationEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.applicationUnavailableListeners =</span>
+                this.applicationUnavailableListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (applicationEvent: ApplicationEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    return listener !== curr;</span>
+                });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyApplicationUnavailable(applicationEvent: ApplicationEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            this.applicationUnavailableListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (applicationEvent: ApplicationEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(applicationEvent);</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onApplicationStarted(listener: (applicationEvent: ApplicationEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.applicationStartedListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unApplicationStarted(listener: (applicationEvent: ApplicationEvent)=&gt;void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.applicationStartedListeners =</span>
+                this.applicationStartedListeners.filter(<span class="fstat-no" title="function not covered" >(curr: (applicationEvent: ApplicationEvent)=&gt;void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    return listener !== curr;</span>
+                });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyApplicationStarted(applicationEvent: ApplicationEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            this.applicationStartedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (applicationEvent: ApplicationEvent)=&gt;void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(applicationEvent);</span>
+            });
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

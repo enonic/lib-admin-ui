@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/util/loader/BaseLoader.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/util/loader/</a> BaseLoader.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">51.85% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>56/108</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">23.33% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>7/30</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">32.5% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>13/40</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">52.48% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>53/101</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">36×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>util.<span class="branch-1 cbranch-no" title="branch not covered" ></span>loader </span>{
+&nbsp;
+    import LoaderEvents = api.util.loader.event.LoaderEvents;
+    import LoaderEvent = api.util.loader.event.LoaderEvent;
+    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
+    import LoadingDataEvent = api.util.loader.event.LoadingDataEvent;
+    import LoaderErrorEvent = api.util.loader.event.LoaderErrorEvent;
+&nbsp;
+    enum LoaderStatus {
+        NOT_STARTED,
+        LOADING,
+        LOADED
+    }
+&nbsp;
+    export class BaseLoader&lt;JSON, OBJECT&gt; {
+&nbsp;
+        protected request: api.rest.ResourceRequest&lt;JSON, OBJECT[]&gt;;
+&nbsp;
+        private status: LoaderStatus = LoaderStatus.NOT_STARTED;
+&nbsp;
+        private results: OBJECT[];
+&nbsp;
+        private searchString: string;
+&nbsp;
+        private loadedDataListeners: {(event: LoadedDataEvent&lt;OBJECT&gt;): void}[] = [];
+&nbsp;
+        private loadingDataListeners: {(event: LoadingDataEvent): void}[] = [];
+&nbsp;
+        private loaderErrorListeners: {(event: LoaderErrorEvent): void}[] = [];
+&nbsp;
+        private comparator: Comparator&lt;OBJECT&gt;;
+&nbsp;
+        constructor(request?: api.rest.ResourceRequest&lt;JSON, OBJECT[]&gt;) {
+            this.setRequest(request || this.createRequest());
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected createRequest(): api.rest.ResourceRequest&lt;JSON, OBJECT[]&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented in deriving classes!');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected getRequest(): api.rest.ResourceRequest&lt;JSON, OBJECT[]&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return this.request;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        sendRequest(): wemQ.Promise&lt;OBJECT[]&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return this.request.sendAndParse();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        load(<span class="cstat-no" title="statement not covered" >postLoad: boolean = false)</span></span>: wemQ.Promise&lt;OBJECT[]&gt; {
+<span class="cstat-no" title="statement not covered" >            this.notifyLoadingData(postLoad);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this.sendRequest()</span>
+                .then&lt;OBJECT[]&gt;(this.handleLoadSuccess.bind(this, postLoad))
+                .catch&lt;OBJECT[]&gt;(this.handleLoadError.bind(this, postLoad));
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        preLoad(<span class="cstat-no" title="statement not covered" >searchString: string = '')</span></span>: wemQ.Promise&lt;OBJECT[]&gt; {
+<span class="cstat-no" title="statement not covered" >            this.notifyLoadingData(false);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this.sendPreLoadRequest(searchString)</span>
+                .then&lt;OBJECT[]&gt;(this.handleLoadSuccess.bind(this, false))
+                .catch&lt;OBJECT[]&gt;(this.handleLoadError.bind(this, false));
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected sendPreLoadRequest(searchString?: string)</span>: wemQ.Promise&lt;OBJECT[]&gt; {
+<span class="cstat-no" title="statement not covered" >            return this.sendRequest();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private handleLoadSuccess(<span class="cstat-no" title="statement not covered" >postLoad: boolean = false,</span> results: OBJECT[])</span>: OBJECT[] {
+<span class="cstat-no" title="statement not covered" >            this.results = results;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.comparator) {</span>
+<span class="cstat-no" title="statement not covered" >                try {</span>
+<span class="cstat-no" title="statement not covered" >                    this.results = results.sort(this.comparator.compare);</span>
+                } catch (e) {
+<span class="cstat-no" title="statement not covered" >                    console.error('Error sorting loaded elements with ' + api.ClassHelper.getClassName(this.comparator) + ': ', e);</span>
+                }
+            }
+<span class="cstat-no" title="statement not covered" >            this.notifyLoadedData(results, postLoad);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return results;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private handleLoadError(<span class="cstat-no" title="statement not covered" >postLoad: boolean = false,</span> error: any)</span>: OBJECT[] {
+<span class="cstat-no" title="statement not covered" >            let isObj = typeof error === 'object';</span>
+<span class="cstat-no" title="statement not covered" >            let textMessage = isObj ? (error['message'] || 'Unknown error') : String(error);</span>
+<span class="cstat-no" title="statement not covered" >            let statusCode = isObj &amp;&amp; error['statusCode'] ? error['statusCode'] : 500;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.notifyErrorOccurred(statusCode, 'Service error: ' + textMessage, postLoad);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return [];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isLoading(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.status === LoaderStatus.LOADING;</span>
+        }
+&nbsp;
+        isLoaded(): boolean {
+            return this.status === LoaderStatus.LOADED;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isNotStarted(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.status === LoaderStatus.NOT_STARTED;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setComparator(comparator: Comparator&lt;OBJECT&gt;)</span>: BaseLoader&lt;JSON, OBJECT&gt; {
+<span class="cstat-no" title="statement not covered" >            this.comparator = comparator;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+        setRequest(request: api.rest.ResourceRequest&lt;JSON, OBJECT[]&gt;) {
+            this.request = request;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        search(searchString: string)</span>: wemQ.Promise&lt;OBJECT[]&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let deferred = wemQ.defer&lt;OBJECT[]&gt;();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.searchString = searchString;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.results) {</span>
+<span class="cstat-no" title="statement not covered" >                let filtered = this.results.filter(this.filterFn, this);</span>
+<span class="cstat-no" title="statement not covered" >                this.notifyLoadedData(filtered);</span>
+<span class="cstat-no" title="statement not covered" >                deferred.resolve(this.results);</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                deferred.resolve(null);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return deferred.promise;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getResults(): OBJECT[] {</span>
+<span class="cstat-no" title="statement not covered" >            return this.results;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setResults(results: OBJECT[])</span> {
+<span class="cstat-no" title="statement not covered" >            this.results = results;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getComparator(): Comparator&lt;OBJECT&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return this.comparator;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getSearchString(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.searchString;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        filterFn(result: OBJECT)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            throw Error('must be implemented');</span>
+        }
+&nbsp;
+        notifyLoadedData(results: OBJECT[], postLoad?: boolean) {
+            this.status = LoaderStatus.LOADED;
+            this.loadedDataListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: LoadedDataEvent&lt;OBJECT&gt;) =&gt; void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                listener.call(this, new LoadedDataEvent&lt;OBJECT&gt;(results, postLoad));</span>
+            });
+        }
+&nbsp;
+        notifyLoadingData(postLoad?: boolean) {
+            this.status = LoaderStatus.LOADING;
+            this.loadingDataListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: LoadingDataEvent) =&gt; void)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                listener.call(this, new LoadingDataEvent(postLoad));</span>
+            });
+        }
+&nbsp;
+        onLoadedData(listener: (event: LoadedDataEvent&lt;OBJECT&gt;) =&gt; void) {
+            this.loadedDataListeners.push(listener);
+        }
+&nbsp;
+        onLoadingData(listener: (event: LoadingDataEvent) =&gt; void) {
+            this.loadingDataListeners.push(listener);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unLoadedData(listener: (event: LoadedDataEvent&lt;OBJECT&gt;) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.loadedDataListeners = this.loadedDataListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: (event: LoadedDataEvent&lt;OBJECT&gt;)=&gt;void)</span>=&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return currentListener !== listener;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unLoadingData(listener: (event: LoadingDataEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.loadingDataListeners = this.loadingDataListeners.filter(<span class="fstat-no" title="function not covered" >(currentListener: (event: LoadingDataEvent)=&gt;void)</span>=&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return currentListener !== listener;</span>
+            });
+        }
+&nbsp;
+        onErrorOccurred(listener: (event: LoaderErrorEvent) =&gt; void) {
+            this.loaderErrorListeners.push(listener);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unErrorOccurred(listener: (event: LoaderErrorEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.loaderErrorListeners = this.loaderErrorListeners.filter(<span class="fstat-no" title="function not covered" >(curr)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return curr !== listener;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        notifyErrorOccurred(statusCode: number, textStatus: string, postLoad?: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            let error = new LoaderErrorEvent(statusCode, textStatus, postLoad);</span>
+<span class="cstat-no" title="statement not covered" >            this.loaderErrorListeners.forEach(<span class="fstat-no" title="function not covered" >(listener)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(error);</span>
+            });
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

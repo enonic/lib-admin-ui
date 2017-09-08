@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/aggregation/BucketView.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/aggregation/</a> BucketView.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">36.84% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>21/57</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">16.67% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>2/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">14.29% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>3/21</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">33.33% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>18/54</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>aggregation </span>{
+&nbsp;
+    export class BucketView extends api.dom.DivEl {
+&nbsp;
+        private bucket: api.aggregation.Bucket;
+&nbsp;
+        private checkbox: api.ui.Checkbox;
+&nbsp;
+        private parentAggregationView: api.aggregation.AggregationView;
+&nbsp;
+        private <span class="cstat-no" title="statement not covered" >selectionChangedListeners: Function[] = [];</span>
+&nbsp;
+        private displayName: string;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(bucket: api.aggregation.Bucket, parentAggregationView: api.aggregation.AggregationView, select: boolean,</span>
+                    displayName?: string) {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            super('aggregation-bucket-view');</span>
+<span class="cstat-no" title="statement not covered" >            this.bucket = bucket;</span>
+<span class="cstat-no" title="statement not covered" >            this.parentAggregationView = parentAggregationView;</span>
+<span class="cstat-no" title="statement not covered" >            this.displayName = displayName;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.checkbox = api.ui.Checkbox.create().setLabelText(this.resolveLabelValue()).setChecked(select).build();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.checkbox.onValueChanged(<span class="fstat-no" title="function not covered" >(event: api.ValueChangedEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.notifySelectionChanged(eval(event.getOldValue()), eval(event.getNewValue()));</span>
+            });
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.checkbox);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.updateUI();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private resolveLabelValue(): string {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.displayName != null) {</span>
+<span class="cstat-no" title="statement not covered" >                return this.displayName + ' (' + this.bucket.getDocCount() + ')';</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this.resolveKey() + ' (' + this.bucket.getDocCount() + ')';</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private resolveKey(): string {</span>
+<span class="cstat-no" title="statement not covered" >            let key = this.bucket.getKey();</span>
+<span class="cstat-no" title="statement not covered" >            if (key.indexOf(':') &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >                return api.util.StringHelper.capitalize(key.substring(key.indexOf(':') + 1));</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return key;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setDisplayName(displayName: string)</span> {
+<span class="cstat-no" title="statement not covered" >            this.displayName = displayName;</span>
+<span class="cstat-no" title="statement not covered" >            this.updateLabel();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private updateLabel(): void {</span>
+<span class="cstat-no" title="statement not covered" >            this.checkbox.setLabel(this.resolveLabelValue());</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getBucket(): api.aggregation.Bucket {</span>
+<span class="cstat-no" title="statement not covered" >            return this.bucket;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getName(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.bucket.getKey();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        update(bucket: api.aggregation.Bucket)</span> {
+<span class="cstat-no" title="statement not covered" >            this.bucket = bucket;</span>
+<span class="cstat-no" title="statement not covered" >            this.updateUI();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isSelected(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.checkbox.isChecked();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        deselect(supressEvent?: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.checkbox.setChecked(false, supressEvent);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private updateUI() {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.updateLabel();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.bucket.getDocCount() &gt; 0 || this.isSelected()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.show();</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.hide();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getParentAggregationView() {</span>
+<span class="cstat-no" title="statement not covered" >            return this.parentAggregationView;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        notifySelectionChanged(oldValue: boolean, newValue: boolean)</span> {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.selectionChangedListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: (event: api.aggregation.BucketViewSelectionChangedEvent) =&gt; void)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                listener(new api.aggregation.BucketViewSelectionChangedEvent(oldValue, newValue, this));</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unSelectionChanged(listener: (event: api.aggregation.BucketViewSelectionChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.selectionChangedListeners = this.selectionChangedListeners</span>
+                .filter(<span class="fstat-no" title="function not covered" >function (curr: (event: api.aggregation.BucketViewSelectionChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >                return curr !== listener;</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onSelectionChanged(listener: (event: api.aggregation.BucketViewSelectionChangedEvent) =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.selectionChangedListeners.push(listener);</span>
+        }
+&nbsp;
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/page/region/_module.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/content/page/region/</a> _module.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/0</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">///&lt;reference path='ComponentPath.ts' /&gt;
+///&lt;reference path='ComponentJson.ts' /&gt;
+///&lt;reference path='ComponentTypeWrapperJson.ts' /&gt;
+///&lt;reference path='ComponentName.ts' /&gt;
+///&lt;reference path='ComponentType.ts' /&gt;
+///&lt;reference path='ComponentChangedEvent.ts' /&gt;
+///&lt;reference path='ComponentPropertyChangedEvent.ts' /&gt;
+///&lt;reference path='ComponentResetEvent.ts' /&gt;
+///&lt;reference path='ComponentPropertyValueChangedEvent.ts' /&gt;
+///&lt;reference path='Component.ts' /&gt;
+///&lt;reference path='ComponentFactory.ts' /&gt;
+///&lt;reference path='DescriptorBasedComponentJson.ts' /&gt;
+///&lt;reference path='DescriptorBasedComponent.ts' /&gt;
+&nbsp;
+///&lt;reference path='RegionsChangedEvent.ts' /&gt;
+///&lt;reference path='RegionAddedEvent.ts' /&gt;
+///&lt;reference path='RegionRemovedEvent.ts' /&gt;
+///&lt;reference path='RegionChangedEvent.ts' /&gt;
+///&lt;reference path='Regions.ts' /&gt;
+&nbsp;
+///&lt;reference path='ImageComponentJson.ts' /&gt;
+///&lt;reference path='ImageComponent.ts' /&gt;
+///&lt;reference path='ImageComponentType.ts' /&gt;
+&nbsp;
+///&lt;reference path='TextComponent.ts' /&gt;
+///&lt;reference path='TextComponentType.ts' /&gt;
+///&lt;reference path='TextComponentJson.ts' /&gt;
+&nbsp;
+///&lt;reference path='FragmentComponent.ts' /&gt;
+///&lt;reference path='FragmentComponentType.ts' /&gt;
+///&lt;reference path='FragmentComponentJson.ts' /&gt;
+///&lt;reference path='FragmentDropdown.ts' /&gt;
+&nbsp;
+///&lt;reference path='PartDescriptorJson.ts' /&gt;
+///&lt;reference path='PartComponentJson.ts' /&gt;
+///&lt;reference path='PartDescriptorsJson.ts' /&gt;
+///&lt;reference path='PartDescriptor.ts' /&gt;
+///&lt;reference path='PartDescriptorDropdown.ts' /&gt;
+///&lt;reference path='PartComponent.ts' /&gt;
+///&lt;reference path='PartComponentType.ts' /&gt;
+///&lt;reference path='PartDescriptorViewer.ts' /&gt;
+///&lt;reference path='PartDescriptorComboBox.ts' /&gt;
+///&lt;reference path='PartDescriptorLoader.ts' /&gt;
+///&lt;reference path='PartDescriptorResourceRequest.ts' /&gt;
+///&lt;reference path='PartDescriptorsResourceRequest.ts' /&gt;
+///&lt;reference path='GetPartDescriptorsByApplicationsRequest.ts' /&gt;
+///&lt;reference path='GetPartDescriptorsByApplicationRequest.ts' /&gt;
+///&lt;reference path='GetPartDescriptorByKeyRequest.ts' /&gt;
+///&lt;reference path='PartDescriptorCache.ts' /&gt;
+&nbsp;
+///&lt;reference path='LayoutDescriptorJson.ts' /&gt;
+///&lt;reference path='LayoutComponentJson.ts' /&gt;
+///&lt;reference path='LayoutDescriptorsJson.ts' /&gt;
+///&lt;reference path='LayoutDescriptor.ts' /&gt;
+///&lt;reference path='LayoutComponentType.ts' /&gt;
+///&lt;reference path='LayoutComponent.ts' /&gt;
+///&lt;reference path='LayoutDescriptorViewer.ts' /&gt;
+///&lt;reference path='LayoutDescriptorComboBox.ts' /&gt;
+///&lt;reference path='LayoutDescriptorLoader.ts' /&gt;
+///&lt;reference path='LayoutDescriptorResourceRequest.ts' /&gt;
+///&lt;reference path='LayoutDescriptorsResourceRequest.ts' /&gt;
+///&lt;reference path='GetLayoutDescriptorsByApplicationRequest.ts' /&gt;
+///&lt;reference path='GetLayoutDescriptorsByApplicationsRequest.ts' /&gt;
+///&lt;reference path='GetLayoutDescriptorByKeyRequest.ts' /&gt;
+///&lt;reference path='LayoutDescriptorDropdown.ts' /&gt;
+///&lt;reference path='LayoutRegionsMerger.ts' /&gt;
+///&lt;reference path='LayoutDescriptorCache.ts' /&gt;
+&nbsp;
+///&lt;reference path='RegionPath.ts' /&gt;
+///&lt;reference path='RegionsDescriptorJson.ts' /&gt;
+///&lt;reference path='RegionJson.ts' /&gt;
+///&lt;reference path='RegionDescriptor.ts' /&gt;
+///&lt;reference path='BaseRegionChangedEvent.ts' /&gt;
+///&lt;reference path='RegionPropertyChangedEvent.ts' /&gt;
+///&lt;reference path='RegionPropertyValueChangedEvent.ts' /&gt;
+///&lt;reference path='ComponentAddedEvent.ts' /&gt;
+///&lt;reference path='ComponentRemovedEvent.ts' /&gt;
+///&lt;reference path='Region.ts' /&gt;
+&nbsp;
+///&lt;reference path='FragmentResourceRequest.ts' /&gt;
+///&lt;reference path='CreateFragmentRequest.ts' /&gt;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

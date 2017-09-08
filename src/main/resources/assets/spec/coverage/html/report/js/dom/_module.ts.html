@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/dom/_module.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/dom/</a> _module.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/0</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">///&lt;reference path='WindowDOM.ts' /&gt;
+///&lt;reference path='ElementHelper.ts' /&gt;
+///&lt;reference path='ImgElHelper.ts' /&gt;
+///&lt;reference path='Element.ts' /&gt;
+///&lt;reference path='ElementRegistry.ts' /&gt;
+///&lt;reference path='ElementEvent.ts' /&gt;
+///&lt;reference path='ElementAddedEvent.ts' /&gt;
+///&lt;reference path='ElementRenderedEvent.ts' /&gt;
+///&lt;reference path='ElementShownEvent.ts' /&gt;
+///&lt;reference path='ElementHiddenEvent.ts' /&gt;
+///&lt;reference path='ElementRemovedEvent.ts' /&gt;
+///&lt;reference path='ElementResizedEvent.ts' /&gt;
+///&lt;reference path='AEl.ts' /&gt;
+///&lt;reference path='BrEl.ts' /&gt;
+///&lt;reference path='IEl.ts' /&gt;
+///&lt;reference path='Body.ts' /&gt;
+///&lt;reference path='DivEl.ts' /&gt;
+///&lt;reference path='H1El.ts' /&gt;
+///&lt;reference path='H2El.ts' /&gt;
+///&lt;reference path='H3El.ts' /&gt;
+///&lt;reference path='H4El.ts' /&gt;
+///&lt;reference path='H5El.ts' /&gt;
+///&lt;reference path='H6El.ts' /&gt;
+///&lt;reference path='UlEl.ts' /&gt;
+///&lt;reference path='LiEl.ts' /&gt;
+///&lt;reference path='EmEl.ts' /&gt;
+///&lt;reference path='ImgEl.ts' /&gt;
+///&lt;reference path='SpanEl.ts' /&gt;
+///&lt;reference path='FormItemEl.ts' /&gt;
+///&lt;reference path='ButtonEl.ts' /&gt;
+///&lt;reference path='PEl.ts' /&gt;
+///&lt;reference path='FormInputEl.ts' /&gt;
+///&lt;reference path='CompositeFormInputEl.ts' /&gt;
+///&lt;reference path='InputEl.ts' /&gt;
+///&lt;reference path='LabelEl.ts' /&gt;
+///&lt;reference path='SelectEl.ts' /&gt;
+///&lt;reference path='OptionEl.ts' /&gt;
+///&lt;reference path='IFrameEl.ts' /&gt;
+///&lt;reference path='FieldsetEl.ts' /&gt;
+///&lt;reference path='LegendEl.ts' /&gt;
+///&lt;reference path='FormEl.ts' /&gt;
+///&lt;reference path='AsideEl.ts' /&gt;
+///&lt;reference path='SectionEl.ts' /&gt;
+///&lt;reference path='ArticleEl.ts' /&gt;
+///&lt;reference path='DlEl.ts' /&gt;
+///&lt;reference path='DdDtEl.ts' /&gt;
+///&lt;reference path='LinkEl.ts' /&gt;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

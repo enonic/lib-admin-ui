@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/schema/content/ContentTypeName.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/schema/content/</a> ContentTypeName.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">81.36% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>48/59</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">66.67% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/6</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">38.89% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>7/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">80% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>44/55</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">116×</span>
+<span class="cline-any cline-yes">116×</span>
+<span class="cline-any cline-yes">116×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">30×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>schema.</span>content {
+&nbsp;
+    import ApplicationKey = api.application.ApplicationKey;
+&nbsp;
+    export class ContentTypeName extends api.application.ApplicationBasedName {
+&nbsp;
+        // Built-in ContentTypes can be listed here
+        static UNSTRUCTURED: ContentTypeName = ContentTypeName.from(ApplicationKey.BASE, 'unstructured');
+&nbsp;
+        static FOLDER: ContentTypeName = ContentTypeName.from(ApplicationKey.BASE, 'folder');
+&nbsp;
+        static SHORTCUT: ContentTypeName = ContentTypeName.from(ApplicationKey.BASE, 'shortcut');
+&nbsp;
+        static MEDIA: ContentTypeName = ContentTypeName.from(ApplicationKey.BASE, 'media');
+&nbsp;
+        static MEDIA_TEXT: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'text');
+&nbsp;
+        static MEDIA_DATA: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'data');
+&nbsp;
+        static MEDIA_AUDIO: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'audio');
+&nbsp;
+        static MEDIA_VIDEO: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'video');
+&nbsp;
+        static MEDIA_IMAGE: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'image');
+&nbsp;
+        static MEDIA_VECTOR: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'vector');
+&nbsp;
+        static MEDIA_ARCHIVE: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'archive');
+&nbsp;
+        static MEDIA_DOCUMENT: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'document');
+&nbsp;
+        static MEDIA_SPREADSHEET: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'spreadsheet');
+&nbsp;
+        static MEDIA_PRESENTATION: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'presentation');
+&nbsp;
+        static MEDIA_CODE: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'code');
+&nbsp;
+        static MEDIA_EXECUTABLE: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'executable');
+&nbsp;
+        static MEDIA_UNKNOWN: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'unknown');
+&nbsp;
+        static SITE: ContentTypeName = ContentTypeName.from(ApplicationKey.PORTAL, 'site');
+&nbsp;
+        static PAGE_TEMPLATE: ContentTypeName = ContentTypeName.from(ApplicationKey.PORTAL, 'page-template');
+&nbsp;
+        static TEMPLATE_FOLDER: ContentTypeName = ContentTypeName.from(ApplicationKey.PORTAL, 'template-folder');
+&nbsp;
+        static FRAGMENT: ContentTypeName = ContentTypeName.from(ApplicationKey.PORTAL, 'fragment');
+&nbsp;
+        static IMAGE: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'image');
+&nbsp;
+        constructor(name: string) {
+            api.util.assertNotNull(name, `Content type name can't be null`);
+            let parts = name.split(api.application.ApplicationBasedName.SEPARATOR);
+            super(ApplicationKey.fromString(parts[0]), parts[1]);
+        }
+&nbsp;
+        static from(applicationKey: api.application.ApplicationKey, localName: string) {
+            return new ContentTypeName(applicationKey.toString() + ':' + localName);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isFolder(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return ContentTypeName.FOLDER.equals(this);</span>
+        }
+&nbsp;
+        isSite(): boolean {
+            return ContentTypeName.SITE.equals(this);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isPageTemplate(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return ContentTypeName.PAGE_TEMPLATE.equals(this);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isTemplateFolder(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return ContentTypeName.TEMPLATE_FOLDER.equals(this);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isFragment(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return ContentTypeName.FRAGMENT.equals(this);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isImage(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return ContentTypeName.IMAGE.equals(this);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isMedia(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return ContentTypeName.MEDIA.equals(this);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isVectorMedia(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return ContentTypeName.MEDIA_VECTOR.equals(this);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isShortcut(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return ContentTypeName.SHORTCUT.equals(this);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static getMediaTypes(): ContentTypeName[] {</span>
+<span class="cstat-no" title="statement not covered" >            return [</span>
+                ContentTypeName.MEDIA_ARCHIVE,
+                ContentTypeName.MEDIA_AUDIO,
+                ContentTypeName.MEDIA_VIDEO,
+                ContentTypeName.MEDIA_CODE,
+                ContentTypeName.MEDIA_DATA,
+                ContentTypeName.MEDIA_DOCUMENT,
+                ContentTypeName.MEDIA_EXECUTABLE,
+                ContentTypeName.MEDIA_IMAGE,
+                ContentTypeName.MEDIA_SPREADSHEET,
+                ContentTypeName.MEDIA_PRESENTATION,
+                ContentTypeName.MEDIA_VECTOR,
+                ContentTypeName.MEDIA_TEXT,
+                ContentTypeName.MEDIA_UNKNOWN
+            ];
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isDescendantOfMedia(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return ContentTypeName.getMediaTypes().some(<span class="fstat-no" title="function not covered" >(contentTypeName: ContentTypeName)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return contentTypeName.equals(this);</span>
+            });
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

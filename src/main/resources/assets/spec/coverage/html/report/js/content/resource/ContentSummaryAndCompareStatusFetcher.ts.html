@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/content/resource/ContentSummaryAndCompareStatusFetcher.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/content/resource/</a> ContentSummaryAndCompareStatusFetcher.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">24.32% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>18/74</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">18.75% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">13.33% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/30</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">22.06% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>15/68</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>content.<span class="branch-1 cbranch-no" title="branch not covered" ></span>resource </span>{
+&nbsp;
+    import CompareContentRequest = api.content.resource.CompareContentRequest;
+    import BatchContentRequest = api.content.resource.BatchContentRequest;
+    import ContentResponse = api.content.resource.result.ContentResponse;
+    import CompareContentResults = api.content.resource.result.CompareContentResults;
+    import resolve = Q.resolve;
+&nbsp;
+    export class ContentSummaryAndCompareStatusFetcher {
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static fetchChildren(parentContentId: ContentId, <span class="cstat-no" title="statement not covered" >from: number = 0,</span> <span class="cstat-no" title="statement not covered" >size: number = -1,</span></span>
+                             childOrder?: api.content.order.ChildOrder): wemQ.Promise&lt;ContentResponse&lt;ContentSummaryAndCompareStatus&gt;&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let deferred = wemQ.defer&lt;ContentResponse&lt;ContentSummaryAndCompareStatus&gt;&gt;();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            new ListContentByIdRequest(parentContentId).setFrom(from).setSize(size).setOrder(childOrder).sendAndParse().then(</span>
+<span class="fstat-no" title="function not covered" >                (response: ContentResponse&lt;ContentSummary&gt;)</span>=&gt; {
+<span class="cstat-no" title="statement not covered" >                    CompareContentRequest.fromContentSummaries(response.getContents()).sendAndParse().then(</span>
+<span class="fstat-no" title="function not covered" >                        (compareResults: CompareContentResults)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                            let contents: ContentSummaryAndCompareStatus[] = ContentSummaryAndCompareStatusFetcher.updateCompareStatus(</span>
+                                response.getContents(), compareResults);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                            ContentSummaryAndCompareStatusFetcher.updateReadOnly(contents).then(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                                let result = new ContentResponse&lt;ContentSummaryAndCompareStatus&gt;(</span>
+                                    contents,
+                                    response.getMetadata()
+                                );
+<span class="cstat-no" title="statement not covered" >                                deferred.resolve(result);</span>
+                            });
+                        });
+                });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return deferred.promise;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static fetch(contentId: ContentId)</span>: wemQ.Promise&lt;ContentSummaryAndCompareStatus&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let deferred = wemQ.defer&lt;ContentSummaryAndCompareStatus&gt;();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            new GetContentByIdRequest(contentId).sendAndParse().then(<span class="fstat-no" title="function not covered" >(content: Content)</span>=&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                CompareContentRequest.fromContentSummaries([content]).sendAndParse().then(<span class="fstat-no" title="function not covered" >(compareResults: CompareContentResults)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    deferred.resolve(ContentSummaryAndCompareStatusFetcher.updateCompareStatus([content], compareResults)[0]);</span>
+                });
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return deferred.promise;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static fetchByContent(content: Content)</span>: wemQ.Promise&lt;ContentSummaryAndCompareStatus&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let deferred = wemQ.defer&lt;ContentSummaryAndCompareStatus&gt;();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            CompareContentRequest.fromContentSummaries([content]).sendAndParse().then(<span class="fstat-no" title="function not covered" >(compareResults: CompareContentResults)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                deferred.resolve(ContentSummaryAndCompareStatusFetcher.updateCompareStatus([content], compareResults)[0]);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return deferred.promise;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static fetchByPaths(paths: ContentPath[])</span>: wemQ.Promise&lt;ContentSummaryAndCompareStatus[]&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let deferred = wemQ.defer&lt;ContentSummaryAndCompareStatus[]&gt;();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (paths.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >                new BatchContentRequest().setContentPaths(paths).sendAndParse().then(<span class="fstat-no" title="function not covered" >(response: ContentResponse&lt;ContentSummary&gt;)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    let contentSummaries: ContentSummary[] = response.getContents();</span>
+<span class="cstat-no" title="statement not covered" >                    CompareContentRequest.fromContentSummaries(contentSummaries).sendAndParse().then(</span>
+<span class="fstat-no" title="function not covered" >                        (compareResults: CompareContentResults)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                            deferred.resolve(ContentSummaryAndCompareStatusFetcher.updateCompareStatus(contentSummaries, compareResults));</span>
+                        });
+                });
+            } else {
+<span class="cstat-no" title="statement not covered" >                deferred.resolve([]);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return deferred.promise;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static fetchByIds(ids: ContentId[])</span>: wemQ.Promise&lt;ContentSummaryAndCompareStatus[]&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let deferred = wemQ.defer&lt;ContentSummaryAndCompareStatus[]&gt;();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (ids.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >                new GetContentSummaryByIds(ids).sendAndParse().then(<span class="fstat-no" title="function not covered" >(contentSummaries: ContentSummary[])</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    CompareContentRequest.fromContentSummaries(contentSummaries).sendAndParse().then(</span>
+<span class="fstat-no" title="function not covered" >                        (compareResults: CompareContentResults)</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                            deferred.resolve(ContentSummaryAndCompareStatusFetcher.updateCompareStatus(contentSummaries, compareResults));</span>
+                        });
+                });
+            } else {
+<span class="cstat-no" title="statement not covered" >                deferred.resolve([]);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return deferred.promise;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static fetchStatus(contentSummaries: ContentSummary[])</span>: wemQ.Promise&lt;ContentSummaryAndCompareStatus[]&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let deferred = wemQ.defer&lt;ContentSummaryAndCompareStatus[]&gt;();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            CompareContentRequest.fromContentSummaries(contentSummaries).sendAndParse().then(<span class="fstat-no" title="function not covered" >(compareResults: CompareContentResults)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                deferred.resolve(ContentSummaryAndCompareStatusFetcher.updateCompareStatus(contentSummaries, compareResults));</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return deferred.promise;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static fetchChildrenIds(parentContentId: ContentId)</span>: wemQ.Promise&lt;ContentId[]&gt; {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let deferred = wemQ.defer&lt;ContentId[]&gt;();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            new GetContentIdsByParentRequest().setParentId(parentContentId).sendAndParse().then(</span>
+<span class="fstat-no" title="function not covered" >                (response: ContentId[])</span>=&gt; {
+<span class="cstat-no" title="statement not covered" >                    deferred.resolve(response);</span>
+                });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return deferred.promise;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static updateCompareStatus(contentSummaries: ContentSummary[],</span>
+                                   compareResults: CompareContentResults): ContentSummaryAndCompareStatus[] {
+<span class="cstat-no" title="statement not covered" >            let list: ContentSummaryAndCompareStatus[] = [];</span>
+<span class="cstat-no" title="statement not covered" >            contentSummaries.forEach(<span class="fstat-no" title="function not covered" >(contentSummary: ContentSummary)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let compareResult: api.content.resource.result.CompareContentResult = compareResults.get(contentSummary.getId());</span>
+<span class="cstat-no" title="statement not covered" >                let newEntry = ContentSummaryAndCompareStatus.fromContentAndCompareAndPublishStatus(</span>
+                    contentSummary, compareResult.getCompareStatus(), compareResult.getPublishStatus());
+<span class="cstat-no" title="statement not covered" >                list.push(newEntry);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return list;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static updateReadOnly(contents: ContentSummaryAndCompareStatus[])</span>: wemQ.Promise&lt;any&gt; {
+<span class="cstat-no" title="statement not covered" >            return new IsContentReadOnlyRequest(contents.map(<span class="fstat-no" title="function not covered" >content </span>=&gt; <span class="cstat-no" title="statement not covered" >content.getContentId())</span>).sendAndParse().then(</span>
+<span class="fstat-no" title="function not covered" >                (readOnlyContentIds: string[])</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >                    readOnlyContentIds.forEach(<span class="fstat-no" title="function not covered" >(id: string)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                        contents.some(<span class="fstat-no" title="function not covered" >content </span>=&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                            if (content.getId() === id) {</span>
+<span class="cstat-no" title="statement not covered" >                                content.setReadOnly(true);</span>
+<span class="cstat-no" title="statement not covered" >                                return true;</span>
+                            }
+                        });
+                    });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    return true;</span>
+                });
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

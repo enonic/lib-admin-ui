@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/util/htmlarea/dialog/HTMLAreaDialogHandler.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">js/util/htmlarea/dialog/</a> HTMLAreaDialogHandler.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">34.69% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>17/49</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">23.53% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/17</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">31.25% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>5/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">29.55% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>13/44</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>util.<span class="branch-1 cbranch-no" title="branch not covered" ></span>htmlarea.<span class="branch-1 cbranch-no" title="branch not covered" ></span>dialog </span>{
+&nbsp;
+    export class HTMLAreaDialogHandler {
+&nbsp;
+        private static modalDialog: ModalDialog;
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        static createAndOpenDialog(event: CreateHtmlAreaDialogEvent)</span>: ModalDialog {</span>
+<span class="cstat-no" title="statement not covered" >            let modalDialog;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            switch (event.getType()) {</span>
+            case HtmlAreaDialogType.ANCHOR:
+<span class="cstat-no" title="statement not covered" >                modalDialog = this.openAnchorDialog(event.getConfig());</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case HtmlAreaDialogType.IMAGE:
+<span class="cstat-no" title="statement not covered" >                modalDialog = this.openImageDialog(event.getConfig(), event.getContent());</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case HtmlAreaDialogType.LINK:
+<span class="cstat-no" title="statement not covered" >                modalDialog = this.openLinkDialog(event.getConfig(), event.getContent());</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case HtmlAreaDialogType.MACRO:
+<span class="cstat-no" title="statement not covered" >                modalDialog = this.openMacroDialog(event.getConfig(), event.getContent(), event.getApplicationKeys());</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case HtmlAreaDialogType.SEARCHREPLACE:
+<span class="cstat-no" title="statement not covered" >                modalDialog = this.openSearchReplaceDialog(event.getConfig());</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case HtmlAreaDialogType.CODE:
+<span class="cstat-no" title="statement not covered" >                modalDialog = this.openCodeDialog(event.getConfig());</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            case HtmlAreaDialogType.CHARMAP:
+<span class="cstat-no" title="statement not covered" >                modalDialog = this.openCharMapDialog(event.getConfig());</span>
+<span class="cstat-no" title="statement not covered" >                break;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (modalDialog) {</span>
+<span class="cstat-no" title="statement not covered" >                this.modalDialog = modalDialog;</span>
+<span class="cstat-no" title="statement not covered" >                modalDialog.onHidden(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                    this.modalDialog = null;</span>
+                });
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this.modalDialog;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static getOpenDialog(): ModalDialog {</span>
+<span class="cstat-no" title="statement not covered" >            return this.modalDialog;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private static openLinkDialog(config: HtmlAreaAnchor, content: api.content.ContentSummary)</span>: ModalDialog {
+<span class="cstat-no" title="statement not covered" >            return this.openDialog(new LinkModalDialog(config, content));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private static openImageDialog(config: HtmlAreaImage, content: api.content.ContentSummary)</span>: ModalDialog {
+<span class="cstat-no" title="statement not covered" >            return this.openDialog(new ImageModalDialog(config, content));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private static openAnchorDialog(editor: HtmlAreaEditor)</span>: ModalDialog {
+<span class="cstat-no" title="statement not covered" >            return this.openDialog(new AnchorModalDialog(editor));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private static openMacroDialog(config: HtmlAreaMacro, content: api.content.ContentSummary,</span>
+                                       applicationKeys: api.application.ApplicationKey[]): ModalDialog {
+<span class="cstat-no" title="statement not covered" >            return this.openDialog(new MacroModalDialog(config, content, applicationKeys));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private static openSearchReplaceDialog(editor: HtmlAreaEditor)</span>: ModalDialog {
+<span class="cstat-no" title="statement not covered" >            return this.openDialog(new SearchReplaceModalDialog(editor));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private static openCodeDialog(editor: HtmlAreaEditor)</span>: ModalDialog {
+<span class="cstat-no" title="statement not covered" >            return this.openDialog(new CodeDialog(editor));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private static openCharMapDialog(editor: HtmlAreaEditor)</span>: ModalDialog {
+<span class="cstat-no" title="statement not covered" >            return this.openDialog(new CharMapDialog(editor));</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private static openDialog(dialog: ModalDialog)</span>: ModalDialog {
+<span class="cstat-no" title="statement not covered" >            dialog.open();</span>
+<span class="cstat-no" title="statement not covered" >            return dialog;</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

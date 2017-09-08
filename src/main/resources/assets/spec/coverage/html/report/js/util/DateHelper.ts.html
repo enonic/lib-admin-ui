@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/util/DateHelper.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/util/</a> DateHelper.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">61.16% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>74/121</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">49.56% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>56/113</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">52.94% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>9/17</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">58.56% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>65/111</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">54×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">21×</span>
+<span class="cline-any cline-yes">21×</span>
+<span class="cline-any cline-yes">21×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">27×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>util </span>{
+&nbsp;
+    export class DateHelper {
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static isInvalidDate(value: Date)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            return isNaN(value.getTime());</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public static getTZOffset(): number {</span>
+<span class="cstat-no" title="statement not covered" >            let jan = new Date(2016, 0, 1);</span>
+<span class="cstat-no" title="statement not covered" >            let jul = new Date(2016, 6, 1);</span>
+<span class="cstat-no" title="statement not covered" >            let absoluteOffsetInHrs = Math.min(Math.abs(jan.getTimezoneOffset() / 60), Math.abs(jul.getTimezoneOffset() / 60));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return jan.getTimezoneOffset() &gt; 0 ? absoluteOffsetInHrs * -1 : absoluteOffsetInHrs;</span>
+        }
+&nbsp;
+        // returns true if passed date uses daylight savings time
+<span class="fstat-no" title="function not covered" >        public static isDST(date: Date)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            return Math.abs(date.getTimezoneOffset() / 60) &gt; DateHelper.getTZOffset();</span>
+        }
+&nbsp;
+        /**
+         * Parses passed UTC string into Date object.
+         * @param value
+         * @returns {Date}
+         */
+        public static makeDateFromUTCString(value: string): Date {
+&nbsp;
+            let parsedYear: number = Number(value.substring(0, 4));
+            let parsedMonth: number = Number(value.substring(5, 7));
+            let parsedDayOfMonth: number = Number(value.substring(8, 10));
+            let parsedHours: number = Number(value.substring(11, 13));
+            let parsedMinutes: number = Number(value.substring(14, 16));
+            let parsedSeconds: number = Number(value.substring(17, 19));
+&nbsp;
+            return new Date(Date.UTC(parsedYear, parsedMonth - 1, parsedDayOfMonth, parsedHours, parsedMinutes, parsedSeconds));
+        }
+&nbsp;
+        /**
+         * Formats date part of passed date object. Returns string like 2010-01-01
+         * @param date
+         * @returns {string}
+         */
+<span class="fstat-no" title="function not covered" >        public static formatDate(date: Date)</span>: string {
+<span class="cstat-no" title="statement not covered" >            let yearAsString = '' + date.getFullYear();</span>
+<span class="cstat-no" title="statement not covered" >            return yearAsString + '-' + this.padNumber(date.getMonth() + 1) + '-' + this.padNumber(date.getDate());</span>
+        }
+&nbsp;
+        /**
+         * Formats time part of passed date object. Returns string like 10:55:00
+         * @param date
+         * @param includeSeconds
+         * @returns {string}
+         */
+<span class="fstat-no" title="function not covered" >        public static formatTime(date: Date, <span class="cstat-no" title="statement not covered" >includeSeconds: boolean = true)</span></span>: string {
+<span class="cstat-no" title="statement not covered" >            return this.padNumber(date.getHours()) + ':' + this.padNumber(date.getMinutes()) +</span>
+                   (includeSeconds ? ':' + this.padNumber(date.getSeconds()) : '');
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private static padNumber(num: number)</span>: string {
+<span class="cstat-no" title="statement not covered" >            return (num &lt; 10 ? '0' : '') + num;</span>
+        }
+&nbsp;
+        /**
+         * Parses passed iso-like string 2010-01-01 into js date,
+         * month expected to be in a 1-12 range
+         * @param date
+         * @returns {string}
+         */
+        public static parseDate(value: string, <span class="missing-if-branch" title="if path not taken" >I</span>dateSeparator: string = '-', <span class="missing-if-branch" title="else path not taken" >E</span>forceDaysBeOfTwoChars: boolean = false): Date {
+            let dateStr = (value || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>.trim();
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (dateStr.length &lt; 8 || dateStr.length &gt; 10) {
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+            let parts = dateStr.split(dateSeparator);
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (parts.length !== 3 || parts[0].length !== 4) {
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+&nbsp;
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (forceDaysBeOfTwoChars &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >parts[2].length !== 2)</span> {
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+&nbsp;
+            let parsedYear: number = Number(parts[0]);
+            let parsedMonth: number = Number(parts[1]);
+            let parsedDayOfMonth: number = Number(parts[2]);
+&nbsp;
+            let date = new Date(parsedYear, parsedMonth - 1, parsedDayOfMonth);
+            return date.getFullYear() === parsedYear &amp;&amp; date.getMonth() === (parsedMonth - 1) &amp;&amp; date.getDate() === parsedDayOfMonth
+                ? date
+                : null;
+        }
+&nbsp;
+        /**
+         * Parses passed value to Time object. Expected format is only 5 chars like '12:10'
+         * @param value
+         * @returns {*}
+         */
+<span class="fstat-no" title="function not covered" >        private static parseTime(value: string)</span>: Time {
+<span class="cstat-no" title="statement not covered" >            let dateStr = (value || '').trim();</span>
+<span class="cstat-no" title="statement not covered" >            if (dateStr.length !== 5) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let parts = dateStr.split(':');</span>
+<span class="cstat-no" title="statement not covered" >            if (parts.length !== 2) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let hour: number = Number(parts[0]);</span>
+<span class="cstat-no" title="statement not covered" >            let minute: number = Number(parts[1]);</span>
+<span class="cstat-no" title="statement not covered" >            if (isNaN(hour) || isNaN(minute) || hour &lt; 0 || hour &gt; 23 || minute &lt; 0 || minute &gt; 59) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return {hour: hour, minute: minute};</span>
+        }
+&nbsp;
+        /**
+         * Parses passed value into Date object. Expected length is 14-16 chars, value should be like '2015-04-17 06:00'
+         * @param value
+         * @returns {*}
+         */
+<span class="fstat-no" title="function not covered" >        static parseDateTime(value: string)</span>: Date {
+<span class="cstat-no" title="statement not covered" >            let dateStr = (value || '').trim();</span>
+<span class="cstat-no" title="statement not covered" >            if (dateStr.length &lt; 14 || dateStr.length &gt; 16) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let parts = dateStr.split(' ');</span>
+<span class="cstat-no" title="statement not covered" >            if (parts.length !== 2) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let datePart = parts[0];</span>
+<span class="cstat-no" title="statement not covered" >            let timePart = parts[1];</span>
+<span class="cstat-no" title="statement not covered" >            let date = DateHelper.parseDate(datePart);</span>
+<span class="cstat-no" title="statement not covered" >            if (!date) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let time = DateHelper.parseTime(timePart);</span>
+<span class="cstat-no" title="statement not covered" >            if (!time) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            date.setHours(time.hour, time.minute, 0, 0);</span>
+<span class="cstat-no" title="statement not covered" >            return date;</span>
+        }
+&nbsp;
+        private static parseLongTime(value: string, <span class="missing-if-branch" title="if path not taken" >I</span>timeSeparator: string = ':', <span class="missing-if-branch" title="if path not taken" >I</span>fractionSeparator: string = '.'): LongTime {
+            let timeStr = (value || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>.trim();
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (timeStr.length &lt; 5 || timeStr.length &gt; 12) {
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+            let time: string[] = timeStr.split(timeSeparator);
+&nbsp;
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (time.length &lt; 2 || time.length &gt; 3) {
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+&nbsp;
+            let hours = Number(time[0]);
+            let minutes = Number(time[1]);
+            let seconds: number = 0;
+            let fractions: number = 0;
+&nbsp;
+            if (time[2]) {
+                let secondArr: string[] = time[2].split(fractionSeparator);
+                seconds = Number(secondArr[0]);
+                if (secondArr[1]) {
+                    fractions = Number(secondArr[1]);
+                }
+            }
+&nbsp;
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (isNaN(hours) || isNaN(minutes) || isNaN(seconds) || isNaN(fractions) ||
+                hours &lt; 0 || hours &gt; 23 || minutes &lt; 0 || minutes &gt; 59 || seconds &lt; 0 || seconds &gt; 59 || fractions &lt; 0) {
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+&nbsp;
+            return {
+                hours: hours,
+                minutes: minutes,
+                seconds: seconds,
+                fractions: fractions
+            };
+        }
+&nbsp;
+        /**
+         * Parses passed string with use of given separators. Passed string should not contain timezone.
+         * @param value
+         * @param dateTimeSeparator
+         * @param dateSeparator
+         * @param timeSeparator
+         * @param fractionSeparator
+         * @returns {*}
+         */
+        static parseLongDateTime(value: string, <span class="missing-if-branch" title="if path not taken" >I</span>dateTimeSeparator: string = '-', <span class="missing-if-branch" title="if path not taken" >I</span>dateSeparator: string = '-', <span class="missing-if-branch" title="if path not taken" >I</span>timeSeparator: string = ':',
+                                 <span class="missing-if-branch" title="if path not taken" >I</span>fractionSeparator: string = '.'): Date {
+            let dateStr = (value || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>.trim();
+&nbsp;
+            let parts = dateStr.split(dateTimeSeparator);
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (parts.length !== 2) {
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+            let datePart = parts[0];
+            let timePart = parts[1];
+&nbsp;
+            let date = DateHelper.parseDate(datePart, dateSeparator);
+            if (!date) {
+                return null;
+            }
+            let time = DateHelper.parseLongTime(timePart, timeSeparator, fractionSeparator);
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (!time) {
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+            date.setHours(time.hours, time.minutes, time.seconds, time.fractions);
+&nbsp;
+            return date;
+        }
+&nbsp;
+        /**
+         * Returns true if passed string ends with 'z'
+         * @param value
+         * @returns {number}
+         */
+        static isUTCdate(value: string): boolean {
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (value != null &amp;&amp; (value[value.length - 1] === 'Z' || value[value.length - 1] === 'z')) {
+<span class="cstat-no" title="statement not covered" >                return true;</span>
+            }
+            return false;
+        }
+&nbsp;
+        /**
+         * E.g. numDaysInMonth(2015, 1) -&gt; 28
+         * @param year
+         * @param month 0 based month number of the year. 0 === January , 11 === December
+         * @returns {number}
+         */
+        static numDaysInMonth(year: number, month: number): number {
+            return new Date(year, month + 1, 0).getDate();
+        }
+    }
+&nbsp;
+    interface Time {
+        hour: number;
+        minute: number;
+    }
+&nbsp;
+    interface LongTime {
+        hours: number;
+        minutes: number;
+        seconds: number;
+        fractions: number;
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

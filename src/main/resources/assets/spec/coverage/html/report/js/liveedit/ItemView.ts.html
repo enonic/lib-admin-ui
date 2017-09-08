@@ -1,0 +1,3017 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/liveedit/ItemView.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">js/liveedit/</a> ItemView.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20.25% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>99/489</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0.93% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>2/214</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">3.81% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/105</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20.04% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>95/474</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856
+857
+858
+859
+860
+861
+862
+863
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873
+874
+875
+876
+877
+878
+879
+880
+881
+882
+883
+884
+885
+886
+887
+888
+889
+890
+891
+892
+893
+894
+895
+896
+897
+898
+899
+900
+901
+902
+903
+904
+905
+906
+907
+908
+909
+910
+911
+912
+913
+914
+915
+916
+917
+918
+919
+920
+921
+922
+923
+924
+925
+926
+927
+928
+929
+930
+931
+932
+933
+934
+935
+936
+937
+938
+939
+940
+941
+942
+943
+944
+945
+946
+947
+948
+949
+950
+951
+952
+953
+954
+955
+956
+957
+958
+959
+960
+961
+962
+963
+964
+965
+966
+967
+968
+969
+970
+971
+972
+973
+974
+975
+976
+977
+978
+979
+980
+981
+982
+983
+984
+985</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>liveedit </span>{
+    import Component = api.content.page.region.Component;
+&nbsp;
+    export interface ElementDimensions {
+        top: number;
+        left: number;
+        width: number;
+        height: number;
+    }
+&nbsp;
+    export class ItemViewBuilder {
+&nbsp;
+        liveEditModel: LiveEditModel;
+&nbsp;
+        itemViewIdProducer: ItemViewIdProducer;
+&nbsp;
+        type: ItemType;
+&nbsp;
+        element: api.dom.Element;
+&nbsp;
+        parentElement: api.dom.Element;
+&nbsp;
+        parentView: ItemView;
+&nbsp;
+        contextMenuActions: api.ui.Action[];
+&nbsp;
+        contextMenuTitle: ItemViewContextMenuTitle;
+&nbsp;
+        placeholder: ItemViewPlaceholder;
+&nbsp;
+        viewer: api.ui.Viewer&lt;any&gt;;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setLiveEditModel(value: LiveEditModel)</span>: ItemViewBuilder {
+<span class="cstat-no" title="statement not covered" >            this.liveEditModel = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setItemViewIdProducer(value: ItemViewIdProducer)</span>: ItemViewBuilder {
+<span class="cstat-no" title="statement not covered" >            this.itemViewIdProducer = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setType(value: ItemType)</span>: ItemViewBuilder {
+<span class="cstat-no" title="statement not covered" >            this.type = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setElement(value: api.dom.Element)</span>: ItemViewBuilder {
+<span class="cstat-no" title="statement not covered" >            this.element = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setPlaceholder(value: ItemViewPlaceholder)</span>: ItemViewBuilder {
+<span class="cstat-no" title="statement not covered" >            this.placeholder = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setViewer(value: api.ui.Viewer&lt;any&gt;)</span>: ItemViewBuilder {
+<span class="cstat-no" title="statement not covered" >            this.viewer = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setParentView(value: ItemView)</span>: ItemViewBuilder {
+<span class="cstat-no" title="statement not covered" >            this.parentView = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setParentElement(value: api.dom.Element)</span>: ItemViewBuilder {
+<span class="cstat-no" title="statement not covered" >            this.parentElement = value;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setContextMenuActions(actions: api.ui.Action[])</span>: ItemViewBuilder {
+<span class="cstat-no" title="statement not covered" >            this.contextMenuActions = actions;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setContextMenuTitle(title: ItemViewContextMenuTitle)</span>: ItemViewBuilder {
+<span class="cstat-no" title="statement not covered" >            this.contextMenuTitle = title;</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+    }
+&nbsp;
+    export class ItemView extends api.dom.Element {
+&nbsp;
+        protected liveEditModel: LiveEditModel;
+&nbsp;
+        private itemViewIdProducer: ItemViewIdProducer;
+&nbsp;
+        private placeholder: ItemViewPlaceholder;
+&nbsp;
+        private type: ItemType;
+&nbsp;
+        private parentItemView: ItemView;
+&nbsp;
+        private loadMask: api.ui.mask.LoadMask;
+&nbsp;
+        private contextMenu: api.liveedit.ItemViewContextMenu;
+&nbsp;
+        private contextMenuTitle: ItemViewContextMenuTitle;
+&nbsp;
+        private contextMenuActions: api.ui.Action[];
+&nbsp;
+        private viewer: api.ui.Viewer&lt;any&gt;;
+&nbsp;
+        private mouseOver: boolean;
+&nbsp;
+        private shaded: boolean;
+&nbsp;
+        private mouseOverViewListeners: {(): void} [];
+&nbsp;
+        private mouseOutViewListeners: {(): void} [];
+&nbsp;
+        private mouseOverViewListener: () =&gt; void;
+        private mouseLeaveViewListener: () =&gt; void;
+        private shaderClickedListener: (event: MouseEvent) =&gt; void;
+        private pageItemViewAddedListener: (event: ItemViewAddedEvent) =&gt; void;
+        private mouseEnterListener: (event: MouseEvent) =&gt; void;
+        private mouseLeaveListener: (event: MouseEvent) =&gt; void;
+        private mouseClickedListener: (event: MouseEvent) =&gt; void;
+        private contextMenuListener: (event: MouseEvent) =&gt; void;
+&nbsp;
+        public static debug: boolean = false;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(builder: ItemViewBuilder)</span> {
+<span class="cstat-no" title="statement not covered" >            api.util.assertNotNull(builder.type, 'type cannot be null');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let props: api.dom.ElementBuilder = null;</span>
+<span class="cstat-no" title="statement not covered" >            if (builder.element) {</span>
+<span class="cstat-no" title="statement not covered" >                let elementFromElementBuilder = new api.dom.ElementFromElementBuilder();</span>
+<span class="cstat-no" title="statement not covered" >                elementFromElementBuilder.setElement(builder.element);</span>
+<span class="cstat-no" title="statement not covered" >                elementFromElementBuilder.setParentElement(builder.parentElement);</span>
+<span class="cstat-no" title="statement not covered" >                elementFromElementBuilder.setGenerateId(false);</span>
+<span class="cstat-no" title="statement not covered" >                props = elementFromElementBuilder;</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                let newElementBuilder = new api.dom.NewElementBuilder();</span>
+<span class="cstat-no" title="statement not covered" >                newElementBuilder.setTagName('div');</span>
+<span class="cstat-no" title="statement not covered" >                newElementBuilder.setParentElement(builder.parentElement);</span>
+<span class="cstat-no" title="statement not covered" >                newElementBuilder.setGenerateId(false);</span>
+<span class="cstat-no" title="statement not covered" >                props = newElementBuilder;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            super(props);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.type = builder.type;</span>
+<span class="cstat-no" title="statement not covered" >            this.parentItemView = builder.parentView;</span>
+<span class="cstat-no" title="statement not covered" >            this.liveEditModel = builder.liveEditModel ? builder.liveEditModel : builder.parentView.getLiveEditModel();</span>
+<span class="cstat-no" title="statement not covered" >            this.itemViewIdProducer = builder.itemViewIdProducer;</span>
+<span class="cstat-no" title="statement not covered" >            this.contextMenuTitle = builder.contextMenuTitle;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.addClassEx('item-view');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.contextMenuActions = [];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setDraggable(true);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.mouseOver = false;</span>
+<span class="cstat-no" title="statement not covered" >            this.mouseOverViewListeners = [];</span>
+<span class="cstat-no" title="statement not covered" >            this.mouseOutViewListeners = [];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.setItemId(builder.itemViewIdProducer.next());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!builder.element) {</span>
+<span class="cstat-no" title="statement not covered" >                this.getEl().setData(ItemType.ATTRIBUTE_TYPE, builder.type.getShortName());</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.viewer = builder.viewer;</span>
+&nbsp;
+            // remove old placeholder in case of parsing already parsed page again
+<span class="cstat-no" title="statement not covered" >            for (let i = 0; i &lt; this.getChildren().length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >                let child = this.getChildren()[i];</span>
+<span class="cstat-no" title="statement not covered" >                if (api.ObjectHelper.iFrameSafeInstanceOf(child, ItemViewPlaceholder)) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.removeChild(child);</span>
+                    // there can be only one placeholder
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (builder.placeholder) {</span>
+<span class="cstat-no" title="statement not covered" >                this.setPlaceholder(builder.placeholder);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.onRemoved(this.invalidateContextMenu.bind(this));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.bindMouseListeners();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected addContextMenuActions(actions: api.ui.Action[])</span> {
+<span class="cstat-no" title="statement not covered" >            this.contextMenuActions = this.contextMenuActions.concat(actions);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected removeContextMenuAction(action: api.ui.Action)</span> {
+<span class="cstat-no" title="statement not covered" >            if (this.contextMenuActions.indexOf(action) === -1) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.contextMenuActions.splice(this.contextMenuActions.indexOf(action), 1);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected setPlaceholder(placeholder: ItemViewPlaceholder)</span> {
+<span class="cstat-no" title="statement not covered" >            this.placeholder = placeholder;</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(placeholder);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected disableLinks() {</span>
+<span class="cstat-no" title="statement not covered" >            wemjq(this.getHTMLElement()).find('a').click(<span class="fstat-no" title="function not covered" >e </span>=&gt; <span class="cstat-no" title="statement not covered" >e.preventDefault())</span>;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        public setContextMenuTitle(title: ItemViewContextMenuTitle)</span> {
+<span class="cstat-no" title="statement not covered" >            this.contextMenuTitle = title;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private bindMouseListeners() {</span></span>
+<span class="cstat-no" title="statement not covered" >            this.mouseEnterListener = this.handleMouseEnter.bind(this);</span>
+<span class="cstat-no" title="statement not covered" >            this.onMouseEnter(this.mouseEnterListener);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.mouseLeaveListener = this.handleMouseLeave.bind(this);</span>
+<span class="cstat-no" title="statement not covered" >            this.onMouseLeave(this.mouseLeaveListener);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.mouseClickedListener = this.handleClick.bind(this);</span>
+<span class="cstat-no" title="statement not covered" >            this.onClicked(this.mouseClickedListener);</span>
+<span class="cstat-no" title="statement not covered" >            this.onTouchStart(this.mouseClickedListener);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.contextMenuListener = this.handleClick.bind(this);</span>
+<span class="cstat-no" title="statement not covered" >            this.onContextMenu(this.contextMenuListener);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, <span class="fstat-no" title="function not covered" >(item: api.ui.responsive.ResponsiveItem)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (this.mouseOver) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.highlight();</span>
+                }
+<span class="cstat-no" title="statement not covered" >                if (this.isSelected()) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.highlightSelected();</span>
+                    //this.shade();
+                }
+            });
+&nbsp;
+            // Page shader catches mouse events
+            // so bind listener to it to know when a shader clicked
+            // in case of the locked or selected page
+<span class="cstat-no" title="statement not covered" >            this.shaderClickedListener = this.handleShaderClick.bind(this);</span>
+<span class="cstat-no" title="statement not covered" >            Shader.get().onClicked(this.shaderClickedListener);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.mouseOverViewListener = <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                let isRegistered = !!this.getParentItemView() || api.ObjectHelper.iFrameSafeInstanceOf(this, PageView);</span>
+<span class="cstat-no" title="statement not covered" >                if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('ItemView[' + this.toString() + '].mouseOverViewListener registered: ' + isRegistered);</span>
+                }
+<span class="cstat-no" title="statement not covered" >                if (!isRegistered) {</span>
+                    // the component has not been registered yet
+<span class="cstat-no" title="statement not covered" >                    return;</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let isDragging = DragAndDrop.get().isDragging();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (!isDragging) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.showCursor();</span>
+<span class="cstat-no" title="statement not covered" >                    this.highlight();</span>
+                }
+            };
+<span class="cstat-no" title="statement not covered" >            this.onMouseOverView(this.mouseOverViewListener);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.mouseLeaveViewListener = <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                let isRegistered = !!this.getParentItemView() || api.ObjectHelper.iFrameSafeInstanceOf(this, PageView);</span>
+<span class="cstat-no" title="statement not covered" >                if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('ItemView[' + this.toString() + '].mouseLeaveViewListener registered: ' + isRegistered);</span>
+                }
+<span class="cstat-no" title="statement not covered" >                if (!isRegistered) {</span>
+                    // the component has not been registered yet
+<span class="cstat-no" title="statement not covered" >                    return;</span>
+                }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                let isDragging = DragAndDrop.get().isDragging();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (!isDragging) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.resetCursor();</span>
+<span class="cstat-no" title="statement not covered" >                    this.unhighlight();</span>
+                }
+            };
+<span class="cstat-no" title="statement not covered" >            this.onMouseLeaveView(this.mouseLeaveViewListener);</span>
+            /*
+            this.pageItemViewAddedListener = (event) =&gt; {
+                if (this.isSelected()) {
+                    this.deselect();
+                }
+            };
+            pageView.onItemViewAdded(this.pageItemViewAddedListener);
+&nbsp;
+            this.onRemoved(() =&gt; {
+                pageView.unItemViewAdded(this.pageItemViewAddedListener);
+            });
+             */
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected unbindMouseListeners() {</span>
+<span class="cstat-no" title="statement not covered" >            this.unMouseEnter(this.mouseEnterListener);</span>
+<span class="cstat-no" title="statement not covered" >            this.unMouseLeave(this.mouseLeaveListener);</span>
+<span class="cstat-no" title="statement not covered" >            this.unClicked(this.mouseClickedListener);</span>
+<span class="cstat-no" title="statement not covered" >            this.unTouchStart(this.mouseClickedListener);</span>
+<span class="cstat-no" title="statement not covered" >            this.unContextMenu(this.contextMenuListener);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this);</span>
+<span class="cstat-no" title="statement not covered" >            Shader.get().unClicked(this.shaderClickedListener);</span>
+<span class="cstat-no" title="statement not covered" >            this.unMouseOverView(this.mouseOverViewListener);</span>
+<span class="cstat-no" title="statement not covered" >            this.unMouseLeaveView(this.mouseLeaveViewListener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        highlight() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!this.getPageView().isHighlightingAllowed() || this.isViewInsideSelectedContainer()) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            Highlighter.get().highlightItemView(this);</span>
+<span class="cstat-no" title="statement not covered" >            if (this.isSelected()) {</span>
+                // Remove selected hilighter to see the hover hilight
+                // this.unhighlightSelected();
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unhighlight() {</span>
+<span class="cstat-no" title="statement not covered" >            Highlighter.get().hide();</span>
+<span class="cstat-no" title="statement not covered" >            if (this.isSelected()) {</span>
+                // Restore selected highlight after leaving
+                // this.highlightSelected();
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        highlightSelected() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!this.getPageView().isHighlightingAllowed()) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            SelectedHighlighter.get().highlightItemView(this);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unhighlightSelected() {</span>
+<span class="cstat-no" title="statement not covered" >            SelectedHighlighter.get().unselect();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        shade() {</span>
+<span class="cstat-no" title="statement not covered" >            Shader.get().shade(this);</span>
+<span class="cstat-no" title="statement not covered" >            this.shaded = true;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unshade() {</span>
+<span class="cstat-no" title="statement not covered" >            Shader.get().hide();</span>
+<span class="cstat-no" title="statement not covered" >            this.shaded = false;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        showCursor() {</span>
+<span class="cstat-no" title="statement not covered" >            let itemView = this.isViewInsideSelectedContainer() ? SelectedHighlighter.get().getSelectedView() : this;</span>
+<span class="cstat-no" title="statement not covered" >            Cursor.get().displayItemViewCursor(itemView);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        resetCursor() {</span>
+<span class="cstat-no" title="statement not covered" >            Cursor.get().reset();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getPageView(): PageView {</span>
+<span class="cstat-no" title="statement not covered" >            let itemView: ItemView = this;</span>
+<span class="cstat-no" title="statement not covered" >            while (!PageItemType.get().equals(itemView.getType())) {</span>
+<span class="cstat-no" title="statement not covered" >                itemView = itemView.parentItemView;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return &lt;PageView&gt;itemView;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        remove(): ItemView {</span>
+<span class="cstat-no" title="statement not covered" >            if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.log('ItemView.remove [' + this.toString() + ']');</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.contextMenu) {</span>
+<span class="cstat-no" title="statement not covered" >                this.contextMenu.remove();</span>
+            }
+<span class="cstat-no" title="statement not covered" >            if (this.loadMask) {</span>
+<span class="cstat-no" title="statement not covered" >                this.loadMask.remove();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.unhighlight();</span>
+            //this.unshade();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.unbindMouseListeners();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            super.remove();</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setDraggable(value: boolean)</span> {
+            // do not call super.setDraggable
+            // tells jquery drag n drop to ignore this draggable
+<span class="cstat-no" title="statement not covered" >            this.toggleClass('not-draggable', !value);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        scrollComponentIntoView(): void {</span>
+<span class="cstat-no" title="statement not covered" >            let distance = this.calcDistanceToViewport();</span>
+<span class="cstat-no" title="statement not covered" >            if (distance !== 0) {</span>
+<span class="cstat-no" title="statement not covered" >                wemjq('html,body').animate({scrollTop: (distance &gt; 0 ? '+=' : '-=') + Math.abs(distance)}, 200);</span>
+            }
+        }
+&nbsp;
+        /**
+         * Process 'mouseenter' event to track when mouse moves between ItemView's.
+         * ItemView notifies that mouse is over it if mouse moves from parent or child ItemView to this one.
+         *
+         * Method manages two cases:
+         * 1. 'mouseenter' was triggered on parent ItemView and then it is triggered on its child ItemView.
+         *    - parent has 'mouseOver' state set to 'true';
+         *    - the ItemView calls parent.notifyMouseOut(), parent is still in 'mouseOver' state;
+         *    - the ItemView receive 'mouseOver' state;
+         *    - the ItemView notifies about mouseOver event;
+         * 2. 'mouseenter' was triggered on child ItemView before it has been triggered on parent ItemView.
+         *    (This occurs when child ItemView is adjacent to its parent's edge.)
+         *    - direct parent hasn't received 'mouseOver' state yet;
+         *    - look up for the first parent ItemView with 'mouseOver' state, it is ItemView the mouse came from;
+         *    - the parent with 'mouseOver' state calls notifyMouseOut();
+         *    - go to the previous parent, give it 'mouseOver' state, call notifyMouseOver() and notifyMouseOut() events,
+         *      repeat until current ItemView reached;
+         *    - set 'mouseOver' state to this ItemView;
+         *    - notify about mouseOver event for this ItemView;
+         *
+         * @param event browser MouseEvent
+         */
+<span class="fstat-no" title="function not covered" >        handleMouseEnter(event: MouseEvent)</span> {
+            // If ItemView has 'mouseOver' state before it has received 'mouseenter' event,
+            // then 'mouseenter' event has already occurred on child ItemView
+            // and child has already called notifyMouseOver and notifyMouseOut for this ItemView.
+            // No need to process this event.
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.group('mouse enter [' + this.getId() + ']');</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.mouseOver) {</span>
+<span class="cstat-no" title="statement not covered" >                if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('mouseOver = true, returning.');</span>
+<span class="cstat-no" title="statement not covered" >                    console.groupEnd();</span>
+                }
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.manageParentsMouseOver();</span>
+&nbsp;
+            // Turn on 'mouseOver' state for this element and notify it entered.
+<span class="cstat-no" title="statement not covered" >            this.mouseOver = true;</span>
+<span class="cstat-no" title="statement not covered" >            this.notifyMouseOverView();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.groupEnd();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private manageParentsMouseOver() {</span>
+            // Look up for the parent ItemView with 'mouseOver' state.
+            // It is direct parent for case 1 or some parent up to the PageView for case 2.
+            // Parents are stored to the stack to manage their state and triger events for them further.
+<span class="cstat-no" title="statement not covered" >            let parentsStack = [];</span>
+<span class="cstat-no" title="statement not covered" >            for (let parent = this.parentItemView; parent; parent = parent.parentItemView) {</span>
+<span class="cstat-no" title="statement not covered" >                parentsStack.push(parent);</span>
+<span class="cstat-no" title="statement not covered" >                if (parent.mouseOver) {</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+                }
+            }
+&nbsp;
+            // Stack of parents elements contains single parent element for case 1 or
+            // all parents with state 'mouseOver' set to 'false' and first one with 'mouseOver' state.
+            // If parent has 'mouseOver' state, notify that mouse is moved out this parent.
+            // If parent isn't in 'mouseOver' state, turn it on and notify the parent was entered and left.
+<span class="cstat-no" title="statement not covered" >            parentsStack.reverse().forEach(<span class="fstat-no" title="function not covered" >(view: ItemView)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                if (view.mouseOver) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                        console.debug('parent.mouseOver = true, notifying mouse out [' + view.getId() + ']');</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    view.notifyMouseLeaveView();</span>
+                } else {
+<span class="cstat-no" title="statement not covered" >                    view.mouseOver = true;</span>
+<span class="cstat-no" title="statement not covered" >                    if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                        console.debug('parent.mouseOver = false, setting to true [' + view.getId() + ']');</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    view.notifyMouseOverView();</span>
+<span class="cstat-no" title="statement not covered" >                    view.notifyMouseLeaveView();</span>
+                }
+            });
+        }
+&nbsp;
+        /**
+         * Process 'mouseleave' event to track when mouse moves between ItemView's.
+         * ItemView notifies that mouse left it when mouse moves to its parent or child ItemView.
+         *
+         * 'mouseleave' event is always triggered on child element before it has been triggered on parent.
+         *
+         * @param event browser MouseEvent
+         */
+<span class="fstat-no" title="function not covered" >        handleMouseLeave(event: MouseEvent)</span> {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.group('mouse leave [' + this.getId() + ']');</span>
+            }
+&nbsp;
+            // Turn off 'mouseOver' state and notify ItemVeiw was left.
+<span class="cstat-no" title="statement not covered" >            this.mouseOver = false;</span>
+<span class="cstat-no" title="statement not covered" >            this.notifyMouseLeaveView();</span>
+&nbsp;
+            // Notify parent ItemView is entered.
+<span class="cstat-no" title="statement not covered" >            if (this.parentItemView) {</span>
+<span class="cstat-no" title="statement not covered" >                this.parentItemView.notifyMouseOverView();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.groupEnd();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isEmpty(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritors');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        refreshEmptyState(): ItemView {</span>
+<span class="cstat-no" title="statement not covered" >            this.toggleClass('empty', this.isEmpty());</span>
+<span class="cstat-no" title="statement not covered" >            return this;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        handleClick(event: MouseEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            event.stopPropagation();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let pageView = this.getPageView();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (pageView.isNextClickDisabled()) {</span>
+<span class="cstat-no" title="statement not covered" >                pageView.setNextClickDisabled(false);</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let rightClicked = event.which === 3 || event.ctrlKey;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (rightClicked) { // right click</span>
+<span class="cstat-no" title="statement not covered" >                event.preventDefault();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!this.isSelected() || rightClicked) {</span>
+<span class="cstat-no" title="statement not covered" >                let selectedView = pageView.getSelectedView();</span>
+<span class="cstat-no" title="statement not covered" >                let isViewInsideSelectedContainer = this.isViewInsideSelectedContainer();</span>
+<span class="cstat-no" title="statement not covered" >                let clickPosition = !this.isEmpty() ? {x: event.pageX, y: event.pageY} : null;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                if (selectedView &amp;&amp; isViewInsideSelectedContainer &amp;&amp; !rightClicked) {</span>
+<span class="cstat-no" title="statement not covered" >                    selectedView.deselect();</span>
+                }
+&nbsp;
+                // Allow selecting only component types if something is selected
+                // The rest will only deselect current selection
+                // Also allow selecting the same component again (i.e. to show context menu)
+<span class="cstat-no" title="statement not covered" >                if (!selectedView || selectedView === this || !isViewInsideSelectedContainer) {</span>
+<span class="cstat-no" title="statement not covered" >                    let menuPosition = rightClicked ? null : ItemViewContextMenuPosition.NONE;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    if (pageView.isTextEditMode()) { // if in text edit mode don't select on first click</span>
+<span class="cstat-no" title="statement not covered" >                        pageView.setTextEditMode(false);</span>
+<span class="cstat-no" title="statement not covered" >                        this.unhighlight();</span>
+                    } else {
+<span class="cstat-no" title="statement not covered" >                        this.select(clickPosition, menuPosition, false, rightClicked);</span>
+                    }
+&nbsp;
+                } else <span class="cstat-no" title="statement not covered" >if (isViewInsideSelectedContainer &amp;&amp; rightClicked) {</span>
+<span class="cstat-no" title="statement not covered" >                    SelectedHighlighter.get().getSelectedView().showContextMenu(clickPosition);</span>
+                }
+            } else {
+<span class="cstat-no" title="statement not covered" >                this.deselect();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        handleShaderClick(event: MouseEvent)</span> {
+<span class="cstat-no" title="statement not covered" >            event.stopPropagation();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.getPageView().isLocked()) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            if (this.isSelected()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.deselect();</span>
+            }
+<span class="cstat-no" title="statement not covered" >            if (!!event.type &amp;&amp; (event.type === 'click' || event.type === 'contextmenu') &amp;&amp; this.isEventOverItem(event)) {</span>
+<span class="cstat-no" title="statement not covered" >                this.handleClick(event);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected isEventOverItem(event: MouseEvent)</span>: boolean {
+<span class="cstat-no" title="statement not covered" >            let offset = this.getEl().getDimensions();</span>
+<span class="cstat-no" title="statement not covered" >            let x = event.pageX;</span>
+<span class="cstat-no" title="statement not covered" >            let y = event.pageY;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return x &gt;= offset.left</span>
+                   &amp;&amp; x &lt;= offset.left + offset.width
+                   &amp;&amp; y &gt;= offset.top
+                   &amp;&amp; y &lt;= offset.top + offset.height;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getItemViewIdProducer(): ItemViewIdProducer {</span>
+<span class="cstat-no" title="statement not covered" >            return this.itemViewIdProducer;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        showContextMenu(clickPosition?: Position, menuPosition?: ItemViewContextMenuPosition)</span> {
+<span class="cstat-no" title="statement not covered" >            if (this.getPageView().isDisabledContextMenu()) {</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (menuPosition &amp;&amp; ItemViewContextMenuPosition.NONE === menuPosition) {</span>
+<span class="cstat-no" title="statement not covered" >                this.hideContextMenu();</span>
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            const dimensions = this.getEl().getDimensions();</span>
+<span class="cstat-no" title="statement not covered" >            let x;</span>
+<span class="cstat-no" title="statement not covered" >            let y;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!this.contextMenu) {</span>
+<span class="cstat-no" title="statement not covered" >                this.contextMenu = new api.liveedit.ItemViewContextMenu(this.contextMenuTitle, this.contextMenuActions);</span>
+<span class="cstat-no" title="statement not covered" >                this.contextMenu.onOrientationChanged(<span class="fstat-no" title="function not covered" >(orientation: ItemViewContextMenuOrientation)</span> =&gt; {</span>
+&nbsp;
+                    // move menu to the top edge of empty view in order to not overlay it
+<span class="cstat-no" title="statement not covered" >                    if (orientation === ItemViewContextMenuOrientation.UP &amp;&amp; this.isEmpty()) {</span>
+<span class="cstat-no" title="statement not covered" >                        this.contextMenu.getEl().setMarginTop('-' + dimensions.height + 'px');</span>
+                    } else {
+<span class="cstat-no" title="statement not covered" >                        this.contextMenu.getEl().setMarginTop('0px');</span>
+                    }
+                });
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (clickPosition) {</span>
+                // show menu at position
+<span class="cstat-no" title="statement not covered" >                x = clickPosition.x;</span>
+<span class="cstat-no" title="statement not covered" >                y = clickPosition.y;</span>
+            } else {
+                // show menu below if empty or on top
+<span class="cstat-no" title="statement not covered" >                x = dimensions.left + dimensions.width / 2;</span>
+<span class="cstat-no" title="statement not covered" >                y = dimensions.top + (ItemViewContextMenuPosition.TOP === menuPosition ? 0 : dimensions.height);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.contextMenu.showAt(x, y, !clickPosition);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hideContextMenu() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.contextMenu) {</span>
+<span class="cstat-no" title="statement not covered" >                this.contextMenu.hide();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private invalidateContextMenu() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.contextMenu) {</span>
+<span class="cstat-no" title="statement not covered" >                this.contextMenu.remove();</span>
+<span class="cstat-no" title="statement not covered" >                this.contextMenu = null;</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private setItemId(value: ItemViewId)</span> {
+<span class="cstat-no" title="statement not covered" >            this.getEl().setAttribute('data-' + ItemViewId.DATA_ATTRIBUTE, value.toString());</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getItemId(): ItemViewId {</span>
+<span class="cstat-no" title="statement not covered" >            let asString = this.getEl().getAttribute('data-' + ItemViewId.DATA_ATTRIBUTE);</span>
+<span class="cstat-no" title="statement not covered" >            if (!asString) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return ItemViewId.fromString(asString);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static parseItemId(element: HTMLElement)</span>: ItemViewId {
+<span class="cstat-no" title="statement not covered" >            let attribute = element.getAttribute('data-' + ItemViewId.DATA_ATTRIBUTE);</span>
+<span class="cstat-no" title="statement not covered" >            if (api.util.StringHelper.isEmpty(attribute)) {</span>
+<span class="cstat-no" title="statement not covered" >                return null;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return ItemViewId.fromString(attribute);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getType(): ItemType {</span>
+<span class="cstat-no" title="statement not covered" >            return this.type;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getParentItemView(): ItemView {</span>
+<span class="cstat-no" title="statement not covered" >            return this.parentItemView;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setParentItemView(itemView: ItemView)</span> {
+<span class="cstat-no" title="statement not covered" >            this.parentItemView = itemView;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isSelected(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return this.getEl().hasAttribute('data-live-edit-selected');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        select(clickPosition?: Position, menuPosition?: ItemViewContextMenuPosition, <span class="cstat-no" title="statement not covered" >isNew: boolean = false,</span></span>
+<span class="cstat-no" title="statement not covered" >               rightClicked: boolean = false)</span> {
+<span class="cstat-no" title="statement not covered" >            Highlighter.get().hide();</span>
+<span class="cstat-no" title="statement not covered" >            this.selectItem();</span>
+<span class="cstat-no" title="statement not covered" >            this.showContextMenu(clickPosition, menuPosition);</span>
+<span class="cstat-no" title="statement not covered" >            new ItemViewSelectedEvent(this, clickPosition, isNew, rightClicked).fire();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        selectWithoutMenu(<span class="cstat-no" title="statement not covered" >isNew: boolean = false)</span></span> {
+<span class="cstat-no" title="statement not covered" >            this.selectItem();</span>
+<span class="cstat-no" title="statement not covered" >            new ItemViewSelectedEvent(this, null, isNew).fire();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private selectItem() {</span>
+<span class="cstat-no" title="statement not covered" >            let pageView = this.getPageView();</span>
+<span class="cstat-no" title="statement not covered" >            let selectedView = pageView.getSelectedView();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (selectedView === this) {</span>
+                // view is already selected
+<span class="cstat-no" title="statement not covered" >                return;</span>
+            } else <span class="cstat-no" title="statement not covered" >if (selectedView) {</span>
+                // deselect selected item view if any
+<span class="cstat-no" title="statement not covered" >                selectedView.deselect();</span>
+            }
+&nbsp;
+            // selecting anything should exit the text edit mode
+            // do this before highlighting as this might change text component dimensions
+<span class="cstat-no" title="statement not covered" >            this.stopTextEditMode();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.getEl().setData('live-edit-selected', 'true');</span>
+&nbsp;
+            //this.shade();
+<span class="cstat-no" title="statement not covered" >            this.showCursor();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!pageView.isLocked()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.highlightSelected();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.isEmpty()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.selectPlaceholder();</span>
+            }
+&nbsp;
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        deselect(silent?: boolean)</span> {
+<span class="cstat-no" title="statement not covered" >            this.getEl().removeAttribute('data-live-edit-selected');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.hideContextMenu();</span>
+<span class="cstat-no" title="statement not covered" >            this.unhighlightSelected();</span>
+            //this.unshade();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.isEmpty()) {</span>
+<span class="cstat-no" title="statement not covered" >                this.deselectPlaceholder();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (!silent) {</span>
+<span class="cstat-no" title="statement not covered" >                new ItemViewDeselectedEvent(this).fire();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isDraggableView(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return !(api.ObjectHelper.iFrameSafeInstanceOf(this, RegionView) ||</span>
+                     api.ObjectHelper.iFrameSafeInstanceOf(this, PageView));
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private stopTextEditMode() {</span>
+<span class="cstat-no" title="statement not covered" >            let pageView = this.getPageView();</span>
+<span class="cstat-no" title="statement not covered" >            if (pageView.isTextEditMode()) {</span>
+<span class="cstat-no" title="statement not covered" >                pageView.setTextEditMode(false);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private selectPlaceholder() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.placeholder) {</span>
+<span class="cstat-no" title="statement not covered" >                this.placeholder.select();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private deselectPlaceholder() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.placeholder) {</span>
+<span class="cstat-no" title="statement not covered" >                this.placeholder.deselect();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        showRenderingError(url: string, errorMessage?: string)</span> {
+<span class="cstat-no" title="statement not covered" >            if (this.placeholder) {</span>
+<span class="cstat-no" title="statement not covered" >                this.addClass('error');</span>
+<span class="cstat-no" title="statement not covered" >                this.placeholder.showRenderingError(url, errorMessage);</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getName(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return '[No Name]';</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getIconUrl(content: api.content.Content)</span>: string {
+<span class="cstat-no" title="statement not covered" >            return new api.content.util.ContentIconUrlResolver().setContent(content).resolve();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getIconClass() {</span>
+<span class="cstat-no" title="statement not covered" >            return api.liveedit.ItemViewIconClassResolver.resolveByView(this);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        showLoadingSpinner() {</span>
+<span class="cstat-no" title="statement not covered" >            if (!this.loadMask) {</span>
+<span class="cstat-no" title="statement not covered" >                this.loadMask = new api.ui.mask.LoadMask(this);</span>
+<span class="cstat-no" title="statement not covered" >                this.appendChild(this.loadMask);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.loadMask.show();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        hideLoadingSpinner() {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.loadMask) {</span>
+<span class="cstat-no" title="statement not covered" >                this.loadMask.hide();</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getContextMenuActions(): api.ui.Action[] {</span>
+<span class="cstat-no" title="statement not covered" >            return this.contextMenuActions;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toItemViewArray(): ItemView[] {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return [this];</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        toString(): string {</span>
+<span class="cstat-no" title="statement not covered" >            return this.getItemId().toNumber() + ' : ' + this.getType().getShortName();</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getLiveEditModel(): LiveEditModel {</span>
+<span class="cstat-no" title="statement not covered" >            return this.liveEditModel;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        getViewer(): api.ui.Viewer&lt;any&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return this.viewer;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        static findParentItemViewAsHTMLElement(htmlElement: HTMLElement)</span>: HTMLElement {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let parentHTMLElement = htmlElement.parentElement;</span>
+<span class="cstat-no" title="statement not covered" >            let parseItemId = ItemView.parseItemId(parentHTMLElement);</span>
+<span class="cstat-no" title="statement not covered" >            while (parseItemId == null) {</span>
+<span class="cstat-no" title="statement not covered" >                parentHTMLElement = parentHTMLElement.parentElement;</span>
+<span class="cstat-no" title="statement not covered" >                parseItemId = ItemView.parseItemId(parentHTMLElement);</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return parentHTMLElement;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onMouseOverView(listener: () =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.mouseOverViewListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unMouseOverView(listener: () =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.mouseOverViewListeners = this.mouseOverViewListeners.filter(<span class="fstat-no" title="function not covered" >(current)</span> =&gt; <span class="cstat-no" title="statement not covered" >(current !== listener))</span>;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyMouseOverView() {</span>
+<span class="cstat-no" title="statement not covered" >            if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.log('notifying mouse over [' + this.getId() + ']');</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.mouseOverViewListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: () =&gt; void)</span> =&gt; <span class="cstat-no" title="statement not covered" >listener())</span>;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        onMouseLeaveView(listener: () =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.mouseOutViewListeners.push(listener);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        unMouseLeaveView(listener: () =&gt; void)</span> {
+<span class="cstat-no" title="statement not covered" >            this.mouseOutViewListeners = this.mouseOutViewListeners.filter(<span class="fstat-no" title="function not covered" >(current)</span> =&gt; <span class="cstat-no" title="statement not covered" >(current !== listener))</span>;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private notifyMouseLeaveView() {</span>
+<span class="cstat-no" title="statement not covered" >            if (ItemView.debug) {</span>
+<span class="cstat-no" title="statement not covered" >                console.log('notifying mouse out [' + this.getId() + ']');</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.mouseOutViewListeners.forEach(<span class="fstat-no" title="function not covered" >(listener: () =&gt; void)</span> =&gt; <span class="cstat-no" title="statement not covered" >listener())</span>;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected getContextMenuTitle(): ItemViewContextMenuTitle {</span>
+<span class="cstat-no" title="statement not covered" >            return this.contextMenuTitle;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private calcDistanceToViewport(): number {</span>
+<span class="cstat-no" title="statement not covered" >            let dimensions = this.getEl().getDimensions();</span>
+<span class="cstat-no" title="statement not covered" >            let menuHeight = this.contextMenu &amp;&amp; this.contextMenu.isVisible() ? this.contextMenu.getEl().getHeight() : dimensions.height;</span>
+<span class="cstat-no" title="statement not covered" >            let scrollTop: number = this.getDocumentScrollTop();</span>
+<span class="cstat-no" title="statement not covered" >            let padding = 10;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let top = (dimensions.top - padding) - scrollTop;</span>
+<span class="cstat-no" title="statement not covered" >            let bottom = (dimensions.top + menuHeight + padding) - (scrollTop + window.innerHeight);</span>
+<span class="cstat-no" title="statement not covered" >            let tallerThanWindow = menuHeight &gt; window.innerHeight;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return top &lt;= 0 ? top : (bottom &gt; 0 &amp;&amp; !tallerThanWindow) ? bottom : 0;</span>
+        }
+&nbsp;
+        // http://stackoverflow.com/a/872537
+<span class="fstat-no" title="function not covered" >        private getDocumentScrollTop() {</span>
+<span class="cstat-no" title="statement not covered" >            if (typeof pageYOffset !== 'undefined') {</span>
+                //most browsers except IE before #9
+<span class="cstat-no" title="statement not covered" >                return pageYOffset;</span>
+            } else {
+                //IE 'quirks' and doctype
+<span class="cstat-no" title="statement not covered" >                let doc = (document.documentElement.clientHeight) ? document.documentElement : document.body;</span>
+<span class="cstat-no" title="statement not covered" >                return doc.scrollTop;</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected addComponentView(componentView: ComponentView&lt;Component&gt;, index?: number, <span class="cstat-no" title="statement not covered" >isNew: boolean = false)</span></span> {
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritors');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected getNewItemIndex(): number {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritors');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected createComponentView(componentItemType: ItemType)</span>: ItemView {
+<span class="cstat-no" title="statement not covered" >            let regionView = this.getRegionView();</span>
+<span class="cstat-no" title="statement not covered" >            let newComponent = regionView.createComponent(componentItemType.toComponentType());</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return componentItemType.createView(new CreateItemViewConfig&lt;RegionView,Component&gt;().</span>
+                setParentView(regionView).
+                setParentElement(regionView).
+                setData(newComponent));
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private getInsertActions(liveEditModel: LiveEditModel)</span>: api.ui.Action[] {
+<span class="cstat-no" title="statement not covered" >            let isFragmentContent = liveEditModel.getContent().getType().isFragment();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let actions = [this.createInsertSubAction('Image', api.liveedit.image.ImageItemType.get()),</span>
+                this.createInsertSubAction('Part', api.liveedit.part.PartItemType.get())];
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            let isInRegion = api.ObjectHelper.iFrameSafeInstanceOf(this.getRegionView(), RegionView);</span>
+<span class="cstat-no" title="statement not covered" >            if (isInRegion &amp;&amp; !this.getRegionView().hasParentLayoutComponentView() &amp;&amp; !isFragmentContent) {</span>
+<span class="cstat-no" title="statement not covered" >                actions.push(this.createInsertSubAction('Layout', api.liveedit.layout.LayoutItemType.get()));</span>
+            }
+<span class="cstat-no" title="statement not covered" >            actions.push(this.createInsertSubAction('Text', api.liveedit.text.TextItemType.get()));</span>
+<span class="cstat-no" title="statement not covered" >            actions.push(this.createInsertSubAction('Fragment', api.liveedit.fragment.FragmentItemType.get()));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return actions;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected getRegionView(): RegionView {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('Must be implemented by inheritors');</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        protected createInsertAction(): api.ui.Action {</span>
+<span class="cstat-no" title="statement not covered" >            return new api.ui.Action('Insert').setChildActions(this.getInsertActions(this.liveEditModel));</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        protected createSelectParentAction(): api.ui.Action {</span></span>
+<span class="cstat-no" title="statement not covered" >            let action = new api.ui.Action('Select parent');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            action.setSortOrder(0);</span>
+<span class="cstat-no" title="statement not covered" >            action.onExecuted(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                let parentView: ItemView = this.getParentItemView();</span>
+<span class="cstat-no" title="statement not covered" >                if (parentView) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.deselect();</span>
+<span class="cstat-no" title="statement not covered" >                    parentView.select(null, ItemViewContextMenuPosition.TOP, false, true);</span>
+<span class="cstat-no" title="statement not covered" >                    parentView.scrollComponentIntoView();</span>
+                }
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return action;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private createInsertSubAction(label: string, componentItemType: ItemType)</span>: api.ui.Action {</span>
+<span class="cstat-no" title="statement not covered" >            let action = new api.ui.Action(label).onExecuted(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                let componentView = this.createComponentView(componentItemType);</span>
+<span class="cstat-no" title="statement not covered" >                this.addComponentView(&lt;ComponentView&lt;Component&gt;&gt;componentView, this.getNewItemIndex(), true);</span>
+            });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            action.setIconClass(api.StyleHelper.getCommonIconCls(label.toLowerCase()));</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return action;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isChildOfItemView(itemView: ItemView)</span> {
+<span class="cstat-no" title="statement not covered" >            if (this === itemView) {</span>
+<span class="cstat-no" title="statement not covered" >                return false;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            let parentItemView = this.getParentItemView();</span>
+<span class="cstat-no" title="statement not covered" >            let result = false;</span>
+<span class="cstat-no" title="statement not covered" >            while (!!parentItemView &amp;&amp; !result) {</span>
+<span class="cstat-no" title="statement not covered" >                result = (parentItemView === itemView);</span>
+<span class="cstat-no" title="statement not covered" >                parentItemView = parentItemView.getParentItemView();</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return result;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        isContainer(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            return api.ObjectHelper.iFrameSafeInstanceOf(this, PageView) ||</span>
+                   api.ObjectHelper.iFrameSafeInstanceOf(this, RegionView) ||
+                   api.ObjectHelper.iFrameSafeInstanceOf(this, api.liveedit.layout.LayoutComponentView);
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private isViewInsideSelectedContainer() {</span>
+<span class="cstat-no" title="statement not covered" >            return SelectedHighlighter.get().isViewInsideSelectedContainer(this);</span>
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

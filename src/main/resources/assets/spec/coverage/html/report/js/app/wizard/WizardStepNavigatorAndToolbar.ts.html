@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for js/app/wizard/WizardStepNavigatorAndToolbar.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">js/app/wizard/</a> WizardStepNavigatorAndToolbar.ts
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">20.78% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>16/77</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">10.71% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>3/28</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">22.22% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">17.39% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>12/69</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module <span class="branch-1 cbranch-no" title="branch not covered" >api.<span class="branch-1 cbranch-no" title="branch not covered" ></span>app.<span class="branch-1 cbranch-no" title="branch not covered" ></span>wizard </span>{
+&nbsp;
+    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
+    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
+    import Toolbar = api.ui.toolbar.Toolbar;
+    import TabBarItem = api.ui.tab.TabBarItem;
+    import ActivatedEvent = api.ui.ActivatedEvent;
+&nbsp;
+    export class WizardStepNavigatorAndToolbar extends api.dom.DivEl {
+&nbsp;
+        static maxFittingWidth: number = 675;
+&nbsp;
+        private foldButton: api.ui.toolbar.FoldButton;
+&nbsp;
+        private stepToolbar: Toolbar;
+&nbsp;
+        private stepNavigator: WizardStepNavigator;
+&nbsp;
+        private fittingWidth: number;
+&nbsp;
+        private helpTextToggleButton: api.dom.DivEl;
+&nbsp;
+<span class="fstat-no" title="function not covered" >        constructor(className?: string)</span> {
+<span class="cstat-no" title="statement not covered" >            super(className);</span>
+<span class="cstat-no" title="statement not covered" >            this.foldButton = new api.ui.toolbar.FoldButton();</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.foldButton);</span>
+<span class="cstat-no" title="statement not covered" >            this.fittingWidth = 0;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.foldButton.getDropdown().onClicked(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                this.addClass('no-dropdown-hover');</span>
+                // Place call in the queue outside of the stack and current context,
+                // so the repaint will be triggered between those two calls
+<span class="cstat-no" title="statement not covered" >                setTimeout(this.removeClass.bind(this, 'no-dropdown-hover'));</span>
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setupHelpTextToggleButton(): api.dom.DivEl {</span>
+<span class="cstat-no" title="statement not covered" >            this.helpTextToggleButton = new api.dom.DivEl('help-text-button');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.addClass('has-help-text-button');</span>
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.helpTextToggleButton);</span>
+<span class="cstat-no" title="statement not covered" >            this.checkAndMinimize();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return this.helpTextToggleButton;</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setStepToolbar(stepToolbar: Toolbar)</span> {
+<span class="cstat-no" title="statement not covered" >            if (this.stepToolbar) {</span>
+<span class="cstat-no" title="statement not covered" >                this.removeChild(this.stepToolbar);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.stepToolbar = stepToolbar;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.stepToolbar.insertBeforeEl(this.foldButton);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        setStepNavigator(stepNavigator: WizardStepNavigator)</span> {
+<span class="cstat-no" title="statement not covered" >            let onStepChanged = <span class="fstat-no" title="function not covered" >(event: ActivatedEvent)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.onStepChanged(event.getIndex());</span>
+            };
+<span class="cstat-no" title="statement not covered" >            if (this.stepNavigator) {</span>
+<span class="cstat-no" title="statement not covered" >                this.stepNavigator.unNavigationItemActivated(onStepChanged);</span>
+<span class="cstat-no" title="statement not covered" >                this.removeChild(this.stepNavigator);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            this.stepNavigator = stepNavigator;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.appendChild(this.stepNavigator);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            this.stepNavigator.onNavigationItemActivated(onStepChanged);</span>
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private onStepChanged(index: number)</span>: void {
+<span class="cstat-no" title="statement not covered" >            let tabBarItem: TabBarItem = this.stepNavigator.getNavigationItem(index);</span>
+<span class="cstat-no" title="statement not covered" >            if (tabBarItem) {</span>
+<span class="cstat-no" title="statement not covered" >                this.foldButton.setLabel(tabBarItem.getLabel());</span>
+            }
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        private isStepNavigatorFit(): boolean {</span>
+<span class="cstat-no" title="statement not covered" >            let width;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (this.stepNavigator.isVisible()) {</span>
+                // StepNavigator fits if summary width of its steps &lt; width of StepNavigator
+                // StepNavigator width is calculated in CSS
+<span class="cstat-no" title="statement not covered" >                width = this.stepNavigator.getEl().getWidthWithoutPadding();</span>
+<span class="cstat-no" title="statement not covered" >                const steps = this.stepNavigator.getChildren();</span>
+<span class="cstat-no" title="statement not covered" >                const stepMargin = <span class="fstat-no" title="function not covered" >(step)</span> =&gt; <span class="cstat-no" title="statement not covered" >step.isVisible() ? step.getEl().getWidthWithMargin() : 0;</span></span>
+<span class="cstat-no" title="statement not covered" >                const stepsWidth = steps.reduce(<span class="fstat-no" title="function not covered" >(totalStepWidth, step)</span> =&gt; <span class="cstat-no" title="statement not covered" >totalStepWidth + stepMargin(step),</span> 0);</span>
+&nbsp;
+                // Update fitting width to check, when toolbar is minimized
+<span class="cstat-no" title="statement not covered" >                this.fittingWidth = stepsWidth;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                return width &gt; stepsWidth;</span>
+            } else {
+                // StepNavigator is minimized and not visible
+                // Check with saved width
+<span class="cstat-no" title="statement not covered" >                const help = this.helpTextToggleButton;</span>
+<span class="cstat-no" title="statement not covered" >                width = help.isVisible() ?</span>
+                        this.getEl().getWidthWithoutPadding() - help.getEl().getWidthWithMargin() :
+                        this.getEl().getWidthWithoutPadding();
+            }
+&nbsp;
+            // Add to pixels delta to made the check work as it should, when scale is not 100%
+<span class="cstat-no" title="statement not covered" >            const fittingWidth = Math.min(this.fittingWidth, WizardStepNavigatorAndToolbar.maxFittingWidth) + 2;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            return width &gt; fittingWidth;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        private updateStepLabels(numberTabs: boolean)</span> {</span>
+<span class="cstat-no" title="statement not covered" >            let selectedTabIndex = this.stepNavigator.getSelectedIndex();</span>
+<span class="cstat-no" title="statement not covered" >            this.stepNavigator.getNavigationItems().forEach(<span class="fstat-no" title="function not covered" >(tab: api.ui.tab.TabBarItem, index)</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                let strIndex = (index + 1) + ' - ';</span>
+<span class="cstat-no" title="statement not covered" >                if (numberTabs &amp;&amp; tab.getLabel().indexOf(strIndex) !== 0) {</span>
+<span class="cstat-no" title="statement not covered" >                    tab.setLabel(strIndex + tab.getLabel());</span>
+<span class="cstat-no" title="statement not covered" >                    if (index === selectedTabIndex) {</span>
+<span class="cstat-no" title="statement not covered" >                        this.foldButton.setLabel(tab.getLabel());</span>
+                    }
+                } else {
+<span class="cstat-no" title="statement not covered" >                    tab.setLabel(tab.getLabel().replace(strIndex, ''));</span>
+                }
+            });
+        }
+&nbsp;
+<span class="fstat-no" title="function not covered" >        checkAndMinimize() {</span>
+<span class="cstat-no" title="statement not covered" >            const needUpdate = <span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" ></span>this.isStepNavigatorFit() === this.hasClass('minimized');</span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (needUpdate()) {</span>
+<span class="cstat-no" title="statement not covered" >                const needMinimize = !this.hasClass('minimized');</span>
+<span class="cstat-no" title="statement not covered" >                this.toggleClass('minimized', needMinimize);</span>
+<span class="cstat-no" title="statement not covered" >                if (needMinimize) {</span>
+<span class="cstat-no" title="statement not covered" >                    this.removeChild(this.stepNavigator);</span>
+<span class="cstat-no" title="statement not covered" >                    this.foldButton.push(this.stepNavigator, 300);</span>
+                } else {
+<span class="cstat-no" title="statement not covered" >                    this.foldButton.pop();</span>
+<span class="cstat-no" title="statement not covered" >                    this.stepNavigator.insertAfterEl(this.foldButton);</span>
+                }
+<span class="cstat-no" title="statement not covered" >                this.updateStepLabels(needMinimize);</span>
+            }
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 15 2017 17:00:00 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>
