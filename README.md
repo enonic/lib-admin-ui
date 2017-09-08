@@ -5,10 +5,20 @@
 
 UI framework used in several [Enonic](https://enonic.com) apps.
 
+## Usage
+
+To use this library, place the following dependency in your `build.gradle` file:
+
+```gradle
+dependencies {
+    include 'com.enonic.lib:lib-admin-ui:1.0.0'
+}
+```
+
 ## Building
 
 To build the UI framework, run the following command:
 
 ```
-gulp clean build
+./gradlew clean build
 ```
