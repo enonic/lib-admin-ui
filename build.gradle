@@ -27,23 +27,29 @@ node {
 
 ext {
     resourcesDir = file( 'src/main/resources' )
-    buildResourcesDir = file( "${buildDir}/resources/main" )
-}
-
-task copySrcFromXp( type: Copy ) {
-    from '../xp-master/modules/admin/admin-ui/src/main/resources/web'
-    into 'src/main/resources/assets'
 }
 
 task gulpAll( type: GulpTask, dependsOn: npmInstall ) {
     description = 'Build UI resources (css, etc).'
-    inputs.dir 'src/main/resources'
-    outputs.dir 'build/resources/main'
+    inputs.files fileTree( dir: 'src/main/resources', exclude: '**/_all.*' )
+    outputs.files fileTree( dir: 'src/main/resources', include: '**/_all.*' )
     args = ['all']
 }
 
-jar.dependsOn += gulpAll
-jar.outputs.dir "${buildDir}/resources/main"
+task copyTypeDefs( type: Copy, dependsOn: gulpAll ) {
+    description = 'Copy Typescript definitions to /dev/d.ts folder.'
+    from( 'src/main/resources/assets/admin/common/js' ) {
+        include '**/*.d.ts'
+        rename '_all.d.ts', 'admin.d.ts'
+    }
+    into 'build/resources/main/dev/d.ts'
+    includeEmptyDirs = false
+}
+
+jar {
+    exclude 'assets/spec/**'
+    dependsOn += copyTypeDefs
+}
 
 task cleanNode( type: Delete ) {
     delete += 'node_modules'
