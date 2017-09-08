@@ -11,7 +11,7 @@ To use this library, place the following dependency in your `build.gradle` file:
 
 ```gradle
 dependencies {
-    include 'com.enonic.lib:lib-admin-ui:1.0.0'
+    include 'com.enonic.lib:lib-admin-ui:1.0.1'
 }
 ```
 
