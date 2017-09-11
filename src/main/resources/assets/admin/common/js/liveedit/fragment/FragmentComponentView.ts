@@ -123,9 +123,12 @@ module api.liveedit.fragment {
         getFragmentDisplayName(): string {
             if (this.fragmentContent) {
                 return this.fragmentContent.getDisplayName();
-            } else if (this.component) {
+            }
+
+            if (this.component) {
                 return this.component.getName().toString();
             }
+
             return null;
         }
 
