@@ -24,8 +24,6 @@ module api.liveedit.fragment {
 
     export class FragmentComponentView extends ContentBasedComponentView<FragmentComponent> {
 
-        protected component: FragmentComponent;
-
         private fragmentContainsLayout: boolean;
 
         private fragmentContent: Content;
@@ -123,7 +121,15 @@ module api.liveedit.fragment {
         }
 
         getFragmentDisplayName(): string {
-            return this.fragmentContent ? this.fragmentContent.getDisplayName() : null;
+            if (this.fragmentContent) {
+                return this.fragmentContent.getDisplayName();
+            }
+
+            if (this.component) {
+                return this.component.getName().toString();
+            }
+
+            return null;
         }
 
         isLoaded(): boolean {

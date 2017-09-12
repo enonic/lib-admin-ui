@@ -83,7 +83,6 @@ module api.liveedit {
                 new RegionComponentViewer()).setParentElement(builder.parentElement).setParentView(builder.parentView).setContextMenuTitle(
                 new RegionViewContextMenuTitle(builder.region)));
 
-            this.addRegionContextMenuActions();
             this.addClassEx('region-view');
 
             this.componentViews = [];
@@ -91,10 +90,11 @@ module api.liveedit {
             this.itemViewAddedListeners = [];
             this.itemViewRemovedListeners = [];
             this.parentView = builder.parentView;
-
             this.initListeners();
 
             this.setRegion(builder.region);
+
+            this.addRegionContextMenuActions();
 
             this.parseComponentViews();
         }
