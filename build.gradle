@@ -45,12 +45,31 @@ task copyTypeDefs( type: Copy, dependsOn: gulpAll ) {
     includeEmptyDirs = false
 }
 
+task copySharedStyles( type: Copy, dependsOn: copyTypeDefs ) {
+    description = 'Copy shared styles to /dev/styles folder.'
+    from( 'src/main/resources/assets/admin/common/styles' ) {
+        include '**/*.less'
+        into 'styles'
+    }
+    from( 'src/main/resources/assets/admin/common/images' ) {
+        into 'images'
+    }
+    from( 'src/main/resources/assets/admin/common/font' ) {
+        into 'font'
+    }
+    from( 'src/main/resources/assets/admin/common/icons' ) {
+        into 'icons'
+    }
+    includeEmptyDirs = false
+    into 'build/resources/main/dev'
+}
+
 jar {
     exclude 'assets/spec/**'
-    exclude '**/*.ts'
-    exclude '**/*.less'
+    exclude 'assets/**/*.ts'    // let dev/**/admin.d.ts through to be used by other apps
+    exclude 'assets/**/*.less'  // let dev/**/*.less through to be used by other apps
     includeEmptyDirs = false
-    dependsOn += copyTypeDefs
+    dependsOn += copySharedStyles
 }
 
 task cleanNode( type: Delete ) {
