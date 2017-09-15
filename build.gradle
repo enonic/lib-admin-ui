@@ -47,8 +47,6 @@ task copyTypeDefs( type: Copy, dependsOn: gulpAll ) {
 
 jar {
     exclude 'assets/spec/**'
-    exclude '**/*.ts'
-    exclude '**/*.less'
     includeEmptyDirs = false
     dependsOn += copyTypeDefs
 }
