@@ -1,25 +1,47 @@
 module api.content.image {
 
     import TreeNode = api.ui.treegrid.TreeNode;
-    import ContentAndStatusTreeSelectorItem = api.content.resource.ContentAndStatusTreeSelectorItem;
     import OptionDataLoaderData = api.ui.selector.OptionDataLoaderData;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import Option = api.ui.selector.Option;
 
-    export class ImageOptionDataLoader extends ContentSummaryOptionDataLoader {
+    export class ImageOptionDataLoader
+        extends ContentSummaryOptionDataLoader<ImageTreeSelectorItem> {
 
-        protected createOptionData(data: ContentAndStatusTreeSelectorItem[], hits: number, totalHits: number) {
-            return new OptionDataLoaderData(data.map((cur => new ImageTreeSelectorItem(cur.getContent(), cur.getExpand()))),
+        fetch(node: TreeNode<Option<ImageTreeSelectorItem>>): wemQ.Promise<ImageTreeSelectorItem> {
+            return super.fetch(node).then((data) => {
+                return this.wrapItem(data);
+            });
+        }
+
+        fetchChildren(parentNode: TreeNode<Option<ImageTreeSelectorItem>>, from: number = 0,
+                      size: number = -1): wemQ.Promise<OptionDataLoaderData<ImageTreeSelectorItem>> {
+            return super.fetchChildren(parentNode, from, size).then((data: OptionDataLoaderData<ContentTreeSelectorItem>) => {
+                    return this.createOptionData(data.getData(), data.getHits(), data.getTotalHits());
+                }
+            );
+        }
+
+        protected createOptionData(data: ContentTreeSelectorItem[], hits: number, totalHits: number) {
+            return new OptionDataLoaderData(this.wrapItems(data),
                 hits,
                 totalHits);
         }
 
-        search(value: string): wemQ.Promise<ImageTreeSelectorItem[]> {
-            return super.search(value).then((items: ContentTreeSelectorItem[]) => {
-                return items.map(item =>
-                    new ImageTreeSelectorItem(item.getContent(), item.getExpand())
-                );
-            });
+        notifyLoadedData(data: ContentTreeSelectorItem[] = [], postLoad?: boolean) {
+            const items = this.wrapItems(data);
+
+            super.notifyLoadedData(items, postLoad);
+        }
+
+        private wrapItems(items: ContentTreeSelectorItem[] = []): ImageTreeSelectorItem[] {
+            return items.map(item =>
+                new ImageTreeSelectorItem(item.getContent(), item.getExpand())
+            );
+        }
+
+        private wrapItem(item: ContentTreeSelectorItem): ImageTreeSelectorItem {
+            return item ? new ImageTreeSelectorItem(item.getContent(), item.getExpand()) : null;
         }
 
         static create(): ImageOptionDataLoaderBuilder {
@@ -27,7 +49,8 @@ module api.content.image {
         }
     }
 
-    export class ImageOptionDataLoaderBuilder extends ContentSummaryOptionDataLoaderBuilder {
+    export class ImageOptionDataLoaderBuilder
+        extends ContentSummaryOptionDataLoaderBuilder {
 
         inputName: string;
 
@@ -61,13 +84,20 @@ module api.content.image {
         }
     }
 
-    export class ImageTreeSelectorItem extends ContentTreeSelectorItem {
+    export class ImageTreeSelectorItem
+        extends ContentTreeSelectorItem {
 
         private imageSelectorDisplayValue: ImageSelectorDisplayValue;
 
         constructor(content: ContentSummary, expand: boolean) {
             super(content, expand);
-            this.imageSelectorDisplayValue = ImageSelectorDisplayValue.fromContentSummary(content);
+            this.imageSelectorDisplayValue =
+                !!content ? ImageSelectorDisplayValue.fromContentSummary(content) : ImageSelectorDisplayValue.makeEmpty();
+        }
+
+        setDisplayValue(value: ImageSelectorDisplayValue): ImageTreeSelectorItem {
+            this.imageSelectorDisplayValue = value;
+            return this;
         }
 
         getImageUrl(): string {
@@ -84,6 +114,22 @@ module api.content.image {
 
         getTypeLocaleName(): string {
             return this.imageSelectorDisplayValue.getTypeLocaleName();
+        }
+
+        getId(): string {
+            return this.imageSelectorDisplayValue.getId();
+        }
+
+        getContentId(): api.content.ContentId {
+            return this.imageSelectorDisplayValue.getContentId();
+        }
+
+        getContentPath(): api.content.ContentPath {
+            return this.imageSelectorDisplayValue.getContentPath();
+        }
+
+        getPath(): api.content.ContentPath {
+            return this.imageSelectorDisplayValue.getPath();
         }
 
         equals(o: api.Equitable): boolean {

@@ -6,31 +6,36 @@ module api.content {
     import OptionDataLoaderData = api.ui.selector.OptionDataLoaderData;
     import ContentResponse = api.content.resource.result.ContentResponse;
     import Option = api.ui.selector.Option;
-    import ContentQueryRequest = api.content.resource.ContentQueryRequest;
-    import ContentTreeSelectorQueryRequest = api.content.resource.ContentTreeSelectorQueryRequest;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import CompareContentRequest = api.content.resource.CompareContentRequest;
     import CompareContentResults = api.content.resource.result.CompareContentResults;
     import ContentSummaryAndCompareStatusFetcher = api.content.resource.ContentSummaryAndCompareStatusFetcher;
     import ContentAndStatusTreeSelectorItem = api.content.resource.ContentAndStatusTreeSelectorItem;
     import CompareContentResult = api.content.resource.result.CompareContentResult;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
     import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
 
-    export class ContentSummaryOptionDataLoader implements OptionDataLoader<ContentTreeSelectorItem> {
+    export class ContentSummaryOptionDataLoader<DATA extends ContentTreeSelectorItem>
+        extends OptionDataLoader<DATA> {
 
-        protected request: ContentTreeSelectorQueryRequest = new ContentTreeSelectorQueryRequest();
+        protected request: ContentTreeSelectorQueryRequest<DATA>;
 
         private loadStatus: boolean;
 
-        private loadedDataListeners: {(event: LoadedDataEvent<ContentTreeSelectorItem>): void}[] = [];
+        private loadModeChangedListeners: { (isFlat: boolean): void }[] = [];
 
         constructor(builder?: ContentSummaryOptionDataLoaderBuilder) {
+            super();
+
             if (builder) {
                 this.loadStatus = builder.loadStatus;
 
                 this.initRequest(builder);
             }
+        }
+
+        protected createRequest(): ContentTreeSelectorQueryRequest<DATA> {
+
+            return new ContentTreeSelectorQueryRequest<DATA>();
         }
 
         private initRequest(builder: ContentSummaryOptionDataLoaderBuilder) {
@@ -44,7 +49,8 @@ module api.content {
             this.request.setContent(content);
         }
 
-        search(value: string): wemQ.Promise<ContentTreeSelectorItem[]> {
+        search(value: string): wemQ.Promise<DATA[]> {
+            this.notifyLoadingData();
 
             const req = new ContentSelectorQueryRequest();
             req.setContent(this.request.getContent());
@@ -57,42 +63,30 @@ module api.content {
             req.setQueryExpr(value);
 
             return req.sendAndParse().then((contents: ContentSummary[]) => {
-                const result = contents.map(
-                    content => new ContentAndStatusTreeSelectorItem(ContentSummaryAndCompareStatus.fromContentSummary(
-                        content), false));
 
-               // this.notifyLoadedData(result);
-                return result;
+                const result = contents.map(
+                    content => new ContentTreeSelectorItem(content, false));
+
+                this.notifyLoadModeChanged(true);
+
+                this.notifyLoadedData(<DATA[]>result);
+                return <DATA[]>result;
             });
         }
 
-        load(values: string[]): wemQ.Promise<ContentTreeSelectorItem[]> {
-            if (!values) {
-                return;
-            }
+        load(postLoad: boolean = false): wemQ.Promise<DATA[]> {
+            this.request.setParentPath(null);
+            this.notifyLoadingData();
+            return this.loadItems().then(data => {
 
-            if (this.loadStatus) {
-                return ContentSummaryAndCompareStatusFetcher.fetchByIds(values.map(value => new ContentId(value))).then(
-                    (contents) => {
-                        const result = contents.map(content => new ContentAndStatusTreeSelectorItem(content, false));
-                        this.notifyLoadedData(result);
+                this.notifyLoadModeChanged(false);
 
-                        return result;
-                    });
-            } else {
-                return ContentSummaryFetcher.fetchByIds(values.map(value => new ContentId(value))).then(
-                    (contents) => {
-                        const result = contents.map(
-                            content => new ContentAndStatusTreeSelectorItem(ContentSummaryAndCompareStatus.fromContentSummary(
-                                content), false));
-                        this.notifyLoadedData(result);
-
-                        return result;
-                    });
-            }
+                this.notifyLoadedData(data);
+                return data;
+            });
         }
 
-        fetch(node: TreeNode<Option<ContentTreeSelectorItem>>): wemQ.Promise<ContentTreeSelectorItem> {
+        fetch(node: TreeNode<Option<DATA>>): wemQ.Promise<DATA> {
             this.request.setParentPath(node.getDataId() ? node.getData().displayValue.getPath() : null);
             if (this.request.getContent()) {
                 return this.loadItems().then(items => items[0]);
@@ -100,15 +94,15 @@ module api.content {
 
             if (this.loadStatus) {
                 return ContentSummaryAndCompareStatusFetcher.fetch(node.getData().displayValue.getContentId()).then(
-                    content => new ContentAndStatusTreeSelectorItem(content, false));
+                    content => <any>new ContentAndStatusTreeSelectorItem(content, false));
             }
 
             return ContentSummaryFetcher.fetch(node.getData().displayValue.getContentId()).then(
-                content => new ContentAndStatusTreeSelectorItem(ContentSummaryAndCompareStatus.fromContentSummary(content), false));
+                content => <any>new ContentTreeSelectorItem(content, false));
         }
 
-        fetchChildren(parentNode: TreeNode<Option<ContentTreeSelectorItem>>, from: number = 0,
-                      size: number = -1): wemQ.Promise<OptionDataLoaderData<ContentTreeSelectorItem>> {
+        fetchChildren(parentNode: TreeNode<Option<DATA>>, from: number = 0,
+                      size: number = -1): wemQ.Promise<OptionDataLoaderData<DATA>> {
 
             if (this.request.getContent()) {
                 this.request.setFrom(from);
@@ -116,8 +110,7 @@ module api.content {
 
                 this.request.setParentPath(parentNode.getDataId() ? parentNode.getData().displayValue.getPath() : null);
 
-                return this.loadItems().then((result: ContentAndStatusTreeSelectorItem[]) => {
-         //           this.notifyLoadedData(result);
+                return this.loadItems().then((result: DATA[]) => {
                     return this.createOptionData(result, 0, 0);
                 });
             }
@@ -129,9 +122,8 @@ module api.content {
 
                         const result = response.getContents().map(
                             content => new ContentAndStatusTreeSelectorItem(content, false));
-              //          this.notifyLoadedData(result);
 
-                        return this.createOptionData(result,
+                        return this.createOptionData(<any[]>result,
                             response.getMetadata().getHits(),
                             response.getMetadata().getTotalHits());
                     });
@@ -142,60 +134,39 @@ module api.content {
                 (response: ContentResponse<ContentSummary>) => {
 
                     const result = response.getContents().map(
-                        content => new ContentAndStatusTreeSelectorItem(ContentSummaryAndCompareStatus.fromContentSummary(
-                            content), false));
-           //         this.notifyLoadedData(result);
+                        content => new ContentTreeSelectorItem(content, false));
+                    //         this.notifyLoadedData(result);
 
-                    return this.createOptionData(result, response.getMetadata().getHits(), response.getMetadata().getTotalHits());
+                    return this.createOptionData(<DATA[]>result, response.getMetadata().getHits(), response.getMetadata().getTotalHits());
                 });
         }
 
-        notifyLoadedData(results: ContentTreeSelectorItem[]) {
-            this.loadedDataListeners.forEach((listener: (event: LoadedDataEvent<ContentTreeSelectorItem>) => void) => {
-                listener.call(this, new LoadedDataEvent<ContentTreeSelectorItem>(results));
-            });
+        protected createOptionData(data: DATA[], hits: number,
+                                   totalHits: number): OptionDataLoaderData<DATA> {
+            return new OptionDataLoaderData<DATA>(data, hits, totalHits);
         }
 
-        onLoadedData(listener: (event: LoadedDataEvent<ContentTreeSelectorItem>) => void) {
-            this.loadedDataListeners.push(listener);
-        }
-
-        unLoadedData(listener: (event: LoadedDataEvent<ContentTreeSelectorItem>) => void) {
-            this.loadedDataListeners =
-                this.loadedDataListeners.filter((currentListener: (event: LoadedDataEvent<ContentTreeSelectorItem>)=>void)=> {
-                    return currentListener !== listener;
-                });
-        }
-
-        protected createOptionData(data: ContentAndStatusTreeSelectorItem[], hits: number,
-                                   totalHits: number): OptionDataLoaderData<ContentTreeSelectorItem> {
-            return new OptionDataLoaderData(data, hits, totalHits);
-        }
-
-        checkReadonly(items: ContentAndStatusTreeSelectorItem[]): wemQ.Promise<string[]> {
+        checkReadonly(items: DATA[]): wemQ.Promise<string[]> {
             return ContentSummaryFetcher.getReadOnly(items.map(item => item.getContent()));
         }
 
-        private loadItems(): wemQ.Promise<ContentAndStatusTreeSelectorItem[]> {
-            if (this.request.getContent()) {
-                return this.request.sendAndParse().then(items => {
-                    if (this.loadStatus) {
-                        return this.loadStatuses(items);
-                    }
+        private loadItems(): wemQ.Promise<DATA[]> {
+            return this.request.sendAndParse().then(items => {
+                if (this.loadStatus) {
+                    return this.loadStatuses(items);
+                }
 
-                    const deferred = wemQ.defer<ContentAndStatusTreeSelectorItem[]>();
+                const deferred = wemQ.defer<DATA[]>();
 
-                    deferred.resolve(items.map((item: ContentTreeSelectorItem) => {
-                        return new ContentAndStatusTreeSelectorItem(ContentSummaryAndCompareStatus.fromContentSummary(
-                            item.getContent()), item.getExpand());
-                    }));
+                deferred.resolve(items.map((item: DATA) => {
+                    return <any> new ContentTreeSelectorItem(item.getContent(), item.getExpand());
+                }));
 
-                    return deferred.promise;
-                });
-            }
+                return deferred.promise;
+            });
         }
 
-        private loadStatuses(contents: ContentTreeSelectorItem[]): wemQ.Promise<ContentAndStatusTreeSelectorItem[]> {
+        private loadStatuses(contents: DATA[]): wemQ.Promise<DATA[]> {
             return CompareContentRequest.fromContentSummaries(contents.map(item => item.getContent())).sendAndParse().then(
                 (compareResults: CompareContentResults) => {
 
@@ -205,8 +176,25 @@ module api.content {
                         const contentAndCompareStatus = ContentSummaryAndCompareStatus.fromContentAndCompareAndPublishStatus(
                             item.getContent(), compareResult.getCompareStatus(), compareResult.getPublishStatus());
 
-                        return new ContentAndStatusTreeSelectorItem(contentAndCompareStatus, item.getExpand());
+                        return <any>new ContentAndStatusTreeSelectorItem(contentAndCompareStatus, item.getExpand());
                     });
+                });
+        }
+
+        private notifyLoadModeChanged(isFlat: boolean) {
+            this.loadModeChangedListeners.forEach((listener: (isFlat: boolean) => void) => {
+                listener(isFlat);
+            });
+        }
+
+        onLoadModeChanged(listener: (isFlat: boolean) => void) {
+            this.loadModeChangedListeners.push(listener);
+        }
+
+        unLoadModeChanged(listener: (isFlat: boolean) => void) {
+            this.loadModeChangedListeners = this.loadModeChangedListeners
+                .filter(function (curr: (isFlat: boolean) => void) {
+                    return curr !== listener;
                 });
         }
 
@@ -252,7 +240,7 @@ module api.content {
             return this;
         }
 
-        build(): ContentSummaryOptionDataLoader {
+        build(): ContentSummaryOptionDataLoader<ContentTreeSelectorItem> {
             return new ContentSummaryOptionDataLoader(this);
         }
     }

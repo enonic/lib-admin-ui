@@ -3,6 +3,7 @@ module api.content.util {
     import TreeNode = api.ui.treegrid.TreeNode;
     import ContentAndStatusTreeSelectorItem = api.content.resource.ContentAndStatusTreeSelectorItem;
     import Option = api.ui.selector.Option;
+    import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
 
     export class ContentRowFormatter {
 
@@ -56,14 +57,19 @@ module api.content.util {
             return ContentRowFormatter.doStatusFormat(data, value);
         }
 
-        public static statusSelectorFormatter(row: number, cell: number, value: ContentAndStatusTreeSelectorItem, columnDef: any,
-                                              node: TreeNode<Option<ContentAndStatusTreeSelectorItem>>) {
+        public static statusSelectorFormatter(row: number, cell: number, value: ContentTreeSelectorItem, columnDef: any,
+                                              node: TreeNode<Option<ContentTreeSelectorItem>>) {
 
-            if (value.getCompareStatus() || value.getPublishStatus()) {
-                return ContentRowFormatter.doStatusFormat(
-                    ContentSummaryAndCompareStatus.fromContentAndCompareAndPublishStatus(value.getContent(),
-                        value.getCompareStatus(),
-                        value.getPublishStatus()), value.getCompareStatus());
+            if(api.ObjectHelper.iFrameSafeInstanceOf(value, ContentAndStatusTreeSelectorItem)) {
+
+                const item = <ContentAndStatusTreeSelectorItem>value;
+
+                if (item.getCompareStatus() != null || item.getPublishStatus() != null) {
+                    return ContentRowFormatter.doStatusFormat(
+                        ContentSummaryAndCompareStatus.fromContentAndCompareAndPublishStatus(value.getContent(),
+                            item.getCompareStatus(),
+                            item.getPublishStatus()), item.getCompareStatus());
+                }
             }
 
             return '';

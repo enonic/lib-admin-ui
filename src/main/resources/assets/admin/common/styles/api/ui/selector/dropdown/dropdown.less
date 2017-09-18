@@ -132,15 +132,17 @@
       }
     }
   }
-  &.self-loaded {
+  &:not(.flat) {
     .grid .slick-row .slick-cell {
       padding-left: 0;
     }
   }
-  &:not(.self-loaded) {
-    .toggle.icon {
-      &:not(.expand):not(.collapse) {
-        display: none;
+  &.flat {
+    .grid {
+      .slick-row {
+        .toggle.icon {
+          display: none;
+        }
       }
     }
   }
