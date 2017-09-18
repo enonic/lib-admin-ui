@@ -2,30 +2,23 @@ module api.content.image {
 
     import Option = api.ui.selector.Option;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import ContentSummary = api.content.ContentSummary;
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import ValueChangedEvent = api.form.inputtype.ValueChangedEvent;
-    import LoadMask = api.ui.mask.LoadMask;
     import Tooltip = api.ui.Tooltip;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import Promise = Q.Promise;
 
-    export class ImageSelectorSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<ImageSelectorDisplayValue> {
+    export class ImageSelectorSelectedOptionsView
+        extends api.ui.selector.combobox.BaseSelectedOptionsView<ImageTreeSelectorItem> {
 
         private numberOfOptionsPerRow: number = 3;
 
-        private activeOption: SelectedOption<ImageSelectorDisplayValue>;
+        private activeOption: SelectedOption<ImageTreeSelectorItem>;
 
-        private selection: SelectedOption<ImageSelectorDisplayValue>[] = [];
+        private selection: SelectedOption<ImageTreeSelectorItem>[] = [];
 
         private toolbar: SelectionToolbar;
 
-        private editSelectedOptionsListeners: {(option: SelectedOption<ImageSelectorDisplayValue>[]): void}[] = [];
+        private editSelectedOptionsListeners: { (option: SelectedOption<ImageTreeSelectorItem>[]): void }[] = [];
 
-        private removeSelectedOptionsListeners: {(option: SelectedOption<ImageSelectorDisplayValue>[]): void}[] = [];
+        private removeSelectedOptionsListeners: { (option: SelectedOption<ImageTreeSelectorItem>[]): void }[] = [];
 
         private mouseClickListener: (event: MouseEvent) => void;
 
@@ -57,7 +50,7 @@ module api.content.image {
 
         private addOptionMovedEventHandler() {
             //when dragging selected image in chrome it looses focus; bringing focus back
-            this.onOptionMoved((moved: SelectedOption<ImageSelectorDisplayValue>) => {
+            this.onOptionMoved((moved: SelectedOption<ImageTreeSelectorItem>) => {
                 let selectedOptionMoved: boolean = moved.getOptionView().hasClass('editing');
 
                 if (selectedOptionMoved) {
@@ -76,10 +69,10 @@ module api.content.image {
             setTimeout(() => this.clickDisabled = false, 50);
         }
 
-        removeOption(optionToRemove: Option<ImageSelectorDisplayValue>, silent: boolean = false) {
+        removeOption(optionToRemove: Option<ImageTreeSelectorItem>, silent: boolean = false) {
             const selectedOption = this.getByOption(optionToRemove);
 
-            this.selection = this.selection.filter((option: SelectedOption<ImageSelectorDisplayValue>) => {
+            this.selection = this.selection.filter((option: SelectedOption<ImageTreeSelectorItem>) => {
                 return option.getOption().value !== selectedOption.getOption().value;
             });
 
@@ -88,7 +81,7 @@ module api.content.image {
             super.removeOption(optionToRemove, silent);
         }
 
-        removeSelectedOptions(options: SelectedOption<ImageSelectorDisplayValue>[]) {
+        removeSelectedOptions(options: SelectedOption<ImageTreeSelectorItem>[]) {
             this.notifyRemoveSelectedOptions(options);
             // clear the selection;
             this.selection.length = 0;
@@ -96,12 +89,11 @@ module api.content.image {
             this.resetActiveOption();
         }
 
-        createSelectedOption(option: Option<ImageSelectorDisplayValue>): SelectedOption<ImageSelectorDisplayValue> {
-            return new SelectedOption<ImageSelectorDisplayValue>(new ImageSelectorSelectedOptionView(option), this.count());
+        createSelectedOption(option: Option<ImageTreeSelectorItem>): SelectedOption<ImageTreeSelectorItem> {
+            return new SelectedOption<ImageTreeSelectorItem>(new ImageSelectorSelectedOptionView(option), this.count());
         }
 
-        addOption(option: Option<ImageSelectorDisplayValue>, silent: boolean = false, keyCode: number = -1): boolean {
-
+        addOption(option: Option<ImageTreeSelectorItem>, silent: boolean = false, keyCode: number = -1): boolean {
             let selectedOption = this.getByOption(option);
             if (!selectedOption) {
                 this.addNewOption(option, silent, keyCode);
@@ -116,8 +108,8 @@ module api.content.image {
             return false;
         }
 
-        private addNewOption(option: Option<ImageSelectorDisplayValue>, silent: boolean, keyCode: number = -1) {
-            let selectedOption: SelectedOption<ImageSelectorDisplayValue> = this.createSelectedOption(option);
+        private addNewOption(option: Option<ImageTreeSelectorItem>, silent: boolean, keyCode: number = -1) {
+            let selectedOption: SelectedOption<ImageTreeSelectorItem> = this.createSelectedOption(option);
             this.getSelectedOptions().push(selectedOption);
 
             let optionView: ImageSelectorSelectedOptionView = <ImageSelectorSelectedOptionView>selectedOption.getOptionView();
@@ -141,27 +133,27 @@ module api.content.image {
                                         : '', 1000);
         }
 
-        updateUploadedOption(option: Option<ImageSelectorDisplayValue>) {
+        updateUploadedOption(option: Option<ImageTreeSelectorItem>) {
             let selectedOption = this.getByOption(option);
             let content = option.displayValue.getContentSummary();
 
-            let newOption = <Option<ImageSelectorDisplayValue>>{
+            let newOption = <Option<ImageTreeSelectorItem>>{
                 value: content.getId(),
-                displayValue: ImageSelectorDisplayValue.fromContentSummary(content)
+                displayValue: new ImageTreeSelectorItem(content, false)
             };
 
             selectedOption.getOptionView().setOption(newOption);
         }
 
-        makeEmptyOption(id: string): Option<ImageSelectorDisplayValue> {
-            return <Option<ImageSelectorDisplayValue>>{
+        makeEmptyOption(id: string): Option<ImageTreeSelectorItem> {
+            return <Option<ImageTreeSelectorItem>>{
                 value: id,
-                displayValue: ImageSelectorDisplayValue.makeEmpty(),
+                displayValue: new ImageTreeSelectorItem(null, false).setDisplayValue(ImageSelectorDisplayValue.makeEmpty()),
                 empty: true
             };
         }
 
-        private uncheckOthers(option: SelectedOption<ImageSelectorDisplayValue>) {
+        private uncheckOthers(option: SelectedOption<ImageTreeSelectorItem>) {
             let selectedOptions = this.getSelectedOptions();
             for (let i = 0; i < selectedOptions.length; i++) {
                 let view = <ImageSelectorSelectedOptionView>selectedOptions[i].getOptionView();
@@ -171,10 +163,8 @@ module api.content.image {
             }
         }
 
-        private removeOptionViewAndRefocus(option: SelectedOption<ImageSelectorDisplayValue>) {
-            let index = this.isLast(option.getIndex()) ?
-                        (this.isFirst(option.getIndex()) ? -1 : option.getIndex() - 1) :
-                        option.getIndex();
+        private removeOptionViewAndRefocus(option: SelectedOption<ImageTreeSelectorItem>) {
+            let index = this.isLast(option.getIndex()) ? (this.isFirst(option.getIndex()) ? -1 : option.getIndex() - 1) : option.getIndex();
 
             this.notifyRemoveSelectedOptions([option]);
             this.resetActiveOption();
@@ -184,7 +174,7 @@ module api.content.image {
             }
         }
 
-        private setActiveOption(option: SelectedOption<ImageSelectorDisplayValue>) {
+        private setActiveOption(option: SelectedOption<ImageTreeSelectorItem>) {
 
             if (this.activeOption) {
                 this.activeOption.getOptionView().removeClass('editing');
@@ -235,7 +225,7 @@ module api.content.image {
             api.dom.Body.get().onClicked(this.mouseClickListener);
         }
 
-        private handleOptionViewRendered(option: SelectedOption<ImageSelectorDisplayValue>, optionView: ImageSelectorSelectedOptionView) {
+        private handleOptionViewRendered(option: SelectedOption<ImageTreeSelectorItem>, optionView: ImageSelectorSelectedOptionView) {
             optionView.onClicked((event: MouseEvent) => this.handleOptionViewClicked(option, optionView));
 
             optionView.getCheckbox().onKeyDown((event: KeyboardEvent) => this.handleOptionViewKeyDownEvent(event, option, optionView));
@@ -252,7 +242,7 @@ module api.content.image {
             }
         }
 
-        private handleOptionViewClicked(option: SelectedOption<ImageSelectorDisplayValue>, optionView: ImageSelectorSelectedOptionView) {
+        private handleOptionViewClicked(option: SelectedOption<ImageTreeSelectorItem>, optionView: ImageSelectorSelectedOptionView) {
             if (this.clickDisabled) {
                 return;
             }
@@ -267,7 +257,7 @@ module api.content.image {
             optionView.getCheckbox().giveFocus();
         }
 
-        private handleOptionViewKeyDownEvent(event: KeyboardEvent, option: SelectedOption<ImageSelectorDisplayValue>,
+        private handleOptionViewKeyDownEvent(event: KeyboardEvent, option: SelectedOption<ImageTreeSelectorItem>,
                                              optionView: ImageSelectorSelectedOptionView) {
             let checkbox = optionView.getCheckbox();
 
@@ -298,7 +288,7 @@ module api.content.image {
             }
         }
 
-        private handleOptionViewChecked(checked: boolean, option: SelectedOption<ImageSelectorDisplayValue>,
+        private handleOptionViewChecked(checked: boolean, option: SelectedOption<ImageTreeSelectorItem>,
                                         optionView: ImageSelectorSelectedOptionView) {
             if (checked) {
                 if (this.selection.indexOf(option) < 0) {
@@ -348,36 +338,36 @@ module api.content.image {
             return index === this.getSelectedOptions().length - 1;
         }
 
-        private notifyRemoveSelectedOptions(option: SelectedOption<ImageSelectorDisplayValue>[]) {
+        private notifyRemoveSelectedOptions(option: SelectedOption<ImageTreeSelectorItem>[]) {
             this.removeSelectedOptionsListeners.forEach((listener) => {
                 listener(option);
             });
         }
 
-        onRemoveSelectedOptions(listener: (option: SelectedOption<ImageSelectorDisplayValue>[]) => void) {
+        onRemoveSelectedOptions(listener: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
             this.removeSelectedOptionsListeners.push(listener);
         }
 
-        unRemoveSelectedOptions(listener: (option: SelectedOption<ImageSelectorDisplayValue>[]) => void) {
+        unRemoveSelectedOptions(listener: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
             this.removeSelectedOptionsListeners = this.removeSelectedOptionsListeners
-                .filter(function (curr: (option: SelectedOption<ImageSelectorDisplayValue>[]) => void) {
+                .filter(function (curr: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
                     return curr !== listener;
                 });
         }
 
-        private notifyEditSelectedOptions(option: SelectedOption<ImageSelectorDisplayValue>[]) {
+        private notifyEditSelectedOptions(option: SelectedOption<ImageTreeSelectorItem>[]) {
             this.editSelectedOptionsListeners.forEach((listener) => {
                 listener(option);
             });
         }
 
-        onEditSelectedOptions(listener: (option: SelectedOption<ImageSelectorDisplayValue>[]) => void) {
+        onEditSelectedOptions(listener: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
             this.editSelectedOptionsListeners.push(listener);
         }
 
-        unEditSelectedOptions(listener: (option: SelectedOption<ImageSelectorDisplayValue>[]) => void) {
+        unEditSelectedOptions(listener: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
             this.editSelectedOptionsListeners = this.editSelectedOptionsListeners
-                .filter(function (curr: (option: SelectedOption<ImageSelectorDisplayValue>[]) => void) {
+                .filter(function (curr: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
                     return curr !== listener;
                 });
         }

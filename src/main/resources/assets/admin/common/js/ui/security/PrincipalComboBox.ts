@@ -4,7 +4,6 @@ module api.ui.security {
     import Principal = api.security.Principal;
     import PrincipalLoader = api.security.PrincipalLoader;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import BaseSelectedOptionView = api.ui.selector.combobox.BaseSelectedOptionView;
     import BaseSelectedOptionsView = api.ui.selector.combobox.BaseSelectedOptionsView;
     import PrincipalKey = api.security.PrincipalKey;
     import User = api.security.User;
@@ -12,7 +11,8 @@ module api.ui.security {
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
     import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
 
-    export class PrincipalComboBox extends RichComboBox<Principal> {
+    export class PrincipalComboBox
+        extends RichComboBox<Principal> {
         constructor(builder: PrincipalComboBoxBuilder) {
             let richComboBoxBuilder = new RichComboBoxBuilder<Principal>().setMaximumOccurrences(
                 builder.maxOccurrences).setComboBoxName('principalSelector').setIdentifierMethod('getKey').setLoader(
@@ -23,6 +23,10 @@ module api.ui.security {
                 new PrincipalViewer()).setDelayedInputValueChangedHandling(500);
 
             super(richComboBoxBuilder);
+        }
+
+        getLoader() {
+            return super.getLoader();
         }
 
         static create(): PrincipalComboBoxBuilder {
@@ -72,7 +76,9 @@ module api.ui.security {
         }
     }
 
-    export class PrincipalSelectedOptionView extends PrincipalViewer implements SelectedOptionView<Principal> {
+    export class PrincipalSelectedOptionView
+        extends PrincipalViewer
+        implements SelectedOptionView<Principal> {
 
         private option: Option<Principal>;
 
@@ -105,7 +111,8 @@ module api.ui.security {
 
     }
 
-    export class PrincipalSelectedOptionsView extends BaseSelectedOptionsView<Principal> {
+    export class PrincipalSelectedOptionsView
+        extends BaseSelectedOptionsView<Principal> {
 
         constructor() {
             super('principal-selected-options-view');
@@ -129,7 +136,8 @@ module api.ui.security {
 
     }
 
-    export class RemovedPrincipalSelectedOptionView extends PrincipalSelectedOptionView {
+    export class RemovedPrincipalSelectedOptionView
+        extends PrincipalSelectedOptionView {
 
         constructor(option: Option<Principal>) {
             super(option);
@@ -141,7 +149,9 @@ module api.ui.security {
         }
     }
 
-    export class PrincipalSelectedOptionViewCompact extends PrincipalViewerCompact implements SelectedOptionView<Principal> {
+    export class PrincipalSelectedOptionViewCompact
+        extends PrincipalViewerCompact
+        implements SelectedOptionView<Principal> {
 
         private option: Option<Principal>;
 
@@ -174,7 +184,8 @@ module api.ui.security {
 
     }
 
-    export class PrincipalSelectedOptionsViewCompact extends BaseSelectedOptionsView<Principal> {
+    export class PrincipalSelectedOptionsViewCompact
+        extends BaseSelectedOptionsView<Principal> {
 
         private currentUser: User;
 

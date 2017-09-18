@@ -1,4 +1,4 @@
-module api.content.resource {
+module api.content {
 
     import FieldOrderExpr = api.query.expr.FieldOrderExpr;
     import FieldExpr = api.query.expr.FieldExpr;
@@ -7,8 +7,13 @@ module api.content.resource {
     import QueryExpr = api.query.expr.QueryExpr;
     import Expression = api.query.expr.Expression;
     import QueryField = api.query.QueryField;
+    import ContentResourceRequest = api.content.resource.ContentResourceRequest;
+    import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
+    import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
+    import ContentTreeSelectorItemJson = api.content.resource.ContentTreeSelectorItemJson;
 
-    export class ContentTreeSelectorQueryRequest extends ContentResourceRequest<ContentTreeSelectorItemJson[], ContentTreeSelectorItem[]> {
+    export class ContentTreeSelectorQueryRequest<DATA extends ContentTreeSelectorItem> extends
+        ContentResourceRequest<any, DATA[]> {
 
         public static DEFAULT_SIZE: number = 15;
 
@@ -105,7 +110,7 @@ module api.content.resource {
             this.parentPath = parentPath;
         }
 
-        private createSearchExpression(searchString: string): Expression {
+        protected createSearchExpression(searchString: string): Expression {
             return new api.query.PathMatchExpressionBuilder()
                 .setSearchString(searchString)
                 .setPath(this.content ? this.content.getPath().toString() : '')
@@ -165,10 +170,10 @@ module api.content.resource {
             };
         }
 
-        sendAndParse(): wemQ.Promise<ContentTreeSelectorItem[]> {
+        sendAndParse(): wemQ.Promise<DATA[]> {
             return this.send().then((response: api.rest.JsonResponse<ContentTreeSelectorItemJson[]>) => {
                 if (response.getResult() && response.getResult().length > 0) {
-                    return response.getResult().map(json => ContentTreeSelectorItem.fromJson(json));
+                    return response.getResult().map(json => <any>ContentTreeSelectorItem.fromJson(json));
                 } else {
                     return [];
                 }

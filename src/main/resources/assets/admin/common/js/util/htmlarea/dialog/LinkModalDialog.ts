@@ -11,8 +11,10 @@ module api.util.htmlarea.dialog {
     import InputAlignment = api.ui.InputAlignment;
     import TextInput = api.ui.text.TextInput;
     import i18n = api.util.i18n;
+    import ContentSummaryOptionDataLoader = api.content.ContentSummaryOptionDataLoader;
 
-    export class LinkModalDialog extends ModalDialog {
+    export class LinkModalDialog
+        extends ModalDialog {
         private dockedPanel: DockedPanel;
         private link: HTMLElement;
         private linkText: string;
@@ -95,9 +97,9 @@ module api.util.htmlarea.dialog {
         }
 
         private getDownloadId(): string {
-            return this.isDownloadLink() ?
-                   this.getHref().replace(LinkModalDialog.downloadPrefix, api.util.StringHelper.EMPTY_STRING) :
-                   api.util.StringHelper.EMPTY_STRING;
+            return this.isDownloadLink()
+                ? this.getHref().replace(LinkModalDialog.downloadPrefix, api.util.StringHelper.EMPTY_STRING)
+                : api.util.StringHelper.EMPTY_STRING;
         }
 
         private isUrl(): boolean {
@@ -277,17 +279,13 @@ module api.util.htmlarea.dialog {
 
         private createContentSelector(getValueFn: Function,
                                       contentTypeNames?: api.schema.content.ContentTypeName[]): api.content.ContentComboBox {
-            const loader = new api.content.resource.ContentSummaryLoader();
-
-            loader.onLoadingData((event) => {
-                loader.setContentPath(this.content.getPath());
-            });
+            const loaderBuilder = ContentSummaryOptionDataLoader.create();
 
             if (contentTypeNames) {
-                loader.setAllowedContentTypeNames(contentTypeNames);
+                loaderBuilder.setContentTypeNames(contentTypeNames.map(name => name.toString()));
             }
 
-            const contentSelector = api.content.ContentComboBox.create().setLoader(loader).setMaximumOccurrences(1).build();
+            const contentSelector = api.content.ContentComboBox.create().setLoader(loaderBuilder.build()).setMaximumOccurrences(1).build();
 
             this.onAdded(() => {
                 contentSelector.setValue(getValueFn.call(this));

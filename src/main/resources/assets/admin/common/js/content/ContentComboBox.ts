@@ -4,28 +4,28 @@ module api.content {
     import Option = api.ui.selector.Option;
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
     import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
-    import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
-    import RichSelectedOptionViewBuilder = api.ui.selector.combobox.RichSelectedOptionViewBuilder;
-    import ContentQueryResultJson = api.content.json.ContentQueryResultJson;
-    import ContentSummaryJson = api.content.json.ContentSummaryJson;
-    import OptionDataLoader = api.ui.selector.OptionDataLoader;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import Viewer = api.ui.Viewer;
-    import ContentAndStatusTreeSelectorItem = api.content.resource.ContentAndStatusTreeSelectorItem;
-    import TreeNode = api.ui.treegrid.TreeNode;
     import ContentRowFormatter = api.content.util.ContentRowFormatter;
-    import GridColumn = api.ui.grid.GridColumn;
     import i18n = api.util.i18n;
+    import OptionsFactory = api.ui.selector.OptionsFactory;
+    import StringHelper = api.util.StringHelper;
+    import OptionDataHelper = api.ui.selector.OptionDataHelper;
 
-    export class ContentComboBox extends RichComboBox<ContentSummary> {
+    export class ContentComboBox extends RichComboBox<ContentTreeSelectorItem> {
+
+        protected optionsFactory: OptionsFactory<ContentTreeSelectorItem>;
 
         constructor(builder: ContentComboBoxBuilder) {
 
-            let loader = builder.loader ? builder.loader : new ContentSummaryLoader();
+            const loader = builder.loader ? builder.loader : ContentSummaryOptionDataLoader.create().setLoadStatus(
+                builder.showStatus).build();
+
+            const optionHelper = builder.optionDataHelper ? builder.optionDataHelper : new ContentSummaryOptionDataHelper();
 
             const treeGridDropdownEnabled = builder.treegridDropdownEnabled == undefined ? true : builder.treegridDropdownEnabled;
 
-            let richComboBoxBuilder = new RichComboBoxBuilder<ContentSummary>()
+            let richComboBoxBuilder = new RichComboBoxBuilder<ContentTreeSelectorItem>()
                 .setComboBoxName(builder.name ? builder.name : 'contentSelector')
                 .setLoader(loader)
                 .setSelectedOptionsView(builder.selectedOptionsView || new ContentSelectedOptionsView())
@@ -37,9 +37,7 @@ module api.content {
                 .setRemoveMissingSelectedOptions(builder.removeMissingSelectedOptions)
                 .setSkipAutoDropShowOnValueChange(builder.skipAutoDropShowOnValueChange)
                 .setTreegridDropdownEnabled(treeGridDropdownEnabled)
-                .setOptionDataHelper(builder.optionDataHelper || new ContentSummaryOptionDataHelper())
-                .setOptionDataLoader(builder.optionDataLoader ||
-                                     ContentSummaryOptionDataLoader.create().setLoadStatus(builder.showStatus).build())
+                .setOptionDataHelper(optionHelper)
                 .setMinWidth(builder.minWidth);
 
             if(builder.showStatus && treeGridDropdownEnabled) {
@@ -52,16 +50,18 @@ module api.content {
             super(richComboBoxBuilder);
 
             this.addClass('content-combo-box');
+
+            this.optionsFactory = new OptionsFactory<ContentTreeSelectorItem>(this.getLoader(), optionHelper);
         }
 
-        getLoader(): ContentSummaryLoader {
-            return <ContentSummaryLoader> this.loader;
+        getLoader(): ContentSummaryOptionDataLoader<ContentTreeSelectorItem> {
+            return <ContentSummaryOptionDataLoader<ContentTreeSelectorItem>> super.getLoader();
         }
 
         getContent(contentId: ContentId): ContentSummary {
             let option = this.getOptionByValue(contentId.toString());
             if (option) {
-                return option.displayValue;
+                return option.displayValue.getContent();
             }
             return null;
         }
@@ -70,11 +70,11 @@ module api.content {
 
             this.clearSelection();
             if (content) {
-                let optionToSelect: Option<ContentSummary> = this.getOptionByValue(content.getContentId().toString());
+                let optionToSelect: Option<ContentTreeSelectorItem> = this.getOptionByValue(content.getContentId().toString());
                 if (!optionToSelect) {
                     optionToSelect = {
                         value: content.getContentId().toString(),
-                        displayValue: content
+                        displayValue: new ContentTreeSelectorItem(content, false)
                     };
                     this.addOption(optionToSelect);
                 }
@@ -83,24 +83,67 @@ module api.content {
             }
         }
 
+        protected createOptions(items: ContentTreeSelectorItem[]): wemQ.Promise<Option<ContentTreeSelectorItem>[]> {
+            return this.optionsFactory.createOptions(items);
+        }
+
+        protected createOption(data: Object, readOnly?: boolean): Option<ContentTreeSelectorItem> {
+
+            let option;
+
+            if (api.ObjectHelper.iFrameSafeInstanceOf(data, ContentTreeSelectorItem)) {
+                option = this.optionsFactory.createOption(<ContentTreeSelectorItem>data, readOnly);
+            } else {
+                option = {
+                    value: (<ContentSummary>data).getId(),
+                    displayValue: new ContentTreeSelectorItem(<ContentSummary>data, false),
+                    disabled: null
+                };
+            }
+
+            return option;
+        }
+
+        protected reload(inputValue: string):wemQ.Promise<any> {
+
+            const deferred = wemQ.defer<void>();
+
+            if(!StringHelper.isBlank(inputValue) || !this.treegridDropdownEnabled) {
+                this.getLoader().search(inputValue).then((result: ContentTreeSelectorItem[]) => {
+                    deferred.resolve(null);
+                }).catch((reason: any) => {
+                    api.DefaultErrorHandler.handle(reason);
+                }).done();
+            } else {
+                this.getComboBox().getComboBoxDropdownGrid().reload().then(() => {
+                    this.getComboBox().showDropdown();
+                    deferred.resolve(null);
+                }).catch((reason: any) => {
+                    api.DefaultErrorHandler.handle(reason);
+                }).done();
+            }
+
+            return deferred.promise;
+        }
+
         public static create(): ContentComboBoxBuilder {
             return new ContentComboBoxBuilder();
         }
     }
 
-    export class ContentSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<ContentSummary> {
+    export class ContentSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<ContentTreeSelectorItem> {
 
-        createSelectedOption(option: api.ui.selector.Option<ContentSummary>): SelectedOption<ContentSummary> {
+        createSelectedOption(option: api.ui.selector.Option<ContentTreeSelectorItem>): SelectedOption<ContentTreeSelectorItem> {
             let optionView = !!option.displayValue ? new ContentSelectedOptionView(option) : new MissingContentSelectedOptionView(option);
-            return new SelectedOption<ContentSummary>(optionView, this.count());
+            return new SelectedOption<ContentTreeSelectorItem>(optionView, this.count());
         }
     }
 
-    export class MissingContentSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<ContentSummary> {
+    export class MissingContentSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<ContentTreeSelectorItem> {
 
         private id: string;
 
-        constructor(option: api.ui.selector.Option<ContentSummary>) {
+        constructor(option: api.ui.selector.Option<ContentTreeSelectorItem>) {
             super(option);
             this.id = option.value;
         }
@@ -126,32 +169,32 @@ module api.content {
         }
     }
 
-    export class ContentSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<ContentSummary> {
+    export class ContentSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<ContentTreeSelectorItem> {
 
-        constructor(option: api.ui.selector.Option<ContentSummary>) {
+        constructor(option: api.ui.selector.Option<ContentTreeSelectorItem>) {
             super(
-                new api.ui.selector.combobox.RichSelectedOptionViewBuilder<ContentSummary>(option)
+                new api.ui.selector.combobox.RichSelectedOptionViewBuilder<ContentTreeSelectorItem>(option)
                     .setEditable(true)
                     .setDraggable(true)
             );
         }
 
-        resolveIconUrl(content: ContentSummary): string {
+        resolveIconUrl(content: ContentTreeSelectorItem): string {
             return content.getIconUrl();
         }
 
-        resolveTitle(content: ContentSummary): string {
+        resolveTitle(content: ContentTreeSelectorItem): string {
             return content.getDisplayName().toString();
         }
 
-        resolveSubTitle(content: ContentSummary): string {
+        resolveSubTitle(content: ContentTreeSelectorItem): string {
             return content.getPath().toString();
         }
 
-        protected createEditButton(content: api.content.ContentSummary): api.dom.AEl {
+        protected createEditButton(content: ContentTreeSelectorItem): api.dom.AEl {
             let editButton = super.createEditButton(content);
             editButton.onClicked((event: Event) => {
-                let model = [api.content.ContentSummaryAndCompareStatus.fromContentSummary(content)];
+                let model = [api.content.ContentSummaryAndCompareStatus.fromContentSummary(content.getContent())];
                 new api.content.event.EditContentEvent(model).fire();
             });
 
@@ -159,17 +202,19 @@ module api.content {
         }
     }
 
-    export class ContentComboBoxBuilder extends RichComboBoxBuilder<ContentSummary> {
+    export class ContentComboBoxBuilder extends RichComboBoxBuilder<ContentTreeSelectorItem> {
 
         name: string;
 
         maximumOccurrences: number = 0;
 
-        loader: api.util.loader.BaseLoader<ContentQueryResultJson<ContentSummaryJson>, ContentSummary>;
+        loader: ContentSummaryOptionDataLoader<ContentTreeSelectorItem>;
 
         minWidth: number;
 
         value: string;
+
+        optionDataHelper: OptionDataHelper<ContentTreeSelectorItem>;
 
         displayMissingSelectedOptions: boolean;
 
@@ -187,7 +232,7 @@ module api.content {
             return this;
         }
 
-        setLoader(loader: api.util.loader.BaseLoader<ContentQueryResultJson<ContentSummaryJson>, ContentSummary>): ContentComboBoxBuilder {
+        setLoader(loader: ContentSummaryOptionDataLoader<ContentTreeSelectorItem>): ContentComboBoxBuilder {
             this.loader = loader;
             return this;
         }
@@ -227,8 +272,8 @@ module api.content {
             return this;
         }
 
-        setOptionDataLoader(value: OptionDataLoader<ContentTreeSelectorItem>): ContentComboBoxBuilder {
-            super.setOptionDataLoader(value);
+        setOptionDataHelper(value: OptionDataHelper<ContentTreeSelectorItem>): ContentComboBoxBuilder {
+            this.optionDataHelper = value;
             return this;
         }
 

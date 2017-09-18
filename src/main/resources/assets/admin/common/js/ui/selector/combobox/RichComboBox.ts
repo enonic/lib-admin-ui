@@ -7,10 +7,12 @@ module api.ui.selector.combobox {
     import PostLoader = api.util.loader.PostLoader;
     import LoaderErrorEvent = api.util.loader.event.LoaderErrorEvent;
     import GridColumn = api.ui.grid.GridColumn;
+    import StringHelper = api.util.StringHelper;
 
-    export class RichComboBox<OPTION_DISPLAY_VALUE> extends api.dom.CompositeFormInputEl {
+    export class RichComboBox<OPTION_DISPLAY_VALUE>
+        extends api.dom.CompositeFormInputEl {
 
-        protected loader: api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE>;
+        private loader: api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE>;
 
         private selectedOptionsView: SelectedOptionsView<OPTION_DISPLAY_VALUE>;
 
@@ -20,13 +22,13 @@ module api.ui.selector.combobox {
 
         private identifierMethod: string;
 
-        private loadingListeners: {(): void;}[];
+        private loadingListeners: { (): void; }[];
 
-        private loadedListeners: {(items: OPTION_DISPLAY_VALUE[], postLoaded?: boolean): void;}[];
+        private loadedListeners: { (items: OPTION_DISPLAY_VALUE[], postLoaded?: boolean): void; }[];
 
         private interval: number;
 
-        private treegridDropdownEnabled: boolean;
+        protected treegridDropdownEnabled: boolean;
 
         public static debug: boolean = false;
 
@@ -84,7 +86,9 @@ module api.ui.selector.combobox {
                 skipAutoDropShowOnValueChange: true,
                 treegridDropdownEnabled: builder.treegridDropdownEnabled,
                 optionDataHelper: builder.optionDataHelper,
-                optionDataLoader: builder.optionDataLoader,
+                optionDataLoader: api.ObjectHelper.iFrameSafeInstanceOf(builder.loader, OptionDataLoader)
+                    ? <OptionDataLoader<OPTION_DISPLAY_VALUE>>builder.loader
+                    : null,
                 onDropdownShownCallback: this.loadOptionsAfterShowDropdown.bind(this),
                 createColumns: builder.createColumns
             };
@@ -218,10 +222,6 @@ module api.ui.selector.combobox {
             return this.comboBox.getOptionByRow(rowIndex);
         }
 
-        getOptionDataLoader(): OptionDataLoader<OPTION_DISPLAY_VALUE> {
-            return this.comboBox.getOptionDataLoader();
-        }
-
         countSelected(): number {
             return this.comboBox.countSelectedOptions();
         }
@@ -263,6 +263,14 @@ module api.ui.selector.combobox {
             return typeof val === 'object' && val['toString'] ? val.toString() : val;
         }
 
+        protected createOptions(items: any[]): wemQ.Promise<api.ui.selector.Option<OPTION_DISPLAY_VALUE>[]> {
+            let options = [];
+            items.forEach((itemInst: any) => {
+                options.push(this.createOption(itemInst));
+            });
+            return wemQ(options);
+        }
+
         protected createOption(value: Object, readOnly?: boolean): Option<OPTION_DISPLAY_VALUE> {
             return {
                 value: this.getDisplayValueId(value),
@@ -275,22 +283,20 @@ module api.ui.selector.combobox {
             return this.treegridDropdownEnabled && this.comboBox.isInputEmpty();
         }
 
-        private loadOptionsAfterShowDropdown(): wemQ.Promise<void> {
-            let deferred = wemQ.defer<void>();
-            if (this.treegridDropdownEnabled) {
-                if (this.isDataGridSelfLoading()) {
-                    this.comboBox.getComboBoxDropdownGrid().reload().then(() => {
-                        this.comboBox.showDropdown();
-                        this.comboBox.setReadOnly(false);
-                        deferred.resolve(null);
-                    });
-                } else {
-                    this.comboBox.getComboBoxDropdownGrid().search(this.comboBox.getInput().getValue()).then(() => {
-                        this.comboBox.showDropdown();
-                        this.comboBox.setReadOnly(false);
-                        deferred.resolve(null);
-                    });
-                }
+        protected loadOptionsAfterShowDropdown(): wemQ.Promise<void> {
+            return this.reload(this.comboBox.getInput().getValue());
+        }
+
+        protected reload(inputValue: string): wemQ.Promise<any> {
+
+            const deferred = wemQ.defer<void>();
+
+            if (!StringHelper.isBlank(inputValue)) {
+                this.loader.search(inputValue).then((result: OPTION_DISPLAY_VALUE[]) => {
+                    deferred.resolve(null);
+                }).catch((reason: any) => {
+                    api.DefaultErrorHandler.handle(reason);
+                }).done();
             } else {
                 this.loader.load().then(() => {
                     deferred.resolve(null);
@@ -298,45 +304,24 @@ module api.ui.selector.combobox {
                     api.DefaultErrorHandler.handle(reason);
                 }).done();
             }
+
             return deferred.promise;
         }
 
         private setupLoader() {
 
             this.comboBox.onOptionFilterInputValueChanged((event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>) => {
-                if (this.treegridDropdownEnabled) {
-                    if (this.isDataGridSelfLoading()) {
-                        this.comboBox.getComboBoxDropdownGrid().reload().then(() => {
-                            this.comboBox.showDropdown();
-                            this.comboBox.giveInputFocus();
-                        });
-                    } else {
-                        this.comboBox.getComboBoxDropdownGrid().search(event.getNewValue()).then(() => {
-                            this.comboBox.showDropdown();
-                            this.comboBox.giveInputFocus();
-                        });
-                    }
-                } else {
-                    this.loader.search(event.getNewValue()).then((result: OPTION_DISPLAY_VALUE[]) => {
-                        return result;
-                    }).catch((reason: any) => {
-                        api.DefaultErrorHandler.handle(reason);
-                    }).done();
-                }
+                return this.reload(event.getNewValue());
             });
 
             this.loader.onLoadingData((event: api.util.loader.event.LoadingDataEvent) => {
-                if (!event.isPostLoad() && !this.treegridDropdownEnabled) {
+                if (!event.isPostLoad()) {
                     this.comboBox.setEmptyDropdownText('Searching...');
                 }
                 this.notifyLoading();
             });
 
             this.loader.onLoadedData(this.handleLoadedData.bind(this));
-
-            if (this.getOptionDataLoader()) {
-                this.getOptionDataLoader().onLoadedData(this.handleLoadedData.bind(this));
-            }
 
             this.loader.onErrorOccurred((event: LoaderErrorEvent) => {
                 this.comboBox.hideDropdown();
@@ -350,18 +335,10 @@ module api.ui.selector.combobox {
 
         private handleLoadedData(event: api.util.loader.event.LoadedDataEvent<OPTION_DISPLAY_VALUE>) {
             this.errorContainer.hide();
-            let options = this.createOptions(event.getData());
-
-            this.comboBox.setOptions(options, event.isPostLoad());
-            this.notifyLoaded(event.getData(), event.isPostLoad());
-        }
-
-        private createOptions(items: Object[]): api.ui.selector.Option<OPTION_DISPLAY_VALUE>[] {
-            let options = [];
-            items.forEach((itemInst: Object) => {
-                options.push(this.createOption(itemInst));
+            this.createOptions(event.getData()).then(options => {
+                this.comboBox.setOptions(options, event.isPostLoad());
+                this.notifyLoaded(event.getData(), event.isPostLoad());
             });
-            return options;
         }
 
         getLoader(): api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE> {
@@ -372,27 +349,27 @@ module api.ui.selector.combobox {
             this.comboBox.setInputIconUrl(url);
         }
 
-        onOptionDeselected(listener: {(option: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void;}) {
+        onOptionDeselected(listener: { (option: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void; }) {
             this.comboBox.onOptionDeselected(listener);
         }
 
-        unOptionDeselected(listener: {(removed: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void;}) {
+        unOptionDeselected(listener: { (removed: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void; }) {
             this.comboBox.unOptionDeselected(listener);
         }
 
-        onOptionSelected(listener: {(option: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void;}) {
+        onOptionSelected(listener: { (option: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void; }) {
             this.comboBox.onOptionSelected(listener);
         }
 
-        unOptionSelected(listener: {(option: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void;}) {
+        unOptionSelected(listener: { (option: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void; }) {
             this.comboBox.unOptionSelected(listener);
         }
 
-        onOptionMoved(listener: {(option: SelectedOption<OPTION_DISPLAY_VALUE>): void;}) {
+        onOptionMoved(listener: { (option: SelectedOption<OPTION_DISPLAY_VALUE>): void; }) {
             this.comboBox.onOptionMoved(listener);
         }
 
-        unOptionMoved(listener: {(option: SelectedOption<OPTION_DISPLAY_VALUE>): void;}) {
+        unOptionMoved(listener: { (option: SelectedOption<OPTION_DISPLAY_VALUE>): void; }) {
             this.comboBox.unOptionMoved(listener);
         }
 
@@ -402,20 +379,20 @@ module api.ui.selector.combobox {
             });
         }
 
-        onLoading(listener: {(): void;}) {
+        onLoading(listener: { (): void; }) {
             this.loadingListeners.push(listener);
         }
 
-        unLoading(listener: {(): void;}) {
+        unLoading(listener: { (): void; }) {
             let index = this.loadedListeners.indexOf(listener);
             this.loadedListeners.splice(index, 1);
         }
 
-        onLoaded(listener: {(items: OPTION_DISPLAY_VALUE[], postLoaded?: boolean): void;}) {
+        onLoaded(listener: { (items: OPTION_DISPLAY_VALUE[], postLoaded?: boolean): void; }) {
             this.loadedListeners.push(listener);
         }
 
-        unLoaded(listenerToBeRemoved: {(items: OPTION_DISPLAY_VALUE[], postLoaded?: boolean): void;}) {
+        unLoaded(listenerToBeRemoved: { (items: OPTION_DISPLAY_VALUE[], postLoaded?: boolean): void; }) {
             let index = this.loadedListeners.indexOf(listenerToBeRemoved);
             this.loadedListeners.splice(index, 1);
         }
@@ -491,9 +468,7 @@ module api.ui.selector.combobox {
 
         treegridDropdownEnabled: boolean;
 
-        optionDataHelper: OptionDataHelper<any>;
-
-        optionDataLoader: OptionDataLoader<any>;
+        optionDataHelper: OptionDataHelper<T>;
 
         createColumns: GridColumn<T>[];
 
@@ -586,13 +561,8 @@ module api.ui.selector.combobox {
             return this;
         }
 
-        setOptionDataHelper(value: OptionDataHelper<any>): RichComboBoxBuilder<T> {
+        setOptionDataHelper(value: OptionDataHelper<T>): RichComboBoxBuilder<T> {
             this.optionDataHelper = value;
-            return this;
-        }
-
-        setOptionDataLoader(value: OptionDataLoader<any>): RichComboBoxBuilder<T> {
-            this.optionDataLoader = value;
             return this;
         }
 

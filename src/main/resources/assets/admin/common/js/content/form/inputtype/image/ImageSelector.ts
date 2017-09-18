@@ -7,41 +7,32 @@ module api.content.form.inputtype.image {
     import ValueTypes = api.data.ValueTypes;
     import ContentId = api.content.ContentId;
     import ContentSummary = api.content.ContentSummary;
-    import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
     import ContentTypeName = api.schema.content.ContentTypeName;
     import ComboBox = api.ui.selector.combobox.ComboBox;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
     import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import Option = api.ui.selector.Option;
-    import RelationshipTypeName = api.schema.relationshiptype.RelationshipTypeName;
 
-    import ContentDeletedEvent = api.content.event.ContentDeletedEvent;
     import UploadItem = api.ui.uploader.UploadItem;
     import FileUploadedEvent = api.ui.uploader.FileUploadedEvent;
     import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
     import FileUploadProgressEvent = api.ui.uploader.FileUploadProgressEvent;
-    import FileUploadCompleteEvent = api.ui.uploader.FileUploadCompleteEvent;
     import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
 
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
 
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
-    import ContentUpdatedEvent = api.content.event.ContentUpdatedEvent;
-    import ServerEventsListener = api.app.ServerEventsListener;
-    import ContentServerEventsHandler = api.content.event.ContentServerEventsHandler;
     import ContentInputTypeManagingAdd = api.content.form.inputtype.ContentInputTypeManagingAdd;
-    import ContentSummaryJson = api.content.json.ContentSummaryJson;
-    import ContentQueryResultJson = api.content.json.ContentQueryResultJson;
-    import BaseLoader = api.util.loader.BaseLoader;
     import SelectedOptionsView = api.ui.selector.combobox.SelectedOptionsView;
     import StringHelper = api.util.StringHelper;
     import ImageSelectorDisplayValue = api.content.image.ImageSelectorDisplayValue;
     import ImageSelectorSelectedOptionsView = api.content.image.ImageSelectorSelectedOptionsView;
     import ImageOptionDataLoader = api.content.image.ImageOptionDataLoader;
     import ImageSelectorSelectedOptionView = api.content.image.ImageSelectorSelectedOptionView;
+    import ImageTreeSelectorItem = api.content.image.ImageTreeSelectorItem;
 
-    export class ImageSelector extends ContentInputTypeManagingAdd<ImageSelectorDisplayValue> {
+    export class ImageSelector
+        extends ContentInputTypeManagingAdd<ImageTreeSelectorItem> {
 
         private contentComboBox: api.content.image.ImageContentComboBox;
 
@@ -52,7 +43,7 @@ module api.content.form.inputtype.image {
 
         private uploader: api.content.image.ImageUploaderEl;
 
-        private editContentRequestListeners: {(content: ContentSummary): void}[] = [];
+        private editContentRequestListeners: { (content: ContentSummary): void }[] = [];
 
         private isFlat: boolean;
 
@@ -77,17 +68,17 @@ module api.content.form.inputtype.image {
             return this.contentComboBox;
         }
 
-        protected getContentPath(raw: ImageSelectorDisplayValue): api.content.ContentPath {
-            return raw.getContentPath();
+        protected getContentPath(raw: ImageTreeSelectorItem): api.content.ContentPath {
+            return raw.getContentSummary().getPath();
         }
 
         private updateSelectedItemsIcons() {
             if (this.contentComboBox.getSelectedOptions().length > 0) {
                 this.doLoadContent(this.getPropertyArray()).then((contents: ContentSummary[]) => {
                     contents.forEach((content: ContentSummary) => {
-                        this.selectedOptionsView.updateUploadedOption(<Option<ImageSelectorDisplayValue>>{
+                        this.selectedOptionsView.updateUploadedOption(<Option<ImageTreeSelectorItem>>{
                             value: content.getId(),
-                            displayValue: ImageSelectorDisplayValue.fromContentSummary(content)
+                            displayValue: new ImageTreeSelectorItem(content, false)
                         });
                     });
 
@@ -121,14 +112,14 @@ module api.content.form.inputtype.image {
         private createSelectedOptionsView(): ImageSelectorSelectedOptionsView {
             let selectedOptionsView = new ImageSelectorSelectedOptionsView();
 
-            selectedOptionsView.onEditSelectedOptions((options: SelectedOption<ImageSelectorDisplayValue>[]) => {
-                options.forEach((option: SelectedOption<ImageSelectorDisplayValue>) => {
+            selectedOptionsView.onEditSelectedOptions((options: SelectedOption<ImageTreeSelectorItem>[]) => {
+                options.forEach((option: SelectedOption<ImageTreeSelectorItem>) => {
                     this.notifyEditContentRequested(option.getOption().displayValue.getContentSummary());
                 });
             });
 
-            selectedOptionsView.onRemoveSelectedOptions((options: SelectedOption<ImageSelectorDisplayValue>[]) => {
-                options.forEach((option: SelectedOption<ImageSelectorDisplayValue>) => {
+            selectedOptionsView.onRemoveSelectedOptions((options: SelectedOption<ImageTreeSelectorItem>[]) => {
+                options.forEach((option: SelectedOption<ImageTreeSelectorItem>) => {
                     this.contentComboBox.deselect(option.getOption().displayValue);
                 });
                 this.validate(false);
@@ -144,20 +135,13 @@ module api.content.form.inputtype.image {
                 return property.getString();
             }).join(';');
 
-            let contentTypes = this.allowedContentTypes.length ? this.allowedContentTypes :
-                               relationshipAllowedContentTypes.length ? relationshipAllowedContentTypes :
-                                   [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()];
+            let contentTypes = this.allowedContentTypes.length
+                ? this.allowedContentTypes
+                : relationshipAllowedContentTypes.length
+                                   ? relationshipAllowedContentTypes
+                                   : [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()];
 
             const optionDataLoader = ImageOptionDataLoader
-                .create()
-                .setContent(this.config.content)
-                .setInputName(inputName)
-                .setAllowedContentPaths(this.allowedContentPaths)
-                .setContentTypeNames(contentTypes)
-                .setRelationshipType(this.relationshipType)
-                .build();
-
-            const imageSelectorLoader = ImageSelectorLoader
                 .create()
                 .setContent(this.config.content)
                 .setInputName(inputName)
@@ -169,14 +153,13 @@ module api.content.form.inputtype.image {
             const contentComboBox: api.content.image.ImageContentComboBox
                 = api.content.image.ImageContentComboBox.create()
                 .setMaximumOccurrences(maximumOccurrences)
-                .setLoader(imageSelectorLoader)
+                .setLoader(optionDataLoader)
                 .setSelectedOptionsView(this.selectedOptionsView = this.createSelectedOptionsView())
                 .setValue(value)
-                .setOptionDataLoader(optionDataLoader)
                 .setTreegridDropdownEnabled(!this.isFlat)
                 .build();
 
-            let comboBox: ComboBox<ImageSelectorDisplayValue> = contentComboBox.getComboBox();
+            let comboBox: ComboBox<ImageTreeSelectorItem> = contentComboBox.getComboBox();
 
             comboBox.onHidden((event: api.dom.ElementHiddenEvent) => {
                 // hidden on max occurrences reached
@@ -192,7 +175,7 @@ module api.content.form.inputtype.image {
             });
             comboBox.setInputIconUrl(inputIconUrl);
 
-            comboBox.onOptionDeselected((event: SelectedOptionEvent<ImageSelectorDisplayValue>) => {
+            comboBox.onOptionDeselected((event: SelectedOptionEvent<ImageTreeSelectorItem>) => {
                 // property not found.
                 const option = event.getSelectedOption();
                 if (option.getOption().displayValue.getContentSummary()) {
@@ -206,7 +189,7 @@ module api.content.form.inputtype.image {
                 this.validate(false);
             });
 
-            comboBox.onOptionSelected((event: SelectedOptionEvent<ImageSelectorDisplayValue>) => {
+            comboBox.onOptionSelected((event: SelectedOptionEvent<ImageTreeSelectorItem>) => {
                 this.fireFocusSwitchEvent(event);
 
                 if (!this.isLayoutInProgress()) {
@@ -220,7 +203,7 @@ module api.content.form.inputtype.image {
                 this.validate(false);
             });
 
-            comboBox.onOptionMoved((moved: SelectedOption<ImageSelectorDisplayValue>) => {
+            comboBox.onOptionMoved((moved: SelectedOption<ImageTreeSelectorItem>) => {
 
                 this.getPropertyArray().set(moved.getIndex(), ValueTypes.REFERENCE.newValue(moved.getOption().value));
                 this.validate(false);
@@ -255,7 +238,13 @@ module api.content.form.inputtype.image {
                         this.appendChild(comboBoxWrapper);
                         this.appendChild(this.selectedOptionsView);
 
-                        this.setLayoutInProgress(false);
+                        return this.doLoadContent(propertyArray).then((contents: api.content.ContentSummary[]) => {
+                            contents.forEach((content: api.content.ContentSummary) => {
+                                this.contentComboBox.select(new ImageTreeSelectorItem(content, false));
+                            });
+                            this.setLayoutInProgress(false);
+                        });
+
                     });
             });
         }
@@ -302,9 +291,10 @@ module api.content.form.inputtype.image {
 
             this.uploader.onUploadStarted((event: FileUploadStartedEvent<Content>) => {
                 event.getUploadItems().forEach((uploadItem: UploadItem<Content>) => {
-                    let value = ImageSelectorDisplayValue.fromUploadItem(uploadItem);
+                    const value = new ImageTreeSelectorItem(null, false).setDisplayValue(
+                        ImageSelectorDisplayValue.fromUploadItem(uploadItem));
 
-                    let option = <api.ui.selector.Option<ImageSelectorDisplayValue>>{
+                    const option = <api.ui.selector.Option<ImageTreeSelectorItem>>{
                         value: value.getId(),
                         displayValue: value
                     };
@@ -331,7 +321,7 @@ module api.content.form.inputtype.image {
 
                 let selectedOption = this.selectedOptionsView.getById(item.getId());
                 let option = selectedOption.getOption();
-                option.displayValue.setContentSummary(createdContent);
+                option.displayValue = new ImageTreeSelectorItem(createdContent, false);
                 option.value = createdContent.getContentId().toString();
 
                 selectedOption.getOptionView().setOption(option);
@@ -422,7 +412,7 @@ module api.content.form.inputtype.image {
             }
         }
 
-        protected readConfig(inputConfig: {[element: string]: {[name: string]: string}[];}): void {
+        protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
             const isFlatConfig = inputConfig['flat'] ? inputConfig['flat'][0] : {};
             this.isFlat = !StringHelper.isBlank(isFlatConfig['value']) ? isFlatConfig['value'].toLowerCase() == 'true' : false;
 

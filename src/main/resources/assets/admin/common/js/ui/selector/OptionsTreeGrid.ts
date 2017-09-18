@@ -5,17 +5,16 @@ module api.ui.selector {
     import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import SelectionOnClickType = api.ui.treegrid.SelectionOnClickType;
 
-    export class OptionsTreeGrid<OPTION_DISPLAY_VALUE> extends TreeGrid<Option<OPTION_DISPLAY_VALUE>> {
+    export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
+        extends TreeGrid<Option<OPTION_DISPLAY_VALUE>> {
 
         private loader: OptionDataLoader<OPTION_DISPLAY_VALUE>;
 
         private treeDataHelper: OptionDataHelper<OPTION_DISPLAY_VALUE>;
 
-        private readonlyChecker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean;
-
         private defaultOption: OPTION_DISPLAY_VALUE;
 
-        private isSelfLoading: boolean;
+        private optionsFactory: OptionsFactory<OPTION_DISPLAY_VALUE>;
 
         private isDefaultOptionActive: boolean;
 
@@ -37,19 +36,21 @@ module api.ui.selector {
                     .setShowToolbar(false)
                     .setIdPropertyName(gridOptions.dataIdProperty);
 
-            builder.setColumnUpdater(() => {
-                this.setColumns(columns, true);
-            });
-
             builder.getOptions().setDataItemColumnValueExtractor(builder.nodeExtractor);
 
             super(builder);
+
             this.loader = loader;
             this.treeDataHelper = treeDataHelper;
-            this.setSelfLoading(true);
+
             this.setSelectionOnClick(SelectionOnClickType.SELECT);
 
             this.initEventHandlers();
+            this.initLoaderListeners();
+
+            this.optionsFactory = new OptionsFactory(this.loader, this.treeDataHelper);
+
+            this.setActive(true);
         }
 
         removeAllOptions() {
@@ -57,19 +58,23 @@ module api.ui.selector {
         }
 
         setOptions(options: Option<OPTION_DISPLAY_VALUE>[]) {
-            this.setSelfLoading(false);
-
             this.removeAllOptions();
-            this.getGrid().getDataView().setItems(this.dataToTreeNodes(options, this.getRoot().getCurrentRoot()), 'dataId');
+
+            const data = this.dataToTreeNodes(options, this.getRoot().getCurrentRoot());
+
+            this.getRoot().getCurrentRoot().setChildren(data);
+            this.getGrid().getDataView().setItems(data, 'dataId');
         }
 
         addOption(option: Option<OPTION_DISPLAY_VALUE>) {
-            this.setSelfLoading(false);
-            this.getGrid().getDataView().addItem(this.dataToTreeNode(option, this.getRoot().getCurrentRoot()));
+            const data = this.dataToTreeNode(option, this.getRoot().getCurrentRoot());
+
+            this.getRoot().getCurrentRoot().addChild(data);
+            this.getGrid().getDataView().addItem(data);
         }
 
         setReadonlyChecker(checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
-            this.readonlyChecker = checker;
+            this.optionsFactory.setReadonlyChecker(checker);
         }
 
         queryScrollable(): api.dom.Element {
@@ -79,6 +84,7 @@ module api.ui.selector {
         }
 
         reload(parentNodeData?: Option<OPTION_DISPLAY_VALUE>): wemQ.Promise<void> {
+            this.toggleFlatMode(false);
             return super.reload(parentNodeData).then(() => {
                 if (this.defaultOption && !this.isDefaultOptionActive) {
                     this.scrollToDefaultOption(this.getRoot().getCurrentRoot(), 0);
@@ -87,17 +93,20 @@ module api.ui.selector {
             });
         }
 
-        search(searchString: string): wemQ.Promise<void> {
-            return this.loader.search(searchString).then((items) => {
-                return this.createOptions(items).then(newOptions => {
-                    this.setOptions(newOptions);
-                    this.updateExpanded();
-                });
-            });
-        }
-
         expandNode(node?: TreeNode<Option<OPTION_DISPLAY_VALUE>>, expandAll?: boolean): wemQ.Promise<boolean> {
             return super.expandNode(node, expandAll);
+        }
+
+        private initLoaderListeners() {
+            if (this.loader) {
+                this.loader.onLoadModeChanged((isFlat: boolean) => {
+                    this.toggleFlatMode(isFlat);
+                });
+            }
+        }
+
+        private toggleFlatMode(isFlat: boolean) {
+            this.toggleClass('flat', isFlat);
         }
 
         private initEventHandlers() {
@@ -118,9 +127,6 @@ module api.ui.selector {
         }
 
         hasChildren(option: Option<OPTION_DISPLAY_VALUE>): boolean {
-            if (!this.isSelfLoading) {
-                return false;
-            }
             return this.treeDataHelper.hasChildren(option.displayValue);
         }
 
@@ -134,12 +140,11 @@ module api.ui.selector {
 
         fetch(node: TreeNode<Option<OPTION_DISPLAY_VALUE>>, dataId?: string): wemQ.Promise<Option<OPTION_DISPLAY_VALUE>> {
             return this.loader.fetch(node).then((data: OPTION_DISPLAY_VALUE) => {
-                return this.createOption(data);
+                return this.optionsFactory.createOption(data);
             });
         }
 
         fetchChildren(parentNode?: TreeNode<Option<OPTION_DISPLAY_VALUE>>): wemQ.Promise<Option<OPTION_DISPLAY_VALUE>[]> {
-            this.setSelfLoading(true);
             parentNode = parentNode ? parentNode : this.getRoot().getCurrentRoot();
 
             let from = parentNode.getChildren().length;
@@ -150,7 +155,7 @@ module api.ui.selector {
 
             return this.loader.fetchChildren(parentNode).then(
                 (loadedData: OptionDataLoaderData<OPTION_DISPLAY_VALUE>) => {
-                    return this.createOptions(loadedData.getData()).then((newOptions) => {
+                    return this.optionsFactory.createOptions(loadedData.getData()).then((newOptions) => {
 
                         let options = parentNode.getChildren().map((el) => el.getData()).slice(0, from).concat(newOptions);
                         parentNode.setMaxChildren(loadedData.getTotalHits());
@@ -207,43 +212,11 @@ module api.ui.selector {
             }
         }
 
-        createOptions(data: OPTION_DISPLAY_VALUE[]): wemQ.Promise<Option<OPTION_DISPLAY_VALUE>[]> {
-            return this.loader.checkReadonly(data).then((readonlyIds: string[]) => {
-                return data.map((item) => this.createOption(item, readonlyIds));
-            });
-        }
-
-        private createOption(data: OPTION_DISPLAY_VALUE, readonlyIds: string[] = []): Option<OPTION_DISPLAY_VALUE> {
-            return {
-                value: this.treeDataHelper.getDataId(data),
-                disabled: this.treeDataHelper.isDisabled(data),
-                displayValue: data,
-                readOnly: readonlyIds ? this.isOptionReadonly(data, readonlyIds) : false
-            };
-        }
-
-        private isOptionReadonly(data: OPTION_DISPLAY_VALUE, readonlyIds: string[]): boolean {
-            if (this.readonlyChecker && this.readonlyChecker(data)) {
-                return true;
-            }
-
-            return readonlyIds.some((id: string) => {
-                if (this.treeDataHelper.getDataId(data) === id) {
-                    return true;
-                }
-            });
-        }
-
         private makeEmptyData(): Option<OPTION_DISPLAY_VALUE> {
             return {
                 value: null,
                 displayValue: null
             };
-        }
-
-        private setSelfLoading(value: boolean) {
-            this.isSelfLoading = value;
-            this.toggleClass('self-loaded', value);
         }
 
         protected handleItemMetadata(row: number) {
@@ -253,12 +226,7 @@ module api.ui.selector {
             }
 
             if (node.getData().readOnly) {
-                if (this.treeDataHelper.getDataId(node.getData().displayValue) !=
-                    this.treeDataHelper.getDataId(this.defaultOption)) {
-                    return {cssClasses: "readonly' title='This content is read-only'"};
-                } else {
-                    return {cssClasses: "active readonly' title='This content is read-only'"};
-                }
+                return {cssClasses: "readonly' title='This content is read-only'"};
             }
 
             if (node.getData().disabled) {

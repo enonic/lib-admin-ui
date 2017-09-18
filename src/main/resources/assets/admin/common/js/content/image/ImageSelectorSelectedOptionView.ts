@@ -2,7 +2,8 @@ module api.content.image {
 
     import LoadMask = api.ui.mask.LoadMask;
 
-    export class ImageSelectorSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<ImageSelectorDisplayValue> {
+    export class ImageSelectorSelectedOptionView
+        extends api.ui.selector.combobox.BaseSelectedOptionView<ImageTreeSelectorItem> {
 
         private static IMAGE_SIZE: number = 270;
 
@@ -18,16 +19,16 @@ module api.content.image {
 
         private loadMask: LoadMask;
 
-        private selectionChangeListeners: {(option: ImageSelectorSelectedOptionView, checked: boolean): void;}[] = [];
+        private selectionChangeListeners: { (option: ImageSelectorSelectedOptionView, checked: boolean): void; }[] = [];
 
-        constructor(option: api.ui.selector.Option<ImageSelectorDisplayValue>) {
+        constructor(option: api.ui.selector.Option<ImageTreeSelectorItem>) {
             super(option);
         }
 
-        setOption(option: api.ui.selector.Option<ImageSelectorDisplayValue>) {
+        setOption(option: api.ui.selector.Option<ImageTreeSelectorItem>) {
             super.setOption(option);
 
-            let displayValue: ImageSelectorDisplayValue = option.displayValue;
+            let displayValue: ImageTreeSelectorItem = option.displayValue;
 
             if (displayValue.getContentSummary()) {
                 this.updateIconSrc(displayValue);
@@ -37,7 +38,7 @@ module api.content.image {
             }
         }
 
-        private updateIconSrc(content: ImageSelectorDisplayValue) {
+        private updateIconSrc(content: ImageTreeSelectorItem) {
             let newIconSrc = content.getImageUrl() + '?thumbnail=false&size=' + ImageSelectorSelectedOptionView.IMAGE_SIZE;
 
             if (this.icon.getSrc().indexOf(newIconSrc) === -1) {
@@ -161,13 +162,13 @@ module api.content.image {
             });
         }
 
-        onChecked(listener: {(option: ImageSelectorSelectedOptionView, checked: boolean): void;}) {
+        onChecked(listener: { (option: ImageSelectorSelectedOptionView, checked: boolean): void; }) {
             this.selectionChangeListeners.push(listener);
         }
 
-        unChecked(listener: {(option: ImageSelectorSelectedOptionView, checked: boolean): void;}) {
+        unChecked(listener: { (option: ImageSelectorSelectedOptionView, checked: boolean): void; }) {
             this.selectionChangeListeners = this.selectionChangeListeners
-                .filter(function (curr: {(option: ImageSelectorSelectedOptionView, checked: boolean): void;}) {
+                .filter(function (curr: { (option: ImageSelectorSelectedOptionView, checked: boolean): void; }) {
                     return curr !== listener;
                 });
         }
