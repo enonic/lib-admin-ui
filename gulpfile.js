@@ -6,7 +6,7 @@ var LessAutoPrefix = require('less-plugin-autoprefix');
 var include = require("gulp-include");
 var ts = require('gulp-typescript');
 var del = require('del');
-var sequence = require('gulp-sequence')
+var sequence = require('gulp-sequence');
 var tsLint = require('gulp-tslint');
 var path = require('path');
 
@@ -55,9 +55,9 @@ gulp.task('less-admin', function () {
     return lessCss('admin/common/styles/_module.less', 'admin/common/styles', '_all.css');
 });
 
-gulp.task('less-live-edit', function () {
+/*gulp.task('less-live-edit', function () {
     return lessCss('admin/live-edit/styles/_module.less', 'admin/live-edit/styles', '_all.css');
-});
+});*/
 
 gulp.task('less-html-editor', function () {
     return lessCss('admin/common/styles/api/util/htmlarea/html-editor.module.less',
@@ -69,9 +69,9 @@ gulp.task('ts-admin', function () {
     return typescript('admin/common/js/_module.ts', 'admin/common/js/_all.js', true);
 });
 
-gulp.task('ts-live', function () {
+/*gulp.task('ts-live', function () {
     return typescript('admin/live-edit/js/_module.ts', 'admin/live-edit/js/_all.js', false);
-});
+});*/
 
 gulp.task('ts-spec', function () {
     return typescript('spec/_spec.ts', 'spec/_all.js', false);
@@ -109,8 +109,8 @@ gulp.task('clean', function () {
     });
 });
 
-gulp.task('less', ['less-admin', 'less-live-edit', 'less-html-editor']);
-gulp.task('ts', sequence('ts-admin', ['ts-live', 'ts-spec']));
+gulp.task('less', ['less-admin', /*'less-live-edit',*/ 'less-html-editor']);
+gulp.task('ts', sequence('ts-admin', [/*'ts-live',*/ 'ts-spec']));
 gulp.task('combine', ['combine-js']);
 
 gulp.task('all', sequence(['less', 'combine'], 'lint', 'ts'));
