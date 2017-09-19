@@ -14,5 +14,4 @@ This will generate a <i>-element with the icon.
 
 All icons can be browsed via dem/demo.html page.
 
-icons-all.less contains all the icons, but are not used since it has 7k lines and would take time to load.
 To add a new icon, simply find it in the demo page, search it up in icons-all.less and copy-paste the icon code to icons.less.
