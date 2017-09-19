@@ -16,7 +16,6 @@
 ///<reference path='GetPageDescriptorByKeyRequest.ts' />
 ///<reference path='GetPageDescriptorsByApplicationRequest.ts' />
 ///<reference path='GetPageDescriptorsByApplicationsRequest.ts' />
-///<reference path='PageDescriptorDropdown.ts' />
 ///<reference path='PageDescriptorViewer.ts' />
 ///<reference path='PageDescriptorLoader.ts' />
 
@@ -45,7 +44,6 @@
 ///<reference path='Page.ts' />
 ///<reference path='PageMode.ts' />
 ///<reference path='PageModeChangedEvent.ts' />
-///<reference path='PageModel.ts' />
 ///<reference path='DescriptorByDisplayNameComparator.ts' />
 ///<reference path='PageTemplateByDisplayNameComparator.ts' />
 ///<reference path='CreatePageTemplateRequest.ts' />
