@@ -343,7 +343,6 @@ module api.ui.selector.combobox {
         }
 
         showDropdown() {
-
             this.comboBoxDropdown.showDropdown(this.getSelectedOptions(), this.isInputEmpty() ? this.noOptionsText : null);
 
             this.doUpdateDropdownTopPositionAndWidth();
@@ -428,10 +427,6 @@ module api.ui.selector.combobox {
 
         setFilterArgs(args: any) {
             this.comboBoxDropdown.setFilterArgs(args);
-        }
-
-        getOptionDataLoader(): OptionDataLoader<OPTION_DISPLAY_VALUE> {
-            return this.comboBoxDropdown.getOptionDataLoader();
         }
 
         protected doGetValue(): string {

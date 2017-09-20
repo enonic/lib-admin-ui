@@ -2,7 +2,6 @@ module api.content.page.region {
 
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
     import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
-    import ComboBoxConfig = api.ui.selector.combobox.ComboBoxConfig;
     import Option = api.ui.selector.Option;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import BaseSelectedOptionView = api.ui.selector.combobox.BaseSelectedOptionView;
@@ -10,7 +9,8 @@ module api.content.page.region {
     import DescriptorKey = api.content.page.DescriptorKey;
     import ApplicationKey = api.application.ApplicationKey;
 
-    export class PartDescriptorComboBox extends RichComboBox<PartDescriptor> {
+    export class PartDescriptorComboBox
+        extends RichComboBox<PartDescriptor> {
 
         constructor() {
             super(new RichComboBoxBuilder<PartDescriptor>()
@@ -23,8 +23,8 @@ module api.content.page.region {
         }
 
         loadDescriptors(applicationKeys: ApplicationKey[]) {
-            (<PartDescriptorLoader>this.loader).setApplicationKeys(applicationKeys);
-            this.loader.load();
+            (<PartDescriptorLoader>this.getLoader()).setApplicationKeys(applicationKeys);
+            this.getLoader().load();
         }
 
         getDescriptor(descriptorKey: DescriptorKey): PartDescriptor {
@@ -53,14 +53,16 @@ module api.content.page.region {
 
     }
 
-    export class PartDescriptorSelectedOptionsView extends BaseSelectedOptionsView<PartDescriptor> {
+    export class PartDescriptorSelectedOptionsView
+        extends BaseSelectedOptionsView<PartDescriptor> {
 
         createSelectedOption(option: Option<PartDescriptor>): SelectedOption<PartDescriptor> {
             return new SelectedOption<PartDescriptor>(new PartDescriptorSelectedOptionView(option), this.count());
         }
     }
 
-    export class PartDescriptorSelectedOptionView extends BaseSelectedOptionView<PartDescriptor> {
+    export class PartDescriptorSelectedOptionView
+        extends BaseSelectedOptionView<PartDescriptor> {
 
         private descriptor: PartDescriptor;
 

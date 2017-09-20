@@ -2,7 +2,6 @@ module api.content.page.region {
 
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
     import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
-    import ComboBoxConfig = api.ui.selector.combobox.ComboBoxConfig;
     import Option = api.ui.selector.Option;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import BaseSelectedOptionView = api.ui.selector.combobox.BaseSelectedOptionView;
@@ -23,8 +22,8 @@ module api.content.page.region {
         }
 
         loadDescriptors(applicationKeys: ApplicationKey[]) {
-            (<LayoutDescriptorLoader>this.loader).setApplicationKeys(applicationKeys);
-            this.loader.load();
+            (<LayoutDescriptorLoader>this.getLoader()).setApplicationKeys(applicationKeys);
+            this.getLoader().load();
         }
 
         getDescriptor(descriptorKey: DescriptorKey): LayoutDescriptor {

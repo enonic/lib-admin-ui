@@ -1,25 +1,7 @@
 module api.ui.selector {
 
-    import Item = api.item.Item;
-
     import ElementHelper = api.dom.ElementHelper;
-    import ValidationRecordingViewer = api.form.ValidationRecordingViewer;
-
-    import Grid = api.ui.grid.Grid;
-    import GridOptions = api.ui.grid.GridOptions;
-    import GridColumn = api.ui.grid.GridColumn;
-    import GridOptionsBuilder = api.ui.grid.GridOptionsBuilder;
-    import DataView = api.ui.grid.DataView;
-    import KeyBinding = api.ui.KeyBinding;
-    import KeyBindings = api.ui.KeyBindings;
-
-    import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
-    import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
-    import AppHelper = api.util.AppHelper;
-    import DataChangedEvent = api.ui.treegrid.DataChangedEvent;
     import TreeNode = api.ui.treegrid.TreeNode;
-    import TreeNodeBuilder = api.ui.treegrid.TreeNodeBuilder;
-    import TreeRoot = api.ui.treegrid.TreeRoot;
     import Element = api.dom.Element;
 
     export class DropdownTreeGrid<OPTION_DISPLAY_VALUE> extends DropdownGrid<OPTION_DISPLAY_VALUE> {
@@ -50,10 +32,6 @@ module api.ui.selector {
             return this.optionsTreeGrid.reload();
         }
 
-        search(searchString: string): wemQ.Promise<void> {
-            return this.optionsTreeGrid.search(searchString);
-        }
-
         setReadonlyChecker(checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
             this.optionsTreeGrid.setReadonlyChecker(checker);
         }
@@ -81,14 +59,9 @@ module api.ui.selector {
         }
 
         protected initGridAndData() {
-            if (this.filter) {
-                // TODO
-                // this.getGridData().setFilter(this.filter);
-            }
-
             this.dataIdProperty = 'dataId';
 
-            this.optionsTreeGrid = new OptionsTreeGrid(this.createColumns(),
+            this.optionsTreeGrid = new OptionsTreeGrid<OPTION_DISPLAY_VALUE>(this.createColumns(),
                 this.createOptions(),
                 this.config.optionDataLoader,
                 this.config.optionDataHelper);

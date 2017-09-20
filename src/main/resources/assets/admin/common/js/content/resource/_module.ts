@@ -3,7 +3,6 @@
 ///<reference path='ContentSummaryPreLoader.ts' />
 ///<reference path='ContentSummaryLoader.ts' />
 ///<reference path='FragmentContentSummaryRequest.ts' />
-///<reference path='FragmentContentSummaryLoader.ts' />
 ///<reference path='MoveContentSummaryLoader.ts' />
 ///<reference path='ContentResourceRequest.ts' />
 ///<reference path='ApplyContentPermissionsRequest.ts' />
@@ -28,7 +27,6 @@
 ///<reference path='DeleteContentRequest.ts' />
 ///<reference path='BatchContentRequest.ts' />
 ///<reference path='ContentQueryRequest.ts' />
-///<reference path='ContentTreeSelectorQueryRequest.ts' />
 ///<reference path='ContentSelectorQueryRequest.ts' />
 ///<reference path='SetActiveContentVersionRequest.ts' />
 ///<reference path='UpdateContentRequest.ts' />

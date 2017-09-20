@@ -11,7 +11,8 @@ module api.content.resource {
         expand: boolean;
     }
 
-    export class ContentTreeSelectorItem implements Equitable {
+    export class ContentTreeSelectorItem
+        implements Equitable {
 
         private content: ContentSummary;
 
@@ -31,51 +32,51 @@ module api.content.resource {
         }
 
         getId(): string {
-            return this.content.getId();
+            return this.content ? this.content.getId() : null;
         }
 
         getContentId(): ContentId {
-            return this.content.getContentId();
+            return this.content ? this.content.getContentId() : null;
         }
 
         getPath(): ContentPath {
-            return this.content.getPath();
+            return this.content ? this.content.getPath() : null;
         }
 
         getName(): ContentName {
-            return this.content.getName();
+            return this.content ? this.content.getName() : null;
         }
 
         getDisplayName(): string {
-            return this.content.getDisplayName();
+            return this.content ? this.content.getDisplayName() : null;
         }
 
         getContentState(): ContentState {
-            return this.content.getContentState();
+            return this.content ? this.content.getContentState() : null;
         }
 
         hasChildren(): boolean {
-            return this.content.hasChildren();
+            return this.content ? this.content.hasChildren() : null;
         }
 
         isValid(): boolean {
-            return this.content.isValid();
+            return this.content ? this.content.isValid() : null;
         }
 
         getIconUrl(): string {
-            return this.content.getIconUrl();
+            return this.content ? this.content.getIconUrl() : null;
         }
 
         getType(): ContentTypeName {
-            return this.content.getType();
+            return this.content ? this.content.getType() : null;
         }
 
         isImage(): boolean {
-            return this.content.isImage();
+            return this.content ? this.content.isImage() : null;
         }
 
         isSite(): boolean {
-            return this.content.isSite();
+            return this.content ? this.content.isSite() : null;
         }
 
         getExpand(): boolean {

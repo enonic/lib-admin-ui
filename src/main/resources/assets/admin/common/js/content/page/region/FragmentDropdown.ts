@@ -1,14 +1,7 @@
 module api.content.page.region {
 
-    import Dropdown = api.ui.selector.dropdown.Dropdown;
-    import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
     import Option = api.ui.selector.Option;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-
     import ContentSummary = api.content.ContentSummary;
-    import ContentPath = api.content.ContentPath;
-    import FragmentContentSummaryLoader = api.content.resource.FragmentContentSummaryLoader;
-
     import RichDropdown = api.ui.selector.dropdown.RichDropdown;
     import LiveEditModel = api.liveedit.LiveEditModel;
 

@@ -1,15 +1,12 @@
 module api.liveedit.fragment {
 
-    import ContentTypeName = api.schema.content.ContentTypeName;
     import FragmentComponent = api.content.page.region.FragmentComponent;
     import GetContentByIdRequest = api.content.resource.GetContentByIdRequest;
     import Content = api.content.Content;
     import LayoutComponentType = api.content.page.region.LayoutComponentType;
-    import QueryExpr = api.query.expr.QueryExpr;
-    import FieldExpr = api.query.expr.FieldExpr;
-    import ValueExpr = api.query.expr.ValueExpr;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
     import i18n = api.util.i18n;
+    import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
 
     export class FragmentPlaceholder extends api.liveedit.ItemViewPlaceholder {
 
@@ -27,16 +24,18 @@ module api.liveedit.fragment {
             this.comboboxWrapper = new api.dom.DivEl('rich-combobox-wrapper');
 
             let sitePath = this.fragmentComponentView.getLiveEditModel().getSiteModel().getSite().getPath().toString();
-            let loader = new api.content.resource.FragmentContentSummaryLoader().setParentSitePath(sitePath);
+            let loader = new FragmentOptionDataLoader().setParentSitePath(sitePath);
 
             this.comboBox =
-                api.content.ContentComboBox.create().setMaximumOccurrences(1).setLoader(loader).setMinWidth(270).setTreegridDropdownEnabled(
-                    false).build();
+                api.content.ContentComboBox.create().setMaximumOccurrences(1)
+                    .setLoader(loader)
+                    .setMinWidth(270)
+                    .setTreegridDropdownEnabled(false).build();
 
             this.comboboxWrapper.appendChildren(this.comboBox);
             this.appendChild(this.comboboxWrapper);
 
-            this.comboBox.onOptionSelected((event: SelectedOptionEvent<api.content.ContentSummary>) => {
+            this.comboBox.onOptionSelected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
 
                 let component: FragmentComponent = this.fragmentComponentView.getComponent();
                 let fragmentContent = event.getSelectedOption().getOption().displayValue;

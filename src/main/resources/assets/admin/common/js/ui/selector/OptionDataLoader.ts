@@ -1,23 +1,20 @@
 module api.ui.selector {
 
     import TreeNode = api.ui.treegrid.TreeNode;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
+    import BaseLoader = api.util.loader.BaseLoader;
 
-    export interface OptionDataLoader<DATA> {
+    export abstract class OptionDataLoader<DATA>
+        extends BaseLoader<JSON, DATA> {
 
-        search(value: string): wemQ.Promise<DATA[]>;
+        abstract fetch(node: TreeNode<Option<DATA>>): wemQ.Promise<DATA>;
 
-        load(values: string[]): wemQ.Promise<DATA[]>;
+        abstract fetchChildren(parentNode: TreeNode<Option<DATA>>, from?: number, size?: number): wemQ.Promise<OptionDataLoaderData<DATA>>;
 
-        fetch(node: TreeNode<Option<DATA>>): wemQ.Promise<DATA>;
+        abstract checkReadonly(options: DATA[]): wemQ.Promise<string[]>;
 
-        fetchChildren(parentNode: TreeNode<Option<DATA>>, from?: number, size?: number): wemQ.Promise<OptionDataLoaderData<DATA>>;
+        abstract onLoadModeChanged(listener: (isFlat: boolean) => void);
 
-        checkReadonly(options: DATA[]): wemQ.Promise<string[]>;
-
-        onLoadedData(listener: (event: LoadedDataEvent<DATA>) => void);
-
-        unLoadedData(listener: (event: LoadedDataEvent<DATA>) => void);
+        abstract unLoadModeChanged(listener: (isFlat: boolean) => void);
     }
 
     export class OptionDataLoaderData<DATA> {
