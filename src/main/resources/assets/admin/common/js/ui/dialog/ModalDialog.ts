@@ -5,6 +5,7 @@ module api.ui.dialog {
     import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
     import Element = api.dom.Element;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
+    import Body = api.dom.Body;
     import i18n = api.util.i18n;
 
     export interface ConfirmationConfig {
@@ -109,7 +110,7 @@ module api.ui.dialog {
         }
 
         private initListeners() {
-            ResponsiveManager.onAvailableSizeChanged(this, () => this.centerMyself());
+            ResponsiveManager.onAvailableSizeChanged(Body.get(), () => this.centerMyself());
 
             // Set the ResponsiveRanges on first show() call
             const firstTimeResize = () => {
@@ -282,18 +283,16 @@ module api.ui.dialog {
             const el = this.getEl();
             el.setMarginTop(`-${ el.getHeightWithBorder() / 2 }px`);
 
-            if (ResponsiveRanges._540_720.isFitOrBigger(this.getEl().getWidthWithBorder())) {
+            if (ResponsiveRanges._540_720.isFitOrBigger(Body.get().getEl().getWidthWithBorder())) {
                 this.centerHorisontally();
             } else {
                 el.setMarginLeft('0px');
-                el.removeClass('centered_horizontally');
             }
         }
 
         centerHorisontally() {
             const el = this.getEl();
             el.setMarginLeft(`-${ el.getWidthWithBorder() / 2 }px`);
-            el.addClass('centered_horizontally');
         }
 
         getButtonRow(): ButtonRow {

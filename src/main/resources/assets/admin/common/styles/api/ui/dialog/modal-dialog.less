@@ -151,36 +151,6 @@
     margin-left: 11px;
   }
 
-  &._0-240, &._240-360, &._360-540 {
-    box-sizing: content-box;
-  }
-
-  &._0-240, &._240-360 {
-    margin: 0;
-    padding-left: 2%;
-    padding-right: 2%;
-    width: 96%;
-  }
-
-  &._360-540 {
-    margin: 0;
-    padding-left: 3%;
-    padding-right: 3%;
-    width: 94%;
-  }
-
-  &._540-720 {
-    margin-left: 10px;
-    margin-right: 10px;
-    padding-left: 30px;
-    padding-right: 30px;
-    width: 80.185%;
-  }
-
-  &.centered_horizontally {
-    left: 50%;
-  }
-
   .input-view .edit {
     display: none;
   }
@@ -232,4 +202,35 @@ body {
       }
     }
   }
+
+  &._0-240 .@{_COMMON_PREFIX}modal-dialog, &._240-360 .@{_COMMON_PREFIX}modal-dialog {
+    margin: 0;
+    padding-left: 2%;
+    padding-right: 2%;
+    width: 96%;
+    box-sizing: content-box;
+  }
+
+  &._360-540 .@{_COMMON_PREFIX}modal-dialog {
+    margin: 0;
+    padding-left: 3%;
+    padding-right: 3%;
+    width: 94%;
+    box-sizing: content-box;
+  }
+
+  &._540-720 .@{_COMMON_PREFIX}modal-dialog {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    width: 80.185%;
+  }
+
+  @media screen and (min-width: 541px) {
+    .@{_COMMON_PREFIX}modal-dialog {
+      left: 50%;
+    }
+  }
+
 }
