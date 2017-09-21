@@ -43,7 +43,6 @@ module api.liveedit.part {
             siteModel.onApplicationRemoved(listener);
             siteModel.onSiteModelUpdated(listener);
 
-
             this.onRemoved(() => {
                 siteModel.unApplicationAdded(listener);
                 siteModel.unApplicationRemoved(listener);
