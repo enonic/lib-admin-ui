@@ -21,7 +21,7 @@ module api.content {
 
         private loadStatus: boolean;
 
-        private loadModeChangedListeners: { (isFlat: boolean): void }[] = [];
+        private loadModeChangedListeners: { (isTreeMode: boolean): void }[] = [];
 
         constructor(builder?: ContentSummaryOptionDataLoaderBuilder) {
             super();
@@ -181,19 +181,19 @@ module api.content {
                 });
         }
 
-        private notifyLoadModeChanged(isFlat: boolean) {
-            this.loadModeChangedListeners.forEach((listener: (isFlat: boolean) => void) => {
-                listener(isFlat);
+        private notifyLoadModeChanged(isTreeMode: boolean) {
+            this.loadModeChangedListeners.forEach((listener: (isTreeMode: boolean) => void) => {
+                listener(isTreeMode);
             });
         }
 
-        onLoadModeChanged(listener: (isFlat: boolean) => void) {
+        onLoadModeChanged(listener: (isTreeMode: boolean) => void) {
             this.loadModeChangedListeners.push(listener);
         }
 
-        unLoadModeChanged(listener: (isFlat: boolean) => void) {
+        unLoadModeChanged(listener: (isTreeMode: boolean) => void) {
             this.loadModeChangedListeners = this.loadModeChangedListeners
-                .filter(function (curr: (isFlat: boolean) => void) {
+                .filter(function (curr: (isTreeMode: boolean) => void) {
                     return curr !== listener;
                 });
         }
