@@ -11,10 +11,14 @@ module api.content {
     import OptionsFactory = api.ui.selector.OptionsFactory;
     import StringHelper = api.util.StringHelper;
     import OptionDataHelper = api.ui.selector.OptionDataHelper;
+    import ModeTogglerButton = api.content.button.ModeTogglerButton;
 
-    export class ContentComboBox extends RichComboBox<ContentTreeSelectorItem> {
+    export class ContentComboBox
+        extends RichComboBox<ContentTreeSelectorItem> {
 
         protected optionsFactory: OptionsFactory<ContentTreeSelectorItem>;
+
+        protected treegridDropdownEnabled: boolean;
 
         constructor(builder: ContentComboBoxBuilder) {
 
@@ -22,8 +26,6 @@ module api.content {
                 builder.showStatus).build();
 
             const optionHelper = builder.optionDataHelper ? builder.optionDataHelper : new ContentSummaryOptionDataHelper();
-
-            const treeGridDropdownEnabled = builder.treegridDropdownEnabled == undefined ? true : builder.treegridDropdownEnabled;
 
             let richComboBoxBuilder = new RichComboBoxBuilder<ContentTreeSelectorItem>()
                 .setComboBoxName(builder.name ? builder.name : 'contentSelector')
@@ -36,11 +38,11 @@ module api.content {
                 .setDisplayMissingSelectedOptions(builder.displayMissingSelectedOptions)
                 .setRemoveMissingSelectedOptions(builder.removeMissingSelectedOptions)
                 .setSkipAutoDropShowOnValueChange(builder.skipAutoDropShowOnValueChange)
-                .setTreegridDropdownEnabled(treeGridDropdownEnabled)
+                .setTreegridDropdownAllowed(builder.treegridDropdownAllowed)
                 .setOptionDataHelper(optionHelper)
                 .setMinWidth(builder.minWidth);
 
-            if(builder.showStatus && treeGridDropdownEnabled) {
+            if (builder.showStatus) {
                 const columns = [new api.ui.grid.GridColumnBuilder().setId('status').setName('Status').setField(
                     'displayValue').setFormatter(
                     ContentRowFormatter.statusSelectorFormatter).setCssClass('status').setBoundaryWidth(75, 75).build()];
@@ -50,6 +52,11 @@ module api.content {
             super(richComboBoxBuilder);
 
             this.addClass('content-combo-box');
+
+            if(builder.treegridDropdownAllowed) {
+                this.treegridDropdownEnabled = builder.treegridDropdownEnabled;
+                this.initTreeModeToggler();
+            }
 
             this.optionsFactory = new OptionsFactory<ContentTreeSelectorItem>(this.getLoader(), optionHelper);
         }
@@ -83,6 +90,17 @@ module api.content {
             }
         }
 
+        private initTreeModeToggler() {
+            const modeToggler = new ModeTogglerButton();
+            modeToggler.setActive(this.treegridDropdownEnabled);
+            this.getComboBox().prependChild(modeToggler);
+
+            modeToggler.onActiveChanged(isActive => {
+                this.treegridDropdownEnabled = isActive;
+                this.reload(this.getComboBox().getInput().getValue());
+            });
+        }
+
         protected createOptions(items: ContentTreeSelectorItem[]): wemQ.Promise<Option<ContentTreeSelectorItem>[]> {
             return this.optionsFactory.createOptions(items);
         }
@@ -104,19 +122,24 @@ module api.content {
             return option;
         }
 
-        protected reload(inputValue: string):wemQ.Promise<any> {
+        protected reload(inputValue: string): wemQ.Promise<any> {
 
             const deferred = wemQ.defer<void>();
 
-            if(!StringHelper.isBlank(inputValue) || !this.treegridDropdownEnabled) {
+            if (!this.treegridDropdownEnabled) {
                 this.getLoader().search(inputValue).then((result: ContentTreeSelectorItem[]) => {
                     deferred.resolve(null);
                 }).catch((reason: any) => {
                     api.DefaultErrorHandler.handle(reason);
                 }).done();
             } else {
+                this.getLoader().setTreeFilterValue(inputValue);
+
                 this.getComboBox().getComboBoxDropdownGrid().reload().then(() => {
-                    this.getComboBox().showDropdown();
+                    if (this.getComboBox().isDropdownShown()) {
+                        this.getComboBox().showDropdown();
+                        this.getComboBox().getInput().setReadOnly(false);
+                    }
                     deferred.resolve(null);
                 }).catch((reason: any) => {
                     api.DefaultErrorHandler.handle(reason);
@@ -131,7 +154,8 @@ module api.content {
         }
     }
 
-    export class ContentSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<ContentTreeSelectorItem> {
+    export class ContentSelectedOptionsView
+        extends api.ui.selector.combobox.BaseSelectedOptionsView<ContentTreeSelectorItem> {
 
         createSelectedOption(option: api.ui.selector.Option<ContentTreeSelectorItem>): SelectedOption<ContentTreeSelectorItem> {
             let optionView = !!option.displayValue ? new ContentSelectedOptionView(option) : new MissingContentSelectedOptionView(option);
@@ -139,7 +163,8 @@ module api.content {
         }
     }
 
-    export class MissingContentSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<ContentTreeSelectorItem> {
+    export class MissingContentSelectedOptionView
+        extends api.ui.selector.combobox.BaseSelectedOptionView<ContentTreeSelectorItem> {
 
         private id: string;
 
@@ -169,7 +194,8 @@ module api.content {
         }
     }
 
-    export class ContentSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<ContentTreeSelectorItem> {
+    export class ContentSelectedOptionView
+        extends api.ui.selector.combobox.RichSelectedOptionView<ContentTreeSelectorItem> {
 
         constructor(option: api.ui.selector.Option<ContentTreeSelectorItem>) {
             super(
@@ -202,7 +228,8 @@ module api.content {
         }
     }
 
-    export class ContentComboBoxBuilder extends RichComboBoxBuilder<ContentTreeSelectorItem> {
+    export class ContentComboBoxBuilder
+        extends RichComboBoxBuilder<ContentTreeSelectorItem> {
 
         name: string;
 
@@ -221,6 +248,8 @@ module api.content {
         removeMissingSelectedOptions: boolean;
 
         showStatus: boolean = false;
+
+        treegridDropdownEnabled: boolean = false;
 
         setName(value: string): ContentComboBoxBuilder {
             this.name = value;
@@ -257,8 +286,13 @@ module api.content {
             return this;
         }
 
+        setTreegridDropdownAllowed(value: boolean): ContentComboBoxBuilder {
+            super.setTreegridDropdownAllowed(value);
+            return this;
+        }
+
         setTreegridDropdownEnabled(value: boolean): ContentComboBoxBuilder {
-            super.setTreegridDropdownEnabled(value);
+            this.treegridDropdownEnabled = value;
             return this;
         }
 

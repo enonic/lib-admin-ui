@@ -127,7 +127,7 @@ module api.content.form.inputtype.image {
             return selectedOptionsView;
         }
 
-        createContentComboBox(maximumOccurrences: number, inputIconUrl: string, relationshipAllowedContentTypes: string[],
+        createContentComboBox(maximumOccurrences: number,
                               inputName: string): api.content.image.ImageContentComboBox {
 
             let value = this.getPropertyArray().getProperties().map((property) => {
@@ -135,10 +135,7 @@ module api.content.form.inputtype.image {
             }).join(';');
 
             let contentTypes = this.allowedContentTypes.length
-                ? this.allowedContentTypes
-                : relationshipAllowedContentTypes.length
-                                   ? relationshipAllowedContentTypes
-                                   : [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()];
+                ? this.allowedContentTypes : [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()];
 
             const optionDataLoader = ImageOptionDataLoader
                 .create()
@@ -172,7 +169,6 @@ module api.content.form.inputtype.image {
                     this.uploader.show();
                 }
             });
-            comboBox.setInputIconUrl(inputIconUrl);
 
             comboBox.onOptionDeselected((event: SelectedOptionEvent<ImageTreeSelectorItem>) => {
                 // property not found.
@@ -216,35 +212,31 @@ module api.content.form.inputtype.image {
                 propertyArray.convertValues(ValueTypes.REFERENCE);
             }
             return super.layout(input, propertyArray).then(() => {
-                return new api.schema.relationshiptype.GetRelationshipTypeByNameRequest(this.relationshipTypeName).sendAndParse()
-                    .then((relationshipType: api.schema.relationshiptype.RelationshipType) => {
+                this.contentComboBox = this.createContentComboBox(
+                    input.getOccurrences().getMaximum(),
+                    input.getName()
+                );
 
-                        this.contentComboBox = this.createContentComboBox(
-                            input.getOccurrences().getMaximum(), relationshipType.getIconUrl(), relationshipType.getAllowedToTypes() || [],
-                            input.getName()
-                        );
+                let comboBoxWrapper = new api.dom.DivEl('combobox-wrapper');
 
-                        let comboBoxWrapper = new api.dom.DivEl('combobox-wrapper');
+                comboBoxWrapper.appendChild(this.contentComboBox);
 
-                        comboBoxWrapper.appendChild(this.contentComboBox);
+                this.contentRequestsAllowed = true;
 
-                        this.contentRequestsAllowed = true;
+                if (this.config.content) {
+                    comboBoxWrapper.appendChild(this.createUploader());
+                }
 
-                        if (this.config.content) {
-                            comboBoxWrapper.appendChild(this.createUploader());
-                        }
+                this.appendChild(comboBoxWrapper);
+                this.appendChild(this.selectedOptionsView);
 
-                        this.appendChild(comboBoxWrapper);
-                        this.appendChild(this.selectedOptionsView);
-
-                        return this.doLoadContent(propertyArray).then((contents: api.content.ContentSummary[]) => {
-                            contents.forEach((content: api.content.ContentSummary) => {
-                                this.contentComboBox.select(new ImageTreeSelectorItem(content, false));
-                            });
-                            this.setLayoutInProgress(false);
-                        });
-
+                return this.doLoadContent(propertyArray).then((contents: api.content.ContentSummary[]) => {
+                    contents.forEach((content: api.content.ContentSummary) => {
+                        this.contentComboBox.select(new ImageTreeSelectorItem(content, false));
                     });
+                    this.setLayoutInProgress(false);
+                });
+
             });
         }
 

@@ -13,7 +13,8 @@ module api.content.form.inputtype.contentselector {
     import StringHelper = api.util.StringHelper;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
 
-    export class ContentSelector extends ContentInputTypeManagingAdd<ContentTreeSelectorItem> {
+    export class ContentSelector
+        extends ContentInputTypeManagingAdd<ContentTreeSelectorItem> {
 
         private contentComboBox: api.content.ContentComboBox;
 
@@ -35,7 +36,7 @@ module api.content.form.inputtype.contentselector {
             super('relationship', config);
         }
 
-        protected readConfig(inputConfig: {[element: string]: {[name: string]: string}[];}): void {
+        protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
 
             const isTreeModeConfig = inputConfig['treeMode'] ? inputConfig['treeMode'][0] : {};
             this.treeMode = !StringHelper.isBlank(isTreeModeConfig['value']) ? isTreeModeConfig['value'].toLowerCase() == 'true' : false;
@@ -97,64 +98,58 @@ module api.content.form.inputtype.contentselector {
                 this.validate(false);
             });
 
-            return new GetRelationshipTypeByNameRequest(this.relationshipTypeName).sendAndParse()
-                .then((relationshipType: api.schema.relationshiptype.RelationshipType) => {
+            this.appendChild(this.contentComboBox);
 
-                    this.contentComboBox.setInputIconUrl(relationshipType.getIconUrl());
+            const contentIds: ContentId[] = [];
+            propertyArray.forEach((property: Property) => {
+                if (property.hasNonNullValue()) {
+                    let referenceValue = property.getReference();
+                    if (referenceValue instanceof api.util.Reference) {
+                        contentIds.push(ContentId.fromReference(referenceValue));
+                    }
+                }
+            });
 
-                    this.appendChild(this.contentComboBox);
+            return this.doLoadContent(contentIds).then((contents: api.content.ContentSummary[]) => {
 
-                    const contentIds: ContentId[] = [];
-                    propertyArray.forEach((property: Property) => {
-                        if (property.hasNonNullValue()) {
-                            let referenceValue = property.getReference();
-                            if (referenceValue instanceof api.util.Reference) {
-                                contentIds.push(ContentId.fromReference(referenceValue));
-                            }
-                        }
-                    });
-
-                    return this.doLoadContent(contentIds).then((contents: api.content.ContentSummary[]) => {
-
-                        //TODO: original value doesn't work because of additional request, so have to select manually
-                        contents.forEach((content: api.content.ContentSummary) => {
-                            this.contentComboBox.select(new ContentTreeSelectorItem(content, false));
-                        });
-
-                        this.contentComboBox.getSelectedOptions().forEach((selectedOption: SelectedOption<ContentTreeSelectorItem>) => {
-                            this.updateSelectedOptionIsEditable(selectedOption);
-                        });
-
-                        this.contentComboBox.onOptionSelected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
-                            this.fireFocusSwitchEvent(event);
-
-                            const reference = api.util.Reference.from(event.getSelectedOption().getOption().displayValue.getContentId());
-
-                            const value = new Value(reference, ValueTypes.REFERENCE);
-                            if (this.contentComboBox.countSelected() === 1) { // overwrite initial value
-                                this.getPropertyArray().set(0, value);
-                            } else if (!this.getPropertyArray().containsValue(value)) {
-                                this.getPropertyArray().add(value);
-                            }
-
-                            this.updateSelectedOptionIsEditable(event.getSelectedOption());
-                            this.refreshSortable();
-                            this.updateSelectedOptionStyle();
-                            this.validate(false);
-                        });
-
-                        this.contentComboBox.onOptionDeselected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
-
-                            this.getPropertyArray().remove(event.getSelectedOption().getIndex());
-                            this.updateSelectedOptionStyle();
-                            this.validate(false);
-                        });
-
-                        this.setupSortable();
-
-                        this.setLayoutInProgress(false);
-                    });
+                //TODO: original value doesn't work because of additional request, so have to select manually
+                contents.forEach((content: api.content.ContentSummary) => {
+                    this.contentComboBox.select(new ContentTreeSelectorItem(content, false));
                 });
+
+                this.contentComboBox.getSelectedOptions().forEach((selectedOption: SelectedOption<ContentTreeSelectorItem>) => {
+                    this.updateSelectedOptionIsEditable(selectedOption);
+                });
+
+                this.contentComboBox.onOptionSelected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
+                    this.fireFocusSwitchEvent(event);
+
+                    const reference = api.util.Reference.from(event.getSelectedOption().getOption().displayValue.getContentId());
+
+                    const value = new Value(reference, ValueTypes.REFERENCE);
+                    if (this.contentComboBox.countSelected() === 1) { // overwrite initial value
+                        this.getPropertyArray().set(0, value);
+                    } else if (!this.getPropertyArray().containsValue(value)) {
+                        this.getPropertyArray().add(value);
+                    }
+
+                    this.updateSelectedOptionIsEditable(event.getSelectedOption());
+                    this.refreshSortable();
+                    this.updateSelectedOptionStyle();
+                    this.validate(false);
+                });
+
+                this.contentComboBox.onOptionDeselected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
+
+                    this.getPropertyArray().remove(event.getSelectedOption().getIndex());
+                    this.updateSelectedOptionStyle();
+                    this.validate(false);
+                });
+
+                this.setupSortable();
+
+                this.setLayoutInProgress(false);
+            });
         }
 
         private removePropertyWithId(id: string) {

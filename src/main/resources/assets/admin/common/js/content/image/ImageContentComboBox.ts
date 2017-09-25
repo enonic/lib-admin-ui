@@ -1,23 +1,19 @@
 module api.content.image {
 
-    import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import Option = api.ui.selector.Option;
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
     import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
-    import ContentQueryResultJson = api.content.json.ContentQueryResultJson;
-    import ContentSummaryJson = api.content.json.ContentSummaryJson;
-    import BaseLoader = api.util.loader.BaseLoader;
-    import OptionDataLoader = api.ui.selector.OptionDataLoader;
     import SelectedOptionsView = api.ui.selector.combobox.SelectedOptionsView;
     import ContentTypeName = api.schema.content.ContentTypeName;
     import OptionsFactory = api.ui.selector.OptionsFactory;
-    import StringHelper = api.util.StringHelper;
     import OptionDataHelper = api.ui.selector.OptionDataHelper;
+    import ModeTogglerButton = api.content.button.ModeTogglerButton;
 
     export class ImageContentComboBox extends RichComboBox<ImageTreeSelectorItem> {
 
         protected optionsFactory: OptionsFactory<ImageTreeSelectorItem>;
+
+        protected treegridDropdownEnabled: boolean;
 
         constructor(builder: ImageContentComboBoxBuilder) {
 
@@ -35,7 +31,7 @@ module api.content.image {
                 .setDelayedInputValueChangedHandling(750)
                 .setValue(builder.value)
                 .setMinWidth(builder.minWidth)
-                .setTreegridDropdownEnabled(builder.treegridDropdownEnabled)
+                .setTreegridDropdownAllowed(true)
                 .setOptionDataHelper(optionHelper)
                 .setRemoveMissingSelectedOptions(true)
                 .setDisplayMissingSelectedOptions(true);
@@ -43,6 +39,13 @@ module api.content.image {
             // Actually the hack.
             // ImageSelectorSelectedOptionsView and BaseSelectedOptionsView<ContentSummary> are incompatible in loaders.
             super(<RichComboBoxBuilder<ImageTreeSelectorItem>>richComboBoxBuilder);
+
+            this.addClass('content-combo-box');
+
+            if(builder.treegridDropdownAllowed) {
+                this.treegridDropdownEnabled = builder.treegridDropdownEnabled;
+                this.initTreeModeToggler();
+            }
 
             this.optionsFactory = new OptionsFactory<ImageTreeSelectorItem>(loader, optionHelper);
 
@@ -70,6 +73,17 @@ module api.content.image {
             return null;
         }
 
+        private initTreeModeToggler() {
+            const modeToggler = new ModeTogglerButton();
+            modeToggler.setActive(this.treegridDropdownEnabled);
+            this.getComboBox().prependChild(modeToggler);
+
+            modeToggler.onActiveChanged(isActive => {
+                this.treegridDropdownEnabled = isActive;
+                this.reload(this.getComboBox().getInput().getValue());
+            });
+        }
+
         protected createOptions(items: ImageTreeSelectorItem[]): wemQ.Promise<Option<ImageTreeSelectorItem>[]> {
             return this.optionsFactory.createOptions(items);
         }
@@ -91,19 +105,24 @@ module api.content.image {
             return option;
         }
 
-        protected reload(inputValue: string): wemQ.Promise<any> {
+        protected reload(inputValue: string):wemQ.Promise<any> {
 
             const deferred = wemQ.defer<void>();
 
-            if(!StringHelper.isBlank(inputValue) || !this.treegridDropdownEnabled) {
+            if(!this.treegridDropdownEnabled) {
                 this.getLoader().search(inputValue).then((result: ImageTreeSelectorItem[]) => {
                     deferred.resolve(null);
                 }).catch((reason: any) => {
                     api.DefaultErrorHandler.handle(reason);
                 }).done();
             } else {
+                this.getLoader().setTreeFilterValue(inputValue);
+
                 this.getComboBox().getComboBoxDropdownGrid().reload().then(() => {
-                    this.getComboBox().showDropdown();
+                    if(this.getComboBox().isDropdownShown()) {
+                        this.getComboBox().showDropdown();
+                        this.getComboBox().getInput().setReadOnly(false);
+                    }
                     deferred.resolve(null);
                 }).catch((reason: any) => {
                     api.DefaultErrorHandler.handle(reason);
@@ -138,7 +157,7 @@ module api.content.image {
 
         optionDataHelper: OptionDataHelper<ImageTreeSelectorItem>;
 
-        treegridDropdownEnabled: boolean;
+        treegridDropdownEnabled: boolean = false;
 
         value: string;
 
@@ -186,6 +205,11 @@ module api.content.image {
 
         setOptionDataHelper(value: OptionDataHelper<ImageTreeSelectorItem>): ImageContentComboBoxBuilder {
             this.optionDataHelper = value;
+            return this;
+        }
+
+        setTreegridDropdownAllowed(value: boolean): ImageContentComboBoxBuilder {
+            super.setTreegridDropdownAllowed(value);
             return this;
         }
 
