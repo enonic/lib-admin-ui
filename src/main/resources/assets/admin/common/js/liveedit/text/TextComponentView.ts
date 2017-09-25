@@ -1,20 +1,15 @@
 module api.liveedit.text {
 
-    import RoleKeys = api.security.RoleKeys;
-    declare var CONFIG;
-
     import ComponentView = api.liveedit.ComponentView;
-    import RegionView = api.liveedit.RegionView;
     import TextComponent = api.content.page.region.TextComponent;
-
-    import LinkModalDialog = api.util.htmlarea.dialog.LinkModalDialog;
-    import AnchorModalDialog = api.util.htmlarea.dialog.AnchorModalDialog;
-    import HtmlAreaAnchor = api.util.htmlarea.dialog.HtmlAreaAnchor;
     import HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
     import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
     import ModalDialog = api.util.htmlarea.dialog.ModalDialog;
     import Promise = Q.Promise;
     import i18n = api.util.i18n;
+    declare var CONFIG;
+
+
 
     export class TextComponentViewBuilder extends ComponentViewBuilder<TextComponent> {
         constructor() {
@@ -364,8 +359,7 @@ module api.liveedit.text {
                 this.appendChild(this.editorContainer);
             }
 
-            new HTMLAreaBuilder().
-                setSelector('div.' + id + ' .tiny-mce-here').
+            new HTMLAreaBuilder().setSelector('div.' + id + ' .tiny-mce-here').setTextAreaId(this.getId()).
                 setAssetsUri(assetsUri).
                 setInline(true).
                 onCreateDialog(event => {
@@ -373,7 +367,7 @@ module api.liveedit.text {
             }).setFocusHandler(this.onFocusHandler.bind(this)).setBlurHandler(this.onBlurHandler.bind(this)).setKeydownHandler(
                 this.onKeydownHandler.bind(this)).setFixedToolbarContainer('.mce-toolbar-container').setContent(
                 this.getContent()).setEditableSourceCode(this.editableSourceCode).setContentPath(this.getContentPath()).setApplicationKeys(
-                this.getApplicationKeys()).createEditor().then(this.handleEditorCreated.bind(this));
+                this.getApplicationKeys()).createEditor();//.then(this.handleEditorCreated.bind(this));
         }
 
         private handleEditorCreated(editor: HtmlAreaEditor) {
