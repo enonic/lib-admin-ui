@@ -84,7 +84,7 @@ module api.ui.selector {
         }
 
         reload(parentNodeData?: Option<OPTION_DISPLAY_VALUE>): wemQ.Promise<void> {
-            this.toggleFlatMode(false);
+            this.toggleTreeMode(true);
             return super.reload(parentNodeData).then(() => {
                 if (this.defaultOption && !this.isDefaultOptionActive) {
                     this.scrollToDefaultOption(this.getRoot().getCurrentRoot(), 0);
@@ -99,14 +99,14 @@ module api.ui.selector {
 
         private initLoaderListeners() {
             if (this.loader) {
-                this.loader.onLoadModeChanged((isFlat: boolean) => {
-                    this.toggleFlatMode(isFlat);
+                this.loader.onLoadModeChanged((isTreeMode: boolean) => {
+                    this.toggleTreeMode(isTreeMode);
                 });
             }
         }
 
-        private toggleFlatMode(isFlat: boolean) {
-            this.toggleClass('flat', isFlat);
+        private toggleTreeMode(isTreeMode: boolean) {
+            this.toggleClass('tree-mode', isTreeMode);
         }
 
         private initEventHandlers() {

@@ -36,7 +36,6 @@ module api.content.image {
                 .setValue(builder.value)
                 .setMinWidth(builder.minWidth)
                 .setTreegridDropdownEnabled(builder.treegridDropdownEnabled)
-                // .setOptionDataLoader(builder.optionDataLoader)
                 .setOptionDataHelper(optionHelper)
                 .setRemoveMissingSelectedOptions(true)
                 .setDisplayMissingSelectedOptions(true);
@@ -96,7 +95,7 @@ module api.content.image {
 
             const deferred = wemQ.defer<void>();
 
-            if (!StringHelper.isBlank(inputValue)) {
+            if(!StringHelper.isBlank(inputValue) || !this.treegridDropdownEnabled) {
                 this.getLoader().search(inputValue).then((result: ImageTreeSelectorItem[]) => {
                     deferred.resolve(null);
                 }).catch((reason: any) => {
