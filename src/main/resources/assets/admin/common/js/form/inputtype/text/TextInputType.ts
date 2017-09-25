@@ -1,10 +1,6 @@
 module api.form.inputtype.text {
 
     import support = api.form.inputtype.support;
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
     import i18n = api.util.i18n;
     import NumberHelper = api.util.NumberHelper;
     import DivEl = api.dom.DivEl;
@@ -52,6 +48,11 @@ module api.form.inputtype.text {
             }
 
             return inputEl;
+        }
+
+        protected newValueHandler(inputEl: FormInputEl, newValue: string, isValid: boolean = true) {
+            const value = isValid ? ValueTypes.STRING.newValue(newValue) : this.newInitialValue();
+            this.notifyOccurrenceValueChanged(inputEl, value);
         }
 
         private updateLengthCounterValue(lengthCounter: DivEl, newValue: string) {
