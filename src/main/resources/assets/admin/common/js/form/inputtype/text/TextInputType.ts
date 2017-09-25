@@ -6,6 +6,7 @@ module api.form.inputtype.text {
     import DivEl = api.dom.DivEl;
     import FormInputEl = api.dom.FormInputEl;
     import Element = api.dom.Element;
+    import ValueTypes = api.data.ValueTypes;
 
     export abstract class TextInputType extends support.BaseInputTypeNotManagingAdd<string> {
 

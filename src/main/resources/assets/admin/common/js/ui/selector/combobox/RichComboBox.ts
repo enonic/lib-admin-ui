@@ -335,9 +335,10 @@ module api.ui.selector.combobox {
 
         private handleLoadedData(event: api.util.loader.event.LoadedDataEvent<OPTION_DISPLAY_VALUE>) {
             this.errorContainer.hide();
-            this.createOptions(event.getData()).then(options => {
+            return this.createOptions(event.getData()).then(options => {
                 this.comboBox.setOptions(options, event.isPostLoad());
                 this.notifyLoaded(event.getData(), event.isPostLoad());
+                return;
             });
         }
 

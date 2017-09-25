@@ -44,7 +44,7 @@ module api.content.form.inputtype.image {
 
         private editContentRequestListeners: { (content: ContentSummary): void }[] = [];
 
-        private isFlat: boolean;
+        private treeMode: boolean;
 
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('image-selector', config);
@@ -152,7 +152,7 @@ module api.content.form.inputtype.image {
                 .setLoader(optionDataLoader)
                 .setSelectedOptionsView(this.selectedOptionsView = this.createSelectedOptionsView())
                 .setValue(value)
-                .setTreegridDropdownEnabled(!this.isFlat)
+                .setTreegridDropdownEnabled(this.treeMode)
                 .build();
 
             let comboBox: ComboBox<ImageTreeSelectorItem> = contentComboBox.getComboBox();
@@ -404,8 +404,8 @@ module api.content.form.inputtype.image {
         }
 
         protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
-            const isFlatConfig = inputConfig['flat'] ? inputConfig['flat'][0] : {};
-            this.isFlat = !StringHelper.isBlank(isFlatConfig['value']) ? isFlatConfig['value'].toLowerCase() == 'true' : false;
+            const isTreeModeConfig = inputConfig['treeMode'] ? inputConfig['treeMode'][0] : {};
+            this.treeMode = !StringHelper.isBlank(isTreeModeConfig['value']) ? isTreeModeConfig['value'].toLowerCase() == 'true' : false;
 
             super.readConfig(inputConfig);
         }

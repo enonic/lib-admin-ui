@@ -20,7 +20,7 @@ module api.content.form.inputtype.contentselector {
 
         private draggingIndex: number;
 
-        private isFlat: boolean;
+        private treeMode: boolean;
 
         private showStatus: boolean;
 
@@ -38,8 +38,8 @@ module api.content.form.inputtype.contentselector {
 
         protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
 
-            const isFlatConfig = inputConfig['flat'] ? inputConfig['flat'][0] : {};
-            this.isFlat = !StringHelper.isBlank(isFlatConfig['value']) ? isFlatConfig['value'].toLowerCase() == 'true' : false;
+            const isTreeModeConfig = inputConfig['treeMode'] ? inputConfig['treeMode'][0] : {};
+            this.treeMode = !StringHelper.isBlank(isTreeModeConfig['value']) ? isTreeModeConfig['value'].toLowerCase() == 'true' : false;
 
             const showStatusConfig = inputConfig['showStatus'] ? inputConfig['showStatus'][0] : {};
             this.showStatus = !StringHelper.isBlank(showStatusConfig['value']) ? showStatusConfig['value'].toLowerCase() == 'true' : false;
@@ -89,7 +89,7 @@ module api.content.form.inputtype.contentselector {
                 .setLoader(optionDataLoader)
                 .setValue(comboboxValue)
                 .setRemoveMissingSelectedOptions(true)
-                .setTreegridDropdownEnabled(!this.isFlat)
+                .setTreegridDropdownEnabled(this.treeMode)
                 .setShowStatus(this.showStatus)
                 .build();
 

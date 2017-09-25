@@ -22,7 +22,7 @@ module api.util.loader {
 
         private searchString: string;
 
-        private loadedDataListeners: {(event: LoadedDataEvent<OBJECT>): void}[] = [];
+        private loadedDataListeners: {(event: LoadedDataEvent<OBJECT>): Q.Promise<any>}[] = [];
 
         private loadingDataListeners: {(event: LoadingDataEvent): void}[] = [];
 
@@ -151,9 +151,7 @@ module api.util.loader {
 
         notifyLoadedData(results: OBJECT[], postLoad?: boolean) {
             this.status = LoaderStatus.LOADED;
-            this.loadedDataListeners.forEach((listener: (event: LoadedDataEvent<OBJECT>) => void) => {
-                listener.call(this, new LoadedDataEvent<OBJECT>(results, postLoad));
-            });
+            this.loadedDataListeners.reduce(Q.when, Q( new LoadedDataEvent<OBJECT>(results, postLoad)));
         }
 
         notifyLoadingData(postLoad?: boolean) {
@@ -163,7 +161,7 @@ module api.util.loader {
             });
         }
 
-        onLoadedData(listener: (event: LoadedDataEvent<OBJECT>) => void) {
+        onLoadedData(listener: (event: LoadedDataEvent<OBJECT>) => Q.Promise<any>) {
             this.loadedDataListeners.push(listener);
         }
 
@@ -171,7 +169,7 @@ module api.util.loader {
             this.loadingDataListeners.push(listener);
         }
 
-        unLoadedData(listener: (event: LoadedDataEvent<OBJECT>) => void) {
+        unLoadedData(listener: (event: LoadedDataEvent<OBJECT>) => Q.Promise<any>) {
             this.loadedDataListeners = this.loadedDataListeners.filter((currentListener: (event: LoadedDataEvent<OBJECT>)=>void)=> {
                 return currentListener !== listener;
             });
