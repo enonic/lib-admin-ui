@@ -85,6 +85,8 @@ module api.util.htmlarea.dialog {
                     this.imageSelectorFormItem.addClass('selected-item-preview');
                 }
                 loader.unLoadedData(singleLoadListener);
+
+                return wemQ(null);
             };
             loader.onLoadedData(singleLoadListener);
 
