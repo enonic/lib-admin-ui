@@ -23,7 +23,6 @@ module api.content.form.inputtype.image {
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
 
     import ContentInputTypeManagingAdd = api.content.form.inputtype.ContentInputTypeManagingAdd;
-    import SelectedOptionsView = api.ui.selector.combobox.SelectedOptionsView;
     import StringHelper = api.util.StringHelper;
     import ImageSelectorDisplayValue = api.content.image.ImageSelectorDisplayValue;
     import ImageSelectorSelectedOptionsView = api.content.image.ImageSelectorSelectedOptionsView;

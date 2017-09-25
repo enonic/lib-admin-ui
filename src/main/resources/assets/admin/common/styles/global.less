@@ -6,6 +6,12 @@ body {
   overflow-y: hidden; // Fix for scrollbar
   font-family: @admin-font-family;
   font-size: @admin-font-size;
+
+  &.modal-dialog {
+    > .panel, > .appbar {
+      .filter(blur(2px));
+    }
+  }
 }
 
 .headers_mixin();
