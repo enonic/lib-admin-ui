@@ -2,7 +2,6 @@ module api.content.image {
 
     import Option = api.ui.selector.Option;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Tooltip = api.ui.Tooltip;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
 
     export class ImageSelectorSelectedOptionsView
@@ -125,12 +124,9 @@ module api.content.image {
                 this.notifyOptionSelected(new SelectedOptionEvent(selectedOption, keyCode));
             }
 
-            // tslint:disable-next-line:no-unused-new
-            new Tooltip(optionView, isMissingContent
+            optionView.getEl().setAttribute('title', isMissingContent
                 ? option.value
-                : option.displayValue.getPath()
-                                        ? option.displayValue.getPath().toString()
-                                        : '', 1000);
+                : option.displayValue.getPath() ? option.displayValue.getPath().toString() : '');
         }
 
         updateUploadedOption(option: Option<ImageTreeSelectorItem>) {
