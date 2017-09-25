@@ -9,7 +9,6 @@ module api.content {
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import CompareContentRequest = api.content.resource.CompareContentRequest;
     import CompareContentResults = api.content.resource.result.CompareContentResults;
-    import ContentSummaryAndCompareStatusFetcher = api.content.resource.ContentSummaryAndCompareStatusFetcher;
     import ContentAndStatusTreeSelectorItem = api.content.resource.ContentAndStatusTreeSelectorItem;
     import CompareContentResult = api.content.resource.result.CompareContentResult;
     import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
@@ -18,6 +17,8 @@ module api.content {
         extends OptionDataLoader<DATA> {
 
         protected request: ContentTreeSelectorQueryRequest<DATA>;
+
+        private treeFilterValue: string;
 
         private loadStatus: boolean;
 
@@ -47,6 +48,10 @@ module api.content {
 
         setContent(content: ContentSummary) {
             this.request.setContent(content);
+        }
+
+        setTreeFilterValue(value: string) {
+            this.treeFilterValue = value;
         }
 
         search(value: string): wemQ.Promise<DATA[]> {
@@ -88,57 +93,22 @@ module api.content {
 
         fetch(node: TreeNode<Option<DATA>>): wemQ.Promise<DATA> {
             this.request.setParentPath(node.getDataId() ? node.getData().displayValue.getPath() : null);
-            if (this.request.getContent()) {
-                return this.loadItems().then(items => items[0]);
-            }
-
-            if (this.loadStatus) {
-                return ContentSummaryAndCompareStatusFetcher.fetch(node.getData().displayValue.getContentId()).then(
-                    content => <any>new ContentAndStatusTreeSelectorItem(content, false));
-            }
-
-            return ContentSummaryFetcher.fetch(node.getData().displayValue.getContentId()).then(
-                content => <any>new ContentTreeSelectorItem(content, false));
+            return this.loadItems().then(items => items[0]);
         }
 
         fetchChildren(parentNode: TreeNode<Option<DATA>>, from: number = 0,
                       size: number = -1): wemQ.Promise<OptionDataLoaderData<DATA>> {
 
-            if (this.request.getContent()) {
-                this.request.setFrom(from);
-                this.request.setSize(size);
+            this.request.setFrom(from);
+            this.request.setSize(size);
 
-                this.request.setParentPath(parentNode.getDataId() ? parentNode.getData().displayValue.getPath() : null);
+            this.request.setParentPath(parentNode.getDataId() ? parentNode.getData().displayValue.getPath() : null);
 
-                return this.loadItems().then((result: DATA[]) => {
-                    return this.createOptionData(result, 0, 0);
-                });
-            }
+            this.request.setQueryExpr(this.treeFilterValue);
 
-            if (this.loadStatus) {
-                return ContentSummaryAndCompareStatusFetcher.fetchChildren(
-                    parentNode.getData() ? parentNode.getData().displayValue.getContentId() : null, from, size).then(
-                    (response: ContentResponse<ContentSummaryAndCompareStatus>) => {
-
-                        const result = response.getContents().map(
-                            content => new ContentAndStatusTreeSelectorItem(content, false));
-
-                        return this.createOptionData(<any[]>result,
-                            response.getMetadata().getHits(),
-                            response.getMetadata().getTotalHits());
-                    });
-            }
-
-            return ContentSummaryFetcher.fetchChildren(
-                parentNode.getData() ? parentNode.getData().displayValue.getContentId() : null, from, size).then(
-                (response: ContentResponse<ContentSummary>) => {
-
-                    const result = response.getContents().map(
-                        content => new ContentTreeSelectorItem(content, false));
-                    //         this.notifyLoadedData(result);
-
-                    return this.createOptionData(<DATA[]>result, response.getMetadata().getHits(), response.getMetadata().getTotalHits());
-                });
+            return this.loadItems().then((result: DATA[]) => {
+                return this.createOptionData(result, 0, 0);
+            });
         }
 
         protected createOptionData(data: DATA[], hits: number,

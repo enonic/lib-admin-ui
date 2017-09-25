@@ -22,6 +22,8 @@ module api.ui.button {
             }
 
             this.onClicked((event: MouseEvent) => {
+                event.stopPropagation();
+
                 if (this.isEnabled()) {
                     this.setActive(!this.isActive());
                 }

@@ -18,7 +18,7 @@ module api.ui.selector {
         }
 
         private initDropdownGrid(config: DropdownGridConfig<OPTION_DISPLAY_VALUE>) {
-            if (config.isDropdownGrid) {
+            if (config.treegridDropdownAllowed) {
                 this.dropdownGrid = new DropdownTreeGrid<OPTION_DISPLAY_VALUE>(config);
             } else {
                 this.dropdownGrid = new DropdownListGrid<OPTION_DISPLAY_VALUE>(config);

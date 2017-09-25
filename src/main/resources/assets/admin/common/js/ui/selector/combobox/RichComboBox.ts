@@ -28,7 +28,7 @@ module api.ui.selector.combobox {
 
         private interval: number;
 
-        protected treegridDropdownEnabled: boolean;
+        protected treegridDropdownAllowed: boolean;
 
         public static debug: boolean = false;
 
@@ -41,7 +41,7 @@ module api.ui.selector.combobox {
             this.loadingListeners = [];
             this.identifierMethod = builder.identifierMethod;
             this.selectedOptionsView = builder.selectedOptionsView;
-            this.treegridDropdownEnabled = builder.treegridDropdownEnabled;
+            this.treegridDropdownAllowed = builder.treegridDropdownAllowed;
             this.errorContainer = new api.dom.DivEl('error-container');
 
             this.setupLoader();
@@ -84,7 +84,7 @@ module api.ui.selector.combobox {
                 displayMissingSelectedOptions: builder.displayMissingSelectedOptions,
                 removeMissingSelectedOptions: builder.removeMissingSelectedOptions,
                 skipAutoDropShowOnValueChange: true,
-                treegridDropdownEnabled: builder.treegridDropdownEnabled,
+                treegridDropdownAllowed: builder.treegridDropdownAllowed,
                 optionDataHelper: builder.optionDataHelper,
                 optionDataLoader: api.ObjectHelper.iFrameSafeInstanceOf(builder.loader, OptionDataLoader)
                     ? <OptionDataLoader<OPTION_DISPLAY_VALUE>>builder.loader
@@ -280,7 +280,7 @@ module api.ui.selector.combobox {
         }
 
         private isDataGridSelfLoading(): boolean { // if its a tree grid and there is no filter - it will load data itself
-            return this.treegridDropdownEnabled && this.comboBox.isInputEmpty();
+            return this.treegridDropdownAllowed && this.comboBox.isInputEmpty();
         }
 
         protected loadOptionsAfterShowDropdown(): wemQ.Promise<void> {
@@ -466,7 +466,7 @@ module api.ui.selector.combobox {
 
         skipAutoDropShowOnValueChange: boolean;
 
-        treegridDropdownEnabled: boolean;
+        treegridDropdownAllowed: boolean = true;
 
         optionDataHelper: OptionDataHelper<T>;
 
@@ -556,8 +556,8 @@ module api.ui.selector.combobox {
             return this;
         }
 
-        setTreegridDropdownEnabled(value: boolean): RichComboBoxBuilder<T> {
-            this.treegridDropdownEnabled = value;
+        setTreegridDropdownAllowed(value: boolean): RichComboBoxBuilder<T> {
+            this.treegridDropdownAllowed = value;
             return this;
         }
 
