@@ -748,23 +748,24 @@ module api.util.htmlarea.dialog {
         }
 
         private createScrollButton(direction: string): api.dom.Element {
-            let scrollAreaDiv = new api.dom.DivEl(direction === 'up' ? 'scroll-up-div' : 'scroll-down-div');
-            let imageEl = new api.dom.ImgEl(api.util.UriHelper.getAdminUri('common/images/icons/512x512/arrow_' + direction + '.png'));
-            let scrollTop = (direction === 'up' ? '-=50' : '+=50');
+            const scrollAreaDiv = new api.dom.DivEl(direction === 'up' ? 'scroll-up-div' : 'scroll-down-div');
+            const arrow = new api.dom.DivEl('arrow');
+            const scrollTop = (direction === 'up' ? '-=50' : '+=50');
 
-            scrollAreaDiv.appendChild(imageEl);
+            scrollAreaDiv.appendChild(arrow);
 
-            imageEl.onClicked((event) => {
+            arrow.onClicked((event) => {
                 event.preventDefault();
+                this.scrolling = false;
                 wemjq(this.imagePreviewContainer.getHTMLElement()).animate({scrollTop: scrollTop}, 400);
             });
 
-            imageEl.onMouseOver(() => {
+            arrow.onMouseOver(() => {
                 this.scrolling = true;
                 this.scrollImagePreview(direction);
             });
 
-            imageEl.onMouseOut(() => {
+            arrow.onMouseOut(() => {
                 this.scrolling = false;
             });
 
