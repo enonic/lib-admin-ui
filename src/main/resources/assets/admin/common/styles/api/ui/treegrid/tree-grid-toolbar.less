@@ -10,12 +10,20 @@
 
     &.selection-toggler {
       position: relative;
-      padding: 0 7px;
-      width: 80px;
+      padding: 0;
 
-      &:before {
+      &::before {
         font-size: 24px;
       }
+
+      & > *:first-child {
+        margin-left: 7px;
+      }
+
+      & > *:last-child {
+        margin-right: 7px;
+      }
+
       &.active, &.updated {
         &:disabled {
           opacity: 1;
@@ -28,8 +36,7 @@
 
       span {
         position: relative;
-        top: 1px;
-        display: block;
+        display: inline-block;
         width: 18px;
         height: 18px;
         line-height: 18px;
@@ -64,15 +71,16 @@
         font-size: 7px;
       }
 
-      &.any-selected:after {
-        content: attr(data-label);
-        display: block;
-        font-size: 15px;
-        position: absolute;
-        top: 0;
-        left: 37px;
-        height: 39px;
-        width: 48px;
+      &.any-selected .description {
+        display: inline-block;
+        padding-left: 6px;
+        height: 100%;
+
+        &::after {
+          content: attr(data-label);
+          font-size: 15px;
+          color: @admin-font-gray2;
+        }
       }
 
       &:disabled:after {
@@ -159,7 +167,6 @@ body {
 
     .tree-grid-toolbar .@{_COMMON_PREFIX}button.selection-toggler {
       float: right;
-      padding-right: 50px;
     }
   }
 }
