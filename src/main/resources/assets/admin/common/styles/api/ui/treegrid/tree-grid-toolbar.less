@@ -74,10 +74,12 @@
       &.any-selected .description {
         display: inline-block;
         padding-left: 6px;
+        height: 100%;
 
         &::after {
           content: attr(data-label);
           font-size: 15px;
+          color: @admin-font-gray2;
         }
       }
 
