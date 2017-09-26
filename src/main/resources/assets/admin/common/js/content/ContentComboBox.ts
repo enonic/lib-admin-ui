@@ -20,6 +20,10 @@ module api.content {
 
         protected treegridDropdownEnabled: boolean;
 
+        protected initialTreeEnabledState: boolean;
+
+        protected treeModeToggler: ModeTogglerButton;
+
         constructor(builder: ContentComboBoxBuilder) {
 
             const loader = builder.loader ? builder.loader : ContentSummaryOptionDataLoader.create().setLoadStatus(
@@ -49,14 +53,16 @@ module api.content {
 
                 richComboBoxBuilder.setCreateColumns(columns);
             }
+
             super(richComboBoxBuilder);
 
             this.addClass('content-combo-box');
 
-            if(builder.treegridDropdownAllowed) {
+            if (builder.treegridDropdownAllowed) {
                 this.treegridDropdownEnabled = builder.treegridDropdownEnabled;
                 this.initTreeModeToggler();
             }
+            this.initialTreeEnabledState = this.treegridDropdownEnabled;
 
             this.optionsFactory = new OptionsFactory<ContentTreeSelectorItem>(this.getLoader(), optionHelper);
         }
@@ -91,13 +97,29 @@ module api.content {
         }
 
         private initTreeModeToggler() {
-            const modeToggler = new ModeTogglerButton();
-            modeToggler.setActive(this.treegridDropdownEnabled);
-            this.getComboBox().prependChild(modeToggler);
 
-            modeToggler.onActiveChanged(isActive => {
+            this.treeModeToggler = new ModeTogglerButton();
+            this.treeModeToggler.setActive(this.treegridDropdownEnabled);
+            this.getComboBox().prependChild(this.treeModeToggler);
+
+            this.treeModeToggler.onActiveChanged(isActive => {
                 this.treegridDropdownEnabled = isActive;
                 this.reload(this.getComboBox().getInput().getValue());
+            });
+
+            this.getComboBox().getInput().onValueChanged((event: ValueChangedEvent) => {
+
+                if (!StringHelper.isEmpty(event.getNewValue())) {
+                    if (this.treeModeToggler.isActive()) {
+                        this.treegridDropdownEnabled = false;
+                        this.treeModeToggler.setActive(false, true);
+                    }
+                } else {
+                    if (!this.treeModeToggler.isActive() && this.initialTreeEnabledState) {
+                        this.treegridDropdownEnabled = true;
+                        this.treeModeToggler.setActive(true, true);
+                    }
+                }
             });
         }
 
