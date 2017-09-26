@@ -7,6 +7,12 @@
   .image-selector {
     .showsSelectedOption();
 
+    margin-bottom: 0px;
+
+    &.invalid .preview-panel-scroll-navigation-wrapper {
+      display: none;
+    }
+
     .content-item-preview-panel {
       max-height: 420px;
       overflow-y: auto;
@@ -51,10 +57,21 @@
       }
     }
 
-    margin-bottom: 0px;
+    .input-wrapper {
+      display: flex;
 
-    &.invalid .preview-panel-scroll-navigation-wrapper {
-        display: none;
+      .image-uploader-el {
+        max-width: 37px !important;
+        position: static;
+
+        .upload-button {
+          right: auto;
+        }
+
+        .dropzone-container {
+          position: static;
+        }
+      }
     }
   }
 
