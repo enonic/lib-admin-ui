@@ -1,6 +1,5 @@
-Licenses used by Enonic XP
 
-The following is a list of open source projects with code used in this library:
+Licenses used by Enonic XP
 
     CodeMirror
     MIT License
@@ -19,7 +18,7 @@ The following is a list of open source projects with code used in this library:
     http://github.com/millermedeiros/hasher
 
     IcoMoon icons (Ultimate Pack)
-    Need seperate development licenses for developing software using the icons.
+    Friendly license (Need seperate development licenses for developing software using the icons.)
     https://icomoon.io/#icons-icomoon/license
 
     JQuery
