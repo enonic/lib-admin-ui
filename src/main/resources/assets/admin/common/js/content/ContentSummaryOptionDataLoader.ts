@@ -72,7 +72,7 @@ module api.content {
                 const result = contents.map(
                     content => new ContentTreeSelectorItem(content, false));
 
-                this.notifyLoadModeChanged(true);
+                this.notifyLoadModeChanged(false);
 
                 this.notifyLoadedData(<DATA[]>result);
                 return <DATA[]>result;
@@ -84,7 +84,7 @@ module api.content {
             this.notifyLoadingData();
             return this.loadItems().then(data => {
 
-                this.notifyLoadModeChanged(false);
+                this.notifyLoadModeChanged(true);
 
                 this.notifyLoadedData(data);
                 return data;

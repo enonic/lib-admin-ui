@@ -115,7 +115,7 @@ module api.util.htmlarea.dialog {
         private createImageSelector(id: string): FormItem {
 
             let imageSelector = api.content.image.ImageContentComboBox.create().setMaximumOccurrences(1).setContent(
-                this.content).setSelectedOptionsView(new api.content.ContentSelectedOptionsView()).setTreegridDropdownAllowed(true).build();
+                this.content).setSelectedOptionsView(new api.content.ContentSelectedOptionsView()).build();
 
             let formItemBuilder = new ModalDialogFormItemBuilder(id, i18n('dialog.image.formitem.image')).setValidator(
                 Validators.required).setInputEl(imageSelector);
