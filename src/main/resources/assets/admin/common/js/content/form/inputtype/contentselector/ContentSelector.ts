@@ -84,7 +84,7 @@ module api.content.form.inputtype.contentselector {
             const comboboxValue = this.getValueFromPropertyArray(propertyArray);
 
             this.contentComboBox = api.content.ContentComboBox.create()
-                .setName(input.getName())
+                .setComboBoxName(input.getName())
                 .setMaximumOccurrences(input.getOccurrences().getMaximum())
                 .setLoader(optionDataLoader)
                 .setValue(comboboxValue)
