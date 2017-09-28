@@ -4,7 +4,6 @@ module api.content {
     import TreeNode = api.ui.treegrid.TreeNode;
     import ContentSummaryFetcher = api.content.resource.ContentSummaryFetcher;
     import OptionDataLoaderData = api.ui.selector.OptionDataLoaderData;
-    import ContentResponse = api.content.resource.result.ContentResponse;
     import Option = api.ui.selector.Option;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import CompareContentRequest = api.content.resource.CompareContentRequest;
@@ -74,8 +73,15 @@ module api.content {
 
                 this.notifyLoadModeChanged(false);
 
-                this.notifyLoadedData(<DATA[]>result);
-                return <DATA[]>result;
+                if (this.loadStatus) {
+                    return this.loadStatuses(<DATA[]>result).then(resultWithStatuses => {
+                        this.notifyLoadedData(resultWithStatuses);
+                        return resultWithStatuses;
+                    });
+                } else {
+                    this.notifyLoadedData(<DATA[]>result);
+                    return wemQ(<DATA[]>result);
+                }
             });
         }
 
