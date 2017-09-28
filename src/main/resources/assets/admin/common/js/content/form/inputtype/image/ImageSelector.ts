@@ -46,6 +46,8 @@ module api.content.form.inputtype.image {
 
         private treeMode: boolean;
 
+        private hideToggleIcon: boolean;
+
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('image-selector', config);
 
@@ -153,6 +155,7 @@ module api.content.form.inputtype.image {
                 .setSelectedOptionsView(this.selectedOptionsView = this.createSelectedOptionsView())
                 .setValue(value)
                 .setTreegridDropdownEnabled(this.treeMode)
+                .setTreeModeTogglerAllowed(!this.hideToggleIcon)
                 .build();
 
             let comboBox: ComboBox<ImageTreeSelectorItem> = contentComboBox.getComboBox();
@@ -406,6 +409,9 @@ module api.content.form.inputtype.image {
         protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
             const isTreeModeConfig = inputConfig['treeMode'] ? inputConfig['treeMode'][0] : {};
             this.treeMode = !StringHelper.isBlank(isTreeModeConfig['value']) ? isTreeModeConfig['value'].toLowerCase() == 'true' : false;
+
+            const hideToggleIconConfig = inputConfig['hideToggleIcon'] ? inputConfig['hideToggleIcon'][0] : {};
+            this.hideToggleIcon = !StringHelper.isBlank(hideToggleIconConfig['value']) ? hideToggleIconConfig['value'].toLowerCase() == 'true' : false;
 
             super.readConfig(inputConfig);
         }
