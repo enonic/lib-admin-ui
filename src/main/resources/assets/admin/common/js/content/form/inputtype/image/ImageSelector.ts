@@ -408,10 +408,12 @@ module api.content.form.inputtype.image {
 
         protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
             const isTreeModeConfig = inputConfig['treeMode'] ? inputConfig['treeMode'][0] : {};
-            this.treeMode = !StringHelper.isBlank(isTreeModeConfig['value']) ? isTreeModeConfig['value'].toLowerCase() == 'true' : false;
+            this.treeMode = !StringHelper.isBlank(isTreeModeConfig['value']) ?
+                            isTreeModeConfig['value'].toLowerCase() == 'true' : false;
 
             const hideToggleIconConfig = inputConfig['hideToggleIcon'] ? inputConfig['hideToggleIcon'][0] : {};
-            this.hideToggleIcon = !StringHelper.isBlank(hideToggleIconConfig['value']) ? hideToggleIconConfig['value'].toLowerCase() == 'true' : false;
+            this.hideToggleIcon = !StringHelper.isBlank(hideToggleIconConfig['value']) ?
+                                  hideToggleIconConfig['value'].toLowerCase() == 'true' : false;
 
             super.readConfig(inputConfig);
         }

@@ -5,6 +5,7 @@ module api.ui.dialog {
     import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
     import Element = api.dom.Element;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
+    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import Body = api.dom.Body;
     import i18n = api.util.i18n;
 
@@ -110,7 +111,11 @@ module api.ui.dialog {
         }
 
         private initListeners() {
-            ResponsiveManager.onAvailableSizeChanged(Body.get(), () => this.centerMyself());
+            const responsiveItem: ResponsiveItem = new ResponsiveItem(this);
+            ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
+                this.centerMyself();
+                responsiveItem.update();
+            });
 
             // Set the ResponsiveRanges on first show() call
             const firstTimeResize = () => {
