@@ -22,6 +22,8 @@ module api.content.form.inputtype.contentselector {
 
         private treeMode: boolean;
 
+        private hideToggleIcon: boolean;
+
         private showStatus: boolean;
 
         private static contentIdBatch: ContentId[] = [];
@@ -43,6 +45,9 @@ module api.content.form.inputtype.contentselector {
 
             const showStatusConfig = inputConfig['showStatus'] ? inputConfig['showStatus'][0] : {};
             this.showStatus = !StringHelper.isBlank(showStatusConfig['value']) ? showStatusConfig['value'].toLowerCase() == 'true' : false;
+
+            const hideToggleIconConfig = inputConfig['hideToggleIcon'] ? inputConfig['hideToggleIcon'][0] : {};
+            this.hideToggleIcon = !StringHelper.isBlank(hideToggleIconConfig['value']) ? hideToggleIconConfig['value'].toLowerCase() == 'true' : false;
 
             super.readConfig(inputConfig);
         }
@@ -90,6 +95,7 @@ module api.content.form.inputtype.contentselector {
                 .setValue(comboboxValue)
                 .setRemoveMissingSelectedOptions(true)
                 .setTreegridDropdownEnabled(this.treeMode)
+                .setTreeModeTogglerAllowed(!this.hideToggleIcon)
                 .setShowStatus(this.showStatus)
                 .build();
 
