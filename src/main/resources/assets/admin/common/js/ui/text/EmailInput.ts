@@ -5,7 +5,8 @@ module api.ui.text {
     import CheckEmailAvailabilityRequest = api.security.CheckEmailAvailabilityRequest;
     import i18n = api.util.i18n;
 
-    export class EmailInput extends api.dom.CompositeFormInputEl {
+    export class EmailInput
+        extends api.dom.CompositeFormInputEl {
 
         private input: InputEl;
 
@@ -17,9 +18,9 @@ module api.ui.text {
 
         private userStoreKey: api.security.UserStoreKey;
 
-        private focusListeners: {(event: FocusEvent):void}[];
+        private focusListeners: { (event: FocusEvent): void }[];
 
-        private blurListeners: {(event: FocusEvent):void}[];
+        private blurListeners: { (event: FocusEvent): void }[];
 
         constructor() {
             super();
@@ -38,7 +39,8 @@ module api.ui.text {
         createInput(): InputEl {
             let input = new InputEl(undefined, 'email');
             // tslint:disable-next-line:max-line-length
-            input.setPattern('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
+            input.setPattern(
+                '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
 
             input.onFocus((event: FocusEvent) => {
                 this.notifyFocused(event);
@@ -97,11 +99,15 @@ module api.ui.text {
 
             if (!StringHelper.isEmpty(email) && isValid) {
                 status = 'checking';
-
-                new CheckEmailAvailabilityRequest(email).setUserStoreKey(this.userStoreKey).sendAndParse().then((available: boolean) => {
-                    let availability = available || email === this.originEmail;
-                    this.updateStatus(availability ? 'available' : 'notavailable');
-                    this.notifyValidityChanged(isValid && availability);
+                let promise;
+                if (email === this.originEmail) {
+                    promise = wemQ(true);
+                } else {
+                    promise = new CheckEmailAvailabilityRequest(email).setUserStoreKey(this.userStoreKey).sendAndParse();
+                }
+                promise.then((available: boolean) => {
+                    this.updateStatus(available ? 'available' : 'notavailable');
+                    this.notifyValidityChanged(isValid && available);
                     this.removeClass('just-shown');
                 }).fail((reason) => {
                     this.notifyValidityChanged(false);
