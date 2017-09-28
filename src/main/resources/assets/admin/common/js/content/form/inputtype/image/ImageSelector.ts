@@ -44,7 +44,9 @@ module api.content.form.inputtype.image {
 
         private editContentRequestListeners: { (content: ContentSummary): void }[] = [];
 
-        private isFlat: boolean;
+        private treeMode: boolean;
+
+        private hideToggleIcon: boolean;
 
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('image-selector', config);
@@ -127,7 +129,7 @@ module api.content.form.inputtype.image {
             return selectedOptionsView;
         }
 
-        createContentComboBox(maximumOccurrences: number, inputIconUrl: string, relationshipAllowedContentTypes: string[],
+        createContentComboBox(maximumOccurrences: number,
                               inputName: string): api.content.image.ImageContentComboBox {
 
             let value = this.getPropertyArray().getProperties().map((property) => {
@@ -135,10 +137,7 @@ module api.content.form.inputtype.image {
             }).join(';');
 
             let contentTypes = this.allowedContentTypes.length
-                ? this.allowedContentTypes
-                : relationshipAllowedContentTypes.length
-                                   ? relationshipAllowedContentTypes
-                                   : [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()];
+                ? this.allowedContentTypes : [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()];
 
             const optionDataLoader = ImageOptionDataLoader
                 .create()
@@ -155,7 +154,8 @@ module api.content.form.inputtype.image {
                 .setLoader(optionDataLoader)
                 .setSelectedOptionsView(this.selectedOptionsView = this.createSelectedOptionsView())
                 .setValue(value)
-                .setTreegridDropdownEnabled(!this.isFlat)
+                .setTreegridDropdownEnabled(this.treeMode)
+                .setTreeModeTogglerAllowed(!this.hideToggleIcon)
                 .build();
 
             let comboBox: ComboBox<ImageTreeSelectorItem> = contentComboBox.getComboBox();
@@ -172,7 +172,6 @@ module api.content.form.inputtype.image {
                     this.uploader.show();
                 }
             });
-            comboBox.setInputIconUrl(inputIconUrl);
 
             comboBox.onOptionDeselected((event: SelectedOptionEvent<ImageTreeSelectorItem>) => {
                 // property not found.
@@ -216,35 +215,31 @@ module api.content.form.inputtype.image {
                 propertyArray.convertValues(ValueTypes.REFERENCE);
             }
             return super.layout(input, propertyArray).then(() => {
-                return new api.schema.relationshiptype.GetRelationshipTypeByNameRequest(this.relationshipTypeName).sendAndParse()
-                    .then((relationshipType: api.schema.relationshiptype.RelationshipType) => {
+                this.contentComboBox = this.createContentComboBox(
+                    input.getOccurrences().getMaximum(),
+                    input.getName()
+                );
 
-                        this.contentComboBox = this.createContentComboBox(
-                            input.getOccurrences().getMaximum(), relationshipType.getIconUrl(), relationshipType.getAllowedToTypes() || [],
-                            input.getName()
-                        );
+                let comboBoxWrapper = new api.dom.DivEl('combobox-wrapper');
 
-                        let comboBoxWrapper = new api.dom.DivEl('combobox-wrapper');
+                comboBoxWrapper.appendChild(this.contentComboBox);
 
-                        comboBoxWrapper.appendChild(this.contentComboBox);
+                this.contentRequestsAllowed = true;
 
-                        this.contentRequestsAllowed = true;
+                if (this.config.content) {
+                    comboBoxWrapper.appendChild(this.createUploader());
+                }
 
-                        if (this.config.content) {
-                            comboBoxWrapper.appendChild(this.createUploader());
-                        }
+                this.appendChild(comboBoxWrapper);
+                this.appendChild(this.selectedOptionsView);
 
-                        this.appendChild(comboBoxWrapper);
-                        this.appendChild(this.selectedOptionsView);
-
-                        return this.doLoadContent(propertyArray).then((contents: api.content.ContentSummary[]) => {
-                            contents.forEach((content: api.content.ContentSummary) => {
-                                this.contentComboBox.select(new ImageTreeSelectorItem(content, false));
-                            });
-                            this.setLayoutInProgress(false);
-                        });
-
+                return this.doLoadContent(propertyArray).then((contents: api.content.ContentSummary[]) => {
+                    contents.forEach((content: api.content.ContentSummary) => {
+                        this.contentComboBox.select(new ImageTreeSelectorItem(content, false));
                     });
+                    this.setLayoutInProgress(false);
+                });
+
             });
         }
 
@@ -412,8 +407,11 @@ module api.content.form.inputtype.image {
         }
 
         protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
-            const isFlatConfig = inputConfig['flat'] ? inputConfig['flat'][0] : {};
-            this.isFlat = !StringHelper.isBlank(isFlatConfig['value']) ? isFlatConfig['value'].toLowerCase() == 'true' : false;
+            const isTreeModeConfig = inputConfig['treeMode'] ? inputConfig['treeMode'][0] : {};
+            this.treeMode = !StringHelper.isBlank(isTreeModeConfig['value']) ? isTreeModeConfig['value'].toLowerCase() == 'true' : false;
+
+            const hideToggleIconConfig = inputConfig['hideToggleIcon'] ? inputConfig['hideToggleIcon'][0] : {};
+            this.hideToggleIcon = !StringHelper.isBlank(hideToggleIconConfig['value']) ? hideToggleIconConfig['value'].toLowerCase() == 'true' : false;
 
             super.readConfig(inputConfig);
         }

@@ -12,9 +12,9 @@ module api.ui.selector {
 
         abstract checkReadonly(options: DATA[]): wemQ.Promise<string[]>;
 
-        abstract onLoadModeChanged(listener: (isFlat: boolean) => void);
+        abstract onLoadModeChanged(listener: (isTreeMode: boolean) => void);
 
-        abstract unLoadModeChanged(listener: (isFlat: boolean) => void);
+        abstract unLoadModeChanged(listener: (isTreeMode: boolean) => void);
     }
 
     export class OptionDataLoaderData<DATA> {

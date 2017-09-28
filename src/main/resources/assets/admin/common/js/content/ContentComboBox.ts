@@ -11,47 +11,51 @@ module api.content {
     import OptionsFactory = api.ui.selector.OptionsFactory;
     import StringHelper = api.util.StringHelper;
     import OptionDataHelper = api.ui.selector.OptionDataHelper;
+    import ModeTogglerButton = api.content.button.ModeTogglerButton;
+    import SelectedOptionsView = api.ui.selector.combobox.SelectedOptionsView;
+    import ComboBoxConfig = api.ui.selector.combobox.ComboBoxConfig;
 
-    export class ContentComboBox extends RichComboBox<ContentTreeSelectorItem> {
+    export class ContentComboBox
+        extends RichComboBox<ContentTreeSelectorItem> {
 
         protected optionsFactory: OptionsFactory<ContentTreeSelectorItem>;
+
+        protected treegridDropdownEnabled: boolean;
+
+        protected treeModeTogglerAllowed: boolean;
+
+        protected initialTreeEnabledState: boolean;
+
+        protected treeModeToggler: ModeTogglerButton;
 
         constructor(builder: ContentComboBoxBuilder) {
 
             const loader = builder.loader ? builder.loader : ContentSummaryOptionDataLoader.create().setLoadStatus(
                 builder.showStatus).build();
 
-            const optionHelper = builder.optionDataHelper ? builder.optionDataHelper : new ContentSummaryOptionDataHelper();
+            builder.setLoader(loader);
 
-            const treeGridDropdownEnabled = builder.treegridDropdownEnabled == undefined ? true : builder.treegridDropdownEnabled;
-
-            let richComboBoxBuilder = new RichComboBoxBuilder<ContentTreeSelectorItem>()
-                .setComboBoxName(builder.name ? builder.name : 'contentSelector')
-                .setLoader(loader)
-                .setSelectedOptionsView(builder.selectedOptionsView || new ContentSelectedOptionsView())
-                .setMaximumOccurrences(builder.maximumOccurrences)
-                .setOptionDisplayValueViewer(builder.optionDisplayValueViewer || new api.content.ContentSummaryViewer())
-                .setDelayedInputValueChangedHandling(builder.delayedInputValueChangedHandling || 750)
-                .setValue(builder.value)
-                .setDisplayMissingSelectedOptions(builder.displayMissingSelectedOptions)
-                .setRemoveMissingSelectedOptions(builder.removeMissingSelectedOptions)
-                .setSkipAutoDropShowOnValueChange(builder.skipAutoDropShowOnValueChange)
-                .setTreegridDropdownEnabled(treeGridDropdownEnabled)
-                .setOptionDataHelper(optionHelper)
-                .setMinWidth(builder.minWidth);
-
-            if(builder.showStatus && treeGridDropdownEnabled) {
+            if (builder.showStatus) {
                 const columns = [new api.ui.grid.GridColumnBuilder().setId('status').setName('Status').setField(
                     'displayValue').setFormatter(
                     ContentRowFormatter.statusSelectorFormatter).setCssClass('status').setBoundaryWidth(75, 75).build()];
 
-                richComboBoxBuilder.setCreateColumns(columns);
+                builder.setCreateColumns(columns);
             }
-            super(richComboBoxBuilder);
+
+            super(builder);
 
             this.addClass('content-combo-box');
 
-            this.optionsFactory = new OptionsFactory<ContentTreeSelectorItem>(this.getLoader(), optionHelper);
+            this.treegridDropdownEnabled = builder.treegridDropdownEnabled;
+            this.initialTreeEnabledState = this.treegridDropdownEnabled;
+
+            this.treeModeTogglerAllowed = builder.treeModeTogglerAllowed;
+            if (this.treeModeTogglerAllowed) {
+                this.initTreeModeToggler();
+            }
+
+            this.optionsFactory = new OptionsFactory<ContentTreeSelectorItem>(this.getLoader(), builder.optionDataHelper);
         }
 
         getLoader(): ContentSummaryOptionDataLoader<ContentTreeSelectorItem> {
@@ -83,6 +87,35 @@ module api.content {
             }
         }
 
+        private initTreeModeToggler() {
+
+            this.treeModeToggler = new ModeTogglerButton();
+            this.treeModeToggler.setActive(this.treegridDropdownEnabled);
+            this.getComboBox().prependChild(this.treeModeToggler);
+
+            this.treeModeToggler.onActiveChanged(isActive => {
+                this.treegridDropdownEnabled = isActive;
+                this.reload(this.getComboBox().getInput().getValue());
+            });
+
+            this.getComboBox().getInput().onValueChanged((event: ValueChangedEvent) => {
+
+                if (this.initialTreeEnabledState && StringHelper.isEmpty(event.getNewValue())) {
+                    if (!this.treeModeToggler.isActive()) {
+                        this.treegridDropdownEnabled = true;
+                        this.treeModeToggler.setActive(true, true);
+                    }
+                    return;
+                }
+
+                if (this.treeModeToggler.isActive()) {
+                    this.treegridDropdownEnabled = false;
+                    this.treeModeToggler.setActive(false, true);
+                }
+
+            });
+        }
+
         protected createOptions(items: ContentTreeSelectorItem[]): wemQ.Promise<Option<ContentTreeSelectorItem>[]> {
             return this.optionsFactory.createOptions(items);
         }
@@ -104,19 +137,24 @@ module api.content {
             return option;
         }
 
-        protected reload(inputValue: string):wemQ.Promise<any> {
+        protected reload(inputValue: string): wemQ.Promise<any> {
 
             const deferred = wemQ.defer<void>();
 
-            if(!StringHelper.isBlank(inputValue) || !this.treegridDropdownEnabled) {
+            if (this.ifFlatLoadingMode(inputValue)) {
                 this.getLoader().search(inputValue).then((result: ContentTreeSelectorItem[]) => {
                     deferred.resolve(null);
                 }).catch((reason: any) => {
                     api.DefaultErrorHandler.handle(reason);
                 }).done();
             } else {
+                this.getLoader().setTreeFilterValue(inputValue);
+
                 this.getComboBox().getComboBoxDropdownGrid().reload().then(() => {
-                    this.getComboBox().showDropdown();
+                    if (this.getComboBox().isDropdownShown()) {
+                        this.getComboBox().showDropdown();
+                        this.getComboBox().getInput().setReadOnly(false);
+                    }
                     deferred.resolve(null);
                 }).catch((reason: any) => {
                     api.DefaultErrorHandler.handle(reason);
@@ -126,12 +164,24 @@ module api.content {
             return deferred.promise;
         }
 
+        protected createComboboxConfig(builder: ContentComboBoxBuilder): ComboBoxConfig<ContentTreeSelectorItem> {
+            const config = super.createComboboxConfig(builder);
+            config.treegridDropdownAllowed = builder.treegridDropdownEnabled || builder.treeModeTogglerAllowed;
+
+            return config;
+        }
+
+        private ifFlatLoadingMode(inputValue: string): boolean {
+            return !this.treegridDropdownEnabled || (!this.treeModeTogglerAllowed && !StringHelper.isEmpty(inputValue));
+        }
+
         public static create(): ContentComboBoxBuilder {
             return new ContentComboBoxBuilder();
         }
     }
 
-    export class ContentSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<ContentTreeSelectorItem> {
+    export class ContentSelectedOptionsView
+        extends api.ui.selector.combobox.BaseSelectedOptionsView<ContentTreeSelectorItem> {
 
         createSelectedOption(option: api.ui.selector.Option<ContentTreeSelectorItem>): SelectedOption<ContentTreeSelectorItem> {
             let optionView = !!option.displayValue ? new ContentSelectedOptionView(option) : new MissingContentSelectedOptionView(option);
@@ -139,7 +189,8 @@ module api.content {
         }
     }
 
-    export class MissingContentSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<ContentTreeSelectorItem> {
+    export class MissingContentSelectedOptionView
+        extends api.ui.selector.combobox.BaseSelectedOptionView<ContentTreeSelectorItem> {
 
         private id: string;
 
@@ -169,7 +220,8 @@ module api.content {
         }
     }
 
-    export class ContentSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<ContentTreeSelectorItem> {
+    export class ContentSelectedOptionView
+        extends api.ui.selector.combobox.RichSelectedOptionView<ContentTreeSelectorItem> {
 
         constructor(option: api.ui.selector.Option<ContentTreeSelectorItem>) {
             super(
@@ -202,19 +254,27 @@ module api.content {
         }
     }
 
-    export class ContentComboBoxBuilder extends RichComboBoxBuilder<ContentTreeSelectorItem> {
+    export class ContentComboBoxBuilder
+        extends RichComboBoxBuilder<ContentTreeSelectorItem> {
 
-        name: string;
+        comboBoxName: string = 'contentSelector';
+
+        selectedOptionsView: SelectedOptionsView<ContentTreeSelectorItem> =
+            <SelectedOptionsView<ContentTreeSelectorItem>> new ContentSelectedOptionsView();
+
+        loader: ContentSummaryOptionDataLoader<ContentTreeSelectorItem>;
+
+        optionDataHelper: OptionDataHelper<ContentTreeSelectorItem> = new ContentSummaryOptionDataHelper();
+
+        optionDisplayValueViewer: Viewer<any> = <Viewer<any>>new ContentSummaryViewer();
 
         maximumOccurrences: number = 0;
 
-        loader: ContentSummaryOptionDataLoader<ContentTreeSelectorItem>;
+        delayedInputValueChangedHandling: number = 750;
 
         minWidth: number;
 
         value: string;
-
-        optionDataHelper: OptionDataHelper<ContentTreeSelectorItem>;
 
         displayMissingSelectedOptions: boolean;
 
@@ -222,43 +282,17 @@ module api.content {
 
         showStatus: boolean = false;
 
-        setName(value: string): ContentComboBoxBuilder {
-            this.name = value;
-            return this;
-        }
+        treegridDropdownEnabled: boolean = false;
 
-        setMaximumOccurrences(maximumOccurrences: number): ContentComboBoxBuilder {
-            this.maximumOccurrences = maximumOccurrences;
-            return this;
-        }
-
-        setLoader(loader: ContentSummaryOptionDataLoader<ContentTreeSelectorItem>): ContentComboBoxBuilder {
-            this.loader = loader;
-            return this;
-        }
-
-        setMinWidth(value: number): ContentComboBoxBuilder {
-            this.minWidth = value;
-            return this;
-        }
-
-        setValue(value: string): ContentComboBoxBuilder {
-            this.value = value;
-            return this;
-        }
-
-        setDisplayMissingSelectedOptions(value: boolean): ContentComboBoxBuilder {
-            this.displayMissingSelectedOptions = value;
-            return this;
-        }
-
-        setRemoveMissingSelectedOptions(value: boolean): ContentComboBoxBuilder {
-            this.removeMissingSelectedOptions = value;
-            return this;
-        }
+        treeModeTogglerAllowed: boolean = true;
 
         setTreegridDropdownEnabled(value: boolean): ContentComboBoxBuilder {
-            super.setTreegridDropdownEnabled(value);
+            this.treegridDropdownEnabled = value;
+            return this;
+        }
+
+        setTreeModeTogglerAllowed(value: boolean): ContentComboBoxBuilder {
+            this.treeModeTogglerAllowed = value;
             return this;
         }
 
@@ -267,13 +301,63 @@ module api.content {
             return this;
         }
 
+        setMaximumOccurrences(maximumOccurrences: number): ContentComboBoxBuilder {
+            super.setMaximumOccurrences(maximumOccurrences);
+            return this;
+        }
+
+        setComboBoxName(value: string): ContentComboBoxBuilder {
+            super.setComboBoxName(value);
+            return this;
+        }
+
+        setSelectedOptionsView(selectedOptionsView: SelectedOptionsView<ContentTreeSelectorItem>): ContentComboBoxBuilder {
+            super.setSelectedOptionsView(selectedOptionsView);
+            return this;
+        }
+
+        setLoader(loader: ContentSummaryOptionDataLoader<ContentTreeSelectorItem>): ContentComboBoxBuilder {
+            super.setLoader(loader);
+            return this;
+        }
+
+        setMinWidth(value: number): ContentComboBoxBuilder {
+            super.setMinWidth(value);
+            return this;
+        }
+
+        setValue(value: string): ContentComboBoxBuilder {
+            super.setValue(value);
+            return this;
+        }
+
+        setDelayedInputValueChangedHandling(value: number): ContentComboBoxBuilder {
+            super.setDelayedInputValueChangedHandling(value ? value : 750);
+            return this;
+        }
+
+        setDisplayMissingSelectedOptions(value: boolean): ContentComboBoxBuilder {
+            super.setDisplayMissingSelectedOptions(value);
+            return this;
+        }
+
+        setRemoveMissingSelectedOptions(value: boolean): ContentComboBoxBuilder {
+            super.setRemoveMissingSelectedOptions(value);
+            return this;
+        }
+
+        setSkipAutoDropShowOnValueChange(value: boolean): ContentComboBoxBuilder {
+            super.setSkipAutoDropShowOnValueChange(value);
+            return this;
+        }
+
         setOptionDisplayValueViewer(value: Viewer<any>): ContentComboBoxBuilder {
-            super.setOptionDisplayValueViewer(value);
+            super.setOptionDisplayValueViewer(value ? value : new api.content.ContentSummaryViewer());
             return this;
         }
 
         setOptionDataHelper(value: OptionDataHelper<ContentTreeSelectorItem>): ContentComboBoxBuilder {
-            this.optionDataHelper = value;
+            super.setOptionDataHelper(value);
             return this;
         }
 
