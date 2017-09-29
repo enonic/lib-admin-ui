@@ -87,11 +87,7 @@ module api.content.order {
         }
 
         toString(): string {
-            let result = '';
-            this.orderExpressions.forEach((expr: OrderExpr) => {
-                result = result.concat(' ', expr.toString());
-            });
-            return result;
+            return this.orderExpressions.map(expr => expr.toString()).join(", ");
         }
 
         equals(o: api.Equitable): boolean {

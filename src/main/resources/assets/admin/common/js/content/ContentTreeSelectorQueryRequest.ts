@@ -1,9 +1,5 @@
 module api.content {
 
-    import FieldOrderExpr = api.query.expr.FieldOrderExpr;
-    import FieldExpr = api.query.expr.FieldExpr;
-    import OrderDirection = api.query.expr.OrderDirection;
-    import OrderExpr = api.query.expr.OrderExpr;
     import QueryExpr = api.query.expr.QueryExpr;
     import Expression = api.query.expr.Expression;
     import QueryField = api.query.QueryField;
@@ -11,18 +7,10 @@ module api.content {
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
     import ContentTreeSelectorItemJson = api.content.resource.ContentTreeSelectorItemJson;
+    import ChildOrder = api.content.order.ChildOrder;
 
     export class ContentTreeSelectorQueryRequest<DATA extends ContentTreeSelectorItem> extends
         ContentResourceRequest<any, DATA[]> {
-
-        public static DEFAULT_SIZE: number = 15;
-
-        public static MODIFIED_TIME_DESC: FieldOrderExpr = new FieldOrderExpr(new FieldExpr('modifiedTime'), OrderDirection.DESC);
-
-        public static SCORE_DESC: FieldOrderExpr = new FieldOrderExpr(new FieldExpr('_score'), OrderDirection.DESC);
-
-        public static DEFAULT_ORDER: OrderExpr[] = [ContentTreeSelectorQueryRequest.SCORE_DESC,
-            ContentTreeSelectorQueryRequest.MODIFIED_TIME_DESC];
 
         private queryExpr: api.query.expr.QueryExpr;
 
@@ -47,6 +35,8 @@ module api.content {
         private results: ContentSummary[] = [];
 
         private parentPath: ContentPath;
+
+        private childOrder: ChildOrder;
 
         constructor() {
             super();
@@ -106,8 +96,9 @@ module api.content {
             this.queryExpr = new QueryExpr(fulltextExpression, ContentSelectorQueryRequest.DEFAULT_ORDER);
         }
 
-        setParentPath(parentPath: ContentPath) {
-            this.parentPath = parentPath;
+        setParentContent(content: ContentSummary) {
+            this.parentPath = content ? content.getPath() : null;
+            this.childOrder = content ? content.getChildOrder() : null;
         }
 
         protected createSearchExpression(searchString: string): Expression {
@@ -166,7 +157,8 @@ module api.content {
                 contentTypeNames: this.contentTypeNames,
                 allowedContentPaths: this.allowedContentPaths,
                 relationshipType: this.relationshipType,
-                parentPath: this.parentPath ? this.parentPath.toString() : null
+                parentPath: this.parentPath ? this.parentPath.toString() : null,
+                childOrder: this.childOrder ? this.childOrder.toString() : ''
             };
         }
 
