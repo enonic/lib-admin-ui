@@ -1,7 +1,6 @@
 module api.content.order {
 
     import ChildOrderJson =  api.content.json.ChildOrderJson;
-    import OrderExprJson =  api.content.json.OrderExprJson;
     import OrderExprWrapperJson = api.content.json.OrderExprWrapperJson;
 
     export class ChildOrder implements api.Equitable {
@@ -87,7 +86,7 @@ module api.content.order {
         }
 
         toString(): string {
-            return this.orderExpressions.map(expr => expr.toString()).join(", ");
+            return this.orderExpressions.map(expr => expr.toString()).join(', ');
         }
 
         equals(o: api.Equitable): boolean {
