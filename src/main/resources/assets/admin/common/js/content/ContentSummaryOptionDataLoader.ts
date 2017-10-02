@@ -86,7 +86,7 @@ module api.content {
         }
 
         load(postLoad: boolean = false): wemQ.Promise<DATA[]> {
-            this.request.setParentPath(null);
+            this.request.setParentContent(null);
             this.notifyLoadingData();
             return this.loadItems().then(data => {
 
@@ -98,7 +98,7 @@ module api.content {
         }
 
         fetch(node: TreeNode<Option<DATA>>): wemQ.Promise<DATA> {
-            this.request.setParentPath(node.getDataId() ? node.getData().displayValue.getPath() : null);
+            this.request.setParentContent(node.getDataId() ? node.getData().displayValue.getContent() : null);
             return this.loadItems().then(items => items[0]);
         }
 
@@ -108,7 +108,7 @@ module api.content {
             this.request.setFrom(from);
             this.request.setSize(size);
 
-            this.request.setParentPath(parentNode.getDataId() ? parentNode.getData().displayValue.getPath() : null);
+            this.request.setParentContent(parentNode.getDataId() ? parentNode.getData().displayValue.getContent() : null);
 
             this.request.setQueryExpr(this.treeFilterValue);
 
