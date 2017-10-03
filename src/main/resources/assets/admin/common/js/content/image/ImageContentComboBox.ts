@@ -22,6 +22,8 @@ module api.content.image {
 
         protected initialTreeEnabledState: boolean;
 
+        private showAfterReload: boolean;
+
         protected treeModeToggler: ModeTogglerButton;
 
         constructor(builder: ImageContentComboBoxBuilder) {
@@ -42,6 +44,8 @@ module api.content.image {
             if (this.treeModeTogglerAllowed) {
                 this.initTreeModeToggler();
             }
+
+            this.showAfterReload = false;
 
             this.optionsFactory = new OptionsFactory<ImageTreeSelectorItem>(loader, builder.optionDataHelper);
 
@@ -78,6 +82,21 @@ module api.content.image {
             this.treeModeToggler.onActiveChanged(isActive => {
                 this.treegridDropdownEnabled = isActive;
                 this.reload(this.getComboBox().getInput().getValue());
+            });
+
+            this.onLoaded(() => {
+                if(this.showAfterReload) {
+                    if (!this.getComboBox().isDropdownShown()) {
+                        this.getComboBox().showDropdown();
+                        this.getComboBox().getInput().setReadOnly(false);
+                    }
+                    this.showAfterReload = false;
+                }
+            });
+
+            this.treeModeToggler.onClicked(() => {
+                this.giveFocus();
+                this.showAfterReload = true;
             });
 
             this.getComboBox().getInput().onValueChanged((event: ValueChangedEvent) => {
@@ -137,6 +156,8 @@ module api.content.image {
                         this.getComboBox().showDropdown();
                         this.getComboBox().getInput().setReadOnly(false);
                     }
+                    this.notifyLoaded(this.getComboBox().getOptions().map(option => option.displayValue));
+
                     deferred.resolve(null);
                 }).catch((reason: any) => {
                     api.DefaultErrorHandler.handle(reason);

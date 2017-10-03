@@ -388,7 +388,7 @@ module api.ui.selector.combobox {
             this.loadedListeners.splice(index, 1);
         }
 
-        private notifyLoaded(items: OPTION_DISPLAY_VALUE[], postLoaded?: boolean) {
+        protected notifyLoaded(items: OPTION_DISPLAY_VALUE[], postLoaded?: boolean) {
             this.loadedListeners.forEach((listener) => {
                 listener(items, postLoaded);
             });
