@@ -103,11 +103,8 @@ module api.content {
             });
 
             this.onLoaded(() => {
-                if(this.showAfterReload) {
-                    if (!this.getComboBox().isDropdownShown()) {
-                        this.getComboBox().showDropdown();
-                        this.getComboBox().getInput().setReadOnly(false);
-                    }
+                if (this.showAfterReload) {
+                    this.getComboBox().getInput().setReadOnly(false);
                     this.showAfterReload = false;
                 }
             });
@@ -115,6 +112,9 @@ module api.content {
             this.treeModeToggler.onClicked(() => {
                 this.giveFocus();
                 this.showAfterReload = true;
+
+                this.getComboBox().showDropdown();
+                this.getComboBox().setEmptyDropdownText('Searching...');
             });
 
             this.getComboBox().getInput().onValueChanged((event: ValueChangedEvent) => {
