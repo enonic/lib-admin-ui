@@ -1,6 +1,6 @@
 module api.form {
 
-    import ArrayHelper = api.util.ArrayHelper;
+
 
     export class ValidationRecording {
 
@@ -168,23 +168,14 @@ module api.form {
                 return false;
             }
 
-            const keys = mapA.keys();
-            let result: IteratorResult<string>;
+            const keys: string[] = [];
+            mapA.forEach((value: KeyBinding, key: string) => {
+                keys.push(key);
+            });
 
-            do {
-                result = keys.next();
-
-                if (!result.done) {
-                    const key: string = result.value;
-
-                    if (!mapA.get(key).equals(mapB.get(key))) {
-                        return false;
-                    }
-                }
-
-            } while (!result.done);
-
-            return true;
+            return keys.every(key => {
+                return mapA.get(key).equals(mapB.get(key));
+            });
         }
     }
 }

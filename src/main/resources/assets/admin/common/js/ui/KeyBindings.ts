@@ -1,6 +1,6 @@
 module api.ui {
 
-    import ArrayHelper = api.util.ArrayHelper;
+
     export class KeyBindings {
 
         private static instanceCount: number = 0;
@@ -89,7 +89,12 @@ module api.ui {
         }
 
         public getActiveBindings(): KeyBinding[] {
-            return Array.from(this.activeBindings.values());
+            const activeBindings: KeyBinding[] = [];
+            this.activeBindings.forEach((value: KeyBinding) => {
+                activeBindings.push(value);
+            });
+
+            return activeBindings;
         }
 
         /*
@@ -114,7 +119,11 @@ module api.ui {
                 });
 
                 if (curBindings.size > 0) {
-                    this.unbindKeys(Array.from(curBindings.values()));
+                    const curBindingsValues: KeyBinding[] = [];
+                    curBindings.forEach((value: KeyBinding) => {
+                        curBindingsValues.push(value);
+                    });
+                    this.unbindKeys(curBindingsValues);
                     this.shelves.push(curBindings);
                 }
             }
@@ -147,7 +156,10 @@ module api.ui {
                 this.activeBindings.clear();
                 Mousetrap.reset();
 
-                const previousBindings = Array.from(previousMousetraps.values());
+                const previousBindings: KeyBinding[] = [];
+                previousMousetraps.forEach((value: KeyBinding) => {
+                    previousBindings.push(value);
+                });
 
                 previousBindings.forEach((previousBinding) => {
                     this.bindKey(previousBinding);
@@ -157,7 +169,10 @@ module api.ui {
             } else {
                 const keys = keyBindings.map(binding => this.getBindingKey(binding));
 
-                const previousKeys = Array.from(previousMousetraps.keys());
+                const previousKeys: string[] = [];
+                previousMousetraps.forEach((value: KeyBinding, key: string) => {
+                    previousKeys.push(key);
+                });
 
                 previousKeys.forEach((previousKey) => {
                     if (keys.indexOf(previousKey) >= 0) {
@@ -172,7 +187,10 @@ module api.ui {
         }
 
         isActive(keyBinding: KeyBinding) {
-            const activeBindings: KeyBinding[] = Array.from(this.activeBindings.values());
+            const activeBindings: KeyBinding[] = [];
+            this.activeBindings.forEach((value: KeyBinding) => {
+                activeBindings.push(value);
+            });
 
             return activeBindings.some((curBinding: KeyBinding) => {
                 return curBinding == keyBinding ? true : false;
