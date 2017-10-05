@@ -89,12 +89,7 @@ module api.ui {
         }
 
         public getActiveBindings(): KeyBinding[] {
-            const activeBindings: KeyBinding[] = [];
-            this.activeBindings.forEach((value: KeyBinding) => {
-                activeBindings.push(value);
-            });
-
-            return activeBindings;
+            return this.toArray(this.activeBindings);
         }
 
         /*
@@ -119,11 +114,7 @@ module api.ui {
                 });
 
                 if (curBindings.size > 0) {
-                    const curBindingsValues: KeyBinding[] = [];
-                    curBindings.forEach((value: KeyBinding) => {
-                        curBindingsValues.push(value);
-                    });
-                    this.unbindKeys(curBindingsValues);
+                    this.unbindKeys(this.toArray(curBindings));
                     this.shelves.push(curBindings);
                 }
             }
@@ -156,10 +147,7 @@ module api.ui {
                 this.activeBindings.clear();
                 Mousetrap.reset();
 
-                const previousBindings: KeyBinding[] = [];
-                previousMousetraps.forEach((value: KeyBinding) => {
-                    previousBindings.push(value);
-                });
+                const previousBindings: KeyBinding[] = this.toArray(previousMousetraps);
 
                 previousBindings.forEach((previousBinding) => {
                     this.bindKey(previousBinding);
@@ -187,10 +175,7 @@ module api.ui {
         }
 
         isActive(keyBinding: KeyBinding) {
-            const activeBindings: KeyBinding[] = [];
-            this.activeBindings.forEach((value: KeyBinding) => {
-                activeBindings.push(value);
-            });
+            const activeBindings: KeyBinding[] = this.toArray(this.activeBindings);
 
             return activeBindings.some((curBinding: KeyBinding) => {
                 return curBinding == keyBinding ? true : false;
@@ -222,6 +207,16 @@ module api.ui {
             this.helpKeyPressedListeners.forEach((listener: (event: ExtendedKeyboardEvent) => void) => {
                 listener.call(this, e);
             });
+        }
+
+        private toArray(bindings: Map<string, KeyBinding>): KeyBinding[] {
+            const result: KeyBinding[] = [];
+
+            bindings.forEach((value: KeyBinding) => {
+                result.push(value);
+            });
+
+            return result;
         }
     }
 }

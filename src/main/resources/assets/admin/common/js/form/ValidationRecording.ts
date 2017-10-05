@@ -169,7 +169,7 @@ module api.form {
             }
 
             const keys: string[] = [];
-            mapA.forEach((value: KeyBinding, key: string) => {
+            mapA.forEach((value: Equitable, key: string) => {
                 keys.push(key);
             });
 
