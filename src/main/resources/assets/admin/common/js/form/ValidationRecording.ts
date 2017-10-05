@@ -1,7 +1,5 @@
 module api.form {
 
-
-
     export class ValidationRecording {
 
         private breaksMinimumOccurrencesArray: ValidationRecordingPath[] = [];
