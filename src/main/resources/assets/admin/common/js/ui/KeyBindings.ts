@@ -1,6 +1,5 @@
 module api.ui {
 
-
     export class KeyBindings {
 
         private static instanceCount: number = 0;
