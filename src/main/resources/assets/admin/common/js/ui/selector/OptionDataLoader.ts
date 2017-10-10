@@ -1,10 +1,10 @@
 module api.ui.selector {
 
     import TreeNode = api.ui.treegrid.TreeNode;
-    import BaseLoader = api.util.loader.BaseLoader;
+    import PostLoader = api.util.loader.PostLoader;
 
     export abstract class OptionDataLoader<DATA>
-        extends BaseLoader<JSON, DATA> {
+        extends PostLoader<JSON, DATA> {
 
         abstract fetch(node: TreeNode<Option<DATA>>): wemQ.Promise<DATA>;
 

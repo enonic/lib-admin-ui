@@ -138,9 +138,15 @@ module api.content.image {
             return option;
         }
 
-        protected reload(inputValue: string): wemQ.Promise<any> {
+        protected reload(inputValue: string, force: boolean = true): wemQ.Promise<any> {
 
             const deferred = wemQ.defer<void>();
+
+            if(!force) {
+                if(this.getOptions().length > 0) {
+                    return wemQ(null);
+                }
+            }
 
             if (this.ifFlatLoadingMode(inputValue)) {
                 this.getLoader().search(inputValue).then((result: ImageTreeSelectorItem[]) => {

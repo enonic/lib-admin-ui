@@ -15,7 +15,11 @@ module api.content {
     export class ContentSummaryOptionDataLoader<DATA extends ContentTreeSelectorItem>
         extends OptionDataLoader<DATA> {
 
-        protected request: ContentTreeSelectorQueryRequest<DATA>;
+        protected treeRequest: ContentTreeSelectorQueryRequest<DATA>;
+
+        protected flatRequest: ContentSelectorQueryRequest;
+
+        protected isTreeLoadMode: boolean;
 
         private treeFilterValue: string;
 
@@ -35,18 +39,27 @@ module api.content {
 
         protected createRequest(): ContentTreeSelectorQueryRequest<DATA> {
 
-            return new ContentTreeSelectorQueryRequest<DATA>();
+            this.flatRequest = new ContentSelectorQueryRequest();
+            this.treeRequest = new ContentTreeSelectorQueryRequest<DATA>();
+
+            return this.treeRequest;
         }
 
         private initRequest(builder: ContentSummaryOptionDataLoaderBuilder) {
-            this.request.setContentTypeNames(builder.contentTypeNames);
-            this.request.setAllowedContentPaths(builder.allowedContentPaths);
-            this.request.setRelationshipType(builder.relationshipType);
-            this.request.setContent(builder.content);
+            this.treeRequest.setContentTypeNames(builder.contentTypeNames);
+            this.treeRequest.setAllowedContentPaths(builder.allowedContentPaths);
+            this.treeRequest.setRelationshipType(builder.relationshipType);
+            this.treeRequest.setContent(builder.content);
+
+            this.flatRequest.setContentTypeNames(builder.contentTypeNames);
+            this.flatRequest.setAllowedContentPaths(builder.allowedContentPaths);
+            this.flatRequest.setRelationshipType(builder.relationshipType);
+            this.flatRequest.setContent(builder.content);
         }
 
         setContent(content: ContentSummary) {
-            this.request.setContent(content);
+            this.treeRequest.setContent(content);
+            this.flatRequest.setContent(content);
         }
 
         setTreeFilterValue(value: string) {
@@ -54,23 +67,20 @@ module api.content {
         }
 
         search(value: string): wemQ.Promise<DATA[]> {
+
             this.notifyLoadingData();
 
-            const req = new ContentSelectorQueryRequest();
-            req.setContent(this.request.getContent());
-            req.setAllowedContentPaths(this.request.getAllowedContentPaths());
-            req.setContentTypeNames(this.request.getContentTypeNames());
-            req.setFrom(this.request.getFrom());
-            req.setSize(this.request.getSize());
-            req.setInputName(this.request.getInputName());
-            req.setRelationshipType(this.request.getRelationshipType());
-            req.setQueryExpr(value);
+            this.flatRequest.resetParams();
 
-            return req.sendAndParse().then((contents: ContentSummary[]) => {
+            this.flatRequest.setInputName(this.treeRequest.getInputName());
+            this.flatRequest.setQueryExpr(value);
+
+            return this.flatRequest.sendAndParse().then((contents: ContentSummary[]) => {
 
                 const result = contents.map(
                     content => new ContentTreeSelectorItem(content, false));
 
+                this.isTreeLoadMode = false;
                 this.notifyLoadModeChanged(false);
 
                 if (this.loadStatus) {
@@ -86,34 +96,53 @@ module api.content {
         }
 
         load(postLoad: boolean = false): wemQ.Promise<DATA[]> {
-            this.request.setParentContent(null);
-            this.notifyLoadingData();
-            return this.loadItems().then(data => {
+            if (this.isTreeLoadMode) {
 
-                this.notifyLoadModeChanged(true);
+                this.treeRequest.setParentContent(null);
+                this.notifyLoadingData(postLoad);
+                return this.loadItems().then(data => {
 
-                this.notifyLoadedData(data);
-                return data;
-            });
+                    this.notifyLoadedData(data, postLoad);
+                    return data;
+                });
+            } else {
+                return this.flatRequest.sendAndParse().then((contents) => {
+                    const result = contents.map(
+                        content => new ContentTreeSelectorItem(content, false));
+
+                    if (this.loadStatus) {
+                        return this.loadStatuses(<DATA[]>result).then(resultWithStatuses => {
+                            this.notifyLoadedData(resultWithStatuses, postLoad);
+                            return resultWithStatuses;
+                        });
+                    } else {
+                        this.notifyLoadedData(<DATA[]>result, postLoad);
+                        return wemQ(<DATA[]>result);
+                    }
+                });
+            }
         }
 
         fetch(node: TreeNode<Option<DATA>>): wemQ.Promise<DATA> {
-            this.request.setParentContent(node.getDataId() ? node.getData().displayValue.getContent() : null);
+            this.treeRequest.setParentContent(node.getDataId() ? node.getData().displayValue.getContent() : null);
             return this.loadItems().then(items => items[0]);
         }
 
         fetchChildren(parentNode: TreeNode<Option<DATA>>, from: number = 0,
                       size: number = -1): wemQ.Promise<OptionDataLoaderData<DATA>> {
 
-            this.request.setFrom(from);
-            this.request.setSize(size);
+            this.isTreeLoadMode = true;
 
-            this.request.setParentContent(parentNode.getDataId() ? parentNode.getData().displayValue.getContent() : null);
+            this.treeRequest.setFrom(from);
+            this.treeRequest.setSize(size);
 
-            this.request.setQueryExpr(this.treeFilterValue);
+            this.treeRequest.setParentContent(parentNode.getDataId() ? parentNode.getData().displayValue.getContent() : null);
+
+            this.treeRequest.setQueryExpr(this.treeFilterValue);
 
             return this.loadItems().then((result: DATA[]) => {
-                return this.createOptionData(result, 0, 0);
+                return this.createOptionData(result, this.treeRequest.getMetadata().getHits(),
+                    this.treeRequest.getMetadata().getTotalHits());
             });
         }
 
@@ -176,6 +205,14 @@ module api.content {
 
         static create(): ContentSummaryOptionDataLoaderBuilder {
             return new ContentSummaryOptionDataLoaderBuilder();
+        }
+
+        resetParams() {
+            this.isTreeLoadMode ? this.treeRequest.resetParams() : this.flatRequest.resetParams();
+        }
+
+        isPartiallyLoaded(): boolean {
+            return this.isTreeLoadMode ? this.treeRequest.isPartiallyLoaded() : this.flatRequest.isPartiallyLoaded();
         }
     }
 

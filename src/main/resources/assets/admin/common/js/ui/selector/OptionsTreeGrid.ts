@@ -4,6 +4,7 @@ module api.ui.selector {
     import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
     import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import SelectionOnClickType = api.ui.treegrid.SelectionOnClickType;
+    import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
 
     export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         extends TreeGrid<Option<OPTION_DISPLAY_VALUE>> {
@@ -58,8 +59,9 @@ module api.ui.selector {
         }
 
         setOptions(options: Option<OPTION_DISPLAY_VALUE>[]) {
-            this.removeAllOptions();
-
+            if (this.isTreeModeEnabled()) {
+                this.removeAllOptions();
+            }
             const data = this.dataToTreeNodes(options, this.getRoot().getCurrentRoot());
 
             this.getRoot().getCurrentRoot().setChildren(data);
@@ -109,6 +111,10 @@ module api.ui.selector {
             this.toggleClass('tree-mode', isTreeMode);
         }
 
+        private isTreeModeEnabled(): boolean {
+            return this.hasClass('tree-mode');
+        }
+
         private initEventHandlers() {
             let onBecameActive = (active: boolean) => {
                 if (active) {
@@ -153,7 +159,7 @@ module api.ui.selector {
                 from--;
             }
 
-            return this.loader.fetchChildren(parentNode).then(
+            return this.loader.fetchChildren(parentNode, from, ContentSelectorQueryRequest.DEFAULT_SIZE).then(
                 (loadedData: OptionDataLoaderData<OPTION_DISPLAY_VALUE>) => {
                     return this.optionsFactory.createOptions(loadedData.getData()).then((newOptions) => {
 
