@@ -1,8 +1,6 @@
 module api.app.browse {
 
-    import ViewItem = api.app.view.ViewItem;
-
-    export class BrowseItem<M> extends ViewItem<M> {
+    export class BrowseItem<M extends api.Equitable> extends api.app.view.ViewItem<M> {
 
         private id: string;
 

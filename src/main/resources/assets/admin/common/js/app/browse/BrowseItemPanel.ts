@@ -46,9 +46,9 @@ module api.app.browse {
 
         setStatisticsItem(item: BrowseItem<M>) {
             if (item) {
-                this.itemStatisticsPanel.setItem(item)
+                this.itemStatisticsPanel.setItem(item);
             } else {
-                this.itemStatisticsPanel.clearItem()
+                this.itemStatisticsPanel.clearItem();
             }
         }
 
