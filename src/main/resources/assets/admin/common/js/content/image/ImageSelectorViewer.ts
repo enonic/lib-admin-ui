@@ -1,24 +1,25 @@
 module api.content.image {
 
-    export class ImageSelectorViewer extends api.ui.NamesAndIconViewer<ImageSelectorDisplayValue> {
+    export class ImageSelectorViewer
+        extends api.ui.NamesAndIconViewer<ImageTreeSelectorItem> {
 
         constructor() {
             super();
         }
 
-        resolveDisplayName(object: ImageSelectorDisplayValue): string {
+        resolveDisplayName(object: ImageTreeSelectorItem): string {
             return object.getDisplayName();
         }
 
-        resolveUnnamedDisplayName(object: ImageSelectorDisplayValue): string {
+        resolveUnnamedDisplayName(object: ImageTreeSelectorItem): string {
             return object.getTypeLocaleName();
         }
 
-        resolveSubName(object: ImageSelectorDisplayValue, relativePath: boolean = false): string {
+        resolveSubName(object: ImageTreeSelectorItem, relativePath: boolean = false): string {
             return object.getPath() ? object.getPath().toString() : '';
         }
 
-        resolveIconUrl(object: ImageSelectorDisplayValue): string {
+        resolveIconUrl(object: ImageTreeSelectorItem): string {
             return object.getImageUrl() + '?crop=false';
         }
     }

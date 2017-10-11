@@ -87,6 +87,10 @@ module api.content.image {
             return (this.content && this.content.getType()) ? this.content.getType().getLocalName() : null;
         }
 
+        hasChildren(): boolean {
+            return this.content ? this.content.hasChildren() : false;
+        }
+
         getPath(): ContentPath {
             return this.content ? this.content.getPath() : null;
         }

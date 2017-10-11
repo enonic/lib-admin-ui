@@ -6,18 +6,15 @@ module api.macro {
     import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
     import MacrosLoader = api.macro.resource.MacrosLoader;
 
-    export class MacroComboBox extends RichComboBox<MacroDescriptor> {
+    export class MacroComboBox
+        extends RichComboBox<MacroDescriptor> {
 
         constructor(builder: MacroComboBoxBuilder) {
 
-            let richComboBoxBuilder = new RichComboBoxBuilder<MacroDescriptor>().
-                setComboBoxName('macroSelector').
-                setLoader(builder.loader).
-                setSelectedOptionsView(new MacroSelectedOptionsView()).
-                setMaximumOccurrences(builder.maximumOccurrences).
-                setDelayedInputValueChangedHandling(750).setOptionDisplayValueViewer(new MacroViewer()).
-                setValue(builder.value).
-                setMaxHeight(250);
+            let richComboBoxBuilder = new RichComboBoxBuilder<MacroDescriptor>().setComboBoxName('macroSelector').setLoader(
+                builder.loader).setSelectedOptionsView(new MacroSelectedOptionsView()).setMaximumOccurrences(
+                builder.maximumOccurrences).setDelayedInputValueChangedHandling(750).setOptionDisplayValueViewer(
+                new MacroViewer()).setValue(builder.value).setMaxHeight(250);
 
             super(richComboBoxBuilder);
 
@@ -25,7 +22,7 @@ module api.macro {
         }
 
         getLoader(): MacrosLoader {
-            return <MacrosLoader> this.loader;
+            return <MacrosLoader> super.getLoader();
         }
 
         createOption(val: MacroDescriptor): Option<MacroDescriptor> {
@@ -40,7 +37,8 @@ module api.macro {
         }
     }
 
-    export class MacroSelectedOptionsView extends api.ui.selector.combobox.BaseSelectedOptionsView<MacroDescriptor> {
+    export class MacroSelectedOptionsView
+        extends api.ui.selector.combobox.BaseSelectedOptionsView<MacroDescriptor> {
 
         createSelectedOption(option: api.ui.selector.Option<MacroDescriptor>): SelectedOption<MacroDescriptor> {
             let optionView = new MacroSelectedOptionView(option);
@@ -48,7 +46,8 @@ module api.macro {
         }
     }
 
-    export class MacroSelectedOptionView extends api.ui.selector.combobox.RichSelectedOptionView<MacroDescriptor> {
+    export class MacroSelectedOptionView
+        extends api.ui.selector.combobox.RichSelectedOptionView<MacroDescriptor> {
 
         constructor(option: api.ui.selector.Option<MacroDescriptor>) {
             super(new api.ui.selector.combobox.RichSelectedOptionViewBuilder<MacroDescriptor>(option));

@@ -1,6 +1,7 @@
 module api.ui.selector.combobox {
 
-    export class LoaderComboBox<OPTION_DISPLAY_VALUE> extends ComboBox<OPTION_DISPLAY_VALUE> {
+    export class LoaderComboBox<OPTION_DISPLAY_VALUE>
+        extends ComboBox<OPTION_DISPLAY_VALUE> {
 
         private loader: api.util.loader.BaseLoader<any, OPTION_DISPLAY_VALUE>;
 
@@ -21,35 +22,22 @@ module api.ui.selector.combobox {
         }
 
         protected doSetValue(value: string, silent?: boolean) {
-            if (this.getComboBoxDropdownGrid().isTreeGrid()) {
 
-                if(!value || this.getOptionByValue(value)) {
-                    super.doSetValue(value, silent);
-                } else {
-                    this.getOptionDataLoader().load(this.splitValues(value)).then(() => {
-                        super.doSetValue(value, silent);
-                        this.refreshValueChanged(silent);
-                        this.refreshDirtyState(silent);
-                    });
+            if (!this.loader.isLoaded()) {
+                if (RichComboBox.debug) {
+                    console.debug(this.toString() + '.doSetValue: loader is not loaded, saving temp value = ' + value);
                 }
-
-            } else {
-                if (!this.loader.isLoaded()) {
-                    if (RichComboBox.debug) {
-                        console.debug(this.toString() + '.doSetValue: loader is not loaded, saving temp value = ' + value);
-                    }
-                    this.tempValue = value;
-                }
-                this.doWhenLoaded(() => {
-                    if (this.tempValue) {
-                        if (RichComboBox.debug) {
-                            console.debug(this.toString() + '.doSetValue: clearing temp value = ' + this.tempValue);
-                        }
-                        delete this.tempValue;
-                    }
-                    super.doSetValue(value, silent);
-                }, value);
+                this.tempValue = value;
             }
+            this.doWhenLoaded(() => {
+                if (this.tempValue) {
+                    if (RichComboBox.debug) {
+                        console.debug(this.toString() + '.doSetValue: clearing temp value = ' + this.tempValue);
+                    }
+                    delete this.tempValue;
+                }
+                super.doSetValue(value, silent);
+            }, value);
         }
 
         protected doGetValue(): string {
@@ -66,8 +54,8 @@ module api.ui.selector.combobox {
         private doWhenLoaded(callback: Function, value: string) {
             if (this.loader.isLoaded()) {
                 let optionsMissing = !api.util.StringHelper.isEmpty(value) && this.splitValues(value).some((val) => {
-                        return !this.getOptionByValue(val);
-                    });
+                    return !this.getOptionByValue(val);
+                });
                 if (optionsMissing) { // option needs loading
                     this.loader.preLoad(value).then(() => {
                         callback();

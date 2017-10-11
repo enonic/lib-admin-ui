@@ -6,20 +6,14 @@ module api.content.form.inputtype.contentselector {
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
     import GetRelationshipTypeByNameRequest = api.schema.relationshiptype.GetRelationshipTypeByNameRequest;
-    import RelationshipTypeName = api.schema.relationshiptype.RelationshipTypeName;
-    import ContentDeletedEvent = api.content.event.ContentDeletedEvent;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Option = api.ui.selector.Option;
     import Deferred = Q.Deferred;
-    import ContentUpdatedEvent = api.content.event.ContentUpdatedEvent;
-    import ContentServerEventsHandler = api.content.event.ContentServerEventsHandler;
     import ContentInputTypeManagingAdd = api.content.form.inputtype.ContentInputTypeManagingAdd;
     import StringHelper = api.util.StringHelper;
-    import ContentRowFormatter = api.content.util.ContentRowFormatter;
+    import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
 
-    export class ContentSelector extends ContentInputTypeManagingAdd<api.content.ContentSummary> {
+    export class ContentSelector extends ContentInputTypeManagingAdd<ContentTreeSelectorItem> {
 
         private contentComboBox: api.content.ContentComboBox;
 
@@ -60,7 +54,7 @@ module api.content.form.inputtype.contentselector {
             return <ContentSelectedOptionsView> this.contentComboBox.getSelectedOptionView();
         }
 
-        protected getContentPath(raw: api.content.ContentSummary): api.content.ContentPath {
+        protected getContentPath(raw: ContentTreeSelectorItem): api.content.ContentPath {
             return raw.getPath();
         }
 
@@ -82,10 +76,6 @@ module api.content.form.inputtype.contentselector {
             }
             super.layout(input, propertyArray);
 
-            const contentSelectorLoader = ContentSelectorLoader.create().setContent(this.config.content).setInputName(
-                input.getName()).setAllowedContentPaths(this.allowedContentPaths).setContentTypeNames(
-                this.allowedContentTypes).setRelationshipType(this.relationshipType).build();
-
             const optionDataLoader = ContentSummaryOptionDataLoader.create().setAllowedContentPaths(
                 this.allowedContentPaths).setContentTypeNames(this.allowedContentTypes).setRelationshipType(
                 this.relationshipType).setContent(this.config.content).setLoadStatus(this.showStatus).build();
@@ -95,8 +85,7 @@ module api.content.form.inputtype.contentselector {
             this.contentComboBox = api.content.ContentComboBox.create()
                 .setName(input.getName())
                 .setMaximumOccurrences(input.getOccurrences().getMaximum())
-                .setLoader(contentSelectorLoader)
-                .setOptionDataLoader(optionDataLoader)
+                .setLoader(optionDataLoader)
                 .setValue(comboboxValue)
                 .setRemoveMissingSelectedOptions(true)
                 .setTreegridDropdownEnabled(!this.isFlat)
@@ -129,14 +118,14 @@ module api.content.form.inputtype.contentselector {
 
                         //TODO: original value doesn't work because of additional request, so have to select manually
                         contents.forEach((content: api.content.ContentSummary) => {
-                            this.contentComboBox.select(content);
+                            this.contentComboBox.select(new ContentTreeSelectorItem(content, false));
                         });
 
-                        this.contentComboBox.getSelectedOptions().forEach((selectedOption: SelectedOption<ContentSummary>) => {
+                        this.contentComboBox.getSelectedOptions().forEach((selectedOption: SelectedOption<ContentTreeSelectorItem>) => {
                             this.updateSelectedOptionIsEditable(selectedOption);
                         });
 
-                        this.contentComboBox.onOptionSelected((event: SelectedOptionEvent<api.content.ContentSummary>) => {
+                        this.contentComboBox.onOptionSelected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
                             this.fireFocusSwitchEvent(event);
 
                             const reference = api.util.Reference.from(event.getSelectedOption().getOption().displayValue.getContentId());
@@ -154,7 +143,7 @@ module api.content.form.inputtype.contentselector {
                             this.validate(false);
                         });
 
-                        this.contentComboBox.onOptionDeselected((event: SelectedOptionEvent<api.content.ContentSummary>) => {
+                        this.contentComboBox.onOptionDeselected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
 
                             this.getPropertyArray().remove(event.getSelectedOption().getIndex());
                             this.updateSelectedOptionStyle();
@@ -261,7 +250,7 @@ module api.content.form.inputtype.contentselector {
             }
         }
 
-        private updateSelectedOptionIsEditable(selectedOption: SelectedOption<ContentSummary>) {
+        private updateSelectedOptionIsEditable(selectedOption: SelectedOption<ContentTreeSelectorItem>) {
             let selectedContentId = selectedOption.getOption().displayValue.getContentId();
             let refersToItself = selectedContentId.toString() === this.config.content.getId();
             selectedOption.getOptionView().toggleClass('non-editable', refersToItself);

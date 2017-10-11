@@ -14,3 +14,4 @@
 ///<reference path='SelectorOnBlurEvent.ts' />
 ///<reference path='OptionDataHelper.ts' />
 ///<reference path='OptionDataLoader.ts' />
+///<reference path='OptionsFactory.ts' />

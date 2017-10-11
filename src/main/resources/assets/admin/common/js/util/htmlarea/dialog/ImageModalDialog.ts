@@ -1,12 +1,10 @@
 module api.util.htmlarea.dialog {
 
-    import FormItemBuilder = api.ui.form.FormItemBuilder;
     import FormItem = api.ui.form.FormItem;
     import Validators = api.ui.form.Validators;
     import FileUploadedEvent = api.ui.uploader.FileUploadedEvent;
     import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
     import FileUploadProgressEvent = api.ui.uploader.FileUploadProgressEvent;
-    import FileUploadCompleteEvent = api.ui.uploader.FileUploadCompleteEvent;
     import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
     import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
     import Action = api.ui.Action;
@@ -15,10 +13,7 @@ module api.util.htmlarea.dialog {
     import Content = api.content.Content;
     import Option = api.ui.selector.Option;
     import i18n = api.util.i18n;
-    import ContentSelectorLoader = api.content.form.inputtype.contentselector.ContentSelectorLoader;
-    import ContentSummaryLoader = api.content.resource.ContentSummaryLoader;
-    import ImageSelectorDisplayValue = api.content.image.ImageSelectorDisplayValue;
-    import ContentSelectedOptionsView = api.content.ContentSelectedOptionsView;
+    import ImageTreeSelectorItem = api.content.image.ImageTreeSelectorItem;
 
     export class ImageModalDialog extends ModalDialog {
 
@@ -79,9 +74,9 @@ module api.util.htmlarea.dialog {
         }
 
         private loadImage() {
-            let loader = <ContentSummaryLoader>this.imageSelector.getLoader();
+            let loader = this.imageSelector.getLoader();
 
-            let singleLoadListener = (event: api.util.loader.event.LoadedDataEvent<api.content.ContentSummary>) => {
+            let singleLoadListener = (event: api.util.loader.event.LoadedDataEvent<ImageTreeSelectorItem>) => {
                 let imageContent = this.getImageContent(event.getData());
                 if (imageContent) {
                     this.imageSelector.setValue(imageContent.getId());
@@ -132,14 +127,14 @@ module api.util.htmlarea.dialog {
 
             formItem.addClass('image-selector');
 
-            imageSelectorComboBox.onOptionSelected((event: SelectedOptionEvent<ImageSelectorDisplayValue>) => {
+            imageSelectorComboBox.onOptionSelected((event: SelectedOptionEvent<ImageTreeSelectorItem>) => {
                 let imageContent = event.getSelectedOption().getOption().displayValue;
                 if (!imageContent.getContentId()) {
                     return;
                 }
 
                 this.imageLoadMask.show();
-                this.createImgElForNewImage(imageContent.getContentSummary());
+                this.createImgElForNewImage(imageContent);
                 this.previewImage();
                 formItem.addClass('selected-item-preview');
                 this.setAltTextFieldValue(imageContent.getDisplayName());
@@ -189,19 +184,19 @@ module api.util.htmlarea.dialog {
             });
         }
 
-        private getImageContent(images: api.content.ContentSummary[]): api.content.ContentSummary {
-            let filteredImages = images.filter((image: api.content.ContentSummary) => {
+        private getImageContent(images: ImageTreeSelectorItem[]): ImageTreeSelectorItem {
+            let filteredImages = images.filter((image: ImageTreeSelectorItem) => {
                 return this.imageElement.src.indexOf(image.getId()) > 0;
             });
 
             return filteredImages.length > 0 ? filteredImages[0] : null;
         }
 
-        private createImgElForExistingImage(imageContent: api.content.ContentSummary) {
+        private createImgElForExistingImage(imageContent: ImageTreeSelectorItem) {
             this.image = this.createImgElForPreview(imageContent, true);
         }
 
-        private createImgElForNewImage(imageContent: api.content.ContentSummary) {
+        private createImgElForNewImage(imageContent: ImageTreeSelectorItem) {
             this.image = this.createImgElForPreview(imageContent, false);
         }
 
@@ -230,7 +225,7 @@ module api.util.htmlarea.dialog {
             this.imagePreviewContainer.insertChild(this.image, 0);
         }
 
-        private createImgElForPreview(imageContent: api.content.ContentSummary, isExistingImg: boolean = false): api.dom.ImgEl {
+        private createImgElForPreview(imageContent: ImageTreeSelectorItem, isExistingImg: boolean = false): api.dom.ImgEl {
             let imgSrcAttr = isExistingImg
                 ? new api.dom.ElementHelper(this.imageElement).getAttribute('src')
                 : this.generateDefaultImgSrc(imageContent.getContentId().toString());

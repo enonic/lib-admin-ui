@@ -8,7 +8,6 @@ module api.content.resource {
     import QueryField = api.query.QueryField;
     import QueryExpr = api.query.expr.QueryExpr;
     import ContentSummaryJson = api.content.json.ContentSummaryJson;
-    import ContentId = api.content.ContentId;
     import ContentQueryResultJson = api.content.json.ContentQueryResultJson;
 
     export class ContentSelectorQueryRequest extends ContentResourceRequest<ContentQueryResultJson<ContentSummaryJson>, ContentSummary[]> {
@@ -149,7 +148,6 @@ module api.content.resource {
         }
 
         sendAndParse(): wemQ.Promise<ContentSummary[]> {
-
             return this.send().then((response: api.rest.JsonResponse<ContentQueryResultJson<ContentSummaryJson>>) => {
 
                 let responseResult: ContentQueryResultJson<ContentSummaryJson> = response.getResult();
