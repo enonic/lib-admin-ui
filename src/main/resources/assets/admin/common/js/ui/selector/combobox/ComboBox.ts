@@ -47,7 +47,7 @@ module api.ui.selector.combobox {
 
         skipAutoDropShowOnValueChange?: boolean;
 
-        treegridDropdownEnabled?: boolean;
+        treegridDropdownAllowed?: boolean;
 
         optionDataHelper?: OptionDataHelper<T>;
 
@@ -194,7 +194,7 @@ module api.ui.selector.combobox {
                 filter: config.filter,
                 dataIdProperty: config.dataIdProperty,
                 multipleSelections: (this.selectedOptionsView && (config.maximumOccurrences !== 1)),
-                isDropdownGrid: config.treegridDropdownEnabled,
+                treegridDropdownAllowed: config.treegridDropdownAllowed,
                 optionDataHelper: config.optionDataHelper,
                 optionDataLoader: config.optionDataLoader,
                 createColumns: config.createColumns

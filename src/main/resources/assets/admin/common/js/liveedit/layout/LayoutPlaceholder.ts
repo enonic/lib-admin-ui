@@ -33,18 +33,20 @@ module api.liveedit.layout {
 
             let siteModel = layoutView.getLiveEditModel().getSiteModel();
 
-            let listener = () => this.reloadDescriptorsOnApplicationChange(siteModel);
+            let listener = () => this.reloadDescriptors(siteModel);
 
             siteModel.onApplicationAdded(listener);
             siteModel.onApplicationRemoved(listener);
+            siteModel.onSiteModelUpdated(listener);
 
             this.onRemoved(() => {
                 siteModel.unApplicationAdded(listener);
                 siteModel.unApplicationRemoved(listener);
+                siteModel.unSiteModelUpdated(listener);
             });
         }
 
-        private reloadDescriptorsOnApplicationChange(siteModel: SiteModel) {
+        private reloadDescriptors(siteModel: SiteModel) {
             this.comboBox.loadDescriptors(siteModel.getApplicationKeys());
         }
 

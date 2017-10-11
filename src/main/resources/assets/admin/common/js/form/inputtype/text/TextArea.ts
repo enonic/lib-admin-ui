@@ -1,6 +1,5 @@
 module api.form.inputtype.text {
 
-    import support = api.form.inputtype.support;
     import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
@@ -31,8 +30,8 @@ module api.form.inputtype.text {
             const inputEl = new api.ui.text.TextArea(this.getInput().getName() + '-' + index, value);
 
             inputEl.onValueChanged((event: api.ValueChangedEvent) => {
-                const newValue = ValueTypes.STRING.newValue(event.getNewValue());
-                this.notifyOccurrenceValueChanged(inputEl, newValue);
+                const isValid = this.isValid(event.getNewValue(), inputEl);
+                this.newValueHandler(inputEl, event.getNewValue(), isValid);
             });
 
             this.initOccurenceListeners(inputEl);

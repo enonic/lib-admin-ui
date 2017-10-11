@@ -4,12 +4,10 @@ module api.content {
     import TreeNode = api.ui.treegrid.TreeNode;
     import ContentSummaryFetcher = api.content.resource.ContentSummaryFetcher;
     import OptionDataLoaderData = api.ui.selector.OptionDataLoaderData;
-    import ContentResponse = api.content.resource.result.ContentResponse;
     import Option = api.ui.selector.Option;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import CompareContentRequest = api.content.resource.CompareContentRequest;
     import CompareContentResults = api.content.resource.result.CompareContentResults;
-    import ContentSummaryAndCompareStatusFetcher = api.content.resource.ContentSummaryAndCompareStatusFetcher;
     import ContentAndStatusTreeSelectorItem = api.content.resource.ContentAndStatusTreeSelectorItem;
     import CompareContentResult = api.content.resource.result.CompareContentResult;
     import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
@@ -17,11 +15,17 @@ module api.content {
     export class ContentSummaryOptionDataLoader<DATA extends ContentTreeSelectorItem>
         extends OptionDataLoader<DATA> {
 
-        protected request: ContentTreeSelectorQueryRequest<DATA>;
+        protected treeRequest: ContentTreeSelectorQueryRequest<DATA>;
+
+        protected flatRequest: ContentSelectorQueryRequest;
+
+        protected isTreeLoadMode: boolean;
+
+        private treeFilterValue: string;
 
         private loadStatus: boolean;
 
-        private loadModeChangedListeners: { (isFlat: boolean): void }[] = [];
+        private loadModeChangedListeners: { (isTreeMode: boolean): void }[] = [];
 
         constructor(builder?: ContentSummaryOptionDataLoaderBuilder) {
             super();
@@ -35,110 +39,111 @@ module api.content {
 
         protected createRequest(): ContentTreeSelectorQueryRequest<DATA> {
 
-            return new ContentTreeSelectorQueryRequest<DATA>();
+            this.flatRequest = new ContentSelectorQueryRequest();
+            this.treeRequest = new ContentTreeSelectorQueryRequest<DATA>();
+
+            return this.treeRequest;
         }
 
         private initRequest(builder: ContentSummaryOptionDataLoaderBuilder) {
-            this.request.setContentTypeNames(builder.contentTypeNames);
-            this.request.setAllowedContentPaths(builder.allowedContentPaths);
-            this.request.setRelationshipType(builder.relationshipType);
-            this.request.setContent(builder.content);
+            this.treeRequest.setContentTypeNames(builder.contentTypeNames);
+            this.treeRequest.setAllowedContentPaths(builder.allowedContentPaths);
+            this.treeRequest.setRelationshipType(builder.relationshipType);
+            this.treeRequest.setContent(builder.content);
+
+            this.flatRequest.setContentTypeNames(builder.contentTypeNames);
+            this.flatRequest.setAllowedContentPaths(builder.allowedContentPaths);
+            this.flatRequest.setRelationshipType(builder.relationshipType);
+            this.flatRequest.setContent(builder.content);
         }
 
         setContent(content: ContentSummary) {
-            this.request.setContent(content);
+            this.treeRequest.setContent(content);
+            this.flatRequest.setContent(content);
+        }
+
+        setTreeFilterValue(value: string) {
+            this.treeFilterValue = value;
         }
 
         search(value: string): wemQ.Promise<DATA[]> {
+
             this.notifyLoadingData();
 
-            const req = new ContentSelectorQueryRequest();
-            req.setContent(this.request.getContent());
-            req.setAllowedContentPaths(this.request.getAllowedContentPaths());
-            req.setContentTypeNames(this.request.getContentTypeNames());
-            req.setFrom(this.request.getFrom());
-            req.setSize(this.request.getSize());
-            req.setInputName(this.request.getInputName());
-            req.setRelationshipType(this.request.getRelationshipType());
-            req.setQueryExpr(value);
+            this.flatRequest.resetParams();
 
-            return req.sendAndParse().then((contents: ContentSummary[]) => {
+            this.flatRequest.setInputName(this.treeRequest.getInputName());
+            this.flatRequest.setQueryExpr(value);
+
+            return this.flatRequest.sendAndParse().then((contents: ContentSummary[]) => {
 
                 const result = contents.map(
                     content => new ContentTreeSelectorItem(content, false));
 
-                this.notifyLoadModeChanged(true);
+                this.isTreeLoadMode = false;
+                this.notifyLoadModeChanged(false);
 
-                this.notifyLoadedData(<DATA[]>result);
-                return <DATA[]>result;
+                if (this.loadStatus) {
+                    return this.loadStatuses(<DATA[]>result).then(resultWithStatuses => {
+                        this.notifyLoadedData(resultWithStatuses);
+                        return resultWithStatuses;
+                    });
+                } else {
+                    this.notifyLoadedData(<DATA[]>result);
+                    return wemQ(<DATA[]>result);
+                }
             });
         }
 
         load(postLoad: boolean = false): wemQ.Promise<DATA[]> {
-            this.request.setParentPath(null);
-            this.notifyLoadingData();
-            return this.loadItems().then(data => {
+            if (this.isTreeLoadMode) {
 
-                this.notifyLoadModeChanged(false);
+                this.treeRequest.setParentContent(null);
+                this.notifyLoadingData(postLoad);
+                return this.loadItems().then(data => {
 
-                this.notifyLoadedData(data);
-                return data;
-            });
+                    this.notifyLoadedData(data, postLoad);
+                    return data;
+                });
+            } else {
+                return this.flatRequest.sendAndParse().then((contents) => {
+                    const result = contents.map(
+                        content => new ContentTreeSelectorItem(content, false));
+
+                    if (this.loadStatus) {
+                        return this.loadStatuses(<DATA[]>result).then(resultWithStatuses => {
+                            this.notifyLoadedData(resultWithStatuses, postLoad);
+                            return resultWithStatuses;
+                        });
+                    } else {
+                        this.notifyLoadedData(<DATA[]>result, postLoad);
+                        return wemQ(<DATA[]>result);
+                    }
+                });
+            }
         }
 
         fetch(node: TreeNode<Option<DATA>>): wemQ.Promise<DATA> {
-            this.request.setParentPath(node.getDataId() ? node.getData().displayValue.getPath() : null);
-            if (this.request.getContent()) {
-                return this.loadItems().then(items => items[0]);
-            }
-
-            if (this.loadStatus) {
-                return ContentSummaryAndCompareStatusFetcher.fetch(node.getData().displayValue.getContentId()).then(
-                    content => <any>new ContentAndStatusTreeSelectorItem(content, false));
-            }
-
-            return ContentSummaryFetcher.fetch(node.getData().displayValue.getContentId()).then(
-                content => <any>new ContentTreeSelectorItem(content, false));
+            this.treeRequest.setParentContent(node.getDataId() ? node.getData().displayValue.getContent() : null);
+            return this.loadItems().then(items => items[0]);
         }
 
         fetchChildren(parentNode: TreeNode<Option<DATA>>, from: number = 0,
                       size: number = -1): wemQ.Promise<OptionDataLoaderData<DATA>> {
 
-            if (this.request.getContent()) {
-                this.request.setFrom(from);
-                this.request.setSize(size);
+            this.isTreeLoadMode = true;
 
-                this.request.setParentPath(parentNode.getDataId() ? parentNode.getData().displayValue.getPath() : null);
+            this.treeRequest.setFrom(from);
+            this.treeRequest.setSize(size);
 
-                return this.loadItems().then((result: DATA[]) => {
-                    return this.createOptionData(result, 0, 0);
-                });
-            }
+            this.treeRequest.setParentContent(parentNode.getDataId() ? parentNode.getData().displayValue.getContent() : null);
 
-            if (this.loadStatus) {
-                return ContentSummaryAndCompareStatusFetcher.fetchChildren(
-                    parentNode.getData() ? parentNode.getData().displayValue.getContentId() : null, from, size).then(
-                    (response: ContentResponse<ContentSummaryAndCompareStatus>) => {
+            this.treeRequest.setQueryExpr(this.treeFilterValue);
 
-                        const result = response.getContents().map(
-                            content => new ContentAndStatusTreeSelectorItem(content, false));
-
-                        return this.createOptionData(<any[]>result,
-                            response.getMetadata().getHits(),
-                            response.getMetadata().getTotalHits());
-                    });
-            }
-
-            return ContentSummaryFetcher.fetchChildren(
-                parentNode.getData() ? parentNode.getData().displayValue.getContentId() : null, from, size).then(
-                (response: ContentResponse<ContentSummary>) => {
-
-                    const result = response.getContents().map(
-                        content => new ContentTreeSelectorItem(content, false));
-                    //         this.notifyLoadedData(result);
-
-                    return this.createOptionData(<DATA[]>result, response.getMetadata().getHits(), response.getMetadata().getTotalHits());
-                });
+            return this.loadItems().then((result: DATA[]) => {
+                return this.createOptionData(result, this.treeRequest.getMetadata().getHits(),
+                    this.treeRequest.getMetadata().getTotalHits());
+            });
         }
 
         protected createOptionData(data: DATA[], hits: number,
@@ -181,25 +186,33 @@ module api.content {
                 });
         }
 
-        private notifyLoadModeChanged(isFlat: boolean) {
-            this.loadModeChangedListeners.forEach((listener: (isFlat: boolean) => void) => {
-                listener(isFlat);
+        private notifyLoadModeChanged(isTreeMode: boolean) {
+            this.loadModeChangedListeners.forEach((listener: (isTreeMode: boolean) => void) => {
+                listener(isTreeMode);
             });
         }
 
-        onLoadModeChanged(listener: (isFlat: boolean) => void) {
+        onLoadModeChanged(listener: (isTreeMode: boolean) => void) {
             this.loadModeChangedListeners.push(listener);
         }
 
-        unLoadModeChanged(listener: (isFlat: boolean) => void) {
+        unLoadModeChanged(listener: (isTreeMode: boolean) => void) {
             this.loadModeChangedListeners = this.loadModeChangedListeners
-                .filter(function (curr: (isFlat: boolean) => void) {
+                .filter(function (curr: (isTreeMode: boolean) => void) {
                     return curr !== listener;
                 });
         }
 
         static create(): ContentSummaryOptionDataLoaderBuilder {
             return new ContentSummaryOptionDataLoaderBuilder();
+        }
+
+        resetParams() {
+            this.isTreeLoadMode ? this.treeRequest.resetParams() : this.flatRequest.resetParams();
+        }
+
+        isPartiallyLoaded(): boolean {
+            return this.isTreeLoadMode ? this.treeRequest.isPartiallyLoaded() : this.flatRequest.isPartiallyLoaded();
         }
     }
 
