@@ -20,7 +20,7 @@ module api.ui.treegrid {
 
         private children: TreeNode<DATA>[];
 
-        private static EMPTY_DATA_ID_PREFFIX = '_empty_';
+        private static EMPTY_DATA_ID_PREFFIX: string = '_empty_';
 
         /**
          * A cache for stashing viewers by name, so that they can be reused.

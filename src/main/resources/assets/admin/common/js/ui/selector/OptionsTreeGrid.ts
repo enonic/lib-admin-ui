@@ -6,7 +6,6 @@ module api.ui.selector {
     import SelectionOnClickType = api.ui.treegrid.SelectionOnClickType;
     import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
     import StringHelper = api.util.StringHelper;
-    import TreeNode = api.ui.treegrid.TreeNode;
 
     export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         extends TreeGrid<Option<OPTION_DISPLAY_VALUE>> {
