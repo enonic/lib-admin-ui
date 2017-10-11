@@ -26,7 +26,7 @@ module api.util {
             }
         }
 
-        static removeDuplicates<T>(array: T[], keyFunction: (item: T)=> string): T[] {
+        static removeDuplicates<T>(array: T[], keyFunction: (item: T) => string): T[] {
             let seen = {};
             return array.filter((item) => {
                 let key = keyFunction(item);
@@ -36,6 +36,13 @@ module api.util {
                 }
                 return false;
             });
+        }
+
+        static uniqueCount(array: any[], keyFunction: (item: any) => string): number {
+            return array.map(keyFunction).sort()
+                .reduce((prev, curr, i, arr) => {
+                    return (curr === arr[i+1]) ? prev : (prev + 1);
+                }, 0);
         }
 
         // Non-symmetric difference of A and B
