@@ -5,6 +5,8 @@ module api.ui.selector {
     import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import SelectionOnClickType = api.ui.treegrid.SelectionOnClickType;
     import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
+    import StringHelper = api.util.StringHelper;
+    import TreeNode = api.ui.treegrid.TreeNode;
 
     export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         extends TreeGrid<Option<OPTION_DISPLAY_VALUE>> {
@@ -216,6 +218,18 @@ module api.ui.selector {
                     this.scrollToDefaultOption(parentNode, from);
                 });
             }
+        }
+
+        dataToTreeNode(data: Option<OPTION_DISPLAY_VALUE>, parent: TreeNode<Option<OPTION_DISPLAY_VALUE>>,
+                       expandAllowed: boolean = true): TreeNode<Option<OPTION_DISPLAY_VALUE>> {
+
+           const node = super.dataToTreeNode(data, parent, expandAllowed);
+
+            if (StringHelper.isBlank(node.getDataId()) && !node.getData().value) {
+                node.setEmptyDataId();
+            }
+
+           return node;
         }
 
         private makeEmptyData(): Option<OPTION_DISPLAY_VALUE> {

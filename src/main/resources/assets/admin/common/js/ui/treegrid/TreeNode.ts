@@ -20,6 +20,8 @@ module api.ui.treegrid {
 
         private children: TreeNode<DATA>[];
 
+        private static EMPTY_DATA_ID_PREFFIX = '_empty_';
+
         /**
          * A cache for stashing viewers by name, so that they can be reused.
          */
@@ -213,6 +215,14 @@ module api.ui.treegrid {
                 this.parent.clearViewers();
                 this.parent = null;
             }
+        }
+
+        setEmptyDataId() {
+            this.dataId = TreeNode.EMPTY_DATA_ID_PREFFIX + this.id;
+        }
+
+        isEmptyDataId(): boolean {
+            return this.dataId === '' || this.dataId == TreeNode.EMPTY_DATA_ID_PREFFIX + this.id;
         }
 
         /*
