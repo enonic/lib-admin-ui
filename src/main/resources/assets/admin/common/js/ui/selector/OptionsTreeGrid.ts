@@ -159,7 +159,7 @@ module api.ui.selector {
                 from--;
             }
 
-            return this.loader.fetchChildren(parentNode, from, ContentSelectorQueryRequest.DEFAULT_SIZE).then(
+            return this.loader.fetchChildren(parentNode, from, api.content.resource.ContentSelectorQueryRequest.DEFAULT_SIZE).then(
                 (loadedData: OptionDataLoaderData<OPTION_DISPLAY_VALUE>) => {
                     return this.optionsFactory.createOptions(loadedData.getData()).then((newOptions) => {
 
