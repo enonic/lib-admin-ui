@@ -6,17 +6,17 @@ module api.content {
     import ContentResourceRequest = api.content.resource.ContentResourceRequest;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
-    import ContentTreeSelectorItemJson = api.content.resource.ContentTreeSelectorItemJson;
     import ChildOrder = api.content.order.ChildOrder;
+    import ContentTreeSelectorListJson = api.content.resource.result.ContentTreeSelectorListJson;
 
-    export class ContentTreeSelectorQueryRequest<DATA extends ContentTreeSelectorItem> extends
-        ContentResourceRequest<any, DATA[]> {
+    export class ContentTreeSelectorQueryRequest<DATA extends ContentTreeSelectorItem>
+        extends ContentResourceRequest<any, DATA[]> {
 
         private queryExpr: api.query.expr.QueryExpr;
 
         private from: number = 0;
 
-        private size: number = -1;//ContentTreeSelectorQueryRequest.DEFAULT_SIZE;
+        private size: number = 10;//ContentTreeSelectorQueryRequest.DEFAULT_SIZE;
 
         private expand: api.rest.Expand = api.rest.Expand.SUMMARY;
 
@@ -33,6 +33,8 @@ module api.content {
         private loaded: boolean;
 
         private results: ContentSummary[] = [];
+
+        private metadata: ContentMetadata;
 
         private parentPath: ContentPath;
 
@@ -162,11 +164,17 @@ module api.content {
             };
         }
 
+        getMetadata(): ContentMetadata {
+            return this.metadata;
+        }
+
         sendAndParse(): wemQ.Promise<DATA[]> {
-            return this.send().then((response: api.rest.JsonResponse<ContentTreeSelectorItemJson[]>) => {
-                if (response.getResult() && response.getResult().length > 0) {
-                    return response.getResult().map(json => <any>ContentTreeSelectorItem.fromJson(json));
+            return this.send().then((response: api.rest.JsonResponse<ContentTreeSelectorListJson>) => {
+                if (response.getResult() && response.getResult().items.length > 0) {
+                    this.metadata = new ContentMetadata(response.getResult().metadata['hits'], response.getResult().metadata['totalHits']);
+                    return response.getResult().items.map(json => <any>ContentTreeSelectorItem.fromJson(json));
                 } else {
+                    this.metadata = new ContentMetadata(0, 0);
                     return [];
                 }
             });

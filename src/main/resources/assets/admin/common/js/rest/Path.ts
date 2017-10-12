@@ -64,7 +64,7 @@ module api.rest {
         }
 
         hasParent():boolean {
-            return this.elements.length > 0;
+            return this.elements.length > 1;
         }
 
         getParentPath():Path {

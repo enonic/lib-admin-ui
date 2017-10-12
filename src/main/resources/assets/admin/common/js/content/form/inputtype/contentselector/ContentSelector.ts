@@ -30,6 +30,8 @@ module api.content.form.inputtype.contentselector {
 
         private static loadSummariesResult: Deferred<ContentSummary[]>;
 
+        public static debug: boolean = false;
+
         private static loadSummaries: () => void = api.util.AppHelper.debounce(
             ContentSelector.doFetchSummaries,
             10, false);
@@ -68,7 +70,9 @@ module api.content.form.inputtype.contentselector {
         }
 
         availableSizeChanged() {
-            console.log('Relationship.availableSizeChanged(' + this.getEl().getWidth() + 'x' + this.getEl().getWidth() + ')');
+            if (ContentSelector.debug) {
+                console.log('Relationship.availableSizeChanged(' + this.getEl().getWidth() + 'x' + this.getEl().getWidth() + ')');
+            }
         }
 
         getValueType(): ValueType {

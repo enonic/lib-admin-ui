@@ -1,7 +1,5 @@
 module api.ui.treegrid {
 
-    import Item = api.item.Item;
-
     import Element = api.dom.Element;
     import ElementHelper = api.dom.ElementHelper;
     import ValidationRecordingViewer = api.form.ValidationRecordingViewer;
@@ -9,13 +7,10 @@ module api.ui.treegrid {
     import Grid = api.ui.grid.Grid;
     import GridOptions = api.ui.grid.GridOptions;
     import GridColumn = api.ui.grid.GridColumn;
-    import GridOptionsBuilder = api.ui.grid.GridOptionsBuilder;
     import DataView = api.ui.grid.DataView;
     import KeyBinding = api.ui.KeyBinding;
     import KeyBindings = api.ui.KeyBindings;
 
-    import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
-    import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
     import AppHelper = api.util.AppHelper;
     import ResponsiveItem = api.ui.responsive.ResponsiveItem;
 
@@ -237,15 +232,17 @@ module api.ui.treegrid {
             });
 
             this.onRendered(() => {
-                this.onRenderedHandler(builder);
+                this.grid.resizeCanvas();
             });
 
             this.grid.onShown(() => {
                 this.bindKeys(builder);
+                this.enablePostLoad(builder);
             });
 
             this.grid.onHidden(() => {
                 this.unbindKeys(builder);
+                this.disablePostLoad(builder);
             });
 
             this.grid.subscribeOnSelectedRowsChanged((event, rows) => {
@@ -282,13 +279,16 @@ module api.ui.treegrid {
             });
         }
 
-        private onRenderedHandler(builder: TreeGridBuilder<DATA>) {
-            this.grid.resizeCanvas();
-            if (builder.isPartialLoadEnabled()) {
-                if (this.interval) {
-                    clearInterval(this.interval);
-                }
+        private enablePostLoad(builder: TreeGridBuilder<DATA>) {
+            if (builder.isPartialLoadEnabled() && !this.interval) {
                 this.interval = setInterval(this.postLoad.bind(this), 200);
+            }
+        }
+
+        private disablePostLoad(builder: TreeGridBuilder<DATA>) {
+            if (builder.isPartialLoadEnabled() && this.interval) {
+                clearInterval(this.interval);
+                this.interval = null;
             }
         }
 
@@ -306,10 +306,6 @@ module api.ui.treegrid {
                     KeyBindings.get().unbindKeys(this.keyBindings);
                     KeyBindings.get().unshelveBindings(this.keyBindings);
                 }
-            }
-
-            if (builder.isPartialLoadEnabled() && this.interval) {
-                clearInterval(this.interval);
             }
         }
 
@@ -963,7 +959,7 @@ module api.ui.treegrid {
             const to = Math.min(lastVisible + this.loadBufferSize, lastIndex);
 
             for (let i = from; i <= to; i++) {
-                if (this.gridData.getItem(i) && this.gridData.getItem(i).getDataId() === '') {
+                if (this.gridData.getItem(i) && this.gridData.getItem(i).isEmptyDataId()) {
                     this.loading = true;
                     this.loadEmptyNode(this.gridData.getItem(i));
                     break;

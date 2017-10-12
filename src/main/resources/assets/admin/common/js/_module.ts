@@ -49,6 +49,11 @@
 
 ///<reference path='icon/_module.ts' />
 
+///<reference path='query/expr/_module.ts' />
+///<reference path='query/_module.ts' />
+///<reference path='query/aggregation/_module.ts' />
+///<reference path='query/filter/_module.ts' />
+
 ///<reference path='security/_module.ts' />
 ///<reference path='security/acl/_module.ts' />
 ///<reference path='security/auth/_module.ts' />
@@ -111,11 +116,6 @@
 ///<reference path='site/_module.ts' />
 
 ///<reference path='item/_module.ts' />
-
-///<reference path='query/expr/_module.ts' />
-///<reference path='query/_module.ts' />
-///<reference path='query/aggregation/_module.ts' />
-///<reference path='query/filter/_module.ts' />
 
 ///<reference path='application/_module.ts' />
 ///<reference path='application/json/_module.ts' />

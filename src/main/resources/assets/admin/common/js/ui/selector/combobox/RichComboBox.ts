@@ -274,10 +274,10 @@ module api.ui.selector.combobox {
         }
 
         protected loadOptionsAfterShowDropdown(): wemQ.Promise<void> {
-            return this.reload(this.comboBox.getInput().getValue());
+            return this.reload(this.comboBox.getInput().getValue(), false);
         }
 
-        protected reload(inputValue: string): wemQ.Promise<any> {
+        protected reload(inputValue: string, force: boolean = true): wemQ.Promise<any> {
 
             const deferred = wemQ.defer<void>();
 
