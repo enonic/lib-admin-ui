@@ -22,15 +22,19 @@ module api.ui.button {
             }
 
             this.onClicked((event: MouseEvent) => {
+                event.stopPropagation();
+
                 if (this.isEnabled()) {
                     this.setActive(!this.isActive());
                 }
             });
         }
 
-        setActive(value: boolean) {
+        setActive(value: boolean, silent: boolean = false) {
             this.toggleClass('active', value);
-            this.notifyActiveChanged(value);
+            if(!silent) {
+                this.notifyActiveChanged(value);
+            }
         }
 
         setVisible(value: boolean): TogglerButton {

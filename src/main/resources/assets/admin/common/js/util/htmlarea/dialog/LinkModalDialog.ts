@@ -11,7 +11,6 @@ module api.util.htmlarea.dialog {
     import InputAlignment = api.ui.InputAlignment;
     import TextInput = api.ui.text.TextInput;
     import i18n = api.util.i18n;
-    import ContentSummaryOptionDataLoader = api.content.ContentSummaryOptionDataLoader;
 
     export class LinkModalDialog
         extends ModalDialog {
@@ -279,7 +278,7 @@ module api.util.htmlarea.dialog {
 
         private createContentSelector(getValueFn: Function,
                                       contentTypeNames?: api.schema.content.ContentTypeName[]): api.content.ContentComboBox {
-            const loaderBuilder = ContentSummaryOptionDataLoader.create();
+            const loaderBuilder = api.content.ContentSummaryOptionDataLoader.create();
 
             if (contentTypeNames) {
                 loaderBuilder.setContentTypeNames(contentTypeNames.map(name => name.toString()));

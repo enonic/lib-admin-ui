@@ -17,7 +17,7 @@ module api.ui.selector {
 
         multipleSelections?: boolean;
 
-        isDropdownGrid?: boolean;
+        treegridDropdownAllowed?: boolean;
 
         optionDataHelper?: OptionDataHelper<OPTION_DISPLAY_VALUE>;
 
@@ -127,10 +127,6 @@ module api.ui.selector {
 
         isVisible(): boolean {
             return this.getGrid().isVisible();
-        }
-
-        isTreeGrid(): boolean {
-            return this.config.isDropdownGrid;
         }
 
         show() {

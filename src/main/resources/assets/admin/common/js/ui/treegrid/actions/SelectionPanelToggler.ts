@@ -1,12 +1,19 @@
 module api.ui.treegrid.actions {
 
+    import DivEl = api.dom.DivEl;
     import i18n = api.util.i18n;
+
     export class SelectionPanelToggler extends api.ui.button.TogglerButton {
 
         private tooltip: Tooltip;
 
+        private counterDescription: DivEl;
+
         constructor(treeGrid: TreeGrid<any>) {
             super('selection-toggler');
+
+            this.counterDescription = new DivEl('description');
+            this.appendChild(this.counterDescription);
 
             this.setEnabled(true);
 
@@ -31,7 +38,8 @@ module api.ui.treegrid.actions {
                     const itemCount = fullSelection.length;
                     if (itemCount >= 1) {
                         this.addClass('any-selected');
-                        this.getEl().setAttribute('data-label', i18n(`field.item.${itemCount === 1 ? 'single' : 'multiple'}`));
+                        const description = i18n(`field.item.${itemCount === 1 ? 'single' : 'multiple'}`);
+                        this.counterDescription.getEl().setAttribute('data-label', description);
                     }
                     setTimeout(() => {
                         this.removeClass('updated');

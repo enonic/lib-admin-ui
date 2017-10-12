@@ -187,8 +187,8 @@ module api.app.browse.filter {
             this.doSearch(elementChanged);
         }
 
-        doSearch(elementChanged?: api.dom.Element) {
-            return;
+        doSearch(elementChanged?: api.dom.Element): wemQ.Promise<void>  {
+            return wemQ<void>(null);
         }
 
         refresh() {
@@ -199,19 +199,19 @@ module api.app.browse.filter {
             }
         }
 
-        doRefresh() {
-            return;
+        doRefresh(): wemQ.Promise<void> {
+            return wemQ<void>(null);
         }
 
-        resetConstraints() {
+        resetConstraints(): wemQ.Promise<void> {
             this.removeClass('show-constraint');
             this.selectionSection.reset();
-            this.reset(true);
+            return this.reset(true);
         }
 
-        reset(suppressEvent?: boolean) {
+        reset(suppressEvent?: boolean): wemQ.Promise<void> {
             this.resetControls();
-            this.resetFacets(suppressEvent);
+            return this.resetFacets(suppressEvent);
         }
 
         resetControls() {
@@ -221,7 +221,7 @@ module api.app.browse.filter {
             this.updateResultsTitle(true);
         }
 
-        protected resetFacets(suppressEvent?: boolean, doResetAll?: boolean) {
+        protected resetFacets(suppressEvent?: boolean, doResetAll?: boolean): wemQ.Promise<void> {
             throw new Error('To be implemented by inheritors');
         }
 

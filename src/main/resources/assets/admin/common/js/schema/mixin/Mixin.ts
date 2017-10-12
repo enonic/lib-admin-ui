@@ -76,12 +76,14 @@ module api.schema.mixin {
             super.fromSchemaJson(mixinJson);
 
             this.formItems = [];
-            mixinJson.items.forEach((formItemJson: api.form.json.FormItemJson) => {
-                let formItem = api.form.FormItemFactory.createFormItem(formItemJson);
-                if (formItem) {
-                    this.formItems.push(formItem);
-                }
-            });
+            if(mixinJson.form && mixinJson.form.formItems) {
+                mixinJson.form.formItems.forEach((formItemJson: api.form.json.FormItemJson) => {
+                    let formItem = api.form.FormItemFactory.createFormItem(formItemJson);
+                    if (formItem) {
+                        this.formItems.push(formItem);
+                    }
+                });
+            }
             this.schemaKey = 'mixin:' + this.name;
             return this;
         }

@@ -4,7 +4,6 @@ module api.liveedit.part {
     import SiteModel = api.content.site.SiteModel;
     import PartComponent = api.content.page.region.PartComponent;
     import PartDescriptor = api.content.page.region.PartDescriptor;
-    import PartDescriptorLoader = api.content.page.region.PartDescriptorLoader;
     import PartDescriptorComboBox = api.content.page.region.PartDescriptorComboBox;
     import PartItemType = api.liveedit.part.PartItemType;
     import PageItemType = api.liveedit.PageItemType;
@@ -38,14 +37,16 @@ module api.liveedit.part {
 
             let siteModel = partView.getLiveEditModel().getSiteModel();
 
-            let listener = () => this.reloadDescriptorsOnApplicationChange(siteModel);
+            let listener = () => this.reloadDescriptors(siteModel);
 
             siteModel.onApplicationAdded(listener);
             siteModel.onApplicationRemoved(listener);
+            siteModel.onSiteModelUpdated(listener);
 
             this.onRemoved(() => {
                 siteModel.unApplicationAdded(listener);
                 siteModel.unApplicationRemoved(listener);
+                siteModel.unSiteModelUpdated(listener);
             });
 
             this.displayName = new api.dom.H3El('display-name');
@@ -56,7 +57,7 @@ module api.liveedit.part {
             }
         }
 
-        private reloadDescriptorsOnApplicationChange(siteModel: SiteModel) {
+        private reloadDescriptors(siteModel: SiteModel) {
             this.comboBox.loadDescriptors(siteModel.getApplicationKeys());
         }
 

@@ -12,13 +12,13 @@ module api.ui.responsive {
 
         private oldRangeValue: number;         // Range (width) value of the previous state
 
-        private handle: Function;              // Additional handler on update
+        private handler: Function;              // Additional handler on update
 
-        constructor(element: api.dom.Element, handler: (item: ResponsiveItem) => void = ((item: ResponsiveItem) => { /* empty */ })) {
+        constructor(element: api.dom.Element, handler?: (item: ResponsiveItem) => void) {
             this.element = element;
             this.rangeValue = this.element.getEl().getWidthWithBorder();
             this.oldRangeValue = this.rangeValue;
-            this.handle = handler;
+            this.handler = handler;
             this.fitToRange();
             this.element.getEl().addClass(this.rangeSize.getRangeClass());
         }
@@ -54,7 +54,9 @@ module api.ui.responsive {
                 this.fitToRange(); // update rangeSize
                 this.element.getEl().addClass(this.rangeSize.getRangeClass());
             }
-            this.handle.call(this, this); // Additional handler
+            if (this.handler) {
+                this.handler.call(this, this); // Additional handler
+            }
         }
 
         isRangeSizeChanged(): boolean {
@@ -62,7 +64,7 @@ module api.ui.responsive {
         }
 
         setHandler(handler: (item: ResponsiveItem) => void = ((item: ResponsiveItem) => { /* empty */ })) {
-            this.handle = handler;
+            this.handler = handler;
         }
 
         getRangeValue(): number {

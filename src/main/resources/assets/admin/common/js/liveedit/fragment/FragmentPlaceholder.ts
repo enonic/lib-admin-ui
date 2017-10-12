@@ -30,7 +30,7 @@ module api.liveedit.fragment {
                 api.content.ContentComboBox.create().setMaximumOccurrences(1)
                     .setLoader(loader)
                     .setMinWidth(270)
-                    .setTreegridDropdownEnabled(false).build();
+                    .setTreeModeTogglerAllowed(false).build();
 
             this.comboboxWrapper.appendChildren(this.comboBox);
             this.appendChild(this.comboboxWrapper);
