@@ -1,0 +1,52 @@
+
+Licenses used by Enonic XP Admin UI library
+
+    CodeMirror
+    MIT License
+    https://github.com/codemirror/CodeMirror/blob/master/LICENSE
+
+    Crossroads.js
+    MIT License
+    http://millermedeiros.github.io/crossroads.js
+
+    Fine Uploader
+    MIT License
+    http://fineuploader.com/
+
+    Hasher
+    MIT License
+    http://github.com/millermedeiros/hasher
+
+    IcoMoon icons (Ultimate Pack)
+    Friendly license (Need seperate development licenses for developing software using the icons.)
+    https://icomoon.io/#icons-icomoon/license
+
+    JQuery
+    MIT License
+    https://jquery.org/license/
+
+    Mousetrap
+    Apache 2.0
+    https://github.com/ccampbell/mousetrap
+
+    Q.js
+    MIT License
+    https://github.com/kriskowal/q/blob/v1/LICENSE
+
+    Signals
+    MIT License
+    http://millermedeiros.github.com/js-signals
+
+    SlickGrid
+    MIT License
+    https://github.com/mleibman/SlickGrid/blob/master/MIT-LICENSE.txt
+
+    Tiny MCE
+    GNU LGPL 2.1
+    https://raw.githubusercontent.com/tinymce/tinymce/master/LICENSE.TXT
+
+    Web Components
+    BSD "style" license:
+    https://github.com/webcomponents/webcomponentsjs/blob/master/LICENSE.md
+
+

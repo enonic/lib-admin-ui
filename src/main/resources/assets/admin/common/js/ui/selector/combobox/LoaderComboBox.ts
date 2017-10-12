@@ -73,6 +73,8 @@ module api.ui.selector.combobox {
                     }
                     callback(data);
                     this.loader.unLoadedData(singleLoadListener);
+
+                    return wemQ(null);
                 });
                 this.loader.onLoadedData(singleLoadListener);
                 if (!api.util.StringHelper.isEmpty(value) && this.loader.isNotStarted()) {

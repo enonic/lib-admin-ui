@@ -1,13 +1,10 @@
 module api.form.inputtype.text {
 
-    import support = api.form.inputtype.support;
     import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
     import i18n = api.util.i18n;
-    import NumberHelper = api.util.NumberHelper;
-    import DivEl = api.dom.DivEl;
     import FormInputEl = api.dom.FormInputEl;
     import Element = api.dom.Element;
     import StringHelper = api.util.StringHelper;
@@ -47,9 +44,9 @@ module api.form.inputtype.text {
             inputEl.setName(this.getInput().getName() + '-' + index);
 
             inputEl.onValueChanged((event: api.ValueChangedEvent) => {
-                let isValid = this.isValid(event.getNewValue(), inputEl);
-                let value = isValid ? ValueTypes.STRING.newValue(event.getNewValue()) : this.newInitialValue();
-                this.notifyOccurrenceValueChanged(inputEl, value);
+                const isValid = this.isValid(event.getNewValue(), inputEl);
+                this.newValueHandler(inputEl, event.getNewValue(), isValid);
+
                 inputEl.updateValidationStatusOnUserInput(isValid);
 
             });

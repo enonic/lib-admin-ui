@@ -49,6 +49,11 @@
 
 ///<reference path='icon/_module.ts' />
 
+///<reference path='query/expr/_module.ts' />
+///<reference path='query/_module.ts' />
+///<reference path='query/aggregation/_module.ts' />
+///<reference path='query/filter/_module.ts' />
+
 ///<reference path='security/_module.ts' />
 ///<reference path='security/acl/_module.ts' />
 ///<reference path='security/auth/_module.ts' />
@@ -112,11 +117,6 @@
 
 ///<reference path='item/_module.ts' />
 
-///<reference path='query/expr/_module.ts' />
-///<reference path='query/_module.ts' />
-///<reference path='query/aggregation/_module.ts' />
-///<reference path='query/filter/_module.ts' />
-
 ///<reference path='application/_module.ts' />
 ///<reference path='application/json/_module.ts' />
 
@@ -132,6 +132,7 @@
 ///<reference path='content/json/_module.ts' />
 ///<reference path='content/query/_module.ts' />
 ///<reference path='content/attachment/_module.ts' />
+///<reference path='content/button/_module.ts' />
 ///<reference path='content/event/_module.ts' />
 ///<reference path='content/resource/result/_module.ts' />
 ///<reference path='content/resource/_module.ts' />

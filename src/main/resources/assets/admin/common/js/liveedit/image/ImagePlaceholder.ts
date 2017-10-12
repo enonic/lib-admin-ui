@@ -34,8 +34,7 @@ module api.liveedit.image {
             this.comboBox = api.content.image.ImageContentComboBox.create().
                 setMaximumOccurrences(1).
                 setLoader(loader).
-                 setContent(imageView.getLiveEditModel().getContent()).
-                 setTreegridDropdownEnabled(true).
+                setContent(imageView.getLiveEditModel().getContent()).
                 setMinWidth(270).
                 build();
 

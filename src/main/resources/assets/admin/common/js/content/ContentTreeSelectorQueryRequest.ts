@@ -1,34 +1,22 @@
 module api.content {
 
-    import FieldOrderExpr = api.query.expr.FieldOrderExpr;
-    import FieldExpr = api.query.expr.FieldExpr;
-    import OrderDirection = api.query.expr.OrderDirection;
-    import OrderExpr = api.query.expr.OrderExpr;
     import QueryExpr = api.query.expr.QueryExpr;
     import Expression = api.query.expr.Expression;
     import QueryField = api.query.QueryField;
     import ContentResourceRequest = api.content.resource.ContentResourceRequest;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
-    import ContentTreeSelectorItemJson = api.content.resource.ContentTreeSelectorItemJson;
+    import ChildOrder = api.content.order.ChildOrder;
+    import ContentTreeSelectorListJson = api.content.resource.result.ContentTreeSelectorListJson;
 
-    export class ContentTreeSelectorQueryRequest<DATA extends ContentTreeSelectorItem> extends
-        ContentResourceRequest<any, DATA[]> {
-
-        public static DEFAULT_SIZE: number = 15;
-
-        public static MODIFIED_TIME_DESC: FieldOrderExpr = new FieldOrderExpr(new FieldExpr('modifiedTime'), OrderDirection.DESC);
-
-        public static SCORE_DESC: FieldOrderExpr = new FieldOrderExpr(new FieldExpr('_score'), OrderDirection.DESC);
-
-        public static DEFAULT_ORDER: OrderExpr[] = [ContentTreeSelectorQueryRequest.SCORE_DESC,
-            ContentTreeSelectorQueryRequest.MODIFIED_TIME_DESC];
+    export class ContentTreeSelectorQueryRequest<DATA extends ContentTreeSelectorItem>
+        extends ContentResourceRequest<any, DATA[]> {
 
         private queryExpr: api.query.expr.QueryExpr;
 
         private from: number = 0;
 
-        private size: number = -1;//ContentTreeSelectorQueryRequest.DEFAULT_SIZE;
+        private size: number = 10;//ContentTreeSelectorQueryRequest.DEFAULT_SIZE;
 
         private expand: api.rest.Expand = api.rest.Expand.SUMMARY;
 
@@ -46,7 +34,11 @@ module api.content {
 
         private results: ContentSummary[] = [];
 
+        private metadata: ContentMetadata;
+
         private parentPath: ContentPath;
+
+        private childOrder: ChildOrder;
 
         constructor() {
             super();
@@ -106,8 +98,9 @@ module api.content {
             this.queryExpr = new QueryExpr(fulltextExpression, ContentSelectorQueryRequest.DEFAULT_ORDER);
         }
 
-        setParentPath(parentPath: ContentPath) {
-            this.parentPath = parentPath;
+        setParentContent(content: ContentSummary) {
+            this.parentPath = content ? content.getPath() : null;
+            this.childOrder = content ? content.getChildOrder() : null;
         }
 
         protected createSearchExpression(searchString: string): Expression {
@@ -166,15 +159,22 @@ module api.content {
                 contentTypeNames: this.contentTypeNames,
                 allowedContentPaths: this.allowedContentPaths,
                 relationshipType: this.relationshipType,
-                parentPath: this.parentPath ? this.parentPath.toString() : null
+                parentPath: this.parentPath ? this.parentPath.toString() : null,
+                childOrder: this.childOrder ? this.childOrder.toString() : ''
             };
         }
 
+        getMetadata(): ContentMetadata {
+            return this.metadata;
+        }
+
         sendAndParse(): wemQ.Promise<DATA[]> {
-            return this.send().then((response: api.rest.JsonResponse<ContentTreeSelectorItemJson[]>) => {
-                if (response.getResult() && response.getResult().length > 0) {
-                    return response.getResult().map(json => <any>ContentTreeSelectorItem.fromJson(json));
+            return this.send().then((response: api.rest.JsonResponse<ContentTreeSelectorListJson>) => {
+                if (response.getResult() && response.getResult().items.length > 0) {
+                    this.metadata = new ContentMetadata(response.getResult().metadata['hits'], response.getResult().metadata['totalHits']);
+                    return response.getResult().items.map(json => <any>ContentTreeSelectorItem.fromJson(json));
                 } else {
+                    this.metadata = new ContentMetadata(0, 0);
                     return [];
                 }
             });

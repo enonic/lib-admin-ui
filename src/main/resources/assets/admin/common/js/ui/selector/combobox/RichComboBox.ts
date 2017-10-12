@@ -28,8 +28,6 @@ module api.ui.selector.combobox {
 
         private interval: number;
 
-        protected treegridDropdownEnabled: boolean;
-
         public static debug: boolean = false;
 
         constructor(builder: RichComboBoxBuilder<OPTION_DISPLAY_VALUE>) {
@@ -41,7 +39,6 @@ module api.ui.selector.combobox {
             this.loadingListeners = [];
             this.identifierMethod = builder.identifierMethod;
             this.selectedOptionsView = builder.selectedOptionsView;
-            this.treegridDropdownEnabled = builder.treegridDropdownEnabled;
             this.errorContainer = new api.dom.DivEl('error-container');
 
             this.setupLoader();
@@ -69,7 +66,7 @@ module api.ui.selector.combobox {
             return comboBox;
         }
 
-        private createComboboxConfig(builder: RichComboBoxBuilder<OPTION_DISPLAY_VALUE>): ComboBoxConfig<OPTION_DISPLAY_VALUE> {
+        protected createComboboxConfig(builder: RichComboBoxBuilder<OPTION_DISPLAY_VALUE>): ComboBoxConfig<OPTION_DISPLAY_VALUE> {
             return {
                 maximumOccurrences: builder.maximumOccurrences,
                 selectedOptionsView: builder.selectedOptionsView,
@@ -84,7 +81,6 @@ module api.ui.selector.combobox {
                 displayMissingSelectedOptions: builder.displayMissingSelectedOptions,
                 removeMissingSelectedOptions: builder.removeMissingSelectedOptions,
                 skipAutoDropShowOnValueChange: true,
-                treegridDropdownEnabled: builder.treegridDropdownEnabled,
                 optionDataHelper: builder.optionDataHelper,
                 optionDataLoader: api.ObjectHelper.iFrameSafeInstanceOf(builder.loader, OptionDataLoader)
                     ? <OptionDataLoader<OPTION_DISPLAY_VALUE>>builder.loader
@@ -110,17 +106,15 @@ module api.ui.selector.combobox {
                     clearInterval(this.interval);
                 }
                 this.interval = setInterval(() => {
-                    if (!this.isDataGridSelfLoading()) {
-                        grid = this.getComboBox().getComboBoxDropdownGrid().getGrid();
-                        let canvas = grid.getCanvasNode();
-                        let canvasEl = new api.dom.ElementHelper(canvas);
-                        let viewportEl = new api.dom.ElementHelper(canvas.parentElement);
+                    grid = this.getComboBox().getComboBoxDropdownGrid().getGrid();
+                    let canvas = grid.getCanvasNode();
+                    let canvasEl = new api.dom.ElementHelper(canvas);
+                    let viewportEl = new api.dom.ElementHelper(canvas.parentElement);
 
-                        let isLastRange = viewportEl.getScrollTop() >= canvasEl.getHeight() - 3 * viewportEl.getHeight();
+                    let isLastRange = viewportEl.getScrollTop() >= canvasEl.getHeight() - 3 * viewportEl.getHeight();
 
-                        if (isLastRange) {
-                            handler();
-                        }
+                    if (isLastRange) {
+                        handler();
                     }
                 }, 200);
             });
@@ -279,15 +273,11 @@ module api.ui.selector.combobox {
             };
         }
 
-        private isDataGridSelfLoading(): boolean { // if its a tree grid and there is no filter - it will load data itself
-            return this.treegridDropdownEnabled && this.comboBox.isInputEmpty();
-        }
-
         protected loadOptionsAfterShowDropdown(): wemQ.Promise<void> {
-            return this.reload(this.comboBox.getInput().getValue());
+            return this.reload(this.comboBox.getInput().getValue(), false);
         }
 
-        protected reload(inputValue: string): wemQ.Promise<any> {
+        protected reload(inputValue: string, force: boolean = true): wemQ.Promise<any> {
 
             const deferred = wemQ.defer<void>();
 
@@ -335,9 +325,10 @@ module api.ui.selector.combobox {
 
         private handleLoadedData(event: api.util.loader.event.LoadedDataEvent<OPTION_DISPLAY_VALUE>) {
             this.errorContainer.hide();
-            this.createOptions(event.getData()).then(options => {
+            return this.createOptions(event.getData()).then(options => {
                 this.comboBox.setOptions(options, event.isPostLoad());
                 this.notifyLoaded(event.getData(), event.isPostLoad());
+                return;
             });
         }
 
@@ -397,7 +388,7 @@ module api.ui.selector.combobox {
             this.loadedListeners.splice(index, 1);
         }
 
-        private notifyLoaded(items: OPTION_DISPLAY_VALUE[], postLoaded?: boolean) {
+        protected notifyLoaded(items: OPTION_DISPLAY_VALUE[], postLoaded?: boolean) {
             this.loadedListeners.forEach((listener) => {
                 listener(items, postLoaded);
             });
@@ -465,8 +456,6 @@ module api.ui.selector.combobox {
         removeMissingSelectedOptions: boolean;
 
         skipAutoDropShowOnValueChange: boolean;
-
-        treegridDropdownEnabled: boolean;
 
         optionDataHelper: OptionDataHelper<T>;
 
@@ -553,11 +542,6 @@ module api.ui.selector.combobox {
 
         setSkipAutoDropShowOnValueChange(value: boolean): RichComboBoxBuilder<T> {
             this.skipAutoDropShowOnValueChange = value;
-            return this;
-        }
-
-        setTreegridDropdownEnabled(value: boolean): RichComboBoxBuilder<T> {
-            this.treegridDropdownEnabled = value;
             return this;
         }
 
