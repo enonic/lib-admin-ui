@@ -17,7 +17,6 @@ module api.security.event {
             this.id = id;
         }
 
-
         getId(): string {
             return this.id;
         }

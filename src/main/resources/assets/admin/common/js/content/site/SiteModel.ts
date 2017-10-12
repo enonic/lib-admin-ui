@@ -26,6 +26,8 @@ module api.content.site {
 
         private applicationStartedListeners: {(applicationEvent: ApplicationEvent): void}[] = [];
 
+        private siteModelUpdatedListeners: {(): void}[] = [];
+
         constructor(site: Site) {
             this.initApplicationPropertyListeners();
             this.setup(site);
@@ -83,6 +85,8 @@ module api.content.site {
             if (site) {
                 this.setup(site);
             }
+
+            this.notifySiteModelUpdated();
         }
 
         getSite(): Site {
@@ -182,6 +186,23 @@ module api.content.site {
         private notifyApplicationStarted(applicationEvent: ApplicationEvent) {
             this.applicationStartedListeners.forEach((listener: (applicationEvent: ApplicationEvent)=>void) => {
                 listener(applicationEvent);
+            });
+        }
+
+        onSiteModelUpdated(listener: ()=>void) {
+            this.siteModelUpdatedListeners.push(listener);
+        }
+
+        unSiteModelUpdated(listener: ()=>void) {
+            this.siteModelUpdatedListeners =
+                this.siteModelUpdatedListeners.filter((curr: ()=>void) => {
+                    return listener !== curr;
+                });
+        }
+
+        private notifySiteModelUpdated() {
+            this.siteModelUpdatedListeners.forEach((listener: ()=>void) => {
+                listener();
             });
         }
     }

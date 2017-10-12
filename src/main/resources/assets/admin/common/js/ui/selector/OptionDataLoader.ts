@@ -1,10 +1,10 @@
 module api.ui.selector {
 
     import TreeNode = api.ui.treegrid.TreeNode;
-    import BaseLoader = api.util.loader.BaseLoader;
+    import PostLoader = api.util.loader.PostLoader;
 
     export abstract class OptionDataLoader<DATA>
-        extends BaseLoader<JSON, DATA> {
+        extends PostLoader<JSON, DATA> {
 
         abstract fetch(node: TreeNode<Option<DATA>>): wemQ.Promise<DATA>;
 
@@ -12,9 +12,9 @@ module api.ui.selector {
 
         abstract checkReadonly(options: DATA[]): wemQ.Promise<string[]>;
 
-        abstract onLoadModeChanged(listener: (isFlat: boolean) => void);
+        abstract onLoadModeChanged(listener: (isTreeMode: boolean) => void);
 
-        abstract unLoadModeChanged(listener: (isFlat: boolean) => void);
+        abstract unLoadModeChanged(listener: (isTreeMode: boolean) => void);
     }
 
     export class OptionDataLoaderData<DATA> {

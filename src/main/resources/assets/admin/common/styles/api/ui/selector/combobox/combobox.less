@@ -21,6 +21,10 @@
     padding-left: 50px;
   }
 
+  .mode-toggler-button + .option-filter-input {
+    padding-left: 50px !important;
+  }
+
   .apply-button {
     position: absolute;
     height: 28px;
@@ -86,7 +90,7 @@
         min-width: 16px;
         min-height: 16px;
         margin: 0;
-        background: url("../../../../../images/admin-unchecked.gif") center no-repeat;
+        background: url("../../../../../images/box-unchecked.gif") center no-repeat;
       }
 
       input[type="checkbox"] {
@@ -94,14 +98,13 @@
       }
 
       &.selected label {
-        background: url("../../../../../images/admin-checked.gif") center no-repeat;
+        background: url("../../../../../images/box-checked.gif") center no-repeat;
       }
 
     }
 
     .slick-cell {
       .option-cell();
-      height: 50px;
     }
   }
 

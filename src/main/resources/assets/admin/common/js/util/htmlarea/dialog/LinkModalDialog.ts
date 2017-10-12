@@ -11,7 +11,6 @@ module api.util.htmlarea.dialog {
     import InputAlignment = api.ui.InputAlignment;
     import TextInput = api.ui.text.TextInput;
     import i18n = api.util.i18n;
-    import ContentSummaryOptionDataLoader = api.content.ContentSummaryOptionDataLoader;
 
     export class LinkModalDialog
         extends ModalDialog {
@@ -229,8 +228,8 @@ module api.util.htmlarea.dialog {
             this.initTabNames();
 
             let dockedPanel = new DockedPanel();
-            dockedPanel.addItem(this.tabNames.content, true, this.createContentPanel());
             dockedPanel.addItem(this.tabNames.url, true, this.createUrlPanel());
+            dockedPanel.addItem(this.tabNames.content, true, this.createContentPanel());
             dockedPanel.addItem(this.tabNames.download, true, this.createDownloadPanel());
             dockedPanel.addItem(this.tabNames.email, true, this.createEmailPanel());
 
@@ -279,7 +278,7 @@ module api.util.htmlarea.dialog {
 
         private createContentSelector(getValueFn: Function,
                                       contentTypeNames?: api.schema.content.ContentTypeName[]): api.content.ContentComboBox {
-            const loaderBuilder = ContentSummaryOptionDataLoader.create();
+            const loaderBuilder = api.content.ContentSummaryOptionDataLoader.create();
 
             if (contentTypeNames) {
                 loaderBuilder.setContentTypeNames(contentTypeNames.map(name => name.toString()));

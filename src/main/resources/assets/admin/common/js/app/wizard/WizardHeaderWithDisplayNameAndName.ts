@@ -57,9 +57,9 @@ module api.app.wizard {
             this.appendChild(this.pathEl);
 
             this.nameEl = api.ui.text.AutosizeTextInput.middle().setForbiddenCharsRe(this.forbiddenChars);
-            this.nameEl.setPlaceholder('<name>').setName('name');
+            this.nameEl.setPlaceholder('<' + i18n('field.path') + '>').setName('name');
             this.nameEl.onValueChanged((event: api.ValueChangedEvent) => {
-                this.notifyPropertyChanged('<' + i18n('field.item.name') + '>', event.getOldValue(), event.getNewValue());
+                this.notifyPropertyChanged('<' + i18n('field.path') + '>', event.getOldValue(), event.getNewValue());
             });
             this.appendChild(this.nameEl);
 

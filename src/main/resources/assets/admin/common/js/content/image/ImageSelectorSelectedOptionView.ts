@@ -1,6 +1,7 @@
 module api.content.image {
 
     import LoadMask = api.ui.mask.LoadMask;
+    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
 
     export class ImageSelectorSelectedOptionView
         extends api.ui.selector.combobox.BaseSelectedOptionView<ImageTreeSelectorItem> {
@@ -98,6 +99,8 @@ module api.content.image {
                 if (this.getOption().displayValue.getContentSummary()) {
                     this.showResult();
                 }
+
+                ResponsiveManager.fireResizeEvent();
             });
 
             return wemQ(true);

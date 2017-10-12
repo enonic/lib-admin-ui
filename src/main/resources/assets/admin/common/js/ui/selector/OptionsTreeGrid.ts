@@ -4,6 +4,8 @@ module api.ui.selector {
     import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
     import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import SelectionOnClickType = api.ui.treegrid.SelectionOnClickType;
+    import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
+    import StringHelper = api.util.StringHelper;
 
     export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         extends TreeGrid<Option<OPTION_DISPLAY_VALUE>> {
@@ -58,8 +60,9 @@ module api.ui.selector {
         }
 
         setOptions(options: Option<OPTION_DISPLAY_VALUE>[]) {
-            this.removeAllOptions();
-
+            if (this.isTreeModeEnabled()) {
+                this.removeAllOptions();
+            }
             const data = this.dataToTreeNodes(options, this.getRoot().getCurrentRoot());
 
             this.getRoot().getCurrentRoot().setChildren(data);
@@ -84,7 +87,7 @@ module api.ui.selector {
         }
 
         reload(parentNodeData?: Option<OPTION_DISPLAY_VALUE>): wemQ.Promise<void> {
-            this.toggleFlatMode(false);
+            this.toggleTreeMode(true);
             return super.reload(parentNodeData).then(() => {
                 if (this.defaultOption && !this.isDefaultOptionActive) {
                     this.scrollToDefaultOption(this.getRoot().getCurrentRoot(), 0);
@@ -99,14 +102,18 @@ module api.ui.selector {
 
         private initLoaderListeners() {
             if (this.loader) {
-                this.loader.onLoadModeChanged((isFlat: boolean) => {
-                    this.toggleFlatMode(isFlat);
+                this.loader.onLoadModeChanged((isTreeMode: boolean) => {
+                    this.toggleTreeMode(isTreeMode);
                 });
             }
         }
 
-        private toggleFlatMode(isFlat: boolean) {
-            this.toggleClass('flat', isFlat);
+        private toggleTreeMode(isTreeMode: boolean) {
+            this.toggleClass('tree-mode', isTreeMode);
+        }
+
+        private isTreeModeEnabled(): boolean {
+            return this.hasClass('tree-mode');
         }
 
         private initEventHandlers() {
@@ -153,7 +160,7 @@ module api.ui.selector {
                 from--;
             }
 
-            return this.loader.fetchChildren(parentNode).then(
+            return this.loader.fetchChildren(parentNode, from, api.content.resource.ContentSelectorQueryRequest.DEFAULT_SIZE).then(
                 (loadedData: OptionDataLoaderData<OPTION_DISPLAY_VALUE>) => {
                     return this.optionsFactory.createOptions(loadedData.getData()).then((newOptions) => {
 
@@ -210,6 +217,18 @@ module api.ui.selector {
                     this.scrollToDefaultOption(parentNode, from);
                 });
             }
+        }
+
+        dataToTreeNode(data: Option<OPTION_DISPLAY_VALUE>, parent: TreeNode<Option<OPTION_DISPLAY_VALUE>>,
+                       expandAllowed: boolean = true): TreeNode<Option<OPTION_DISPLAY_VALUE>> {
+
+           const node = super.dataToTreeNode(data, parent, expandAllowed);
+
+            if (StringHelper.isBlank(node.getDataId()) && !node.getData().value) {
+                node.setEmptyDataId();
+            }
+
+           return node;
         }
 
         private makeEmptyData(): Option<OPTION_DISPLAY_VALUE> {
