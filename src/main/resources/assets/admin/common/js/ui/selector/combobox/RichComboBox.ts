@@ -278,24 +278,14 @@ module api.ui.selector.combobox {
         }
 
         protected reload(inputValue: string, force: boolean = true): wemQ.Promise<any> {
-
-            const deferred = wemQ.defer<void>();
-
-            if (!StringHelper.isBlank(inputValue)) {
-                this.loader.search(inputValue).then((result: OPTION_DISPLAY_VALUE[]) => {
-                    deferred.resolve(null);
-                }).catch((reason: any) => {
-                    api.DefaultErrorHandler.handle(reason);
-                }).done();
-            } else {
-                this.loader.load().then(() => {
-                    deferred.resolve(null);
-                }).catch((reason: any) => {
-                    api.DefaultErrorHandler.handle(reason);
-                }).done();
+            if (!force) {
+                if (this.getOptions().length > 0 && !this.loader.isPreLoaded()) {
+                    return wemQ(null);
+                }
             }
-
-            return deferred.promise;
+            return this.loader.search(inputValue).then((result: OPTION_DISPLAY_VALUE[]) => {
+                return null;
+            }).catch(api.DefaultErrorHandler.handle);
         }
 
         private setupLoader() {

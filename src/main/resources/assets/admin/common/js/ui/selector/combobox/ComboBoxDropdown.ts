@@ -20,7 +20,9 @@ module api.ui.selector.combobox {
             });
 
             // `from` is used to determine, from which point should selection be updated
-            let from = this.getDropdownGrid().getOptionCount();
+            const from = this.getDropdownGrid().getOptionCount();
+
+            const gridSelection = this.getDropdownGrid().getSelectedOptions();
 
             this.getDropdownGrid().setOptions(options);
 
@@ -30,8 +32,7 @@ module api.ui.selector.combobox {
                 // Save the current grid selection and restore the selection for the new items,
                 // according to the selected options
                 if (saveSelection) {
-                    let gridSelection = this.getDropdownGrid().getSelectedOptions();
-                    let newSelection = selectedOptions.filter((option) => {
+                    const newSelection = selectedOptions.filter((option) => {
                         return this.getDropdownGrid().getRowByValue(option.value) >= from;
                     });
 
