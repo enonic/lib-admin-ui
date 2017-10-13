@@ -11,6 +11,7 @@ module api.content {
     import ContentAndStatusTreeSelectorItem = api.content.resource.ContentAndStatusTreeSelectorItem;
     import CompareContentResult = api.content.resource.result.CompareContentResult;
     import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
+    import GetContentSummaryByIds = api.content.resource.GetContentSummaryByIds;
 
     export class ContentSummaryOptionDataLoader<DATA extends ContentTreeSelectorItem>
         extends OptionDataLoader<DATA> {
@@ -55,6 +56,15 @@ module api.content {
             this.flatRequest.setAllowedContentPaths(builder.allowedContentPaths);
             this.flatRequest.setRelationshipType(builder.relationshipType);
             this.flatRequest.setContent(builder.content);
+        }
+
+        protected sendPreLoadRequest(ids: string): Q.Promise<DATA[]> {
+            let contentIds = ids.split(';').map((id) => {
+                return new ContentId(id);
+            });
+            return new GetContentSummaryByIds(contentIds).sendAndParse().then(((contents: ContentSummary[]) => {
+                return <DATA[]>contents.map(content => new ContentTreeSelectorItem(content, false));
+            }));
         }
 
         setContent(content: ContentSummary) {
