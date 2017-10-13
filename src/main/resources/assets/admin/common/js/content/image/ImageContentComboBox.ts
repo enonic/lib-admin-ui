@@ -130,7 +130,7 @@ module api.content.image {
             } else if (api.ObjectHelper.iFrameSafeInstanceOf(data, ContentSummary)) {
                 option = {
                     value: (<ContentSummary>data).getId(),
-                    displayValue: new ImageTreeSelectorItem(<ContentSummary>data, false),
+                    displayValue: new ImageTreeSelectorItem(<ContentSummary>data),
                     disabled: null
                 };
             }

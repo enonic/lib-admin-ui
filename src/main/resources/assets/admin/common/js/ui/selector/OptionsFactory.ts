@@ -26,7 +26,8 @@ module api.ui.selector {
         createOption(data: OPTION_DISPLAY_VALUE, isReadonly: boolean = false): Option<OPTION_DISPLAY_VALUE> {
             return {
                 value: this.helper.getDataId(data),
-                disabled: this.helper.isDisabled(data),
+                expandable: this.helper.isExpandable(data),
+                selectable: this.helper.isSelectable(data),
                 displayValue: data,
                 readOnly: isReadonly
             };

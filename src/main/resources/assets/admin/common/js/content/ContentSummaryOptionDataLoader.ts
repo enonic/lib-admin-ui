@@ -78,7 +78,7 @@ module api.content {
             return this.flatRequest.sendAndParse().then((contents: ContentSummary[]) => {
 
                 const result = contents.map(
-                    content => new ContentTreeSelectorItem(content, false));
+                    content => new ContentTreeSelectorItem(content));
 
                 this.isTreeLoadMode = false;
                 this.notifyLoadModeChanged(false);
@@ -108,7 +108,7 @@ module api.content {
             } else {
                 return this.flatRequest.sendAndParse().then((contents) => {
                     const result = contents.map(
-                        content => new ContentTreeSelectorItem(content, false));
+                        content => new ContentTreeSelectorItem(content));
 
                     if (this.loadStatus) {
                         return this.loadStatuses(<DATA[]>result).then(resultWithStatuses => {
@@ -164,7 +164,7 @@ module api.content {
                 const deferred = wemQ.defer<DATA[]>();
 
                 deferred.resolve(items.map((item: DATA) => {
-                    return <any> new ContentTreeSelectorItem(item.getContent(), item.getExpand());
+                    return <any>new ContentTreeSelectorItem(item.getContent(), item.isSelectable(), item.isExpandable());
                 }));
 
                 return deferred.promise;
@@ -181,7 +181,7 @@ module api.content {
                         const contentAndCompareStatus = ContentSummaryAndCompareStatus.fromContentAndCompareAndPublishStatus(
                             item.getContent(), compareResult.getCompareStatus(), compareResult.getPublishStatus());
 
-                        return <any>new ContentAndStatusTreeSelectorItem(contentAndCompareStatus, item.getExpand());
+                        return <any>new ContentAndStatusTreeSelectorItem(contentAndCompareStatus, item.isSelectable());
                     });
                 });
         }

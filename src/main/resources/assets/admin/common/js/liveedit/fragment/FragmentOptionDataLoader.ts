@@ -27,7 +27,7 @@ module api.liveedit.fragment {
             return req.sendAndParse().then((contents: ContentSummary[]) => {
 
                 const result = contents.map(
-                    content => new ContentTreeSelectorItem(content, false));
+                    content => new ContentTreeSelectorItem(content));
 
                 this.notifyLoadedData(result);
                 return result;

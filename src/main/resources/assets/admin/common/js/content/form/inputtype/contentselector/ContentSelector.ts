@@ -127,7 +127,7 @@ module api.content.form.inputtype.contentselector {
 
                 //TODO: original value doesn't work because of additional request, so have to select manually
                 contents.forEach((content: api.content.ContentSummary) => {
-                    this.contentComboBox.select(new ContentTreeSelectorItem(content, false));
+                    this.contentComboBox.select(new ContentTreeSelectorItem(content));
                 });
 
                 this.contentComboBox.getSelectedOptions().forEach((selectedOption: SelectedOption<ContentTreeSelectorItem>) => {
