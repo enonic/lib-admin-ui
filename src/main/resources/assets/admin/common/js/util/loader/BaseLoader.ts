@@ -1,7 +1,5 @@
 module api.util.loader {
 
-    import LoaderEvents = api.util.loader.event.LoaderEvents;
-    import LoaderEvent = api.util.loader.event.LoaderEvent;
     import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
     import LoadingDataEvent = api.util.loader.event.LoadingDataEvent;
     import LoaderErrorEvent = api.util.loader.event.LoaderErrorEvent;
@@ -9,7 +7,8 @@ module api.util.loader {
     enum LoaderStatus {
         NOT_STARTED,
         LOADING,
-        LOADED
+        LOADED,
+        PRE_LOADED
     }
 
     export class BaseLoader<JSON, OBJECT> {
@@ -59,7 +58,8 @@ module api.util.loader {
 
             return this.sendPreLoadRequest(searchString)
                 .then<OBJECT[]>(this.handleLoadSuccess.bind(this, false))
-                .catch<OBJECT[]>(this.handleLoadError.bind(this, false));
+                .catch<OBJECT[]>(this.handleLoadError.bind(this, false))
+                .finally(() => this.status = LoaderStatus.PRE_LOADED);
         }
 
         protected sendPreLoadRequest(searchString?: string): wemQ.Promise<OBJECT[]> {
@@ -101,6 +101,10 @@ module api.util.loader {
 
         isNotStarted(): boolean {
             return this.status === LoaderStatus.NOT_STARTED;
+        }
+
+        isPreLoaded(): boolean {
+            return this.status === LoaderStatus.PRE_LOADED;
         }
 
         setComparator(comparator: Comparator<OBJECT>): BaseLoader<JSON, OBJECT> {

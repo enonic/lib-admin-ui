@@ -27,6 +27,7 @@
 ///<reference path='FindPrincipalListRequest.ts'/>
 ///<reference path='FindPrincipalsResultJson.ts'/>
 ///<reference path='GetPrincipalByKeyRequest.ts'/>
+///<reference path='GetPrincipalsByKeysRequest.ts'/>
 ///<reference path='GetPrincipalsByUserStoreRequest.ts'/>
 ///<reference path='CheckEmailAvailabilityRequest.ts'/>
 ///<reference path='SetUserPasswordRequest.ts'/>
