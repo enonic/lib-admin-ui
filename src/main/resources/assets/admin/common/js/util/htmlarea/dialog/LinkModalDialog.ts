@@ -228,8 +228,8 @@ module api.util.htmlarea.dialog {
             this.initTabNames();
 
             let dockedPanel = new DockedPanel();
-            dockedPanel.addItem(this.tabNames.content, true, this.createContentPanel());
             dockedPanel.addItem(this.tabNames.url, true, this.createUrlPanel());
+            dockedPanel.addItem(this.tabNames.content, true, this.createContentPanel());
             dockedPanel.addItem(this.tabNames.download, true, this.createDownloadPanel());
             dockedPanel.addItem(this.tabNames.email, true, this.createEmailPanel());
 

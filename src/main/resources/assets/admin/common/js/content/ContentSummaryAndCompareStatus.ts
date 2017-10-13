@@ -105,6 +105,26 @@ module api.content {
             return !!this.contentSummary ? this.contentSummary.hasChildren() : false;
         }
 
+        getStatusText(): string {
+            let value = CompareStatusFormatter.formatStatusTextFromContent(this);
+
+            if (PublishStatus.EXPIRED === this.getPublishStatus() || PublishStatus.PENDING === this.getPublishStatus()) {
+                value += ' (' + PublishStatusFormatter.formatStatus(this.getPublishStatus()) + ')';
+            }
+
+            return value;
+        }
+
+        getStatusClass(): string {
+            let value = CompareStatusFormatter.formatStatusClassFromContent(this).toLowerCase();
+
+            if (PublishStatus.EXPIRED === this.getPublishStatus() || PublishStatus.PENDING === this.getPublishStatus()) {
+                value += ' ' + PublishStatusFormatter.formatStatus(this.getPublishStatus()).toLowerCase();
+            }
+
+            return api.content.util.ContentRowFormatter.makeClassName(value);
+        }
+
         equals(o: api.Equitable): boolean {
 
             if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentSummaryAndCompareStatus)) {
