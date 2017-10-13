@@ -1,5 +1,4 @@
 module api.app.browse {
-    import TreeGrid = api.ui.treegrid.TreeGrid;
     import i18n = api.util.i18n;
 
     export class BrowseItemPanel<M extends api.Equitable> extends api.ui.panel.DeckPanel {
@@ -46,7 +45,11 @@ module api.app.browse {
         }
 
         setStatisticsItem(item: BrowseItem<M>) {
-            item ? this.itemStatisticsPanel.setItem(item.toViewItem()) : this.itemStatisticsPanel.clearItem();
+            if (item) {
+                this.itemStatisticsPanel.setItem(item);
+            } else {
+                this.itemStatisticsPanel.clearItem();
+            }
         }
 
         getStatisticsItem(): api.app.view.ViewItem<M> {

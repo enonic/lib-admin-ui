@@ -60,7 +60,7 @@ module api.content.util {
         public static statusSelectorFormatter(row: number, cell: number, value: ContentTreeSelectorItem, columnDef: any,
                                               node: TreeNode<Option<ContentTreeSelectorItem>>) {
 
-            if(api.ObjectHelper.iFrameSafeInstanceOf(value, ContentAndStatusTreeSelectorItem)) {
+            if (api.ObjectHelper.iFrameSafeInstanceOf(value, ContentAndStatusTreeSelectorItem)) {
 
                 const item = <ContentAndStatusTreeSelectorItem>value;
 
@@ -78,31 +78,14 @@ module api.content.util {
         private static doStatusFormat(data: ContentSummaryAndCompareStatus, value: any): string {
 
             if (data && data.getContentSummary()) {
-                const publishStatus: PublishStatus = data.getPublishStatus();
 
-                let compareStatusText = api.content.CompareStatusFormatter.formatStatusFromContent(data);
+                let status = new api.dom.SpanEl();
 
-                if (PublishStatus[publishStatus] && (publishStatus === PublishStatus.PENDING || publishStatus === PublishStatus.EXPIRED)) {
-                    const compareStatusCls = ContentRowFormatter.makeClassName(CompareStatus[value]);
-                    const publishStatusCls = ContentRowFormatter.makeClassName(PublishStatus[publishStatus]);
+                status.addClass(data.getStatusClass());
+                status.setHtml(data.getStatusText());
 
-                    const statusEl = new api.dom.DivEl(compareStatusCls + ' ' + publishStatusCls);
-                    statusEl.getEl().setText(compareStatusText);
+                return status.toString();
 
-                    const publishStatusEl = new api.dom.DivEl(compareStatusCls + ' ' + publishStatusCls);
-                    const publishStatusText = api.content.PublishStatusFormatter.formatStatus(publishStatus);
-
-                    publishStatusEl.getEl().setText('(' + publishStatusText + ')');
-
-                    return statusEl.toString() + publishStatusEl.toString();
-                } else {
-                    const statusEl = new api.dom.SpanEl();
-                    if (CompareStatus[value]) {
-                        statusEl.addClass(ContentRowFormatter.makeClassName(compareStatusText));
-                    }
-                    statusEl.getEl().setText(compareStatusText);
-                    return statusEl.toString();
-                }
             } else if (data.getUploadItem()) { // uploading node
                 const compareStatusText = new api.ui.ProgressBar(data.getUploadItem().getProgress());
                 return new api.dom.SpanEl().appendChild(compareStatusText).toString();

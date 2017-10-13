@@ -143,7 +143,7 @@ module api.app.browse {
                 return;
             }
 
-            let browseItem: BrowseItem<M> = this.treeNodesToBrowseItems([node])[0];
+            let browseItem: BrowseItem<M> = this.treeNodeToBrowseItem(node);
             this.getBrowseActions().updateActionsEnabledState([browseItem]);
             this.checkIfItemIsRenderable(browseItem).then(() => {
                 this.getBrowseItemPanel().togglePreviewForItem(browseItem);
@@ -237,8 +237,12 @@ module api.app.browse {
             return this.browseToolbar.getActions();
         }
 
+        treeNodeToBrowseItem(node: TreeNode<Object>): BrowseItem<M>|null {
+            throw new Error('Must be implemented by inheritors');
+        }
+
         treeNodesToBrowseItems(nodes: TreeNode<Object>[]): BrowseItem<M>[] {
-            return [];
+            throw new Error('Must be implemented by inheritors');
         }
 
         refreshFilter() {

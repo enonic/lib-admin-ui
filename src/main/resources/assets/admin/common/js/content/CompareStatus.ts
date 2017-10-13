@@ -18,54 +18,60 @@ module api.content {
 
     export class CompareStatusFormatter {
 
-        public static formatStatusFromContent(content: ContentSummaryAndCompareStatus): string {
-            if(content) {
+        public static formatStatusTextFromContent(content: ContentSummaryAndCompareStatus): string {
+            if (content) {
                 return CompareStatusFormatter.formatStatus(content.getCompareStatus(), content.getContentSummary());
             }
         }
 
-        public static formatStatus(compareStatus: CompareStatus, content?:ContentSummary): string {
+        public static formatStatusClassFromContent(content: ContentSummaryAndCompareStatus): string {
+            if (content) {
+                return CompareStatusFormatter.formatStatus(content.getCompareStatus(), content.getContentSummary(), true);
+            }
+        }
+
+        public static formatStatus(compareStatus: CompareStatus, content?: ContentSummary, isClassName: boolean = false): string {
 
             let status;
 
             switch (compareStatus) {
             case CompareStatus.NEW:
-                if(content && !content.getPublishFirstTime()) {
-                    status = i18n('status.new');
+                if (content && !content.getPublishFirstTime()) {
+                    status = isClassName ? 'New' : i18n('status.new');
                 } else {
-                    status = i18n('status.offline');
+                    status = isClassName ? 'Offline' : i18n('status.offline');
                 }
                 break;
             case CompareStatus.NEWER:
-                status = i18n('status.modified');
+                status = isClassName ? 'Modified' : i18n('status.modified');
                 break;
             case CompareStatus.OLDER:
-                status = i18n('status.outofdate');
+                status = isClassName ? 'Out-of-date' : i18n('status.outofdate');
                 break;
             case CompareStatus.PENDING_DELETE:
-                status = i18n('status.deleted');
+                status = isClassName ? 'Deleted' : i18n('status.deleted');
                 break;
             case CompareStatus.EQUAL:
-                status = i18n('status.online');
+                status = isClassName ? 'Online' : i18n('status.online');
                 break;
             case CompareStatus.MOVED:
-                status = i18n('status.moved');
+                status = isClassName ? 'Moved' : i18n('status.moved');
                 break;
             case CompareStatus.PENDING_DELETE_TARGET:
-                status = i18n('status.deletedinprod');
+                status = isClassName ? 'Deleted in prod' : i18n('status.deletedinprod');
                 break;
             case CompareStatus.NEW_TARGET:
-                status = i18n('status.newinprod');
+                status = isClassName ? 'New in prod' : i18n('status.newinprod');
                 break;
             case CompareStatus.CONFLICT_PATH_EXISTS:
-                status = i18n('status.conflict');
+                status = isClassName ? 'Conflict' : i18n('status.conflict');
                 break;
             default:
-                status = i18n('status.unknown');
+                status = isClassName ? 'Unknown' : i18n('status.unknown');
             }
 
             if (!!CompareStatus[status]) {
-                return i18n('status.unknown');
+                return isClassName ? 'Unknown' : i18n('status.unknown');
             }
 
             return status;
