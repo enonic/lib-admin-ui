@@ -8,7 +8,9 @@ module api.ui.selector {
 
         getDataId(data: DATA): string;
 
-        isDisabled(data: DATA): boolean;
+        isSelectable(data: DATA): boolean;
+
+        isExpandable(data: DATA): boolean;
 
         isDescendingPath(childOption: DATA, parentOption: DATA);
     }

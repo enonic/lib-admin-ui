@@ -36,12 +36,12 @@ module api.content.image {
 
         private wrapItems(items: ContentTreeSelectorItem[] = []): ImageTreeSelectorItem[] {
             return items.map(item =>
-                new ImageTreeSelectorItem(item.getContent(), item.getExpand())
+                new ImageTreeSelectorItem(item.getContent(), item.isSelectable(), item.isExpandable())
             );
         }
 
         private wrapItem(item: ContentTreeSelectorItem): ImageTreeSelectorItem {
-            return item ? new ImageTreeSelectorItem(item.getContent(), item.getExpand()) : null;
+            return item ? new ImageTreeSelectorItem(item.getContent(), item.isSelectable(), item.isExpandable()) : null;
         }
 
         static create(): ImageOptionDataLoaderBuilder {
@@ -89,8 +89,8 @@ module api.content.image {
 
         private imageSelectorDisplayValue: ImageSelectorDisplayValue;
 
-        constructor(content: ContentSummary, expand: boolean) {
-            super(content, expand);
+        constructor(content: ContentSummary, selectable?: boolean, expandable?: boolean) {
+            super(content, selectable, expandable);
             this.imageSelectorDisplayValue =
                 !!content ? ImageSelectorDisplayValue.fromContentSummary(content) : ImageSelectorDisplayValue.makeEmpty();
         }

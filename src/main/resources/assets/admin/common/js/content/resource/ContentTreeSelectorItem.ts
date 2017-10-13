@@ -8,7 +8,9 @@ module api.content.resource {
 
         content: ContentSummaryJson;
 
-        expand: boolean;
+        selectable: boolean;
+
+        expandable: boolean;
     }
 
     export class ContentTreeSelectorItem
@@ -16,15 +18,18 @@ module api.content.resource {
 
         private content: ContentSummary;
 
-        private expand: boolean;
+        private selectable: boolean;
 
-        constructor(content: ContentSummary, expand: boolean) {
+        private expandable: boolean;
+
+        constructor(content: ContentSummary, selectable: boolean = false, expandable: boolean = true) {
             this.content = content;
-            this.expand = expand;
+            this.selectable = selectable;
+            this.expandable = expandable;
         }
 
         public static fromJson(json: ContentTreeSelectorItemJson) {
-            return new ContentTreeSelectorItem(ContentSummary.fromJson(json.content), json.expand);
+            return new ContentTreeSelectorItem(ContentSummary.fromJson(json.content), json.selectable, json.expandable);
         }
 
         getContent(): ContentSummary {
@@ -79,8 +84,12 @@ module api.content.resource {
             return this.content ? this.content.isSite() : null;
         }
 
-        getExpand(): boolean {
-            return this.expand;
+        isSelectable(): boolean {
+            return this.selectable;
+        }
+
+        isExpandable(): boolean {
+            return this.expandable;
         }
 
         equals(o: api.Equitable): boolean {
@@ -95,7 +104,11 @@ module api.content.resource {
                 return false;
             }
 
-            if (this.expand != other.expand) {
+            if (this.selectable != other.selectable) {
+                return false;
+            }
+
+            if (this.expandable != other.expandable) {
                 return false;
             }
 

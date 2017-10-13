@@ -148,7 +148,7 @@ module api.content {
             } else {
                 option = {
                     value: (<ContentSummary>data).getId(),
-                    displayValue: new ContentTreeSelectorItem(<ContentSummary>data, false),
+                    displayValue: new ContentTreeSelectorItem(<ContentSummary>data),
                     disabled: null
                 };
             }
