@@ -14,7 +14,6 @@ module api.security {
         }
 
         sendAndParse(): wemQ.Promise<Principal[]> {
-            debugger;
             return this.request.sendAndParse().then((result: FindPrincipalsResult) => {
 
                 if (this.getFrom() === 0) {

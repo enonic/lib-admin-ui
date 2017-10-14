@@ -25,7 +25,6 @@ module api.security {
         }
 
         protected sendPreLoadRequest(keys: string): Q.Promise<Principal[]> {
-            debugger;
             let principalKeys = keys.split(';').map((key) => {
                 return PrincipalKey.fromString(key);
             });
