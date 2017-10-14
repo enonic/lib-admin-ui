@@ -153,16 +153,20 @@ module api.util.loader {
             throw Error('must be implemented');
         }
 
-        notifyLoadedData(results: OBJECT[], postLoad?: boolean) {
+        notifyLoadedData(results: OBJECT[], postLoad?: boolean, silent: boolean = false) {
             this.status = LoaderStatus.LOADED;
-            this.loadedDataListeners.reduce(Q.when, Q( new LoadedDataEvent<OBJECT>(results, postLoad)));
+            if(!silent) {
+                this.loadedDataListeners.reduce(Q.when, Q(new LoadedDataEvent<OBJECT>(results, postLoad)));
+            }
         }
 
-        notifyLoadingData(postLoad?: boolean) {
+        notifyLoadingData(postLoad?: boolean, silent: boolean = false) {
             this.status = LoaderStatus.LOADING;
-            this.loadingDataListeners.forEach((listener: (event: LoadingDataEvent) => void) => {
-                listener.call(this, new LoadingDataEvent(postLoad));
-            });
+            if(!silent) {
+                this.loadingDataListeners.forEach((listener: (event: LoadingDataEvent) => void) => {
+                    listener.call(this, new LoadingDataEvent(postLoad));
+                });
+            }
         }
 
         onLoadedData(listener: (event: LoadedDataEvent<OBJECT>) => Q.Promise<any>) {

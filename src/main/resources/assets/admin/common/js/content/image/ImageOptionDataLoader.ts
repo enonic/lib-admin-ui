@@ -38,10 +38,10 @@ module api.content.image {
                 totalHits);
         }
 
-        notifyLoadedData(data: ContentTreeSelectorItem[] = [], postLoad?: boolean) {
+        notifyLoadedData(data: ContentTreeSelectorItem[] = [], postLoad?: boolean, silent: boolean = false) {
             const items = this.wrapItems(data);
 
-            super.notifyLoadedData(items, postLoad);
+            super.notifyLoadedData(items, postLoad, silent);
         }
 
         private wrapItems(items: ContentTreeSelectorItem[] = []): ImageTreeSelectorItem[] {
