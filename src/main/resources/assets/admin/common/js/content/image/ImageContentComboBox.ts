@@ -142,8 +142,8 @@ module api.content.image {
 
             const deferred = wemQ.defer<void>();
 
-            if(!force) {
-                if(this.getOptions().length > 0) {
+            if (!force) {
+                if (this.getOptions().length > 0 && !this.getLoader().isPreLoaded()) {
                     return wemQ(null);
                 }
             }
