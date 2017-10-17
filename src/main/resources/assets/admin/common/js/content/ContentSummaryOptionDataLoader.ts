@@ -76,6 +76,28 @@ module api.content {
             this.treeFilterValue = value;
         }
 
+        private sendAndParseFlatRequest(silent: boolean = false, postLoad?: boolean): wemQ.Promise<DATA[]> {
+            return this.flatRequest.sendAndParse().then((contents) => {
+                const result = contents.map(
+                    content => new ContentTreeSelectorItem(content, true));
+
+                if (!silent) {
+                    this.isTreeLoadMode = false;
+                    this.notifyLoadModeChanged(false);
+                }
+
+                if (this.loadStatus) {
+                    return this.loadStatuses(<DATA[]>result).then(resultWithStatuses => {
+                        this.notifyLoadedData(resultWithStatuses, postLoad);
+                        return resultWithStatuses;
+                    });
+                } else {
+                    this.notifyLoadedData(<DATA[]>result, postLoad);
+                    return wemQ(<DATA[]>result);
+                }
+            });
+        }
+
         search(value: string): wemQ.Promise<DATA[]> {
 
             this.notifyLoadingData();
@@ -85,24 +107,7 @@ module api.content {
             this.flatRequest.setInputName(this.treeRequest.getInputName());
             this.flatRequest.setQueryExpr(value);
 
-            return this.flatRequest.sendAndParse().then((contents: ContentSummary[]) => {
-
-                const result = contents.map(
-                    content => new ContentTreeSelectorItem(content));
-
-                this.isTreeLoadMode = false;
-                this.notifyLoadModeChanged(false);
-
-                if (this.loadStatus) {
-                    return this.loadStatuses(<DATA[]>result).then(resultWithStatuses => {
-                        this.notifyLoadedData(resultWithStatuses);
-                        return resultWithStatuses;
-                    });
-                } else {
-                    this.notifyLoadedData(<DATA[]>result);
-                    return wemQ(<DATA[]>result);
-                }
-            });
+            return this.sendAndParseFlatRequest();
         }
 
         load(postLoad: boolean = false): wemQ.Promise<DATA[]> {
@@ -116,20 +121,7 @@ module api.content {
                     return data;
                 });
             } else {
-                return this.flatRequest.sendAndParse().then((contents) => {
-                    const result = contents.map(
-                        content => new ContentTreeSelectorItem(content));
-
-                    if (this.loadStatus) {
-                        return this.loadStatuses(<DATA[]>result).then(resultWithStatuses => {
-                            this.notifyLoadedData(resultWithStatuses, postLoad);
-                            return resultWithStatuses;
-                        });
-                    } else {
-                        this.notifyLoadedData(<DATA[]>result, postLoad);
-                        return wemQ(<DATA[]>result);
-                    }
-                });
+                return this.sendAndParseFlatRequest(true, postLoad);
             }
         }
 
