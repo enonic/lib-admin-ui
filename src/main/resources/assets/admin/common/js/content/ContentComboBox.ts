@@ -148,7 +148,7 @@ module api.content {
             } else {
                 option = {
                     value: (<ContentSummary>data).getId(),
-                    displayValue: new ContentTreeSelectorItem(<ContentSummary>data, false),
+                    displayValue: new ContentTreeSelectorItem(<ContentSummary>data),
                     disabled: null
                 };
             }
@@ -160,8 +160,8 @@ module api.content {
 
             const deferred = wemQ.defer<void>();
 
-            if(!force) {
-                if(this.getOptions().length > 0) {
+            if (!force) {
+                if (this.getOptions().length > 0 && !this.getLoader().isPreLoaded()) {
                     return wemQ(null);
                 }
             }

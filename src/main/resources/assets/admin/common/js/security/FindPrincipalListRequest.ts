@@ -4,6 +4,10 @@ module api.security {
 
         private request: FindPrincipalsRequest;
 
+        private loaded: boolean;
+
+        private results: Principal[] = [];
+
         constructor() {
             super();
             this.request = new api.security.FindPrincipalsRequest();
@@ -11,8 +15,44 @@ module api.security {
 
         sendAndParse(): wemQ.Promise<Principal[]> {
             return this.request.sendAndParse().then((result: FindPrincipalsResult) => {
-                return result.getPrincipals();
-                });
+
+                if (this.getFrom() === 0) {
+                    this.results = [];
+                }
+                this.setFrom(this.getFrom() + result.getHits());
+                this.loaded = this.getFrom() >= result.getTotalHits();
+
+                this.results = this.results.concat(result.getPrincipals());
+
+                return this.results;
+            });
+        }
+
+        isPartiallyLoaded(): boolean {
+            return this.results.length > 0 && !this.loaded;
+        }
+
+        isLoaded(): boolean {
+            return this.loaded;
+        }
+
+        setFrom(value: number): FindPrincipalListRequest {
+            this.request.setFrom(value);
+            return this;
+        }
+
+        setSize(value: number): FindPrincipalListRequest {
+            this.request.setSize(value);
+            return this;
+        }
+
+        resetParams() {
+            this.request.setFrom(0);
+            this.loaded = false;
+        }
+
+        getFrom() : number {
+            return this.request.getFrom();
         }
 
         setUserStoreKey(key: UserStoreKey): FindPrincipalListRequest {
@@ -23,6 +63,10 @@ module api.security {
         setAllowedTypes(types: PrincipalType[]): FindPrincipalListRequest {
             this.request.setAllowedTypes(types);
             return this;
+        }
+
+        getAllowedTypes(): PrincipalType[] {
+            return this.request.getAllowedTypes();
         }
 
         setSearchQuery(query: string): FindPrincipalListRequest {

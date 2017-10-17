@@ -79,7 +79,7 @@ module api.content.form.inputtype.image {
                     contents.forEach((content: ContentSummary) => {
                         this.selectedOptionsView.updateUploadedOption(<Option<ImageTreeSelectorItem>>{
                             value: content.getId(),
-                            displayValue: new ImageTreeSelectorItem(content, false)
+                            displayValue: new ImageTreeSelectorItem(content)
                         });
                     });
 
@@ -235,7 +235,7 @@ module api.content.form.inputtype.image {
 
                 return this.doLoadContent(propertyArray).then((contents: api.content.ContentSummary[]) => {
                     contents.forEach((content: api.content.ContentSummary) => {
-                        this.contentComboBox.select(new ImageTreeSelectorItem(content, false));
+                        this.contentComboBox.select(new ImageTreeSelectorItem(content));
                     });
                     this.setLayoutInProgress(false);
                 });
@@ -285,7 +285,7 @@ module api.content.form.inputtype.image {
 
             this.uploader.onUploadStarted((event: FileUploadStartedEvent<Content>) => {
                 event.getUploadItems().forEach((uploadItem: UploadItem<Content>) => {
-                    const value = new ImageTreeSelectorItem(null, false).setDisplayValue(
+                    const value = new ImageTreeSelectorItem(null).setDisplayValue(
                         ImageSelectorDisplayValue.fromUploadItem(uploadItem));
 
                     const option = <api.ui.selector.Option<ImageTreeSelectorItem>>{
@@ -315,7 +315,7 @@ module api.content.form.inputtype.image {
 
                 let selectedOption = this.selectedOptionsView.getById(item.getId());
                 let option = selectedOption.getOption();
-                option.displayValue = new ImageTreeSelectorItem(createdContent, false);
+                option.displayValue = new ImageTreeSelectorItem(createdContent);
                 option.value = createdContent.getContentId().toString();
 
                 selectedOption.getOptionView().setOption(option);

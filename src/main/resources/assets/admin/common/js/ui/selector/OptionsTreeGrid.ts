@@ -240,16 +240,28 @@ module api.ui.selector {
 
         protected handleItemMetadata(row: number) {
             let node = this.getItem(row);
+            let cssClasses = '';
+            let title = '';
+
             if (this.isEmptyNode(node)) {
-                return {cssClasses: 'empty-node'};
+                cssClasses += ' empty-node';
             }
 
             if (node.getData().readOnly) {
-                return {cssClasses: "readonly' title='This content is read-only'"};
+                cssClasses += ' readonly';
+                title='This content is read-only';
             }
 
-            if (node.getData().disabled) {
-                return {cssClasses: "disabled'"};
+            if (node.getData().selectable) {
+                cssClasses += ' selectable';
+            }
+
+            if (node.getData().expandable) {
+                cssClasses += ' expandable';
+            }
+
+            if(!StringHelper.isBlank(cssClasses) || !StringHelper.isBlank(title)) {
+                return {cssClasses: cssClasses, title: title};
             }
 
             return null;
