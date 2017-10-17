@@ -93,6 +93,10 @@ module api.ui.dialog {
             this.initListeners();
         }
 
+        onCloseButtonClicked(listener: (e: MouseEvent) => void) {
+            return this.closeIcon.onClicked(listener);
+        }
+
         private initConfirmationDialog(confirmation: ConfirmationConfig) {
             if (confirmation) {
                 const {yesCallback, noCallback, question = i18n('dialog.confirm.applyChanges')} = confirmation;
