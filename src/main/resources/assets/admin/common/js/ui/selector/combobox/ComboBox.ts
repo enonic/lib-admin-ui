@@ -522,13 +522,15 @@ module api.ui.selector.combobox {
 
         handleRowSelected(index: number, keyCode: number = -1) {
             let option = this.getOptionByRow(index);
-            if (option.disabled) {
-                this.comboBoxDropdown.markSelections(this.getSelectedOptions());
-            } else if (option != null && !option.readOnly) {
-                if (!this.isOptionSelected(option)) {
-                    this.selectOption(option, false, keyCode);
-                } else {
-                    this.deselectOption(option);
+            if (option) {
+                if (option.selectable == false) {
+                    this.comboBoxDropdown.markSelections(this.getSelectedOptions());
+                } else if (!option.readOnly) {
+                    if (!this.isOptionSelected(option)) {
+                        this.selectOption(option, false, keyCode);
+                    } else {
+                        this.deselectOption(option);
+                    }
                 }
             }
             this.refreshDirtyState();

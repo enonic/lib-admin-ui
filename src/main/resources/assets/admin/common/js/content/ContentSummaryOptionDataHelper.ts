@@ -17,8 +17,12 @@ module api.content {
             return childOption.getPath().isDescendantOf(parentOption.getPath());
         }
 
-        isDisabled(data: ContentTreeSelectorItem): boolean {
-            return data.getExpand();
+        isSelectable(data: ContentTreeSelectorItem): boolean {
+            return data.isSelectable();
+        }
+
+        isExpandable(data: ContentTreeSelectorItem): boolean {
+            return data.isExpandable();
         }
     }
 }

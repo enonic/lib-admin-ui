@@ -130,7 +130,7 @@ module api.content.image {
             } else if (api.ObjectHelper.iFrameSafeInstanceOf(data, ContentSummary)) {
                 option = {
                     value: (<ContentSummary>data).getId(),
-                    displayValue: new ImageTreeSelectorItem(<ContentSummary>data, false),
+                    displayValue: new ImageTreeSelectorItem(<ContentSummary>data),
                     disabled: null
                 };
             }
@@ -142,8 +142,8 @@ module api.content.image {
 
             const deferred = wemQ.defer<void>();
 
-            if(!force) {
-                if(this.getOptions().length > 0) {
+            if (!force) {
+                if (this.getOptions().length > 0 && !this.getLoader().isPreLoaded()) {
                     return wemQ(null);
                 }
             }

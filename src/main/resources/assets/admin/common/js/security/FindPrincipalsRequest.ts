@@ -37,7 +37,7 @@ module api.security {
                     if (this.filterPredicate) {
                         principals = principals.filter(this.filterPredicate);
                     }
-                    return new FindPrincipalsResult(principals, response.getResult().totalSize);
+                    return new FindPrincipalsResult(principals, response.getResult().principals.length, response.getResult().totalSize);
                 });
         }
 
@@ -57,9 +57,17 @@ module api.security {
             return this;
         }
 
+        getAllowedTypes(): PrincipalType[] {
+            return this.allowedTypes;
+        }
+
         setFrom(from: number): FindPrincipalsRequest {
             this.from = from;
             return this;
+        }
+
+        getFrom(): number {
+            return this.from;
         }
 
         setSize(size: number): FindPrincipalsRequest {

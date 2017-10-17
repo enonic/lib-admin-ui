@@ -12,6 +12,8 @@ module api.ui.selector {
 
         empty? :boolean;
 
-        disabled?: boolean;
+        selectable?: boolean;
+
+        expandable?: boolean;
     }
 }

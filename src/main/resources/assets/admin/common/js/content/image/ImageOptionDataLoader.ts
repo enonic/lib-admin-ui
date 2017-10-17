@@ -4,6 +4,7 @@ module api.content.image {
     import OptionDataLoaderData = api.ui.selector.OptionDataLoaderData;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import Option = api.ui.selector.Option;
+    import GetContentSummaryByIds = api.content.resource.GetContentSummaryByIds;
 
     export class ImageOptionDataLoader
         extends ContentSummaryOptionDataLoader<ImageTreeSelectorItem> {
@@ -22,26 +23,35 @@ module api.content.image {
             );
         }
 
+        protected sendPreLoadRequest(ids: string): Q.Promise<ImageTreeSelectorItem[]> {
+            let contentIds = ids.split(';').map((id) => {
+                return new ContentId(id);
+            });
+            return new GetContentSummaryByIds(contentIds).sendAndParse().then(((contents: ContentSummary[]) => {
+                return contents.map(content => new ImageTreeSelectorItem(content, false));
+            }));
+        }
+
         protected createOptionData(data: ContentTreeSelectorItem[], hits: number, totalHits: number) {
             return new OptionDataLoaderData(this.wrapItems(data),
                 hits,
                 totalHits);
         }
 
-        notifyLoadedData(data: ContentTreeSelectorItem[] = [], postLoad?: boolean) {
+        notifyLoadedData(data: ContentTreeSelectorItem[] = [], postLoad?: boolean, silent: boolean = false) {
             const items = this.wrapItems(data);
 
-            super.notifyLoadedData(items, postLoad);
+            super.notifyLoadedData(items, postLoad, silent);
         }
 
         private wrapItems(items: ContentTreeSelectorItem[] = []): ImageTreeSelectorItem[] {
             return items.map(item =>
-                new ImageTreeSelectorItem(item.getContent(), item.getExpand())
+                new ImageTreeSelectorItem(item.getContent(), item.isSelectable(), item.isExpandable())
             );
         }
 
         private wrapItem(item: ContentTreeSelectorItem): ImageTreeSelectorItem {
-            return item ? new ImageTreeSelectorItem(item.getContent(), item.getExpand()) : null;
+            return item ? new ImageTreeSelectorItem(item.getContent(), item.isSelectable(), item.isExpandable()) : null;
         }
 
         static create(): ImageOptionDataLoaderBuilder {
@@ -89,8 +99,8 @@ module api.content.image {
 
         private imageSelectorDisplayValue: ImageSelectorDisplayValue;
 
-        constructor(content: ContentSummary, expand: boolean) {
-            super(content, expand);
+        constructor(content: ContentSummary, selectable?: boolean, expandable?: boolean) {
+            super(content, selectable, expandable);
             this.imageSelectorDisplayValue =
                 !!content ? ImageSelectorDisplayValue.fromContentSummary(content) : ImageSelectorDisplayValue.makeEmpty();
         }

@@ -1,8 +1,11 @@
 module api.security {
 
-    export class PrincipalLoader extends api.util.loader.BaseLoader<any, any> {
+    import PostLoader = api.util.loader.PostLoader;
+
+    export class PrincipalLoader extends PostLoader<PrincipalListJson, Principal> {
 
         protected request: FindPrincipalListRequest;
+
         private skipPrincipalKeys: { [key:string]:PrincipalKey; };
 
         constructor() {
@@ -14,11 +17,20 @@ module api.security {
         }
 
         protected createRequest(): FindPrincipalListRequest {
-            return new FindPrincipalListRequest();
+            return new FindPrincipalListRequest().setSize(10);
         }
 
         protected getRequest(): FindPrincipalListRequest {
             return this.request;
+        }
+
+        protected sendPreLoadRequest(keys: string): Q.Promise<Principal[]> {
+            let principalKeys = keys.split(';').map((key) => {
+                return PrincipalKey.fromString(key);
+            });
+            return new GetPrincipalsByKeysRequest(principalKeys).sendAndParse().then((value => {
+                return value;
+            }));
         }
 
         setUserStoreKey(key: UserStoreKey): PrincipalLoader {
@@ -51,6 +63,12 @@ module api.security {
             return this;
         }
 
-    }
+        resetParams() {
+            this.getRequest().resetParams();
+        }
 
+        isPartiallyLoaded(): boolean {
+            return this.getRequest().isPartiallyLoaded();
+        }
+    }
 }

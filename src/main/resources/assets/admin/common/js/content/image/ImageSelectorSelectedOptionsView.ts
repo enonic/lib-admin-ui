@@ -135,7 +135,7 @@ module api.content.image {
 
             let newOption = <Option<ImageTreeSelectorItem>>{
                 value: content.getId(),
-                displayValue: new ImageTreeSelectorItem(content, false)
+                displayValue: new ImageTreeSelectorItem(content)
             };
 
             selectedOption.getOptionView().setOption(newOption);
@@ -144,7 +144,7 @@ module api.content.image {
         makeEmptyOption(id: string): Option<ImageTreeSelectorItem> {
             return <Option<ImageTreeSelectorItem>>{
                 value: id,
-                displayValue: new ImageTreeSelectorItem(null, false).setDisplayValue(ImageSelectorDisplayValue.makeEmpty()),
+                displayValue: new ImageTreeSelectorItem(null).setDisplayValue(ImageSelectorDisplayValue.makeEmpty()),
                 empty: true
             };
         }

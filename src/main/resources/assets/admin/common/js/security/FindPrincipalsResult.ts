@@ -1,29 +1,34 @@
 module api.security {
 
-    import ContentMetadata = api.content.ContentMetadata;
-
     export class FindPrincipalsResult {
 
         private principals: Principal[];
 
-        private totalSize: number;
+        private hits: number;
 
-        constructor(principals: Principal[], totalSize: number) {
+        private totalHits: number;
+
+        constructor(principals: Principal[], hits: number, totalHits: number) {
             this.principals = principals;
-            this.totalSize = totalSize;
+            this.hits = hits;
+            this.totalHits = totalHits;
         }
 
         getPrincipals(): Principal[] {
             return this.principals;
         }
 
-        getTotalSize(): number {
-            return this.totalSize;
+        getTotalHits(): number {
+            return this.totalHits;
+        }
+
+        getHits(): number {
+            return this.hits;
         }
 
         static fromJson(json: FindPrincipalsResultJson): FindPrincipalsResult {
             let principals = json.principals.map(principalJson => Principal.fromJson(principalJson));
-            return new FindPrincipalsResult(principals, json.totalSize);
+            return new FindPrincipalsResult(principals, principals.length, json.totalSize);
         }
     }
 
