@@ -1609,8 +1609,8 @@ module api.ui.treegrid {
             this.root.stashSelection();
 
             this.gridData.refresh();
-            this.invalidate();
             this.triggerSelectionChangedListeners();
+            this.invalidate();
             this.setActive(true);
         }
 
