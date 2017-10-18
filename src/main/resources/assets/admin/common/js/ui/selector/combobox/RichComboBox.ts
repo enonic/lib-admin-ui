@@ -283,9 +283,11 @@ module api.ui.selector.combobox {
                     return wemQ(null);
                 }
             }
-            return this.loader.search(inputValue).then((result: OPTION_DISPLAY_VALUE[]) => {
-                return null;
-            }).catch(api.DefaultErrorHandler.handle);
+            if (!StringHelper.isBlank(inputValue)) {
+                return this.loader.search(inputValue).catch(api.DefaultErrorHandler.handle);
+            } else {
+                return this.loader.load().catch(api.DefaultErrorHandler.handle);
+            }
         }
 
         private setupLoader() {
