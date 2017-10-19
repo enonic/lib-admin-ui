@@ -90,6 +90,7 @@
   h6 {
     font-size: 12.5px;
     margin-bottom: 10px;
+    .ellipsis();
   }
 
   .grid-canvas {
@@ -124,7 +125,6 @@
     h2 {
       float: left;
       margin-bottom: 20px;
-      margin-right: 26%;
 
       @media screen and (max-height: 360px) {
         margin-bottom: 10px;
@@ -139,7 +139,7 @@
 
   .sort-tab-menu {
     width: 280px;
-    float: left;
+    float: right;
     margin: 0px;
 
     .tab-menu-button {
@@ -186,10 +186,6 @@
   }
 
   &._0-240, &._240-360 {
-    .sort-tab-menu {
-      width: 230px;
-    }
-
     .r1 {
       width: 82%;
     }
@@ -226,5 +222,13 @@
 
     }
   }
+}
 
+body {
+  &._360-540, &._540-720 {
+    .sort-tab-menu {
+      float: left;
+      width: 100%;
+    }
+  }
 }
