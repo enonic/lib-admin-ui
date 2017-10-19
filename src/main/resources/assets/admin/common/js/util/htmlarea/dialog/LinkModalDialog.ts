@@ -11,6 +11,7 @@ module api.util.htmlarea.dialog {
     import InputAlignment = api.ui.InputAlignment;
     import TextInput = api.ui.text.TextInput;
     import i18n = api.util.i18n;
+    import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
 
     export class LinkModalDialog
         extends ModalDialog {
@@ -276,8 +277,7 @@ module api.util.htmlarea.dialog {
             super.initializeActions();
         }
 
-        private createContentSelector(getValueFn: Function,
-                                      contentTypeNames?: api.schema.content.ContentTypeName[]): api.content.ContentComboBox {
+        private createContentSelector(getValueFn: Function, contentTypeNames?: api.schema.content.ContentTypeName[]) {
             const loaderBuilder = api.content.ContentSummaryOptionDataLoader.create();
 
             if (contentTypeNames) {
@@ -293,7 +293,7 @@ module api.util.htmlarea.dialog {
             return contentSelector;
         }
 
-        private createSelectorFormItem(id: string, label: string, contentSelector: api.content.ContentComboBox,
+        private createSelectorFormItem(id: string, label: string, contentSelector: api.content.ContentComboBox<ContentTreeSelectorItem>,
                                        addValueValidation: boolean = false): FormItem {
 
             const formItemBuilder = new ModalDialogFormItemBuilder(id, label).setValidator(Validators.required).setInputEl(contentSelector);
@@ -358,7 +358,7 @@ module api.util.htmlarea.dialog {
         }
 
         private createContentLink(): api.dom.AEl {
-            let contentSelector = <api.content.ContentComboBox>this.getFieldById('contentId');
+            let contentSelector = <api.content.ContentComboBox<ContentTreeSelectorItem>>this.getFieldById('contentId');
             let targetCheckbox = <api.ui.Checkbox>this.getFieldById('contentTarget');
 
             let linkEl = new api.dom.AEl();
@@ -368,7 +368,7 @@ module api.util.htmlarea.dialog {
         }
 
         private createDownloadLink(): api.dom.AEl {
-            let contentSelector = <api.content.ContentComboBox>this.getFieldById('downloadId');
+            let contentSelector = <api.content.ContentComboBox<ContentTreeSelectorItem>>this.getFieldById('downloadId');
 
             let linkEl = new api.dom.AEl();
             linkEl.setUrl(LinkModalDialog.downloadPrefix + contentSelector.getValue());
