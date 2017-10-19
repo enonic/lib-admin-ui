@@ -2,10 +2,6 @@ module api.ui.grid {
 
     import Element = api.dom.Element;
     import TreeGrid = api.ui.treegrid.TreeGrid;
-    import TreeNode = api.ui.treegrid.TreeNode;
-
-    import DragHelper = api.ui.DragHelper;
-    import ElementHelper = api.dom.ElementHelper;
 
     export class GridDragHandler<MODEL> {
 

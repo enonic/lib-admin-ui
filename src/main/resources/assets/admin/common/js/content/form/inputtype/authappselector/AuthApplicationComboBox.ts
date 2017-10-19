@@ -1,17 +1,10 @@
 module api.content.site.inputtype.authappselector {
-
-    import Property = api.data.Property;
-    import PropertyTree = api.data.PropertyTree;
     import Application = api.application.Application;
     import ApplicationKey = api.application.ApplicationKey;
 
     import ApplicationViewer = api.application.ApplicationViewer;
-    import ApplicationLoader = api.application.ApplicationLoader;
     import FormView = api.form.FormView;
-    import Option = api.ui.selector.Option;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import SelectedOptionView = api.ui.selector.combobox.SelectedOptionView;
-    import SelectedOptionsView = api.ui.selector.combobox.SelectedOptionsView;
     import SiteConfigProvider = api.content.site.inputtype.siteconfigurator.SiteConfigProvider;
 
     export class AuthApplicationComboBox extends api.ui.selector.combobox.RichComboBox<Application> {

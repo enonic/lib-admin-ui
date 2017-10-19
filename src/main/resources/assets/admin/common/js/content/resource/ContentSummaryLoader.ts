@@ -1,7 +1,5 @@
 module api.content.resource {
 
-    import QueryExpr = api.query.expr.QueryExpr;
-
     export class ContentSummaryLoader extends ContentSummaryPreLoader {
 
         protected request: ContentSummaryRequest;

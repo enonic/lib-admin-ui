@@ -3,7 +3,6 @@ declare var qq;
 module api.ui.uploader {
 
     import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
     import Element = api.dom.Element;
     import ElementRenderedEvent = api.dom.ElementRenderedEvent;
     import ElementShownEvent = api.dom.ElementShownEvent;

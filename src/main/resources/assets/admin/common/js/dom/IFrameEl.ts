@@ -1,7 +1,5 @@
 module api.dom {
 
-    import UriHelper = api.util.UriHelper;
-
     export class IFrameEl extends api.dom.Element {
 
         private loaded: boolean = false;

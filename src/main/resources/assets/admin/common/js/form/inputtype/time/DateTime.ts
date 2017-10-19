@@ -5,7 +5,6 @@ module api.content.form.inputtype.time {
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import Timezone = api.util.Timezone;
     import DateTimePicker = api.ui.time.DateTimePicker;
     import DateTimePickerBuilder = api.ui.time.DateTimePickerBuilder;
 

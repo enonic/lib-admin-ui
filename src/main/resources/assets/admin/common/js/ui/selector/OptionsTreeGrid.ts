@@ -4,7 +4,6 @@ module api.ui.selector {
     import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
     import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import SelectionOnClickType = api.ui.treegrid.SelectionOnClickType;
-    import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
     import StringHelper = api.util.StringHelper;
 
     export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>

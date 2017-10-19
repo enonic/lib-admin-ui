@@ -1,7 +1,6 @@
 module api.ui.panel {
 
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
 
     export enum SplitPanelAlignment {
         HORIZONTAL,

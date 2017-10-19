@@ -2,7 +2,6 @@ module api.content.form.inputtype.customselector {
 
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
     import BaseSelectedOptionsView = api.ui.selector.combobox.BaseSelectedOptionsView;
-    import BaseSelectedOptionView = api.ui.selector.combobox.BaseSelectedOptionView;
     import Option = api.ui.selector.Option;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;

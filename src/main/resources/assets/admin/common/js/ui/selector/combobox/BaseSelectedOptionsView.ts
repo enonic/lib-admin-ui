@@ -1,8 +1,5 @@
 module api.ui.selector.combobox {
 
-    import Value = api.data.Value;
-    import ValueTypes = api.data.ValueTypes;
-
     export class BaseSelectedOptionsView<T> extends api.dom.DivEl implements SelectedOptionsView<T> {
 
         private list: SelectedOption<T>[] = [];

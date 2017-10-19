@@ -1,7 +1,4 @@
 module api.util.htmlarea.dialog {
-
-    import FormItem = api.ui.form.FormItem;
-    import Validators = api.ui.form.Validators;
     import TextArea = api.ui.text.TextArea;
     import Action = api.ui.Action;
     import i18n = api.util.i18n;

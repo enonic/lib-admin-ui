@@ -1,10 +1,5 @@
 module api.form {
-
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
     import PropertySet = api.data.PropertySet;
     import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
     import i18n = api.util.i18n;

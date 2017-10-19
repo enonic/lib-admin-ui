@@ -1,7 +1,5 @@
 module api.application {
 
-    import ValueTypes = api.data.ValueTypes;
-
     export class ApplicationUploaderEl extends api.ui.uploader.UploaderEl<Application> {
 
         private failure: string;

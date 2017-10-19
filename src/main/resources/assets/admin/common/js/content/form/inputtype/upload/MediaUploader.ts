@@ -4,7 +4,6 @@ module api.content.form.inputtype.upload {
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
 
     export interface MediaUploaderConfigAllowType {
         name: string;

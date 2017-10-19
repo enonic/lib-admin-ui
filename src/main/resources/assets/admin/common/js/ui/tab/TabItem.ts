@@ -1,7 +1,5 @@
 module api.ui.tab {
 
-    import Action = api.ui.Action;
-
     export class TabItem extends api.dom.LiEl implements api.ui.NavigationItem {
 
         private index: number;

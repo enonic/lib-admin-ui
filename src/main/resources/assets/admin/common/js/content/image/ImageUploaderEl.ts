@@ -1,8 +1,5 @@
 module api.content.image {
 
-    import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
-
     import Point = api.ui.image.Point;
     import Rect = api.ui.image.Rect;
     import ImageEditor = api.ui.image.ImageEditor;

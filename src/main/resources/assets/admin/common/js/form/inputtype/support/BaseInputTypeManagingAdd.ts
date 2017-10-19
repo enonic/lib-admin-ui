@@ -1,11 +1,7 @@
 module api.form.inputtype.support {
-
-    import PropertyPath = api.data.PropertyPath;
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
     import FocusSwitchEvent = api.ui.FocusSwitchEvent;
     import InputTypeView = api.form.inputtype.InputTypeView;

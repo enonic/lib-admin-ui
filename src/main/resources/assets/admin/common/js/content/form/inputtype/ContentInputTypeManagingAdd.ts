@@ -5,11 +5,9 @@ module api.content.form.inputtype {
     import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
     import ContentServerEventsHandler = api.content.event.ContentServerEventsHandler;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import ContentDeletedEvent = api.content.event.ContentDeletedEvent;
     import ContentServerChangeItem = api.content.event.ContentServerChangeItem;
     import SelectedOptionsView = api.ui.selector.combobox.SelectedOptionsView;
     import BaseInputTypeManagingAdd = api.form.inputtype.support.BaseInputTypeManagingAdd;
-    import Option = api.ui.selector.Option;
 
     export class ContentInputTypeManagingAdd<RAW_VALUE_TYPE> extends BaseInputTypeManagingAdd<RAW_VALUE_TYPE> {
 

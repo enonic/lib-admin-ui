@@ -1,6 +1,4 @@
 module api.content.resource {
-
-    import AccessControlList = api.security.acl.AccessControlList;
     import EffectivePermissionJson = api.content.json.EffectivePermissionJson;
     import EffectivePermission = api.ui.security.acl.EffectivePermission;
 

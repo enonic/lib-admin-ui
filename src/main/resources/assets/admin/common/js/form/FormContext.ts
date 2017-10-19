@@ -1,7 +1,6 @@
 module api.form {
 
     import PropertyPath = api.data.PropertyPath;
-    import PropertyArray = api.data.PropertyArray;
 
     export class FormContext {
 

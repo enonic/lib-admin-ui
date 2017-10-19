@@ -1,7 +1,6 @@
 module api.ui.grid {
 
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
 
     export class Grid<T extends Slick.SlickData> extends api.dom.DivEl {
 

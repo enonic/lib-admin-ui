@@ -5,7 +5,6 @@ module api.ui.treegrid {
     import GridColumnBuilder = api.ui.grid.GridColumnBuilder;
     import GridOptions = api.ui.grid.GridOptions;
     import GridOptionsBuilder = api.ui.grid.GridOptionsBuilder;
-    import ContextMenu = api.ui.menu.ContextMenu;
 
     export class TreeGridBuilder<NODE> {
 

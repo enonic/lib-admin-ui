@@ -1,7 +1,5 @@
 module api.app.bar {
 
-    import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-
     export class TabbedAppBar extends AppBar implements api.ui.ActionContainer {
 
         private tabMenu: AppBarTabMenu;

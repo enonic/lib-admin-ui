@@ -1,10 +1,6 @@
 module api.app.bar {
 
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
-
-    import TabMenuItem = api.ui.tab.TabMenuItem;
     import HideTabMenuEvent = api.ui.tab.HideTabMenuEvent;
 
     export class AppBarTabMenu extends api.ui.tab.TabMenu {

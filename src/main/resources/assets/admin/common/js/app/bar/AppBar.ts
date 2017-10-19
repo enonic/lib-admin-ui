@@ -1,7 +1,5 @@
 module api.app.bar {
 
-    import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-
     export class AppBar extends api.dom.DivEl implements api.ui.ActionContainer {
 
         protected application: Application;

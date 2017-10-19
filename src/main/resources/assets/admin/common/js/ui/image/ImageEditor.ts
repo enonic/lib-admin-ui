@@ -4,14 +4,7 @@ module api.ui.image {
     import DivEl = api.dom.DivEl;
     import Button = api.ui.button.Button;
     import Element = api.dom.Element;
-    import TabMenu = api.ui.tab.TabMenu;
-    import TabMenuItem = api.ui.tab.TabMenuItem;
-    import TabMenuItemBuilder = api.ui.tab.TabMenuItemBuilder;
-    import NavigatorEvent = api.ui.NavigatorEvent;
     import i18n = api.util.i18n;
-    import ElementBuilder = api.dom.ElementBuilder;
-    import ElementFromHelperBuilder = api.dom.ElementFromHelperBuilder;
-    import StringHelper = api.util.StringHelper;
     import LoadMask = api.ui.mask.LoadMask;
 
     export interface Point {

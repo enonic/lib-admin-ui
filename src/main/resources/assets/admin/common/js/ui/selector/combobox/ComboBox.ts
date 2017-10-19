@@ -7,7 +7,6 @@ module api.ui.selector.combobox {
     import DelayedFunctionCall = api.util.DelayedFunctionCall;
     import Button = api.ui.button.Button;
     import ElementHelper = api.dom.ElementHelper;
-    import IFrameEl = api.dom.IFrameEl;
     import Body = api.dom.Body;
     import WindowDOM = api.dom.WindowDOM;
     import GridColumn = api.ui.grid.GridColumn;

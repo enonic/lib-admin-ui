@@ -1,9 +1,5 @@
 module api.ui.uploader {
-
-    import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
     import Element = api.dom.Element;
-    import SelectionItem = api.app.browse.SelectionItem;
 
     export class FileUploaderEl<MODEL extends api.Equitable> extends UploaderEl<MODEL> {
 

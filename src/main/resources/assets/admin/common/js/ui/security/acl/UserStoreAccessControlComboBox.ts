@@ -2,8 +2,6 @@ module api.ui.security.acl {
 
     import Option = api.ui.selector.Option;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import BaseSelectedOptionView = api.ui.selector.combobox.BaseSelectedOptionView;
-    import Permission = api.security.acl.Permission;
     import UserStoreAccessControlEntry = api.security.acl.UserStoreAccessControlEntry;
     import UserStoreAccessControlEntryLoader = api.security.acl.UserStoreAccessControlEntryLoader;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;

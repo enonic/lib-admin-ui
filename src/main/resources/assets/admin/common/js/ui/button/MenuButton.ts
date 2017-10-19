@@ -1,6 +1,4 @@
 module api.ui.button {
-
-    import Element = api.dom.Element;
     import Menu = api.ui.menu.Menu;
     import MenuItem = api.ui.menu.MenuItem;
 

@@ -1,7 +1,5 @@
 module api.form.inputtype {
 
-    import Value = api.data.Value;
-
     export class ValueRemovedEvent {
 
         private arrayIndex: number;

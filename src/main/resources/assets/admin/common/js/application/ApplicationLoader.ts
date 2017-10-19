@@ -1,8 +1,5 @@
 module api.application {
 
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import LoadingDataEvent = api.util.loader.event.LoadingDataEvent;
-
     export class ApplicationLoader extends api.util.loader.BaseLoader<ApplicationListResult, Application> {
 
         protected request: ListApplicationsRequest;

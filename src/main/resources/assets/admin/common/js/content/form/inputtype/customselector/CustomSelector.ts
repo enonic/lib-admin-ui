@@ -1,27 +1,13 @@
 module api.content.form.inputtype.customselector {
 
     import PropertyArray = api.data.PropertyArray;
-    import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
-    import ComboBoxOption = api.form.inputtype.combobox.ComboBoxOption;
-    import ComboBoxDisplayValueViewer = api.form.inputtype.combobox.ComboBoxDisplayValueViewer;
-    import Dropdown = api.ui.selector.dropdown.Dropdown;
-    import Viewer = api.ui.Viewer;
-    import NamesAndIconViewer = api.ui.NamesAndIconViewer;
-    import JsonRequest = api.rest.JsonRequest;
     import StringHelper = api.util.StringHelper;
     import UriHelper = api.util.UriHelper;
-    import Path = api.rest.Path;
-    import JsonResponse = api.rest.JsonResponse;
     import ContentInputTypeViewContext = api.content.form.inputtype.ContentInputTypeViewContext;
-    import ElementBuilder = api.dom.ElementBuilder;
-    import NewElementBuilder = api.dom.NewElementBuilder;
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
 
     export class CustomSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<CustomSelectorItem> {

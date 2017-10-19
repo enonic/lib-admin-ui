@@ -1,15 +1,7 @@
 module api.content.form.inputtype.upload {
-
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
-
-    import Content = api.content.Content;
     import Attachment = api.content.attachment.Attachment;
-    import UploaderEl = api.ui.uploader.UploaderEl;
     import FileUploaderEl = api.ui.uploader.FileUploaderEl;
     import AttachmentUploaderEl = api.content.attachment.AttachmentUploaderEl;
 

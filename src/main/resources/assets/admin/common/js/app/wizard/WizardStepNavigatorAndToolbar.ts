@@ -1,7 +1,4 @@
 module api.app.wizard {
-
-    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import Toolbar = api.ui.toolbar.Toolbar;
     import TabBarItem = api.ui.tab.TabBarItem;
     import ActivatedEvent = api.ui.ActivatedEvent;

@@ -1,7 +1,4 @@
 module api.form {
-
-    import PropertySet = api.data.PropertySet;
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
 
     export interface FormOptionSetOccurrencesConfig {

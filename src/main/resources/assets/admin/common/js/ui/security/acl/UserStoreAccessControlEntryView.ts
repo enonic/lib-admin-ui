@@ -1,9 +1,6 @@
 module api.ui.security.acl {
 
     import Principal = api.security.Principal;
-    import PrincipalType = api.security.PrincipalType;
-    import PrincipalKey = api.security.PrincipalKey;
-    import Permission = api.security.acl.Permission;
     import UserStoreAccessControlEntry = api.security.acl.UserStoreAccessControlEntry;
     import UserStoreAccess = api.security.acl.UserStoreAccess;
 

@@ -1,9 +1,5 @@
 module api.content.site.inputtype.authappselector {
-
-    import PropertyTree = api.data.PropertyTree;
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
-    import PropertySet = api.data.PropertySet;
     import FormView = api.form.FormView;
     import FormValidityChangedEvent = api.form.FormValidityChangedEvent;
     import Value = api.data.Value;
@@ -13,10 +9,7 @@ module api.content.site.inputtype.authappselector {
     import Application = api.application.Application;
     import ApplicationKey = api.application.ApplicationKey;
     import SiteConfig = api.content.site.SiteConfig;
-    import GetApplicationRequest = api.application.GetApplicationRequest;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
     import SiteConfigProvider = api.content.site.inputtype.siteconfigurator.SiteConfigProvider;
 
     export class AuthApplicationSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<Application> {

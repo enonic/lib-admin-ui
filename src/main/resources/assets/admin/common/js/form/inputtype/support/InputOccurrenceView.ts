@@ -2,7 +2,6 @@ module api.form.inputtype.support {
 
     import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
     import PropertyValueChangedEvent = api.data.PropertyValueChangedEvent;
 
     export class InputOccurrenceView

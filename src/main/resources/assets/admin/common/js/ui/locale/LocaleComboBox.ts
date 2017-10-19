@@ -4,8 +4,6 @@ module api.ui.locale {
     import Locale = api.locale.Locale;
     import LocaleLoader = api.locale.LocaleLoader;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import BaseSelectedOptionView = api.ui.selector.combobox.BaseSelectedOptionView;
-    import BaseSelectedOptionsView = api.ui.selector.combobox.BaseSelectedOptionsView;
 
     export class LocaleComboBox extends api.ui.selector.combobox.RichComboBox<Locale> {
         constructor(maxOccurrences?: number, value?: string) {

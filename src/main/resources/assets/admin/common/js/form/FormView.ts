@@ -1,13 +1,5 @@
 module api.form {
-
-    import PropertyPath = api.data.PropertyPath;
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import PropertyTree = api.data.PropertyTree;
     import PropertySet = api.data.PropertySet;
-    import FormInputEl = api.dom.FormInputEl;
 
     /**
      * Creates a UI component representing the given [[Form]] backed by given [[api.data.PropertySet]].

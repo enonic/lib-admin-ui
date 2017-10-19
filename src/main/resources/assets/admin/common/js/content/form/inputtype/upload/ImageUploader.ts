@@ -7,7 +7,6 @@ module api.content.form.inputtype.upload {
     import ValueTypes = api.data.ValueTypes;
     import Point = api.ui.image.Point;
     import Rect = api.ui.image.Rect;
-    import MixinName = api.schema.mixin.MixinName;
 
     export class ImageUploader
         extends api.form.inputtype.support.BaseInputTypeSingleOccurrence<string> {

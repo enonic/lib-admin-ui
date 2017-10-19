@@ -1,10 +1,6 @@
 module api.schema.content.inputtype {
 
     import ContentInputTypeViewContext = api.content.form.inputtype.ContentInputTypeViewContext;
-    import InputValidationRecording = api.form.inputtype.InputValidationRecording;
-    import InputValidityChangedEvent = api.form.inputtype.InputValidityChangedEvent;
-    import ValueChangedEvent = api.form.inputtype.ValueChangedEvent;
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
@@ -13,9 +9,7 @@ module api.schema.content.inputtype {
     import ContentTypeComboBox = api.schema.content.ContentTypeComboBox;
     import ContentTypeSummary = api.schema.content.ContentTypeSummary;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import ApplicationKey = api.application.ApplicationKey;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
     import BaseLoader = api.util.loader.BaseLoader;
 
     export class ContentTypeFilter

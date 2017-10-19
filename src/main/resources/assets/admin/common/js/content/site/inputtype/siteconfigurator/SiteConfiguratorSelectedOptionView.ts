@@ -1,14 +1,11 @@
 module api.content.site.inputtype.siteconfigurator {
 
     import PropertyTree = api.data.PropertyTree;
-    import PropertySet = api.data.PropertySet;
     import Option = api.ui.selector.Option;
     import FormView = api.form.FormView;
-    import FormContextBuilder = api.form.FormContextBuilder;
     import Application = api.application.Application;
     import ApplicationKey = api.application.ApplicationKey;
     import SiteConfig = api.content.site.SiteConfig;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
     import ContentFormContext = api.content.form.ContentFormContext;
 
     export class SiteConfiguratorSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<Application> {

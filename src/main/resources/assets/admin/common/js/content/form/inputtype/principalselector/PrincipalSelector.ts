@@ -1,14 +1,9 @@
 module api.content.form.inputtype.principalselector {
-
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import GetRelationshipTypeByNameRequest = api.schema.relationshiptype.GetRelationshipTypeByNameRequest;
-    import RelationshipTypeName = api.schema.relationshiptype.RelationshipTypeName;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
     import PrincipalSelectedOptionView = api.ui.security.PrincipalSelectedOptionView;
 
     export class PrincipalSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<api.security.Principal> {

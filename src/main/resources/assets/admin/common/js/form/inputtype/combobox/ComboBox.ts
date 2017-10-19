@@ -1,14 +1,10 @@
 module api.form.inputtype.combobox {
 
     import PropertyArray = api.data.PropertyArray;
-    import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
 
     export class ComboBox extends api.form.inputtype.support.BaseInputTypeManagingAdd<string> {
 

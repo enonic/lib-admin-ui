@@ -1,11 +1,5 @@
 module api.content.site.inputtype.siteconfigurator {
-
-    import SelectionItem = api.app.browse.SelectionItem;
-    import ContentSummary = api.content.ContentSummary;
-    import DialogButton = api.ui.dialog.DialogButton;
-    import DivEl = api.dom.DivEl;
     import FormView = api.form.FormView;
-    import ModalDialogHeader = api.ui.dialog.ModalDialogHeader;
     import InputView = api.form.InputView;
     import ContentSelector = api.content.form.inputtype.contentselector.ContentSelector;
     import PrincipalSelector = api.content.form.inputtype.principalselector.PrincipalSelector;
