@@ -14,11 +14,12 @@ module api.content {
     import ModeTogglerButton = api.content.button.ModeTogglerButton;
     import SelectedOptionsView = api.ui.selector.combobox.SelectedOptionsView;
     import ComboBoxConfig = api.ui.selector.combobox.ComboBoxConfig;
+    import ComboBox = api.ui.selector.combobox.ComboBox;
 
-    export class ContentComboBox
+    export class ContentComboBox<ITEM_TYPE extends ContentTreeSelectorItem>
         extends RichComboBox<ContentTreeSelectorItem> {
 
-        protected optionsFactory: OptionsFactory<ContentTreeSelectorItem>;
+        protected optionsFactory: OptionsFactory<ITEM_TYPE>;
 
         protected treegridDropdownEnabled: boolean;
 
@@ -26,16 +27,16 @@ module api.content {
 
         protected initialTreeEnabledState: boolean;
 
-        private showAfterReload: boolean;
+        protected showAfterReload: boolean;
 
         protected treeModeToggler: ModeTogglerButton;
 
-        constructor(builder: ContentComboBoxBuilder) {
+        constructor(builder: ContentComboBoxBuilder<ITEM_TYPE>) {
 
             const loader = builder.loader ? builder.loader : ContentSummaryOptionDataLoader.create().setLoadStatus(
                 builder.showStatus).build();
 
-            builder.setLoader(loader);
+            builder.setLoader(<ContentSummaryOptionDataLoader<ITEM_TYPE>>loader);
 
             if (builder.showStatus) {
                 const columns = [new api.ui.grid.GridColumnBuilder().setId('status').setName('Status').setField(
@@ -59,11 +60,11 @@ module api.content {
 
             this.showAfterReload = false;
 
-            this.optionsFactory = new OptionsFactory<ContentTreeSelectorItem>(this.getLoader(), builder.optionDataHelper);
+            this.optionsFactory = new OptionsFactory<ITEM_TYPE>(this.getLoader(), builder.optionDataHelper);
         }
 
-        getLoader(): ContentSummaryOptionDataLoader<ContentTreeSelectorItem> {
-            return <ContentSummaryOptionDataLoader<ContentTreeSelectorItem>> super.getLoader();
+        getLoader(): ContentSummaryOptionDataLoader<ITEM_TYPE> {
+            return <ContentSummaryOptionDataLoader<ITEM_TYPE>> super.getLoader();
         }
 
         getContent(contentId: ContentId): ContentSummary {
@@ -74,16 +75,17 @@ module api.content {
             return null;
         }
 
+        getComboBox(): ComboBox<ITEM_TYPE> {
+            return <ComboBox<ITEM_TYPE>>super.getComboBox();
+        }
+
         setContent(content: ContentSummary) {
 
             this.clearSelection();
             if (content) {
                 let optionToSelect: Option<ContentTreeSelectorItem> = this.getOptionByValue(content.getContentId().toString());
                 if (!optionToSelect) {
-                    optionToSelect = {
-                        value: content.getContentId().toString(),
-                        displayValue: new ContentTreeSelectorItem(content, false)
-                    };
+                    optionToSelect = this.createOption(content);
                     this.addOption(optionToSelect);
                 }
                 this.selectOption(optionToSelect);
@@ -135,21 +137,20 @@ module api.content {
             });
         }
 
-        protected createOptions(items: ContentTreeSelectorItem[]): wemQ.Promise<Option<ContentTreeSelectorItem>[]> {
+        protected createOptions(items: ITEM_TYPE[]): wemQ.Promise<Option<ITEM_TYPE>[]> {
             return this.optionsFactory.createOptions(items);
         }
 
-        protected createOption(data: Object, readOnly?: boolean): Option<ContentTreeSelectorItem> {
+        protected createOption(data: Object, readOnly?: boolean): Option<ITEM_TYPE> {
 
             let option;
 
             if (api.ObjectHelper.iFrameSafeInstanceOf(data, ContentTreeSelectorItem)) {
-                option = this.optionsFactory.createOption(<ContentTreeSelectorItem>data, readOnly);
+                option = this.optionsFactory.createOption(<ITEM_TYPE>data, readOnly);
             } else {
                 option = {
                     value: (<ContentSummary>data).getId(),
-                    displayValue: new ContentTreeSelectorItem(<ContentSummary>data),
-                    disabled: null
+                    displayValue: new ContentTreeSelectorItem(<ContentSummary>data)
                 };
             }
 
@@ -167,7 +168,7 @@ module api.content {
             }
 
             if (this.ifFlatLoadingMode(inputValue)) {
-                this.getLoader().search(inputValue).then((result: ContentTreeSelectorItem[]) => {
+                this.getLoader().search(inputValue).then((result: ITEM_TYPE[]) => {
                     deferred.resolve(null);
                 }).catch((reason: any) => {
                     api.DefaultErrorHandler.handle(reason);
@@ -191,7 +192,7 @@ module api.content {
             return deferred.promise;
         }
 
-        protected createComboboxConfig(builder: ContentComboBoxBuilder): ComboBoxConfig<ContentTreeSelectorItem> {
+        protected createComboboxConfig(builder: ContentComboBoxBuilder<ITEM_TYPE>): ComboBoxConfig<ContentTreeSelectorItem> {
             const config = super.createComboboxConfig(builder);
             config.treegridDropdownAllowed = builder.treegridDropdownEnabled || builder.treeModeTogglerAllowed;
 
@@ -202,8 +203,8 @@ module api.content {
             return !this.treegridDropdownEnabled || (!this.treeModeTogglerAllowed && !StringHelper.isEmpty(inputValue));
         }
 
-        public static create(): ContentComboBoxBuilder {
-            return new ContentComboBoxBuilder();
+        public static create(): ContentComboBoxBuilder<ContentTreeSelectorItem> {
+            return new ContentComboBoxBuilder<ContentTreeSelectorItem>();
         }
     }
 
@@ -281,7 +282,7 @@ module api.content {
         }
     }
 
-    export class ContentComboBoxBuilder
+    export class ContentComboBoxBuilder<ITEM_TYPE extends ContentTreeSelectorItem>
         extends RichComboBoxBuilder<ContentTreeSelectorItem> {
 
         comboBoxName: string = 'contentSelector';
@@ -313,83 +314,83 @@ module api.content {
 
         treeModeTogglerAllowed: boolean = true;
 
-        setTreegridDropdownEnabled(value: boolean): ContentComboBoxBuilder {
+        setTreegridDropdownEnabled(value: boolean): ContentComboBoxBuilder<ITEM_TYPE> {
             this.treegridDropdownEnabled = value;
             return this;
         }
 
-        setTreeModeTogglerAllowed(value: boolean): ContentComboBoxBuilder {
+        setTreeModeTogglerAllowed(value: boolean): ContentComboBoxBuilder<ITEM_TYPE> {
             this.treeModeTogglerAllowed = value;
             return this;
         }
 
-        setShowStatus(value: boolean): ContentComboBoxBuilder {
+        setShowStatus(value: boolean): ContentComboBoxBuilder<ITEM_TYPE> {
             this.showStatus = value;
             return this;
         }
 
-        setMaximumOccurrences(maximumOccurrences: number): ContentComboBoxBuilder {
+        setMaximumOccurrences(maximumOccurrences: number): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setMaximumOccurrences(maximumOccurrences);
             return this;
         }
 
-        setComboBoxName(value: string): ContentComboBoxBuilder {
+        setComboBoxName(value: string): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setComboBoxName(value);
             return this;
         }
 
-        setSelectedOptionsView(selectedOptionsView: SelectedOptionsView<ContentTreeSelectorItem>): ContentComboBoxBuilder {
+        setSelectedOptionsView(selectedOptionsView: SelectedOptionsView<ITEM_TYPE>): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setSelectedOptionsView(selectedOptionsView);
             return this;
         }
 
-        setLoader(loader: ContentSummaryOptionDataLoader<ContentTreeSelectorItem>): ContentComboBoxBuilder {
+        setLoader(loader: ContentSummaryOptionDataLoader<ITEM_TYPE>): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setLoader(loader);
             return this;
         }
 
-        setMinWidth(value: number): ContentComboBoxBuilder {
+        setMinWidth(value: number): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setMinWidth(value);
             return this;
         }
 
-        setValue(value: string): ContentComboBoxBuilder {
+        setValue(value: string): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setValue(value);
             return this;
         }
 
-        setDelayedInputValueChangedHandling(value: number): ContentComboBoxBuilder {
+        setDelayedInputValueChangedHandling(value: number): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setDelayedInputValueChangedHandling(value ? value : 750);
             return this;
         }
 
-        setDisplayMissingSelectedOptions(value: boolean): ContentComboBoxBuilder {
+        setDisplayMissingSelectedOptions(value: boolean): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setDisplayMissingSelectedOptions(value);
             return this;
         }
 
-        setRemoveMissingSelectedOptions(value: boolean): ContentComboBoxBuilder {
+        setRemoveMissingSelectedOptions(value: boolean): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setRemoveMissingSelectedOptions(value);
             return this;
         }
 
-        setSkipAutoDropShowOnValueChange(value: boolean): ContentComboBoxBuilder {
+        setSkipAutoDropShowOnValueChange(value: boolean): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setSkipAutoDropShowOnValueChange(value);
             return this;
         }
 
-        setOptionDisplayValueViewer(value: Viewer<any>): ContentComboBoxBuilder {
+        setOptionDisplayValueViewer(value: Viewer<any>): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setOptionDisplayValueViewer(value ? value : new api.content.ContentSummaryViewer());
             return this;
         }
 
-        setOptionDataHelper(value: OptionDataHelper<ContentTreeSelectorItem>): ContentComboBoxBuilder {
+        setOptionDataHelper(value: OptionDataHelper<ITEM_TYPE>): ContentComboBoxBuilder<ITEM_TYPE> {
             super.setOptionDataHelper(value);
             return this;
         }
 
-        build(): ContentComboBox {
-            return new ContentComboBox(this);
+        build(): ContentComboBox<ITEM_TYPE> {
+            return new ContentComboBox<ITEM_TYPE>(this);
         }
 
     }

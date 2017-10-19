@@ -5,7 +5,6 @@ module api.content.form.inputtype.contentselector {
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import GetRelationshipTypeByNameRequest = api.schema.relationshiptype.GetRelationshipTypeByNameRequest;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import Deferred = Q.Deferred;
@@ -16,7 +15,7 @@ module api.content.form.inputtype.contentselector {
     export class ContentSelector
         extends ContentInputTypeManagingAdd<ContentTreeSelectorItem> {
 
-        private contentComboBox: api.content.ContentComboBox;
+        private contentComboBox: api.content.ContentComboBox<ContentTreeSelectorItem>;
 
         private draggingIndex: number;
 
@@ -57,7 +56,7 @@ module api.content.form.inputtype.contentselector {
             super.readConfig(inputConfig);
         }
 
-        public getContentComboBox(): ContentComboBox {
+        public getContentComboBox(): ContentComboBox<ContentTreeSelectorItem> {
             return this.contentComboBox;
         }
 

@@ -380,7 +380,7 @@ module api.content.form.inputtype.image {
         }
 
         protected getNumberOfValids(): number {
-            return this.getPropertyArray().getSize();
+            return this.contentComboBox.countSelected();
         }
 
         giveFocus(): boolean {
