@@ -22,7 +22,7 @@ module api.content.resource {
 
         private expandable: boolean;
 
-        constructor(content: ContentSummary, selectable: boolean = false, expandable: boolean = true) {
+        constructor(content: ContentSummary, selectable: boolean = true, expandable: boolean = true) {
             this.content = content;
             this.selectable = selectable;
             this.expandable = expandable;
