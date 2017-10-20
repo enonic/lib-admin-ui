@@ -7,6 +7,7 @@ module api.app.browse {
     import ActionButton = api.ui.button.ActionButton;
     import BrowseItem = api.app.browse.BrowseItem;
     import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
+    import SplitPanelAlignment = api.ui.panel.SplitPanelAlignment;
 
     export class BrowsePanel<M extends api.Equitable> extends api.ui.panel.Panel implements api.ui.ActionContainer {
 
@@ -175,9 +176,8 @@ module api.app.browse {
                 if (!this.browseItemPanel) {
                     this.browseItemPanel = this.createBrowseItemPanel();
                 }
-                this.gridAndItemsSplitPanel = new api.ui.panel.SplitPanelBuilder(this.treeGrid, this.browseItemPanel)
-                    .setAlignmentTreshold(BrowsePanel.SPLIT_PANEL_ALIGNMENT_TRESHOLD)
-                    .build();
+                this.gridAndItemsSplitPanel = new api.ui.panel.SplitPanelBuilder(this.treeGrid, this.browseItemPanel).setAlignment(
+                    SplitPanelAlignment.VERTICAL).build();
 
                 this.gridAndItemsSplitPanel.setFirstPanelSize(38, api.ui.panel.SplitPanelUnit.PERCENT);
 
