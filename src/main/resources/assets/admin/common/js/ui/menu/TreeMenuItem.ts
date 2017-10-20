@@ -23,7 +23,6 @@ module api.ui.menu {
                 }
             });
             this.setEnabled(action.isEnabled());
-            this.setVisible(action.isVisible());
 
             action.onPropertyChanged((changedAction: api.ui.Action) => {
                 this.setEnabled(changedAction.isEnabled());
