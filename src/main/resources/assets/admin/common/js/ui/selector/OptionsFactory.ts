@@ -29,7 +29,8 @@ module api.ui.selector {
                 expandable: this.helper.isExpandable(data),
                 selectable: this.helper.isSelectable(data),
                 displayValue: data,
-                readOnly: isReadonly
+                readOnly: isReadonly,
+                image: this.helper.isImage(data)
             };
         }
 

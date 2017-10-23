@@ -24,5 +24,9 @@ module api.content {
         isExpandable(data: ContentTreeSelectorItem): boolean {
             return data.isExpandable();
         }
+
+        isImage(data: ContentTreeSelectorItem): boolean {
+            return data.isImage();
+        }
     }
 }

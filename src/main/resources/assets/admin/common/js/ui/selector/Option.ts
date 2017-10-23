@@ -15,5 +15,7 @@ module api.ui.selector {
         selectable?: boolean;
 
         expandable?: boolean;
+
+        image? :boolean;
     }
 }

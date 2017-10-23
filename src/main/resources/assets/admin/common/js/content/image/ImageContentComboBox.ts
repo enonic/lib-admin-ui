@@ -17,6 +17,8 @@ module api.content.image {
             builder.setLoader(loader);
 
             super(builder);
+
+            this.addClass('image-combo-box');
         }
 
         getContent(contentId: ContentId): ContentSummary {
@@ -40,7 +42,8 @@ module api.content.image {
             } else if (api.ObjectHelper.iFrameSafeInstanceOf(data, ContentSummary)) {
                 option = {
                     value: (<ContentSummary>data).getId(),
-                    displayValue: new ImageTreeSelectorItem(<ContentSummary>data)
+                    displayValue: new ImageTreeSelectorItem(<ContentSummary>data),
+                    image: true
                 };
             }
 

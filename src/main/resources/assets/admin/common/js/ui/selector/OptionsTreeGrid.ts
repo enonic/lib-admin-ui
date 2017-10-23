@@ -260,6 +260,10 @@ module api.ui.selector {
                 cssClasses += ' expandable';
             }
 
+            if (node.getData().image) {
+                cssClasses += ' image';
+            }
+
             if(!StringHelper.isBlank(cssClasses) || !StringHelper.isBlank(title)) {
                 return {cssClasses: cssClasses, title: title};
             }

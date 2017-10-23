@@ -13,5 +13,7 @@ module api.ui.selector {
         isExpandable(data: DATA): boolean;
 
         isDescendingPath(childOption: DATA, parentOption: DATA);
+
+        isImage(data: DATA): boolean;
     }
 }
