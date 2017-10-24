@@ -23,6 +23,7 @@ module api.ui.menu {
                 }
             });
             this.setEnabled(action.isEnabled());
+            this.setVisible(action.isVisible());
 
             action.onPropertyChanged((changedAction: api.ui.Action) => {
                 this.setEnabled(changedAction.isEnabled());
@@ -45,14 +46,15 @@ module api.ui.menu {
             return this.action;
         }
 
+        setVisible(value: boolean) {
+            this.toggleClass('expanded', value);
+            return this;
+        }
+
         setEnabled(value: boolean) {
-            let el = this.getEl();
-            el.setDisabled(!value);
-            if (value) {
-                el.removeClass('disabled');
-            } else {
-                el.addClass('disabled');
-            }
+            this.getEl()
+                .setDisabled(!value)
+                .toggleClass('disabled', !value);
         }
     }
 
