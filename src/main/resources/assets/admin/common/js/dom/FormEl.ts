@@ -21,10 +21,10 @@ module api.dom {
         }
 
         static getNextFocusable(input: Element, focusableSelector?: string, ignoreTabIndex?: boolean): Element {
-            let focusableElements: NodeList = document.querySelectorAll(focusableSelector ? focusableSelector : 'input, button, select');
+            const focusableElements: NodeList = document.querySelectorAll(focusableSelector ? focusableSelector : 'input, button, select');
 
             // find index of current input
-            let index = FormEl.getIndexOfInput(focusableElements, input);
+            const index = FormEl.getIndexOfInput(focusableElements, input);
 
             if (index < 0) {
                 return;
@@ -53,11 +53,12 @@ module api.dom {
             }
         }
 
-        static moveFocusToPrevFocusable(input: Element, focusableSelector?: string) {
-            let focusableElements: NodeList = document.querySelectorAll(focusableSelector ? focusableSelector : 'input, button, select');
+        static getPrevFocusable(input: Element, focusableSelector?: string, ignoreTabIndex?: boolean): Element {
+            const focusableElements: NodeList = document.querySelectorAll(focusableSelector ? focusableSelector : 'input, button, select');
 
             // find index of current input
             let index = FormEl.getIndexOfInput(focusableElements, input);
+
             let nextFocusable: api.dom.Element;
 
             do {
@@ -66,8 +67,16 @@ module api.dom {
                     nextFocusable = api.dom.Element.fromHtmlElement(<HTMLElement>focusableElements.item(index));
                 }
             } while (nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0);
-            nextFocusable.giveFocus();
-            return;
+
+            return nextFocusable;
+        }
+
+        static moveFocusToPrevFocusable(input: Element, focusableSelector?: string) {
+            const prevFocusable = FormEl.getPrevFocusable(input, focusableSelector);
+
+            if (prevFocusable) {
+                prevFocusable.giveFocus();
+            }
         }
 
         private static getIndexOfInput(elements: NodeList, el: Element) {
