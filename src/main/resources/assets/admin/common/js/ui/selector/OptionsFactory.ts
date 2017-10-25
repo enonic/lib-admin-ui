@@ -18,9 +18,14 @@ module api.ui.selector {
         }
 
         createOptions(data: OPTION_DISPLAY_VALUE[]): wemQ.Promise<Option<OPTION_DISPLAY_VALUE>[]> {
-            return this.loader.checkReadonly(data).then((readonlyIds: string[]) => {
-                return data.map((item) => this.createOption(item, this.isOptionReadonly(item, readonlyIds)));
-            });
+            if (this.readonlyChecker) {
+                return this.loader.checkReadonly(data).then((readonlyIds: string[]) => {
+                    return data.map((item) => this.createOption(item, this.isOptionReadonly(item, readonlyIds)));
+                });
+            } else {
+                return wemQ(data.map((item) => this.createOption(item)));
+            }
+
         }
 
         createOption(data: OPTION_DISPLAY_VALUE, isReadonly: boolean = false): Option<OPTION_DISPLAY_VALUE> {
