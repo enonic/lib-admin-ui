@@ -5,6 +5,7 @@ module api.content.image {
     import ContentTypeName = api.schema.content.ContentTypeName;
     import OptionDataHelper = api.ui.selector.OptionDataHelper;
     import ComboBox = api.ui.selector.combobox.ComboBox;
+    import ElementHelper = api.dom.ElementHelper;
 
     export class ImageContentComboBox
         extends ContentComboBox<ImageTreeSelectorItem> {
@@ -18,7 +19,28 @@ module api.content.image {
 
             super(builder);
 
-            this.addClass('image-combo-box');
+            this.addClass('image-combobox');
+
+            this.initImagePreview();
+        }
+
+        private initImagePreview() {
+            const preview = new ImageContentPreview();
+
+            this.onMouseOver((e: MouseEvent) => {
+                const helper = new ElementHelper((<HTMLElement>e.target));
+                if (this.isThumbnailImage(helper)) {
+                    preview.showFor(helper);
+                }
+            });
+
+            preview.onSelected((id: string) => {
+                this.selectOptionByValue(id);
+            });
+        }
+
+        private isThumbnailImage(helper: ElementHelper): boolean {
+            return helper.getTagName().toLowerCase() == 'img' && helper.hasAttribute('data-contentid');
         }
 
         getContent(contentId: ContentId): ContentSummary {

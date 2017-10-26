@@ -1,37 +1,30 @@
 module api.form.inputtype.text {
 
-    import DivEl = api.dom.DivEl;
-    declare var CONFIG;
-
     import support = api.form.inputtype.support;
     import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import ContentSummary = api.content.ContentSummary;
     import Element = api.dom.Element;
-    import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
     import HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
     import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
-    import ModalDialog = api.util.htmlarea.dialog.ModalDialog;
-    import ElementHelper = api.dom.ElementHelper;
     import ApplicationKey = api.application.ApplicationKey;
-    import RoleKeys = api.security.RoleKeys;
-    import LoginResult = api.security.auth.LoginResult;
     import Promise = Q.Promise;
-    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
     import AppHelper = api.util.AppHelper;
+    declare var CONFIG;
 
-    export class HtmlArea extends support.BaseInputTypeNotManagingAdd<string> {
+
+    export class HtmlArea
+        extends support.BaseInputTypeNotManagingAdd<string> {
 
         private editors: HtmlAreaOccurrenceInfo[];
         private content: api.content.ContentSummary;
         private contentPath: api.content.ContentPath;
         private applicationKeys: ApplicationKey[];
 
-        private focusListeners: {(event: FocusEvent): void}[] = [];
+        private focusListeners: { (event: FocusEvent): void }[] = [];
 
-        private blurListeners: {(event: FocusEvent): void}[] = [];
+        private blurListeners: { (event: FocusEvent): void }[] = [];
 
         private authRequest: Promise<void>;
         private editableSourceCode: boolean;
@@ -173,9 +166,15 @@ module api.form.inputtype.text {
                     // the one that event is triggered from
                     let htmlAreaIframe = wemjq(textAreaWrapper.getHTMLElement()).find('iframe').get(0);
                     // check if focused element is html area that triggered event
-                    let activeElement = this.isNotActiveElement(htmlAreaIframe) ? htmlAreaIframe : <HTMLElement>document.activeElement;
-                    let nextFocusable = api.dom.FormEl.getNextFocusable(api.dom.Element.fromHtmlElement(activeElement),
-                        'iframe, input, select');
+                    const activeElement = this.isNotActiveElement(htmlAreaIframe) ? htmlAreaIframe : <HTMLElement>document.activeElement;
+                    const focusedEl = api.dom.Element.fromHtmlElement(activeElement);
+                    const isShift = e.shiftKey;
+                    let nextFocusable;
+                    if (!isShift) {
+                        nextFocusable = api.dom.FormEl.getNextFocusable(focusedEl, 'iframe, input, select');
+                    } else {
+                        nextFocusable = api.dom.FormEl.getPrevFocusable(focusedEl, 'iframe, input, select');
+                    }
 
                     if (nextFocusable) {
                         // if iframe is next focusable then it is a html area and using it's own focus method
@@ -194,49 +193,37 @@ module api.form.inputtype.text {
                 textAreaWrapper.addClass(focusedEditorCls);
             };
 
-            new HTMLAreaBuilder().
-                setSelector('textarea.' + id.replace(/\./g, '_')).
-                setAssetsUri(assetsUri).
-                setInline(false).
-                onCreateDialog(createDialogHandler).
-                setFocusHandler(focusHandler.bind(this)).
-                setBlurHandler(blurHandler.bind(this)).
-                setKeydownHandler(keydownHandler).
-                setKeyupHandler(notifyValueChanged).
-                setNodeChangeHandler(notifyValueChanged).
-                setContentPath(this.contentPath).
-                setContent(this.content).
-                setApplicationKeys(this.applicationKeys).
-                setTools({
-                    include: this.inputConfig['include'],
-                    exclude: this.inputConfig['exclude']
-                }).
-                setForcedRootBlock(this.inputConfig['forcedRootBlock'] ? this.inputConfig['forcedRootBlock'][0].value : 'p').
-                setEditableSourceCode(this.editableSourceCode).
-                createEditor().
-                then((editor: HtmlAreaEditor) => {
-                    this.setEditorContent(id, property);
-                    if (this.notInLiveEdit()) {
-                        this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper, id);
-                    }
-                    this.removeTooltipFromEditorArea(textAreaWrapper);
+            new HTMLAreaBuilder().setSelector('textarea.' + id.replace(/\./g, '_')).setAssetsUri(assetsUri).setInline(false).onCreateDialog(
+                createDialogHandler).setFocusHandler(focusHandler.bind(this)).setBlurHandler(blurHandler.bind(this)).setKeydownHandler(
+                keydownHandler).setKeyupHandler(notifyValueChanged).setNodeChangeHandler(notifyValueChanged).setContentPath(
+                this.contentPath).setContent(this.content).setApplicationKeys(this.applicationKeys).setTools({
+                include: this.inputConfig['include'],
+                exclude: this.inputConfig['exclude']
+            }).setForcedRootBlock(
+                this.inputConfig['forcedRootBlock'] ? this.inputConfig['forcedRootBlock'][0].value : 'p').setEditableSourceCode(
+                this.editableSourceCode).createEditor().then((editor: HtmlAreaEditor) => {
+                this.setEditorContent(id, property);
+                if (this.notInLiveEdit()) {
+                    this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper, id);
+                }
+                this.removeTooltipFromEditorArea(textAreaWrapper);
 
-                    let removeButtonEL = wemjq(textAreaWrapper.getParentElement().getParentElement().getHTMLElement()).find(
-                        '.remove-button')[0];
-                    removeButtonEL.addEventListener('mouseover', () => {
-                        isMouseOverRemoveOccurenceButton = true;
-                    });
-                    removeButtonEL.addEventListener('mouseleave', () => {
-                        isMouseOverRemoveOccurenceButton = false;
-                    });
+                let removeButtonEL = wemjq(textAreaWrapper.getParentElement().getParentElement().getHTMLElement()).find(
+                    '.remove-button')[0];
+                removeButtonEL.addEventListener('mouseover', () => {
+                    isMouseOverRemoveOccurenceButton = true;
+                });
+                removeButtonEL.addEventListener('mouseleave', () => {
+                    isMouseOverRemoveOccurenceButton = false;
+                });
 
                 this.onShown(() => {
-                            // invoke auto resize on shown in case contents have been updated while inactive
+                    // invoke auto resize on shown in case contents have been updated while inactive
                     if (editor['contentAreaContainer'] || editor['bodyElement']) {
-                                editor.execCommand('mceAutoResize', false, null, {skip_focus: true});
-                            }
-                    });
+                        editor.execCommand('mceAutoResize', false, null, {skip_focus: true});
+                    }
                 });
+            });
         }
 
         private setFocusOnEditorAfterCreate(inputOccurence: Element, id: string): void {
