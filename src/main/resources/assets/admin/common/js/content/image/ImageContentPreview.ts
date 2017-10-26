@@ -12,7 +12,7 @@ module api.content.image {
         private static PADDING: number = 20;
         private static TIMEOUT: number = 300;
 
-        public static debug: boolean = true;
+        public static debug: boolean = false;
 
         private image: ImgEl;
 
@@ -31,8 +31,10 @@ module api.content.image {
             this.resolver = new ContentImageUrlResolver();
             this.image = new ImgEl();
             this.image.onLoaded(() => {
-                this.mask.hide();
                 if (!this.image.isPlaceholder()) {
+                    this.mask.hide();
+                }
+                if (this.isVisible()) {
                     this.positionFor(this.thumb);
                 }
             });
@@ -59,32 +61,34 @@ module api.content.image {
             this.selectListeners = this.selectListeners.filter(item => item !== listener);
         }
 
-        showFor(img: ElementHelper) {
+        showFor(thumb: ElementHelper) {
             if (ImageContentPreview.debug) {
-                console.debug('ImageContentPreview.showFor:', img);
+                console.debug('ImageContentPreview.showFor:', thumb);
             }
             this.clearTimeout();
 
             if (!this.isVisible()) {
                 api.dom.Body.get().appendChild(this);
+                // mask removes itself when masked element is removed so add it again
+                this.appendChild(this.mask);
             }
 
-            const imageId = img.getAttribute('data-contentid');
+            const imageId = thumb.getAttribute('data-contentid');
 
-            this.thumb = img;
-            const maxWidth = this.positionFor(img);
-            const biggestSize = this.getBiggestSize(img, maxWidth);
+            const maxWidth = this.positionFor(thumb);
+            const biggestSize = this.getBiggestSize(thumb, maxWidth);
             this.addClass('shown');
             const imageUrl = this.resolver.setContentId(new ContentId(imageId)).setSize(biggestSize).resolve();
             this.image.setSrc(imageUrl);
             this.mask.show();
+            this.thumb = thumb;
 
             const leaveListener = (outE: MouseEvent) => {
-                img.removeEventListener('mouseout', leaveListener);
+                thumb.removeEventListener('mouseout', leaveListener);
                 this.delayHide();
             };
 
-            img.addEventListener('mouseout', leaveListener);
+            thumb.addEventListener('mouseout', leaveListener);
         }
 
         private delayHide() {
@@ -108,25 +112,30 @@ module api.content.image {
             return ratio > 1 ? Math.floor(maxWidth * ratio) : maxWidth;
         }
 
-        private positionFor(img: ElementHelper) {
+        private positionFor(thumb: ElementHelper) {
             if (ImageContentPreview.debug) {
-                console.debug('ImageContentPreview.positionFor:', img);
+                console.debug('ImageContentPreview.positionFor:', thumb);
             }
 
-            const imgDims = img.getDimensions();
+            const thumbDims = thumb.getDimensions();
             const bodyDims = api.dom.Body.get().getEl().getDimensions();
+            const imgDims = this.image.getEl().getDimensions();
             const el = this.getEl();
-            const previewDims = el.getDimensions();
 
-            const leftSpace = imgDims.left - ImageContentPreview.PADDING;
-            const leftSide = Math.max(leftSpace - previewDims.width, 0);
-            const rightSide = Math.min(imgDims.left + imgDims.width + ImageContentPreview.PADDING, bodyDims.width - previewDims.width);
+            const leftSpace = thumbDims.left - ImageContentPreview.PADDING;
+            const leftSide = Math.max(leftSpace - imgDims.width, 0);
+            const rightSide = Math.max(0, Math.min(thumbDims.left + thumbDims.width + ImageContentPreview.PADDING, bodyDims.width -
+                                                                                                                   imgDims.width));
             const rightSpace = bodyDims.width - rightSide;
 
-            const topSpace = imgDims.top - ImageContentPreview.PADDING;
-            const topSide = topSpace - (previewDims.height - imgDims.height) / 2;
+            const topSpace = thumbDims.top - ImageContentPreview.PADDING;
+            const topSide = topSpace - (imgDims.height - thumbDims.height) / 2;
 
-            el.setLeftPx(leftSpace > rightSpace ? leftSide : rightSide).setTopPx(Math.max(topSide, 0));
+            el.setLeftPx(leftSpace > rightSpace ? leftSide : rightSide)
+                .setTopPx(Math.max(topSide, 0))
+                .setWidthPx(Math.min(imgDims.width, bodyDims.width))
+                .setHeightPx(Math.min(imgDims.height || imgDims.width, bodyDims.height));
+
             return Math.max(leftSpace, rightSpace);
         }
 
@@ -140,7 +149,7 @@ module api.content.image {
                 if (ImageContentPreview.debug) {
                     console.debug('ImageContentPreview.hide: animation finished, removing from dom');
                 }
-                // mouse might have returned during animation time
+                // mouse might have returned during animation time, don't hide it in that case
                 if (!this.thumb) {
                     this.image.setSrc(ImgEl.PLACEHOLDER);
                     api.dom.Body.get().removeChild(this);

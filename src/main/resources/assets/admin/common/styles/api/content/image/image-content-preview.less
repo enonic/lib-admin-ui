@@ -3,8 +3,9 @@
   z-index: @z-index-context-window;
   background: #eee;
   opacity: 0;
-  transition: transform .3s ease-out, opacity .3s ease-out;
+  transition: all .3s ease-out;
   transform: translateY(10%);
+  overflow: auto;
 
   &.shown {
     opacity: 1;
@@ -12,10 +13,8 @@
   }
 
   img {
-    min-width: 200px;
-    min-height: 200px;
-
-    transition-duration: .3s;
-    transition-property: all;
+    min-width: 500px;
+    margin: 0;
+    border: 0 none;
   }
 }
