@@ -64,12 +64,18 @@ task copySharedStyles( type: Copy, dependsOn: copyTypeDefs ) {
     into 'build/resources/main/dev'
 }
 
+task list( type: Exec ) {
+    executable "sh"
+    args "-c", "find ./build ./src -type f -name '_all*' -print"
+}
+
 jar {
     exclude 'assets/spec/**'
     exclude 'assets/**/*.ts'    // let dev/**/admin.d.ts through to be used by other apps
     exclude 'assets/**/*.less'  // let dev/**/*.less through to be used by other apps
     includeEmptyDirs = false
     dependsOn += copySharedStyles
+    dependsOn += list
 }
 
 task cleanNode( type: Delete ) {
