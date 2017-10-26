@@ -1,0 +1,21 @@
+.image-content-preview {
+  position: absolute;
+  z-index: @z-index-context-window;
+  background: #eee;
+  opacity: 0;
+  transition: transform .3s ease-out, opacity .3s ease-out;
+  transform: translateY(10%);
+
+  &.shown {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+
+  img {
+    min-width: 200px;
+    min-height: 200px;
+
+    transition-duration: .3s;
+    transition-property: all;
+  }
+}

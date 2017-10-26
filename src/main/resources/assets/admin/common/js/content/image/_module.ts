@@ -4,6 +4,7 @@
 ///<reference path='ImageSelectorDisplayValue.ts' />
 ///<reference path='ImageContentComboBox.ts' />
 ///<reference path='ImageSelectorViewer.ts' />
+///<reference path='ImageContentPreview.ts' />
 ///<reference path='ImageSelectorSelectedOptionsView.ts' />
 ///<reference path='ImageSelectorSelectedOptionView.ts' />
 ///<reference path='SelectionToolbar.ts' />

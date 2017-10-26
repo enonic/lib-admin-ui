@@ -7,6 +7,12 @@ module api.content.image {
             super();
         }
 
+        doLayout(object: api.content.image.ImageTreeSelectorItem): any {
+            super.doLayout(object);
+
+            this.getNamesAndIconView().getIconImageEl().getEl().setAttribute('data-contentid', object.getContentId().toString());
+        }
+
         resolveDisplayName(object: ImageTreeSelectorItem): string {
             return object.getDisplayName();
         }
