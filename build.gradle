@@ -38,7 +38,8 @@ task gulpAll( type: GulpTask, dependsOn: npmInstall ) {
 task copyCompiled( type: Copy, dependsOn: gulpAll ) {
     description = 'Copy compiled js files.'
     from( 'src/main/resources/assets' ) {
-        include '**/_all.js*'
+        include '**/_all.js'
+        include '**/_all.css'
     }
     into 'build/resources/main/assets'
     includeEmptyDirs = false
