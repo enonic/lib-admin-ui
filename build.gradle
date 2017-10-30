@@ -35,7 +35,17 @@ task gulpAll( type: GulpTask, dependsOn: npmInstall ) {
     args = ['all']
 }
 
-task copyTypeDefs( type: Copy, dependsOn: gulpAll ) {
+task copyCompiled( type: Copy, dependsOn: gulpAll ) {
+    description = 'Copy compiled js files.'
+    from( 'src/main/resources/assets' ) {
+        include '**/_all.js'
+        include '**/_all.css'
+    }
+    into 'build/resources/main/assets'
+    includeEmptyDirs = false
+}
+
+task copyTypeDefs( type: Copy, dependsOn: copyCompiled ) {
     description = 'Copy Typescript definitions to /dev/d.ts folder.'
     from( 'src/main/resources/assets/admin/common/js' ) {
         include '**/*.d.ts'
@@ -45,10 +55,31 @@ task copyTypeDefs( type: Copy, dependsOn: gulpAll ) {
     includeEmptyDirs = false
 }
 
+task copySharedStyles( type: Copy, dependsOn: copyTypeDefs ) {
+    description = 'Copy shared styles to /dev/styles folder.'
+    from( 'src/main/resources/assets/admin/common/styles' ) {
+        include '**/*.less'
+        into 'styles'
+    }
+    from( 'src/main/resources/assets/admin/common/images' ) {
+        into 'images'
+    }
+    from( 'src/main/resources/assets/admin/common/font' ) {
+        into 'font'
+    }
+    from( 'src/main/resources/assets/admin/common/icons' ) {
+        into 'icons'
+    }
+    includeEmptyDirs = false
+    into 'build/resources/main/dev'
+}
+
 jar {
     exclude 'assets/spec/**'
+    exclude 'assets/**/*.ts'    // let dev/**/admin.d.ts through to be used by other apps
+    exclude 'assets/**/*.less'  // let dev/**/*.less through to be used by other apps
     includeEmptyDirs = false
-    dependsOn += copyTypeDefs
+    dependsOn += copySharedStyles
 }
 
 task cleanNode( type: Delete ) {
