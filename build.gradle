@@ -35,7 +35,17 @@ task gulpAll( type: GulpTask, dependsOn: npmInstall ) {
     args = ['all']
 }
 
-task copyTypeDefs( type: Copy, dependsOn: gulpAll ) {
+task copyCompiled( type: Copy, dependsOn: gulpAll ) {
+    description = 'Copy compiled js files.'
+    from( 'src/main/resources/assets' ) {
+        include '**/_all.js'
+        include '**/_all.css'
+    }
+    into 'build/resources/main/assets'
+    includeEmptyDirs = false
+}
+
+task copyTypeDefs( type: Copy, dependsOn: copyCompiled ) {
     description = 'Copy Typescript definitions to /dev/d.ts folder.'
     from( 'src/main/resources/assets/admin/common/js' ) {
         include '**/*.d.ts'
