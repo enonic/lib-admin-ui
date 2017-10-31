@@ -20,7 +20,7 @@ module api.content.image {
         }
 
         resolveIconUrl(object: ImageTreeSelectorItem): string {
-            return object.getImageUrl() + '?crop=false';
+            return object.getImageUrl() + '&size=270';
         }
     }
 }

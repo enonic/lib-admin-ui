@@ -36,7 +36,8 @@ module api.ui.selector {
                     .setRowHeight(50)
                     .setHotkeysEnabled(true)
                     .setShowToolbar(false)
-                    .setIdPropertyName(gridOptions.dataIdProperty);
+                    .setIdPropertyName(gridOptions.dataIdProperty)
+                    .disableCleanupRows(api.ObjectHelper.iFrameSafeInstanceOf(loader, api.content.image.ImageOptionDataLoader));
 
             builder.getOptions().setDataItemColumnValueExtractor(builder.nodeExtractor);
 
