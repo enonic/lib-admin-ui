@@ -58,13 +58,31 @@ module api.notify {
             }
         }
 
+        private messageExistsInRegistry(opts: NotifyOpts) {
+            if (Object.keys(this.registry).length === 0) {
+                return false;
+            }
+
+            const registryArray = Object.keys(this.registry).map(function (key: string) { return this.registry[key]; });
+
+            return registryArray.some((registryEntry) =>
+                                            registryEntry.opts.message == opts.message && registryEntry.opts.type == opts.type);
+        }
+
         private createNotification(opts: NotifyOpts): NotificationMessage {
+            if (this.messageExistsInRegistry(opts)) {
+                return;
+            }
+
             const notificationEl = new NotificationMessage(opts.message, opts.autoHide);
             if (opts.type) {
                 notificationEl.addClass(opts.type);
             }
 
-            this.registry[notificationEl.getEl().getId()] = notificationEl;
+            this.registry[notificationEl.getEl().getId()] = {
+                opts: opts,
+                el: notificationEl
+            };
             this.setListeners(notificationEl, opts);
 
             return notificationEl;
@@ -94,7 +112,6 @@ module api.notify {
         hide(messageId: string) {
             if (this.registry[messageId]) {
                 this.remove(this.registry[messageId]);
-                delete this.registry[messageId];
             }
         }
 
@@ -138,6 +155,7 @@ module api.notify {
                     this.el.getWrapper().removeChild(el);
                 });
 
+            delete this.registry[el.getEl().getId()];
             delete this.timers[el.getEl().getId()];
         }
 
