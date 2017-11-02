@@ -17,6 +17,8 @@ module api.content.image {
             builder.setLoader(loader);
 
             super(builder);
+
+            this.addClass('image-content-combo-box');
         }
 
         getContent(contentId: ContentId): ContentSummary {

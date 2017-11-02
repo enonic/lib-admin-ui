@@ -202,3 +202,51 @@
     visibility: hidden;
   }
 }
+
+.image-selector, .image-content-combo-box {
+  .tree-grid:not(.tree-mode) {
+
+    .grid-canvas {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+
+      .slick-row.ui-widget-content {
+        flex-grow: 0;
+        width: 33%;
+        height: 200px;
+        position: static;
+      }
+
+      .slick-cell {
+        position: relative;
+        height: 100%;
+
+        .viewer {
+          height: 100%;
+
+          .names-and-icon-view {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .@{_COMMON_PREFIX}wrapper {
+              float: none;
+              height: auto;
+              width: auto;
+              margin: 0 5px;
+
+              .font-icon-default {
+                width: 100%;
+              }
+            }
+            .@{_COMMON_PREFIX}names-view {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1958,7 +1958,9 @@ if (typeof Slick === "undefined") {
       var rendered = getRenderedRange();
 
       // remove rows no longer in the viewport
-      cleanupRows(rendered);
+      if (!options.disableCleanupRows) {
+        cleanupRows(rendered);
+      }
 
       // add new rows & missing cells in existing rows
       if (lastRenderedScrollLeft != scrollLeft) {
