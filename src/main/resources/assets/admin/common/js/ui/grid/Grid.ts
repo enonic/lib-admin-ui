@@ -1,9 +1,9 @@
 module api.ui.grid {
 
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
 
-    export class Grid<T extends Slick.SlickData> extends api.dom.DivEl {
+    export class Grid<T extends Slick.SlickData>
+        extends api.dom.DivEl {
 
         private defaultHeight: string = '400px';
 
@@ -43,7 +43,7 @@ module api.ui.grid {
                     width: 40
                 });
 
-                if(options.isLeftAlignedCheckbox()) {
+                if (options.isLeftAlignedCheckbox()) {
                     columns.unshift(<GridColumn<T>>this.checkboxSelectorPlugin.getColumnDefinition());
                 } else {
                     columns.push(<GridColumn<T>>this.checkboxSelectorPlugin.getColumnDefinition());
@@ -90,6 +90,13 @@ module api.ui.grid {
 
         protected createColumns(): api.ui.grid.GridColumn<any>[] {
             throw 'Must be implemented by inheritors';
+        }
+
+        hide(skipAnimation: boolean = false): any {
+            if (this.getOptions().disableCleanupRows) {
+                this.slickGrid.invalidateAllRows();
+            }
+            return super.hide(skipAnimation);
         }
 
         setItemMetadata(metadataHandler: () => void) {
