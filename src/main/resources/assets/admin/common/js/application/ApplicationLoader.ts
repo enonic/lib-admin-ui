@@ -1,7 +1,6 @@
 module api.application {
 
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import LoadingDataEvent = api.util.loader.event.LoadingDataEvent;
+
 
     export class ApplicationLoader extends api.util.loader.BaseLoader<ApplicationListResult, Application> {
 
@@ -28,6 +27,11 @@ module api.application {
         search(searchString: string): wemQ.Promise<Application[]> {
             this.getRequest().setSearchQuery(searchString);
             return this.load();
+        }
+
+        setSearchString(value: string) {
+            super.setSearchString(value);
+            this.getRequest().setSearchQuery(value);
         }
 
         load(): wemQ.Promise<Application[]> {

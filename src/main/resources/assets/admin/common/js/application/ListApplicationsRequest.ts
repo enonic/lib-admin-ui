@@ -23,6 +23,8 @@ module api.application {
             return this;
         }
 
+
+
         getRequestPath(): api.rest.Path {
             return api.rest.Path.fromParent(super.getResourcePath(), this.apiName);
         }

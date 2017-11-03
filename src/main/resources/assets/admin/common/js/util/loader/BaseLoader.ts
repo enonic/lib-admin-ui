@@ -145,6 +145,10 @@ module api.util.loader {
             return this.comparator;
         }
 
+        setSearchString(value: string) {
+            this.searchString = value;
+        }
+
         getSearchString(): string {
             return this.searchString;
         }

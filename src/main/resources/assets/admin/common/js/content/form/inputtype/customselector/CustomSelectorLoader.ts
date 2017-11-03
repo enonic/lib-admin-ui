@@ -26,6 +26,11 @@ module api.content.form.inputtype.customselector {
             return this.load();
         }
 
+        setSearchString(value: string) {
+            super.setSearchString(value);
+            this.getRequest().setQuery(value);
+        }
+
         protected sendPreLoadRequest(ids: string): Q.Promise<CustomSelectorItem[]> {
 
             return this.getRequest().setIds(ids.split(';')).sendAndParse().then((results) => {

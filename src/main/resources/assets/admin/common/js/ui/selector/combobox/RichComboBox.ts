@@ -286,6 +286,7 @@ module api.ui.selector.combobox {
             if (!StringHelper.isBlank(inputValue)) {
                 return this.loader.search(inputValue).catch(api.DefaultErrorHandler.handle);
             } else {
+                this.loader.setSearchString(inputValue);
                 return this.loader.load().catch(api.DefaultErrorHandler.handle);
             }
         }

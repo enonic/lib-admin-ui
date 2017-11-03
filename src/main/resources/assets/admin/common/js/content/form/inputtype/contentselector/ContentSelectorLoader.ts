@@ -36,6 +36,11 @@ module api.content.form.inputtype.contentselector {
             return this.load();
         }
 
+        setSearchString(value: string) {
+            super.setSearchString(value);
+            this.getRequest().setQueryExpr(value);
+        }
+
         isPartiallyLoaded(): boolean {
             return this.getRequest().isPartiallyLoaded();
         }

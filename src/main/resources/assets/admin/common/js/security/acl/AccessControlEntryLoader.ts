@@ -92,6 +92,11 @@ module api.security.acl {
             return this.load();
         }
 
+        setSearchString(value: string) {
+            super.setSearchString(value);
+            this.getRequest().setSearchQuery(value);
+        }
+
     }
 
 }
