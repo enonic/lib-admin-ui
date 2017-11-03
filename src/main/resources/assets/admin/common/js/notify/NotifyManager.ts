@@ -36,9 +36,9 @@ module api.notify {
             this.notify(feedback);
         }
 
-        showError(message: string, autoHide: boolean = true) {
+        showError(message: string, autoHide: boolean = true): string {
             let error = Message.newError(message, autoHide);
-            this.notify(error);
+            return this.notify(error);
         }
 
         showWarning(message: string, autoHide: boolean = true) {
@@ -46,16 +46,21 @@ module api.notify {
             this.notify(warning);
         }
 
-        notify(message: Message) {
+        notify(message: Message): string {
             const opts = NotifyOpts.buildOpts(message);
 
             const limitReached = this.queue.length > 0
                                  || this.el.getWrapper().getChildren().length >= this.notificationLimit;
+
+            const notification = this.createNotification(opts);
+
             if (limitReached) {
-                this.queue.push(this.createNotification(opts));
+                this.queue.push(notification);
             } else {
-                this.renderNotification(this.createNotification(opts));
+                this.renderNotification(notification);
             }
+
+            return notification.getEl().getId();
         }
 
         private messageExistsInRegistry(opts: NotifyOpts) {
@@ -63,10 +68,10 @@ module api.notify {
                 return false;
             }
 
-            const registryArray = Object.keys(this.registry).map(function (key: string) { return this.registry[key]; });
+            const registryArray = Object.keys(this.registry).map((key) => this.registry[key].opts);
 
             return registryArray.some((registryEntry) =>
-                                            registryEntry.opts.message == opts.message && registryEntry.opts.type == opts.type);
+                                            registryEntry.message == opts.message && registryEntry.type == opts.type);
         }
 
         private createNotification(opts: NotifyOpts): NotificationMessage {
@@ -110,8 +115,8 @@ module api.notify {
         }
 
         hide(messageId: string) {
-            if (this.registry[messageId]) {
-                this.remove(this.registry[messageId]);
+            if (messageId && this.registry[messageId]) {
+                this.remove(this.registry[messageId].el);
             }
         }
 
