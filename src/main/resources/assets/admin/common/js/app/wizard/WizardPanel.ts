@@ -839,6 +839,10 @@ module api.app.wizard {
         isValid() {
             return this.validityManager.isAllValid();
         }
+
+        isNew(): boolean {
+            return this.formState.isNew();
+        }
     }
 
     export class FormState {

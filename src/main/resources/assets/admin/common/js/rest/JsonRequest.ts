@@ -12,6 +12,8 @@ module api.rest {
 
         private timeoutMillis: number = 10000;
 
+        private async: boolean = true;
+
         setPath(value: Path): JsonRequest<RAW_JSON_TYPE> {
             this.path = value;
             return this;
@@ -29,6 +31,11 @@ module api.rest {
 
         setTimeout(timeoutMillis: number): JsonRequest<RAW_JSON_TYPE> {
             this.timeoutMillis = timeoutMillis;
+            return this;
+        }
+
+        setAsync(async: boolean): JsonRequest<RAW_JSON_TYPE> {
+            this.async = async;
             return this;
         }
 
@@ -74,8 +81,10 @@ module api.rest {
 
         private prepareGETRequest(request: XMLHttpRequest) {
             let uriString = UriHelper.appendUrlParams(this.path.toString(), this.params);
-            request.open(this.method, UriHelper.getUri(uriString), true);
-            request.timeout = this.timeoutMillis;
+            request.open(this.method, UriHelper.getUri(uriString), this.async);
+            if (this.async) {
+                request.timeout = this.timeoutMillis;
+            }
             request.setRequestHeader('Accept', 'application/json');
             if (api.BrowserHelper.isIE()) {
                 request.setRequestHeader('Pragma', 'no-cache');
@@ -85,8 +94,10 @@ module api.rest {
         }
 
         private preparePOSTRequest(request: XMLHttpRequest) {
-            request.open(this.method, UriHelper.getUri(this.path.toString()), true);
-            request.timeout = this.timeoutMillis;
+            request.open(this.method, UriHelper.getUri(this.path.toString()), this.async);
+            if (this.async) {
+                request.timeout = this.timeoutMillis;
+            }
             request.setRequestHeader('Accept', 'application/json');
             request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         }
