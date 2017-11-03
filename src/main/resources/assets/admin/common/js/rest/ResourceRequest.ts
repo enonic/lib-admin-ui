@@ -10,6 +10,8 @@ module api.rest {
 
         private timeoutMillis: number;
 
+        private async: boolean = true;
+
         constructor() {
             this.restPath = Path.fromString(api.util.UriHelper.getRestUri(''));
         }
@@ -38,6 +40,10 @@ module api.rest {
             this.heavyOperation = value;
         }
 
+        setAsync(async: boolean) {
+            this.async = async;
+        }
+
         validate() {
             // Override to ensure any validation of ResourceRequest before sending.
         }
@@ -46,10 +52,12 @@ module api.rest {
 
             this.validate();
 
-            let jsonRequest = new JsonRequest<RAW_JSON_TYPE>().
-                setMethod(this.method).setParams(this.getParams()).setPath(this.getRequestPath()).setTimeout(
-                !this.heavyOperation ? this.timeoutMillis : 0);
-            return jsonRequest.send();
+            return new JsonRequest<RAW_JSON_TYPE>().setMethod(this.method)
+                .setParams(this.getParams())
+                .setPath(this.getRequestPath())
+                .setTimeout(!this.heavyOperation ? this.timeoutMillis : 0)
+                .setAsync(this.async)
+                .send();
         }
 
         sendAndParse(): wemQ.Promise<PARSED_TYPE> {

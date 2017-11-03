@@ -547,7 +547,9 @@ module api.dom {
             api.util.assertNotNull(child, 'Child element to remove cannot be null');
 
             child.getEl().remove();
-            this.removeChildElement(child);
+            if (this.hasChild(child)) {
+                this.removeChildElement(child);
+            }
 
             return this;
         }
