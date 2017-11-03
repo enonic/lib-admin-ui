@@ -210,43 +210,93 @@
       display: flex;
       flex-wrap: wrap;
       align-content: flex-start;
+      padding: -10px -5px 0;
 
       .slick-row.ui-widget-content {
         flex-grow: 0;
-        width: 33%;
+        width: ~"calc(33% - 10px)";
         height: 200px;
-        position: static;
-      }
-
-      .slick-cell {
         position: relative;
-        height: 100%;
+        top: auto !important;
+        margin: 10px 5px 0;
+        box-sizing: border-box;
 
-        .viewer {
+        .slick-cell:not(.slick-cell-checkboxsel) {
           height: 100%;
+          width: 100%;
+          box-sizing: border-box;
+          padding: 0;
+          position: static;
 
-          .names-and-icon-view {
+          .viewer {
             height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100%;
 
-            .@{_COMMON_PREFIX}wrapper {
-              float: none;
-              height: auto;
-              width: auto;
-              margin: 0 5px;
+            .names-and-icon-view {
+              overflow: visible;
+              height: 100%;
+              width: 100%;
 
-              .font-icon-default {
+              .@{_COMMON_PREFIX}wrapper {
+                float: none;
+                height: 100%;
                 width: 100%;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+
+              .@{_COMMON_PREFIX}names-view {
+                display: none;
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                box-sizing: border-box;
+                margin: 0;
+                padding: 8px;
+                background-color: rgba(255, 255, 255, .7);
+
+                .@{_COMMON_PREFIX}sub-name {
+                  display: none;
+                }
               }
             }
-            .@{_COMMON_PREFIX}names-view {
-              display: none;
+          }
+
+          &:hover, &.selected {
+            .viewer {
+              .names-and-icon-view {
+
+                .@{_COMMON_PREFIX}names-view {
+                  display: block;
+
+                  .@{_COMMON_PREFIX}main-name {
+                    color: #000;
+                  }
+                }
+              }
             }
+          }
+
+        }
+
+        .slick-cell-checkboxsel {
+          position: absolute;
+          display: inline-block;
+          top: 0;
+          left: 0;
+          padding: 8px;
+          height: auto;
+          min-width: 32px;
+          width: 32px;
+
+          &:hover, &.selected {
+            background-color: transparent;
           }
         }
       }
     }
   }
+
 }
