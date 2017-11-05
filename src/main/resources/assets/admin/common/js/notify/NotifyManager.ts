@@ -49,6 +49,10 @@ module api.notify {
         notify(message: Message): string {
             const opts = NotifyOpts.buildOpts(message);
 
+            if (this.messageExistsInRegistry(opts)) {
+                return;
+            }
+
             const limitReached = this.queue.length > 0
                                  || this.el.getWrapper().getChildren().length >= this.notificationLimit;
 
@@ -75,10 +79,6 @@ module api.notify {
         }
 
         private createNotification(opts: NotifyOpts): NotificationMessage {
-            if (this.messageExistsInRegistry(opts)) {
-                return;
-            }
-
             const notificationEl = new NotificationMessage(opts.message, opts.autoHide);
             if (opts.type) {
                 notificationEl.addClass(opts.type);
