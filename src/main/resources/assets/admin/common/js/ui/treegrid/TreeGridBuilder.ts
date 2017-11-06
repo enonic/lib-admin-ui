@@ -276,11 +276,6 @@ module api.ui.treegrid {
             return this;
         }
 
-        disableCleanupRows(value: boolean): TreeGridBuilder<NODE> {
-            this.options.setDisabledCleanupRows(value);
-            return this;
-        }
-
         setQuietErrorHandling(value: boolean): TreeGridBuilder<NODE> {
             this.quietErrorHandling = value;
             return this;

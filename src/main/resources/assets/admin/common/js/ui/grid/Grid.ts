@@ -184,6 +184,10 @@ module api.ui.grid {
             return <GridOptions<T>>this.slickGrid.getOptions();
         }
 
+        setOption(name: string, value: any) {
+            this.slickGrid.getOptions()[name] = value;
+        }
+
         getCheckboxSelectorPlugin(): Slick.CheckboxSelectColumn<T> {
             return this.checkboxSelectorPlugin;
         }

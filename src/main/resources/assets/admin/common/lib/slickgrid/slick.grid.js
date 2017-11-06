@@ -86,7 +86,8 @@ if (typeof Slick === "undefined") {
       multiColumnSort: false,
       defaultFormatter: defaultFormatter,
       forceSyncScrolling: false,
-      addNewRowCssClass: "new-row"
+      addNewRowCssClass: "new-row",
+      enableGalleryMode: false
     };
 
     var columnDefaults = {
@@ -1958,7 +1959,7 @@ if (typeof Slick === "undefined") {
       var rendered = getRenderedRange();
 
       // remove rows no longer in the viewport
-      if (!options.disableCleanupRows) {
+      if (!options.enableGalleryMode) {
         cleanupRows(rendered);
       }
 
@@ -2300,7 +2301,7 @@ if (typeof Slick === "undefined") {
         return;
       }
 
-      if ((activeCell != cell.cell || activeRow != cell.row) && canCellBeActive(cell.row, cell.cell)) {
+      if (!options.enableGalleryMode && (activeCell != cell.cell || activeRow != cell.row) && canCellBeActive(cell.row, cell.cell)) {
         if (!getEditorLock().isActive() || getEditorLock().commitCurrentEdit()) {
           scrollRowIntoView(cell.row, false);
           setActiveCellInternal(getCellNode(cell.row, cell.cell));
