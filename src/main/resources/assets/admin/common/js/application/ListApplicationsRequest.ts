@@ -1,6 +1,7 @@
 module api.application {
 
-    export class ListApplicationsRequest extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
+    export class ListApplicationsRequest
+        extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
 
         private searchQuery: string;
         private apiName: string;
