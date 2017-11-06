@@ -118,19 +118,14 @@ module api.util.loader {
 
         search(searchString: string): wemQ.Promise<OBJECT[]> {
 
-            let deferred = wemQ.defer<OBJECT[]>();
-
             this.searchString = searchString;
 
             if (this.results) {
                 let filtered = this.results.filter(this.filterFn, this);
                 this.notifyLoadedData(filtered);
-                deferred.resolve(this.results);
-            } else {
-                deferred.resolve(null);
+                return wemQ(this.results);
             }
-
-            return deferred.promise;
+            return wemQ(null);
         }
 
         getResults(): OBJECT[] {

@@ -8,6 +8,7 @@ module api.ui.selector.combobox {
     import LoaderErrorEvent = api.util.loader.event.LoaderErrorEvent;
     import GridColumn = api.ui.grid.GridColumn;
     import StringHelper = api.util.StringHelper;
+    import i18n = api.util.i18n;
 
     export class RichComboBox<OPTION_DISPLAY_VALUE>
         extends api.dom.CompositeFormInputEl {
@@ -299,7 +300,7 @@ module api.ui.selector.combobox {
 
             this.loader.onLoadingData((event: api.util.loader.event.LoadingDataEvent) => {
                 if (!event.isPostLoad()) {
-                    this.comboBox.setEmptyDropdownText('Searching...');
+                    this.comboBox.setEmptyDropdownText(i18n('field.search.inprogress'));
                 }
                 this.notifyLoading();
             });
