@@ -179,7 +179,6 @@ module api.app.browse {
                 this.gridAndItemsSplitPanel = new api.ui.panel.SplitPanelBuilder(this.treeGrid, this.browseItemPanel)
                     .setAlignment(SplitPanelAlignment.VERTICAL)
                     .setFirstPanelSize(38, SplitPanelUnit.PERCENT)
-                    .setFirstPanelMinSize(300, SplitPanelUnit.PIXEL)
                     .build();
 
                 this.browseToolbar.addClass('browse-toolbar');
