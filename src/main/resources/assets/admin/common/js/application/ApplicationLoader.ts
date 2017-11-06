@@ -1,8 +1,7 @@
 module api.application {
 
-
-
-    export class ApplicationLoader extends api.util.loader.BaseLoader<ApplicationListResult, Application> {
+    export class ApplicationLoader
+        extends api.util.loader.BaseLoader<ApplicationListResult, Application> {
 
         protected request: ListApplicationsRequest;
 

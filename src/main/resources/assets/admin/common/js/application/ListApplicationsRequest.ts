@@ -1,6 +1,7 @@
 module api.application {
 
-    export class ListApplicationsRequest extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
+    export class ListApplicationsRequest
+        extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
 
         private searchQuery: string;
         private apiName: string;
@@ -22,8 +23,6 @@ module api.application {
             this.searchQuery = query;
             return this;
         }
-
-
 
         getRequestPath(): api.rest.Path {
             return api.rest.Path.fromParent(super.getResourcePath(), this.apiName);
