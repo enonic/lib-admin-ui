@@ -88,7 +88,7 @@ gulp.task('lint', function () {
             configuration: path.resolve('./tslint.json')
         }))
         .pipe(tsLint.report({
-            emitError: false
+            emitError: true
         }));
 });
 
@@ -114,4 +114,5 @@ gulp.task('ts', sequence('ts-admin', [/*'ts-live',*/ 'ts-spec']));
 gulp.task('combine', ['combine-js']);
 
 gulp.task('all', sequence(['less', 'combine'], 'lint', 'ts'));
+gulp.task('all:no-lint', sequence(['less', 'combine'], 'ts'));
 gulp.task('default', ['all']);
