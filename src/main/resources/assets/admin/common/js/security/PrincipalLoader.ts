@@ -48,6 +48,11 @@ module api.security {
             return this.load();
         }
 
+        setSearchString(value: string) {
+            super.setSearchString(value);
+            this.getRequest().setSearchQuery(value);
+        }
+
         skipPrincipals(principalKeys: PrincipalKey[]): PrincipalLoader {
             this.skipPrincipalKeys = {};
             principalKeys.forEach((principalKey: PrincipalKey) => {
