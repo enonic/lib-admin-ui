@@ -125,7 +125,7 @@ module api.util.loader {
                 this.notifyLoadedData(filtered);
                 return wemQ(this.results);
             }
-            return wemQ(null);
+            return wemQ([]);
         }
 
         getResults(): OBJECT[] {
