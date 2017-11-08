@@ -10,18 +10,20 @@ module api.content.image {
         extends ContentComboBox<ImageTreeSelectorItem> {
 
         constructor(builder: ImageContentComboBoxBuilder) {
+            let loader = builder.loader ? builder.loader : ImageOptionDataLoader.create().setContent(builder.content).setContentTypeNames(
+                [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()]).build();
 
-            if (!builder.loader) {
-                builder.setLoader(ImageOptionDataLoader.create()
-                    .setContent(builder.content)
-                    .setContentTypeNames([ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()])
-                    .build());
-            }
+            builder.setLoader(loader);
 
             super(builder);
 
-            this.setKeyEventsHandler(new ImageContentComboboxKeyEventsHandler(this));
             this.addClass('image-content-combo-box');
+            this.toggleGridOptions(builder.treegridDropdownEnabled);
+            this.setKeyEventsHandler(new ImageContentComboboxKeyEventsHandler(this));
+        }
+
+        private getItemPerViewportCount(treeMode: boolean) {
+            return treeMode ? 4 : 3;
         }
 
         getContent(contentId: ContentId): ContentSummary {
@@ -34,6 +36,17 @@ module api.content.image {
 
         getComboBox(): ComboBox<ImageTreeSelectorItem> {
             return <ComboBox<ImageTreeSelectorItem>>super.getComboBox();
+        }
+
+        protected toggleGridOptions(treeMode: boolean) {
+            const viewportHeight = parseInt(this.getComboBox().getComboBoxDropdownGrid().getGrid().getOptions().getHeight(), 10);
+            const grid = this.getComboBox().getComboBoxDropdownGrid().getGrid();
+
+            //grid.setOption('rowHeight', viewportHeight / this.getItemPerViewportCount(treeMode));
+            //grid.setOption('rowHeight', treeMode ? 50 : 65);
+            grid.setOption('enableGalleryMode', !treeMode);
+
+            return true;
         }
 
         protected createOption(data: Object, readOnly?: boolean): Option<ImageTreeSelectorItem> {
