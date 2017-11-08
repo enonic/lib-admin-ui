@@ -69,6 +69,10 @@ task copySharedStyles( type: Copy, dependsOn: copyTypeDefs ) {
         include '**/*.less'
         into 'styles'
     }
+    from( 'src/main/resources/assets/admin/common/lib' ) {
+        include '**/*.css'
+        into 'lib'
+    }
     from( 'src/main/resources/assets/admin/common/images' ) {
         into 'images'
     }
