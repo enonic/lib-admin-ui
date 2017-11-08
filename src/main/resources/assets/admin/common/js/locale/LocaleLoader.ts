@@ -20,6 +20,11 @@ module api.locale {
             return this.load();
         }
 
+        setSearchString(value: string) {
+            super.setSearchString(value);
+            this.getRequest().setSearchQuery(value);
+        }
+
         load(): wemQ.Promise<Locale[]> {
 
             this.notifyLoadingData();

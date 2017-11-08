@@ -8,6 +8,7 @@ module api.ui.selector.combobox {
     import LoaderErrorEvent = api.util.loader.event.LoaderErrorEvent;
     import GridColumn = api.ui.grid.GridColumn;
     import StringHelper = api.util.StringHelper;
+    import i18n = api.util.i18n;
     import KeyEventsHandler = api.event.KeyEventsHandler;
 
     export class RichComboBox<OPTION_DISPLAY_VALUE>
@@ -291,6 +292,7 @@ module api.ui.selector.combobox {
             if (!StringHelper.isBlank(inputValue)) {
                 return this.loader.search(inputValue).catch(api.DefaultErrorHandler.handle);
             } else {
+                this.loader.setSearchString(inputValue);
                 return this.loader.load().catch(api.DefaultErrorHandler.handle);
             }
         }
@@ -303,7 +305,7 @@ module api.ui.selector.combobox {
 
             this.loader.onLoadingData((event: api.util.loader.event.LoadingDataEvent) => {
                 if (!event.isPostLoad()) {
-                    this.comboBox.setEmptyDropdownText('Searching...');
+                    this.comboBox.setEmptyDropdownText(i18n('field.search.inprogress'));
                 }
                 this.notifyLoading();
             });

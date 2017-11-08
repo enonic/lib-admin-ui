@@ -1,25 +1,26 @@
 module api.ui.selector.list {
 
-    export class ListBox<I> extends api.dom.UlEl {
+    export class ListBox<I>
+        extends api.dom.UlEl {
 
         private items: I[] = [];
 
-        private itemViews: {[key: string]: api.dom.Element} = {};
+        private itemViews: { [key: string]: api.dom.Element } = {};
 
-        private itemsAddedListeners: {(items: I[]): void}[] = [];
-        private itemsRemovedListeners: {(items: I[]): void}[] = [];
+        private itemsAddedListeners: { (items: I[]): void }[] = [];
+        private itemsRemovedListeners: { (items: I[]): void }[] = [];
 
         constructor(className?: string) {
             super(className);
         }
 
-        setItems(items: I[], silent?:boolean) {
+        setItems(items: I[], silent?: boolean) {
             this.clearItems(silent);
 
             this.items = items;
             if (items.length > 0) {
                 this.layoutList(items);
-                if(!silent) {
+                if (!silent) {
                     this.notifyItemsAdded(items);
                 }
             }
@@ -52,25 +53,27 @@ module api.ui.selector.list {
             }
         }
 
-        addItem(...items: I[]) {
-            this.doAddItem(false, items);
+        addItem(item: I, silent: boolean = false) {
+            this.doAddItem(false, [item], silent);
         }
 
-        addItems(items: I[]) {
-            this.doAddItem(false, items);
+        addItems(items: I[], silent: boolean = false) {
+            this.doAddItem(false, items, silent);
         }
 
         addItemReadOnly(...items: I[]) {
             this.doAddItem(true, items);
         }
 
-        private doAddItem(readOnly: boolean, items: I[]) {
+        private doAddItem(readOnly: boolean, items: I[], silent: boolean = false) {
             this.items = this.items.concat(items);
             items.forEach((item) => {
                 this.addItemView(item, readOnly);
             });
             if (items.length > 0) {
-                this.notifyItemsAdded(items);
+                if (!silent) {
+                    this.notifyItemsAdded(items);
+                }
             }
         }
 

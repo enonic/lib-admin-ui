@@ -8,8 +8,8 @@ module api.notify {
         NotifyManager.get().showFeedback(message, autoHide);
     }
 
-    export function showError(message: string, autoHide: boolean = true) {
-        NotifyManager.get().showError(message, autoHide);
+    export function showError(message: string, autoHide: boolean = true): string {
+        return NotifyManager.get().showError(message, autoHide);
     }
 
     export function showWarning(message: string, autoHide: boolean = true) {

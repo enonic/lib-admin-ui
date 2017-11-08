@@ -124,7 +124,7 @@ module api.content {
                 this.showAfterReload = true;
 
                 this.getComboBox().showDropdown();
-                this.getComboBox().setEmptyDropdownText('Searching...');
+                this.getComboBox().setEmptyDropdownText(i18n('field.search.inprogress'));
             });
 
             this.getComboBox().getInput().onValueChanged((event: ValueChangedEvent) => {
