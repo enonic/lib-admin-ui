@@ -1,5 +1,6 @@
 ///<reference path='ImageUploaderEl.ts' />
 ///<reference path='ImageErrorEvent.ts' />
+///<reference path='ImageContentComboboxKeyEventsHandler.ts' />
 ///<reference path='ImageOptionDataLoader.ts' />
 ///<reference path='ImageSelectorDisplayValue.ts' />
 ///<reference path='ImageContentComboBox.ts' />

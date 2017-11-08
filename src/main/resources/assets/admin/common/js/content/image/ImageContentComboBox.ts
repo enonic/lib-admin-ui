@@ -11,13 +11,16 @@ module api.content.image {
 
         constructor(builder: ImageContentComboBoxBuilder) {
 
-            let loader = builder.loader ? builder.loader : ImageOptionDataLoader.create().setContent(builder.content).setContentTypeNames(
-                [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()]).build();
-
-            builder.setLoader(loader);
+            if (!builder.loader) {
+                builder.setLoader(ImageOptionDataLoader.create()
+                    .setContent(builder.content)
+                    .setContentTypeNames([ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()])
+                    .build());
+            }
 
             super(builder);
 
+            this.setKeyEventsHandler(new ImageContentComboboxKeyEventsHandler(this));
             this.addClass('image-content-combo-box');
         }
 

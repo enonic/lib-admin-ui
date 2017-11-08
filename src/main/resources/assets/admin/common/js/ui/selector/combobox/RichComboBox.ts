@@ -8,6 +8,7 @@ module api.ui.selector.combobox {
     import LoaderErrorEvent = api.util.loader.event.LoaderErrorEvent;
     import GridColumn = api.ui.grid.GridColumn;
     import StringHelper = api.util.StringHelper;
+    import KeyEventsHandler = api.event.KeyEventsHandler;
 
     export class RichComboBox<OPTION_DISPLAY_VALUE>
         extends api.dom.CompositeFormInputEl {
@@ -250,6 +251,10 @@ module api.ui.selector.combobox {
                 }
             }
             return false;
+        }
+
+        setKeyEventsHandler(handler: KeyEventsHandler) {
+            this.comboBox.setKeyEventsHandler(handler);
         }
 
         protected getDisplayValueId(value: Object): string {
