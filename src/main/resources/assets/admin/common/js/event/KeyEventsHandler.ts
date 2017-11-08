@@ -13,10 +13,6 @@ module api.event {
         private downListeners: { (e: KeyboardEvent): boolean }[] = [];
         private keyListeners: { (e: KeyboardEvent): boolean }[] = [];
 
-        constructor() {
-
-        }
-
         onBackspace(listener: (event: KeyboardEvent) => boolean): KeyEventsHandler {
             return this.push(this.backspaceListeners, listener);
         }
@@ -72,34 +68,24 @@ module api.event {
             switch (event.which) {
             case 8: // Backspace
                 return this.notify(this.backspaceListeners, event);
-                break;
             case 9: // Tab
                 return this.notify(this.tabListeners, event);
-                break;
             case 13: // Enter
                 return this.notify(this.enterListeners, event);
-                break;
             case 27: // Esc
                 return this.notify(this.escapeListeners, event);
-                break;
             case 32: // Spacebar
                 return this.notify(this.spaceListeners, event);
-                break;
             case 37: // Left
                 return this.notify(this.leftListeners, event);
-                break;
             case 38: // Up
                 return this.notify(this.upListeners, event);
-                break;
             case 39: // Right
                 return this.notify(this.rightListeners, event);
-                break;
             case 40: // Down
                 return this.notify(this.downListeners, event);
-                break;
             default:
                 return this.notify(this.keyListeners, event);
-                break;
             }
         }
     }
