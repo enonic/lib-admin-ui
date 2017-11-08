@@ -93,3 +93,14 @@ jar {
 task cleanNode( type: Delete ) {
     delete += 'node_modules'
 }
+
+task buildNoLint() {
+    dependsOn += build
+}
+
+gradle.taskGraph.whenReady { graph ->
+    // Disable `lint` in `buildNoLint` task
+    if (graph.hasTask(buildNoLint)) {
+        lint.enabled = false
+    }
+}
