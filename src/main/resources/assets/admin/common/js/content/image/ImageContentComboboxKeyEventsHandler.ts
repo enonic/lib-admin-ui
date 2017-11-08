@@ -10,7 +10,7 @@ module api.content.image {
         private input: ComboBoxOptionFilterInput;
         private grid: DropdownGrid<ImageTreeSelectorItem>;
         private lastSelectedCol: number = 0;
-        public static debug: boolean = true;
+        public static debug: boolean = false;
 
         constructor(comboBox: ImageContentComboBox) {
             super();
