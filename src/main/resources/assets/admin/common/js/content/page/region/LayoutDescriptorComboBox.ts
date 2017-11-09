@@ -14,7 +14,6 @@ module api.content.page.region {
             super(new RichComboBoxBuilder<LayoutDescriptor>()
                 .setIdentifierMethod('getKey')
                 .setOptionDisplayValueViewer(new LayoutDescriptorViewer())
-                .setSelectedOptionsView(new LayoutDescriptorSelectedOptionsView())
                 .setLoader(new LayoutDescriptorLoader())
                 .setMaximumOccurrences(1)
                 .setNextInputFocusWhenMaxReached(false)
@@ -49,46 +48,5 @@ module api.content.page.region {
                 this.selectOption(optionToSelect);
             }
         }
-    }
-
-    export class LayoutDescriptorSelectedOptionsView extends BaseSelectedOptionsView<LayoutDescriptor> {
-
-        createSelectedOption(option: Option<LayoutDescriptor>): SelectedOption<LayoutDescriptor> {
-            return new SelectedOption<LayoutDescriptor>(new LayoutDescriptorSelectedOptionView(option), this.count());
-        }
-    }
-
-    export class LayoutDescriptorSelectedOptionView extends BaseSelectedOptionView<LayoutDescriptor> {
-
-        private descriptor: LayoutDescriptor;
-
-        constructor(option: Option<LayoutDescriptor>) {
-            super(option);
-
-            this.descriptor = option.displayValue;
-            this.addClass('layout-descriptor-selected-option-view');
-        }
-
-        doRender(): wemQ.Promise<boolean> {
-
-            let namesAndIconView = new api.app.NamesAndIconViewBuilder().setSize(api.app.NamesAndIconViewSize.small).build();
-            namesAndIconView.setIconClass('icon-earth icon-medium')
-                .setMainName(this.descriptor.getDisplayName())
-                .setSubName(this.descriptor.getKey().toString());
-
-            let removeButtonEl = new api.dom.AEl('remove');
-            removeButtonEl.onClicked((event: MouseEvent) => {
-                this.notifyRemoveClicked();
-
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
-            });
-
-            this.appendChildren<api.dom.Element>(removeButtonEl, namesAndIconView);
-
-            return wemQ(true);
-        }
-
     }
 }

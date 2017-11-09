@@ -8,7 +8,8 @@ module api.ui.menu {
 
         constructor(label: string, ...actions: Action[]) {
             super('action-menu');
-            this.labelEl = new api.dom.DivEl('drop-down-button icon-arrow-down');
+            this.labelEl = new api.dom.DivEl('drop-down-button ' +
+                                             api.StyleHelper.getCls('dropdown-handle'));
             this.labelEl.setHtml(label);
             this.appendChild(this.labelEl);
 
@@ -22,11 +23,7 @@ module api.ui.menu {
             }
 
             this.labelEl.onClicked((event) => {
-                if (this.hasClass('expanded')) {
-                    this.removeClass('expanded');
-                } else {
-                    this.addClass('expanded');
-                }
+                this.toggleClass('down');
             });
 
             api.dom.Body.get().onClicked((event: MouseEvent) => this.foldMenuOnOutsideClick(event));

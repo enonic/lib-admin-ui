@@ -36,9 +36,9 @@ module api.content.util {
                 if (!childOrder.isDefault()) {
                     if (!childOrder.isManual()) {
                         if (childOrder.isDesc()) {
-                            icon = new api.dom.DivEl('icon-arrow-up2 sort-dialog-trigger');
+                            icon = new api.dom.DivEl('icon-arrow-up sort-dialog-trigger');
                         } else {
-                            icon = new api.dom.DivEl('icon-arrow-down4 sort-dialog-trigger');
+                            icon = new api.dom.DivEl('icon-arrow-down sort-dialog-trigger');
                         }
                     } else {
                         icon = new api.dom.DivEl(api.StyleHelper.getCommonIconCls('menu') + ' sort-dialog-trigger');

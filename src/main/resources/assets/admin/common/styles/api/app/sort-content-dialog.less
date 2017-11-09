@@ -40,11 +40,10 @@
   }
 
   .dialog-buttons .@{_COMMON_PREFIX}button.save-button.spinner {
-    font-family: 'icomoon';
+    .icon-spinner;
 
-    &:after {
+    &:before {
       .animation(rotate360, .5s, .0s, linear);
-      content: "\e007";
       color: white;
       display: inline-block;
     }

@@ -40,9 +40,9 @@
   &.locked:not(.no-action) {
     .dialog-buttons {
       button:not(.force-enabled):not(.no-animation) {
-        &:after {
+        .icon-spinner;
+        &:before {
           .animation(rotate360, .5s, .0s, linear);
-          content: "\e007";
           color: white;
           display: inline-block;
           margin-left: 5px;
@@ -117,9 +117,6 @@
       cursor: default;
       order: 1;
       margin: 0 5px 0 12px;
-      &:before {
-        font-size: 18px;
-      }
     }
   }
 
@@ -174,6 +171,7 @@
 
           .remove {
             height: 20px;
+            line-height: 20px;
           }
 
           &.removable {
@@ -239,9 +237,8 @@
             }
 
             .font-icon-default.image {
-              background: url("../../../../images/image.png");
-              width: inherit;
-              height: inherit;
+              .icon-large;
+              .icon-image;
             }
 
             .@{_COMMON_PREFIX}names-view {
