@@ -19,6 +19,7 @@ module api.content.image {
 
             this.addClass('image-content-combo-box');
             this.toggleGridOptions(builder.treegridDropdownEnabled);
+            this.setKeyEventsHandler(new ImageContentComboboxKeyEventsHandler(this));
         }
 
         private getItemPerViewportCount(treeMode: boolean) {

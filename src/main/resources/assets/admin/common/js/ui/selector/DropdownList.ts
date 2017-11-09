@@ -154,7 +154,7 @@ module api.ui.selector {
             return this.dropdownGrid.getActiveRow();
         }
 
-        nagivateToFirstRow() {
+        navigateToFirstRow() {
             this.dropdownGrid.navigateToFirstRow();
         }
 

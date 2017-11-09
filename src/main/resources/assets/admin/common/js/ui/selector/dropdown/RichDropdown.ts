@@ -1,6 +1,7 @@
 module api.ui.selector.dropdown {
 
     import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
+    import i18n = api.util.i18n;
 
     export class RichDropdown<OPTION_DISPLAY_VALUE> extends Dropdown<OPTION_DISPLAY_VALUE> {
 
@@ -22,7 +23,7 @@ module api.ui.selector.dropdown {
             this.loader.onLoadedData(this.handleLoadedData.bind(this));
 
             this.loader.onLoadingData((event: api.util.loader.event.LoadingDataEvent) => {
-                this.setEmptyDropdownText('Searching...');
+                this.setEmptyDropdownText(i18n('field.search.inprogress'));
             });
         }
 

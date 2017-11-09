@@ -26,6 +26,11 @@ module api.content.form.inputtype.image {
             return this.load();
         }
 
+        setSearchString(value: string) {
+            super.setSearchString(value);
+            this.imageSelectorQueryRequest.setQueryExpr(value);
+        }
+
         isPartiallyLoaded(): boolean {
             return this.imageSelectorQueryRequest.isPartiallyLoaded();
         }

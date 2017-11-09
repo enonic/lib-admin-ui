@@ -3,3 +3,4 @@
 ///<reference path='NodeServerEvent.ts' />
 ///<reference path='NodeServerChange.ts' />
 ///<reference path='EventJson.ts' />
+///<reference path='KeyEventsHandler.ts' />

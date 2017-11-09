@@ -7,11 +7,11 @@ module api.ui.selector.combobox {
     import DelayedFunctionCall = api.util.DelayedFunctionCall;
     import Button = api.ui.button.Button;
     import ElementHelper = api.dom.ElementHelper;
-    import IFrameEl = api.dom.IFrameEl;
     import Body = api.dom.Body;
     import WindowDOM = api.dom.WindowDOM;
     import GridColumn = api.ui.grid.GridColumn;
     import i18n = api.util.i18n;
+    import KeyEventsHandler = api.event.KeyEventsHandler;
 
     export interface ComboBoxConfig<T> {
 
@@ -72,7 +72,8 @@ module api.ui.selector.combobox {
         height: number;
     }
 
-    export class ComboBox<OPTION_DISPLAY_VALUE> extends api.dom.FormInputEl {
+    export class ComboBox<OPTION_DISPLAY_VALUE>
+        extends api.dom.FormInputEl {
 
         private icon: api.dom.ImgEl;
 
@@ -100,13 +101,13 @@ module api.ui.selector.combobox {
 
         private minWidth: number = -1;
 
-        private optionFilterInputValueChangedListeners: {(event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>): void}[] = [];
+        private optionFilterInputValueChangedListeners: { (event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>): void }[] = [];
 
-        private expandedListeners: {(event: api.ui.selector.DropdownExpandedEvent): void}[] = [];
+        private expandedListeners: { (event: api.ui.selector.DropdownExpandedEvent): void }[] = [];
 
-        private valueLoadedListeners: {(options: Option<OPTION_DISPLAY_VALUE>[]): void}[] = [];
+        private valueLoadedListeners: { (options: Option<OPTION_DISPLAY_VALUE>[]): void }[] = [];
 
-        private contentMissingListeners: {(ids: string[]): void}[] = [];
+        private contentMissingListeners: { (ids: string[]): void }[] = [];
 
         private selectiondDelta: string[] = [];
 
@@ -119,6 +120,8 @@ module api.ui.selector.combobox {
         private skipAutoDropShowOnValueChange: boolean = false;
 
         private onDropdownShownCallback: () => wemQ.Promise<void>;
+
+        private keyEventsHandler: KeyEventsHandler;
 
         public static debug: boolean = false;
 
@@ -255,7 +258,7 @@ module api.ui.selector.combobox {
 
             let dropdown = this.comboBoxDropdown.getDropdownGrid().getGrid().getEl();
 
-            if(!dropdown.isVisible()) {
+            if (!dropdown.isVisible()) {
                 dropdown = this.comboBoxDropdown.getEmptyDropdown().getEl();
             }
 
@@ -852,6 +855,9 @@ module api.ui.selector.combobox {
         }
 
         private handleKeyDown(event: KeyboardEvent) {
+            if (this.keyEventsHandler && this.keyEventsHandler.handle(event)) {
+                return;
+            }
 
             if (event.which === 9) { // tab
                 this.hideDropdown();
@@ -909,7 +915,7 @@ module api.ui.selector.combobox {
                 if (this.comboBoxDropdown.hasActiveRow()) {
                     this.comboBoxDropdown.navigateToNextRow();
                 } else {
-                    this.comboBoxDropdown.nagivateToFirstRow();
+                    this.comboBoxDropdown.navigateToFirstRow();
                 }
                 this.input.setReadOnly(true);
                 break;
@@ -948,6 +954,10 @@ module api.ui.selector.combobox {
                 event.stopPropagation();
                 event.preventDefault();
             }
+        }
+
+        setKeyEventsHandler(handler: KeyEventsHandler) {
+            this.keyEventsHandler = handler;
         }
 
         private isSelectedRowReadOnly(): boolean {
@@ -1082,19 +1092,19 @@ module api.ui.selector.combobox {
             });
         }
 
-        onOptionDeselected(listener: {(removed: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void;}) {
+        onOptionDeselected(listener: { (removed: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void; }) {
             this.selectedOptionsView.onOptionDeselected(listener);
         }
 
-        unOptionDeselected(listener: {(removed: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void;}) {
+        unOptionDeselected(listener: { (removed: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void; }) {
             this.selectedOptionsView.unOptionDeselected(listener);
         }
 
-        onOptionMoved(listener: {(moved: SelectedOption<OPTION_DISPLAY_VALUE>): void;}) {
+        onOptionMoved(listener: { (moved: SelectedOption<OPTION_DISPLAY_VALUE>): void; }) {
             this.selectedOptionsView.onOptionMoved(listener);
         }
 
-        unOptionMoved(listener: {(moved: SelectedOption<OPTION_DISPLAY_VALUE>): void;}) {
+        unOptionMoved(listener: { (moved: SelectedOption<OPTION_DISPLAY_VALUE>): void; }) {
             this.selectedOptionsView.unOptionMoved(listener);
         }
 

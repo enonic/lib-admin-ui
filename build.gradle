@@ -28,11 +28,19 @@ ext {
     resourcesDir = file( 'src/main/resources' )
 }
 
-task gulpAll( type: GulpTask, dependsOn: npmInstall ) {
-    description = 'Build UI resources (css, etc).'
+task lint( type: GulpTask, dependsOn: npmInstall ) {
+    description = 'Lint the *.ts files.'
+    args = ['lint']
     inputs.files fileTree( dir: 'src/main/resources', exclude: '**/_all.*' )
     outputs.files fileTree( dir: 'src/main/resources', include: '**/_all.*' )
-    args = ['all']
+    outputs.upToDateWhen { false }
+}
+
+task gulpAll( type: GulpTask, dependsOn: lint ) {
+    description = 'Build UI resources (css, etc).'
+    args = ['all:no-lint']
+    inputs.files fileTree( dir: 'src/main/resources', exclude: '**/_all.*' )
+    outputs.files fileTree( dir: 'src/main/resources', include: '**/_all.*' )
 }
 
 task copyCompiled( type: Copy, dependsOn: gulpAll ) {
