@@ -403,9 +403,13 @@
   }
 }
 
-.@{_COMMON_PREFIX}icon-layout {
+.icon-layout {
   .icon-insert-template;
   .rotate(90deg);
+}
+
+.@{_COMMON_PREFIX}icon-layout {
+  .icon-layout;
 }
 
 .icon-page-template {
@@ -474,6 +478,34 @@
   .icon;
   &:before {
     content: "\e903";
+  }
+}
+
+.icon-sort-alpha-asc {
+  .icon;
+  &:before {
+    content: "\ea48";
+  }
+}
+
+.icon-sort-alpha-desc {
+  .icon;
+  &:before {
+    content: "\ea49";
+  }
+}
+
+.icon-sort-num-asc {
+  .icon;
+  &:before {
+    content: "\ea4a";
+  }
+}
+
+.icon-sort-num-desc {
+  .icon;
+  &:before {
+    content: "\ea4b";
   }
 }
 /*

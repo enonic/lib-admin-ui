@@ -64,6 +64,15 @@ module api.content.order {
             return api.ObjectHelper.stringEquals(ChildOrder.DESC_ORDER_DIRECTION_VALUE.toLowerCase(), order.getDirection().toLowerCase());
         }
 
+        isNumeric(): boolean {
+            if (this.orderExpressions.length === 0) {
+                return ChildOrder.DEFAULT_ORDER_FIELD_VALUE == api.query.QueryField.MODIFIED_TIME;
+            }
+
+            let order = (<FieldOrderExpr>this.orderExpressions[0]);
+            return api.ObjectHelper.stringEquals(api.query.QueryField.MODIFIED_TIME, order.getFieldName().toLowerCase());
+        }
+
         isDefault(): boolean {
             let order = this.orderExpressions[0];
             if (api.ObjectHelper.iFrameSafeInstanceOf(order, FieldOrderExpr)) {

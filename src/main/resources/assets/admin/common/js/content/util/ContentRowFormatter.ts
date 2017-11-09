@@ -34,15 +34,18 @@ module api.content.util {
                 let childOrder = node.getData().getContentSummary().getChildOrder();
                 let icon;
                 if (!childOrder.isDefault()) {
+                    let iconCls = 'sort-dialog-trigger ';
                     if (!childOrder.isManual()) {
                         if (childOrder.isDesc()) {
-                            icon = new api.dom.DivEl('icon-arrow-up sort-dialog-trigger');
+                            iconCls += childOrder.isNumeric() ? 'icon-sort-num-desc' : 'icon-sort-alpha-desc';
                         } else {
-                            icon = new api.dom.DivEl('icon-arrow-down sort-dialog-trigger');
+                            iconCls += childOrder.isNumeric() ? 'icon-sort-num-asc' : 'icon-sort-alpha-asc';
                         }
                     } else {
-                        icon = new api.dom.DivEl(api.StyleHelper.getCommonIconCls('menu') + ' sort-dialog-trigger');
+                        iconCls += api.StyleHelper.getCommonIconCls('menu');
                     }
+
+                    icon = new api.dom.DivEl(iconCls);
                     wrapper.getEl().setInnerHtml(icon.toString(), false);
                 }
             }
