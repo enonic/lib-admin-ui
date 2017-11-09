@@ -9,7 +9,7 @@ module api.ui.menu {
         constructor(label: string, ...actions: Action[]) {
             super('action-menu');
             this.labelEl = new api.dom.DivEl('drop-down-button ' +
-                                             api.StyleHelper.getCls('dropdown-handle'));
+                               api.StyleHelper.getCls('dropdown-handle', api.StyleHelper.COMMON_PREFIX));
             this.labelEl.setHtml(label);
             this.appendChild(this.labelEl);
 
@@ -24,6 +24,7 @@ module api.ui.menu {
 
             this.labelEl.onClicked((event) => {
                 this.toggleClass('down');
+                this.labelEl.toggleClass('down');
             });
 
             api.dom.Body.get().onClicked((event: MouseEvent) => this.foldMenuOnOutsideClick(event));
