@@ -114,6 +114,13 @@
   .icon-file-text2;
 }
 
+.icon-folder-closed {
+  .icon;
+  &:before {
+    content: "\e92f";
+  }
+}
+
 .icon-folder-open {
   .icon;
   &:before {
@@ -122,6 +129,10 @@
 }
 
 .icon-folder {
+  .icon-folder-closed;
+}
+
+.icon.collapse + * .icon-folder {
   .icon-folder-open;
 }
 
