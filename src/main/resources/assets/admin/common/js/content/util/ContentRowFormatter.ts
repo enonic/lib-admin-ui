@@ -42,7 +42,7 @@ module api.content.util {
                             iconCls += childOrder.isNumeric() ? 'icon-sort-num-asc' : 'icon-sort-alpha-asc';
                         }
                     } else {
-                        iconCls += api.StyleHelper.getCommonIconCls('menu');
+                        iconCls += 'icon-menu';
                     }
 
                     icon = new api.dom.DivEl(iconCls);
