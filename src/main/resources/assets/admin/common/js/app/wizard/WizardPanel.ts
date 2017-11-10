@@ -422,7 +422,7 @@ module api.app.wizard {
                 this.toggleMinimizeListener = (event: api.ui.ActivatedEvent) => {
                     this.toggleMinimize(event.getIndex());
                 };
-                this.minimizeEditButton = new api.dom.DivEl('minimize-edit icon icon-arrow-right');
+                this.minimizeEditButton = new api.dom.DivEl('minimize-edit');
                 api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this.formPanel, updateMinimizeButtonPosition);
 
                 this.minimizeEditButton.onClicked(this.toggleMinimize.bind(this, -1));

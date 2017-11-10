@@ -847,7 +847,7 @@ module api.ui.image {
             this.mirrorButton
                 .setEnabled(false)
                 .setTitle(i18n('action.mirror'))
-                .addClass('button-mirror transparent icon-mirror')
+                .addClass('button-mirror transparent icon-flip')
                 .onClicked((event: MouseEvent) => {
                     event.stopPropagation();
                     this.mirrorHorizontal();
