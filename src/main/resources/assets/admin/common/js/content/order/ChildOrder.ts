@@ -70,7 +70,7 @@ module api.content.order {
             }
 
             let order = (<FieldOrderExpr>this.orderExpressions[0]);
-            return api.ObjectHelper.stringEquals(api.query.QueryField.MODIFIED_TIME, order.getFieldName().toLowerCase());
+            return api.ObjectHelper.stringEquals(api.query.QueryField.MODIFIED_TIME.toLowerCase(), order.getFieldName().toLowerCase());
         }
 
         isDefault(): boolean {

@@ -521,14 +521,14 @@
 }
 
 .picker-icon(@picker-type: "date", @font-size: 18px, @top: 9px, @right: 7px, @pointer-events: none) {
-  &:before {
-    & when (@picker-type = "date") {
-      .icon-calendar;
-    }
-    & when (@picker-type = "time") {
-      .icon-clock;
-    }
+  & when (@picker-type = "date") {
+    .icon-calendar;
+  }
+  & when (@picker-type = "time") {
+    .icon-clock;
+  }
 
+  &:before {
     position: absolute;
     right: @right;
     top: @top;
@@ -573,6 +573,10 @@
 
     .prev {
       .icon-arrow-left();
+    }
+
+    .next {
+      .icon-arrow-right();
     }
 
     .year-container {

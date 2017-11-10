@@ -96,7 +96,11 @@
   }
 }
 
-.icon-file {
+.@{_COMMON_PREFIX}icon-image {
+  .icon-image();
+}
+
+.@{_COMMON_PREFIX}icon-file {
   .icon;
   &:before {
     content: "\e077";
@@ -157,36 +161,28 @@
   }
 }
 
-.icon-screen {
+.@{_CLS_PREFIX}icon-screen {
   .icon;
   &:before {
     content: "\e120";
   }
 }
 
-.icon-monitor2 {
-  .icon-screen;
-}
-
-.icon-screen2 {
+.@{_CLS_PREFIX}icon-monitor {
   .icon;
   &:before {
     content: "\e123";
   }
 }
 
-.icon-monitor {
-  .icon-screen2;
-}
-
-.icon-mobile {
+.@{_CLS_PREFIX}icon-mobile {
   .icon;
   &:before {
     content: "\e125";
   }
 }
 
-.icon-tablet {
+.@{_CLS_PREFIX}icon-tablet {
   .icon;
   &:before {
     content: "\e127";
@@ -257,7 +253,11 @@
 }
 
 .icon-fragment {
-  .icon-pie;
+  .icon-pie();
+}
+
+.@{_COMMON_PREFIX}icon-fragment {
+  .icon-pie();
 }
 
 .icon-puzzle {
@@ -265,6 +265,10 @@
   &:before {
     content: "\e26e";
   }
+}
+
+.@{_COMMON_PREFIX}icon-part {
+  .icon-puzzle;
 }
 
 .icon-signup {
@@ -416,11 +420,14 @@
 
 .icon-layout {
   .icon-insert-template;
-  .rotate(90deg);
+  &:before {
+    display: inline-block;
+    .rotate(90deg);
+  }
 }
 
 .@{_COMMON_PREFIX}icon-layout {
-  .icon-layout;
+  .icon-layout();
 }
 
 .icon-page-template {
