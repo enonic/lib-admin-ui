@@ -1334,13 +1334,16 @@ if (typeof Slick === "undefined") {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Rendering / Scrolling
+      function getGalleryRow(row, ceil) {
+          return options.enableGalleryMode ? Math[!ceil ? 'floor' : 'ceil'](row / CELLS_IN_ROW) : row;
+      }
 
     function getRowTop(row) {
-      return options.rowHeight * row - offset;
+        return getGalleryRow(row) * options.rowHeight - offset;
     }
 
     function getRowFromPosition(y) {
-      return Math.floor((y + offset) / options.rowHeight);
+        return Math.floor((y + offset) * (options.enableGalleryMode ? CELLS_IN_ROW : 1) / options.rowHeight);
     }
 
     function scrollTo(y) {
@@ -1527,7 +1530,7 @@ if (typeof Slick === "undefined") {
       } else {
         $canvas[0].removeChild(cacheEntry.rowNode);
       }
-      
+
       delete rowsCache[row];
       delete postProcessedRows[row];
       renderedRows--;
@@ -1612,12 +1615,12 @@ if (typeof Slick === "undefined") {
     function resizeCanvas() {
       if (!initialized) { return; }
       if (options.autoHeight) {
-        viewportH = options.rowHeight * getDataLengthIncludingAddNew();
+          viewportH = getGalleryRow(getDataLengthIncludingAddNew(), true) * options.rowHeight;
       } else {
         viewportH = getViewportHeight();
       }
 
-      numVisibleRows = Math.ceil(viewportH / options.rowHeight);
+        numVisibleRows = getRowFromPosition(viewportH);
       viewportW = parseFloat($.css($container[0], "width", true));
       if (!options.autoHeight) {
         $viewport.height(viewportH);
@@ -1643,7 +1646,7 @@ if (typeof Slick === "undefined") {
 
       var oldViewportHasVScroll = viewportHasVScroll;
       // with autoHeight, we do not need to accommodate the vertical scroll bar
-      viewportHasVScroll = !options.autoHeight && (numberOfRows * options.rowHeight > viewportH);
+        viewportHasVScroll = !options.autoHeight && (getGalleryRow(numberOfRows, true) * options.rowHeight > viewportH);
 
       makeActiveCellNormal();
 
@@ -1661,7 +1664,7 @@ if (typeof Slick === "undefined") {
       }
 
       var oldH = h;
-      th = Math.max(options.rowHeight * numberOfRows, viewportH - scrollbarDimensions.height);
+        th = Math.max(options.rowHeight * getGalleryRow(numberOfRows, true), viewportH - scrollbarDimensions.height);
       if (th < maxSupportedCssHeight) {
         // just one page
         h = ph = th;
@@ -1676,7 +1679,9 @@ if (typeof Slick === "undefined") {
       }
 
       if (h !== oldH) {
-        $canvas.css("height", h);
+          if (!options.enableGalleryMode) {
+              $canvas.css("height", h);
+          }
         scrollTop = $viewport[0].scrollTop;
       }
 
@@ -1720,7 +1725,7 @@ if (typeof Slick === "undefined") {
 
     function getRenderedRange(viewportTop, viewportLeft) {
       var range = getVisibleRange(viewportTop, viewportLeft);
-      var buffer = Math.round(viewportH / options.rowHeight);
+        var buffer = getRowFromPosition(viewportH);
       var minBuffer = 3;
 
       if (vScrollDir == -1) {
@@ -2176,7 +2181,7 @@ if (typeof Slick === "undefined") {
           $canvas[0].removeChild(zombieRowNodeFromLastMouseWheelEvent);
           zombieRowNodeFromLastMouseWheelEvent = null;
         }
-        rowNodeFromLastMouseWheelEvent = rowNode;      
+          rowNodeFromLastMouseWheelEvent = rowNode;
       }
     }
 
@@ -2231,7 +2236,7 @@ if (typeof Slick === "undefined") {
             cancelEditAndSetFocus();
           } else if (e.which == 34) {
             navigatePageDown();
-            handled = true;           
+              handled = true;
           } else if (e.which == 33) {
             navigatePageUp();
             handled = true;
@@ -2748,24 +2753,27 @@ if (typeof Slick === "undefined") {
       return activeCellNode;
     }
 
+      const CELLS_IN_ROW = 3;
+
     function scrollRowIntoView(row, doPaging) {
-      var rowAtTop = row * options.rowHeight;
-      var rowAtBottom = (row + 1) * options.rowHeight - viewportH + (viewportHasHScroll ? scrollbarDimensions.height : 0);
+        var rowAtTop = getGalleryRow(row) * options.rowHeight;
+        var nextRowAtTop = (getGalleryRow(row) + 1) * options.rowHeight;
+        var rowAtBottom = nextRowAtTop - viewportH + (viewportHasHScroll ? scrollbarDimensions.height : 0);
 
       // need to page down?
-      if ((row + 1) * options.rowHeight > scrollTop + viewportH + offset) {
+        if (nextRowAtTop > scrollTop + viewportH + offset) {
         scrollTo(doPaging ? rowAtTop : rowAtBottom);
         render();
       }
       // or page up?
-      else if (row * options.rowHeight < scrollTop + offset) {
+        else if (rowAtTop < scrollTop + offset) {
         scrollTo(doPaging ? rowAtBottom : rowAtTop);
         render();
       }
     }
 
     function scrollRowToTop(row) {
-      scrollTo(row * options.rowHeight);
+        scrollTo(getGalleryRow(row) * options.rowHeight);
       render();
     }
 
@@ -2788,7 +2796,7 @@ if (typeof Slick === "undefined") {
         var prevActivePosX = activePosX;
         while (cell <= activePosX) {
           if (canCellBeActive(row, cell)) {
-            prevCell = cell;  
+              prevCell = cell;
           }
           cell += getColspan(row, cell);
         }
