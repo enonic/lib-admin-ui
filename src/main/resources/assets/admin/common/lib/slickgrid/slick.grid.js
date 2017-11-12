@@ -1342,8 +1342,12 @@ if (typeof Slick === "undefined") {
         return getGalleryRow(row) * options.rowHeight - offset;
     }
 
-    function getRowFromPosition(y) {
-        return Math.floor((y + offset) * (options.enableGalleryMode ? CELLS_IN_ROW : 1) / options.rowHeight);
+      function getGalleryRowLeft(row) {
+          return row % CELLS_IN_ROW * 100 / CELLS_IN_ROW; // in percents
+      }
+
+      function getRowFromPosition(y, round) {
+          return Math[!round ? 'floor' : 'round']((y + offset) * (options.enableGalleryMode ? CELLS_IN_ROW : 1) / options.rowHeight);
     }
 
     function scrollTo(y) {
@@ -1432,8 +1436,12 @@ if (typeof Slick === "undefined") {
       if (metadata && metadata.cssClasses) {
         rowCss += " " + metadata.cssClasses;
       }
+        var rowStyle = "top:" + getRowTop(row) + "px;";
+        if (options.enableGalleryMode) {
+            rowStyle += "left: " + getGalleryRowLeft(row) + "%;"
+        }
 
-      stringArray.push("<div class='ui-widget-content " + rowCss + "' style='top:" + getRowTop(row) + "px'>");
+        stringArray.push("<div class='ui-widget-content " + rowCss + "' style='" + rowStyle + "'>");
 
       var colspan, m;
       for (var i = 0, ii = columns.length; i < ii; i++) {
@@ -1679,9 +1687,7 @@ if (typeof Slick === "undefined") {
       }
 
       if (h !== oldH) {
-          if (!options.enableGalleryMode) {
-              $canvas.css("height", h);
-          }
+          $canvas.css("height", h);
         scrollTop = $viewport[0].scrollTop;
       }
 
@@ -1725,7 +1731,7 @@ if (typeof Slick === "undefined") {
 
     function getRenderedRange(viewportTop, viewportLeft) {
       var range = getVisibleRange(viewportTop, viewportLeft);
-        var buffer = getRowFromPosition(viewportH);
+        var buffer = getRowFromPosition(viewportH, true);
       var minBuffer = 3;
 
       if (vScrollDir == -1) {
@@ -1955,6 +1961,9 @@ if (typeof Slick === "undefined") {
     function updateRowPositions() {
       for (var row in rowsCache) {
         rowsCache[row].rowNode.style.top = getRowTop(row) + "px";
+          if (options.enableGalleryMode) {
+              rowsCache[row].rowNode.style.left = getGalleryRowLeft(row) + "%";
+          }
       }
     }
 
@@ -1964,9 +1973,7 @@ if (typeof Slick === "undefined") {
       var rendered = getRenderedRange();
 
       // remove rows no longer in the viewport
-      if (!options.enableGalleryMode) {
         cleanupRows(rendered);
-      }
 
       // add new rows & missing cells in existing rows
       if (lastRenderedScrollLeft != scrollLeft) {
