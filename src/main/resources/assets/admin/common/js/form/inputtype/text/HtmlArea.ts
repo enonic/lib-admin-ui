@@ -123,11 +123,9 @@ module api.form.inputtype.text {
                 new api.ui.selector.SelectorOnBlurEvent(this).fire();
             };
 
-            const debouncedResize = AppHelper.debounce(() => new HtmlAreaResizeEvent(this).fire(), 50);
-
             const notifyValueChanged = () => {
                 this.notifyValueChanged(id, textAreaWrapper);
-                debouncedResize();
+                new HtmlAreaResizeEvent(this).fire();
             };
 
             let isMouseOverRemoveOccurenceButton = false;
@@ -147,7 +145,6 @@ module api.form.inputtype.text {
                 if ((e.metaKey || e.ctrlKey) && e.keyCode === 83) {  // Cmd-S or Ctrl-S
                     e.preventDefault();
 
-                    this.notifyValueChanged(id, textAreaWrapper);
                     // as editor resides in a frame - propagate event via wrapping element
                     wemjq(this.getEl().getHTMLElement()).simulate(e.type, {
                         bubbles: e.bubbles,
@@ -194,7 +191,7 @@ module api.form.inputtype.text {
 
             new HTMLAreaBuilder().setSelector('textarea.' + id.replace(/\./g, '_')).setAssetsUri(assetsUri).setInline(false).onCreateDialog(
                 createDialogHandler).setFocusHandler(focusHandler.bind(this)).setBlurHandler(blurHandler.bind(this)).setKeydownHandler(
-                keydownHandler).setKeyupHandler(notifyValueChanged).setNodeChangeHandler(notifyValueChanged).setContentPath(
+                keydownHandler).setNodeChangeHandler(notifyValueChanged).setContentPath(
                 this.contentPath).setContent(this.content).setApplicationKeys(this.applicationKeys).setTools({
                 include: this.inputConfig['include'],
                 exclude: this.inputConfig['exclude']
