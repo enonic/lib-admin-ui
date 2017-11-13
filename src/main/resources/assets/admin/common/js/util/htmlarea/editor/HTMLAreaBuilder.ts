@@ -15,7 +15,6 @@ module api.util.htmlarea.editor {
         private blurHandler: (e: FocusEvent) => void;
         private keydownHandler: (e: KeyboardEvent) => void;
         private keyupHandler: (e: KeyboardEvent) => void;
-        private keyPressedHandler: (e: KeyboardEvent) => void;
         private nodeChangeHandler: (e: any) => void;
         private createDialogListeners: {(event: CreateHtmlAreaDialogEvent): void}[] = [];
         private inline: boolean = false;
@@ -103,15 +102,10 @@ module api.util.htmlarea.editor {
             return this;
         }
 
-        setKeyPressedHandler(keyPressedHandler: (e: KeyboardEvent) => void): HTMLAreaBuilder {
-            this.keyPressedHandler = keyPressedHandler;
-            return this;
-        }
-
         setNodeChangeHandler(nodeChangeHandler: (e: any) => void): HTMLAreaBuilder {
             this.nodeChangeHandler =  api.util.AppHelper.debounce((e) => {
                 nodeChangeHandler(e);
-            }, 500, false);
+            }, 300, true);
 
             return this;
         }
@@ -271,17 +265,12 @@ module api.util.htmlarea.editor {
 
                     editor.on('NodeChange', (e) => {
                         if (this.nodeChangeHandler) {
-                            this.nodeChangeHandler(e);
+                            setTimeout(() => this.nodeChangeHandler(e), 30);
                         }
                     });
                     editor.on('keyup', (e) => {
                         if (this.keyupHandler) {
                             this.keyupHandler(e);
-                        }
-                    });
-                    editor.on('keypress', (e) => {
-                        if (this.keyPressedHandler) {
-                            this.keyPressedHandler(e);
                         }
                     });
                     editor.on('focus', (e) => {
