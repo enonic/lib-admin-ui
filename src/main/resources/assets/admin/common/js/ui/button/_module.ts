@@ -5,3 +5,4 @@
 ///<reference path='TogglerButton.ts' />
 ///<reference path='DropdownHandle.ts' />
 ///<reference path='MenuButton.ts' />
+///<reference path='MenuButtonProgressBarManager.ts' />
