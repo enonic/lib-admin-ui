@@ -337,7 +337,7 @@ module api.ui.selector.dropdown {
                 this.dropdownList.setFilterArgs({searchString: event.getNewValue()});
                 this.showDropdown();
 
-                this.dropdownList.nagivateToFirstRow();
+                this.dropdownList.navigateToFirstRow();
 
             });
 
