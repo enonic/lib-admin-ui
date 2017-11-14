@@ -31,7 +31,6 @@
     display: block;
     background-color: @admin-black;
     text-align: center;
-    font-size: 14px;
     color: @admin-white;
 
     .mobile-header-title {
@@ -111,16 +110,18 @@
   }
 
   .mobile-details-panel-toggle-button {
-    right: 0px;
-    font-size: 15px;
+    right: -2px;
 
     .box-sizing(border-box);
     .icon-list();
 
     &.expanded {
-      font-size: 25px;
-      padding: 10px 0;
-      .icon-close2();
+      padding: 14px 0;
+      .icon-close();
+    }
+
+    &:not(.expanded) {
+      font-size: 15px;
     }
   }
 
@@ -128,9 +129,8 @@
 
     left: 0px;
     font-size: 20px;
-    transform: rotate(180deg);
 
-    .icon-trending_neutral();
+    .icon-arrow-left2();
   }
 
   .mobile-preview-fold-button {
@@ -188,12 +188,6 @@
 
     .widgets-selection-row {
 
-      .info-widget-toggle-button {
-
-        font-size: 16px;
-        .icon-list();
-      }
-
       .widget-selector {
         max-width: none;
 
@@ -212,33 +206,6 @@
 
     .transition(all 0.5s ease-in-out);
 
-    .widget-toggle-button {
-      position: relative;
-      overflow: hidden;
-      display: block;
-      line-height: 20px;
-      padding: 8px 5px;
-      background-color: @admin-bg-light-gray;
-      cursor: pointer;
-
-      * {
-        vertical-align: top;
-      }
-
-      &:before {
-        font-size: 20px;
-        position: absolute;
-        right: 5px;
-      }
-
-      span.label {
-        font-family: "Open Sans", sans-serif;
-        margin-left: 5px;
-        display: block;
-        font-size: 14px;
-      }
-    }
-
     .widget-view {
 
       margin: 0 0 2px 0;
@@ -254,18 +221,8 @@
         font-size: 20px;
       }
 
-      .widget-toggle-button {
-        line-height: 20px !important;
-        .icon-arrow-right2();
-      }
-
       &.expanded {
-
         padding: 5px 0 5px 0;
-
-        .widget-toggle-button {
-          .icon-arrow-down2();
-        }
       }
 
     }

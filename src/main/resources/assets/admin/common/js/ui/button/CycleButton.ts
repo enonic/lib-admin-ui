@@ -8,7 +8,7 @@ module api.ui.button {
 
         constructor(actions: Action[]) {
             super();
-            this.addClass('cycle-button icon-medium ' + api.StyleHelper.getIconCls('monitor2'));
+            this.addClass('cycle-button icon-medium ' + api.StyleHelper.getIconCls('screen'));
             this.actionList = actions;
 
             if (this.actionList.length > 0) {

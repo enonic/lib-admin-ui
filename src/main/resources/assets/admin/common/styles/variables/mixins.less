@@ -521,14 +521,14 @@
 }
 
 .picker-icon(@picker-type: "date", @font-size: 18px, @top: 9px, @right: 7px, @pointer-events: none) {
-  &:before {
-    & when (@picker-type = "date") {
-      .icon-calendar;
-    }
-    & when (@picker-type = "time") {
-      .icon-clock;
-    }
+  & when (@picker-type = "date") {
+    .icon-calendar;
+  }
+  & when (@picker-type = "time") {
+    .icon-clock;
+  }
 
+  &:before {
     position: absolute;
     right: @right;
     top: @top;
@@ -575,6 +575,10 @@
       .icon-arrow-left();
     }
 
+    .next {
+      .icon-arrow-right();
+    }
+
     .year-container {
       .prev {
         top: 5px;
@@ -587,7 +591,7 @@
     }
 
     .next {
-      .icon-arrow-right4();
+      .icon-arrow-right();
     }
 
     .month-container {
@@ -650,13 +654,13 @@
 
       .prev {
         span {
-          .icon-arrow-down4();
+          .icon-arrow-down();
         }
       }
 
       .next {
         span {
-          .icon-arrow-up2();
+          .icon-arrow-up();
         }
       }
 
