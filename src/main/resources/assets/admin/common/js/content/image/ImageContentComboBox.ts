@@ -43,7 +43,7 @@ module api.content.image {
             const grid = this.getComboBox().getComboBoxDropdownGrid().getGrid();
 
             //grid.setOption('rowHeight', viewportHeight / this.getItemPerViewportCount(treeMode));
-            //grid.setOption('rowHeight', treeMode ? 50 : 65);
+            grid.setOption('rowHeight', treeMode ? 50 : 198);
             grid.setOption('enableGalleryMode', !treeMode);
 
             return true;

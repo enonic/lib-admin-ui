@@ -69,6 +69,10 @@ task copySharedStyles( type: Copy, dependsOn: copyTypeDefs ) {
         include '**/*.less'
         into 'styles'
     }
+    from( 'src/main/resources/assets/admin/common/lib' ) {
+        include '**/*.css'
+        into 'lib'
+    }
     from( 'src/main/resources/assets/admin/common/images' ) {
         into 'images'
     }
@@ -92,4 +96,15 @@ jar {
 
 task cleanNode( type: Delete ) {
     delete += 'node_modules'
+}
+
+task buildNoLint() {
+    dependsOn += build
+}
+
+gradle.taskGraph.whenReady { graph ->
+    // Disable `lint` in `buildNoLint` task
+    if (graph.hasTask(buildNoLint)) {
+        lint.enabled = false
+    }
 }

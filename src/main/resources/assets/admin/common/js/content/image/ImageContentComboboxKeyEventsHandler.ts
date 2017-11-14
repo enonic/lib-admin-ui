@@ -71,6 +71,10 @@ module api.content.image {
         }
 
         private handleDown(e: KeyboardEvent): boolean {
+            if (!this.grid.isVisible()) {
+                // use default down handler if grid is not visible to show dropdown
+                return false;
+            }
             e.stopPropagation();
             e.preventDefault();
             const activeRow = this.grid.getActiveRow();

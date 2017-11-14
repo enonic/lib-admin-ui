@@ -92,13 +92,6 @@ module api.ui.grid {
             throw 'Must be implemented by inheritors';
         }
 
-        hide(skipAnimation: boolean = false): any {
-            if (this.getOptions().disableCleanupRows) {
-                this.slickGrid.invalidateAllRows();
-            }
-            return super.hide(skipAnimation);
-        }
-
         setItemMetadata(metadataHandler: () => void) {
             this.dataView.setItemMetadataHandler(metadataHandler);
         }
