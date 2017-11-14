@@ -6,7 +6,7 @@ module api.form.inputtype.support {
     import FocusSwitchEvent = api.ui.FocusSwitchEvent;
     import InputTypeView = api.form.inputtype.InputTypeView;
 
-    export class BaseInputTypeManagingAdd<RAW_VALUE_TYPE> extends api.dom.DivEl implements InputTypeView<RAW_VALUE_TYPE> {
+    export class BaseInputTypeManagingAdd extends api.dom.DivEl implements InputTypeView {
 
         private inputValidityChangedListeners: {(event: api.form.inputtype.InputValidityChangedEvent) : void}[] = [];
 

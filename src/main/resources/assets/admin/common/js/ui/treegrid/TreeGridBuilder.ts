@@ -22,8 +22,6 @@ module api.ui.treegrid {
 
         private autoLoad: boolean = true;
 
-        private autoHeight: boolean = true;
-
         private hotkeysEnabled: boolean = true;
 
         private partialLoadEnabled: boolean = false;

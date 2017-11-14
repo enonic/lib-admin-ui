@@ -11,7 +11,7 @@ module api.content.form.inputtype.time {
     /**
      * Uses [[api.data.ValueType]] [[api.data.ValueTypeLocalDateTime]].
      */
-    export class DateTime extends support.BaseInputTypeNotManagingAdd<Date> {
+    export class DateTime extends support.BaseInputTypeNotManagingAdd {
 
         private withTimezone: boolean = false;
         private valueType: ValueType = ValueTypes.LOCAL_DATE_TIME;

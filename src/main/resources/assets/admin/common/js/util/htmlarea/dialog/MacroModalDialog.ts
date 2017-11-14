@@ -123,7 +123,7 @@ module api.util.htmlarea.dialog {
 
         private insertMacroIntoTextArea(): void {
             this.macroDockedPanel.getMacroPreviewString().then((macroString: string) => {
-                let macro = this.callback(api.util.StringHelper.escapeHtml(macroString));
+                this.callback(api.util.StringHelper.escapeHtml(macroString));
                 this.close();
             }).catch((reason: any) => {
                 api.DefaultErrorHandler.handle(reason);

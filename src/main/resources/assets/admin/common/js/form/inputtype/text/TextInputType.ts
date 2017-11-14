@@ -8,7 +8,7 @@ module api.form.inputtype.text {
     import Element = api.dom.Element;
     import ValueTypes = api.data.ValueTypes;
 
-    export abstract class TextInputType extends support.BaseInputTypeNotManagingAdd<string> {
+    export abstract class TextInputType extends support.BaseInputTypeNotManagingAdd {
 
         private maxLength: number;
 

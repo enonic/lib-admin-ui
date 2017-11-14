@@ -6,7 +6,7 @@ module api.form.inputtype.support {
     import ValueType = api.data.ValueType;
     import InputTypeView = api.form.inputtype.InputTypeView;
 
-    export class BaseInputTypeSingleOccurrence<RAW_VALUE_TYPE> extends api.dom.DivEl implements InputTypeView<RAW_VALUE_TYPE> {
+    export class BaseInputTypeSingleOccurrence extends api.dom.DivEl implements InputTypeView {
 
         private context: api.form.inputtype.InputTypeViewContext;
 

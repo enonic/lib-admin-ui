@@ -13,7 +13,7 @@ module api.schema.content.inputtype {
     import BaseLoader = api.util.loader.BaseLoader;
 
     export class ContentTypeFilter
-        extends api.form.inputtype.support.BaseInputTypeManagingAdd<string> {
+        extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         private combobox: ContentTypeComboBox;
 

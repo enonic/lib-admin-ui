@@ -122,10 +122,6 @@ describe('api.ui.selector.combobox.ComboBox', () => {
 
     });
 
-    function createComboBox(config: ComboBoxConfig<any>) {
-        return new ComboBox('comboboxName', config);
-    }
-
     function createDefaultComboBox() {
         const cbox = new ComboBox('comboboxName', createComboBoxConfig());
 
@@ -180,13 +176,6 @@ describe('api.ui.selector.combobox.ComboBox', () => {
             removeMissingSelectedOptions: true,
 
             skipAutoDropShowOnValueChange: true
-        };
-    }
-
-    function createComboBoxMinimumConfig(): ComboBoxConfig<any> {
-        const selectedOptionsView = new BaseSelectedOptionsView();
-        return <ComboBoxConfig<any>> {
-            selectedOptionsView
         };
     }
 

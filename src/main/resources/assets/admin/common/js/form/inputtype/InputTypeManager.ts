@@ -33,7 +33,7 @@ module api.form.inputtype {
             }
         }
 
-        static createView(inputTypeName: string, context: InputTypeViewContext): InputTypeView<any> {
+        static createView(inputTypeName: string, context: InputTypeViewContext): InputTypeView {
             let name = InputTypeManager.normalize(inputTypeName);
 
             if (InputTypeManager.isRegistered(name)) {

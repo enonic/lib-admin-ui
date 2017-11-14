@@ -13,8 +13,7 @@ module api.form.inputtype.text {
     import Promise = Q.Promise;
     import AppHelper = api.util.AppHelper;
 
-    export class HtmlArea
-        extends support.BaseInputTypeNotManagingAdd<string> {
+    export class HtmlArea extends support.BaseInputTypeNotManagingAdd {
 
         private editors: HtmlAreaOccurrenceInfo[];
         private content: api.content.ContentSummary;
@@ -353,10 +352,6 @@ module api.form.inputtype.text {
         private notifyValueChanged(id: string, occurrence: api.dom.Element) {
             let value = ValueTypes.STRING.newValue(HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id)));
             this.notifyOccurrenceValueChanged(occurrence, value);
-        }
-
-        private newValue(s: string): Value {
-            return new Value(s, ValueTypes.STRING);
         }
 
         private isNotActiveElement(htmlAreaIframe: HTMLElement): boolean {

@@ -7,7 +7,7 @@ module api.content.form.inputtype.tag {
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
 
-    export class Tag extends api.form.inputtype.support.BaseInputTypeManagingAdd<string> {
+    export class Tag extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         private context: api.content.form.inputtype.ContentInputTypeViewContext;
 

@@ -61,7 +61,6 @@ module FormItemSetViewSpec {
 
     export function getPropertySet(): PropertySet {
         let tree = new api.data.PropertyTree();
-        let set = tree.addPropertySet('itemSet1');
 
         return tree.getRoot();
     }

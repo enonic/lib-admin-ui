@@ -14,7 +14,7 @@ module api.content.site.inputtype.siteconfigurator {
     import ApplicationEvent = api.application.ApplicationEvent;
     import ApplicationEventType = api.application.ApplicationEventType;
 
-    export class SiteConfigurator extends api.form.inputtype.support.BaseInputTypeManagingAdd<Application> {
+    export class SiteConfigurator extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         private context: api.form.inputtype.InputTypeViewContext;
 

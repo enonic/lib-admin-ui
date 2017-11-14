@@ -9,7 +9,7 @@ module api.content.form.inputtype {
     import SelectedOptionsView = api.ui.selector.combobox.SelectedOptionsView;
     import BaseInputTypeManagingAdd = api.form.inputtype.support.BaseInputTypeManagingAdd;
 
-    export class ContentInputTypeManagingAdd<RAW_VALUE_TYPE> extends BaseInputTypeManagingAdd<RAW_VALUE_TYPE> {
+    export class ContentInputTypeManagingAdd<RAW_VALUE_TYPE> extends BaseInputTypeManagingAdd {
 
         protected config: api.content.form.inputtype.ContentInputTypeViewContext;
 

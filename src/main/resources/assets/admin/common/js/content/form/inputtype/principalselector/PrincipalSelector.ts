@@ -6,7 +6,7 @@ module api.content.form.inputtype.principalselector {
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
     import PrincipalSelectedOptionView = api.ui.security.PrincipalSelectedOptionView;
 
-    export class PrincipalSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<api.security.Principal> {
+    export class PrincipalSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         private config: api.content.form.inputtype.ContentInputTypeViewContext;
 
@@ -105,10 +105,6 @@ module api.content.form.inputtype.principalselector {
 
         private saveToSet(principalOption: api.ui.selector.Option<api.security.Principal>, index: number) {
             this.getPropertyArray().set(index, ValueTypes.REFERENCE.newValue(principalOption.value));
-        }
-
-        private refreshSortable() {
-            wemjq(this.getHTMLElement()).find('.selected-options').sortable('refresh');
         }
 
         protected getNumberOfValids(): number {

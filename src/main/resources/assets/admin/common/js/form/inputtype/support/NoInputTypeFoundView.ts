@@ -6,11 +6,7 @@ module api.form.inputtype.support {
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
 
-    export class NoInputTypeFoundView extends BaseInputTypeNotManagingAdd<string> {
-
-        constructor(context: api.form.inputtype.InputTypeViewContext) {
-            super(context);
-        }
+    export class NoInputTypeFoundView extends BaseInputTypeNotManagingAdd {
 
         getValueType(): ValueType {
             return ValueTypes.STRING;

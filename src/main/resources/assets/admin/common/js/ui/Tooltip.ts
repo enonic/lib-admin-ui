@@ -349,23 +349,6 @@ module api.ui {
             }
         }
 
-        private hideOnMouseOut() {
-            let tooltip = this;
-            let mouseMoveListener = (event: MouseEvent) => {
-                let tooltipTargetHtmlElement = tooltip.targetEl.getHTMLElement();
-                for (let element = event.target; element; element = (<any>element).parentNode) {
-                    if (element === tooltipTargetHtmlElement) {
-                        return;
-                    }
-                }
-
-                tooltip.startHideTimeout();
-                api.dom.Body.get().unMouseMove(mouseMoveListener);
-            };
-
-            api.dom.Body.get().onMouseMove(mouseMoveListener);
-        }
-
         private getEventName(enter: boolean) {
             switch (this.trigger) {
             case Tooltip.TRIGGER_FOCUS:

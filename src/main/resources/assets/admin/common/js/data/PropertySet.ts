@@ -503,14 +503,6 @@ module api.data {
             array.onPropertyValueChanged(this.propertyValueChangedEventHandler);
         }
 
-        // Currently not used, because we do not remove arrays
-        private unregisterPropertyArrayListeners(array: PropertyArray) {
-            array.unPropertyAdded(this.propertyAddedEventHandler);
-            array.unPropertyRemoved(this.propertyRemovedEventHandler);
-            array.unPropertyIndexChanged(this.propertyIndexChangedEventHandler);
-            array.unPropertyValueChanged(this.propertyValueChangedEventHandler);
-        }
-
         onChanged(listener: {(event: PropertyEvent): void;}) {
             this.changedListeners.push(listener);
         }

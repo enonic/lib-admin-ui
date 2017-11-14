@@ -213,8 +213,6 @@ module api.ui.treegrid {
 
         private initEventListeners(builder: TreeGridBuilder<DATA>) {
 
-            let keyBindings: KeyBinding[] = [];
-
             this.onClicked(() => {
                 this.grid.focus();
             });
@@ -1380,7 +1378,6 @@ module api.ui.treegrid {
         appendNodeToParent(parentNode: TreeNode<DATA>, data: DATA) {
             let index = Math.max(0, parentNode.getChildren().length - 1);
             let root = this.root.getCurrentRoot();
-            let isRootParentNode: boolean = (parentNode === root);
 
             this.doInsertNodeToParentWithChildren(parentNode, data, root, index);
         }

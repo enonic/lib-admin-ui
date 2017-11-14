@@ -667,18 +667,6 @@ module api.ui.panel {
             this.secondPanel.getEl().setRightPx(-this.secondPanel.getEl().getWidthWithBorder());
         }
 
-        private getUnitString(panelNumber: number): string {
-            api.util.assert((panelNumber === 1 || panelNumber === 2), 'Panel number must be 1 or 2');
-
-            let unit = (panelNumber === 1) ? this.firstPanelUnit : this.secondPanelUnit;
-            //console.log('UNIT', unit);
-            if (unit === SplitPanelUnit.PIXEL) {
-                return 'px';
-            } else {
-                return '%';
-            }
-        }
-
         private getSplitterThickness(): number {
             return this.splitterIsHidden ? 0 : this.splitterThickness;
         }

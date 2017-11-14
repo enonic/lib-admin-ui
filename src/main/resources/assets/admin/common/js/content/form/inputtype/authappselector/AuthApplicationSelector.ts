@@ -12,7 +12,7 @@ module api.content.site.inputtype.authappselector {
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
     import SiteConfigProvider = api.content.site.inputtype.siteconfigurator.SiteConfigProvider;
 
-    export class AuthApplicationSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<Application> {
+    export class AuthApplicationSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         private context: api.form.inputtype.InputTypeViewContext;
 

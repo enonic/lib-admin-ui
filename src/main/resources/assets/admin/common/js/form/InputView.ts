@@ -23,7 +23,7 @@ module api.form {
 
         private propertyArray: PropertyArray;
 
-        private inputTypeView: api.form.inputtype.InputTypeView<any>;
+        private inputTypeView: api.form.inputtype.InputTypeView;
 
         private bottomButtonRow: api.dom.DivEl;
 
@@ -94,7 +94,7 @@ module api.form {
 
                 if (!this.inputTypeView.isManagingAdd()) {
 
-                    let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd<any>>this.inputTypeView;
+                    let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
                     inputTypeViewNotManagingAdd.onOccurrenceAdded(() => {
                         this.refreshButtonsState();
                     });
@@ -168,11 +168,11 @@ module api.form {
             this.inputTypeView.refresh();
         }
 
-        public getInputTypeView(): api.form.inputtype.InputTypeView<any> {
+        public getInputTypeView(): api.form.inputtype.InputTypeView {
             return this.inputTypeView;
         }
 
-        private createInputTypeView(): api.form.inputtype.InputTypeView<any> {
+        private createInputTypeView(): api.form.inputtype.InputTypeView {
             let inputType: api.form.InputTypeName = this.input.getInputType();
             let inputTypeViewContext = this.getContext().createInputTypeViewContext(
                 this.input.getInputTypeConfig() || {},
@@ -196,7 +196,7 @@ module api.form {
 
         private refreshButtonsState(validate: boolean = true) {
             if (!this.inputTypeView.isManagingAdd()) {
-                let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd<any>>this.inputTypeView;
+                let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
                 this.addButton.setVisible(!inputTypeViewNotManagingAdd.maximumOccurrencesReached());
             }
             if (validate) {

@@ -9,7 +9,7 @@ module api.content.form.inputtype.upload {
     import Rect = api.ui.image.Rect;
 
     export class ImageUploader
-        extends api.form.inputtype.support.BaseInputTypeSingleOccurrence<string> {
+        extends api.form.inputtype.support.BaseInputTypeSingleOccurrence {
 
         private imageUploader: api.content.image.ImageUploaderEl;
         private previousValidationRecording: api.form.inputtype.InputValidationRecording;

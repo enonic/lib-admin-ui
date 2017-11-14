@@ -17,10 +17,6 @@ module api.dom {
             return this;
         }
 
-        private getFrameWindowObject(): Window {
-            return (<HTMLIFrameElement>this.getHTMLElement()).contentWindow;
-        }
-
         isLoaded() {
             return this.loaded;
         }

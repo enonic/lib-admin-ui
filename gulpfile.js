@@ -40,7 +40,8 @@ function typescript(src, out, decl) {
                 "DOM"
             ],
             declaration: decl,
-            noImplicitAny: false
+            noImplicitAny: false,
+            noUnusedLocals: true
         }));
 
     tsResult.js

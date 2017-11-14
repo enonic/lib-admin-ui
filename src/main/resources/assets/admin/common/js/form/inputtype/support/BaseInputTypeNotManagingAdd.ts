@@ -7,7 +7,7 @@ module api.form.inputtype.support {
     import InputTypeView = api.form.inputtype.InputTypeView;
     import i18n = api.util.i18n;
 
-    export class BaseInputTypeNotManagingAdd<RAW_VALUE_TYPE> extends api.dom.DivEl implements InputTypeView<RAW_VALUE_TYPE> {
+    export class BaseInputTypeNotManagingAdd extends api.dom.DivEl implements InputTypeView {
 
         private context: api.form.inputtype.InputTypeViewContext;
 

@@ -7,8 +7,6 @@ module api.content.image {
     export class ImageSelectorSelectedOptionsView
         extends api.ui.selector.combobox.BaseSelectedOptionsView<ImageTreeSelectorItem> {
 
-        private numberOfOptionsPerRow: number = 3;
-
         private activeOption: SelectedOption<ImageTreeSelectorItem>;
 
         private selection: SelectedOption<ImageTreeSelectorItem>[] = [];
@@ -316,14 +314,6 @@ module api.content.image {
                 };
                 optionView.getIcon().onShown(shownListener);
             }
-        }
-
-        private isFirstInRow(index: number): boolean {
-            return index % this.numberOfOptionsPerRow === 0;
-        }
-
-        private isLastInRow(index: number): boolean {
-            return index % this.numberOfOptionsPerRow === 2;
         }
 
         private isFirst(index: number): boolean {

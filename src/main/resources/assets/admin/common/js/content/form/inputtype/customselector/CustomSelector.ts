@@ -10,7 +10,7 @@ module api.content.form.inputtype.customselector {
     import ContentInputTypeViewContext = api.content.form.inputtype.ContentInputTypeViewContext;
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
 
-    export class CustomSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<CustomSelectorItem> {
+    export class CustomSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         public static debug: boolean = false;
 

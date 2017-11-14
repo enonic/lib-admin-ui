@@ -11,7 +11,7 @@ module api.form.inputtype.support {
 
         private property: Property;
 
-        private inputTypeView: BaseInputTypeNotManagingAdd<any>;
+        private inputTypeView: BaseInputTypeNotManagingAdd;
 
         private inputElement: api.dom.Element;
 
@@ -25,7 +25,7 @@ module api.form.inputtype.support {
 
         public static debug: boolean = false;
 
-        constructor(inputOccurrence: InputOccurrence, baseInputTypeView: BaseInputTypeNotManagingAdd<any>, property: Property) {
+        constructor(inputOccurrence: InputOccurrence, baseInputTypeView: BaseInputTypeNotManagingAdd, property: Property) {
             super('input-occurrence-view', inputOccurrence);
 
             this.inputTypeView = baseInputTypeView;

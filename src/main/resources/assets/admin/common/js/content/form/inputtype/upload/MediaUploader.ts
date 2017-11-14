@@ -10,7 +10,7 @@ module api.content.form.inputtype.upload {
         extensions: string;
     }
 
-    export class MediaUploader extends api.form.inputtype.support.BaseInputTypeSingleOccurrence<string> {
+    export class MediaUploader extends api.form.inputtype.support.BaseInputTypeSingleOccurrence {
         private config: api.content.form.inputtype.ContentInputTypeViewContext;
         private mediaUploaderEl: api.ui.uploader.MediaUploaderEl;
         private uploaderWrapper: api.dom.DivEl;
@@ -125,24 +125,6 @@ module api.content.form.inputtype.upload {
             } else {
                 this.removeClass('with-svg-image');
             }
-        }
-
-        private deleteContent(property: Property) {
-            let contentId = this.getContext().content.getContentId();
-
-            new api.content.resource.GetContentByIdRequest(contentId).sendAndParse().then((content: api.content.Content) => {
-                let deleteRequest = new api.content.resource.DeleteContentRequest();
-                deleteRequest.addContentPath(content.getPath());
-                deleteRequest.sendAndParseWithPolling().then((message: string) => {
-                    api.notify.showSuccess(message);
-                }).catch((reason: any) => {
-                    if (reason && reason.message) {
-                        api.notify.showError(reason.message);
-                    } else {
-                        api.notify.showError('Content could not be deleted.');
-                    }
-                }).done();
-            });
         }
 
         private getFileNameFromProperty(property: Property): string {

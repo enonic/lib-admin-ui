@@ -7,7 +7,7 @@ module api.content.form.inputtype.checkbox {
     import BaseInputTypeSingleOccurrence = api.form.inputtype.support.BaseInputTypeSingleOccurrence;
     import InputAlignment = api.ui.InputAlignment;
 
-    export class Checkbox extends BaseInputTypeSingleOccurrence<boolean> {
+    export class Checkbox extends BaseInputTypeSingleOccurrence {
 
         private checkbox: api.ui.Checkbox;
 

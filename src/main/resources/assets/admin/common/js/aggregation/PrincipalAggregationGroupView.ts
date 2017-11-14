@@ -4,8 +4,6 @@ module api.aggregation {
 
         initialize() {
 
-            let displayNameMap: string[] = [];
-
             let mask: api.ui.mask.LoadMask = new api.ui.mask.LoadMask(this);
             this.appendChild(mask);
             this.onRendered((event: api.dom.ElementRenderedEvent) => {

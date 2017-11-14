@@ -299,7 +299,7 @@ module api.ui.selector.combobox {
 
         private setupLoader() {
 
-            this.comboBox.onOptionFilterInputValueChanged((event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>) => {
+            this.comboBox.onOptionFilterInputValueChanged((event: OptionFilterInputValueChangedEvent) => {
                 return this.reload(event.getNewValue());
             });
 

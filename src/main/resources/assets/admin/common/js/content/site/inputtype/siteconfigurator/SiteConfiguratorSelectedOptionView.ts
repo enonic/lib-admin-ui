@@ -160,10 +160,6 @@ module api.content.site.inputtype.siteconfigurator {
             this.toggleClass('invalid', !this.formView.isValid());
         }
 
-        private undoSelectionOnCancel(comboBoxToUndoSelectionOnCancel: SiteConfiguratorComboBox) {
-            comboBoxToUndoSelectionOnCancel.deselect(this.application);
-        }
-
         private applyTemporaryConfig(tempSiteConfig: SiteConfig) {
             tempSiteConfig.getConfig().forEach((property) => {
                 this.siteConfig.getConfig().setProperty(property.getName(), property.getIndex(), property.getValue());

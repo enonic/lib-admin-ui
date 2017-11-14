@@ -161,12 +161,6 @@ module api.ui.tab {
             });
         }
 
-        private notifyClosedListeners() {
-            this.closedListeners.forEach((listener: (event: TabItemClosedEvent)=>void) => {
-                listener.call(this, new TabItemClosedEvent(this));
-            });
-        }
-
         giveFocus(): boolean {
             return this.labelEl.giveFocus();
         }
