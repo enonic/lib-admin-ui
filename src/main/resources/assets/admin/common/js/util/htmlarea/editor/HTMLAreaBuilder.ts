@@ -103,7 +103,10 @@ module api.util.htmlarea.editor {
         }
 
         setNodeChangeHandler(nodeChangeHandler: (e: any) => void): HTMLAreaBuilder {
-            this.nodeChangeHandler = nodeChangeHandler;
+            this.nodeChangeHandler =  api.util.AppHelper.debounce((e) => {
+                nodeChangeHandler(e);
+            }, 300, true);
+
             return this;
         }
 
@@ -214,32 +217,28 @@ module api.util.htmlarea.editor {
                     alignleft: [
                         {
                             selector: 'img,figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'left'},
-                            inline: 'span'
+                            styles: {textAlign: 'left'}
                         },
                         {selector: 'table', collapsed: false, styles: {float: 'left'}}
                     ],
                     aligncenter: [
                         {
                             selector: 'img,figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'center'},
-                            inline: 'span'
+                            styles: {textAlign: 'center'}
                         },
                         {selector: 'table', collapsed: false, styles: {marginLeft: 'auto', marginRight: 'auto'}}
                     ],
                     alignright: [
                         {
                             selector: 'img,figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'right'},
-                            inline: 'span'
+                            styles: {textAlign: 'right'}
                         },
                         {selector: 'table', collapsed: false, styles: {float: 'right'}}
                     ],
                     alignjustify: [
                         {
                             selector: 'img,figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'justify'},
-                            inline: 'span'
+                            styles: {textAlign: 'justify'}
                         }
                     ]
                 },
@@ -266,7 +265,7 @@ module api.util.htmlarea.editor {
 
                     editor.on('NodeChange', (e) => {
                         if (this.nodeChangeHandler) {
-                            this.nodeChangeHandler(e);
+                            setTimeout(() => this.nodeChangeHandler(e), 30);
                         }
                     });
                     editor.on('keyup', (e) => {

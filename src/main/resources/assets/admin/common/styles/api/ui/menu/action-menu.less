@@ -18,16 +18,20 @@
     cursor: pointer;
     background-color: white;
     border: 1px solid @admin-medium-gray-border;
+    width: auto;
+  }
 
-    &:before {
-      font-size: 14px;
-      position: absolute;
-      right: 15px;
-      top:10px;
+  .@{_COMMON_PREFIX}dropdown-handle {
+
+    &:after {
+      margin: 0;
+      right: 13px;
+      top: 13px;
+      left: auto;
     }
   }
 
-  &.expanded {
+  &.down {
 
     background-color: @admin-bg-light-gray !important;
     z-index: @z-index-toolbar-element;

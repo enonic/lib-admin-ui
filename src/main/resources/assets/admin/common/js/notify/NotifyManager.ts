@@ -36,9 +36,9 @@ module api.notify {
             this.notify(feedback);
         }
 
-        showError(message: string, autoHide: boolean = true) {
+        showError(message: string, autoHide: boolean = true): string {
             let error = Message.newError(message, autoHide);
-            this.notify(error);
+            return this.notify(error);
         }
 
         showWarning(message: string, autoHide: boolean = true) {
@@ -46,16 +46,36 @@ module api.notify {
             this.notify(warning);
         }
 
-        notify(message: Message) {
+        notify(message: Message): string {
             const opts = NotifyOpts.buildOpts(message);
+
+            if (this.messageExistsInRegistry(opts)) {
+                return;
+            }
 
             const limitReached = this.queue.length > 0
                                  || this.el.getWrapper().getChildren().length >= this.notificationLimit;
+
+            const notification = this.createNotification(opts);
+
             if (limitReached) {
-                this.queue.push(this.createNotification(opts));
+                this.queue.push(notification);
             } else {
-                this.renderNotification(this.createNotification(opts));
+                this.renderNotification(notification);
             }
+
+            return notification.getEl().getId();
+        }
+
+        private messageExistsInRegistry(opts: NotifyOpts) {
+            if (Object.keys(this.registry).length === 0) {
+                return false;
+            }
+
+            const registryArray = Object.keys(this.registry).map((key) => this.registry[key].opts);
+
+            return registryArray.some((registryEntry) =>
+                                            registryEntry.message == opts.message && registryEntry.type == opts.type);
         }
 
         private createNotification(opts: NotifyOpts): NotificationMessage {
@@ -64,7 +84,10 @@ module api.notify {
                 notificationEl.addClass(opts.type);
             }
 
-            this.registry[notificationEl.getEl().getId()] = notificationEl;
+            this.registry[notificationEl.getEl().getId()] = {
+                opts: opts,
+                el: notificationEl
+            };
             this.setListeners(notificationEl, opts);
 
             return notificationEl;
@@ -92,9 +115,8 @@ module api.notify {
         }
 
         hide(messageId: string) {
-            if (this.registry[messageId]) {
-                this.remove(this.registry[messageId]);
-                delete this.registry[messageId];
+            if (messageId && this.registry[messageId]) {
+                this.remove(this.registry[messageId].el);
             }
         }
 
@@ -138,6 +160,7 @@ module api.notify {
                     this.el.getWrapper().removeChild(el);
                 });
 
+            delete this.registry[el.getEl().getId()];
             delete this.timers[el.getEl().getId()];
         }
 

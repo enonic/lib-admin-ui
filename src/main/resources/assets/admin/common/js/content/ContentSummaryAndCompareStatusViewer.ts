@@ -56,7 +56,7 @@ module api.content {
         }
 
         resolveIconClass(object: ContentSummaryAndCompareStatus): string {
-            return !!object.getUploadItem() ? 'icon-file-upload2' : '';
+            return '';
         }
 
         resolveIconUrl(object: ContentSummaryAndCompareStatus): string {
