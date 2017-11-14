@@ -46,14 +46,15 @@ module api.ui.menu {
             return this.action;
         }
 
+        setVisible(value: boolean) {
+            this.toggleClass('expanded', value);
+            return this;
+        }
+
         setEnabled(value: boolean) {
-            let el = this.getEl();
-            el.setDisabled(!value);
-            if (value) {
-                el.removeClass('disabled');
-            } else {
-                el.addClass('disabled');
-            }
+            this.getEl()
+                .setDisabled(!value)
+                .toggleClass('disabled', !value);
         }
     }
 

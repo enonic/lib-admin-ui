@@ -3,20 +3,29 @@
   z-index: @z-index-context-menu;
   position: absolute;
 
-  dt.collapsible {
-    &:after {
-      content: "";
-      position: absolute;
-      left: 90%;
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      margin-top: 5px;
-      border-top: 7px solid @admin-dark-gray;
+  dt {
+    &:not(.collapsible) {
+      display: none;
+      &.expanded {
+        display: block;
+      }
     }
 
-    &.expanded:after {
-      border-top: none;
-      border-bottom: 7px solid @admin-dark-gray;
+    &.collapsible {
+      &:after {
+        content: "";
+        position: absolute;
+        left: 90%;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        margin-top: 5px;
+        border-top: 7px solid @admin-dark-gray;
+      }
+
+      &.expanded:after {
+        border-top: none;
+        border-bottom: 7px solid @admin-dark-gray;
+      }
     }
   }
 

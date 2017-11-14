@@ -127,12 +127,13 @@ module api.ui {
             return this.visible;
         }
 
-        setVisible(value: boolean) {
+        setVisible(value: boolean): Action {
 
             if (value !== this.visible) {
                 this.visible = value;
                 this.notifyPropertyChanged();
             }
+            return this;
         }
 
         getIconClass(): string {

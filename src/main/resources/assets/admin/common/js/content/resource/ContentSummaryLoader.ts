@@ -1,6 +1,7 @@
 module api.content.resource {
 
-    export class ContentSummaryLoader extends ContentSummaryPreLoader {
+    export class ContentSummaryLoader
+        extends ContentSummaryPreLoader {
 
         protected request: ContentSummaryRequest;
 
@@ -50,6 +51,11 @@ module api.content.resource {
             this.setSearchQueryExpr(searchString);
 
             return this.load();
+        }
+
+        setSearchString(value: string) {
+            super.setSearchString(value);
+            this.setSearchQueryExpr(value);
         }
 
     }

@@ -120,17 +120,20 @@
       }
 
       .minimize-edit {
+        .icon-arrow-right;
         position: absolute;
         left: 40px !important;
         top: 0;
-        &:before {
-          transform: rotate(0deg);
-        }
+        height: 35px;
+        font-weight: bold;
       }
     }
   }
 
   .minimize-edit {
+    .icon-arrow-left;
+    font-size: 30px;
+    font-weight: 800;
     display: none;
     position: fixed;
     height: 40px;
@@ -142,13 +145,13 @@
     z-index: @z-index-mask - 1;
     cursor: pointer;
     color: @admin-font-gray2;
-
+/*
     &:before {
       display: inline-block;
       transform: rotate(180deg);
       .transition(0.3s);
     }
-
+*/
     &:hover {
       color: @admin-bg-dark-gray;
     }
@@ -166,11 +169,10 @@
       z-index: 2;
 
       &.spinner {
-        font-family: 'icomoon';
+        .icon-spinner;
 
-        &:after {
+        &:before {
           .animation(rotate360, .5s, .0s, linear);
-          content: "\e007";
           color: white;
           display: inline-block;
           margin-left: 5px;

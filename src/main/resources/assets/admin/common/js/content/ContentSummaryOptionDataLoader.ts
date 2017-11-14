@@ -63,7 +63,7 @@ module api.content {
                 return new ContentId(id);
             });
             return new GetContentSummaryByIds(contentIds).sendAndParse().then(((contents: ContentSummary[]) => {
-                return <DATA[]>contents.map(content => new ContentTreeSelectorItem(content, false));
+                return <DATA[]>contents.map(content => new ContentTreeSelectorItem(content));
             }));
         }
 
@@ -79,7 +79,7 @@ module api.content {
         private sendAndParseFlatRequest(silent: boolean = false, postLoad?: boolean): wemQ.Promise<DATA[]> {
             return this.flatRequest.sendAndParse().then((contents) => {
                 const result = contents.map(
-                    content => new ContentTreeSelectorItem(content, true));
+                    content => new ContentTreeSelectorItem(content));
 
                 if (!silent) {
                     this.isTreeLoadMode = false;

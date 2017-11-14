@@ -1161,6 +1161,8 @@ declare module Slick {
         public invalidate(): void;
         public invalidateRow(row: number): void;
         public invalidateRows(rows: number[]): void;
+
+        public invalidateAllRows(): void;
         public updateCell(row: number, cell: number): void;
         public updateRow(row: number): void;
         public getViewport(viewportTop?: number, viewportLeft?: number): Viewport;

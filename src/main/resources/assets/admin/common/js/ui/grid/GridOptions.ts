@@ -458,6 +458,8 @@ module api.ui.grid {
 
         dragAndDrop: boolean;
 
+        disableCleanupRows: boolean;
+
         constructor(builder: GridOptionsBuilder<T>) {
             this.asyncEditorLoading = builder.asyncEditorLoading;
             this.asyncEditorLoadDelay = builder.asyncEditorLoadDelay;
@@ -899,6 +901,11 @@ module api.ui.grid {
 
         setDragAndDrop(dragAndDrop: boolean): GridOptions<T> {
             this.dragAndDrop = dragAndDrop;
+            return this;
+        }
+
+        setDisabledCleanupRows(value: boolean): GridOptions<T> {
+            this.disableCleanupRows = value;
             return this;
         }
     }
