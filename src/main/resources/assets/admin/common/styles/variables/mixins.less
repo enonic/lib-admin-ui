@@ -773,44 +773,6 @@
   background-color: @bgColor;
 }
 
-.is-processing-mixin() {
-  .dependants {
-    display: none !important;
-  }
-
-  .progress-bar {
-    display: block;
-    margin-bottom: 20px;
-    height: 25px;
-
-    .progress-indicator {
-      background-color: @admin-green;
-    }
-  }
-
-  .button-container {
-    float: none;
-    text-align: center;
-
-    *:not(.cancel-button-bottom) {
-      display: none !important;
-    }
-
-    .cancel-button-bottom {
-      span {
-        display: none;
-      }
-      &:after {
-        content: attr(data-button-text);
-        color: @admin-white;
-        width: 100px;
-        line-height: 24px;
-        font-size: 16px;
-      }
-    }
-  }
-}
-
 .content-status-mixin() {
   .equal, .online {
     color: @admin-green;

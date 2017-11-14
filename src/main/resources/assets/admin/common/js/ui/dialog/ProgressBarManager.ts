@@ -4,7 +4,6 @@ module api.ui.dialog {
     import i18n = api.util.i18n;
 
     export interface ProgressBarManagerConfig {
-        processingClass: string;
         processingLabel: string;
         processHandler: () => void;
         unlockControlsHandler?: () => void;
@@ -19,13 +18,13 @@ module api.ui.dialog {
         // Interval of task polling when processing the content (in ms)
         static pollInterval: number = 500;
 
+        static processingClass: string = 'is-processing';
+
         private managingElement: ModalDialog;
 
         private progressBar: ProgressBar;
 
         private processingLabel: string;
-
-        private processingClass: string;
 
         private processHandler: () => void;
 
@@ -33,12 +32,16 @@ module api.ui.dialog {
 
         private progressCompleteListeners: ((taskState: TaskState) => void)[] = [];
 
+        private enabled: boolean = false;
+
         constructor(config: ProgressBarManagerConfig) {
             this.managingElement = config.managingElement;
-            this.processingClass = config.processingClass;
             this.processHandler = config.processHandler;
             this.processingLabel = config.processingLabel;
-            this.unlockControlsHandler = config.unlockControlsHandler;
+            this.unlockControlsHandler = config.unlockControlsHandler || (() => { /* empty */
+            });
+
+            this.managingElement.addClass('progress-manageable');
         }
 
         private createProgressBar(): ProgressBar {
@@ -54,8 +57,9 @@ module api.ui.dialog {
         }
 
         private enableProgressBar() {
-            this.managingElement.addClass(this.processingClass);
-            api.dom.Body.get().addClass(this.processingClass);
+            this.managingElement.addClass(ProgressBarManager.processingClass);
+            api.dom.Body.get().addClass(ProgressBarManager.processingClass);
+            this.enabled = true;
 
             MenuButtonProgressBarManager.getProgressBar().setValue(0);
             MenuButtonProgressBarManager.getProgressBar().setLabel(this.processingLabel);
@@ -65,16 +69,17 @@ module api.ui.dialog {
         }
 
         private disableProgressBar() {
-            this.managingElement.removeClass(this.processingClass);
-            api.dom.Body.get().removeClass(this.processingClass);
+            this.managingElement.removeClass(ProgressBarManager.processingClass);
+            api.dom.Body.get().removeClass(ProgressBarManager.processingClass);
+            this.enabled = false;
         }
 
-        private isProgressBarEnabled() {
-            return this.managingElement.hasClass(this.processingClass);
+        isEnabled(): boolean {
+            return this.enabled;
         }
 
         private setProgressValue(value: number) {
-            if (this.isProgressBarEnabled()) {
+            if (this.isEnabled()) {
                 this.progressBar.setValue(value);
                 if (!api.dom.Body.get().isShowingModalDialog()) {
                     MenuButtonProgressBarManager.getProgressBar().setValue(value);
@@ -83,7 +88,7 @@ module api.ui.dialog {
         }
 
         handleProcessingComplete() {
-            if (this.isProgressBarEnabled()) {
+            if (this.isEnabled()) {
                 this.disableProgressBar();
             }
 
@@ -120,7 +125,7 @@ module api.ui.dialog {
         pollTask(taskId: api.task.TaskId, elapsed: number = 0) {
             const interval = ProgressBarManager.pollInterval;
             setTimeout(() => {
-                if (!this.isProgressBarEnabled() && elapsed >= ProgressBarManager.progressBarDelay) {
+                if (!this.isEnabled() && elapsed >= ProgressBarManager.progressBarDelay) {
                     this.enableProgressBar();
                 }
 
@@ -154,10 +159,6 @@ module api.ui.dialog {
                 }).done();
 
             }, interval);
-        }
-
-        getProcessingClass() {
-            return this.processingClass;
         }
     }
 }

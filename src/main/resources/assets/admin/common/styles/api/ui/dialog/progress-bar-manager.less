@@ -1,0 +1,95 @@
+.is-processing {
+  &.@{_COMMON_PREFIX}modal-dialog {
+    .dependants {
+      display: none !important;
+    }
+
+    .progress-bar {
+      display: block;
+      margin-bottom: 20px;
+      height: 25px;
+
+      .progress-indicator {
+        background-color: @admin-green;
+      }
+    }
+
+    .button-container {
+      float: none;
+      text-align: center;
+
+      *:not(.cancel-button-bottom) {
+        display: none !important;
+      }
+
+      .cancel-button-bottom {
+        span {
+          display: none;
+        }
+        &:after {
+          content: attr(data-button-text);
+          color: @admin-white;
+          width: 100px;
+          line-height: 24px;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  &body {
+    .content-publish-menu {
+      button {
+        display: none !important;
+      }
+      .progress-bar {
+        display: block;
+        height: 40px;
+        min-width: 167px; // Width of the Publish menu button
+        background-color: @form-button-bg-disabled;
+
+        .progress-indicator {
+          background-color: @admin-green;
+        }
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        &:after {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          line-height: 40px;
+          color: @admin-white;
+          font-size: 14px;
+          font-family: "Open Sans", sans-serif;
+          text-align: center;
+        }
+      }
+      .progress-label {
+        line-height: 40px;
+      }
+      &.minimized {
+        .progress-bar {
+          min-width: 105px;
+
+          &:after {
+            margin: 0 15px;
+            left: 0;
+          }
+        }
+      }
+    }
+
+    .context-menu,
+    .content-browse-toolbar {
+      .move-action {
+        pointer-events: none;
+        opacity: 0.5;
+        cursor: default;
+      }
+    }
+  }
+}

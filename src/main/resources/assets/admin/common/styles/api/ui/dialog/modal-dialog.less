@@ -126,17 +126,11 @@
     }
 
     &:before {
-      -webkit-animation: close-icon-animation-before 500ms forwards; /* Safari 4+ */
-      -moz-animation:    close-icon-animation-before 500ms forwards; /* Fx 5+ */
-      -o-animation:      close-icon-animation-before 500ms forwards; /* Opera 12+ */
-      animation:         close-icon-animation-before 500ms forwards; /* IE 10+, Fx 29+ */
+      animation: close-icon-animation-before 500ms forwards;
     }
 
     &:after {
-      -webkit-animation: close-icon-animation-after 500ms forwards; /* Safari 4+ */
-      -moz-animation:    close-icon-animation-after 500ms forwards; /* Fx 5+ */
-      -o-animation:      close-icon-animation-after 500ms forwards; /* Opera 12+ */
-      animation:         close-icon-animation-after 500ms forwards; /* IE 10+, Fx 29+ */
+      animation: close-icon-animation-after 500ms forwards;
     }
 
     &:hover {
@@ -152,6 +146,10 @@
   }
 
   .input-view .edit {
+    display: none;
+  }
+
+  .progress-bar {
     display: none;
   }
 }
