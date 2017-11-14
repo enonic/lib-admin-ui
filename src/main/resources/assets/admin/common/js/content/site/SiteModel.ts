@@ -10,11 +10,11 @@ module api.content.site {
 
         private siteConfigs: SiteConfig[];
 
-        private applicationAddedListeners: {(event: ApplicationAddedEvent):void}[] = [];
+        private applicationAddedListeners: { (event: ApplicationAddedEvent): void }[] = [];
 
-        private applicationRemovedListeners: {(event: ApplicationRemovedEvent):void}[] = [];
+        private applicationRemovedListeners: { (event: ApplicationRemovedEvent): void }[] = [];
 
-        private propertyChangedListeners: {(event: api.PropertyChangedEvent):void}[] = [];
+        private propertyChangedListeners: { (event: api.PropertyChangedEvent): void }[] = [];
 
         private applicationPropertyAddedListener: (event: api.data.PropertyAddedEvent) => void;
 
@@ -22,11 +22,11 @@ module api.content.site {
 
         private applicationGlobalEventsListener: (event: ApplicationEvent) => void;
 
-        private applicationUnavailableListeners: {(applicationEvent: ApplicationEvent):void}[] = [];
+        private applicationUnavailableListeners: { (applicationEvent: ApplicationEvent): void }[] = [];
 
-        private applicationStartedListeners: {(applicationEvent: ApplicationEvent): void}[] = [];
+        private applicationStartedListeners: { (applicationEvent: ApplicationEvent): void }[] = [];
 
-        private siteModelUpdatedListeners: {(): void}[] = [];
+        private siteModelUpdatedListeners: { (): void }[] = [];
 
         constructor(site: Site) {
             this.initApplicationPropertyListeners();
@@ -75,7 +75,7 @@ module api.content.site {
             ApplicationEvent.on(this.applicationGlobalEventsListener);
         }
 
-        update(site: Site) {
+        update(site: Site): SiteModel {
             if (this.site) {
                 this.site.getContentData().unPropertyAdded(this.applicationPropertyAddedListener);
                 this.site.getContentData().unPropertyRemoved(this.applicationPropertyRemovedListener);
@@ -87,6 +87,8 @@ module api.content.site {
             }
 
             this.notifySiteModelUpdated();
+
+            return this;
         }
 
         getSite(): Site {
@@ -101,107 +103,107 @@ module api.content.site {
             return this.siteConfigs.map((sc: SiteConfig) => sc.getApplicationKey());
         }
 
-        onPropertyChanged(listener: (event: api.PropertyChangedEvent)=>void) {
+        onPropertyChanged(listener: (event: api.PropertyChangedEvent) => void) {
             this.propertyChangedListeners.push(listener);
         }
 
-        unPropertyChanged(listener: (event: api.PropertyChangedEvent)=>void) {
+        unPropertyChanged(listener: (event: api.PropertyChangedEvent) => void) {
             this.propertyChangedListeners =
-                this.propertyChangedListeners.filter((curr: (event: api.PropertyChangedEvent)=>void) => {
+                this.propertyChangedListeners.filter((curr: (event: api.PropertyChangedEvent) => void) => {
                     return listener !== curr;
                 });
         }
 
         private notifyPropertyChanged(property: string, oldValue: any, newValue: any, source: any) {
             let event = new api.PropertyChangedEvent(property, oldValue, newValue, source);
-            this.propertyChangedListeners.forEach((listener: (event: api.PropertyChangedEvent)=>void) => {
+            this.propertyChangedListeners.forEach((listener: (event: api.PropertyChangedEvent) => void) => {
                 listener(event);
             });
         }
 
-        onApplicationAdded(listener: (event: ApplicationAddedEvent)=>void) {
+        onApplicationAdded(listener: (event: ApplicationAddedEvent) => void) {
             this.applicationAddedListeners.push(listener);
         }
 
-        unApplicationAdded(listener: (event: ApplicationAddedEvent)=>void) {
+        unApplicationAdded(listener: (event: ApplicationAddedEvent) => void) {
             this.applicationAddedListeners =
-            this.applicationAddedListeners.filter((curr: (event: ApplicationAddedEvent)=>void) => {
+                this.applicationAddedListeners.filter((curr: (event: ApplicationAddedEvent) => void) => {
                     return listener !== curr;
                 });
         }
 
         private notifyApplicationAdded(siteConfig: SiteConfig) {
             let event = new ApplicationAddedEvent(siteConfig);
-            this.applicationAddedListeners.forEach((listener: (event: ApplicationAddedEvent)=>void) => {
+            this.applicationAddedListeners.forEach((listener: (event: ApplicationAddedEvent) => void) => {
                 listener(event);
             });
         }
 
-        onApplicationRemoved(listener: (event: ApplicationRemovedEvent)=>void) {
+        onApplicationRemoved(listener: (event: ApplicationRemovedEvent) => void) {
             this.applicationRemovedListeners.push(listener);
         }
 
-        unApplicationRemoved(listener: (event: ApplicationRemovedEvent)=>void) {
+        unApplicationRemoved(listener: (event: ApplicationRemovedEvent) => void) {
             this.applicationRemovedListeners =
-            this.applicationRemovedListeners.filter((curr: (event: ApplicationRemovedEvent)=>void) => {
+                this.applicationRemovedListeners.filter((curr: (event: ApplicationRemovedEvent) => void) => {
                     return listener !== curr;
                 });
         }
 
         private notifyApplicationRemoved(applicationKey: ApplicationKey) {
             let event = new ApplicationRemovedEvent(applicationKey);
-            this.applicationRemovedListeners.forEach((listener: (event: ApplicationRemovedEvent)=>void) => {
+            this.applicationRemovedListeners.forEach((listener: (event: ApplicationRemovedEvent) => void) => {
                 listener(event);
             });
         }
 
-        onApplicationUnavailable(listener: (applicationEvent: ApplicationEvent)=>void) {
+        onApplicationUnavailable(listener: (applicationEvent: ApplicationEvent) => void) {
             this.applicationUnavailableListeners.push(listener);
         }
 
-        unApplicationUnavailable(listener: (applicationEvent: ApplicationEvent)=>void) {
+        unApplicationUnavailable(listener: (applicationEvent: ApplicationEvent) => void) {
             this.applicationUnavailableListeners =
-                this.applicationUnavailableListeners.filter((curr: (applicationEvent: ApplicationEvent)=>void) => {
+                this.applicationUnavailableListeners.filter((curr: (applicationEvent: ApplicationEvent) => void) => {
                     return listener !== curr;
                 });
         }
 
         private notifyApplicationUnavailable(applicationEvent: ApplicationEvent) {
-            this.applicationUnavailableListeners.forEach((listener: (applicationEvent: ApplicationEvent)=>void) => {
+            this.applicationUnavailableListeners.forEach((listener: (applicationEvent: ApplicationEvent) => void) => {
                 listener(applicationEvent);
             });
         }
 
-        onApplicationStarted(listener: (applicationEvent: ApplicationEvent)=>void) {
+        onApplicationStarted(listener: (applicationEvent: ApplicationEvent) => void) {
             this.applicationStartedListeners.push(listener);
         }
 
-        unApplicationStarted(listener: (applicationEvent: ApplicationEvent)=>void) {
+        unApplicationStarted(listener: (applicationEvent: ApplicationEvent) => void) {
             this.applicationStartedListeners =
-                this.applicationStartedListeners.filter((curr: (applicationEvent: ApplicationEvent)=>void) => {
+                this.applicationStartedListeners.filter((curr: (applicationEvent: ApplicationEvent) => void) => {
                     return listener !== curr;
                 });
         }
 
         private notifyApplicationStarted(applicationEvent: ApplicationEvent) {
-            this.applicationStartedListeners.forEach((listener: (applicationEvent: ApplicationEvent)=>void) => {
+            this.applicationStartedListeners.forEach((listener: (applicationEvent: ApplicationEvent) => void) => {
                 listener(applicationEvent);
             });
         }
 
-        onSiteModelUpdated(listener: ()=>void) {
+        onSiteModelUpdated(listener: () => void) {
             this.siteModelUpdatedListeners.push(listener);
         }
 
-        unSiteModelUpdated(listener: ()=>void) {
+        unSiteModelUpdated(listener: () => void) {
             this.siteModelUpdatedListeners =
-                this.siteModelUpdatedListeners.filter((curr: ()=>void) => {
+                this.siteModelUpdatedListeners.filter((curr: () => void) => {
                     return listener !== curr;
                 });
         }
 
         private notifySiteModelUpdated() {
-            this.siteModelUpdatedListeners.forEach((listener: ()=>void) => {
+            this.siteModelUpdatedListeners.forEach((listener: () => void) => {
                 listener();
             });
         }
