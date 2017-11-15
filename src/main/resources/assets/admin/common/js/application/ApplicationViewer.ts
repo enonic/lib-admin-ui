@@ -23,7 +23,7 @@ module api.application {
             return object.getDisplayName();
         }
 
-        resolveSubName(object: Application | ApplicationUploadMock, relativePath: boolean = false): string {
+        resolveSubName(object: Application | ApplicationUploadMock): string {
             if (object instanceof Application && object.getDescription()) {
                 return object.getDescription();
             }
@@ -31,7 +31,7 @@ module api.application {
             return object.getName();
         }
 
-        resolveIconClass(object: Application): string {
+        resolveIconClass(): string {
             return 'icon-puzzle icon-large';
         }
     }

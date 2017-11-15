@@ -41,7 +41,7 @@ module api.content.resource {
                 return logicalExpr;
             }
 
-            this.filterContentPaths.forEach((contentPath: ContentPath, index: number) => {
+            this.filterContentPaths.forEach((_contentPath: ContentPath, index: number) => {
                 if (index === 0 || index === 1) {
                     return;
                 }

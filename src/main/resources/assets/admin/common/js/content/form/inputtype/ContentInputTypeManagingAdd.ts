@@ -38,7 +38,7 @@ module api.content.form.inputtype {
             throw new Error('Should be overridden by inheritor');
         }
 
-        protected getContentPath(raw: RAW_VALUE_TYPE): ContentPath {
+        protected getContentPath(_raw: RAW_VALUE_TYPE): ContentPath {
             throw new Error('Should be overridden by inheritor');
         }
 
@@ -92,7 +92,7 @@ module api.content.form.inputtype {
             handler.onContentRenamed(contentUpdatedOrMovedListener);
             handler.onContentUpdated(contentUpdatedOrMovedListener);
 
-            this.onRemoved(event => {
+            this.onRemoved(() => {
                 handler.unContentUpdated(contentUpdatedOrMovedListener);
                 handler.unContentRenamed(contentUpdatedOrMovedListener);
                 handler.unContentMoved(contentUpdatedOrMovedListener);
@@ -135,7 +135,7 @@ module api.content.form.inputtype {
             let handler = ContentServerEventsHandler.getInstance();
             handler.onContentDeleted(this.contentDeletedListener);
 
-            this.onRemoved((event) => {
+            this.onRemoved(() => {
                 handler.unContentDeleted(this.contentDeletedListener);
             });
         }

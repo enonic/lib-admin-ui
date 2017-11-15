@@ -15,7 +15,7 @@ module api.content.image {
             return object.getTypeLocaleName();
         }
 
-        resolveSubName(object: ImageTreeSelectorItem, relativePath: boolean = false): string {
+        resolveSubName(object: ImageTreeSelectorItem): string {
             return object.getPath() ? object.getPath().toString() : '';
         }
 

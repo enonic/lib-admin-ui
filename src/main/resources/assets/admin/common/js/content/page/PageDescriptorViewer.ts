@@ -10,11 +10,11 @@ module api.content.page {
             return object.getDisplayName();
         }
 
-        resolveSubName(object: PageDescriptor, relativePath: boolean = false): string {
+        resolveSubName(object: PageDescriptor): string {
             return object.getKey().toString();
         }
 
-        resolveIconClass(object: PageDescriptor): string {
+        resolveIconClass(): string {
             return api.StyleHelper.getCommonIconCls('file') + ' icon-large';
         }
     }

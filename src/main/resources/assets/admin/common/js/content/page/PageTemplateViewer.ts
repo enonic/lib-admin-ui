@@ -10,11 +10,11 @@ module api.content.page {
             return object.getDisplayName();
         }
 
-        resolveSubName(object: PageTemplate, relativePath: boolean = false): string {
+        resolveSubName(object: PageTemplate): string {
             return object.getController().toString();
         }
 
-        resolveIconClass(object: PageTemplate): string {
+        resolveIconClass(): string {
             return 'icon-newspaper icon-large';
         }
     }

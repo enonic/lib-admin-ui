@@ -10,7 +10,6 @@ module api.content.form.inputtype.image {
     import ContentTypeName = api.schema.content.ContentTypeName;
     import ComboBox = api.ui.selector.combobox.ComboBox;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import Option = api.ui.selector.Option;
 
@@ -51,18 +50,12 @@ module api.content.form.inputtype.image {
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('image-selector', config);
 
-            ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
-                this.availableSizeChanged();
-            });
+            ResponsiveManager.onAvailableSizeChanged(this, () => this.availableSizeChanged());
 
             // Don't forget to clean up the modal dialog on remove
-            this.onRemoved((event) => {
-                ResponsiveManager.unAvailableSizeChanged(this);
-            });
+            this.onRemoved(() => ResponsiveManager.unAvailableSizeChanged(this));
 
-            this.onShown(() => {
-                this.updateSelectedItemsIcons();
-            });
+            this.onShown(() => this.updateSelectedItemsIcons());
         }
 
         public getContentComboBox(): api.content.image.ImageContentComboBox {
@@ -160,13 +153,13 @@ module api.content.form.inputtype.image {
 
             let comboBox: ComboBox<ImageTreeSelectorItem> = contentComboBox.getComboBox();
 
-            comboBox.onHidden((event: api.dom.ElementHiddenEvent) => {
+            comboBox.onHidden(() => {
                 // hidden on max occurrences reached
                 if (this.uploader) {
                     this.uploader.hide();
                 }
             });
-            comboBox.onShown((event: api.dom.ElementShownEvent) => {
+            comboBox.onShown(() => {
                 // shown on occurrences between min and max
                 if (this.uploader) {
                     this.uploader.show();
@@ -355,12 +348,12 @@ module api.content.form.inputtype.image {
                 this.uploader.setDefaultDropzoneVisible(true, true);
             });
 
-            this.uploader.onDropzoneDragLeave((event: DragEvent) => {
+            this.uploader.onDropzoneDragLeave(() => {
                 this.uploader.giveBlur();
                 this.uploader.setDefaultDropzoneVisible(false);
             });
 
-            this.uploader.onDropzoneDrop((event) => {
+            this.uploader.onDropzoneDrop(() => {
                 this.uploader.setMaximumOccurrences(this.getRemainingOccurrences());
                 this.uploader.setDefaultDropzoneVisible(false);
             });

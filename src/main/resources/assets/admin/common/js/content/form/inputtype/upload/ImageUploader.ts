@@ -143,7 +143,7 @@ module api.content.form.inputtype.upload {
             this.ignorePropertyChange = false;
         }
 
-        updateProperty(property: api.data.Property, unchangedOnly?: boolean): Q.Promise<void> {
+        updateProperty(_property: api.data.Property, unchangedOnly?: boolean): Q.Promise<void> {
             if ((!unchangedOnly || !this.imageUploader.isDirty()) && this.getContext().content.getContentId()) {
 
                 return new api.content.resource.GetContentByIdRequest(this.getContext().content.getContentId())

@@ -20,16 +20,15 @@ module api.application {
         }
 
         createModel(serverResponse: api.application.json.ApplicationInstallResultJson): Application {
-            if (serverResponse) {
-
-                let result = ApplicationInstallResult.fromJson(serverResponse);
-
-                this.failure = result.getFailure();
-
-                return result.getApplication();
-            } else {
+            if (!serverResponse) {
                 return null;
             }
+
+            let result = ApplicationInstallResult.fromJson(serverResponse);
+
+            this.failure = result.getFailure();
+
+            return result.getApplication();
         }
 
         getFailure(): string {
@@ -44,7 +43,7 @@ module api.application {
             return new api.dom.AEl().setUrl(api.util.UriHelper.getRestUri('application/' + value), '_blank');
         }
 
-        protected getErrorMessage(fileString: string): string {
+        protected getErrorMessage(): string {
             return 'The application could not be installed';
         }
     }

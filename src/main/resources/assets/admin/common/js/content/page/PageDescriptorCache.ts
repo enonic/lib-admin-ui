@@ -24,7 +24,7 @@ module api.content.page {
             super();
         }
 
-        loadByApplication(applicationKey: ApplicationKey) {
+        protected loadByApplication(applicationKey: ApplicationKey) {
             new GetPageDescriptorsByApplicationRequest(applicationKey).sendAndParse().catch((reason: any) => {
                 api.DefaultErrorHandler.handle(reason);
             }).done();

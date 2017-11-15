@@ -25,7 +25,7 @@ module api.content.page.region {
             super();
         }
 
-        loadByApplication(applicationKey: ApplicationKey) {
+        protected loadByApplication(applicationKey: ApplicationKey) {
             new GetLayoutDescriptorsByApplicationRequest(applicationKey).sendAndParse().catch((reason: any) => {
                 api.DefaultErrorHandler.handle(reason);
             }).done();

@@ -95,7 +95,7 @@ module api.content.image {
                     }
                 }
             });
-            this.icon.onLoaded((event: UIEvent) => {
+            this.icon.onLoaded(() => {
                 if (this.getOption().displayValue.getContentSummary()) {
                     this.showResult();
                 }

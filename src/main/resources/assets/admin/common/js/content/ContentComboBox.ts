@@ -93,7 +93,7 @@ module api.content {
             }
         }
 
-        protected toggleGridOptions(treeMode: boolean) {
+        protected toggleGridOptions(_treeMode: boolean) {
             // May be overridden in deriving class if the grid should
             // have different settings in different modes
 
@@ -176,7 +176,7 @@ module api.content {
             }
 
             if (this.ifFlatLoadingMode(inputValue)) {
-                this.getLoader().search(inputValue).then((result: ITEM_TYPE[]) => {
+                this.getLoader().search(inputValue).then(() => {
                     deferred.resolve(null);
                 }).catch((reason: any) => {
                     api.DefaultErrorHandler.handle(reason);
@@ -281,7 +281,7 @@ module api.content {
 
         protected createEditButton(content: ContentTreeSelectorItem): api.dom.AEl {
             let editButton = super.createEditButton(content);
-            editButton.onClicked((event: Event) => {
+            editButton.onClicked(() => {
                 let model = [api.content.ContentSummaryAndCompareStatus.fromContentSummary(content.getContent())];
                 new api.content.event.EditContentEvent(model).fire();
             });

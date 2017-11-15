@@ -220,16 +220,16 @@ module api.content.image {
         }
 
         private handleOptionViewRendered(option: SelectedOption<ImageTreeSelectorItem>, optionView: ImageSelectorSelectedOptionView) {
-            optionView.onClicked((event: MouseEvent) => this.handleOptionViewClicked(option, optionView));
+            optionView.onClicked(() => this.handleOptionViewClicked(option, optionView));
 
             optionView.getCheckbox().onKeyDown((event: KeyboardEvent) => this.handleOptionViewKeyDownEvent(event, option, optionView));
 
-            optionView.getCheckbox().onFocus((event: FocusEvent) => this.setActiveOption(option));
+            optionView.getCheckbox().onFocus(() => this.setActiveOption(option));
 
             optionView.onChecked(
-                (view: ImageSelectorSelectedOptionView, checked: boolean) => this.handleOptionViewChecked(checked, option, optionView));
+                (_view: ImageSelectorSelectedOptionView, checked: boolean) => this.handleOptionViewChecked(checked, option, optionView));
 
-            optionView.getIcon().onLoaded((event: UIEvent) => this.handleOptionViewImageLoaded(optionView));
+            optionView.getIcon().onLoaded(() => this.handleOptionViewImageLoaded(optionView));
 
             if (option.getOption().displayValue.isEmptyContent()) {
                 optionView.showError('No access to image.');

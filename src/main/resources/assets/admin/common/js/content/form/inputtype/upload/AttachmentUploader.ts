@@ -106,7 +106,7 @@ module api.content.form.inputtype.upload {
             new api.content.event.ContentRequiresSaveEvent(this.getContext().content.getContentId()).fire();
         }
 
-        private addItemCallback(itemName: string) {
+        private addItemCallback() {
             this.updateOccurrences();
         }
 

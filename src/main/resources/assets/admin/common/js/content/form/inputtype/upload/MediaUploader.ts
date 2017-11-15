@@ -33,7 +33,7 @@ module api.content.form.inputtype.upload {
             return ValueTypes.STRING.newNullValue();
         }
 
-        layoutProperty(input: api.form.Input, property: Property): wemQ.Promise<void> {
+        layoutProperty(_input: api.form.Input, property: Property): wemQ.Promise<void> {
             if (!ValueTypes.STRING.equals(property.getType()) && !ValueTypes.DATA.equals(property.getType())) {
                 property.convertValueType(ValueTypes.STRING);
             }
@@ -94,7 +94,7 @@ module api.content.form.inputtype.upload {
             return wemQ<void>(null);
         }
 
-        validate(silent: boolean = true): api.form.inputtype.InputValidationRecording {
+        validate(): api.form.inputtype.InputValidationRecording {
             return new api.form.inputtype.InputValidationRecording();
         }
 
@@ -168,9 +168,8 @@ module api.content.form.inputtype.upload {
 
                 this.appendChild(new api.dom.DivEl('svg-image-wrapper').appendChild(this.svgImage));
 
-                this.svgImage.onLoaded((event: UIEvent) => {
-                    this.mediaUploaderEl.setResultVisible(true); // need to call it manually as svg images are uploaded too quickly
-                });
+                // need to call it manually as svg images are uploaded too quickly
+                this.svgImage.onLoaded(() => this.mediaUploaderEl.setResultVisible(true));
             }
         }
 
@@ -180,7 +179,7 @@ module api.content.form.inputtype.upload {
             let uploadButton = new api.ui.button.Button();
             uploadButton.addClass('upload-button');
 
-            uploadButton.onClicked((event: MouseEvent) => {
+            uploadButton.onClicked(() => {
                 if (property.hasNullValue()) {
                     return;
                 }

@@ -123,9 +123,7 @@ module api.content.form.inputtype.customselector {
                 this.validate(false);
             });
 
-            comboBox.onValueLoaded((options) => {
-                this.validate(false);
-            });
+            comboBox.onValueLoaded(() => this.validate(false));
 
             return comboBox;
         }
@@ -164,8 +162,8 @@ module api.content.form.inputtype.customselector {
                 containment: 'parent',
                 handle: '.drag-control',
                 tolerance: 'pointer',
-                start: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(event, ui),
-                update: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(event, ui)
+                start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
+                update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui)
             });
         }
 
@@ -174,7 +172,7 @@ module api.content.form.inputtype.customselector {
             wemjq(this.getHTMLElement()).find('.selected-options').sortable('refresh');
         }
 
-        private handleDnDStart(event: Event, ui: JQueryUI.SortableUIParams): void {
+        private handleDnDStart(ui: JQueryUI.SortableUIParams): void {
 
             let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
             this.draggingIndex = draggedElement.getSiblingIndex();
@@ -182,7 +180,7 @@ module api.content.form.inputtype.customselector {
             ui.placeholder.html('Drop form item set here');
         }
 
-        private handleDnDUpdate(event: Event, ui: JQueryUI.SortableUIParams) {
+        private handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
                 let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);

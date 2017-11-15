@@ -163,9 +163,7 @@ module api.content.site.inputtype.siteconfigurator {
                     siteConfigFormsToDisplay.splice(indexToRemove, 1);
                 }
 
-                formView.onValidityChanged((event: FormValidityChangedEvent) => {
-                    this.validate(false);
-                });
+                formView.onValidityChanged(() => this.validate(false));
 
                 this.validate(false);
             });

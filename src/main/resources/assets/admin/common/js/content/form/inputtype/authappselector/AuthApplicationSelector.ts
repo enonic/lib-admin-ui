@@ -1,7 +1,6 @@
 module api.content.site.inputtype.authappselector {
     import PropertyArray = api.data.PropertyArray;
     import FormView = api.form.FormView;
-    import FormValidityChangedEvent = api.form.FormValidityChangedEvent;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
@@ -153,9 +152,7 @@ module api.content.site.inputtype.authappselector {
                     siteConfigFormsToDisplay.splice(indexToRemove, 1);
                 }
 
-                formView.onValidityChanged((event: FormValidityChangedEvent) => {
-                    this.validate(false);
-                });
+                formView.onValidityChanged(() => this.validate(false));
 
                 this.validate(false);
             });

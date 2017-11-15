@@ -46,7 +46,7 @@ module api.content.site.inputtype.siteconfigurator {
 
             this.addClass('site-configurator-dialog');
 
-            CreateHtmlAreaDialogEvent.on((event: CreateHtmlAreaDialogEvent) => {
+            CreateHtmlAreaDialogEvent.on(() => {
                 this.addClass('masked');
                 this.addClass('await-confirmation');
 
@@ -136,7 +136,7 @@ module api.content.site.inputtype.siteconfigurator {
         private handleSelectorsDropdowns(formView: FormView) {
             let comboboxes = this.getComboboxesFromFormView(formView);
 
-            this.getContentPanel().onScroll((event) => {
+            this.getContentPanel().onScroll(() => {
                 comboboxes.forEach((comboBox: ComboBox<any>) => {
                     comboBox.hideDropdown();
                 });

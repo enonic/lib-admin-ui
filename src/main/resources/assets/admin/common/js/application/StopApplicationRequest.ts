@@ -21,8 +21,9 @@ module api.application {
         }
 
         sendAndParse(): wemQ.Promise<void> {
+            this.send();
 
-            return this.send().then((response: api.rest.JsonResponse<void>) => { /* empty*/ });
+            return wemQ<void>(null);
         }
     }
 }

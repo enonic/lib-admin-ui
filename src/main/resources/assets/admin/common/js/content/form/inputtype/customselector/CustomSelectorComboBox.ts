@@ -40,7 +40,7 @@ module api.content.form.inputtype.customselector {
             );
         }
 
-        protected createView(content: CustomSelectorItem): CustomSelectorItemViewer {
+        protected createView(_content: CustomSelectorItem): CustomSelectorItemViewer {
             let viewer = new CustomSelectorItemViewer();
             viewer.setObject(this.getOption().displayValue);
 

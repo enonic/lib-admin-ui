@@ -18,7 +18,7 @@ module api.content.form.inputtype.geo {
             return super.newInitialValue() || ValueTypes.GEO_POINT.newNullValue();
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(_index: number, property: Property): api.dom.Element {
             if (!ValueTypes.GEO_POINT.equals(property.getType())) {
                 property.convertValueType(ValueTypes.GEO_POINT);
             }
