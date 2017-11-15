@@ -1,14 +1,6 @@
 .issue-list-dialog {
   height: 430px;
 
-  .modal-dialog-header {
-    padding-bottom: 62px;
-  }
-
-  .dialog-content {
-    margin-top: -64px;
-  }
-
   .docked-panel {
     width: auto;
     box-shadow: none;
@@ -16,11 +8,23 @@
     background-color: transparent;
 
     .tab-bar {
+      position: relative !important;
       background-color: transparent;
-    }
+      border: 0 none;
+      overflow: visible;
 
-    .deck-panel {
-      margin-top: 6px;
+      .tab-bar-item {
+        top: 0;
+        right: 18px;
+        display: inline;
+        border: 0 none;
+        padding: 8px 5px;
+        position: absolute;
+
+        &.active {
+          display: none;
+        }
+      }
     }
   }
 
@@ -28,6 +32,7 @@
     position: inherit;
 
     .filters {
+      margin-bottom: 20px;
       .flexbox();
 
       .checkbox {
