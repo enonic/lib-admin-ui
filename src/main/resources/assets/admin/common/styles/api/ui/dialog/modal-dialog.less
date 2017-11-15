@@ -12,7 +12,6 @@
   top: 50%;
   z-index: @z-index-modal-dialog;
   margin: 10px;
-  padding: 30px;
   width: 85.185%;
   min-width: 230px;
   max-width: 660px;
@@ -22,18 +21,15 @@
   border: 1px solid @admin-dialog-border;
   box-sizing: border-box;
 
-  .modal-dialog-content-wrapper {
-    min-height: 100%;
+  .modal-dialog-wrapper {
+    display: flex;
+    flex-direction: column;
     height: 100%;
-    margin: 0 auto -3em;
-  }
-  .modal-dialog-footer, .modal-dialog-content-push {
-    height: 3em;
   }
 
-  .dialog-header {
+  .modal-dialog-header {
     .clearfix();
-    margin-bottom: 20px;
+    padding: 30px 30px 20px;
 
     h2 {
       line-height: 0.8em;
@@ -52,6 +48,14 @@
     }
   }
 
+  .modal-dialog-body {
+    padding: 0 30px;
+    flex: 1;
+  }
+  .modal-dialog-footer {
+    padding: 20px 30px 30px;
+  }
+
   .dialog-content {
     .clearfix();
 
@@ -62,7 +66,6 @@
 
   .dialog-buttons {
     .clearfix();
-    margin-top: 20px;
     position: relative;
 
     @media screen and (max-height: 360px) {
