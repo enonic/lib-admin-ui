@@ -282,7 +282,7 @@ module api.data {
          */
         getSize(): number {
             let size = 0;
-            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
+            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (_name: string, propertyArray: PropertyArray) => {
                 size += propertyArray.getSize();
             });
 
@@ -365,7 +365,7 @@ module api.data {
          * Calls the given callback for each property in the set.
          */
         forEach(callback: (property: Property, index?: number) => void) {
-            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
+            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (_name: string, propertyArray: PropertyArray) => {
                 propertyArray.forEach((property: Property, index: number) => {
                     callback(property, index);
                 });
@@ -474,7 +474,7 @@ module api.data {
 
             let copy = new PropertySet(destinationTree);
 
-            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, sourcePropertyArray: PropertyArray) => {
+            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (_name: string, sourcePropertyArray: PropertyArray) => {
                 let propertyArrayCopy = sourcePropertyArray.copy(copy);
                 copy.addPropertyArray(propertyArrayCopy);
             });
@@ -485,7 +485,7 @@ module api.data {
         toJson(): PropertyArrayJson[] {
             let jsonArray: PropertyArrayJson[] = [];
 
-            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
+            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (_name: string, propertyArray: PropertyArray) => {
                 jsonArray.push(propertyArray.toJson());
             });
 

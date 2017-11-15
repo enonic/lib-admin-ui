@@ -95,7 +95,7 @@ module api.dom {
                 if (FormInputEl.debug) {
                     console.debug(`update value from "${this.oldValue}" to "${value}"`);
                 }
-                this.doSetValue(value, silent);
+                this.doSetValue(value);
                 this.refreshValueChanged(silent);
 
                 if (!userInput && !this.dirty && this.originalValue !== value) {
@@ -127,7 +127,7 @@ module api.dom {
          * @param value
          * @param silent
          */
-        protected doSetValue(value: string, silent?: boolean) {
+        protected doSetValue(value: string) {
             this.getEl().setValue(value);
         }
 

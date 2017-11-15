@@ -1,7 +1,6 @@
 module api.content.site.inputtype.siteconfigurator {
     import PropertyArray = api.data.PropertyArray;
     import FormView = api.form.FormView;
-    import FormValidityChangedEvent = api.form.FormValidityChangedEvent;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;

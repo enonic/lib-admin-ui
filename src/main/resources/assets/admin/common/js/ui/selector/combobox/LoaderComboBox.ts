@@ -21,7 +21,7 @@ module api.ui.selector.combobox {
             this.loader = loader;
         }
 
-        protected doSetValue(value: string, silent?: boolean) {
+        protected doSetValue(value: string) {
 
             if (!this.loader.isLoaded()) {
                 if (RichComboBox.debug) {
@@ -36,7 +36,7 @@ module api.ui.selector.combobox {
                     }
                     delete this.tempValue;
                 }
-                super.doSetValue(value, silent);
+                super.doSetValue(value);
             }, value);
         }
 

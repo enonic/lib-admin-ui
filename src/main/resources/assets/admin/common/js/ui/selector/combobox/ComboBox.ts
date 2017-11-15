@@ -440,7 +440,7 @@ module api.ui.selector.combobox {
             }
         }
 
-        protected doSetValue(value: string, silent?: boolean) {
+        protected doSetValue(value: string) {
             if (ComboBox.debug) {
                 console.debug('ComboBox.doSetValue:', value);
             }

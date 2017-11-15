@@ -9,7 +9,7 @@ module api.dom {
                 setTagName('iframe').
                 setClassName(className));
 
-            this.onLoaded((event: UIEvent) => this.loaded = true);
+            this.onLoaded(() => this.loaded = true);
         }
 
         public setSrc(src: string): api.dom.IFrameEl {

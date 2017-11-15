@@ -36,7 +36,7 @@ module api.ui {
             this.appendChild(radio);
         }
 
-        doSetValue(value: string, silent?: boolean): RadioGroup {
+        doSetValue(value: string): RadioGroup {
             let option;
             for (let i = 0; i < this.options.length; i++) {
                 option = this.options[i];

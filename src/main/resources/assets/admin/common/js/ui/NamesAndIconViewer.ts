@@ -97,7 +97,7 @@ module api.ui {
             return '';
         }
 
-        resolveSubName(object: OBJECT, relativePath: boolean = false): string {
+        resolveSubName(object: OBJECT): string {
             return '';
         }
 

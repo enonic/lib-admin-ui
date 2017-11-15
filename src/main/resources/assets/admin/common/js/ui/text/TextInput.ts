@@ -72,7 +72,7 @@ module api.ui.text {
             return new TextInput(className, TextInput.MIDDLE, originalValue);
         }
 
-        protected doSetValue(value: string, silent?: boolean) {
+        protected doSetValue(value: string) {
             let newValue = this.removeForbiddenChars(value);
             super.doSetValue(newValue);
         }
