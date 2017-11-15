@@ -83,7 +83,7 @@ module api.ui.time {
             this.appendChild(hourContainer);
 
             this.nextHour = new api.dom.AEl('next');
-            this.nextHour.onMouseDown((e: MouseEvent) => {
+            this.nextHour.onMouseDown(() => {
                 this.addHour(+1);
                 this.startInterval(this.addHour, 1);
             });
@@ -92,7 +92,7 @@ module api.ui.time {
                 e.preventDefault();
                 return false;
             });
-            api.dom.Body.get().onMouseUp((e: MouseEvent) => {
+            api.dom.Body.get().onMouseUp(() => {
                 this.stopInterval();
             });
             this.nextHour.appendChild(new api.dom.SpanEl());
@@ -102,7 +102,7 @@ module api.ui.time {
             hourContainer.appendChild(this.hour);
 
             this.prevHour = new api.dom.AEl('prev');
-            this.prevHour.onMouseDown((e: MouseEvent) => {
+            this.prevHour.onMouseDown(() => {
                 this.addHour(-1);
                 this.startInterval(this.addHour, -1);
             });
@@ -120,7 +120,7 @@ module api.ui.time {
             this.appendChild(minuteContainer);
 
             this.nextMinute = new api.dom.AEl('next');
-            this.nextMinute.onMouseDown((e: MouseEvent) => {
+            this.nextMinute.onMouseDown(() => {
                 this.addMinute(+1);
                 this.startInterval(this.addMinute, 1);
             });
@@ -136,7 +136,7 @@ module api.ui.time {
             minuteContainer.appendChild(this.minute);
 
             this.prevMinute = new api.dom.AEl('prev');
-            this.prevMinute.onMouseDown((e: MouseEvent) => {
+            this.prevMinute.onMouseDown(() => {
                 this.addMinute(-1);
                 this.startInterval(this.addMinute, -1);
             });

@@ -41,7 +41,7 @@ module api.ui.treegrid {
                 this.showToolbar = grid.hasToolbar();
                 this.contextMenu = grid.getContextMenu();
                 this.classes = grid.getEl().getClass();
-                this.copyOptions(grid.getOptions())
+                this.initOptions()
                     .copyColumns(grid.getColumns());
             } else {
                 this.options = this.buildDefaultOptions();
@@ -99,12 +99,12 @@ module api.ui.treegrid {
             return [];
         }
 
-        copyOptions(options: GridOptions<NODE>): TreeGridBuilder<NODE> {
+        private initOptions(): TreeGridBuilder<NODE> {
             this.options = new GridOptionsBuilder<NODE>().build();
             return this;
         }
 
-        copyColumns(columns: GridColumn<TreeNode<NODE>>[]): TreeGridBuilder<NODE> {
+        private copyColumns(columns: GridColumn<TreeNode<NODE>>[]): TreeGridBuilder<NODE> {
             this.columns = [];
             columns.forEach((column) => {
                 this.columns.push(new GridColumnBuilder<NODE>(column).build());

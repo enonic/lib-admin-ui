@@ -18,7 +18,7 @@ module api.ui.treegrid {
             const refreshButton: Button = new Button();
             refreshButton
                 .addClass(api.StyleHelper.getCommonIconCls('loop'))
-                .onClicked((event: MouseEvent) => treeGrid.reload());
+                .onClicked(() => treeGrid.reload());
 
             this.appendChild(selectionController);
             this.appendChild(this.selectionPanelToggler);

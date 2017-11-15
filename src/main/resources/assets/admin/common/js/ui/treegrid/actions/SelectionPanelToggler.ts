@@ -19,7 +19,7 @@ module api.ui.treegrid.actions {
 
             this.tooltip = new Tooltip(this, '', 1000);
 
-            treeGrid.onSelectionChanged((currentSelection: TreeNode<any>[], fullSelection: TreeNode<any>[]) => {
+            treeGrid.onSelectionChanged((_currentSelection: TreeNode<any>[], fullSelection: TreeNode<any>[]) => {
 
                 let oldLabel = this.getLabel();
                 let newLabel = fullSelection.length ? fullSelection.length.toString() : '';

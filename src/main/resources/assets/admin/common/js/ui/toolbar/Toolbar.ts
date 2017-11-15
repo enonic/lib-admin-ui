@@ -21,7 +21,7 @@ module api.ui.toolbar {
             // Hack: Update after styles are applied to evaluate the sizes correctly
             api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => setTimeout(this.foldOrExpand.bind(this)));
 
-            this.onShown((event) => this.foldOrExpand());
+            this.onShown(() => this.foldOrExpand());
         }
 
         addAction(action: api.ui.Action): ActionButton {

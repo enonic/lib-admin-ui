@@ -51,13 +51,9 @@ module api.ui.text {
                 }
             });
 
-            this.onFocus((event: Event) => {
-                this.previousValue = this.doGetValue();
-            });
+            this.onFocus(() => this.previousValue = this.doGetValue());
 
-            this.onBlur((event: Event) => {
-                this.previousValue = this.doGetValue();
-            });
+            this.onBlur(() => this.previousValue = this.doGetValue());
         }
 
         private setPreviousValue() {

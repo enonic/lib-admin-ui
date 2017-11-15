@@ -7,7 +7,7 @@ module api.ui.uploader {
 
         static FILE_NAME_DELIMITER: string = '/';
 
-        doSetValue(value: string, silent?: boolean): UploaderEl<MODEL> {
+        doSetValue(value: string): UploaderEl<MODEL> {
 
             if (UploaderEl.debug) {
                 console.log('Setting new uploader value', value, this);

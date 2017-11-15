@@ -243,8 +243,8 @@ module api.ui.treegrid {
                 this.disablePostLoad(builder);
             });
 
-            this.grid.subscribeOnSelectedRowsChanged((event, rows) => {
-                this.notifySelectionChanged(event, rows.rows);
+            this.grid.subscribeOnSelectedRowsChanged((_event, rows) => {
+                this.notifySelectionChanged(rows.rows);
             });
 
             this.onLoaded(() => this.unmask());
@@ -290,7 +290,7 @@ module api.ui.treegrid {
             }
         }
 
-        private bindKeys(builder: TreeGridBuilder<DATA>) {
+        private bindKeys(_builder: TreeGridBuilder<DATA>) {
             if (this.keyBindings.length > 0) {
                 KeyBindings.get().shelveBindings(this.keyBindings);
                 KeyBindings.get().bindKeys(this.keyBindings);
@@ -612,7 +612,7 @@ module api.ui.treegrid {
             }
         }
 
-        protected editItem(node: TreeNode<DATA>) {
+        protected editItem(_node: TreeNode<DATA>) {
             return;
         }
 
@@ -777,7 +777,7 @@ module api.ui.treegrid {
             return columns;
         }
 
-        isEmptyNode(node: TreeNode<DATA>): boolean {
+        isEmptyNode(_node: TreeNode<DATA>): boolean {
             return false;
         }
 
@@ -969,7 +969,7 @@ module api.ui.treegrid {
          * Used to determine if a data have child nodes.
          * Must be overridden for the grids with a tree structure.
          */
-        hasChildren(data: DATA): boolean {
+        hasChildren(_data: DATA): boolean {
             return false;
         }
 
@@ -977,7 +977,7 @@ module api.ui.treegrid {
          * Used to get the data identifier or key.
          * Must be overridden.
          */
-        getDataId(data: DATA): string {
+        getDataId(_data: DATA): string {
             throw new Error('Must be implemented by inheritors');
         }
 
@@ -991,7 +991,7 @@ module api.ui.treegrid {
          * retrieving a a full data, or for the purpose of the
          * infinite scroll.
          */
-        fetch(node: TreeNode<DATA>, dataId?: string): wemQ.Promise<DATA> {
+        fetch(_node: TreeNode<DATA>): wemQ.Promise<DATA> {
             let deferred = wemQ.defer<DATA>();
             // Empty logic
             deferred.resolve(null);
@@ -1002,7 +1002,7 @@ module api.ui.treegrid {
          * Used as a default children fetcher.
          * Must be overridden to use predefined root nodes.
          */
-        fetchChildren(parentNode?: TreeNode<DATA>): wemQ.Promise<DATA[]> {
+        fetchChildren(_parentNode?: TreeNode<DATA>): wemQ.Promise<DATA[]> {
             let deferred = wemQ.defer<DATA[]>();
             // Empty logic
             deferred.resolve([]);
@@ -1155,7 +1155,7 @@ module api.ui.treegrid {
 
         // Hard reset
 
-        reload(parentNodeData?: DATA, idPropertyName?: string, rememberExpanded: boolean = true): wemQ.Promise<void> {
+        reload(parentNodeData?: DATA, _idPropertyName?: string, rememberExpanded: boolean = true): wemQ.Promise<void> {
             const expandedNodesDataId = rememberExpanded ? this.grid.getDataView().getItems()
                                                              .filter(item => item.isExpanded()).map(item => item.getDataId()) : [];
 
@@ -1297,7 +1297,7 @@ module api.ui.treegrid {
         }
 
         private fetchAndUpdateNodes(nodesToUpdate: TreeNode<DATA>[], dataId?: string): wemQ.Promise<void> {
-            return this.fetch(nodesToUpdate[0], dataId)
+            return this.fetch(nodesToUpdate[0])
                 .then((data: DATA) => {
                     nodesToUpdate.forEach((node) => {
                         if (dataId) {
@@ -1370,7 +1370,7 @@ module api.ui.treegrid {
          */
         appendNode(data: DATA, nextToSelection: boolean = false, prepend: boolean = true,
                    stashedParentNode?: TreeNode<DATA>): wemQ.Promise<void> {
-            let parentNode = this.getParentNode(nextToSelection, stashedParentNode, data);
+            let parentNode = this.getParentNode(nextToSelection, stashedParentNode);
             let index = prepend ? 0 : Math.max(0, parentNode.getChildren().length - 1);
             return this.insertNode(data, nextToSelection, index, stashedParentNode);
         }
@@ -1382,7 +1382,7 @@ module api.ui.treegrid {
             this.doInsertNodeToParentWithChildren(parentNode, data, root, index);
         }
 
-        getParentNode(nextToSelection: boolean = false, stashedParentNode?: TreeNode<DATA>, data?: DATA) {
+        getParentNode(nextToSelection: boolean = false, stashedParentNode?: TreeNode<DATA>) {
             let root = stashedParentNode || this.root.getCurrentRoot();
             let parentNode: TreeNode<DATA>;
 
@@ -1402,7 +1402,7 @@ module api.ui.treegrid {
                    stashedParentNode?: TreeNode<DATA>): wemQ.Promise<void> {
             let deferred = wemQ.defer<void>();
             let root = stashedParentNode || this.root.getCurrentRoot();
-            let parentNode = this.getParentNode(nextToSelection, stashedParentNode, data);
+            let parentNode = this.getParentNode(nextToSelection, stashedParentNode);
 
             if (!parentNode.hasChildren() && (parentNode !== root)) {
                 this.fetchData(parentNode)
@@ -1641,7 +1641,7 @@ module api.ui.treegrid {
             return this.gridData.getItem(rowIndex);
         }
 
-        private notifySelectionChanged(event: any, rows: number[]): void {
+        private notifySelectionChanged(rows: number[]): void {
             let currentSelection: TreeNode<DATA>[] = [];
             if (rows) {
                 rows.forEach((rowIndex) => {
@@ -1746,11 +1746,11 @@ module api.ui.treegrid {
             this.invalidate();
         }
 
-        refreshNodeData(parentNode: TreeNode<DATA>): wemQ.Promise<TreeNode<DATA>> {
+        refreshNodeData(_parentNode: TreeNode<DATA>): wemQ.Promise<TreeNode<DATA>> {
             return null;
         }
 
-        sortNodeChildren(node: TreeNode<DATA>): void {
+        sortNodeChildren(_node: TreeNode<DATA>): void {
             // must be implemented by children
         }
 
