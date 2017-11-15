@@ -130,7 +130,7 @@ module api.ui.tab {
             this.navigationItemSelectedListeners.push(listener);
         }
 
-        onNavigationItemDeselected(listener: (event: NavigatorEvent) => void) {
+        onNavigationItemDeselected(_listener: (event: NavigatorEvent) => void) {
             //Not used here
         }
 
@@ -152,7 +152,7 @@ module api.ui.tab {
             });
         }
 
-        unNavigationItemDeselected(listener: (event: NavigatorEvent) => void) {
+        unNavigationItemDeselected(_listener: (event: NavigatorEvent) => void) {
             //Not used here
         }
 

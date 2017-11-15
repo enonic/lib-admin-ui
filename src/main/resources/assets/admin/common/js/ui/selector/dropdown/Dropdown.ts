@@ -117,10 +117,7 @@ module api.ui.selector.dropdown {
 
             this.setupListeners();
 
-            this.onRendered((event: api.dom.ElementRenderedEvent) => {
-
-                this.doUpdateDropdownTopPositionAndWidth();
-            });
+            this.onRendered(() => this.doUpdateDropdownTopPositionAndWidth());
         }
 
         isValid(): boolean {
@@ -320,7 +317,7 @@ module api.ui.selector.dropdown {
                 }
             });
 
-            this.dropdownHandle.onClicked((event: any) => {
+            this.dropdownHandle.onClicked(() => {
 
                 if (this.isDropdownShown()) {
                     this.hideDropdown();
@@ -341,14 +338,14 @@ module api.ui.selector.dropdown {
 
             });
 
-            this.input.onDblClicked((event: MouseEvent) => {
+            this.input.onDblClicked(() => {
 
                 if (!this.isDropdownShown()) {
                     this.showDropdown();
                 }
             });
 
-            this.input.onClicked((event: MouseEvent) => {
+            this.input.onClicked(() => {
                 this.giveFocus();
                 this.input.setReadOnly(false);
             });
@@ -357,7 +354,9 @@ module api.ui.selector.dropdown {
                 if (event.which === 9) { // tab
                     this.hideDropdown();
                     return;
-                } else if (event.which === 16 || event.which === 17 || event.which === 18) {  // shift or ctrl or alt
+                }
+
+                if (event.which === 16 || event.which === 17 || event.which === 18) {  // shift or ctrl or alt
                     return;
                 }
 

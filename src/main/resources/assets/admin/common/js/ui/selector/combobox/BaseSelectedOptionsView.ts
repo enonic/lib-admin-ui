@@ -49,9 +49,9 @@ module api.ui.selector.combobox {
                     cursor: 'move',
                     tolerance: 'pointer',
                     placeholder: 'selected-option placeholder',
-                    start: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
-                    update: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui),
-                    stop: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStop()
+                    start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
+                    update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui),
+                    stop: () => this.handleDnDStop()
                 });
             } else {
                 wemjq(this.getHtml()).sortable('destroy');
@@ -127,7 +127,7 @@ module api.ui.selector.combobox {
             return true;
         }
 
-        updateOption(optionToUpdate: api.ui.selector.Option<T>, newOption: api.ui.selector.Option<T>, silent: boolean = false) {
+        updateOption(optionToUpdate: api.ui.selector.Option<T>, newOption: api.ui.selector.Option<T>) {
             api.util.assertNotNull(optionToUpdate, 'optionToRemove cannot be null');
 
             let selectedOption = this.getByOption(optionToUpdate);

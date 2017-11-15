@@ -87,7 +87,7 @@ module api.ui.security.acl {
             return this.maximumOccurrences;
         }
 
-        createSelectedOption(option: Option<UserStoreAccessControlEntry>): SelectedOption<UserStoreAccessControlEntry> {
+        createSelectedOption(_option: Option<UserStoreAccessControlEntry>): SelectedOption<UserStoreAccessControlEntry> {
             throw new Error('Not supported, use createItemView instead');
         }
 
@@ -133,7 +133,7 @@ module api.ui.security.acl {
             return true;
         }
 
-        updateOption(option: Option<UserStoreAccessControlEntry>, newOption: Option<UserStoreAccessControlEntry>) {
+        updateOption(_option: Option<UserStoreAccessControlEntry>, _newOption: Option<UserStoreAccessControlEntry>) {
             //TODO
         }
 
@@ -236,11 +236,11 @@ module api.ui.security.acl {
             });
         }
 
-        onOptionMoved(listener: {(moved: SelectedOption<UserStoreAccessControlEntry>): void;}) {
+        onOptionMoved(_listener: {(moved: SelectedOption<UserStoreAccessControlEntry>): void;}) {
             // must be implemented by children
         }
 
-        unOptionMoved(listener: {(moved: SelectedOption<UserStoreAccessControlEntry>): void;}) {
+        unOptionMoved(_listener: {(moved: SelectedOption<UserStoreAccessControlEntry>): void;}) {
             // must be implemented by children
         }
 

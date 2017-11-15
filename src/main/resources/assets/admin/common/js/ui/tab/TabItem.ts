@@ -41,9 +41,7 @@ module api.ui.tab {
                 this.setFocusable(false);
             }
 
-            this.onClicked((event: MouseEvent) => {
-                this.select();
-            });
+            this.onClicked(() => this.select());
         }
 
         private createRemoveButton() {

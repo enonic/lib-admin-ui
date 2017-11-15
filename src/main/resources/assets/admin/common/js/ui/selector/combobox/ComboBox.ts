@@ -819,15 +819,9 @@ module api.ui.selector.combobox {
             this.onKeyDown(this.handleKeyDown.bind(this));
 
             if (this.selectedOptionsView) {
-                this.selectedOptionsView.onOptionDeselected((event: SelectedOptionEvent<OPTION_DISPLAY_VALUE>) => {
-                    this.handleSelectedOptionRemoved();
-                });
-                this.selectedOptionsView.onOptionSelected((event: SelectedOptionEvent<OPTION_DISPLAY_VALUE>) => {
-                    this.handleSelectedOptionAdded();
-                });
-                this.selectedOptionsView.onOptionMoved((movedOption: SelectedOption<OPTION_DISPLAY_VALUE>) => {
-                    this.handleSelectedOptionMoved();
-                });
+                this.selectedOptionsView.onOptionDeselected(() => this.handleSelectedOptionRemoved());
+                this.selectedOptionsView.onOptionSelected(() => this.handleSelectedOptionAdded());
+                this.selectedOptionsView.onOptionMoved(() => this.handleSelectedOptionMoved());
             }
 
             this.comboBoxDropdown.getDropdownGrid().onRowCountChanged(() => {
@@ -994,7 +988,7 @@ module api.ui.selector.combobox {
             this.refreshValueChanged();
         }
 
-        private handleMultipleSelectionChanged(event: DropdownGridMultipleSelectionEvent) {
+        private handleMultipleSelectionChanged() {
             if (this.isSelectionChanged()) {
                 this.applySelectionsButton.show();
                 this.updateSelectionDelta();

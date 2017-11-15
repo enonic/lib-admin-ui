@@ -17,8 +17,6 @@ module api.content.site.inputtype.authappselector {
 
         private siteConfig: SiteConfig;
 
-        private editClickedListeners: {(event: MouseEvent): void;}[] = [];
-
         private siteConfigFormDisplayedListeners: {(applicationKey: ApplicationKey): void}[] = [];
 
         private formContext: ContentFormContext;
@@ -87,52 +85,45 @@ module api.content.site.inputtype.authappselector {
             this.siteConfig = siteConfig;
         }
 
-        private createEditButton(): api.dom.AEl {
-            let editButton = new api.dom.AEl('edit');
+        protected onEditButtonClicked(e: MouseEvent) {
+            this.initAndOpenConfigureDialog();
 
-            editButton.onClicked((event: MouseEvent) => {
-                this.notifyEditClicked(event);
-                this.initAndOpenConfigureDialog();
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
-            });
-
-            return editButton;
+            return super.onEditButtonClicked(e);
         }
 
         initAndOpenConfigureDialog(comboBoxToUndoSelectionOnCancel?: AuthApplicationComboBox) {
 
-            if (this.application.getAuthForm().getFormItems().length > 0) {
-
-                let tempSiteConfig: SiteConfig = this.makeTemporarySiteConfig();
-
-                let formViewStateOnDialogOpen = this.formView;
-                this.unbindValidationEvent(formViewStateOnDialogOpen);
-
-                this.formView = this.createFormView(tempSiteConfig);
-                this.bindValidationEvent(this.formView);
-
-                let okCallback = () => {
-                    if (!tempSiteConfig.equals(this.siteConfig)) {
-                        this.applyTemporaryConfig(tempSiteConfig);
-                    }
-                };
-
-                let cancelCallback = () => {
-                    this.revertFormViewToGivenState(formViewStateOnDialogOpen);
-                    if (comboBoxToUndoSelectionOnCancel) {
-                        this.undoSelectionOnCancel(comboBoxToUndoSelectionOnCancel);
-                    }
-                };
-
-                let siteConfiguratorDialog = new SiteConfiguratorDialog(this.application,
-                    this.formView,
-                    okCallback,
-                    cancelCallback);
-
-                siteConfiguratorDialog.open();
+            if (this.application.getAuthForm().getFormItems().length == 0) {
+                return;
             }
+
+            let tempSiteConfig: SiteConfig = this.makeTemporarySiteConfig();
+
+            let formViewStateOnDialogOpen = this.formView;
+            this.unbindValidationEvent(formViewStateOnDialogOpen);
+
+            this.formView = this.createFormView(tempSiteConfig);
+            this.bindValidationEvent(this.formView);
+
+            let okCallback = () => {
+                if (!tempSiteConfig.equals(this.siteConfig)) {
+                    this.applyTemporaryConfig(tempSiteConfig);
+                }
+            };
+
+            let cancelCallback = () => {
+                this.revertFormViewToGivenState(formViewStateOnDialogOpen);
+                if (comboBoxToUndoSelectionOnCancel) {
+                    this.undoSelectionOnCancel(comboBoxToUndoSelectionOnCancel);
+                }
+            };
+
+            let siteConfiguratorDialog = new SiteConfiguratorDialog(this.application,
+                this.formView,
+                okCallback,
+                cancelCallback);
+
+            siteConfiguratorDialog.open();
         }
 
         private revertFormViewToGivenState(formViewStateToRevertTo: FormView) {
@@ -199,22 +190,6 @@ module api.content.site.inputtype.authappselector {
 
         getFormView(): FormView {
             return this.formView;
-        }
-
-        onEditClicked(listener: (event: MouseEvent) => void) {
-            this.editClickedListeners.push(listener);
-        }
-
-        unEditClicked(listener: (event: MouseEvent) => void) {
-            this.editClickedListeners = this.editClickedListeners.filter((curr) => {
-                return listener !== curr;
-            });
-        }
-
-        private notifyEditClicked(event: MouseEvent) {
-            this.editClickedListeners.forEach((listener) => {
-                listener(event);
-            });
         }
 
         onSiteConfigFormDisplayed(listener: {(applicationKey: ApplicationKey): void;}) {

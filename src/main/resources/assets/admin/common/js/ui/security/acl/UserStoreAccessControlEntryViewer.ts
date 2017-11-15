@@ -17,7 +17,7 @@ module api.ui.security.acl {
             return object.getPrincipalTypeName();
         }
 
-        resolveSubName(object: UserStoreAccessControlEntry, relativePath: boolean = false): string {
+        resolveSubName(object: UserStoreAccessControlEntry): string {
             return object.getPrincipalKey().toPath();
         }
 

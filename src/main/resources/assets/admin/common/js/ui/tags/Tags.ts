@@ -90,7 +90,7 @@ module api.ui.tags {
                 }
             });
 
-            this.textInput.onBlur((event: FocusEvent) => {
+            this.textInput.onBlur(() => {
                 this.handleWordCompleted();
                 // when tags are fill line an empty input moves to next line its looks ugly for inactive field
                 // set small input width to leave it on the same line
@@ -98,7 +98,7 @@ module api.ui.tags {
                 this.textInput.getEl().setValue('').setWidthPx(1);
             });
 
-            this.textInput.onFocus((event: FocusEvent) => {
+            this.textInput.onFocus(() => {
                 this.textInput.getEl().setWidth('');
             });
 
@@ -122,11 +122,11 @@ module api.ui.tags {
                 this.textInput.giveFocus();
             });
 
-            this.onTagAdded((event: TagAddedEvent) => {
+            this.onTagAdded(() => {
                 this.refreshDirtyState();
                 this.refreshValueChanged();
             });
-            this.onTagRemoved((event: TagRemovedEvent) => {
+            this.onTagRemoved(() => {
                 this.refreshDirtyState();
                 this.refreshValueChanged();
             });

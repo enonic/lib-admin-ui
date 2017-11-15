@@ -18,7 +18,7 @@ module api.ui.selector.dropdown {
             this.optionValueEl.appendChild(this.objectViewer);
 
             if (!skipExpandOnClick) {
-                this.onClicked((event: MouseEvent)=> {
+                this.onClicked(()=> {
 
                     if (document['selection'] && document['selection'].empty) {
                         document['selection'].empty();

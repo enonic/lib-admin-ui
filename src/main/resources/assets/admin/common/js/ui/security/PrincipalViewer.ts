@@ -20,7 +20,7 @@ module api.ui.security {
             return object.getTypeName();
         }
 
-        resolveSubName(object: Principal, relativePath: boolean = false): string {
+        resolveSubName(object: Principal): string {
             return object.getKey().toPath();
         }
 

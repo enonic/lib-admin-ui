@@ -17,12 +17,10 @@ module api.ui.panel {
                 this.showPanelByIndex(event.getItem().getIndex());
             });
 
-            this.onPanelShown((event: PanelShownEvent) => {
-                this.listenToScroll = true;
-            });
+            this.onPanelShown(() => this.listenToScroll = true);
 
             //
-            this.getScrollable().onScroll((event: MouseEvent) => {
+            this.getScrollable().onScroll(() => {
                 if (this.listenToScroll) {
                     this.updateScrolledNavigationItem();
                 }
@@ -37,7 +35,7 @@ module api.ui.panel {
         private updateScrolledNavigationItem() {
             let scrollTop = this.getScrollable().getHTMLElement().scrollTop;
 
-            let focusVisible = this.isFocusedPanelVisible(scrollTop);
+            let focusVisible = this.isFocusedPanelVisible();
             let scrollIndex = this.getScrolledPanelIndex(scrollTop);
             if (this.scrollIndex !== scrollIndex || this.focusVisible !== focusVisible) {
                 if (focusVisible) {
@@ -50,7 +48,7 @@ module api.ui.panel {
             }
         }
 
-        private isFocusedPanelVisible(scrollTop: number): boolean {
+        private isFocusedPanelVisible(): boolean {
             if (this.focusIndex < 0) {
                 return false;
             }
@@ -95,11 +93,11 @@ module api.ui.panel {
             super.insertPanel(panel, index, panelHeader);
 
             // select corresponding step on focus
-            panel.onFocus((event: FocusEvent) => {
+            panel.onFocus(() => {
                 this.navigator.selectNavigationItem(item.getIndex(), true);
                 this.focusIndex = item.getIndex();
             });
-            panel.onBlur((event: FocusEvent) => {
+            panel.onBlur(() => {
                 this.focusIndex = -1;
                 // Update navigation item according to scroll position
                 this.updateScrolledNavigationItem();

@@ -63,7 +63,7 @@ module api.ui.responsive {
             return this.rangeSize !== this.oldRangeSize;
         }
 
-        setHandler(handler: (item: ResponsiveItem) => void = ((item: ResponsiveItem) => { /* empty */ })) {
+        setHandler(handler: (item: ResponsiveItem) => void) {
             this.handler = handler;
         }
 

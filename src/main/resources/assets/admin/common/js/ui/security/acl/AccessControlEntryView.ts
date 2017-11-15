@@ -25,7 +25,7 @@ module api.ui.security.acl {
 
             this.ace = ace;
 
-            this.setAccessControlEntry(this.ace, true);
+            this.setAccessControlEntry(this.ace);
         }
 
         doLayout(object: Principal) {
@@ -121,7 +121,7 @@ module api.ui.security.acl {
             });
         }
 
-        public setAccessControlEntry(ace: AccessControlEntry, silent?: boolean) {
+        public setAccessControlEntry(ace: AccessControlEntry) {
             this.ace = ace;
 
             let principal: Principal = <Principal>Principal.create().setKey(ace.getPrincipalKey()).setDisplayName(

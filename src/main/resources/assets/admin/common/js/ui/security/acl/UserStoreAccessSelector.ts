@@ -24,7 +24,7 @@ module api.ui.security.acl {
         constructor() {
             super('access-selector');
 
-            UserStoreAccessSelector.OPTIONS.forEach((option: UserStoreAccessSelectorOption, index: number) => {
+            UserStoreAccessSelector.OPTIONS.forEach((option: UserStoreAccessSelectorOption) => {
                 let menuItem = (<TabMenuItemBuilder>new TabMenuItemBuilder().setLabel(option.name)).build();
                 this.addNavigationItem(menuItem);
             });

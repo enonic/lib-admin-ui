@@ -96,21 +96,12 @@ module api.content.site.inputtype.siteconfigurator {
             this.siteConfig = siteConfig;
         }
 
-        private createEditButton(): api.dom.AEl {
-            let editButton = new api.dom.AEl('edit');
+        protected onEditButtonClicked(e: MouseEvent) {
+            this.showConfigureDialog();
 
-            editButton.onClicked((event: MouseEvent) => {
-                if (this.isEditable()) {
-                    this.notifyEditClicked(event);
-                    this.showConfigureDialog();
-                    event.stopPropagation();
-                    event.preventDefault();
-                    return false;
-                }
-            });
-
-            return editButton;
+            return super.onEditButtonClicked(e);
         }
+
         showConfigureDialog() {
 
             if (this.formView) {
@@ -214,22 +205,6 @@ module api.content.site.inputtype.siteconfigurator {
 
         getFormView(): FormView {
             return this.formView;
-        }
-
-        onEditClicked(listener: (event: MouseEvent) => void) {
-            this.editClickedListeners.push(listener);
-        }
-
-        unEditClicked(listener: (event: MouseEvent) => void) {
-            this.editClickedListeners = this.editClickedListeners.filter((curr) => {
-                return listener !== curr;
-            });
-        }
-
-        private notifyEditClicked(event: MouseEvent) {
-            this.editClickedListeners.forEach((listener) => {
-                listener(event);
-            });
         }
 
         onSiteConfigFormDisplayed(listener: {(applicationKey: ApplicationKey): void;}) {

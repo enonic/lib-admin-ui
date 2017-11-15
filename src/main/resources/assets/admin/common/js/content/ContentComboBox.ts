@@ -279,14 +279,12 @@ module api.content {
             return content.getPath().toString();
         }
 
-        protected createEditButton(content: ContentTreeSelectorItem): api.dom.AEl {
-            let editButton = super.createEditButton(content);
-            editButton.onClicked(() => {
-                let model = [api.content.ContentSummaryAndCompareStatus.fromContentSummary(content.getContent())];
-                new api.content.event.EditContentEvent(model).fire();
-            });
+        protected onEditButtonClicked(e: MouseEvent) {
+            let content = this.getOptionDisplayValue().getContent();
+            let model = [api.content.ContentSummaryAndCompareStatus.fromContentSummary(content)];
+            new api.content.event.EditContentEvent(model).fire();
 
-            return editButton;
+            return super.onEditButtonClicked(e);
         }
     }
 

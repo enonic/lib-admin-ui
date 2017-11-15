@@ -22,7 +22,7 @@ module api.ui.selector.dropdown {
         private initLoaderListeners() {
             this.loader.onLoadedData(this.handleLoadedData.bind(this));
 
-            this.loader.onLoadingData((event: api.util.loader.event.LoadingDataEvent) => {
+            this.loader.onLoadingData(() => {
                 this.setEmptyDropdownText(i18n('field.search.inprogress'));
             });
         }
@@ -54,7 +54,7 @@ module api.ui.selector.dropdown {
             return options;
         }
 
-        protected createOption(value: OPTION_DISPLAY_VALUE): Option<OPTION_DISPLAY_VALUE> {
+        protected createOption(_value: OPTION_DISPLAY_VALUE): Option<OPTION_DISPLAY_VALUE> {
             throw new Error('Must be implemented by inheritors');
         }
 
