@@ -7,10 +7,12 @@ module api.app.browse {
     import ActionButton = api.ui.button.ActionButton;
     import BrowseItem = api.app.browse.BrowseItem;
     import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
+    import SplitPanelAlignment = api.ui.panel.SplitPanelAlignment;
+    import SplitPanelUnit = api.ui.panel.SplitPanelUnit;
 
-    export class BrowsePanel<M extends api.Equitable> extends api.ui.panel.Panel implements api.ui.ActionContainer {
-
-        private static SPLIT_PANEL_ALIGNMENT_TRESHOLD: number = 720;
+    export class BrowsePanel<M extends api.Equitable>
+        extends api.ui.panel.Panel
+        implements api.ui.ActionContainer {
 
         protected browseToolbar: api.ui.toolbar.Toolbar;
 
@@ -47,8 +49,7 @@ module api.app.browse {
 
             let selectionChangedHandler = (currentSelection: TreeNode<Object>[],
                                            fullSelection: TreeNode<Object>[],
-                                           highlighted: boolean
-                                                   ) => {
+                                           highlighted: boolean) => {
                 if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
                     this.updateSelectionModeShownItems(currentSelection, fullSelection);
                 }
@@ -176,10 +177,9 @@ module api.app.browse {
                     this.browseItemPanel = this.createBrowseItemPanel();
                 }
                 this.gridAndItemsSplitPanel = new api.ui.panel.SplitPanelBuilder(this.treeGrid, this.browseItemPanel)
-                    .setAlignmentTreshold(BrowsePanel.SPLIT_PANEL_ALIGNMENT_TRESHOLD)
+                    .setAlignment(SplitPanelAlignment.VERTICAL)
+                    .setFirstPanelSize(38, SplitPanelUnit.PERCENT)
                     .build();
-
-                this.gridAndItemsSplitPanel.setFirstPanelSize(38, api.ui.panel.SplitPanelUnit.PERCENT);
 
                 this.browseToolbar.addClass('browse-toolbar');
                 this.gridAndItemsSplitPanel.addClass('content-grid-and-browse-split-panel');
@@ -237,7 +237,7 @@ module api.app.browse {
             return this.browseToolbar.getActions();
         }
 
-        treeNodeToBrowseItem(node: TreeNode<Object>): BrowseItem<M>|null {
+        treeNodeToBrowseItem(node: TreeNode<Object>): BrowseItem<M> | null {
             throw new Error('Must be implemented by inheritors');
         }
 
@@ -339,19 +339,14 @@ module api.app.browse {
         }
 
         private togglePreviewPanelDependingOnScreenSize(item: ResponsiveItem) {
-            if (item.isInRangeOrSmaller(ResponsiveRanges._360_540)) {
-                if (!this.gridAndItemsSplitPanel.isSecondPanelHidden()) {
-                    this.gridAndItemsSplitPanel.hideSecondPanel();
-                }
-            } else if (item.isInRangeOrBigger(ResponsiveRanges._540_720)) {
-                if (this.gridAndItemsSplitPanel.isSecondPanelHidden()) {
-                    this.gridAndItemsSplitPanel.showSecondPanel();
-                }
+            if (item.isInRangeOrSmaller(ResponsiveRanges._540_720) && !this.gridAndItemsSplitPanel.isSecondPanelHidden()) {
+                this.gridAndItemsSplitPanel.hideSecondPanel();
+            } else if (item.isInRangeOrBigger(ResponsiveRanges._720_960) && this.gridAndItemsSplitPanel.isSecondPanelHidden()) {
+                this.gridAndItemsSplitPanel.showSecondPanel();
             }
         }
 
-        private updateSelectionModeShownItems(currentSelection: TreeNode<Object>[],
-                                              fullSelection: TreeNode<Object>[]) {
+        private updateSelectionModeShownItems(currentSelection: TreeNode<Object>[], fullSelection: TreeNode<Object>[]) {
             if (currentSelection.length === fullSelection.length) { // to filter unwanted selection change events
                 let amountOfNodesShown: number = this.treeGrid.getRoot().getCurrentRoot().treeToList().length;
                 if (currentSelection.length === 0 || amountOfNodesShown === 0) { // all items deselected

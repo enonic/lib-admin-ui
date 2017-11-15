@@ -93,6 +93,13 @@ module api.content {
             }
         }
 
+        protected toggleGridOptions(treeMode: boolean) {
+            // May be overridden in deriving class if the grid should
+            // have different settings in different modes
+
+            return false;
+        }
+
         private initTreeModeToggler() {
 
             this.treeModeToggler = new ModeTogglerButton();
@@ -101,6 +108,7 @@ module api.content {
 
             this.treeModeToggler.onActiveChanged(isActive => {
                 this.treegridDropdownEnabled = isActive;
+                this.toggleGridOptions(isActive);
                 this.reload(this.getComboBox().getInput().getValue());
             });
 

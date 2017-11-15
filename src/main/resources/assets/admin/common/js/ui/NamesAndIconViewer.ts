@@ -45,6 +45,11 @@ module api.ui {
                 const displayName = this.resolveDisplayName(object) || this.normalizeDisplayName(this.resolveUnnamedDisplayName(object));
                 const subName = this.resolveSubName(object, this.relativePath) || api.content.ContentUnnamed.prettifyUnnamed();
                 const subTitle = this.resolveSubTitle(object);
+                const hint = this.resolveHint(object);
+
+                if (!api.util.StringHelper.isBlank(hint)) {
+                    this.getEl().setAttribute('title', hint);
+                }
 
                 let iconUrl;
                 let iconClass;
@@ -78,6 +83,10 @@ module api.ui {
             } else {
                 return api.content.ContentUnnamed.prettifyUnnamed(displayName);
             }
+        }
+
+        resolveHint(object: OBJECT): string {
+            return '';
         }
 
         resolveDisplayName(object: OBJECT): string {
