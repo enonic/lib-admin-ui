@@ -28,7 +28,7 @@ module api.app.browse.filter {
             });
         }
 
-        clear(silent?: boolean) {
+        clear() {
             window.clearTimeout(this.timerId);
             this.setValue('', true);
         }

@@ -53,9 +53,7 @@ module api.app.bar {
 
         setAction(action: api.ui.Action) {
             this.addClass('clickable');
-            this.onClicked((event: MouseEvent) => {
-                action.execute();
-            });
+            this.onClicked(() => action.execute());
         }
 
     }
