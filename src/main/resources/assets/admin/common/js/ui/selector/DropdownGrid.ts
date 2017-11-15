@@ -68,6 +68,10 @@ module api.ui.selector {
             this.initGridEventListeners();
         }
 
+        setReadonlyChecker(checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
+            return;
+        }
+
         protected initGridAndData() {
             throw new Error('Must be implemented by inheritors');
         }
