@@ -42,13 +42,13 @@ module api.form.inputtype.support {
                 containment: 'parent',
                 handle: '.drag-control',
                 tolerance: 'pointer',
-                start: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(event, ui),
-                stop: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStop(event, ui),
-                update: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(event, ui)
+                start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
+                stop: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStop(ui),
+                update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui)
             });
         }
 
-        handleDnDStart(event: Event, ui: JQueryUI.SortableUIParams): void {
+        handleDnDStart(ui: JQueryUI.SortableUIParams): void {
 
             let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
             this.draggingIndex = draggedElement.getSiblingIndex();
@@ -56,11 +56,11 @@ module api.form.inputtype.support {
             ui.placeholder.html('Drop form item set here');
         }
 
-        handleDnDStop(event: Event, ui: JQueryUI.SortableUIParams): void {
+        handleDnDStop(_ui: JQueryUI.SortableUIParams): void {
             //override in child classes if needed
         }
 
-        handleDnDUpdate(event: Event, ui: JQueryUI.SortableUIParams) {
+        handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
                 let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
@@ -127,11 +127,11 @@ module api.form.inputtype.support {
             });
         }
 
-        onValueChanged(listener: (event: api.form.inputtype.ValueChangedEvent) => void) {
+        onValueChanged(_listener: (event: api.form.inputtype.ValueChangedEvent) => void) {
             throw new Error('User onOccurrenceValueChanged instead');
         }
 
-        unValueChanged(listener: (event: api.form.inputtype.ValueChangedEvent) => void) {
+        unValueChanged(_listener: (event: api.form.inputtype.ValueChangedEvent) => void) {
             throw new Error('User onOccurrenceValueChanged instead');
         }
 
@@ -169,11 +169,11 @@ module api.form.inputtype.support {
                 setPropertyArray(propertyArray).
                 build();
 
-            this.onAdded((event: api.dom.ElementAddedEvent) => {
+            this.onAdded(() =>
                 this.onOccurrenceAdded(() => {
                     wemjq(this.getHTMLElement()).sortable('refresh');
-                });
-            });
+                })
+            );
 
             return this.inputOccurrences.layout().then(() => {
                 wemjq(this.getHTMLElement()).sortable('refresh');
@@ -198,7 +198,7 @@ module api.form.inputtype.support {
             return this.inputOccurrences.hasValidUserInput(recording);
         }
 
-        hasInputElementValidUserInput(inputElement: api.dom.Element, recording?: api.form.inputtype.InputValidationRecording): boolean {
+        hasInputElementValidUserInput(_inputElement: api.dom.Element, _recording?: api.form.inputtype.InputValidationRecording): boolean {
             throw new Error('Must be implemented by inheritor');
         }
 
@@ -218,7 +218,7 @@ module api.form.inputtype.support {
             this.inputOccurrences.unBlur(listener);
         }
 
-        displayValidationErrors(value: boolean) {
+        displayValidationErrors(_value: boolean) {
             // must be implemented by children
         }
 
@@ -243,7 +243,7 @@ module api.form.inputtype.support {
             return recording;
         }
 
-        protected additionalValidate(recording: api.form.inputtype.InputValidationRecording) {
+        protected additionalValidate(_recording: api.form.inputtype.InputValidationRecording) {
             //Do nothing
         }
 
@@ -274,8 +274,7 @@ module api.form.inputtype.support {
             return property.hasNonNullValue() ? property.getString() : '';
         }
 
-        notifyRequiredContractBroken(state: boolean, index: number) {
-
+        notifyRequiredContractBroken() {
             this.validate(false);
         }
 
@@ -283,19 +282,19 @@ module api.form.inputtype.support {
             return this.input;
         }
 
-        valueBreaksRequiredContract(value: Value): boolean {
+        valueBreaksRequiredContract(_value: Value): boolean {
             throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(_index: number, _property: Property): api.dom.Element {
             throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
         }
 
-        updateInputOccurrenceElement(occurrence: api.dom.Element, property: Property, unchangedOnly?: boolean) {
+        updateInputOccurrenceElement(_occurrence: api.dom.Element, _property: Property, _unchangedOnly?: boolean) {
             throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
         }
 
-        resetInputOccurrenceElement(occurrence: api.dom.Element) {
+        resetInputOccurrenceElement(_occurrence: api.dom.Element) {
             throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
         }
 
@@ -314,11 +313,11 @@ module api.form.inputtype.support {
             return false;
         }
 
-        onEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        onEditContentRequest(_listener: (content: api.content.ContentSummary) => void) {
             // Adapter for InputTypeView method, to be implemented on demand in inheritors
         }
 
-        unEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        unEditContentRequest(_listener: (content: api.content.ContentSummary) => void) {
             // Adapter for InputTypeView method, to be implemented on demand in inheritors
         }
     }

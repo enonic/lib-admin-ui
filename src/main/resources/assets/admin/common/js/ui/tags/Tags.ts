@@ -237,7 +237,7 @@ module api.ui.tags {
             return this.doGetTags().join(';');
         }
 
-        protected doSetValue(value: string, silent: boolean) {
+        protected doSetValue(value: string) {
             this.doClearTags(true);
             value.split(';').forEach((tag) => this.doAddTag(tag, true));
         }

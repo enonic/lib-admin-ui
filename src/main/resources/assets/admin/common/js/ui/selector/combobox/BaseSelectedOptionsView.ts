@@ -49,9 +49,9 @@ module api.ui.selector.combobox {
                     cursor: 'move',
                     tolerance: 'pointer',
                     placeholder: 'selected-option placeholder',
-                    start: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(event, ui),
-                    update: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(event, ui),
-                    stop: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStop(event, ui)
+                    start: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
+                    update: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui),
+                    stop: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStop()
                 });
             } else {
                 wemjq(this.getHtml()).sortable('destroy');
@@ -59,14 +59,14 @@ module api.ui.selector.combobox {
             this.toggleClass('sortable', sortable);
         }
 
-        protected handleDnDStart(event: Event, ui: JQueryUI.SortableUIParams): void {
+        protected handleDnDStart(ui: JQueryUI.SortableUIParams): void {
             this.beforeDragStartedHeight = this.getEl().getHeight();
 
             let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
             this.draggingIndex = draggedElement.getSiblingIndex();
         }
 
-        protected handleDnDUpdate(event: Event, ui: JQueryUI.SortableUIParams) {
+        protected handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
                 let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
@@ -77,7 +77,7 @@ module api.ui.selector.combobox {
             this.draggingIndex = -1;
         }
 
-        protected handleDnDStop(event: Event, ui: JQueryUI.SortableUIParams): void {
+        protected handleDnDStop(): void {
             // must be implemented by children
         }
 

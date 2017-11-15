@@ -29,9 +29,7 @@ module api.ui {
             let checked = value === this.getOriginalValue();
             let radio = new RadioButton(label, value, this.groupName, checked);
 
-            radio.onValueChanged((event: api.ValueChangedEvent) => {
-                this.setValue(this.doGetValue(), false, true);
-            });
+            radio.onValueChanged(() => this.setValue(this.doGetValue(), false, true));
             this.options.push(radio);
             this.appendChild(radio);
         }
@@ -101,7 +99,7 @@ module api.ui {
             return this.radio.getValue();
         }
 
-        protected doSetValue(value: string, silent?: boolean) {
+        protected doSetValue(value: string) {
             if (RadioButton.debug) {
                 console.warn('RadioButton.doSetValue', value);
             }

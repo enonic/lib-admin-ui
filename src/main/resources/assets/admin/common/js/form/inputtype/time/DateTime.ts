@@ -39,12 +39,12 @@ module api.content.form.inputtype.time {
             return super.newInitialValue() || this.valueType.newNullValue();
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(_index: number, property: Property): api.dom.Element {
             if (this.valueType === ValueTypes.DATE_TIME) {
                 return this.createInputAsDateTime(property);
-            } else {
-                return this.createInputAsLocalDateTime(property);
             }
+
+            return this.createInputAsLocalDateTime(property);
         }
 
         updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {

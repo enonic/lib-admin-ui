@@ -234,30 +234,21 @@ module api.form.inputtype.text {
         }
 
         private setupStickyEditorToolbarForInputOccurence(inputOccurence: Element, editorId: string) {
-            let scrollHandler = AppHelper.debounce((e) => {
-                this.updateStickyEditorToolbar(inputOccurence, this.getEditorInfo(editorId));
-            }, 20, false);
+            let scrollHandler = AppHelper.debounce(() =>
+                this.updateStickyEditorToolbar(inputOccurence, this.getEditorInfo(editorId)), 20, false);
 
-            wemjq(this.getHTMLElement()).closest('.form-panel').on('scroll', (event) => {
-                scrollHandler();
-            });
+            wemjq(this.getHTMLElement()).closest('.form-panel').on('scroll', () => scrollHandler());
 
             api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => {
                 this.updateEditorToolbarPos(inputOccurence);
                 this.updateEditorToolbarWidth(inputOccurence, this.getEditorInfo(editorId));
             });
 
-            this.onRemoved((event) => {
-                api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this);
-            });
+            this.onRemoved(() => api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this));
 
-            this.onOccurrenceRendered(() => {
-                this.resetInputHeight();
-            });
+            this.onOccurrenceRendered(() => this.resetInputHeight());
 
-            this.onOccurrenceRemoved(() => {
-                this.resetInputHeight();
-            });
+            this.onOccurrenceRemoved(() => this.resetInputHeight());
         }
 
         private updateStickyEditorToolbar(inputOccurence: Element, editorInfo: HtmlAreaOccurrenceInfo) {
@@ -368,7 +359,7 @@ module api.form.inputtype.text {
             return value.isNull() || !value.getType().equals(ValueTypes.STRING) || api.util.StringHelper.isBlank(value.getString());
         }
 
-        hasInputElementValidUserInput(inputElement: api.dom.Element) {
+        hasInputElementValidUserInput(_inputElement: api.dom.Element) {
 
             // TODO
             return true;
@@ -378,8 +369,8 @@ module api.form.inputtype.text {
             wemjq(inputOccurence.getHTMLElement()).find('iframe').removeAttr('title');
         }
 
-        handleDnDStart(event: Event, ui: JQueryUI.SortableUIParams): void {
-            super.handleDnDStart(event, ui);
+        handleDnDStart(ui: JQueryUI.SortableUIParams): void {
+            super.handleDnDStart(ui);
 
             let editorId = wemjq('textarea', ui.item)[0].id;
             this.destroyEditor(editorId);
@@ -395,7 +386,7 @@ module api.form.inputtype.text {
             });
         }
 
-        handleDnDStop(event: Event, ui: JQueryUI.SortableUIParams): void {
+        handleDnDStop(ui: JQueryUI.SortableUIParams): void {
             let editorId = wemjq('textarea', ui.item)[0].id;
 
             this.reInitEditor(editorId);

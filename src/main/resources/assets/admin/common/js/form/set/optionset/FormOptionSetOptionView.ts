@@ -163,7 +163,7 @@ module api.form {
 
         private getThisPropertyFromSelectedOptionsArray(): Property {
             let result: Property = null;
-            this.getSelectedOptionsArray().forEach((property: api.data.Property, i: number) => {
+            this.getSelectedOptionsArray().forEach((property: api.data.Property) => {
                 if (property.getString() === this.getName()) {
                     result = property;
                 }
@@ -342,7 +342,7 @@ module api.form {
 
             wemjq(this.getEl().getHTMLElement()).find('.invalid').filter(function () {
                 return regExp.test(this.className);
-            }).each((index, elem) => {
+            }).each((_index, elem) => {
                 wemjq(elem).removeClass('invalid');
                 wemjq(elem).find('.validation-viewer ul').html('');
             });
@@ -360,14 +360,14 @@ module api.form {
 
         private enableFormItems() {
             wemjq(this.getEl().getHTMLElement()).find('.option-items-container input, .option-items-container button').each(
-                (index, elem) => {
+                (_index, elem) => {
                     elem.removeAttribute('disabled');
                 });
         }
 
         private disableFormItems() {
             wemjq(this.getEl().getHTMLElement()).find('.option-items-container input, .option-items-container button').each(
-                (index, elem) => {
+                (_index, elem) => {
                     elem.setAttribute('disabled', 'true');
                 });
         }

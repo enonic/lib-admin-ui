@@ -19,7 +19,7 @@ module api.content.form.inputtype.time {
             return super.newInitialValue() || ValueTypes.LOCAL_TIME.newNullValue();
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(_index: number, property: Property): api.dom.Element {
             if (!ValueTypes.LOCAL_TIME.equals(property.getType())) {
                 property.convertValueType(ValueTypes.LOCAL_TIME);
             }

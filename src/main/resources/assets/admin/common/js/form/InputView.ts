@@ -110,9 +110,7 @@ module api.form {
 
                     this.addButton = new api.ui.button.Button(i18n('action.add'));
                     this.addButton.addClass('small');
-                    this.addButton.onClicked((event: MouseEvent) => {
-                        inputTypeViewNotManagingAdd.createAndAddOccurrence();
-                    });
+                    this.addButton.onClicked(() => inputTypeViewNotManagingAdd.createAndAddOccurrence());
 
                     this.bottomButtonRow = new api.dom.DivEl('bottom-button-row');
                     this.appendChild(this.bottomButtonRow);
@@ -182,10 +180,10 @@ module api.form {
 
             if (inputtype.InputTypeManager.isRegistered(inputType.getName())) {
                 return inputtype.InputTypeManager.createView(inputType.getName(), inputTypeViewContext);
-            } else {
-                console.warn('Input type [' + inputType.getName() + '] needs to be registered first.');
-                return inputtype.InputTypeManager.createView('NoInputTypeFound', inputTypeViewContext);
             }
+
+            console.warn('Input type [' + inputType.getName() + '] needs to be registered first.');
+            return inputtype.InputTypeManager.createView('NoInputTypeFound', inputTypeViewContext);
         }
 
         broadcastFormSizeChanged() {

@@ -31,7 +31,7 @@ module api.form.inputtype.text {
 
             if (NumberHelper.isNumber(this.maxLength)) {
 
-                inputEl.onValueChanged((event: api.ValueChangedEvent) => {
+                inputEl.onValueChanged(() => {
                     const lengthCounter = Element.fromHtmlElement(
                         (<HTMLElement>inputEl.getParentElement().getHTMLElement().querySelector('.length-counter')));
                     if (lengthCounter) {
@@ -60,7 +60,7 @@ module api.form.inputtype.text {
             lengthCounter.setHtml(`${this.maxLength - newValue.length}`);
         }
 
-        protected isValid(value: string, textInput: FormInputEl, silent: boolean = false,
+        protected isValid(value: string, _textInput: FormInputEl, _silent: boolean = false,
                           recording?: api.form.inputtype.InputValidationRecording): boolean {
             const lengthValid = this.isValidMaxLength(value);
 

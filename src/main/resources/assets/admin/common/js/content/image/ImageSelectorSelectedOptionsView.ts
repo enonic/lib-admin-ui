@@ -56,8 +56,7 @@ module api.content.image {
             });
         }
 
-        protected handleDnDStop(event: Event, ui: JQueryUI.SortableUIParams): void {
-            super.handleDnDStop(event, ui);
+        protected handleDnDStop(): void {
             this.temporarilyDisableClickEvent(); //FF triggers unwanted click event after dragging sortable
         }
 

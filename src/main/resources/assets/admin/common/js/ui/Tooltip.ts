@@ -55,12 +55,8 @@ module api.ui {
             this.hideTimeout = hideTimeout;
             this.side = Tooltip.SIDE_BOTTOM;
 
-            this.overListener = (event: MouseEvent) => {
-                this.startShowDelay();
-            };
-            this.outListener = (event: MouseEvent) => {
-                this.startHideTimeout();
-            };
+            this.overListener = () => this.startShowDelay();
+            this.outListener = () => this.startHideTimeout();
             this.moveListener = (event: MouseEvent) => {
                 if (this.tooltipEl && this.tooltipEl.isVisible()) {
                     this.positionAtMouse(event);

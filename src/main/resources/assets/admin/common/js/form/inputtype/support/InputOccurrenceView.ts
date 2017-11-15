@@ -54,7 +54,7 @@ module api.form.inputtype.support {
 
                 if (this.requiredContractBroken !== newStateOfRequiredContractBroken) {
                     this.requiredContractBroken = newStateOfRequiredContractBroken;
-                    this.inputTypeView.notifyRequiredContractBroken(newStateOfRequiredContractBroken, inputOccurrence.getIndex());
+                    this.inputTypeView.notifyRequiredContractBroken();
                 }
 
                 if (!ignorePropertyChange) {

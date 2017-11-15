@@ -24,7 +24,7 @@ module api.form.inputtype.support {
             return super.layout(input, property);
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(_index: number, property: Property): api.dom.Element {
 
             let inputEl = api.ui.text.TextInput.middle();
             inputEl.setName(this.getInput().getName());
@@ -58,7 +58,7 @@ module api.form.inputtype.support {
                    api.util.StringHelper.isBlank(value.getString());
         }
 
-        hasInputElementValidUserInput(inputElement: api.dom.Element) {
+        hasInputElementValidUserInput(_inputElement: api.dom.Element) {
 
             // TODO
             return true;

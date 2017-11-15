@@ -168,7 +168,7 @@ module api.ui.image {
                 }
             };
 
-            let onLoaded = (event: UIEvent) => {
+            let onLoaded = () => {
                 // check that real image has been loaded
                 if (this.isImageLoaded()) {
                     if (this.isVisible()) {
@@ -237,9 +237,9 @@ module api.ui.image {
             this.stickyToolbar = this.createStickyToolbar();
             this.appendChildren(this.stickyToolbar, this.frame);
 
-            let scrollListener = (event) => this.updateStickyToolbar();
+            let scrollListener = () => this.updateStickyToolbar();
 
-            this.onAdded((event: api.dom.ElementAddedEvent) => {
+            this.onAdded(() => {
                 // sticky toolbar needs to have access to parent elements
                 wemjq(this.getHTMLElement()).closest(this.SCROLLABLE_SELECTOR).bind('scroll', scrollListener);
             });
@@ -648,7 +648,7 @@ module api.ui.image {
                 api.dom.Body.get().onMouseWheel(this.maskWheelListener);
 
                 if (!this.maskHideListener) {
-                    this.maskHideListener = (event: api.dom.ElementHiddenEvent) => {
+                    this.maskHideListener = () => {
                         api.dom.Body.get().unClicked(this.maskClickListener);
                         api.dom.Body.get().unMouseWheel(this.maskWheelListener);
                         bodyMask.unHidden(this.maskHideListener);
@@ -777,7 +777,7 @@ module api.ui.image {
                 resetButton.setVisible(isEditorDirty());
             });
 
-            this.onOrientationChanged((orientation) => {
+            this.onOrientationChanged(() => {
                 resetButton.setVisible(isEditorDirty());
             });
 

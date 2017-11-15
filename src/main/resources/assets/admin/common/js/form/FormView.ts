@@ -105,7 +105,7 @@ module api.form {
                     });
                 });
 
-                api.dom.WindowDOM.get().onResized((event: UIEvent) => this.checkSizeChanges(), this);
+                api.dom.WindowDOM.get().onResized(() => this.checkSizeChanges(), this);
                 this.onShown(() => this.checkSizeChanges());
 
             }).catch((reason: any) => {

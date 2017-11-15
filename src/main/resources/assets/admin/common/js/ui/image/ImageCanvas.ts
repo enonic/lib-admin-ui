@@ -25,7 +25,7 @@ module api.ui.image {
 
             this.image = image;
 
-            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item: api.ui.responsive.ResponsiveItem) => {
+            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => {
                 console.group('on size changed');
                 if (this.enabled) {
                     this.recalculateHeight(true, false);
@@ -34,7 +34,7 @@ module api.ui.image {
                 console.groupEnd();
             });
 
-            image.onLoaded((event: UIEvent) => {
+            image.onLoaded(() => {
                 console.group('on image loaded');
                 if (this.enabled) {
                     this.recalculateHeight(false, true);
@@ -72,7 +72,7 @@ module api.ui.image {
                 }
             });
 
-            let stopDrag = (event: MouseEvent) => {
+            let stopDrag = () => {
                 prev = undefined;
                 this.removeClass('dragging');
             };

@@ -154,7 +154,7 @@ module api.form.inputtype.support {
             return true;
         }
 
-        displayValidationErrors(value: boolean) {
+        displayValidationErrors(_value: boolean) {
             // must be implemented by children
         }
 
@@ -226,11 +226,11 @@ module api.form.inputtype.support {
             throw new Error('Must be overridden by inheritor: ' + api.ClassHelper.getClassName(this));
         }
 
-        onEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        onEditContentRequest(_listener: (content: api.content.ContentSummary) => void) {
             // Have to use stub here because it doesn't extend BaseInputTypeView
         }
 
-        unEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        unEditContentRequest(_listener: (content: api.content.ContentSummary) => void) {
             // Have to use stub here because it doesn't extend BaseInputTypeView
         }
 

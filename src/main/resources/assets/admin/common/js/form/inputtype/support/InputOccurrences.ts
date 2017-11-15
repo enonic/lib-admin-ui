@@ -91,7 +91,7 @@ module api.form.inputtype.support {
         protected constructOccurrencesForData(): api.form.FormItemOccurrence<InputOccurrenceView>[] {
             let occurrences: api.form.FormItemOccurrence<InputOccurrenceView>[] = [];
 
-            this.propertyArray.forEach((property: Property, index: number) => {
+            this.propertyArray.forEach((_property: Property, index: number) => {
                 occurrences.push(this.createNewOccurrence(this, index));
             });
 

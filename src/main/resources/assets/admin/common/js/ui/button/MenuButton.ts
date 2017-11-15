@@ -88,7 +88,7 @@ module api.ui.button {
             api.util.AppHelper.focusInOut(this, hideMenu);
         }
 
-        private hideMenu(event: MouseEvent): void {
+        private hideMenu(): void {
             this.menu.removeClass('expanded');
             this.dropdownHandle.removeClass('down');
         }

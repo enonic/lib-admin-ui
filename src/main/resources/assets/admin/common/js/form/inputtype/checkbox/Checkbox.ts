@@ -78,7 +78,7 @@ module api.content.form.inputtype.checkbox {
             return this.checkbox.giveFocus();
         }
 
-        validate(silent: boolean = true): api.form.inputtype.InputValidationRecording {
+        validate(): api.form.inputtype.InputValidationRecording {
 
             return new api.form.inputtype.InputValidationRecording();
         }

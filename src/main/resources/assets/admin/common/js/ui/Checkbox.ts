@@ -72,7 +72,7 @@ module api.ui {
             return String(this.checkbox.getHTMLElement()['checked']);
         }
 
-        setValue(value: string, silent?: boolean): Checkbox {
+        setValue(value: string): Checkbox {
             if (Checkbox.debug) {
                 console.warn('Checkbox.setValue sets the value attribute, you may have wanted to use setChecked instead');
             }

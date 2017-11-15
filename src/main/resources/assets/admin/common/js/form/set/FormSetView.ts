@@ -53,9 +53,9 @@ module api.form {
                 tolerance: 'pointer',
                 handle: '.drag-control',
                 placeholder: this.classPrefix + '-drop-target-placeholder',
-                helper: (event, ui) => api.ui.DragHelper.get().getHTMLElement(),
-                start: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(event, ui),
-                update: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(event, ui)
+                helper: () => api.ui.DragHelper.get().getHTMLElement(),
+                start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
+                update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui)
             });
 
             this.appendChild(this.occurrenceViewsContainer);
@@ -122,7 +122,7 @@ module api.form {
         private makeAddButton(): api.ui.button.Button {
             let addButton = new api.ui.button.Button(i18n('button.add', this.formSet.getLabel()));
             addButton.addClass('small');
-            addButton.onClicked((event: MouseEvent) => {
+            addButton.onClicked(() => {
                 this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), false);
                 if ((<FormSetOccurrences<V>> this.formItemOccurrences).isCollapsed()) {
                     this.collapseButton.getHTMLElement().click();
@@ -323,7 +323,7 @@ module api.form {
             }
         }
 
-        protected handleDnDStart(event: Event, ui: JQueryUI.SortableUIParams): void {
+        protected handleDnDStart(ui: JQueryUI.SortableUIParams): void {
             let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
             api.util.assert(draggedElement.hasClass(this.classPrefix + '-occurrence-view'));
             this.draggingIndex = draggedElement.getSiblingIndex();
@@ -332,7 +332,7 @@ module api.form {
             ui.placeholder.html('Drop form item set here');
         }
 
-        protected handleDnDUpdate(event: Event, ui: JQueryUI.SortableUIParams) {
+        protected handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
                 let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
