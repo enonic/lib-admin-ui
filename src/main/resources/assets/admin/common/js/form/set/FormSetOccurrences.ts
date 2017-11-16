@@ -65,7 +65,7 @@ module api.form {
         protected constructOccurrencesForData(): FormItemOccurrence<V>[] {
             let occurrences: FormItemOccurrence<V>[] = [];
 
-            this.propertyArray.forEach((property: Property, index: number) => {
+            this.propertyArray.forEach((_property: Property, index: number) => {
                 occurrences.push(this.createNewOccurrence(this, index));
             });
 
@@ -92,7 +92,7 @@ module api.form {
         }
 
         updateOccurrenceView(occurrenceView: FormSetOccurrenceView, propertyArray: PropertyArray,
-                             unchangedOnly?: boolean): wemQ.Promise<void> {
+                             _unchangedOnly?: boolean): wemQ.Promise<void> {
             this.propertyArray = propertyArray;
 
             return occurrenceView.update(propertyArray);

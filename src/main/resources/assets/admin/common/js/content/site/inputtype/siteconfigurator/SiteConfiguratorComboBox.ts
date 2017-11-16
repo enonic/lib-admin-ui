@@ -1,16 +1,11 @@
 module api.content.site.inputtype.siteconfigurator {
-
-    import Property = api.data.Property;
-    import PropertyTree = api.data.PropertyTree;
     import Application = api.application.Application;
     import ApplicationKey = api.application.ApplicationKey;
 
     import ApplicationViewer = api.application.ApplicationViewer;
     import SiteApplicationLoader = api.application.SiteApplicationLoader;
     import FormView = api.form.FormView;
-    import Option = api.ui.selector.Option;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import SelectedOptionView = api.ui.selector.combobox.SelectedOptionView;
 
     export class SiteConfiguratorComboBox extends api.ui.selector.combobox.RichComboBox<Application> {
 

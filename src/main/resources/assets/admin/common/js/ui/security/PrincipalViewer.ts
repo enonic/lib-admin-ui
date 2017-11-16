@@ -2,7 +2,6 @@ module api.ui.security {
 
     import Principal = api.security.Principal;
     import PrincipalType = api.security.PrincipalType;
-    import SpanEl = api.dom.SpanEl;
     import User = api.security.User;
 
     export class PrincipalViewer extends api.ui.NamesAndIconViewer<Principal> {
@@ -21,7 +20,7 @@ module api.ui.security {
             return object.getTypeName();
         }
 
-        resolveSubName(object: Principal, relativePath: boolean = false): string {
+        resolveSubName(object: Principal): string {
             return object.getKey().toPath();
         }
 

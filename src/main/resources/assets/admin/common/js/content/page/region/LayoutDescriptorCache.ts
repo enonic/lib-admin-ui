@@ -1,8 +1,5 @@
 module api.content.page.region {
-
-    import Application = api.application.Application;
     import ApplicationKey = api.application.ApplicationKey;
-    import ApplicationCaches = api.application.ApplicationCaches;
     import ApplicationBasedCache = api.application.ApplicationBasedCache;
     import DescriptorKey = api.content.page.DescriptorKey;
 
@@ -28,7 +25,7 @@ module api.content.page.region {
             super();
         }
 
-        loadByApplication(applicationKey: ApplicationKey) {
+        protected loadByApplication(applicationKey: ApplicationKey) {
             new GetLayoutDescriptorsByApplicationRequest(applicationKey).sendAndParse().catch((reason: any) => {
                 api.DefaultErrorHandler.handle(reason);
             }).done();

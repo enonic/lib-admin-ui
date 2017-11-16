@@ -2,9 +2,6 @@ module api.util.htmlarea.dialog {
 
     import FormItem = api.ui.form.FormItem;
     import Validators = api.ui.form.Validators;
-    import Panel = api.ui.panel.Panel;
-    import MacroDescriptor = api.macro.MacroDescriptor;
-    import FormContext = api.form.FormContext;
     import ApplicationKey = api.application.ApplicationKey;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
@@ -126,7 +123,7 @@ module api.util.htmlarea.dialog {
 
         private insertMacroIntoTextArea(): void {
             this.macroDockedPanel.getMacroPreviewString().then((macroString: string) => {
-                let macro = this.callback(api.util.StringHelper.escapeHtml(macroString));
+                this.callback(api.util.StringHelper.escapeHtml(macroString));
                 this.close();
             }).catch((reason: any) => {
                 api.DefaultErrorHandler.handle(reason);

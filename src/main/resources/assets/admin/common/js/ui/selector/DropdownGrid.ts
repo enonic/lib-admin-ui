@@ -69,11 +69,7 @@ module api.ui.selector {
             this.initGridEventListeners();
         }
 
-        setReadonlyChecker(checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
-            return;
-        }
-
-        presetDefaultOption(data: OPTION_DISPLAY_VALUE) {
+        setReadonlyChecker(_checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
             return;
         }
 
@@ -117,7 +113,7 @@ module api.ui.selector {
                 return false;
             });
 
-            this.getGrid().subscribeOnSelectedRowsChanged((e, args) => {
+            this.getGrid().subscribeOnSelectedRowsChanged((_e, args) => {
                 this.notifyMultipleSelection(args.rows);
             });
         }
@@ -161,7 +157,7 @@ module api.ui.selector {
 
         protected createColumns(): api.ui.grid.GridColumn<any>[] {
             let columnFormatter =
-                (row: number, cell: number, value: OPTION_DISPLAY_VALUE, columnDef: any, dataContext: Option<OPTION_DISPLAY_VALUE>) => {
+                (_row: number, _cell: number, value: OPTION_DISPLAY_VALUE, _columnDef: any, _dataContext: Option<OPTION_DISPLAY_VALUE>) => {
                     this.optionDisplayValueViewer.setObject(value);
                     return this.optionDisplayValueViewer.toString();
                 };

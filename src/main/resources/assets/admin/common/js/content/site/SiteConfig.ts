@@ -1,6 +1,4 @@
 module api.content.site {
-
-    import Property = api.data.Property;
     import PropertySet = api.data.PropertySet;
     import PropertyTree = api.data.PropertyTree;
     import ApplicationKey = api.application.ApplicationKey;

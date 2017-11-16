@@ -49,7 +49,7 @@ module api.ui.text {
             input.onBlur((event: FocusEvent) => {
                 this.notifyBlurred(event);
             });
-            input.onInput((event: Event) => {
+            input.onInput(() => {
                 if (this.checkTimeout) {
                     clearTimeout(this.checkTimeout);
                 }
@@ -109,7 +109,7 @@ module api.ui.text {
                     this.updateStatus(available ? 'available' : 'notavailable');
                     this.notifyValidityChanged(isValid && available);
                     this.removeClass('just-shown');
-                }).fail((reason) => {
+                }).fail(() => {
                     this.notifyValidityChanged(false);
                     this.updateStatus('error');
                 }).done();

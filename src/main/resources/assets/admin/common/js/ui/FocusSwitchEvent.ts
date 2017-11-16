@@ -3,14 +3,14 @@ module api.ui {
     import InputTypeView = api.form.inputtype.InputTypeView;
 
     export class FocusSwitchEvent extends api.event.Event {
-        private inputTypeView: InputTypeView<any>;
+        private inputTypeView: InputTypeView;
 
-        constructor(inputTypeView: InputTypeView<any>) {
+        constructor(inputTypeView: InputTypeView) {
             super();
             this.inputTypeView = inputTypeView;
         }
 
-        getInputTypeView(): InputTypeView<any> {
+        getInputTypeView(): InputTypeView {
             return this.inputTypeView;
         }
 

@@ -6,7 +6,7 @@ module api.ui {
             super();
             this.setName(name);
 
-            this.onChange((event: Event) => {
+            this.onChange(() => {
                 this.refreshDirtyState();
                 this.refreshValueChanged();
             });

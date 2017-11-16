@@ -1,7 +1,6 @@
 module api.content.form {
 
     import PropertyPath = api.data.PropertyPath;
-    import PropertyArray = api.data.PropertyArray;
     import FormState = api.app.wizard.FormState;
 
     export class ContentFormContext

@@ -10,7 +10,7 @@ module api.ui.responsive {
 
         // Custom handler will be executed in addition on element update
         static onAvailableSizeChanged(el: api.dom.Element,
-                                      handler: (item: ResponsiveItem) => void = (item: ResponsiveItem) => { /*empty*/ }): ResponsiveItem {
+                                      handler?: (item: ResponsiveItem) => void): ResponsiveItem {
             const responsiveItem: ResponsiveItem = new ResponsiveItem(el, handler);
             let listener = () => {
                 if (el.isVisible()) {
@@ -33,7 +33,7 @@ module api.ui.responsive {
             if (el.isVisible()) {
                 responsiveItem.update();
             } else {
-                let renderedHandler = (event) => {
+                let renderedHandler = () => {
                     responsiveItem.update();
                     el.unShown(renderedHandler); // update needs
                 };

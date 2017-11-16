@@ -22,10 +22,6 @@ module api.content.image {
             this.setKeyEventsHandler(new ImageContentComboboxKeyEventsHandler(this));
         }
 
-        private getItemPerViewportCount(treeMode: boolean) {
-            return treeMode ? 4 : 3;
-        }
-
         getContent(contentId: ContentId): ContentSummary {
             let option = this.getOptionByValue(contentId.toString());
             if (option) {
@@ -39,10 +35,8 @@ module api.content.image {
         }
 
         protected toggleGridOptions(treeMode: boolean) {
-            const viewportHeight = parseInt(this.getComboBox().getComboBoxDropdownGrid().getGrid().getOptions().getHeight(), 10);
             const grid = this.getComboBox().getComboBoxDropdownGrid().getGrid();
 
-            //grid.setOption('rowHeight', viewportHeight / this.getItemPerViewportCount(treeMode));
             grid.getOptions().setRowHeight(treeMode ? 50 : 198)
                 .setEnableGalleryMode(!treeMode)
                 .setGalleryModeColumns(3);

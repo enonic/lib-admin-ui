@@ -1,7 +1,5 @@
 module api.app.bar {
 
-    import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-
     export class TabbedAppBar extends AppBar implements api.ui.ActionContainer {
 
         private tabMenu: AppBarTabMenu;
@@ -13,15 +11,11 @@ module api.app.bar {
 
             this.appendChild(this.tabMenu);
 
-            this.tabMenu.onNavigationItemAdded((event: api.ui.NavigatorEvent) => {
-                this.updateAppOpenTabs();
-            });
-            this.tabMenu.onNavigationItemRemoved((event: api.ui.NavigatorEvent) => {
-                this.updateAppOpenTabs();
-            });
+            this.tabMenu.onNavigationItemAdded(() => this.updateAppOpenTabs());
+            this.tabMenu.onNavigationItemRemoved(() => this.updateAppOpenTabs());
 
             // Responsive events to update homeButton styles
-            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item: api.ui.responsive.ResponsiveItem) => {
+            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => {
                 if (this.tabMenu.countVisible() > 0) {
                     this.addClass('tabs-present');
                 } else {

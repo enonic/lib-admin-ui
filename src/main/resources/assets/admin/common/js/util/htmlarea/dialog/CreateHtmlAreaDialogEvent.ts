@@ -1,6 +1,4 @@
 module api.util.htmlarea.dialog {
-
-    import ContentId = api.content.ContentId;
     import ContentPath = api.content.ContentPath;
     import ContentSummary = api.content.ContentSummary;
     import ApplicationKey = api.application.ApplicationKey;

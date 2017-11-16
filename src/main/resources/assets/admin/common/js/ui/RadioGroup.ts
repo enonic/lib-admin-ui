@@ -29,14 +29,12 @@ module api.ui {
             let checked = value === this.getOriginalValue();
             let radio = new RadioButton(label, value, this.groupName, checked);
 
-            radio.onValueChanged((event: api.ValueChangedEvent) => {
-                this.setValue(this.doGetValue(), false, true);
-            });
+            radio.onValueChanged(() => this.setValue(this.doGetValue(), false, true));
             this.options.push(radio);
             this.appendChild(radio);
         }
 
-        doSetValue(value: string, silent?: boolean): RadioGroup {
+        doSetValue(value: string): RadioGroup {
             let option;
             for (let i = 0; i < this.options.length; i++) {
                 option = this.options[i];
@@ -101,7 +99,7 @@ module api.ui {
             return this.radio.getValue();
         }
 
-        protected doSetValue(value: string, silent?: boolean) {
+        protected doSetValue(value: string) {
             if (RadioButton.debug) {
                 console.warn('RadioButton.doSetValue', value);
             }

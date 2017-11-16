@@ -5,7 +5,6 @@ module api.util.htmlarea.dialog {
     import Action = api.ui.Action;
     import TextInput = api.ui.text.TextInput;
     import Checkbox = api.ui.Checkbox;
-    import ElementHelper = api.dom.ElementHelper;
     import i18n = api.util.i18n;
 
     export class SearchReplaceModalDialog extends ModalDialog {

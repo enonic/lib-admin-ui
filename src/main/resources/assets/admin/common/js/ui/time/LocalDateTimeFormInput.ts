@@ -25,7 +25,7 @@ module api.form {
             return this.localDate.toString();
         }
 
-        protected doSetValue(value: string, silent?: boolean) {
+        protected doSetValue(value: string) {
             this.localDate.setSelectedDateTime(api.util.LocalDateTime.fromString(value).toDate());
         }
 

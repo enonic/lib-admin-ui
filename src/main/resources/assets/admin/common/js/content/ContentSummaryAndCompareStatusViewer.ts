@@ -55,7 +55,7 @@ module api.content {
             return !!contentSummary ? contentSummary.getPath().toString() : '';
         }
 
-        resolveIconClass(object: ContentSummaryAndCompareStatus): string {
+        resolveIconClass(): string {
             return '';
         }
 

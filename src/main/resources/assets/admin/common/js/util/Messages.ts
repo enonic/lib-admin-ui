@@ -13,7 +13,7 @@ module api.util {
             message = messages[key];
         }
 
-        return message.replace(/{(\d+)}/g, function (substring: string, ...replaceArgs: any[]) {
+        return message.replace(/{(\d+)}/g, function (_substring: string, ...replaceArgs: any[]) {
             return args[replaceArgs[0]];
         }).trim();
     }

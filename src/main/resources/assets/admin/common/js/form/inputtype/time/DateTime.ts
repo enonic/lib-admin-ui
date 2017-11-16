@@ -5,14 +5,13 @@ module api.content.form.inputtype.time {
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import Timezone = api.util.Timezone;
     import DateTimePicker = api.ui.time.DateTimePicker;
     import DateTimePickerBuilder = api.ui.time.DateTimePickerBuilder;
 
     /**
      * Uses [[api.data.ValueType]] [[api.data.ValueTypeLocalDateTime]].
      */
-    export class DateTime extends support.BaseInputTypeNotManagingAdd<Date> {
+    export class DateTime extends support.BaseInputTypeNotManagingAdd {
 
         private withTimezone: boolean = false;
         private valueType: ValueType = ValueTypes.LOCAL_DATE_TIME;
@@ -40,12 +39,12 @@ module api.content.form.inputtype.time {
             return super.newInitialValue() || this.valueType.newNullValue();
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(_index: number, property: Property): api.dom.Element {
             if (this.valueType === ValueTypes.DATE_TIME) {
                 return this.createInputAsDateTime(property);
-            } else {
-                return this.createInputAsLocalDateTime(property);
             }
+
+            return this.createInputAsLocalDateTime(property);
         }
 
         updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {

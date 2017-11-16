@@ -1,7 +1,5 @@
 module api.dom {
 
-    import UriHelper = api.util.UriHelper;
-
     export class IFrameEl extends api.dom.Element {
 
         private loaded: boolean = false;
@@ -11,16 +9,12 @@ module api.dom {
                 setTagName('iframe').
                 setClassName(className));
 
-            this.onLoaded((event: UIEvent) => this.loaded = true);
+            this.onLoaded(() => this.loaded = true);
         }
 
         public setSrc(src: string): api.dom.IFrameEl {
             this.getEl().setAttribute('src', src);
             return this;
-        }
-
-        private getFrameWindowObject(): Window {
-            return (<HTMLIFrameElement>this.getHTMLElement()).contentWindow;
         }
 
         isLoaded() {

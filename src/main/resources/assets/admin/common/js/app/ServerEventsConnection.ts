@@ -46,7 +46,7 @@ module api.app {
         private doConnect(wsUrl: string) {
             this.ws = new WebSocket(wsUrl, 'text');
 
-            this.ws.addEventListener('close', (ev: CloseEvent) => {
+            this.ws.addEventListener('close', () => {
                 clearInterval(this.keepAliveIntervalId);
                 if (ServerEventsConnection.debug) {
                     let m = 'ServerEventsConnection: connection closed to ' + wsUrl;
@@ -89,7 +89,7 @@ module api.app {
                 this.handleServerEvent(jsonEvent);
             });
 
-            this.ws.addEventListener('open', (event: Event) => {
+            this.ws.addEventListener('open', () => {
                 if (ServerEventsConnection.debug) {
                     let m = 'ServerEventsConnection: connection opened to ' + wsUrl;
                     if (this.downTime > 0) {

@@ -1,6 +1,6 @@
 module api.ui.selector {
 
-    export class OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE> {
+    export class OptionFilterInputValueChangedEvent {
 
         private oldValue: string;
 

@@ -1,7 +1,5 @@
 module api.ui.treegrid.actions {
 
-    import Action = api.ui.Action;
-
     export class SelectionController extends Checkbox {
 
         private tooltip: Tooltip;

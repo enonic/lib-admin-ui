@@ -24,11 +24,11 @@ module api.data {
             return Number(value.getObject());
         }
 
-        isValid(value: any): boolean {
+        isValid(_value: any): boolean {
             return true;
         }
 
-        isConvertible(value: string): boolean {
+        isConvertible(_value: string): boolean {
             return true;
         }
 
@@ -55,7 +55,7 @@ module api.data {
             return true;
         }
 
-        valueEquals(a: any, b: any): boolean {
+        valueEquals(_a: any, _b: any): boolean {
             throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
         }
 

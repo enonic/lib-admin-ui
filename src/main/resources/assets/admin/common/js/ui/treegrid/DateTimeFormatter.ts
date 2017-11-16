@@ -2,11 +2,11 @@ module api.ui.treegrid {
 
     export class DateTimeFormatter {
 
-        static format(row:number, cell:number, value:any, columnDef:any, item:any): string {
+        static format(_row: number, _cell: number, value: any, _columnDef: any, _item: any): string {
             return DateTimeFormatter.createHtml(value);
         }
 
-        static formatNoTimestamp(row:number, cell:number, value:any, columnDef:any, item:any): string {
+        static formatNoTimestamp(_row: number, _cell: number, value: any, _columnDef: any, _item: any): string {
             return DateTimeFormatter.createHtmlNoTimestamp(value);
         }
 

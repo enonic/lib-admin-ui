@@ -7,8 +7,6 @@ module api.content.image {
     export class ImageSelectorSelectedOptionsView
         extends api.ui.selector.combobox.BaseSelectedOptionsView<ImageTreeSelectorItem> {
 
-        private numberOfOptionsPerRow: number = 3;
-
         private activeOption: SelectedOption<ImageTreeSelectorItem>;
 
         private selection: SelectedOption<ImageTreeSelectorItem>[] = [];
@@ -58,8 +56,7 @@ module api.content.image {
             });
         }
 
-        protected handleDnDStop(event: Event, ui: JQueryUI.SortableUIParams): void {
-            super.handleDnDStop(event, ui);
+        protected handleDnDStop(): void {
             this.temporarilyDisableClickEvent(); //FF triggers unwanted click event after dragging sortable
         }
 
@@ -222,16 +219,16 @@ module api.content.image {
         }
 
         private handleOptionViewRendered(option: SelectedOption<ImageTreeSelectorItem>, optionView: ImageSelectorSelectedOptionView) {
-            optionView.onClicked((event: MouseEvent) => this.handleOptionViewClicked(option, optionView));
+            optionView.onClicked(() => this.handleOptionViewClicked(option, optionView));
 
             optionView.getCheckbox().onKeyDown((event: KeyboardEvent) => this.handleOptionViewKeyDownEvent(event, option, optionView));
 
-            optionView.getCheckbox().onFocus((event: FocusEvent) => this.setActiveOption(option));
+            optionView.getCheckbox().onFocus(() => this.setActiveOption(option));
 
             optionView.onChecked(
-                (view: ImageSelectorSelectedOptionView, checked: boolean) => this.handleOptionViewChecked(checked, option, optionView));
+                (_view: ImageSelectorSelectedOptionView, checked: boolean) => this.handleOptionViewChecked(checked, option, optionView));
 
-            optionView.getIcon().onLoaded((event: UIEvent) => this.handleOptionViewImageLoaded(optionView));
+            optionView.getIcon().onLoaded(() => this.handleOptionViewImageLoaded(optionView));
 
             if (option.getOption().displayValue.isEmptyContent()) {
                 optionView.showError('No access to image.');
@@ -316,14 +313,6 @@ module api.content.image {
                 };
                 optionView.getIcon().onShown(shownListener);
             }
-        }
-
-        private isFirstInRow(index: number): boolean {
-            return index % this.numberOfOptionsPerRow === 0;
-        }
-
-        private isLastInRow(index: number): boolean {
-            return index % this.numberOfOptionsPerRow === 2;
         }
 
         private isFirst(index: number): boolean {

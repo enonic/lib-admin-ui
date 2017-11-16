@@ -157,7 +157,7 @@ module api.ui {
                 const keys = keyBindings.map(binding => this.getBindingKey(binding));
 
                 const previousKeys: string[] = [];
-                previousMousetraps.forEach((value: KeyBinding, key: string) => {
+                previousMousetraps.forEach((_value: KeyBinding, key: string) => {
                     previousKeys.push(key);
                 });
 

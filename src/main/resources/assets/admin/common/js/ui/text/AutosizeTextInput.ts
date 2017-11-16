@@ -23,15 +23,15 @@ module api.ui.text {
             this.attendant.appendChild(this.clone);
 
             // Update input after input has been shown.
-            this.onShown((event) => this.updateSize());
+            this.onShown(() => this.updateSize());
 
             // Update input width according to current text length.
-            this.onValueChanged((event) => this.updateSize());
+            this.onValueChanged(() => this.updateSize());
 
             // Update input width according to current page size.
-            api.dom.WindowDOM.get().onResized((event: UIEvent) => this.updateSize(), this);
+            api.dom.WindowDOM.get().onResized(() => this.updateSize(), this);
             // Update input width according to current panel size.
-            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item) => this.updateSize());
+            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => this.updateSize());
         }
 
         static large(className?: string, originalValue?: string): AutosizeTextInput {

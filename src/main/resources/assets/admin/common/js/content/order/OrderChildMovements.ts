@@ -1,7 +1,6 @@
 module api.content.order {
 
     import ReorderChildContentJson =  api.content.json.ReorderChildContentJson;
-    import ReorderChildContentsJson =  api.content.json.ReorderChildContentsJson;
 
     export class OrderChildMovements {
 

@@ -2,7 +2,6 @@ module api.content.site {
 
     import Property = api.data.Property;
     import ApplicationKey = api.application.ApplicationKey;
-    import ValueTypes = api.data.ValueTypes;
 
     export class Site extends api.content.Content implements api.Equitable, api.Cloneable {
 

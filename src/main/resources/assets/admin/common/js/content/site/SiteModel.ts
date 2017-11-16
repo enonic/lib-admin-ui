@@ -114,13 +114,6 @@ module api.content.site {
                 });
         }
 
-        private notifyPropertyChanged(property: string, oldValue: any, newValue: any, source: any) {
-            let event = new api.PropertyChangedEvent(property, oldValue, newValue, source);
-            this.propertyChangedListeners.forEach((listener: (event: api.PropertyChangedEvent) => void) => {
-                listener(event);
-            });
-        }
-
         onApplicationAdded(listener: (event: ApplicationAddedEvent) => void) {
             this.applicationAddedListeners.push(listener);
         }

@@ -81,7 +81,7 @@ module api.ui.selector {
                 }
             });
 
-            this.getGrid().subscribeOnSelectedRowsChanged((e, args) => {
+            this.getGrid().subscribeOnSelectedRowsChanged((_e, args) => {
                 this.notifyMultipleSelection(args.rows);
             });
         }
@@ -92,8 +92,8 @@ module api.ui.selector {
         }
 
         protected createColumns(): api.ui.grid.GridColumn<any>[] {
-            let columnFormatter =
-                (row: number, cell: number, value: OPTION_DISPLAY_VALUE, columnDef: any, node: TreeNode<Option<OPTION_DISPLAY_VALUE>>) => {
+            let columnFormatter = (_row: number, _cell: number, value: OPTION_DISPLAY_VALUE, _columnDef: any,
+                                   node: TreeNode<Option<OPTION_DISPLAY_VALUE>>) => {
                     if (value && node.getData().displayValue) {
                         this.optionDisplayValueViewer.setObject(value);
                         return this.optionDisplayValueViewer.toString();

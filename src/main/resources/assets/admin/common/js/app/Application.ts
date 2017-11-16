@@ -19,8 +19,7 @@ module api.app {
         private loadedListeners: {(): void}[] = [];
         private window: Window;
 
-        constructor(id: string, name: string, shortName: string, icon: string, appFrame: api.dom.IFrameEl = null,
-                    iconImage: boolean = false) {
+        constructor(id: string, name: string, shortName: string, icon: string, iconImage: boolean = false) {
             this.id = id;
             this.name = name;
             this.shortName = shortName;

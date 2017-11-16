@@ -1,10 +1,5 @@
 module api.content.resource {
-
-    import CompareContentRequest = api.content.resource.CompareContentRequest;
-    import BatchContentRequest = api.content.resource.BatchContentRequest;
     import ContentResponse = api.content.resource.result.ContentResponse;
-    import CompareContentResults = api.content.resource.result.CompareContentResults;
-    import resolve = Q.resolve;
 
     export class ContentSummaryFetcher {
 

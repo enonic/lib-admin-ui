@@ -5,16 +5,8 @@ module api.content.form.inputtype.tag {
     import ContentQuery = api.content.query.ContentQuery;
     import ContentQueryRequest = api.content.resource.ContentQueryRequest;
     import QueryExpr = api.query.expr.QueryExpr;
-    import FieldExpr = api.query.expr.FieldExpr;
-    import CompareOperator = api.query.expr.CompareOperator;
-    import FunctionExpr = api.query.expr.FunctionExpr;
-    import DynamicConstraintExpr = api.query.expr.DynamicConstraintExpr;
-    import ValueExpr = api.query.expr.ValueExpr;
     import PropertyPath = api.data.PropertyPath;
     import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
 
     export class ContentTagSuggesterBuilder {
 

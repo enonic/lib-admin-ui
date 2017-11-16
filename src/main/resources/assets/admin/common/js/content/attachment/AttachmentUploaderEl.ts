@@ -1,13 +1,8 @@
 module api.content.attachment {
 
-    import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
-    import ValueTypes = api.data.ValueTypes;
-
     import Attachment = api.content.attachment.Attachment;
     import AttachmentJson = api.content.attachment.AttachmentJson;
     import AttachmentBuilder = api.content.attachment.AttachmentBuilder;
-    import SelectionItem = api.app.browse.SelectionItem;
     import i18n = api.util.i18n;
 
     export class AttachmentUploaderEl extends api.ui.uploader.FileUploaderEl<Attachment> {

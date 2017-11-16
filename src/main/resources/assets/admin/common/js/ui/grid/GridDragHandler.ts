@@ -2,10 +2,6 @@ module api.ui.grid {
 
     import Element = api.dom.Element;
     import TreeGrid = api.ui.treegrid.TreeGrid;
-    import TreeNode = api.ui.treegrid.TreeNode;
-
-    import DragHelper = api.ui.DragHelper;
-    import ElementHelper = api.dom.ElementHelper;
 
     export class GridDragHandler<MODEL> {
 
@@ -28,7 +24,7 @@ module api.ui.grid {
             this.contentGrid.getGrid().subscribeMoveRows(this.handleMoveRows.bind(this));
         }
 
-        protected handleDragInit(event: DragEvent, data: DragEventData) {
+        protected handleDragInit(event: DragEvent) {
             event.stopImmediatePropagation();
         }
 
@@ -57,7 +53,7 @@ module api.ui.grid {
             wemjq('.tree-grid ' + gridClasses + ' .slick-viewport').append(wemjq(this.draggableItem.getHTMLElement()));
         }
 
-        protected handleDrag(event: Event, data: DragEventData) {
+        private handleDrag() {
             if (!this.draggableItem) {
                 this.handleDragStart();
             }
@@ -65,13 +61,13 @@ module api.ui.grid {
             this.draggableItem.getEl().setTopPx(top /*- this.rowHeight*//* / 2*/).setZindex(2);
         }
 
-        protected handleDragEnd(event: Event, data: DragEventData) {
+        protected handleDragEnd(_event: Event, _data: DragEventData) {
             this.draggableItem.remove();
             this.draggableItem = null;
             this.contentGrid.refresh();
         }
 
-        protected handleBeforeMoveRows(event: Event, data: DragEventData): boolean {
+        protected handleBeforeMoveRows(_event: Event, data: DragEventData): boolean {
 
             if (!this.draggableItem) {
                 this.handleDragStart();
@@ -105,7 +101,7 @@ module api.ui.grid {
             return true;
         }
 
-        protected handleMoveRows(event: Event, args: DragEventData) {
+        protected handleMoveRows(_event: Event, args: DragEventData) {
             let dataView = this.contentGrid.getGrid().getDataView();
             let draggableRow = args.rows[0];
 
@@ -151,11 +147,11 @@ module api.ui.grid {
             return this.draggableItem;
         }
 
-        protected handleMovements(rowDataId: any, moveBeforeRowDataId: any) {
-            throw new Error('Must be implemented by inheritors');
+        protected handleMovements(_rowDataId: any, _moveBeforeRowDataId: any) {
+            return;
         }
 
-        protected getModelId(model: MODEL): any {
+        protected getModelId(_model: MODEL): any {
             throw new Error('Must be implemented by inheritors');
         }
 

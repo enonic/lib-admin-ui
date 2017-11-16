@@ -78,9 +78,7 @@ module api.ui.time {
         protected handleShownEvent() {
             let onDatePickerShown = this.onDatePickerShown.bind(this);
             DatePickerShownEvent.on(onDatePickerShown);
-            this.onRemoved((event: api.dom.ElementRemovedEvent) => {
-                DatePickerShownEvent.un(onDatePickerShown);
-            });
+            this.onRemoved(() => DatePickerShownEvent.un(onDatePickerShown));
         }
 
         protected initPopup() {

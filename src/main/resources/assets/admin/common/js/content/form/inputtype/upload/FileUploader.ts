@@ -1,15 +1,13 @@
 module api.content.form.inputtype.upload {
 
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
     import UploaderEl = api.ui.uploader.UploaderEl;
     import FileUploaderEl = api.ui.uploader.FileUploaderEl;
 
-    export class FileUploader extends api.form.inputtype.support.BaseInputTypeManagingAdd<string> {
+    export class FileUploader extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         protected config: api.content.form.inputtype.ContentInputTypeViewContext;
         protected uploaderEl: FileUploaderEl<any>;
@@ -85,15 +83,13 @@ module api.content.form.inputtype.upload {
                 this.uploadButton.addClass('upload-button');
                 wrapper.appendChild(this.uploadButton);
 
-                this.uploadButton.onClicked((event: MouseEvent) => {
-                    this.uploaderEl.showFileSelectionDialog();
-                });
+                this.uploadButton.onClicked(() => this.uploaderEl.showFileSelectionDialog());
             }
 
             return wrapper;
         }
 
-        protected createUploader(property: Property): UploaderEl<any> {
+        protected createUploader(): UploaderEl<any> {
             throw new Error('must be implemented in inheritors');
         }
 

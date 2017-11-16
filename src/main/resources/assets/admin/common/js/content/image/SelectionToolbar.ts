@@ -21,16 +21,12 @@ module api.content.image {
 
             this.editButton = new Button('Edit');
             this.editButton.addClass('large edit');
-            this.editButton.onClicked((event: MouseEvent) => {
-                this.notifyEditClicked();
-            });
+            this.editButton.onClicked(() => this.notifyEditClicked());
             this.appendChild(this.editButton);
 
             this.removeButton = new Button('Remove');
             this.removeButton.addClass('large red');
-            this.removeButton.onClicked((event: MouseEvent) => {
-                this.notifyRemoveClicked();
-            });
+            this.removeButton.onClicked(() => this.notifyRemoveClicked());
             this.appendChild(this.removeButton);
         }
 

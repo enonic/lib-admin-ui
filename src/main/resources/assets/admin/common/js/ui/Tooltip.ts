@@ -55,12 +55,8 @@ module api.ui {
             this.hideTimeout = hideTimeout;
             this.side = Tooltip.SIDE_BOTTOM;
 
-            this.overListener = (event: MouseEvent) => {
-                this.startShowDelay();
-            };
-            this.outListener = (event: MouseEvent) => {
-                this.startHideTimeout();
-            };
+            this.overListener = () => this.startShowDelay();
+            this.outListener = () => this.startHideTimeout();
             this.moveListener = (event: MouseEvent) => {
                 if (this.tooltipEl && this.tooltipEl.isVisible()) {
                     this.positionAtMouse(event);
@@ -347,23 +343,6 @@ module api.ui {
                 clearTimeout(this.timeoutTimer);
                 this.timeoutTimer = undefined;
             }
-        }
-
-        private hideOnMouseOut() {
-            let tooltip = this;
-            let mouseMoveListener = (event: MouseEvent) => {
-                let tooltipTargetHtmlElement = tooltip.targetEl.getHTMLElement();
-                for (let element = event.target; element; element = (<any>element).parentNode) {
-                    if (element === tooltipTargetHtmlElement) {
-                        return;
-                    }
-                }
-
-                tooltip.startHideTimeout();
-                api.dom.Body.get().unMouseMove(mouseMoveListener);
-            };
-
-            api.dom.Body.get().onMouseMove(mouseMoveListener);
         }
 
         private getEventName(enter: boolean) {

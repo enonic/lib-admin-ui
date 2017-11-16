@@ -1,10 +1,8 @@
 module api.content {
 
     import AccessControlList = api.security.acl.AccessControlList;
-    import AccessControlEntry = api.security.acl.AccessControlEntry;
     import Property = api.data.Property;
     import PropertyTree = api.data.PropertyTree;
-    import PropertyPath = api.data.PropertyPath;
     import RoleKeys = api.security.RoleKeys;
 
     export class Content extends ContentSummary implements api.Equitable, api.Cloneable {

@@ -37,7 +37,7 @@ module api.app.wizard {
 
         setHeader(header: WizardHeader) {
             this.header = header;
-            this.header.onPropertyChanged((event) => {
+            this.header.onPropertyChanged(() => {
                 this.notifyValidityChanged(this.header.isValid());
             });
         }
