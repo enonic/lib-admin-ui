@@ -991,7 +991,7 @@ module api.ui.treegrid {
          * retrieving a a full data, or for the purpose of the
          * infinite scroll.
          */
-        fetch(_node: TreeNode<DATA>): wemQ.Promise<DATA> {
+        fetch(_node: TreeNode<DATA>, _dataId?: string): wemQ.Promise<DATA> {
             let deferred = wemQ.defer<DATA>();
             // Empty logic
             deferred.resolve(null);
@@ -1297,7 +1297,7 @@ module api.ui.treegrid {
         }
 
         private fetchAndUpdateNodes(nodesToUpdate: TreeNode<DATA>[], dataId?: string): wemQ.Promise<void> {
-            return this.fetch(nodesToUpdate[0])
+            return this.fetch(nodesToUpdate[0], dataId)
                 .then((data: DATA) => {
                     nodesToUpdate.forEach((node) => {
                         if (dataId) {

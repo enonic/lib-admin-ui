@@ -68,7 +68,7 @@ module api.ui.selector {
             this.initGridEventListeners();
         }
 
-        setReadonlyChecker(checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
+        setReadonlyChecker(_checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
             return;
         }
 
