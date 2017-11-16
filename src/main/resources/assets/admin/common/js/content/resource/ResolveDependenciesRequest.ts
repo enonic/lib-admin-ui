@@ -1,25 +1,31 @@
 module api.content.resource {
 
-    import ContentDependencyJson = api.content.json.ContentDependencyJson;
+    export class ResolveDependenciesRequest
+        extends ContentResourceRequest<ResolveDependenciesResultJson, ResolveDependenciesResult> {
 
-    export class ResolveDependenciesRequest extends ContentResourceRequest<ContentDependencyJson, any> {
+        private ids: ContentId[];
 
-        private id: ContentId;
-
-        constructor(contentId: ContentId) {
+        constructor(contentIds: ContentId[]) {
             super();
-            super.setMethod('GET');
-            this.id = contentId;
+            super.setMethod('POST');
+            this.ids = contentIds;
         }
 
         getParams(): Object {
             return {
-                id: this.id.toString()
+                contentIds: this.ids.map(id => id.toString())
             };
         }
 
         getRequestPath(): api.rest.Path {
             return api.rest.Path.fromParent(super.getResourcePath(), 'getDependencies');
+        }
+
+        sendAndParse(): wemQ.Promise<ResolveDependenciesResult> {
+
+            return this.send().then((response: api.rest.JsonResponse<any>) => {
+                return ResolveDependenciesResult.fromJson(response.getResult());
+            });
         }
     }
 }
