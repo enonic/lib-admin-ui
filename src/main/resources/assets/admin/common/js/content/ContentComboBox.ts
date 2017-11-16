@@ -132,14 +132,14 @@ module api.content {
                 if (this.initialTreeEnabledState && StringHelper.isEmpty(event.getNewValue())) {
                     if (!this.treeModeToggler.isActive()) {
                         this.treegridDropdownEnabled = true;
-                        this.treeModeToggler.setActive(true, true);
+                        this.treeModeToggler.setActive(true);
                     }
                     return;
                 }
 
                 if (this.treeModeToggler.isActive()) {
                     this.treegridDropdownEnabled = false;
-                    this.treeModeToggler.setActive(false, true);
+                    this.treeModeToggler.setActive(false);
                 }
 
             });

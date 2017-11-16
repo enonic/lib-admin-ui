@@ -458,7 +458,9 @@ module api.ui.grid {
 
         dragAndDrop: boolean;
 
-        disableCleanupRows: boolean;
+        enableGalleryMode: boolean;
+
+        galleryModeColumns: number;
 
         constructor(builder: GridOptionsBuilder<T>) {
             this.asyncEditorLoading = builder.asyncEditorLoading;
@@ -684,6 +686,14 @@ module api.ui.grid {
             return this.dragAndDrop;
         }
 
+        isEnableGalleryMode(): boolean {
+            return this.enableGalleryMode;
+        }
+
+        getGalleryModeColums(): number {
+            return this.galleryModeColumns;
+        }
+
         setAsyncEditorLoading(asyncEditorLoading: boolean): GridOptions<T> {
             this.asyncEditorLoading = asyncEditorLoading;
             return this;
@@ -904,8 +914,13 @@ module api.ui.grid {
             return this;
         }
 
-        setDisabledCleanupRows(value: boolean): GridOptions<T> {
-            this.disableCleanupRows = value;
+        setEnableGalleryMode(value: boolean): GridOptions<T> {
+            this.enableGalleryMode = value;
+            return this;
+        }
+
+        setGalleryModeColumns(value: number): GridOptions<T> {
+            this.galleryModeColumns = value;
             return this;
         }
     }
