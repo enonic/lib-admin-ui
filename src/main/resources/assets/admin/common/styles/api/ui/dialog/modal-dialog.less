@@ -157,6 +157,27 @@
   .input-view .edit {
     display: none;
   }
+
+  .back-button {
+    float: left;
+    text-decoration: none;
+    cursor: pointer;
+    margin: -14px 0px 0px -14px;
+    height: 32px;
+
+    &:before {
+      color: @admin-font-gray2;
+    }
+
+    &:hover {
+      &:before {
+        color: lighten(@admin-font-gray2, 10%);
+      }
+    }
+
+    .icon-arrow-left();
+    .icon-xlarge();
+  }
 }
 
 .confirmation-dialog {
@@ -181,17 +202,18 @@ body {
   &._0-240, &._240-360, &._360-540, &._540-720 {
     .cancel-button-top {
 
-      top: 16px;
+      top: 0;
       right: 0;
       width: 26px;
       height: 26px;
       line-height: 26px;
       background-color: white;
+      z-index: 1;
 
       &:before, &:after {
         background-color: @admin-font-gray2;
         margin: 0;
-        top: 0;
+        top: 16px;
         left: 0;
         height: 3px;
         width: 15px;

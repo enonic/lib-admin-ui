@@ -15,10 +15,10 @@
 
       .tab-bar-item {
         top: 0;
-        right: 18px;
+        right: 0;
         display: inline;
         border: 0 none;
-        padding: 8px 5px;
+        padding: 7px 5px;
         position: absolute;
 
         &.active {
@@ -45,8 +45,7 @@
       }
 
       .my-issues-filter {
-        margin-left: 15px;
-        margin-right: 15px;
+        margin-right: 20px;
       }
     }
 
@@ -130,6 +129,13 @@
 
   &.masked {
     opacity: 0;
+  }
+
+  @media screen and (max-width: 480px) {
+    .filters {
+      flex-wrap: wrap;
+      max-width: 200px;
+    }
   }
 }
 
