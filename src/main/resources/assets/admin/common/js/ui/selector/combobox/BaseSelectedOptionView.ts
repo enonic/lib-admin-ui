@@ -72,5 +72,19 @@ module api.ui.selector.combobox {
         isEditable(): boolean {
             return this.editable;
         }
+
+        protected onEditButtonClicked(e: MouseEvent): boolean {
+            e.stopPropagation();
+            e.preventDefault();
+
+            return false;
+        }
+
+        protected createEditButton(): api.dom.AEl {
+            let editButton = new api.dom.AEl('edit');
+            editButton.onClicked((event: MouseEvent) => this.onEditButtonClicked(event));
+
+            return editButton;
+        }
     }
 }

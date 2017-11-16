@@ -77,7 +77,6 @@ module api.security.acl {
 
         clone(): UserStoreAccessControlList {
             let result = new UserStoreAccessControlList();
-            let clonedEntries = {};
             this.getEntries().forEach((item) => {
                 let clonedItem = new UserStoreAccessControlEntry(item.getPrincipal().clone(), item.getAccess());
                 result.add(clonedItem);

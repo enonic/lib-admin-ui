@@ -61,7 +61,7 @@ module api.ui {
             this.setChecked(!this.isChecked());
         }
 
-        protected doSetValue(value: string, silent?: boolean) {
+        protected doSetValue(value: string) {
             if (Checkbox.debug) {
                 console.debug('Checkbox.doSetValue: ', value);
             }
@@ -72,7 +72,7 @@ module api.ui {
             return String(this.checkbox.getHTMLElement()['checked']);
         }
 
-        setValue(value: string, silent?: boolean): Checkbox {
+        setValue(value: string): Checkbox {
             if (Checkbox.debug) {
                 console.warn('Checkbox.setValue sets the value attribute, you may have wanted to use setChecked instead');
             }

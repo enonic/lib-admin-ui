@@ -1,16 +1,12 @@
 module api.form.inputtype.combobox {
 
     import PropertyArray = api.data.PropertyArray;
-    import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
 
-    export class ComboBox extends api.form.inputtype.support.BaseInputTypeManagingAdd<string> {
+    export class ComboBox extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         private context: api.form.inputtype.InputTypeViewContext;
 
@@ -102,7 +98,7 @@ module api.form.inputtype.combobox {
                 value: this.getValueFromPropertyArray(propertyArray)
             });
 
-            comboBox.onOptionFilterInputValueChanged((event: api.ui.selector.OptionFilterInputValueChangedEvent<string>) => {
+            comboBox.onOptionFilterInputValueChanged((event: api.ui.selector.OptionFilterInputValueChangedEvent) => {
                 this.comboBox.setFilterArgs({searchString: event.getNewValue()});
             });
             comboBox.onOptionSelected((event: SelectedOptionEvent<string>) => {

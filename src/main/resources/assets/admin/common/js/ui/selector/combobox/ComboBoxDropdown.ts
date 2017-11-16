@@ -1,7 +1,6 @@
 module api.ui.selector.combobox {
 
     import Option = api.ui.selector.Option;
-    import DropdownGridConfig = api.ui.selector.DropdownGridConfig;
 
     export class ComboBoxDropdown<OPTION_DISPLAY_VALUE> extends DropdownList<OPTION_DISPLAY_VALUE> {
 

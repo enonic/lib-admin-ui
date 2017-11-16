@@ -1,7 +1,5 @@
 module api.app.bar {
 
-    import TabMenuItemBuilder = api.ui.tab.TabMenuItemBuilder;
-
     export class AppBarTabMenuItem extends api.ui.tab.TabMenuItem {
 
         private tabId: AppBarTabId;

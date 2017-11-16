@@ -128,7 +128,7 @@ module api.app.browse {
             this.treeGrid.resetFilter();
         }
 
-        protected checkIfItemIsRenderable(browseItem: BrowseItem<M>): wemQ.Promise<boolean> {
+        protected checkIfItemIsRenderable(_browseItem: BrowseItem<M>): wemQ.Promise<boolean> {
             let deferred = wemQ.defer<boolean>();
             deferred.resolve(true);
             return deferred.promise;
@@ -237,11 +237,11 @@ module api.app.browse {
             return this.browseToolbar.getActions();
         }
 
-        treeNodeToBrowseItem(node: TreeNode<Object>): BrowseItem<M> | null {
+        treeNodeToBrowseItem(_node: TreeNode<Object>): BrowseItem<M> | null {
             throw new Error('Must be implemented by inheritors');
         }
 
-        treeNodesToBrowseItems(nodes: TreeNode<Object>[]): BrowseItem<M>[] {
+        treeNodesToBrowseItems(_nodes: TreeNode<Object>[]): BrowseItem<M>[] {
             throw new Error('Must be implemented by inheritors');
         }
 

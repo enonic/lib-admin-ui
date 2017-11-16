@@ -1,7 +1,6 @@
 module api.ui.security.acl {
 
     import Principal = api.security.Principal;
-    import Tooltip = api.ui.Tooltip;
     import User = api.security.User;
 
     export class UserAccessListItemView extends api.ui.Viewer<EffectivePermission> {

@@ -19,7 +19,7 @@ module api.content.form.inputtype.number.double {
             return super.newInitialValue() || ValueTypes.DOUBLE.newNullValue();
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(_index: number, property: Property): api.dom.Element {
             if (!ValueTypes.DOUBLE.equals(property.getType())) {
                 property.convertValueType(ValueTypes.DOUBLE);
             }

@@ -41,7 +41,7 @@ module api.aggregation {
             return this.aggregation.getName();
         }
 
-        deselectFacet(supressEvent?: boolean) {
+        deselectFacet(_supressEvent?: boolean) {
             throw new Error('Must be implemented by inheritor');
         }
 
@@ -53,7 +53,7 @@ module api.aggregation {
             throw new Error('Must be implemented by inheritor');
         }
 
-        update(aggregation: api.aggregation.Aggregation) {
+        update(_aggregation: api.aggregation.Aggregation) {
             throw new Error('Must be implemented by inheritor');
         }
 

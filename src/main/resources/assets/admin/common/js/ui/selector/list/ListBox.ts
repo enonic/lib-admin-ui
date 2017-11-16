@@ -117,11 +117,11 @@ module api.ui.selector.list {
             return this.items.length;
         }
 
-        protected createItemView(item: I, readOnly: boolean): api.dom.Element {
+        protected createItemView(_item: I, _readOnly: boolean): api.dom.Element {
             throw new Error('You must override createListItem to create views for list items');
         }
 
-        protected getItemId(item: I): string {
+        protected getItemId(_item: I): string {
             throw new Error('You must override getItemId to find item views by items');
         }
 

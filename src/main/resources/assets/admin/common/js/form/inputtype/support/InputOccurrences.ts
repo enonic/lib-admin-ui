@@ -2,19 +2,16 @@ module api.form.inputtype.support {
 
     import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
 
     export class InputOccurrencesBuilder {
 
-        baseInputTypeView: BaseInputTypeNotManagingAdd<any>;
+        baseInputTypeView: BaseInputTypeNotManagingAdd;
 
         input: api.form.Input;
 
         propertyArray: PropertyArray;
 
-        setBaseInputTypeView(value: BaseInputTypeNotManagingAdd<any>): InputOccurrencesBuilder {
+        setBaseInputTypeView(value: BaseInputTypeNotManagingAdd): InputOccurrencesBuilder {
             this.baseInputTypeView = value;
             return this;
         }
@@ -39,7 +36,7 @@ module api.form.inputtype.support {
      */
     export class InputOccurrences extends api.form.FormItemOccurrences<InputOccurrenceView> {
 
-        private baseInputTypeView: BaseInputTypeNotManagingAdd<any>;
+        private baseInputTypeView: BaseInputTypeNotManagingAdd;
 
         private input: api.form.Input;
 
@@ -94,7 +91,7 @@ module api.form.inputtype.support {
         protected constructOccurrencesForData(): api.form.FormItemOccurrence<InputOccurrenceView>[] {
             let occurrences: api.form.FormItemOccurrence<InputOccurrenceView>[] = [];
 
-            this.propertyArray.forEach((property: Property, index: number) => {
+            this.propertyArray.forEach((_property: Property, index: number) => {
                 occurrences.push(this.createNewOccurrence(this, index));
             });
 

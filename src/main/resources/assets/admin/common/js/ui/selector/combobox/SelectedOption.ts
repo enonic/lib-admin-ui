@@ -4,8 +4,6 @@ module api.ui.selector.combobox {
 
         private optionView:SelectedOptionView<T>;
 
-        private item:api.ui.selector.Option<T>;
-
         private index:number;
 
         constructor(optionView:SelectedOptionView<T>, index:number) {

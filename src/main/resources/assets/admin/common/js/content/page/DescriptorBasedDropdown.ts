@@ -1,9 +1,6 @@
 module api.content.page.region {
-
-    import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
     import Option = api.ui.selector.Option;
     import DescriptorKey = api.content.page.DescriptorKey;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
     import RichDropdown = api.ui.selector.dropdown.RichDropdown;
 
     export class DescriptorBasedDropdown<DESCRIPTOR extends Descriptor> extends RichDropdown<DESCRIPTOR> {

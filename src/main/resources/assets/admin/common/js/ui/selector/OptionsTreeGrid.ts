@@ -2,9 +2,7 @@ module api.ui.selector {
     import TreeNode = api.ui.treegrid.TreeNode;
     import TreeGrid = api.ui.treegrid.TreeGrid;
     import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import SelectionOnClickType = api.ui.treegrid.SelectionOnClickType;
-    import ContentSelectorQueryRequest = api.content.resource.ContentSelectorQueryRequest;
     import StringHelper = api.util.StringHelper;
 
     export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
@@ -126,7 +124,7 @@ module api.ui.selector {
             // update columns when grid becomes active for the first time
             this.onActiveChanged(onBecameActive);
 
-            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
+            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => {
                 if (this.isInRenderingView()) {
                     this.getGrid().resizeCanvas();
                 }
@@ -145,7 +143,7 @@ module api.ui.selector {
             return !(node.getData() && node.getData().displayValue);
         }
 
-        fetch(node: TreeNode<Option<OPTION_DISPLAY_VALUE>>, dataId?: string): wemQ.Promise<Option<OPTION_DISPLAY_VALUE>> {
+        fetch(node: TreeNode<Option<OPTION_DISPLAY_VALUE>>): wemQ.Promise<Option<OPTION_DISPLAY_VALUE>> {
             return this.loader.fetch(node).then((data: OPTION_DISPLAY_VALUE) => {
                 return this.optionsFactory.createOption(data);
             });

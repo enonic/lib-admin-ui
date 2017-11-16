@@ -4,7 +4,7 @@ module api.content.form.inputtype.number {
     import NumberHelper = api.util.NumberHelper;
     import i18n = api.util.i18n;
 
-    export abstract class NumberInputType extends BaseInputTypeNotManagingAdd<number> {
+    export abstract class NumberInputType extends BaseInputTypeNotManagingAdd {
 
         private min: number = null;
         private max: number = null;

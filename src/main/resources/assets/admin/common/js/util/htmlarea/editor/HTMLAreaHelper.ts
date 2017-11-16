@@ -1,10 +1,5 @@
 module api.util.htmlarea.editor {
-
-    import AnchorModalDialog = api.util.htmlarea.dialog.AnchorModalDialog;
     import ImageModalDialog = api.util.htmlarea.dialog.ImageModalDialog;
-    import LinkModalDialog = api.util.htmlarea.dialog.LinkModalDialog;
-    import HtmlAreaAnchor = api.util.htmlarea.dialog.HtmlAreaAnchor;
-    import HtmlAreaImage = api.util.htmlarea.dialog.HtmlAreaImage;
     import StringHelper = api.util.StringHelper;
 
     export class HTMLAreaHelper {

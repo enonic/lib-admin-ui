@@ -2,13 +2,12 @@ module api.content.form.inputtype.tag {
 
     import PropertyPath = api.data.PropertyPath;
     import PropertyPathElement = api.data.PropertyPathElement;
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
 
-    export class Tag extends api.form.inputtype.support.BaseInputTypeManagingAdd<string> {
+    export class Tag extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         private context: api.content.form.inputtype.ContentInputTypeViewContext;
 

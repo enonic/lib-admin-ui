@@ -25,15 +25,15 @@ module api.form {
             throw new Error('Must be implemented by inheritor');
         }
 
-        public layout(validate: boolean = true): wemQ.Promise<void> {
+        public layout(_validate: boolean = true): wemQ.Promise<void> {
             return wemQ<void>(null);
         }
 
-        public update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
+        public update(_propertyArray: PropertyArray, _unchangedOnly?: boolean): wemQ.Promise<void> {
             return wemQ<void>(null);
         }
 
-        hasValidUserInput(recording?: api.form.inputtype.InputValidationRecording): boolean {
+        hasValidUserInput(_recording?: api.form.inputtype.InputValidationRecording): boolean {
 
             throw new Error('Must be implemented by inheritor');
         }

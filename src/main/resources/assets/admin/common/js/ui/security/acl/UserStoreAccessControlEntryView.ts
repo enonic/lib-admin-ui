@@ -1,9 +1,6 @@
 module api.ui.security.acl {
 
     import Principal = api.security.Principal;
-    import PrincipalType = api.security.PrincipalType;
-    import PrincipalKey = api.security.PrincipalKey;
-    import Permission = api.security.acl.Permission;
     import UserStoreAccessControlEntry = api.security.acl.UserStoreAccessControlEntry;
     import UserStoreAccess = api.security.acl.UserStoreAccess;
 
@@ -29,7 +26,7 @@ module api.ui.security.acl {
                 this.ace.setAccess(UserStoreAccess[UserStoreAccess.CREATE_USERS]);
             }
 
-            this.setUserStoreAccessControlEntry(this.ace, true);
+            this.setUserStoreAccessControlEntry(this.ace);
 
         }
 
@@ -66,7 +63,7 @@ module api.ui.security.acl {
             });
         }
 
-        public setUserStoreAccessControlEntry(ace: UserStoreAccessControlEntry, silent?: boolean) {
+        public setUserStoreAccessControlEntry(ace: UserStoreAccessControlEntry) {
             this.ace = ace;
 
             let principal: Principal = <Principal>Principal.create().setKey(ace.getPrincipal().getKey()).setModifiedTime(

@@ -1,7 +1,4 @@
 module api.ui.uploader {
-
-    import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
     import ValueTypes = api.data.ValueTypes;
 
     export enum MediaUploaderElOperation {

@@ -1,10 +1,5 @@
 module api.form {
-
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
     import PropertySet = api.data.PropertySet;
     import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
     import i18n = api.util.i18n;
@@ -28,7 +23,7 @@ module api.form {
 
         private propertyArray: PropertyArray;
 
-        private inputTypeView: api.form.inputtype.InputTypeView<any>;
+        private inputTypeView: api.form.inputtype.InputTypeView;
 
         private bottomButtonRow: api.dom.DivEl;
 
@@ -99,7 +94,7 @@ module api.form {
 
                 if (!this.inputTypeView.isManagingAdd()) {
 
-                    let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd<any>>this.inputTypeView;
+                    let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
                     inputTypeViewNotManagingAdd.onOccurrenceAdded(() => {
                         this.refreshButtonsState();
                     });
@@ -115,9 +110,7 @@ module api.form {
 
                     this.addButton = new api.ui.button.Button(i18n('action.add'));
                     this.addButton.addClass('small');
-                    this.addButton.onClicked((event: MouseEvent) => {
-                        inputTypeViewNotManagingAdd.createAndAddOccurrence();
-                    });
+                    this.addButton.onClicked(() => inputTypeViewNotManagingAdd.createAndAddOccurrence());
 
                     this.bottomButtonRow = new api.dom.DivEl('bottom-button-row');
                     this.appendChild(this.bottomButtonRow);
@@ -173,11 +166,11 @@ module api.form {
             this.inputTypeView.refresh();
         }
 
-        public getInputTypeView(): api.form.inputtype.InputTypeView<any> {
+        public getInputTypeView(): api.form.inputtype.InputTypeView {
             return this.inputTypeView;
         }
 
-        private createInputTypeView(): api.form.inputtype.InputTypeView<any> {
+        private createInputTypeView(): api.form.inputtype.InputTypeView {
             let inputType: api.form.InputTypeName = this.input.getInputType();
             let inputTypeViewContext = this.getContext().createInputTypeViewContext(
                 this.input.getInputTypeConfig() || {},
@@ -187,10 +180,10 @@ module api.form {
 
             if (inputtype.InputTypeManager.isRegistered(inputType.getName())) {
                 return inputtype.InputTypeManager.createView(inputType.getName(), inputTypeViewContext);
-            } else {
-                console.warn('Input type [' + inputType.getName() + '] needs to be registered first.');
-                return inputtype.InputTypeManager.createView('NoInputTypeFound', inputTypeViewContext);
             }
+
+            console.warn('Input type [' + inputType.getName() + '] needs to be registered first.');
+            return inputtype.InputTypeManager.createView('NoInputTypeFound', inputTypeViewContext);
         }
 
         broadcastFormSizeChanged() {
@@ -201,7 +194,7 @@ module api.form {
 
         private refreshButtonsState(validate: boolean = true) {
             if (!this.inputTypeView.isManagingAdd()) {
-                let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd<any>>this.inputTypeView;
+                let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
                 this.addButton.setVisible(!inputTypeViewNotManagingAdd.maximumOccurrencesReached());
             }
             if (validate) {

@@ -167,7 +167,7 @@ module api.dom {
             if (builder.className) {
                 this.setClass(builder.className);
             }
-            this.onRemoved((event: ElementRemovedEvent) => {
+            this.onRemoved(() => {
                 if (this.getId()) {
                     ElementRegistry.unregisterElement(this);
                 }
@@ -247,24 +247,24 @@ module api.dom {
                 }
             });
 
-            return wemQ.all(childPromises).then((childResults) => {
+            return wemQ.all(childPromises).then(() => {
 
                 if (this.childrenAddedDuringInit) {
                     if (Element.debug) {
                         console.debug('Element.init: initing children that were added during init', api.ClassHelper.getClassName(this));
                     }
                     return this.initChildren(rendered);
-                } else {
-                    if (Element.debug) {
-                        console.log('Element.init done', api.ClassHelper.getClassName(this));
-                    }
-
-                    this.rendering = false;
-                    this.rendered = rendered;
-                    this.notifyRendered();
-
-                    return rendered;
                 }
+
+                if (Element.debug) {
+                    console.log('Element.init done', api.ClassHelper.getClassName(this));
+                }
+
+                this.rendering = false;
+                this.rendered = rendered;
+                this.notifyRendered();
+
+                return rendered;
             }).catch((reason) => {
                 api.DefaultErrorHandler.handle(reason);
                 return false;
@@ -291,7 +291,7 @@ module api.dom {
                         childPromises.push(child.render(deep));
                     });
                 }
-                return wemQ.all(childPromises).then((childResults) => {
+                return wemQ.all(childPromises).then(() => {
                     if (Element.debug) {
                         console.log('Element.render done', api.ClassHelper.getClassName(this));
                     }
@@ -1152,7 +1152,7 @@ module api.dom {
         }
 
         static fromSelector(s: string, loadExistingChildren: boolean = true): Element[] {
-            return wemjq(s).map((index, elem) => {
+            return wemjq(s).map((_index, elem) => {
                 let htmlEl = <HTMLElement> elem;
                 let parentEl;
                 if (htmlEl && htmlEl.parentElement) {

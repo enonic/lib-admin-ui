@@ -53,10 +53,6 @@ module api.form.inputtype.text {
             input.resetBaseValues();
         }
 
-        private newValue(s: string): Value {
-            return new Value(s, ValueTypes.STRING);
-        }
-
         valueBreaksRequiredContract(value: Value): boolean {
             return value.isNull() || !value.getType().equals(ValueTypes.STRING) ||
                    api.util.StringHelper.isBlank(value.getString());

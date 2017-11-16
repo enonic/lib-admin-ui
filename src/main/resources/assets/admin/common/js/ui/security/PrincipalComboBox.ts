@@ -96,7 +96,7 @@ module api.ui.security {
             this.appendChild(removeButton);
         }
 
-        setEditable(editable: boolean) {
+        setEditable(_editable: boolean) {
             // must be implemented by children
         }
 
@@ -118,7 +118,7 @@ module api.ui.security {
             super('principal-selected-options-view');
         }
 
-        createSelectedOption(option: Option<Principal>, isEmpty?: boolean): SelectedOption<Principal> {
+        createSelectedOption(option: Option<Principal>): SelectedOption<Principal> {
             let optionView = !option.empty ? new PrincipalSelectedOptionView(option) : new RemovedPrincipalSelectedOptionView(option);
             return new SelectedOption<Principal>(<any>optionView, this.count());
         }
@@ -144,7 +144,7 @@ module api.ui.security {
             this.addClass('removed');
         }
 
-        resolveSubName(object: Principal, relativePath: boolean = false): string {
+        resolveSubName(): string {
             return 'This user is deleted';
         }
     }
@@ -161,7 +161,7 @@ module api.ui.security {
             this.addClass('principal-selected-option-view-compact');
         }
 
-        setEditable(editable: boolean) {
+        setEditable(_editable: boolean) {
             // must be implemented by children
         }
 
@@ -174,11 +174,11 @@ module api.ui.security {
             return this.option;
         }
 
-        onRemoveClicked(listener: (event: MouseEvent) => void) {
+        onRemoveClicked(_listener: (event: MouseEvent) => void) {
             // to make lint happy
         }
 
-        unRemoveClicked(listener: (event: MouseEvent) => void) {
+        unRemoveClicked(_listener: (event: MouseEvent) => void) {
             // to make lint happy
         }
 
@@ -200,7 +200,7 @@ module api.ui.security {
             });
         }
 
-        createSelectedOption(option: Option<Principal>, isEmpty?: boolean): SelectedOption<Principal> {
+        createSelectedOption(option: Option<Principal>): SelectedOption<Principal> {
             let optionView = new PrincipalSelectedOptionViewCompact(option);
             optionView.setCurrentUser(this.currentUser);
             return new SelectedOption<Principal>(<any>optionView, this.count());

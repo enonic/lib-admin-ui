@@ -1,8 +1,5 @@
 module api.content.page {
-
-    import Application = api.application.Application;
     import ApplicationKey = api.application.ApplicationKey;
-    import ApplicationCaches = api.application.ApplicationCaches;
     import ApplicationBasedCache = api.application.ApplicationBasedCache;
 
     export class PageDescriptorCache extends ApplicationBasedCache<PageDescriptorApplicationCache,PageDescriptor,DescriptorKey> {
@@ -27,7 +24,7 @@ module api.content.page {
             super();
         }
 
-        loadByApplication(applicationKey: ApplicationKey) {
+        protected loadByApplication(applicationKey: ApplicationKey) {
             new GetPageDescriptorsByApplicationRequest(applicationKey).sendAndParse().catch((reason: any) => {
                 api.DefaultErrorHandler.handle(reason);
             }).done();

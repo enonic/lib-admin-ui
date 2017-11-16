@@ -8,9 +8,7 @@ module api.aggregation {
 
             let mask: api.ui.mask.LoadMask = new api.ui.mask.LoadMask(this);
             this.appendChild(mask);
-            this.onRendered((event: api.dom.ElementRenderedEvent) => {
-                mask.show();
-            });
+            this.onRendered(() => mask.show());
 
             let request = new api.schema.content.GetAllContentTypesRequest();
             request.sendAndParse().done((contentTypes: api.schema.content.ContentTypeSummary[]) => {

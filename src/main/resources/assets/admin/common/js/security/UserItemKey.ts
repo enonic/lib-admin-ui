@@ -17,7 +17,7 @@ module api.security {
             return this.id;
         }
 
-        static fromString(str: string): UserItemKey {
+        static fromString(_str: string): UserItemKey {
             throw Error('Override me');
         }
 

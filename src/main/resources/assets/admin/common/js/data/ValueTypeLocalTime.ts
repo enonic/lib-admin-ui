@@ -18,8 +18,6 @@ module api.data {
         }
 
         isConvertible(value: string): boolean {
-
-            let asString = <string>value;
             if (api.util.StringHelper.isBlank(value)) {
                 return false;
             }

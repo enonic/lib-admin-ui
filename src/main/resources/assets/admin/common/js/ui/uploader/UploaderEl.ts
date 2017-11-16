@@ -3,7 +3,6 @@ declare var qq;
 module api.ui.uploader {
 
     import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
     import Element = api.dom.Element;
     import ElementRenderedEvent = api.dom.ElementRenderedEvent;
     import ElementShownEvent = api.dom.ElementShownEvent;
@@ -96,7 +95,7 @@ module api.ui.uploader {
 
             this.initDebouncedUploadStart();
 
-            let initHandlerOnEvent = (event) => {
+            let initHandlerOnEvent = () => {
                 this.initHandler();
 
                 if (this.config.deferred) {
@@ -112,7 +111,7 @@ module api.ui.uploader {
                 this.onRendered(initHandlerOnEvent);
             }
 
-            this.onRemoved((event) => this.destroyHandler());
+            this.onRemoved(() => this.destroyHandler());
         }
 
         private initUploadButton() {
@@ -121,9 +120,7 @@ module api.ui.uploader {
             }
             this.uploadButton = new api.dom.DivEl('upload-button');
             this.uploadButton.setId('upload-button-' + new Date().getTime());
-            this.uploadButton.onClicked((event: MouseEvent) => {
-                this.showFileSelectionDialog();
-            });
+            this.uploadButton.onClicked(() => this.showFileSelectionDialog());
             this.appendChild(this.uploadButton);
         }
 
@@ -144,7 +141,7 @@ module api.ui.uploader {
         private initCancelButton() {
             this.cancelBtn = new Button(i18n('action.cancel'));
             this.cancelBtn.setVisible(this.config.showCancel);
-            this.cancelBtn.onClicked((event: MouseEvent) => {
+            this.cancelBtn.onClicked(() => {
                 this.stop();
                 this.reset();
             });
@@ -255,7 +252,7 @@ module api.ui.uploader {
             return this.value;
         }
 
-        doSetValue(value: string, silent?: boolean): UploaderEl<MODEL> {
+        doSetValue(value: string): UploaderEl<MODEL> {
             if (UploaderEl.debug) {
                 console.log('Setting uploader value', value, this);
             }
@@ -310,11 +307,11 @@ module api.ui.uploader {
             toRemove.forEach((elem: Element) => elem.remove());
         }
 
-        protected refreshExistingItem(existingItem: Element, value: string) {
+        protected refreshExistingItem(_existingItem: Element, _value: string) {
             // must be implemented by children
         }
 
-        protected getExistingItem(value: string): Element {
+        protected getExistingItem(_value: string): Element {
             return null;
         }
 
@@ -334,7 +331,7 @@ module api.ui.uploader {
             return [jsonString];
         }
 
-        createResultItem(value: string): api.dom.Element {
+        createResultItem(_value: string): api.dom.Element {
             throw new Error('Should be overridden by inheritors');
         }
 
@@ -403,11 +400,11 @@ module api.ui.uploader {
             this.resultContainer.setVisible(visible);
         }
 
-        createModel(serverResponse: any): MODEL {
+        createModel(_serverResponse: any): MODEL {
             throw new Error('Should be overridden by inheritors');
         }
 
-        getModelValue(item: MODEL): string {
+        getModelValue(_item: MODEL): string {
             throw new Error('Should be overridden by inheritors');
         }
 
@@ -450,7 +447,7 @@ module api.ui.uploader {
                         if (UploaderEl.debug) {
                             console.log('Deferring enabling uploader until it\' shown', this);
                         }
-                        this.shownInitHandler = (event: ElementShownEvent) => {
+                        this.shownInitHandler = () => {
                             this.initHandler();
                             this.unShown(this.shownInitHandler);
                             this.shownInitHandler = null;
@@ -465,7 +462,7 @@ module api.ui.uploader {
                         if (UploaderEl.debug) {
                             console.log('Deferring enabling uploader until it\' rendered', this);
                         }
-                        this.renderedInitHandler = (event: ElementRenderedEvent) => {
+                        this.renderedInitHandler = () => {
                             this.initHandler();
                             this.unRendered(this.renderedInitHandler);
                             this.renderedInitHandler = null;
@@ -517,14 +514,14 @@ module api.ui.uploader {
             this.debouncedUploadStart();
         }
 
-        private statusChangeCallback(id: number, oldStatus: string, newStatus: string) {
+        private statusChangeCallback(id: number, _oldStatus: string, newStatus: string) {
             let uploadItem = this.findUploadItemById(id);
             if (!!uploadItem) {
                 uploadItem.setStatus(newStatus);
             }
         }
 
-        private progressCallback(id: number, name: string, uploadedBytes: number, totalBytes: number) {
+        private progressCallback(id: number, _name: string, uploadedBytes: number, totalBytes: number) {
             let percent = Math.round(uploadedBytes / totalBytes * 100);
 
             this.progress.setValue(percent);
@@ -536,7 +533,7 @@ module api.ui.uploader {
             }
         }
 
-        private fileCompleteCallback(id: number, name: string, response: any, xhrOrXdr: XMLHttpRequest) {
+        private fileCompleteCallback(id: number, _name: string, response: any, xhrOrXdr: XMLHttpRequest) {
             if (xhrOrXdr && xhrOrXdr.status === 200) {
                 try {
                     let uploadItem = this.findUploadItemById(id);
@@ -551,7 +548,7 @@ module api.ui.uploader {
             }
         }
 
-        private errorCallback(id: number, name: string, errorReason: any, xhrOrXdr: XMLHttpRequest) {
+        private errorCallback(id: number, name: string, _errorReason: any, xhrOrXdr: XMLHttpRequest) {
             if (xhrOrXdr && xhrOrXdr.status !== 200) {
                 try {
                     let responseObj = JSON.parse(xhrOrXdr.response);
@@ -631,7 +628,7 @@ module api.ui.uploader {
                     },
                     callbacks: {
                         //this submits the dropped files to uploader
-                        processingDroppedFilesComplete: (files, dropTarget) => {
+                        processingDroppedFilesComplete: (files) => {
                             if (!this.isUploading()) {
                                 uploader.addFiles(files);
                             }

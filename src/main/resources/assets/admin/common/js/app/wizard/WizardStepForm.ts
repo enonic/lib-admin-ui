@@ -20,7 +20,7 @@ module api.app.wizard {
         /*
          *   public to be used by inheritors
          */
-        public validate(silent?: boolean): ValidationRecording {
+        public validate(_silent?: boolean): ValidationRecording {
             return new ValidationRecording();
         }
 
@@ -88,8 +88,8 @@ module api.app.wizard {
             });
         }
 
-        toggleHelpText(show?: boolean) {
-            // TO BE IMPLEMENTED BY INHERITORS
+        toggleHelpText(_show?: boolean) {
+            throw new Error('Must be overriden by inheritor');
         }
 
         hasHelpText(): boolean {

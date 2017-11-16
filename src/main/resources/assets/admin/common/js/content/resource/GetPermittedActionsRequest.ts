@@ -1,8 +1,4 @@
 module api.content.resource {
-
-    import AccessControlList = api.security.acl.AccessControlList;
-    import ContentsPermissionsEntryJson = api.content.json.ContentPermissionsJson;
-    import ContentAccessControlList = api.security.acl.ContentAccessControlList;
     import Permission = api.security.acl.Permission;
 
     export class GetPermittedActionsRequest extends ContentResourceRequest<string[], Permission[]> {

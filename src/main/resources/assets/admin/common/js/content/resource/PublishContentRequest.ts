@@ -1,7 +1,5 @@
 module api.content.resource {
 
-    import LocalDateTime = api.util.LocalDateTime;
-
     export class PublishContentRequest extends ContentResourceRequest<api.task.TaskIdJson, api.task.TaskId> {
 
         private ids: ContentId[] = [];

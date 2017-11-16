@@ -7,10 +7,9 @@ module api.content.form.inputtype.upload {
     import ValueTypes = api.data.ValueTypes;
     import Point = api.ui.image.Point;
     import Rect = api.ui.image.Rect;
-    import MixinName = api.schema.mixin.MixinName;
 
     export class ImageUploader
-        extends api.form.inputtype.support.BaseInputTypeSingleOccurrence<string> {
+        extends api.form.inputtype.support.BaseInputTypeSingleOccurrence {
 
         private imageUploader: api.content.image.ImageUploaderEl;
         private previousValidationRecording: api.form.inputtype.InputValidationRecording;
@@ -144,7 +143,7 @@ module api.content.form.inputtype.upload {
             this.ignorePropertyChange = false;
         }
 
-        updateProperty(property: api.data.Property, unchangedOnly?: boolean): Q.Promise<void> {
+        updateProperty(_property: api.data.Property, unchangedOnly?: boolean): Q.Promise<void> {
             if ((!unchangedOnly || !this.imageUploader.isDirty()) && this.getContext().content.getContentId()) {
 
                 return new api.content.resource.GetContentByIdRequest(this.getContext().content.getContentId())

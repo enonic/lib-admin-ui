@@ -19,7 +19,7 @@ module api.content.form.inputtype.number.long {
             return super.newInitialValue() || ValueTypes.LONG.newNullValue();
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(_index: number, property: Property): api.dom.Element {
             if (!ValueTypes.LONG.equals(property.getType())) {
                 property.convertValueType(ValueTypes.LONG);
             }
@@ -36,9 +36,7 @@ module api.content.form.inputtype.number.long {
                 inputEl.updateValidationStatusOnUserInput(isValid);
             });
 
-            property.onPropertyValueChanged((event: api.data.PropertyValueChangedEvent) => {
-                this.updateInputOccurrenceElement(inputEl, property, true);
-            });
+            property.onPropertyValueChanged(() =>  this.updateInputOccurrenceElement(inputEl, property, true));
 
             return inputEl;
         }

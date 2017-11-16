@@ -2,7 +2,6 @@ module api.form.inputtype.support {
 
     import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
     import PropertyValueChangedEvent = api.data.PropertyValueChangedEvent;
 
     export class InputOccurrenceView
@@ -12,7 +11,7 @@ module api.form.inputtype.support {
 
         private property: Property;
 
-        private inputTypeView: BaseInputTypeNotManagingAdd<any>;
+        private inputTypeView: BaseInputTypeNotManagingAdd;
 
         private inputElement: api.dom.Element;
 
@@ -26,7 +25,7 @@ module api.form.inputtype.support {
 
         public static debug: boolean = false;
 
-        constructor(inputOccurrence: InputOccurrence, baseInputTypeView: BaseInputTypeNotManagingAdd<any>, property: Property) {
+        constructor(inputOccurrence: InputOccurrence, baseInputTypeView: BaseInputTypeNotManagingAdd, property: Property) {
             super('input-occurrence-view', inputOccurrence);
 
             this.inputTypeView = baseInputTypeView;
@@ -55,7 +54,7 @@ module api.form.inputtype.support {
 
                 if (this.requiredContractBroken !== newStateOfRequiredContractBroken) {
                     this.requiredContractBroken = newStateOfRequiredContractBroken;
-                    this.inputTypeView.notifyRequiredContractBroken(newStateOfRequiredContractBroken, inputOccurrence.getIndex());
+                    this.inputTypeView.notifyRequiredContractBroken();
                 }
 
                 if (!ignorePropertyChange) {
