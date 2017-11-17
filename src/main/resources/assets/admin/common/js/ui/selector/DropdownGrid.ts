@@ -231,7 +231,7 @@ module api.ui.selector {
             if (!options.isEnableGalleryMode()) {
                 rowsHeight = this.getOptionCount() * options.getRowHeight();
             } else {
-                rowsHeight = Math.ceil(this.getOptionCount() / options.getGalleryModeColums()) * options.getRowHeight()
+                rowsHeight = Math.ceil(this.getOptionCount() / options.getGalleryModeColums()) * options.getRowHeight();
             }
 
             if (rowsHeight < this.customHeight) {
