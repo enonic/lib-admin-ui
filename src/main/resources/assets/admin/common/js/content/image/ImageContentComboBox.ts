@@ -37,8 +37,9 @@ module api.content.image {
         protected toggleGridOptions(treeMode: boolean) {
             const grid = this.getComboBox().getComboBoxDropdownGrid().getGrid();
 
-            grid.setOption('rowHeight', treeMode ? 50 : 198);
-            grid.setOption('enableGalleryMode', !treeMode);
+            grid.getOptions().setRowHeight(treeMode ? 50 : 198)
+                .setEnableGalleryMode(!treeMode)
+                .setGalleryModeColumns(3);
 
             return true;
         }

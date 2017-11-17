@@ -87,7 +87,8 @@ if (typeof Slick === "undefined") {
       defaultFormatter: defaultFormatter,
       forceSyncScrolling: false,
       addNewRowCssClass: "new-row",
-      enableGalleryMode: false
+        enableGalleryMode: false,
+        galleryModeColumns: 3
     };
 
     var columnDefaults = {
@@ -1335,7 +1336,7 @@ if (typeof Slick === "undefined") {
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Rendering / Scrolling
       function getGalleryRow(row, ceil) {
-          return options.enableGalleryMode ? Math[!ceil ? 'floor' : 'ceil'](row / CELLS_IN_ROW) : row;
+          return options.enableGalleryMode ? Math[!ceil ? 'floor' : 'ceil'](row / options.galleryModeColumns) : row;
       }
 
     function getRowTop(row) {
@@ -1343,11 +1344,12 @@ if (typeof Slick === "undefined") {
     }
 
       function getGalleryRowLeft(row) {
-          return row % CELLS_IN_ROW * 100 / CELLS_IN_ROW; // in percents
+          return row % options.galleryModeColumns * 100 / options.galleryModeColumns; // in percents
       }
 
       function getRowFromPosition(y, round) {
-          return Math[!round ? 'floor' : 'round']((y + offset) * (options.enableGalleryMode ? CELLS_IN_ROW : 1) / options.rowHeight);
+          return Math[!round ? 'floor' : 'round']((y + offset) * (options.enableGalleryMode ? options.galleryModeColumns : 1) /
+                                                  options.rowHeight);
     }
 
     function scrollTo(y) {
@@ -2759,8 +2761,6 @@ if (typeof Slick === "undefined") {
     function getActiveCellNode() {
       return activeCellNode;
     }
-
-      const CELLS_IN_ROW = 3;
 
     function scrollRowIntoView(row, doPaging) {
         var rowAtTop = getGalleryRow(row) * options.rowHeight;
