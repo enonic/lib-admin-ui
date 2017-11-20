@@ -83,6 +83,15 @@ module api.util {
                 .build();
         }
 
+        static fromDate(date: Date): LocalTime {
+
+            return LocalTime.create()
+                .setHours(date.getHours())
+                .setMinutes(date.getMinutes())
+                .setSeconds(date.getSeconds())
+                .build();
+        }
+
         public getAdjustedTime(): {hour: number; minute: number; seconds: number} {
             let date = new Date();
             date.setHours(this.getHours(), this.getMinutes(), this.getSeconds());

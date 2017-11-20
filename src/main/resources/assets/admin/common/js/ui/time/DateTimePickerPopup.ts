@@ -8,12 +8,17 @@ module api.ui.time {
 
         minutes: number;
 
-        calendar: Calendar;
+        date: Date;
 
         timezone: Timezone;
 
         // use local timezone if timezone value is not initialized
         useLocalTimezoneIfNotPresent: boolean = false;
+
+        setDate(date: Date): DateTimePickerPopupBuilder {
+            this.date = date;
+            return this;
+        }
 
         setHours(value: number): DateTimePickerPopupBuilder {
             this.hours = value;
@@ -31,15 +36,6 @@ module api.ui.time {
 
         getMinutes(): number {
             return this.minutes;
-        }
-
-        setCalendar(value: Calendar): DateTimePickerPopupBuilder {
-            this.calendar = value;
-            return this;
-        }
-
-        getCalendar(): Calendar {
-            return this.calendar;
         }
 
         setTimezone(value: Timezone): DateTimePickerPopupBuilder {
@@ -76,8 +72,9 @@ module api.ui.time {
             super('date-time-dialog');
 
             this.datePickerPopup = new DatePickerPopupBuilder().
-                setCalendar(builder.getCalendar()).
+                setDate(builder.date).
                 build();
+
             this.timePickerPopup = new TimePickerPopupBuilder().
                 setHours(builder.getHours()).
                 setTimezone(builder.timezone).
@@ -88,10 +85,6 @@ module api.ui.time {
             this.appendChildren(<api.dom.Element>this.datePickerPopup, <api.dom.Element>this.timePickerPopup);
         }
 
-        getSelectedDate(): Date {
-            return this.datePickerPopup.getSelectedDate();
-        }
-
         onSelectedDateChanged(listener: (event: SelectedDateChangedEvent) => void) {
             this.datePickerPopup.onSelectedDateChanged(listener);
         }
@@ -100,25 +93,12 @@ module api.ui.time {
             this.datePickerPopup.unSelectedDateChanged(listener);
         }
 
-        getSelectedTime(): { hour: number; minute: number } {
-            return this.timePickerPopup.getSelectedTime();
-        }
-
         onSelectedTimeChanged(listener: (hours: number, minutes: number) => void) {
             this.timePickerPopup.onSelectedTimeChanged(listener);
         }
 
         unSelectedTimeChanged(listener: (hours: number, minutes: number) => void) {
             this.timePickerPopup.unSelectedTimeChanged(listener);
-        }
-
-        getSelectedDateTime(): Date {
-            let date = this.getSelectedDate();
-            let time = this.getSelectedTime();
-            if (!date || !time) {
-                return null;
-            }
-            return new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.hour, time.minute);
         }
 
         setSelectedTime(hours: number, minutes: number, silent?: boolean) {
