@@ -26,14 +26,14 @@ module api.notify {
             this.el.getEl().setBottomPx(0);
         }
 
-        showFeedback(message: string, autoHide: boolean = true) {
+        showFeedback(message: string, autoHide: boolean = true): string {
             let feedback = Message.newInfo(message, autoHide);
-            this.notify(feedback);
+            return this.notify(feedback);
         }
 
-        showSuccess(message: string, autoHide: boolean = true) {
+        showSuccess(message: string, autoHide: boolean = true): string {
             let feedback = Message.newSuccess(message, autoHide);
-            this.notify(feedback);
+            return this.notify(feedback);
         }
 
         showError(message: string, autoHide: boolean = true): string {
@@ -41,9 +41,9 @@ module api.notify {
             return this.notify(error);
         }
 
-        showWarning(message: string, autoHide: boolean = true) {
+        showWarning(message: string, autoHide: boolean = true): string {
             let warning = Message.newWarning(message, autoHide);
-            this.notify(warning);
+            return this.notify(warning);
         }
 
         notify(message: Message): string {
