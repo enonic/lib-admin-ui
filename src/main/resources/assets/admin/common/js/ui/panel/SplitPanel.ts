@@ -1,7 +1,6 @@
 module api.ui.panel {
 
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
 
     export enum SplitPanelAlignment {
         HORIZONTAL,
@@ -271,7 +270,7 @@ module api.ui.panel {
                 ResponsiveManager.onAvailableSizeChanged(this, debounced);
             }
 
-            this.onAdded((event: api.dom.ElementShownEvent) => {
+            this.onAdded(() => {
                 // wait 1ms to ensure browser calculated element dimensions and styles
                 setTimeout(() => {
                     let splitPanelSize = this.isHorizontal() ? this.getEl().getHeight() : this.getEl().getWidth();
@@ -286,7 +285,7 @@ module api.ui.panel {
             ResponsiveManager.onAvailableSizeChanged(this.firstPanel);
             ResponsiveManager.onAvailableSizeChanged(this.secondPanel);
 
-            this.onRemoved((event) => {
+            this.onRemoved(() => {
                 ResponsiveManager.unAvailableSizeChanged(this);
                 ResponsiveManager.unAvailableSizeChanged(this.firstPanel);
                 ResponsiveManager.unAvailableSizeChanged(this.secondPanel);
@@ -322,9 +321,9 @@ module api.ui.panel {
                 this.startDrag();
             });
 
-            this.onMouseUp((e: MouseEvent) => {
+            this.onMouseUp(() => {
                 if (this.ghostDragger.getHTMLElement().parentNode) {
-                    this.stopDrag(e);
+                    this.stopDrag();
                     super.removeChild(this.ghostDragger);
                 }
             });
@@ -342,7 +341,7 @@ module api.ui.panel {
             }
         }
 
-        private stopDrag(e: MouseEvent) {
+        private stopDrag() {
             this.mask.hide();
             this.removeClass('dragging');
             this.unMouseMove(this.dragListener);
@@ -461,15 +460,15 @@ module api.ui.panel {
             this.distribute();
         }
 
-        appendChild<T extends api.dom.Element>(child: T): api.dom.Element {
+        appendChild<T extends api.dom.Element>(_child: T): api.dom.Element {
             throw Error('SplitPanel allows adding children in constructor only.');
         }
 
-        appendChildren<T extends api.dom.Element>(...children:T[]): api.dom.Element {
+        appendChildren<T extends api.dom.Element>(..._children:T[]): api.dom.Element {
             throw Error('SplitPanel allows adding children in constructor only.');
         }
 
-        prependChild(child: api.dom.Element): api.dom.Element {
+        prependChild(_child: api.dom.Element): api.dom.Element {
             throw Error('SplitPanel allows adding children in constructor only.');
         }
 
@@ -666,18 +665,6 @@ module api.ui.panel {
 
         private slideOutSecondPanelRight() {
             this.secondPanel.getEl().setRightPx(-this.secondPanel.getEl().getWidthWithBorder());
-        }
-
-        private getUnitString(panelNumber: number): string {
-            api.util.assert((panelNumber === 1 || panelNumber === 2), 'Panel number must be 1 or 2');
-
-            let unit = (panelNumber === 1) ? this.firstPanelUnit : this.secondPanelUnit;
-            //console.log('UNIT', unit);
-            if (unit === SplitPanelUnit.PIXEL) {
-                return 'px';
-            } else {
-                return '%';
-            }
         }
 
         private getSplitterThickness(): number {

@@ -43,7 +43,7 @@ module api.app.browse.filter {
 
             this.searchField = new TextSearchField(i18n('panel.filter.search'));
             this.searchField.onValueChanged(() => {
-                this.search(this.searchField);
+                this.search();
             });
 
             this.clearFilter = new ClearFilterButton();
@@ -62,9 +62,7 @@ module api.app.browse.filter {
             if (groupViews != null) {
                 groupViews.forEach((aggregationGroupView: api.aggregation.AggregationGroupView) => {
 
-                        aggregationGroupView.onBucketViewSelectionChanged((event: api.aggregation.BucketViewSelectionChangedEvent) => {
-                            this.search(event.getBucketView());
-                        });
+                        aggregationGroupView.onBucketViewSelectionChanged(() => this.search());
 
                         this.aggregationContainer.addAggregationGroupView(aggregationGroupView);
                     }
@@ -177,18 +175,18 @@ module api.app.browse.filter {
             return this.searchField.getHTMLElement()['value'].trim() !== '';
         }
 
-        search(elementChanged?: api.dom.Element) {
+        search() {
             const hasFilterSet = this.hasFilterSet();
 
             this.clearFilter.setVisible(hasFilterSet);
             this.updateResultsTitle(!hasFilterSet);
 
             this.notifySearchStarted();
-            this.doSearch(elementChanged);
+            this.doSearch();
         }
 
-        doSearch(elementChanged?: api.dom.Element): wemQ.Promise<void>  {
-            return wemQ<void>(null);
+        protected doSearch(): wemQ.Promise<void>  {
+            throw new Error('Must be implemented by inheritors');
         }
 
         refresh() {
@@ -215,13 +213,13 @@ module api.app.browse.filter {
         }
 
         resetControls() {
-            this.searchField.clear(true);
+            this.searchField.clear();
             this.aggregationContainer.deselectAll(true);
             this.clearFilter.hide();
             this.updateResultsTitle(true);
         }
 
-        protected resetFacets(suppressEvent?: boolean, doResetAll?: boolean): wemQ.Promise<void> {
+        protected resetFacets(_suppressEvent?: boolean, _doResetAll?: boolean): wemQ.Promise<void> {
             throw new Error('To be implemented by inheritors');
         }
 

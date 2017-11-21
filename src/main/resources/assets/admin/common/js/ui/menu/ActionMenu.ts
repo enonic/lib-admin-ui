@@ -22,7 +22,7 @@ module api.ui.menu {
                 });
             }
 
-            this.labelEl.onClicked((event) => {
+            this.labelEl.onClicked(() => {
                 this.toggleClass('down');
                 this.labelEl.toggleClass('down');
             });

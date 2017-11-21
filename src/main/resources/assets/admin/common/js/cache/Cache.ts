@@ -18,15 +18,15 @@ module api.cache {
             return all;
         }
 
-        copy(object: T): T {
+        copy(_object: T): T {
             throw new Error('Must be implemented by inheritor');
         }
 
-        getKeyFromObject(object: T): KEY {
+        getKeyFromObject(_object: T): KEY {
             throw new Error('Must be implemented by inheritor');
         }
 
-        getKeyAsString(object: KEY): string {
+        getKeyAsString(_object: KEY): string {
             throw new Error('Must be implemented by inheritor');
         }
 

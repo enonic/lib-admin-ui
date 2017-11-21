@@ -28,9 +28,7 @@ module api.app {
         }
 
         protected handleGlobalEvents() {
-            ShowBrowsePanelEvent.on((event) => {
-                this.handleBrowse(event);
-            });
+            ShowBrowsePanelEvent.on(() => this.handleBrowse());
 
             window.onmessage = (e: MessageEvent) => {
                 if (e.data.appLauncherEvent) {
@@ -42,7 +40,7 @@ module api.app {
             };
         }
 
-        protected handleBrowse(event: ShowBrowsePanelEvent) {
+        protected handleBrowse() {
             if (!this.browsePanel) {
                 this.addBrowsePanel(this.createBrowsePanel());
             }

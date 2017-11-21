@@ -80,9 +80,7 @@ module api.ui.time {
                 this.addClass('after-month');
             }
 
-            this.onClicked((event: MouseEvent) => {
-                this.notifyCalendarDayClicked();
-            });
+            this.onClicked(() => this.notifyCalendarDayClicked());
         }
 
         getDate(): Date {

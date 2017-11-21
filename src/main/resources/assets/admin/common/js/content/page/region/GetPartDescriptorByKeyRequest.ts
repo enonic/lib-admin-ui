@@ -1,7 +1,5 @@
 module api.content.page.region {
 
-    import ApplicationKey = api.application.ApplicationKey;
-
     export class GetPartDescriptorByKeyRequest extends PartDescriptorResourceRequest<PartDescriptorJson,PartDescriptor> {
 
         private key: api.content.page.DescriptorKey;

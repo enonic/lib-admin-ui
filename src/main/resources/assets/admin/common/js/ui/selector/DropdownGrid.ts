@@ -40,11 +40,11 @@ module api.ui.selector {
 
         protected filter: (item: Option<OPTION_DISPLAY_VALUE>, args: any) => boolean;
 
-        protected rowSelectionListeners: {(event: DropdownGridRowSelectedEvent): void}[];
+        protected rowSelectionListeners: { (event: DropdownGridRowSelectedEvent): void }[];
 
-        protected multipleSelectionListeners: {(event: DropdownGridMultipleSelectionEvent): void}[];
+        protected multipleSelectionListeners: { (event: DropdownGridMultipleSelectionEvent): void }[];
 
-        protected rowCountChangedListeners: {(): void}[] = [];
+        protected rowCountChangedListeners: { (): void }[] = [];
 
         protected multipleSelections: boolean;
 
@@ -54,8 +54,9 @@ module api.ui.selector {
             this.config = config;
             this.rowSelectionListeners = [];
             this.multipleSelectionListeners = [];
-            this.optionDisplayValueViewer = config.optionDisplayValueViewer ?
-                new (<any>config.optionDisplayValueViewer['constructor'])() : new DefaultOptionDisplayValueViewer();
+            this.optionDisplayValueViewer = config.optionDisplayValueViewer
+                ? new (<any>config.optionDisplayValueViewer['constructor'])()
+                : new DefaultOptionDisplayValueViewer();
             this.filter = config.filter;
             this.dataIdProperty = config.dataIdProperty || 'value';
             this.maxHeight = config.maxHeight;
@@ -68,11 +69,7 @@ module api.ui.selector {
             this.initGridEventListeners();
         }
 
-        setReadonlyChecker(checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
-            return;
-        }
-
-        presetDefaultOption(data: OPTION_DISPLAY_VALUE) {
+        setReadonlyChecker(_checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
             return;
         }
 
@@ -116,7 +113,7 @@ module api.ui.selector {
                 return false;
             });
 
-            this.getGrid().subscribeOnSelectedRowsChanged((e, args) => {
+            this.getGrid().subscribeOnSelectedRowsChanged((_e, args) => {
                 this.notifyMultipleSelection(args.rows);
             });
         }
@@ -160,7 +157,7 @@ module api.ui.selector {
 
         protected createColumns(): api.ui.grid.GridColumn<any>[] {
             let columnFormatter =
-                (row: number, cell: number, value: OPTION_DISPLAY_VALUE, columnDef: any, dataContext: Option<OPTION_DISPLAY_VALUE>) => {
+                (_row: number, _cell: number, value: OPTION_DISPLAY_VALUE, _columnDef: any, _dataContext: Option<OPTION_DISPLAY_VALUE>) => {
                     this.optionDisplayValueViewer.setObject(value);
                     return this.optionDisplayValueViewer.toString();
                 };
@@ -228,17 +225,20 @@ module api.ui.selector {
 
         adjustGridHeight() {
 
-            let gridEl = this.getGrid().getEl();
-            let rowsHeight = this.getOptionCount() * this.optionDisplayValueViewer.getPreferredHeight();
+            const gridEl = this.getGrid().getEl();
+            const options = this.getGrid().getOptions();
+            let rowsHeight;
+            if (!options.isEnableGalleryMode()) {
+                rowsHeight = this.getOptionCount() * options.getRowHeight();
+            } else {
+                rowsHeight = Math.ceil(this.getOptionCount() / options.getGalleryModeColums()) * options.getRowHeight();
+            }
 
             if (rowsHeight < this.customHeight) {
                 let borderWidth = gridEl.getBorderTopWidth() + gridEl.getBorderBottomWidth();
                 gridEl.setHeightPx(rowsHeight + borderWidth);
                 this.getGrid().getOptions().setAutoHeight(true);
-            } else if (gridEl.getHeight() < this.customHeight) {
-                gridEl.setHeightPx(this.customHeight);
-                this.getGrid().getOptions().setAutoHeight(false);
-            } else if (this.customHeight !== this.maxHeight) {
+            } else if (gridEl.getHeight() < this.customHeight || this.customHeight !== this.maxHeight) {
                 gridEl.setHeightPx(this.customHeight);
                 this.getGrid().getOptions().setAutoHeight(false);
             }
@@ -249,7 +249,7 @@ module api.ui.selector {
         addSelections(selectedOptions: Option<OPTION_DISPLAY_VALUE>[]) {
             selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
                 let row = this.getGridData().getRowById(selectedOption.value);
-                if(row != undefined && !this.getGrid().isRowSelected(row)) {
+                if (row != undefined && !this.getGrid().isRowSelected(row)) {
                     this.getGrid().addSelectedRow(row);
                 }
             });
@@ -274,7 +274,7 @@ module api.ui.selector {
 
             let stylesHash: Slick.CellCssStylesHash = {};
             selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-                if(selectedOption.readOnly) {
+                if (selectedOption.readOnly) {
                     let row = this.getGridData().getRowById(selectedOption.value);
                     stylesHash[row] = {_checkbox_selector: 'readonly', option: 'readonly'};
                 }

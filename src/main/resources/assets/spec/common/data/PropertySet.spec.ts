@@ -9,7 +9,6 @@ describe('api.data.PropertySet', () => {
 
         it('given 2 string values then 2 properties are returned ', () => {
             let tree = new PropertyTree();
-            let propertySet = tree.addPropertySet('mySet');
             let properties = tree.addStrings('myProp', ['1', '2']);
             expect(properties.length).toBe(2);
             expect(properties[0].getString()).toBe('1');

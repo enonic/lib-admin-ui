@@ -49,7 +49,7 @@ module api.ui.selector.dropdown {
 
         private optionSelectedListeners: {(event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>): void}[] = [];
 
-        private optionFilterInputValueChangedListeners: {(event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>): void}[] = [];
+        private optionFilterInputValueChangedListeners: {(event: OptionFilterInputValueChangedEvent): void}[] = [];
 
         private expandedListeners: {(event: api.ui.selector.DropdownExpandedEvent): void}[] = [];
 
@@ -117,10 +117,7 @@ module api.ui.selector.dropdown {
 
             this.setupListeners();
 
-            this.onRendered((event: api.dom.ElementRenderedEvent) => {
-
-                this.doUpdateDropdownTopPositionAndWidth();
-            });
+            this.onRendered(() => this.doUpdateDropdownTopPositionAndWidth());
         }
 
         isValid(): boolean {
@@ -320,7 +317,7 @@ module api.ui.selector.dropdown {
                 }
             });
 
-            this.dropdownHandle.onClicked((event: any) => {
+            this.dropdownHandle.onClicked(() => {
 
                 if (this.isDropdownShown()) {
                     this.hideDropdown();
@@ -341,14 +338,14 @@ module api.ui.selector.dropdown {
 
             });
 
-            this.input.onDblClicked((event: MouseEvent) => {
+            this.input.onDblClicked(() => {
 
                 if (!this.isDropdownShown()) {
                     this.showDropdown();
                 }
             });
 
-            this.input.onClicked((event: MouseEvent) => {
+            this.input.onClicked(() => {
                 this.giveFocus();
                 this.input.setReadOnly(false);
             });
@@ -357,7 +354,9 @@ module api.ui.selector.dropdown {
                 if (event.which === 9) { // tab
                     this.hideDropdown();
                     return;
-                } else if (event.which === 16 || event.which === 17 || event.which === 18) {  // shift or ctrl or alt
+                }
+
+                if (event.which === 16 || event.which === 17 || event.which === 18) {  // shift or ctrl or alt
                     return;
                 }
 
@@ -410,21 +409,21 @@ module api.ui.selector.dropdown {
             });
         }
 
-        onOptionFilterInputValueChanged(listener: (event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>)=>void) {
+        onOptionFilterInputValueChanged(listener: (event: OptionFilterInputValueChangedEvent)=>void) {
             this.optionFilterInputValueChangedListeners.push(listener);
         }
 
-        unOptionFilterInputValueChanged(listener: (event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>)=>void) {
+        unOptionFilterInputValueChanged(listener: (event: OptionFilterInputValueChangedEvent)=>void) {
             this.optionFilterInputValueChangedListeners.filter(
-                (currentListener: (event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>)=>void) => {
+                (currentListener: (event: OptionFilterInputValueChangedEvent)=>void) => {
                     return listener !== currentListener;
                 });
         }
 
         private notifyOptionFilterInputValueChanged(oldValue: string, newValue: string) {
-            let event = new OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>(oldValue, newValue);
+            let event = new OptionFilterInputValueChangedEvent(oldValue, newValue);
             this.optionFilterInputValueChangedListeners.forEach(
-                (listener: (event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>)=>void) => {
+                (listener: (event: OptionFilterInputValueChangedEvent)=>void) => {
                     listener(event);
                 });
         }

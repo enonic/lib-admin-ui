@@ -24,7 +24,6 @@
 ///<reference path='PropertyAddedEvent.ts' />
 ///<reference path='PropertyRemovedEvent.ts' />
 ///<reference path='Property.ts' />
-///<reference path='PropertyVisitor.ts' />
 ///<reference path='PropertyTreeComparator.ts' />
 ///<reference path='PropertyValueJson.ts' />
 ///<reference path='PropertyArrayJson.ts' />

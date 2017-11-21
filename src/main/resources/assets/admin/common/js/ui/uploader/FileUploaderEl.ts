@@ -1,9 +1,5 @@
 module api.ui.uploader {
-
-    import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
     import Element = api.dom.Element;
-    import SelectionItem = api.app.browse.SelectionItem;
 
     export class FileUploaderEl<MODEL extends api.Equitable> extends UploaderEl<MODEL> {
 
@@ -11,7 +7,7 @@ module api.ui.uploader {
 
         static FILE_NAME_DELIMITER: string = '/';
 
-        doSetValue(value: string, silent?: boolean): UploaderEl<MODEL> {
+        doSetValue(value: string): UploaderEl<MODEL> {
 
             if (UploaderEl.debug) {
                 console.log('Setting new uploader value', value, this);

@@ -18,7 +18,7 @@ module api.app.wizard {
             throw new Error('Must be overridden by inheritors');
         }
 
-        enableActionsForExisting(existing: T) {
+        enableActionsForExisting(_existing: T) {
             throw new Error('Must be overridden by inheritors');
         }
 

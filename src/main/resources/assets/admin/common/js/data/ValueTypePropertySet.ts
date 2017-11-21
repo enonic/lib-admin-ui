@@ -16,11 +16,11 @@ module api.data {
             return true;
         }
 
-        isConvertible(value: string): boolean {
+        isConvertible(): boolean {
             return false;
         }
 
-        newValue(value: string): Value {
+        newValue(): Value {
             throw new Error('A value of type Data cannot be created from a string');
         }
 
@@ -32,11 +32,11 @@ module api.data {
             return data.toJson();
         }
 
-        fromJsonValue(propertyArrayJsonArray: PropertyArrayJson[]): Value {
+        fromJsonValue(): Value {
             throw new Error('Method not supported!');
         }
 
-        valueToString(value: Value): string {
+        valueToString(): string {
             throw new Error('A value of type Data cannot be made into a string');
         }
 

@@ -36,9 +36,7 @@ module api.ui.button {
                 });
             }
 
-            this.onClicked((event: MouseEvent) => {
-                this.action.execute();
-            });
+            this.onClicked(() => this.action.execute());
 
             this.action.onPropertyChanged((changedAction: api.ui.Action) => {
                 this.setEnabled(changedAction.isEnabled());

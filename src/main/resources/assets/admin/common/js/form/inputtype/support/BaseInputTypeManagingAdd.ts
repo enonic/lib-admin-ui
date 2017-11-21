@@ -1,16 +1,12 @@
 module api.form.inputtype.support {
-
-    import PropertyPath = api.data.PropertyPath;
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
     import FocusSwitchEvent = api.ui.FocusSwitchEvent;
     import InputTypeView = api.form.inputtype.InputTypeView;
 
-    export class BaseInputTypeManagingAdd<RAW_VALUE_TYPE> extends api.dom.DivEl implements InputTypeView<RAW_VALUE_TYPE> {
+    export class BaseInputTypeManagingAdd extends api.dom.DivEl implements InputTypeView {
 
         private inputValidityChangedListeners: {(event: api.form.inputtype.InputValidityChangedEvent) : void}[] = [];
 
@@ -158,7 +154,7 @@ module api.form.inputtype.support {
             return true;
         }
 
-        displayValidationErrors(value: boolean) {
+        displayValidationErrors(_value: boolean) {
             // must be implemented by children
         }
 
@@ -230,11 +226,11 @@ module api.form.inputtype.support {
             throw new Error('Must be overridden by inheritor: ' + api.ClassHelper.getClassName(this));
         }
 
-        onEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        onEditContentRequest(_listener: (content: api.content.ContentSummary) => void) {
             // Have to use stub here because it doesn't extend BaseInputTypeView
         }
 
-        unEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
+        unEditContentRequest(_listener: (content: api.content.ContentSummary) => void) {
             // Have to use stub here because it doesn't extend BaseInputTypeView
         }
 

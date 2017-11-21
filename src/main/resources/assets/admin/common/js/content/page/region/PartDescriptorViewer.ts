@@ -10,11 +10,11 @@ module api.content.page.region {
             return object.getDisplayName();
         }
 
-        resolveSubName(object: PartDescriptor, relativePath: boolean = false): string {
+        resolveSubName(object: PartDescriptor): string {
             return object.getKey().toString();
         }
 
-        resolveIconClass(object: PartDescriptor): string {
+        resolveIconClass(): string {
             return api.StyleHelper.getCommonIconCls('part') + ' icon-large';
         }
     }

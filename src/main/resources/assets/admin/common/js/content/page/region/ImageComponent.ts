@@ -3,7 +3,6 @@ module api.content.page.region {
     import Form = api.form.Form;
     import FormBuilder = api.form.FormBuilder;
     import OccurrencesBuilder = api.form.OccurrencesBuilder;
-    import TextLine = api.form.inputtype.text.TextLine;
     import TextArea = api.form.inputtype.text.TextArea;
     import PropertyTree = api.data.PropertyTree;
     import PropertyEvent = api.data.PropertyEvent;

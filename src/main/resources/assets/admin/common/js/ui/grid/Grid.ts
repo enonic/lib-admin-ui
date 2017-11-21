@@ -70,9 +70,7 @@ module api.ui.grid {
                 this.slickGrid.registerPlugin(<Slick.Plugin<T>>this.rowManagerPlugin);
             }
 
-            this.onRemoved((event) => {
-                ResponsiveManager.unAvailableSizeChanged(this);
-            });
+            this.onRemoved(() => ResponsiveManager.unAvailableSizeChanged(this));
 
             // The only way to dataIdProperty before adding items
             this.dataView.setItems([], options.getDataIdProperty());
@@ -121,12 +119,12 @@ module api.ui.grid {
         }
 
         private autoRenderGridOnDataChanges(dataView: DataView<T>) {
-            dataView.onRowCountChanged((eventData: Slick.EventData, args) => {
+            dataView.onRowCountChanged(() => {
                 this.updateRowCount();
                 this.renderGrid();
             });
 
-            dataView.onRowsChanged((eventData: Slick.EventData, args) => {
+            dataView.onRowsChanged((_eventData: Slick.EventData, args) => {
                 this.invalidateRows(args.rows);
                 this.renderGrid();
             });

@@ -1,27 +1,19 @@
 module api.content.site.inputtype.siteconfigurator {
-
-    import PropertyTree = api.data.PropertyTree;
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
-    import PropertySet = api.data.PropertySet;
     import FormView = api.form.FormView;
-    import FormValidityChangedEvent = api.form.FormValidityChangedEvent;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import Application = api.application.Application;
     import SiteConfig = api.content.site.SiteConfig;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
     import Promise = Q.Promise;
     import ApplicationKey = api.application.ApplicationKey;
     import ApplicationEvent = api.application.ApplicationEvent;
     import ApplicationEventType = api.application.ApplicationEventType;
-    import PrincipalKey = api.security.PrincipalKey;
 
-    export class SiteConfigurator extends api.form.inputtype.support.BaseInputTypeManagingAdd<Application> {
+    export class SiteConfigurator extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         private context: api.form.inputtype.InputTypeViewContext;
 
@@ -170,9 +162,7 @@ module api.content.site.inputtype.siteconfigurator {
                     siteConfigFormsToDisplay.splice(indexToRemove, 1);
                 }
 
-                formView.onValidityChanged((event: FormValidityChangedEvent) => {
-                    this.validate(false);
-                });
+                formView.onValidityChanged(() => this.validate(false));
 
                 this.validate(false);
             });

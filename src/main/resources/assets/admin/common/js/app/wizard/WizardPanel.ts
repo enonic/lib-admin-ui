@@ -334,10 +334,10 @@ module api.app.wizard {
             this.formPanel = new api.ui.panel.Panel('form-panel rendering');
             this.formPanel.onScroll(() => this.updateStickyToolbar());
 
-            this.formPanel.onAdded((event) => this.onFormPanelAdded());
+            this.formPanel.onAdded(() => this.onFormPanelAdded());
 
             let firstShow;
-            this.formPanel.onRendered((event) => {
+            this.formPanel.onRendered(() => {
                 if (WizardPanel.debug) {
                     console.debug('WizardPanel: formPanel.onRendered');
                 }
@@ -429,14 +429,14 @@ module api.app.wizard {
 
                 this.formPanel.prependChild(this.minimizeEditButton);
 
-                this.livePanel.onAdded((event) => {
+                this.livePanel.onAdded(() => {
                     if (WizardPanel.debug) {
                         console.debug('WizardPanel: livePanel.onAdded');
                     }
                     this.liveMask = new api.ui.mask.LoadMask(this.livePanel);
                 });
 
-                this.livePanel.onRendered((event) => {
+                this.livePanel.onRendered(() => {
                     if (WizardPanel.debug) {
                         console.debug('WizardPanel: livePanel.onRendered');
                     }
@@ -446,17 +446,15 @@ module api.app.wizard {
 
                 this.splitPanel = this.createSplitPanel(this.formPanel, this.livePanel);
 
-                this.splitPanel.onAdded((event) => {
-                    if (WizardPanel.debug) {
+                if (WizardPanel.debug) {
+                    this.splitPanel.onAdded(() => {
                         console.debug('WizardPanel: splitPanel.onAdded');
-                    }
-                });
+                    });
 
-                this.splitPanel.onRendered((event) => {
-                    if (WizardPanel.debug) {
+                    this.splitPanel.onRendered(() => {
                         console.debug('WizardPanel: splitPanel.onRendered');
-                    }
-                });
+                    });
+                }
 
                 this.appendChild(this.splitPanel);
 

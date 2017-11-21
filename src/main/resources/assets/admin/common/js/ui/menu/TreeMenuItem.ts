@@ -13,7 +13,7 @@ module api.ui.menu {
                 this.setClass(cls);
             }
             this.getEl().setInnerHtml(action.getLabel());
-            this.onClicked((event: MouseEvent) => {
+            this.onClicked(() => {
                 if (action.isEnabled()) {
                     if (action.hasChildActions()) {
                         this.toggleExpand();

@@ -1,7 +1,5 @@
 module api.content {
 
-    import TreeNode = api.ui.treegrid.TreeNode;
-
     import ContentTypeSummary = api.schema.content.ContentTypeSummary;
 
     export class ContentTypeSummaryByDisplayNameComparator implements api.Comparator<ContentTypeSummary> {

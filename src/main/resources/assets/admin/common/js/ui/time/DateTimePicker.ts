@@ -96,9 +96,7 @@ module api.ui.time {
         protected handleShownEvent() {
             let onDatePickerShown = this.onDateTimePickerShown.bind(this);
             DateTimePickerShownEvent.on(onDatePickerShown);
-            this.onRemoved((event: api.dom.ElementRemovedEvent) => {
-                DateTimePickerShownEvent.un(onDatePickerShown);
-            });
+            this.onRemoved(() => DateTimePickerShownEvent.un(onDatePickerShown));
         }
 
         protected initInput() {

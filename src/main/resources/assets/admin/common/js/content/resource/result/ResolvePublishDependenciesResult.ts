@@ -1,6 +1,4 @@
 module api.content.resource.result {
-
-    import ContentPublishItemJson = api.content.json.ContentPublishItemJson;
     import ResolvePublishContentResultJson = api.content.json.ResolvePublishContentResultJson;
 
     export class ResolvePublishDependenciesResult {

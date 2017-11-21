@@ -3,7 +3,6 @@ module ImageUploaderElSpec {
     import ImageUploaderEl = api.content.image.ImageUploaderEl;
     import Spy = jasmine.Spy;
     import Rect = api.ui.image.Rect;
-    import MaskContentWizardPanelEvent = api.app.wizard.MaskContentWizardPanelEvent;
     import MediaUploaderElConfig = api.ui.uploader.MediaUploaderElConfig;
 
     describe('api.content.image.ImageUploaderEl', () => {

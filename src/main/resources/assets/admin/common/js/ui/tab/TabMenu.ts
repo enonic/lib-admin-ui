@@ -45,7 +45,7 @@ module api.ui.tab {
             this.tabMenuButton.hide();
             this.tabMenuButton.addClass('tab-menu-button');
 
-            this.tabMenuButton.onClicked((event: MouseEvent) => {
+            this.tabMenuButton.onClicked(() => {
                 if (this.enabled) {
                     this.toggleMenu();
                 }

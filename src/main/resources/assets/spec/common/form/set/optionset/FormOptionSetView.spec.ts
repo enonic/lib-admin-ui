@@ -1,18 +1,12 @@
 module FormOptionSetViewSpec {
 
     import FormOptionSet = api.form.FormOptionSet;
-    import FormOptionSetJson = api.form.json.FormOptionSetJson;
-    import FormOptionSetOptionJson = api.form.json.FormOptionSetOptionJson;
     import FormOptionSetView = api.form.FormOptionSetView;
     import FormOptionSetViewConfig = api.form.FormOptionSetViewConfig;
     import PropertySet = api.data.PropertySet;
     import FormContext = api.form.FormContext;
     import ValidationRecording = api.form.ValidationRecording;
-    import FormItem = api.form.FormItem;
-    import FormOptionSetOccurrenceView = api.form.FormOptionSetOccurrenceView;
     import FormItemPath = api.form.FormItemPath;
-    import RecordingValidityChangedEvent = api.form.RecordingValidityChangedEvent;
-    import FormOptionSetOccurrences = api.form.FormOptionSetOccurrences;
     import Button = api.ui.button.Button;
     import AEl = api.dom.AEl;
     import CallInfo = jasmine.CallInfo;

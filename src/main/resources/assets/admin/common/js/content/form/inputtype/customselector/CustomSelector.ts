@@ -1,30 +1,16 @@
 module api.content.form.inputtype.customselector {
 
     import PropertyArray = api.data.PropertyArray;
-    import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
-    import FocusSwitchEvent = api.ui.FocusSwitchEvent;
-    import ComboBoxOption = api.form.inputtype.combobox.ComboBoxOption;
-    import ComboBoxDisplayValueViewer = api.form.inputtype.combobox.ComboBoxDisplayValueViewer;
-    import Dropdown = api.ui.selector.dropdown.Dropdown;
-    import Viewer = api.ui.Viewer;
-    import NamesAndIconViewer = api.ui.NamesAndIconViewer;
-    import JsonRequest = api.rest.JsonRequest;
     import StringHelper = api.util.StringHelper;
     import UriHelper = api.util.UriHelper;
-    import Path = api.rest.Path;
-    import JsonResponse = api.rest.JsonResponse;
     import ContentInputTypeViewContext = api.content.form.inputtype.ContentInputTypeViewContext;
-    import ElementBuilder = api.dom.ElementBuilder;
-    import NewElementBuilder = api.dom.NewElementBuilder;
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
 
-    export class CustomSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd<CustomSelectorItem> {
+    export class CustomSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         public static debug: boolean = false;
 
@@ -137,9 +123,7 @@ module api.content.form.inputtype.customselector {
                 this.validate(false);
             });
 
-            comboBox.onValueLoaded((options) => {
-                this.validate(false);
-            });
+            comboBox.onValueLoaded(() => this.validate(false));
 
             return comboBox;
         }
@@ -178,8 +162,8 @@ module api.content.form.inputtype.customselector {
                 containment: 'parent',
                 handle: '.drag-control',
                 tolerance: 'pointer',
-                start: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(event, ui),
-                update: (event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(event, ui)
+                start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
+                update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui)
             });
         }
 
@@ -188,7 +172,7 @@ module api.content.form.inputtype.customselector {
             wemjq(this.getHTMLElement()).find('.selected-options').sortable('refresh');
         }
 
-        private handleDnDStart(event: Event, ui: JQueryUI.SortableUIParams): void {
+        private handleDnDStart(ui: JQueryUI.SortableUIParams): void {
 
             let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
             this.draggingIndex = draggedElement.getSiblingIndex();
@@ -196,7 +180,7 @@ module api.content.form.inputtype.customselector {
             ui.placeholder.html('Drop form item set here');
         }
 
-        private handleDnDUpdate(event: Event, ui: JQueryUI.SortableUIParams) {
+        private handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
                 let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);

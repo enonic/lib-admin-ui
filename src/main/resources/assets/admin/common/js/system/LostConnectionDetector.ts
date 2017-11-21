@@ -43,7 +43,7 @@ module api.system {
                     this.notifySessionExpired();
                 }
                 this.authenticated = status.isAuthenticated();
-            }).catch((reason: any) => {
+            }).catch(() => {
                 if (this.connected) {
                     this.notifyConnectionLost();
                     this.connected = !this.connected;

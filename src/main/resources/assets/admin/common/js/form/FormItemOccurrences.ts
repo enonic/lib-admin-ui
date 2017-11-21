@@ -70,7 +70,7 @@ module api.form {
             this.occurrenceRenderedListeners.push(listener);
         }
 
-        refreshOccurence(index: number) {
+        refreshOccurence(_index: number) {
             //to be implemented on demand in inheritors
         }
 
@@ -164,7 +164,7 @@ module api.form {
 
             let promises = [];
             // next update existing occurrences and add missing ones if there are not enough
-            this.propertyArray.forEach((property: api.data.Property, index: number) => {
+            this.propertyArray.forEach((_property: api.data.Property, index: number) => {
                 let occurrenceView = this.occurrenceViews[index];
                 let occurrence = this.occurrences[index];
                 if (occurrenceView && occurrence) {
@@ -181,7 +181,7 @@ module api.form {
         }
 
         reset() {
-            this.propertyArray.forEach((property: api.data.Property, i: number) => {
+            this.propertyArray.forEach((_property: api.data.Property, i: number) => {
                 let occurrenceView = this.occurrenceViews[i];
                 let occurrence = this.occurrences[i];
                 if (occurrenceView && occurrence) {
@@ -190,19 +190,19 @@ module api.form {
             });
         }
 
-        createNewOccurrenceView(occurrence: FormItemOccurrence<V>): V {
+        createNewOccurrenceView(_occurrence: FormItemOccurrence<V>): V {
             throw new Error('Must be implemented by inheritor');
         }
 
-        updateOccurrenceView(occurrenceView: V, propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
+        updateOccurrenceView(_occurrenceView: V, _propertyArray: PropertyArray, _unchangedOnly?: boolean): wemQ.Promise<void> {
             throw new Error('Must be implemented by inheritor');
         }
 
-        resetOccurrenceView(occurrenceView: V) {
+        resetOccurrenceView(_occurrenceView: V) {
             throw new Error('Must be implemented by inheritor');
         }
 
-        createNewOccurrence(formItemOccurrences: FormItemOccurrences<V>, insertAtIndex: number): FormItemOccurrence<V> {
+        createNewOccurrence(_formItemOccurrences: FormItemOccurrences<V>, _insertAtIndex: number): FormItemOccurrence<V> {
             throw new Error('Must be implemented by inheritor');
         }
 

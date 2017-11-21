@@ -7,7 +7,6 @@ module api.content.site.inputtype.authappselector {
 
     import Option = api.ui.selector.Option;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import SelectedOptionView = api.ui.selector.combobox.SelectedOptionView;
     import BaseSelectedOptionsView = api.ui.selector.combobox.BaseSelectedOptionsView;
     import SiteConfigProvider = api.content.site.inputtype.siteconfigurator.SiteConfigProvider;
 

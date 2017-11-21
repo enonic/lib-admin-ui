@@ -1,9 +1,7 @@
 import ComboBox = api.ui.selector.combobox.ComboBox;
 import ComboBoxConfig = api.ui.selector.combobox.ComboBoxConfig;
 import BaseSelectedOptionsView = api.ui.selector.combobox.BaseSelectedOptionsView;
-import Viewer = api.ui.Viewer;
 import hasElement = FormOptionSetSpec.hasElement;
-import hasElementByClassName = FormOptionSetSpec.hasElementByClassName;
 import NamesAndIconViewer = api.ui.NamesAndIconViewer;
 import Option = api.ui.selector.Option;
 import PositionType = api.ui.selector.combobox.PositionType;
@@ -124,10 +122,6 @@ describe('api.ui.selector.combobox.ComboBox', () => {
 
     });
 
-    function createComboBox(config: ComboBoxConfig<any>) {
-        return new ComboBox('comboboxName', config);
-    }
-
     function createDefaultComboBox() {
         const cbox = new ComboBox('comboboxName', createComboBoxConfig());
 
@@ -182,13 +176,6 @@ describe('api.ui.selector.combobox.ComboBox', () => {
             removeMissingSelectedOptions: true,
 
             skipAutoDropShowOnValueChange: true
-        };
-    }
-
-    function createComboBoxMinimumConfig(): ComboBoxConfig<any> {
-        const selectedOptionsView = new BaseSelectedOptionsView();
-        return <ComboBoxConfig<any>> {
-            selectedOptionsView
         };
     }
 

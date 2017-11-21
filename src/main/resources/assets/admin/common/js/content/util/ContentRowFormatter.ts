@@ -7,7 +7,8 @@ module api.content.util {
 
     export class ContentRowFormatter {
 
-        public static nameFormatter(row: number, cell: number, value: any, columnDef: any, node: TreeNode<ContentSummaryAndCompareStatus>) {
+        public static nameFormatter(_row: number, _cell: number, _value: any, _columnDef: any,
+                                    node: TreeNode<ContentSummaryAndCompareStatus>) {
             const data = node.getData();
             if (data.getContentSummary() || data.getUploadItem()) {
                 let viewer = <ContentSummaryAndCompareStatusViewer> node.getViewer('name');
@@ -22,7 +23,7 @@ module api.content.util {
             return '';
         }
 
-        public static orderFormatter(row: number, cell: number, value: any, columnDef: any,
+        public static orderFormatter(_row: number, _cell: number, value: any, _columnDef: any,
                                      node: TreeNode<ContentSummaryAndCompareStatus>) {
             let wrapper = new api.dom.SpanEl();
 
@@ -52,16 +53,13 @@ module api.content.util {
             return wrapper.toString();
         }
 
-        public static statusFormatter(row: number, cell: number, value: any, columnDef: any,
+        public static statusFormatter(_row: number, _cell: number, _value: any, _columnDef: any,
                                       node: TreeNode<ContentSummaryAndCompareStatus>) {
-
-            const data = node.getData();
-
-            return ContentRowFormatter.doStatusFormat(data, value);
+            return ContentRowFormatter.doStatusFormat(node.getData());
         }
 
-        public static statusSelectorFormatter(row: number, cell: number, value: ContentTreeSelectorItem, columnDef: any,
-                                              node: TreeNode<Option<ContentTreeSelectorItem>>) {
+        public static statusSelectorFormatter(_row: number, _cell: number, value: ContentTreeSelectorItem, _columnDef: any,
+                                              _node: TreeNode<Option<ContentTreeSelectorItem>>) {
 
             if (api.ObjectHelper.iFrameSafeInstanceOf(value, ContentAndStatusTreeSelectorItem)) {
 
@@ -71,14 +69,14 @@ module api.content.util {
                     return ContentRowFormatter.doStatusFormat(
                         ContentSummaryAndCompareStatus.fromContentAndCompareAndPublishStatus(value.getContent(),
                             item.getCompareStatus(),
-                            item.getPublishStatus()), item.getCompareStatus());
+                            item.getPublishStatus()));
                 }
             }
 
             return '';
         }
 
-        private static doStatusFormat(data: ContentSummaryAndCompareStatus, value: any): string {
+        private static doStatusFormat(data: ContentSummaryAndCompareStatus): string {
 
             if (data && data.getContentSummary()) {
 
@@ -88,8 +86,9 @@ module api.content.util {
                 status.setHtml(data.getStatusText());
 
                 return status.toString();
+            }
 
-            } else if (data.getUploadItem()) { // uploading node
+            if (data.getUploadItem()) { // uploading node
                 const compareStatusText = new api.ui.ProgressBar(data.getUploadItem().getProgress());
                 return new api.dom.SpanEl().appendChild(compareStatusText).toString();
             }

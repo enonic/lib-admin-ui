@@ -107,7 +107,7 @@ module api.content.page.region {
 
             // Remove regions not existing in regionDescriptors
             let regionsToRemove: Region[] = this.getRegions().
-                filter((region: Region, index: number) => {
+                filter((region: Region) => {
                     return !regionDescriptors.
                         some((regionDescriptor: RegionDescriptor) => {
                             return regionDescriptor.getName() === region.getName();

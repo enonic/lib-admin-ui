@@ -61,9 +61,7 @@ module api.ui.selector.combobox {
             let comboBox = new LoaderComboBox<OPTION_DISPLAY_VALUE>(builder.comboBoxName, this.createComboboxConfig(
                 builder), builder.loader);
 
-            comboBox.onClicked((event: MouseEvent) => {
-                comboBox.giveFocus();
-            });
+            comboBox.onClicked(() => comboBox.giveFocus());
 
             return comboBox;
         }
@@ -299,7 +297,7 @@ module api.ui.selector.combobox {
 
         private setupLoader() {
 
-            this.comboBox.onOptionFilterInputValueChanged((event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>) => {
+            this.comboBox.onOptionFilterInputValueChanged((event: OptionFilterInputValueChangedEvent) => {
                 return this.reload(event.getNewValue());
             });
 

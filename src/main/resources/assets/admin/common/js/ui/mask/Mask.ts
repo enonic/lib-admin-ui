@@ -28,11 +28,9 @@ module api.ui.mask {
                         this.hide();
                     }
                 });
-                this.masked.onRemoved((event) => {
-                    this.remove();
-                });
+                this.masked.onRemoved(() => this.remove());
                 // Masked element might have been resized on window resize
-                ResponsiveManager.onAvailableSizeChanged(api.dom.Body.get(), (item) => {
+                ResponsiveManager.onAvailableSizeChanged(api.dom.Body.get(), () => {
                     if (this.isVisible()) {
                         this.positionOver(this.masked);
                     }

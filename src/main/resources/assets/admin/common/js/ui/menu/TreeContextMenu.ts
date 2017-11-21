@@ -40,7 +40,7 @@ module api.ui.menu {
                 for (let i = 0; i < childActions.length; i++) {
                     subItems.push(this.addAction(childActions[i]));
                 }
-                menuItem.onClicked((event: MouseEvent) => {
+                menuItem.onClicked(() => {
                     for (let i = 0; i < subItems.length; i++) {
                         subItems[i].toggleExpand();
                     }

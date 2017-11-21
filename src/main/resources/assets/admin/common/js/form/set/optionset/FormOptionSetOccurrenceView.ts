@@ -2,7 +2,6 @@ module api.form {
 
     import PropertySet = api.data.PropertySet;
     import PropertyArray = api.data.PropertyArray;
-    import PropertyPath = api.data.PropertyPath;
     import ValueTypes = api.data.ValueTypes;
     import Value = api.data.Value;
     import i18n = api.util.i18n;

@@ -1,11 +1,5 @@
 module api.content.site.inputtype.siteconfigurator {
-
-    import SelectionItem = api.app.browse.SelectionItem;
-    import ContentSummary = api.content.ContentSummary;
-    import DialogButton = api.ui.dialog.DialogButton;
-    import DivEl = api.dom.DivEl;
     import FormView = api.form.FormView;
-    import ModalDialogHeader = api.ui.dialog.ModalDialogHeader;
     import InputView = api.form.InputView;
     import ContentSelector = api.content.form.inputtype.contentselector.ContentSelector;
     import PrincipalSelector = api.content.form.inputtype.principalselector.PrincipalSelector;
@@ -52,7 +46,7 @@ module api.content.site.inputtype.siteconfigurator {
 
             this.addClass('site-configurator-dialog');
 
-            CreateHtmlAreaDialogEvent.on((event: CreateHtmlAreaDialogEvent) => {
+            CreateHtmlAreaDialogEvent.on(() => {
                 this.addClass('masked');
                 this.addClass('await-confirmation');
 
@@ -142,7 +136,7 @@ module api.content.site.inputtype.siteconfigurator {
         private handleSelectorsDropdowns(formView: FormView) {
             let comboboxes = this.getComboboxesFromFormView(formView);
 
-            this.getContentPanel().onScroll((event) => {
+            this.getContentPanel().onScroll(() => {
                 comboboxes.forEach((comboBox: ComboBox<any>) => {
                     comboBox.hideDropdown();
                 });

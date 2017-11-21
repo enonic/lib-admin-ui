@@ -5,7 +5,6 @@ module api.content.resource {
     import ValueExpr = api.query.expr.ValueExpr;
     import LogicalExpr = api.query.expr.LogicalExpr;
     import LogicalOperator = api.query.expr.LogicalOperator;
-    import QueryExpr = api.query.expr.QueryExpr;
     import ConstraintExpr = api.query.expr.ConstraintExpr;
 
     export class FragmentContentSummaryRequest extends ContentSummaryRequest {

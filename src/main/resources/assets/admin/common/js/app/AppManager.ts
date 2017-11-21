@@ -7,8 +7,6 @@ module api.app {
 
         private connectionRestoredListeners: {():void}[] = [];
 
-        private showLauncherListeners: {():void}[] = [];
-
         constructor() {
             api.app.AppManager.INSTANCE = this;
 

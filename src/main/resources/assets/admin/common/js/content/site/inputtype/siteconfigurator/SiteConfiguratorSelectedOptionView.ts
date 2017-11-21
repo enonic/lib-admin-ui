@@ -1,14 +1,11 @@
 module api.content.site.inputtype.siteconfigurator {
 
     import PropertyTree = api.data.PropertyTree;
-    import PropertySet = api.data.PropertySet;
     import Option = api.ui.selector.Option;
     import FormView = api.form.FormView;
-    import FormContextBuilder = api.form.FormContextBuilder;
     import Application = api.application.Application;
     import ApplicationKey = api.application.ApplicationKey;
     import SiteConfig = api.content.site.SiteConfig;
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
     import ContentFormContext = api.content.form.ContentFormContext;
 
     export class SiteConfiguratorSelectedOptionView extends api.ui.selector.combobox.BaseSelectedOptionView<Application> {
@@ -99,21 +96,12 @@ module api.content.site.inputtype.siteconfigurator {
             this.siteConfig = siteConfig;
         }
 
-        private createEditButton(): api.dom.AEl {
-            let editButton = new api.dom.AEl('edit');
+        protected onEditButtonClicked(e: MouseEvent) {
+            this.showConfigureDialog();
 
-            editButton.onClicked((event: MouseEvent) => {
-                if (this.isEditable()) {
-                    this.notifyEditClicked(event);
-                    this.showConfigureDialog();
-                    event.stopPropagation();
-                    event.preventDefault();
-                    return false;
-                }
-            });
-
-            return editButton;
+            return super.onEditButtonClicked(e);
         }
+
         showConfigureDialog() {
 
             if (this.formView) {
@@ -161,10 +149,6 @@ module api.content.site.inputtype.siteconfigurator {
             this.formView = formViewStateToRevertTo;
             this.formView.validate(false, true);
             this.toggleClass('invalid', !this.formView.isValid());
-        }
-
-        private undoSelectionOnCancel(comboBoxToUndoSelectionOnCancel: SiteConfiguratorComboBox) {
-            comboBoxToUndoSelectionOnCancel.deselect(this.application);
         }
 
         private applyTemporaryConfig(tempSiteConfig: SiteConfig) {
@@ -221,22 +205,6 @@ module api.content.site.inputtype.siteconfigurator {
 
         getFormView(): FormView {
             return this.formView;
-        }
-
-        onEditClicked(listener: (event: MouseEvent) => void) {
-            this.editClickedListeners.push(listener);
-        }
-
-        unEditClicked(listener: (event: MouseEvent) => void) {
-            this.editClickedListeners = this.editClickedListeners.filter((curr) => {
-                return listener !== curr;
-            });
-        }
-
-        private notifyEditClicked(event: MouseEvent) {
-            this.editClickedListeners.forEach((listener) => {
-                listener(event);
-            });
         }
 
         onSiteConfigFormDisplayed(listener: {(applicationKey: ApplicationKey): void;}) {

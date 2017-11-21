@@ -24,7 +24,7 @@ module api.application {
             });
         }
 
-        loadByApplication(applicationKey: ApplicationKey) {
+        protected loadByApplication(_applicationKey: ApplicationKey) {
             throw new Error('Must be implemented by inheritor');
         }
 

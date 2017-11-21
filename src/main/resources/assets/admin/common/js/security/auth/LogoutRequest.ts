@@ -16,10 +16,9 @@ module api.security.auth {
         }
 
         sendAndParse(): wemQ.Promise<void> {
+            this.send();
 
-            return this.send().then((response: api.rest.JsonResponse<LogoutResultJson>) => {
-                return;
-            });
+            return wemQ<void>(null);
         }
 
     }

@@ -10,7 +10,7 @@ module api.macro {
             return object.getDisplayName();
         }
 
-        resolveSubName(object: MacroDescriptor, relativePath: boolean = false): string {
+        resolveSubName(object: MacroDescriptor): string {
             return object.getDescription();
         }
 

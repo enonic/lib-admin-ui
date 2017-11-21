@@ -1,11 +1,9 @@
 module api.form.inputtype {
-
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
 
-    export interface InputTypeView<RAW_VALUE_TYPE> {
+    export interface InputTypeView {
 
         getValueType(): ValueType;
 

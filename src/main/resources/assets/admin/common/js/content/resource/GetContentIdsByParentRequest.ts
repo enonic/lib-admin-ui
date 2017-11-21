@@ -1,9 +1,5 @@
 module api.content.resource {
 
-    import ListContentResult = api.content.resource.result.ListContentResult;
-    import ContentResponse = api.content.resource.result.ContentResponse;
-    import ChildOrder = api.content.order.ChildOrder;
-
     export class GetContentIdsByParentRequest extends ContentResourceRequest<any, any> {
 
         private parentId: ContentId;

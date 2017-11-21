@@ -37,12 +37,6 @@ module api.security.acl {
                 });
         }
 
-        private enumToStrings(types: PrincipalType[]): string[] {
-            return types.map((type: PrincipalType) => {
-                return PrincipalType[type].toUpperCase();
-            });
-        }
-
         setUserStoreKey(key: UserStoreKey): FindUserStoreAccessControlEntriesRequest {
             this.userStoreKey = key;
             return this;
