@@ -27,9 +27,8 @@ module api.app.bar {
             return this.id;
         }
 
-        changeToEditMode(id: string) {
-            this.mode = 'edit';
-            this.id = id;
+        getMode(): string {
+            return this.mode;
         }
 
         equals(other: AppBarTabId): boolean {
