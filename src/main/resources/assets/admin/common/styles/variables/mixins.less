@@ -1,38 +1,23 @@
 .linear-gradient(@side, @startColor, @stopColor) {
   background: @startColor; /* Old browsers */
-  background: -webkit-linear-gradient(@side, @startColor, @stopColor); /* Chrome10+,Safari5.1+ */
-  background: -moz-linear-gradient(@side, @startColor, @stopColor); /* FF3.6+ */
-  background: -ms-linear-gradient(@side, @startColor, @stopColor); /* IE10+ */
-  background: -o-linear-gradient(@side, @startColor, @stopColor); /* Opera 11.10+ */
   background: linear-gradient(@side, @startColor, @stopColor); /* W3C */
 }
 
 .box-shadow(@value1,@value2:X,...) {
   @params: ~`"@{arguments}".replace(/[\[\]]|\,\sX/g, '')`;
 
-  -webkit-box-shadow: @params;
-  -moz-box-shadow: @params;
   box-shadow: @params;
 }
 
 .filter(@value) {
-  -webkit-filter: @value;
   filter: @value;
 }
 
 .outline(@params) {
-  -webkit-outline: @params;
-  -moz-outline: @params;
-  -ms-outline: @params;
-  -o-outline: @params;
   outline: @params;
 }
 
 .border-radius(@size) {
-  -webkit-border-radius: @size;
-  -moz-border-radius: @size;
-  -ms-border-radius: @size;
-  -o-border-radius: @size;
   border-radius: @size;
 }
 
@@ -50,11 +35,6 @@
 }
 
 .user-select(@value) {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: -moz-none;
-  -ms-user-select: none;
   user-select: none;
 }
 
@@ -67,15 +47,10 @@
 }
 
 .noAppearance() {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
 }
 
 .box-sizing(@value) {
-  -moz-box-sizing: @value;
-  -webkit-box-sizing: @value;
-  -ms-box-sizing: @value;
   box-sizing: @value;
 }
 
@@ -125,23 +100,14 @@
 
 .transition (@value1,@value2:X,...) {
   @params: ~`"@{arguments}".replace(/[\[\]]|\,\sX/g, '')`;
-
-  -webkit-transition: @params;
-  -moz-transition: @params;
-  -o-transition: @params;
   transition: @params;
 }
 
 .transition-timing-function(@value) {
-  -webkit-transition-timing-function: @value;
   transition-timing-function: @value;
 }
 
 .transform (@function) {
-  -webkit-transform: @function;
-  -moz-transform: @function;
-  -ms-transform: @function;
-  -o-transform: @function;
   transform: @function;
 }
 
@@ -179,9 +145,6 @@
 }
 
 .animation (@name, @duration: 1s, @delay: 0s, @ease: ease, @iteration: infinite) {
-  -webkit-animation: @name @duration @delay @ease @iteration;
-  -moz-animation: @name @duration @delay @ease @iteration;
-  -ms-animation: @name @duration @delay @ease @iteration;
   animation: @name @duration @delay @ease @iteration;
 }
 
@@ -201,32 +164,18 @@
 }
 
 .flex(@values) {
-  -webkit-box-flex: @values;
-  -moz-box-flex: @values;
-  -webkit-flex: @values;
-  -ms-flex: @values;
   flex: @values;
 }
 
 .order(@value) {
-  -webkit-box-ordinal-group: @value;
-  -moz-box-ordinal-group: @value;
-  -ms-flex-order: @value;
-  -webkit-order: @value;
   order: @value;
 }
 
 .align-items(@value) {
-  -webkit-align-items: @value;
-  -moz-align-items: @value;
-  -ms-align-items: @value;
-  -ms-flex-align: @value;
   align-items: @value;
 }
 
 .opacity(@value) {
-  -webkit-opacity: @value;
-  -moz-opacity: @value;
   opacity: @value;
 }
 
@@ -707,9 +656,6 @@
 
     background-repeat: no-repeat;
     background-attachment: fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
     background-size: cover;
     background-position: center;
 
@@ -771,44 +717,6 @@
   background-image: none;
   box-shadow: none;
   background-color: @bgColor;
-}
-
-.is-processing-mixin() {
-  .dependants {
-    display: none !important;
-  }
-
-  .progress-bar {
-    display: block;
-    margin-bottom: 20px;
-    height: 25px;
-
-    .progress-indicator {
-      background-color: @admin-green;
-    }
-  }
-
-  .button-container {
-    float: none;
-    text-align: center;
-
-    *:not(.cancel-button-bottom) {
-      display: none !important;
-    }
-
-    .cancel-button-bottom {
-      span {
-        display: none;
-      }
-      &:after {
-        content: attr(data-button-text);
-        color: @admin-white;
-        width: 100px;
-        line-height: 24px;
-        font-size: 16px;
-      }
-    }
-  }
 }
 
 .content-status-mixin() {
