@@ -16,12 +16,17 @@ module api.content.resource {
             return this.dependencies;
         }
 
-        public getById(contentId: ContentId): ResolveDependencyResult {
-            const result = this.getDependencies().filter(dependency => {
-                return dependency.getContentId().equals(contentId);
+        public getIncomingDependenciesCount(): Object {
+            let object = {};
+            this.dependencies.forEach(dependencyResult => {
+                const dependency = dependencyResult.getDependency();
+                const contentId = dependencyResult.getContentId().toString();
+                if (dependency.inbound && dependency.inbound.length > 0) {
+                    object[contentId] = dependency.inbound.reduce((sum, dep) => sum + dep.count, 0);
+                }
             });
 
-            return result.length == 1 ? result[0] : null;
+            return object;
         }
 
         public static fromJson(json: ResolveDependenciesResultJson): ResolveDependenciesResult {
