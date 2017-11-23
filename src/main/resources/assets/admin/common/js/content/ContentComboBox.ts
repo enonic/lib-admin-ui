@@ -169,10 +169,8 @@ module api.content {
 
             const deferred = wemQ.defer<void>();
 
-            if (!force) {
-                if (this.getOptions().length > 0 && !this.getLoader().isPreLoaded()) {
-                    return wemQ(null);
-                }
+            if (!force && this.isNoNeedToReload()) {
+                return wemQ(null);
             }
 
             if (this.ifFlatLoadingMode(inputValue)) {
