@@ -282,7 +282,7 @@ module api.ui.selector.combobox {
         }
 
         protected reload(inputValue: string, force: boolean = true): wemQ.Promise<any> {
-            if (!force && this.isNoNeedToReload()) {
+            if (!force && this.isLoadingOrLoaded()) {
                 return wemQ(null);
             }
             if (!StringHelper.isBlank(inputValue)) {
@@ -293,7 +293,7 @@ module api.ui.selector.combobox {
             }
         }
 
-        protected isNoNeedToReload(): boolean {
+        protected isLoadingOrLoaded(): boolean {
             return (this.getOptions().length > 0 && this.getLoader().isLoaded()) || this.getLoader().isLoading();
         }
 
