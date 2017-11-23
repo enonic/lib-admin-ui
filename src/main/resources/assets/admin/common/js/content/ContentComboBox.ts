@@ -169,7 +169,7 @@ module api.content {
 
             const deferred = wemQ.defer<void>();
 
-            if (!force && this.isNoNeedToReload()) {
+            if (!force && this.isLoadingOrLoaded()) {
                 return wemQ(null);
             }
 
