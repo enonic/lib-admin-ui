@@ -74,19 +74,19 @@ module api.util.htmlarea.dialog {
         private loadImage() {
             let loader = this.imageSelector.getLoader();
 
-            let singleLoadListener = (event: api.util.loader.event.LoadedDataEvent<ImageTreeSelectorItem>) => {
-                let imageContent = this.getImageContent(event.getData());
+            let singleLoadListener = (items: ImageTreeSelectorItem[]) => {
+                let imageContent = this.getImageContent(items);
                 if (imageContent) {
                     this.imageSelector.setValue(imageContent.getId());
                     this.createImgElForExistingImage(imageContent);
                     this.previewImage();
                     this.imageSelectorFormItem.addClass('selected-item-preview');
                 }
-                loader.unLoadedData(singleLoadListener);
+                this.imageSelector.unLoaded(singleLoadListener);
 
                 return wemQ(null);
             };
-            loader.onLoadedData(singleLoadListener);
+            this.imageSelector.onLoaded(singleLoadListener);
 
             loader.load();
         }

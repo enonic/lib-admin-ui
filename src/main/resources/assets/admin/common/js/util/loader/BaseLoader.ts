@@ -155,9 +155,7 @@ module api.util.loader {
         notifyLoadedData(results: OBJECT[], postLoad?: boolean, silent: boolean = false) {
             this.status = LoaderStatus.LOADED;
             if(!silent) {
-                this.loadedDataListeners.forEach((listener: (event: LoadedDataEvent<OBJECT>) => void) => {
-                    listener.call(this, new LoadedDataEvent<OBJECT>(results, postLoad));
-                });
+                this.loadedDataListeners.reduce(Q.when, Q(new LoadedDataEvent<OBJECT>(results, postLoad)));
             }
         }
 
