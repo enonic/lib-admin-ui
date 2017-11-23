@@ -216,28 +216,28 @@ module api.util.htmlarea.editor {
                 formats: {
                     alignleft: [
                         {
-                            selector: 'img,figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
+                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
                             styles: {textAlign: 'left'}
                         },
                         {selector: 'table', collapsed: false, styles: {float: 'left'}}
                     ],
                     aligncenter: [
                         {
-                            selector: 'img,figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
+                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
                             styles: {textAlign: 'center'}
                         },
                         {selector: 'table', collapsed: false, styles: {marginLeft: 'auto', marginRight: 'auto'}}
                     ],
                     alignright: [
                         {
-                            selector: 'img,figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
+                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
                             styles: {textAlign: 'right'}
                         },
                         {selector: 'table', collapsed: false, styles: {float: 'right'}}
                     ],
                     alignjustify: [
                         {
-                            selector: 'img,figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
+                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
                             styles: {textAlign: 'justify'}
                         }
                     ]
@@ -264,6 +264,11 @@ module api.util.htmlarea.editor {
                     editor.addCommand('openCharMapDialog', this.notifyCharMapDialog, this);
 
                     editor.on('NodeChange', (e) => {
+                        if (e.element && /^(FIGCAPTION)$/.test(e.element.nodeName) && /<[^>]*>/.test(e.element.innerHTML)) {
+                            e.preventDefault();
+                            e.element.innerHTML = '';
+                        }
+
                         if (this.nodeChangeHandler) {
                             setTimeout(() => this.nodeChangeHandler(e), 30);
                         }
