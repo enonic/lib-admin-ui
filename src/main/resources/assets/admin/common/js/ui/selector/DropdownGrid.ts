@@ -100,7 +100,7 @@ module api.ui.selector {
         private initCommonGridProps() {
             this.getGrid().addClass('options-container');
             this.getGrid().getEl().setPosition('absolute');
-            this.getGrid().hide();
+            this.hide();
             this.getGrid().setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
         }
 
@@ -123,15 +123,16 @@ module api.ui.selector {
         }
 
         isVisible(): boolean {
-            return this.getGrid().isVisible();
+            return !this.getGrid().hasClass('hidden') && this.getGrid().isVisible();
         }
 
         show() {
-            this.getGrid().show();
+            this.getGrid().removeClass('hidden');
         }
 
         hide() {
-            this.getGrid().hide();
+            // hiding grid with visibility: hidden instead of display: none to allow scrollTop modification
+            this.getGrid().addClass('hidden');
         }
 
         getSelectedOptionCount(): number {
