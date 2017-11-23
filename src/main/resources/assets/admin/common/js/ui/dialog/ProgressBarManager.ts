@@ -2,11 +2,13 @@ module api.ui.dialog {
     import MenuButtonProgressBarManager = api.ui.button.MenuButtonProgressBarManager;
     import TaskState = api.task.TaskState;
     import i18n = api.util.i18n;
+    import DivEl = api.dom.DivEl;
 
     export interface ProgressBarManagerConfig {
         processingLabel: string;
         processHandler: () => void;
         unlockControlsHandler?: () => void;
+        createProcessingMessage?: () => api.dom.Element;
         managingElement: ModalDialog;
     }
 
@@ -24,6 +26,10 @@ module api.ui.dialog {
 
         private progressBar: ProgressBar;
 
+        private processingMessageContainer: api.dom.Element;
+
+        private createProcessingMessage: () => api.dom.Element;
+
         private processingLabel: string;
 
         private processHandler: () => void;
@@ -38,22 +44,33 @@ module api.ui.dialog {
             this.managingElement = config.managingElement;
             this.processHandler = config.processHandler;
             this.processingLabel = config.processingLabel;
-            this.unlockControlsHandler = config.unlockControlsHandler || (() => { /* empty */
+            this.unlockControlsHandler = config.unlockControlsHandler || (() => { /*empty*/
             });
+            this.createProcessingMessage = config.createProcessingMessage;
 
             this.managingElement.addClass('progress-manageable');
         }
 
-        private createProgressBar(): ProgressBar {
+        private createProgressBar() {
             if (this.progressBar) {
                 this.progressBar.setValue(0);
-                return this.progressBar;
+            } else {
+                this.progressBar = new ProgressBar(0);
+                this.managingElement.appendChildToContentPanel(this.progressBar);
             }
+        }
 
-            const progressBar = new ProgressBar(0);
-            this.managingElement.appendChildToContentPanel(progressBar);
-
-            return progressBar;
+        private createProcessingMessageContainer() {
+            if (this.createProcessingMessage) {
+                if (this.processingMessageContainer) {
+                    this.processingMessageContainer.removeChildren();
+                    this.processingMessageContainer.appendChild(this.createProcessingMessage());
+                } else {
+                    this.processingMessageContainer = new DivEl('progress-message');
+                    this.processingMessageContainer.appendChild(this.createProcessingMessage());
+                    this.managingElement.appendChildToContentPanel(this.processingMessageContainer);
+                }
+            }
         }
 
         private enableProgressBar() {
@@ -64,7 +81,8 @@ module api.ui.dialog {
             MenuButtonProgressBarManager.getProgressBar().setValue(0);
             MenuButtonProgressBarManager.getProgressBar().setLabel(this.processingLabel);
             this.unlockControlsHandler();
-            this.progressBar = this.createProgressBar();
+            this.createProcessingMessageContainer();
+            this.createProgressBar();
             MenuButtonProgressBarManager.updateProgressHandler(this.processHandler);
         }
 
@@ -122,10 +140,10 @@ module api.ui.dialog {
             });
         }
 
-        pollTask(taskId: api.task.TaskId, elapsed: number = 0) {
+        pollTask(taskId: api.task.TaskId, elapsed: number = 0, instant?: boolean) {
             const interval = ProgressBarManager.pollInterval;
-            setTimeout(() => {
-                if (!this.isEnabled() && elapsed >= ProgressBarManager.progressBarDelay) {
+            const checkUpdates = () => {
+                if (!this.isEnabled() && (elapsed >= ProgressBarManager.progressBarDelay || instant)) {
                     this.enableProgressBar();
                 }
 
@@ -158,7 +176,12 @@ module api.ui.dialog {
                     api.DefaultErrorHandler.handle(reason);
                 }).done();
 
-            }, interval);
+            };
+            if (instant) {
+                checkUpdates();
+            } else {
+                setTimeout(checkUpdates, interval);
+            }
         }
     }
 }

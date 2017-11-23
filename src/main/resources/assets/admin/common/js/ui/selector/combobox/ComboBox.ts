@@ -7,7 +7,6 @@ module api.ui.selector.combobox {
     import DelayedFunctionCall = api.util.DelayedFunctionCall;
     import Button = api.ui.button.Button;
     import ElementHelper = api.dom.ElementHelper;
-    import IFrameEl = api.dom.IFrameEl;
     import Body = api.dom.Body;
     import WindowDOM = api.dom.WindowDOM;
     import GridColumn = api.ui.grid.GridColumn;
@@ -1009,6 +1008,11 @@ module api.ui.selector.combobox {
                 .filter(x => selectedValues.indexOf(x) === -1)
                 .concat(selectedValues.filter(x => gridOptions.indexOf(x) === -1));
 
+        }
+
+        setEnabled(enabled: boolean) {
+            this.dropdownHandle.setEnabled(enabled);
+            this.input.getEl().setDisabled(!enabled);
         }
 
         onOptionSelected(listener: (event: SelectedOptionEvent<OPTION_DISPLAY_VALUE>) => void) {

@@ -25,32 +25,6 @@
     }
   }
 
-  &.locked {
-
-    .dialog-buttons {
-
-      button:not(.force-enabled) {
-        font-family: 'icomoon';
-        pointer-events: none;
-        opacity: 0.5;
-      }
-    }
-  }
-
-  &.locked:not(.no-action) {
-    .dialog-buttons {
-      button:not(.force-enabled):not(.no-animation) {
-        .icon-spinner;
-        &:before {
-          .animation(rotate360, .5s, .0s, linear);
-          color: white;
-          display: inline-block;
-          margin-left: 5px;
-        }
-      }
-    }
-  }
-
   .sub-title {
     margin-top: 20px;
     margin-bottom: -10px;
