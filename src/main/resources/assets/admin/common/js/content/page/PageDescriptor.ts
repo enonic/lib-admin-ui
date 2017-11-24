@@ -1,6 +1,8 @@
 module api.content.page {
 
-    export class PageDescriptor extends Descriptor implements api.Cloneable {
+    export class PageDescriptor
+        extends Descriptor
+        implements api.Cloneable {
 
         private regions: region.RegionDescriptor[];
 
@@ -13,12 +15,30 @@ module api.content.page {
             return this.regions;
         }
 
+        public static create(): PageDescriptorBuilder {
+            return new PageDescriptorBuilder();
+        }
+
+        public static fromJson(json: api.content.page.PageDescriptorJson): PageDescriptor {
+
+            return PageDescriptor.create()
+                .setName(new DescriptorName(json.name))
+                .setDisplayName(json.displayName)
+                .setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null)
+                .setKey(DescriptorKey.fromString(json.key))
+                .setRegions(json.regions.map(regionJson => {
+                    return api.content.page.region.RegionDescriptor.fromJson(regionJson);
+                }))
+                .build();
+        }
+
         public clone(): PageDescriptor {
             return new PageDescriptorBuilder(this).build();
         }
     }
 
-    export class PageDescriptorBuilder extends DescriptorBuilder {
+    export class PageDescriptorBuilder
+        extends DescriptorBuilder {
 
         regions: region.RegionDescriptor[];
 
@@ -29,20 +49,6 @@ module api.content.page {
             } else {
                 this.regions = [];
             }
-        }
-
-        public fromJson(json: api.content.page.PageDescriptorJson): PageDescriptorBuilder {
-
-            this.setName(new DescriptorName(json.name));
-            this.setDisplayName(json.displayName);
-            this.setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null);
-            this.setKey(DescriptorKey.fromString(json.key));
-            for (let i = 0; i < json.regions.length; i++) {
-                let region = new api.content.page.region.RegionDescriptorBuilder().fromJson(json.regions[i]).build();
-                this.regions.push(region);
-            }
-
-            return this;
         }
 
         public setKey(key: DescriptorKey): PageDescriptorBuilder {
@@ -67,6 +73,11 @@ module api.content.page {
 
         public addRegion(value: region.RegionDescriptor): PageDescriptorBuilder {
             this.regions.push(value);
+            return this;
+        }
+
+        public setRegions(value: region.RegionDescriptor[]): PageDescriptorBuilder {
+            this.regions = value;
             return this;
         }
 

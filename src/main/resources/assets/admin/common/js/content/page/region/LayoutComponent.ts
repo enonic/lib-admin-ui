@@ -163,7 +163,7 @@ module api.content.page.region {
             this.setParent(region);
 
             let layoutComponent = this.build();
-            let layoutRegions = Regions.create().fromJson(json.regions, layoutComponent).build();
+            let layoutRegions = Regions.fromJson(json.regions, layoutComponent);
             layoutComponent.setRegions(layoutRegions);
             return layoutComponent;
         }

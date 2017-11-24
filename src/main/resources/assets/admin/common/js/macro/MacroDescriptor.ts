@@ -1,6 +1,7 @@
 module api.macro {
 
-    export class MacroDescriptor implements api.Equitable {
+    export class MacroDescriptor
+        implements api.Equitable {
 
         private macroKey: MacroKey;
 
@@ -46,6 +47,16 @@ module api.macro {
 
         static create(): MacroDescriptorBuilder {
             return new MacroDescriptorBuilder();
+        }
+
+        static fromJson(json: api.macro.resource.MacroJson): MacroDescriptor {
+            return MacroDescriptor.create()
+                .setKey(MacroKey.fromString(json.key))
+                .setDisplayName(json.displayName)
+                .setDescription(json.description)
+                .setForm(json.form != null ? api.form.Form.fromJson(json.form) : null)
+                .setIconUrl(json.iconUrl)
+                .build();
         }
 
         equals(o: api.Equitable): boolean {
@@ -97,15 +108,6 @@ module api.macro {
             this.description = source.getDescription();
             this.form = source.getForm();
             this.iconUrl = source.getIconUrl();
-            return this;
-        }
-
-        fromJson(json: api.macro.resource.MacroJson) {
-            this.macroKey = MacroKey.fromString(json.key);
-            this.displayName = json.displayName;
-            this.description = json.description;
-            this.form = json.form != null ? api.form.Form.fromJson(json.form) : null;
-            this.iconUrl = json.iconUrl;
             return this;
         }
 

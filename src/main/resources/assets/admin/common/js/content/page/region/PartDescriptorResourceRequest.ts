@@ -17,7 +17,7 @@ module api.content.page.region {
         }
 
         fromJsonToPartDescriptor(json: PartDescriptorJson): PartDescriptor {
-            let partDescriptor = new PartDescriptorBuilder().fromJson(json).build();
+            let partDescriptor = PartDescriptor.fromJson(json);
             this.cache.put(partDescriptor);
             return  partDescriptor;
         }
