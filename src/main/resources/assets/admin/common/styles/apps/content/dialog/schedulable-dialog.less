@@ -1,8 +1,6 @@
 .schedulable-dialog {
 
-  &.is-publishing {
-    .is-processing-mixin();
-
+  &.is-processing {
     .item-list,
     .include-child-check,
     .dialog-buttons button.publish-action,
@@ -13,10 +11,6 @@
 
   &.masked {
     opacity: 0;
-  }
-
-  .progress-bar {
-    display: none;
   }
 
   .dialog-buttons {

@@ -1015,6 +1015,11 @@ module api.ui.selector.combobox {
 
         }
 
+        setEnabled(enabled: boolean) {
+            this.dropdownHandle.setEnabled(enabled);
+            this.input.getEl().setDisabled(!enabled);
+        }
+
         onOptionSelected(listener: (event: SelectedOptionEvent<OPTION_DISPLAY_VALUE>) => void) {
             this.selectedOptionsView.onOptionSelected(listener);
         }
