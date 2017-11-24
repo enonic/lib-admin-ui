@@ -9,6 +9,7 @@ module api.ui.selector.combobox {
     import GridColumn = api.ui.grid.GridColumn;
     import StringHelper = api.util.StringHelper;
     import i18n = api.util.i18n;
+    import KeyEventsHandler = api.event.KeyEventsHandler;
 
     export class RichComboBox<OPTION_DISPLAY_VALUE>
         extends api.dom.CompositeFormInputEl {
@@ -60,9 +61,7 @@ module api.ui.selector.combobox {
             let comboBox = new LoaderComboBox<OPTION_DISPLAY_VALUE>(builder.comboBoxName, this.createComboboxConfig(
                 builder), builder.loader);
 
-            comboBox.onClicked((event: MouseEvent) => {
-                comboBox.giveFocus();
-            });
+            comboBox.onClicked(() => comboBox.giveFocus());
 
             return comboBox;
         }
@@ -253,6 +252,10 @@ module api.ui.selector.combobox {
             return false;
         }
 
+        setKeyEventsHandler(handler: KeyEventsHandler) {
+            this.comboBox.setKeyEventsHandler(handler);
+        }
+
         protected getDisplayValueId(value: Object): string {
             let val = value[this.identifierMethod]();
             return typeof val === 'object' && val['toString'] ? val.toString() : val;
@@ -279,10 +282,8 @@ module api.ui.selector.combobox {
         }
 
         protected reload(inputValue: string, force: boolean = true): wemQ.Promise<any> {
-            if (!force) {
-                if (this.getOptions().length > 0 && !this.loader.isPreLoaded()) {
-                    return wemQ(null);
-                }
+            if (!force && this.isLoadingOrLoaded()) {
+                return wemQ(null);
             }
             if (!StringHelper.isBlank(inputValue)) {
                 return this.loader.search(inputValue).catch(api.DefaultErrorHandler.handle);
@@ -292,9 +293,13 @@ module api.ui.selector.combobox {
             }
         }
 
+        protected isLoadingOrLoaded(): boolean {
+            return (this.getOptions().length > 0 && this.getLoader().isLoaded()) || this.getLoader().isLoading();
+        }
+
         private setupLoader() {
 
-            this.comboBox.onOptionFilterInputValueChanged((event: OptionFilterInputValueChangedEvent<OPTION_DISPLAY_VALUE>) => {
+            this.comboBox.onOptionFilterInputValueChanged((event: OptionFilterInputValueChangedEvent) => {
                 return this.reload(event.getNewValue());
             });
 

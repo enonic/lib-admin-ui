@@ -1,6 +1,4 @@
 module api.ui.security.acl {
-
-    import i18n = api.util.i18n;
     import TabMenuItemBuilder = api.ui.tab.TabMenuItemBuilder;
     import AppHelper = api.util.AppHelper;
 

@@ -129,7 +129,7 @@ module api.ui.panel {
         /*
          * Override this method to decide whether given panel at given index can be removed or not. Default is true.
          */
-        canRemovePanel(panel: Panel): boolean {
+        canRemovePanel(_panel: Panel): boolean {
             return true;
         }
 

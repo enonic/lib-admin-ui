@@ -40,7 +40,7 @@ module api.ui.text {
 
             this.input = new PasswordInput();
             this.initFocusEvents(this.input);
-            this.input.onInput((event: Event) => {
+            this.input.onInput(() => {
                 this.assessComplexity(this.input.getValue());
                 this.notifyValidityChanged(this.input.isValid());
             });

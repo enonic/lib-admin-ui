@@ -7,7 +7,6 @@ module api.content.resource {
     import CompareExpr = api.query.expr.CompareExpr;
     import FieldExpr = api.query.expr.FieldExpr;
     import ValueExpr = api.query.expr.ValueExpr;
-    import OrderDirection = api.query.expr.OrderDirection;
     import OrderExpr = api.query.expr.OrderExpr;
 
     export class MoveAllowedTargetsRequest extends ContentSummaryRequest {
@@ -42,7 +41,7 @@ module api.content.resource {
                 return logicalExpr;
             }
 
-            this.filterContentPaths.forEach((contentPath: ContentPath, index: number) => {
+            this.filterContentPaths.forEach((_contentPath: ContentPath, index: number) => {
                 if (index === 0 || index === 1) {
                     return;
                 }

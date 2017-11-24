@@ -10,11 +10,7 @@ module api.content.form.inputtype.time {
     /**
      * Uses [[api.data.ValueType]] [[api.data.ValueTypeLocalDate]].
      */
-    export class Date extends support.BaseInputTypeNotManagingAdd<Date> {
-
-        constructor(config: api.form.inputtype.InputTypeViewContext) {
-            super(config);
-        }
+    export class Date extends support.BaseInputTypeNotManagingAdd {
 
         getValueType(): ValueType {
             return ValueTypes.LOCAL_DATE;
@@ -24,7 +20,7 @@ module api.content.form.inputtype.time {
             return super.newInitialValue() || ValueTypes.LOCAL_DATE.newNullValue();
         }
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
+        createInputOccurrenceElement(_index: number, property: Property): api.dom.Element {
             if (!ValueTypes.LOCAL_DATE.equals(property.getType())) {
                 property.convertValueType(ValueTypes.LOCAL_DATE);
             }

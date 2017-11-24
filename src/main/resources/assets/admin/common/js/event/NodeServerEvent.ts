@@ -28,7 +28,7 @@ module api.event {
             return this.change;
         }
 
-        static is(eventJson: api.event.NodeEventJson): boolean {
+        static is(_eventJson: api.event.NodeEventJson): boolean {
             throw new Error('must be implemented in inheritors');
         }
 
@@ -44,7 +44,7 @@ module api.event {
             api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
         }
 
-        static fromJson(nodeEventJson: NodeEventJson): NodeServerEvent {
+        static fromJson(_nodeEventJson: NodeEventJson): NodeServerEvent {
             throw new Error('must be implemented in inheritors');
         }
     }

@@ -2,8 +2,6 @@ module api.ui.security.acl {
 
     import Option = api.ui.selector.Option;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import BaseSelectedOptionView = api.ui.selector.combobox.BaseSelectedOptionView;
-    import Permission = api.security.acl.Permission;
     import UserStoreAccessControlEntry = api.security.acl.UserStoreAccessControlEntry;
     import UserStoreAccessControlEntryLoader = api.security.acl.UserStoreAccessControlEntryLoader;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
@@ -89,7 +87,7 @@ module api.ui.security.acl {
             return this.maximumOccurrences;
         }
 
-        createSelectedOption(option: Option<UserStoreAccessControlEntry>): SelectedOption<UserStoreAccessControlEntry> {
+        createSelectedOption(_option: Option<UserStoreAccessControlEntry>): SelectedOption<UserStoreAccessControlEntry> {
             throw new Error('Not supported, use createItemView instead');
         }
 
@@ -135,7 +133,7 @@ module api.ui.security.acl {
             return true;
         }
 
-        updateOption(option: Option<UserStoreAccessControlEntry>, newOption: Option<UserStoreAccessControlEntry>) {
+        updateOption(_option: Option<UserStoreAccessControlEntry>, _newOption: Option<UserStoreAccessControlEntry>) {
             //TODO
         }
 
@@ -238,11 +236,11 @@ module api.ui.security.acl {
             });
         }
 
-        onOptionMoved(listener: {(moved: SelectedOption<UserStoreAccessControlEntry>): void;}) {
+        onOptionMoved(_listener: {(moved: SelectedOption<UserStoreAccessControlEntry>): void;}) {
             // must be implemented by children
         }
 
-        unOptionMoved(listener: {(moved: SelectedOption<UserStoreAccessControlEntry>): void;}) {
+        unOptionMoved(_listener: {(moved: SelectedOption<UserStoreAccessControlEntry>): void;}) {
             // must be implemented by children
         }
 

@@ -112,7 +112,7 @@ module api.form {
             return allRecordings;
         }
 
-        protected extraValidation(validationRecording: ValidationRecording) {
+        protected extraValidation(_validationRecording: ValidationRecording) {
             // must be implemented by children
         }
 
@@ -154,7 +154,7 @@ module api.form {
             return result;
         }
 
-        protected ensureSelectionArrayExists(propertyArraySet: PropertySet) {
+        protected ensureSelectionArrayExists(_propertyArraySet: PropertySet) {
             // override if needed to add default selection to property set
         }
 

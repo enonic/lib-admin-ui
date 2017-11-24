@@ -23,29 +23,29 @@ module api.ui.selector.combobox {
             this.removable = builder.removable;
         }
 
-        resolveIconUrl(content: T): string {
+        resolveIconUrl(_content: T): string {
             return '';
         }
 
-        resolveTitle(content: T): string {
+        resolveTitle(_content: T): string {
             return '';
         }
 
-        resolveSubTitle(content: T): string {
+        resolveSubTitle(_content: T): string {
             return '';
         }
 
-        resolveIconClass(content: T): string {
+        resolveIconClass(_content: T): string {
             return '';
         }
 
-        protected createActionButtons(content: T): api.dom.Element[] {
+        protected createActionButtons(): api.dom.Element[] {
             let buttons = [];
             if (this.draggable) {
                 buttons.push(new api.dom.DivEl('drag-control'));
             }
             if (this.isEditButtonNeeded()) {
-                buttons.push(this.createEditButton(content));
+                buttons.push(this.createEditButton());
             }
             if (this.removable) {
                 buttons.push(this.createRemoveButton());
@@ -84,17 +84,6 @@ module api.ui.selector.combobox {
             }
         }
 
-        protected createEditButton(content: T): api.dom.AEl {
-            let editButton = new api.dom.AEl('edit');
-            editButton.onClicked((event: Event) => {
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
-            });
-
-            return editButton;
-        }
-
         protected createRemoveButton(): api.dom.AEl {
             let removeButton = new api.dom.AEl('remove');
             removeButton.onClicked((event: Event) => {
@@ -109,10 +98,14 @@ module api.ui.selector.combobox {
         }
 
         doRender(): wemQ.Promise<boolean> {
-            this.appendChildren(...this.createActionButtons(this.optionDisplayValue));
+            this.appendChildren(...this.createActionButtons());
             this.appendChild(this.createView(this.optionDisplayValue));
 
             return wemQ(true);
+        }
+
+        protected getOptionDisplayValue(): T {
+            return this.optionDisplayValue;
         }
     }
 

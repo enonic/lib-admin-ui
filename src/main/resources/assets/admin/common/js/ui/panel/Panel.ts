@@ -11,7 +11,7 @@ module api.ui.panel {
             super('panel' + (className ? ' ' + className : ''));
             this.doOffset = true;
 
-            this.onAdded((event) => {
+            this.onAdded(() => {
                 if (this.doOffset) {
                     this.calculateOffset();
                 }

@@ -1,7 +1,5 @@
 module api.ui.tab {
 
-    import Action = api.ui.Action;
-
     export class TabItem extends api.dom.LiEl implements api.ui.NavigationItem {
 
         private index: number;
@@ -43,9 +41,7 @@ module api.ui.tab {
                 this.setFocusable(false);
             }
 
-            this.onClicked((event: MouseEvent) => {
-                this.select();
-            });
+            this.onClicked(() => this.select());
         }
 
         private createRemoveButton() {
@@ -160,12 +156,6 @@ module api.ui.tab {
         private notifySelectedListeners() {
             this.selectedListeners.forEach((listener: (event: TabItemSelectedEvent)=>void) => {
                 listener.call(this, new TabItemSelectedEvent(this));
-            });
-        }
-
-        private notifyClosedListeners() {
-            this.closedListeners.forEach((listener: (event: TabItemClosedEvent)=>void) => {
-                listener.call(this, new TabItemClosedEvent(this));
             });
         }
 

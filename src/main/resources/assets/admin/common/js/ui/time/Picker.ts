@@ -28,8 +28,8 @@ module api.ui.time {
         }
 
         private setupCommonListeners() {
-            this.popup.onShown(e => this.addClass('expanded'));
-            this.popup.onHidden(e => this.removeClass('expanded'));
+            this.popup.onShown(() => this.addClass('expanded'));
+            this.popup.onHidden(() => this.removeClass('expanded'));
 
             api.util.AppHelper.focusInOut(this, () => {
                 this.popup.hide();
@@ -86,15 +86,15 @@ module api.ui.time {
             // must be implemented by children
         }
 
-        protected initData(builder: any) {
+        protected initData(_builder: any) {
             // must be implemented by children
         }
 
-        protected initPopup(builder: any) {
+        protected initPopup(_builder: any) {
             throw new Error('must be implemented by inheritor');
         }
 
-        protected initInput(builder: any) {
+        protected initInput(_builder: any) {
             throw new Error('must be implemented by inheritor');
         }
 
@@ -105,7 +105,7 @@ module api.ui.time {
             this.appendChild(wrapper);
         }
 
-        protected setupListeners(builder: any) {
+        protected setupListeners(_builder: any) {
             throw new Error('must be implemented by inheritor');
         }
 

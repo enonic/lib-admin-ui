@@ -1,11 +1,6 @@
 module api.content.resource {
-
-    import LoadedDataEvent = api.util.loader.event.LoadedDataEvent;
-    import LoadingDataEvent = api.util.loader.event.LoadingDataEvent;
-    import QueryField = api.query.QueryField;
     import GetContentTypeByNameRequest = api.schema.content.GetContentTypeByNameRequest;
     import ContentType = api.schema.content.ContentType;
-    import ContentTypeName = api.schema.content.ContentTypeName;
 
     export class MoveContentSummaryLoader extends ContentSummaryLoader {
 

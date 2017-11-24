@@ -44,7 +44,7 @@ module api.ui.time {
             this.input.setPlaceholder('hh:mm');
         }
 
-        protected setupListeners(builder: TimePickerBuilder) {
+        protected setupListeners() {
 
             this.popup.onSelectedTimeChanged((hours: number, minutes: number) => {
                 if (hours != null && minutes != null) {

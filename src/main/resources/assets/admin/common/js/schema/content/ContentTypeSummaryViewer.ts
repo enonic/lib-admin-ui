@@ -13,7 +13,7 @@ module api.schema.content {
             return object.getDisplayName();
         }
 
-        resolveSubName(object: ContentTypeSummary, relativePath: boolean = false): string {
+        resolveSubName(object: ContentTypeSummary): string {
             return object.getName();
         }
 

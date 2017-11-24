@@ -59,7 +59,7 @@ module api.util {
             return this.newInstance(parentElemements, this.absolute);
         }
 
-        newInstance(elements:string[], absolute:boolean):PATH {
+        newInstance(_elements: string[], _absolute: boolean):PATH {
             throw new Error('Must be implemented by inheritor');
         }
 

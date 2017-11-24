@@ -22,11 +22,11 @@ module api.content {
             return this;
         }
 
-        setAllowedContentTypes(contentTypes: string[]) {
+        setAllowedContentTypes() {
             throw new Error('Only fragments allowed');
         }
 
-        setAllowedContentTypeNames(contentTypeNames: api.schema.content.ContentTypeName[]) {
+        setAllowedContentTypeNames() {
             throw new Error('Only fragments allowed');
         }
 

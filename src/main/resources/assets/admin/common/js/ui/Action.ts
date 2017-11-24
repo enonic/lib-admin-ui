@@ -38,7 +38,7 @@ module api.ui {
             this.label = label;
 
             if (shortcut) {
-                this.shortcut = new KeyBinding(shortcut).setGlobal(global).setCallback((e: ExtendedKeyboardEvent, combo: string) => {
+                this.shortcut = new KeyBinding(shortcut).setGlobal(global).setCallback((e: ExtendedKeyboardEvent) => {
 
                     // preventing Browser shortcuts to kick in
                     if (e.preventDefault) {

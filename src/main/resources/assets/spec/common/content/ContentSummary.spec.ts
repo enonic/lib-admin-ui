@@ -3,7 +3,6 @@ module ContentSummarySpec {
     import ContentSummary = api.content.ContentSummary;
     import ContentSummaryJson = api.content.json.ContentSummaryJson;
     import ContentSummaryBuilder = api.content.ContentSummaryBuilder;
-    import ChildOrderJson = api.content.json.ChildOrderJson;
     import ChildOrder = api.content.order.ChildOrder;
 
     describe('api.content.ContentSummary', function () {

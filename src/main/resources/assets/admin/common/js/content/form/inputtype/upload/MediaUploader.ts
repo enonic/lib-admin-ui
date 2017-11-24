@@ -4,14 +4,13 @@ module api.content.form.inputtype.upload {
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
 
     export interface MediaUploaderConfigAllowType {
         name: string;
         extensions: string;
     }
 
-    export class MediaUploader extends api.form.inputtype.support.BaseInputTypeSingleOccurrence<string> {
+    export class MediaUploader extends api.form.inputtype.support.BaseInputTypeSingleOccurrence {
         private config: api.content.form.inputtype.ContentInputTypeViewContext;
         private mediaUploaderEl: api.ui.uploader.MediaUploaderEl;
         private uploaderWrapper: api.dom.DivEl;
@@ -34,7 +33,7 @@ module api.content.form.inputtype.upload {
             return ValueTypes.STRING.newNullValue();
         }
 
-        layoutProperty(input: api.form.Input, property: Property): wemQ.Promise<void> {
+        layoutProperty(_input: api.form.Input, property: Property): wemQ.Promise<void> {
             if (!ValueTypes.STRING.equals(property.getType()) && !ValueTypes.DATA.equals(property.getType())) {
                 property.convertValueType(ValueTypes.STRING);
             }
@@ -95,7 +94,7 @@ module api.content.form.inputtype.upload {
             return wemQ<void>(null);
         }
 
-        validate(silent: boolean = true): api.form.inputtype.InputValidationRecording {
+        validate(): api.form.inputtype.InputValidationRecording {
             return new api.form.inputtype.InputValidationRecording();
         }
 
@@ -126,24 +125,6 @@ module api.content.form.inputtype.upload {
             } else {
                 this.removeClass('with-svg-image');
             }
-        }
-
-        private deleteContent(property: Property) {
-            let contentId = this.getContext().content.getContentId();
-
-            new api.content.resource.GetContentByIdRequest(contentId).sendAndParse().then((content: api.content.Content) => {
-                let deleteRequest = new api.content.resource.DeleteContentRequest();
-                deleteRequest.addContentPath(content.getPath());
-                deleteRequest.sendAndParseWithPolling().then((message: string) => {
-                    api.notify.showSuccess(message);
-                }).catch((reason: any) => {
-                    if (reason && reason.message) {
-                        api.notify.showError(reason.message);
-                    } else {
-                        api.notify.showError('Content could not be deleted.');
-                    }
-                }).done();
-            });
         }
 
         private getFileNameFromProperty(property: Property): string {
@@ -187,9 +168,8 @@ module api.content.form.inputtype.upload {
 
                 this.appendChild(new api.dom.DivEl('svg-image-wrapper').appendChild(this.svgImage));
 
-                this.svgImage.onLoaded((event: UIEvent) => {
-                    this.mediaUploaderEl.setResultVisible(true); // need to call it manually as svg images are uploaded too quickly
-                });
+                // need to call it manually as svg images are uploaded too quickly
+                this.svgImage.onLoaded(() => this.mediaUploaderEl.setResultVisible(true));
             }
         }
 
@@ -199,7 +179,7 @@ module api.content.form.inputtype.upload {
             let uploadButton = new api.ui.button.Button();
             uploadButton.addClass('upload-button');
 
-            uploadButton.onClicked((event: MouseEvent) => {
+            uploadButton.onClicked(() => {
                 if (property.hasNullValue()) {
                     return;
                 }

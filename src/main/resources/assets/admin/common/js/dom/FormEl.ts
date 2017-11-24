@@ -53,7 +53,7 @@ module api.dom {
             }
         }
 
-        static getPrevFocusable(input: Element, focusableSelector?: string, ignoreTabIndex?: boolean): Element {
+        static getPrevFocusable(input: Element, focusableSelector?: string): Element {
             const focusableElements: NodeList = document.querySelectorAll(focusableSelector ? focusableSelector : 'input, button, select');
 
             // find index of current input

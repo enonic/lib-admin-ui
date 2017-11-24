@@ -22,7 +22,7 @@ module api.ui.security.acl {
             this.getOptions().forEach((option: PermissionSelectorOption) => {
                 let toggle = new PermissionToggle(option);
                 toggle.setEnabled(this.enabled);
-                toggle.onValueChanged((event: api.ValueChangedEvent) => {
+                toggle.onValueChanged(() => {
                     let newValue = this.getValue();
                     this.notifyValueChanged(new api.ValueChangedEvent(JSON.stringify(this.oldValue), JSON.stringify(newValue)));
                     this.oldValue = newValue;

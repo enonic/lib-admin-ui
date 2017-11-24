@@ -3,9 +3,7 @@ module api.util.htmlarea.dialog {
     import FormItem = api.ui.form.FormItem;
     import Validators = api.ui.form.Validators;
     import FileUploadedEvent = api.ui.uploader.FileUploadedEvent;
-    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
     import FileUploadProgressEvent = api.ui.uploader.FileUploadProgressEvent;
-    import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
     import OptionSelectedEvent = api.ui.selector.OptionSelectedEvent;
     import Action = api.ui.Action;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
@@ -76,19 +74,19 @@ module api.util.htmlarea.dialog {
         private loadImage() {
             let loader = this.imageSelector.getLoader();
 
-            let singleLoadListener = (event: api.util.loader.event.LoadedDataEvent<ImageTreeSelectorItem>) => {
-                let imageContent = this.getImageContent(event.getData());
+            let singleLoadListener = (items: ImageTreeSelectorItem[]) => {
+                let imageContent = this.getImageContent(items);
                 if (imageContent) {
                     this.imageSelector.setValue(imageContent.getId());
                     this.createImgElForExistingImage(imageContent);
                     this.previewImage();
                     this.imageSelectorFormItem.addClass('selected-item-preview');
                 }
-                loader.unLoadedData(singleLoadListener);
+                this.imageSelector.unLoaded(singleLoadListener);
 
                 return wemQ(null);
             };
-            loader.onLoadedData(singleLoadListener);
+            this.imageSelector.onLoaded(singleLoadListener);
 
             loader.load();
         }
@@ -179,7 +177,7 @@ module api.util.htmlarea.dialog {
             this.imageLoadMask = new api.ui.mask.LoadMask(this.imagePreviewContainer);
             this.imagePreviewContainer.appendChild(this.imageLoadMask);
 
-            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, (item: api.ui.responsive.ResponsiveItem) => {
+            api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => {
                 this.resetPreviewContainerMaxHeight();
                 this.imagePreviewScrollHandler.toggleScrollButtons();
                 this.imagePreviewScrollHandler.setMarginRight();
@@ -319,7 +317,7 @@ module api.util.htmlarea.dialog {
 
             uploader.hide();
 
-            uploader.onUploadStarted((event: FileUploadStartedEvent<Content>) => {
+            uploader.onUploadStarted(() => {
                 this.hideUploadMasks();
                 this.imagePreviewContainer.addClass('upload');
                 this.showProgress();
@@ -339,7 +337,7 @@ module api.util.htmlarea.dialog {
                 this.imageSelector.setContent(createdContent);
             });
 
-            uploader.onUploadFailed((event: FileUploadFailedEvent<Content>) => {
+            uploader.onUploadFailed(() => {
                 this.showError('Upload failed');
             });
 
@@ -591,7 +589,7 @@ module api.util.htmlarea.dialog {
 
             this.initSelectedCropping(imageCroppingSelector);
 
-            imageCroppingSelector.onOptionSelected((event: OptionSelectedEvent<ImageCroppingOption>) => {
+            imageCroppingSelector.onOptionSelected(() => {
                 this.imageLoadMask.show();
                 this.rebuildImgSrcParams();
                 this.rebuildImgDataSrcParams();

@@ -1,7 +1,5 @@
 module api.app.bar {
 
-    import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
-
     export class AppBar extends api.dom.DivEl implements api.ui.ActionContainer {
 
         protected application: Application;
@@ -55,9 +53,7 @@ module api.app.bar {
 
         setAction(action: api.ui.Action) {
             this.addClass('clickable');
-            this.onClicked((event: MouseEvent) => {
-                action.execute();
-            });
+            this.onClicked(() => action.execute());
         }
 
     }

@@ -1,8 +1,6 @@
 module api.form {
 
     import PropertySet = api.data.PropertySet;
-    import PropertyArray = api.data.PropertyArray;
-    import PropertyPath = api.data.PropertyPath;
 
     export interface FormItemSetOccurrenceViewConfig {
 

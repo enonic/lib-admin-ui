@@ -1,7 +1,5 @@
 module api.content.image {
 
-    import Content = api.content.Content;
-
     export class ImageErrorEvent extends api.event.Event {
 
         private contentId: ContentId;

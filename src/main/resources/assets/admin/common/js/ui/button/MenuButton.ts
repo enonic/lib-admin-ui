@@ -1,6 +1,4 @@
 module api.ui.button {
-
-    import Element = api.dom.Element;
     import Menu = api.ui.menu.Menu;
     import MenuItem = api.ui.menu.MenuItem;
 
@@ -90,7 +88,7 @@ module api.ui.button {
             api.util.AppHelper.focusInOut(this, hideMenu);
         }
 
-        private hideMenu(event: MouseEvent): void {
+        private hideMenu(): void {
             this.menu.removeClass('expanded');
             this.dropdownHandle.removeClass('down');
         }

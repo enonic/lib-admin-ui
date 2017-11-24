@@ -1,8 +1,6 @@
 module api.content.site.inputtype.authappselector {
-
     import Application = api.application.Application;
     import ApplicationKey = api.application.ApplicationKey;
-
     import ApplicationViewer = api.application.ApplicationViewer;
     import FormView = api.form.FormView;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;

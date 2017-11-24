@@ -1,8 +1,5 @@
 module api.content.image {
 
-    import Button = api.ui.button.Button;
-    import CloseButton = api.ui.button.CloseButton;
-
     import Point = api.ui.image.Point;
     import Rect = api.ui.image.Rect;
     import ImageEditor = api.ui.image.ImageEditor;
@@ -170,7 +167,7 @@ module api.content.image {
                 new api.app.wizard.MaskContentWizardPanelEvent(contentId, visible).fire();
             };
 
-            let imageErrorHandler = (event: UIEvent) => {
+            let imageErrorHandler = () => {
                 new ImageErrorEvent(contentId).fire();
                 this.imageEditors = this.imageEditors.filter((curr) => {
                     return curr !== imageEditor;
@@ -191,7 +188,7 @@ module api.content.image {
             };
 
             const editorImage = imageEditor.getImage();
-            editorImage.onLoaded((event: UIEvent) => {
+            editorImage.onLoaded(() => {
                 if (!editorImage.isPlaceholder()) {
                     this.togglePlaceholder(false);
                 }

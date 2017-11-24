@@ -1,7 +1,5 @@
 module api.content.page.region {
 
-    import ApplicationKey = api.application.ApplicationKey;
-
     export class GetLayoutDescriptorByKeyRequest extends LayoutDescriptorResourceRequest<LayoutDescriptorJson,LayoutDescriptor> {
 
         private key: api.content.page.DescriptorKey;

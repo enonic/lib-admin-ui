@@ -5,7 +5,7 @@ module api.form.inputtype.radiobutton {
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
 
-    export class RadioButton extends api.form.inputtype.support.BaseInputTypeSingleOccurrence<string> {
+    export class RadioButton extends api.form.inputtype.support.BaseInputTypeSingleOccurrence {
 
         private selector: api.ui.RadioGroup;
         private previousValidationRecording: api.form.inputtype.InputValidationRecording;
@@ -118,10 +118,6 @@ module api.form.inputtype.radiobutton {
             });
 
             return radioGroup;
-        }
-
-        private newValue(s: string): Value {
-            return new Value(s, ValueTypes.STRING);
         }
 
         private isValidOption(value: string): boolean {

@@ -62,7 +62,7 @@ module api.util.loader {
                 .finally(() => this.status = LoaderStatus.PRE_LOADED);
         }
 
-        protected sendPreLoadRequest(searchString?: string): wemQ.Promise<OBJECT[]> {
+        protected sendPreLoadRequest(_searchString?: string): wemQ.Promise<OBJECT[]> {
             return this.sendRequest();
         }
 
@@ -148,7 +148,7 @@ module api.util.loader {
             return this.searchString;
         }
 
-        filterFn(result: OBJECT): boolean {
+        filterFn(_result: OBJECT): boolean {
             throw Error('must be implemented');
         }
 

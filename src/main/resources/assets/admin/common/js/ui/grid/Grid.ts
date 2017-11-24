@@ -1,9 +1,9 @@
 module api.ui.grid {
 
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
 
-    export class Grid<T extends Slick.SlickData> extends api.dom.DivEl {
+    export class Grid<T extends Slick.SlickData>
+        extends api.dom.DivEl {
 
         private defaultHeight: string = '400px';
 
@@ -43,7 +43,7 @@ module api.ui.grid {
                     width: 40
                 });
 
-                if(options.isLeftAlignedCheckbox()) {
+                if (options.isLeftAlignedCheckbox()) {
                     columns.unshift(<GridColumn<T>>this.checkboxSelectorPlugin.getColumnDefinition());
                 } else {
                     columns.push(<GridColumn<T>>this.checkboxSelectorPlugin.getColumnDefinition());
@@ -70,9 +70,7 @@ module api.ui.grid {
                 this.slickGrid.registerPlugin(<Slick.Plugin<T>>this.rowManagerPlugin);
             }
 
-            this.onRemoved((event) => {
-                ResponsiveManager.unAvailableSizeChanged(this);
-            });
+            this.onRemoved(() => ResponsiveManager.unAvailableSizeChanged(this));
 
             // The only way to dataIdProperty before adding items
             this.dataView.setItems([], options.getDataIdProperty());
@@ -121,13 +119,12 @@ module api.ui.grid {
         }
 
         private autoRenderGridOnDataChanges(dataView: DataView<T>) {
-
-            dataView.onRowCountChanged((eventData: Slick.EventData, args) => {
+            dataView.onRowCountChanged(() => {
                 this.updateRowCount();
                 this.renderGrid();
             });
 
-            dataView.onRowsChanged((eventData: Slick.EventData, args) => {
+            dataView.onRowsChanged((_eventData: Slick.EventData, args) => {
                 this.invalidateRows(args.rows);
                 this.renderGrid();
             });
@@ -176,6 +173,10 @@ module api.ui.grid {
 
         getOptions(): GridOptions<T> {
             return <GridOptions<T>>this.slickGrid.getOptions();
+        }
+
+        setOption(name: string, value: any) {
+            this.slickGrid.getOptions()[name] = value;
         }
 
         getCheckboxSelectorPlugin(): Slick.CheckboxSelectColumn<T> {

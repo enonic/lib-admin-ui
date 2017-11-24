@@ -458,6 +458,10 @@ module api.ui.grid {
 
         dragAndDrop: boolean;
 
+        enableGalleryMode: boolean;
+
+        galleryModeColumns: number;
+
         constructor(builder: GridOptionsBuilder<T>) {
             this.asyncEditorLoading = builder.asyncEditorLoading;
             this.asyncEditorLoadDelay = builder.asyncEditorLoadDelay;
@@ -682,6 +686,14 @@ module api.ui.grid {
             return this.dragAndDrop;
         }
 
+        isEnableGalleryMode(): boolean {
+            return this.enableGalleryMode;
+        }
+
+        getGalleryModeColums(): number {
+            return this.galleryModeColumns;
+        }
+
         setAsyncEditorLoading(asyncEditorLoading: boolean): GridOptions<T> {
             this.asyncEditorLoading = asyncEditorLoading;
             return this;
@@ -899,6 +911,16 @@ module api.ui.grid {
 
         setDragAndDrop(dragAndDrop: boolean): GridOptions<T> {
             this.dragAndDrop = dragAndDrop;
+            return this;
+        }
+
+        setEnableGalleryMode(value: boolean): GridOptions<T> {
+            this.enableGalleryMode = value;
+            return this;
+        }
+
+        setGalleryModeColumns(value: number): GridOptions<T> {
+            this.galleryModeColumns = value;
             return this;
         }
     }

@@ -1,8 +1,6 @@
 module FormItemSetViewSpec {
 
     import FormItemSet = api.form.FormItemSet;
-    import FormOptionSetJson = api.form.json.FormOptionSetJson;
-    import FormOptionSetOptionJson = api.form.json.FormOptionSetOptionJson;
     import FormItemSetView = api.form.FormItemSetView;
     import PropertySet = api.data.PropertySet;
     import FormContext = api.form.FormContext;
@@ -63,7 +61,6 @@ module FormItemSetViewSpec {
 
     export function getPropertySet(): PropertySet {
         let tree = new api.data.PropertyTree();
-        let set = tree.addPropertySet('itemSet1');
 
         return tree.getRoot();
     }

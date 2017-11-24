@@ -148,7 +148,7 @@ module api.ui.treegrid {
             let currentIds = this.currentSelection.map(el => el.getDataId());
             let stashedIds = this.stashedSelection.map(el => el.getDataId());
 
-            this.stashedSelection = this.stashedSelection.filter((value, index, self) => {
+            this.stashedSelection = this.stashedSelection.filter((value, index) => {
                 // remove duplicated nodes and those, that are already in `currentSelection`
                 return (currentIds.indexOf(value.getDataId()) < 0) &&
                        (stashedIds.indexOf(value.getDataId()) === index);

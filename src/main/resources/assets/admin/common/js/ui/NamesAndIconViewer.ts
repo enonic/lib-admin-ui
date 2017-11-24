@@ -43,8 +43,13 @@ module api.ui {
 
             if (object) {
                 const displayName = this.resolveDisplayName(object) || this.normalizeDisplayName(this.resolveUnnamedDisplayName(object));
-                const subName = this.resolveSubName(object, this.relativePath) || api.content.ContentUnnamed.prettifyUnnamed();
+                const subName = this.resolveSubName(object) || api.content.ContentUnnamed.prettifyUnnamed();
                 const subTitle = this.resolveSubTitle(object);
+                const hint = this.resolveHint(object);
+
+                if (!api.util.StringHelper.isBlank(hint)) {
+                    this.getEl().setAttribute('title', hint);
+                }
 
                 let iconUrl;
                 let iconClass;
@@ -80,31 +85,35 @@ module api.ui {
             }
         }
 
-        resolveDisplayName(object: OBJECT): string {
+        resolveHint(_object: OBJECT): string {
             return '';
         }
 
-        resolveUnnamedDisplayName(object: OBJECT): string {
+        resolveDisplayName(_object: OBJECT): string {
             return '';
         }
 
-        resolveSubName(object: OBJECT, relativePath: boolean = false): string {
+        resolveUnnamedDisplayName(_object: OBJECT): string {
             return '';
         }
 
-        resolveSubTitle(object: OBJECT): string {
+        resolveSubName(_object: OBJECT): string {
             return '';
         }
 
-        resolveIconClass(object: OBJECT): string {
+        resolveSubTitle(_object: OBJECT): string {
             return '';
         }
 
-        resolveIconUrl(object: OBJECT): string {
+        resolveIconClass(_object: OBJECT): string {
             return '';
         }
 
-        resolveIconEl(object: OBJECT): api.dom.Element {
+        resolveIconUrl(_object: OBJECT): string {
+            return '';
+        }
+
+        resolveIconEl(_object: OBJECT): api.dom.Element {
             return null;
         }
 

@@ -93,6 +93,13 @@ module api.content {
             }
         }
 
+        protected toggleGridOptions(_treeMode: boolean) {
+            // May be overridden in deriving class if the grid should
+            // have different settings in different modes
+
+            return false;
+        }
+
         private initTreeModeToggler() {
 
             this.treeModeToggler = new ModeTogglerButton();
@@ -101,6 +108,7 @@ module api.content {
 
             this.treeModeToggler.onActiveChanged(isActive => {
                 this.treegridDropdownEnabled = isActive;
+                this.toggleGridOptions(isActive);
                 this.reload(this.getComboBox().getInput().getValue());
             });
 
@@ -124,14 +132,14 @@ module api.content {
                 if (this.initialTreeEnabledState && StringHelper.isEmpty(event.getNewValue())) {
                     if (!this.treeModeToggler.isActive()) {
                         this.treegridDropdownEnabled = true;
-                        this.treeModeToggler.setActive(true, true);
+                        this.treeModeToggler.setActive(true);
                     }
                     return;
                 }
 
                 if (this.treeModeToggler.isActive()) {
                     this.treegridDropdownEnabled = false;
-                    this.treeModeToggler.setActive(false, true);
+                    this.treeModeToggler.setActive(false);
                 }
 
             });
@@ -161,14 +169,12 @@ module api.content {
 
             const deferred = wemQ.defer<void>();
 
-            if (!force) {
-                if (this.getOptions().length > 0 && !this.getLoader().isPreLoaded()) {
-                    return wemQ(null);
-                }
+            if (!force && this.isLoadingOrLoaded()) {
+                return wemQ(null);
             }
 
             if (this.ifFlatLoadingMode(inputValue)) {
-                this.getLoader().search(inputValue).then((result: ITEM_TYPE[]) => {
+                this.getLoader().search(inputValue).then(() => {
                     deferred.resolve(null);
                 }).catch((reason: any) => {
                     api.DefaultErrorHandler.handle(reason);
@@ -271,14 +277,12 @@ module api.content {
             return content.getPath().toString();
         }
 
-        protected createEditButton(content: ContentTreeSelectorItem): api.dom.AEl {
-            let editButton = super.createEditButton(content);
-            editButton.onClicked((event: Event) => {
-                let model = [api.content.ContentSummaryAndCompareStatus.fromContentSummary(content.getContent())];
-                new api.content.event.EditContentEvent(model).fire();
-            });
+        protected onEditButtonClicked(e: MouseEvent) {
+            let content = this.getOptionDisplayValue().getContent();
+            let model = [api.content.ContentSummaryAndCompareStatus.fromContentSummary(content)];
+            new api.content.event.EditContentEvent(model).fire();
 
-            return editButton;
+            return super.onEditButtonClicked(e);
         }
     }
 

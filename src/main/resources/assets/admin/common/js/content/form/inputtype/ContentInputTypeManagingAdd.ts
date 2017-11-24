@@ -5,13 +5,11 @@ module api.content.form.inputtype {
     import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
     import ContentServerEventsHandler = api.content.event.ContentServerEventsHandler;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import ContentDeletedEvent = api.content.event.ContentDeletedEvent;
     import ContentServerChangeItem = api.content.event.ContentServerChangeItem;
     import SelectedOptionsView = api.ui.selector.combobox.SelectedOptionsView;
     import BaseInputTypeManagingAdd = api.form.inputtype.support.BaseInputTypeManagingAdd;
-    import Option = api.ui.selector.Option;
 
-    export class ContentInputTypeManagingAdd<RAW_VALUE_TYPE> extends BaseInputTypeManagingAdd<RAW_VALUE_TYPE> {
+    export class ContentInputTypeManagingAdd<RAW_VALUE_TYPE> extends BaseInputTypeManagingAdd {
 
         protected config: api.content.form.inputtype.ContentInputTypeViewContext;
 
@@ -40,7 +38,7 @@ module api.content.form.inputtype {
             throw new Error('Should be overridden by inheritor');
         }
 
-        protected getContentPath(raw: RAW_VALUE_TYPE): ContentPath {
+        protected getContentPath(_raw: RAW_VALUE_TYPE): ContentPath {
             throw new Error('Should be overridden by inheritor');
         }
 
@@ -94,7 +92,7 @@ module api.content.form.inputtype {
             handler.onContentRenamed(contentUpdatedOrMovedListener);
             handler.onContentUpdated(contentUpdatedOrMovedListener);
 
-            this.onRemoved(event => {
+            this.onRemoved(() => {
                 handler.unContentUpdated(contentUpdatedOrMovedListener);
                 handler.unContentRenamed(contentUpdatedOrMovedListener);
                 handler.unContentMoved(contentUpdatedOrMovedListener);
@@ -137,7 +135,7 @@ module api.content.form.inputtype {
             let handler = ContentServerEventsHandler.getInstance();
             handler.onContentDeleted(this.contentDeletedListener);
 
-            this.onRemoved((event) => {
+            this.onRemoved(() => {
                 handler.unContentDeleted(this.contentDeletedListener);
             });
         }

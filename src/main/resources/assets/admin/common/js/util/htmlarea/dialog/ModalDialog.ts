@@ -183,9 +183,7 @@ module api.util.htmlarea.dialog {
                 let validationRecordingViewer = new api.form.ValidationRecordingViewer();
 
                 fieldSet.appendChild(validationRecordingViewer);
-                fieldSet.onValidityChanged((event: ValidityChangedEvent) => {
-                    validationRecordingViewer.setError(formItem.getError());
-                });
+                fieldSet.onValidityChanged(() => validationRecordingViewer.setError(formItem.getError()));
             }
 
             return fieldSet;
