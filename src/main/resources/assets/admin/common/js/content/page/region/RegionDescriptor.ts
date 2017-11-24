@@ -11,16 +11,20 @@ module api.content.page.region {
         getName(): string {
             return this.name;
         }
+
+        public static create(): RegionDescriptorBuilder {
+            return new RegionDescriptorBuilder();
+        }
+
+        public static fromJson(json: RegionsDescriptorJson): RegionDescriptor {
+           return RegionDescriptor.create().setName(json.name).build();
+        }
+
     }
 
     export class RegionDescriptorBuilder {
 
         name: string;
-
-        public fromJson(json: RegionsDescriptorJson): RegionDescriptorBuilder {
-            this.name = json.name;
-            return this;
-        }
 
         public setName(value: string): RegionDescriptorBuilder {
             this.name = value;
