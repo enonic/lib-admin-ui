@@ -4,25 +4,39 @@ module api.content.resource {
 
     export interface ResolveDependenciesResultJson {
 
-        dependencies: {key:string, value:ContentDependencyJson};
+        dependencies: { key: string, value: ContentDependencyJson };
 
     }
+
     export class ResolveDependenciesResult {
 
         private dependencies: ResolveDependencyResult[] = [];
 
-        public getDependencies():ResolveDependencyResult[] {
+        public getDependencies(): ResolveDependencyResult[] {
             return this.dependencies;
         }
 
-        public static fromJson(json:ResolveDependenciesResultJson): ResolveDependenciesResult {
+        public getIncomingDependenciesCount(): Object {
+            let object = {};
+            this.dependencies.forEach(dependencyResult => {
+                const dependency = dependencyResult.getDependency();
+                const contentId = dependencyResult.getContentId().toString();
+                if (dependency.inbound && dependency.inbound.length > 0) {
+                    object[contentId] = dependency.inbound.reduce((sum, dep) => sum + dep.count, 0);
+                }
+            });
+
+            return object;
+        }
+
+        public static fromJson(json: ResolveDependenciesResultJson): ResolveDependenciesResult {
 
             const result = new ResolveDependenciesResult();
 
-            if(json) {
+            if (json) {
 
-                for(let id in json.dependencies) {
-                    if(json.dependencies.hasOwnProperty(id)) {
+                for (let id in json.dependencies) {
+                    if (json.dependencies.hasOwnProperty(id)) {
                         result.getDependencies().push(new ResolveDependencyResult(new ContentId(id), json.dependencies[id]));
                     }
                 }

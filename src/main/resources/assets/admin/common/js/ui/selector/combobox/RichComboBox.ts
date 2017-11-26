@@ -282,10 +282,8 @@ module api.ui.selector.combobox {
         }
 
         protected reload(inputValue: string, force: boolean = true): wemQ.Promise<any> {
-            if (!force) {
-                if (this.getOptions().length > 0 && !this.loader.isPreLoaded()) {
-                    return wemQ(null);
-                }
+            if (!force && this.isLoadingOrLoaded()) {
+                return wemQ(null);
             }
             if (!StringHelper.isBlank(inputValue)) {
                 return this.loader.search(inputValue).catch(api.DefaultErrorHandler.handle);
@@ -293,6 +291,10 @@ module api.ui.selector.combobox {
                 this.loader.setSearchString(inputValue);
                 return this.loader.load().catch(api.DefaultErrorHandler.handle);
             }
+        }
+
+        protected isLoadingOrLoaded(): boolean {
+            return (this.getOptions().length > 0 && this.getLoader().isLoaded()) || this.getLoader().isLoading();
         }
 
         private setupLoader() {

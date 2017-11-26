@@ -1,6 +1,7 @@
 module api.app.browse {
 
-    export class SelectionItem<M extends api.Equitable> extends api.dom.DivEl {
+    export class SelectionItem<M extends api.Equitable>
+        extends api.dom.DivEl {
 
         private viewer: api.ui.Viewer<M>;
 
@@ -8,7 +9,7 @@ module api.app.browse {
 
         protected removeEl: api.dom.DivEl;
 
-        private removeListeners: {(event: MouseEvent): void}[] = [];
+        private removeListeners: { (event: MouseEvent): void }[] = [];
 
         constructor(viewer: api.ui.Viewer<M>, item: BrowseItem<M>) {
             super('browse-selection-item');
@@ -56,6 +57,10 @@ module api.app.browse {
 
         getBrowseItem(): BrowseItem<M> {
             return this.item;
+        }
+
+        getViewer(): api.ui.Viewer<M> {
+            return this.viewer;
         }
 
         hideRemoveButton() {
