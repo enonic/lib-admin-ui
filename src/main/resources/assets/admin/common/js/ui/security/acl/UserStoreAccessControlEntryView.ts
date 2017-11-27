@@ -14,12 +14,12 @@ module api.ui.security.acl {
 
         public static debug: boolean = false;
 
-        constructor(ace: UserStoreAccessControlEntry) {
-            super();
-            this.setClass('userstore-access-control-entry');
-            //this.toggleClass('inherited', ace.isInherited());
+        constructor(ace: UserStoreAccessControlEntry, readonly: boolean = false) {
+            super('selected-option userstore-access-control-entry');
 
             this.ace = ace;
+            super.setEditable(!readonly);
+
             if (isNaN(this.ace.getAccess())) {
                 this.ace.setAccess(UserStoreAccess[UserStoreAccess.CREATE_USERS]);
             }

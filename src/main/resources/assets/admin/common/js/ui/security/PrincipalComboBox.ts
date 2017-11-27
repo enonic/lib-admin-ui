@@ -83,9 +83,8 @@ module api.ui.security {
         private option: Option<Principal>;
 
         constructor(option: Option<Principal>) {
-            super();
+            super('selected-option principal-selected-option-view');
             this.setOption(option);
-            this.setClass('principal-selected-option-view');
             this.appendRemoveButton();
         }
 

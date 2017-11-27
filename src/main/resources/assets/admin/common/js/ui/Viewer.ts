@@ -5,7 +5,10 @@ module api.ui {
      */
     export class Viewer<OBJECT> extends api.dom.Element {
 
+        private editable: boolean = true;
         private object: OBJECT;
+        private removeButton: api.dom.AEl;
+        private removeClickedListeners: {(event: MouseEvent):void}[] = [];
 
         constructor(className?: string) {
             super(new api.dom.NewElementBuilder().
@@ -49,6 +52,50 @@ module api.ui {
                 this.doLayout(this.getObject());
             }
             return super.toString();
+        }
+
+        setReadonly(readonly: boolean) {
+            this.setEditable(!readonly);
+        }
+
+        setEditable(editable: boolean) {
+            this.editable = editable;
+        }
+
+        isEditable(): boolean {
+            return this.editable;
+        }
+
+        appendRemoveButton() {
+            if (!this.editable || this.removeButton) {
+                return;
+            }
+            this.removeButton = new api.dom.AEl('remove');
+            this.removeButton.onClicked((event: MouseEvent) => {
+                if (this.editable) {
+                    this.notifyRemoveClicked(event);
+                }
+                event.stopPropagation();
+                event.preventDefault();
+                return false;
+            });
+            this.appendChild(this.removeButton);
+        }
+
+        onRemoveClicked(listener: (event: MouseEvent) => void) {
+            this.removeClickedListeners.push(listener);
+        }
+
+        unRemoveClicked(listener: (event: MouseEvent) => void) {
+            this.removeClickedListeners = this.removeClickedListeners.filter((current) => {
+                return current !== listener;
+            });
+        }
+
+        private notifyRemoveClicked(event: MouseEvent) {
+            this.removeClickedListeners.forEach((listener) => {
+                listener(event);
+            });
         }
     }
 }

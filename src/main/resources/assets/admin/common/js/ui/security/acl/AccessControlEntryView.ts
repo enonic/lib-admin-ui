@@ -15,12 +15,11 @@ module api.ui.security.acl {
 
         public static debug: boolean = false;
 
-        constructor(ace: AccessControlEntry) {
-            super();
-            this.setClass('access-control-entry');
-            //this.toggleClass('inherited', ace.isInherited());
+        constructor(ace: AccessControlEntry, readonly: boolean = false) {
+            super('selected-option access-control-entry');
 
             this.ace = ace;
+            super.setEditable(!readonly);
 
             this.setAccessControlEntry(this.ace);
         }

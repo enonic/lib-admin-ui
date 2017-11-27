@@ -5,10 +5,10 @@ module api.ui.security {
     import User = api.security.User;
 
     export class PrincipalViewer extends api.ui.NamesAndIconViewer<Principal> {
-        private editable: boolean = true;
-        private removeButton: api.dom.AEl;
 
-        private removeClickedListeners: {(event: MouseEvent):void}[] = [];
+        constructor(className?: string) {
+            super(className);
+        }
 
         resolveDisplayName(object: Principal): string {
             return object.getDisplayName();
@@ -35,51 +35,6 @@ module api.ui.security {
             return '';
         }
 
-        setReadonly(readonly: boolean) {
-            this.setEditable(!readonly);
-        }
-
-        setEditable(editable: boolean) {
-            if (editable !== this.editable) {
-                this.editable = editable;
-            }
-        }
-
-        isEditable(): boolean {
-            return this.editable;
-        }
-
-        appendRemoveButton() {
-            if (this.removeButton) {
-                return;
-            }
-            this.removeButton = new api.dom.AEl('icon-close');
-            this.removeButton.onClicked((event: MouseEvent) => {
-                if (this.editable) {
-                    this.notifyRemoveClicked(event);
-                }
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
-            });
-            this.appendChild(this.removeButton);
-        }
-
-        onRemoveClicked(listener: (event: MouseEvent) => void) {
-            this.removeClickedListeners.push(listener);
-        }
-
-        unRemoveClicked(listener: (event: MouseEvent) => void) {
-            this.removeClickedListeners = this.removeClickedListeners.filter((current) => {
-                return current !== listener;
-            });
-        }
-
-        private notifyRemoveClicked(event: MouseEvent) {
-            this.removeClickedListeners.forEach((listener) => {
-                listener(event);
-            });
-        }
     }
 
     export class PrincipalViewerCompact extends api.ui.Viewer<Principal> {

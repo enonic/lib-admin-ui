@@ -42,8 +42,8 @@ module api.ui.security.acl {
 
         private option: Option<UserStoreAccessControlEntry>;
 
-        constructor(option: Option<UserStoreAccessControlEntry>) {
-            super(option.displayValue);
+        constructor(option: Option<UserStoreAccessControlEntry>, readonly: boolean = false) {
+            super(option.displayValue, readonly);
             this.option = option;
         }
 
@@ -97,7 +97,7 @@ module api.ui.security.acl {
                 value: this.getItemId(entry),
                 readOnly: readOnly
             };
-            let itemView = new UserStoreACESelectedOptionView(option);
+            let itemView = new UserStoreACESelectedOptionView(option, readOnly);
             itemView.onValueChanged((item: UserStoreAccessControlEntry) => {
                 // update our selected options list with new values
                 let selectedOption = this.getById(item.getPrincipal().getKey().toString());
@@ -109,10 +109,6 @@ module api.ui.security.acl {
             let selectedOption = new SelectedOption<UserStoreAccessControlEntry>(itemView, this.list.length);
 
             itemView.onRemoveClicked(() => this.removeOption(option, false));
-
-            if(readOnly) {
-                itemView.setEditable(false);
-            }
 
             // keep track of selected options for SelectedOptionsView
             this.list.push(selectedOption);
