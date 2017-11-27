@@ -37,6 +37,10 @@ module api.content.site.inputtype.siteconfigurator {
             this.application = option.displayValue;
             this.siteConfig = siteConfig;
             this.formContext = formContext;
+
+            if (!this.application.getForm() || this.application.getForm().getFormItems().length == 0) {
+                this.setEditable(false);
+            }
         }
 
         doRender(): wemQ.Promise<boolean> {
@@ -68,20 +72,7 @@ module api.content.site.inputtype.siteconfigurator {
 
             this.formView = this.createFormView(this.siteConfig);
 
-            if (this.application.getForm() && this.application.getForm().getFormItems().length > 0) {
-                header.appendChild(this.createEditButton());
-            }
-
-            let removeButton = new api.dom.AEl('remove');
-            removeButton.onClicked((event: MouseEvent) => {
-                if (this.isEditable()) {
-                    this.notifyRemoveClicked();
-                    event.stopPropagation();
-                    event.preventDefault();
-                    return false;
-                }
-            });
-            header.appendChild(removeButton);
+            this.appendActionButtons(header);
 
             this.configureDialog = this.initConfigureDialog();
             if(this.configureDialog) {
@@ -116,7 +107,7 @@ module api.content.site.inputtype.siteconfigurator {
         }
 
         initConfigureDialog(): SiteConfiguratorDialog {
-            if (!this.application.getForm().getFormItems().length) {
+            if (!this.isEditable()) {
                 return null;
             }
 
