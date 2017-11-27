@@ -239,6 +239,10 @@ module api.ui.security.acl {
             // must be implemented by children
         }
 
+        setEditable(_editable: boolean) {
+            throw new Error('Not in use');
+        }
+
     }
 
 }

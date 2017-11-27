@@ -16,8 +16,9 @@ module api.ui.security.acl {
                 setMaximumOccurrences(0).
                 setComboBoxName('principalSelector').
                 setIdentifierMethod('getPrincipalKey').
-                setLoader(new AccessControlEntryLoader()).setHideComboBoxWhenMaxReached(false).setSelectedOptionsView(
-                new ACESelectedOptionsView()).
+                setLoader(new AccessControlEntryLoader()).
+                setHideComboBoxWhenMaxReached(false).
+                setSelectedOptionsView(new ACESelectedOptionsView()).
                 setOptionDisplayValueViewer(new AccessControlEntryViewer()).
                 setDelayedInputValueChangedHandling(500);
 
@@ -228,6 +229,10 @@ module api.ui.security.acl {
 
         unOptionMoved(_listener: {(moved: SelectedOption<AccessControlEntry>): void;}) {
             // must be implemented by children
+        }
+
+        setEditable(_editable: boolean) {
+            throw new Error('Not in use');
         }
 
     }
