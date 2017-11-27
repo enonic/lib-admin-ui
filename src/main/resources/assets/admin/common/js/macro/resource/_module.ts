@@ -6,4 +6,3 @@
 ///<reference path='GetPreviewStringRequest.ts' />
 ///<reference path='GetPreviewRequest.ts' />
 ///<reference path='MacrosLoader.ts' />
-///<reference path='ApplicationInfoJson.ts' />

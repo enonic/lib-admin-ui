@@ -30,6 +30,3 @@
 ///<reference path='ListSiteApplicationsRequest.ts' />
 ///<reference path='ListAuthApplicationsRequest.ts' />
 ///<reference path='AuthApplicationRequest.ts' />
-
-///<reference path='ApplicationInfo.ts' />
-///<reference path='GetApplicationInfoRequest.ts' />
