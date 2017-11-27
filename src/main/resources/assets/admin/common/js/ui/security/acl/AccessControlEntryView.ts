@@ -11,10 +11,7 @@ module api.ui.security.acl {
         private accessSelector: AccessSelector;
         private permissionSelector: PermissionSelector;
 
-        private removeButton: api.dom.AEl;
-
         private valueChangedListeners: {(item: AccessControlEntry): void}[] = [];
-        private editable: boolean = true;
 
         public static debug: boolean = false;
 
@@ -43,16 +40,7 @@ module api.ui.security.acl {
             }
             this.accessSelector.setValue(AccessControlEntryView.getAccessValueFromEntry(this.ace), true);
 
-            if (!this.removeButton) {
-                this.removeButton = new api.dom.AEl('icon-close');
-                this.removeButton.onClicked((event: MouseEvent) => {
-                    this.notifyRemoveClicked(event);
-                    event.stopPropagation();
-                    event.preventDefault();
-                    return false;
-                });
-                this.appendChild(this.removeButton);
-            }
+            this.appendRemoveButton();
 
             if (!this.permissionSelector) {
                 this.permissionSelector = new PermissionSelector();
@@ -89,20 +77,15 @@ module api.ui.security.acl {
             return this.permissionSelector;
         }
 
+        setEditable(editable: boolean) {
+            super.setEditable(editable);
+
+            this.permissionSelector.setEnabled(editable);
+            this.accessSelector.setEnabled(editable);
+        }
+
         getValueChangedListeners(): {(item: AccessControlEntry): void}[] {
             return this.valueChangedListeners;
-        }
-
-        setEditable(editable: boolean) {
-            if (editable !== this.editable) {
-                this.permissionSelector.setEnabled(editable);
-                this.accessSelector.setEnabled(editable);
-                this.editable = editable;
-            }
-        }
-
-        isEditable(): boolean {
-            return this.editable;
         }
 
         onValueChanged(listener: (item: AccessControlEntry) => void) {

@@ -10,6 +10,6 @@ module api.ui.selector.combobox {
 
         unRemoveClicked(listener: {(): void;});
 
-        setEditable(editable: boolean);
+        setReadonly(readonly: boolean);
     }
 }

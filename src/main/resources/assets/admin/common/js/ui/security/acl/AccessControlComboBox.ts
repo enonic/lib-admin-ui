@@ -68,13 +68,9 @@ module api.ui.security.acl {
         private selectedOptionRemovedListeners: {(removed: SelectedOptionEvent<AccessControlEntry>): void;}[] = [];
         private selectedOptionAddedListeners: {(added: SelectedOptionEvent<AccessControlEntry>): void;}[] = [];
 
-        constructor(className?: string) {
-            super(className);
-        }
-
-        setEditable(editable: boolean) {
+        setReadonly(readonly: boolean) {
             this.getSelectedOptions().forEach((option: SelectedOption<AccessControlEntry>) => {
-                option.getOptionView().setEditable(editable);
+                option.getOptionView().setReadonly(readonly);
             });
         }
 

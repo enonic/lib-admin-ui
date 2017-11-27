@@ -47,7 +47,7 @@ module api.ui.locale {
             this.appendChild(removeButton);
         }
 
-        setEditable(_editable: boolean) {
+        setReadonly(_readonly: boolean) {
             // must be implemented by children
         }
 

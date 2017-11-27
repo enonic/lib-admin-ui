@@ -213,7 +213,7 @@ module api.ui.selector.combobox {
             super.setReadOnly(readOnly);
 
             this.input.setReadOnly(readOnly);
-            this.selectedOptionsView.setEditable(!readOnly);
+            this.selectedOptionsView.setReadonly(readOnly);
 
             this.toggleClass('readonly', readOnly);
         }

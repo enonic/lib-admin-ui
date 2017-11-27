@@ -16,16 +16,16 @@ module api.ui.selector.combobox {
 
         private optionMovedListeners: {(moved: SelectedOption<T>) : void}[] = [];
 
-        private editable: boolean = true;
+        private readonly: boolean = false;
 
         constructor(className?: string) {
             super('selected-options' + (className ? ' ' + className : ''));
         }
 
-        setEditable(editable: boolean) {
-            this.editable = editable;
+        setReadonly(readonly: boolean) {
+            this.readonly = readonly;
             this.getSelectedOptions().forEach((option: SelectedOption<T>) => {
-                option.getOptionView().setEditable(editable);
+                option.getOptionView().setReadonly(readonly);
             });
         }
 
@@ -114,7 +114,7 @@ module api.ui.selector.combobox {
 
             let optionView = selectedOption.getOptionView();
             optionView.onRemoveClicked(() => this.removeOption(option));
-            optionView.setEditable(this.editable);
+            optionView.setReadonly(this.readonly);
 
             this.getSelectedOptions().push(selectedOption);
 

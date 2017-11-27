@@ -43,8 +43,7 @@ module api.ui.security.acl {
         private option: Option<UserStoreAccessControlEntry>;
 
         constructor(option: Option<UserStoreAccessControlEntry>) {
-            let ace = option.displayValue;
-            super(ace);
+            super(option.displayValue);
             this.option = option;
         }
 
@@ -73,9 +72,9 @@ module api.ui.security.acl {
             super(className);
         }
 
-        setEditable(editable: boolean) {
+        setReadonly(readonly: boolean) {
             this.getSelectedOptions().forEach((option: SelectedOption<UserStoreAccessControlEntry>) => {
-                option.getOptionView().setEditable(editable);
+                option.getOptionView().setReadonly(readonly);
             });
         }
 

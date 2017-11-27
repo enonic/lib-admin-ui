@@ -67,9 +67,13 @@ module api.ui.selector.combobox {
             });
         }
 
+        setReadonly(readonly: boolean) {
+            this.editable = readonly ? false : this.editable;
+            this.removable = readonly ? false : this.removable;
+        }
+
         setEditable(editable: boolean) {
             this.editable = editable;
-            //this.toggleClass('readonly', !editable);
         }
 
         setRemovable(removable: boolean) {
