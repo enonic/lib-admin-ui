@@ -231,26 +231,16 @@ module api.content {
         constructor(option: api.ui.selector.Option<ContentTreeSelectorItem>) {
             super(option);
             this.id = option.value;
+            this.setEditable(false);
         }
 
-        doRender(): wemQ.Promise<boolean> {
+        protected appendActionButtons() {
+            super.appendActionButtons();
 
-            let removeButtonEl = new api.dom.AEl('remove');
             let message = new api.dom.H6El('missing-content');
-
             message.setHtml(i18n('field.content.noaccess', this.id));
 
-            removeButtonEl.onClicked((event: Event) => {
-                this.notifyRemoveClicked();
-
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
-            });
-
-            this.appendChildren<api.dom.Element>(removeButtonEl, message);
-
-            return wemQ(true);
+            this.appendChild(message);
         }
     }
 

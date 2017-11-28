@@ -58,6 +58,7 @@ module api.form.inputtype.combobox {
             super.layout(input, propertyArray);
 
             this.selectedOptionsView = new api.ui.selector.combobox.BaseSelectedOptionsView<string>();
+            this.selectedOptionsView.setEditable(false);
             this.comboBox = this.createComboBox(input, propertyArray);
 
             this.comboBoxOptions.forEach((option: ComboBoxOption) => {

@@ -4,15 +4,17 @@ module api.ui.security.acl {
     export class AccessControlListView extends api.ui.selector.list.ListBox<AccessControlEntry> {
 
         private itemValueChangedListeners: {(item: AccessControlEntry): void}[] = [];
-        private itemsEditable: boolean = true;
 
         constructor(className?: string) {
-            super('access-control-list' + (className ? ' ' + className : ''));
+            super('selected-options access-control-list' + (className ? ' ' + className : ''));
         }
 
-        createItemView(entry: AccessControlEntry): AccessControlEntryView {
-            let itemView = new AccessControlEntryView(entry);
-            itemView.setEditable(this.itemsEditable);
+        addItem(item: AccessControlEntry, readOnly: boolean = false) {
+            readOnly ? super.addItemReadOnly(item) : super.addItem(item);
+        }
+
+        createItemView(entry: AccessControlEntry, readOnly: boolean = false): AccessControlEntryView {
+            let itemView = new AccessControlEntryView(entry, readOnly);
             itemView.onRemoveClicked(() => {
                 this.removeItem(entry);
             });
@@ -40,18 +42,6 @@ module api.ui.security.acl {
             this.itemValueChangedListeners.forEach((listener) => {
                 listener(item);
             });
-        }
-
-        setItemsEditable(editable: boolean): AccessControlListView {
-            if (this.itemsEditable !== editable) {
-                this.itemsEditable = editable;
-                this.refreshList();
-            }
-            return this;
-        }
-
-        isItemsEditable(): boolean {
-            return this.itemsEditable;
         }
 
     }

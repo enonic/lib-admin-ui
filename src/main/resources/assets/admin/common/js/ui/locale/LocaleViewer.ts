@@ -6,12 +6,10 @@ module api.ui.locale {
 
         private namesView: api.app.NamesView;
 
-        private removeClickedListeners: {(event: MouseEvent):void}[] = [];
-
         private displayNamePattern: string = '{0} ({1})';
 
-        constructor() {
-            super();
+        constructor(className?: string) {
+            super(className);
             this.namesView = new api.app.NamesView();
             this.appendChild(this.namesView);
         }
@@ -24,22 +22,6 @@ module api.ui.locale {
 
         getPreferredHeight(): number {
             return 30;
-        }
-
-        onRemoveClicked(listener: (event: MouseEvent) => void) {
-            this.removeClickedListeners.push(listener);
-        }
-
-        unRemoveClicked(listener: (event: MouseEvent) => void) {
-            this.removeClickedListeners = this.removeClickedListeners.filter((current) => {
-                return current !== listener;
-            });
-        }
-
-        notifyRemoveClicked(event: MouseEvent) {
-            this.removeClickedListeners.forEach((listener) => {
-                listener(event);
-            });
         }
     }
 }

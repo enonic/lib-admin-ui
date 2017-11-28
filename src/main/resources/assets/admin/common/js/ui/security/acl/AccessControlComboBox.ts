@@ -16,8 +16,9 @@ module api.ui.security.acl {
                 setMaximumOccurrences(0).
                 setComboBoxName('principalSelector').
                 setIdentifierMethod('getPrincipalKey').
-                setLoader(new AccessControlEntryLoader()).setHideComboBoxWhenMaxReached(false).setSelectedOptionsView(
-                new ACESelectedOptionsView()).
+                setLoader(new AccessControlEntryLoader()).
+                setHideComboBoxWhenMaxReached(false).
+                setSelectedOptionsView(new ACESelectedOptionsView()).
                 setOptionDisplayValueViewer(new AccessControlEntryViewer()).
                 setDelayedInputValueChangedHandling(500);
 
@@ -68,13 +69,9 @@ module api.ui.security.acl {
         private selectedOptionRemovedListeners: {(removed: SelectedOptionEvent<AccessControlEntry>): void;}[] = [];
         private selectedOptionAddedListeners: {(added: SelectedOptionEvent<AccessControlEntry>): void;}[] = [];
 
-        constructor(className?: string) {
-            super(className);
-        }
-
-        setEditable(editable: boolean) {
+        setReadonly(readonly: boolean) {
             this.getSelectedOptions().forEach((option: SelectedOption<AccessControlEntry>) => {
-                option.getOptionView().setEditable(editable);
+                option.getOptionView().setReadonly(readonly);
             });
         }
 
@@ -232,6 +229,10 @@ module api.ui.security.acl {
 
         unOptionMoved(_listener: {(moved: SelectedOption<AccessControlEntry>): void;}) {
             // must be implemented by children
+        }
+
+        setEditable(_editable: boolean) {
+            throw new Error('Not in use');
         }
 
     }
