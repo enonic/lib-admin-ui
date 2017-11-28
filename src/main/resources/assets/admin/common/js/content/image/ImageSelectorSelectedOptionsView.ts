@@ -21,6 +21,8 @@ module api.content.image {
 
         private clickDisabled: boolean = false;
 
+        readonly stickyToolbarCls: string = 'image-selector-toolbar-sticky';
+
         constructor() {
             super();
 
@@ -40,8 +42,16 @@ module api.content.image {
             this.toolbar.onRemoveClicked(() => {
                 this.removeSelectedOptions(this.selection);
             });
+            this.toolbar.onShown(() => this.updateStickyToolbar());
+            this.toolbar.onHidden(() => this.toolbar.removeClass(this.stickyToolbarCls));
             this.onRendered(() => {
                 this.toolbar.insertAfterEl(this);
+
+                const scrollableParentEl = wemjq(this.getHTMLElement()).scrollParent()[0];
+                const scrollableParent = api.dom.Element.fromHtmlElement(scrollableParentEl);
+
+                scrollableParent.onScroll(() => this.updateStickyToolbar());
+                api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => this.updateStickyToolbar());
             });
         }
 
@@ -90,17 +100,18 @@ module api.content.image {
         }
 
         addOption(option: Option<ImageTreeSelectorItem>, silent: boolean = false, keyCode: number = -1): boolean {
-            let selectedOption = this.getByOption(option);
+            const selectedOption = this.getByOption(option);
             if (!selectedOption) {
                 this.addNewOption(option, silent, keyCode);
                 return true;
-            } else if (selectedOption) {
-                let displayValue = selectedOption.getOption().displayValue;
-                if (displayValue.getContentSummary() == null && option.displayValue.getContentSummary() != null) {
-                    this.updateUploadedOption(option);
-                    return true;
-                }
             }
+
+            const displayValue = selectedOption.getOption().displayValue;
+            if (displayValue.getContentSummary() == null && option.displayValue.getContentSummary() != null) {
+                this.updateUploadedOption(option);
+                return true;
+            }
+
             return false;
         }
 
@@ -116,6 +127,7 @@ module api.content.image {
                 optionView.setOption(option);
             });
             this.appendChild(optionView);
+            this.updateStickyToolbar();
 
             if (!silent) {
                 this.notifyOptionSelected(new SelectedOptionEvent(selectedOption, keyCode));
@@ -321,6 +333,38 @@ module api.content.image {
 
         private isLast(index: number): boolean {
             return index === this.getSelectedOptions().length - 1;
+        }
+
+        private unstickOtherToolbars() {
+            wemjq('.' + this.stickyToolbarCls).removeClass(this.stickyToolbarCls);
+        }
+
+        updateStickyToolbar() {
+            if (!this.toolbar.isVisible()) {
+                return;
+            }
+            const selectedOptionsViewRect = this.getHTMLElement().getBoundingClientRect();
+            const windowHeight = (window.innerHeight || document.documentElement.clientHeight);
+
+            if (this.toolbar.hasClass(this.stickyToolbarCls)) {
+                const toolbarHeight = this.toolbar.getEl().getHeightWithBorder();
+
+                if (selectedOptionsViewRect.bottom + toolbarHeight <= windowHeight ||
+                    selectedOptionsViewRect.top >= windowHeight - toolbarHeight) {
+                    this.toolbar.removeClass(this.stickyToolbarCls);
+                    this.toolbar.getEl().setWidth('100%');
+                }
+            } else {
+
+                const toolbarRect = this.toolbar.getHTMLElement().getBoundingClientRect();
+
+                if (toolbarRect.bottom > windowHeight &&
+                    selectedOptionsViewRect.top < windowHeight) {
+                    this.unstickOtherToolbars();
+                    this.toolbar.addClass(this.stickyToolbarCls);
+                    this.toolbar.getEl().setWidthPx(this.getEl().getWidth());
+                }
+            }
         }
 
         private notifyRemoveSelectedOptions(option: SelectedOption<ImageTreeSelectorItem>[]) {
