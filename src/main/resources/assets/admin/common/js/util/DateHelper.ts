@@ -52,13 +52,55 @@ module api.util {
          * @param includeSeconds
          * @returns {string}
          */
-        public static formatTime(date: Date, includeSeconds: boolean = true): string {
-            return this.padNumber(date.getHours()) + ':' + this.padNumber(date.getMinutes()) +
-                   (includeSeconds ? ':' + this.padNumber(date.getSeconds()) : '');
+        public static getFormattedTimeFromDate(date: Date, includeSeconds: boolean = true): string {
+            return DateHelper.padNumber(date.getHours()) + ':' + DateHelper.padNumber(date.getMinutes()) +
+                   (includeSeconds ? ':' + DateHelper.padNumber(date.getSeconds()) : '');
         }
 
-        private static padNumber(num: number): string {
-            return (num < 10 ? '0' : '') + num;
+        /**
+         * Returns Date object with only time part set
+         * @param hours
+         * @param minutes
+         * @param seconds?
+         * @returns {Date}
+         */
+        public static dateFromTime(hours: number, minutes: number, seconds?: number): Date {
+            const now = new Date();
+
+            if (!DateHelper.isHoursValid(hours) || !DateHelper.isMinutesValid(minutes) ||
+                (!!seconds && !DateHelper.isMinutesValid(seconds))) {
+                return now;
+            }
+
+            return new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, seconds || 0);
+        }
+
+        /**
+         * Formats hours, minutes and seconds into time string
+         * @param hours
+         * @param minutes
+         * @param seconds?
+         * @returns {string}
+         */
+        public static formatTime(hours: number, minutes: number, seconds?: number): string {
+            if (!DateHelper.isHoursValid(hours) || !DateHelper.isMinutesValid(minutes) ||
+                                    (!!seconds && !DateHelper.isMinutesValid(seconds))) {
+                return '';
+            }
+            return DateHelper.padNumber(hours) + ':' + DateHelper.padNumber(minutes) +
+                   (seconds ? ':' + DateHelper.padNumber(seconds) : '');
+        }
+
+        public static isHoursValid(hours: number): boolean {
+            return hours >= 0 && hours < 24;
+        }
+
+        public static isMinutesValid(minutes: number): boolean {
+            return minutes >= 0 && minutes < 60;
+        }
+
+        public static padNumber(num: number): string {
+            return ((num || 0) < 10 ? '0' : '') + (num || 0);
         }
 
         /**

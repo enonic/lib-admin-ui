@@ -27,10 +27,11 @@ module api.content.form.inputtype.time {
             const value = this.getValueFromProperty(property);
             const timePicker = new api.ui.time.TimePickerBuilder().setHours(value.hours).setMinutes(value.minutes).build();
 
-            timePicker.onSelectedTimeChanged((hours: number, minutes: number) => {
-                const valueStr = hours + ':' + minutes;
-                const newValue = new Value(api.util.LocalTime.isValidString(valueStr) ? api.util.LocalTime.fromString(valueStr) : null,
+            timePicker.onSelectedTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
+
+                let newValue = new Value(event.getDate() != null ? api.util.LocalTime.fromDate(event.getDate()) : null,
                     ValueTypes.LOCAL_TIME);
+
                 this.notifyOccurrenceValueChanged(timePicker, newValue);
             });
 

@@ -1,6 +1,7 @@
 module api.ui.time {
 
     import Timezone = api.util.Timezone;
+    import DateHelper = api.util.DateHelper;
 
     export class TimePickerPopupBuilder {
 
@@ -148,8 +149,8 @@ module api.ui.time {
             this.prevMinute.appendChild(new api.dom.SpanEl());
             minuteContainer.appendChild(this.prevMinute);
 
-            this.selectedHour = this.isHoursValid(builder.getHours()) ? builder.getHours() : null;
-            this.selectedMinute = this.isMinutesValid(builder.getMinutes()) ? builder.getMinutes() : null;
+            this.selectedHour = DateHelper.isHoursValid(builder.getHours()) ? builder.getHours() : null;
+            this.selectedMinute = DateHelper.isMinutesValid(builder.getMinutes()) ? builder.getMinutes() : null;
 
             this.useLocalTimezoneIfNotPresent = builder.useLocalTimezoneIfNotPresent;
             this.timezone = builder.timezone;
@@ -168,8 +169,8 @@ module api.ui.time {
                 this.appendChild(timezoneContainer);
             }
 
-            this.hour.setHtml(this.padNumber(this.selectedHour || 0, 2));
-            this.minute.setHtml(this.padNumber(this.selectedMinute || 0, 2));
+            this.hour.setHtml(DateHelper.padNumber(this.selectedHour));
+            this.minute.setHtml(DateHelper.padNumber(this.selectedMinute));
         }
 
         getSelectedTime(): {hour: number; minute: number} {
@@ -246,31 +247,19 @@ module api.ui.time {
         }
 
         setSelectedTime(hours: number, minutes: number, silent?: boolean) {
-            if (this.isHoursValid(hours) && this.isMinutesValid(minutes)) {
+            if (DateHelper.isHoursValid(hours) && DateHelper.isMinutesValid(minutes)) {
                 this.selectedHour = hours;
                 this.selectedMinute = minutes;
             } else {
                 this.selectedHour = null;
                 this.selectedMinute = null;
             }
-            this.hour.setHtml(this.padNumber(this.selectedHour || 0, 2));
-            this.minute.setHtml(this.padNumber(this.selectedMinute || 0, 2));
+            this.hour.setHtml(DateHelper.padNumber(this.selectedHour || 0));
+            this.minute.setHtml(DateHelper.padNumber(this.selectedMinute || 0));
 
             if (!silent) {
                 this.notifyTimeChanged(this.selectedHour, this.selectedMinute);
             }
-        }
-
-        public padNumber(value: number, pad: number): string {
-            return Array(pad - String(value).length + 1).join('0') + value;
-        }
-
-        public isHoursValid(hours: number): boolean {
-            return hours >= 0 && hours < 24;
-        }
-
-        public isMinutesValid(minutes: number): boolean {
-            return minutes >= 0 && minutes < 60;
         }
     }
 

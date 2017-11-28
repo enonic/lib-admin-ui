@@ -12,7 +12,7 @@ module api.ui.time {
 
         startingDayOfWeek: DayOfWeek;
 
-        interactive: boolean = false;
+        interactive: boolean = true;
 
         setYear(value: number): CalendarBuilder {
             this.year = value;
@@ -68,8 +68,8 @@ module api.ui.time {
             super('calendar');
 
             let now = new Date();
-            this.year = builder.year || now.getFullYear();
-            this.month = builder.month != null ? builder.month : now.getMonth();
+            this.year = builder.selectedDate ? builder.selectedDate.getFullYear() : builder.year || now.getFullYear();
+            this.month = builder.selectedDate ? builder.selectedDate.getMonth() : builder.month || now.getMonth();
             this.selectedDate = builder.selectedDate;
             this.startingDayOfWeek = builder.startingDayOfWeek || DaysOfWeek.MONDAY;
             this.interactive = builder.interactive;

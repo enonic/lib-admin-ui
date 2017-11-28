@@ -105,33 +105,21 @@ module api.ui.time {
         }
 
         protected initPopup(builder: DateTimePickerBuilder) {
-            let calendar = new CalendarBuilder().
-                setSelectedDate(builder.selectedDate).
-                setMonth(builder.month).
-                setYear(builder.year).
-                setInteractive(true).
-                build();
-
             let popupBuilder = new DateTimePickerPopupBuilder().
                 setHours(builder.hours).
                 setMinutes(builder.minutes).
-                setCalendar(calendar).
+                setDate(builder.selectedDate).
                 setTimezone(builder.timezone).
                 setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent);
+
             this.popup = new DateTimePickerPopup(popupBuilder);
             this.popup.onShown(() => {
                 new DateTimePickerShownEvent(this).fire();
             });
         }
 
-        protected wrapChildrenAndAppend() {
-            let wrapper = new api.dom.DivEl('wrapper', api.StyleHelper.COMMON_PREFIX);
-            wrapper.appendChildren<api.dom.Element>(this.input, this.popup);
-
-            this.appendChild(wrapper);
-        }
-
-        protected setupListeners(builder: DateTimePickerBuilder) {
+        protected setupPopupListeners(builder: DatePickerBuilder) {
+            super.setupPopupListeners(builder);
 
             this.popup.onSelectedDateChanged((e: SelectedDateChangedEvent) => {
                 if (builder.closeOnSelect) {
@@ -145,6 +133,10 @@ module api.ui.time {
                 this.setTime(hours, minutes);
                 this.setInputValue();
             });
+        }
+
+        protected setupInputListeners() {
+            super.setupInputListeners();
 
             this.input.onKeyUp((event: KeyboardEvent) => {
                 if (api.ui.KeyHelper.isArrowKey(event) || api.ui.KeyHelper.isModifierKey(event)) {
@@ -155,16 +147,14 @@ module api.ui.time {
                 if (api.util.StringHelper.isEmpty(typedDateTime)) {
                     this.validUserInput = true;
                     this.setDateTime(null);
-                    this.popup.hide();
+                    this.hidePopup();
                 } else {
                     date = api.util.DateHelper.parseDateTime(typedDateTime);
                     let dateLength = date && date.getFullYear().toString().length + 12;
                     if (date && date.toString() !== 'Invalid Date' && typedDateTime.length === dateLength) {
                         this.validUserInput = true;
                         this.setDateTime(date);
-                        if (!this.popup.isVisible()) {
-                            this.popup.show();
-                        }
+                        this.showPopup();
                     } else {
                         this.selectedDate = null;
                         this.validUserInput = false;
@@ -177,7 +167,7 @@ module api.ui.time {
 
         private onDateTimePickerShown(event: DateTimePickerShownEvent) {
             if (event.getDateTimePicker() !== this) {
-                this.popup.hide();
+                this.hidePopup();
             }
         }
 
@@ -191,9 +181,7 @@ module api.ui.time {
         private setDateTime(date: Date) {
             this.selectedDate = date;
             this.popup.setSelectedDate(date, true);
-            date ?
-            this.popup.setSelectedTime(date.getHours(), date.getMinutes(), true) :
-            this.popup.setSelectedTime(null, null, true);
+            this.popup.setSelectedTime(date ? date.getHours() : null, date ? date.getMinutes() : null, true);
         }
 
         private setInputValue() {
@@ -223,10 +211,6 @@ module api.ui.time {
             }
         }
 
-        getSelectedDateTime(): Date {
-            return this.selectedDate;
-        }
-
         onSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
             this.selectedDateTimeChangedListeners.push(listener);
         }
@@ -247,7 +231,7 @@ module api.ui.time {
             if (!date) {
                 return '';
             }
-            return api.util.DateHelper.formatDate(date) + ' ' + api.util.DateHelper.formatTime(date, false);
+            return api.util.DateHelper.formatDate(date) + ' ' + api.util.DateHelper.getFormattedTimeFromDate(date, false);
         }
     }
 

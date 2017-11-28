@@ -2,15 +2,11 @@ module api.ui.time {
 
     export class DatePickerPopupBuilder {
 
-        calendar: Calendar;
+        date: Date;
 
-        setCalendar(value: Calendar): DatePickerPopupBuilder {
-            this.calendar = value;
+        setDate(date: Date): DatePickerPopupBuilder {
+            this.date = date;
             return this;
-        }
-
-        getCalendar(): Calendar {
-            return this.calendar;
         }
 
         build(): DatePickerPopup {
@@ -80,7 +76,7 @@ module api.ui.time {
             });
             monthContainer.appendChild(this.nextMonth);
 
-            this.calendar = builder.getCalendar() || new CalendarBuilder().build();
+            this.calendar = new CalendarBuilder().setSelectedDate(builder.date).build();
 
             this.year.setHtml(this.calendar.getYear().toString());
             this.month.setHtml(MonthsOfYear.getByNumberCode(this.calendar.getMonth()).getFullName());
@@ -90,10 +86,6 @@ module api.ui.time {
                 this.year.setHtml(year.toString());
             });
             this.appendChild(this.calendar);
-        }
-
-        getSelectedDate(): Date {
-            return this.calendar.getSelectedDate();
         }
 
         setSelectedDate(date: Date, silent?: boolean) {
