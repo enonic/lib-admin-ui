@@ -32,8 +32,11 @@ module api.content.image {
             let displayValue: ImageTreeSelectorItem = option.displayValue;
 
             if (displayValue.getContentSummary()) {
+                const isMissingContent = option.displayValue.isEmptyContent();
                 this.updateIconSrc(displayValue);
                 this.label.getEl().setInnerHtml(displayValue.getDisplayName());
+                this.icon.getEl().setAttribute('title',
+                    isMissingContent ? option.value : option.displayValue.getPath() ? option.displayValue.getPath().toString() : '');
             } else {
                 this.showProgress();
             }

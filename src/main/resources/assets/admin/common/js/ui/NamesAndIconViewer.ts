@@ -48,7 +48,7 @@ module api.ui {
                 const hint = this.resolveHint(object);
 
                 if (!api.util.StringHelper.isBlank(hint)) {
-                    this.getEl().setAttribute('title', hint);
+                    this.getHintTargetEl().setAttribute('title', hint);
                 }
 
                 let iconUrl;
@@ -83,6 +83,10 @@ module api.ui {
             } else {
                 return api.content.ContentUnnamed.prettifyUnnamed(displayName);
             }
+        }
+
+        protected getHintTargetEl(): api.dom.ElementHelper {
+            return this.getEl();
         }
 
         resolveHint(_object: OBJECT): string {

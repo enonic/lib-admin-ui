@@ -127,12 +127,32 @@
     button {
       margin-right: 10px;
     }
+
+    &.image-selector-toolbar-sticky {
+      float: none;
+      position: fixed;
+      bottom: 0;
+      z-index: @z-index-toolbar-element;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px 0px;
+      box-sizing: content-box;
+    }
   }
 
   .open-library-button {
     background: url("../../../../../images/folder-open.png") no-repeat center;
   }
 
+  &._0-240, &._240-360 {
+    .squared-content > .label {
+      font-size: 8px;
+    }
+  }
+  &._360-540 {
+    .squared-content > .label {
+      font-size: 10px;
+    }
+  }
 }
 
 .image-selector-small() {
