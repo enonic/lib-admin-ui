@@ -1,4 +1,4 @@
-.userstore-access-control-entry {
+.userstore-access-control-entry.selected-option {
   position: relative;
   padding: 5px 42px 5px 5px;
   .flexbox();
@@ -57,6 +57,8 @@
     .tab-menu-button {
       text-align: left;
       padding: 6px 5px;
+      padding-top: 4px;
+      margin-top: -4px;
       color: @admin-font-gray3;
       background-color: transparent;
 
@@ -66,24 +68,18 @@
 
       .label {
         margin: 0;
-        color: @admin-blue;
+        color: @admin-bg-dark-gray;
       }
 
     }
 
     ul {
-      padding: 40px 4px 4px;
+      padding: 36px 4px 4px;
+      top: -8px;
     }
 
   }
-
-  &.readonly {
-    opacity: 0.5;
-
-    .icon-close {
-      cursor: default;
-
-    }
+  &:not(.readonly) .tab-menu:not(.expanded) .tab-menu-button .label {
+    color: @admin-blue;
   }
-
 }

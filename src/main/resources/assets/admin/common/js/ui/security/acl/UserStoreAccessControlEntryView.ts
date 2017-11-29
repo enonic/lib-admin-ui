@@ -18,7 +18,7 @@ module api.ui.security.acl {
             super('selected-option userstore-access-control-entry');
 
             this.ace = ace;
-            super.setEditable(!readonly);
+            this.setEditable(!readonly);
 
             if (isNaN(this.ace.getAccess())) {
                 this.ace.setAccess(UserStoreAccess[UserStoreAccess.CREATE_USERS]);
@@ -35,8 +35,10 @@ module api.ui.security.acl {
         setEditable(editable: boolean) {
             super.setEditable(editable);
 
-            this.accessSelector.setEnabled(editable);
             this.toggleClass('readonly', !editable);
+            if (this.accessSelector) {
+                this.accessSelector.setEnabled(editable);
+            }
         }
 
         onValueChanged(listener: (item: UserStoreAccessControlEntry) => void) {
@@ -82,6 +84,7 @@ module api.ui.security.acl {
 
             if (!this.accessSelector) {
                 this.accessSelector = new UserStoreAccessSelector();
+                this.accessSelector.setEnabled(this.isEditable());
                 this.accessSelector.onValueChanged((event: ValueChangedEvent) => {
                     this.ace.setAccess(event.getNewValue());
                 });

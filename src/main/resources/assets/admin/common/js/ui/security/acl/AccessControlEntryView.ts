@@ -19,7 +19,7 @@ module api.ui.security.acl {
             super('selected-option access-control-entry');
 
             this.ace = ace;
-            super.setEditable(!readonly);
+            this.setEditable(!readonly);
 
             this.setAccessControlEntry(this.ace);
         }
@@ -35,6 +35,7 @@ module api.ui.security.acl {
 
             if (!this.accessSelector) {
                 this.accessSelector = new AccessSelector();
+                this.accessSelector.setEnabled(this.isEditable());
                 this.appendChild(this.accessSelector);
             }
             this.accessSelector.setValue(AccessControlEntryView.getAccessValueFromEntry(this.ace), true);
@@ -43,6 +44,7 @@ module api.ui.security.acl {
 
             if (!this.permissionSelector) {
                 this.permissionSelector = new PermissionSelector();
+                this.permissionSelector.setEnabled(this.isEditable());
                 this.permissionSelector.onValueChanged((event: api.ValueChangedEvent) => {
                     this.toggleClass('dirty', event.getNewValue() !== JSON.stringify({
                             allow: this.ace.getAllowedPermissions().sort(),
@@ -79,8 +81,12 @@ module api.ui.security.acl {
         setEditable(editable: boolean) {
             super.setEditable(editable);
 
-            this.permissionSelector.setEnabled(editable);
-            this.accessSelector.setEnabled(editable);
+            if (this.permissionSelector) {
+                this.permissionSelector.setEnabled(editable);
+            }
+            if (this.accessSelector) {
+                this.accessSelector.setEnabled(editable);
+            }
         }
 
         getValueChangedListeners(): {(item: AccessControlEntry): void}[] {
