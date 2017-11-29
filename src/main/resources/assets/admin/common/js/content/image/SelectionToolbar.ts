@@ -21,7 +21,7 @@ module api.content.image {
             super('selection-toolbar');
 
             this.editButton = new Button(i18n('button.edit'));
-            this.editButton.addClass('large edit green');
+            this.editButton.addClass('large edit blue');
             this.editButton.onClicked(() => this.notifyEditClicked());
             this.appendChild(this.editButton);
 
