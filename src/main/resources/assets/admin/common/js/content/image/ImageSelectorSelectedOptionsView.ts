@@ -51,7 +51,7 @@ module api.content.image {
                 const scrollableParent = api.dom.Element.fromHtmlElement(scrollableParentEl);
 
                 scrollableParent.onScroll(() => this.updateStickyToolbar());
-                api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => this.updateStickyToolbar());
+                api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => this.updateStickyToolbar(true));
             });
         }
 
@@ -339,7 +339,7 @@ module api.content.image {
             wemjq('.' + this.stickyToolbarCls).removeClass(this.stickyToolbarCls);
         }
 
-        updateStickyToolbar() {
+        updateStickyToolbar(afterResize: boolean = false) {
             if (!this.toolbar.isVisible()) {
                 return;
             }
@@ -350,16 +350,18 @@ module api.content.image {
                 const toolbarHeight = this.toolbar.getEl().getHeightWithBorder();
 
                 if (selectedOptionsViewRect.bottom + toolbarHeight <= windowHeight ||
-                    selectedOptionsViewRect.top >= windowHeight - toolbarHeight) {
+                    selectedOptionsViewRect.top + 10 >= windowHeight) {
                     this.toolbar.removeClass(this.stickyToolbarCls);
                     this.toolbar.getEl().setWidth('100%');
+                } else if (afterResize) {
+                    this.toolbar.getEl().setWidthPx(this.getEl().getWidth());
                 }
             } else {
 
                 const toolbarRect = this.toolbar.getHTMLElement().getBoundingClientRect();
 
                 if (toolbarRect.bottom > windowHeight &&
-                    selectedOptionsViewRect.top < windowHeight) {
+                    selectedOptionsViewRect.top + 10 < windowHeight) {
                     this.unstickOtherToolbars();
                     this.toolbar.addClass(this.stickyToolbarCls);
                     this.toolbar.getEl().setWidthPx(this.getEl().getWidth());
