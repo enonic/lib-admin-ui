@@ -568,7 +568,8 @@ module api.ui.selector.combobox {
                     let row = this.comboBoxDropdown.getDropdownGrid().getRowByValue(value);
                     this.handleRowSelected(row, keyCode);
                 });
-                this.input.setValue('', true);
+                this.input.setValue('');
+                this.hideDropdown();
             } else {
                 this.handleRowSelected(index, keyCode);
                 this.input.setValue('');
@@ -990,7 +991,9 @@ module api.ui.selector.combobox {
 
         private handleMultipleSelectionChanged() {
             if (this.isSelectionChanged()) {
-                this.applySelectionsButton.show();
+                if(this.comboBoxDropdown.isDropdownShown()) {
+                    this.applySelectionsButton.show();
+                }
                 this.updateSelectionDelta();
             } else {
                 this.applySelectionsButton.hide();
