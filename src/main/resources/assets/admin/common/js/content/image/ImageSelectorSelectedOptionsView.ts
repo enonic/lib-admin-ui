@@ -120,7 +120,6 @@ module api.content.image {
             this.getSelectedOptions().push(selectedOption);
 
             let optionView: ImageSelectorSelectedOptionView = <ImageSelectorSelectedOptionView>selectedOption.getOptionView();
-            let isMissingContent = option.displayValue.isEmptyContent();
 
             optionView.onRendered(() => {
                 this.handleOptionViewRendered(selectedOption, optionView);
@@ -132,10 +131,6 @@ module api.content.image {
             if (!silent) {
                 this.notifyOptionSelected(new SelectedOptionEvent(selectedOption, keyCode));
             }
-
-            optionView.getEl().setAttribute('title', isMissingContent
-                ? option.value
-                : option.displayValue.getPath() ? option.displayValue.getPath().toString() : '');
         }
 
         updateUploadedOption(option: Option<ImageTreeSelectorItem>) {
