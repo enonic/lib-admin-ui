@@ -275,6 +275,20 @@ module api.ui.treegrid {
                     updateColumnsHandler(item.isRangeSizeChanged());
                 }
             });
+
+            api.dom.Body.get().onClicked((event: MouseEvent) => this.unhighlightRowOnMouseClick(event));
+        }
+
+        private unhighlightRowOnMouseClick(e: Event): void {
+            if (!!this.highlightedNode && this.isClickOutsideGridViewport(<HTMLElement> e.target)) {
+                this.unhighlightRows();
+            }
+        }
+
+        protected isClickOutsideGridViewport(clickedEl: HTMLElement) {
+            const element = api.dom.Element.fromHtmlElement(clickedEl);
+
+            return (element.hasClass('grid-canvas tree-grid-toolbar browse-toolbar appbar'));
         }
 
         private enablePostLoad(builder: TreeGridBuilder<DATA>) {
@@ -1159,7 +1173,8 @@ module api.ui.treegrid {
             const expandedNodesDataId = rememberExpanded ? this.grid.getDataView().getItems()
                                                              .filter(item => item.isExpanded()).map(item => item.getDataId()) : [];
 
-            let selection = this.root.getCurrentSelection();
+            const selection = this.root.getCurrentSelection();
+            const highlightedNode = this.highlightedNode;
 
             this.root.resetCurrentRoot(parentNodeData);
             this.initData([]);
@@ -1173,6 +1188,9 @@ module api.ui.treegrid {
                     this.root.setCurrentSelection(selection);
                     this.initData(this.root.getCurrentRoot().treeToList());
                     this.updateExpanded();
+                    if (highlightedNode) {
+                        this.highlightRowByNode(highlightedNode);
+                    }
                 }).catch((reason: any) => {
                     this.initData([]);
                     this.handleError(reason);
