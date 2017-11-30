@@ -17,7 +17,9 @@ module api.ui.button {
                 this.setTitle(title);
 
                 this.onActiveChanged((isActive: boolean) => {
-                    this.setTitle(isActive ? '' : title, true);
+                    if (this.isRendered()) {
+                        this.setTitle(isActive ? '' : title, true);
+                    }
                 });
             }
 
