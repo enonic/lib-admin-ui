@@ -2,7 +2,9 @@ module api.ui.tab {
 
     import AppHelper = api.util.AppHelper;
 
-    export class TabMenu extends api.dom.DivEl implements api.ui.Navigator {
+    export class TabMenu
+        extends api.dom.DivEl
+        implements api.ui.Navigator {
 
         private tabMenuButton: TabMenuButton;
 
@@ -16,13 +18,13 @@ module api.ui.tab {
 
         private hideOnItemClick: boolean = true;
 
-        private navigationItemAddedListeners: {(event: NavigatorEvent):void}[] = [];
+        private navigationItemAddedListeners: { (event: NavigatorEvent): void }[] = [];
 
-        private navigationItemRemovedListeners: {(event: NavigatorEvent):void}[] = [];
+        private navigationItemRemovedListeners: { (event: NavigatorEvent): void }[] = [];
 
-        private navigationItemSelectedListeners: {(event: NavigatorEvent):void}[] = [];
+        private navigationItemSelectedListeners: { (event: NavigatorEvent): void }[] = [];
 
-        private navigationItemDeselectedListeners: {(event: NavigatorEvent):void}[] = [];
+        private navigationItemDeselectedListeners: { (event: NavigatorEvent): void }[] = [];
 
         private enabled: boolean = true;
 
@@ -199,7 +201,7 @@ module api.ui.tab {
             this.tabs.splice(index, 0, tab);
             tab.setIndex(index);
 
-            this.tabs.slice(index+1).forEach((slicedTab:TabBarItem) => {
+            this.tabs.slice(index + 1).forEach((slicedTab: TabBarItem) => {
                 slicedTab.setIndex(slicedTab.getIndex() + 1);
             });
 
@@ -347,7 +349,7 @@ module api.ui.tab {
             });
         }
 
-        selectNavigationItem(tabIndex: number) {
+        selectNavigationItem(tabIndex: number, silent?: boolean) {
             if (tabIndex < 0 || tabIndex >= this.getSize() || this.selectedTab === tabIndex) {
                 return;
             }
@@ -357,7 +359,9 @@ module api.ui.tab {
             this.setButtonLabel(selectedTab.getLabel());
             this.updateActiveTab(tabIndex);
 
-            this.notifyTabSelectedListeners(selectedTab);
+            if (!silent) {
+                this.notifyTabSelectedListeners(selectedTab);
+            }
         }
 
         deselectNavigationItem() {
@@ -386,52 +390,52 @@ module api.ui.tab {
 
         unNavigationItemAdded(listener: (event: NavigatorEvent) => void) {
             this.navigationItemAddedListeners =
-            this.navigationItemAddedListeners.filter((currentListener: (event: NavigatorEvent)=>void) => {
-                return listener !== currentListener;
-            });
+                this.navigationItemAddedListeners.filter((currentListener: (event: NavigatorEvent) => void) => {
+                    return listener !== currentListener;
+                });
         }
 
         unNavigationItemRemoved(listener: (event: NavigatorEvent) => void) {
             this.navigationItemRemovedListeners =
-            this.navigationItemRemovedListeners.filter((currentListener: (event: NavigatorEvent)=>void) => {
-                return listener !== currentListener;
-            });
+                this.navigationItemRemovedListeners.filter((currentListener: (event: NavigatorEvent) => void) => {
+                    return listener !== currentListener;
+                });
         }
 
         unNavigationItemSelected(listener: (event: NavigatorEvent) => void) {
             this.navigationItemSelectedListeners =
-            this.navigationItemSelectedListeners.filter((currentListener: (event: NavigatorEvent)=>void) => {
-                return listener !== currentListener;
-            });
+                this.navigationItemSelectedListeners.filter((currentListener: (event: NavigatorEvent) => void) => {
+                    return listener !== currentListener;
+                });
         }
 
         unNavigationItemDeselected(listener: (event: NavigatorEvent) => void) {
             this.navigationItemDeselectedListeners =
-            this.navigationItemDeselectedListeners.filter((currentListener: (event: NavigatorEvent)=>void) => {
-                return listener !== currentListener;
-            });
+                this.navigationItemDeselectedListeners.filter((currentListener: (event: NavigatorEvent) => void) => {
+                    return listener !== currentListener;
+                });
         }
 
         private notifyTabAddedListeners(tab: TabMenuItem) {
-            this.navigationItemAddedListeners.forEach((listener: (event: NavigatorEvent)=>void) => {
+            this.navigationItemAddedListeners.forEach((listener: (event: NavigatorEvent) => void) => {
                 listener.call(this, new NavigatorEvent(tab));
             });
         }
 
         private notifyTabRemovedListeners(tab: TabMenuItem) {
-            this.navigationItemRemovedListeners.forEach((listener: (event: NavigatorEvent)=>void) => {
+            this.navigationItemRemovedListeners.forEach((listener: (event: NavigatorEvent) => void) => {
                 listener.call(this, new NavigatorEvent(tab));
             });
         }
 
         private notifyTabSelectedListeners(tab: TabMenuItem) {
-            this.navigationItemSelectedListeners.forEach((listener: (event: NavigatorEvent)=>void) => {
+            this.navigationItemSelectedListeners.forEach((listener: (event: NavigatorEvent) => void) => {
                 listener.call(this, new NavigatorEvent(tab));
             });
         }
 
         private notifyTabDeselectedListeners(tab: TabMenuItem) {
-            this.navigationItemDeselectedListeners.forEach((listener: (event: NavigatorEvent)=>void) => {
+            this.navigationItemDeselectedListeners.forEach((listener: (event: NavigatorEvent) => void) => {
                 listener.call(this, new NavigatorEvent(tab));
             });
         }
