@@ -43,7 +43,7 @@ module api.ui {
 
             if (object) {
                 const displayName = this.resolveDisplayName(object) || this.normalizeDisplayName(this.resolveUnnamedDisplayName(object));
-                const subName = this.resolveSubName(object) || api.content.ContentUnnamed.prettifyUnnamed();
+                const subName = this.resolveSubName(object, this.relativePath) || api.content.ContentUnnamed.prettifyUnnamed();
                 const subTitle = this.resolveSubTitle(object);
                 const hint = this.resolveHint(object);
 
@@ -101,7 +101,7 @@ module api.ui {
             return '';
         }
 
-        resolveSubName(_object: OBJECT): string {
+        resolveSubName(_object: OBJECT, relativePath: boolean = false): string {
             return '';
         }
 
