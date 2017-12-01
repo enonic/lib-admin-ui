@@ -101,7 +101,7 @@ module api.ui {
             return '';
         }
 
-        resolveSubName(_object: OBJECT, relativePath: boolean = false): string {
+        resolveSubName(_object: OBJECT, _relativePath: boolean = false): string {
             return '';
         }
 

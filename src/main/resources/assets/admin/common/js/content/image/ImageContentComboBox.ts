@@ -10,10 +10,10 @@ module api.content.image {
         extends ContentComboBox<ImageTreeSelectorItem> {
 
         constructor(builder: ImageContentComboBoxBuilder) {
-            let loader = builder.loader ? builder.loader : ImageOptionDataLoader.create().setContent(builder.content).setContentTypeNames(
+            let loader = builder.loader || ImageOptionDataLoader.create().setContent(builder.content).setContentTypeNames(
                 [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()]).build();
 
-            builder.setLoader(loader);
+            builder.setLoader(loader).setMaxHeight(250);
 
             super(builder);
 

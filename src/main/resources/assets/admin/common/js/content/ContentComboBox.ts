@@ -33,10 +33,10 @@ module api.content {
 
         constructor(builder: ContentComboBoxBuilder<ITEM_TYPE>) {
 
-            const loader = builder.loader ? builder.loader : ContentSummaryOptionDataLoader.create().setLoadStatus(
+            const loader = builder.loader || ContentSummaryOptionDataLoader.create().setLoadStatus(
                 builder.showStatus).build();
 
-            builder.setLoader(<ContentSummaryOptionDataLoader<ITEM_TYPE>>loader);
+            builder.setLoader(<ContentSummaryOptionDataLoader<ITEM_TYPE>>loader).setMaxHeight(230);
 
             if (builder.showStatus) {
                 const columns = [new api.ui.grid.GridColumnBuilder().setId('status').setName('Status').setField(
