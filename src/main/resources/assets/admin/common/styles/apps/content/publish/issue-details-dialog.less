@@ -227,31 +227,32 @@
   .button-container {
     width: 100%;
 
-    .dropdown-dialog-menu {
-      float: right;
-    }
-    .cancel-button-bottom {
-      display: none;
-
-      float: left;
-      margin: 0px;
-    }
-
-    .show-schedule-action {
+    .dialog-button, .menu-button, .no-action-message {
       float: right;
     }
 
-    .edit-issue {
-      .button-background();
-      float: right;
-    }
+    .dialog-button {
 
-    .close-issue {
-      float: right;
+      &.edit-issue {
+        .button-background();
+      }
+
+      &.reopen-issue {
+        .dialog-button(@form-button-font, @admin-green);
+        display: none !important;
+      }
+
+      .cancel-button-bottom {
+        display: none;
+        float: left;
+        margin: 0;
+      }
     }
 
     + .no-action-message {
       display: none;
+      line-height: 36px;
+      font-size: 15px;
     }
   }
 
@@ -315,9 +316,6 @@
 
     .no-action-message {
       display: inline-block;
-      float: right;
-      line-height: 36px;
-      font-size: 15px;
     }
     .dependants {
       display: none !important;
@@ -325,11 +323,13 @@
   }
 
   &.closed {
-    .modal-dialog-body {
-      padding-bottom: 30px;
-    }
-    .modal-dialog-footer {
-      display: none;
+    .button-container {
+      .dialog-button:not(.reopen-issue), .menu-button {
+        display: none !important;
+      }
+      .reopen-issue {
+        display: block !important;
+      }
     }
   }
 
