@@ -8,11 +8,15 @@
     overflow-y: auto;
 
     .deck-panel {
-      min-height: 200px;
       overflow: visible;
 
       & > .panel {
-        height: 100%;
+        overflow: visible;
+        min-height: 240px;
+
+        input {
+          .input-glow();
+        }
       }
     }
   }
@@ -107,27 +111,7 @@
 
     .tab-bar {
       margin-top: 20px;
-      display: flex;
-
-      .tab-bar-item {
-        flex: 1;
-        border-bottom: 4px solid transparent;
-        text-align: center;
-
-        &.active {
-          border-bottom-color: @admin-blue;
-        }
-
-        &:hover {
-          background-color: #ddd;
-          cursor: pointer;
-        }
-
-        a {
-          padding: 10px 20px;
-          display: block;
-        }
-      }
+      background: transparent;
     }
   }
 
@@ -227,7 +211,7 @@
   .button-container {
     width: 100%;
 
-    .dialog-button, .menu-button, .no-action-message {
+    .dialog-button, .menu-button {
       float: right;
     }
 
@@ -254,6 +238,10 @@
       line-height: 36px;
       font-size: 15px;
     }
+  }
+
+  .no-action-message {
+    float: right;
   }
 
   &.nested {

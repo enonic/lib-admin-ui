@@ -264,17 +264,17 @@ module api.ui.selector.combobox {
 
             // If the page is in iframe page is not scrollable and fully rendered
             // The height of the iframe should be used instead
-            const containerHeight = win.isInIFrame() ? new ElementHelper(win.getFrameElement()).getHeight() : parent.getHeight();
+            const containerHeight = (win.isInIFrame() ? new ElementHelper(win.getFrameElement()) : parent).getHeight();
 
             // distance is measured from the top of the viewport
-            const distanceToParentsTop = win.isInIFrame() ? parent.getScrollTop() : parent.getOffsetTop();
+            const distanceToParentsTop = (win.isInIFrame() ? parent.getScrollTop() : parent.getOffsetTop());
             const distanceToInputsTop = inputEl.getOffsetTop();
 
             const distanceToParentsBottom = distanceToParentsTop + containerHeight;
-            const distanceToInputsBottom = distanceToInputsTop + inputEl.getHeight();
+            const distanceToInputsBottom = distanceToInputsTop + inputEl.getHeightWithBorder();
 
-            const sizeAboveInput = distanceToInputsTop - distanceToParentsTop;
-            const sizeBelowInput = distanceToParentsBottom - distanceToInputsBottom;
+            const sizeAboveInput = distanceToInputsTop - distanceToParentsTop - parent.getPaddingTop();
+            const sizeBelowInput = distanceToParentsBottom - distanceToInputsBottom - parent.getPaddingBottom();
 
             const dropdownHeight = dropdown.getHeightWithBorder();
 
