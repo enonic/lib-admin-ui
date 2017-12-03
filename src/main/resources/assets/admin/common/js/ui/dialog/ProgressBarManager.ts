@@ -3,13 +3,17 @@ module api.ui.dialog {
     import TaskState = api.task.TaskState;
     import i18n = api.util.i18n;
     import DivEl = api.dom.DivEl;
+    import HeavyOperationsManager = api.heavy.HeavyOperationsManager;
+    import HeavyOperationPerformer = api.heavy.HeavyOperationPerformer;
+
+    export type HeavyOperationModalDialog = ModalDialog & HeavyOperationPerformer;
 
     export interface ProgressBarManagerConfig {
         processingLabel: string;
         processHandler: () => void;
         unlockControlsHandler?: () => void;
         createProcessingMessage?: () => api.dom.Element;
-        managingElement: ModalDialog;
+        managingElement: HeavyOperationModalDialog;
     }
 
     export class ProgressBarManager {
@@ -22,7 +26,7 @@ module api.ui.dialog {
 
         static processingClass: string = 'is-processing';
 
-        private managingElement: ModalDialog;
+        private managingElement: HeavyOperationModalDialog;
 
         private progressBar: ProgressBar;
 
@@ -44,9 +48,12 @@ module api.ui.dialog {
             this.managingElement = config.managingElement;
             this.processHandler = config.processHandler;
             this.processingLabel = config.processingLabel;
-            this.unlockControlsHandler = config.unlockControlsHandler || (() => { /*empty*/
+            this.unlockControlsHandler = config.unlockControlsHandler || (() => {/*empty*/
             });
             this.createProcessingMessage = config.createProcessingMessage;
+
+            HeavyOperationsManager.instance().addPerformer(this.managingElement);
+            this.managingElement.onRemoved(() => HeavyOperationsManager.instance().removePerformer(this.managingElement));
 
             this.managingElement.addClass('progress-manageable');
         }
@@ -76,6 +83,7 @@ module api.ui.dialog {
         private enableProgressBar() {
             this.managingElement.addClass(ProgressBarManager.processingClass);
             api.dom.Body.get().addClass(ProgressBarManager.processingClass);
+            HeavyOperationsManager.instance().notifyHeavyOperationStarted(this.managingElement);
             this.enabled = true;
 
             MenuButtonProgressBarManager.getProgressBar().setValue(0);
@@ -89,6 +97,7 @@ module api.ui.dialog {
         private disableProgressBar() {
             this.managingElement.removeClass(ProgressBarManager.processingClass);
             api.dom.Body.get().removeClass(ProgressBarManager.processingClass);
+            HeavyOperationsManager.instance().notifyHeavyOperationEnded(this.managingElement);
             this.enabled = false;
         }
 
@@ -113,6 +122,8 @@ module api.ui.dialog {
             if (this.managingElement.isVisible()) {
                 this.managingElement.close();
             }
+
+            HeavyOperationsManager.instance().clearListeners();
         }
 
         private handleSucceeded() {
@@ -140,10 +151,10 @@ module api.ui.dialog {
             });
         }
 
-        pollTask(taskId: api.task.TaskId, elapsed: number = 0, instant?: boolean) {
+        pollTask(taskId: api.task.TaskId, elapsed: number = 0) {
             const interval = ProgressBarManager.pollInterval;
-            const checkUpdates = () => {
-                if (!this.isEnabled() && (elapsed >= ProgressBarManager.progressBarDelay || instant)) {
+            setTimeout(() => {
+                if (!this.isEnabled() && (elapsed >= ProgressBarManager.progressBarDelay)) {
                     this.enableProgressBar();
                 }
 
@@ -174,14 +185,9 @@ module api.ui.dialog {
                     this.handleProcessingComplete();
 
                     api.DefaultErrorHandler.handle(reason);
-                }).done();
+                });
 
-            };
-            if (instant) {
-                checkUpdates();
-            } else {
-                setTimeout(checkUpdates, interval);
-            }
+            }, interval);
         }
     }
 }

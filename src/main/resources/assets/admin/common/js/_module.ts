@@ -64,6 +64,8 @@
 
 ///<reference path='task/_module.ts' />
 
+///<reference path='heavy/_module.ts' />
+
 ///<reference path='ui/responsive/_module.ts' />
 
 ///<reference path='ui/_module.ts' />
