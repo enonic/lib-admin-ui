@@ -436,11 +436,15 @@ module api.ui.treegrid {
         }
 
         private recursivelyExpandHighlightedNode() {
-            if (!this.highlightedNode || this.highlightedNode.isVisible()) {
+            this.recursivelyExpandNode(this.highlightedNode);
+        }
+
+        private recursivelyExpandNode(node: TreeNode<DATA>) {
+            if (!node || node.isVisible()) {
                 return;
             }
-            let parent: TreeNode<DATA> = this.highlightedNode.getParent();
-            while (!this.highlightedNode.isVisible()) {
+            let parent: TreeNode<DATA> = node.getParent();
+            while (!node.isVisible()) {
                 this.expandNode(parent);
                 parent = parent.getParent();
             }
@@ -1091,13 +1095,16 @@ module api.ui.treegrid {
             }
         }
 
-        selectNode(dataId: string) {
+        selectNode(dataId: string, expand: boolean = false) {
             let root = this.root.getCurrentRoot();
             let node = root.findNode(dataId);
 
             if (node) {
                 this.unhighlightCurrentRow(true);
 
+                if (expand) {
+                    this.recursivelyExpandNode(node);
+                }
                 let row = this.getRowIndexByNode(node);
                 this.grid.selectRow(row);
             }
