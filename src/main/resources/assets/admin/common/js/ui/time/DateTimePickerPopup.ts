@@ -20,22 +20,12 @@ module api.ui.time {
             return this;
         }
 
-        setHours(value: number): DateTimePickerPopupBuilder {
-            this.hours = value;
-            return this;
-        }
-
         getHours(): number {
-            return this.hours;
-        }
-
-        setMinutes(value: number): DateTimePickerPopupBuilder {
-            this.minutes = value;
-            return this;
+            return this.date ? this.date.getHours() : null;
         }
 
         getMinutes(): number {
-            return this.minutes;
+            return this.date ? this.date.getMinutes() : null;
         }
 
         setTimezone(value: Timezone): DateTimePickerPopupBuilder {

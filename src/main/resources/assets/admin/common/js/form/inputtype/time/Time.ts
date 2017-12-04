@@ -27,7 +27,7 @@ module api.content.form.inputtype.time {
             const value = this.getValueFromProperty(property);
             const timePicker = new api.ui.time.TimePickerBuilder().setHours(value.hours).setMinutes(value.minutes).build();
 
-            timePicker.onSelectedTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
+            timePicker.onSelectedDateTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
 
                 let newValue = new Value(event.getDate() != null ? api.util.LocalTime.fromDate(event.getDate()) : null,
                     ValueTypes.LOCAL_TIME);

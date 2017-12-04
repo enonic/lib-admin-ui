@@ -12,9 +12,7 @@ module api.form {
 
             let publishFromDateTimeBuilder = new DateTimePickerBuilder();
             if (value) {
-                publishFromDateTimeBuilder.setSelectedDate(value);
-                publishFromDateTimeBuilder.setHours(value.getHours());
-                publishFromDateTimeBuilder.setMinutes(value.getMinutes());
+                publishFromDateTimeBuilder.setDate(value);
             }
 
             this.localDate = publishFromDateTimeBuilder.build();

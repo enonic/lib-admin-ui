@@ -2,28 +2,14 @@ module api.ui.time {
 
     export class DatePickerBuilder {
 
-        year: number;
-
-        month: number;
-
-        selectedDate: Date;
+        date: Date;
 
         startingDayOfWeek: DayOfWeek = DaysOfWeek.MONDAY;
 
         closeOnSelect: boolean = true;
 
-        setYear(value: number): DatePickerBuilder {
-            this.year = value;
-            return this;
-        }
-
-        setMonth(value: number): DatePickerBuilder {
-            this.month = value;
-            return this;
-        }
-
-        setSelectedDate(value: Date): DatePickerBuilder {
-            this.selectedDate = value;
+        setDate(value: Date): DatePickerBuilder {
+            this.date = value;
             return this;
         }
 
@@ -35,16 +21,14 @@ module api.ui.time {
 
     export class DatePicker extends Picker {
 
-        private selectedDate: Date;
-
-        private selectedDateChangedListeners: {(event: SelectedDateChangedEvent) : void}[] = [];
-
         constructor(builder: DatePickerBuilder) {
             super(builder, 'date-picker');
         }
 
         protected initData(builder: DatePickerBuilder) {
-            this.selectedDate = builder.selectedDate;
+            if (builder.date) {
+                this.setDate(builder.date);
+            }
         }
 
         protected handleShownEvent() {
@@ -80,7 +64,7 @@ module api.ui.time {
                 this.selectedDate = e.getDate();
                 this.validUserInput = true;
                 this.input.setValue(this.formatDate(e.getDate()), false, true);
-                this.notifySelectedDateChanged(e);
+                this.notifySelectedDateTimeChanged(e);
                 this.updateInputStyling();
             });
         }
@@ -94,27 +78,22 @@ module api.ui.time {
                 }
 
                 let typedDate = this.input.getValue();
+                this.validUserInput = true;
 
                 if (api.util.StringHelper.isEmpty(typedDate)) {
-                    this.popup.setSelectedDate(null);
-                    this.selectedDate = null;
-                    this.validUserInput = true;
+                    this.setDate(null);
                     this.hidePopup();
-                    this.notifySelectedDateChanged(new SelectedDateChangedEvent(null));
                 } else {
                     let date = api.util.DateHelper.parseDate(typedDate, '-', true);
                     if (date) {
-                        this.selectedDate = date;
-                        this.validUserInput = true;
-                        this.popup.setSelectedDate(date);
-                        this.notifySelectedDateChanged(new SelectedDateChangedEvent(date));
+                        this.setDate(date);
                         this.showPopup();
                     } else {
                         this.selectedDate = null;
                         this.validUserInput = false;
-                        this.notifySelectedDateChanged(new SelectedDateChangedEvent(null));
                     }
                 }
+                this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate));
                 this.updateInputStyling();
             });
         }
@@ -130,20 +109,11 @@ module api.ui.time {
             this.selectedDate = date;
         }
 
-        onSelectedDateChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.selectedDateChangedListeners.push(listener);
-        }
-
-        unSelectedDateChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.selectedDateChangedListeners = this.selectedDateChangedListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
-
-        private notifySelectedDateChanged(event: SelectedDateChangedEvent) {
-            this.selectedDateChangedListeners.forEach((listener) => {
-                listener(event);
-            });
+        private setDate(date: Date) {
+            this.selectedDate = date;
+            if (this.popup) {
+                this.popup.setSelectedDate(date, true);
+            }
         }
 
         private formatDate(date: Date): string {

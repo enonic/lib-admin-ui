@@ -89,12 +89,7 @@ module api.content.form.inputtype.time {
 
             if (property.hasNonNullValue()) {
                 let date = property.getLocalDateTime();
-                dateTimeBuilder.
-                    setYear(date.getYear()).
-                    setMonth(date.getMonth()).
-                    setSelectedDate(date.toDate()).
-                    setHours(date.getHours()).
-                    setMinutes(date.getMinutes());
+                dateTimeBuilder.setDate(date.toDate());
             }
 
             let dateTimePicker = dateTimeBuilder.build();
@@ -118,13 +113,7 @@ module api.content.form.inputtype.time {
 
             if (property.hasNonNullValue()) {
                 let date: api.util.DateTime = property.getDateTime();
-                dateTimeBuilder.
-                    setYear(date.getYear()).
-                    setMonth(date.getMonth()).
-                    setSelectedDate(date.toDate()).
-                    setHours(date.getHours()).
-                    setMinutes(date.getMinutes()).
-                    setTimezone(date.getTimezone());
+                dateTimeBuilder.setDate(date.toDate()).setTimezone(date.getTimezone());
             }
 
             let dateTimePicker = new DateTimePicker(dateTimeBuilder);

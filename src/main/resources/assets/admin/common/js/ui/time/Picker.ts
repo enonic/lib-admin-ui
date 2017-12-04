@@ -4,11 +4,15 @@ module api.ui.time {
 
         protected popup: any;
 
+        protected selectedDate: Date;
+
         protected input: api.ui.text.TextInput;
 
         protected validUserInput: boolean;
 
         private builder: any;
+
+        private selectedDateTimeChangedListeners: {(event: SelectedDateChangedEvent) : void}[] = [];
 
         constructor(builder: any, className?: string) {
             super(className);
@@ -155,6 +159,22 @@ module api.ui.time {
 
         giveFocus(): boolean {
             return this.input.giveFocus();
+        }
+
+        onSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
+            this.selectedDateTimeChangedListeners.push(listener);
+        }
+
+        unSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
+            this.selectedDateTimeChangedListeners = this.selectedDateTimeChangedListeners.filter((curr) => {
+                return curr !== listener;
+            });
+        }
+
+        notifySelectedDateTimeChanged(event: SelectedDateChangedEvent) {
+            this.selectedDateTimeChangedListeners.forEach((listener) => {
+                listener(event);
+            });
         }
     }
 }

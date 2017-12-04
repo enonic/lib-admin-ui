@@ -25,10 +25,12 @@ module api.ui.time {
 
     export class TimePicker extends Picker {
 
-        private selectedTimeChangedListeners: {(event: SelectedDateChangedEvent) : void}[] = [];
-
         constructor(builder: TimePickerBuilder) {
             super(builder, 'time-picker');
+        }
+
+        protected initData(builder: TimePickerBuilder) {
+            this.setTime(builder.hours, builder.minutes);
         }
 
         protected initPopup(builder: TimePickerBuilder) {
@@ -56,7 +58,7 @@ module api.ui.time {
                     this.input.setValue(DateHelper.formatTime(hours, minutes), false, true);
                     this.validUserInput = true;
 
-                    this.notifySelectedTimeChanged(new SelectedDateChangedEvent(DateHelper.dateFromTime(hours, minutes)));
+                    this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(DateHelper.dateFromTime(hours, minutes)));
                 }
 
                 this.updateInputStyling();
@@ -72,24 +74,19 @@ module api.ui.time {
                 }
 
                 let typedTime = this.input.getValue();
+                this.validUserInput = true;
                 if (api.util.StringHelper.isEmpty(typedTime)) {
-                    this.validUserInput = true;
-                    this.popup.setSelectedTime(null, null);
-                    if (this.popup.isVisible()) {
-                        this.popup.hide();
-                    }
+                    this.setTime(null, null);
+                    this.hidePopup();
                 } else {
                     let parsedTime = typedTime.match(/^[0-2][0-9]:[0-5][0-9]$/);
                     if (parsedTime && parsedTime.length === 1) {
                         let splitTime = parsedTime[0].split(':');
-                        this.validUserInput = true;
-                        this.popup.setSelectedTime(parseInt(splitTime[0], 10), parseInt(splitTime[1], 10));
-                        if (!this.popup.isVisible()) {
-                            this.popup.show();
-                        }
+                        this.setTime(parseInt(splitTime[0], 10), parseInt(splitTime[1], 10));
+                        this.showPopup();
                     } else {
                         this.validUserInput = false;
-                        this.popup.setSelectedTime(null, null);
+                        this.setTime(null, null);
                     }
                 }
 
@@ -104,20 +101,17 @@ module api.ui.time {
             }
         }
 
-        onSelectedTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.selectedTimeChangedListeners.push(listener);
-        }
+        private setTime(hours: number, minutes: number) {
+            if (!this.selectedDate) {
+                let today = new Date();
+                this.selectedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            }
+            this.selectedDate.setHours(hours);
+            this.selectedDate.setMinutes(minutes);
 
-        unSelectedTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.selectedTimeChangedListeners = this.selectedTimeChangedListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
-
-        private notifySelectedTimeChanged(event: SelectedDateChangedEvent) {
-            this.selectedTimeChangedListeners.forEach((listener) => {
-                listener(event);
-            });
+            if (this.popup) {
+                this.popup.setSelectedTime(hours, minutes);
+            }
         }
     }
 }
