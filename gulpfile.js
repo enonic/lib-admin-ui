@@ -24,7 +24,7 @@ function lessCss(src, outDir, outName) {
         }))
         .pipe(rename(outName))
         .pipe(sourceMaps.write())
-        .pipe(gulp.dest('src/main/resources/assets/' + outDir));
+        .pipe(gulp.dest(outDir));
 }
 
 function typescript(src, out, decl) {
@@ -54,12 +54,12 @@ function typescript(src, out, decl) {
 }
 
 gulp.task('less-admin', function () {
-    return lessCss('admin/common/styles/_module.less', 'admin/common/styles', '_all.css');
+    return lessCss('admin/common/styles/_module.less', 'src/main/resources/assets/admin/common/styles', '_all.css');
 });
 
 gulp.task('less-html-editor', function () {
     return lessCss('admin/common/styles/api/util/htmlarea/html-editor.module.less',
-        'admin/common/styles/api/util/htmlarea',
+        'build/resources/main/dev/styles/api/util/htmlarea',
         'html-editor.css');
 });
 
