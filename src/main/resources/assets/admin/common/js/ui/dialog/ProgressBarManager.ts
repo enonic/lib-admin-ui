@@ -3,17 +3,18 @@ module api.ui.dialog {
     import TaskState = api.task.TaskState;
     import i18n = api.util.i18n;
     import DivEl = api.dom.DivEl;
-    import HeavyOperationsManager = api.heavy.HeavyOperationsManager;
-    import HeavyOperationPerformer = api.heavy.HeavyOperationPerformer;
+    import ManagedActionManager = api.managedaction.ManagedActionManager;
+    import ManagedActionExecutor = api.managedaction.ManagedActionExecutor;
+    import ManagedActionState = api.managedaction.ManagedActionState;
 
-    export type HeavyOperationModalDialog = ModalDialog & HeavyOperationPerformer;
+    export type ManagedActionsModalDialog = ModalDialog & ManagedActionExecutor;
 
     export interface ProgressBarManagerConfig {
         processingLabel: string;
         processHandler: () => void;
         unlockControlsHandler?: () => void;
         createProcessingMessage?: () => api.dom.Element;
-        managingElement: HeavyOperationModalDialog;
+        managingElement: ManagedActionsModalDialog;
     }
 
     export class ProgressBarManager {
@@ -26,7 +27,7 @@ module api.ui.dialog {
 
         static processingClass: string = 'is-processing';
 
-        private managingElement: HeavyOperationModalDialog;
+        private managingElement: ManagedActionsModalDialog;
 
         private progressBar: ProgressBar;
 
@@ -42,7 +43,7 @@ module api.ui.dialog {
 
         private progressCompleteListeners: ((taskState: TaskState) => void)[] = [];
 
-        private enabled: boolean = false;
+        private state: ProgressBarManagerState = ProgressBarManagerState.DISABLED;
 
         constructor(config: ProgressBarManagerConfig) {
             this.managingElement = config.managingElement;
@@ -52,8 +53,8 @@ module api.ui.dialog {
             });
             this.createProcessingMessage = config.createProcessingMessage;
 
-            HeavyOperationsManager.instance().addPerformer(this.managingElement);
-            this.managingElement.onRemoved(() => HeavyOperationsManager.instance().removePerformer(this.managingElement));
+            ManagedActionManager.instance().addPerformer(this.managingElement);
+            this.managingElement.onRemoved(() => ManagedActionManager.instance().removePerformer(this.managingElement));
 
             this.managingElement.addClass('progress-manageable');
         }
@@ -83,8 +84,8 @@ module api.ui.dialog {
         private enableProgressBar() {
             this.managingElement.addClass(ProgressBarManager.processingClass);
             api.dom.Body.get().addClass(ProgressBarManager.processingClass);
-            HeavyOperationsManager.instance().notifyHeavyOperationStarted(this.managingElement);
-            this.enabled = true;
+            this.state = ProgressBarManagerState.ENABLED;
+            ManagedActionManager.instance().notifyManagedActionStateChanged(ManagedActionState.STARTED, this.managingElement);
 
             MenuButtonProgressBarManager.getProgressBar().setValue(0);
             MenuButtonProgressBarManager.getProgressBar().setLabel(this.processingLabel);
@@ -97,16 +98,19 @@ module api.ui.dialog {
         private disableProgressBar() {
             this.managingElement.removeClass(ProgressBarManager.processingClass);
             api.dom.Body.get().removeClass(ProgressBarManager.processingClass);
-            HeavyOperationsManager.instance().notifyHeavyOperationEnded(this.managingElement);
-            this.enabled = false;
+            this.state = ProgressBarManagerState.DISABLED;
         }
 
         isEnabled(): boolean {
-            return this.enabled;
+            return this.state === ProgressBarManagerState.ENABLED;
+        }
+
+        isActive(): boolean {
+            return this.state === ProgressBarManagerState.PREPARING || this.state === ProgressBarManagerState.ENABLED;
         }
 
         private setProgressValue(value: number) {
-            if (this.isEnabled()) {
+            if (this.state === ProgressBarManagerState.ENABLED) {
                 this.progressBar.setValue(value);
                 if (!api.dom.Body.get().isShowingModalDialog()) {
                     MenuButtonProgressBarManager.getProgressBar().setValue(value);
@@ -117,13 +121,15 @@ module api.ui.dialog {
         handleProcessingComplete() {
             if (this.isEnabled()) {
                 this.disableProgressBar();
+            } else {
+                this.state = ProgressBarManagerState.DISABLED;
             }
+
+            ManagedActionManager.instance().notifyManagedActionStateChanged(ManagedActionState.ENDED, this.managingElement);
 
             if (this.managingElement.isVisible()) {
                 this.managingElement.close();
             }
-
-            HeavyOperationsManager.instance().clearListeners();
         }
 
         private handleSucceeded() {
@@ -152,7 +158,13 @@ module api.ui.dialog {
         }
 
         pollTask(taskId: api.task.TaskId, elapsed: number = 0) {
+            if (elapsed === 0) {
+                this.state = ProgressBarManagerState.PREPARING;
+                ManagedActionManager.instance().notifyManagedActionStateChanged(ManagedActionState.PREPARING, this.managingElement);
+            }
+
             const interval = ProgressBarManager.pollInterval;
+
             setTimeout(() => {
                 if (!this.isEnabled() && (elapsed >= ProgressBarManager.progressBarDelay)) {
                     this.enableProgressBar();
