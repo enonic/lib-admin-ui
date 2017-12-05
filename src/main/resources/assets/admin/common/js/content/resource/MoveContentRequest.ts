@@ -10,11 +10,11 @@ module api.content.resource {
 
         private parentPath: ContentPath;
 
-        constructor(id: ContentIds, parentPath: ContentPath) {
+        constructor(ids: ContentIds, parentPath: ContentPath) {
             super();
             this.setHeavyOperation(true);
             super.setMethod('POST');
-            this.ids = id;
+            this.ids = ids;
             this.parentPath = parentPath;
         }
 

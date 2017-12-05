@@ -1,20 +1,23 @@
 module api.content.resource {
 
-    import ContentJson = api.content.json.ContentJson;
+    import TaskIdJson = api.task.TaskIdJson;
+    import TaskId = api.task.TaskId;
 
-    export class DuplicateContentRequest extends ContentResourceRequest<ContentJson, Content> {
+    export class DuplicateContentRequest
+        extends ContentResourceRequest<TaskIdJson, TaskId> {
 
-        private id: ContentId;
+        private ids: ContentIds;
 
-        constructor(id: ContentId) {
+        constructor(ids: ContentIds) {
             super();
+            this.setHeavyOperation(true);
             super.setMethod('POST');
-            this.id = id;
+            this.ids = ids;
         }
 
         getParams(): Object {
             return {
-                contentId: this.id.toString()
+                contentIds: this.ids.map(id => id.toString())
             };
         }
 
@@ -22,10 +25,9 @@ module api.content.resource {
             return api.rest.Path.fromParent(super.getResourcePath(), 'duplicate');
         }
 
-        sendAndParse(): wemQ.Promise<Content> {
-
-            return this.send().then((response: api.rest.JsonResponse<ContentJson>) => {
-                return this.fromJsonToContent(response.getResult());
+        sendAndParse(): wemQ.Promise<TaskId> {
+            return this.send().then((response: api.rest.JsonResponse<TaskIdJson>) => {
+                return TaskId.fromJson(response.getResult());
             });
         }
     }
