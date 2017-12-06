@@ -14,6 +14,18 @@
       }
     }
   }
+
+  .form-item-set-occurrence-view {
+    .form-occurrence-draggable-label {
+      cursor: zoom-out;
+      cursor: -webkit-zoom-out;
+    }
+
+    &.collapsed .form-occurrence-draggable-label {
+      cursor: zoom-in;
+      cursor: -webkit-zoom-in;
+    }
+  }
 }
 
 .form-option-set-view .form-item-set-view {
@@ -69,6 +81,7 @@
 
       &:not(:empty) + .bottom-button-row {
         padding-top: 0px;
+        padding-bottom: 5px;
       }
     }
   }

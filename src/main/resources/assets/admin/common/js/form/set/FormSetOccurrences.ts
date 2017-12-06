@@ -16,6 +16,12 @@ module api.form {
 
         constructor(config: FormItemOccurrencesConfig) {
             super(config);
+
+            this.onOccurrenceRendered((event: OccurrenceRenderedEvent) => {
+                const occurrenceView = <FormSetOccurrenceView>event.getOccurrenceView();
+                occurrenceView.getContainer().onShown(() => this.updateOccurrencesCollapsed());
+                occurrenceView.getContainer().onHidden(() => this.updateOccurrencesCollapsed());
+            });
         }
 
         showOccurrences(show: boolean) {
@@ -23,6 +29,12 @@ module api.form {
             this.occurrencesCollapsed = !show;
             views.forEach((formSetOccurrenceView: FormSetOccurrenceView) => {
                 formSetOccurrenceView.showContainer(show);
+            });
+        }
+
+        private updateOccurrencesCollapsed() {
+            this.occurrencesCollapsed = this.getOccurrenceViews().every((formSetOccurrenceView: FormSetOccurrenceView) => {
+                return !formSetOccurrenceView.isContainerVisible();
             });
         }
 
@@ -36,6 +48,7 @@ module api.form {
 
         createNewOccurrence(formItemOccurrences: FormItemOccurrences<V>,
                             insertAtIndex: number): FormItemOccurrence<V> {
+            this.occurrencesCollapsed = false;
             return new FormSetOccurrence(<FormSetOccurrences<V>>formItemOccurrences, insertAtIndex);
         }
 

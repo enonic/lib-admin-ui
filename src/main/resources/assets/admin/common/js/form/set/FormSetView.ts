@@ -85,7 +85,13 @@ module api.form {
         private subscribeFormSetOccurrencesOnEvents() {
 
             this.formItemOccurrences.onOccurrenceRendered((event: OccurrenceRenderedEvent) => {
-                this.validate(false, event.validateViewOnRender() ? null : event.getOccurrenceView());
+                const occurrenceView = event.getOccurrenceView();
+
+                this.validate(false, event.validateViewOnRender() ? null : occurrenceView);
+
+                if (api.ObjectHelper.iFrameSafeInstanceOf(occurrenceView, FormSetOccurrenceView)) {
+                    this.onFormSetOccurrenceContainerVisibilityToggle((<FormSetOccurrenceView>occurrenceView).getContainer());
+                }
             });
 
             this.formItemOccurrences.onOccurrenceAdded((event: OccurrenceAddedEvent) => {
@@ -116,7 +122,15 @@ module api.form {
                 formSetOccurrenceView.onEditContentRequest((summary: api.content.ContentSummary) => {
                     this.notifyEditContentRequested(summary);
                 });
+                if (api.ObjectHelper.iFrameSafeInstanceOf(formSetOccurrenceView, FormSetOccurrenceView)) {
+                    this.onFormSetOccurrenceContainerVisibilityToggle((<FormSetOccurrenceView>formSetOccurrenceView).getContainer());
+                }
             });
+        }
+
+        private onFormSetOccurrenceContainerVisibilityToggle(container: api.dom.DivEl) {
+            container.onShown(() => this.setCollapseButtonCaption());
+            container.onHidden(() => this.setCollapseButtonCaption());
         }
 
         private makeAddButton(): api.ui.button.Button {

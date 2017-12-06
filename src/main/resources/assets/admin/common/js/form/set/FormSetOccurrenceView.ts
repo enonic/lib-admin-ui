@@ -45,6 +45,8 @@ module api.form {
             this.label = new FormOccurrenceDraggableLabel(this.getFormSet().getLabel(), this.getFormSet().getOccurrences());
             this.appendChild(this.label);
 
+            this.label.onClicked(() => this.toggleContainerVisibility());
+
             if (this.getFormSet().getHelpText()) {
                 this.helpText = new HelpTextContainer(this.getFormSet().getHelpText());
 
@@ -158,8 +160,22 @@ module api.form {
             // override if needed to add default selection to property set
         }
 
+        getContainer(): api.dom.DivEl {
+            return this.formSetOccurrencesContainer;
+        }
+
         showContainer(show: boolean) {
             this.formSetOccurrencesContainer.setVisible(show);
+        }
+
+        private toggleContainerVisibility() {
+            const isContainerHidden = !this.isContainerVisible();
+            this.toggleClass('collapsed', !isContainerHidden);
+            this.formSetOccurrencesContainer.setVisible(isContainerHidden);
+        }
+
+        isContainerVisible(): boolean {
+            return this.formSetOccurrencesContainer.isVisible();
         }
 
         refresh() {
