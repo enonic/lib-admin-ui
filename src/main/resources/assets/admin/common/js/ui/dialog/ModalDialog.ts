@@ -232,8 +232,8 @@ module api.ui.dialog {
             return cancelButton;
         }
 
-        setTitle(value: string) {
-            this.header.setTitle(value);
+        setTitle(value: string, escapeHtml: boolean = true) {
+            this.header.setTitle(value, escapeHtml);
         }
 
         appendChildToContentPanel(child: api.dom.Element) {
@@ -442,8 +442,8 @@ module api.ui.dialog {
             this.appendChild(this.titleEl);
         }
 
-        setTitle(value: string) {
-            this.titleEl.setHtml(value);
+        setTitle(value: string, escapeHtml: boolean = true) {
+            this.titleEl.setHtml(value, escapeHtml);
         }
 
         appendElement(el: Element) {
