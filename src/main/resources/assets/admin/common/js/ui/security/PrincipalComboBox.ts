@@ -83,21 +83,9 @@ module api.ui.security {
         private option: Option<Principal>;
 
         constructor(option: Option<Principal>) {
-            super();
+            super('selected-option principal-selected-option-view');
             this.setOption(option);
-            this.setClass('principal-selected-option-view');
-            let removeButton = new api.dom.AEl('icon-close');
-            removeButton.onClicked((event: MouseEvent) => {
-                this.notifyRemoveClicked(event);
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
-            });
-            this.appendChild(removeButton);
-        }
-
-        setEditable(_editable: boolean) {
-            // must be implemented by children
+            this.appendRemoveButton();
         }
 
         setOption(option: api.ui.selector.Option<Principal>) {
@@ -161,7 +149,7 @@ module api.ui.security {
             this.addClass('principal-selected-option-view-compact');
         }
 
-        setEditable(_editable: boolean) {
+        setReadonly(_readonly: boolean) {
             // must be implemented by children
         }
 

@@ -1,5 +1,7 @@
 module api.ui.time {
 
+    import DateHelper = api.util.DateHelper;
+
     export class TimePickerBuilder {
 
         hours: number;
@@ -27,6 +29,10 @@ module api.ui.time {
             super(builder, 'time-picker');
         }
 
+        protected initData(builder: TimePickerBuilder) {
+            this.setTime(builder.hours, builder.minutes);
+        }
+
         protected initPopup(builder: TimePickerBuilder) {
             this.popup = new TimePickerPopupBuilder().
                 setHours(builder.hours).
@@ -37,23 +43,30 @@ module api.ui.time {
         protected initInput(builder: TimePickerBuilder) {
             let value;
             if (builder.hours || builder.minutes) {
-                value = this.formatTime(builder.hours, builder.minutes);
+                value = DateHelper.formatTime(builder.hours, builder.minutes);
             }
 
             this.input = api.ui.text.TextInput.middle(undefined, value);
             this.input.setPlaceholder('hh:mm');
         }
 
-        protected setupListeners() {
+        protected setupPopupListeners(builder: DatePickerBuilder) {
+            super.setupPopupListeners(builder);
 
             this.popup.onSelectedTimeChanged((hours: number, minutes: number) => {
                 if (hours != null && minutes != null) {
-                    this.input.setValue(this.formatTime(hours, minutes), false, true);
+                    this.input.setValue(DateHelper.formatTime(hours, minutes), false, true);
                     this.validUserInput = true;
+
+                    this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(DateHelper.dateFromTime(hours, minutes)));
                 }
 
                 this.updateInputStyling();
             });
+        }
+
+        protected setupInputListeners() {
+            super.setupInputListeners();
 
             this.input.onKeyUp((event: KeyboardEvent) => {
                 if (api.ui.KeyHelper.isArrowKey(event) || api.ui.KeyHelper.isModifierKey(event)) {
@@ -61,24 +74,19 @@ module api.ui.time {
                 }
 
                 let typedTime = this.input.getValue();
+                this.validUserInput = true;
                 if (api.util.StringHelper.isEmpty(typedTime)) {
-                    this.validUserInput = true;
-                    this.popup.setSelectedTime(null, null);
-                    if (this.popup.isVisible()) {
-                        this.popup.hide();
-                    }
+                    this.setTime(null, null);
+                    this.hidePopup();
                 } else {
                     let parsedTime = typedTime.match(/^[0-2][0-9]:[0-5][0-9]$/);
                     if (parsedTime && parsedTime.length === 1) {
                         let splitTime = parsedTime[0].split(':');
-                        this.validUserInput = true;
-                        this.popup.setSelectedTime(parseInt(splitTime[0], 10), parseInt(splitTime[1], 10));
-                        if (!this.popup.isVisible()) {
-                            this.popup.show();
-                        }
+                        this.setTime(parseInt(splitTime[0], 10), parseInt(splitTime[1], 10));
+                        this.showPopup();
                     } else {
                         this.validUserInput = false;
-                        this.popup.setSelectedTime(null, null);
+                        this.setTime(null, null);
                     }
                 }
 
@@ -87,26 +95,23 @@ module api.ui.time {
         }
 
         setSelectedTime(hour: number, minute: number) {
-            this.input.setValue(this.formatTime(hour, minute));
-            this.popup.setSelectedTime(hour, minute, true);
+            this.input.setValue(DateHelper.formatTime(hour, minute));
+            if (this.popup) {
+                this.popup.setSelectedTime(hour, minute, true);
+            }
         }
 
-        getSelectedTime(): {hour: number; minute: number} {
-            return this.popup.getSelectedTime();
-        }
+        private setTime(hours: number, minutes: number) {
+            if (!this.selectedDate) {
+                let today = new Date();
+                this.selectedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            }
+            this.selectedDate.setHours(hours);
+            this.selectedDate.setMinutes(minutes);
 
-        onSelectedTimeChanged(listener: (hours: number, minutes: number) => void) {
-            this.popup.onSelectedTimeChanged(listener);
-        }
-
-        unSelectedTimeChanged(listener: (hours: number, minutes: number) => void) {
-            this.popup.unSelectedTimeChanged(listener);
-        }
-
-        formatTime(hours: number, minutes: number): string {
-            return this.popup.isHoursValid(hours) && this.popup.isMinutesValid(minutes) ?
-                   this.popup.padNumber(hours, 2) + ':' + this.popup.padNumber(minutes, 2) :
-                   '';
+            if (this.popup) {
+                this.popup.setSelectedTime(hours, minutes);
+            }
         }
     }
 }

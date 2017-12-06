@@ -31,6 +31,11 @@ module api.content.site.inputtype.authappselector {
 
             this.readOnly = readOnly;
 
+            if (this.readOnly) {
+                this.setEditable(false);
+                this.setRemovable(false);
+            }
+
             this.application = option.displayValue;
             this.siteConfig = siteConfig;
             this.formContext = formContext;
@@ -55,6 +60,13 @@ module api.content.site.inputtype.authappselector {
             header.appendChild(namesAndIconView);
 
             this.appendChild(header);
+            if (this.application.getAuthForm().getFormItems().length == 0) {
+                this.setEditable(false);
+            }
+
+            if (!this.readOnly) {
+                this.appendActionButtons(header);
+            }
 
             this.formValidityChangedHandler = (event: api.form.FormValidityChangedEvent) => {
                 this.toggleClass('invalid', !event.isValid());
@@ -62,21 +74,6 @@ module api.content.site.inputtype.authappselector {
 
             this.formView = this.createFormView(this.siteConfig);
             this.formView.layout();
-
-            if (!this.readOnly && this.application.getAuthForm().getFormItems().length > 0) {
-                header.appendChild(this.createEditButton());
-            }
-
-            if (!this.readOnly) {
-                let removeButton = new api.dom.AEl('remove');
-                removeButton.onClicked((event: MouseEvent) => {
-                    this.notifyRemoveClicked();
-                    event.stopPropagation();
-                    event.preventDefault();
-                    return false;
-                });
-                header.appendChild(removeButton);
-            }
 
             return wemQ(true);
         }

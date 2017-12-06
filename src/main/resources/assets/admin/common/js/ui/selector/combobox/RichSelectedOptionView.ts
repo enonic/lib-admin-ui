@@ -8,7 +8,6 @@ module api.ui.selector.combobox {
         private size: api.app.NamesAndIconViewSize;
 
         private draggable: boolean;
-        private removable: boolean;
 
         private namesAndIconView: NamesAndIconView;
 
@@ -18,9 +17,9 @@ module api.ui.selector.combobox {
             this.optionDisplayValue = builder.option.displayValue;
             this.size = builder.size;
 
-            this.setEditable(builder.editable);
             this.draggable = builder.draggable;
-            this.removable = builder.removable;
+            this.setEditable(builder.editable);
+            this.setRemovable(builder.removable);
         }
 
         resolveIconUrl(_content: T): string {
@@ -39,22 +38,12 @@ module api.ui.selector.combobox {
             return '';
         }
 
-        protected createActionButtons(): api.dom.Element[] {
-            let buttons = [];
+        protected appendActionButtons() {
             if (this.draggable) {
-                buttons.push(new api.dom.DivEl('drag-control'));
+                this.appendChild(new api.dom.DivEl('drag-control'));
             }
-            if (this.isEditButtonNeeded()) {
-                buttons.push(this.createEditButton());
-            }
-            if (this.removable) {
-                buttons.push(this.createRemoveButton());
-            }
-            return buttons;
-        }
 
-        protected isEditButtonNeeded(): boolean {
-            return this.isEditable();
+            super.appendActionButtons();
         }
 
         protected createView(content: T): api.dom.Element {
@@ -84,21 +73,8 @@ module api.ui.selector.combobox {
             }
         }
 
-        protected createRemoveButton(): api.dom.AEl {
-            let removeButton = new api.dom.AEl('remove');
-            removeButton.onClicked((event: Event) => {
-                this.notifyRemoveClicked();
-
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
-            });
-
-            return removeButton;
-        }
-
         doRender(): wemQ.Promise<boolean> {
-            this.appendChildren(...this.createActionButtons());
+            this.appendActionButtons();
             this.appendChild(this.createView(this.optionDisplayValue));
 
             return wemQ(true);

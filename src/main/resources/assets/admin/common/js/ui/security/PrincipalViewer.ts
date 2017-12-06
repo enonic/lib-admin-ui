@@ -6,10 +6,8 @@ module api.ui.security {
 
     export class PrincipalViewer extends api.ui.NamesAndIconViewer<Principal> {
 
-        private removeClickedListeners: {(event: MouseEvent):void}[] = [];
-
-        constructor() {
-            super();
+        constructor(className?: string) {
+            super(className);
         }
 
         resolveDisplayName(object: Principal): string {
@@ -37,21 +35,6 @@ module api.ui.security {
             return '';
         }
 
-        onRemoveClicked(listener: (event: MouseEvent) => void) {
-            this.removeClickedListeners.push(listener);
-        }
-
-        unRemoveClicked(listener: (event: MouseEvent) => void) {
-            this.removeClickedListeners = this.removeClickedListeners.filter((current) => {
-                return current !== listener;
-            });
-        }
-
-        notifyRemoveClicked(event: MouseEvent) {
-            this.removeClickedListeners.forEach((listener) => {
-                listener(event);
-            });
-        }
     }
 
     export class PrincipalViewerCompact extends api.ui.Viewer<Principal> {

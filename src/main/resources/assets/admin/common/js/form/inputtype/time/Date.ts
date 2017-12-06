@@ -29,14 +29,11 @@ module api.content.form.inputtype.time {
 
             if (!property.hasNullValue()) {
                 let date = property.getLocalDate();
-                datePickerBuilder.
-                    setSelectedDate(date.toDate()).
-                    setYear(date.getYear()).
-                    setMonth(date.getMonth());
+                datePickerBuilder.setDate(date.toDate());
             }
             let datePicker = datePickerBuilder.build();
 
-            datePicker.onSelectedDateChanged((event: api.ui.time.SelectedDateChangedEvent) => {
+            datePicker.onSelectedDateTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
                 let value = new Value(event.getDate() != null ? api.util.LocalDate.fromDate(event.getDate()) : null,
                     ValueTypes.LOCAL_DATE);
                 this.notifyOccurrenceValueChanged(datePicker, value);

@@ -1,28 +1,27 @@
 module api.content.resource {
 
-    import MoveContentResultJson = api.content.json.MoveContentResultJson;
-    import MoveContentResult = api.content.resource.result.MoveContentResult;
+    import TaskIdJson = api.task.TaskIdJson;
+    import TaskId = api.task.TaskId;
 
-    export class MoveContentRequest extends ContentResourceRequest<MoveContentResultJson, MoveContentResult> {
+    export class MoveContentRequest
+        extends ContentResourceRequest<TaskIdJson, TaskId> {
 
         private ids: ContentIds;
 
         private parentPath: ContentPath;
 
-        constructor(id: ContentIds, parentPath: ContentPath) {
+        constructor(ids: ContentIds, parentPath: ContentPath) {
             super();
+            this.setHeavyOperation(true);
             super.setMethod('POST');
-            this.ids = id;
+            this.ids = ids;
             this.parentPath = parentPath;
         }
 
         getParams(): Object {
-            let fn = (contentId: ContentId) => {
-                return contentId.toString();
-            };
             return {
-                contentIds: this.ids.map(fn),
-                parentContentPath: !!this.parentPath ? this.parentPath.toString() : ''
+                contentIds: this.ids.map(id => id.toString()),
+                parentContentPath: this.parentPath ? this.parentPath.toString() : ''
             };
         }
 
@@ -30,10 +29,9 @@ module api.content.resource {
             return api.rest.Path.fromParent(super.getResourcePath(), 'move');
         }
 
-        sendAndParse(): wemQ.Promise<MoveContentResult> {
-
-            return this.send().then((response: api.rest.JsonResponse<MoveContentResultJson>) => {
-                return MoveContentResult.fromJson(response.getResult());
+        sendAndParse(): wemQ.Promise<TaskId> {
+            return this.send().then((response: api.rest.JsonResponse<TaskIdJson>) => {
+                return TaskId.fromJson(response.getResult());
             });
         }
     }

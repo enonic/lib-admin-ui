@@ -83,6 +83,8 @@ module api.ui.tab {
 
                 AppHelper.lockEvent(event);
             });
+
+            api.dom.Body.get().onClicked((event: MouseEvent) => this.hideMenuOnOutsideClick(event));
         }
 
         isEnabled(): boolean {
@@ -370,6 +372,13 @@ module api.ui.tab {
             this.updateActiveTab(this.selectedTab);
 
             this.notifyTabDeselectedListeners(selectedTab);
+        }
+
+        private hideMenuOnOutsideClick(evt: Event): void {
+            if (this.isMenuVisible() && !this.getEl().contains(<HTMLElement> evt.target)) {
+                // click outside menu
+                this.hideMenu();
+            }
         }
 
         onNavigationItemAdded(listener: (event: NavigatorEvent) => void) {

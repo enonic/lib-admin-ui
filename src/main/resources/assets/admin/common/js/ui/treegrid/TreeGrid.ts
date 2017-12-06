@@ -275,6 +275,20 @@ module api.ui.treegrid {
                     updateColumnsHandler(item.isRangeSizeChanged());
                 }
             });
+
+            api.dom.Body.get().onClicked((event: MouseEvent) => this.unhighlightRowOnMouseClick(event));
+        }
+
+        private unhighlightRowOnMouseClick(e: Event): void {
+            if (!!this.highlightedNode && this.isClickOutsideGridViewport(<HTMLElement> e.target)) {
+                this.unhighlightRows();
+            }
+        }
+
+        protected isClickOutsideGridViewport(clickedEl: HTMLElement) {
+            const element = api.dom.Element.fromHtmlElement(clickedEl);
+
+            return (element.hasClass('grid-canvas tree-grid-toolbar browse-toolbar appbar'));
         }
 
         private enablePostLoad(builder: TreeGridBuilder<DATA>) {
@@ -422,11 +436,15 @@ module api.ui.treegrid {
         }
 
         private recursivelyExpandHighlightedNode() {
-            if (!this.highlightedNode || this.highlightedNode.isVisible()) {
+            this.recursivelyExpandNode(this.highlightedNode);
+        }
+
+        private recursivelyExpandNode(node: TreeNode<DATA>) {
+            if (!node || node.isVisible()) {
                 return;
             }
-            let parent: TreeNode<DATA> = this.highlightedNode.getParent();
-            while (!this.highlightedNode.isVisible()) {
+            let parent: TreeNode<DATA> = node.getParent();
+            while (!node.isVisible()) {
                 this.expandNode(parent);
                 parent = parent.getParent();
             }
@@ -1077,13 +1095,16 @@ module api.ui.treegrid {
             }
         }
 
-        selectNode(dataId: string) {
+        selectNode(dataId: string, expand: boolean = false) {
             let root = this.root.getCurrentRoot();
             let node = root.findNode(dataId);
 
             if (node) {
                 this.unhighlightCurrentRow(true);
 
+                if (expand) {
+                    this.recursivelyExpandNode(node);
+                }
                 let row = this.getRowIndexByNode(node);
                 this.grid.selectRow(row);
             }
@@ -1159,7 +1180,8 @@ module api.ui.treegrid {
             const expandedNodesDataId = rememberExpanded ? this.grid.getDataView().getItems()
                                                              .filter(item => item.isExpanded()).map(item => item.getDataId()) : [];
 
-            let selection = this.root.getCurrentSelection();
+            const selection = this.root.getCurrentSelection();
+            const highlightedNode = this.highlightedNode;
 
             this.root.resetCurrentRoot(parentNodeData);
             this.initData([]);
@@ -1173,6 +1195,9 @@ module api.ui.treegrid {
                     this.root.setCurrentSelection(selection);
                     this.initData(this.root.getCurrentRoot().treeToList());
                     this.updateExpanded();
+                    if (highlightedNode) {
+                        this.highlightRowByNode(highlightedNode);
+                    }
                 }).catch((reason: any) => {
                     this.initData([]);
                     this.handleError(reason);

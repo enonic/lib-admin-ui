@@ -4,15 +4,7 @@ module api.ui.time {
 
     export class DateTimePickerBuilder {
 
-        year: number;
-
-        month: number;
-
-        selectedDate: Date;
-
-        hours: number;
-
-        minutes: number;
+        date: Date;
 
         startingDayOfWeek: DayOfWeek = DaysOfWeek.MONDAY;
 
@@ -23,28 +15,8 @@ module api.ui.time {
         // use local timezone if timezone value is not initialized
         useLocalTimezoneIfNotPresent: boolean = false;
 
-        setYear(value: number): DateTimePickerBuilder {
-            this.year = value;
-            return this;
-        }
-
-        setMonth(value: number): DateTimePickerBuilder {
-            this.month = value;
-            return this;
-        }
-
-        setSelectedDate(value: Date): DateTimePickerBuilder {
-            this.selectedDate = value;
-            return this;
-        }
-
-        setHours(value: number): DateTimePickerBuilder {
-            this.hours = value;
-            return this;
-        }
-
-        setMinutes(value: number): DateTimePickerBuilder {
-            this.minutes = value;
+        setDate(value: Date): DateTimePickerBuilder {
+            this.date = value;
             return this;
         }
 
@@ -76,20 +48,13 @@ module api.ui.time {
 
     export class DateTimePicker extends Picker {
 
-        private selectedDate: Date;
-
-        private selectedDateTimeChangedListeners: {(event: SelectedDateChangedEvent) : void}[] = [];
-
         constructor(builder: DateTimePickerBuilder) {
             super(builder, 'date-time-picker');
         }
 
         protected initData(builder: DateTimePickerBuilder) {
-            if (builder.selectedDate) {
-                this.setDate(builder.selectedDate);
-            }
-            if (builder.hours || builder.minutes) {
-                this.setTime(builder.hours, builder.minutes);
+            if (builder.date) {
+                this.setDate(builder.date);
             }
         }
 
@@ -105,33 +70,19 @@ module api.ui.time {
         }
 
         protected initPopup(builder: DateTimePickerBuilder) {
-            let calendar = new CalendarBuilder().
-                setSelectedDate(builder.selectedDate).
-                setMonth(builder.month).
-                setYear(builder.year).
-                setInteractive(true).
-                build();
-
             let popupBuilder = new DateTimePickerPopupBuilder().
-                setHours(builder.hours).
-                setMinutes(builder.minutes).
-                setCalendar(calendar).
+                setDate(this.selectedDate).
                 setTimezone(builder.timezone).
                 setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent);
+
             this.popup = new DateTimePickerPopup(popupBuilder);
             this.popup.onShown(() => {
                 new DateTimePickerShownEvent(this).fire();
             });
         }
 
-        protected wrapChildrenAndAppend() {
-            let wrapper = new api.dom.DivEl('wrapper', api.StyleHelper.COMMON_PREFIX);
-            wrapper.appendChildren<api.dom.Element>(this.input, this.popup);
-
-            this.appendChild(wrapper);
-        }
-
-        protected setupListeners(builder: DateTimePickerBuilder) {
+        protected setupPopupListeners(builder: DatePickerBuilder) {
+            super.setupPopupListeners(builder);
 
             this.popup.onSelectedDateChanged((e: SelectedDateChangedEvent) => {
                 if (builder.closeOnSelect) {
@@ -145,6 +96,10 @@ module api.ui.time {
                 this.setTime(hours, minutes);
                 this.setInputValue();
             });
+        }
+
+        protected setupInputListeners() {
+            super.setupInputListeners();
 
             this.input.onKeyUp((event: KeyboardEvent) => {
                 if (api.ui.KeyHelper.isArrowKey(event) || api.ui.KeyHelper.isModifierKey(event)) {
@@ -152,19 +107,16 @@ module api.ui.time {
                 }
                 let typedDateTime = this.input.getValue();
                 let date: Date = null;
+                this.validUserInput = true;
                 if (api.util.StringHelper.isEmpty(typedDateTime)) {
-                    this.validUserInput = true;
                     this.setDateTime(null);
-                    this.popup.hide();
+                    this.hidePopup();
                 } else {
                     date = api.util.DateHelper.parseDateTime(typedDateTime);
                     let dateLength = date && date.getFullYear().toString().length + 12;
                     if (date && date.toString() !== 'Invalid Date' && typedDateTime.length === dateLength) {
-                        this.validUserInput = true;
                         this.setDateTime(date);
-                        if (!this.popup.isVisible()) {
-                            this.popup.show();
-                        }
+                        this.showPopup();
                     } else {
                         this.selectedDate = null;
                         this.validUserInput = false;
@@ -177,28 +129,26 @@ module api.ui.time {
 
         private onDateTimePickerShown(event: DateTimePickerShownEvent) {
             if (event.getDateTimePicker() !== this) {
-                this.popup.hide();
+                this.hidePopup();
             }
         }
 
         public setSelectedDateTime(date: Date) {
-            this.input.setValue(this.formatDateTime(date));
             this.setDateTime(date);
-            this.validUserInput = true;
-            this.updateInputStyling();
+            this.setInputValue(false);
         }
 
         private setDateTime(date: Date) {
             this.selectedDate = date;
-            this.popup.setSelectedDate(date, true);
-            date ?
-            this.popup.setSelectedTime(date.getHours(), date.getMinutes(), true) :
-            this.popup.setSelectedTime(null, null, true);
+            if (this.popup) {
+                this.popup.setSelectedDate(date, true);
+                this.popup.setSelectedTime(date ? date.getHours() : null, date ? date.getMinutes() : null, true);
+            }
         }
 
-        private setInputValue() {
+        private setInputValue(userInput: boolean = true) {
             this.validUserInput = true;
-            this.input.setValue(this.formatDateTime(this.selectedDate), false, true);
+            this.input.setValue(this.formatDateTime(this.selectedDate), false, userInput);
             this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate));
             this.updateInputStyling();
         }
@@ -223,31 +173,11 @@ module api.ui.time {
             }
         }
 
-        getSelectedDateTime(): Date {
-            return this.selectedDate;
-        }
-
-        onSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.selectedDateTimeChangedListeners.push(listener);
-        }
-
-        unSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.selectedDateTimeChangedListeners = this.selectedDateTimeChangedListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
-
-        private notifySelectedDateTimeChanged(event: SelectedDateChangedEvent) {
-            this.selectedDateTimeChangedListeners.forEach((listener) => {
-                listener(event);
-            });
-        }
-
         private formatDateTime(date: Date): string {
             if (!date) {
                 return '';
             }
-            return api.util.DateHelper.formatDate(date) + ' ' + api.util.DateHelper.formatTime(date, false);
+            return api.util.DateHelper.formatDate(date) + ' ' + api.util.DateHelper.getFormattedTimeFromDate(date, false);
         }
     }
 

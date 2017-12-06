@@ -57,6 +57,11 @@ module api.form {
 
             let deferred = wemQ.defer<void>();
 
+            if (!this.form) {
+                deferred.resolve(null);
+                return deferred.promise;
+            }
+
             let formItems = this.form.getFormItems();
             let layoutPromise: wemQ.Promise<FormItemView[]> = this.formItemLayer.
                 setFormItems(formItems).

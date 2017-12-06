@@ -26,5 +26,9 @@ module api.content.image {
         resolveHint(object: api.content.image.ImageTreeSelectorItem): string {
             return object.getPath().toString();
         }
+
+        protected getHintTargetEl(): api.dom.ElementHelper {
+            return this.getNamesAndIconView().getIconImageEl().getEl();
+        }
     }
 }

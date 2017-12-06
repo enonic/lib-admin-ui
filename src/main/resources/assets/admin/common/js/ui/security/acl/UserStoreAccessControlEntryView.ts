@@ -10,18 +10,16 @@ module api.ui.security.acl {
 
         private accessSelector: UserStoreAccessSelector;
 
-        private removeButton: api.dom.AEl;
         private valueChangedListeners: {(item: UserStoreAccessControlEntry): void}[] = [];
-        private editable: boolean = true;
 
         public static debug: boolean = false;
 
-        constructor(ace: UserStoreAccessControlEntry) {
-            super();
-            this.setClass('userstore-access-control-entry');
-            //this.toggleClass('inherited', ace.isInherited());
+        constructor(ace: UserStoreAccessControlEntry, readonly: boolean = false) {
+            super('selected-option userstore-access-control-entry');
 
             this.ace = ace;
+            this.setEditable(!readonly);
+
             if (isNaN(this.ace.getAccess())) {
                 this.ace.setAccess(UserStoreAccess[UserStoreAccess.CREATE_USERS]);
             }
@@ -35,16 +33,12 @@ module api.ui.security.acl {
         }
 
         setEditable(editable: boolean) {
-            if (editable !== this.editable) {
-                this.accessSelector.setEnabled(editable);
-                this.editable = editable;
-            }
+            super.setEditable(editable);
 
             this.toggleClass('readonly', !editable);
-        }
-
-        isEditable(): boolean {
-            return this.editable;
+            if (this.accessSelector) {
+                this.accessSelector.setEnabled(editable);
+            }
         }
 
         onValueChanged(listener: (item: UserStoreAccessControlEntry) => void) {
@@ -90,6 +84,7 @@ module api.ui.security.acl {
 
             if (!this.accessSelector) {
                 this.accessSelector = new UserStoreAccessSelector();
+                this.accessSelector.setEnabled(this.isEditable());
                 this.accessSelector.onValueChanged((event: ValueChangedEvent) => {
                     this.ace.setAccess(event.getNewValue());
                 });
@@ -97,18 +92,7 @@ module api.ui.security.acl {
             }
             this.accessSelector.setValue(this.ace.getAccess(), true);
 
-            if (!this.removeButton) {
-                this.removeButton = new api.dom.AEl('icon-close');
-                this.removeButton.onClicked((event: MouseEvent) => {
-                    if (this.editable) {
-                        this.notifyRemoveClicked(event);
-                    }
-                    event.stopPropagation();
-                    event.preventDefault();
-                    return false;
-                });
-                this.appendChild(this.removeButton);
-            }
+            this.appendRemoveButton();
         }
     }
 

@@ -43,12 +43,12 @@ module api.ui {
 
             if (object) {
                 const displayName = this.resolveDisplayName(object) || this.normalizeDisplayName(this.resolveUnnamedDisplayName(object));
-                const subName = this.resolveSubName(object) || api.content.ContentUnnamed.prettifyUnnamed();
+                const subName = this.resolveSubName(object, this.relativePath) || api.content.ContentUnnamed.prettifyUnnamed();
                 const subTitle = this.resolveSubTitle(object);
                 const hint = this.resolveHint(object);
 
                 if (!api.util.StringHelper.isBlank(hint)) {
-                    this.getEl().setAttribute('title', hint);
+                    this.getHintTargetEl().setAttribute('title', hint);
                 }
 
                 let iconUrl;
@@ -85,6 +85,10 @@ module api.ui {
             }
         }
 
+        protected getHintTargetEl(): api.dom.ElementHelper {
+            return this.getEl();
+        }
+
         resolveHint(_object: OBJECT): string {
             return '';
         }
@@ -97,7 +101,7 @@ module api.ui {
             return '';
         }
 
-        resolveSubName(_object: OBJECT): string {
+        resolveSubName(_object: OBJECT, _relativePath: boolean = false): string {
             return '';
         }
 

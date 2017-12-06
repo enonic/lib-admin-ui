@@ -213,7 +213,7 @@ module api.ui.selector.combobox {
             super.setReadOnly(readOnly);
 
             this.input.setReadOnly(readOnly);
-            this.selectedOptionsView.setEditable(!readOnly);
+            this.selectedOptionsView.setReadonly(readOnly);
 
             this.toggleClass('readonly', readOnly);
         }
@@ -568,7 +568,8 @@ module api.ui.selector.combobox {
                     let row = this.comboBoxDropdown.getDropdownGrid().getRowByValue(value);
                     this.handleRowSelected(row, keyCode);
                 });
-                this.input.setValue('', true);
+                this.input.setValue('');
+                this.hideDropdown();
             } else {
                 this.handleRowSelected(index, keyCode);
                 this.input.setValue('');
@@ -990,7 +991,9 @@ module api.ui.selector.combobox {
 
         private handleMultipleSelectionChanged() {
             if (this.isSelectionChanged()) {
-                this.applySelectionsButton.show();
+                if(this.comboBoxDropdown.isDropdownShown()) {
+                    this.applySelectionsButton.show();
+                }
                 this.updateSelectionDelta();
             } else {
                 this.applySelectionsButton.hide();
@@ -1013,6 +1016,11 @@ module api.ui.selector.combobox {
                 .filter(x => selectedValues.indexOf(x) === -1)
                 .concat(selectedValues.filter(x => gridOptions.indexOf(x) === -1));
 
+        }
+
+        setEnabled(enabled: boolean) {
+            this.dropdownHandle.setEnabled(enabled);
+            this.input.getEl().setDisabled(!enabled);
         }
 
         onOptionSelected(listener: (event: SelectedOptionEvent<OPTION_DISPLAY_VALUE>) => void) {

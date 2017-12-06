@@ -15,4 +15,26 @@
     }
   }
 
+  &.is-processing {
+    .dialog-header {
+      margin-bottom: 0;
+    }
+    .content-selector,
+    .desc-message,
+    .dialog-content > .content-path {
+      display: none;
+    }
+
+    .progress-bar {
+      margin-top: 20px;
+      margin-bottom: 0;
+    }
+  }
+
+  &.locked {
+    .selected-option .remove {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+  }
 }

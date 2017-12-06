@@ -7,22 +7,17 @@ module api.ui.security.acl {
         private itemsEditable: boolean = true;
 
         constructor(className?: string) {
-            super('access-control-list' + (className ? ' ' + className : ''));
+            super('selected-options access-control-list' + (className ? ' ' + className : ''));
         }
 
         createItemView(entry: UserStoreAccessControlEntry, readOnly: boolean): UserStoreAccessControlEntryView {
-            let itemView = new UserStoreAccessControlEntryView(entry);
-            itemView.setEditable(this.itemsEditable);
+            let itemView = new UserStoreAccessControlEntryView(entry, readOnly);
             itemView.onRemoveClicked(() => {
                 this.removeItem(entry);
             });
             itemView.onValueChanged((item: UserStoreAccessControlEntry) => {
                 this.notifyItemValueChanged(item);
             });
-
-            if(readOnly) {
-                itemView.setEditable(false);
-            }
 
             return itemView;
         }

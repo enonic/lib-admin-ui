@@ -11,19 +11,15 @@ module api.ui.security.acl {
         private accessSelector: AccessSelector;
         private permissionSelector: PermissionSelector;
 
-        private removeButton: api.dom.AEl;
-
         private valueChangedListeners: {(item: AccessControlEntry): void}[] = [];
-        private editable: boolean = true;
 
         public static debug: boolean = false;
 
-        constructor(ace: AccessControlEntry) {
-            super();
-            this.setClass('access-control-entry');
-            //this.toggleClass('inherited', ace.isInherited());
+        constructor(ace: AccessControlEntry, readonly: boolean = false) {
+            super('selected-option access-control-entry');
 
             this.ace = ace;
+            this.setEditable(!readonly);
 
             this.setAccessControlEntry(this.ace);
         }
@@ -39,23 +35,16 @@ module api.ui.security.acl {
 
             if (!this.accessSelector) {
                 this.accessSelector = new AccessSelector();
+                this.accessSelector.setEnabled(this.isEditable());
                 this.appendChild(this.accessSelector);
             }
             this.accessSelector.setValue(AccessControlEntryView.getAccessValueFromEntry(this.ace), true);
 
-            if (!this.removeButton) {
-                this.removeButton = new api.dom.AEl('icon-close');
-                this.removeButton.onClicked((event: MouseEvent) => {
-                    this.notifyRemoveClicked(event);
-                    event.stopPropagation();
-                    event.preventDefault();
-                    return false;
-                });
-                this.appendChild(this.removeButton);
-            }
+            this.appendRemoveButton();
 
             if (!this.permissionSelector) {
                 this.permissionSelector = new PermissionSelector();
+                this.permissionSelector.setEnabled(this.isEditable());
                 this.permissionSelector.onValueChanged((event: api.ValueChangedEvent) => {
                     this.toggleClass('dirty', event.getNewValue() !== JSON.stringify({
                             allow: this.ace.getAllowedPermissions().sort(),
@@ -89,20 +78,19 @@ module api.ui.security.acl {
             return this.permissionSelector;
         }
 
-        getValueChangedListeners(): {(item: AccessControlEntry): void}[] {
-            return this.valueChangedListeners;
-        }
-
         setEditable(editable: boolean) {
-            if (editable !== this.editable) {
+            super.setEditable(editable);
+
+            if (this.permissionSelector) {
                 this.permissionSelector.setEnabled(editable);
+            }
+            if (this.accessSelector) {
                 this.accessSelector.setEnabled(editable);
-                this.editable = editable;
             }
         }
 
-        isEditable(): boolean {
-            return this.editable;
+        getValueChangedListeners(): {(item: AccessControlEntry): void}[] {
+            return this.valueChangedListeners;
         }
 
         onValueChanged(listener: (item: AccessControlEntry) => void) {

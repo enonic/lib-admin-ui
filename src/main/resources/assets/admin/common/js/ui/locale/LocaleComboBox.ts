@@ -34,21 +34,9 @@ module api.ui.locale {
         private option: Option<Locale>;
 
         constructor(option: Option<Locale>) {
-            super();
+            super('selected-option locale-selected-option-view');
             this.setOption(option);
-            this.setClass('locale-selected-option-view');
-            let removeButton = new api.dom.AEl('icon-close');
-            removeButton.onClicked((event: MouseEvent) => {
-                this.notifyRemoveClicked(event);
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
-            });
-            this.appendChild(removeButton);
-        }
-
-        setEditable(_editable: boolean) {
-            // must be implemented by children
+            this.appendRemoveButton();
         }
 
         setOption(option: api.ui.selector.Option<Locale>) {
