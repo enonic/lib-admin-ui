@@ -152,6 +152,28 @@
     display: none;
   }
 
+  .back-button {
+    float: left;
+    text-decoration: none;
+    cursor: pointer;
+    height: 32px;
+    line-height: 32px;
+    width: 40px;
+
+    &:before {
+      color: @admin-font-gray2;
+    }
+
+    &:hover {
+      &:before {
+        color: lighten(@admin-font-gray2, 10%);
+      }
+    }
+
+    .icon-arrow-left();
+    .icon-xlarge();
+  }
+
   .progress-bar,
   .progress-message {
     display: none;
