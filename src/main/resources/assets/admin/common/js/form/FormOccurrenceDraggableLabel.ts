@@ -7,8 +7,7 @@ module api.form {
 
             let nodes: Node[] = [];
 
-            let dragHandle = new api.dom.SpanEl('drag-control');
-            dragHandle.setHtml(':::');
+            let dragHandle = new api.dom.DivEl('drag-control');
             nodes.push(dragHandle.getHTMLElement());
 
             nodes.push(document.createTextNode(label));
@@ -25,7 +24,6 @@ module api.form {
                 let requiredMarker = new api.dom.SpanEl('required');
                 nodes.push(requiredMarker.getHTMLElement());
             }
-            nodes.push(document.createTextNode(':'));
             this.getEl().appendChildren(nodes);
         }
     }

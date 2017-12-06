@@ -125,6 +125,24 @@
       text-align: justify;
     }
   }
+
+  .drag-control {
+    .order(1);
+
+    display: none;
+    float: left;
+    background: url("../../images/nail-plate.png") no-repeat;
+    width: 5px;
+    height: 30px;
+    cursor: move;
+  }
+
+  .multiple-occurrence .drag-control {
+    display: block;
+    position: relative;
+    top: 2px;
+    padding-right: 5px;
+  }
 }
 
 .context-window, ._0-240, ._240-360, ._360-540, ._540-720 {

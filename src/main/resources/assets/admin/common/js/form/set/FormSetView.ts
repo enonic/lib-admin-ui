@@ -270,9 +270,11 @@ module api.form {
         }
 
         private refreshButtonsState() {
+            const occurrenceCount = this.formItemOccurrences.getOccurrences().length;
             this.setCollapseButtonCaption();
-            this.collapseButton.setVisible(this.formItemOccurrences.getOccurrences().length > 0);
+            this.collapseButton.setVisible(occurrenceCount > 0);
             this.addButton.setVisible(!this.formItemOccurrences.maximumOccurrencesReached());
+            this.toggleClass('multiple-occurrence', occurrenceCount > 1);
         }
 
         update(propertySet: api.data.PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
