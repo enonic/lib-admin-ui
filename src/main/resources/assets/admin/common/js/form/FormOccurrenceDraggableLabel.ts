@@ -7,7 +7,7 @@ module api.form {
 
             let nodes: Node[] = [];
 
-            let dragHandle = new api.dom.SpanEl('drag-handle');
+            let dragHandle = new api.dom.SpanEl('drag-control');
             dragHandle.setHtml(':::');
             nodes.push(dragHandle.getHTMLElement());
 

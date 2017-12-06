@@ -131,7 +131,7 @@ module api.form {
             return addButton;
         }
 
-        private setCollapseButtonCaption(): string {
+        private setCollapseButtonCaption() {
             const occurrenceCount = this.formItemOccurrences.getOccurrenceViews().length;
             const isCollapsed = (<FormSetOccurrences<V>> this.formItemOccurrences).isCollapsed();
 

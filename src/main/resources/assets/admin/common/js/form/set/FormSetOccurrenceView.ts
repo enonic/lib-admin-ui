@@ -163,7 +163,7 @@ module api.form {
         }
 
         refresh() {
-            this.label.toggleClass('drag-control', !this.formItemOccurrence.oneAndOnly());
+            this.label.toggleClass('draggable', !this.formItemOccurrence.oneAndOnly());
             this.removeButton.setVisible(this.formItemOccurrence.isRemoveButtonRequired());
         }
 

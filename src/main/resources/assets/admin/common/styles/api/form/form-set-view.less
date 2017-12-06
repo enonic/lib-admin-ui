@@ -209,19 +209,16 @@
 
       }
 
-      .drag-handle {
+      .drag-control {
         display: none;
+        margin-right: 15px;
+        line-height: 14px;
+        font-size: 14px;
+        cursor: move;
       }
 
-      .drag-control {
-        cursor: move;
-
-        & > .drag-handle {
-          display: inline;
-          margin-right: 15px;
-          line-height: 14px;
-          font-size: 14px;
-        }
+      .draggable > .drag-control {
+        display: inline;
       }
 
       & > .remove-button {
