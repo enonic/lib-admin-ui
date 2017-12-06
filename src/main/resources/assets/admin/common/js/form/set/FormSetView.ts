@@ -131,17 +131,24 @@ module api.form {
             return addButton;
         }
 
+        private setCollapseButtonCaption(): string {
+            const occurrenceCount = this.formItemOccurrences.getOccurrenceViews().length;
+            const isCollapsed = (<FormSetOccurrences<V>> this.formItemOccurrences).isCollapsed();
+
+            const caption = occurrenceCount > 1 ?
+                            (isCollapsed ? i18n('button.expandall') : i18n('button.collapseall')) :
+                            (isCollapsed ? i18n('button.expand') : i18n('button.collapse'));
+
+            this.collapseButton.setHtml(caption);
+        }
+
         private makeCollapseButton(): api.dom.AEl {
             let collapseButton = new api.dom.AEl('collapse-button');
-            collapseButton.setHtml(i18n('button.collapse'));
             collapseButton.onClicked((event: MouseEvent) => {
-                if ((<FormSetOccurrences<V>> this.formItemOccurrences).isCollapsed()) {
-                    collapseButton.setHtml(i18n('button.collapse'));
-                    (<FormSetOccurrences<V>> this.formItemOccurrences).showOccurrences(true);
-                } else {
-                    collapseButton.setHtml(i18n('button.expand'));
-                    (<FormSetOccurrences<V>> this.formItemOccurrences).showOccurrences(false);
-                }
+                const isCollapsed = (<FormSetOccurrences<V>> this.formItemOccurrences).isCollapsed();
+                (<FormSetOccurrences<V>> this.formItemOccurrences).showOccurrences(isCollapsed);
+                this.setCollapseButtonCaption();
+
                 event.stopPropagation();
                 event.preventDefault();
                 return false;
@@ -263,6 +270,7 @@ module api.form {
         }
 
         private refreshButtonsState() {
+            this.setCollapseButtonCaption();
             this.collapseButton.setVisible(this.formItemOccurrences.getOccurrences().length > 0);
             this.addButton.setVisible(!this.formItemOccurrences.maximumOccurrencesReached());
         }

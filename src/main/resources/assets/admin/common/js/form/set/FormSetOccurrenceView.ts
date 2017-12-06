@@ -159,21 +159,11 @@ module api.form {
         }
 
         showContainer(show: boolean) {
-            if (show) {
-                this.formSetOccurrencesContainer.show();
-            } else {
-                this.formSetOccurrencesContainer.hide();
-            }
+            this.formSetOccurrencesContainer.setVisible(show);
         }
 
         refresh() {
-
-            if (!this.formItemOccurrence.oneAndOnly()) {
-                this.label.addClass('drag-control');
-            } else {
-                this.label.removeClass('drag-control');
-            }
-
+            this.label.toggleClass('drag-control', !this.formItemOccurrence.oneAndOnly());
             this.removeButton.setVisible(this.formItemOccurrence.isRemoveButtonRequired());
         }
 
