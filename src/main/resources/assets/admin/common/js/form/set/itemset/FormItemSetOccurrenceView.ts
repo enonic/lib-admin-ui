@@ -29,6 +29,26 @@ module api.form {
             this.formItemLayer = new FormItemLayer(config.context);
         }
 
+        public layout(validate: boolean = true): wemQ.Promise<void> {
+            return super.layout(validate).then(() => {
+
+                const firstNonEmptyInput = wemjq(this.formSetOccurrencesContainer.getHTMLElement())
+                    .find('.input-wrapper input, .input-wrapper textarea').toArray()
+                    .find(input => {
+                        const value = (input.nodeName === 'INPUT') ? input.value : api.util.StringHelper.htmlToString(input.value);
+                        return value.trim().length > 0;
+                    });
+
+                if (firstNonEmptyInput) {
+                    if (firstNonEmptyInput.nodeName === 'INPUT') {
+                        this.label.setTitle(firstNonEmptyInput.value);
+                    } else {
+                        this.label.setTitle(api.util.StringHelper.htmlToString(firstNonEmptyInput.value)); // Strip HTML tags
+                    }
+                }
+            });
+        }
+
         protected subscribeOnItemEvents() {
             this.formItemViews.forEach((formItemView: FormItemView) => {
                 formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
