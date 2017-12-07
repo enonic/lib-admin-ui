@@ -16,7 +16,11 @@
   &.display-validation-errors {
     .form-option-set-occurrence-view {
 
-      .selection-message:not(.empty) {
+      &.collapsed {
+        padding-bottom: 10px;
+      }
+
+      .selection-message {
         display: block;
         color: @input-red-text;
         font-size: 14px;
@@ -95,7 +99,7 @@
 
   .occurrence-views-container .form-option-set-occurrence-view {
 
-    .selection-message {
+    .selection-message:empty {
       display: none;
     }
 
@@ -145,6 +149,10 @@
         border-bottom: none;
         border-top: none;
         box-sizing: border-box;
+
+        .checkbox input[type="checkbox"]:focus + label:before {
+          box-shadow: none;
+        }
 
         &.expandable {
           border-bottom: 6px solid @admin-option-set-header-bg;
@@ -207,7 +215,7 @@
             padding: 0px 5px 0px 25px;
             &:before {
               left: 4px;
-              background: url("../../../images/box-checked-optionset.gif") -1px -2px no-repeat;
+              background: url("../../../images/box-checked-optionset.gif") -1px no-repeat;
             }
           }
 
