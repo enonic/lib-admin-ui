@@ -764,7 +764,7 @@ module api.ui.selector.combobox {
             });
 
             this.comboBoxDropdown.onRowCountChanged(() => {
-                this.comboBoxDropdown.addSelections(this.getSelectedOptions());
+                this.comboBoxDropdown.markSelections(this.getSelectedOptions());
                 this.doUpdateDropdownTopPositionAndWidth();
             });
 
