@@ -12,7 +12,7 @@
 
       & > .panel {
         overflow: visible;
-        min-height: 240px;
+        min-height: 260px;
 
         input {
           .input-glow();
@@ -46,20 +46,17 @@
       .clearfix();
 
       .principal-viewer-compact {
-        float: left;
 
         &:not(:first-child) {
           margin-left: -10px;
         }
 
         .user-icon {
-          width: 58px;
-          height: 58px;
-          border-radius: 58px;
-          line-height: 58px;
-          border: 2px solid #eee;
-          background-color: @admin-font-gray1;
-          margin: 0;
+          width: 32px;
+          height: 32px;
+          border-radius: 32px;
+          line-height: 32px;
+          font-size: 16px;
         }
       }
       .all-assignees-tooltip {
@@ -69,7 +66,7 @@
     }
 
     .issue-details-sub-title {
-      margin: 6px 0 0 40px;
+      margin: 15px 0 0 34px;
       font-size: 13px;
 
       .creator, .assignee {
@@ -99,7 +96,7 @@
           display: inline-block;
           font-weight: bold;
           padding: 2px 14px;
-          border-radius: 12px;
+          border-radius: 4px;
 
           &:before {
             content: '';
@@ -115,7 +112,6 @@
           text-align: center;
           min-width: inherit;
           width: 80px;
-          border-radius: 14px;
           li {
             padding: 1px 5px;
             border-radius: 12px;
@@ -130,7 +126,7 @@
     }
 
     .sub-title {
-      margin: 10px 0 15px;
+      margin: 10px 0 30px;
       font-size: 14px;
 
       .creator, .assignee {
@@ -140,7 +136,7 @@
     }
 
     .tab-bar {
-      margin-top: 20px;
+      margin-top: 5px;
       background: transparent;
       display: flex;
 
@@ -254,6 +250,7 @@
 
       &.close-issue {
         .dialog-button(@form-button-font, @admin-button-gray3);
+        float: left;
       }
 
       &.reopen-issue {
