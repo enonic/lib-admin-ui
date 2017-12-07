@@ -53,7 +53,7 @@ module api.security.acl {
         }
 
         toString(): string {
-            return '[' + this.getEntries().map((ace) => ace.toString()).join(', ') + ']';
+            return '[' + this.getEntries().sort().map((ace) => ace.toString()).join(', ') + ']';
         }
 
         equals(o: api.Equitable): boolean {
@@ -63,7 +63,7 @@ module api.security.acl {
             }
 
             let other = <UserStoreAccessControlList>o;
-            return api.ObjectHelper.arrayEquals(this.getEntries().sort(), other.getEntries().sort());
+            return this.toString() === other.toString();
         }
 
         static fromJson(json: api.security.acl.UserStoreAccessControlEntryJson[]): UserStoreAccessControlList {
