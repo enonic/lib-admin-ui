@@ -33,6 +33,11 @@ module api.util {
             }));
         }
 
+        static htmlToString(html: string): string {
+            const htmlEl = wemjq.parseHTML(html);
+            return wemjq(htmlEl).text();
+        }
+
         static isUpperCase(str: string): boolean {
             if (StringHelper.isEmpty(str)) {
                 return false;

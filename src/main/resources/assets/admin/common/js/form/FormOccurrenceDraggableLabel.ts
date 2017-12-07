@@ -2,16 +2,18 @@ module api.form {
 
     export class FormOccurrenceDraggableLabel extends api.dom.DivEl {
 
+        private title: Text;
+
         constructor(label: string, occurrences: Occurrences, note?: string) {
             super('form-occurrence-draggable-label');
 
             let nodes: Node[] = [];
 
-            let dragHandle = new api.dom.SpanEl('drag-handle');
-            dragHandle.setHtml(':::');
+            let dragHandle = new api.dom.DivEl('drag-control');
             nodes.push(dragHandle.getHTMLElement());
 
-            nodes.push(document.createTextNode(label));
+            this.title = document.createTextNode(label);
+            nodes.push(this.title);
 
             if (!!note) {
                 let noteEl = new api.dom.Element(new api.dom.NewElementBuilder().setTagName('sup').setGenerateId(true));
@@ -25,8 +27,11 @@ module api.form {
                 let requiredMarker = new api.dom.SpanEl('required');
                 nodes.push(requiredMarker.getHTMLElement());
             }
-            nodes.push(document.createTextNode(':'));
             this.getEl().appendChildren(nodes);
+        }
+
+        setTitle(label: string) {
+            this.title.nodeValue = label.trim();
         }
     }
 }

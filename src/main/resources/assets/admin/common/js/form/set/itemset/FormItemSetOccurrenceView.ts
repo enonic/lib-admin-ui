@@ -29,6 +29,27 @@ module api.form {
             this.formItemLayer = new FormItemLayer(config.context);
         }
 
+        private setTitle() {
+            const firstNonEmptyInput = wemjq(this.formSetOccurrencesContainer.getHTMLElement())
+                .find('.input-wrapper input, .input-wrapper textarea').toArray()
+                .find(input => {
+                    const value = (input.nodeName === 'INPUT') ? input.value : api.util.StringHelper.htmlToString(input.value);
+                    return value.trim().length > 0;
+                });
+
+            if (firstNonEmptyInput) {
+                if (firstNonEmptyInput.nodeName === 'INPUT') {
+                    this.label.setTitle(firstNonEmptyInput.value);
+                } else {
+                    this.label.setTitle(api.util.StringHelper.htmlToString(firstNonEmptyInput.value)); // Strip HTML tags
+                }
+            }
+        }
+
+        public layout(validate: boolean = true): wemQ.Promise<void> {
+            return super.layout(validate).then(() => this.setTitle());
+        }
+
         protected subscribeOnItemEvents() {
             this.formItemViews.forEach((formItemView: FormItemView) => {
                 formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
@@ -54,6 +75,8 @@ module api.form {
                     const summaryAndStatus = api.content.ContentSummaryAndCompareStatus.fromContentSummary(content);
                     new api.content.event.EditContentEvent([summaryAndStatus]).fire();
                 });
+
+                formItemView.onBlur(() => this.setTitle());
             });
         }
 
