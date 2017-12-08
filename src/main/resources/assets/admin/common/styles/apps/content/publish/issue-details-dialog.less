@@ -12,7 +12,6 @@
 
       & > .panel {
         overflow: visible;
-        min-height: 260px;
 
         input {
           .input-glow();
@@ -46,10 +45,7 @@
       .clearfix();
 
       .principal-viewer-compact {
-
-        &:not(:first-child) {
-          margin-left: -10px;
-        }
+        float: left;
 
         .user-icon {
           width: 32px;
@@ -59,9 +55,11 @@
           font-size: 16px;
         }
       }
+
       .all-assignees-tooltip {
-        line-height: 62px;
-        display: inline-block;
+        float: left;
+        margin-left: 5px;
+        line-height: 32px;
       }
     }
 
@@ -114,7 +112,7 @@
           width: 80px;
           li {
             padding: 1px 5px;
-            border-radius: 12px;
+            border-radius: 4px;
           }
         }
       }
