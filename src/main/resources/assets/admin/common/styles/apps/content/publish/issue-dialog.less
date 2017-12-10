@@ -2,7 +2,7 @@
   max-height: none;
   @toggler-width: 35px;
 
-  &.create-issue-dialog .dialog-header .title {
+  &.create-issue-dialog .modal-dialog-header .title {
     margin-top: -2px;
   }
 
@@ -14,14 +14,28 @@
     }
   }
 
+  &:not(.issue-details-dialog) {
+    .dialog-content {
+
+      .issue-dialog-form {
+        margin: 0px 0px;
+        padding: 0 !important;
+
+        fieldset {
+          overflow: hidden;
+        }
+      }
+
+      .publish-dialog-item-list {
+        padding: 0;
+      }
+    }
+  }
+
   .dialog-content {
     max-height: 60vh;
+    min-height: 20vh;
     overflow-y: auto;
-
-    .issue-dialog-form {
-      margin: 0px 0px;
-      padding: 0 !important;
-    }
 
     .content-combo-box {
       .selected-options {
@@ -33,13 +47,18 @@
       padding: 0 15px 0 0;
     }
 
-
     .browse-selection-item .remove {
       margin-right: 10px;
     }
 
     .dependants {
       margin-top: 5px;
+
+      .dependants-header:not(:empty) {
+        margin: 10px 0 15px;
+        cursor: pointer;
+        color: @admin-blue;
+      }
     }
 
     .publish-dialog-item-list {
@@ -66,7 +85,7 @@
 
         .include-children-toggler {
           cursor: pointer;
-          &.readonly{
+          &.readonly {
             cursor: default;
           }
           &:hover {
@@ -100,24 +119,34 @@
   }
 }
 
-.back-button {
-  float: left;
-  text-decoration: none;
-  background-color: @admin-white;
-  cursor: pointer;
-  margin: -11px 0px 0px -13px;
+.issue-dialog, .issue-list-dialog {
 
-  &:before {
-    color: @admin-font-gray2;
-    font-size: 44px !important;
-  }
+  &.grey-header {
+    .modal-dialog-header {
+      background-color: #eee;
+      padding-bottom: 30px;
+    }
 
-  &:hover {
-    &:before {
-      color: lighten(@admin-font-gray2, 10%);
+    .modal-dialog-body {
+      margin-top: 20px;
     }
   }
+}
 
-  .icon-medium();
-  .icon-arrow-left();
+@media screen and (max-width: 720px) {
+  body .@{_COMMON_PREFIX}modal-dialog {
+    &.grey-header {
+      padding-left: 0;
+      padding-right: 0;
+
+      .cancel-button-top {
+        background-color: #eee;
+      }
+
+      .modal-dialog-body {
+        padding-left: 30px;
+        padding-right: 30px;
+      }
+    }
+  }
 }
