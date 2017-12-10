@@ -1,25 +1,33 @@
 module api.content.page.region {
 
-    export class PartDescriptor extends api.content.page.Descriptor implements api.Cloneable {
+    export class PartDescriptor
+        extends api.content.page.Descriptor
+        implements api.Cloneable {
 
         public clone(): PartDescriptor {
             return new PartDescriptorBuilder(this).build();
         }
+
+        public static create(): PartDescriptorBuilder {
+            return new PartDescriptorBuilder();
+        }
+
+        public static fromJson(json: PartDescriptorJson): PartDescriptor {
+
+            return PartDescriptor.create()
+                .setKey(api.content.page.DescriptorKey.fromString(json.key))
+                .setName(new api.content.page.DescriptorName(json.name))
+                .setDisplayName(json.displayName)
+                .setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null)
+                .build();
+        }
     }
 
-    export class PartDescriptorBuilder extends api.content.page.DescriptorBuilder {
+    export class PartDescriptorBuilder
+        extends api.content.page.DescriptorBuilder {
 
         constructor(source?: PartDescriptor) {
             super(source);
-        }
-
-        public fromJson(json: PartDescriptorJson): PartDescriptorBuilder {
-
-            this.setKey(api.content.page.DescriptorKey.fromString(json.key));
-            this.setName(new api.content.page.DescriptorName(json.name));
-            this.setDisplayName(json.displayName);
-            this.setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null);
-            return this;
         }
 
         public setKey(value: api.content.page.DescriptorKey): PartDescriptorBuilder {

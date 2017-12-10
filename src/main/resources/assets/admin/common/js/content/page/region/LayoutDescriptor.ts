@@ -1,6 +1,8 @@
 module api.content.page.region {
 
-    export class LayoutDescriptor extends api.content.page.Descriptor implements api.Cloneable {
+    export class LayoutDescriptor
+        extends api.content.page.Descriptor
+        implements api.Cloneable {
         private regions: RegionDescriptor[];
 
         constructor(builder: LayoutDescriptorBuilder) {
@@ -15,9 +17,26 @@ module api.content.page.region {
         public clone(): LayoutDescriptor {
             return new LayoutDescriptorBuilder(this).build();
         }
+
+        public static create(): LayoutDescriptorBuilder {
+            return new LayoutDescriptorBuilder();
+        }
+
+        public static fromJson(json: LayoutDescriptorJson): LayoutDescriptor {
+
+            return LayoutDescriptor.create().setKey(api.content.page.DescriptorKey.fromString(json.key))
+                .setName(new api.content.page.DescriptorName(json.name))
+                .setDisplayName(json.displayName)
+                .setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null)
+                .setRegions(json.regions.map(regionJson => {
+                    return api.content.page.region.RegionDescriptor.fromJson(regionJson);
+                }))
+                .build();
+        }
     }
 
-    export class LayoutDescriptorBuilder extends api.content.page.DescriptorBuilder {
+    export class LayoutDescriptorBuilder
+        extends api.content.page.DescriptorBuilder {
 
         regions: RegionDescriptor[] = [];
 
@@ -26,20 +45,6 @@ module api.content.page.region {
             if (source) {
                 this.regions = source.getRegions();
             }
-        }
-
-        public fromJson(json: LayoutDescriptorJson): LayoutDescriptorBuilder {
-
-            this.setKey(api.content.page.DescriptorKey.fromString(json.key));
-            this.setName(new api.content.page.DescriptorName(json.name));
-            this.setDisplayName(json.displayName);
-            this.setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null);
-            for (let i = 0; i < json.regions.length; i++) {
-                let region = new RegionDescriptorBuilder().fromJson(json.regions[i]).build();
-                this.regions.push(region);
-            }
-
-            return this;
         }
 
         public setKey(value: api.content.page.DescriptorKey): LayoutDescriptorBuilder {
@@ -64,6 +69,11 @@ module api.content.page.region {
 
         public addRegion(value: RegionDescriptor): LayoutDescriptorBuilder {
             this.regions.push(value);
+            return this;
+        }
+
+        public setRegions(value: region.RegionDescriptor[]): LayoutDescriptorBuilder {
+            this.regions = value;
             return this;
         }
 
