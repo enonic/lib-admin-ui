@@ -278,23 +278,16 @@ module api.ui.selector.combobox {
         }
 
         protected loadOptionsAfterShowDropdown(): wemQ.Promise<void> {
-            return this.reload(this.comboBox.getInput().getValue(), false);
+            return this.reload(this.comboBox.getInput().getValue());
         }
 
         protected reload(inputValue: string, force: boolean = true): wemQ.Promise<any> {
-            if (!force && this.isLoadingOrLoaded()) {
-                return wemQ(null);
-            }
             if (!StringHelper.isBlank(inputValue)) {
                 return this.loader.search(inputValue).catch(api.DefaultErrorHandler.handle);
             } else {
                 this.loader.setSearchString(inputValue);
                 return this.loader.load().catch(api.DefaultErrorHandler.handle);
             }
-        }
-
-        protected isLoadingOrLoaded(): boolean {
-            return (this.getOptions().length > 0 && this.getLoader().isLoaded()) || this.getLoader().isLoading();
         }
 
         private setupLoader() {
