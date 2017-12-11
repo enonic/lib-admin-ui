@@ -379,6 +379,11 @@ module api.content {
             return this;
         }
 
+        setHideComboBoxWhenMaxReached(value: boolean): ContentComboBoxBuilder<ITEM_TYPE> {
+            super.setHideComboBoxWhenMaxReached(value);
+            return this;
+        }
+
         build(): ContentComboBox<ITEM_TYPE> {
             return new ContentComboBox<ITEM_TYPE>(this);
         }

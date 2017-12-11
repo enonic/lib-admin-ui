@@ -1,18 +1,29 @@
 .issue-list-dialog {
 
-  height: 430px;
-
-  .dialog-content {
-    margin-top: -10px;
-  }
-
   .docked-panel {
     width: auto;
     box-shadow: none;
     position: inherit !important;
+    background-color: transparent;
 
-    .deck-panel {
-      margin-top: 6px;
+    .tab-bar {
+      position: relative !important;
+      background-color: transparent;
+      border: 0 none;
+      overflow: visible;
+
+      .tab-bar-item {
+        top: 0;
+        right: 0;
+        display: inline;
+        border: 0 none;
+        padding: 7px 5px;
+        position: absolute;
+
+        &.active {
+          display: none;
+        }
+      }
     }
   }
 
@@ -20,6 +31,7 @@
     position: inherit;
 
     .filters {
+      margin-bottom: 20px;
       .flexbox();
 
       .checkbox {
@@ -32,13 +44,11 @@
       }
 
       .my-issues-filter {
-        margin-left: 15px;
-        margin-right: 15px;
+        margin-right: 20px;
       }
     }
 
     .issue-list {
-      max-height: 220px;
       overflow: auto;
       cursor: pointer;
 
@@ -117,6 +127,13 @@
 
   &.masked {
     opacity: 0;
+  }
+
+  @media screen and (max-width: 480px) {
+    .filters {
+      flex-wrap: wrap;
+      max-width: 200px;
+    }
   }
 }
 

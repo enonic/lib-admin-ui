@@ -1,34 +1,69 @@
 .issue-details-dialog {
-  max-height: none;
   @toggler-width: 35px;
 
   .dialog-content {
     padding: 5px 0;
-    max-height: 60vh;
     overflow-y: auto;
+
+    .deck-panel {
+      overflow: visible;
+
+      & > .panel {
+        overflow: visible;
+
+        input {
+          .input-glow();
+        }
+      }
+    }
   }
 
-  .dialog-header {
+  .modal-dialog-header {
     margin-bottom: 0;
+    padding-bottom: 0 !important;
     position: relative;
 
     .title {
       display: block;
       font-size: 24px;
       max-width: 100%;
-      line-height: 30px;
-      margin-top: -5px;
+      line-height: 32px;
       text-transform: capitalize;
 
       .ellipsis();
+
+      span.title-id {
+        color: @admin-font-gray1;
+        margin-left: 10px;
+      }
+    }
+
+    .assignees-line {
+      float: right;
+      .clearfix();
+
+      .principal-viewer-compact {
+        float: left;
+
+        .user-icon {
+          width: 32px;
+          height: 32px;
+          border-radius: 32px;
+          line-height: 32px;
+          font-size: 16px;
+        }
+      }
+
+      .all-assignees-tooltip {
+        float: left;
+        margin-left: 5px;
+        line-height: 32px;
+      }
     }
 
     .issue-details-sub-title {
-      display: inline-block;
-      margin: 10px 0;
+      margin: 15px 0 0 34px;
       font-size: 13px;
-      float: left;
-      clear: both;
 
       .creator, .assignee {
         color: @admin-font-gray3;
@@ -40,7 +75,6 @@
         min-width: inherit;
         margin: 0;
         margin-right: 15px;
-
         vertical-align: middle;
 
         &.open {
@@ -57,9 +91,7 @@
         .tab-menu-button {
           display: inline-block;
           font-weight: bold;
-
-          padding: 4px 14px;
-
+          padding: 2px 14px;
           border-radius: 4px;
 
           &:before {
@@ -78,6 +110,7 @@
           width: 80px;
           li {
             padding: 1px 5px;
+            border-radius: 4px;
           }
         }
       }
@@ -89,17 +122,28 @@
     }
 
     .sub-title {
-      display: inline-block;
-      margin: 10px 0 15px;
-      font-size: 13px;
-      float: left;
-      clear: both;
+      margin: 10px 0 30px;
+      font-size: 14px;
 
       .creator, .assignee {
         color: @admin-black;
         font-weight: bold;
       }
     }
+
+    .tab-bar {
+      margin-top: 5px;
+      background: transparent;
+      display: flex;
+
+      .tab-bar-item {
+        flex: 1;
+      }
+    }
+  }
+
+  .panel {
+    position: static;
   }
 
   .icon-tree {
@@ -126,8 +170,7 @@
   }
 
   .issue-dialog-form {
-    margin-bottom: 15px;
-    background-color: @admin-bg-light-gray;
+    padding: 0;
 
     input-view:not(:last-child) {
       margin-bottom: 0px;
@@ -138,14 +181,6 @@
       font-style: italic;
       &.empty {
         display: none !important;
-      }
-    }
-
-    .issue-approver-selector {
-      margin-bottom: 0;
-
-      label {
-        display: none;
       }
     }
 
@@ -169,6 +204,7 @@
   }
 
   .publish-dialog-item-list {
+    margin-top: 20px;
 
     .browse-selection-item {
 
@@ -198,34 +234,43 @@
       }
     }
   }
+
   .button-container {
     width: 100%;
 
-    .dropdown-dialog-menu {
-      float: right;
-    }
-    .cancel-button-bottom {
-      display: none;
-
-      float: left;
-      margin: 0;
-    }
-    .publish-action {
+    .dialog-button, .menu-button {
       float: right;
     }
 
-    .show-schedule-action {
-      float: right;
-    }
+    .dialog-button {
 
-    .edit-issue {
-      .button-background();
-      margin-left: 0;
+      &.close-issue {
+        .dialog-button(@form-button-font, @admin-button-gray3);
+        float: left;
+        margin-left: 0;
+      }
+
+      &.reopen-issue {
+        .dialog-button(@form-button-font, @admin-green);
+        display: none !important;
+      }
+
+      .cancel-button-bottom {
+        display: none;
+        float: left;
+        margin: 0;
+      }
     }
 
     + .no-action-message {
       display: none;
+      line-height: 36px;
+      font-size: 15px;
     }
+  }
+
+  .no-action-message {
+    float: right;
   }
 
   &.nested {
@@ -258,29 +303,51 @@
     position: relative;
   }
 
-  &.no-action {
+  &.tab-issue {
     .button-container {
-      .show-schedule-action, .publish-action, .@{_COMMON_PREFIX}dropdown-handle {
+      .publish-issue, .show-schedule-action {
         display: none !important;
       }
     }
     .no-action-message {
-      display: block;
-      width: 100%;
-      text-align: right;
-      position: absolute;
-      margin-top: 10px;
-      left: 0;
-      font-size: 15px;
-      pointer-events: none;
+      display: none !important;
+    }
+  }
+
+  &.tab-items {
+    .button-container {
+      .edit-issue, .close-issue {
+        display: none !important;
+      }
+    }
+  }
+
+  &.no-action {
+    &.tab-items {
+      .button-container {
+        .show-schedule-action, .publish-issue {
+          display: none !important;
+        }
+      }
+    }
+
+    .no-action-message {
+      display: inline-block;
     }
     .dependants {
       display: none !important;
     }
   }
 
-  &.closed .modal-dialog-footer {
-    display: none;
+  &.closed {
+    .button-container {
+      .dialog-button:not(.reopen-issue), .menu-button {
+        display: none !important;
+      }
+      .reopen-issue {
+        display: block !important;
+      }
+    }
   }
 
 }

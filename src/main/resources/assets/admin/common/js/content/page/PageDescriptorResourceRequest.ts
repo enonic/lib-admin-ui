@@ -18,7 +18,7 @@ module api.content.page {
 
         fromJsonToPageDescriptor(json: api.content.page.PageDescriptorJson, ignoreCache: boolean = false): PageDescriptor {
 
-            let pageDescriptor = new api.content.page.PageDescriptorBuilder().fromJson(json).build();
+            const pageDescriptor = api.content.page.PageDescriptor.fromJson(json);
             if(!ignoreCache) {
                 this.cache.put(pageDescriptor);
             }

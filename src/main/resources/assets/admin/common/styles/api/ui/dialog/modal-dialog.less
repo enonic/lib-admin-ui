@@ -12,31 +12,27 @@
   top: 50%;
   z-index: @z-index-modal-dialog;
   margin: 10px;
-  padding: 30px;
   width: 85.185%;
   min-width: 230px;
   max-width: 660px;
-  max-height: 660px;
   background-color: white;
   background-clip: padding-box;
   border: 1px solid @admin-dialog-border;
   box-sizing: border-box;
 
-  .modal-dialog-content-wrapper {
-    min-height: 100%;
+  .modal-dialog-wrapper {
+    display: flex;
+    flex-direction: column;
     height: 100%;
-    margin: 0 auto -3em;
-  }
-  .modal-dialog-footer, .modal-dialog-content-push {
-    height: 3em;
+    position: relative;
   }
 
-  .dialog-header {
+  .modal-dialog-header {
     .clearfix();
-    margin-bottom: 20px;
+    padding: 30px;
 
     h2 {
-      line-height: 0.8em;
+      line-height: 32px; //92px total height
     }
 
     .path {
@@ -52,6 +48,18 @@
     }
   }
 
+  .modal-dialog-body {
+    padding: 0 30px;
+    flex: 1;
+    max-height: calc(~'100% - ' 164px);
+    overflow: auto;
+  }
+
+  .modal-dialog-footer {
+    padding: 20px 30px;
+    height: 32px; //72px total height
+  }
+
   .dialog-content {
     .clearfix();
 
@@ -62,7 +70,6 @@
 
   .dialog-buttons {
     .clearfix();
-    margin-top: 20px;
     position: relative;
 
     @media screen and (max-height: 360px) {
@@ -149,6 +156,30 @@
     display: none;
   }
 
+  .back-button {
+    float: left;
+    text-decoration: none;
+    cursor: pointer;
+    height: 32px;
+    line-height: 32px;
+    width: 32px;
+
+    &:before {
+      color: @admin-font-gray2;
+      position: absolute;
+      left: 14px;
+    }
+
+    &:hover {
+      &:before {
+        color: lighten(@admin-font-gray2, 10%);
+      }
+    }
+
+    .icon-arrow-left();
+    .icon-xlarge();
+  }
+
   .progress-bar,
   .progress-message {
     display: none;
@@ -203,17 +234,18 @@ body {
   &._0-240, &._240-360, &._360-540, &._540-720 {
     .cancel-button-top {
 
-      top: 16px;
+      top: 0;
       right: 0;
       width: 26px;
       height: 26px;
       line-height: 26px;
       background-color: white;
+      z-index: 1;
 
       &:before, &:after {
         background-color: @admin-font-gray2;
         margin: 0;
-        top: 0;
+        top: 16px;
         left: 0;
         height: 3px;
         width: 15px;
@@ -255,6 +287,18 @@ body {
   @media screen and (min-width: 541px) {
     .@{_COMMON_PREFIX}modal-dialog {
       left: 50%;
+    }
+  }
+
+  @media screen and (max-height: 720px) {
+    .@{_COMMON_PREFIX}modal-dialog {
+      height: 80%;
+    }
+  }
+  @media screen and (min-height: 721px) {
+    .@{_COMMON_PREFIX}modal-dialog .modal-dialog-wrapper {
+      height: auto;
+      max-height: 660px;
     }
   }
 

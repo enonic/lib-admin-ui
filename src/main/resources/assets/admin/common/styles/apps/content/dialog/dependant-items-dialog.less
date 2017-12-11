@@ -97,36 +97,7 @@
 
   .dialog-content {
 
-    max-height: 300px;
     overflow-y: auto;
-
-    @media screen and (max-height: 720px) {
-      max-height: 250px;
-    }
-
-    @media screen and (max-height: 540px) {
-      max-height: 150px;
-    }
-
-    @media screen and (max-height: 360px) {
-      max-height: 80px;
-    }
-
-    .item-list {
-
-      @media screen and (max-height: 720px) {
-        max-height: 350px;
-      }
-
-      @media screen and (max-height: 540px) {
-        max-height: 170px;
-      }
-
-      @media screen and (max-height: 360px) {
-        max-height: 82%;
-      }
-
-    }
 
     .dependants {
       display: none;
@@ -136,6 +107,7 @@
       }
 
       .dependant-list {
+        display: none;
 
         h6 {
           margin-bottom: 5px;

@@ -34,7 +34,7 @@ module api.macro.resource {
         toMacroDescriptors(macrosJson: MacrosJson): MacroDescriptor[] {
             let result: MacroDescriptor[] = [];
             for (let i = 0; i < macrosJson.macros.length; i++) {
-                result.push(MacroDescriptor.create().fromJson(macrosJson.macros[i]).build());
+                result.push(MacroDescriptor.fromJson(macrosJson.macros[i]));
             }
             return result;
         }

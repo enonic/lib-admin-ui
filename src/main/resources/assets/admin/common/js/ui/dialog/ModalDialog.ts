@@ -48,13 +48,12 @@ module api.ui.dialog {
 
         private clickOutsideCallback: () => void;
 
+        private hasResizeObserver: boolean = false;
+
         public static debug: boolean = false;
 
         constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
             super('modal-dialog', api.StyleHelper.COMMON_PREFIX);
-
-            let wrapper = new DivEl('modal-dialog-content-wrapper');
-            this.appendChild(wrapper);
 
             this.buttonRow = config.buttonRow || new ButtonRow();
 
@@ -73,21 +72,21 @@ module api.ui.dialog {
 
             this.closeIcon = new DivEl('cancel-button-top');
             this.closeIcon.onClicked(this.closeIconCallback);
-            wrapper.appendChild(this.closeIcon);
 
             this.header = this.createHeader(config.title || '');
-            wrapper.appendChild(this.header);
 
             this.contentPanel = new ModalDialogContentPanel();
-            wrapper.appendChild(this.contentPanel);
 
-            let push = new DivEl('modal-dialog-content-push');
-            wrapper.appendChild(push);
+            let body = new DivEl('modal-dialog-body');
+            body.appendChildren(this.closeIcon, this.contentPanel);
 
             let footer = new DivEl('modal-dialog-footer');
-            this.appendChild(footer);
-
             footer.appendChild(this.buttonRow);
+
+            let wrapper = new DivEl('modal-dialog-wrapper');
+            wrapper.appendChildren<Element>(this.header, body, footer);
+
+            this.appendChild(wrapper);
 
             this.initConfirmationDialog(config.confirmation);
             this.initListeners();
@@ -115,18 +114,18 @@ module api.ui.dialog {
         }
 
         private initListeners() {
+            const resizeObserver = window['ResizeObserver'];
             const responsiveItem: ResponsiveItem = new ResponsiveItem(this);
-            ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
-                this.centerMyself();
+            const resizeHandler = () => {
+                this.centerDialog();
                 responsiveItem.update();
-            });
-
-            // Set the ResponsiveRanges on first show() call
-            const firstTimeResize = () => {
-                ResponsiveManager.fireResizeEvent();
-                this.unShown(firstTimeResize);
             };
-            this.onShown(firstTimeResize);
+            if (resizeObserver) {
+                this.hasResizeObserver = true;
+                new resizeObserver(resizeHandler).observe(this.getHTMLElement());
+            } else {
+                ResponsiveManager.onAvailableSizeChanged(Body.get(), resizeHandler);
+            }
 
             this.handleClickOutsideDialog();
             this.handleFocusInOutEvents();
@@ -235,8 +234,8 @@ module api.ui.dialog {
             return cancelButton;
         }
 
-        setTitle(value: string) {
-            this.header.setTitle(value);
+        setTitle(value: string, escapeHtml: boolean = true) {
+            this.header.setTitle(value, escapeHtml);
         }
 
         appendChildToContentPanel(child: api.dom.Element) {
@@ -286,10 +285,24 @@ module api.ui.dialog {
         }
 
         protected centerMyself() {
+            if (this.hasResizeObserver) {
+                return;
+            }
+
+            this.centerDialog();
+        }
+
+        private centerDialog() {
+            const el = this.getEl();
+
+            if (!el.getParent() || el.getHeightWithBorder() === 0) {
+                return;
+            }
+
             if (ModalDialog.debug) {
                 console.debug('ModalDialog.centerMyself', api.ClassHelper.getClassName(this));
             }
-            const el = this.getEl();
+
             el.setMarginTop(`-${ el.getHeightWithBorder() / 2 }px`);
 
             if (ResponsiveRanges._540_720.isFitOrBigger(Body.get().getEl().getWidthWithBorder())) {
@@ -438,15 +451,15 @@ module api.ui.dialog {
         private titleEl: api.dom.H2El;
 
         constructor(title: string) {
-            super('dialog-header');
+            super('modal-dialog-header');
 
             this.titleEl = new api.dom.H2El('title');
             this.titleEl.setHtml(title);
             this.appendChild(this.titleEl);
         }
 
-        setTitle(value: string) {
-            this.titleEl.setHtml(value);
+        setTitle(value: string, escapeHtml: boolean = true) {
+            this.titleEl.setHtml(value, escapeHtml);
         }
 
         appendElement(el: Element) {
