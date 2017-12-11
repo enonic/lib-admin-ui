@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'maven'
     id 'com.enonic.defaults' version '1.0.3'
-    id 'com.enonic.xp.base' version '1.0.7'
+    id 'com.enonic.xp.base' version '1.0.15'
     id 'com.moowork.gulp' version '1.2.0'
 }
 
