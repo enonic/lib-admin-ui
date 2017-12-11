@@ -165,13 +165,9 @@ module api.content {
             return option;
         }
 
-        protected reload(inputValue: string, force: boolean = true): wemQ.Promise<any> {
+        protected reload(inputValue: string): wemQ.Promise<any> {
 
             const deferred = wemQ.defer<void>();
-
-            if (!force && this.isLoadingOrLoaded()) {
-                return wemQ(null);
-            }
 
             if (this.ifFlatLoadingMode(inputValue)) {
                 this.getLoader().search(inputValue).then(() => {
