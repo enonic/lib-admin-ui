@@ -115,22 +115,16 @@ module api.ui.dialog {
 
         private initListeners() {
             const resizeObserver = window['ResizeObserver'];
+            const responsiveItem: ResponsiveItem = new ResponsiveItem(this);
+            const resizeHandler = () => {
+                this.centerDialog();
+                responsiveItem.update();
+            };
             if (resizeObserver) {
                 this.hasResizeObserver = true;
-                new resizeObserver(() => this.centerDialog()).observe(this.getHTMLElement());
+                new resizeObserver(resizeHandler).observe(this.getHTMLElement());
             } else {
-                const responsiveItem: ResponsiveItem = new ResponsiveItem(this);
-                ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
-                    this.centerMyself();
-                    responsiveItem.update();
-                });
-
-                // Set the ResponsiveRanges on first show() call
-                const firstTimeResize = () => {
-                    ResponsiveManager.fireResizeEvent();
-                    this.unShown(firstTimeResize);
-                };
-                this.onShown(firstTimeResize);
+                ResponsiveManager.onAvailableSizeChanged(Body.get(), resizeHandler);
             }
 
             this.handleClickOutsideDialog();
