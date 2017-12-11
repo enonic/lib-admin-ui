@@ -281,7 +281,7 @@ module api.ui.selector.combobox {
             return this.reload(this.comboBox.getInput().getValue());
         }
 
-        protected reload(inputValue: string, force: boolean = true): wemQ.Promise<any> {
+        protected reload(inputValue: string): wemQ.Promise<any> {
             if (!StringHelper.isBlank(inputValue)) {
                 return this.loader.search(inputValue).catch(api.DefaultErrorHandler.handle);
             } else {
