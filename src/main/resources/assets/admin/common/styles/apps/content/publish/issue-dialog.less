@@ -1,5 +1,4 @@
 .issue-dialog {
-  max-height: none;
   @toggler-width: 35px;
 
   &.create-issue-dialog .modal-dialog-header .title {
@@ -33,8 +32,6 @@
   }
 
   .dialog-content {
-    max-height: 60vh;
-    min-height: 20vh;
     overflow-y: auto;
 
     .content-combo-box {
@@ -63,7 +60,6 @@
 
     .publish-dialog-item-list {
 
-      max-height: none;
       padding: 0;
 
       .browse-selection-item {
@@ -109,12 +105,6 @@
 
     .back-action {
       float: left;
-    }
-  }
-
-  @media screen and (max-height: 720px) {
-    .dialog-content {
-      max-height: 450px;
     }
   }
 }
