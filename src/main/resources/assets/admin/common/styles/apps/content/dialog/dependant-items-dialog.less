@@ -132,99 +132,109 @@
       display: none;
 
       .dependants-header:not(:empty) {
-        margin: 10px 0;
+        margin: 10px 0 15px;
+        cursor: pointer;
+        color: @admin-blue;
       }
 
-      .dependant-list {
+      .dependants-body {
         display: none;
 
-        h6 {
-          margin-bottom: 5px;
+        .dependants-desc {
+          margin: 0 0 10px;
+          font-weight: bold;
         }
 
-        .browse-selection-item {
-          padding-left: 2px;
+        .dependant-list {
 
-          .remove {
-            height: 20px;
-            line-height: 20px;
+          h6 {
+            margin-bottom: 5px;
           }
 
-          &.removable {
+          .browse-selection-item {
+            padding-left: 2px;
+
             .remove {
-              color: @admin-dark-gray;
-              cursor: pointer;
+              height: 20px;
+              line-height: 20px;
             }
-          }
 
-          &.invalid {
-            cursor: pointer;
-
-            .names-and-icon-view {
-              cursor: pointer;
-
-              .@{_COMMON_PREFIX}wrapper:before {
-                content: "!";
-                background: #cb0300;
-                color: #ffffff;
-                top: 2px;
-                left: 30px;
-              }
-
-              .@{_COMMON_PREFIX}main-name, .@{_COMMON_PREFIX}sub-name {
+            &.removable {
+              .remove {
+                color: @admin-dark-gray;
                 cursor: pointer;
               }
             }
 
-            &:hover {
-              background-color: #eeeeee;
-            }
-          }
+            &.invalid {
+              cursor: pointer;
 
-          .dependant-item-viewer {
-            &.pending-delete .@{_COMMON_PREFIX}names-view {
-              .@{_COMMON_PREFIX}main-name, .@{_COMMON_PREFIX}sub-name {
-                text-decoration: line-through;
+              .names-and-icon-view {
+                cursor: pointer;
+
+                .@{_COMMON_PREFIX}wrapper:before {
+                  content: "!";
+                  background: #cb0300;
+                  color: #ffffff;
+                  top: 2px;
+                  left: 30px;
+                }
+
+                .@{_COMMON_PREFIX}main-name, .@{_COMMON_PREFIX}sub-name {
+                  cursor: pointer;
+                }
+              }
+
+              &:hover {
+                background-color: #eeeeee;
               }
             }
-          }
 
-          .names-and-icon-view {
-            .@{_COMMON_PREFIX}wrapper {
-              margin: 0px;
-              height: 16px;
-              width: 16px;
-              line-height: 14px;
+            .dependant-item-viewer {
+              &.pending-delete .@{_COMMON_PREFIX}names-view {
+                .@{_COMMON_PREFIX}main-name, .@{_COMMON_PREFIX}sub-name {
+                  text-decoration: line-through;
+                }
+              }
             }
 
-            &.small {
-              .@{_COMMON_PREFIX}wrapper:before {
-                left: 8px;
-                width: 8px;
-                height: 8px;
-                line-height: 8px;
-                border-radius: 15px;
-                font-size: 12px;
+            .names-and-icon-view {
+              .@{_COMMON_PREFIX}wrapper {
+                margin: 0px;
+                height: 16px;
+                width: 16px;
+                line-height: 14px;
+              }
+
+              &.small {
+                .@{_COMMON_PREFIX}wrapper:before {
+                  left: 8px;
+                  width: 8px;
+                  height: 8px;
+                  line-height: 8px;
+                  border-radius: 15px;
+                  font-size: 12px;
+                }
+
+                .@{_COMMON_PREFIX}names-view {
+                  margin-left: 30px;
+                }
+              }
+
+              .font-icon-default.image {
+                .icon-image;
+                width: 18px;
+                height: 18px;
+                font-size: 18px;
+                position: absolute;
+                left: 0;
+                top: 0;
               }
 
               .@{_COMMON_PREFIX}names-view {
-                margin-left: 30px;
-              }
-            }
-
-            .font-icon-default.image {
-              .icon-image;
-              width: 18px;
-              height: 18px;
-              font-size: 18px;
-              position: absolute;
-              left: 0;
-              top: 0;
-            }
-
-            .@{_COMMON_PREFIX}names-view {
-              .@{_COMMON_PREFIX}sub-name {
-                display: none;
+                .@{_COMMON_PREFIX}sub-name {
+                  display: none;
+                }
               }
             }
           }
