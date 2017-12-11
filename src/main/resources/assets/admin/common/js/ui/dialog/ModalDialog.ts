@@ -48,6 +48,8 @@ module api.ui.dialog {
 
         private clickOutsideCallback: () => void;
 
+        private hasResizeObserver: boolean = false;
+
         public static debug: boolean = false;
 
         constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
@@ -112,18 +114,18 @@ module api.ui.dialog {
         }
 
         private initListeners() {
+            const resizeObserver = window['ResizeObserver'];
             const responsiveItem: ResponsiveItem = new ResponsiveItem(this);
-            ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
-                this.centerMyself();
+            const resizeHandler = () => {
+                this.centerDialog();
                 responsiveItem.update();
-            });
-
-            // Set the ResponsiveRanges on first show() call
-            const firstTimeResize = () => {
-                ResponsiveManager.fireResizeEvent();
-                this.unShown(firstTimeResize);
             };
-            this.onShown(firstTimeResize);
+            if (resizeObserver) {
+                this.hasResizeObserver = true;
+                new resizeObserver(resizeHandler).observe(this.getHTMLElement());
+            } else {
+                ResponsiveManager.onAvailableSizeChanged(Body.get(), resizeHandler);
+            }
 
             this.handleClickOutsideDialog();
             this.handleFocusInOutEvents();
@@ -283,10 +285,24 @@ module api.ui.dialog {
         }
 
         protected centerMyself() {
+            if (this.hasResizeObserver) {
+                return;
+            }
+
+            this.centerDialog();
+        }
+
+        private centerDialog() {
+            const el = this.getEl();
+
+            if (!el.getParent() || el.getHeightWithBorder() === 0) {
+                return;
+            }
+
             if (ModalDialog.debug) {
                 console.debug('ModalDialog.centerMyself', api.ClassHelper.getClassName(this));
             }
-            const el = this.getEl();
+
             el.setMarginTop(`-${ el.getHeightWithBorder() / 2 }px`);
 
             if (ResponsiveRanges._540_720.isFitOrBigger(Body.get().getEl().getWidthWithBorder())) {

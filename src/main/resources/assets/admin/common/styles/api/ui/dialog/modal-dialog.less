@@ -15,7 +15,6 @@
   width: 85.185%;
   min-width: 230px;
   max-width: 660px;
-  max-height: 660px;
   background-color: white;
   background-clip: padding-box;
   border: 1px solid @admin-dialog-border;
@@ -30,10 +29,10 @@
 
   .modal-dialog-header {
     .clearfix();
-    padding: 30px 30px 20px;
+    padding: 30px;
 
     h2 {
-      line-height: 32px;
+      line-height: 32px; //92px total height
     }
 
     .path {
@@ -52,9 +51,13 @@
   .modal-dialog-body {
     padding: 0 30px;
     flex: 1;
+    max-height: calc(~'100% - ' 164px);
+    overflow: auto;
   }
+
   .modal-dialog-footer {
-    padding: 20px 30px 30px;
+    padding: 20px 30px;
+    height: 32px; //72px total height
   }
 
   .dialog-content {
@@ -284,6 +287,18 @@ body {
   @media screen and (min-width: 541px) {
     .@{_COMMON_PREFIX}modal-dialog {
       left: 50%;
+    }
+  }
+
+  @media screen and (max-height: 720px) {
+    .@{_COMMON_PREFIX}modal-dialog {
+      height: 80%;
+    }
+  }
+  @media screen and (min-height: 721px) {
+    .@{_COMMON_PREFIX}modal-dialog .modal-dialog-wrapper {
+      height: auto;
+      max-height: 660px;
     }
   }
 
