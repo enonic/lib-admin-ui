@@ -51,6 +51,7 @@
     .issue-list {
       overflow: auto;
       cursor: pointer;
+      min-height: 30px;
 
       .issue-list-item {
         .flexbox();
@@ -115,7 +116,7 @@
 
     .no-issues-message {
       .watermark-text(18px, true);
-
+      top: calc(~'50% + 24px');
       left: 0;
     }
 
