@@ -29,6 +29,8 @@ module api.content {
 
         protected showAfterReload: boolean;
 
+        protected preventReload: boolean;
+
         protected treeModeToggler: ModeTogglerButton;
 
         constructor(builder: ContentComboBoxBuilder<ITEM_TYPE>) {
@@ -109,7 +111,9 @@ module api.content {
             this.treeModeToggler.onActiveChanged(isActive => {
                 this.treegridDropdownEnabled = isActive;
                 this.toggleGridOptions(isActive);
-                this.reload(this.getComboBox().getInput().getValue());
+                if (!this.preventReload) {
+                    this.reload(this.getComboBox().getInput().getValue());
+                }
             });
 
             this.onLoaded(() => {
@@ -131,15 +135,17 @@ module api.content {
 
                 if (this.initialTreeEnabledState && StringHelper.isEmpty(event.getNewValue())) {
                     if (!this.treeModeToggler.isActive()) {
-                        this.treegridDropdownEnabled = true;
+                        this.preventReload = true;
                         this.treeModeToggler.setActive(true);
+                        this.preventReload = false;
                     }
                     return;
                 }
 
                 if (this.treeModeToggler.isActive()) {
-                    this.treegridDropdownEnabled = false;
+                    this.preventReload = true;
                     this.treeModeToggler.setActive(false);
+                    this.preventReload = false;
                 }
 
             });
