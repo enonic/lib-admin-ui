@@ -59,7 +59,7 @@ gulp.task('less-admin', function () {
 
 gulp.task('less-html-editor', function () {
     return lessCss('admin/common/styles/api/util/htmlarea/html-editor.module.less',
-        'build/resources/main/dev/styles/api/util/htmlarea',
+        'src/main/resources/assets/admin/common/styles',
         'html-editor.css');
 });
 
@@ -103,8 +103,8 @@ gulp.task('clean', function () {
     });
 });
 
-gulp.task('less', ['less-admin', /*'less-live-edit',*/ 'less-html-editor']);
-gulp.task('ts', sequence('ts-admin', [/*'ts-live',*/ 'ts-spec']));
+gulp.task('less', ['less-admin', 'less-html-editor']);
+gulp.task('ts', sequence('ts-admin', ['ts-spec']));
 gulp.task('combine', ['combine-js']);
 
 gulp.task('all', sequence(['less', 'combine'], 'lint', 'ts'));

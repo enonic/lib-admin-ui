@@ -203,7 +203,7 @@ module api.util.htmlarea.editor {
                 forced_root_block : this.forcedRootBlock,
                 document_base_url: this.assetsUri + '/admin/common/lib/tinymce/',
                 skin_url: this.assetsUri + '/admin/common/lib/tinymce/skins/lightgray',
-                content_css: this.assetsUri + '/admin/common/styles/api/util/htmlarea/html-editor.css',
+                content_css: this.assetsUri + '/admin/common/styles/html-editor.css',
                 theme_url: 'modern',
                 inline: this.inline,
                 fixed_toolbar_container: this.fixedToolbarContainer,
