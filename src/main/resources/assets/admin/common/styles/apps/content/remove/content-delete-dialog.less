@@ -2,8 +2,8 @@
 
   .instant-delete-check {
     position: absolute;
-    bottom: 40px;
-    left: 39px;
+    bottom: 27px;
+    left: 34px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -55,5 +55,11 @@
     .instant-delete-check {
       left: calc(~'3% + 9px');
     }
+  }
+}
+
+@media screen and (max-height: 720px) {
+  .instant-delete-check {
+    bottom: 19px;
   }
 }
