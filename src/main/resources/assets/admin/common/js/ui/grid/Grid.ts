@@ -70,6 +70,11 @@ module api.ui.grid {
                 this.slickGrid.registerPlugin(<Slick.Plugin<T>>this.rowManagerPlugin);
             }
 
+            ResponsiveManager.onAvailableSizeChanged(this, () => {
+                // notify slick grid the resize has occured
+                const slickResize = new Event('resize');
+                this.getHTMLElement().dispatchEvent(slickResize);
+            });
             this.onRemoved(() => ResponsiveManager.unAvailableSizeChanged(this));
 
             // The only way to dataIdProperty before adding items

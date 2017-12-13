@@ -304,7 +304,7 @@ if (typeof Slick === "undefined") {
         bindAncestorScrollEvents();
 
         $container
-            .bind("resize.slickgrid", resizeCanvas);
+            .bind("resize.slickgrid", handleResize);
         $viewport
             //.bind("click", handleClick)
             .bind("scroll", handleScroll);
@@ -328,9 +328,6 @@ if (typeof Slick === "undefined") {
             .bind("dragend", handleDragEnd)
             .delegate(".slick-cell", "mouseenter", handleMouseEnter)
             .delegate(".slick-cell", "mouseleave", handleMouseLeave);
-
-          $(window)
-              .bind('resize', handleResize);
 
         // Work around http://crbug.com/312427.
         if (navigator.userAgent.toLowerCase().match(/webkit/) &&
