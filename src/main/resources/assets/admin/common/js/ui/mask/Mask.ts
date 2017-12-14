@@ -73,13 +73,14 @@ module api.ui.mask {
         }
 
         private positionOver(masked: api.dom.Element) {
-            let maskedEl = masked.getEl();
-            let maskEl = this.getEl();
+            const maskedEl = masked.getEl();
+            const maskEl = this.getEl();
             let maskedOffset: {top:number; left: number};
+            const wrapperEl = wemjq(maskEl.getHTMLElement()).closest('.mask-wrapper');
             let isMaskedPositioned = maskedEl.getPosition() !== 'static';
             let maskedDimensions: {width: string; height: string} = {
                     width: maskedEl.getWidthWithBorder() + 'px',
-                    height: maskedEl.getHeightWithBorder() + 'px'
+                    height: (wrapperEl.length ? wrapperEl.innerHeight() : maskedEl.getHeightWithBorder()) + 'px'
                 };
 
             if (masked.contains(this) && isMaskedPositioned) {
@@ -97,7 +98,7 @@ module api.ui.mask {
                 }
             } else {
                 // mask is outside masked element
-                let maskedParent = maskedEl.getOffsetParent();
+                let maskedParent = wrapperEl.length ? wrapperEl[0] : maskedEl.getOffsetParent();
                 let maskParent = maskEl.getOffsetParent();
 
                 maskedOffset = maskedEl.getOffsetToParent();
@@ -119,8 +120,8 @@ module api.ui.mask {
             }
 
             this.getEl().
-                setTopPx(maskedOffset.top).
-                setLeftPx(maskedOffset.left).
+                setTopPx(wrapperEl.length ? wrapperEl.position().top : Math.max(maskedOffset.top, 0)).
+                setLeftPx(wrapperEl.length ? wrapperEl.position().left : maskedOffset.left).
                 setWidth(maskedDimensions.width).
                 setHeight(maskedDimensions.height);
         }

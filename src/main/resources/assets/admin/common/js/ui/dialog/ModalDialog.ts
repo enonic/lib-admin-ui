@@ -26,6 +26,8 @@ module api.ui.dialog {
 
         protected header: api.ui.dialog.ModalDialogHeader;
 
+        private body: api.dom.DivEl;
+
         private contentPanel: ModalDialogContentPanel;
 
         private buttonRow: ButtonRow;
@@ -50,12 +52,16 @@ module api.ui.dialog {
 
         private hasResizeObserver: boolean = false;
 
+        private debouncedCenter: () => void;
+
         public static debug: boolean = false;
 
         constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
             super('modal-dialog', api.StyleHelper.COMMON_PREFIX);
 
             this.buttonRow = config.buttonRow || new ButtonRow();
+
+            this.debouncedCenter = api.util.AppHelper.debounce(() => this.centerDialog(), 200, false);
 
             this.cancelAction = this.createDefaultCancelAction();
             this.closeIconCallback = config.closeIconCallback || (() => {
@@ -77,19 +83,23 @@ module api.ui.dialog {
 
             this.contentPanel = new ModalDialogContentPanel();
 
-            let body = new DivEl('modal-dialog-body');
-            body.appendChildren(this.closeIcon, this.contentPanel);
+            this.body = new DivEl('modal-dialog-body mask-wrapper');
+            this.body.appendChildren(this.closeIcon, this.contentPanel);
 
             let footer = new DivEl('modal-dialog-footer');
             footer.appendChild(this.buttonRow);
 
             let wrapper = new DivEl('modal-dialog-wrapper');
-            wrapper.appendChildren<Element>(this.header, body, footer);
+            wrapper.appendChildren<Element>(this.header, this.body, footer);
 
             this.appendChild(wrapper);
 
             this.initConfirmationDialog(config.confirmation);
             this.initListeners();
+        }
+
+        protected getBody(): api.dom.DivEl {
+            return this.body;
         }
 
         onCloseButtonClicked(listener: (e: MouseEvent) => void) {
@@ -123,9 +133,9 @@ module api.ui.dialog {
             if (resizeObserver) {
                 this.hasResizeObserver = true;
                 new resizeObserver(resizeHandler).observe(this.getHTMLElement());
-            } else {
-                ResponsiveManager.onAvailableSizeChanged(Body.get(), resizeHandler);
             }
+
+            ResponsiveManager.onAvailableSizeChanged(Body.get(), resizeHandler);
 
             this.handleClickOutsideDialog();
             this.handleFocusInOutEvents();
@@ -289,7 +299,7 @@ module api.ui.dialog {
                 return;
             }
 
-            this.centerDialog();
+            this.debouncedCenter();
         }
 
         private centerDialog() {

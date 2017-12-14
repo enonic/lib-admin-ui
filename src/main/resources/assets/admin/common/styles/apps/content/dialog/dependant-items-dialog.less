@@ -1,5 +1,9 @@
 .dependant-dialog {
 
+  .modal-dialog-body {
+    padding-top: 0px;
+  }
+
   @toggler-width: 35px;
 
   .icon-tree {
@@ -27,7 +31,6 @@
 
   .sub-title {
     margin-top: 20px;
-    margin-bottom: -10px;
   }
 
   .publish-dialog-dependant-list {
@@ -80,6 +83,7 @@
     .status {
       .flex(1);
       text-align: right;
+      padding-right: 3px;
     }
 
     .content-status-mixin();
@@ -96,8 +100,6 @@
   }
 
   .dialog-content {
-
-    overflow-y: auto;
 
     .dependants {
       display: none;
