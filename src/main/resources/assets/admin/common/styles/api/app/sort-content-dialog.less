@@ -1,15 +1,7 @@
 .sort-content-dialog {
 
-  .dialog-content {
-    max-height: 480px;
-    overflow-y: hidden;
-  }
-
   @media screen and (max-height: 360px) {
     .dialog-content {
-      max-height: 220px;
-      overflow-y: hidden;
-
       > h6 {
         display: none;
       }
@@ -21,22 +13,8 @@
   }
 
   @media screen and (max-height: 540px) {
-
-    .dialog-content {
-      max-height: 200px;
-      overflow-y: hidden;
-    }
-
     padding-top: 20px;
     padding-bottom: 10px;
-  }
-
-  @media screen and (max-height: 720px) {
-
-    .dialog-content {
-      max-height: 240px;
-      overflow-y: hidden;
-    }
   }
 
   .dialog-buttons .@{_COMMON_PREFIX}button.save-button.spinner {
@@ -50,17 +28,7 @@
   }
 
   .slick-viewport {
-    max-height: 440px;
     overflow: auto;
-
-    @media screen and (max-height: 720px) {
-      max-height: 210px;
-    }
-
-    @media screen and (max-height: 540px) {
-      max-height: 155px;
-    }
-
   }
   .drag-icon {
     cursor: move;
@@ -177,7 +145,7 @@
   }
 
   .sort-content-grid {
-    height: 70%;
+    //height: 70%;
     width: 100%;
   }
   .toggle.icon {

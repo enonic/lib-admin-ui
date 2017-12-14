@@ -5,28 +5,13 @@
   .modal-dialog-content-push {
     display: none;
   }
-  .modal-dialog-footer {
-    height: 2em;
+
+  .modal-dialog-header {
+    padding-bottom: 0;
   }
 
-  .market-app-panel-wrapper {
-    max-height: 540px;
-    overflow-y: auto;
-
-    .market-app-panel, .slick-viewport {
-
-      @media screen and (max-height: 720px) {
-        max-height: 380px;
-      }
-
-      @media screen and (max-height: 540px) {
-        max-height: 200px;
-      }
-
-      @media screen and (max-height: 360px) {
-        max-height: 60px;
-      }
-    }
+  .modal-dialog-body {
+    padding-top: 0;
   }
 
   .modal-dialog-header {
@@ -133,10 +118,6 @@
         }
       }
 
-      .load-mask {
-        max-height: 580px;
-      }
-
       .version {
         text-align: center;
         color: @admin-black;
@@ -179,7 +160,7 @@
     display: block;
     color: @admin-font-gray2;
     text-align: center;
-    margin-top: 30px;
+    margin: 15px 0;
     font-size: 14px;
 
     &.loaded:not(.empty) {
