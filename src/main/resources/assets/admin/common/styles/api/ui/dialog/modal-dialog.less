@@ -21,7 +21,8 @@
   box-sizing: border-box;
 
   .form-view {
-    padding: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
   }
 
   .modal-dialog-wrapper {
@@ -263,11 +264,14 @@
     }
   }
 
-  &.grey-header .cancel-button-top {
-    background-color: @admin-bg-light-gray;
+  &.grey-header {
 
-    &:hover {
+    .cancel-button-top {
       background-color: @admin-bg-light-gray;
+
+      &:hover {
+        background-color: @admin-bg-light-gray;
+      }
     }
   }
 }
@@ -307,7 +311,7 @@ body {
     }
   }
 
-  @media screen and (max-height: 720px) {
+  @media screen and (max-height: 950px) {
     .@{_COMMON_PREFIX}modal-dialog {
       .cancel-button-inline();
 
@@ -317,6 +321,17 @@ body {
 
       .modal-dialog-body {
         max-height: 65vh;
+        padding-top: 0;
+      }
+
+      &.grey-header {
+        .modal-dialog-header {
+          padding-bottom: 15px;
+        }
+
+        .modal-dialog-body {
+          padding-top: 20px;
+        }
       }
     }
   }
