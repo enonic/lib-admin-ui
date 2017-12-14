@@ -52,12 +52,16 @@ module api.ui.dialog {
 
         private hasResizeObserver: boolean = false;
 
+        private debouncedCenter: () => void;
+
         public static debug: boolean = false;
 
         constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
             super('modal-dialog', api.StyleHelper.COMMON_PREFIX);
 
             this.buttonRow = config.buttonRow || new ButtonRow();
+
+            this.debouncedCenter = api.util.AppHelper.debounce(() => this.centerDialog(), 200, false);
 
             this.cancelAction = this.createDefaultCancelAction();
             this.closeIconCallback = config.closeIconCallback || (() => {
@@ -295,7 +299,7 @@ module api.ui.dialog {
                 return;
             }
 
-            this.centerDialog();
+            this.debouncedCenter();
         }
 
         private centerDialog() {
