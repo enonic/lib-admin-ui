@@ -1,6 +1,6 @@
 {
   "name": "lib-admin-ui",
-  "version": "1.0.3",
+  "version": "1.1.0-B1",
   "description": "Admin UI Library",
   "devDependencies": {
     "del": "^2.2.1",
