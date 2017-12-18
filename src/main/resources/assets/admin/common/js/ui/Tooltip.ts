@@ -21,8 +21,8 @@ module api.ui {
         private tooltipEl: api.dom.DivEl;
         private timeoutTimer: number;
 
-        private overListener: (event: MouseEvent) => any;
-        private outListener: (event: MouseEvent) => any;
+        private overListener: () => any;
+        private outListener: () => any;
         private moveListener: (event: MouseEvent) => any;
 
         private targetEl: api.dom.Element;
@@ -178,6 +178,8 @@ module api.ui {
             this.targetEl.getEl().
                 removeEventListener(this.getEventName(true), this.overListener).
                 removeEventListener(this.getEventName(false), this.outListener);
+            this.targetEl.unRemoved(this.outListener);
+            this.targetEl.unHidden(this.outListener);
 
             this.trigger = trigger;
 
@@ -186,6 +188,8 @@ module api.ui {
                 this.targetEl.getEl().
                     addEventListener(this.getEventName(true), this.overListener).
                     addEventListener(this.getEventName(false), this.outListener);
+                this.targetEl.onRemoved(this.outListener);
+                this.targetEl.onHidden(this.outListener);
             }
             return this;
         }
