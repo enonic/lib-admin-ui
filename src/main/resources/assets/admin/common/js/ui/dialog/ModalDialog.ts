@@ -2,7 +2,6 @@ module api.ui.dialog {
 
     import DivEl = api.dom.DivEl;
     import Action = api.ui.Action;
-    import ResponsiveRanges = api.ui.responsive.ResponsiveRanges;
     import Element = api.dom.Element;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
     import ResponsiveItem = api.ui.responsive.ResponsiveItem;
@@ -50,9 +49,7 @@ module api.ui.dialog {
 
         private clickOutsideCallback: () => void;
 
-        private hasResizeObserver: boolean = false;
-
-        private debouncedCenter: () => void;
+        private height: number = 0;
 
         public static debug: boolean = false;
 
@@ -60,8 +57,6 @@ module api.ui.dialog {
             super('modal-dialog', api.StyleHelper.COMMON_PREFIX);
 
             this.buttonRow = config.buttonRow || new ButtonRow();
-
-            this.debouncedCenter = api.util.AppHelper.debounce(() => this.centerDialog(), 200, false);
 
             this.cancelAction = this.createDefaultCancelAction();
             this.closeIconCallback = config.closeIconCallback || (() => {
@@ -123,16 +118,29 @@ module api.ui.dialog {
             }
         }
 
+        private toggleHeightClass() {
+            const dialogHeight = this.getEl().getHeightWithBorder();
+
+            if (dialogHeight === 0 || Math.abs(this.height - dialogHeight) <= 1) {
+                return;
+            }
+
+            this.height = dialogHeight;
+
+            if (Math.abs(dialogHeight % 2) == 1) {
+                this.getEl().toggleClass('uneven-height', !this.getEl().hasClass('uneven-height'));
+            }
+        }
+
         private initListeners() {
             const resizeObserver = window['ResizeObserver'];
             const responsiveItem: ResponsiveItem = new ResponsiveItem(this);
             const resizeHandler = () => {
-                this.centerDialog();
+                this.toggleHeightClass();
                 responsiveItem.update();
             };
             if (resizeObserver) {
-                this.hasResizeObserver = true;
-                new resizeObserver(resizeHandler).observe(this.getHTMLElement());
+                new resizeObserver(resizeHandler).observe(this.body.getHTMLElement());
             }
 
             ResponsiveManager.onAvailableSizeChanged(Body.get(), resizeHandler);
@@ -284,7 +292,6 @@ module api.ui.dialog {
 
         show() {
             api.dom.Body.get().getHTMLElement().classList.add('modal-dialog');
-            this.centerMyself();
             super.show();
             this.buttonRow.focusDefaultAction();
         }
@@ -292,39 +299,6 @@ module api.ui.dialog {
         hide() {
             api.dom.Body.get().getHTMLElement().classList.remove('modal-dialog');
             super.hide(true);
-        }
-
-        protected centerMyself() {
-            if (this.hasResizeObserver) {
-                return;
-            }
-
-            this.debouncedCenter();
-        }
-
-        private centerDialog() {
-            const el = this.getEl();
-
-            if (!el.getParent() || el.getHeightWithBorder() === 0) {
-                return;
-            }
-
-            if (ModalDialog.debug) {
-                console.debug('ModalDialog.centerMyself', api.ClassHelper.getClassName(this));
-            }
-
-            el.setMarginTop(`-${ el.getHeightWithBorder() / 2 }px`);
-
-            if (ResponsiveRanges._540_720.isFitOrBigger(Body.get().getEl().getWidthWithBorder())) {
-                this.centerHorisontally();
-            } else {
-                el.setMarginLeft('0px');
-            }
-        }
-
-        centerHorisontally() {
-            const el = this.getEl();
-            el.setMarginLeft(`-${ el.getWidthWithBorder() / 2 }px`);
         }
 
         getButtonRow(): ButtonRow {

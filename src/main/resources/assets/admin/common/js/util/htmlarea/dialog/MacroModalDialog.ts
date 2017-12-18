@@ -41,7 +41,6 @@ module api.util.htmlarea.dialog {
                 let dialogHeight = this.getEl().getHeight();
                 if (dialogHeight >= (wemjq('body').height() - 100)) {
                     formView.getEl().setHeightPx(0.5 * dialogHeight);
-                    this.centerMyself();
                 }
             }, 500, true);
 
@@ -54,18 +53,7 @@ module api.util.htmlarea.dialog {
         }
 
         private makeMacroDockedPanel(): MacroDockedPanel {
-            let macroDockedPanel = new MacroDockedPanel();
-
-            let debouncedPreviewRenderedHandler: () => void = api.util.AppHelper.debounce(() => {
-                this.centerMyself();
-            }, 400, false);
-
-            macroDockedPanel.onPanelRendered(debouncedPreviewRenderedHandler);
-            this.onRemoved(() => {
-                macroDockedPanel.unPanelRendered(debouncedPreviewRenderedHandler);
-            });
-
-            return macroDockedPanel;
+            return new MacroDockedPanel();
         }
 
         protected getMainFormItems(): FormItem[] {

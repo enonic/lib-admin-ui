@@ -141,19 +141,6 @@ module api.util.htmlarea.dialog {
         protected layout() {
             super.layout();
             this.appendChildToContentPanel(this.dockedPanel = this.createDockedPanel());
-
-            this.getMainForm().onValidityChanged(() => {
-                this.centerMyself();
-            });
-
-            this.dockedPanel.getDeck().onPanelShown(() => {
-                this.centerMyself();
-            });
-
-            this.dockedPanel.onRendered(() => {
-                this.centerMyself();
-            });
-
         }
 
         private createContentPanel(): Panel {
@@ -244,12 +231,6 @@ module api.util.htmlarea.dialog {
                 });
             });
 
-            dockedPanel.getDeck().getPanels().forEach((panel) => {
-                (<Form>panel.getFirstChild()).onValidityChanged(() => {
-                    this.centerMyself();
-                });
-            });
-
             return dockedPanel;
         }
 
@@ -304,8 +285,6 @@ module api.util.htmlarea.dialog {
             }
 
             contentSelector.onValueChanged((event) => {
-                this.centerMyself();
-
                 if (contentSelector.getLoader().isLoaded()) {
 
                     if (event.getNewValue()) {

@@ -94,7 +94,6 @@ module api.content.site.inputtype.siteconfigurator {
 
                 return this.formView.layout().then(() => {
                     this.addClass('animated');
-                    this.centerMyself();
 
                     this.handleSelectorsDropdowns(this.formView);
                     this.handleDialogClose(this.formView);

@@ -10,6 +10,12 @@
   display: none;
   position: fixed;
   top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  backface-visibility: hidden;
+  -webkit-transform: translateX(-50%) translateY(-50%) translateZ(0);
+  transform: translateX(-50%) translateY(-50%) translateZ(0);
   z-index: @z-index-modal-dialog;
   margin: 10px;
   width: 85.185%;
@@ -19,6 +25,10 @@
   background-clip: padding-box;
   border: 1px solid @admin-dialog-border;
   box-sizing: border-box;
+
+  &.uneven-height {
+    border-bottom: 2px solid transparent;
+  }
 
   .form-view {
     padding-left: 0px !important;
@@ -305,18 +315,14 @@ body {
     width: 80.185%;
   }
 
-  @media screen and (min-width: 541px) {
-    .@{_COMMON_PREFIX}modal-dialog {
-      left: 50%;
-    }
-  }
-
   @media screen and (max-height: 950px) {
     .@{_COMMON_PREFIX}modal-dialog {
       .cancel-button-inline();
 
       .modal-dialog-header {
-        padding: 15px 30px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-right: 35px;
       }
 
       .modal-dialog-body {
@@ -325,12 +331,11 @@ body {
       }
 
       &.grey-header {
-        .modal-dialog-header {
-          padding-bottom: 15px;
-        }
-
         .modal-dialog-body {
           padding-top: 20px;
+        }
+        .modal-dialog-header {
+          padding-bottom: 15px;
         }
       }
     }

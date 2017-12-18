@@ -34,7 +34,6 @@ module api.util.htmlarea.dialog {
             this.getEl().setAttribute('spellcheck', 'false');
             this.resetHeight();
             this.textArea.giveFocus();
-            this.centerMyself();
         }
 
         private resetHeight() {
