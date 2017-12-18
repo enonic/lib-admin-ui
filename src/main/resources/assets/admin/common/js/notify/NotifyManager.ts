@@ -75,7 +75,7 @@ module api.notify {
             const registryArray = Object.keys(this.registry).map((key) => this.registry[key].opts);
 
             return registryArray.some((registryEntry) =>
-                                            registryEntry.message == opts.message && registryEntry.type == opts.type);
+                registryEntry.message == opts.message && registryEntry.type == opts.type);
         }
 
         private createNotification(opts: NotifyOpts): NotificationMessage {
@@ -91,6 +91,13 @@ module api.notify {
             this.setListeners(notificationEl, opts);
 
             return notificationEl;
+        }
+
+        getNotification(messageId: string): NotificationMessage {
+            if (messageId && this.registry[messageId]) {
+                return this.registry[messageId].el;
+            }
+            return null;
         }
 
         private renderNotification(notification: NotificationMessage): NotificationMessage {
@@ -121,19 +128,19 @@ module api.notify {
         }
 
         private setListeners(el: NotificationMessage, opts: NotifyOpts) {
-            el.onClicked(()=> {
+            el.onClicked(() => {
                 this.remove(el);
                 return false;
             });
-            el.onMouseEnter(()=> {
+            el.onMouseEnter(() => {
                 this.stopTimer(el);
             });
-            el.onMouseLeave(()=> {
+            el.onMouseLeave(() => {
                 this.startTimer(el);
             });
 
             if (opts.listeners) {
-                opts.listeners.forEach((listener)=> {
+                opts.listeners.forEach((listener) => {
                     el.onClicked(listener);
                 });
             }

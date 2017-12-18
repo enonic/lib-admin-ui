@@ -216,6 +216,13 @@ module api.ui.dialog {
             this.listOfClickIgnoredElements.push(elem);
         }
 
+        removeClickIgnoredElement(elem: api.dom.Element) {
+            const elementIndex = this.listOfClickIgnoredElements.indexOf(elem);
+            if (elementIndex > -1) {
+                delete this.listOfClickIgnoredElements.splice(elementIndex, 1);
+            }
+        }
+
         private isIgnoredElementClicked(element: HTMLElement): boolean {
             let ignoredElementClicked = false;
             if (element && element.className && element.className.indexOf) {
