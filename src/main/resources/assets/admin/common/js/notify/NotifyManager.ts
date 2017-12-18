@@ -97,6 +97,7 @@ module api.notify {
             if (messageId && this.registry[messageId]) {
                 return this.registry[messageId].el;
             }
+            return null;
         }
 
         private renderNotification(notification: NotificationMessage): NotificationMessage {
