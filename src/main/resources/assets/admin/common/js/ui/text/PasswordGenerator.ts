@@ -130,7 +130,7 @@ module api.ui.text {
             this.toggleClass('invalid', !isValid);
 
             if (!isValid) {
-                this.getEl().setAttribute('data-i18n', i18n('field.pswGenerator.invalid'));
+                this.getEl().setAttribute('data-i18n', i18n('field.password.invalid'));
             } else {
                 if (this.isExtreme(value)) {
                     this.complexity = 'extreme';

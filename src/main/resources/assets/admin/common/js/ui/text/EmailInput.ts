@@ -94,7 +94,7 @@ module api.ui.text {
             let isValid = this.input.isValid();
             this.toggleClass('invalid', !isValid);
             if (!isValid) {
-                this.getEl().setAttribute('data-status', i18n('field.emailInput.invalid'));
+                this.getEl().setAttribute('data-status', i18n('field.email.invalid'));
             }
 
             if (!StringHelper.isEmpty(email) && isValid) {
