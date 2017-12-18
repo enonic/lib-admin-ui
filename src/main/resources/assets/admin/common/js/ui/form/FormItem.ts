@@ -2,11 +2,12 @@ module api.ui.form {
 
     export class FormItem extends api.dom.DivEl {
 
+        static INVALID_CLASS: string = 'invalid';
+
         private label: api.dom.LabelEl;
         private input: api.dom.FormItemEl;
         private error: api.dom.SpanEl;
         private validator: (input: api.dom.FormItemEl) => string;
-        private invalidClass: string = 'invalid';
 
         private focusListeners: {(event: FocusEvent):void}[] = [];
 
@@ -78,10 +79,10 @@ module api.ui.form {
                 if (markInvalid) {
                     let validityChanged = false;
                     if (validationMessage) {
-                        this.addClass(this.invalidClass);
+                        this.addClass(FormItem.INVALID_CLASS);
                         validityChanged = (validationMessage !== this.getError());
                     } else {
-                        this.removeClass(this.invalidClass);
+                        this.removeClass(FormItem.INVALID_CLASS);
                         validityChanged = !api.util.StringHelper.isBlank(this.getError());
                     }
                     this.error.setHtml(validationMessage || api.util.StringHelper.EMPTY_STRING);
