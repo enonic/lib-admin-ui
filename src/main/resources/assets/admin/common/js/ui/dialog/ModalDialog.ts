@@ -208,9 +208,10 @@ module api.ui.dialog {
             this.listOfClickIgnoredElements.push(elem);
         }
 
-        removeClickIgnoredEl(elem: api.dom.Element) {
-            if(this.listOfClickIgnoredElements.indexOf(elem) >= 0) {
-                delete this.listOfClickIgnoredElements.splice(this.listOfClickIgnoredElements.indexOf(elem), 1);
+        removeClickIgnoredElement(elem: api.dom.Element) {
+            const elementIndex = this.listOfClickIgnoredElements.indexOf(elem);
+            if (elementIndex > -1) {
+                delete this.listOfClickIgnoredElements.splice(elementIndex, 1);
             }
         }
 
