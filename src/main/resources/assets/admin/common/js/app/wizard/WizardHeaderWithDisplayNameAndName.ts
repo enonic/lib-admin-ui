@@ -179,12 +179,22 @@ module api.app.wizard {
             return this.nameEl.getValue();
         }
 
+        normalizeNames() {
+            this.nameEl.updateValue();
+            this.displayNameEl.updateValue();
+        }
+
         getDisplayName(): string {
             return this.displayNameEl.getValue();
         }
 
         giveFocus(): boolean {
             return this.displayNameEl.giveFocus();
+        }
+
+        setAutoTrim(autoTrim: boolean) {
+            this.nameEl.setAutoTrim(autoTrim);
+            this.displayNameEl.setAutoTrim(autoTrim);
         }
 
         private generateName(value: string): string {

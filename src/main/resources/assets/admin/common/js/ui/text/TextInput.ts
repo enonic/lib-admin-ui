@@ -17,6 +17,8 @@ module api.ui.text {
 
         private previousValue: string;
 
+        private autoTrim: boolean = false;
+
         constructor(className?: string, size?: string, originalValue?: string) {
             super('text-input', 'text', api.StyleHelper.COMMON_PREFIX, originalValue);
             if (className) {
@@ -51,9 +53,12 @@ module api.ui.text {
                 }
             });
 
-            this.onFocus(() => this.previousValue = this.doGetValue());
+            const updatePreviousValue = () => {
+                this.previousValue = this.autoTrim ? this.updateValue() : this.doGetValue();
+            };
 
-            this.onBlur(() => this.previousValue = this.doGetValue());
+            this.onFocus(updatePreviousValue);
+            this.onBlur(updatePreviousValue);
         }
 
         private setPreviousValue() {
@@ -71,6 +76,16 @@ module api.ui.text {
         protected doSetValue(value: string) {
             let newValue = this.removeForbiddenChars(value);
             super.doSetValue(newValue);
+        }
+
+        updateValue(): string {
+            this.doSetValue(this.doGetValue());
+            this.refreshValueChanged();
+            return this.doGetValue();
+        }
+
+        setAutoTrim(autoTrim: boolean) {
+            this.autoTrim = autoTrim;
         }
 
         setForbiddenCharsRe(re: RegExp): TextInput {
@@ -121,8 +136,9 @@ module api.ui.text {
             }
         }
 
-        private removeForbiddenChars(rawValue: string): string {
-            return this.stripCharsRe ? (rawValue || '').replace(this.stripCharsRe, '') : rawValue;
+        private removeForbiddenChars(rawValue: string = ''): string {
+            const value = this.autoTrim ? rawValue.trim() : rawValue;
+            return this.stripCharsRe ? value.replace(this.stripCharsRe, '') : value;
         }
 
         private containsForbiddenChars(value: string): boolean {
