@@ -5,6 +5,8 @@ module api.ui.text {
         constructor(className?: string) {
             super(className, 'password');
 
+            this.setPattern('\\S+');
+
             this.addClass('password-input');
         }
 

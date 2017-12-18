@@ -120,22 +120,31 @@ module api.ui.text {
         }
 
         private assessComplexity(value: string) {
+            const isValid = this.input.isValid();
+
             if (this.complexity) {
                 this.removeClass(this.complexity);
-                this.complexity = undefined;
+                this.complexity = null;
             }
-            if (this.isExtreme(value)) {
-                this.complexity = 'extreme';
-            } else if (this.isStrong(value)) {
-                this.complexity = 'strong';
-            } else if (this.isGood(value)) {
-                this.complexity = 'good';
-            } else if (this.isWeak(value)) {
-                this.complexity = 'weak';
-            }
-            if (this.complexity) {
-                this.addClass(this.complexity);
-                this.getEl().setAttribute('data-i18n', i18n(`field.pswGenerator.complexity.${this.complexity}`));
+
+            this.toggleClass('invalid', !isValid);
+
+            if (!isValid) {
+                this.getEl().setAttribute('data-i18n', i18n('field.password.invalid'));
+            } else {
+                if (this.isExtreme(value)) {
+                    this.complexity = 'extreme';
+                } else if (this.isStrong(value)) {
+                    this.complexity = 'strong';
+                } else if (this.isGood(value)) {
+                    this.complexity = 'good';
+                } else if (this.isWeak(value)) {
+                    this.complexity = 'weak';
+                }
+                if (this.complexity) {
+                    this.addClass(this.complexity);
+                    this.getEl().setAttribute('data-i18n', i18n(`field.pswGenerator.complexity.${this.complexity}`));
+                }
             }
         }
 
@@ -195,6 +204,10 @@ module api.ui.text {
                 }
             }
             this.input.setValue(result);
+        }
+
+        isValid(): boolean {
+            return !!this.getValue() && this.getValue().length > 0 && this.input.isValid();
         }
 
         private isWeak(value: string): boolean {
