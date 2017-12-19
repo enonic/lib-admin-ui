@@ -97,12 +97,12 @@
 .dropdown-tree-grid {
   .grid {
     .slick-row {
-
+/*
       .slick-cell {
         height: 50px;
         padding: 6px 8px 6px 15px;
       }
-
+*/
       &.readonly {
         opacity: 0.5;
         pointer-events: none;
@@ -124,9 +124,7 @@
       }
 
       .toggle.icon {
-        margin-right: 0px;
-        padding-left: 10px;
-        margin-right: 10px;
+        margin-left: 10px;
       }
 
       .selected {
@@ -141,6 +139,10 @@
   &.tree-mode {
     .grid .slick-row .slick-cell {
       padding-left: 0;
+
+      &:first-child {
+        padding-left: 10px;
+      }
     }
   }
   &:not(.tree-mode) {
@@ -148,6 +150,9 @@
       .slick-row {
         .toggle.icon {
           display: none;
+        }
+        .content-summary-viewer {
+          padding-left: 15px;
         }
       }
     }
