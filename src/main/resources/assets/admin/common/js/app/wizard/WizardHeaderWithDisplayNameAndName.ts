@@ -47,7 +47,7 @@ module api.app.wizard {
             this.displayNameGenerator = builder.displayNameGenerator;
             this.displayNameProgrammaticallySet = this.displayNameGenerator != null;
 
-            const debounceNotify = (query: String) => AppHelper.debounce((event: ValueChangedEvent) => {
+            const debounceNotify = (query: string) => AppHelper.debounce((event: ValueChangedEvent) => {
                 this.notifyPropertyChanged(query, event.getOldValue(), event.getNewValue());
             }, 100);
 
