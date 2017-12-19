@@ -821,11 +821,13 @@ module api.app.wizard {
         }
 
         onWizardHeaderCreated(listener: () => void) {
-            this.validityManager.onValidityChanged(listener);
+            this.wizardHeaderCreatedListeners.push(listener);
         }
 
         unWizardHeaderCreated(listener: () => void) {
-            this.validityManager.unValidityChanged(listener);
+            this.wizardHeaderCreatedListeners = this.wizardHeaderCreatedListeners.filter((curr) => {
+                return curr !== listener;
+            });
         }
 
         notifyWizardHeaderCreated() {
