@@ -48,7 +48,8 @@
     box-sizing: border-box;
 
     h2 {
-      line-height: 32px; //92px total height
+      line-height: 36px;
+      .ellipsis();
     }
 
     .path {
@@ -250,6 +251,7 @@
 .cancel-button-inline() {
   .cancel-button-top {
 
+    position: fixed;
     top: 0;
     right: 0;
     width: 26px;
@@ -301,6 +303,10 @@ body {
       .modal-dialog-header {
         padding-top: 15px;
         padding-bottom: 10px;
+
+        .back-button:before {
+          left: 0;
+        }
       }
       .modal-dialog-footer {
         padding-bottom: 15px;
