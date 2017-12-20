@@ -1,6 +1,8 @@
 module api.app.wizard {
 
     import i18n = api.util.i18n;
+    import AppHelper = api.util.AppHelper;
+    import QueryField = api.query.QueryField;
 
     export class WizardHeaderWithDisplayNameAndNameBuilder {
 
@@ -45,11 +47,13 @@ module api.app.wizard {
             this.displayNameGenerator = builder.displayNameGenerator;
             this.displayNameProgrammaticallySet = this.displayNameGenerator != null;
 
+            const debounceNotify = (query: string) => AppHelper.debounce((event: ValueChangedEvent) => {
+                this.notifyPropertyChanged(query, event.getOldValue(), event.getNewValue());
+            }, 100);
+
             this.displayNameEl = api.ui.text.AutosizeTextInput.large();
             this.displayNameEl.setPlaceholder('<' + i18n('field.displayName') + '>').setName(api.query.QueryField.DISPLAY_NAME);
-            this.displayNameEl.onValueChanged((event: api.ValueChangedEvent) => {
-                this.notifyPropertyChanged(api.query.QueryField.DISPLAY_NAME, event.getOldValue(), event.getNewValue());
-            });
+            this.displayNameEl.onValueChanged(debounceNotify(QueryField.DISPLAY_NAME));
             this.appendChild(this.displayNameEl);
 
             this.pathEl = new api.dom.SpanEl('path');
@@ -58,9 +62,8 @@ module api.app.wizard {
 
             this.nameEl = api.ui.text.AutosizeTextInput.middle().setForbiddenCharsRe(this.forbiddenChars);
             this.nameEl.setPlaceholder('<' + i18n('field.path') + '>').setName('name');
-            this.nameEl.onValueChanged((event: api.ValueChangedEvent) => {
-                this.notifyPropertyChanged('<' + i18n('field.path') + '>', event.getOldValue(), event.getNewValue());
-            });
+            this.nameEl.onValueChanged(debounceNotify(`<${i18n('field.path')}>`));
+
             this.appendChild(this.nameEl);
 
             this.displayNameEl.onValueChanged((event: api.ValueChangedEvent) => {

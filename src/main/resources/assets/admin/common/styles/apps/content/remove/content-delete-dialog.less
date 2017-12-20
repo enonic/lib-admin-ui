@@ -36,8 +36,18 @@
   }
 }
 
-@media screen and (max-height: 720px) {
-  .instant-delete-check {
-    bottom: 19px;
+body {
+  &._0-240, &._240-360, &._360-540, &._540-720 {
+    .delete-dialog {
+
+      .modal-dialog-footer {
+        padding-top: 50px;
+      }
+
+      .instant-delete-check {
+        bottom: 60px;
+        left: 14px;
+      }
+    }
   }
 }

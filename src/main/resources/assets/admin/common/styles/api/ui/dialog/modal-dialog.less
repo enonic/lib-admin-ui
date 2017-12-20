@@ -48,7 +48,8 @@
     box-sizing: border-box;
 
     h2 {
-      line-height: 32px; //92px total height
+      line-height: 36px;
+      .ellipsis();
     }
 
     .path {
@@ -78,6 +79,7 @@
   .dialog-content {
     width: 100%;
     .clearfix();
+    padding: 1px 0;
 
     > p {
       margin-bottom: 20px;
@@ -249,6 +251,7 @@
 .cancel-button-inline() {
   .cancel-button-top {
 
+    position: fixed;
     top: 0;
     right: 0;
     width: 26px;
@@ -288,21 +291,37 @@
 
 body {
   &._0-240, &._240-360, &._360-540, &._540-720 {
-    .cancel-button-inline();
+    .@{_COMMON_PREFIX}modal-dialog {
+
+      .cancel-button-inline();
+
+      .modal-dialog-header, .modal-dialog-body, .modal-dialog-footer {
+        padding-left: 10px;
+        padding-right: 20px;
+      }
+
+      .modal-dialog-header {
+        padding-top: 15px;
+        padding-bottom: 10px;
+
+        .back-button:before {
+          left: 0;
+        }
+      }
+      .modal-dialog-footer {
+        padding-bottom: 15px;
+      }
+    }
   }
 
   &._0-240 .@{_COMMON_PREFIX}modal-dialog, &._240-360 .@{_COMMON_PREFIX}modal-dialog {
     margin: 0;
-    padding-left: 2%;
-    padding-right: 2%;
     width: 96%;
     box-sizing: content-box;
   }
 
   &._360-540 .@{_COMMON_PREFIX}modal-dialog {
     margin: 0;
-    padding-left: 3%;
-    padding-right: 3%;
     width: 94%;
     box-sizing: content-box;
   }
@@ -315,29 +334,10 @@ body {
     width: 80.185%;
   }
 
-  @media screen and (max-height: 950px) {
+  @media screen and (max-height: 540px) {
     .@{_COMMON_PREFIX}modal-dialog {
-      .cancel-button-inline();
-
-      .modal-dialog-header {
-        padding-top: 15px;
-        padding-bottom: 15px;
-        padding-right: 35px;
-      }
-
-      .modal-dialog-body {
-        max-height: 65vh;
-        padding-top: 0;
-      }
-
-      &.grey-header {
-        .modal-dialog-body {
-          padding-top: 20px;
-        }
-        .modal-dialog-header {
-          padding-bottom: 15px;
-        }
-      }
+      max-height: 480px;
     }
   }
+
 }

@@ -145,7 +145,6 @@
   }
 
   .sort-content-grid {
-    //height: 70%;
     width: 100%;
   }
   .toggle.icon {
@@ -192,10 +191,11 @@
 }
 
 body {
-  &._360-540, &._540-720 {
-    .sort-tab-menu {
+  &._0-240, &._240-360, &._360-540, &._540-720 {
+    .sort-content-dialog .sort-tab-menu {
       float: left;
       width: 100%;
+      margin-top: 10px;
     }
   }
 }

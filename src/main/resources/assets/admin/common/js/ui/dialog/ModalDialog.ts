@@ -78,7 +78,7 @@ module api.ui.dialog {
 
             this.contentPanel = new ModalDialogContentPanel();
 
-            this.body = new DivEl('modal-dialog-body mask-wrapper');
+            this.body = new DivEl('modal-dialog-body');
             this.body.appendChildren(this.closeIcon, this.contentPanel);
 
             let footer = new DivEl('modal-dialog-footer');

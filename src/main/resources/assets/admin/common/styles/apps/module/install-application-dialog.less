@@ -151,6 +151,9 @@
           }
           color: @input-dark-red;
         }
+        .installing .progress-bar {
+          display: block;
+        }
         .installed {
           opacity: 0.6;
           font-size: 14px;
@@ -194,21 +197,22 @@
     @media screen and (max-width: 540px) {
       right: 56px;
     }
-
-    @media screen and (max-height: 950px) {
+/*
+    @media screen and (max-height: 560px) {
       top: 39px;
       right: 78px;
-    }
+    }*/
     &.hidden {
       display: none;
     }
   }
 }
-
+/*
 body {
-  @media screen and (max-height: 950px) {
+  @media screen and (max-height: 560px) {
     .install-application-dialog .modal-dialog-header {
       padding: 30px 20px 10px 30px;
     }
   }
 }
+*/
