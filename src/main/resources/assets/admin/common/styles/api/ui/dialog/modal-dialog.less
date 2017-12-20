@@ -289,21 +289,33 @@
 
 body {
   &._0-240, &._240-360, &._360-540, &._540-720 {
-    .cancel-button-inline();
+    .@{_COMMON_PREFIX}modal-dialog {
+
+      .cancel-button-inline();
+
+      .modal-dialog-header, .modal-dialog-body, .modal-dialog-footer {
+        padding-left: 10px;
+        padding-right: 20px;
+      }
+
+      .modal-dialog-header {
+        padding-top: 15px;
+        padding-bottom: 10px;
+      }
+      .modal-dialog-footer {
+        padding-bottom: 15px;
+      }
+    }
   }
 
   &._0-240 .@{_COMMON_PREFIX}modal-dialog, &._240-360 .@{_COMMON_PREFIX}modal-dialog {
     margin: 0;
-    padding-left: 2%;
-    padding-right: 2%;
     width: 96%;
     box-sizing: content-box;
   }
 
   &._360-540 .@{_COMMON_PREFIX}modal-dialog {
     margin: 0;
-    padding-left: 3%;
-    padding-right: 3%;
     width: 94%;
     box-sizing: content-box;
   }
@@ -316,29 +328,10 @@ body {
     width: 80.185%;
   }
 
-  @media screen and (max-height: 760px) {
+  @media screen and (max-height: 540px) {
     .@{_COMMON_PREFIX}modal-dialog {
-      .cancel-button-inline();
-
-      .modal-dialog-header {
-        padding-top: 15px;
-        padding-bottom: 15px;
-        padding-right: 35px;
-      }
-
-      .modal-dialog-body {
-        max-height: 65vh;
-        padding-top: 0;
-      }
-
-      &.grey-header {
-        .modal-dialog-body {
-          padding-top: 20px;
-        }
-        .modal-dialog-header {
-          padding-bottom: 15px;
-        }
-      }
+      max-height: 480px;
     }
   }
+
 }
