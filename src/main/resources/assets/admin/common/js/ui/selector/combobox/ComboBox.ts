@@ -203,9 +203,6 @@ module api.ui.selector.combobox {
                 createColumns: config.createColumns
             });
 
-            this.appendChild(this.comboBoxDropdown.getEmptyDropdown());
-            this.appendChild(<api.dom.Element>this.comboBoxDropdown.getDropdownGrid().getElement());
-
             this.setupListeners();
         }
 
@@ -345,7 +342,15 @@ module api.ui.selector.combobox {
             return this.comboBoxDropdown.isDropdownShown();
         }
 
+        isDropdownRendered() {
+            return this.hasChild(this.comboBoxDropdown.getDropdownGrid().getElement());
+        }
+
         showDropdown() {
+            if(!this.isDropdownRendered()) {
+                this.renderDropdown();
+            }
+
             this.comboBoxDropdown.showDropdown(this.getSelectedOptions(), this.isInputEmpty() ? this.noOptionsText : null);
 
             this.doUpdateDropdownTopPositionAndWidth();
@@ -750,22 +755,9 @@ module api.ui.selector.combobox {
                 event.stopPropagation();
             });
 
-            this.getComboBoxDropdownGrid().onClick(() => {
-                this.giveInputFocus();
-            });
-
             this.input.onClicked((event: MouseEvent) => {
                 this.giveInputFocus();
                 event.stopPropagation();
-            });
-
-            this.comboBoxDropdown.onRowSelection((event: DropdownGridRowSelectedEvent) => {
-                this.handleRowSelected(event.getRow());
-            });
-
-            this.comboBoxDropdown.onRowCountChanged(() => {
-                this.comboBoxDropdown.markSelections(this.getSelectedOptions());
-                this.doUpdateDropdownTopPositionAndWidth();
             });
 
             this.dropdownHandle.onClicked((event: MouseEvent) => {
@@ -824,6 +816,24 @@ module api.ui.selector.combobox {
                 this.selectedOptionsView.onOptionSelected(() => this.handleSelectedOptionAdded());
                 this.selectedOptionsView.onOptionMoved(() => this.handleSelectedOptionMoved());
             }
+        }
+
+        private renderDropdown() {
+            this.appendChild(this.comboBoxDropdown.getEmptyDropdown());
+            this.appendChild(<api.dom.Element>this.comboBoxDropdown.getDropdownGrid().getElement());
+
+            this.getComboBoxDropdownGrid().onClick(() => {
+                this.giveInputFocus();
+            });
+
+            this.comboBoxDropdown.onRowSelection((event: DropdownGridRowSelectedEvent) => {
+                this.handleRowSelected(event.getRow());
+            });
+
+            this.comboBoxDropdown.onRowCountChanged(() => {
+                this.comboBoxDropdown.markSelections(this.getSelectedOptions());
+                this.doUpdateDropdownTopPositionAndWidth();
+            });
 
             this.comboBoxDropdown.getDropdownGrid().onRowCountChanged(() => {
                 if (this.comboBoxDropdown.isDropdownShown()) {
