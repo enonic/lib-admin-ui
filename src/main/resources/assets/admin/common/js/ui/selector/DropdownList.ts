@@ -62,6 +62,10 @@ module api.ui.selector {
             this.dropdownGrid.addOption(option);
         }
 
+        removeOption(option: Option<OPTION_DISPLAY_VALUE>) {
+            this.dropdownGrid.removeOption(option);
+        }
+
         hasOptions(): boolean {
             return this.dropdownGrid.hasOptions();
         }

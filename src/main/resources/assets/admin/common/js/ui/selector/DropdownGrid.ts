@@ -55,7 +55,7 @@ module api.ui.selector {
             this.rowSelectionListeners = [];
             this.multipleSelectionListeners = [];
             this.optionDisplayValueViewer = config.optionDisplayValueViewer
-                ? new (<any>config.optionDisplayValueViewer['constructor'])()
+                ? config.optionDisplayValueViewer.clone()
                 : new DefaultOptionDisplayValueViewer();
             this.filter = config.filter;
             this.dataIdProperty = config.dataIdProperty || 'value';
@@ -179,6 +179,10 @@ module api.ui.selector {
 
         addOption(option: Option<OPTION_DISPLAY_VALUE>) {
             this.getGridData().addItem(option);
+        }
+
+        removeOption(option: Option<OPTION_DISPLAY_VALUE>) {
+            this.getGridData().deleteItem(option.value);
         }
 
         hasOptions(): boolean {

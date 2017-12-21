@@ -31,7 +31,8 @@ module api.ui.selector.dropdown {
         createColumns?: GridColumn<OPTION_DISPLAY_VALUE>[];
     }
 
-    export class Dropdown<OPTION_DISPLAY_VALUE> extends api.dom.FormInputEl {
+    export class Dropdown<OPTION_DISPLAY_VALUE>
+        extends api.dom.FormInputEl {
 
         private icon: api.dom.ImgEl;
 
@@ -47,11 +48,11 @@ module api.ui.selector.dropdown {
 
         private selectedOptionView: SelectedOptionView<OPTION_DISPLAY_VALUE>;
 
-        private optionSelectedListeners: {(event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>): void}[] = [];
+        private optionSelectedListeners: { (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>): void }[] = [];
 
-        private optionFilterInputValueChangedListeners: {(event: OptionFilterInputValueChangedEvent): void}[] = [];
+        private optionFilterInputValueChangedListeners: { (event: OptionFilterInputValueChangedEvent): void }[] = [];
 
-        private expandedListeners: {(event: api.ui.selector.DropdownExpandedEvent): void}[] = [];
+        private expandedListeners: { (event: api.ui.selector.DropdownExpandedEvent): void }[] = [];
 
         private noOptionsText: string;
 
@@ -232,6 +233,10 @@ module api.ui.selector.dropdown {
             this.dropdownList.addOption(option);
         }
 
+        removeOption(option: Option<OPTION_DISPLAY_VALUE>) {
+            this.dropdownList.removeOption(option);
+        }
+
         hasOptions(): boolean {
             return this.dropdownList.hasOptions();
         }
@@ -392,30 +397,30 @@ module api.ui.selector.dropdown {
             });
         }
 
-        onOptionSelected(listener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>)=>void) {
+        onOptionSelected(listener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void) {
             this.optionSelectedListeners.push(listener);
         }
 
-        unOptionSelected(listener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>)=>void) {
-            this.optionSelectedListeners.filter((currentListener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>)=>void) => {
+        unOptionSelected(listener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void) {
+            this.optionSelectedListeners.filter((currentListener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void) => {
                 return listener !== currentListener;
             });
         }
 
         private notifyOptionSelected(item: Option<OPTION_DISPLAY_VALUE>, previousItem: Option<OPTION_DISPLAY_VALUE>) {
             let event = new OptionSelectedEvent<OPTION_DISPLAY_VALUE>(item, previousItem, -1);
-            this.optionSelectedListeners.forEach((listener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>)=>void) => {
+            this.optionSelectedListeners.forEach((listener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void) => {
                 listener(event);
             });
         }
 
-        onOptionFilterInputValueChanged(listener: (event: OptionFilterInputValueChangedEvent)=>void) {
+        onOptionFilterInputValueChanged(listener: (event: OptionFilterInputValueChangedEvent) => void) {
             this.optionFilterInputValueChangedListeners.push(listener);
         }
 
-        unOptionFilterInputValueChanged(listener: (event: OptionFilterInputValueChangedEvent)=>void) {
+        unOptionFilterInputValueChanged(listener: (event: OptionFilterInputValueChangedEvent) => void) {
             this.optionFilterInputValueChangedListeners.filter(
-                (currentListener: (event: OptionFilterInputValueChangedEvent)=>void) => {
+                (currentListener: (event: OptionFilterInputValueChangedEvent) => void) => {
                     return listener !== currentListener;
                 });
         }
@@ -423,18 +428,18 @@ module api.ui.selector.dropdown {
         private notifyOptionFilterInputValueChanged(oldValue: string, newValue: string) {
             let event = new OptionFilterInputValueChangedEvent(oldValue, newValue);
             this.optionFilterInputValueChangedListeners.forEach(
-                (listener: (event: OptionFilterInputValueChangedEvent)=>void) => {
+                (listener: (event: OptionFilterInputValueChangedEvent) => void) => {
                     listener(event);
                 });
         }
 
-        onExpanded(listener: (event: api.ui.selector.DropdownExpandedEvent)=>void) {
+        onExpanded(listener: (event: api.ui.selector.DropdownExpandedEvent) => void) {
             this.expandedListeners.push(listener);
         }
 
         private notifyExpanded() {
             let event = new api.ui.selector.DropdownExpandedEvent(this.dropdownList.getDropdownGrid().getElement(), true);
-            this.expandedListeners.forEach((listener: (event: api.ui.selector.DropdownExpandedEvent)=>void) => {
+            this.expandedListeners.forEach((listener: (event: api.ui.selector.DropdownExpandedEvent) => void) => {
                 listener(event);
             });
         }

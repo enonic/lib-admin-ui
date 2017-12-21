@@ -3,18 +3,19 @@ module api.ui {
     /**
      * An abstract class capable of viewing a given object.
      */
-    export class Viewer<OBJECT> extends api.dom.Element {
+    export class Viewer<OBJECT>
+        extends api.dom.Element {
 
         private editable: boolean = true;
         private object: OBJECT;
         private removeButton: api.dom.AEl;
-        private removeClickedListeners: {(event: MouseEvent):void}[] = [];
+        private removeClickedListeners: { (event: MouseEvent): void }[] = [];
+        protected className: string;
 
         constructor(className?: string) {
-            super(new api.dom.NewElementBuilder().
-                setTagName('div').
-                setClassName('viewer ' + (className || '')).
-                setGenerateId(false));
+            super(new api.dom.NewElementBuilder().setTagName('div').setClassName('viewer ' + (className || '')).setGenerateId(false));
+
+            this.className = className;
         }
 
         doRender(): Q.Promise<boolean> {
@@ -34,7 +35,7 @@ module api.ui {
         setObject(object: OBJECT) {
             this.object = object;
 
-            if(this.isRendered()) {
+            if (this.isRendered()) {
                 return this.doLayout(object);
             }
         }
@@ -47,8 +48,20 @@ module api.ui {
             throw new Error('Must be implemented by inheritors');
         }
 
+        clone(): Viewer<OBJECT> {
+            return new (<any>this.constructor)(...this.getCloneArgs());
+        }
+
+        /**
+         * Override to provide additional arguments to clone constructor
+         * @returns {any[]}
+         */
+        getCloneArgs(): any[] {
+            return [this.className];
+        }
+
         toString(): string {
-            if(!this.isRendered()) {
+            if (!this.isRendered()) {
                 this.doLayout(this.getObject());
             }
             return super.toString();
