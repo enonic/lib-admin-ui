@@ -28,7 +28,7 @@ module api.ui {
         /*
          Need a sync method (instead of async doRender) to use in grid formatters which use viewer.toString()
          */
-        protected doLayout(object: OBJECT) {
+        protected doLayout(_object: OBJECT) {
             // may be implemented in children
         }
 
@@ -49,8 +49,7 @@ module api.ui {
         }
 
         clone(): Viewer<OBJECT> {
-            const constr = this['constructor'];
-            return new constr(...this.getCloneArgs());
+            return new (<any>this.constructor)(...this.getCloneArgs());
         }
 
         /**
