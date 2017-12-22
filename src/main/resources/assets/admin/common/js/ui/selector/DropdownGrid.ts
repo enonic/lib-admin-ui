@@ -55,7 +55,7 @@ module api.ui.selector {
             this.rowSelectionListeners = [];
             this.multipleSelectionListeners = [];
             this.optionDisplayValueViewer = config.optionDisplayValueViewer
-                ? new (<any>config.optionDisplayValueViewer['constructor'])()
+                ? config.optionDisplayValueViewer.clone()
                 : new DefaultOptionDisplayValueViewer();
             this.filter = config.filter;
             this.dataIdProperty = config.dataIdProperty || 'value';
@@ -181,6 +181,10 @@ module api.ui.selector {
             this.getGridData().addItem(option);
         }
 
+        removeOption(option: Option<OPTION_DISPLAY_VALUE>) {
+            this.getGridData().deleteItem(option.value);
+        }
+
         hasOptions(): boolean {
             return this.getGridData().getLength() > 0;
         }
@@ -235,12 +239,16 @@ module api.ui.selector {
                 rowsHeight = Math.ceil(this.getOptionCount() / options.getGalleryModeColums()) * options.getRowHeight();
             }
 
+            const borderWidth = gridEl.getBorderTopWidth() + gridEl.getBorderBottomWidth();
+
             if (rowsHeight < this.customHeight) {
-                let borderWidth = gridEl.getBorderTopWidth() + gridEl.getBorderBottomWidth();
+
                 gridEl.setHeightPx(rowsHeight + borderWidth);
                 this.getGrid().getOptions().setAutoHeight(true);
+
             } else if (gridEl.getHeight() < this.customHeight || this.customHeight !== this.maxHeight) {
-                gridEl.setHeightPx(this.customHeight);
+
+                gridEl.setHeightPx(this.customHeight + borderWidth);
                 this.getGrid().getOptions().setAutoHeight(false);
             }
 

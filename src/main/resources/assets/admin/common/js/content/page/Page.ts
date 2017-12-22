@@ -109,7 +109,7 @@ module api.content.page {
 
         public doRegionComponentsContainId(id: ContentId): wemQ.Promise<boolean> {
             let fragments: ContentId[] = [];
-            let containsId = this.doRegionsContainId(this.getRegions().getRegions(), id, fragments);
+            let containsId = this.getRegions() && this.doRegionsContainId(this.getRegions().getRegions(), id, fragments);
             if (!containsId && fragments.length > 0) {
                 return wemQ.all(fragments.map(fragmentId => new GetContentByIdRequest(fragmentId).sendAndParse()))
                     .then((fragmentContents: Content[]) => {

@@ -24,6 +24,10 @@ module api.ui {
             this.size = size;
         }
 
+        getCloneArgs(): any[] {
+            return [this.className, this.size];
+        }
+
         setObject(object: OBJECT, relativePath: boolean = false) {
             this.relativePath = relativePath;
             return super.setObject(object);

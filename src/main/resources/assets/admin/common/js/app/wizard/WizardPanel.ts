@@ -19,7 +19,9 @@ module api.app.wizard {
         persistedItem?: EQUITABLE;
     }
 
-    export class WizardPanel<EQUITABLE extends Equitable> extends Panel implements Closeable, ActionContainer {
+    export class WizardPanel<EQUITABLE extends Equitable>
+        extends Panel
+        implements Closeable, ActionContainer {
 
         protected params: WizardPanelParams<EQUITABLE>;
 
@@ -53,9 +55,9 @@ module api.app.wizard {
 
         protected formState: FormState = new FormState(true);
 
-        private closedListeners: {(event: WizardClosedEvent): void}[] = [];
+        private closedListeners: { (event: WizardClosedEvent): void }[] = [];
 
-        private dataLoadedListeners: {(item: EQUITABLE): void}[] = [];
+        private dataLoadedListeners: { (item: EQUITABLE): void }[] = [];
 
         protected formPanel: Panel;
 
@@ -84,6 +86,8 @@ module api.app.wizard {
         private scrollPosition: number = 0;
 
         private wizardHeaderCreatedListeners: any[] = [];
+
+        private saving: boolean;
 
         public static debug: boolean = false;
 
@@ -709,7 +713,12 @@ module api.app.wizard {
             return this.isChanged;
         }
 
+        isSaving(): boolean {
+            return this.saving;
+        }
+
         saveChanges(): wemQ.Promise<EQUITABLE> {
+            this.saving = true;
 
             if (this.isItemPersisted()) {
                 return this.updatePersistedItem().then((persistedItem: EQUITABLE) => {
@@ -717,7 +726,10 @@ module api.app.wizard {
                     this.isChanged = false;
                     this.formState.setIsNew(false);
                     this.updateToolbarActions();
-                    return this.postUpdatePersistedItem(persistedItem);
+                    return this.postUpdatePersistedItem(persistedItem).then(item => {
+                        this.saving = false;
+                        return item;
+                    });
                 });
 
             } else {
@@ -729,7 +741,10 @@ module api.app.wizard {
                         this.formState.setIsNew(false);
                         this.updateToolbarActions();
                     }
-                    return this.postPersistNewItem(persistedItem);
+                    return this.postPersistNewItem(persistedItem).then(item => {
+                        this.saving = false;
+                        return item;
+                    });
                 });
             }
         }
@@ -768,12 +783,12 @@ module api.app.wizard {
             return !this.hasUnsavedChanges();
         }
 
-        onClosed(listener: (event: WizardClosedEvent)=>void) {
+        onClosed(listener: (event: WizardClosedEvent) => void) {
             this.closedListeners.push(listener);
         }
 
-        unClosed(listener: (event: WizardClosedEvent)=>void) {
-            this.closedListeners = this.closedListeners.filter((currentListener: (event: WizardClosedEvent)=>void) => {
+        unClosed(listener: (event: WizardClosedEvent) => void) {
+            this.closedListeners = this.closedListeners.filter((currentListener: (event: WizardClosedEvent) => void) => {
                 return currentListener !== listener;
             });
         }
@@ -803,16 +818,16 @@ module api.app.wizard {
         }
 
         private notifyClosed(checkCanClose: boolean) {
-            this.closedListeners.forEach((listener: (event: WizardClosedEvent)=>void) => {
+            this.closedListeners.forEach((listener: (event: WizardClosedEvent) => void) => {
                 listener(new WizardClosedEvent(this, checkCanClose));
             });
         }
 
-        onValidityChanged(listener: (event: ValidityChangedEvent)=>void) {
+        onValidityChanged(listener: (event: ValidityChangedEvent) => void) {
             this.validityManager.onValidityChanged(listener);
         }
 
-        unValidityChanged(listener: (event: ValidityChangedEvent)=>void) {
+        unValidityChanged(listener: (event: ValidityChangedEvent) => void) {
             this.validityManager.onValidityChanged(listener);
         }
 
