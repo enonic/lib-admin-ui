@@ -38,6 +38,9 @@ module api.app.wizard {
         setHeader(header: WizardHeader) {
             this.header = header;
             this.header.onPropertyChanged(() => {
+                if (!this.header.isRendered()) {
+                    return;
+                }
                 this.notifyValidityChanged(this.header.isValid());
             });
         }
