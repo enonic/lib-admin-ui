@@ -239,12 +239,16 @@ module api.ui.selector {
                 rowsHeight = Math.ceil(this.getOptionCount() / options.getGalleryModeColums()) * options.getRowHeight();
             }
 
+            const borderWidth = gridEl.getBorderTopWidth() + gridEl.getBorderBottomWidth();
+
             if (rowsHeight < this.customHeight) {
-                let borderWidth = gridEl.getBorderTopWidth() + gridEl.getBorderBottomWidth();
+
                 gridEl.setHeightPx(rowsHeight + borderWidth);
                 this.getGrid().getOptions().setAutoHeight(true);
+
             } else if (gridEl.getHeight() < this.customHeight || this.customHeight !== this.maxHeight) {
-                gridEl.setHeightPx(this.customHeight);
+
+                gridEl.setHeightPx(this.customHeight + borderWidth);
                 this.getGrid().getOptions().setAutoHeight(false);
             }
 
