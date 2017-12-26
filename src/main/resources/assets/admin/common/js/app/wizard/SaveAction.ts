@@ -7,16 +7,18 @@ module api.app.wizard {
         constructor(wizardPanel: WizardPanel<any>, label: string = i18n('action.save')) {
             super(label, 'mod+s', true);
 
-            this.setEnabled(false);
-
             this.onExecuted(() => {
 
                 this.setEnabled(false);
 
-                return wizardPanel.saveChanges().
-                    catch((reason: any) => api.DefaultErrorHandler.handle(reason))/*.
-                    finally(() => this.setEnabled(true))*/;
+                return this.saveChanges(wizardPanel);
             });
+        }
+
+        protected saveChanges(wizardPanel: WizardPanel<any>): wemQ.Promise<any> {
+            return wizardPanel.saveChanges().
+            catch((reason: any) => api.DefaultErrorHandler.handle(reason)).
+            finally(() => this.setEnabled(true));
         }
     }
 }
