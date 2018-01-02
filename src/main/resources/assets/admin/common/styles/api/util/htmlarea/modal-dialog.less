@@ -71,15 +71,6 @@
     overflow: visible;
   }
 
-  @media screen and (max-height: 360px) {
-    min-height: 220px;
-  }
-
-  @media screen and (max-height: 540px) {
-    padding-top: 20px;
-    padding-bottom: 10px;
-  }
-
   &._540-720 {
     .modal-dialog-margin-mixin();
   }
@@ -200,6 +191,18 @@
       overflow: visible;
     }
 
+  }
+
+  &.source-code-modal-dialog {
+
+    .modal-dialog-body {
+      overflow: auto;
+    }
+
+    textarea {
+      min-height: 350px;
+      max-height: 350px;
+    }
   }
 
 }
