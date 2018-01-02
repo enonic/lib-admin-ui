@@ -11,10 +11,14 @@ module api.app.wizard {
 
                 this.setEnabled(false);
 
-                return wizardPanel.saveChanges().
-                    catch((reason: any) => api.DefaultErrorHandler.handle(reason)).
-                    finally(() => this.setEnabled(true));
+                return this.saveChanges(wizardPanel);
             });
+        }
+
+        protected saveChanges(wizardPanel: WizardPanel<any>): wemQ.Promise<any> {
+            return wizardPanel.saveChanges().
+            catch((reason: any) => api.DefaultErrorHandler.handle(reason)).
+            finally(() => this.setEnabled(true));
         }
     }
 }
