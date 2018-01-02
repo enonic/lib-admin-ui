@@ -62,23 +62,11 @@
       float: left;
 
       .content-types-content, .recent-content-types-list {
-        max-height: 418px;
+        max-height: 38vh;
         overflow-y: auto;
         overflow-x: hidden;
 
         .transition(max-height 0.2s);
-
-        @media screen and (max-height: 720px) {
-          max-height: 308px;
-        }
-
-        @media screen and (max-height: 540px) {
-          max-height: 145px;
-        }
-
-        @media screen and (max-height: 360px) {
-          max-height: 78%;
-        }
       }
 
       .content-types-list-item {
