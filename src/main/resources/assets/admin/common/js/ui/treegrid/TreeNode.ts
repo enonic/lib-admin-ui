@@ -330,5 +330,9 @@ module api.ui.treegrid {
                 }
             }
         }
+
+        // TS fix: common fields with Slick.SlickData
+        public test(): any { /* empty */
+        }
     }
 }

@@ -9,12 +9,11 @@ module FormItemSetViewSpec {
     describe('api.form.FormItemSetView', function () {
 
         let itemSet: FormItemSet;
-        let itemSetView: FormItemSetView;
 
         beforeEach(function () {
             itemSet = FormItemSetSpec.createItemSet(FormItemSetSpec.getItemSetJson());
 
-            itemSetView = createItemSetView(itemSet, getPropertySet());
+            createItemSetView(itemSet, getPropertySet());
         });
 
         describe('constructor', function () {

@@ -92,8 +92,7 @@ module api.ui.selector {
         }
 
         protected createColumns(): api.ui.grid.GridColumn<any>[] {
-            let columnFormatter = (_row: number, _cell: number, value: OPTION_DISPLAY_VALUE, _columnDef: any,
-                                   node: TreeNode<Option<OPTION_DISPLAY_VALUE>>) => {
+            let columnFormatter = ({}, {}, value: OPTION_DISPLAY_VALUE, {}, node: TreeNode<Option<OPTION_DISPLAY_VALUE>>) => {
                     if (value && node.getData().displayValue) {
                         this.optionDisplayValueViewer.setObject(value);
                         return this.optionDisplayValueViewer.toString();

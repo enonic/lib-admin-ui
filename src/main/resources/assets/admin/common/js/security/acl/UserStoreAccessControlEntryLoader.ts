@@ -2,20 +2,12 @@ module api.security.acl {
 
     import PrincipalListJson = api.security.PrincipalListJson;
     import PrincipalJson = api.security.PrincipalJson;
-    import PrincipalType = api.security.PrincipalType;
-    import UserStoreKey = api.security.UserStoreKey;
     import SecurityResourceRequest = api.security.SecurityResourceRequest;
 
     export class FindUserStoreAccessControlEntriesRequest
     extends SecurityResourceRequest<PrincipalListJson, UserStoreAccessControlEntry[]> {
 
-        private allowedTypes: PrincipalType[];
         private searchQuery: string;
-        private userStoreKey: UserStoreKey;
-
-        constructor() {
-            super();
-        }
 
         getParams(): Object {
             return {
@@ -37,16 +29,6 @@ module api.security.acl {
                 });
         }
 
-        setUserStoreKey(key: UserStoreKey): FindUserStoreAccessControlEntriesRequest {
-            this.userStoreKey = key;
-            return this;
-        }
-
-        setAllowedTypes(types: PrincipalType[]): FindUserStoreAccessControlEntriesRequest {
-            this.allowedTypes = types;
-            return this;
-        }
-
         setSearchQuery(query: string): FindUserStoreAccessControlEntriesRequest {
             this.searchQuery = query;
             return this;
@@ -57,29 +39,12 @@ module api.security.acl {
 
         protected request: FindUserStoreAccessControlEntriesRequest;
 
-        constructor() {
-            super();
-
-            // allow all by default
-            this.setAllowedTypes([PrincipalType.GROUP, PrincipalType.USER, PrincipalType.ROLE]);
-        }
-
         protected createRequest(): FindUserStoreAccessControlEntriesRequest {
             return new FindUserStoreAccessControlEntriesRequest();
         }
 
         protected getRequest(): FindUserStoreAccessControlEntriesRequest {
             return this.request;
-        }
-
-        setUserStoreKey(key: UserStoreKey): UserStoreAccessControlEntryLoader {
-            this.getRequest().setUserStoreKey(key);
-            return this;
-        }
-
-        setAllowedTypes(principalTypes: PrincipalType[]): UserStoreAccessControlEntryLoader {
-            this.getRequest().setAllowedTypes(principalTypes);
-            return this;
         }
 
         search(searchString: string): wemQ.Promise<UserStoreAccessControlEntry[]> {

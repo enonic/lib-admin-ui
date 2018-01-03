@@ -8,8 +8,6 @@ module api.form.inputtype.combobox {
 
     export class ComboBox extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
-        private context: api.form.inputtype.InputTypeViewContext;
-
         private comboBoxOptions: ComboBoxOption[];
 
         private comboBox: api.ui.selector.combobox.ComboBox<string>;
@@ -18,7 +16,6 @@ module api.form.inputtype.combobox {
 
         constructor(context: api.form.inputtype.InputTypeViewContext) {
             super('');
-            this.context = context;
             this.readConfig(context.inputConfig);
         }
 

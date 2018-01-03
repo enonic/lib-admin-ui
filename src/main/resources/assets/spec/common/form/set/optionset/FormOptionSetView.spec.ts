@@ -263,10 +263,8 @@ module FormOptionSetViewSpec {
                 });
 
                 describe('not silent validate', function () {
-                    let recording;
-
                     beforeEach(function () {
-                        recording = optionSetView.validate(false);
+                        optionSetView.validate(false);
                     });
 
                     it('should call validate(false) on every FormSetOccurrenceView', function () {
@@ -279,7 +277,6 @@ module FormOptionSetViewSpec {
                 });
 
                 describe('validate with exclusions', function () {
-                    let recording;
                     let excludedOccurrenceView;
 
                     beforeEach(function (done: DoneFn) {
@@ -287,7 +284,7 @@ module FormOptionSetViewSpec {
 
                         occurrences.createAndAddOccurrence(1, false).then((addedView) => {
                             excludedOccurrenceView = addedView;
-                            recording = optionSetView.validate(false, excludedOccurrenceView);
+                            optionSetView.validate(false, excludedOccurrenceView);
                             done();
                         });
                     });

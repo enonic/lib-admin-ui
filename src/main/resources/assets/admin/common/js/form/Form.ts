@@ -17,7 +17,7 @@ module api.form {
         }
 
         fromJson(json: json.FormJson): FormBuilder {
-            json.formItems.forEach((formItemJson: api.form.json.FormItemJson) => {
+            json.formItems.forEach((formItemJson) => {
                 let formItem: FormItem = FormItemFactory.createFormItem(formItemJson);
                 if (formItem) {
                     this.addFormItem(formItem);

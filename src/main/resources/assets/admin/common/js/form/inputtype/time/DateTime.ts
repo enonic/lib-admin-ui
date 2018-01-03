@@ -13,7 +13,6 @@ module api.content.form.inputtype.time {
      */
     export class DateTime extends support.BaseInputTypeNotManagingAdd {
 
-        private withTimezone: boolean = false;
         private valueType: ValueType = ValueTypes.LOCAL_DATE_TIME;
 
         constructor(config: api.form.inputtype.InputTypeViewContext) {
@@ -26,7 +25,6 @@ module api.content.form.inputtype.time {
             let timeZone = timeZoneConfig && timeZoneConfig['value'];
 
             if (timeZone === 'true') {
-                this.withTimezone = true;
                 this.valueType = ValueTypes.DATE_TIME;
             }
         }

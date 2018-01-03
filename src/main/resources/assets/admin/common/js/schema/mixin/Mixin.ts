@@ -77,7 +77,7 @@ module api.schema.mixin {
 
             this.formItems = [];
             if(mixinJson.form && mixinJson.form.formItems) {
-                mixinJson.form.formItems.forEach((formItemJson: api.form.json.FormItemJson) => {
+                mixinJson.form.formItems.forEach((formItemJson) => {
                     let formItem = api.form.FormItemFactory.createFormItem(formItemJson);
                     if (formItem) {
                         this.formItems.push(formItem);

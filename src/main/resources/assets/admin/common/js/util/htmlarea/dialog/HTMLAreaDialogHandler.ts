@@ -15,7 +15,7 @@ module api.util.htmlarea.dialog {
                 modalDialog = this.openImageDialog(event.getConfig(), event.getContent());
                 break;
             case HtmlAreaDialogType.LINK:
-                modalDialog = this.openLinkDialog(event.getConfig(), event.getContent());
+                modalDialog = this.openLinkDialog(event.getConfig());
                 break;
             case HtmlAreaDialogType.MACRO:
                 modalDialog = this.openMacroDialog(event.getConfig(), event.getContent(), event.getApplicationKeys());
@@ -45,8 +45,8 @@ module api.util.htmlarea.dialog {
             return this.modalDialog;
         }
 
-        private static openLinkDialog(config: HtmlAreaAnchor, content: api.content.ContentSummary): ModalDialog {
-            return this.openDialog(new LinkModalDialog(config, content));
+        private static openLinkDialog(config: HtmlAreaAnchor): ModalDialog {
+            return this.openDialog(new LinkModalDialog(config));
         }
 
         private static openImageDialog(config: HtmlAreaImage, content: api.content.ContentSummary): ModalDialog {

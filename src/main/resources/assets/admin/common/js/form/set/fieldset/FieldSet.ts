@@ -11,7 +11,7 @@ module api.form {
             this.label = fieldSetJson.label;
 
             if (fieldSetJson.items != null) {
-                fieldSetJson.items.forEach((formItemJson: api.form.json.FormItemJson) => {
+                fieldSetJson.items.forEach((formItemJson) => {
                     let formItem = FormItemFactory.createFormItem(formItemJson);
                     if (formItem) {
                         this.addFormItem(formItem);

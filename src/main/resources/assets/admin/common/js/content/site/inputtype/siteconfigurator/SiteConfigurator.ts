@@ -15,8 +15,6 @@ module api.content.site.inputtype.siteconfigurator {
 
     export class SiteConfigurator extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
-        private context: api.form.inputtype.InputTypeViewContext;
-
         private readOnly: boolean;
 
         private comboBox: SiteConfiguratorComboBox;
@@ -29,7 +27,6 @@ module api.content.site.inputtype.siteconfigurator {
 
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('site-configurator');
-            this.context = config;
             this.formContext = config.formContext;
 
             this.readOnlyPromise =

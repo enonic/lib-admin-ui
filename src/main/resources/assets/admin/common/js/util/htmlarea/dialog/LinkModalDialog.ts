@@ -22,8 +22,6 @@ module api.util.htmlarea.dialog {
         private textFormItem: FormItem;
         private toolTipFormItem: FormItem;
 
-        private content: api.content.ContentSummary;
-
         private tabNames: any;
 
         private static contentPrefix: string = 'content://';
@@ -31,7 +29,7 @@ module api.util.htmlarea.dialog {
         private static emailPrefix: string = 'mailto:';
         private static subjectPrefix: string = '?subject=';
 
-        constructor(config: HtmlAreaAnchor, content: api.content.ContentSummary) {
+        constructor(config: HtmlAreaAnchor) {
             super(<HtmlAreaModalDialogConfig>{
                 editor: config.editor,
                 title: i18n('dialog.link.title'),
@@ -44,8 +42,6 @@ module api.util.htmlarea.dialog {
 
             this.link = config.element;
             this.linkText = config.text;
-
-            this.content = content;
 
             if (config.anchorList.length > 0) {
                 this.dockedPanel.addItem(this.tabNames.anchor, true, this.createAnchorPanel(config.anchorList), this.isAnchor());
