@@ -212,7 +212,7 @@ module api.ui {
             this.beforeExecuteListeners.push(listener);
         }
 
-        unBeforeExecute(listener: () => void) {
+        unBeforeExecute(listener: (action: Action) => void) {
             this.beforeExecuteListeners = this.beforeExecuteListeners.filter((currentListener: () => void) => {
                 return listener !== currentListener;
             });
