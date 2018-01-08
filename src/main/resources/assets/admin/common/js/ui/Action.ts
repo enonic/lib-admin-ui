@@ -115,12 +115,13 @@ module api.ui {
             return this.enabled;
         }
 
-        setEnabled(value: boolean) {
+        setEnabled(value: boolean): Action {
 
             if (value !== this.enabled) {
                 this.enabled = value;
                 this.notifyPropertyChanged();
             }
+            return this;
         }
 
         isVisible(): boolean {
