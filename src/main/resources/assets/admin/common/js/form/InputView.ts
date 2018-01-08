@@ -3,8 +3,6 @@ module api.form {
     import PropertySet = api.data.PropertySet;
     import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
     import i18n = api.util.i18n;
-    import StringHelper = api.util.StringHelper;
-    import Value = api.data.Value;
 
     export interface InputViewConfig {
 
@@ -17,8 +15,7 @@ module api.form {
         parentDataSet: PropertySet;
     }
 
-    export class InputView
-        extends api.form.FormItemView {
+    export class InputView extends api.form.FormItemView {
 
         private input: Input;
 
@@ -38,7 +35,7 @@ module api.form {
 
         private userInputValid: boolean;
 
-        private validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
+        private validityChangedListeners: {(event: RecordingValidityChangedEvent): void}[] = [];
 
         private helpText: HelpTextContainer;
 
@@ -123,7 +120,7 @@ module api.form {
                 this.validationViewer = new ValidationRecordingViewer();
                 this.appendChild(this.validationViewer);
 
-                this.inputTypeView.onValidityChanged((event: api.form.inputtype.InputValidityChangedEvent) => {
+                this.inputTypeView.onValidityChanged((event: api.form.inputtype.InputValidityChangedEvent)=> {
                     this.handleInputValidationRecording(event.getRecording(), false);
                 });
 
@@ -249,10 +246,6 @@ module api.form {
                 this.toggleClass('highlight-validity-change', this.highlightOnValidityChange());
             }
 
-            const initialValue: Value = this.inputTypeView.newInitialValue();
-
-            this.toggleClass('display-validation-errors', initialValue && !StringHelper.isEmpty(initialValue.getString()));
-
             if (!silent && (recording.validityChanged(this.previousValidityRecording) || this.userInputValidityChanged(hasValidInput) )) {
                 this.notifyValidityChanged(new RecordingValidityChangedEvent(recording,
                     validationRecordingPath).setInputValueBroken(!hasValidInput));
@@ -273,19 +266,19 @@ module api.form {
             return this.inputTypeView.giveFocus();
         }
 
-        onValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
+        onValidityChanged(listener: (event: RecordingValidityChangedEvent)=>void) {
             this.validityChangedListeners.push(listener);
         }
 
-        unValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
-            this.validityChangedListeners.filter((currentListener: (event: RecordingValidityChangedEvent) => void) => {
+        unValidityChanged(listener: (event: RecordingValidityChangedEvent)=>void) {
+            this.validityChangedListeners.filter((currentListener: (event: RecordingValidityChangedEvent)=>void) => {
                 return listener === currentListener;
             });
         }
 
         private notifyValidityChanged(event: RecordingValidityChangedEvent) {
 
-            this.validityChangedListeners.forEach((listener: (event: RecordingValidityChangedEvent) => void) => {
+            this.validityChangedListeners.forEach((listener: (event: RecordingValidityChangedEvent)=>void) => {
                 listener(event);
             });
         }

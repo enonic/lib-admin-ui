@@ -47,18 +47,14 @@
     .show-validation-viewer();
   }
 
-  &:not(.display-validation-errors) {
+  &:not(.display-validation-errors) .input-view.highlight-validity-change {
 
-    .input-view {
-      &.highlight-validity-change, &.display-validation-errors {
-        &.invalid {
-          padding: 10px 10px 10px 10px;
-          .input-view-error();
-        }
-
-        .show-validation-viewer();
-      }
+    &.invalid {
+      padding: 10px 10px 10px 10px;
+      .input-view-error();
     }
+
+    .show-validation-viewer();
   }
 
   .form-element-spacing(@form-field-set-spacing);
