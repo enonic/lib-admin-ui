@@ -698,7 +698,7 @@ module api.ui.treegrid {
             return rowIndex;
         }
 
-        private getRowByNode(node: TreeNode<DATA>): JQuery {
+        public getRowByNode(node: TreeNode<DATA>): JQuery {
             let rowIndex = this.getRowIndexByNode(node);
             let cell = this.grid.getCellNode(rowIndex, 0);
 

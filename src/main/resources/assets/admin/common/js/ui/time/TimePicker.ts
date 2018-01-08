@@ -79,10 +79,10 @@ module api.ui.time {
                     this.setTime(null, null);
                     this.hidePopup();
                 } else {
-                    let parsedTime = typedTime.match(/^[0-2][0-9]:[0-5][0-9]$/);
-                    if (parsedTime && parsedTime.length === 1) {
-                        let splitTime = parsedTime[0].split(':');
-                        this.setTime(parseInt(splitTime[0], 10), parseInt(splitTime[1], 10));
+                    let parsedTime = typedTime.match(/^\s*([0-2][0-9]:[0-5][0-9])\s*$/);
+                    if (parsedTime && parsedTime.length === 2) {
+                        let splitTime = parsedTime[1].split(':');
+                        this.setTime(parseInt(splitTime[0], 10), parseInt(splitTime[1], 10), true);
                         this.showPopup();
                     } else {
                         this.validUserInput = false;
@@ -101,7 +101,7 @@ module api.ui.time {
             }
         }
 
-        private setTime(hours: number, minutes: number) {
+        private setTime(hours: number, minutes: number, silent?: boolean) {
             if (!this.selectedDate) {
                 let today = new Date();
                 this.selectedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -110,7 +110,7 @@ module api.ui.time {
             this.selectedDate.setMinutes(minutes);
 
             if (this.popup) {
-                this.popup.setSelectedTime(hours, minutes);
+                this.popup.setSelectedTime(hours, minutes, silent);
             }
         }
     }

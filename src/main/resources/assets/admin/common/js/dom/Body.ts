@@ -1,6 +1,7 @@
 module api.dom {
 
-    export class Body extends Element {
+    export class Body
+        extends Element {
 
         private static instance: Body;
 
@@ -11,6 +12,10 @@ module api.dom {
                 body = document.body;
             }
             let html = Element.fromHtmlElement(body.parentElement);
+
+            if (html.getEl().getChild(0) instanceof HTMLHeadElement) {
+                html.appendChild(Element.fromHtmlElement(<HTMLElement>html.getEl().getChild(0)));
+            }
 
             super(new ElementFromHelperBuilder().setHelper(new ElementHelper(body)).setLoadExistingChildren(loadExistingChildren));
 

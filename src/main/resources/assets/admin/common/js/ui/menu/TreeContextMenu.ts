@@ -71,18 +71,11 @@ module api.ui.menu {
 
         setActions(actions: api.ui.Action[]): TreeContextMenu {
             this.removeChildren();
-            this.clearActionListeners();
 
             this.actions = [];
 
             this.addActions(actions);
             return this;
-        }
-
-        clearActionListeners() {
-            this.actions.forEach((action) => {
-                action.clearListeners();
-            });
         }
 
         onItemClicked(listener: () => void) {
@@ -107,9 +100,21 @@ module api.ui.menu {
             });
         }
 
+        unBeforeAction(listener: (action: api.ui.Action) => void) {
+            this.actions.forEach((action: api.ui.Action) => {
+                action.unBeforeExecute(listener);
+            });
+        }
+
         onAfterAction(listener: (action: api.ui.Action) => void) {
             this.actions.forEach((action: api.ui.Action) => {
                 action.onAfterExecute(listener);
+            });
+        }
+
+        unAfterAction(listener: (action: api.ui.Action) => void) {
+            this.actions.forEach((action: api.ui.Action) => {
+                action.unAfterExecute(listener);
             });
         }
 
