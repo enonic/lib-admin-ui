@@ -241,6 +241,7 @@
 
     .dialog-button, .menu-button {
       float: right;
+      display: none !important; // need important here because dialog sets display style inline
     }
 
     .dialog-button {
@@ -252,11 +253,9 @@
 
       &.reopen-issue {
         .dialog-button(@form-button-font, @admin-green);
-        display: none !important;
       }
 
       .cancel-button-bottom {
-        display: none;
         float: left;
         margin: 0;
       }
@@ -266,6 +265,13 @@
       display: none;
       line-height: 36px;
       font-size: 15px;
+    }
+  }
+
+  .modal-dialog-footer {
+    .issue-comment-textarea {
+      display: none;
+      padding-bottom: 20px;
     }
   }
 
@@ -304,52 +310,62 @@
   }
 
   &.tab-issue {
-    .button-container {
-      .publish-issue, .show-schedule-action {
-        display: none !important;
+    &:not(.closed) {
+      .modal-dialog-footer {
+        .button-container {
+          .close-issue, .edit-issue {
+            display: block !important;
+          }
+        }
       }
     }
-    .no-action-message {
-      display: none !important;
+    &.closed {
+      .modal-dialog-footer {
+        .button-container {
+          .reopen-issue {
+            display: block !important;
+          }
+        }
+      }
     }
   }
 
-  &.tab-items {
-    .button-container {
-      .edit-issue, .close-issue {
-        display: none !important;
+  &.tab-comments:not(.closed) {
+    .modal-dialog-footer {
+      // it's placed in footer to stick to bottom so show it manually
+      .issue-comment-textarea {
+        display: block;
+      }
+
+      .button-container {
+        .comment-issue {
+          display: block !important;
+        }
+      }
+    }
+  }
+
+  &.tab-items:not(.closed) {
+    &:not(.no-action) {
+      .modal-dialog-footer {
+        .button-container {
+          .publish-issue {
+            display: block !important;
+          }
+        }
+      }
+    }
+    &.no-action {
+      .modal-dialog-footer {
+        .no-action-message {
+          display: inline-block;
+        }
       }
     }
   }
 
   &.no-action {
-    &.tab-items {
-      .button-container {
-        .show-schedule-action, .publish-issue {
-          display: none !important;
-        }
-      }
-    }
-
-    .no-action-message {
-      display: inline-block;
-    }
     .dependants {
-      display: none !important;
-    }
-  }
-
-  &.closed {
-    .button-container {
-      .dialog-button:not(.reopen-issue), .menu-button {
-        display: none !important;
-      }
-      .reopen-issue {
-        display: block !important;
-      }
-    }
-
-    .no-action-message {
       display: none;
     }
   }
