@@ -1,6 +1,8 @@
 .page-components-view {
   position: absolute;
   width: 400px;
+  padding: 0 30px;
+  .box-sizing(border-box);
   max-width: 100%;
   background-color: rgba(255, 255, 255, 0.9);
   z-index: @z-index-context-window;
@@ -31,8 +33,8 @@
   }
 
   .tree-grid {
-    padding: 0 30px 15px 30px;
-    width: auto;
+    width: 370px;
+    padding-bottom: 15px;
     height: auto;
     overflow-y: auto;
     .flex(1 auto);
@@ -41,6 +43,8 @@
       height: initial !important;
 
       .slick-viewport {
+
+        width: 340px !important;
 
         .slick-row {
 
