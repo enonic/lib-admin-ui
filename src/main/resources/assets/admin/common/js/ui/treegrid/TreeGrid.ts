@@ -1324,34 +1324,35 @@ module api.ui.treegrid {
         private fetchAndUpdateNodes(nodesToUpdate: TreeNode<DATA>[], dataId?: string): wemQ.Promise<void> {
             return this.fetch(nodesToUpdate[0], dataId)
                 .then((data: DATA) => {
-                    nodesToUpdate.forEach((node) => {
+                    const updates = nodesToUpdate.map(node => {
                         if (dataId) {
                             node.setDataId(dataId);
                         }
                         node.setData(data);
-                        if (this.expandAll) {
-                            node.setExpanded(this.expandAll);
-                        }
-                        node.setDataId(this.getDataId(data));
-                        node.clearViewers();
 
-                        if (node.isVisible()) {
-                            let rowIndex = this.getRowIndexByNode(node);
-                            let selected = this.grid.isRowSelected(rowIndex);
-                            let highlighted = this.isNodeHighlighted(node);
-                            this.gridData.updateItem(node.getId(), node);
-                            if (selected) {
-                                this.grid.addSelectedRow(rowIndex);
-                            } else if (highlighted) {
-                                this.removeHighlighting(true);
-                                this.highlightRowByNode(node);
+                        const reload = () => (this.expandAll ? this.expandNode(node) : wemQ.resolve(true));
+
+                        return reload().then(() => {
+                            node.setDataId(this.getDataId(data));
+                            node.clearViewers();
+
+                            if (node.isVisible()) {
+                                let rowIndex = this.getRowIndexByNode(node);
+                                let selected = this.grid.isRowSelected(rowIndex);
+                                let highlighted = this.isNodeHighlighted(node);
+                                this.gridData.updateItem(node.getId(), node);
+                                if (selected) {
+                                    this.grid.addSelectedRow(rowIndex);
+                                } else if (highlighted) {
+                                    this.removeHighlighting(true);
+                                    this.highlightRowByNode(node);
+                                }
                             }
-                        }
+                        });
                     });
 
-                }).catch((reason: any) => {
-                    this.handleError(reason);
-                });
+                    return wemQ.all(updates);
+                }).catch(reason => this.handleError(reason));
         }
 
         deleteNode(data: DATA): void {
