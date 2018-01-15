@@ -105,7 +105,7 @@ module api.util.htmlarea.editor {
         setNodeChangeHandler(nodeChangeHandler: (e: any) => void): HTMLAreaBuilder {
             this.nodeChangeHandler =  api.util.AppHelper.debounce((e) => {
                 nodeChangeHandler(e);
-            }, 300, true);
+            }, 200);
 
             return this;
         }
@@ -280,6 +280,9 @@ module api.util.htmlarea.editor {
                     editor.on('keyup', (e) => {
                         if (this.keyupHandler) {
                             this.keyupHandler(e);
+                        }
+                        if (this.nodeChangeHandler) {
+                            this.nodeChangeHandler(e);
                         }
                     });
                     editor.on('focus', (e) => {
