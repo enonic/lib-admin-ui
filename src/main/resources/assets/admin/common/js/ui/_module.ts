@@ -21,3 +21,4 @@
 ///<reference path='NamesAndIconViewer.ts' />
 ///<reference path='ActivatedEvent.ts' />
 ///<reference path='FocusSwitchEvent.ts' />
+///<reference path='ActionsStateManager.ts' />
