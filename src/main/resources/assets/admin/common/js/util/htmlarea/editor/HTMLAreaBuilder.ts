@@ -105,7 +105,7 @@ module api.util.htmlarea.editor {
         setNodeChangeHandler(nodeChangeHandler: (e: any) => void): HTMLAreaBuilder {
             this.nodeChangeHandler =  api.util.AppHelper.debounce((e) => {
                 nodeChangeHandler(e);
-            }, 300, true);
+            }, 200);
 
             return this;
         }
@@ -217,28 +217,32 @@ module api.util.htmlarea.editor {
                     alignleft: [
                         {
                             selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'left'}
+                            styles: {textAlign: 'left'},
+                            inline: 'span'
                         },
                         {selector: 'table', collapsed: false, styles: {float: 'left'}}
                     ],
                     aligncenter: [
                         {
                             selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'center'}
+                            styles: {textAlign: 'center'},
+                            inline: 'span'
                         },
                         {selector: 'table', collapsed: false, styles: {marginLeft: 'auto', marginRight: 'auto'}}
                     ],
                     alignright: [
                         {
                             selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'right'}
+                            styles: {textAlign: 'right'},
+                            inline: 'span'
                         },
                         {selector: 'table', collapsed: false, styles: {float: 'right'}}
                     ],
                     alignjustify: [
                         {
                             selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'justify'}
+                            styles: {textAlign: 'justify'},
+                            inline: 'span'
                         }
                     ]
                 },
@@ -276,6 +280,9 @@ module api.util.htmlarea.editor {
                     editor.on('keyup', (e) => {
                         if (this.keyupHandler) {
                             this.keyupHandler(e);
+                        }
+                        if (this.nodeChangeHandler) {
+                            this.nodeChangeHandler(e);
                         }
                     });
                     editor.on('focus', (e) => {
