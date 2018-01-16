@@ -4,6 +4,7 @@
   .dialog-content {
     padding: 5px 0;
     min-height: 200px;
+    position: relative; // to be able to position empty text message absolutely
 
     .deck-panel {
       overflow: visible;
@@ -170,30 +171,6 @@
     }
   }
 
-  .issue-dialog-form {
-    padding: 0;
-
-    input-view:not(:last-child) {
-      margin-bottom: 0px;
-    }
-
-    .description-text {
-      margin-top: 10px;
-      font-style: italic;
-      &.empty {
-        display: none !important;
-      }
-    }
-
-    label {
-      font-size: 14px;
-    }
-
-    .rich-combobox:not(.readonly) {
-      margin-top: 10px;
-    }
-  }
-
   .browse-selection-item {
     &:first-child {
       padding-top: 0;
@@ -265,7 +242,17 @@
       display: none;
       line-height: 36px;
       font-size: 15px;
+      float: right;
     }
+  }
+
+  .description-placeholder {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    margin-top: -10px;
+    text-align: center;
+    color: @admin-font-gray1;
   }
 
   .modal-dialog-footer {
@@ -273,10 +260,6 @@
       display: none;
       padding-bottom: 20px;
     }
-  }
-
-  .no-action-message {
-    float: right;
   }
 
   &.nested {
@@ -331,10 +314,16 @@
   }
 
   &.tab-comments:not(.closed) {
+    .dialog-content {
+      min-height: 124px; // subtract textarea height to keep overall dialog height
+    }
     .modal-dialog-footer {
       // it's placed in footer to stick to bottom so show it manually
       .issue-comment-textarea {
         display: block;
+        textarea {
+          min-height: 52px;
+        }
       }
 
       .button-container {
