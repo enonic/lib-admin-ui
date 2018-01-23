@@ -1351,7 +1351,7 @@ if (typeof Slick === "undefined") {
       }
 
       function getGalleryRowHeight(margin) {
-          if (options.enableGalleryMode) {
+          if (options.enableGalleryMode && viewportH > 0) {
               return Math.min(viewportH, Math.floor(viewportW / options.galleryModeColumns)) - 2 * (margin || 0);
           }
           return options.rowHeight;
@@ -1641,7 +1641,7 @@ if (typeof Slick === "undefined") {
           (options.showHeaderRow ? options.headerRowHeight + getVBoxDelta($headerRowScroller) : 0);
     }
 
-    function resizeCanvas() {
+      function resizeCanvas() {
       if (!initialized) { return; }
       if (options.autoHeight) {
           viewportH = getGalleryRow(getDataLengthIncludingAddNew(), true) * getGalleryRowHeight();
@@ -1750,7 +1750,7 @@ if (typeof Slick === "undefined") {
       };
     }
 
-    function getRenderedRange(viewportTop, viewportLeft) {
+      function getRenderedRange(viewportTop, viewportLeft) {
       var range = getVisibleRange(viewportTop, viewportLeft);
         var buffer = getRowFromPosition(viewportH, true);
       var minBuffer = 3;
