@@ -292,11 +292,22 @@
     position: relative;
   }
 
-  &.tab-issue {
+  &.tab-comments {
     &:not(.closed) {
+      .dialog-content {
+        min-height: 124px; // subtract textarea height to keep overall dialog height
+      }
       .modal-dialog-footer {
+        // it's placed in footer to stick to bottom so show it manually
+        .issue-comment-textarea {
+          display: block;
+          textarea {
+            min-height: 52px;
+          }
+        }
+
         .button-container {
-          .close-issue, .edit-issue {
+          .close-issue, .comment-issue {
             display: block !important;
           }
         }
@@ -308,27 +319,6 @@
           .reopen-issue {
             display: block !important;
           }
-        }
-      }
-    }
-  }
-
-  &.tab-comments:not(.closed) {
-    .dialog-content {
-      min-height: 124px; // subtract textarea height to keep overall dialog height
-    }
-    .modal-dialog-footer {
-      // it's placed in footer to stick to bottom so show it manually
-      .issue-comment-textarea {
-        display: block;
-        textarea {
-          min-height: 52px;
-        }
-      }
-
-      .button-container {
-        .comment-issue {
-          display: block !important;
         }
       }
     }
