@@ -1,6 +1,7 @@
 // =include fineuploader/fine-uploader.min.js
-// =include jquery-2.1.4.js
-// =include jquery-ui.js
+// =include jquery-3.3.1.min.js
+// =include jquery-migrate-3.0.1.min.js
+// =include jquery-ui.min.js
 // =include jquery.simulate.js
 // =include jquery.slimscroll.min.js
 // =include codemirror/codemirror.js
@@ -8,8 +9,8 @@
 // =include signals.js
 // =include hasher.js
 // =include crossroads.js
-// =include slickgrid/lib/jquery.event.drag-2.2.js
-// =include slickgrid/lib/jquery.event.drop-2.2.js
+// =include slickgrid/lib/jquery.event.drag-2.3.js
+// =include slickgrid/lib/jquery.event.drop-2.3.js
 // =include slickgrid/slick.core.js
 // =include slickgrid/slick.grid.js
 // =include slickgrid/slick.dataview.js

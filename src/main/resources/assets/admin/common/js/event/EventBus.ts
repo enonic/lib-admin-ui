@@ -10,7 +10,7 @@ module api.event {
         private static handlersMap: {[eventName: string]: HandlersMapEntry[]} = {};
 
         static onEvent(eventName: string, handler: (apiEventObj: api.event.Event) => void, contextWindow: Window = window) {
-            let customEventHandler = (customEvent: any) => handler(customEvent['apiEventObj']);
+            let customEventHandler = (customEvent: any) => handler(customEvent.detail);
             if (!EventBus.handlersMap[eventName]) {
                 EventBus.handlersMap[eventName] = [];
             }
@@ -40,10 +40,11 @@ module api.event {
         }
 
         static fireEvent(apiEventObj: api.event.Event, contextWindow: Window = window) {
-            let customEvent = contextWindow.document.createEvent('Event');
-            customEvent.initEvent(apiEventObj.getName(), true, true);
-            customEvent['apiEventObj'] = apiEventObj;
-            contextWindow.dispatchEvent(customEvent);
+            const event = new CustomEvent(apiEventObj.getName(), {
+                bubbles: true,
+                detail: apiEventObj
+            });
+            contextWindow.dispatchEvent(event);
         }
 
     }
