@@ -10,9 +10,12 @@ module api.system {
 
         private principals: api.security.PrincipalKey[];
 
+        private readonly: boolean;
+
         constructor(json: StatusJson) {
             this.version = json.version;
             this.installation = json.installation;
+            this.readonly = json.readonly == 'true';
             if (json.context) {
                 this.authenticated = json.context.authenticated;
                 this.principals = json.context.principals ?
@@ -37,6 +40,10 @@ module api.system {
 
         getPrincipals(): api.security.PrincipalKey[] {
             return this.principals;
+        }
+
+        isReadonly(): boolean {
+            return this.readonly;
         }
     }
 }
