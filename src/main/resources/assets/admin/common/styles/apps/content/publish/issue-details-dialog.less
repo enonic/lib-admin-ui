@@ -39,30 +39,6 @@
       }
     }
 
-    .assignees-line {
-      float: right;
-      padding-right: 10px;
-      .clearfix();
-
-      .principal-viewer-compact {
-        float: left;
-
-        .user-icon {
-          width: 32px;
-          height: 32px;
-          border-radius: 32px;
-          line-height: 32px;
-          font-size: 16px;
-        }
-      }
-
-      .all-assignees-tooltip {
-        float: left;
-        margin-left: 5px;
-        line-height: 32px;
-      }
-    }
-
     .issue-details-sub-title {
       margin: 15px 0 0 34px;
       font-size: 13px;
@@ -246,15 +222,6 @@
     }
   }
 
-  .description-placeholder {
-    position: absolute;
-    width: 100%;
-    top: 50%;
-    margin-top: -10px;
-    text-align: center;
-    color: @admin-font-gray1;
-  }
-
   .modal-dialog-footer {
     .issue-comment-textarea {
       display: none;
@@ -340,6 +307,15 @@
           display: inline-block;
         }
       }
+    }
+  }
+
+  &.tab-assignees {
+    .dialog-content {
+      min-height: 256px;
+    }
+    .modal-dialog-footer {
+      padding-top: 0;
     }
   }
 

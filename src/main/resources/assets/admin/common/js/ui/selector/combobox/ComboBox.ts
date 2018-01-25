@@ -131,6 +131,8 @@ module api.ui.selector.combobox {
          */
         private active: boolean = false;
 
+        static VALUE_SEPARATOR: string = ';';
+
         constructor(name: string, config: ComboBoxConfig<OPTION_DISPLAY_VALUE>) {
             super('div', 'combobox', api.StyleHelper.COMMON_PREFIX, config.value);
             this.getEl().setAttribute('name', name);
@@ -439,7 +441,7 @@ module api.ui.selector.combobox {
 
         protected doGetValue(): string {
             if (this.selectedOptionsView) {
-                return this.getSelectedOptions().map((item: Option<OPTION_DISPLAY_VALUE>) => item.value).join(';');
+                return this.getSelectedOptions().map((item: Option<OPTION_DISPLAY_VALUE>) => item.value).join(ComboBox.VALUE_SEPARATOR);
             } else {
                 throw new Error('Not supported yet');
             }
@@ -525,7 +527,7 @@ module api.ui.selector.combobox {
         }
 
         protected splitValues(value: string): string[] {
-            return value.split(';');
+            return value.split(ComboBox.VALUE_SEPARATOR);
         }
 
         handleRowSelected(index: number, keyCode: number = -1) {
