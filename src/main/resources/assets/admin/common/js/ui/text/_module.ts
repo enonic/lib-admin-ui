@@ -1,4 +1,5 @@
 ///<reference path='TextInput.ts' />
+///<reference path='InPlaceTextInput.ts' />
 ///<reference path='AutosizeTextInput.ts' />
 ///<reference path='PasswordInput.ts' />
 ///<reference path='TextArea.ts' />

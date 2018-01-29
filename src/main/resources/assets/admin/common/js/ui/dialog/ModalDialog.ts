@@ -211,7 +211,7 @@ module api.ui.dialog {
         }
 
         protected createHeader(title: string): api.ui.dialog.ModalDialogHeader {
-            return new api.ui.dialog.ModalDialogHeader(title);
+            return new DefaultModalDialogHeader(title);
         }
 
         addClickIgnoredElement(elem: Element) {
@@ -447,7 +447,18 @@ module api.ui.dialog {
         }
     }
 
-    export class ModalDialogHeader extends DivEl {
+    export interface ModalDialogHeader
+        extends api.dom.Element {
+
+        setTitle(value: string, escapeHtml?: boolean);
+
+        getTitle(): string;
+
+    }
+
+    export class DefaultModalDialogHeader
+        extends DivEl
+        implements ModalDialogHeader {
 
         private titleEl: api.dom.H2El;
 
@@ -463,8 +474,8 @@ module api.ui.dialog {
             this.titleEl.setHtml(value, escapeHtml);
         }
 
-        appendElement(el: Element) {
-            el.insertAfterEl(this.titleEl);
+        getTitle(): string {
+            return this.titleEl.getHtml();
         }
     }
 
