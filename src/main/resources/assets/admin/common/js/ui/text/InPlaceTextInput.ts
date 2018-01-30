@@ -20,7 +20,7 @@ module api.ui.text {
             this.addClass('inplace-text-input');
             this.h2 = new H2El('inplace-text');
             this.h2.setHtml(this.formatTextToDisplay(originalValue), false);
-            this.h2.onDblClicked(event => this.setEditMode(true));
+            this.h2.onDblClicked(() => this.setEditMode(true));
             this.input = new TextInput('inplace-input', size, originalValue);
             this.input.onKeyPressed((event: KeyboardEvent) => {
                 switch (event.keyCode) {
