@@ -1,6 +1,7 @@
 module api.ui.treegrid {
 
-    export class TreeNode<DATA> {
+    export class TreeNode<DATA>
+        implements Slick.SlickData {
 
         private id: string;
 
