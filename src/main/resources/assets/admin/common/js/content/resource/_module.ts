@@ -23,7 +23,7 @@
 ///<reference path='MoveContentRequest.ts' />
 ///<reference path='ListContentByIdRequest.ts' />
 ///<reference path='isContentReadOnlyRequest.ts' />
-///<reference path='ListContentByPathRequest.ts' />
+///<reference path='AggregateContentTypesByPathRequest.ts' />
 ///<reference path='DeleteContentRequest.ts' />
 ///<reference path='BatchContentRequest.ts' />
 ///<reference path='ContentQueryRequest.ts' />
