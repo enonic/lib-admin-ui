@@ -133,8 +133,10 @@ module api.content {
         fetchChildren(parentNode: TreeNode<Option<DATA>>, from: number = 0,
                       size: number = -1): wemQ.Promise<OptionDataLoaderData<DATA>> {
 
+            const postLoad: boolean = from > 0;
+
             if(parentNode.getRoot().getId() == parentNode.getId()) {
-                this.notifyLoadingData();
+                this.notifyLoadingData(postLoad);
             }
 
             this.isTreeLoadMode = true;
@@ -147,7 +149,7 @@ module api.content {
             this.treeRequest.setQueryExpr(this.treeFilterValue);
 
             return this.loadItems().then((result: DATA[]) => {
-                this.notifyLoadedData([], false, true);
+                this.notifyLoadedData([], postLoad, true);
 
                 return this.createOptionData(result, this.treeRequest.getMetadata().getHits(),
                     this.treeRequest.getMetadata().getTotalHits());
