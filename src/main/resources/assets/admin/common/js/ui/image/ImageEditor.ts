@@ -786,7 +786,7 @@ module api.ui.image {
             standbyContainer.appendChildren(resetButton, this.uploadButton);
 
             this.editCropButton = new Button().setEnabled(false);
-            // tslint:disable-next-line:no-unused-new
+            // tslint:disable-next-line:no-unused-expression
             new Tooltip(this.editCropButton, i18n('editor.cropimage'), 1000);
             this.editCropButton.addClass('button-crop transparent icon-crop').onClicked((event: MouseEvent) => {
                 event.stopPropagation();
@@ -804,7 +804,7 @@ module api.ui.image {
             });
 
             this.editFocusButton = new Button().setEnabled(false);
-            // tslint:disable-next-line:no-unused-new
+            // tslint:disable-next-line:no-unused-expression
             new Tooltip(this.editFocusButton, i18n('editor.setautofocus'), 1000);
             this.editFocusButton.addClass('button-focus transparent icon-center_focus_strong').onClicked((event: MouseEvent) => {
                 event.stopPropagation();
