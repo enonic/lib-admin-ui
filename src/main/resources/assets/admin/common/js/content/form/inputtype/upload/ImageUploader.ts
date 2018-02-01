@@ -12,7 +12,12 @@ module api.content.form.inputtype.upload {
         extends api.form.inputtype.support.BaseInputTypeSingleOccurrence {
 
         private imageUploader: api.content.image.ImageUploaderEl;
+
         private previousValidationRecording: api.form.inputtype.InputValidationRecording;
+
+        private isCropAutoPositioned: boolean;
+
+        private isFocusAutoPositioned: boolean;
 
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
             super(config);
@@ -95,21 +100,15 @@ module api.content.form.inputtype.upload {
                 }
             });
 
-            this.imageUploader.onCropPositionChanged((crop: Rect, zoom: Rect) => {
-                this.saveCropToProperty(crop, zoom);
-            });
-
             this.imageUploader.onCropAutoPositionedChanged(auto => {
+                this.isCropAutoPositioned = auto;
                 if (auto) {
                     this.saveEditDataToProperty({x: 0, y: 0, x2: 1, y2: 1}, {x: 0, y: 0, x2: 1, y2: 1}, null);
                 }
             });
 
-            this.imageUploader.onFocusPositionChanged((focus: Point) => {
-                this.saveFocusToProperty(focus);
-            });
-
             this.imageUploader.onFocusAutoPositionedChanged(auto => {
+                this.isFocusAutoPositioned = auto;
                 if (auto) {
                     this.saveEditDataToProperty(null, null, {x: 0.5, y: 0.5});
                 }
@@ -180,6 +179,9 @@ module api.content.form.inputtype.upload {
                 container = this.getPropertyContainer(this.getProperty());
             }
             if (container && crop && zoom) {
+                if (this.isCropAutoPositioned && container.getPropertySets('zoomPosition').length == 0) {
+                    return;
+                }
                 container.setDoubleByPath('zoomPosition.left', zoom.x);
                 container.setDoubleByPath('zoomPosition.top', zoom.y);
                 container.setDoubleByPath('zoomPosition.right', zoom.x2);
@@ -198,6 +200,9 @@ module api.content.form.inputtype.upload {
                 container = this.getPropertyContainer(this.getProperty());
             }
             if (container && focus) {
+                if (this.isFocusAutoPositioned && container.getPropertySets('focalPoint').length == 0) {
+                    return;
+                }
                 container.setDoubleByPath('focalPoint.x', focus.x);
                 container.setDoubleByPath('focalPoint.y', focus.y);
             }
