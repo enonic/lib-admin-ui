@@ -148,7 +148,7 @@ module api.ui {
         }
 
         toggleIconClass(className: string, condition?: boolean): Action {
-            if (condition === false || condition == null && this.iconClass == className) {
+            if (condition === false || (condition == null && this.iconClass == className)) {
                 this.setIconClass('');
             } else {
                 this.setIconClass(className);
