@@ -1,17 +1,25 @@
 .issue-comment-textarea {
-  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
-  textarea {
-    width: 100%;
-    padding-left: 52px;
-    box-sizing: border-box;
-    font-size: 14px;
-    overflow: auto;
+  .textarea-container {
+    flex: 1;
+
+    textarea {
+      font-size: 14px;
+      overflow: auto;
+      width: 100%;
+    }
   }
 
   .principal-viewer-compact {
-    position: absolute;
-    top: calc(~'50% - 26px');
-    left: 10px;
+    margin: 2px 10px;
+
+    span.user-icon {
+      height: 32px;
+      width: 32px;
+      line-height: 32px;
+    }
   }
 }

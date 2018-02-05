@@ -1,19 +1,42 @@
 .issue-comments-list {
   .issue-comments-list-item {
     .clearfix();
-    margin-bottom: 10px;
+    margin-bottom: 30px;
 
     .principal-viewer-compact {
       float: left;
-      margin: 10px;
+      margin: 2px 10px;
+
+      span.user-icon {
+        height: 32px;
+        width: 32px;
+        line-height: 32px;
+      }
     }
 
     .@{_COMMON_PREFIX}names-view {
       .@{_COMMON_PREFIX}main-name {
         font-size: 13px;
+        position: relative;
+        padding-right: 24px;
+        .ellipsis();
+
         .created-time {
           margin-left: 10px;
           color: @admin-font-gray1;
+        }
+
+        i.icon {
+          position: absolute;
+          transform: rotate(90deg);
+          right: 0;
+          top: 0;
+          color: @admin-font-gray1;
+          cursor: pointer;
+
+          &:hover {
+            color: @admin-font-gray3;
+          }
         }
       }
       .@{_COMMON_PREFIX}sub-name {

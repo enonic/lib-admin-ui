@@ -23,6 +23,7 @@ module api.ui.text {
             this.h2.onDblClicked(() => this.setEditMode(true));
             this.input = new TextInput('inplace-input', size, originalValue);
             this.input.onKeyPressed((event: KeyboardEvent) => {
+                event.stopImmediatePropagation();
                 switch (event.keyCode) {
                 case 27:
                     this.setEditMode(false, true);
@@ -61,7 +62,7 @@ module api.ui.text {
             if (!this.outsideClickListener) {
                 this.outsideClickListener = (event: MouseEvent) => {
                     if (this.isEditMode() && !this.getEl().contains(<HTMLElement>event.target)) {
-                        this.setEditMode(false);
+                        this.setEditMode(false, true);
                     }
                 };
             }
