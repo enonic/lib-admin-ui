@@ -69,7 +69,7 @@ module api.ui {
         public unbindKey(binding: KeyBinding) {
 
             Mousetrap.unbind(binding.getCombination());
-            delete this.activeBindings.delete(this.getBindingKey(binding));
+            this.activeBindings.delete(this.getBindingKey(binding));
         }
 
         public trigger(combination: string, action?: string) {

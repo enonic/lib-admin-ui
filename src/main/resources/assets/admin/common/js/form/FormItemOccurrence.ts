@@ -4,15 +4,12 @@ module api.form {
 
         private occurrences: FormItemOccurrences<V>;
 
-        private formItem: FormItem;
-
         private allowedOccurrences: Occurrences;
 
         private index: number;
 
         constructor(occurrences: FormItemOccurrences<V>, index: number, allowedOccurrences: Occurrences) {
             this.occurrences = occurrences;
-            this.formItem = occurrences.getFormItem();
             this.allowedOccurrences = allowedOccurrences;
             this.index = index;
         }

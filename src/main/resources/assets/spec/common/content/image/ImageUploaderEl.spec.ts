@@ -53,7 +53,6 @@ module ImageUploaderElSpec {
             describe('general behaviour', () => {
 
                 let editorSpyObj;
-                let editorSpy;
 
                 beforeEach(() => {
                     imageUploaderEl.getEl().setWidthPx(0);
@@ -64,7 +63,7 @@ module ImageUploaderElSpec {
                             'setCropPosition', 'resetCropPosition',
                             'setZoomPosition', 'resetZoomPosition', 'isFocusEditMode', 'isCropEditMode']);
 
-                    editorSpy = spyOn(imageUploaderEl, 'createImageEditor').and.returnValue(editorSpyObj);
+                    spyOn(imageUploaderEl, 'createImageEditor').and.returnValue(editorSpyObj);
 
                     imageUploaderEl.createResultItem('testItem');
 
@@ -161,16 +160,14 @@ module ImageUploaderElSpec {
 
                     let editors;
                     let editorsSpy;
-                    let secondEditor;
-                    let thirdEditor;
 
                     beforeEach(() => {
 
                         editors = imageUploaderEl['imageEditors'];
                         editorsSpy = spyOn(editors, 'push').and.callThrough();
 
-                        secondEditor = imageUploaderEl.createResultItem('secondEditor');
-                        thirdEditor = imageUploaderEl.createResultItem('thirdEditor');
+                        imageUploaderEl.createResultItem('secondEditor');
+                        imageUploaderEl.createResultItem('thirdEditor');
                     });
 
                     it('should add new items the same times', ()=> {
@@ -373,11 +370,10 @@ module ImageUploaderElSpec {
 
             describe('isFocalPointEditMode()', () => {
 
-                let firstEditor;
                 let secondEditor;
 
                 beforeEach(() => {
-                    firstEditor = imageUploaderEl.createResultItem('firstEditor');
+                    imageUploaderEl.createResultItem('firstEditor');
                     secondEditor = imageUploaderEl.createResultItem('secondEditor');
                 });
 
@@ -393,11 +389,10 @@ module ImageUploaderElSpec {
 
             describe('isCropEditMode()', () => {
 
-                let firstEditor;
                 let secondEditor;
 
                 beforeEach(() => {
-                    firstEditor = imageUploaderEl.createResultItem('firstEditor');
+                    imageUploaderEl.createResultItem('firstEditor');
                     secondEditor = imageUploaderEl.createResultItem('secondEditor');
                 });
 

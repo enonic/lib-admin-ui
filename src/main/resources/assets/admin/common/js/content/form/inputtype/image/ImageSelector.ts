@@ -36,9 +36,6 @@ module api.content.form.inputtype.image {
 
         private selectedOptionsView: ImageSelectorSelectedOptionsView;
 
-        // requests aren't allowed until allowed contentTypes are specified
-        private contentRequestsAllowed: boolean = false;
-
         private uploader: api.content.image.ImageUploaderEl;
 
         private editContentRequestListeners: { (content: ContentSummary): void }[] = [];
@@ -216,8 +213,6 @@ module api.content.form.inputtype.image {
                 let comboBoxWrapper = new api.dom.DivEl('combobox-wrapper');
 
                 comboBoxWrapper.appendChild(this.contentComboBox);
-
-                this.contentRequestsAllowed = true;
 
                 if (this.config.content) {
                     comboBoxWrapper.appendChild(this.createUploader());

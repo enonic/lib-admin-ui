@@ -10,8 +10,6 @@ module api.form {
      */
     export class FormView extends api.dom.DivEl {
 
-        private context: FormContext;
-
         private form: Form;
 
         private data: PropertySet;
@@ -43,7 +41,6 @@ module api.form {
          */
         constructor(context: FormContext, form: Form, data: PropertySet) {
             super('form-view');
-            this.context = context;
             this.form = form;
             this.data = data;
 

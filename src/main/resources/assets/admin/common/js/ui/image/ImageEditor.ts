@@ -786,7 +786,7 @@ module api.ui.image {
             standbyContainer.appendChildren(resetButton, this.uploadButton);
 
             this.editCropButton = new Button().setEnabled(false);
-            // tslint:disable-next-line:no-unused-new
+            // tslint:disable-next-line:no-unused-expression
             new Tooltip(this.editCropButton, i18n('editor.cropimage'), 1000);
             this.editCropButton.addClass('button-crop transparent icon-crop').onClicked((event: MouseEvent) => {
                 event.stopPropagation();
@@ -804,7 +804,7 @@ module api.ui.image {
             });
 
             this.editFocusButton = new Button().setEnabled(false);
-            // tslint:disable-next-line:no-unused-new
+            // tslint:disable-next-line:no-unused-expression
             new Tooltip(this.editFocusButton, i18n('editor.setautofocus'), 1000);
             this.editFocusButton.addClass('button-focus transparent icon-center_focus_strong').onClicked((event: MouseEvent) => {
                 event.stopPropagation();
@@ -1311,11 +1311,11 @@ module api.ui.image {
 
             let denormalizedPoint = this.denormalizePoint(0.5, 0.5);
             // make sure it resets to the center of the crop area
+            this.setFocusAutoPositioned(true);
             this.setFocusPositionPx({
                 x: denormalizedPoint.x,
                 y: denormalizedPoint.y
             }, false);
-            this.setFocusAutoPositioned(true);
         }
 
         resetFocusRadius() {
@@ -1666,8 +1666,8 @@ module api.ui.image {
                 console.log('resetCropPosition');
             }
             let crop = {x: 0, y: 0, w: 1, h: 1};
-            this.setCropPositionPx(this.denormalizeRect(crop), false);
             this.setCropAutoPositioned(true);
+            this.setCropPositionPx(this.denormalizeRect(crop), false);
         }
 
         private setCropAutoPositioned(auto: boolean) {
@@ -2009,8 +2009,8 @@ module api.ui.image {
                 console.log('resetZoomPosition');
             }
             let zoom = {x: 0, y: 0, w: 1, h: 1};
-            this.setZoomPositionPx(this.denormalizeRect(zoom), false);
             this.setCropAutoPositioned(true);
+            this.setZoomPositionPx(this.denormalizeRect(zoom), false);
         }
 
         private isInsideZoom(x: number, y: number) {

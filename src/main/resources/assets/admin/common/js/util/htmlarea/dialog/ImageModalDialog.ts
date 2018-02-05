@@ -25,7 +25,6 @@ module api.util.htmlarea.dialog {
         private progress: api.ui.ProgressBar;
         private error: api.dom.DivEl;
         private image: api.dom.ImgEl;
-        private elementContainer: HTMLElement;
         private callback: Function;
         private imageToolbar: ImageToolbar;
         private imagePreviewScrollHandler: ImagePreviewScrollHandler;
@@ -385,7 +384,6 @@ module api.util.htmlarea.dialog {
 
             const config = params.config;
 
-            this.elementContainer = config.container;
             this.callback = config.callback;
 
             this.content = params.content;

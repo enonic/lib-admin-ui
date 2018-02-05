@@ -1,5 +1,6 @@
 ///<reference path='ContentTypeName.ts' />
 ///<reference path='ContentTypeSummary.ts' />
+///<reference path='ContentTypeSummaries.ts' />
 ///<reference path='ContentType.ts' />
 ///<reference path='ContentTypeIconUrlResolver.ts' />
 ///<reference path='ContentTypeSummaryViewer.ts' />
