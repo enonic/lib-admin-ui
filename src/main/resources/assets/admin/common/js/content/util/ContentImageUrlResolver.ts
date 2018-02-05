@@ -20,7 +20,7 @@ module api.content.util {
         }
 
         setSize(value: number): ContentImageUrlResolver {
-            this.size = '' + value;
+            this.size = '' + Math.floor(value);
             return this;
         }
 
