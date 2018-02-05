@@ -1311,11 +1311,11 @@ module api.ui.image {
 
             let denormalizedPoint = this.denormalizePoint(0.5, 0.5);
             // make sure it resets to the center of the crop area
+            this.setFocusAutoPositioned(true);
             this.setFocusPositionPx({
                 x: denormalizedPoint.x,
                 y: denormalizedPoint.y
             }, false);
-            this.setFocusAutoPositioned(true);
         }
 
         resetFocusRadius() {
@@ -1666,8 +1666,8 @@ module api.ui.image {
                 console.log('resetCropPosition');
             }
             let crop = {x: 0, y: 0, w: 1, h: 1};
-            this.setCropPositionPx(this.denormalizeRect(crop), false);
             this.setCropAutoPositioned(true);
+            this.setCropPositionPx(this.denormalizeRect(crop), false);
         }
 
         private setCropAutoPositioned(auto: boolean) {
@@ -2009,8 +2009,8 @@ module api.ui.image {
                 console.log('resetZoomPosition');
             }
             let zoom = {x: 0, y: 0, w: 1, h: 1};
-            this.setZoomPositionPx(this.denormalizeRect(zoom), false);
             this.setCropAutoPositioned(true);
+            this.setZoomPositionPx(this.denormalizeRect(zoom), false);
         }
 
         private isInsideZoom(x: number, y: number) {
