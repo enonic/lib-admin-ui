@@ -16,8 +16,6 @@ module api.content.site.inputtype.siteconfigurator {
 
         private siteConfig: SiteConfig;
 
-        private editClickedListeners: {(event: MouseEvent): void;}[];
-
         private siteConfigFormDisplayedListeners: {(applicationKey: ApplicationKey): void}[];
 
         private formContext: ContentFormContext;
@@ -31,7 +29,6 @@ module api.content.site.inputtype.siteconfigurator {
         constructor(option: Option<Application>, siteConfig: SiteConfig, formContext: api.content.form.ContentFormContext) {
             super(option);
 
-            this.editClickedListeners = [];
             this.siteConfigFormDisplayedListeners = [];
 
             this.application = option.displayValue;

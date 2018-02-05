@@ -13,8 +13,6 @@ module api.content.site.inputtype.authappselector {
 
     export class AuthApplicationSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
-        private context: api.form.inputtype.InputTypeViewContext;
-
         private comboBox: AuthApplicationComboBox;
 
         private siteConfigProvider: SiteConfigProvider;
@@ -25,7 +23,6 @@ module api.content.site.inputtype.authappselector {
 
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('site-configurator');
-            this.context = config;
             this.readConfig(config.inputConfig);
             this.formContext = config.formContext;
         }

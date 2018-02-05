@@ -2,7 +2,6 @@ module api.content.util {
 
     import TreeNode = api.ui.treegrid.TreeNode;
     import ContentAndStatusTreeSelectorItem = api.content.resource.ContentAndStatusTreeSelectorItem;
-    import Option = api.ui.selector.Option;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
 
     export class ContentRowFormatter {
@@ -53,13 +52,11 @@ module api.content.util {
             return wrapper.toString();
         }
 
-        public static statusFormatter(_row: number, _cell: number, _value: any, _columnDef: any,
-                                      node: TreeNode<ContentSummaryAndCompareStatus>) {
-            return ContentRowFormatter.doStatusFormat(node.getData());
+        public static statusFormatter({}: any, {}: any, {}: any, {}: any, dataContext: TreeNode<ContentSummaryAndCompareStatus>) {
+            return ContentRowFormatter.doStatusFormat(dataContext.getData());
         }
 
-        public static statusSelectorFormatter(_row: number, _cell: number, value: ContentTreeSelectorItem, _columnDef: any,
-                                              _node: TreeNode<Option<ContentTreeSelectorItem>>) {
+        public static statusSelectorFormatter({}: any, {}: any, value: ContentTreeSelectorItem, {}: any, {}: any) {
 
             if (api.ObjectHelper.iFrameSafeInstanceOf(value, ContentAndStatusTreeSelectorItem)) {
 

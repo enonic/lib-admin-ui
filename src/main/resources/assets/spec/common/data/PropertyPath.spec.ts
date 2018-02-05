@@ -4,14 +4,14 @@ describe('api.data.PropertyPath', () => {
 
     it("doesn't accept null in first constructor argument", () => {
         expect(() => {
-            // tslint:disable-next-line:no-unused-new
+            // tslint:disable-next-line:no-unused-expression
             new PropertyPath([null]);
         }).toThrow();
     });
 
     it("doesn't accept PropertyPathElement's with empty name in first constructor argument", () => {
         expect(() => {
-            // tslint:disable-next-line:no-unused-new
+            // tslint:disable-next-line:no-unused-expression
             new PropertyPath([new PropertyPathElement('', 0)]);
         }).toThrow();
     });

@@ -125,12 +125,6 @@ module api.ui.selector.combobox {
 
         public static debug: boolean = false;
 
-        /**
-         * Indicates if combobox is currently has focus
-         * @type {boolean}
-         */
-        private active: boolean = false;
-
         constructor(name: string, config: ComboBoxConfig<OPTION_DISPLAY_VALUE>) {
             super('div', 'combobox', api.StyleHelper.COMMON_PREFIX, config.value);
             this.getEl().setAttribute('name', name);
@@ -748,7 +742,6 @@ module api.ui.selector.combobox {
 
             api.util.AppHelper.focusInOut(this, () => {
                 this.hideDropdown();
-                this.active = false;
             });
 
             this.onScrolled((event: WheelEvent) => {

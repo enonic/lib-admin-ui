@@ -8,8 +8,6 @@ module api.content.form.inputtype.principalselector {
 
     export class PrincipalSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
-        private config: api.content.form.inputtype.ContentInputTypeViewContext;
-
         private principalTypes: api.security.PrincipalType[];
 
         private comboBox: api.ui.security.PrincipalComboBox;
@@ -17,7 +15,6 @@ module api.content.form.inputtype.principalselector {
         constructor(config?: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('relationship');
             this.addClass('input-type-view');
-            this.config = config;
             this.readConfig(config.inputConfig);
         }
 

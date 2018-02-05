@@ -18,8 +18,6 @@ module api.content.form.inputtype.customselector {
 
         private requestPath: string;
 
-        private context: ContentInputTypeViewContext;
-
         private comboBox: RichComboBox<CustomSelectorItem>;
 
         private draggingIndex: number;
@@ -31,7 +29,6 @@ module api.content.form.inputtype.customselector {
                 console.debug('CustomSelector: config', context.inputConfig);
             }
 
-            this.context = context;
             this.readConfig(context);
         }
 
