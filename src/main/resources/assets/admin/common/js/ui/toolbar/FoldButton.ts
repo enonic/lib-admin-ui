@@ -75,6 +75,29 @@ module api.ui.toolbar {
             return top;
         }
 
+        removeButton(label: string) {
+
+            const actionElements = this.dropdown.getChildren();
+
+            for (let i in actionElements) {
+                if (!actionElements.hasOwnProperty(i)) {
+                    continue;
+                }
+                const actionEl = actionElements[i];
+
+                if (api.ObjectHelper.iFrameSafeInstanceOf(actionEl, api.ui.button.ActionButton)) {
+
+                    if (label === (<api.ui.button.ActionButton>actionEl).getLabel()) {
+
+                        this.dropdown.removeChild(actionEl);
+                        this.widthCache.splice(Number(i), 1);
+
+                        break;
+                    }
+                }
+            }
+        }
+
         setLabel(label: string) {
             this.span.setHtml(label);
         }
