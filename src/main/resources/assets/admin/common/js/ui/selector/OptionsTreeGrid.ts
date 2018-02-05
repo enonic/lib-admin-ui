@@ -4,6 +4,7 @@ module api.ui.selector {
     import TreeGridBuilder = api.ui.treegrid.TreeGridBuilder;
     import SelectionOnClickType = api.ui.treegrid.SelectionOnClickType;
     import StringHelper = api.util.StringHelper;
+    import i18n = api.util.i18n;
 
     export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         extends TreeGrid<Option<OPTION_DISPLAY_VALUE>> {
@@ -247,7 +248,7 @@ module api.ui.selector {
 
             if (node.getData().readOnly) {
                 cssClasses += ' readonly';
-                title='This content is read-only';
+                title = i18n('field.readOnly');
             }
 
             if (node.getData().selectable) {
