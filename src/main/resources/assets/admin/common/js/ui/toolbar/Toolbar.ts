@@ -29,7 +29,7 @@ module api.ui.toolbar {
 
             const actionButton: ActionButton = new ActionButton(action);
 
-            action.onPropertyChanged((curAction) => this.foldOrExpand(curAction));
+            action.onPropertyChanged((curAction) => this.foldOrExpand());
             this.addElement(actionButton);
 
             return actionButton;
@@ -77,13 +77,9 @@ module api.ui.toolbar {
             this.hasGreedySpacer = false;
         }
 
-        protected foldOrExpand(action?: Action) {
+        protected foldOrExpand() {
             if (!this.isVisible()) {
                 return;
-            }
-
-            if (action && !action.isVisible()) {
-                this.fold.removeButton(action.getLabel());
             }
 
             let toolbarWidth = this.getEl().getWidth();
