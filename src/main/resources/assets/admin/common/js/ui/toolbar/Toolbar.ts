@@ -132,9 +132,8 @@ module api.ui.toolbar {
                 }
                 if (button.getParentElement() != button.getPreviousElement().getParentElement()) {
                     return null;
-                } else {
-                    button = button.getPreviousElement();
                 }
+                button = button.getPreviousElement();
             }
         }
 
