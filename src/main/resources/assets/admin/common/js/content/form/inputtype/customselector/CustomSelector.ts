@@ -171,7 +171,7 @@ module api.content.form.inputtype.customselector {
 
         private handleDnDStart(ui: JQueryUI.SortableUIParams): void {
 
-            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
             this.draggingIndex = draggedElement.getSiblingIndex();
 
             ui.placeholder.html('Drop form item set here');
@@ -180,7 +180,7 @@ module api.content.form.inputtype.customselector {
         private handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
-                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
                 let draggedToIndex = draggedElement.getSiblingIndex();
                 this.getPropertyArray().move(this.draggingIndex, draggedToIndex);
             }

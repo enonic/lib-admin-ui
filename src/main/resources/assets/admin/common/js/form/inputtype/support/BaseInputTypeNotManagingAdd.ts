@@ -50,7 +50,7 @@ module api.form.inputtype.support {
 
         handleDnDStart(ui: JQueryUI.SortableUIParams): void {
 
-            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
             this.draggingIndex = draggedElement.getSiblingIndex();
 
             ui.placeholder.html('Drop form item set here');
@@ -63,7 +63,7 @@ module api.form.inputtype.support {
         handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
-                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
                 let draggedToIndex = draggedElement.getSiblingIndex();
                 this.inputOccurrences.moveOccurrence(this.draggingIndex, draggedToIndex);
             }
