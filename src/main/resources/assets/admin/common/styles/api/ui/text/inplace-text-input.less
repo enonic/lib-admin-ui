@@ -13,13 +13,16 @@
 
   .inplace-toggle {
     font-size: 20px;
-    color: @admin-font-gray1 !important;
     margin-left: 10px;
     background: transparent;
     border: 0 none;
 
-    &:hover {
-      color: @admin-button-gray3 !important;
+    &:before {
+      color: @admin-font-gray2;
+    }
+    &:hover:before {
+      color: @admin-bg-dark-gray;
+      cursor: pointer;
     }
   }
 
