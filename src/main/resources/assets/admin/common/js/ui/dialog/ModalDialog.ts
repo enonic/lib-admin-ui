@@ -19,6 +19,7 @@ module api.ui.dialog {
         buttonRow?: ButtonRow;
         confirmation?: ConfirmationConfig;
         closeIconCallback?: () => void;
+        skipTabbable?: boolean;
     }
 
     export class ModalDialog extends DivEl {
@@ -51,12 +52,15 @@ module api.ui.dialog {
 
         private height: number = 0;
 
+        private skipTabbable: boolean;
+
         public static debug: boolean = false;
 
         constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
             super('modal-dialog', api.StyleHelper.COMMON_PREFIX);
 
             this.buttonRow = config.buttonRow || new ButtonRow();
+            this.skipTabbable = config.skipTabbable || false;
 
             this.cancelAction = this.createDefaultCancelAction();
             this.closeIconCallback = config.closeIconCallback || (() => {
@@ -326,7 +330,7 @@ module api.ui.dialog {
             return !!this.tabbable && this.tabbable.length > 0;
         }
 
-        updateTabbable() {
+        protected updateTabbable() {
             this.tabbable = this.getTabbableElements();
         }
 
@@ -370,7 +374,9 @@ module api.ui.dialog {
 
             let keyBindings = Action.getKeyBindings(this.buttonRow.getActions());
 
-            this.updateTabbable();
+            if (!this.skipTabbable) {
+                this.updateTabbable();
+            }
 
             keyBindings = keyBindings.concat([
                 new KeyBinding('right', (event) => {
