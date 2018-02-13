@@ -1,5 +1,7 @@
 module api.dom {
 
+    import ResponsiveManager = api.ui.responsive.ResponsiveManager;
+
     export class Body
         extends Element {
 
@@ -40,8 +42,9 @@ module api.dom {
         }
 
         static get(): Body {
-            if (!Body.instance) {
+            if (!Body.instance && document.body) {
                 Body.instance = new Body();
+                ResponsiveManager.onAvailableSizeChanged(Body.instance);
             }
             return Body.instance;
         }

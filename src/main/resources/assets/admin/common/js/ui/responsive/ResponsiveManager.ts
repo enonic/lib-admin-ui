@@ -80,8 +80,4 @@ module api.ui.responsive {
             return ResponsiveManager.window;
         }
     }
-
-    if (document.body) {
-        ResponsiveManager.onAvailableSizeChanged(api.dom.Body.get());
-    }
 }

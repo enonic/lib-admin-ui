@@ -348,7 +348,7 @@ module api.form {
         }
 
         protected handleDnDStart(ui: JQueryUI.SortableUIParams): void {
-            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
             api.util.assert(draggedElement.hasClass(this.classPrefix + '-occurrence-view'));
             this.draggingIndex = draggedElement.getSiblingIndex();
 
@@ -359,7 +359,7 @@ module api.form {
         protected handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
-                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
                 api.util.assert(draggedElement.hasClass(this.classPrefix + '-occurrence-view'));
                 let draggedToIndex = draggedElement.getSiblingIndex();
 
