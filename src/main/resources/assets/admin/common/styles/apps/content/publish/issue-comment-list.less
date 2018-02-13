@@ -14,36 +14,42 @@
       }
     }
 
-    .@{_COMMON_PREFIX}names-view {
-      .@{_COMMON_PREFIX}main-name {
-        font-size: 13px;
-        position: relative;
-        padding-right: 24px;
-        .ellipsis();
+    .header {
+      font-size: 13px;
+      position: relative;
+      padding-right: 24px;
+      padding-left: 5px;
+      .ellipsis();
 
-        .created-time {
-          margin-left: 10px;
-          color: @admin-font-gray1;
-        }
+      .created-time {
+        margin-left: 10px;
+        color: @admin-font-gray1;
+      }
 
-        i.icon {
-          position: absolute;
-          transform: rotate(90deg);
-          right: 0;
-          top: 0;
-          color: @admin-font-gray1;
-          cursor: pointer;
+      i.icon {
+        position: absolute;
+        transform: rotate(90deg);
+        right: 0;
+        top: 0;
+        color: @admin-font-gray1;
+        cursor: pointer;
 
-          &:hover {
-            color: @admin-font-gray3;
-          }
+        &:hover {
+          color: @admin-font-gray3;
         }
       }
-      .@{_COMMON_PREFIX}sub-name {
+    }
+    .inplace-text-area {
+      margin-left: 62px;
+
+      .inplace-text {
         font-size: 14px;
         color: black;
-        margin: 5px 0;
+        margin: 6px;
         white-space: normal;
+      }
+      .inplace-area {
+        font-size: 14px;
       }
     }
   }
