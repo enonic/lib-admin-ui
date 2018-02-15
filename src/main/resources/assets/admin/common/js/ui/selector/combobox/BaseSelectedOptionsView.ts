@@ -106,7 +106,7 @@ module api.ui.selector.combobox {
         }
 
         createSelectedOption(option: api.ui.selector.Option<T>): SelectedOption<T> {
-            return new SelectedOption<T>(new BaseSelectedOptionView(option), this.count());
+            return new SelectedOption<T>(new BaseSelectedOptionView(option, this.editable, this.readonly), this.count());
         }
 
         addOption(option: api.ui.selector.Option<T>, silent: boolean = false, keyCode: number): boolean {
@@ -115,7 +115,7 @@ module api.ui.selector.combobox {
                 return false;
             }
 
-            let selectedOption: SelectedOption<T> = this.createSelectedOption(option, this.editable, this.readonly);
+            let selectedOption: SelectedOption<T> = this.createSelectedOption(option);
 
             let optionView = selectedOption.getOptionView();
             optionView.onRemoveClicked(() => this.removeOption(option));
