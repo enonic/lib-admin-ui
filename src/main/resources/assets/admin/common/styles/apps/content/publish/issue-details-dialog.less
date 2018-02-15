@@ -22,11 +22,15 @@
   .modal-dialog-header {
     margin-bottom: 0;
     padding-bottom: 0 !important;
+    padding-right: 30px;
     position: relative;
 
     .inplace-text-input {
       margin-top: -4px;
 
+      .inplace-toggle {
+        margin-right: -7px;
+      }
       .inplace-text {
         line-height: 38px;
 
@@ -68,7 +72,7 @@
           font-weight: bold;
           padding: 2px 20px;
           border-radius: 4px;
-          margin: 5px;
+          margin: 0 0 5px 5px;
 
           &:before {
             content: '';
@@ -116,7 +120,9 @@
       }
     }
   }
-
+  .modal-dialog-body {
+    padding-right: 30px;
+  }
   .panel {
     position: static;
   }

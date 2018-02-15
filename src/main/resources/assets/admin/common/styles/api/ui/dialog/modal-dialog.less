@@ -335,9 +335,12 @@ body {
   &._540-720 .@{_COMMON_PREFIX}modal-dialog {
     margin-left: 10px;
     margin-right: 10px;
-    padding-left: 30px;
-    padding-right: 30px;
     width: 80.185%;
+
+    &:not(.grey-header) {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
   }
 
   @media screen and (max-height: 540px) {
