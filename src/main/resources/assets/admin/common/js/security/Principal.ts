@@ -72,6 +72,11 @@ module api.security {
             return this.modifiedTime;
         }
 
+        isSystemUser(): boolean {
+            return this.isUser() &&
+                    (this.getKey().equals(PrincipalKey.ofAnonymous()) || this.getKey().equals(PrincipalKey.ofSU()));
+        }
+
         equals(o: api.Equitable): boolean {
             if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Principal)) {
                 return false;

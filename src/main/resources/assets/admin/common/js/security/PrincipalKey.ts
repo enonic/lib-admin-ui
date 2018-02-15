@@ -6,6 +6,8 @@ module api.security {
 
         private static ANONYMOUS_PRINCIPAL: PrincipalKey = new PrincipalKey(UserStoreKey.SYSTEM, PrincipalType.USER, 'anonymous');
 
+        private static SU_PRINCIPAL: PrincipalKey = new PrincipalKey(UserStoreKey.SYSTEM, PrincipalType.USER, 'su');
+
         private userStore: UserStoreKey;
 
         private type: PrincipalType;
@@ -113,6 +115,10 @@ module api.security {
 
         public static ofAnonymous(): PrincipalKey {
             return PrincipalKey.ANONYMOUS_PRINCIPAL;
+        }
+
+        public static ofSU(): PrincipalKey {
+            return PrincipalKey.SU_PRINCIPAL;
         }
 
         public static ofUser(userStore: UserStoreKey, userId: string): PrincipalKey {
