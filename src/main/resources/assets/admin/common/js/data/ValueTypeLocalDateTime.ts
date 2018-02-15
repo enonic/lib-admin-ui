@@ -29,10 +29,7 @@ module api.data {
         }
 
         newValue(value: string): Value {
-            if (!value) {
-                return this.newNullValue();
-            }
-            if (!this.isConvertible(value)) {
+            if (!value || !this.isConvertible(value)) {
                 return this.newNullValue();
             }
             let date: LocalDateTime = LocalDateTime.fromString(value);
