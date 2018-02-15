@@ -71,7 +71,7 @@ module api.app {
         }
 
         setMainName(value: string): NamesAndIconView {
-            this.namesView.setMainName(value);
+            this.namesView.setMainName(value, false);
             return this;
         }
 

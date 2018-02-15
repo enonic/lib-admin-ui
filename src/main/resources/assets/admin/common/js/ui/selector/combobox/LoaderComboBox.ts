@@ -52,7 +52,7 @@ module api.ui.selector.combobox {
         }
 
         private doWhenLoaded(callback: Function, value: string) {
-            if (this.loader.isLoaded()) {
+            if (this.loader.isLoaded() || this.loader.isPreLoaded()) {
                 let optionsMissing = !api.util.StringHelper.isEmpty(value) && this.splitValues(value).some((val) => {
                     return !this.getOptionByValue(val);
                 });

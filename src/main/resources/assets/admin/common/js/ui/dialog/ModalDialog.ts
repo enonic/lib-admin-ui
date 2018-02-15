@@ -28,6 +28,8 @@ module api.ui.dialog {
 
         private body: api.dom.DivEl;
 
+        private footer: api.dom.DivEl;
+
         private contentPanel: ModalDialogContentPanel;
 
         private buttonRow: ButtonRow;
@@ -40,9 +42,9 @@ module api.ui.dialog {
 
         private static openDialogsCounter: number = 0;
 
-        private tabbable: api.dom.Element[];
+        private tabbable: Element[];
 
-        private listOfClickIgnoredElements: api.dom.Element[] = [];
+        private listOfClickIgnoredElements: Element[] = [];
 
         private onClosedListeners: {(): void;}[] = [];
 
@@ -85,11 +87,11 @@ module api.ui.dialog {
             this.body = new DivEl('modal-dialog-body');
             this.body.appendChildren(this.closeIcon, this.contentPanel);
 
-            let footer = new DivEl('modal-dialog-footer');
-            footer.appendChild(this.buttonRow);
+            this.footer = new DivEl('modal-dialog-footer');
+            this.footer.appendChild(this.buttonRow);
 
             let wrapper = new DivEl('modal-dialog-wrapper');
-            wrapper.appendChildren<Element>(this.header, this.body, footer);
+            wrapper.appendChildren<Element>(this.header, this.body, this.footer);
 
             this.appendChild(wrapper);
 
@@ -213,14 +215,14 @@ module api.ui.dialog {
         }
 
         protected createHeader(title: string): api.ui.dialog.ModalDialogHeader {
-            return new api.ui.dialog.ModalDialogHeader(title);
+            return new DefaultModalDialogHeader(title);
         }
 
-        addClickIgnoredElement(elem: api.dom.Element) {
+        addClickIgnoredElement(elem: Element) {
             this.listOfClickIgnoredElements.push(elem);
         }
 
-        removeClickIgnoredElement(elem: api.dom.Element) {
+        removeClickIgnoredElement(elem: Element) {
             const elementIndex = this.listOfClickIgnoredElements.indexOf(elem);
             if (elementIndex > -1) {
                 this.listOfClickIgnoredElements.splice(elementIndex, 1);
@@ -232,7 +234,7 @@ module api.ui.dialog {
             if (element && element.className && element.className.indexOf) {
                 ignoredElementClicked = element.className.indexOf('mce-') > -1 || element.className.indexOf('html-area-modal-dialog') > -1;
             }
-            ignoredElementClicked = ignoredElementClicked || this.listOfClickIgnoredElements.some((elem: api.dom.Element) => {
+            ignoredElementClicked = ignoredElementClicked || this.listOfClickIgnoredElements.some((elem: Element) => {
                     return elem.getHTMLElement() === element || elem.getEl().contains(element);
                 });
             return ignoredElementClicked;
@@ -267,23 +269,31 @@ module api.ui.dialog {
             this.header.setTitle(value, escapeHtml);
         }
 
-        appendChildToContentPanel(child: api.dom.Element) {
+        appendChildToContentPanel(child: Element) {
             this.contentPanel.appendChild(child);
         }
 
-        prependChildToContentPanel(child: api.dom.Element) {
+        prependChildToContentPanel(child: Element) {
             this.contentPanel.prependChild(child);
         }
 
-        appendChildToHeader(child: api.dom.Element) {
+        appendChildToHeader(child: Element) {
             this.header.appendChild(child);
         }
 
-        prependChildToHeader(child: api.dom.Element) {
+        prependChildToHeader(child: Element) {
             this.header.prependChild(child);
         }
 
-        removeChildFromContentPanel(child: api.dom.Element) {
+        appendChildToFooter(child: Element) {
+            this.footer.appendChild(child);
+        }
+
+        prependChildToFooter(child: Element) {
+            this.footer.prependChild(child);
+        }
+
+        removeChildFromContentPanel(child: Element) {
             this.contentPanel.removeChild(child);
         }
 
@@ -443,7 +453,18 @@ module api.ui.dialog {
         }
     }
 
-    export class ModalDialogHeader extends DivEl {
+    export interface ModalDialogHeader
+        extends api.dom.Element {
+
+        setTitle(value: string, escapeHtml?: boolean);
+
+        getTitle(): string;
+
+    }
+
+    export class DefaultModalDialogHeader
+        extends DivEl
+        implements ModalDialogHeader {
 
         private titleEl: api.dom.H2El;
 
@@ -459,8 +480,8 @@ module api.ui.dialog {
             this.titleEl.setHtml(value, escapeHtml);
         }
 
-        appendElement(el: Element) {
-            el.insertAfterEl(this.titleEl);
+        getTitle(): string {
+            return this.titleEl.getHtml();
         }
     }
 
@@ -473,7 +494,7 @@ module api.ui.dialog {
 
     export class ButtonRow extends DivEl {
 
-        private defaultElement: api.dom.Element;
+        private defaultElement: Element;
 
         private buttonContainer: DivEl;
 
@@ -536,7 +557,7 @@ module api.ui.dialog {
                 });
         }
 
-        setDefaultElement(element: api.dom.Element) {
+        setDefaultElement(element: Element) {
             this.defaultElement = element;
         }
 
