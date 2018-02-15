@@ -123,6 +123,9 @@ module api.form.inputtype.text {
             };
 
             const notifyValueChanged = () => {
+                if (!this.getEditor(id)) {
+                    return;
+                }
                 this.notifyValueChanged(id, textAreaWrapper);
                 new HtmlAreaResizeEvent(this).fire();
             };

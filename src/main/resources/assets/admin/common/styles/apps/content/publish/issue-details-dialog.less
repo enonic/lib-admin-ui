@@ -4,6 +4,7 @@
   .dialog-content {
     padding: 5px 0;
     min-height: 200px;
+    position: relative; // to be able to position empty text message absolutely
 
     .deck-panel {
       overflow: visible;
@@ -23,47 +24,21 @@
     padding-bottom: 0 !important;
     position: relative;
 
-    .title {
-      display: block;
-      font-size: 24px;
-      max-width: 100%;
-      line-height: 32px;
-      text-transform: capitalize;
+    .inplace-text-input {
+      margin-top: -4px;
 
-      .ellipsis();
+      .inplace-text {
+        line-height: 38px;
 
-      span.title-id {
-        color: @admin-font-gray1;
-        margin-left: 10px;
-      }
-    }
-
-    .assignees-line {
-      float: right;
-      padding-right: 10px;
-      .clearfix();
-
-      .principal-viewer-compact {
-        float: left;
-
-        .user-icon {
-          width: 32px;
-          height: 32px;
-          border-radius: 32px;
-          line-height: 32px;
-          font-size: 16px;
+        .title-id {
+          color: @admin-font-gray1;
+          margin-left: 10px;
         }
-      }
-
-      .all-assignees-tooltip {
-        float: left;
-        margin-left: 5px;
-        line-height: 32px;
       }
     }
 
     .issue-details-sub-title {
-      margin: 15px 0 0 34px;
+      margin: 5px 0 0 39px;
       font-size: 13px;
 
       .creator, .assignee {
@@ -71,11 +46,10 @@
       }
 
       .issue-status-selector {
-        width: 80px;
+        float: right;
         display: inline-block;
         min-width: inherit;
         margin: 0;
-        margin-right: 15px;
         vertical-align: middle;
 
         &.open {
@@ -92,8 +66,9 @@
         .tab-menu-button {
           display: inline-block;
           font-weight: bold;
-          padding: 2px 14px;
+          padding: 2px 20px;
           border-radius: 4px;
+          margin: 5px;
 
           &:before {
             content: '';
@@ -108,7 +83,6 @@
         .menu {
           text-align: center;
           min-width: inherit;
-          width: 80px;
           li {
             padding: 1px 5px;
             border-radius: 4px;
@@ -167,30 +141,6 @@
   .required {
     &:after {
       display: none;
-    }
-  }
-
-  .issue-dialog-form {
-    padding: 0;
-
-    input-view:not(:last-child) {
-      margin-bottom: 0px;
-    }
-
-    .description-text {
-      margin-top: 10px;
-      font-style: italic;
-      &.empty {
-        display: none !important;
-      }
-    }
-
-    label {
-      font-size: 14px;
-    }
-
-    .rich-combobox:not(.readonly) {
-      margin-top: 10px;
     }
   }
 
@@ -265,6 +215,7 @@
       display: none;
       line-height: 36px;
       font-size: 15px;
+      float: right;
     }
   }
 
@@ -273,10 +224,6 @@
       display: none;
       padding-bottom: 20px;
     }
-  }
-
-  .no-action-message {
-    float: right;
   }
 
   &.nested {
@@ -309,11 +256,22 @@
     position: relative;
   }
 
-  &.tab-issue {
+  &.tab-comments {
     &:not(.closed) {
+      .dialog-content {
+        min-height: 124px; // subtract textarea height to keep overall dialog height
+      }
       .modal-dialog-footer {
+        // it's placed in footer to stick to bottom so show it manually
+        .issue-comment-textarea {
+          display: flex;
+          textarea {
+            min-height: 52px;
+          }
+        }
+
         .button-container {
-          .close-issue, .edit-issue {
+          .close-issue, .comment-issue {
             display: block !important;
           }
         }
@@ -325,21 +283,6 @@
           .reopen-issue {
             display: block !important;
           }
-        }
-      }
-    }
-  }
-
-  &.tab-comments:not(.closed) {
-    .modal-dialog-footer {
-      // it's placed in footer to stick to bottom so show it manually
-      .issue-comment-textarea {
-        display: block;
-      }
-
-      .button-container {
-        .comment-issue {
-          display: block !important;
         }
       }
     }
@@ -361,6 +304,15 @@
           display: inline-block;
         }
       }
+    }
+  }
+
+  &.tab-assignees {
+    .dialog-content {
+      min-height: 256px;
+    }
+    .modal-dialog-footer {
+      padding-top: 0;
     }
   }
 

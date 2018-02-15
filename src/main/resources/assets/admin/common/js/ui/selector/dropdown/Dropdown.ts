@@ -56,12 +56,6 @@ module api.ui.selector.dropdown {
 
         private noOptionsText: string;
 
-        /**
-         * Indicates if Dropdown currently has focus
-         * @type {boolean}
-         */
-        private active: boolean = false;
-
         constructor(name: string, config: DropdownConfig<OPTION_DISPLAY_VALUE>) {
             super('div', 'dropdown', api.StyleHelper.COMMON_PREFIX, config.value);
             this.getEl().setAttribute('name', name);
@@ -318,7 +312,6 @@ module api.ui.selector.dropdown {
             api.util.AppHelper.focusInOut(this, () => {
                 if (this.isVisible()) {
                     this.hideDropdown();
-                    this.active = false;
                 }
             });
 

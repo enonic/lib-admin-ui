@@ -19,6 +19,7 @@ module api.ui.dialog {
         buttonRow?: ButtonRow;
         confirmation?: ConfirmationConfig;
         closeIconCallback?: () => void;
+        skipTabbable?: boolean;
     }
 
     export class ModalDialog extends DivEl {
@@ -53,12 +54,15 @@ module api.ui.dialog {
 
         private height: number = 0;
 
+        private skipTabbable: boolean;
+
         public static debug: boolean = false;
 
         constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
             super('modal-dialog', api.StyleHelper.COMMON_PREFIX);
 
             this.buttonRow = config.buttonRow || new ButtonRow();
+            this.skipTabbable = config.skipTabbable || false;
 
             this.cancelAction = this.createDefaultCancelAction();
             this.closeIconCallback = config.closeIconCallback || (() => {
@@ -211,7 +215,7 @@ module api.ui.dialog {
         }
 
         protected createHeader(title: string): api.ui.dialog.ModalDialogHeader {
-            return new api.ui.dialog.ModalDialogHeader(title);
+            return new DefaultModalDialogHeader(title);
         }
 
         addClickIgnoredElement(elem: Element) {
@@ -221,7 +225,7 @@ module api.ui.dialog {
         removeClickIgnoredElement(elem: Element) {
             const elementIndex = this.listOfClickIgnoredElements.indexOf(elem);
             if (elementIndex > -1) {
-                delete this.listOfClickIgnoredElements.splice(elementIndex, 1);
+                this.listOfClickIgnoredElements.splice(elementIndex, 1);
             }
         }
 
@@ -336,7 +340,7 @@ module api.ui.dialog {
             return !!this.tabbable && this.tabbable.length > 0;
         }
 
-        updateTabbable() {
+        protected updateTabbable() {
             this.tabbable = this.getTabbableElements();
         }
 
@@ -380,7 +384,9 @@ module api.ui.dialog {
 
             let keyBindings = Action.getKeyBindings(this.buttonRow.getActions());
 
-            this.updateTabbable();
+            if (!this.skipTabbable) {
+                this.updateTabbable();
+            }
 
             keyBindings = keyBindings.concat([
                 new KeyBinding('right', (event) => {
@@ -447,7 +453,18 @@ module api.ui.dialog {
         }
     }
 
-    export class ModalDialogHeader extends DivEl {
+    export interface ModalDialogHeader
+        extends api.dom.Element {
+
+        setTitle(value: string, escapeHtml?: boolean);
+
+        getTitle(): string;
+
+    }
+
+    export class DefaultModalDialogHeader
+        extends DivEl
+        implements ModalDialogHeader {
 
         private titleEl: api.dom.H2El;
 
@@ -463,8 +480,8 @@ module api.ui.dialog {
             this.titleEl.setHtml(value, escapeHtml);
         }
 
-        appendElement(el: Element) {
-            el.insertAfterEl(this.titleEl);
+        getTitle(): string {
+            return this.titleEl.getHtml();
         }
     }
 

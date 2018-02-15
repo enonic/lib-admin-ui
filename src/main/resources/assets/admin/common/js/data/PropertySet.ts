@@ -674,9 +674,11 @@ module api.data {
         getPropertySets(name: string): PropertySet[] {
             let values: PropertySet[] = [];
             let array = this.getPropertyArray(name);
-            array.forEach((property: Property) => {
-                values.push(property.getPropertySet());
-            });
+            if (array) {
+                array.forEach((property: Property) => {
+                    values.push(property.getPropertySet());
+                });
+            }
             return values;
         }
 

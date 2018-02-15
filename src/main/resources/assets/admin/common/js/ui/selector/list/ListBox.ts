@@ -10,8 +10,16 @@ module api.ui.selector.list {
         private itemsAddedListeners: { (items: I[]): void }[] = [];
         private itemsRemovedListeners: { (items: I[]): void }[] = [];
 
+        private emptyText: string;
+        private emptyView: api.dom.DivEl;
+
         constructor(className?: string) {
             super(className);
+        }
+
+        setEmptyText(text: string) {
+            this.emptyText = text;
+            this.addEmptyView();
         }
 
         setItems(items: I[], silent?: boolean) {
@@ -66,6 +74,9 @@ module api.ui.selector.list {
         }
 
         private doAddItem(readOnly: boolean, items: I[], silent: boolean = false) {
+            if (this.getItemCount() == 0) {
+                this.removeEmptyView();
+            }
             this.items = this.items.concat(items);
             items.forEach((item) => {
                 this.addItemView(item, readOnly);
@@ -95,6 +106,9 @@ module api.ui.selector.list {
             });
             if (itemsRemoved.length > 0) {
                 this.notifyItemsRemoved(itemsRemoved);
+                if (this.getItemCount() == 0) {
+                    this.addEmptyView();
+                }
             }
         }
 
@@ -125,6 +139,12 @@ module api.ui.selector.list {
             throw new Error('You must override getItemId to find item views by items');
         }
 
+        protected createEmptyView(text: string) {
+            const view = new api.dom.H5El('empty-list-item');
+            view.setHtml(text);
+            return view;
+        }
+
         getItemView(item: I) {
             return this.itemViews[this.getItemId(item)];
         }
@@ -139,8 +159,12 @@ module api.ui.selector.list {
 
         private layoutList(items: I[]) {
             this.removeChildren();
-            for (let i = 0; i < items.length; i++) {
-                this.addItemView(items[i]);
+            if (items.length > 0) {
+                for (let i = 0; i < items.length; i++) {
+                    this.addItemView(items[i]);
+                }
+            } else {
+                this.addEmptyView();
             }
         }
 
@@ -156,6 +180,19 @@ module api.ui.selector.list {
             let itemView = this.createItemView(item, readOnly);
             this.itemViews[this.getItemId(item)] = itemView;
             this.appendChild(itemView);
+        }
+
+        private addEmptyView() {
+            if (this.emptyText) {
+                this.emptyView = this.createEmptyView(this.emptyText);
+                this.appendChild(this.emptyView);
+            }
+        }
+
+        private removeEmptyView() {
+            if (this.emptyView) {
+                this.removeChild(this.emptyView);
+            }
         }
 
         public onItemsAdded(listener: (items: I[]) => void) {

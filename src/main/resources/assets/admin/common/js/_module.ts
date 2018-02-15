@@ -14,6 +14,9 @@
 
 ///<reference path='util/_module.ts' />
 
+///<reference path='dom/WindowDOM.ts' />
+///<reference path='ui/responsive/_module.ts' />
+
 ///<reference path='Equitable.ts' />
 ///<reference path='Cloneable.ts' />
 ///<reference path='Class.ts' />
@@ -65,8 +68,6 @@
 ///<reference path='task/_module.ts' />
 
 ///<reference path='managedaction/_module.ts' />
-
-///<reference path='ui/responsive/_module.ts' />
 
 ///<reference path='ui/_module.ts' />
 ///<reference path='ui/menu/_module.ts' />

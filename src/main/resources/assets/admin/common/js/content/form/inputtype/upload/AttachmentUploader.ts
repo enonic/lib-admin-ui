@@ -7,8 +7,6 @@ module api.content.form.inputtype.upload {
 
     export class AttachmentUploader extends FileUploader {
 
-        private attachmentNames: string[] = [];
-
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
             super(config);
             this.addClass('attachment-uploader');
@@ -35,7 +33,6 @@ module api.content.form.inputtype.upload {
                     let attachment = <Attachment>event.getUploadItem().getModel();
 
                     this.setFileNameProperty(attachment.getName().toString());
-                    this.attachmentNames = this.getFileNamesFromProperty(this.getPropertyArray());
 
                     api.notify.showFeedback(`"${attachment.getName().toString()}" uploaded`);
                 });
@@ -99,7 +96,6 @@ module api.content.form.inputtype.upload {
 
             (<AttachmentUploaderEl>this.uploaderEl).removeAttachmentItem(itemName);
             this.getPropertyArray().remove(index);
-            this.attachmentNames = this.getFileNamesFromProperty(this.getPropertyArray());
 
             this.updateOccurrences();
 

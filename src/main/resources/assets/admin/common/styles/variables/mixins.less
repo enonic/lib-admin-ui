@@ -635,37 +635,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.home-main-container-mixin() {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-
-  .center-panel {
-    width: 100%;
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.4);
-    top: 0;
-    bottom: 0;
-  }
-
-  .lazy-image {
-    width: 100%;
-    min-height: 100%;
-
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
-
-    transition: opacity 2s;
-    &.empty {
-      opacity: 0;
-    }
-  }
-}
-
 .headers_mixin() {
 
   h1 {

@@ -22,8 +22,6 @@ module api.form {
 
         private formOptionSet: FormOptionSet;
 
-        private context: FormContext;
-
         private selectionValidationMessage: api.dom.DivEl;
 
         constructor(config: FormOptionSetOccurrenceViewConfig) {
@@ -35,7 +33,6 @@ module api.form {
             this.ensureSelectionArrayExists(this.propertySet);
 
             this.formItemLayer = new FormItemLayer(config.context);
-            this.context = config.context;
         }
 
         protected initValidationMessageBlock() {

@@ -6,8 +6,6 @@ module api.ui.selector.combobox {
 
         private draggingIndex: number;
 
-        private beforeDragStartedHeight: number;
-
         private maximumOccurrences: number;
 
         private optionRemovedListeners: {(removed: SelectedOptionEvent<T>): void;}[] = [];
@@ -69,16 +67,14 @@ module api.ui.selector.combobox {
         }
 
         protected handleDnDStart(ui: JQueryUI.SortableUIParams): void {
-            this.beforeDragStartedHeight = this.getEl().getHeight();
-
-            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
             this.draggingIndex = draggedElement.getSiblingIndex();
         }
 
         protected handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
 
             if (this.draggingIndex >= 0) {
-                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item.context);
+                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
                 let draggedToIndex = draggedElement.getSiblingIndex();
                 this.handleMovedOccurrence(this.draggingIndex, draggedToIndex);
             }

@@ -22,7 +22,7 @@ module api.form {
             this.defaultOption = optionJson.defaultOption;
             this.helpText = optionJson.helpText;
             if (optionJson.items != null) {
-                optionJson.items.forEach((formItemJson: api.form.json.FormItemJson) => {
+                optionJson.items.forEach((formItemJson) => {
                     let formItem: FormItem = FormItemFactory.createFormItem(formItemJson);
                     if (formItem) {
                         this.addFormItem(formItem);
@@ -65,21 +65,23 @@ module api.form {
             return this.helpTextIsOn;
         }
 
-        public toFormOptionSetOptionJson(): api.form.json.FormOptionSetOptionJson {
+        public toFormOptionSetOptionJson(): api.form.json.FormItemTypeWrapperJson {
 
-            return {
-                name: this.getName(),
-                label: this.getLabel(),
-                helpText: this.getHelpText(),
-                defaultOption: this.isDefaultOption(),
-                items: FormItem.formItemsToJson(this.getFormItems())
+            return <api.form.json.FormItemTypeWrapperJson>{
+                FormOptionSetOption: <api.form.json.FormOptionSetOptionJson>{
+                    name: this.getName(),
+                    label: this.getLabel(),
+                    helpText: this.getHelpText(),
+                    defaultOption: this.isDefaultOption(),
+                    items: FormItem.formItemsToJson(this.getFormItems())
+                }
             };
         }
 
         public static optionsToJson(options: FormOptionSetOption[]): api.form.json.FormOptionSetOptionJson[] {
             let jsonArray: api.form.json.FormOptionSetOptionJson[] = [];
             options.forEach((option: FormOptionSetOption) => {
-                jsonArray.push(option.toFormOptionSetOptionJson());
+                jsonArray.push(option.toFormOptionSetOptionJson().FormOptionSetOption);
             });
             return jsonArray;
         }

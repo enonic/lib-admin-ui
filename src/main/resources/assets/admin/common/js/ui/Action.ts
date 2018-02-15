@@ -148,6 +148,15 @@ module api.ui {
             return this;
         }
 
+        toggleIconClass(className: string, condition?: boolean): Action {
+            if (condition === false || (condition == null && this.iconClass == className)) {
+                this.setIconClass('');
+            } else {
+                this.setIconClass(className);
+            }
+            return this;
+        }
+
         private notifyPropertyChanged() {
             this.propertyChangedListeners.forEach((listener: Function) => listener(this));
         }
@@ -214,7 +223,7 @@ module api.ui {
         }
 
         unBeforeExecute(listener: (action: Action) => void) {
-            this.beforeExecuteListeners = this.beforeExecuteListeners.filter((currentListener: () => void) => {
+            this.beforeExecuteListeners = this.beforeExecuteListeners.filter((currentListener: (action: Action) => void) => {
                 return listener !== currentListener;
             });
         }
@@ -230,7 +239,7 @@ module api.ui {
         }
 
         unAfterExecute(listener: (action: Action) => void) {
-            this.afterExecuteListeners = this.afterExecuteListeners.filter((currentListener: () => void) => {
+            this.afterExecuteListeners = this.afterExecuteListeners.filter((currentListener: (action: Action) => void) => {
                 return listener !== currentListener;
             });
         }

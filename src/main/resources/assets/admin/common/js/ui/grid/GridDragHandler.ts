@@ -7,11 +7,9 @@ module api.ui.grid {
 
         protected contentGrid: TreeGrid<MODEL>;
 
-        private positionChangedListeners: {(event: Event):void}[] = [];
+        private positionChangedListeners: { (): void }[] = [];
 
         private draggableItem: Element;
-
-        private draggableTop: number;
 
         private rowHeight: number;
 
@@ -39,7 +37,6 @@ module api.ui.grid {
 
             row = Element.fromString(draggableClass).getParentElement();
 
-            this.draggableTop = row.getEl().getTopPx();
             this.draggableItem = Element.fromString(row.toString());
 
             this.draggableItem.addClass('draggable');
@@ -155,18 +152,18 @@ module api.ui.grid {
             throw new Error('Must be implemented by inheritors');
         }
 
-        onPositionChanged(listener: ()=>void) {
+        onPositionChanged(listener: () => void) {
             this.positionChangedListeners.push(listener);
         }
 
-        unPositionChanged(listener: ()=>void) {
-            this.positionChangedListeners = this.positionChangedListeners.filter((currentListener: ()=>void) => {
+        unPositionChanged(listener: () => void) {
+            this.positionChangedListeners = this.positionChangedListeners.filter((currentListener: () => void) => {
                 return currentListener !== listener;
             });
         }
 
         private notifyPositionChanged() {
-            this.positionChangedListeners.forEach((listener: ()=>void)=> {
+            this.positionChangedListeners.forEach((listener: () => void) => {
                 listener.call(this);
             });
         }

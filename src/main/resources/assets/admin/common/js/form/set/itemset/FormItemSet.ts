@@ -21,7 +21,7 @@ module api.form {
             this.customText = formItemSetJson.customText;
 
             if (formItemSetJson.items != null) {
-                formItemSetJson.items.forEach((formItemJson: api.form.json.FormItemJson) => {
+                formItemSetJson.items.forEach((formItemJson) => {
                     let formItem: FormItem = FormItemFactory.createFormItem(formItemJson);
                     if (formItem) {
                         this.addFormItem(formItem);

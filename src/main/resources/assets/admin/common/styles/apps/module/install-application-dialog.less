@@ -32,7 +32,7 @@
   }
 
   .file-input {
-    margin-bottom: 20px;
+    margin: 20px 0;
 
     > input.text {
       width: calc(~'100% - 37px');
@@ -182,11 +182,11 @@
   .clear-button {
     .icon-close();
     position: absolute;
-    top: 39px;
+    top: 95px;
     line-height: 20px;
     border-radius: 20px;
     border: none;
-    right: 70px;
+    right: 65px;
     padding: 0px 4px;
     background-color: white;
     cursor: pointer;
@@ -197,22 +197,9 @@
     @media screen and (max-width: 540px) {
       right: 56px;
     }
-/*
-    @media screen and (max-height: 560px) {
-      top: 39px;
-      right: 78px;
-    }*/
+
     &.hidden {
       display: none;
     }
   }
 }
-/*
-body {
-  @media screen and (max-height: 560px) {
-    .install-application-dialog .modal-dialog-header {
-      padding: 30px 20px 10px 30px;
-    }
-  }
-}
-*/
