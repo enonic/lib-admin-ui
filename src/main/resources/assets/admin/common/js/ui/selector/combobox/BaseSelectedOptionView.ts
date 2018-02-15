@@ -8,14 +8,16 @@ module api.ui.selector.combobox {
 
         private removeClickedListeners: {(): void;}[] = [];
 
-        private editable: boolean = true;
+        private editable: boolean;
 
-        private removable: boolean = true;
+        private removable: boolean;
 
-        constructor(option: api.ui.selector.Option<T>) {
+        constructor(option: api.ui.selector.Option<T>, editable: boolean = true, removable: boolean = true) {
             super('selected-option');
 
             this.option = option;
+            this.editable = editable;
+            this.removable = removable;
         }
 
         setOption(option: api.ui.selector.Option<T>) {

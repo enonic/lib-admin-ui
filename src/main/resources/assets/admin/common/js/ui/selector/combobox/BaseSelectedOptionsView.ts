@@ -115,12 +115,10 @@ module api.ui.selector.combobox {
                 return false;
             }
 
-            let selectedOption: SelectedOption<T> = this.createSelectedOption(option);
+            let selectedOption: SelectedOption<T> = this.createSelectedOption(option, this.editable, this.readonly);
 
             let optionView = selectedOption.getOptionView();
             optionView.onRemoveClicked(() => this.removeOption(option));
-            optionView.setReadonly(this.readonly);
-            optionView.setEditable(this.editable);
 
             this.getSelectedOptions().push(selectedOption);
 
