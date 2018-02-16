@@ -36,17 +36,17 @@
 
   .empty-options, .options-container {
     position: absolute;
-    .box-sizing(border-box);
+    box-sizing: border-box;
     width: 100%;
     margin: 0;
     padding: 0;
     .input-border();
-    .box-shadow(2px 2px 2px @admin-medium-gray-border);
+    box-shadow: 2px 2px 2px @admin-medium-gray-border;
     background: white;
     z-index: 105;
 
     &.reverted {
-      .box-shadow(2px 0px 2px @admin-medium-gray-border);
+      box-shadow: 2px 0px 2px @admin-medium-gray-border;
     }
 
     .slick-header {
@@ -84,7 +84,7 @@
     margin: 0;
     text-align: left;
     background: white;
-    .box-sizing(border-box);
+    box-sizing: border-box;
 
     .option-value {
       margin: 8px 0 4px 10px;

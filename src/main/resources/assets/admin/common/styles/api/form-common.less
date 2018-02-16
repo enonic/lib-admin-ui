@@ -3,16 +3,6 @@
 @form-field-spacing: 20px;
 @form-field-set-spacing: 35px;
 
-.form-element-spacing(@size: @form-field-spacing) {
-  &:not(:first-of-type) {
-    margin-top: @size;
-  }
-
-  &:not(:last-of-type) {
-    margin-bottom: @size;
-  }
-}
-
 .form-view {
   font-size: 12px;
   position: relative;
@@ -104,7 +94,7 @@
     font-size: 12px;
     color: white;
     background: @form-button-bg-hover;
-    .border-radius(50%);
+    border-radius: 50%;
 
     &:hover:not(.on) {
       color: @admin-dark-gray;
@@ -131,7 +121,7 @@
   }
 
   .drag-control {
-    .order(1);
+    order: 1;
 
     display: none;
     float: left;

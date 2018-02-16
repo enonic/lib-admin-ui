@@ -2,7 +2,7 @@
   position: absolute;
   width: 400px;
   padding: 0 30px;
-  .box-sizing(border-box);
+  box-sizing: border-box;
   max-width: 100%;
   background-color: rgba(255, 255, 255, 0.9);
   z-index: @z-index-context-window;
@@ -10,7 +10,7 @@
   margin-top: 42px;
   .notSelectable();
   .material-layer-shadow();
-  .flexbox();
+  display: flex;
   flex-flow: column nowrap;
   align-items: stretch;
 
@@ -37,7 +37,7 @@
     padding-bottom: 15px;
     height: auto;
     overflow-y: auto;
-    .flex(1 auto);
+    flex: 1 auto;
 
     .grid {
       height: initial !important;
@@ -64,7 +64,7 @@
           }
 
           &.draggable {
-            .box-shadow(1px 5px 20px rgba(51, 51, 51, .5));
+            box-shadow: 1px 5px 20px rgba(51, 51, 51, .5);
             background-color: @admin-bg-light-blue !important;
             box-sizing: border-box;
             cursor: move;
@@ -192,7 +192,7 @@
   margin: 5px 3px 0px;
   height: 30px !important;
   width: 30px !important;
-  .border-radius(30px);
+  border-radius: 30px;
 
   &:before {
     line-height: 30px;

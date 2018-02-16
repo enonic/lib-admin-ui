@@ -23,12 +23,12 @@
     border-right: 6px solid transparent;
     border-top: 10px solid @admin-dark-gray;
 
-    .transition(0.2s);
-    .transition-timing-function(cubic-bezier(0, 0.4, 1, 0.6));
+    transition: 0.2s;
+    transition-timing-function: cubic-bezier(0, 0.4, 1, 0.6);
   }
 
   &.down:after {
-    .transform(rotateX(180deg));
+    transform: rotateX(180deg);
   }
 
   &[disabled] {
@@ -39,7 +39,7 @@
     }
 
     &.down:after {
-      border-top: 0px solid transparent;
+      border-top: 0 solid transparent;
       border-bottom: 10px solid @admin-medium-gray-border;
     }
   }

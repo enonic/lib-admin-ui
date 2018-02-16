@@ -82,7 +82,7 @@
             display: none;
           }
           .image-bg {
-            .opacity(.5);
+            opacity: .5;
           }
         }
       }
@@ -93,7 +93,7 @@
 
     .image-frame {
       border: 1px solid @admin-input-blue;
-      .box-shadow(0px 0px 10px darken(@admin-input-blue, 10%));
+      box-shadow: 0px 0px 10px darken(@admin-input-blue, 10%);
     }
 
   }
@@ -114,7 +114,7 @@
     .image-canvas {
       position: absolute;
       overflow: visible; // to show drag handle
-      .box-shadow(none);
+      box-shadow: none;
 
       // to show upscaled image same way both in html and svg
       img, image {
@@ -187,7 +187,7 @@
     left: 1px; // account for image editor border
     width: 100%;
 
-    .box-sizing(border-box);
+    box-sizing: border-box;
     .clearfix();
 
     .standby-container {
@@ -291,7 +291,7 @@
       &:hover,
       &.active {
         .zoom-line {
-          .opacity(0.7);
+          opacity: 0.7;
 
           .zoom-knob {
             cursor: ew-resize;
@@ -305,7 +305,7 @@
       }
 
       .zoom-line {
-        .opacity(0.5);
+        opacity: 0.5;
         height: 2px;
         margin: 9px 10px 9px 100px;
         background-color: #444;
@@ -322,7 +322,7 @@
           width: 20px;
           background-color: #000;
 
-          .border-radius(10px)
+          border-radius: 10px;
         }
       }
 
