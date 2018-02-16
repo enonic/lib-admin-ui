@@ -149,11 +149,11 @@
 
   &:not([disabled]) {
     border: 2px dashed @color;
-    box-shadow: 0px 0px 5px darken(@color, 10%);
+    box-shadow: 0 0 5px darken(@color, 10%);
   }
 
   &[disabled] {
-    box-shadow: 0px 0px 5px darken(@color, 80%);
+    box-shadow: 0 0 5px darken(@color, 80%);
     cursor: default;
   }
 }
@@ -167,7 +167,7 @@
     &:hover,
     &:focus {
       border-color: darken(@color, 10%);
-      box-shadow: 0px 0px 5px darken(@color, 10%);
+      box-shadow: 0 0 5px darken(@color, 10%);
     }
   }
 
