@@ -106,7 +106,7 @@ module api.ui.selector.combobox {
         }
 
         createSelectedOption(option: api.ui.selector.Option<T>): SelectedOption<T> {
-            return new SelectedOption<T>(new BaseSelectedOptionView(option, this.editable, this.readonly), this.count());
+            return new SelectedOption<T>(new BaseSelectedOptionView(option, this.editable, !this.readonly), this.count());
         }
 
         addOption(option: api.ui.selector.Option<T>, silent: boolean = false, keyCode: number): boolean {
