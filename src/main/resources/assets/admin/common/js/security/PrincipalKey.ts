@@ -4,9 +4,9 @@ module api.security {
 
         private static SEPARATOR: string = ':';
 
-        private static ANONYMOUS_PRINCIPAL: PrincipalKey = new PrincipalKey(UserStoreKey.SYSTEM, PrincipalType.USER, 'anonymous');
+        private static ANONYMOUS_PRINCIPAL: PrincipalKey = PrincipalKey.ofUser(UserStoreKey.SYSTEM, 'anonymous');
 
-        private static SU_PRINCIPAL: PrincipalKey = new PrincipalKey(UserStoreKey.SYSTEM, PrincipalType.USER, 'su');
+        private static SU_PRINCIPAL: PrincipalKey = PrincipalKey.ofUser(UserStoreKey.SYSTEM, 'su');
 
         private userStore: UserStoreKey;
 
@@ -111,6 +111,10 @@ module api.security {
                 return false;
             }
             return true;
+        }
+
+        public isOfSystemUser() {
+            return this.equals(PrincipalKey.ofAnonymous()) || this.equals(PrincipalKey.ofSU());
         }
 
         public static ofAnonymous(): PrincipalKey {
