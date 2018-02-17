@@ -7,27 +7,8 @@
   url('../icons/fonts/icomoon.svg?d2dpl4#icomoon-release') format('svg');
 }
 
-.icon-base {
-  font-weight: normal;
-  font-style: normal;
-  font-variant: normal;
-  text-transform: none;
-  speak: none;
-  line-height: 1;
-  color: @admin-dark-gray;
-
-}
-
 .icon {
-  &:extend(.icon-base);
-
-  // important to override buttons font if icon is applied to button
-  &:before, &:after {
-    font-family: 'icomoon' !important;
-    /* Better Font Rendering =========== */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  .icon-mixin('icomoon');
 }
 
 .font-icon-default {
