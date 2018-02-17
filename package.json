@@ -4,7 +4,7 @@
   "description": "Admin UI Library",
   "devDependencies": {
     "del": "^2.2.1",
-    "enonic-admin-artifacts": "^1.2.0",
+    "enonic-admin-artifacts": "^1.3.0",
     "gulp": "^3.9.1",
     "gulp-include": "^2.3.0",
     "gulp-less": "^3.3.0",
