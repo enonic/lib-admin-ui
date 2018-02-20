@@ -57,6 +57,9 @@ module api.ui.text {
         }
 
         public setEditMode(flag: boolean, cancel?: boolean) {
+            if (this.isReadOnly()) {
+                return;
+            }
             if (cancel) {
                 this.area.setValue(this.persistedValue, true, true);
             }
@@ -65,6 +68,7 @@ module api.ui.text {
             if (flag) {
                 this.persistedValue = newValue;
                 this.okButton.setEnabled(false);
+                this.area.giveFocus();
             } else {
                 this.text.setHtml(this.formatTextToDisplay(newValue), false);
             }

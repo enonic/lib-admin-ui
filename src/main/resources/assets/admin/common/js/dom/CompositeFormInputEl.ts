@@ -40,6 +40,11 @@ module api.dom {
             return this;
         }
 
+        setReadOnly(readOnly: boolean) {
+            this.wrappedInput.setReadOnly(readOnly);
+            this.toggleClass('readonly', readOnly);
+        }
+
         getValue(): string {
             return this.wrappedInput.getValue();
         }
