@@ -3,9 +3,12 @@ module api.app.wizard {
     import TabBarItem = api.ui.tab.TabBarItem;
     import ActivatedEvent = api.ui.ActivatedEvent;
 
-    export class WizardStepNavigatorAndToolbar extends api.dom.DivEl {
+    export class WizardStepNavigatorAndToolbar
+        extends api.dom.DivEl {
 
         static maxFittingWidth: number = 675;
+
+        private static MINIMIZED: string = 'minimized';
 
         private foldButton: api.ui.toolbar.FoldButton;
 
@@ -17,17 +20,54 @@ module api.app.wizard {
 
         private helpTextToggleButton: api.dom.DivEl;
 
-        constructor(className?: string) {
-            super(className);
+        constructor(stepNavigator: WizardStepNavigator, stepToolbar?: Toolbar) {
+            super('wizard-step-navigator-and-toolbar');
+            this.stepNavigator = stepNavigator;
+            this.stepToolbar = stepToolbar;
             this.foldButton = new api.ui.toolbar.FoldButton();
-            this.appendChild(this.foldButton);
             this.fittingWidth = 0;
 
+            this.initListeners();
+        }
+
+        private initListeners() {
             this.foldButton.getDropdown().onClicked(() => {
                 this.addClass('no-dropdown-hover');
                 // Place call in the queue outside of the stack and current context,
                 // so the repaint will be triggered between those two calls
                 setTimeout(this.removeClass.bind(this, 'no-dropdown-hover'));
+            });
+
+            this.stepNavigator.onNavigationItemActivated((event: ActivatedEvent) => {
+                const tabBarItem: TabBarItem = this.stepNavigator.getNavigationItem(event.getIndex());
+                if (tabBarItem) {
+                    this.foldButton.setLabel(tabBarItem.getLabel());
+                }
+            });
+
+            this.stepNavigator.onNavigationItemRemoved(() => {
+                if (this.isMinimized()) {
+                    this.addNumbersToStepLabels(); // updating step numbers
+                }
+            });
+
+            this.stepNavigator.onNavigationItemAdded(() => {
+                if (this.isMinimized()) {
+                    this.addNumbersToStepLabels(); // updating step numbers
+                }
+            });
+        }
+
+        doRender(): Q.Promise<boolean> {
+            return super.doRender().then((rendered) => {
+                if (this.stepToolbar) {
+                    this.appendChild(this.stepToolbar);
+                }
+                this.appendChild(this.foldButton);
+                this.appendChild(this.stepNavigator);
+
+                this.checkAndMinimize();
+                return rendered;
             });
         }
 
@@ -41,60 +81,35 @@ module api.app.wizard {
             return this.helpTextToggleButton;
         }
 
-        setStepToolbar(stepToolbar: Toolbar) {
-            if (this.stepToolbar) {
-                this.removeChild(this.stepToolbar);
-            }
-            this.stepToolbar = stepToolbar;
-
-            this.stepToolbar.insertBeforeEl(this.foldButton);
-        }
-
-        setStepNavigator(stepNavigator: WizardStepNavigator) {
-            let onStepChanged = (event: ActivatedEvent) => {
-                this.onStepChanged(event.getIndex());
-            };
-            if (this.stepNavigator) {
-                this.stepNavigator.unNavigationItemActivated(onStepChanged);
-                this.removeChild(this.stepNavigator);
-            }
-            this.stepNavigator = stepNavigator;
-
-            this.appendChild(this.stepNavigator);
-
-            this.stepNavigator.onNavigationItemActivated(onStepChanged);
-        }
-
-        private onStepChanged(index: number): void {
-            let tabBarItem: TabBarItem = this.stepNavigator.getNavigationItem(index);
-            if (tabBarItem) {
-                this.foldButton.setLabel(tabBarItem.getLabel());
-            }
-        }
-
         private isStepNavigatorFit(): boolean {
-            let width;
-
             if (this.stepNavigator.isVisible()) {
-                // StepNavigator fits if summary width of its steps < width of StepNavigator
-                // StepNavigator width is calculated in CSS
-                width = this.stepNavigator.getEl().getWidthWithoutPadding();
-                const steps = this.stepNavigator.getChildren();
-                const stepMargin = (step) => step.isVisible() ? step.getEl().getWidthWithMargin() : 0;
-                const stepsWidth = steps.reduce((totalStepWidth, step) => totalStepWidth + stepMargin(step), 0);
-
-                // Update fitting width to check, when toolbar is minimized
-                this.fittingWidth = stepsWidth;
-
-                return width > stepsWidth;
-            } else {
-                // StepNavigator is minimized and not visible
-                // Check with saved width
-                const help = this.helpTextToggleButton;
-                width = help.isVisible() ?
-                        this.getEl().getWidthWithoutPadding() - help.getEl().getWidthWithMargin() :
-                        this.getEl().getWidthWithoutPadding();
+                return this.isVisibleStepNavigatorFit();
             }
+
+            return this.isNonVisibleStepNavigatorFit();
+        }
+
+        private isVisibleStepNavigatorFit(): boolean {
+            // StepNavigator fits if summary width of its steps < width of StepNavigator
+            // StepNavigator width is calculated in CSS
+            const width = this.stepNavigator.getEl().getWidthWithoutPadding();
+            const steps = this.stepNavigator.getChildren();
+            const stepMargin = (step) => step.isVisible() ? step.getEl().getWidthWithMargin() : 0;
+            const stepsWidth = steps.reduce((totalStepWidth, step) => totalStepWidth + stepMargin(step), 0);
+
+            // Update fitting width to check, when toolbar is minimized
+            this.fittingWidth = stepsWidth;
+
+            return width > stepsWidth;
+        }
+
+        private isNonVisibleStepNavigatorFit(): boolean {
+            // StepNavigator is minimized and not visible, or not rendered yet
+            // Check with saved width
+            const help = this.helpTextToggleButton;
+            const width = (!!help && help.isVisible())
+                ? this.getEl().getWidthWithoutPadding() - help.getEl().getWidthWithMargin()
+                : this.getEl().getWidthWithoutPadding();
 
             // Add to pixels delta to made the check work as it should, when scale is not 100%
             const fittingWidth = Math.min(this.fittingWidth, WizardStepNavigatorAndToolbar.maxFittingWidth) + 2;
@@ -102,36 +117,60 @@ module api.app.wizard {
             return width > fittingWidth;
         }
 
-        private updateStepLabels(numberTabs: boolean) {
-            let selectedTabIndex = this.stepNavigator.getSelectedIndex();
-            this.stepNavigator.getNavigationItems().forEach((tab: api.ui.tab.TabBarItem, index) => {
-                let strIndex = (index + 1) + ' - ';
-                if (numberTabs && tab.getLabel().indexOf(strIndex) !== 0) {
-                    tab.setLabel(strIndex + tab.getLabel());
-                    if (index === selectedTabIndex) {
-                        this.foldButton.setLabel(tab.getLabel());
-                    }
+        checkAndMinimize() {
+            const isMinimized: boolean = this.isMinimized();
+            const isUpdateNeeded: boolean = this.isStepNavigatorFit() === isMinimized;
+
+            if (isUpdateNeeded) {
+                if (isMinimized) {
+                    this.maximize();
                 } else {
-                    tab.setLabel(tab.getLabel().replace(strIndex, ''));
+                    this.minimize();
                 }
-            });
+            }
         }
 
-        checkAndMinimize() {
-            const needUpdate = () => this.isStepNavigatorFit() === this.hasClass('minimized');
+        private isMinimized(): boolean {
+            return this.hasClass(WizardStepNavigatorAndToolbar.MINIMIZED);
+        }
 
-            if (needUpdate()) {
-                const needMinimize = !this.hasClass('minimized');
-                this.toggleClass('minimized', needMinimize);
-                if (needMinimize) {
-                    this.removeChild(this.stepNavigator);
-                    this.foldButton.push(this.stepNavigator, 300);
-                } else {
-                    this.foldButton.pop();
-                    this.stepNavigator.insertAfterEl(this.foldButton);
-                }
-                this.updateStepLabels(needMinimize);
-            }
+        private minimize() {
+            this.addClass(WizardStepNavigatorAndToolbar.MINIMIZED);
+            this.removeChild(this.stepNavigator);
+            this.foldButton.push(this.stepNavigator, 300);
+            this.addNumbersToStepLabels();
+            this.foldButton.setLabel(this.stepNavigator.getSelectedNavigationItem().getLabel());
+        }
+
+        private maximize() {
+            this.removeClass(WizardStepNavigatorAndToolbar.MINIMIZED);
+            this.foldButton.pop();
+            this.stepNavigator.insertAfterEl(this.foldButton);
+            this.removeNumbersFromStepLabels();
+        }
+
+        private addNumbersToStepLabels() {
+            this.stepNavigator.getNavigationItems().filter((tab: TabBarItem) => this.isTabVisible(tab)).forEach(
+                (tab: TabBarItem, index) => this.addNumbersToStepLabel(tab, index));
+        }
+
+        private isTabVisible(tab: TabBarItem): boolean {
+            return tab.getHTMLElement().style.display !== 'none';
+        }
+
+        private addNumbersToStepLabel(tab: TabBarItem, index: number) {
+            this.removeNumbersFromStepLabel(tab);
+            tab.setLabel((index + 1) + ' - ' + tab.getLabel());
+        }
+
+        private removeNumbersFromStepLabels() {
+            this.stepNavigator.getNavigationItems().forEach(
+                (tab: TabBarItem) => this.removeNumbersFromStepLabel(tab));
+        }
+
+        private removeNumbersFromStepLabel(tab: TabBarItem) {
+            const numberRegEx = /^(\d+\s-\s)/;
+            tab.setLabel(tab.getLabel().replace(numberRegEx, ''));
         }
     }
 }
