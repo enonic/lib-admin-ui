@@ -46,7 +46,7 @@ module api.content.resource {
         private buildAggregationsQuery(parentPath: ContentPath): ContentQuery {
             let contentQuery: ContentQuery = new ContentQuery();
             contentQuery.setQueryExpr(new QueryExpr(CompareExpr.eq(new FieldExpr('_parentPath'),
-                ValueExpr.string('/content' + parentPath.toString()))));
+                ValueExpr.string('/content' + (parentPath.isRoot() ? '' : parentPath.toString())))));
 
             contentQuery.setSize(0);
             contentQuery.setFrom(0);

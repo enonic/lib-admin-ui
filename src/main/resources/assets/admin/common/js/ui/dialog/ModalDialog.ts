@@ -432,7 +432,9 @@ module api.ui.dialog {
 
             api.ui.KeyBindings.get().unshelveBindings();
 
-            ModalDialog.openDialogsCounter--;
+            if (ModalDialog.openDialogsCounter > 0) {
+                ModalDialog.openDialogsCounter--;
+            }
             this.notifyClosed();
         }
 
