@@ -219,7 +219,9 @@ module api.util.htmlarea.dialog {
 
             this.onAdded(() => {
                 dockedPanel.getDeck().getPanels().forEach((panel, index) => {
-                    if ((index === 1 && this.isUrl()) || (index === 2 && this.isDownloadLink()) || (index === 3 && this.isEmail()) ||
+                    if ((index === 1 && this.isContentLink()) ||
+                        (index === 2 && this.isDownloadLink()) ||
+                        (index === 3 && this.isEmail()) ||
                         (index === 4 && this.isAnchor())) {
                         dockedPanel.selectPanel(panel);
                         return false;
@@ -232,8 +234,8 @@ module api.util.htmlarea.dialog {
 
         private initTabNames() {
             this.tabNames = {
-                content: i18n('dialog.link.tabname.content'),
                 url: i18n('dialog.link.tabname.url'),
+                content: i18n('dialog.link.tabname.content'),
                 download: i18n('dialog.link.tabname.download'),
                 email: i18n('dialog.link.tabname.email'),
                 anchor: i18n('dialog.link.tabname.anchor')
@@ -384,8 +386,8 @@ module api.util.htmlarea.dialog {
             let linkEl: api.dom.AEl;
             let deck = <api.ui.panel.NavigatedDeckPanel>this.dockedPanel.getDeck();
             let selectedTab = <api.ui.tab.TabBarItem>deck.getSelectedNavigationItem();
-            let linkText: string = this.onlyTextSelected ? (<api.ui.text.TextInput>this.getFieldById('linkText')).getValue() : '';
-            let toolTip: string = (<api.ui.text.TextInput>this.getFieldById('toolTip')).getValue();
+            let linkText: string = this.onlyTextSelected ? (<api.ui.text.TextInput>this.getFieldById('linkText')).getValue().trim() : '';
+            let toolTip: string = (<api.ui.text.TextInput>this.getFieldById('toolTip')).getValue().trim();
 
             switch (selectedTab.getLabel()) {
             case (this.tabNames.content):
@@ -405,12 +407,18 @@ module api.util.htmlarea.dialog {
                 break;
             }
 
-            linkEl.setHtml(linkText);
+            if (linkText) {
+                linkEl.setHtml(linkText);
+            }
             if (toolTip) {
                 linkEl.setTitle(toolTip);
             }
 
             if (this.link) {
+                if (!linkText && this.link.hasChildNodes()) {
+                    linkEl.setHtml(this.link.innerHTML, false);
+                }
+
                 this.link.parentElement.replaceChild(linkEl.getHTMLElement(), this.link);
             } else {
                 if (this.onlyTextSelected) {
