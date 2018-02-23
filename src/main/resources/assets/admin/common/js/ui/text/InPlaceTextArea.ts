@@ -37,8 +37,8 @@ module api.ui.text {
                     }
                     break;
                 }
-                this.updateButtonState();
             });
+            this.area.onValueChanged(event => this.updateButtonState());
             this.setWrappedInput(this.area);
             this.okButton = new Button(i18n('action.save'));
             this.okButton.addClass('blue');
