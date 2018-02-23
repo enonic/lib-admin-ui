@@ -90,14 +90,6 @@ module api.ui.selector.combobox {
             };
         }
 
-        setReadOnly(readOnly: boolean) {
-            super.setReadOnly(readOnly);
-
-            this.comboBox.setReadOnly(readOnly);
-
-            this.toggleClass('readonly', readOnly);
-        }
-
         private handleLastRange(handler: () => void) {
             let grid = this.getComboBox().getComboBoxDropdownGrid().getGrid();
 

@@ -22,7 +22,7 @@ module api.ui.text {
             this.h2.setHtml(this.formatTextToDisplay(originalValue), false);
             this.h2.onDblClicked(() => this.setEditMode(true));
             this.input = new TextInput('inplace-input', size, originalValue);
-            this.input.onKeyPressed((event: KeyboardEvent) => {
+            this.input.onKeyDown((event: KeyboardEvent) => {
                 event.stopImmediatePropagation();
                 switch (event.keyCode) {
                 case 27:

@@ -20,7 +20,10 @@
     &:before {
       color: @admin-font-gray2;
     }
-    &:hover:before {
+  }
+
+  &:not(.readonly) {
+    .inplace-toggle:hover:before {
       color: @admin-bg-dark-gray;
       cursor: pointer;
     }
