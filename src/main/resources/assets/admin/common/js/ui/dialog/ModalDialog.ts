@@ -52,8 +52,6 @@ module api.ui.dialog {
 
         private clickOutsideCallback: () => void;
 
-        private height: number = 0;
-
         private skipTabbable: boolean;
 
         public static debug: boolean = false;
@@ -127,15 +125,25 @@ module api.ui.dialog {
         private toggleHeightClass() {
             const dialogHeight = this.getEl().getHeightWithBorder();
 
-            if (dialogHeight === 0 || Math.abs(this.height - dialogHeight) <= 1) {
+            if (dialogHeight === 0 || dialogHeight % 2 === 0) {
+
                 return;
             }
 
-            this.height = dialogHeight;
+            const borderBottom = parseFloat(wemjq(this.getHTMLElement()).css('border-bottom'));
+            const dialogHeightWithoutBorder = borderBottom ? dialogHeight - borderBottom : dialogHeight;
 
-            if (Math.abs(dialogHeight % 2) == 1) {
-                this.getEl().toggleClass('uneven-height', !this.getEl().hasClass('uneven-height'));
+            if (dialogHeightWithoutBorder % 2 === 0 && borderBottom) {
+                wemjq(this.getHTMLElement()).css('border-bottom','');
+
+                return;
             }
+            let borderHeight = 1;
+            if (dialogHeightWithoutBorder % 1 !== 0) {
+                borderHeight = Math.ceil(dialogHeightWithoutBorder) - dialogHeightWithoutBorder;
+            }
+
+            wemjq(this.getHTMLElement()).css('border-bottom',`${borderHeight}px solid transparent`);
         }
 
         private initListeners() {
@@ -315,6 +323,8 @@ module api.ui.dialog {
             api.dom.Body.get().getHTMLElement().classList.add('modal-dialog');
             super.show();
             this.buttonRow.focusDefaultAction();
+
+            wemjq(this.body.getHTMLElement()).css('height', '');
         }
 
         hide() {
