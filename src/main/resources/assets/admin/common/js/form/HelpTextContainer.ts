@@ -19,10 +19,11 @@ module api.form {
 
             this.helpTextDiv.appendChild(pEl);
 
-            this.helpTextToggler.onClicked(() => {
+            this.helpTextToggler.onClicked((event: MouseEvent) => {
                 this.helpTextDiv.toggleClass('visible');
                 this.helpTextToggler.toggleClass('on');
                 this.notifyHelpTextToggled(this.helpTextDiv.hasClass('visible'));
+                event.stopPropagation();
             });
         }
 
