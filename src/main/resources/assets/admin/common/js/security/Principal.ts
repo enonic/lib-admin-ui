@@ -73,7 +73,7 @@ module api.security {
         }
 
         isSystemUser(): boolean {
-            return this.isUser() && this.getKey().isOfSystemUser();
+            return this.getKey().isSystem() && this.isUser();
         }
 
         equals(o: api.Equitable): boolean {

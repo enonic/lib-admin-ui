@@ -113,7 +113,7 @@ module api.security {
             return true;
         }
 
-        public isOfSystemUser() {
+        isSystem() {
             return this.equals(PrincipalKey.ofAnonymous()) || this.equals(PrincipalKey.ofSU());
         }
 

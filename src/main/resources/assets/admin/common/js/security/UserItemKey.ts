@@ -9,6 +9,10 @@ module api.security {
             this.id = id;
         }
 
+        isSystem(): boolean {
+            throw Error('Must be overridden by inheritors');
+        }
+
         getId(): string {
             return this.id;
         }
