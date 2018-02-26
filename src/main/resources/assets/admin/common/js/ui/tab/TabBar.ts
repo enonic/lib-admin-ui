@@ -10,6 +10,8 @@ module api.ui.tab {
 
         private navigationItemAddedListeners: {(event: NavigatorEvent):void}[] = [];
 
+        private navigationItemRemovedListeners: {(index: number):void}[] = [];
+
         private navigationItemSelectedListeners: {(event: NavigatorEvent):void}[] = [];
 
         private navigationItemActivatedListeners: {(event: ActivatedEvent):void}[] = [];
@@ -65,6 +67,8 @@ module api.ui.tab {
             }
 
             tab.remove();
+
+            this.notifyTabRemovedListeners(tabIndex);
         }
 
         selectNavigationItem(index: number, silent?: boolean, forced?: boolean) {
@@ -126,6 +130,10 @@ module api.ui.tab {
             this.navigationItemAddedListeners.push(listener);
         }
 
+        onNavigationItemRemoved(listener: (index: number) => void) {
+            this.navigationItemRemovedListeners.push(listener);
+        }
+
         onNavigationItemSelected(listener: (event: NavigatorEvent) => void) {
             this.navigationItemSelectedListeners.push(listener);
         }
@@ -143,6 +151,13 @@ module api.ui.tab {
             this.navigationItemAddedListeners.filter((currentListener: (event: NavigatorEvent)=>void) => {
                 return listener !== currentListener;
             });
+        }
+
+        unNavigationItemRemoved(listener: (index: number) => void) {
+            this.navigationItemRemovedListeners =
+                this.navigationItemRemovedListeners.filter((currentListener: (index: number)=>void) => {
+                    return listener !== currentListener;
+                });
         }
 
         unNavigationItemSelected(listener: (event: NavigatorEvent) => void) {
@@ -166,6 +181,12 @@ module api.ui.tab {
         private notifyTabAddedListeners(tab: TabBarItem) {
             this.navigationItemAddedListeners.forEach((listener: (event: NavigatorEvent)=>void) => {
                 listener.call(this, new NavigatorEvent(tab));
+            });
+        }
+
+        private notifyTabRemovedListeners(index: number) {
+            this.navigationItemRemovedListeners.forEach((listener: (index: number)=>void) => {
+                listener.call(this, index);
             });
         }
 

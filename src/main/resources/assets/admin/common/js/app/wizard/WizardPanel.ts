@@ -390,15 +390,9 @@ module api.app.wizard {
                 this.validityManager.setHeader(this.wizardHeader);
             }
 
-            this.stepNavigatorAndToolbarContainer = new WizardStepNavigatorAndToolbar('wizard-step-navigator-and-toolbar');
-
             this.stepToolbar = this.createStepToolbar();
-            if (this.stepToolbar) {
-                this.stepNavigatorAndToolbarContainer.setStepToolbar(this.stepToolbar);
-            }
-
             this.stepNavigator = new WizardStepNavigator();
-            this.stepNavigatorAndToolbarContainer.setStepNavigator(this.stepNavigator);
+            this.stepNavigatorAndToolbarContainer = new WizardStepNavigatorAndToolbar(this.stepNavigator, this.stepToolbar);
 
             headerAndNavigatorContainer.appendChild(this.stepNavigatorAndToolbarContainer);
 
