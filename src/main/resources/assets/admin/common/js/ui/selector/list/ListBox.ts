@@ -88,11 +88,11 @@ module api.ui.selector.list {
             }
         }
 
-        removeItem(item: I) {
-            this.removeItems([item]);
+        removeItem(item: I, silent?: boolean) {
+            this.removeItems([item], silent);
         }
 
-        removeItems(items: I[]) {
+        removeItems(items: I[], silent?: boolean) {
             let itemsRemoved: I[] = [];
             this.items = this.items.filter((item) => {
                 for (let i = 0; i < items.length; i++) {
@@ -105,7 +105,9 @@ module api.ui.selector.list {
                 return true;
             });
             if (itemsRemoved.length > 0) {
-                this.notifyItemsRemoved(itemsRemoved);
+                if (!silent) {
+                    this.notifyItemsRemoved(itemsRemoved);
+                }
                 if (this.getItemCount() == 0) {
                     this.addEmptyView();
                 }
