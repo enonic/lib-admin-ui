@@ -303,7 +303,7 @@ if (typeof Slick === "undefined") {
 
             $canvas = $("<div class='grid-canvas' />").appendTo($viewport);
 
-            scrollbarDimensions = scrollbarDimensions || measureScrollbar($viewport);
+            scrollbarDimensions = scrollbarDimensions || measureScrollbar("body");
 
             if ($preHeaderPanelSpacer) $preHeaderPanelSpacer.css("width", getCanvasWidth() + scrollbarDimensions.width + "px");
             $headers.width(getHeadersWidth());
