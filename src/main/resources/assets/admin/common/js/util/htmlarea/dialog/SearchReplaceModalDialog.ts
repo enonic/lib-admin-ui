@@ -182,6 +182,10 @@ module api.util.htmlarea.dialog {
             this.nextAction.setEnabled(!!this.searchAndReplaceHelper.findSpansByIndex(this.searchAndReplaceHelper.currentIndex + 1).length);
             this.prevAction.setEnabled(!!this.searchAndReplaceHelper.findSpansByIndex(this.searchAndReplaceHelper.currentIndex - 1).length);
         }
+
+        protected isBlurredBackgroundNeeded(): boolean {
+            return false;
+        }
     }
 
     class SearchAndReplaceHelper {
@@ -426,7 +430,7 @@ module api.util.htmlarea.dialog {
             let spans = this.findSpansByIndex(testIndex);
             if (spans.length) {
                 dom.addClass(this.findSpansByIndex(testIndex), 'mce-match-marker-selected');
-                api.dom.Element.fromHtmlElement(spans[0]).getEl().scrollIntoView();
+                api.dom.Element.fromHtmlElement(spans[0]).getEl().scrollIntoView(false);
                 return testIndex;
             }
 
