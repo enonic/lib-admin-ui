@@ -22,7 +22,8 @@ module api.ui.dialog {
         skipTabbable?: boolean;
     }
 
-    export class ModalDialog extends DivEl {
+    export class ModalDialog
+        extends DivEl {
 
         protected header: api.ui.dialog.ModalDialogHeader;
 
@@ -46,7 +47,7 @@ module api.ui.dialog {
 
         private listOfClickIgnoredElements: Element[] = [];
 
-        private onClosedListeners: {(): void;}[] = [];
+        private onClosedListeners: { (): void; }[] = [];
 
         private closeIconCallback: () => void;
 
@@ -64,12 +65,12 @@ module api.ui.dialog {
 
             this.cancelAction = this.createDefaultCancelAction();
             this.closeIconCallback = config.closeIconCallback || (() => {
-                    if (this.cancelAction) {
-                        this.cancelAction.execute();
-                    } else {
-                        this.close();
-                    }
-                });
+                if (this.cancelAction) {
+                    this.cancelAction.execute();
+                } else {
+                    this.close();
+                }
+            });
 
             this.clickOutsideCallback = (() => {
                 this.confirmBeforeClose();
@@ -112,8 +113,8 @@ module api.ui.dialog {
                 this.confirmationDialog = new ConfirmationDialog()
                     .setQuestion(question)
                     .setYesCallback(yesCallback || (() => {
-                            this.close();
-                        }));
+                        this.close();
+                    }));
                 if (noCallback) {
                     this.confirmationDialog.setNoCallback(noCallback);
                 }
@@ -134,7 +135,7 @@ module api.ui.dialog {
             const dialogHeightWithoutBorder = borderBottom ? dialogHeight - borderBottom : dialogHeight;
 
             if (dialogHeightWithoutBorder % 2 === 0 && borderBottom) {
-                wemjq(this.getHTMLElement()).css('border-bottom','');
+                wemjq(this.getHTMLElement()).css('border-bottom', '');
 
                 return;
             }
@@ -143,7 +144,7 @@ module api.ui.dialog {
                 borderHeight = Math.ceil(dialogHeightWithoutBorder) - dialogHeightWithoutBorder;
             }
 
-            wemjq(this.getHTMLElement()).css('border-bottom',`${borderHeight}px solid transparent`);
+            wemjq(this.getHTMLElement()).css('border-bottom', `${borderHeight}px solid transparent`);
         }
 
         private initListeners() {
@@ -243,8 +244,8 @@ module api.ui.dialog {
                 ignoredElementClicked = element.className.indexOf('mce-') > -1 || element.className.indexOf('html-area-modal-dialog') > -1;
             }
             ignoredElementClicked = ignoredElementClicked || this.listOfClickIgnoredElements.some((elem: Element) => {
-                    return elem.getHTMLElement() === element || elem.getEl().contains(element);
-                });
+                return elem.getHTMLElement() === element || elem.getEl().contains(element);
+            });
             return ignoredElementClicked;
         }
 
@@ -447,7 +448,8 @@ module api.ui.dialog {
 
         close() {
             const isSingleDialogGroup = ModalDialog.openDialogsCounter === 1 ||
-                                        (ModalDialog.openDialogsCounter === 2 && !!this.confirmationDialog);
+                                        (ModalDialog.openDialogsCounter === 2 && !!this.confirmationDialog &&
+                                         !!this.confirmationDialog.isVisible());
             if (isSingleDialogGroup) {
                 api.ui.mask.BodyMask.get().hide();
             }
@@ -466,8 +468,8 @@ module api.ui.dialog {
             this.onClosedListeners.push(onCloseCallback);
         }
 
-        unClosed(listener: {(): void;}) {
-            this.onClosedListeners = this.onClosedListeners.filter(function (curr: {(): void;}) {
+        unClosed(listener: { (): void; }) {
+            this.onClosedListeners = this.onClosedListeners.filter(function (curr: { (): void; }) {
                 return curr !== listener;
             });
         }
@@ -511,14 +513,16 @@ module api.ui.dialog {
         }
     }
 
-    export class ModalDialogContentPanel extends DivEl {
+    export class ModalDialogContentPanel
+        extends DivEl {
 
         constructor() {
             super('dialog-content');
         }
     }
 
-    export class ButtonRow extends DivEl {
+    export class ButtonRow
+        extends DivEl {
 
         private defaultElement: Element;
 
