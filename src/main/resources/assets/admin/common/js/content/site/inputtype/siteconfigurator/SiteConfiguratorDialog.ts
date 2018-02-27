@@ -84,9 +84,6 @@ module api.content.site.inputtype.siteconfigurator {
 
                 this.appendChildToContentPanel(this.formView);
 
-                wemjq(this.getHTMLElement()).find('input[type=text],textarea,select').first().focus();
-                this.updateTabbable();
-
                 this.addOkButton(this.okCallback);
                 this.getCancelAction().onExecuted(() => this.cancelCallback());
 
@@ -94,6 +91,9 @@ module api.content.site.inputtype.siteconfigurator {
 
                 return this.formView.layout().then(() => {
                     this.addClass('animated');
+
+                    wemjq(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().focus();
+                    this.updateTabbable();
 
                     this.handleSelectorsDropdowns(this.formView);
                     this.handleDialogClose(this.formView);
