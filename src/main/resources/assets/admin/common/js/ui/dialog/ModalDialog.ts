@@ -320,7 +320,7 @@ module api.ui.dialog {
         }
 
         show() {
-            api.dom.Body.get().getHTMLElement().classList.add('modal-dialog');
+            this.blurBackground();
             super.show();
             this.buttonRow.focusDefaultAction();
 
@@ -328,7 +328,7 @@ module api.ui.dialog {
         }
 
         hide() {
-            api.dom.Body.get().getHTMLElement().classList.remove('modal-dialog');
+            this.unBlurBackground();
             super.hide(true);
         }
 
@@ -382,6 +382,20 @@ module api.ui.dialog {
                 tabbedIndex = tabbedIndex - 1 < 0 ? this.tabbable.length - 1 : tabbedIndex - 1;
                 this.tabbable[tabbedIndex].giveFocus();
             }
+        }
+
+        private blurBackground() {
+            if (this.isBlurredBackgroundNeeded()) {
+                api.dom.Body.get().getHTMLElement().classList.add('blurred');
+            }
+        }
+
+        protected isBlurredBackgroundNeeded(): boolean {
+            return true;
+        }
+
+        private unBlurBackground() {
+            api.dom.Body.get().getHTMLElement().classList.remove('blurred');
         }
 
         open() {
