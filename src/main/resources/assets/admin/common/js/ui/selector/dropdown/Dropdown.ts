@@ -251,10 +251,10 @@ module api.ui.selector.dropdown {
             return this.dropdownList.getOptionByRow(rowIndex);
         }
 
-        setValue(value: string): Dropdown<OPTION_DISPLAY_VALUE> {
+        setValue(value: string, silent?: boolean): Dropdown<OPTION_DISPLAY_VALUE> {
             let option = this.getOptionByValue(value);
             if (option != null) {
-                this.selectOption(option);
+                this.selectOption(option, silent);
             }
             return this;
         }
