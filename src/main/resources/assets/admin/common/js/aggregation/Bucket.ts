@@ -4,6 +4,7 @@ module api.aggregation {
 
         key: string;
         docCount: number;
+        displayName: string;
 
         constructor(key: string, docCount: number) {
             this.key = key;
@@ -24,6 +25,14 @@ module api.aggregation {
 
         public setDocCount(docCount: number) {
             this.docCount = docCount;
+        }
+
+        public getDisplayName(): string {
+            return this.displayName;
+        }
+
+        public setDisplayName(displayName: string) {
+            this.displayName = displayName;
         }
 
         public static fromJson(json: api.aggregation.BucketJson): Bucket {

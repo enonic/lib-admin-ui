@@ -18,7 +18,7 @@ module api.aggregation {
             super('aggregation-bucket-view');
             this.bucket = bucket;
             this.parentAggregationView = parentAggregationView;
-            this.displayName = displayName;
+            this.displayName = displayName || bucket.getDisplayName();
 
             this.checkbox = api.ui.Checkbox.create().setLabelText(this.resolveLabelValue()).setChecked(select).build();
 

@@ -26,6 +26,10 @@ module api.aggregation {
             this.buckets.push(bucket);
         }
 
+        public setBuckets(buckets: api.aggregation.Bucket[]) {
+            return this.buckets = buckets;
+        }
+
         public static fromJson(json: api.aggregation.BucketAggregationJson): BucketAggregation {
 
             let bucketAggregation: BucketAggregation = new BucketAggregation(json.name);
