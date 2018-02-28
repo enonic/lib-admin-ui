@@ -177,10 +177,9 @@ module api.form {
             if (FormItemLayer.debug) {
                 console.debug('FormItemLayer.update' + (unchangedOnly ? ' (unchanged only)' : ''), this, propertySet);
             }
-            let updatePromises = [];
 
-            this.formItemViews.forEach((formItemView: FormItemView) => {
-                updatePromises.push(formItemView.update(propertySet, unchangedOnly));
+            const updatePromises = this.formItemViews.map((formItemView: FormItemView) => {
+                return formItemView.update(propertySet, unchangedOnly);
             });
 
             return wemQ.all(updatePromises).spread<void>(() => {

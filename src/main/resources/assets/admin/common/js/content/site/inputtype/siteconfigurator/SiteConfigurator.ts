@@ -75,11 +75,15 @@ module api.content.site.inputtype.siteconfigurator {
         update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
             return super.update(propertyArray, unchangedOnly).then(() => {
                 this.siteConfigProvider.setPropertyArray(propertyArray);
-
-                if (!unchangedOnly || !this.comboBox.isDirty()) {
-                    this.comboBox.setValue(this.getValueFromPropertyArray(propertyArray));
-                }
-                return null;
+                const updatePromises = this.comboBox.getSelectedOptionViews().map((view, index) => {
+                    const config = propertyArray.getSet(index).getProperty('config').getPropertySet();
+                    return view.getFormView().update(config, unchangedOnly);
+                });
+                return wemQ.all(updatePromises).then(() => {
+                    if (!unchangedOnly || !this.comboBox.isDirty()) {
+                        this.comboBox.setValue(this.getValueFromPropertyArray(propertyArray));
+                    }
+                });
             });
         }
 
