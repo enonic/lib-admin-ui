@@ -89,6 +89,9 @@ module api.app.wizard {
         }
 
         toggleHelpText(_show?: boolean) {
+            if (!this.hasHelpText()) {
+                return;
+            }
             throw new Error('Must be overriden by inheritor');
         }
 
