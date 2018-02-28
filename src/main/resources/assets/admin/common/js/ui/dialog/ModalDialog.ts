@@ -142,6 +142,9 @@ module api.ui.dialog {
             let borderHeight = 1;
             if (dialogHeightWithoutBorder % 1 !== 0) {
                 borderHeight = Math.ceil(dialogHeightWithoutBorder) - dialogHeightWithoutBorder;
+                if (Math.ceil(dialogHeightWithoutBorder) % 2 === 1) {
+                    borderHeight++;
+                }
             }
 
             wemjq(this.getHTMLElement()).css('border-bottom', `${borderHeight}px solid transparent`);
