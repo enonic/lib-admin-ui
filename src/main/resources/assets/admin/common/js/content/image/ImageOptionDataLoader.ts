@@ -4,7 +4,6 @@ module api.content.image {
     import OptionDataLoaderData = api.ui.selector.OptionDataLoaderData;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import Option = api.ui.selector.Option;
-    import GetContentSummaryByIds = api.content.resource.GetContentSummaryByIds;
 
     export class ImageOptionDataLoader
         extends ContentSummaryOptionDataLoader<ImageTreeSelectorItem> {
@@ -27,9 +26,11 @@ module api.content.image {
             let contentIds = ids.split(';').map((id) => {
                 return new ContentId(id);
             });
-            return new GetContentSummaryByIds(contentIds).sendAndParse().then(((contents: ContentSummary[]) => {
-                return contents.map(content => new ImageTreeSelectorItem(content, false));
-            }));
+
+            return api.content.form.inputtype.image.ImageContentLoader.queueContentLoadRequest(contentIds)
+                .then(((contents: ContentSummary[]) => {
+                    return contents.map(content => new ImageTreeSelectorItem(content, false));
+                }));
         }
 
         protected createOptionData(data: ContentTreeSelectorItem[], hits: number, totalHits: number) {
