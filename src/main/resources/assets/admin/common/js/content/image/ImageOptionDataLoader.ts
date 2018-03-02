@@ -8,6 +8,8 @@ module api.content.image {
     export class ImageOptionDataLoader
         extends ContentSummaryOptionDataLoader<ImageTreeSelectorItem> {
 
+        private preloadedDataListeners: {(data: ImageTreeSelectorItem[]): void}[] = [];
+
         fetch(node: TreeNode<Option<ImageTreeSelectorItem>>): wemQ.Promise<ImageTreeSelectorItem> {
             return super.fetch(node).then((data) => {
                 return this.wrapItem(data);
@@ -29,8 +31,26 @@ module api.content.image {
 
             return api.content.form.inputtype.image.ImageContentLoader.queueContentLoadRequest(contentIds)
                 .then(((contents: ContentSummary[]) => {
-                    return contents.map(content => new ImageTreeSelectorItem(content, false));
+                    const data = contents.map(content => new ImageTreeSelectorItem(content, false));
+                    this.notifyPreloadedData(data);
+                    return data;
                 }));
+        }
+
+        onPreloadedData(listener: (data: ImageTreeSelectorItem[]) => void) {
+            this.preloadedDataListeners.push(listener);
+        }
+
+        unPreloadedData(listener: (data: ImageTreeSelectorItem[]) => void) {
+            this.preloadedDataListeners = this.preloadedDataListeners.filter((currentListener: (data: ImageTreeSelectorItem[])=>void)=> {
+                return currentListener !== listener;
+            });
+        }
+
+        notifyPreloadedData(data: ImageTreeSelectorItem[]) {
+            this.preloadedDataListeners.forEach((listener: (data: ImageTreeSelectorItem[]) => void) => {
+                listener.call(this, data);
+            });
         }
 
         protected createOptionData(data: ContentTreeSelectorItem[], hits: number, totalHits: number) {

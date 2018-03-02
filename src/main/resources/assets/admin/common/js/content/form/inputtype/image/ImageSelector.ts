@@ -1,11 +1,9 @@
 module api.content.form.inputtype.image {
 
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import ContentId = api.content.ContentId;
     import ContentSummary = api.content.ContentSummary;
     import ContentTypeName = api.schema.content.ContentTypeName;
     import ComboBox = api.ui.selector.combobox.ComboBox;
@@ -135,6 +133,15 @@ module api.content.form.inputtype.image {
 
             let comboBox: ComboBox<ImageTreeSelectorItem> = contentComboBox.getComboBox();
 
+            const onPreloadedData = (data: ImageTreeSelectorItem[]) => {
+                data.forEach((item: ImageTreeSelectorItem) => {
+                    this.contentComboBox.select(item);
+                });
+                optionDataLoader.unPreloadedData(onPreloadedData);
+            };
+
+            optionDataLoader.onPreloadedData(onPreloadedData);
+
             comboBox.onHidden(() => {
                 // hidden on max occurrences reached
                 if (this.uploader) {
@@ -208,12 +215,7 @@ module api.content.form.inputtype.image {
                 this.appendChild(comboBoxWrapper);
                 this.appendChild(this.selectedOptionsView);
 
-                return this.queueLoadContent(propertyArray).then((contents: ContentSummary[]) => {
-                    contents.forEach((content: api.content.ContentSummary) => {
-                        this.contentComboBox.select(new ImageTreeSelectorItem(content));
-                    });
-                    this.setLayoutInProgress(false);
-                });
+                this.setLayoutInProgress(false);
             });
         }
 
@@ -341,7 +343,7 @@ module api.content.form.inputtype.image {
 
             return this.uploader;
         }
-
+/*
         private queueLoadContent(propertyArray: PropertyArray): wemQ.Promise<ContentSummary[]> {
 
             let contentIds: ContentId[] = [];
@@ -353,7 +355,7 @@ module api.content.form.inputtype.image {
 
             return api.content.form.inputtype.image.ImageContentLoader.queueContentLoadRequest(contentIds);
         }
-
+*/
         protected getNumberOfValids(): number {
             return this.contentComboBox.countSelected();
         }
