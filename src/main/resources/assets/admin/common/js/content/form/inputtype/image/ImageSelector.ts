@@ -52,7 +52,7 @@ module api.content.form.inputtype.image {
             // Don't forget to clean up the modal dialog on remove
             this.onRemoved(() => ResponsiveManager.unAvailableSizeChanged(this));
 
-            this.onShown(() => this.updateSelectedItemsIcons());
+            //this.onShown(() => this.updateSelectedItemsIcons());
         }
 
         public getContentComboBox(): api.content.image.ImageContentComboBox {
@@ -61,21 +61,6 @@ module api.content.form.inputtype.image {
 
         protected getContentPath(raw: ImageTreeSelectorItem): api.content.ContentPath {
             return raw.getContentSummary().getPath();
-        }
-
-        private updateSelectedItemsIcons() {
-            if (this.contentComboBox.getSelectedOptions().length > 0) {
-                this.doLoadContent(this.getPropertyArray()).then((contents: ContentSummary[]) => {
-                    contents.forEach((content: ContentSummary) => {
-                        this.selectedOptionsView.updateUploadedOption(<Option<ImageTreeSelectorItem>>{
-                            value: content.getId(),
-                            displayValue: new ImageTreeSelectorItem(content)
-                        });
-                    });
-
-                    this.setLayoutInProgress(false);
-                });
-            }
         }
 
         getValueType(): ValueType {
@@ -221,13 +206,12 @@ module api.content.form.inputtype.image {
                 this.appendChild(comboBoxWrapper);
                 this.appendChild(this.selectedOptionsView);
 
-                return this.doLoadContent(propertyArray).then((contents: api.content.ContentSummary[]) => {
+                return this.queueLoadContent(propertyArray).then((contents: ContentSummary[]) => {
                     contents.forEach((content: api.content.ContentSummary) => {
                         this.contentComboBox.select(new ImageTreeSelectorItem(content));
                     });
                     this.setLayoutInProgress(false);
                 });
-
             });
         }
 
@@ -356,7 +340,7 @@ module api.content.form.inputtype.image {
             return this.uploader;
         }
 
-        private doLoadContent(propertyArray: PropertyArray): wemQ.Promise<ContentSummary[]> {
+        private queueLoadContent(propertyArray: PropertyArray): wemQ.Promise<ContentSummary[]> {
 
             let contentIds: ContentId[] = [];
             propertyArray.forEach((property: Property) => {
@@ -364,7 +348,11 @@ module api.content.form.inputtype.image {
                     contentIds.push(ContentId.fromReference(property.getReference()));
                 }
             });
-            return new api.content.resource.GetContentSummaryByIds(contentIds).sendAndParse();
+
+            return api.content.form.inputtype.image.ImageContentLoader.queueContentLoadRequest(contentIds);
+            //api.content.form.inputtype.image.ImageContentLoader.queueContentLoadRequest(contentIds, callback);
+
+            //return new api.content.resource.GetContentSummaryByIds(contentIds).sendAndParse();
         }
 
         protected getNumberOfValids(): number {
