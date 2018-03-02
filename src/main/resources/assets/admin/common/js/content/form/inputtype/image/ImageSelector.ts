@@ -11,7 +11,6 @@ module api.content.form.inputtype.image {
     import ComboBox = api.ui.selector.combobox.ComboBox;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Option = api.ui.selector.Option;
 
     import UploadItem = api.ui.uploader.UploadItem;
     import FileUploadedEvent = api.ui.uploader.FileUploadedEvent;
@@ -54,8 +53,6 @@ module api.content.form.inputtype.image {
 
             // Don't forget to clean up the modal dialog on remove
             this.onRemoved(() => ResponsiveManager.unAvailableSizeChanged(this));
-
-            //this.onShown(() => this.updateSelectedItemsIcons());
         }
 
         public getContentComboBox(): api.content.image.ImageContentComboBox {
@@ -355,9 +352,6 @@ module api.content.form.inputtype.image {
             });
 
             return api.content.form.inputtype.image.ImageContentLoader.queueContentLoadRequest(contentIds);
-            //api.content.form.inputtype.image.ImageContentLoader.queueContentLoadRequest(contentIds, callback);
-
-            //return new api.content.resource.GetContentSummaryByIds(contentIds).sendAndParse();
         }
 
         protected getNumberOfValids(): number {
