@@ -48,11 +48,17 @@ module api.content.form.inputtype.image {
         private static doLoadContent() {
             const contentIds = ImageContentLoader.requestTokens.map(requestToken => requestToken.contentId);
             const requestTokens = ImageContentLoader.requestTokens;
+            const tokenIds = requestTokens.map(token => token.contentId.toString());
+
             ImageContentLoader.requestTokens = [];
+
             new GetContentSummaryByIds(contentIds).sendAndParse().then((contents: ContentSummary[]) => {
 
                 contents.map((content: ContentSummary) => {
-                    const requestToken = requestTokens.filter(token => token.contentId.equals(content.getContentId()))[0];
+                    const tokenIndex = tokenIds.indexOf(content.getContentId().toString());
+                    const requestToken = requestTokens.splice(tokenIndex, 1)[0];
+                    tokenIds.splice(tokenIndex, 1);
+
                     if (requestToken) {
                         requestToken.promises.map(promise => promise.resolve(content));
                     }
