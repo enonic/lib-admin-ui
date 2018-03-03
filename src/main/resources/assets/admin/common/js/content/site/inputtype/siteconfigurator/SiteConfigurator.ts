@@ -74,12 +74,38 @@ module api.content.site.inputtype.siteconfigurator {
 
         update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
             return super.update(propertyArray, unchangedOnly).then(() => {
+                const ignorePropertyChange = this.ignorePropertyChange;
+                this.ignorePropertyChange = true;
+
                 this.siteConfigProvider.setPropertyArray(propertyArray);
-                const updatePromises = this.comboBox.getSelectedOptionViews().map((view, index) => {
-                    const config = propertyArray.getSet(index).getProperty('config').getPropertySet();
-                    return view.getFormView().update(config, unchangedOnly);
+
+                const optionToKey = (option: SiteConfiguratorSelectedOptionView) => option.getApplication().getApplicationKey().toString();
+                const hasKey = (keys: string[], key: string) => keys.some(k => k === key);
+
+                const selectedOptions: SiteConfiguratorSelectedOptionView[] = this.comboBox.getSelectedOptionViews();
+                const selectedKeys = selectedOptions.map(optionToKey);
+                let optionsToRemove: SiteConfiguratorSelectedOptionView[] = selectedOptions.slice(0);
+                const updatePromises = [];
+
+                propertyArray.forEach(array => {
+                    const set = array.getPropertySet();
+                    const key = set.getProperty('applicationKey').getValue().getString();
+                    if (!hasKey(selectedKeys, key)) {
+                        this.comboBox.selectOptionByValue(key);
+                    }
+                    const view = <SiteConfiguratorSelectedOptionView>this.comboBox.getSelectedOptionByValue(key).getOptionView();
+                    const configSet = set.getProperty('config').getPropertySet();
+                    const update = view.getFormView().update(configSet, unchangedOnly);
+                    updatePromises.push(update);
+
+                    optionsToRemove = optionsToRemove.filter(option => optionToKey(option) !== key);
                 });
+
+                optionsToRemove.forEach(option => this.comboBox.deselect(option.getApplication(), true));
+
                 return wemQ.all(updatePromises).then(() => {
+                    this.ignorePropertyChange = ignorePropertyChange;
+
                     if (!unchangedOnly || !this.comboBox.isDirty()) {
                         this.comboBox.setValue(this.getValueFromPropertyArray(propertyArray));
                     }
