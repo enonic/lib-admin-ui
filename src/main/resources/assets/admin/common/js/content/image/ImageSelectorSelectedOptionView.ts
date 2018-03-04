@@ -43,13 +43,43 @@ module api.content.image {
         }
 
         private updateIconSrc(content: ImageTreeSelectorItem) {
-            let newIconSrc = content.getImageUrl() + '?thumbnail=false&size=' + ImageSelectorSelectedOptionView.IMAGE_SIZE;
-
-            if (this.icon.getSrc().indexOf(newIconSrc) === -1) {
+            const newIconSrc = content.getImageUrl() + '?thumbnail=false&size=' + ImageSelectorSelectedOptionView.IMAGE_SIZE;
+            const scrollableParentEl = wemjq(this.getHTMLElement()).scrollParent()[0];
+            const scrollableParent = api.dom.Element.fromHtmlElement(scrollableParentEl);
+            const setSrc = () => {
                 if (this.isVisible()) {
                     this.showSpinner();
                 }
                 this.icon.setSrc(newIconSrc);
+            };
+
+            const isElementInViewport = () => {
+                const rect = this.getEl().getBoundingClientRect();
+
+                return (
+                    rect.top > 0 &&
+                    rect.left > 0 &&
+                    rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
+                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+                );
+            };
+
+            if (this.icon.getSrc().indexOf(newIconSrc) === -1) {
+
+                if (isElementInViewport()) {
+                    setSrc();
+                } else {
+
+                    const onParentScroll = () => {
+                        if (isElementInViewport()) {
+                            setSrc();
+                            scrollableParent.unScroll(onParentScroll);
+                        }
+                    };
+
+                    scrollableParent.onScroll(onParentScroll);
+
+                }
             }
         }
 
