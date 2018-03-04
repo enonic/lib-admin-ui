@@ -27,7 +27,8 @@ module api.ui.treegrid {
      * 3. fetchChildren(parentData?: DATA) -- Should fetch children of a parent data;
      * 4. fetchRoot() -- Fetches root nodes. by default return fetchChildren() with an empty parameter.
      */
-    export class TreeGrid<DATA> extends api.ui.panel.Panel {
+    export class TreeGrid<DATA>
+        extends api.ui.panel.Panel {
 
         public static LEVEL_STEP_INDENT: number = 16;
 
@@ -57,9 +58,9 @@ module api.ui.treegrid {
 
         private highlightingChangeListeners: Function[] = [];
 
-        private dataChangeListeners: {(event: DataChangedEvent<DATA>): void}[] = [];
+        private dataChangeListeners: { (event: DataChangedEvent<DATA>): void }[] = [];
 
-        private activeChangedListeners: {(active: boolean): void}[] = [];
+        private activeChangedListeners: { (active: boolean): void }[] = [];
 
         private loadBufferSize: number;
 
@@ -250,7 +251,7 @@ module api.ui.treegrid {
             this.onLoaded(() => this.unmask());
 
             const updateColumns = builder.getColumnUpdater() || function () { /* empty */
-                };
+            };
             const updateColumnsHandler = (force?: boolean) => {
                 if (force) {
                     updateColumns();
@@ -656,8 +657,9 @@ module api.ui.treegrid {
                 return;
             }
 
-            let selectedIndex = this.highlightedNode ?
-                                this.getRowIndexByNode(this.highlightedNode) : this.grid.getSelectedRows()[selectedCount - 1];
+            let selectedIndex = this.highlightedNode
+                ? this.getRowIndexByNode(this.highlightedNode)
+                : this.grid.getSelectedRows()[selectedCount - 1];
 
             if (selectedIndex > 0) {
                 this.unselectAllRows();
@@ -1178,7 +1180,7 @@ module api.ui.treegrid {
 
         reload(parentNodeData?: DATA, _idPropertyName?: string, rememberExpanded: boolean = true): wemQ.Promise<void> {
             const expandedNodesDataId = rememberExpanded ? this.grid.getDataView().getItems()
-                                                             .filter(item => item.isExpanded()).map(item => item.getDataId()) : [];
+                .filter(item => item.isExpanded()).map(item => item.getDataId()) : [];
 
             const selection = this.root.getCurrentSelection();
             const highlightedNode = this.highlightedNode;
@@ -1193,10 +1195,21 @@ module api.ui.treegrid {
             return this.reloadNode(null, expandedNodesDataId)
                 .then(() => {
                     this.root.setCurrentSelection(selection);
-                    this.initData(this.root.getCurrentRoot().treeToList());
+                    const root = this.root.getCurrentRoot();
+                    this.initData(root.treeToList());
                     this.updateExpanded();
                     if (highlightedNode) {
-                        this.highlightRowByNode(highlightedNode);
+                        const dataId = highlightedNode.getDataId();
+                        const updatedHighlightedNode = root.findNode(dataId);
+                        if (updatedHighlightedNode) {
+                            this.highlightRowByNode(updatedHighlightedNode);
+                        } else {
+                            return this.fetch(highlightedNode).then(data => {
+                                highlightedNode.setDataId(this.getDataId(data));
+                                highlightedNode.setData(data);
+                                this.highlightRowByNode(highlightedNode);
+                            });
+                        }
                     }
                 }).catch((reason: any) => {
                     this.initData([]);
