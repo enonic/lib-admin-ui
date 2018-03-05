@@ -46,104 +46,97 @@ module api.form {
             });
         }
 
-        private doLayoutPropertySet(propertySet: PropertySet, validate: boolean = true): wemQ.Promise<void> {
+        private setShowEmptyFormItemSetOccurrences(propertySet: PropertySet, name: string) {
+            const propertyArray: PropertyArray = propertySet.getPropertyArray(name);
 
-            let layoutPromises: wemQ.Promise<void>[] = [];
+            if (!propertyArray || propertyArray.getSize() === 0) {
+                if (!this.context) {
+                    this.context = FormContext.create().setShowEmptyFormItemSetOccurrences(false).build();
+                } else {
+                    this.context.setShowEmptyFormItemSetOccurrences(false);
+                }
+            }
+        }
+
+        private doLayoutPropertySet(propertySet: PropertySet, validate: boolean = true): wemQ.Promise<void> {
 
             const inputs: InputView[] = [];
 
-            this.formItems.forEach((formItem: FormItem) => {
+            const layoutPromises: wemQ.Promise<void>[] = this.formItems.map((formItem: FormItem) => {
+                let formItemView;
 
                 if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, FormItemSet)) {
 
                     const formItemSet: FormItemSet = <FormItemSet>formItem;
-                    const propertyArray: PropertyArray = propertySet.getPropertyArray(formItemSet.getName());
 
-                    if (!propertyArray || propertyArray.getSize() === 0) {
-                        if (!this.context) {
-                            this.context = FormContext.create().setShowEmptyFormItemSetOccurrences(false).build();
-                        } else {
-                            this.context.setShowEmptyFormItemSetOccurrences(false);
-                        }
-                    }
-                    const formItemSetView = new FormItemSetView(<FormItemSetViewConfig>{
+                    this.setShowEmptyFormItemSetOccurrences(propertySet, formItemSet.getName());
+
+                    formItemView = new FormItemSetView(<FormItemSetViewConfig>{
                         context: this.context,
                         formItemSet: formItemSet,
                         parent: this.parent,
                         parentDataSet: propertySet
                     });
-                    this.parentEl.appendChild(formItemSetView);
-                    this.formItemViews.push(formItemSetView);
+                }
 
-                    layoutPromises.push(formItemSetView.layout(validate));
-                } else if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, FieldSet)) {
+                if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, FieldSet)) {
 
                     const fieldSet: FieldSet = <FieldSet>formItem;
-                    const fieldSetView = new FieldSetView(<FieldSetViewConfig>{
+                    formItemView = new FieldSetView(<FieldSetViewConfig>{
                         context: this.context,
                         fieldSet: fieldSet,
                         parent: this.parent,
                         dataSet: propertySet
                     });
+                }
 
-                    this.parentEl.appendChild(fieldSetView);
-                    this.formItemViews.push(fieldSetView);
-
-                    layoutPromises.push(fieldSetView.layout());
-                } else if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, Input)) {
+                if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, Input)) {
 
                     const input: Input = <Input>formItem;
 
-                    const inputView = new InputView(<InputViewConfig>{
+                    formItemView = new InputView(<InputViewConfig>{
                         context: this.context,
                         input: input,
                         parent: this.parent,
                         parentDataSet: propertySet
                     });
-                    this.parentEl.appendChild(inputView);
-                    this.formItemViews.push(inputView);
 
-                    inputs.push(inputView);
+                    inputs.push(formItemView);
+                }
 
-                    layoutPromises.push(inputView.layout(validate));
-                } else if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, FormOptionSet)) {
+                if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, FormOptionSet)) {
 
                     const formOptionSet: FormOptionSet = <FormOptionSet>formItem;
-                    const propertyArray: PropertyArray = propertySet.getPropertyArray(formOptionSet.getName());
 
-                    if (!propertyArray || propertyArray.getSize() === 0) {
-                        if (!this.context) {
-                            this.context = FormContext.create().setShowEmptyFormItemSetOccurrences(false).build();
-                        } else {
-                            this.context.setShowEmptyFormItemSetOccurrences(false);
-                        }
-                    }
+                    this.setShowEmptyFormItemSetOccurrences(propertySet, formOptionSet.getName());
 
-                    const formOptionSetView = new api.form.FormOptionSetView(<FormOptionSetViewConfig>{
+                    formItemView = new api.form.FormOptionSetView(<FormOptionSetViewConfig>{
                         context: this.context,
                         formOptionSet: formOptionSet,
                         parent: this.parent,
                         parentDataSet: propertySet
                     });
-                    this.parentEl.appendChild(formOptionSetView);
-                    this.formItemViews.push(formOptionSetView);
+                }
 
-                    layoutPromises.push(formOptionSetView.layout(validate));
-                } else if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, FormOptionSetOption)) {
+                if (api.ObjectHelper.iFrameSafeInstanceOf(formItem, FormOptionSetOption)) {
 
                     const formOptionSetOption: FormOptionSetOption = <FormOptionSetOption>formItem;
-                    const formOptionSetOptionView = new api.form.FormOptionSetOptionView(<FormOptionSetOptionViewConfig>{
+                    formItemView = new api.form.FormOptionSetOptionView(<FormOptionSetOptionViewConfig>{
                         context: this.context,
                         formOptionSetOption: formOptionSetOption,
                         parent: this.parent,
                         parentDataSet: propertySet
                     });
-
-                    this.parentEl.appendChild(formOptionSetOptionView);
-                    this.formItemViews.push(formOptionSetOptionView);
-
-                    layoutPromises.push(formOptionSetOptionView.layout(validate));
                 }
+
+                this.formItemViews.push(formItemView);
+
+                return formItemView.layout(validate);
+
+            });
+
+            this.parentEl.onRendered(() => {
+                this.formItemViews.map(formItemView => this.parentEl.appendChild(formItemView, true));
             });
 
             // Bind next focus targets
