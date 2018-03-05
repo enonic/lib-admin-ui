@@ -188,7 +188,6 @@ module api.util.htmlarea.editor {
             });
 
             ckeditor.on('change', (e) => {
-                console.log('change');
                 if (this.nodeChangeHandler) {
                     this.nodeChangeHandler(null);
                 }
