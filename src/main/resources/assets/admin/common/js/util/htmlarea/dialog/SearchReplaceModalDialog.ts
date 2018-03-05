@@ -6,6 +6,7 @@ module api.util.htmlarea.dialog {
     import TextInput = api.ui.text.TextInput;
     import Checkbox = api.ui.Checkbox;
     import i18n = api.util.i18n;
+    import HTMLAreaEditor = CKEDITOR.editor;
 
     export class SearchReplaceModalDialog extends ModalDialog {
 
@@ -23,7 +24,7 @@ module api.util.htmlarea.dialog {
 
         private searchAndReplaceHelper: SearchAndReplaceHelper;
 
-        constructor(editor: HtmlAreaEditor) {
+        constructor(editor: HTMLAreaEditor) {
             super(<HtmlAreaModalDialogConfig>{editor: editor, title: i18n('dialog.search.title'), cls: 'search-and-replace-modal-dialog'});
             this.searchAndReplaceHelper = new SearchAndReplaceHelper(editor);
 
@@ -167,7 +168,7 @@ module api.util.htmlarea.dialog {
             super.open();
             this.searchAndReplaceHelper.last = {};
 
-            let selectedText: string = tinymce.trim(this.getEditor().selection.getContent({format: 'text'}));
+            let selectedText: string = ''; // tinymce.trim(this.getEditor().selection.getContent({format: 'text'}));
             if(selectedText) {
                 this.findInput.setValue(selectedText);
             }
@@ -190,7 +191,7 @@ module api.util.htmlarea.dialog {
 
     class SearchAndReplaceHelper {
 
-        private editor: HtmlAreaEditor;
+        private editor: HTMLAreaEditor;
 
         private m: any;
         private matches: any;
@@ -209,7 +210,7 @@ module api.util.htmlarea.dialog {
         currentIndex: number = -1;
         last: any = {};
 
-        constructor(editor: HtmlAreaEditor) {
+        constructor(editor: HTMLAreaEditor) {
             this.editor = editor;
         }
 
@@ -265,7 +266,7 @@ module api.util.htmlarea.dialog {
 
             forward = forward !== false;
 
-            node = this.editor.getBody();
+            // node = this.editor.getBody();
             nodes = tinymce.grep(tinymce.toArray(node.getElementsByTagName('span')), this.isMatchSpan.bind(this));
             for (i = 0; i < nodes.length; i++) {
                 let nodeIndex = this.getElmIndex(nodes[i]);
@@ -298,7 +299,7 @@ module api.util.htmlarea.dialog {
                 }
             }
 
-            this.editor.undoManager.add();
+            // this.editor.undoManager.add();
             this.currentIndex = nextIndex;
 
             if (forward) {
@@ -331,66 +332,66 @@ module api.util.htmlarea.dialog {
         };
 
         private markAllMatches(regex: RegExp) {
-            let node: Element;
-            let marker: Element;
-
-            marker = this.editor.dom.create('span', {
-                'data-mce-bogus': 1
-            });
-
-            marker.className = 'mce-match-marker'; // IE 7 adds class="mce-match-marker" and class=mce-match-marker
-            node = this.editor.getBody();
-
-            this.done(false);
-
-            return this.findAndReplaceDOMText(regex, node, marker, false, this.editor.schema);
+            // let node: Element;
+            // let marker: Element;
+            //
+            // marker = this.editor.dom.create('span', {
+            //     'data-mce-bogus': 1
+            // });
+            //
+            // marker.className = 'mce-match-marker'; // IE 7 adds class="mce-match-marker" and class=mce-match-marker
+            // node = this.editor.getBody();
+            //
+            // this.done(false);
+            //
+            // return this.findAndReplaceDOMText(regex, node, marker, false, this.editor.schema);
         }
 
         done(keepEditorSelection: boolean = false) {
-            let i: number;
-            let nodes: [any];
-            let startContainer: any;
-            let endContainer: any;
-
-            nodes = tinymce.toArray(this.editor.getBody().getElementsByTagName('span'));
-            for (i = 0; i < nodes.length; i++) {
-                let nodeIndex = this.getElmIndex(nodes[i]);
-
-                if (nodeIndex !== null && nodeIndex.length) {
-                    if (nodeIndex === this.currentIndex.toString()) {
-                        if (!startContainer) {
-                            startContainer = nodes[i].firstChild;
-                        }
-
-                        endContainer = nodes[i].firstChild;
-                    }
-
-                    this.unwrap(nodes[i]);
-                }
-            }
-
-            if (startContainer && endContainer) {
-                let rng = this.editor.dom.createRng();
-                rng.setStart(startContainer, 0);
-                rng.setEnd(endContainer, endContainer.data.length);
-
-                if (keepEditorSelection !== false) {
-                    this.editor.selection.setRng(rng);
-                }
-
-                return rng;
-            }
+            // let i: number;
+            // let nodes: [any];
+            // let startContainer: any;
+            // let endContainer: any;
+            //
+            // nodes = tinymce.toArray(this.editor.getBody().getElementsByTagName('span'));
+            // for (i = 0; i < nodes.length; i++) {
+            //     let nodeIndex = this.getElmIndex(nodes[i]);
+            //
+            //     if (nodeIndex !== null && nodeIndex.length) {
+            //         if (nodeIndex === this.currentIndex.toString()) {
+            //             if (!startContainer) {
+            //                 startContainer = nodes[i].firstChild;
+            //             }
+            //
+            //             endContainer = nodes[i].firstChild;
+            //         }
+            //
+            //         this.unwrap(nodes[i]);
+            //     }
+            // }
+            //
+            // if (startContainer && endContainer) {
+            //     let rng = this.editor.dom.createRng();
+            //     rng.setStart(startContainer, 0);
+            //     rng.setEnd(endContainer, endContainer.data.length);
+            //
+            //     if (keepEditorSelection !== false) {
+            //         this.editor.selection.setRng(rng);
+            //     }
+            //
+            //     return rng;
+            // }
         };
 
         private removeNode(node: Node) {
-            let dom = this.editor.dom;
-            let parent = node.parentNode;
-
-            dom.remove(node);
-
-            if (dom.isEmpty(parent)) {
-                dom.remove(parent);
-            }
+            // let dom = this.editor.dom;
+            // let parent = node.parentNode;
+            //
+            // dom.remove(node);
+            //
+            // if (dom.isEmpty(parent)) {
+            //     dom.remove(parent);
+            // }
         }
 
         private notFoundAlert() {
@@ -398,7 +399,7 @@ module api.util.htmlarea.dialog {
         }
 
         next() {
-            let index = this.moveSelection(true);
+            const index: number = this.moveSelection(true);
 
             if (index !== -1) {
                 this.currentIndex = index;
@@ -406,33 +407,33 @@ module api.util.htmlarea.dialog {
         };
 
         prev() {
-            let index = this.moveSelection(false);
+            const index: number = this.moveSelection(false);
 
             if (index !== -1) {
                 this.currentIndex = index;
             }
         };
 
-        private moveSelection(forward: boolean) {
-            let testIndex: number = this.currentIndex;
-            let dom: any = this.editor.dom;
-
-            forward = forward !== false;
-
-            if (forward) {
-                testIndex++;
-            } else {
-                testIndex--;
-            }
-
-            dom.removeClass(this.findSpansByIndex(this.currentIndex), 'mce-match-marker-selected');
-
-            let spans = this.findSpansByIndex(testIndex);
-            if (spans.length) {
-                dom.addClass(this.findSpansByIndex(testIndex), 'mce-match-marker-selected');
-                api.dom.Element.fromHtmlElement(spans[0]).getEl().scrollIntoView(false);
-                return testIndex;
-            }
+        private moveSelection(forward: boolean): number {
+            // let testIndex: number = this.currentIndex;
+            // let dom: any = this.editor.dom;
+            //
+            // forward = forward !== false;
+            //
+            // if (forward) {
+            //     testIndex++;
+            // } else {
+            //     testIndex--;
+            // }
+            //
+            // dom.removeClass(this.findSpansByIndex(this.currentIndex), 'mce-match-marker-selected');
+            //
+            // let spans = this.findSpansByIndex(testIndex);
+            // if (spans.length) {
+            //     dom.addClass(this.findSpansByIndex(testIndex), 'mce-match-marker-selected');
+            //     api.dom.Element.fromHtmlElement(spans[0]).getEl().scrollIntoView(false);
+            //     return testIndex;
+            // }
 
             return -1;
         }
@@ -441,7 +442,7 @@ module api.util.htmlarea.dialog {
             let nodes: [any];
             let spans: [any] = <any>[];
 
-            nodes = tinymce.toArray(this.editor.getBody().getElementsByTagName('span'));
+            // nodes = tinymce.toArray(this.editor.getBody().getElementsByTagName('span'));
             if (nodes.length) {
                 for (let i = 0; i < nodes.length; i++) {
                     let nodeIndex = this.getElmIndex(nodes[i]);

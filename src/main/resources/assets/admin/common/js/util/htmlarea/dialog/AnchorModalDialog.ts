@@ -4,12 +4,13 @@ module api.util.htmlarea.dialog {
     import Validators = api.ui.form.Validators;
     import i18n = api.util.i18n;
     import TextInput = api.ui.text.TextInput;
+    import HTMLAreaEditor = CKEDITOR.editor;
 
     export class AnchorModalDialog extends ModalDialog {
 
         private nameField: FormItem;
 
-        constructor(editor: HtmlAreaEditor) {
+        constructor(editor: HTMLAreaEditor) {
 
             super(<HtmlAreaModalDialogConfig>{
                 editor: editor,
@@ -60,7 +61,7 @@ module api.util.htmlarea.dialog {
 
         private insertAnchor(): void {
             let anchorEl = this.createAnchorEl();
-            this.getEditor().insertContent(anchorEl);
+            // this.getEditor().insertContent(anchorEl);
         }
 
         isDirty(): boolean {
