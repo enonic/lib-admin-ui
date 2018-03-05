@@ -115,7 +115,7 @@ module api.form {
                 }
             });
 
-            this.formItemOccurrences.getOccurrenceViews().forEach((formSetOccurrenceView: V)=> {
+            this.formItemOccurrences.getOccurrenceViews().map((formSetOccurrenceView: V)=> {
                 formSetOccurrenceView.onValidityChanged((event: RecordingValidityChangedEvent) => {
                     this.handleFormSetOccurrenceViewValidityChanged(event);
                 });

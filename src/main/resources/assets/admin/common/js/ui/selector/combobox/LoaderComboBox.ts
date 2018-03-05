@@ -36,6 +36,7 @@ module api.ui.selector.combobox {
                     }
                     delete this.tempValue;
                 }
+                this.setIgnoreNextFocus(true);
                 super.doSetValue(value);
             }, value);
         }
