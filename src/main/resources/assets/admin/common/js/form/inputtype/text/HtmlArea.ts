@@ -193,7 +193,8 @@ module api.form.inputtype.text {
                 textAreaWrapper.addClass(focusedEditorCls);
             };
 
-            new HTMLAreaBuilder().setSelector('textarea.' + id.replace(/\./g, '_')).setAssetsUri(assetsUri).setInline(false).onCreateDialog(
+            new HTMLAreaBuilder().setSelector('textarea.' + id.replace(/\./g, '_')).setTextAreaId(id).setAssetsUri(assetsUri).setInline(
+                false).onCreateDialog(
                 createDialogHandler).setFocusHandler(focusHandler.bind(this)).setBlurHandler(blurHandler.bind(this)).setKeydownHandler(
                 keydownHandler).setNodeChangeHandler(notifyValueChanged).setContentPath(
                 this.contentPath).setContent(this.content).setApplicationKeys(this.applicationKeys).setTools({
