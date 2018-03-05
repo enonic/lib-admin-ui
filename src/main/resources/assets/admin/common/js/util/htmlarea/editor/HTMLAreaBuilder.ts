@@ -199,6 +199,12 @@ module api.util.htmlarea.editor {
                 }
             });
 
+            ckeditor.on('maximize', (e) => {
+                if (e.data === 2) { // fullscreen off
+                    api.ui.responsive.ResponsiveManager.fireResizeEvent();
+                }
+            });
+
             ckeditor.on('blur', (e) => {
                 if (this.hasActiveDialog) {
                     //e.stopImmediatePropagation();
