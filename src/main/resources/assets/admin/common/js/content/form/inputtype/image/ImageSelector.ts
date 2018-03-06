@@ -41,6 +41,8 @@ module api.content.form.inputtype.image {
 
         private hideToggleIcon: boolean;
 
+        private isPreloaded: boolean = true;
+
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('image-selector', config);
 
@@ -106,6 +108,8 @@ module api.content.form.inputtype.image {
                 return property.getString();
             }).join(';');
 
+            this.isPreloaded = !StringHelper.isBlank(value);
+
             let contentTypes = this.allowedContentTypes.length
                 ? this.allowedContentTypes : [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()];
 
@@ -134,6 +138,10 @@ module api.content.form.inputtype.image {
                 data.forEach((item: ImageTreeSelectorItem) => {
                     this.contentComboBox.select(item);
                 });
+                this.isPreloaded = true;
+                if (data.length > 0) {
+                    this.validate(false);
+                }
                 optionDataLoader.unPreloadedData(onPreloadedData);
             };
 
@@ -338,19 +346,7 @@ module api.content.form.inputtype.image {
 
             return this.uploader;
         }
-/*
-        private queueLoadContent(propertyArray: PropertyArray): wemQ.Promise<ContentSummary[]> {
 
-            let contentIds: ContentId[] = [];
-            propertyArray.forEach((property: Property) => {
-                if (property.hasNonNullValue()) {
-                    contentIds.push(ContentId.fromReference(property.getReference()));
-                }
-            });
-
-            return api.content.form.inputtype.image.ImageContentLoader.queueContentLoadRequest(contentIds);
-        }
-*/
         protected getNumberOfValids(): number {
             return this.contentComboBox.countSelected();
         }
@@ -388,6 +384,12 @@ module api.content.form.inputtype.image {
                                   hideToggleIconConfig['value'].toLowerCase() == 'true' : false;
 
             super.readConfig(inputConfig);
+        }
+
+        displayValidationErrors(value: boolean) {
+            if (this.isPreloaded) {
+                super.displayValidationErrors(value);
+            }
         }
 
         onFocus(listener: (event: FocusEvent) => void) {
