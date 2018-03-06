@@ -55,10 +55,14 @@ module api.data {
             };
         }
 
-        forEach(callBack: {(property: Property, index: number): void;}) {
+        forEach(callBack: (property: Property, index: number) => void) {
             this.array.forEach((property: Property, index: number) => {
                 callBack(property, index);
             });
+        }
+
+        map<U>(callBack: (property: Property, index: number) => U): U[] {
+            return this.array.map(callBack);
         }
 
         containsValue(value: Value): boolean {

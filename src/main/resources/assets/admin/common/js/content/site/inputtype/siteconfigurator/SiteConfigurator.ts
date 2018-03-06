@@ -1,4 +1,5 @@
 module api.content.site.inputtype.siteconfigurator {
+    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import FormView = api.form.FormView;
     import Value = api.data.Value;
@@ -79,33 +80,19 @@ module api.content.site.inputtype.siteconfigurator {
 
                 this.siteConfigProvider.setPropertyArray(propertyArray);
 
-                const optionToKey = (option: SiteConfiguratorSelectedOptionView) => option.getApplication().getApplicationKey().toString();
-                const hasKey = (keys: string[], key: string) => keys.some(k => k === key);
+                const selectedOptions = propertyArray.map(property => this.selectOptionFromProperty(property));
 
-                const selectedOptions: SiteConfiguratorSelectedOptionView[] = this.comboBox.getSelectedOptionViews();
-                const selectedKeys = selectedOptions.map(optionToKey);
-                let optionsToRemove: SiteConfiguratorSelectedOptionView[] = selectedOptions.slice(0);
-                const updatePromises = [];
+                const optionsToDeselect = this.getOptionsToDeselect(selectedOptions);
+                optionsToDeselect.forEach(option => this.comboBox.deselect(option.getApplication(), true));
 
-                propertyArray.forEach(array => {
-                    const set = array.getPropertySet();
-                    const key = set.getProperty('applicationKey').getValue().getString();
-                    if (!hasKey(selectedKeys, key)) {
-                        this.comboBox.selectOptionByValue(key);
-                    }
-                    const view = <SiteConfiguratorSelectedOptionView>this.comboBox.getSelectedOptionByValue(key).getOptionView();
-                    const configSet = set.getProperty('config').getPropertySet();
-                    const update = view.getFormView().update(configSet, unchangedOnly);
-                    updatePromises.push(update);
-
-                    optionsToRemove = optionsToRemove.filter(option => optionToKey(option) !== key);
+                const updatePromises = selectedOptions.map((option, index) => {
+                    const view = <SiteConfiguratorSelectedOptionView>option.getOptionView();
+                    const configSet = propertyArray.get(index).getPropertySet().getProperty('config').getPropertySet();
+                    return view.getFormView().update(configSet, unchangedOnly);
                 });
-
-                optionsToRemove.forEach(option => this.comboBox.deselect(option.getApplication(), true));
 
                 return wemQ.all(updatePromises).then(() => {
                     this.ignorePropertyChange = ignorePropertyChange;
-
                     if (!unchangedOnly || !this.comboBox.isDirty()) {
                         this.comboBox.setValue(this.getValueFromPropertyArray(propertyArray));
                     }
@@ -115,6 +102,27 @@ module api.content.site.inputtype.siteconfigurator {
 
         reset() {
             this.comboBox.resetBaseValues();
+        }
+
+        private static optionViewToKey(option: SiteConfiguratorSelectedOptionView): string {
+            return option.getApplication().getApplicationKey().toString();
+        }
+
+        private getOptionsToDeselect(selectedOptions: SelectedOption<Application>[]) {
+            return this.comboBox.getSelectedOptionViews().filter(view => !selectedOptions.some(option =>
+                SiteConfigurator.optionViewToKey(<SiteConfiguratorSelectedOptionView>option.getOptionView()) ===
+                SiteConfigurator.optionViewToKey(view)) // tslint:disable-line max-line-length
+            );
+        }
+
+        private selectOptionFromProperty(property: Property): SelectedOption<Application> {
+            const key = property.getPropertySet().getProperty('applicationKey').getValue().getString();
+            const selectedOptions: SiteConfiguratorSelectedOptionView[] = this.comboBox.getSelectedOptionViews();
+            const alreadySelected = selectedOptions.some(option => SiteConfigurator.optionViewToKey(option) === key);
+            if (!alreadySelected) {
+                this.comboBox.selectOptionByValue(key);
+            }
+            return this.comboBox.getSelectedOptionByValue(key);
         }
 
         private saveToSet(siteConfig: SiteConfig, index: number) {
