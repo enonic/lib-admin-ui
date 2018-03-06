@@ -200,7 +200,7 @@ module api.form {
                 let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
                 this.addButton.setVisible(!inputTypeViewNotManagingAdd.maximumOccurrencesReached());
             }
-            if (validate) {
+            if (this.isRendered() && validate) {
                 this.validate(false);
             }
         }
