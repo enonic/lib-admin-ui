@@ -21,6 +21,9 @@ function lessCss(src, outDir, outName) {
         .pipe(less({
             plugins: [autoPrefix],
             relativeUrls: true
+        }).on('error', err => {
+            console.error(err.message);
+            process.exit(1);
         }))
         .pipe(rename(outName))
         .pipe(sourceMaps.write())

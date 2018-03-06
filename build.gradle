@@ -28,6 +28,9 @@ ext {
     resourcesDir = file( 'src/main/resources' )
 }
 
+loadConfiguration()
+
+
 task lint( type: GulpTask, dependsOn: npmInstall ) {
     description = 'Lint the *.ts files.'
     args = ['lint']
@@ -36,15 +39,15 @@ task lint( type: GulpTask, dependsOn: npmInstall ) {
     outputs.upToDateWhen { false }
 }
 
-task gulpAll( type: GulpTask, dependsOn: lint ) {
+task compile( type: GulpTask, dependsOn: lint ) {
     description = 'Build UI resources (css, etc).'
     args = ['all:no-lint']
     inputs.files fileTree( dir: 'src/main/resources', exclude: '**/_all.*' )
     outputs.files fileTree( dir: 'src/main/resources', include: '**/_all.*' )
 }
 
-task copyCompiled( type: Copy, dependsOn: gulpAll ) {
-    description = 'Copy compiled js files.'
+task copyCompiled( type: Copy ) {
+    description = 'Copy compiled JS and CSS files'
     from( 'src/main/resources/assets' ) {
         include '**/_all.js'
         include '**/_all.css'
@@ -54,7 +57,7 @@ task copyCompiled( type: Copy, dependsOn: gulpAll ) {
     includeEmptyDirs = false
 }
 
-task copyTypeDefs( type: Copy, dependsOn: copyCompiled ) {
+task copyDTS( type: Copy ) {
     description = 'Copy Typescript definitions to /dev/d.ts folder.'
     from( 'src/main/resources/assets/admin/common/js' ) {
         include '**/*.d.ts'
@@ -64,48 +67,54 @@ task copyTypeDefs( type: Copy, dependsOn: copyCompiled ) {
     includeEmptyDirs = false
 }
 
-task copySharedStyles( type: Copy, dependsOn: copyTypeDefs ) {
-    description = 'Copy shared styles to /dev/styles folder.'
-    from( 'src/main/resources/assets/admin/common/styles' ) {
-        include '**/*.less'
-        into 'styles'
-    }
-    from( 'src/main/resources/assets/admin/common/lib' ) {
+task copyStyles( type: Copy ) {
+    description = 'Copy styles from libraries to /dev/styles folder.'
+    def srcDir = 'src/main/resources/assets/admin/common/'
+    from( "$srcDir/lib" ) {
         include '**/*.css'
         into 'lib'
-    }
-    from( 'src/main/resources/assets/admin/common/images' ) {
-        into 'images'
-    }
-    from( 'src/main/resources/assets/admin/common/font' ) {
-        into 'font'
-    }
-    from( 'src/main/resources/assets/admin/common/icons' ) {
-        into 'icons'
     }
     includeEmptyDirs = false
     into 'build/resources/main/dev'
 }
 
+task copyAll {
+    dependsOn 'compile'
+    dependsOn 'copyCompiled'
+    dependsOn 'copyDTS'
+    dependsOn 'copyStyles'
+    tasks.findByName('copyCompiled').mustRunAfter 'compile'
+}
+
 jar {
     exclude 'assets/spec/**'
-    exclude 'assets/**/*.ts'    // let dev/**/admin.d.ts through to be used by other apps
-    exclude 'assets/**/*.less'  // let dev/**/*.less through to be used by other apps
+    exclude 'assets/**/*.ts'   // let dev/**/admin.d.ts through to be used by other apps
+    exclude 'assets/**/*.less' // let dev/**/*.less through to be used by other apps
     includeEmptyDirs = false
-    dependsOn += copySharedStyles
+    dependsOn += copyAll
+}
+
+task npmInstallForce( type: NpmTask ) {
+    description = 'Update all project node dependencies'
+    args = ['install', '--force']
 }
 
 task cleanNode( type: Delete ) {
     delete += 'node_modules'
 }
 
-task buildNoLint() {
-    dependsOn += build
-}
+def loadConfiguration() {
+    def envList = ['dev', 'prod']
+    def environment = hasProperty( 'env' ) ? env : 'prod'
 
-gradle.taskGraph.whenReady { graph ->
-    // Disable `lint` in `buildNoLint` task
-    if (graph.hasTask(buildNoLint)) {
-        lint.enabled = false
+    if ( !envList.contains( environment ) ) {
+        def message = "Target environment '$environment' is not allowed. Please use one of the following: ${envList.join(", ")}"
+        throw new ResourceException( message )
     }
+
+    def isDev = environment != 'prod'
+    project.ext.isDev = isDev
+
+    def envName = !isDev ? 'production' : 'development'
+    println "Environment is set to $envName"
 }
