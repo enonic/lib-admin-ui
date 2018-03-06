@@ -80,13 +80,13 @@ module api.content.site.inputtype.siteconfigurator {
 
                 this.siteConfigProvider.setPropertyArray(propertyArray);
 
-                const selectedOptions = propertyArray.map(property => this.selectOptionFromProperty(property));
+                const selectedOptionViews = propertyArray.map(property =>
+                    <SiteConfiguratorSelectedOptionView>this.selectOptionFromProperty(property).getOptionView());
 
-                const optionsToDeselect = this.getOptionsToDeselect(selectedOptions);
+                const optionsToDeselect = this.getOptionsToDeselect(selectedOptionViews);
                 optionsToDeselect.forEach(option => this.comboBox.deselect(option.getApplication(), true));
 
-                const updatePromises = selectedOptions.map((option, index) => {
-                    const view = <SiteConfiguratorSelectedOptionView>option.getOptionView();
+                const updatePromises = selectedOptionViews.map((view, index) => {
                     const configSet = propertyArray.get(index).getPropertySet().getProperty('config').getPropertySet();
                     return view.getFormView().update(configSet, unchangedOnly);
                 });
@@ -108,10 +108,9 @@ module api.content.site.inputtype.siteconfigurator {
             return option.getApplication().getApplicationKey().toString();
         }
 
-        private getOptionsToDeselect(selectedOptions: SelectedOption<Application>[]) {
-            return this.comboBox.getSelectedOptionViews().filter(view => !selectedOptions.some(option =>
-                SiteConfigurator.optionViewToKey(<SiteConfiguratorSelectedOptionView>option.getOptionView()) ===
-                SiteConfigurator.optionViewToKey(view)) // tslint:disable-line max-line-length
+        private getOptionsToDeselect(selectedOptionViews: SiteConfiguratorSelectedOptionView[]) {
+            return this.comboBox.getSelectedOptionViews().filter(oldView => !selectedOptionViews.some(newView =>
+                SiteConfigurator.optionViewToKey(newView) === SiteConfigurator.optionViewToKey(oldView))
             );
         }
 
