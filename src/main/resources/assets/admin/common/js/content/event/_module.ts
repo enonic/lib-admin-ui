@@ -10,3 +10,4 @@
 ///<reference path='ContentRequiresSaveEvent.ts' />
 ///<reference path='OpenEditPermissionsDialogEvent.ts' />
 ///<reference path='BeforeContentSavedEvent.ts' />
+///<reference path='RepositoryEvent.ts' />
