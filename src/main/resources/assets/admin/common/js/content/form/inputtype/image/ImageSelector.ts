@@ -41,7 +41,7 @@ module api.content.form.inputtype.image {
 
         private hideToggleIcon: boolean;
 
-        private isPreloaded: boolean = true;
+        private isPendingPreload: boolean = true;
 
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('image-selector', config);
@@ -108,7 +108,7 @@ module api.content.form.inputtype.image {
                 return property.getString();
             }).join(';');
 
-            this.isPreloaded = !StringHelper.isBlank(value);
+            this.isPendingPreload = !StringHelper.isBlank(value);
 
             let contentTypes = this.allowedContentTypes.length
                 ? this.allowedContentTypes : [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()];
@@ -138,7 +138,7 @@ module api.content.form.inputtype.image {
                 data.forEach((item: ImageTreeSelectorItem) => {
                     this.contentComboBox.select(item);
                 });
-                this.isPreloaded = true;
+                this.isPendingPreload = false;
                 if (data.length > 0) {
                     this.validate(false);
                 }
@@ -385,11 +385,14 @@ module api.content.form.inputtype.image {
 
             super.readConfig(inputConfig);
         }
+        validate(silent: boolean = true,
+                 rec: api.form.inputtype.InputValidationRecording = null): api.form.inputtype.InputValidationRecording {
 
-        displayValidationErrors(value: boolean) {
-            if (this.isPreloaded) {
-                super.displayValidationErrors(value);
+            if (!this.isPendingPreload) {
+                return super.validate(silent, rec);
             }
+
+            return new api.form.inputtype.InputValidationRecording();
         }
 
         onFocus(listener: (event: FocusEvent) => void) {
