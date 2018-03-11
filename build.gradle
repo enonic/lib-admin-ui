@@ -92,6 +92,10 @@ jar {
     exclude 'assets/spec/**'
     exclude 'assets/**/*.ts'   // let dev/**/admin.d.ts through to be used by other apps
     exclude 'assets/**/*.less' // let dev/**/*.less through to be used by other apps
+    if (isProd()) {
+        exclude '**/*.map'
+    }
+
     includeEmptyDirs = false
     dependsOn += copyAll
 }
@@ -130,4 +134,8 @@ def nodeEnvironment() {
     def environments = [ prod : 'production', dev: 'development' ]
     def nodeEnv = environments[hasProperty( 'env' ) ? env : 'prod']
     return nodeEnv != null ? nodeEnv : 'production'
+}
+
+def isProd() {
+    return hasProperty( 'env' ) ? (env == 'prod') : true
 }

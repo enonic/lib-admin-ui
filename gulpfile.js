@@ -1,46 +1,55 @@
-var gulp = require('gulp');
-var less = require('gulp-less');
-var rename = require('gulp-rename');
-var sourceMaps = require("gulp-sourcemaps");
-var LessAutoPrefix = require('less-plugin-autoprefix');
-var include = require("gulp-include");
-var ts = require('gulp-typescript');
-var del = require('del');
-var sequence = require('gulp-sequence');
-var tsLint = require('gulp-tslint');
-var path = require('path');
+const gulp = require('gulp');
+const gulpIf = require('gulp-if');
+const sequence = require('gulp-sequence');
+const less = require('gulp-less');
+const postcss = require('gulp-postcss');
+const browsers = require('browserslist-config-enonic');
+const autoprefixer = require('autoprefixer');
+const cssMqpacker = require('css-mqpacker');
+const cssnano = require('cssnano');
+const rename = require('gulp-rename');
+const sourceMaps = require('gulp-sourcemaps');
+const ts = require('gulp-typescript');
+const include = require('gulp-include');
+const tsLint = require('gulp-tslint');
+const del = require('del');
+const path = require('path');
 
-var autoPrefix = new LessAutoPrefix({
-    browsers: ['last 3 versions', 'ie 11']
-});
+const isDev = process.env.NODE_ENV !== 'production';
 
 function lessCss(src, outDir, outName) {
     return gulp
         .src('src/main/resources/assets/' + src)
-        .pipe(sourceMaps.init())
+        .pipe(gulpIf(isDev, sourceMaps.init()))
         .pipe(less({
-            plugins: [autoPrefix],
             relativeUrls: true
         }).on('error', err => {
             console.error(err.message);
             process.exit(1);
         }))
+        .pipe(postcss([
+            autoprefixer({browsers}),
+            cssMqpacker(),
+            ...(isDev ? [] : [
+                cssnano({preset: 'default'})
+            ])
+        ]))
         .pipe(rename(outName))
-        .pipe(sourceMaps.write())
+        .pipe(gulpIf(isDev, sourceMaps.write()))
         .pipe(gulp.dest(outDir));
 }
 
 function typescript(src, out, decl) {
-    var tsResult = gulp
+    const tsResult = gulp
         .src('src/main/resources/assets/' + src)
-        .pipe(sourceMaps.init())
+        .pipe(gulpIf(isDev, sourceMaps.init()))
         .pipe(ts({
             out: 'src/main/resources/assets/' + out,
             target: 'ES5',
             lib: [
-                "ES5",
-                "ES6",
-                "DOM"
+                'ES5',
+                'ES6',
+                'DOM'
             ],
             declaration: decl,
             noImplicitAny: false,
@@ -49,7 +58,7 @@ function typescript(src, out, decl) {
         }));
 
     tsResult.js
-        .pipe(sourceMaps.write('./'))
+        .pipe(gulpIf(isDev, sourceMaps.write('./')))
         .pipe(gulp.dest('./'));
 
     return tsResult.dts
@@ -67,7 +76,7 @@ gulp.task('less-html-editor', function () {
 });
 
 gulp.task('ts-admin', function () {
-    return typescript('admin/common/js/_module.ts', 'admin/common/js/_all.js', true);
+    return typescript('admin/common/js/_module.ts', 'admin/common/js/_all.js', isDev);
 });
 
 gulp.task('ts-spec', function () {
@@ -75,7 +84,7 @@ gulp.task('ts-spec', function () {
 });
 
 gulp.task('lint', function () {
-    var patterns = [];
+    const patterns = [];
     patterns.push('src/main/resources/assets/**/*.ts');
     patterns.push('!src/main/resources/assets/**/*.d.ts');
 
@@ -98,12 +107,9 @@ gulp.task('combine-js', function () {
 });
 
 gulp.task('clean', function () {
-    var paths = [];
-    paths.push('src/main/resources/assets/**/_all.*');
+    const paths = ['src/main/resources/assets/**/_all.*'];
 
-    return del(paths, {
-        dot: true
-    });
+    return del(paths, {dot: true});
 });
 
 gulp.task('less', ['less-admin', 'less-html-editor']);
