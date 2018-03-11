@@ -19,7 +19,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 
 function lessCss(src, outDir, outName) {
     return gulp
-        .src('src/main/resources/assets/' + src)
+        .src(path.join('src/main/resources/assets/', src))
         .pipe(gulpIf(isDev, sourceMaps.init()))
         .pipe(less({
             relativeUrls: true
@@ -41,16 +41,12 @@ function lessCss(src, outDir, outName) {
 
 function typescript(src, out, decl) {
     const tsResult = gulp
-        .src('src/main/resources/assets/' + src)
+        .src(path.join('src/main/resources/assets/', src))
         .pipe(gulpIf(isDev, sourceMaps.init()))
         .pipe(ts({
-            out: 'src/main/resources/assets/' + out,
+            out: path.join('src/main/resources/assets/', out),
             target: 'ES5',
-            lib: [
-                'ES5',
-                'ES6',
-                'DOM'
-            ],
+            lib: ['ES5', 'ES6', 'DOM'],
             declaration: decl,
             noImplicitAny: false,
             noUnusedLocals: true,
@@ -65,23 +61,21 @@ function typescript(src, out, decl) {
         .pipe(gulp.dest('./'));
 }
 
-gulp.task('less-admin', function () {
-    return lessCss('admin/common/styles/_module.less', 'src/main/resources/assets/admin/common/styles', '_all.css');
-});
+gulp.task('less-admin', () => lessCss(
+    'admin/common/styles/_module.less',
+    'src/main/resources/assets/admin/common/styles',
+    '_all.css'
+));
 
-gulp.task('less-html-editor', function () {
-    return lessCss('admin/common/styles/api/util/htmlarea/html-editor.module.less',
-        'src/main/resources/assets/admin/common/styles',
-        'html-editor.css');
-});
+gulp.task('less-html-editor', () => lessCss(
+    'admin/common/styles/api/util/htmlarea/html-editor.module.less',
+    'src/main/resources/assets/admin/common/styles',
+    'html-editor.css'
+));
 
-gulp.task('ts-admin', function () {
-    return typescript('admin/common/js/_module.ts', 'admin/common/js/_all.js', isDev);
-});
+gulp.task('ts-admin', () => typescript('admin/common/js/_module.ts', 'admin/common/js/_all.js', true));
 
-gulp.task('ts-spec', function () {
-    return typescript('spec/_spec.ts', 'spec/_all.js', false);
-});
+gulp.task('ts-spec', () => typescript('spec/_spec.ts', 'spec/_all.js', false));
 
 gulp.task('lint', function () {
     const patterns = [];

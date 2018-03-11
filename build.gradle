@@ -109,7 +109,7 @@ task cleanNode( type: Delete ) {
     delete += 'node_modules'
 }
 
-task flush( type: Delete ) {
+task flush( type: Delete, dependsOn: clean ) {
     description = 'Clean the project from built sources and dependencies'
     delete '.xp'
 }
