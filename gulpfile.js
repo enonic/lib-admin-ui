@@ -12,6 +12,7 @@ const sourceMaps = require('gulp-sourcemaps');
 const ts = require('gulp-typescript');
 const include = require('gulp-include');
 const tsLint = require('gulp-tslint');
+const uglify = require('gulp-uglify-es').default;
 const del = require('del');
 const path = require('path');
 
@@ -54,6 +55,10 @@ function typescript(src, out, decl) {
         }));
 
     tsResult.js
+        .pipe(gulpIf(!isDev, uglify({
+            mangle: false,
+            keep_fnames: true
+        })))
         .pipe(gulpIf(isDev, sourceMaps.write('./')))
         .pipe(gulp.dest('./'));
 

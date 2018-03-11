@@ -24,19 +24,16 @@ node {
     version = '8.10.0'
 }
 
-ext {
-    resourcesDir = file( 'src/main/resources' )
-}
+def resourcesDir = file( 'src/main/resources' )
 
 loadConfiguration()
-
 
 task lint( type: GulpTask, dependsOn: npmInstall ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Lint the *.ts files.'
     args = [ 'lint' ]
-    inputs.files fileTree( dir: 'src/main/resources', exclude: '**/_all.*' )
-    outputs.files fileTree( dir: 'src/main/resources', include: '**/_all.*' )
+    inputs.files fileTree( dir: resourcesDir, exclude: '**/_all.*' )
+    outputs.files fileTree( dir: resourcesDir, include: '**/_all.*' )
     outputs.upToDateWhen { false }
 }
 
@@ -44,13 +41,13 @@ task compile( type: GulpTask, dependsOn: lint ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build UI resources (css, etc).'
     args = [ 'all:no-lint' ]
-    inputs.files fileTree( dir: 'src/main/resources', exclude: '**/_all.*' )
-    outputs.files fileTree( dir: 'src/main/resources', include: '**/_all.*' )
+    inputs.files fileTree( dir: resourcesDir, exclude: '**/_all.*' )
+    outputs.files fileTree( dir: resourcesDir, include: '**/_all.*' )
 }
 
 task copyCompiled( type: Copy ) {
     description = 'Copy compiled JS and CSS files'
-    from( 'src/main/resources/assets' ) {
+    from( "$resourcesDir/assets" ) {
         include '**/_all.js'
         include '**/_all.css'
         include '**/html-editor.css'
@@ -61,7 +58,7 @@ task copyCompiled( type: Copy ) {
 
 task copyDTS( type: Copy ) {
     description = 'Copy Typescript definitions to /dev/d.ts folder.'
-    from( 'src/main/resources/assets/admin/common/js' ) {
+    from( "$resourcesDir/assets/admin/common/js" ) {
         include '**/*.d.ts'
         rename '_all.d.ts', 'admin.d.ts'
     }
@@ -71,7 +68,7 @@ task copyDTS( type: Copy ) {
 
 task copyStyles( type: Copy ) {
     description = 'Copy styles from libraries to /dev/styles folder.'
-    def srcDir = 'src/main/resources/assets/admin/common/'
+    def srcDir = "$resourcesDir/assets/admin/common/"
     from( "$srcDir/lib" ) {
         include '**/*.css'
         into 'lib'
@@ -95,6 +92,12 @@ jar {
     if (isProd()) {
         exclude '**/*.map'
     }
+    // exclude libs sources
+    def buildDir = file('build/resources/main')
+    fileTree("$buildDir/assets/admin/common/lib") {
+        exclude '_all.js'
+        exclude '**/*.css'
+    }.each { f -> exclude buildDir.toURI().relativize( file( f.path ).toURI() ).toString() }
 
     includeEmptyDirs = false
     dependsOn += copyAll
@@ -112,6 +115,8 @@ task cleanNode( type: Delete ) {
 task flush( type: Delete, dependsOn: clean ) {
     description = 'Clean the project from built sources and dependencies'
     delete '.xp'
+    delete fileTree("$resourcesDir/assets/admin/common") { include '**/_all.*' }
+    delete "$resourcesDir/assets/admin/common/styles/html-editor.css"
 }
 
 def loadConfiguration() {
