@@ -437,9 +437,9 @@ module api.util.htmlarea.dialog {
             return -1;
         }
 
-        findSpansByIndex(index: number): [any] {
-            let nodes: [any];
-            let spans: [any] = <any>[];
+        findSpansByIndex(index: number): Array<any> {
+            let nodes: Array<any>;
+            let spans: Array<any> = [];
 
             nodes = tinymce.toArray(this.editor.getBody().getElementsByTagName('span'));
             if (nodes.length) {
