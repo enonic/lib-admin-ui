@@ -157,6 +157,9 @@ module api.app {
                     return event;
                 }
             }
+            if (eventType.indexOf('repository.') === 0) {
+                return api.content.event.RepositoryEvent.fromJson(eventJson);
+            }
 
             return null;
         }

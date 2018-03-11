@@ -1,4 +1,5 @@
 module api.content.site.inputtype.siteconfigurator {
+    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import FormView = api.form.FormView;
     import Value = api.data.Value;
@@ -74,12 +75,24 @@ module api.content.site.inputtype.siteconfigurator {
 
         update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
             return super.update(propertyArray, unchangedOnly).then(() => {
+                const ignorePropertyChange = this.ignorePropertyChange;
+                this.ignorePropertyChange = true;
+
                 this.siteConfigProvider.setPropertyArray(propertyArray);
-                const updatePromises = this.comboBox.getSelectedOptionViews().map((view, index) => {
-                    const config = propertyArray.getSet(index).getProperty('config').getPropertySet();
-                    return view.getFormView().update(config, unchangedOnly);
+
+                const selectedOptionViews = propertyArray.map(property =>
+                    <SiteConfiguratorSelectedOptionView>this.selectOptionFromProperty(property).getOptionView());
+
+                const optionsToDeselect = this.getOptionsToDeselect(selectedOptionViews);
+                optionsToDeselect.forEach(option => this.comboBox.deselect(option.getApplication(), true));
+
+                const updatePromises = selectedOptionViews.map((view, index) => {
+                    const configSet = propertyArray.get(index).getPropertySet().getProperty('config').getPropertySet();
+                    return view.getFormView().update(configSet, unchangedOnly);
                 });
+
                 return wemQ.all(updatePromises).then(() => {
+                    this.ignorePropertyChange = ignorePropertyChange;
                     if (!unchangedOnly || !this.comboBox.isDirty()) {
                         this.comboBox.setValue(this.getValueFromPropertyArray(propertyArray));
                     }
@@ -89,6 +102,26 @@ module api.content.site.inputtype.siteconfigurator {
 
         reset() {
             this.comboBox.resetBaseValues();
+        }
+
+        private static optionViewToKey(option: SiteConfiguratorSelectedOptionView): string {
+            return option.getApplication().getApplicationKey().toString();
+        }
+
+        private getOptionsToDeselect(selectedOptionViews: SiteConfiguratorSelectedOptionView[]) {
+            return this.comboBox.getSelectedOptionViews().filter(oldView => !selectedOptionViews.some(newView =>
+                SiteConfigurator.optionViewToKey(newView) === SiteConfigurator.optionViewToKey(oldView))
+            );
+        }
+
+        private selectOptionFromProperty(property: Property): SelectedOption<Application> {
+            const key = property.getPropertySet().getProperty('applicationKey').getValue().getString();
+            const selectedOptions: SiteConfiguratorSelectedOptionView[] = this.comboBox.getSelectedOptionViews();
+            const alreadySelected = selectedOptions.some(option => SiteConfigurator.optionViewToKey(option) === key);
+            if (!alreadySelected) {
+                this.comboBox.selectOptionByValue(key);
+            }
+            return this.comboBox.getSelectedOptionByValue(key);
         }
 
         private saveToSet(siteConfig: SiteConfig, index: number) {
