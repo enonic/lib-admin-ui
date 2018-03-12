@@ -1,0 +1,150 @@
+.picker-icon(@picker-type: "date", @font-size: 18px, @top: 9px, @right: 7px, @pointer-events: none) {
+  & when (@picker-type = "date") {
+    .icon-calendar;
+  }
+  & when (@picker-type = "time") {
+    .icon-clock;
+  }
+
+  &:before {
+    position: absolute;
+    right: @right;
+    top: @top;
+    font-size: @font-size;
+    pointer-events: @pointer-events;
+
+  }
+}
+
+.date-picker-mixin(@width: 100%, @padding: 10px) {
+  .date-picker-dialog {
+    .picker-dialog(@width, @padding);
+    box-sizing: border-box;
+
+    h2, h5 {
+      text-align: center;
+      position: relative;
+    }
+
+    .prev, .next {
+      position: absolute;
+      cursor: pointer;
+      color: @admin-button-blue2;
+      vertical-align: middle;
+      text-decoration: none;
+    }
+
+    .prev {
+      .icon-arrow-left();
+    }
+
+    .next {
+      .icon-arrow-right();
+    }
+
+    .year-container {
+      .prev {
+        top: 5px;
+        left: 15px;
+      }
+      .next {
+        top: 5px;
+        right: 15px;
+      }
+    }
+
+    .next {
+      .icon-arrow-right();
+    }
+
+    .month-container {
+      margin: 5px 0 10px 0;
+      .prev {
+        top: 2px;
+        left: 24px;
+      }
+      .next {
+        top: 2px;
+        right: 24px;
+      }
+    }
+    .calendar {
+      text-align: center;
+    }
+  }
+}
+
+.time-picker-mixin() {
+  .time-picker-dialog {
+    .picker-dialog(auto, 5px);
+
+    li {
+      display: inline-block;
+      font-size: 30px;
+      line-height: 40px;
+      padding: 5px;
+
+      &.colon {
+        vertical-align: top;
+        padding: 0;
+        margin-top: 19px;
+
+        &:before {
+          content: ':';
+        }
+      }
+
+      a, span {
+        display: block;
+      }
+
+      .prev, .next {
+        cursor: pointer;
+        overflow: hidden;
+        height: 16px;
+
+        width: 34px;
+        text-align: center;
+
+        span {
+          position: absolute;
+          width: inherit;
+          margin-top: -3px;
+          font-size: 0.8em;
+          color: @admin-button-blue2;
+        }
+      }
+
+      .prev {
+        span {
+          .icon-arrow-down();
+        }
+      }
+
+      .next {
+        span {
+          .icon-arrow-up();
+        }
+      }
+
+    }
+
+    .timezone {
+      color: @admin-button-blue2;
+      font-size: 15px;
+      display: block;
+      line-height: 25px;
+    }
+  }
+}
+
+.container-title-mixin(@font-size: 32px, @bottom: -9px) {
+  color: @admin-white;
+  font-family: @admin-font-family;
+  font-size: @font-size;
+  font-weight: 100;
+  position: absolute;
+  bottom: @bottom;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

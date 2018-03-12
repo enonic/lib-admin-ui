@@ -78,7 +78,7 @@
       width: 100%;
       max-width: none;
       box-sizing: border-box;
-      box-shadow: 0px 5px 10px -3px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 5px 10px -3px rgba(0, 0, 0, 0.3);
       border-top: 1px solid lightgray;
 
       .wizard-step-navigator {
@@ -91,7 +91,7 @@
           float: initial;
           span {
             color: @admin-font-gray2;
-            .transition(none);
+            transition: none;
             line-height: 1em;
             padding-left: 15px;
           }
@@ -131,7 +131,7 @@
     top: 43px;
     border-top: 1px solid @admin-medium-gray-border;
 
-    .box-shadow(-3px 3px 6px 0 @admin-toolbar-shadow);
+    box-shadow: -3px 3px 6px 0 @admin-toolbar-shadow;
   }
 
   &:not(.scroll-stick) {
@@ -142,7 +142,7 @@
 
   .help-text-button {
     position: absolute;
-    right: 0px;
+    right: 0;
     top: 9px;
     padding: 0 14px 0 10px;
     overflow: hidden;
@@ -157,7 +157,7 @@
       text-align: center;
       line-height: 22px;
       font-size: 16px;
-      .border-radius(50%);
+      border-radius: 50%;
       color: white;
       background: @form-button-bg-hover;
     }

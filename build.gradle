@@ -21,7 +21,7 @@ jar {
 
 node {
     download = true
-    version = '6.9.2'
+    version = '8.10.0'
 }
 
 ext {
@@ -32,16 +32,18 @@ loadConfiguration()
 
 
 task lint( type: GulpTask, dependsOn: npmInstall ) {
+    environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Lint the *.ts files.'
-    args = ['lint']
+    args = [ 'lint' ]
     inputs.files fileTree( dir: 'src/main/resources', exclude: '**/_all.*' )
     outputs.files fileTree( dir: 'src/main/resources', include: '**/_all.*' )
     outputs.upToDateWhen { false }
 }
 
 task compile( type: GulpTask, dependsOn: lint ) {
+    environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build UI resources (css, etc).'
-    args = ['all:no-lint']
+    args = [ 'all:no-lint' ]
     inputs.files fileTree( dir: 'src/main/resources', exclude: '**/_all.*' )
     outputs.files fileTree( dir: 'src/main/resources', include: '**/_all.*' )
 }
@@ -96,15 +98,20 @@ jar {
 
 task npmInstallForce( type: NpmTask ) {
     description = 'Update all project node dependencies'
-    args = ['install', '--force']
+    args = [ 'install', '--force' ]
 }
 
 task cleanNode( type: Delete ) {
     delete += 'node_modules'
 }
 
+task flush( type: Delete ) {
+    description = 'Clean the project from built sources and dependencies'
+    delete '.xp'
+}
+
 def loadConfiguration() {
-    def envList = ['dev', 'prod']
+    def envList = [ 'dev', 'prod' ]
     def environment = hasProperty( 'env' ) ? env : 'prod'
 
     if ( !envList.contains( environment ) ) {
@@ -115,6 +122,12 @@ def loadConfiguration() {
     def isDev = environment != 'prod'
     project.ext.isDev = isDev
 
-    def envName = !isDev ? 'production' : 'development'
+    def envName = nodeEnvironment()
     println "Environment is set to $envName"
+}
+
+def nodeEnvironment() {
+    def environments = [ prod : 'production', dev: 'development' ]
+    def nodeEnv = environments[hasProperty( 'env' ) ? env : 'prod']
+    return nodeEnv != null ? nodeEnv : 'production'
 }

@@ -1,9 +1,10 @@
 {
   "name": "lib-admin-ui",
-  "version": "1.1.0-B1",
+  "version": "1.2.0",
   "description": "Admin UI Library",
   "devDependencies": {
     "del": "^2.2.1",
+    "enonic-admin-artifacts": "^1.4.0",
     "gulp": "^3.9.1",
     "gulp-include": "^2.3.0",
     "gulp-less": "^3.3.0",
@@ -17,7 +18,7 @@
     "typescript": "2.6.2"
   },
   "engines": {
-    "node": ">= 6.9.2",
-    "npm": ">= 3.10.9"
+    "node": ">= 8.10.0",
+    "npm": ">= 5.6.0"
   }
 }
