@@ -506,8 +506,12 @@ module api.dom {
             return this;
         }
 
-        appendChild<T extends Element>(child: T): Element {
-            return this.insertChild(child, this.children.length);
+        appendChild<T extends Element>(child: T, lazyRender: boolean = false): Element {
+            if (!lazyRender) {
+                return this.insertChild(child, this.children.length);
+            }
+
+            this.lazyRender(child);
         }
 
         appendChildren<T extends Element>(...children: T[]): Element {
@@ -657,6 +661,7 @@ module api.dom {
             let parent = this.parentElement;
             let index = parent.unregisterChildElement(this);
             parent.registerChildElement(replacement, index);
+            parent.registerChildElement(replacement, index);
 
             // Run init of replacement if parent is rendered
             if (parent.isRendered()) {
@@ -748,6 +753,65 @@ module api.dom {
         setHtml(value: string, escapeHtml: boolean = true): Element {
             this.getEl().setInnerHtml(value, escapeHtml);
             return this;
+        }
+
+        private isEmptyElement(): boolean {
+            const rect = this.getEl().getBoundingClientRect();
+
+            return (rect.height === 0 && rect.width === 0);
+        }
+
+        private getFirstNonEmptyAncestor(): Element {
+            let el: Element = this;
+
+            while (!!el && el.isEmptyElement()) {
+                el = el.getParentElement();
+            }
+
+            return el;
+
+        }
+
+        private isInViewport(): boolean {
+            const container = this.getFirstNonEmptyAncestor();
+
+            if (container.isEmptyElement()) {
+                return false;
+            }
+
+            const rect = container.getEl().getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.top <= 2 * (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        private lazyRender(childEl: Element): Element {
+            const scrollableParentEl = wemjq(this.getHTMLElement()).scrollParent();
+            const hasNoScrollableParent = scrollableParentEl[0]['nodeName'].indexOf('document') > -1;
+            const scrollableParent = hasNoScrollableParent ? null : api.dom.Element.fromHtmlElement(scrollableParentEl[0]);
+
+            if (!scrollableParent || this.isInViewport()) {
+                return this.appendChild(childEl);
+            }
+
+            const onParentScroll = () => {
+                if (this.isInViewport()) {
+                    const lastScrollHeight = scrollableParentEl.scrollTop();
+
+                    this.appendChild(childEl);
+
+                    if (lastScrollHeight !== scrollableParentEl.scrollTop()) {
+                        scrollableParentEl.scrollTop(lastScrollHeight);
+                    }
+
+                    scrollableParent.unScroll(onParentScroll);
+                }
+            };
+
+            scrollableParent.onScroll(onParentScroll);
         }
 
         /*
