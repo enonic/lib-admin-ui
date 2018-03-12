@@ -72,12 +72,8 @@ module api.content.site.inputtype.siteconfigurator {
             this.appendActionButtons(header);
 
             this.configureDialog = this.initConfigureDialog();
-            if(this.configureDialog) {
-                return this.configureDialog.render(true)
-                    .then(()=> wemQ(true));
-            } else {
-                return wemQ(true);
-            }
+
+            return wemQ(true);
         }
 
         setSiteConfig(siteConfig: SiteConfig) {
