@@ -84,14 +84,15 @@ module api.ui.security.acl {
                 this.getSelectedNavigationItem().setVisibleInMenu(false);
             }
 
-            let menu = this.getMenuEl();
-            let entry = menu.getParentElement().getParentElement();
-            let list = entry.getParentElement();
-            let offset = entry.getEl().getOffsetTopRelativeToParent() -
-                (list.getEl().getOffsetTopRelativeToParent() + list.getEl().getPaddingTop() + list.getEl().getScrollTop());
-            let height = menu.getEl().getHeightWithoutPadding();
+            const menu = this.getMenuEl();
+            const entry = menu.getParentElement().getParentElement();
+            const list = entry.getParentElement();
 
-            if (offset > height) {
+            const entryTop = entry.getEl().getBoundingClientRect().top;
+            const listBottom = list.getEl().getBoundingClientRect().bottom;
+            const height = menu.getEl().getHeight();
+
+            if (entryTop + height > listBottom) {
                 menu.addClass('upward');
             } else {
                 menu.removeClass('upward');
