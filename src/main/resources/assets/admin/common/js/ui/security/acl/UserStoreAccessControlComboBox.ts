@@ -100,18 +100,18 @@ module api.ui.security.acl {
             let itemView = new UserStoreACESelectedOptionView(option, readOnly);
             itemView.onValueChanged((item: UserStoreAccessControlEntry) => {
                 // update our selected options list with new values
-                let selectedOption = this.getById(item.getPrincipal().getKey().toString());
+                const selectedOption = this.getById(item.getPrincipal().getKey().toString());
                 if (selectedOption) {
                     selectedOption.getOption().displayValue = item;
                 }
                 this.notifyItemValueChanged(item);
             });
-            let selectedOption = new SelectedOption<UserStoreAccessControlEntry>(itemView, this.list.length);
+            const selected = new SelectedOption<UserStoreAccessControlEntry>(itemView, this.list.length);
 
             itemView.onRemoveClicked(() => this.removeOption(option, false));
 
             // keep track of selected options for SelectedOptionsView
-            this.list.push(selectedOption);
+            this.list.push(selected);
             return itemView;
         }
 

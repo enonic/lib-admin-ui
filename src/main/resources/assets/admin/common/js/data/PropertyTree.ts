@@ -645,7 +645,6 @@ module api.data {
 
         isEmpty(): boolean {
             return this.root.isEmpty();
-            ;
         }
     }
 }

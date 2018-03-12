@@ -41,7 +41,6 @@ module api.security {
                     api.DefaultErrorHandler.handle(reason);
                     deferred.resolve(false);
                 }).done();
-            ;
             return deferred.promise;
         }
 

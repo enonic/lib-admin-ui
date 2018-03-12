@@ -38,7 +38,6 @@ describe('api.data.ValueTypeConverter', () => {
 
             expect(converted.getString()).toBe('XxX');
         });
-        ;
     });
 
     describe('to local date conversion test', () => {
