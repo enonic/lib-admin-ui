@@ -4,6 +4,10 @@
       text-overflow: clip;
       padding-left: 0px;
       font-size: 0.9em;
+
+      span {
+        white-space: normal;
+      }
     }
 
     &.readonly {
@@ -24,10 +28,12 @@
   .grid .slick-row {
     .slick-cell {
       &.status {
+        display: flex;
+        align-items: center;
         text-align: center;
-        div:not(.online) {
-          line-height: 18px;
-        }
+        justify-content: center;
+        line-height: unset;
+
         .pending_delete {
           font-size: 0.8em;
         }
