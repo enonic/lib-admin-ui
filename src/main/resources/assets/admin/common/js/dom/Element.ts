@@ -755,13 +755,31 @@ module api.dom {
             return this;
         }
 
-        private isInViewport(): boolean {
+        private isEmptyElement(): boolean {
             const rect = this.getEl().getBoundingClientRect();
 
-            if (rect.height === 0 && rect.width === 0) {
+            return (rect.height === 0 && rect.width === 0);
+        }
+
+        private getFirstNonEmptyAncestor(): Element {
+            let el: Element = this;
+
+            while (!!el && el.isEmptyElement()) {
+                el = el.getParentElement();
+            }
+
+            return el;
+
+        }
+
+        private isInViewport(): boolean {
+            const container = this.getFirstNonEmptyAncestor();
+
+            if (container.isEmptyElement()) {
                 return false;
             }
 
+            const rect = container.getEl().getBoundingClientRect();
             return (
                 rect.top >= 0 &&
                 rect.left >= 0 &&
