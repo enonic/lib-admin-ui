@@ -251,7 +251,7 @@ module api.form {
 
             const initialValue: Value = this.inputTypeView.newInitialValue();
 
-            this.toggleClass('display-validation-errors', Boolean(initialValue && !StringHelper.isEmpty(initialValue.getString())));
+            this.toggleClass('display-validation-errors', !!initialValue && !StringHelper.isEmpty(initialValue.getString()));
 
             if (!silent && (recording.validityChanged(this.previousValidityRecording) || this.userInputValidityChanged(hasValidInput) )) {
                 this.notifyValidityChanged(new RecordingValidityChangedEvent(recording,
