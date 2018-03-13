@@ -73,6 +73,10 @@ module api.content.site.inputtype.siteconfigurator {
 
             this.configureDialog = this.initConfigureDialog();
 
+            if (this.configureDialog) {
+                return this.formView.layout().then(() => wemQ(true));
+            }
+
             return wemQ(true);
         }
 
