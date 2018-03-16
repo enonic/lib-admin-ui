@@ -132,12 +132,22 @@ module api.ui.dialog {
             }
         }
 
-        private handleSucceeded() {
+        private handleSucceeded(message: string) {
             this.setProgressValue(100);
+            api.notify.showSuccess(message);
+            this.notifyProgressComplete(TaskState.FINISHED);
             this.handleProcessingComplete();
         }
 
-        private handleFailed() {
+        private handleFailed(message: string) {
+            api.notify.showError(i18n('notify.process.failed', message));
+            this.notifyProgressComplete(TaskState.FAILED);
+            this.handleProcessingComplete();
+        }
+
+        private handleWarning(message: string) {
+            api.notify.showWarning(message);
+            this.notifyProgressComplete(TaskState.FAILED);
             this.handleProcessingComplete();
         }
 
@@ -177,17 +187,33 @@ module api.ui.dialog {
                     }
 
                     const progress = task.getProgress();
+                    let progressJson;
+                    try {
+                        progressJson = JSON.parse(progress.getInfo());
+                    } catch (e) {
+                        // the info is not in JSON format
+                        progressJson = {
+                            state: "SUCCESS",
+                            message: progress.getInfo()
+                        }
+                    }
 
                     switch (state) {
                     case TaskState.FINISHED:
-                        this.handleSucceeded();
-                        api.notify.showSuccess(progress.getInfo());
-                        this.notifyProgressComplete(TaskState.FINISHED);
+                        switch (progressJson.state) {
+                        case "ERROR":
+                            this.handleFailed(progressJson.message);
+                            break;
+                        case "SUCCESS":
+                            this.handleSucceeded(progressJson.message);
+                            break;
+                        case "WARNING":
+                            this.handleWarning(progressJson.message);
+                            break;
+                        }
                         break;
                     case TaskState.FAILED:
-                        this.handleFailed();
-                        api.notify.showError(i18n('notify.process.failed', progress.getInfo()));
-                        this.notifyProgressComplete(TaskState.FAILED);
+                        this.handleFailed(progressJson.message);
                         break;
                     default:
                         this.setProgressValue(task.getProgressPercentage());

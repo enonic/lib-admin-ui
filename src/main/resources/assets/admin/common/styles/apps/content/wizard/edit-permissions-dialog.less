@@ -1,9 +1,4 @@
 .edit-permissions-dialog {
-  width: 800px;
-
-  @media screen and (max-height: 360px) {
-    min-height: 240px;
-  }
 
   .modal-dialog-header .path {
     font-size: 16px;
@@ -49,28 +44,9 @@
   }
 
   .principal-combobox {
-    height: 320px;
-
-    @media screen and (max-height: 540px) {
-      max-height: 160px;
-    }
-
-    @media screen and (max-height: 360px) {
-      max-height: 110px;
-    }
 
     .access-control-list {
-      overflow-y: auto;
-      overflow-x: hidden;
       padding: 5px 0;
-
-      @media screen and (max-height: 540px) {
-        max-height: 100px;
-      }
-
-      @media screen and (max-height: 360px) {
-        max-height: 50px;
-      }
 
       .access-control-entry {
         height: auto;
@@ -90,10 +66,6 @@
     &.disabled {
       .@{_COMMON_PREFIX}.combobox {
         display: none;
-      }
-
-      .access-control-list {
-        height: 320px;
       }
 
       .access-control-entry {

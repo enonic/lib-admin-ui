@@ -1,17 +1,14 @@
 module api.content.form.inputtype.image {
 
-    import Property = api.data.Property;
     import PropertyArray = api.data.PropertyArray;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import ContentId = api.content.ContentId;
     import ContentSummary = api.content.ContentSummary;
     import ContentTypeName = api.schema.content.ContentTypeName;
     import ComboBox = api.ui.selector.combobox.ComboBox;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Option = api.ui.selector.Option;
 
     import UploadItem = api.ui.uploader.UploadItem;
     import FileUploadedEvent = api.ui.uploader.FileUploadedEvent;
@@ -44,6 +41,8 @@ module api.content.form.inputtype.image {
 
         private hideToggleIcon: boolean;
 
+        private isPendingPreload: boolean = true;
+
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('image-selector', config);
 
@@ -51,8 +50,6 @@ module api.content.form.inputtype.image {
 
             // Don't forget to clean up the modal dialog on remove
             this.onRemoved(() => ResponsiveManager.unAvailableSizeChanged(this));
-
-            this.onShown(() => this.updateSelectedItemsIcons());
         }
 
         public getContentComboBox(): api.content.image.ImageContentComboBox {
@@ -61,21 +58,6 @@ module api.content.form.inputtype.image {
 
         protected getContentPath(raw: ImageTreeSelectorItem): api.content.ContentPath {
             return raw.getContentSummary().getPath();
-        }
-
-        private updateSelectedItemsIcons() {
-            if (this.contentComboBox.getSelectedOptions().length > 0) {
-                this.doLoadContent(this.getPropertyArray()).then((contents: ContentSummary[]) => {
-                    contents.forEach((content: ContentSummary) => {
-                        this.selectedOptionsView.updateUploadedOption(<Option<ImageTreeSelectorItem>>{
-                            value: content.getId(),
-                            displayValue: new ImageTreeSelectorItem(content)
-                        });
-                    });
-
-                    this.setLayoutInProgress(false);
-                });
-            }
         }
 
         getValueType(): ValueType {
@@ -126,6 +108,8 @@ module api.content.form.inputtype.image {
                 return property.getString();
             }).join(';');
 
+            this.isPendingPreload = !StringHelper.isBlank(value);
+
             let contentTypes = this.allowedContentTypes.length
                 ? this.allowedContentTypes : [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()];
 
@@ -149,6 +133,19 @@ module api.content.form.inputtype.image {
                 .build();
 
             let comboBox: ComboBox<ImageTreeSelectorItem> = contentComboBox.getComboBox();
+
+            const onPreloadedData = (data: ImageTreeSelectorItem[]) => {
+                data.forEach((item: ImageTreeSelectorItem) => {
+                    this.contentComboBox.select(item);
+                });
+                this.isPendingPreload = false;
+                if (data.length > 0) {
+                    this.validate(false);
+                }
+                optionDataLoader.unPreloadedData(onPreloadedData);
+            };
+
+            optionDataLoader.onPreloadedData(onPreloadedData);
 
             comboBox.onHidden(() => {
                 // hidden on max occurrences reached
@@ -221,13 +218,7 @@ module api.content.form.inputtype.image {
                 this.appendChild(comboBoxWrapper);
                 this.appendChild(this.selectedOptionsView);
 
-                return this.doLoadContent(propertyArray).then((contents: api.content.ContentSummary[]) => {
-                    contents.forEach((content: api.content.ContentSummary) => {
-                        this.contentComboBox.select(new ImageTreeSelectorItem(content));
-                    });
-                    this.setLayoutInProgress(false);
-                });
-
+                this.setLayoutInProgress(false);
             });
         }
 
@@ -267,8 +258,7 @@ module api.content.form.inputtype.image {
                 showCancel: false,
                 showResult: false,
                 maximumOccurrences: this.getRemainingOccurrences(),
-                allowMultiSelection: multiSelection,
-                deferred: true
+                allowMultiSelection: multiSelection
             });
 
             this.uploader.onUploadStarted((event: FileUploadStartedEvent<Content>) => {
@@ -356,17 +346,6 @@ module api.content.form.inputtype.image {
             return this.uploader;
         }
 
-        private doLoadContent(propertyArray: PropertyArray): wemQ.Promise<ContentSummary[]> {
-
-            let contentIds: ContentId[] = [];
-            propertyArray.forEach((property: Property) => {
-                if (property.hasNonNullValue()) {
-                    contentIds.push(ContentId.fromReference(property.getReference()));
-                }
-            });
-            return new api.content.resource.GetContentSummaryByIds(contentIds).sendAndParse();
-        }
-
         protected getNumberOfValids(): number {
             return this.contentComboBox.countSelected();
         }
@@ -404,6 +383,15 @@ module api.content.form.inputtype.image {
                                   hideToggleIconConfig['value'].toLowerCase() == 'true' : false;
 
             super.readConfig(inputConfig);
+        }
+        validate(silent: boolean = true,
+                 rec: api.form.inputtype.InputValidationRecording = null): api.form.inputtype.InputValidationRecording {
+
+            if (!this.isPendingPreload) {
+                return super.validate(silent, rec);
+            }
+
+            return new api.form.inputtype.InputValidationRecording();
         }
 
         onFocus(listener: (event: FocusEvent) => void) {

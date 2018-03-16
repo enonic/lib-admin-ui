@@ -43,13 +43,23 @@ module api.content.image {
         }
 
         private updateIconSrc(content: ImageTreeSelectorItem) {
-            let newIconSrc = content.getImageUrl() + '?thumbnail=false&size=' + ImageSelectorSelectedOptionView.IMAGE_SIZE;
+            const newIconSrc = content.getImageUrl() + '?thumbnail=false&size=' + ImageSelectorSelectedOptionView.IMAGE_SIZE;
 
             if (this.icon.getSrc().indexOf(newIconSrc) === -1) {
-                if (this.isVisible()) {
-                    this.showSpinner();
+
+                const setSrc = () => {
+                    if (this.isVisible() && !this.icon.isLoaded()) {
+                        this.showSpinner();
+                    }
+                    this.icon.setSrc(newIconSrc);
+                };
+
+                if (this.icon.isRendered()) {
+                    setSrc();
+                } else {
+                    this.icon.onRendered(() => setSrc());
                 }
-                this.icon.setSrc(newIconSrc);
+
             }
         }
 
@@ -61,7 +71,6 @@ module api.content.image {
         }
 
         doRender(): wemQ.Promise<boolean> {
-
             this.icon = new api.dom.ImgEl();
             this.label = new api.dom.DivEl('label');
             this.check = api.ui.Checkbox.create().build();
@@ -72,7 +81,7 @@ module api.content.image {
             let squaredContent = new api.dom.DivEl('squared-content');
             squaredContent.appendChildren<api.dom.Element>(this.icon, this.label, this.check, this.progress, this.error, this.loadMask);
 
-            this.appendChild(squaredContent);
+            this.appendChild(squaredContent, true);
 
             this.check.onClicked((event: MouseEvent) => {
                 this.check.toggleChecked();

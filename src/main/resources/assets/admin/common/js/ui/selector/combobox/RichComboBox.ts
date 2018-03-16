@@ -153,6 +153,11 @@ module api.ui.selector.combobox {
             return this.selectedOptionsView.getByOption(option);
         }
 
+        getSelectedOptionByValue(value: string): SelectedOption<OPTION_DISPLAY_VALUE> {
+            const option = this.getOptionByValue(value);
+            return option && this.selectedOptionsView.getByOption(option);
+        }
+
         getSelectedOptionView(): SelectedOptionsView<OPTION_DISPLAY_VALUE> {
             return this.selectedOptionsView;
         }

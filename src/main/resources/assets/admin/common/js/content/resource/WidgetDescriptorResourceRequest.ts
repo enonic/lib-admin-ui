@@ -15,12 +15,8 @@ module api.content.resource {
 
         static fromJson(json: api.content.json.WidgetDescriptorJson[]): Widget[] {
             let result: Widget[] = [];
-            json.forEach((widgetDescriptor: api.content.json.WidgetDescriptorJson) => {
-                result.push(new Widget(widgetDescriptor.url,
-                    widgetDescriptor.displayName,
-                    widgetDescriptor.interfaces,
-                    widgetDescriptor.key,
-                    widgetDescriptor.config));
+            json.forEach((widgetDescriptorJson: api.content.json.WidgetDescriptorJson) => {
+                result.push(Widget.fromJson(widgetDescriptorJson));
             });
             return result;
         }
