@@ -31,7 +31,7 @@ module api.content.form.inputtype.customselector {
         }
 
         isPartiallyLoaded(): boolean {
-            return this.results.length > 0 && !this.loaded;
+            return !!this.results && this.results.length > 0 && !this.loaded;
         }
 
         resetParams() {
