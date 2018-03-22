@@ -101,6 +101,7 @@ module api.dom {
         public static debug: boolean = false;
 
         private addedListeners: {(event: ElementAddedEvent): void}[] = [];
+        private descendantAddedListeners: {(event: ElementAddedEvent): void}[] = [];
         private removedListeners: {(event: ElementRemovedEvent): void}[] = [];
         private renderedListeners: {(event: ElementRenderedEvent): void}[] = [];
         private shownListeners: {(event: ElementShownEvent): void}[] = [];
@@ -647,6 +648,7 @@ module api.dom {
                 this.getEl().remove();
                 this.notifyRemoved(null);
             }
+            this.unDescendantAdded();
             return this;
         }
 
@@ -688,6 +690,15 @@ module api.dom {
 
         getParentElement(): Element {
             return this.parentElement;
+        }
+
+        private notifyDescendantAdded(e: ElementEvent) {
+            this.descendantAddedListeners.forEach((listener) => {
+                listener(e);
+            });
+            if (this.parentElement) {
+                this.parentElement.notifyDescendantAdded(e);
+            }
         }
 
         getChildren(): Element[] {
@@ -881,6 +892,14 @@ module api.dom {
             this.getEl().removeEventListener('mouseout', listener);
         }
 
+        onDescendantAdded(listener: (event: ElementEvent) => void) {
+            this.descendantAddedListeners.push(listener);
+        }
+
+        unDescendantAdded() {
+            this.descendantAddedListeners = [];
+        }
+
         onAdded(listener: (event: ElementAddedEvent) => void) {
             this.addedListeners.push(listener);
         }
@@ -896,6 +915,9 @@ module api.dom {
             this.addedListeners.forEach((listener) => {
                 listener(addedEvent);
             });
+
+            const elementEvent = new ElementEvent('descendant-added', this, this.parentElement);
+            this.parentElement.notifyDescendantAdded(elementEvent);
 
             this.children.forEach((child: Element) => {
                 child.notifyAdded();
