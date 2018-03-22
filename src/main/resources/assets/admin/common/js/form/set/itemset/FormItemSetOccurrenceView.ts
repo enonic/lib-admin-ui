@@ -18,6 +18,7 @@ module api.form {
     export class FormItemSetOccurrenceView extends FormSetOccurrenceView {
 
         private formItemSet: FormItemSet;
+        private isTitleSet: boolean = false;
 
         constructor(config: FormItemSetOccurrenceViewConfig) {
             super('form-item-set-occurrence-view', config.formSetOccurrence);
@@ -43,11 +44,14 @@ module api.form {
                 } else {
                     this.label.setTitle(api.util.StringHelper.htmlToString(firstNonEmptyInput.value)); // Strip HTML tags
                 }
+                this.formSetOccurrencesContainer.unDescendantAdded();
             }
         }
 
         public layout(validate: boolean = true): wemQ.Promise<void> {
-            return super.layout(validate).then(() => this.setTitle());
+            return super.layout(validate).then(() => {
+                this.formSetOccurrencesContainer.onDescendantAdded(() => this.setTitle());
+            });
         }
 
         protected subscribeOnItemEvents() {

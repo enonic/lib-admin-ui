@@ -159,7 +159,7 @@ module api.ui.dialog {
                 }
             }
 
-            wemjq(this.getHTMLElement()).css('border-bottom-width', `${borderHeight}px`);
+            wemjq(this.getHTMLElement()).css('border-bottom', `${borderHeight}px solid`);
         }
 
         private initListeners() {
