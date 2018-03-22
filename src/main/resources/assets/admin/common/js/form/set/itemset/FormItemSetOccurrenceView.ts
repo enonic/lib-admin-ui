@@ -18,7 +18,6 @@ module api.form {
     export class FormItemSetOccurrenceView extends FormSetOccurrenceView {
 
         private formItemSet: FormItemSet;
-        private isTitleSet: boolean = false;
 
         constructor(config: FormItemSetOccurrenceViewConfig) {
             super('form-item-set-occurrence-view', config.formSetOccurrence);
