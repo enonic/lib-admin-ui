@@ -916,8 +916,10 @@ module api.dom {
                 listener(addedEvent);
             });
 
-            const elementEvent = new ElementEvent('descendant-added', this, this.parentElement);
-            this.parentElement.notifyDescendantAdded(elementEvent);
+            if (this.parentElement) {
+                const e = new ElementEvent('descendant-added', this, this.parentElement);
+                this.parentElement.notifyDescendantAdded(e);
+            }
 
             this.children.forEach((child: Element) => {
                 child.notifyAdded();
