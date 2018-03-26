@@ -43,9 +43,18 @@ module api.content {
         public getConfig(): { [key: string]: string } {
             return this.config;
         }
+
+        public static fromJson(json: api.content.json.WidgetDescriptorJson): Widget {
+            return new Widget(json.url,
+                json.displayName,
+                json.interfaces,
+                json.key,
+                json.config);
+        }
     }
 
-    export class WidgetDescriptorKey implements api.Equitable {
+    export class WidgetDescriptorKey
+        implements api.Equitable {
 
         private static SEPARATOR: string = ':';
 

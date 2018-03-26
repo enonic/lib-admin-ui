@@ -123,7 +123,19 @@ module api.ui.dialog {
             }
         }
 
-        private toggleHeightClass() {
+        private adjustOverflow() {
+
+            if (!this.getBody().getEl().getHeight()) {
+                return;
+            }
+
+            const bodyEl = wemjq(this.getBody().getHTMLElement());
+            const showScrollbar = (parseInt(bodyEl.css('height'), 10) >= parseInt(bodyEl.css('max-height'), 10));
+
+            wemjq(bodyEl).css('overflow', showScrollbar ? 'auto' : 'visible');
+        }
+
+        private adjustHeight() {
             const dialogHeight = this.getEl().getHeightWithBorder();
 
             if (dialogHeight === 0 || dialogHeight % 2 === 0) {
@@ -135,7 +147,7 @@ module api.ui.dialog {
             const dialogHeightWithoutBorder = borderBottom ? dialogHeight - borderBottom : dialogHeight;
 
             if (dialogHeightWithoutBorder % 2 === 0 && borderBottom) {
-                wemjq(this.getHTMLElement()).css('border-bottom', '');
+                wemjq(this.getHTMLElement()).css('border-bottom-width', '0px');
 
                 return;
             }
@@ -154,7 +166,8 @@ module api.ui.dialog {
             const resizeObserver = window['ResizeObserver'];
             const responsiveItem: ResponsiveItem = new ResponsiveItem(this);
             const resizeHandler = () => {
-                this.toggleHeightClass();
+                this.adjustHeight();
+                this.adjustOverflow();
                 responsiveItem.update();
             };
             if (resizeObserver) {

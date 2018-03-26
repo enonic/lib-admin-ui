@@ -101,6 +101,7 @@ module api.dom {
         public static debug: boolean = false;
 
         private addedListeners: {(event: ElementAddedEvent): void}[] = [];
+        private descendantAddedListeners: {(event: ElementAddedEvent): void}[] = [];
         private removedListeners: {(event: ElementRemovedEvent): void}[] = [];
         private renderedListeners: {(event: ElementRenderedEvent): void}[] = [];
         private shownListeners: {(event: ElementShownEvent): void}[] = [];
@@ -506,8 +507,12 @@ module api.dom {
             return this;
         }
 
-        appendChild<T extends Element>(child: T): Element {
-            return this.insertChild(child, this.children.length);
+        appendChild<T extends Element>(child: T, lazyRender: boolean = false): Element {
+            if (!lazyRender) {
+                return this.insertChild(child, this.children.length);
+            }
+
+            this.lazyRender(child);
         }
 
         appendChildren<T extends Element>(...children: T[]): Element {
@@ -643,6 +648,7 @@ module api.dom {
                 this.getEl().remove();
                 this.notifyRemoved(null);
             }
+            this.unDescendantAdded();
             return this;
         }
 
@@ -656,6 +662,7 @@ module api.dom {
             // during these operation this.parentElement will become unavailable
             let parent = this.parentElement;
             let index = parent.unregisterChildElement(this);
+            parent.registerChildElement(replacement, index);
             parent.registerChildElement(replacement, index);
 
             // Run init of replacement if parent is rendered
@@ -683,6 +690,15 @@ module api.dom {
 
         getParentElement(): Element {
             return this.parentElement;
+        }
+
+        private notifyDescendantAdded(e: ElementEvent) {
+            this.descendantAddedListeners.forEach((listener) => {
+                listener(e);
+            });
+            if (this.parentElement) {
+                this.parentElement.notifyDescendantAdded(e);
+            }
         }
 
         getChildren(): Element[] {
@@ -748,6 +764,65 @@ module api.dom {
         setHtml(value: string, escapeHtml: boolean = true): Element {
             this.getEl().setInnerHtml(value, escapeHtml);
             return this;
+        }
+
+        private isEmptyElement(): boolean {
+            const rect = this.getEl().getBoundingClientRect();
+
+            return (rect.height === 0 && rect.width === 0);
+        }
+
+        private getFirstNonEmptyAncestor(): Element {
+            let el: Element = this;
+
+            while (!!el && el.isEmptyElement()) {
+                el = el.getParentElement();
+            }
+
+            return el;
+
+        }
+
+        private isInViewport(): boolean {
+            const container = this.getFirstNonEmptyAncestor();
+
+            if (container.isEmptyElement()) {
+                return false;
+            }
+
+            const rect = container.getEl().getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.top <= 2 * (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        private lazyRender(childEl: Element): Element {
+            const scrollableParentEl = wemjq(this.getHTMLElement()).scrollParent();
+            const hasNoScrollableParent = scrollableParentEl[0]['nodeName'].indexOf('document') > -1;
+            const scrollableParent = hasNoScrollableParent ? null : api.dom.Element.fromHtmlElement(scrollableParentEl[0]);
+
+            if (!scrollableParent || this.isInViewport()) {
+                return this.appendChild(childEl);
+            }
+
+            const onParentScroll = () => {
+                if (this.isInViewport()) {
+                    const lastScrollHeight = scrollableParentEl.scrollTop();
+
+                    this.appendChild(childEl);
+
+                    if (lastScrollHeight !== scrollableParentEl.scrollTop()) {
+                        scrollableParentEl.scrollTop(lastScrollHeight);
+                    }
+
+                    scrollableParent.unScroll(onParentScroll);
+                }
+            };
+
+            scrollableParent.onScroll(onParentScroll);
         }
 
         /*
@@ -817,6 +892,14 @@ module api.dom {
             this.getEl().removeEventListener('mouseout', listener);
         }
 
+        onDescendantAdded(listener: (event: ElementEvent) => void) {
+            this.descendantAddedListeners.push(listener);
+        }
+
+        unDescendantAdded() {
+            this.descendantAddedListeners = [];
+        }
+
         onAdded(listener: (event: ElementAddedEvent) => void) {
             this.addedListeners.push(listener);
         }
@@ -832,6 +915,11 @@ module api.dom {
             this.addedListeners.forEach((listener) => {
                 listener(addedEvent);
             });
+
+            if (this.parentElement) {
+                const e = new ElementEvent('descendant-added', this, this.parentElement);
+                this.parentElement.notifyDescendantAdded(e);
+            }
 
             this.children.forEach((child: Element) => {
                 child.notifyAdded();

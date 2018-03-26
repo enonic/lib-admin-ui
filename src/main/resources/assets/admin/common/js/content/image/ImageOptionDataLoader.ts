@@ -4,10 +4,11 @@ module api.content.image {
     import OptionDataLoaderData = api.ui.selector.OptionDataLoaderData;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import Option = api.ui.selector.Option;
-    import GetContentSummaryByIds = api.content.resource.GetContentSummaryByIds;
 
     export class ImageOptionDataLoader
         extends ContentSummaryOptionDataLoader<ImageTreeSelectorItem> {
+
+        private preloadedDataListeners: {(data: ImageTreeSelectorItem[]): void}[] = [];
 
         fetch(node: TreeNode<Option<ImageTreeSelectorItem>>): wemQ.Promise<ImageTreeSelectorItem> {
             return super.fetch(node).then((data) => {
@@ -27,9 +28,29 @@ module api.content.image {
             let contentIds = ids.split(';').map((id) => {
                 return new ContentId(id);
             });
-            return new GetContentSummaryByIds(contentIds).sendAndParse().then(((contents: ContentSummary[]) => {
-                return contents.map(content => new ImageTreeSelectorItem(content, false));
-            }));
+
+            return api.content.form.inputtype.image.ImageContentLoader.queueContentLoadRequest(contentIds)
+                .then(((contents: ContentSummary[]) => {
+                    const data = contents.map(content => new ImageTreeSelectorItem(content, false));
+                    this.notifyPreloadedData(data);
+                    return data;
+                }));
+        }
+
+        onPreloadedData(listener: (data: ImageTreeSelectorItem[]) => void) {
+            this.preloadedDataListeners.push(listener);
+        }
+
+        unPreloadedData(listener: (data: ImageTreeSelectorItem[]) => void) {
+            this.preloadedDataListeners = this.preloadedDataListeners.filter((currentListener: (data: ImageTreeSelectorItem[])=>void)=> {
+                return currentListener !== listener;
+            });
+        }
+
+        notifyPreloadedData(data: ImageTreeSelectorItem[]) {
+            this.preloadedDataListeners.forEach((listener: (data: ImageTreeSelectorItem[]) => void) => {
+                listener.call(this, data);
+            });
         }
 
         protected createOptionData(data: ContentTreeSelectorItem[], hits: number, totalHits: number) {
