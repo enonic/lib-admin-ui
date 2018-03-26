@@ -310,7 +310,7 @@ module api.util.htmlarea.dialog {
             }
 
             return !all && hasMore;
-        };
+        }
 
         private isContentEditableFalse(node: any): boolean {
             return node && node.nodeType == 1 && node.contentEditable === 'false';
@@ -328,7 +328,7 @@ module api.util.htmlarea.dialog {
             }
 
             return count;
-        };
+        }
 
         private markAllMatches(regex: RegExp) {
             let node: Element;
@@ -380,7 +380,7 @@ module api.util.htmlarea.dialog {
 
                 return rng;
             }
-        };
+        }
 
         private removeNode(node: Node) {
             let dom = this.editor.dom;
@@ -403,7 +403,7 @@ module api.util.htmlarea.dialog {
             if (index !== -1) {
                 this.currentIndex = index;
             }
-        };
+        }
 
         prev() {
             let index = this.moveSelection(false);
@@ -411,7 +411,7 @@ module api.util.htmlarea.dialog {
             if (index !== -1) {
                 this.currentIndex = index;
             }
-        };
+        }
 
         private moveSelection(forward: boolean) {
             let testIndex: number = this.currentIndex;
@@ -437,9 +437,9 @@ module api.util.htmlarea.dialog {
             return -1;
         }
 
-        findSpansByIndex(index: number): [any] {
-            let nodes: [any];
-            let spans: [any] = <any>[];
+        findSpansByIndex(index: number): Array<any> {
+            let nodes: Array<any>;
+            let spans: Array<any> = [];
 
             nodes = tinymce.toArray(this.editor.getBody().getElementsByTagName('span'));
             if (nodes.length) {
@@ -515,7 +515,7 @@ module api.util.htmlarea.dialog {
             this.blockElementsMap = schema.getBlockElements(); // H1-H6, P, TD etc
             this.hiddenTextElementsMap = schema.getWhiteSpaceElements(); // TEXTAREA, PRE, STYLE, SCRIPT
             this.shortEndedElementsMap = schema.getShortEndedElements(); // BR, IMG, INPUT
-        };
+        }
 
         private getMatchIndexes(m: any, captureGroup: number) {
             captureGroup = captureGroup || 0;

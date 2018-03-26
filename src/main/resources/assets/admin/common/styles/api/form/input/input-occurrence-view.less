@@ -1,7 +1,7 @@
 .input-occurrence-view {
   .clearfix();
-  .flexbox();
-  .align-items(center);
+  display: flex;
+  align-items: center;
 
   flex-wrap: wrap;
 
@@ -10,7 +10,7 @@
   }
 
   > .drag-control {
-    .order(1);
+    order: 1;
 
     float: left;
     background: url("../../../../images/nail-plate.png") no-repeat;
@@ -20,8 +20,8 @@
   }
 
   .input-wrapper {
-    .order(2);
-    .flex(1);
+    order: 2;
+    flex: 1;
 
     .form-input {
       width: 100%;
@@ -32,7 +32,7 @@
     &:extend(.icon);
     .icon-close;
 
-    .order(3);
+    order: 3;
 
     float: right;
     text-decoration: none;

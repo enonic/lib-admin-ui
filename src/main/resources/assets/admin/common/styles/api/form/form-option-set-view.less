@@ -107,7 +107,7 @@
     }
 
     .form-occurrence-draggable-label {
-      margin-left: 0px;
+      margin-left: 0;
     }
 
     & > .remove-button {
@@ -165,7 +165,7 @@
           border-bottom: 6px solid @admin-option-set-header-bg;
 
           > .help-text {
-            padding: 3px 0px 0px 25px;
+            padding: 3px 0 0 25px;
           }
 
           &.expanded > .option-items-container {
@@ -219,7 +219,7 @@
           }
 
           input[type="checkbox"] + label {
-            padding: 0px 5px 0px 25px;
+            padding: 0 5px 0 25px;
             &:before {
               left: 4px;
               background: url("../../../images/box-checked-optionset.gif") -1px no-repeat;
@@ -268,7 +268,7 @@
 
         > .input-view {
           .selected-options {
-            padding-bottom: 0px !important;
+            padding-bottom: 0 !important;
           }
 
           &.invalid .input-label .label {
@@ -287,7 +287,7 @@
           width: 15px;
           height: 15px;
           border: 1px solid darkgray;
-          .border-radius(50%);
+          border-radius: 50%;
           background-color: @admin-white;
 
           &:checked {
@@ -302,8 +302,8 @@
               height: 14px;
               width: 14px;
               background: white;
-              .border-radius(8px);
-              .box-shadow(inset 0px 0px 0px 2px white);
+              border-radius: 8px;
+              box-shadow: inset 0 0 0 2px white;
             }
 
             + label:before {
@@ -318,12 +318,12 @@
         }
 
         input[type="radio"] + label {
-          padding: 0px 5px 0px 7px;
+          padding: 0 5px 0 7px;
           position: relative;
         }
 
         input[type="checkbox"] + label {
-          padding: 0px 5px 0px 31px;
+          padding: 0 5px 0 31px;
           &:before {
             margin-top: 10px;
             left: 10px;
