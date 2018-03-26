@@ -4,6 +4,5 @@ module api.content.json {
 
         descriptors: WidgetDescriptorJson[];
 
-
     }
 }
