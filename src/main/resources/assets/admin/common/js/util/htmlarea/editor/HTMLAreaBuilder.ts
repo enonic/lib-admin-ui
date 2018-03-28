@@ -204,7 +204,10 @@ module api.util.htmlarea.editor {
                 document_base_url: this.assetsUri + '/admin/common/lib/tinymce/',
                 skin_url: this.assetsUri + '/admin/common/lib/tinymce/skins/lightgray',
                 content_css: this.assetsUri + '/admin/common/styles/html-editor.css',
-                theme_url: 'modern',
+                theme: 'modern',
+                mobile: {
+                    theme: 'mobile'
+                },
                 inline: this.inline,
                 fixed_toolbar_container: this.fixedToolbarContainer,
                 convert_urls: this.convertUrls,
@@ -246,6 +249,7 @@ module api.util.htmlarea.editor {
                         }
                     ]
                 },
+                branding: false,
                 menubar: false,
                 statusbar: true,
                 paste_as_text: true,
