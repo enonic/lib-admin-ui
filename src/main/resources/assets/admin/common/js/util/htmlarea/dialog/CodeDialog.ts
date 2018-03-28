@@ -2,7 +2,6 @@ module api.util.htmlarea.dialog {
     import TextArea = api.ui.text.TextArea;
     import Action = api.ui.Action;
     import i18n = api.util.i18n;
-    import HTMLAreaEditor = CKEDITOR.editor;
 
     export class CodeDialog extends ModalDialog {
 
@@ -10,7 +9,7 @@ module api.util.htmlarea.dialog {
 
         private okAction: Action;
 
-        constructor(editor: HTMLAreaEditor) {
+        constructor(editor: HtmlAreaEditor) {
             super(<HtmlAreaModalDialogConfig>{
                 editor: editor,
                 title: i18n('dialog.sourcecode.title'), cls: 'source-code-modal-dialog',
@@ -31,7 +30,7 @@ module api.util.htmlarea.dialog {
         open() {
             super.open();
 
-            this.textArea.setValue(this.getEditor().getSnapshot());
+            this.textArea.setValue(this.getEditor().getContent({source_view: true}));
             this.getEl().setAttribute('spellcheck', 'false');
             this.textArea.giveFocus();
         }
@@ -41,7 +40,14 @@ module api.util.htmlarea.dialog {
 
             this.addAction(this.okAction.onExecuted(() => {
                 this.getEditor().focus();
-                this.getEditor().setData(this.textArea.getValue());
+
+                this.getEditor().undoManager.transact(() => {
+                    this.getEditor().setContent(this.textArea.getValue());
+                });
+
+                this.getEditor().selection.setCursorLocation();
+                this.getEditor().nodeChanged();
+
                 this.close();
             }));
 

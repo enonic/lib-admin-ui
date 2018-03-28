@@ -1,7 +1,5 @@
 module api.util.htmlarea.dialog {
 
-    import HTMLAreaEditor = CKEDITOR.editor;
-
     export class HTMLAreaDialogHandler {
 
         private static modalDialog: ModalDialog;
@@ -55,7 +53,7 @@ module api.util.htmlarea.dialog {
             return this.openDialog(new ImageModalDialog(config, content));
         }
 
-        private static openAnchorDialog(editor: HTMLAreaEditor): ModalDialog {
+        private static openAnchorDialog(editor: HtmlAreaEditor): ModalDialog {
             return this.openDialog(new AnchorModalDialog(editor));
         }
 
@@ -64,15 +62,15 @@ module api.util.htmlarea.dialog {
             return this.openDialog(new MacroModalDialog(config, content, applicationKeys));
         }
 
-        private static openSearchReplaceDialog(editor: HTMLAreaEditor): ModalDialog {
+        private static openSearchReplaceDialog(editor: HtmlAreaEditor): ModalDialog {
             return this.openDialog(new SearchReplaceModalDialog(editor));
         }
 
-        private static openCodeDialog(editor: HTMLAreaEditor): ModalDialog {
+        private static openCodeDialog(editor: HtmlAreaEditor): ModalDialog {
             return this.openDialog(new CodeDialog(editor));
         }
 
-        private static openCharMapDialog(editor: HTMLAreaEditor): ModalDialog {
+        private static openCharMapDialog(editor: HtmlAreaEditor): ModalDialog {
             return this.openDialog(new CharMapDialog(editor));
         }
 

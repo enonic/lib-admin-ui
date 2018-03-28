@@ -7,13 +7,14 @@ module api.form.inputtype.text {
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
     import Element = api.dom.Element;
-    import HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
-    import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
+    import HTMLAreaBuilder = api.util.htmlarea.editor._HTMLAreaBuilder;
+    import HTMLAreaHelper = api.util.htmlarea.editor._HTMLAreaHelper;
     import ApplicationKey = api.application.ApplicationKey;
     import Promise = Q.Promise;
     import AppHelper = api.util.AppHelper;
+    import HTMLAreaEditor = CKEDITOR.editor;
 
-    export class HtmlArea
+    export class _HtmlArea
         extends support.BaseInputTypeNotManagingAdd {
 
         private editors: HtmlAreaOccurrenceInfo[];
@@ -128,7 +129,7 @@ module api.form.inputtype.text {
                     return;
                 }
                 this.notifyValueChanged(id, textAreaWrapper);
-                new HtmlAreaResizeEvent(this).fire();
+                new _HtmlAreaResizeEvent(this).fire();
             };
 
             let isMouseOverRemoveOccurenceButton = false;
@@ -192,22 +193,39 @@ module api.form.inputtype.text {
                 textAreaWrapper.addClass(focusedEditorCls);
             };
 
-            new HTMLAreaBuilder().setSelector('textarea.' + id.replace(/\./g, '_')).setAssetsUri(assetsUri).setInline(false).onCreateDialog(
-                createDialogHandler).setFocusHandler(focusHandler.bind(this)).setBlurHandler(blurHandler.bind(this)).setKeydownHandler(
-                keydownHandler).setNodeChangeHandler(notifyValueChanged).setContentPath(
-                this.contentPath).setContent(this.content).setApplicationKeys(this.applicationKeys).setTools({
-                include: this.inputConfig['include'],
-                exclude: this.inputConfig['exclude']
-            }).setForcedRootBlock(
-                this.inputConfig['forcedRootBlock'] ? this.inputConfig['forcedRootBlock'][0].value : 'p').setEditableSourceCode(
-                this.editableSourceCode).createEditor().then((editor: HtmlAreaEditor) => {
+            const editor: HTMLAreaEditor = new HTMLAreaBuilder()
+                .setEditorContainerId(id)
+                .setAssetsUri(assetsUri)
+                .setInline(false)
+                .onCreateDialog(createDialogHandler)
+                .setFocusHandler(focusHandler.bind(this))
+                .setBlurHandler(blurHandler.bind(this))
+                .setKeydownHandler(keydownHandler)
+                .setNodeChangeHandler(notifyValueChanged)
+                .setContentPath(this.contentPath)
+                .setContent(this.content)
+                .setApplicationKeys(this.applicationKeys)
+                .setTools({
+                    include: this.inputConfig['include'],
+                    exclude: this.inputConfig['exclude']
+                })
+                .setForcedRootBlock(this.inputConfig['forcedRootBlock'] ? this.inputConfig['forcedRootBlock'][0].value : 'p')
+                .setEditableSourceCode(this.editableSourceCode)
+                .createEditor();
+
+            editor.on('loaded', () => {
                 this.setEditorContent(id, property);
+
                 if (this.notInLiveEdit()) {
                     this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper, id);
                 }
+
                 this.removeTooltipFromEditorArea(textAreaWrapper);
 
-                let removeButtonEL = wemjq(textAreaWrapper.getParentElement().getParentElement().getHTMLElement()).find(
+                this.moveButtonToBottomBar(textAreaWrapper, '.cke_button__maximize');
+                this.moveButtonToBottomBar(textAreaWrapper, '.cke_button__code');
+
+                const removeButtonEL = wemjq(textAreaWrapper.getParentElement().getParentElement().getHTMLElement()).find(
                     '.remove-button')[0];
                 removeButtonEL.addEventListener('mouseover', () => {
                     isMouseOverRemoveOccurenceButton = true;
@@ -216,13 +234,12 @@ module api.form.inputtype.text {
                     isMouseOverRemoveOccurenceButton = false;
                 });
 
-                this.onShown(() => {
-                    // invoke auto resize on shown in case contents have been updated while inactive
-                    if (editor['contentAreaContainer'] || editor['bodyElement']) {
-                        editor.execCommand('mceAutoResize', false, null, {skip_focus: true});
-                    }
-                });
             });
+        }
+
+        private moveButtonToBottomBar(inputOccurence: Element, buttonClass: string): void {
+            wemjq(inputOccurence.getHTMLElement()).find(buttonClass).appendTo(
+                wemjq(inputOccurence.getHTMLElement()).find('.cke_bottom'));
         }
 
         private setFocusOnEditorAfterCreate(inputOccurence: Element, id: string): void {
@@ -271,16 +288,16 @@ module api.form.inputtype.text {
         }
 
         private updateEditorToolbarPos(inputOccurence: Element) {
-            wemjq(inputOccurence.getHTMLElement()).find('.mce-toolbar-grp').css({top: this.getToolbarOffsetTop(1)});
+            wemjq(inputOccurence.getHTMLElement()).find('.cke_top').css({top: this.getToolbarOffsetTop(1)});
         }
 
         private updateEditorToolbarWidth(inputOccurence: Element, editorInfo: HtmlAreaOccurrenceInfo) {
             if (editorInfo.hasStickyToolbar) {
                 // Toolbar in sticky mode has position: fixed which makes it not
                 // inherit width of its parent, so we have to explicitly set width
-                wemjq(inputOccurence.getHTMLElement()).find('.mce-toolbar-grp').width(inputOccurence.getEl().getWidth() - 3);
+                wemjq(inputOccurence.getHTMLElement()).find('.cke_top').width(inputOccurence.getEl().getWidth() - 19);
             } else {
-                wemjq(inputOccurence.getHTMLElement()).find('.mce-toolbar-grp').width('auto');
+                wemjq(inputOccurence.getHTMLElement()).find('.cke_top').width('auto');
             }
         }
 
@@ -289,9 +306,9 @@ module api.form.inputtype.text {
         }
 
         private editorLowerEdgeIsVisible(inputOccurence: Element): boolean {
-            let distToTopOfScrlblArea = this.calcDistToTopOfScrlbleArea(inputOccurence);
-            let editorToolbarHeight = wemjq(inputOccurence.getHTMLElement()).find('.mce-toolbar-grp').outerHeight(true);
-            let mceStatusToolbarHeight = wemjq(inputOccurence.getHTMLElement()).find('.mce-statusbar').outerHeight(true);
+            const distToTopOfScrlblArea = this.calcDistToTopOfScrlbleArea(inputOccurence);
+            const editorToolbarHeight = wemjq(inputOccurence.getHTMLElement()).find('.cke_top').outerHeight(true);
+            const mceStatusToolbarHeight = wemjq(inputOccurence.getHTMLElement()).find('.cke_bottom').outerHeight(true);
             return (inputOccurence.getEl().getHeightWithoutPadding() - editorToolbarHeight - mceStatusToolbarHeight +
                     distToTopOfScrlblArea) > 0;
         }
@@ -320,21 +337,21 @@ module api.form.inputtype.text {
             }
         }
 
-        private getEditor(editorId: string): HtmlAreaEditor {
-            return tinymce.get(editorId);
+        private getEditor(editorId: string): HTMLAreaEditor {
+            return CKEDITOR.instances[editorId];
         }
 
         isDirty(): boolean {
             return this.editors.some((editor: HtmlAreaOccurrenceInfo) => {
-                return this.getEditor(editor.id).getContent() !== editor.textAreaEl.getValue();
+                return this.getEditor(editor.id).getSnapshot() !== editor.textAreaEl.getValue();
             });
         }
 
         private setEditorContent(editorId: string, property: Property): void {
-            let editor = this.getEditor(editorId);
+            const editor: HTMLAreaEditor = this.getEditor(editorId);
             if (editor) {
-                editor.setContent(property.hasNonNullValue() ? HTMLAreaHelper.prepareImgSrcsInValueForEdit(property.getString()) : '');
-                HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
+                editor.setData(property.hasNonNullValue() ? HTMLAreaHelper.prepareImgSrcsInValueForEdit(property.getString()) : '');
+                //HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
             } else {
                 console.log(`Editor with id '${editorId}' not found`);
             }
@@ -345,7 +362,8 @@ module api.form.inputtype.text {
         }
 
         private notifyValueChanged(id: string, occurrence: api.dom.Element) {
-            let value = ValueTypes.STRING.newValue(HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id)));
+            const value: Value = ValueTypes.STRING.newValue(
+                HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id).getSnapshot()));
             this.notifyOccurrenceValueChanged(occurrence, value);
         }
 
@@ -464,5 +482,5 @@ module api.form.inputtype.text {
         hasStickyToolbar: boolean;
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class('HtmlArea', HtmlArea));
+    api.form.inputtype.InputTypeManager.register(new api.Class('_HtmlArea', _HtmlArea));
 }

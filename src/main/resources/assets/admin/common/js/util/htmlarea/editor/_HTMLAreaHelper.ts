@@ -2,15 +2,15 @@ module api.util.htmlarea.editor {
     import ImageModalDialog = api.util.htmlarea.dialog.ImageModalDialog;
     import StringHelper = api.util.StringHelper;
 
-    export class HTMLAreaHelper {
+    export class _HTMLAreaHelper {
 
         private static getConvertedImageSrc(imgSrc: string): string {
-            let contentId = HTMLAreaHelper.extractContentIdFromImgSrc(imgSrc);
-            let scaleValue = HTMLAreaHelper.extractScaleParamFromImgSrc(imgSrc);
+            let contentId = _HTMLAreaHelper.extractContentIdFromImgSrc(imgSrc);
+            let scaleValue = _HTMLAreaHelper.extractScaleParamFromImgSrc(imgSrc);
             let imageUrl = new api.content.util.ContentImageUrlResolver().setContentId(new api.content.ContentId(contentId)).setScaleWidth(
                 true).setScale(scaleValue).setSize(ImageModalDialog.maxImageWidth).resolve();
 
-            return ` src="${imageUrl}" data-src="${imgSrc}"`;
+            return ` src="${imageUrl}" data-cke-saved-src="${imgSrc}"`;
         }
 
         private static extractContentIdFromImgSrc(imgSrc: string): string {
@@ -44,7 +44,7 @@ module api.util.htmlarea.editor {
                     imgSrcs.forEach((imgSrc: string) => {
                         if (imgSrc.indexOf(ImageModalDialog.imagePrefix) === 0) {
                             processedContent =
-                                processedContent.replace(` src="${imgSrc}"`, HTMLAreaHelper.getConvertedImageSrc(imgSrc));
+                                processedContent.replace(` src="${imgSrc}"`, _HTMLAreaHelper.getConvertedImageSrc(imgSrc));
                         }
                     });
                 }
@@ -52,19 +52,19 @@ module api.util.htmlarea.editor {
             return processedContent;
         }
 
-        public static prepareEditorImageSrcsBeforeSave(editor: HtmlAreaEditor): string {
-            const content = editor.getContent();
-            const regex = /<img.*?data-src="(.*?)".*?>/g;
-            let processedContent = editor.getContent();
+        public static prepareEditorImageSrcsBeforeSave(editorContent: string): string {
+            const regex: RegExp = /<img.*?data-cke-saved-src="(.*?)".*?>/g;
+            let processedContent: string = editorContent;
 
-            AppHelper.whileTruthy(() => regex.exec(content), (imgTags) => {
+            AppHelper.whileTruthy(() => regex.exec(editorContent), (imgTags) => {
                 const imgTag = imgTags[0];
 
                 if (imgTag.indexOf('<img ') === 0 && imgTag.indexOf(ImageModalDialog.imagePrefix) > 0) {
-                    const dataSrc = /<img.*?data-src="(.*?)".*?>/.exec(imgTag)[1];
+                    const dataSrc = /<img.*?data-cke-saved-src="(.*?)".*?>/.exec(imgTag)[1];
                     const src = /<img.*?src="(.*?)".*?>/.exec(imgTags[0])[1];
 
-                    const convertedImg = imgTag.replace(src, dataSrc).replace(` data-src="${dataSrc}"`, StringHelper.EMPTY_STRING);
+                    const convertedImg = imgTag.replace(src, dataSrc).replace(` data-cke-saved-src="${dataSrc}"`,
+                        StringHelper.EMPTY_STRING);
                     processedContent = processedContent.replace(imgTag, convertedImg);
                 }
             });
@@ -85,7 +85,7 @@ module api.util.htmlarea.editor {
             let observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     let alignment = (<HTMLElement>mutation.target).style.textAlign;
-                    HTMLAreaHelper.updateImageParentAlignment(img, alignment);
+                    _HTMLAreaHelper.updateImageParentAlignment(img, alignment);
                 });
             });
 
@@ -100,7 +100,7 @@ module api.util.htmlarea.editor {
             }
 
             let styleFormat = 'float: {0}; margin: {1};' +
-                              (HTMLAreaHelper.isImageInOriginalSize(image) ? '' : 'width: {2}%;');
+                              (_HTMLAreaHelper.isImageInOriginalSize(image) ? '' : 'width: {2}%;');
             let styleAttr = '';
 
             image.parentElement.className = '';
@@ -124,7 +124,7 @@ module api.util.htmlarea.editor {
         }
 
         private static isImageInOriginalSize(image: HTMLElement) {
-            return image.getAttribute('data-src').indexOf('keepSize=true') > 0;
+            return image.getAttribute('data-cke-saved-src').indexOf('keepSize=true') > 0;
         }
     }
 }

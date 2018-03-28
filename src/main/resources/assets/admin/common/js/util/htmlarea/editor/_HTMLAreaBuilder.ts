@@ -2,21 +2,23 @@ module api.util.htmlarea.editor {
 
     import CreateHtmlAreaDialogEvent = api.util.htmlarea.dialog.CreateHtmlAreaDialogEvent;
     import ApplicationKey = api.application.ApplicationKey;
+    import HTMLAreaEditor = CKEDITOR.editor;
+    import config = CKEDITOR.config;
 
-    export class HTMLAreaBuilder {
+    export class _HTMLAreaBuilder {
 
         private content: api.content.ContentSummary; // used for image dialog
         private contentPath: api.content.ContentPath; // used for macro dialog
         private applicationKeys: ApplicationKey[]; // used for macro dialog
 
         private assetsUri: string;
-        private selector: string;
+        private editorContainerId: string;
         private focusHandler: (e: FocusEvent) => void;
         private blurHandler: (e: FocusEvent) => void;
         private keydownHandler: (e: KeyboardEvent) => void;
         private keyupHandler: (e: KeyboardEvent) => void;
         private nodeChangeHandler: (e: any) => void;
-        private createDialogListeners: {(event: CreateHtmlAreaDialogEvent): void}[] = [];
+        private createDialogListeners: { (event: CreateHtmlAreaDialogEvent): void }[] = [];
         private inline: boolean = false;
         private fixedToolbarContainer: string;
         private convertUrls: boolean = false;
@@ -24,43 +26,31 @@ module api.util.htmlarea.editor {
         private customToolConfig: any;
         private editableSourceCode: boolean;
         private forcedRootBlock: string;
+        private toolsToExlcude: string = '';
+        private toolsToInclude: string[] = [];
 
-        private tools: string = [
-            'styleselect',
-            'alignleft aligncenter alignright alignjustify',
-            'bullist numlist outdent indent',
-            'charmap anchor image macro link unlink',
-            'table',
-            'pastetext'
-        ].join(' | ');
-
-        private plugins: string[] = [
-            'autoresize',
-            'directionality',
-            'fullscreen',
-            'hr',
-            'lists',
-            'paste',
-            'preview',
-            'table',
-            'textcolor',
-            'visualblocks',
-            'visualchars',
-            'charmap'
+        private tools: any[] = [
+            {name: 'gr1', items: ['Format', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'Blockquote']},
+            {name: 'gr2', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
+            {name: 'gr3', items: ['BulletedList', 'NumberedList', 'Outdent', 'Indent']},
+            {name: 'gr4', items: ['SpecialChar', 'Anchor', 'Image', 'Link', 'Unlink']},
+            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize']}
         ];
 
-        setEditableSourceCode(value: boolean): HTMLAreaBuilder {
+        private plugins: string = 'autogrow,codeTag,code';
+
+        setEditableSourceCode(value: boolean): _HTMLAreaBuilder {
             this.editableSourceCode = value;
             return this;
         }
 
-        setAssetsUri(assetsUri: string): HTMLAreaBuilder {
+        setAssetsUri(assetsUri: string): _HTMLAreaBuilder {
             this.assetsUri = assetsUri;
             return this;
         }
 
-        setSelector(selector: string): HTMLAreaBuilder {
-            this.selector = selector;
+        setEditorContainerId(id: string): _HTMLAreaBuilder {
+            this.editorContainerId = id;
             return this;
         }
 
@@ -82,93 +72,79 @@ module api.util.htmlarea.editor {
             });
         }
 
-        setFocusHandler(focusHandler: (e: FocusEvent) => void): HTMLAreaBuilder {
+        setFocusHandler(focusHandler: (e: FocusEvent) => void): _HTMLAreaBuilder {
             this.focusHandler = focusHandler;
             return this;
         }
 
-        setBlurHandler(blurHandler: (e: FocusEvent) => void): HTMLAreaBuilder {
+        setBlurHandler(blurHandler: (e: FocusEvent) => void): _HTMLAreaBuilder {
             this.blurHandler = blurHandler;
             return this;
         }
 
-        setKeydownHandler(keydownHandler: (e: KeyboardEvent) => void): HTMLAreaBuilder {
+        setKeydownHandler(keydownHandler: (e: KeyboardEvent) => void): _HTMLAreaBuilder {
             this.keydownHandler = keydownHandler;
             return this;
         }
 
-        setKeyupHandler(keyupHandler: (e: KeyboardEvent) => void): HTMLAreaBuilder {
+        setKeyupHandler(keyupHandler: (e: KeyboardEvent) => void): _HTMLAreaBuilder {
             this.keyupHandler = keyupHandler;
             return this;
         }
 
-        setNodeChangeHandler(nodeChangeHandler: (e: any) => void): HTMLAreaBuilder {
-            this.nodeChangeHandler =  api.util.AppHelper.debounce((e) => {
+        setNodeChangeHandler(nodeChangeHandler: (e: any) => void): _HTMLAreaBuilder {
+            this.nodeChangeHandler = api.util.AppHelper.debounce((e) => {
                 nodeChangeHandler(e);
             }, 200);
 
             return this;
         }
 
-        setInline(inline: boolean): HTMLAreaBuilder {
+        setInline(inline: boolean): _HTMLAreaBuilder {
             this.inline = inline;
             return this;
         }
 
-        setFixedToolbarContainer(fixedToolbarContainer: string): HTMLAreaBuilder {
+        setFixedToolbarContainer(fixedToolbarContainer: string): _HTMLAreaBuilder {
             this.fixedToolbarContainer = fixedToolbarContainer;
             return this;
         }
 
-        setContent(content: api.content.ContentSummary): HTMLAreaBuilder {
+        setContent(content: api.content.ContentSummary): _HTMLAreaBuilder {
             this.content = content;
             return this;
         }
 
-        setContentPath(contentPath: api.content.ContentPath): HTMLAreaBuilder {
+        setContentPath(contentPath: api.content.ContentPath): _HTMLAreaBuilder {
             this.contentPath = contentPath;
             return this;
         }
 
-        setConvertUrls(convertUrls: boolean): HTMLAreaBuilder {
+        setConvertUrls(convertUrls: boolean): _HTMLAreaBuilder {
             this.convertUrls = convertUrls;
             return this;
         }
 
-        setApplicationKeys(applicationKeys: ApplicationKey[]): HTMLAreaBuilder {
+        setApplicationKeys(applicationKeys: ApplicationKey[]): _HTMLAreaBuilder {
             this.applicationKeys = applicationKeys;
             return this;
         }
 
-        private excludeTools(tools: any[]) {
-            let strTools = this.tools;
-            tools.forEach((toolStr: any) => {
-                toolStr.value.split(' ').forEach((tool: string) => {
-                    if (tool === '*') {
-                        strTools = '';
-                    } else {
-                        strTools = strTools.replace(tool, '');
-                    }
-                });
-            });
-            this.tools = strTools;
-        }
-
         private includeTools(tools: any[]) {
             tools.forEach((tool: any) => {
-                this.includeTool(tool.value);
+                this.includeTool(tool);
             });
         }
 
         private includeTool(tool: string) {
-            this.tools += ' ' + tool;
+            this.toolsToInclude.push(tool);
         }
 
-        setTools(tools: any): HTMLAreaBuilder {
+        setTools(tools: any): _HTMLAreaBuilder {
             this.customToolConfig = tools;
 
             if (tools['exclude'] && tools['exclude'] instanceof Array) {
-                this.excludeTools(tools['exclude']);
+                this.toolsToExlcude = tools['exclude'].join();
             }
             if (tools['include'] && tools['include'] instanceof Array) {
                 this.includeTools(tools['include']);
@@ -177,25 +153,79 @@ module api.util.htmlarea.editor {
             return this;
         }
 
-        setForcedRootBlock(el: string): HTMLAreaBuilder {
+        setForcedRootBlock(el: string): _HTMLAreaBuilder {
             this.forcedRootBlock = el;
 
             return this;
         }
 
         private checkRequiredFieldsAreSet() {
-            if (!this.assetsUri || !this.selector || !this.content) {
+            if (!this.assetsUri || !this.editorContainerId || !this.content) {
                 throw new Error('some required fields are missing for tinymce editor');
             }
         }
 
-        public createEditor(): wemQ.Promise<HtmlAreaEditor> {
+        public createEditor(): HTMLAreaEditor {
             this.checkRequiredFieldsAreSet();
 
-            if (this.inline && this.editableSourceCode && !this.isToolExcluded('code')) {
-                this.includeTool('code');
+            if (this.editableSourceCode && !this.isToolExcluded('Code')) {
+                this.includeTool('Code');
             }
 
+            this.tools.push({name: 'custom', items: this.toolsToInclude});
+
+            const config: config = {
+                toolbar: this.tools,
+                removePlugins: 'resize',
+                removeButtons: this.toolsToExlcude,
+                extraPlugins: this.plugins + (this.inline ? ',sharedspace' : ''),
+                autoGrow_onStartup: true,
+                contentsCss: this.assetsUri + '/admin/common/styles/api/util/htmlarea/html-editor.css', // for classic mode only
+                sharedSpaces: this.inline ? {top: this.fixedToolbarContainer} : null
+            };
+
+            const ckeditor: HTMLAreaEditor = this.inline ? CKEDITOR.inline(this.editorContainerId, config) : CKEDITOR.replace(
+                this.editorContainerId, config);
+
+            ckeditor.on('change', (e) => {
+                if (this.nodeChangeHandler) {
+                    this.nodeChangeHandler(null);
+                }
+            });
+
+            ckeditor.on('focus', (e) => {
+                if (this.focusHandler) {
+                    this.focusHandler(<any>e);
+                }
+            });
+
+            ckeditor.on('maximize', (e) => {
+                if (e.data === 2) { // fullscreen off
+                    api.ui.responsive.ResponsiveManager.fireResizeEvent();
+                }
+            });
+
+            ckeditor.on('blur', (e) => {
+                if (this.hasActiveDialog) {
+                    //e.stopImmediatePropagation();
+                    this.hasActiveDialog = false;
+                }
+                if (this.blurHandler) {
+                    this.blurHandler(<any>e);
+                }
+            });
+
+            ckeditor.addCommand('openCodeDialog', {
+                exec: (editor) => {
+                    this.notifyCodeDialog(editor);
+                    return true;
+                }
+            });
+
+            CKEDITOR.plugins.addExternal('code', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', '_code.js');
+
+            return ckeditor;
+            /*
             let deferred = wemQ.defer<HtmlAreaEditor>();
 
             tinymce.init({
@@ -204,10 +234,7 @@ module api.util.htmlarea.editor {
                 document_base_url: this.assetsUri + '/admin/common/lib/tinymce/',
                 skin_url: this.assetsUri + '/admin/common/lib/tinymce/skins/lightgray',
                 content_css: this.assetsUri + '/admin/common/styles/html-editor.css',
-                theme: 'modern',
-                mobile: {
-                    theme: 'mobile'
-                },
+                theme_url: 'modern',
                 inline: this.inline,
                 fixed_toolbar_container: this.fixedToolbarContainer,
                 convert_urls: this.convertUrls,
@@ -249,7 +276,6 @@ module api.util.htmlarea.editor {
                         }
                     ]
                 },
-                branding: false,
                 menubar: false,
                 statusbar: true,
                 paste_as_text: true,
@@ -346,6 +372,7 @@ module api.util.htmlarea.editor {
                 }
             });
             return deferred.promise;
+            */
         }
 
         private getExternalPlugins(): any {
@@ -397,8 +424,8 @@ module api.util.htmlarea.editor {
             this.publishCreateDialogEvent(event);
         }
 
-        private notifyCodeDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+        private notifyCodeDialog(editor: HTMLAreaEditor) {
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(editor).setType(
                 api.util.htmlarea.dialog.HtmlAreaDialogType.CODE).build();
             this.publishCreateDialogEvent(event);
         }
