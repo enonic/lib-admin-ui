@@ -193,21 +193,21 @@ module api.ui.dialog {
                     } catch (e) {
                         // the info is not in JSON format
                         progressJson = {
-                            state: "SUCCESS",
+                            state: 'SUCCESS',
                             message: progress.getInfo()
-                        }
+                        };
                     }
 
                     switch (state) {
                     case TaskState.FINISHED:
                         switch (progressJson.state) {
-                        case "ERROR":
+                        case 'ERROR':
                             this.handleFailed(progressJson.message);
                             break;
-                        case "SUCCESS":
+                        case 'SUCCESS':
                             this.handleSucceeded(progressJson.message);
                             break;
-                        case "WARNING":
+                        case 'WARNING':
                             this.handleWarning(progressJson.message);
                             break;
                         }

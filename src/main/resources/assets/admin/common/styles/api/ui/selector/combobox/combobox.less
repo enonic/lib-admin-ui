@@ -35,17 +35,17 @@
 
   .empty-options, .options-container {
     position: absolute;
-    .box-sizing(border-box);
+    box-sizing: border-box;
     width: 100% !important;
     margin: 0;
     padding: 0;
     .input-border();
-    .box-shadow(2px 2px 2px @admin-medium-gray-border);
+    box-shadow: 2px 2px 2px @admin-medium-gray-border;
     background: white;
     z-index: @z-index-wizard-filed-element;
 
     &.reverted {
-      .box-shadow(2px 0px 2px @admin-medium-gray-border);
+      box-shadow: 2px 0 2px @admin-medium-gray-border;
     }
   }
 
@@ -60,7 +60,7 @@
 
   .options-container {
     .slick-header {
-      height: 0px;
+      height: 0;
       display: none;
     }
 

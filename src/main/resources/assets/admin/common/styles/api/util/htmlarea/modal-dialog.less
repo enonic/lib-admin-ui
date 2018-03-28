@@ -51,12 +51,12 @@
     }
 
     .@{_COMMON_PREFIX}wrapper when (@displayIcon = true) {
-      .flexbox()
+      display: flex;
     }
   }
 
   .input-wrapper {
-    .flexbox();
+    display: flex;
   }
 
   .names-and-icon-view .@{_COMMON_PREFIX}names-view {
@@ -96,7 +96,7 @@
   }
 
   &.animated {
-    .transition(margin-top 0.2s);
+    transition: margin-top 0.2s;
   }
 
   .dialog-content {
@@ -105,7 +105,7 @@
       height: 65%;
     }
 
-    .transition(max-height 0.2s);
+    transition: max-height 0.2s;
 
     input {
       width: 100%;

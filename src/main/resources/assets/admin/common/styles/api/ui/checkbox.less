@@ -12,28 +12,28 @@
   label {
     display: inline-block;
     white-space: nowrap;
-    padding: 0px 5px 0px 23px;
+    padding: 0 5px 0 23px;
     cursor: pointer;
   }
 
   &.top label {
-    padding-left: 0px;
+    padding-left: 0;
     margin-top: 19px;
 
     &:after {
       position: absolute;
-      top: 0px;
+      top: 0;
     }
   }
 
   &.left label:before {
     position: absolute;
-    left: 0px;
+    left: 0;
     margin-top: 2px;
   }
 
   &.right label {
-    padding-left: 0px;
+    padding-left: 0;
     display: inline-block;
     max-width: none;
 
@@ -45,7 +45,7 @@
   }
 
   &.bottom label {
-    padding-left: 0px;
+    padding-left: 0;
 
     &:after {
       margin-top: 7px;
@@ -73,7 +73,7 @@
     // end `hide` block
 
     &:focus + label:before {
-      .box-shadow(inset 0 0 3px @admin-blue, 0 0 5px @admin-input-blue);
+      box-shadow: inset 0 0 3px @admin-blue, 0 0 5px @admin-input-blue;
 
     }
 

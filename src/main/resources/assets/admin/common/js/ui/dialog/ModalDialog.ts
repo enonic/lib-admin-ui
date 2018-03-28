@@ -147,7 +147,7 @@ module api.ui.dialog {
             const dialogHeightWithoutBorder = borderBottom ? dialogHeight - borderBottom : dialogHeight;
 
             if (dialogHeightWithoutBorder % 2 === 0 && borderBottom) {
-                wemjq(this.getHTMLElement()).css('border-bottom', '');
+                wemjq(this.getHTMLElement()).css('border-bottom-width', '0px');
 
                 return;
             }

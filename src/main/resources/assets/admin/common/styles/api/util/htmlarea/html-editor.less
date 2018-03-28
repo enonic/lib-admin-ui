@@ -1,13 +1,12 @@
-.cke_editable {
-  font-family: "Open Sans", sans-serif;
-  margin: 8px;
+.mce-content-body {
+  font-family: @admin-font-family;
 
   > *:first-child {
-    margin-top: 0px;
+    margin-top: 0;
   }
 
   > *:last-child {
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
 
   figure {
@@ -33,21 +32,21 @@
   }
 
   strong {
-    font-family: "Open Sans Bold", "Open Sans", sans-serif;
+    font-family: @admin-font-family;
   }
 }
 
 .mce-floatpanel.mce-menu {
-  .border-radius(0);
+  border-radius: 0;
 
   .mce-menu-item:hover, .mce-menu-item.mce-selected, .mce-menu-item:focus {
     background-image: none;
     background-color: @admin-toolbar-toggle-button;
-    .box-shadow(none);
+    box-shadow: none;
   }
 }
 
-.cke-toolbar-container .mce-panel, .mce-toolbar-grp.mce-panel {
+.mce-toolbar-container .mce-panel, .mce-toolbar-grp.mce-panel {
   background-image: none;
   background-color: @admin-white;
   border: none;
@@ -94,8 +93,8 @@
       button {
         padding: 2px 6px;
         height: 34px;
-        .box-shadow(none);
-        .border-radius(0);
+        box-shadow: none;
+        border-radius: 0;
       }
 
       .mce-caret {
@@ -110,7 +109,7 @@
       &.mce-active {
         background-image: none;
         background-color: @admin-toolbar-toggle-button;
-        .box-shadow(none);
+        box-shadow: none;
 
         span {
           color: @admin-white;

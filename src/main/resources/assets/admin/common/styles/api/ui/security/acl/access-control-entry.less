@@ -1,7 +1,7 @@
 .access-control-entry {
   position: relative;
   min-height: 34px;
-  .flexbox();
+  display: flex;
   flex-flow: row wrap;
   .clearfix();
   .icon-close-mixin();
@@ -29,7 +29,7 @@
     float: left;
     margin: 0 10px 0 0;
     min-width: 200px;
-    .flex(1 auto);
+    flex: 1 auto;
   }
 
   .permission-selector {
@@ -74,7 +74,7 @@
   }
 
   .permission-selector {
-    .flex(100%);
+    flex: 100%;
   }
 
 }

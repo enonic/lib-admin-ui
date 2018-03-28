@@ -96,18 +96,18 @@ module api.ui.security.acl {
             let itemView = new ACESelectedOptionView(option);
             itemView.onValueChanged((item: AccessControlEntry) => {
                 // update our selected options list with new values
-                let selectedOption = this.getById(item.getPrincipalKey().toString());
+                const selectedOption = this.getById(item.getPrincipalKey().toString());
                 if (selectedOption) {
                     selectedOption.getOption().displayValue = item;
                 }
                 this.notifyItemValueChanged(item);
             });
-            let selectedOption = new SelectedOption<AccessControlEntry>(itemView, this.list.length);
+            const selected = new SelectedOption<AccessControlEntry>(itemView, this.list.length);
 
             itemView.onRemoveClicked(() => this.removeOption(option, false));
 
             // keep track of selected options for SelectedOptionsView
-            this.list.push(selectedOption);
+            this.list.push(selected);
             return itemView;
         }
 
