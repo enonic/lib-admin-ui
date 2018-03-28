@@ -3,7 +3,7 @@
 [![Travis Build Status][travis-image]][travis-url]
 [![License][license-image]][license-url]
 
-UI framework, that provides [Enonic] (https://enonic.com) applications with core components and styles.
+UI framework, that provides [Enonic](https://enonic.com) applications with core components and styles.
 
 ## Usage
 
@@ -59,6 +59,12 @@ In case you want forcefully update all your node dependencies, use:
 
 Take a note, that you can also use aliases in Gradle, and `nIF` would be just enough to run `npmInstallForce`.
 
+## Dependencies
+
+Some code and configs are shared across the application.
+They are moved to the separate [repository](https://github.com/enonic/enonic-npm-modules) and published as npm packages.
+
+Common `.less` styles and mixins can be also found under [enonic-admin-artifacts](https://github.com/enonic/enonic-npm-modules/tree/master/packages/enonic-admin-artifacts).
 
 <!-- Links -->
 [travis-url]:    https://travis-ci.org/enonic/lib-admin-ui
