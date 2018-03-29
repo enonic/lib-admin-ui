@@ -2,11 +2,11 @@ module api.util.htmlarea.editor {
     import ImageModalDialog = api.util.htmlarea.dialog.ImageModalDialog;
     import StringHelper = api.util.StringHelper;
 
-    export class _HTMLAreaHelper {
+    export class HTMLAreaHelperCKE {
 
         private static getConvertedImageSrc(imgSrc: string): string {
-            let contentId = _HTMLAreaHelper.extractContentIdFromImgSrc(imgSrc);
-            let scaleValue = _HTMLAreaHelper.extractScaleParamFromImgSrc(imgSrc);
+            let contentId = HTMLAreaHelperCKE.extractContentIdFromImgSrc(imgSrc);
+            let scaleValue = HTMLAreaHelperCKE.extractScaleParamFromImgSrc(imgSrc);
             let imageUrl = new api.content.util.ContentImageUrlResolver().setContentId(new api.content.ContentId(contentId)).setScaleWidth(
                 true).setScale(scaleValue).setSize(ImageModalDialog.maxImageWidth).resolve();
 
@@ -44,7 +44,7 @@ module api.util.htmlarea.editor {
                     imgSrcs.forEach((imgSrc: string) => {
                         if (imgSrc.indexOf(ImageModalDialog.imagePrefix) === 0) {
                             processedContent =
-                                processedContent.replace(` src="${imgSrc}"`, _HTMLAreaHelper.getConvertedImageSrc(imgSrc));
+                                processedContent.replace(` src="${imgSrc}"`, HTMLAreaHelperCKE.getConvertedImageSrc(imgSrc));
                         }
                     });
                 }
@@ -85,7 +85,7 @@ module api.util.htmlarea.editor {
             let observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     let alignment = (<HTMLElement>mutation.target).style.textAlign;
-                    _HTMLAreaHelper.updateImageParentAlignment(img, alignment);
+                    HTMLAreaHelperCKE.updateImageParentAlignment(img, alignment);
                 });
             });
 
@@ -100,7 +100,7 @@ module api.util.htmlarea.editor {
             }
 
             let styleFormat = 'float: {0}; margin: {1};' +
-                              (_HTMLAreaHelper.isImageInOriginalSize(image) ? '' : 'width: {2}%;');
+                              (HTMLAreaHelperCKE.isImageInOriginalSize(image) ? '' : 'width: {2}%;');
             let styleAttr = '';
 
             image.parentElement.className = '';

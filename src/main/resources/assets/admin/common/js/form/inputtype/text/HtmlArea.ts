@@ -9,8 +9,8 @@ module api.form.inputtype.text {
     import Element = api.dom.Element;
     import HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
     import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
-    import _HTMLAreaBuilder = api.util.htmlarea.editor._HTMLAreaBuilder;
-    import _HTMLAreaHelper = api.util.htmlarea.editor._HTMLAreaHelper;
+    import _HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilderCKE;
+    import HTMLAreaHelperCKE = api.util.htmlarea.editor.HTMLAreaHelperCKE;
     import ApplicationKey = api.application.ApplicationKey;
     import Promise = Q.Promise;
     import AppHelper = api.util.AppHelper;
@@ -72,7 +72,7 @@ module api.form.inputtype.text {
             }
 
             let value = this.isCKEditor
-                ? _HTMLAreaHelper.prepareImgSrcsInValueForEdit(property.getString())
+                ? HTMLAreaHelperCKE.prepareImgSrcsInValueForEdit(property.getString())
                 : HTMLAreaHelper.prepareImgSrcsInValueForEdit(property.getString());
             let textAreaEl = new api.ui.text.TextArea(this.getInput().getName() + '-' + index, value);
 
@@ -213,16 +213,16 @@ module api.form.inputtype.text {
                     .onCreateDialog(createDialogHandler)
                     .setFocusHandler(focusHandler.bind(this))
                     .setBlurHandler(blurHandler.bind(this))
-                    .setKeydownHandler(keydownHandler)
+                    // .setKeydownHandler(keydownHandler)
                     .setNodeChangeHandler(notifyValueChanged)
-                    .setContentPath(this.contentPath)
+                    // .setContentPath(this.contentPath)
                     .setContent(this.content)
-                    .setApplicationKeys(this.applicationKeys)
+                    // .setApplicationKeys(this.applicationKeys)
                     .setTools({
                         include: this.inputConfig['include'],
                         exclude: this.inputConfig['exclude']
                     })
-                    .setForcedRootBlock(this.inputConfig['forcedRootBlock'] ? this.inputConfig['forcedRootBlock'][0].value : 'p')
+                    // .setForcedRootBlock(this.inputConfig['forcedRootBlock'] ? this.inputConfig['forcedRootBlock'][0].value : 'p')
                     .setEditableSourceCode(this.editableSourceCode)
                     .createEditor();
 
@@ -248,10 +248,7 @@ module api.form.inputtype.text {
                     });
 
                 });
-            }
-            else {
-
-
+            } else {
                 new HTMLAreaBuilder().setSelector('textarea.' + id.replace(/\./g, '_')).setAssetsUri(assetsUri).setInline(
                     false).onCreateDialog(
                     createDialogHandler).setFocusHandler(focusHandler.bind(this)).setBlurHandler(blurHandler.bind(this)).setKeydownHandler(
@@ -409,9 +406,8 @@ module api.form.inputtype.text {
         private getEditorContent(editor: HtmlAreaOccurrenceInfo) {
             if (this.isCKEditor) {
                 return this.getEditor(editor.id).getSnapshot();
-            }
-            else {
-                return this.getEditor(editor.id).getContent()
+            } else {
+                return this.getEditor(editor.id).getContent();
             }
         }
 
@@ -419,9 +415,8 @@ module api.form.inputtype.text {
             let editor = this.getEditor(editorId);
             if (editor) {
                 if (this.isCKEditor) {
-                    editor.setData(property.hasNonNullValue() ? _HTMLAreaHelper.prepareImgSrcsInValueForEdit(property.getString()) : '');
-                }
-                else {
+                    editor.setData(property.hasNonNullValue() ? HTMLAreaHelperCKE.prepareImgSrcsInValueForEdit(property.getString()) : '');
+                } else {
                     editor.setContent(property.hasNonNullValue() ? HTMLAreaHelper.prepareImgSrcsInValueForEdit(property.getString()) : '');
                     HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
                 }
@@ -436,7 +431,7 @@ module api.form.inputtype.text {
 
         private notifyValueChanged(id: string, occurrence: api.dom.Element) {
             const value = this.isCKEditor ? ValueTypes.STRING.newValue(
-                _HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id).getSnapshot())) : ValueTypes.STRING.newValue(
+                HTMLAreaHelperCKE.prepareEditorImageSrcsBeforeSave(this.getEditor(id).getSnapshot())) : ValueTypes.STRING.newValue(
                 HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id)));
             this.notifyOccurrenceValueChanged(occurrence, value);
         }
