@@ -34,10 +34,10 @@ module api.util.htmlarea.editor {
             {name: 'gr2', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
             {name: 'gr3', items: ['BulletedList', 'NumberedList', 'Outdent', 'Indent']},
             {name: 'gr4', items: ['SpecialChar', 'Anchor', 'Image', 'Link', 'Unlink']},
-            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize']}
+            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Sourcedialog', 'Maximize']}
         ];
 
-        private plugins: string = 'autogrow,codeTag,code';
+        private plugins: string = 'autogrow,codeTag,code,sourcedialog';
 
         setEditableSourceCode(value: boolean): _HTMLAreaBuilder {
             this.editableSourceCode = value;
@@ -225,172 +225,8 @@ module api.util.htmlarea.editor {
             CKEDITOR.plugins.addExternal('code', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', '_code.js');
 
             return ckeditor;
-            /*
-            let deferred = wemQ.defer<HtmlAreaEditor>();
-
-            tinymce.init({
-                selector: this.selector,
-                forced_root_block : this.forcedRootBlock,
-                document_base_url: this.assetsUri + '/admin/common/lib/tinymce/',
-                skin_url: this.assetsUri + '/admin/common/lib/tinymce/skins/lightgray',
-                content_css: this.assetsUri + '/admin/common/styles/html-editor.css',
-                theme_url: 'modern',
-                inline: this.inline,
-                fixed_toolbar_container: this.fixedToolbarContainer,
-                convert_urls: this.convertUrls,
-
-                toolbar: [
-                    this.tools
-                ],
-
-                formats: {
-                    alignleft: [
-                        {
-                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'left'},
-                            inline: 'span'
-                        },
-                        {selector: 'table', collapsed: false, styles: {float: 'left'}}
-                    ],
-                    aligncenter: [
-                        {
-                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'center'},
-                            inline: 'span'
-                        },
-                        {selector: 'table', collapsed: false, styles: {marginLeft: 'auto', marginRight: 'auto'}}
-                    ],
-                    alignright: [
-                        {
-                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'right'},
-                            inline: 'span'
-                        },
-                        {selector: 'table', collapsed: false, styles: {float: 'right'}}
-                    ],
-                    alignjustify: [
-                        {
-                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'justify'},
-                            inline: 'span'
-                        }
-                    ]
-                },
-                menubar: false,
-                statusbar: true,
-                paste_as_text: true,
-                browser_spellcheck: true,
-                verify_html: false,
-                verify_css_classes: false,
-                plugins: this.plugins,
-                external_plugins: this.getExternalPlugins(),
-                object_resizing: 'table',
-                autoresize_min_height: 100,
-                autoresize_bottom_margin: 0,
-
-                setup: (editor) => {
-                    editor.addCommand('openLinkDialog', this.notifyLinkDialog, this);
-                    editor.addCommand('openAnchorDialog', this.notifyAnchorDialog, this);
-                    editor.addCommand('openImageDialog', this.notifyImageDialog, this);
-                    editor.addCommand('openMacroDialog', this.notifyMacroDialog, this);
-                    editor.addCommand('openSearchReplaceDialog', this.notifySearchReplaceDialog, this);
-                    editor.addCommand('openCodeDialog', this.notifyCodeDialog, this);
-                    editor.addCommand('openCharMapDialog', this.notifyCharMapDialog, this);
-
-                    editor.on('NodeChange', (e) => {
-                        if (e.element && /^(FIGCAPTION)$/.test(e.element.nodeName) && /<[^>]*>/.test(e.element.innerHTML)) {
-                            e.preventDefault();
-                            e.element.innerHTML = '';
-                        }
-
-                        if (this.nodeChangeHandler) {
-                            setTimeout(() => this.nodeChangeHandler(e), 30);
-                        }
-                    });
-                    editor.on('keyup', (e) => {
-                        if (this.keyupHandler) {
-                            this.keyupHandler(e);
-                        }
-                        if (this.nodeChangeHandler) {
-                            this.nodeChangeHandler(e);
-                        }
-                    });
-                    editor.on('focus', (e) => {
-                        if (this.focusHandler) {
-                            this.focusHandler(e);
-                        }
-                    });
-                    editor.on('blur', (e) => {
-                        if (this.hasActiveDialog) {
-                            e.stopImmediatePropagation();
-                            this.hasActiveDialog = false;
-                        }
-                        if (this.blurHandler) {
-                            this.blurHandler(e);
-                        }
-                    });
-                    editor.on('keydown', (e) => {
-                        if (e.keyCode === 9 && !e.altKey && !e.ctrlKey) { // tab pressed
-                            editor.execCommand(e.shiftKey ? 'Outdent' : 'Indent');
-                            e.preventDefault();
-                        } else if (e.keyCode === 46 || e.keyCode === 8) { // DELETE
-                            let selectedNode = editor.selection.getRng().startContainer;
-                            if (/^(FIGURE)$/.test(selectedNode.nodeName)) {
-                                e.preventDefault();
-                                selectedNode.remove();
-                            }
-                        }
-
-                        if (this.keydownHandler) {
-                            this.keydownHandler(e);
-                        }
-                    });
-
-                    let dragParentElement;
-                    editor.on('dragstart', (e) => {
-                        dragParentElement = e.target.parentElement || e.target.parentNode;
-                    });
-
-                    editor.on('drop', (e) => {
-                        if (dragParentElement) {
-                            // prevent browser from handling the drop
-                            e.preventDefault();
-
-                            e.target.appendChild(dragParentElement);
-                            dragParentElement = undefined;
-                        }
-                    });
-
-                    // BlockFormat shortcuts keys
-                    for (let i = 1; i <= 6; i++) {
-                        editor.addShortcut('ctrl+shift+' + i, '', ['FormatBlock', false, 'h' + i]);
-                    }
-
-                },
-                init_instance_callback: (editor) => {
-                    deferred.resolve(editor);
-                }
-            });
-            return deferred.promise;
-            */
         }
 
-        private getExternalPlugins(): any {
-            const externalPlugins: any = {
-                link: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/link.js',
-                anchor: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/anchor.js',
-                image: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/image.js',
-                macro: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/macro.js',
-                searchreplace: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/searchreplace.js',
-                charmap: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/charmap.js'
-            };
-
-            if (this.editableSourceCode) {
-                externalPlugins['code'] = this.assetsUri + '/admin/common/js/util/htmlarea/plugins/code.js';
-            }
-
-            return externalPlugins;
-        }
 
         private notifyLinkDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
