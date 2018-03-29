@@ -167,7 +167,7 @@ module api.ui.selector.dropdown {
 
         private doUpdateDropdownTopPositionAndWidth() {
             let inputEl = this.input.getEl();
-            this.dropdownList.setTopPx(inputEl.getHeightWithoutPadding() - inputEl.getBorderBottomWidth());
+            this.dropdownList.setTopPx(inputEl.getHeightWithBorder() - inputEl.getBorderBottomWidth());
             this.dropdownList.setWidth(inputEl.getWidthWithBorder());
         }
 
