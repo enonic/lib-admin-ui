@@ -4,7 +4,7 @@ module api.util.htmlarea.dialog {
     import ApplicationKey = api.application.ApplicationKey;
 
     export enum HtmlAreaDialogType {
-        ANCHOR, IMAGE, LINK, MACRO, SEARCHREPLACE, CODE, CHARMAP
+        ANCHOR, IMAGE, LINK, MACRO, SEARCHREPLACE, CODE, CODE_CKE, CHARMAP
     }
 
     export class CreateHtmlAreaDialogEvent extends api.event.Event {

@@ -1,5 +1,7 @@
 module api.util.htmlarea.dialog {
 
+    import HTMLAreaEditorCKE = CKEDITOR.editor;
+
     export class HTMLAreaDialogHandler {
 
         private static modalDialog: ModalDialog;
@@ -25,6 +27,9 @@ module api.util.htmlarea.dialog {
                 break;
             case HtmlAreaDialogType.CODE:
                 modalDialog = this.openCodeDialog(event.getConfig());
+                break;
+            case HtmlAreaDialogType.CODE_CKE:
+                modalDialog = this.openCodeDialogCKE(event.getConfig());
                 break;
             case HtmlAreaDialogType.CHARMAP:
                 modalDialog = this.openCharMapDialog(event.getConfig());
@@ -68,6 +73,10 @@ module api.util.htmlarea.dialog {
 
         private static openCodeDialog(editor: HtmlAreaEditor): ModalDialog {
             return this.openDialog(new CodeDialog(editor));
+        }
+
+        private static openCodeDialogCKE(editor: HTMLAreaEditorCKE): ModalDialog {
+            return this.openDialog(new CodeDialogCKE(editor));
         }
 
         private static openCharMapDialog(editor: HtmlAreaEditor): ModalDialog {

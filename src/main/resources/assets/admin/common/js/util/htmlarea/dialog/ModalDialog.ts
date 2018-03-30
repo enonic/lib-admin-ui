@@ -50,7 +50,7 @@ module api.util.htmlarea.dialog {
 
     export class HtmlAreaModalDialogConfig {
 
-        editor: HtmlAreaEditor;
+        editor: any; // change it to CKEDITOR.editor when cke merged
 
         title: string;
 
@@ -62,7 +62,7 @@ module api.util.htmlarea.dialog {
     export class ModalDialog extends api.ui.dialog.ModalDialog {
         private fields: { [id: string]: api.dom.FormItemEl } = {};
         private validated: boolean = false;
-        private editor: HtmlAreaEditor;
+        private editor: any; // change it to CKEDITOR.editor when cke merged;
         private mainForm: Form;
         private firstFocusField: api.dom.Element;
         private submitAction: api.ui.Action;
@@ -90,7 +90,7 @@ module api.util.htmlarea.dialog {
             return this.submitAction;
         }
 
-        protected getEditor(): HtmlAreaEditor {
+        protected getEditor(): any { // change it to CKEDITOR.editor when cke merged
             return this.editor;
         }
 

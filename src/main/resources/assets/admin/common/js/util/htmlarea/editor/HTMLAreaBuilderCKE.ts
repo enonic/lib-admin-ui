@@ -32,10 +32,10 @@ module api.util.htmlarea.editor {
             {name: 'gr2', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
             {name: 'gr3', items: ['BulletedList', 'NumberedList', 'Outdent', 'Indent']},
             {name: 'gr4', items: ['SpecialChar', 'Anchor', 'Image', 'Link', 'Unlink']},
-            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Sourcedialog', 'Maximize']}
+            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize']}
         ];
 
-        private plugins: string = 'autogrow,codeTag,code,sourcedialog';
+        private plugins: string = 'autogrow,codeTag,code';
 
         setEditableSourceCode(value: boolean): HTMLAreaBuilderCKE {
             this.editableSourceCode = value;
@@ -220,7 +220,7 @@ module api.util.htmlarea.editor {
                 }
             });
 
-            CKEDITOR.plugins.addExternal('code', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', '_code.js');
+            CKEDITOR.plugins.addExternal('code', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'codeCKE.js');
 
             return ckeditor;
         }
@@ -259,7 +259,7 @@ module api.util.htmlarea.editor {
 
         private notifyCodeDialog(editor: HTMLAreaEditor) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(editor).setType(
-                api.util.htmlarea.dialog.HtmlAreaDialogType.CODE).build();
+                api.util.htmlarea.dialog.HtmlAreaDialogType.CODE_CKE).build();
             this.publishCreateDialogEvent(event);
         }
 
