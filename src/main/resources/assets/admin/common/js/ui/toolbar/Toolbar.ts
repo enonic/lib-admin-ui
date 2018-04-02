@@ -82,7 +82,7 @@ module api.ui.toolbar {
                 return;
             }
 
-            let toolbarWidth = this.getEl().getWidth();
+            let toolbarWidth = this.getEl().getWidthWithoutPadding();
             if (toolbarWidth <= this.getVisibleButtonsWidth()) {
 
                 while (toolbarWidth <= this.getVisibleButtonsWidth() && this.getNextFoldableButton()) {
