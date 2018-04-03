@@ -31,11 +31,11 @@ module api.util.htmlarea.editor {
             {name: 'gr1', items: ['Format', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'Blockquote']},
             {name: 'gr2', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
             {name: 'gr3', items: ['BulletedList', 'NumberedList', 'Outdent', 'Indent']},
-            {name: 'gr4', items: ['SpecialChar', 'Anchor', 'Image', 'Link', 'Unlink']},
+            {name: 'gr4', items: ['SpecialCharXP', 'Anchor', 'Image', 'Link', 'Unlink']},
             {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize']}
         ];
 
-        private plugins: string = 'autogrow,codeTag,code';
+        private plugins: string = 'autogrow,codeTag,code,specialcharXP';
 
         setEditableSourceCode(value: boolean): HTMLAreaBuilderCKE {
             this.editableSourceCode = value;
@@ -220,7 +220,15 @@ module api.util.htmlarea.editor {
                 }
             });
 
+            ckeditor.addCommand('openSpecialCharDialog', {
+                exec: (editor) => {
+                    this.notifySpecialCharDialog(editor);
+                    return true;
+                }
+            });
+
             CKEDITOR.plugins.addExternal('code', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'codeCKE.js');
+            CKEDITOR.plugins.addExternal('specialcharXP', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'specialcharCKE.js');
 
             return ckeditor;
         }
@@ -263,11 +271,11 @@ module api.util.htmlarea.editor {
             this.publishCreateDialogEvent(event);
         }
 
-        // private notifyCharMapDialog(config: any) {
-        //     let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-        //         api.util.htmlarea.dialog.HtmlAreaDialogType.CHARMAP).build();
-        //     this.publishCreateDialogEvent(event);
-        // }
+        private notifySpecialCharDialog(editor: HTMLAreaEditor) {
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(editor).setType(
+                api.util.htmlarea.dialog.HtmlAreaDialogType.SPECIALCHAR_CKE).build();
+            this.publishCreateDialogEvent(event);
+        }
 
         private publishCreateDialogEvent(event: CreateHtmlAreaDialogEvent) {
             this.hasActiveDialog = true;

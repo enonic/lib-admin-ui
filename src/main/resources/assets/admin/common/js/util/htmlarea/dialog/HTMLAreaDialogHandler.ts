@@ -34,6 +34,9 @@ module api.util.htmlarea.dialog {
             case HtmlAreaDialogType.CHARMAP:
                 modalDialog = this.openCharMapDialog(event.getConfig());
                 break;
+            case HtmlAreaDialogType.SPECIALCHAR_CKE:
+                modalDialog = this.openSpecialCharDialogCKE(event.getConfig());
+                break;
             }
 
             if (modalDialog) {
@@ -81,6 +84,10 @@ module api.util.htmlarea.dialog {
 
         private static openCharMapDialog(editor: HtmlAreaEditor): ModalDialog {
             return this.openDialog(new CharMapDialog(editor));
+        }
+
+        private static openSpecialCharDialogCKE(editor: HTMLAreaEditorCKE): ModalDialog {
+            return this.openDialog(new SpecialCharDialogCKE(editor));
         }
 
         private static openDialog(dialog: ModalDialog): ModalDialog {
