@@ -82,7 +82,7 @@ module api.ui.toolbar {
                 return;
             }
 
-            let toolbarWidth = this.getEl().getWidth();
+            let toolbarWidth = this.getEl().getWidthWithoutPadding();
             if (toolbarWidth <= this.getVisibleButtonsWidth()) {
 
                 while (toolbarWidth <= this.getVisibleButtonsWidth() && this.getNextFoldableButton()) {
@@ -130,7 +130,8 @@ module api.ui.toolbar {
                 if (button.isVisible()) {
                     return this.getChildren().filter((child) => child.getId() == button.getId())[0];
                 }
-                if (button.getParentElement() != button.getPreviousElement().getParentElement()) {
+                const prevEl = button.getPreviousElement();
+                if (prevEl && button.getParentElement() != prevEl.getParentElement()) {
                     return null;
                 }
                 button = button.getPreviousElement();
