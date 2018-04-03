@@ -26,6 +26,26 @@ module api.util {
             };
         }
 
+        static debounceWithInterrupt(func: Function, wait: number, immediate: boolean = false): (args: any[], interrupt?: boolean) => void {
+            let timeout;
+            return function (_anyArgs: any[], interrupt?: boolean) {
+                const context = this;
+                const args = _anyArgs;
+                const later = function () {
+                    timeout = null;
+                    if (!immediate) {
+                        func.apply(context, args);
+                    }
+                };
+                const callNow = (immediate && !timeout) || interrupt;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) {
+                    func.apply(context, args);
+                }
+            };
+        }
+
         // Handles the result of the initialization, while the result is truthy
         static whileTruthy(initializer: () => any, callback: (value: any) => void): void {
             let result: any;
