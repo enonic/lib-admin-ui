@@ -4,7 +4,6 @@ module api.ui.dialog {
     import Action = api.ui.Action;
     import Element = api.dom.Element;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import Body = api.dom.Body;
     import i18n = api.util.i18n;
 
@@ -49,6 +48,8 @@ module api.ui.dialog {
 
         private onClosedListeners: { (): void; }[] = [];
 
+        private resizeListeners: { (): void; }[] = [];
+
         private closeIconCallback: () => void;
 
         private clickOutsideCallback: () => void;
@@ -56,6 +57,8 @@ module api.ui.dialog {
         private skipTabbable: boolean;
 
         public static debug: boolean = false;
+
+        private resizeObserver: any;
 
         constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
             super('modal-dialog', api.StyleHelper.COMMON_PREFIX);
@@ -125,12 +128,12 @@ module api.ui.dialog {
 
         private adjustOverflow() {
 
-            if (!this.getBody().getEl().getHeight()) {
+            const bodyEl = wemjq(this.getBody().getHTMLElement());
+            const bodyHeight = parseInt(bodyEl.css('height'), 10);
+            if (bodyHeight === 0) {
                 return;
             }
-
-            const bodyEl = wemjq(this.getBody().getHTMLElement());
-            const showScrollbar = (parseInt(bodyEl.css('height'), 10) >= parseInt(bodyEl.css('max-height'), 10));
+            const showScrollbar = (bodyHeight >= parseInt(bodyEl.css('max-height'), 10));
 
             wemjq(bodyEl).css('overflow', showScrollbar ? 'auto' : 'visible');
         }
@@ -163,21 +166,29 @@ module api.ui.dialog {
         }
 
         private initListeners() {
-            const resizeObserver = window['ResizeObserver'];
-            const responsiveItem: ResponsiveItem = new ResponsiveItem(this);
-            const resizeHandler = () => {
-                this.adjustHeight();
-                this.adjustOverflow();
-                responsiveItem.update();
-            };
-            if (resizeObserver) {
-                new resizeObserver(resizeHandler).observe(this.body.getHTMLElement());
-            }
-
-            ResponsiveManager.onAvailableSizeChanged(Body.get(), resizeHandler);
-
             this.handleClickOutsideDialog();
             this.handleFocusInOutEvents();
+
+            this.handleResize();
+        }
+
+        protected resizeHandler() {
+            if (!this.isVisible()) {
+                return;
+            }
+
+            this.adjustHeight();
+            this.adjustOverflow();
+        }
+
+        private handleResize() {
+            this.resizeHandler = api.util.AppHelper.debounce(this.resizeHandler.bind(this), 50);
+            ResponsiveManager.onAvailableSizeChanged(Body.get(), this.resizeHandler);
+
+            const resizeObserver = window['ResizeObserver'];
+            if (resizeObserver) {
+                this.resizeObserver = new resizeObserver(this.resizeHandler);
+            }
         }
 
         private isActive() {
@@ -341,10 +352,21 @@ module api.ui.dialog {
             super.show();
             this.buttonRow.focusDefaultAction();
 
+            this.onResize(this.resizeHandler);
+            if (this.resizeObserver) {
+                this.resizeObserver.observe(this.body.getHTMLElement());
+            }
+
             wemjq(this.body.getHTMLElement()).css('height', '');
         }
 
         hide() {
+            this.unResize(this.resizeHandler);
+
+            if (this.resizeObserver) {
+                this.resizeObserver.unobserve(this.body.getHTMLElement());
+            }
+
             this.unBlurBackground();
             super.hide(true);
         }
@@ -492,6 +514,22 @@ module api.ui.dialog {
 
         private notifyClosed() {
             this.onClosedListeners.forEach((listener) => {
+                listener();
+            });
+        }
+
+        onResize(listener: () => void) {
+            this.resizeListeners.push(listener);
+        }
+
+        unResize(listener: () => void) {
+            this.resizeListeners = this.resizeListeners.filter((curr) => {
+                return curr !== listener;
+            });
+        }
+
+        public notifyResize() {
+            this.resizeListeners.forEach((listener) => {
                 listener();
             });
         }
