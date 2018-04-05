@@ -1,6 +1,5 @@
 module api.util.htmlarea.dialog {
 
-    import HTMLAreaEditorCKE = CKEDITOR.editor;
     import eventInfo = CKEDITOR.eventInfo;
 
     export class HTMLAreaDialogHandler {
@@ -94,8 +93,8 @@ module api.util.htmlarea.dialog {
             return this.openDialog(new CharMapDialog(editor));
         }
 
-        private static openSpecialCharDialogCKE(editor: HTMLAreaEditorCKE): ModalDialog {
-            return this.openDialog(new SpecialCharDialogCKE(editor));
+        private static openSpecialCharDialogCKE(config: eventInfo): ModalDialog {
+            return this.openDialog(new SpecialCharDialogCKE(config));
         }
 
         private static openDialog(dialog: ModalDialog): ModalDialog {

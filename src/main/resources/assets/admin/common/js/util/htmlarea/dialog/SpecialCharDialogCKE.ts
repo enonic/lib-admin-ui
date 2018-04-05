@@ -1,16 +1,21 @@
 module api.util.htmlarea.dialog {
 
-    import HTMLAreaEditorCKE = CKEDITOR.editor;
     import i18n = api.util.i18n;
+    import eventInfo = CKEDITOR.eventInfo;
 
     export class SpecialCharDialogCKE
-        extends ModalDialog {
+        extends CKEBackedDialog {
 
         // The block with chars will be taken directly from original cke dialog for maximum compatibility
         private static CHARS_BLOCK: HTMLElement;
 
-        constructor(editor: HTMLAreaEditorCKE) {
-            super(<HtmlAreaModalDialogConfig>{editor: editor, title: i18n('dialog.charmap.title'), cls: 'special-char-modal-dialog'});
+        constructor(config: eventInfo) {
+            super(<HtmlAreaModalDialogConfig>{
+                editor: config.editor,
+                dialog: config.data,
+                title: i18n('dialog.charmap.title'),
+                cls: 'special-char-modal-dialog'
+            });
 
             this.initEventListeners();
         }
@@ -25,9 +30,7 @@ module api.util.htmlarea.dialog {
             });
         }
 
-        protected layout() {
-            super.layout();
-
+        protected setDialogInputValues() {
             this.initCharsBlock();
         }
 
@@ -37,14 +40,8 @@ module api.util.htmlarea.dialog {
                 return;
             }
 
-            this.getEditor().openDialog('specialchar', (ckedialog) => {
-                const shownListener = ckedialog.on('show', () => {
-                    ckedialog.hide();
-                    shownListener.removeListener();
-                });
-                SpecialCharDialogCKE.CHARS_BLOCK = ckedialog.parts.contents.getChildren().getItem(0).$;
-                this.getContentPanel().getHTMLElement().appendChild(SpecialCharDialogCKE.CHARS_BLOCK);
-            });
+            SpecialCharDialogCKE.CHARS_BLOCK = (<any>this.ckeOriginalDialog).parts.contents.getChildren().getItem(0).$;
+            this.getContentPanel().getHTMLElement().appendChild(SpecialCharDialogCKE.CHARS_BLOCK);
         }
 
     }

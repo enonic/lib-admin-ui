@@ -32,11 +32,11 @@ module api.util.htmlarea.editor {
             {name: 'gr1', items: ['Format', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'Blockquote']},
             {name: 'gr2', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
             {name: 'gr3', items: ['BulletedList', 'NumberedList', 'Outdent', 'Indent']},
-            {name: 'gr4', items: ['SpecialCharXP', 'Anchor', 'Image', 'Link', 'Unlink']},
+            {name: 'gr4', items: ['SpecialChar', 'Anchor', 'Image', 'Link', 'Unlink']},
             {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize', 'Sourcedialog', 'Find', 'Replace']}
         ];
 
-        private plugins: string = 'autogrow,sourcedialog,specialcharXP';
+        private plugins: string = 'autogrow,sourcedialog';
 
         setEditableSourceCode(value: boolean): HTMLAreaBuilderCKE {
             this.editableSourceCode = value;
@@ -214,20 +214,6 @@ module api.util.htmlarea.editor {
                 }
             });
 
-            ckeditor.addCommand('openCodeDialog', {
-                exec: (editor) => {
-                    this.notifyCodeDialog(editor);
-                    return true;
-                }
-            });
-
-            ckeditor.addCommand('openSpecialCharDialog', {
-                exec: (editor) => {
-                    this.notifySpecialCharDialog(editor);
-                    return true;
-                }
-            });
-
             ckeditor.on('dialogShow', (dialogShowEvent: eventInfo) => {
                 switch (dialogShowEvent.data.getName()) {
                 case 'anchor':
@@ -236,10 +222,11 @@ module api.util.htmlarea.editor {
                 case 'sourcedialog':
                     this.notifyCodeDialog(dialogShowEvent);
                     break;
+                case 'specialchar':
+                    this.notifySpecialCharDialog(dialogShowEvent);
+                    break;
                 }
             });
-
-            CKEDITOR.plugins.addExternal('specialcharXP', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'specialcharCKE.js');
 
             return ckeditor;
         }
@@ -282,8 +269,8 @@ module api.util.htmlarea.editor {
             this.publishCreateDialogEvent(event);
         }
 
-        private notifySpecialCharDialog(editor: HTMLAreaEditor) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(editor).setType(
+        private notifySpecialCharDialog(config: any) {
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 api.util.htmlarea.dialog.HtmlAreaDialogType.SPECIALCHAR_CKE).build();
             this.publishCreateDialogEvent(event);
         }
