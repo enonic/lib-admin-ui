@@ -86,8 +86,8 @@ module api.util.htmlarea.dialog {
             return this.openDialog(new CodeDialog(editor));
         }
 
-        private static openCodeDialogCKE(editor: HTMLAreaEditorCKE): ModalDialog {
-            return this.openDialog(new CodeDialogCKE(editor));
+        private static openCodeDialogCKE(config: eventInfo): ModalDialog {
+            return this.openDialog(new CodeDialogCKE(config));
         }
 
         private static openCharMapDialog(editor: HtmlAreaEditor): ModalDialog {

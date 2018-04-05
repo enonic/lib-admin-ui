@@ -52,6 +52,8 @@ module api.util.htmlarea.dialog {
 
         editor: any; // change it to CKEDITOR.editor when cke merged
 
+        dialog?: any; // for cke backed dialogs
+
         title: string;
 
         cls?: string;

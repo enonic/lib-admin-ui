@@ -8,25 +8,21 @@ module api.util.htmlarea.dialog {
 
     // With this dialog we hide original cke dialog and replicate all actions from our dialog to original one
     export class AnchorModalDialogCKE
-        extends ModalDialog {
+        extends CKEBackedDialog {
 
         private nameField: FormItem;
-
-        private ckeAnchorDialog: CKEDITOR.dialog;
 
         constructor(config: eventInfo) {
 
             super(<HtmlAreaModalDialogConfig>{
                 editor: config.editor,
+                dialog: config.data,
                 title: i18n('dialog.anchor.title'),
                 confirmation: {
                     yesCallback: () => this.getSubmitAction().execute(),
                     noCallback: () => this.close(),
                 }
             });
-
-            this.ckeAnchorDialog = config.data;
-            this.hideOriginalCKEAnchorDialog();
         }
 
         protected getMainFormItems(): FormItem[] {
@@ -39,16 +35,8 @@ module api.util.htmlarea.dialog {
             return [this.nameField];
         }
 
-        close() {
-            super.close();
-            this.ckeAnchorDialog.getElement().$.style.display = 'block';
-            this.ckeAnchorDialog.hide();
-        }
-
-        private hideOriginalCKEAnchorDialog() {
-            this.ckeAnchorDialog.getElement().$.style.display = 'none';
-            (<HTMLElement>document.getElementsByClassName('cke_dialog_background_cover')[0]).style.left = '-10000px';
-            this.nameField.getInput().getEl().setValue(<string>this.ckeAnchorDialog.getValueOf('info', 'txtName'));
+        protected setDialogInputValues() {
+            this.nameField.getInput().getEl().setValue(<string>this.ckeOriginalDialog.getValueOf('info', 'txtName'));
         }
 
         protected initializeActions() {
@@ -57,8 +45,8 @@ module api.util.htmlarea.dialog {
 
             this.addAction(submitAction.onExecuted(() => {
                 if (this.validate()) {
-                    this.ckeAnchorDialog.setValueOf('info', 'txtName', this.nameField.getInput().getEl().getValue());
-                    this.ckeAnchorDialog.getButton('ok').click();
+                    this.ckeOriginalDialog.setValueOf('info', 'txtName', this.nameField.getInput().getEl().getValue());
+                    this.ckeOriginalDialog.getButton('ok').click();
                     this.close();
                 }
             }));
