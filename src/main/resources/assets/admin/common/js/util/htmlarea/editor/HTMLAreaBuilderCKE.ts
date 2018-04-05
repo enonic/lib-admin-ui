@@ -2,6 +2,7 @@ module api.util.htmlarea.editor {
 
     import CreateHtmlAreaDialogEvent = api.util.htmlarea.dialog.CreateHtmlAreaDialogEvent;
     import HTMLAreaEditor = CKEDITOR.editor;
+    import eventInfo = CKEDITOR.eventInfo;
 
     export class HTMLAreaBuilderCKE {
 
@@ -32,7 +33,7 @@ module api.util.htmlarea.editor {
             {name: 'gr2', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
             {name: 'gr3', items: ['BulletedList', 'NumberedList', 'Outdent', 'Indent']},
             {name: 'gr4', items: ['SpecialCharXP', 'Anchor', 'Image', 'Link', 'Unlink']},
-            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize']}
+            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize', 'Find', 'Replace']}
         ];
 
         private plugins: string = 'autogrow,codeTag,code,specialcharXP';
@@ -227,6 +228,15 @@ module api.util.htmlarea.editor {
                 }
             });
 
+            ckeditor.on('dialogShow', (dialogShowEvent: eventInfo) => {
+                switch (dialogShowEvent.data.getName()) {
+                case 'anchor':
+                    this.notifyAnchorDialog(dialogShowEvent);
+                    break;
+                }
+
+            });
+
             CKEDITOR.plugins.addExternal('code', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'codeCKE.js');
             CKEDITOR.plugins.addExternal('specialcharXP', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'specialcharCKE.js');
 
@@ -245,11 +255,11 @@ module api.util.htmlarea.editor {
         //     this.publishCreateDialogEvent(event);
         // }
         //
-        // private notifyAnchorDialog(config: any) {
-        //     let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-        //         api.util.htmlarea.dialog.HtmlAreaDialogType.ANCHOR).build();
-        //     this.publishCreateDialogEvent(event);
-        // }
+        private notifyAnchorDialog(config: any) {
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+                api.util.htmlarea.dialog.HtmlAreaDialogType.ANCHOR_CKE).build();
+            this.publishCreateDialogEvent(event);
+        }
         //
         // private notifyMacroDialog(config: any) {
         //     let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(

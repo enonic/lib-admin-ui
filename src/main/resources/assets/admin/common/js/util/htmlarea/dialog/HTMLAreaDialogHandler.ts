@@ -1,6 +1,7 @@
 module api.util.htmlarea.dialog {
 
     import HTMLAreaEditorCKE = CKEDITOR.editor;
+    import eventInfo = CKEDITOR.eventInfo;
 
     export class HTMLAreaDialogHandler {
 
@@ -12,6 +13,9 @@ module api.util.htmlarea.dialog {
             switch (event.getType()) {
             case HtmlAreaDialogType.ANCHOR:
                 modalDialog = this.openAnchorDialog(event.getConfig());
+                break;
+            case HtmlAreaDialogType.ANCHOR_CKE:
+                modalDialog = this.openAnchorDialogCKE(event.getConfig());
                 break;
             case HtmlAreaDialogType.IMAGE:
                 modalDialog = this.openImageDialog(event.getConfig(), event.getContent());
@@ -63,6 +67,10 @@ module api.util.htmlarea.dialog {
 
         private static openAnchorDialog(editor: HtmlAreaEditor): ModalDialog {
             return this.openDialog(new AnchorModalDialog(editor));
+        }
+
+        private static openAnchorDialogCKE(config: eventInfo): ModalDialog {
+            return this.openDialog(new AnchorModalDialogCKE(config));
         }
 
         private static openMacroDialog(config: HtmlAreaMacro, content: api.content.ContentSummary,
