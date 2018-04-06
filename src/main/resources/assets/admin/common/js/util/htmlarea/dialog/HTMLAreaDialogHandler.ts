@@ -28,6 +28,9 @@ module api.util.htmlarea.dialog {
             case HtmlAreaDialogType.SEARCHREPLACE:
                 modalDialog = this.openSearchReplaceDialog(event.getConfig());
                 break;
+            case HtmlAreaDialogType.SEARCHREPLACE_CKE:
+                modalDialog = this.openSearchReplaceDialogCKE(event.getConfig());
+                break;
             case HtmlAreaDialogType.CODE:
                 modalDialog = this.openCodeDialog(event.getConfig());
                 break;
@@ -79,6 +82,10 @@ module api.util.htmlarea.dialog {
 
         private static openSearchReplaceDialog(editor: HtmlAreaEditor): ModalDialog {
             return this.openDialog(new SearchReplaceModalDialog(editor));
+        }
+
+        private static openSearchReplaceDialogCKE(config: eventInfo): ModalDialog {
+            return this.openDialog(new FindAndReplaceDialogCKE(config));
         }
 
         private static openCodeDialog(editor: HtmlAreaEditor): ModalDialog {

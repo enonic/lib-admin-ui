@@ -33,7 +33,7 @@ module api.util.htmlarea.editor {
             {name: 'gr2', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
             {name: 'gr3', items: ['BulletedList', 'NumberedList', 'Outdent', 'Indent']},
             {name: 'gr4', items: ['SpecialChar', 'Anchor', 'Image', 'Link', 'Unlink']},
-            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize', 'Sourcedialog', 'Find', 'Replace']}
+            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize', 'Sourcedialog', 'Find']}
         ];
 
         private plugins: string = 'autogrow,sourcedialog';
@@ -214,6 +214,8 @@ module api.util.htmlarea.editor {
                 }
             });
 
+            ckeditor.setKeystroke(CKEDITOR.CTRL + 70, 'find');
+
             ckeditor.on('dialogShow', (dialogShowEvent: eventInfo) => {
                 switch (dialogShowEvent.data.getName()) {
                 case 'anchor':
@@ -224,6 +226,9 @@ module api.util.htmlarea.editor {
                     break;
                 case 'specialchar':
                     this.notifySpecialCharDialog(dialogShowEvent);
+                    break;
+                case 'find':
+                    this.notifySearchReplaceDialog(dialogShowEvent);
                     break;
                 }
             });
@@ -256,12 +261,12 @@ module api.util.htmlarea.editor {
         //         this.content).setApplicationKeys(this.applicationKeys).build();
         //     this.publishCreateDialogEvent(event);
         // }
-        //
-        // private notifySearchReplaceDialog(config: any) {
-        //     let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-        //         api.util.htmlarea.dialog.HtmlAreaDialogType.SEARCHREPLACE).build();
-        //     this.publishCreateDialogEvent(event);
-        // }
+
+        private notifySearchReplaceDialog(config: any) {
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+                api.util.htmlarea.dialog.HtmlAreaDialogType.SEARCHREPLACE_CKE).build();
+            this.publishCreateDialogEvent(event);
+        }
 
         private notifyCodeDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(

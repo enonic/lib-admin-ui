@@ -14,6 +14,7 @@
 ///<reference path='ImageCroppingOptionViewer.ts' />
 ///<reference path='ImageCroppingSelector.ts' />
 ///<reference path='SearchReplaceModalDialog.ts' />
+///<reference path='FindAndReplaceDialogCKE.ts' />
 ///<reference path='CodeDialog.ts' />
 ///<reference path='CodeDialogCKE.ts' />
 ///<reference path='CharMapDialog.ts' />
