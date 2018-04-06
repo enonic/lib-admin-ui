@@ -33,7 +33,7 @@ module api.util.htmlarea.editor {
             {name: 'gr2', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
             {name: 'gr3', items: ['BulletedList', 'NumberedList', 'Outdent', 'Indent']},
             {name: 'gr4', items: ['SpecialChar', 'Anchor', 'Image', 'Link', 'Unlink']},
-            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize', 'Sourcedialog', 'Find']}
+            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize', 'Sourcedialog']}
         ];
 
         private plugins: string = 'autogrow,sourcedialog';
