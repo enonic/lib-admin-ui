@@ -97,6 +97,7 @@ jar {
     fileTree("$buildDir/assets/admin/common/lib") {
         exclude '_all.js'
         exclude '**/*.css'
+        exclude '**/fonts/tinymce*.*'
     }.each { f -> exclude buildDir.toURI().relativize( file( f.path ).toURI() ).toString() }
 
     includeEmptyDirs = false

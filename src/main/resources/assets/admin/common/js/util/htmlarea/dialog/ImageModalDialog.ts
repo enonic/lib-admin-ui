@@ -177,7 +177,6 @@ module api.util.htmlarea.dialog {
             this.imagePreviewContainer.appendChild(this.imageLoadMask);
 
             api.ui.responsive.ResponsiveManager.onAvailableSizeChanged(this, () => {
-                this.resetPreviewContainerMaxHeight();
                 this.imagePreviewScrollHandler.toggleScrollButtons();
                 this.imagePreviewScrollHandler.setMarginRight();
             });
@@ -269,15 +268,6 @@ module api.util.htmlarea.dialog {
             imagePreviewContainer.appendChild(this.error);
 
             this.imagePreviewContainer = imagePreviewContainer;
-
-            this.resetPreviewContainerMaxHeight();
-        }
-
-        private resetPreviewContainerMaxHeight() {
-            //limiting image modal dialog height up to screen size except padding on top and bottom
-            //so 340 is 300px content of image modal dialog except preview container + 20*2 from top and bottom of screen
-            let maxImagePreviewHeight = this.getEl().getHeight() - 450;
-            new api.dom.ElementHelper(this.imagePreviewContainer.getHTMLElement()).setMaxHeightPx(maxImagePreviewHeight);
         }
 
         private getCaption(): string {
