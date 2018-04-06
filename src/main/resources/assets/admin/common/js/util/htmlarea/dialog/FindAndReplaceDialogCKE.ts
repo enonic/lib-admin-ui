@@ -72,7 +72,7 @@ module api.util.htmlarea.dialog {
         }
 
         protected setDialogInputValues() {
-
+            //
         }
 
         protected initializeActions() {
@@ -88,7 +88,7 @@ module api.util.htmlarea.dialog {
             this.findAction.onExecuted(() => {
                 this.getElementFromOriginalDialog('find', 'txtFindFind').setValue(this.findInput.getValue(), false);
                 this.setCheckboxesValuesToOriginalDialogFind();
-                (<button>this.getElementFromOriginalDialog('find', 'btnFind')).click()
+                (<button>this.getElementFromOriginalDialog('find', 'btnFind')).click();
             });
 
             return this.findAction;
@@ -111,7 +111,7 @@ module api.util.htmlarea.dialog {
                 this.getElementFromOriginalDialog('replace', 'txtFindReplace').setValue(this.findInput.getValue(), false);
                 this.getElementFromOriginalDialog('replace', 'txtReplace').setValue(this.replaceInput.getValue(), false);
                 this.setCheckboxesValuesToOriginalDialogReplace();
-                (<button>this.getElementFromOriginalDialog('replace', 'btnFindReplace')).click()
+                (<button>this.getElementFromOriginalDialog('replace', 'btnFindReplace')).click();
             });
 
             return this.replaceAction;
@@ -130,7 +130,7 @@ module api.util.htmlarea.dialog {
                 this.getElementFromOriginalDialog('replace', 'txtFindReplace').setValue(this.findInput.getValue(), false);
                 this.getElementFromOriginalDialog('replace', 'txtReplace').setValue(this.replaceInput.getValue(), false);
                 this.setCheckboxesValuesToOriginalDialogReplace();
-                (<button>this.getElementFromOriginalDialog('replace', 'btnReplaceAll')).click()
+                (<button>this.getElementFromOriginalDialog('replace', 'btnReplaceAll')).click();
             });
 
             return this.replaceAllAction;
