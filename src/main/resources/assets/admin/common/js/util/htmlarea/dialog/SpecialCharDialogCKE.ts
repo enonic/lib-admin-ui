@@ -7,7 +7,7 @@ module api.util.htmlarea.dialog {
         extends CKEBackedDialog {
 
         // The block with chars will be taken directly from original cke dialog for maximum compatibility
-        private static CHARS_BLOCK: HTMLElement;
+        private charsBlock: any;
 
         constructor(config: eventInfo) {
             super(<HtmlAreaModalDialogConfig>{
@@ -30,18 +30,19 @@ module api.util.htmlarea.dialog {
             });
         }
 
+        close() {
+            super.close();
+            // bringing chars block back otherwise dialog opening fails
+            (<any>this.ckeOriginalDialog).parts.contents.append(this.charsBlock);
+        }
+
         protected setDialogInputValues() {
             this.initCharsBlock();
         }
 
         private initCharsBlock() {
-            if (!!SpecialCharDialogCKE.CHARS_BLOCK) {
-                this.getContentPanel().getHTMLElement().appendChild(SpecialCharDialogCKE.CHARS_BLOCK);
-                return;
-            }
-
-            SpecialCharDialogCKE.CHARS_BLOCK = (<any>this.ckeOriginalDialog).parts.contents.getChildren().getItem(0).$;
-            this.getContentPanel().getHTMLElement().appendChild(SpecialCharDialogCKE.CHARS_BLOCK);
+            this.charsBlock = (<any>this.ckeOriginalDialog).parts.contents.getChildren().getItem(0);
+            this.getContentPanel().getHTMLElement().appendChild(this.charsBlock.$);
         }
 
     }
