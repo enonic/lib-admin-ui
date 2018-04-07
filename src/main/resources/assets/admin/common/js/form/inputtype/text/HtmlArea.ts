@@ -215,9 +215,9 @@ module api.form.inputtype.text {
                     .setBlurHandler(blurHandler.bind(this))
                     // .setKeydownHandler(keydownHandler)
                     .setNodeChangeHandler(notifyValueChanged)
-                    // .setContentPath(this.contentPath)
+                    .setContentPath(this.contentPath)
                     .setContent(this.content)
-                    // .setApplicationKeys(this.applicationKeys)
+                    .setApplicationKeys(this.applicationKeys)
                     .setTools({
                         include: this.inputConfig['include'],
                         exclude: this.inputConfig['exclude']

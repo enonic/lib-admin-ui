@@ -7,8 +7,8 @@ module api.util.htmlarea.editor {
     export class HTMLAreaBuilderCKE {
 
         private content: api.content.ContentSummary; // used for image dialog
-        // private contentPath: api.content.ContentPath; // used for macro dialog
-        // private applicationKeys: ApplicationKey[]; // used for macro dialog
+        private contentPath: api.content.ContentPath; // used for macro dialog
+        private applicationKeys: ApplicationKey[]; // used for macro dialog
 
         private assetsUri: string;
         private editorContainerId: string;
@@ -32,11 +32,11 @@ module api.util.htmlarea.editor {
             {name: 'gr1', items: ['Format', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'Blockquote']},
             {name: 'gr2', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
             {name: 'gr3', items: ['BulletedList', 'NumberedList', 'Outdent', 'Indent']},
-            {name: 'gr4', items: ['SpecialChar', 'Anchor', 'Image', 'Link', 'Unlink']},
+            {name: 'gr4', items: ['SpecialChar', 'Anchor', 'Image', 'Macro', 'Link', 'Unlink']},
             {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize', 'Sourcedialog']}
         ];
 
-        private plugins: string = 'autogrow,sourcedialog';
+        private plugins: string = 'autogrow,sourcedialog,macro';
 
         setEditableSourceCode(value: boolean): HTMLAreaBuilderCKE {
             this.editableSourceCode = value;
@@ -114,20 +114,20 @@ module api.util.htmlarea.editor {
             return this;
         }
 
-        // setContentPath(contentPath: api.content.ContentPath): HTMLAreaBuilderCKE {
-        //     this.contentPath = contentPath;
-        //     return this;
-        // }
+        setContentPath(contentPath: api.content.ContentPath): HTMLAreaBuilderCKE {
+            this.contentPath = contentPath;
+            return this;
+        }
 
         // setConvertUrls(convertUrls: boolean): HTMLAreaBuilderCKE {
         //     this.convertUrls = convertUrls;
         //     return this;
         // }
 
-        // setApplicationKeys(applicationKeys: ApplicationKey[]): HTMLAreaBuilderCKE {
-        //     this.applicationKeys = applicationKeys;
-        //     return this;
-        // }
+        setApplicationKeys(applicationKeys: ApplicationKey[]): HTMLAreaBuilderCKE {
+            this.applicationKeys = applicationKeys;
+            return this;
+        }
 
         private includeTools(tools: any[]) {
             tools.forEach((tool: any) => {
@@ -214,7 +214,16 @@ module api.util.htmlarea.editor {
                 }
             });
 
+            ckeditor.addCommand('openMacroDialog', {
+                exec: (editor) => {
+                    this.notifyMacroDialog(editor);
+                    return true;
+                }
+            });
+
             ckeditor.setKeystroke(CKEDITOR.CTRL + 70, 'find');
+
+            CKEDITOR.plugins.addExternal('macro', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'macroCKE.js');
 
             ckeditor.on('dialogShow', (dialogShowEvent: eventInfo) => {
                 switch (dialogShowEvent.data.getName()) {
@@ -253,14 +262,14 @@ module api.util.htmlarea.editor {
                 api.util.htmlarea.dialog.HtmlAreaDialogType.ANCHOR_CKE).build();
             this.publishCreateDialogEvent(event);
         }
-        //
-        // private notifyMacroDialog(config: any) {
-        //     let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-        //         api.util.htmlarea.dialog.HtmlAreaDialogType.MACRO).setContentPath(this.contentPath).setApplicationKeys(
-        //         this.applicationKeys).setType(api.util.htmlarea.dialog.HtmlAreaDialogType.MACRO).setContent(
-        //         this.content).setApplicationKeys(this.applicationKeys).build();
-        //     this.publishCreateDialogEvent(event);
-        // }
+
+        private notifyMacroDialog(config: any) {
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+                api.util.htmlarea.dialog.HtmlAreaDialogType.MACRO_CKE).setContentPath(this.contentPath).setApplicationKeys(
+                this.applicationKeys).setContent(
+                this.content).setApplicationKeys(this.applicationKeys).build();
+            this.publishCreateDialogEvent(event);
+        }
 
         private notifySearchReplaceDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(

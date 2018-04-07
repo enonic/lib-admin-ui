@@ -6,6 +6,7 @@
 ///<reference path='AnchorModalDialogCKE.ts' />
 ///<reference path='MacroDockedPanel.ts' />
 ///<reference path='MacroModalDialog.ts' />
+///<reference path='MacroModalDialogCKE.ts' />
 ///<reference path='CreateHtmlAreaDialogEvent.ts' />
 ///<reference path='HTMLAreaDialogHandler.ts' />
 ///<reference path='ImageCroppingNameView.ts' />
