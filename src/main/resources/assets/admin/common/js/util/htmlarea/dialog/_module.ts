@@ -1,6 +1,7 @@
 ///<reference path='ModalDialog.ts' />
 ///<reference path='CKEBackedDialog.ts' />
 ///<reference path='LinkModalDialog.ts' />
+///<reference path='LinkModalDialogCKE.ts' />
 ///<reference path='ImageModalDialog.ts' />
 ///<reference path='AnchorModalDialog.ts' />
 ///<reference path='AnchorModalDialogCKE.ts' />

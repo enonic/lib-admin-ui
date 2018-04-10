@@ -239,18 +239,21 @@ module api.util.htmlarea.editor {
                 case 'find':
                     this.notifySearchReplaceDialog(dialogShowEvent);
                     break;
+                case 'link':
+                    this.notifyLinkDialog(dialogShowEvent);
+                    break;
                 }
             });
 
             return ckeditor;
         }
 
-        // private notifyLinkDialog(config: any) {
-        //     let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-        //         api.util.htmlarea.dialog.HtmlAreaDialogType.LINK).setContent(this.content).build();
-        //     this.publishCreateDialogEvent(event);
-        // }
-        //
+        private notifyLinkDialog(config: any) {
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+                api.util.htmlarea.dialog.HtmlAreaDialogType.LINK_CKE).setContent(this.content).build();
+            this.publishCreateDialogEvent(event);
+        }
+
         // private notifyImageDialog(config: any) {
         //     let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
         //         api.util.htmlarea.dialog.HtmlAreaDialogType.IMAGE).setContent(this.content).build();
