@@ -76,6 +76,9 @@ module api.content.site.inputtype.siteconfigurator {
 
         update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
             return super.update(propertyArray, unchangedOnly).then(() => {
+                const optionsMissing = !!propertyArray && propertyArray.getSize() > 0 && this.comboBox.getOptions().length === 0;
+                return optionsMissing ? this.comboBox.getLoader().preLoad() : null;
+            }).then(() => {
                 const ignorePropertyChange = this.ignorePropertyChange;
                 this.ignorePropertyChange = true;
 
