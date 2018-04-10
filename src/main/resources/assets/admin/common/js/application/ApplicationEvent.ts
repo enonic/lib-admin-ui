@@ -12,6 +12,7 @@ module api.application {
         eventType: string;
         applicationKey: string;
         applicationUrl?: string;
+        systemApplication: boolean;
         progress?: number;
     }
 
@@ -21,15 +22,21 @@ module api.application {
 
         private applicationUrl: string;
 
+        private systemApplication: boolean;
+
         private eventType: ApplicationEventType;
 
         private progress: number;
 
-        constructor(applicationKey: api.application.ApplicationKey, eventType: ApplicationEventType, applicationUrl?: string,
+        constructor(applicationKey: api.application.ApplicationKey,
+                    eventType: ApplicationEventType,
+                    systemApplication: boolean,
+                    applicationUrl?: string,
                     progress?: number) {
             super();
             this.applicationKey = applicationKey;
             this.applicationUrl = applicationUrl;
+            this.systemApplication = systemApplication;
             this.eventType = eventType;
             this.progress = progress;
         }
@@ -50,6 +57,10 @@ module api.application {
             return this.progress;
         }
 
+        public isSystemApplication(): boolean {
+            return this.systemApplication;
+        }
+
         isNeedToUpdateApplication(): boolean {
             return ApplicationEventType.RESOLVED !== this.eventType &&
                    ApplicationEventType.STARTING !== this.eventType &&
@@ -66,11 +77,12 @@ module api.application {
         }
 
         static fromJson(applicationEventJson: ApplicationEventJson): ApplicationEvent {
-            let applicationKey = api.application.ApplicationKey.fromString(applicationEventJson.data.applicationKey);
-            let eventType = ApplicationEventType[applicationEventJson.data.eventType];
-            let applicationUrl = applicationEventJson.data.applicationUrl;
-            let progress = applicationEventJson.data.progress;
-            return new ApplicationEvent(applicationKey, eventType, applicationUrl, progress);
+            const applicationKey = api.application.ApplicationKey.fromString(applicationEventJson.data.applicationKey);
+            const eventType = ApplicationEventType[applicationEventJson.data.eventType];
+            const systemApplication = applicationEventJson.data.systemApplication;
+            const applicationUrl = applicationEventJson.data.applicationUrl;
+            const progress = applicationEventJson.data.progress;
+            return new ApplicationEvent(applicationKey, eventType, systemApplication, applicationUrl, progress);
         }
     }
 
