@@ -14,7 +14,8 @@ module api.content.site.inputtype.siteconfigurator {
     import ApplicationEvent = api.application.ApplicationEvent;
     import ApplicationEventType = api.application.ApplicationEventType;
 
-    export class SiteConfigurator extends api.form.inputtype.support.BaseInputTypeManagingAdd {
+    export class SiteConfigurator
+        extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         private readOnly: boolean;
 
@@ -178,6 +179,13 @@ module api.content.site.inputtype.siteconfigurator {
                 this.ignorePropertyChange = true;
 
                 const selectedOption = event.getSelectedOption();
+                const view: SiteConfiguratorSelectedOptionView = <SiteConfiguratorSelectedOptionView>selectedOption.getOptionView();
+
+                const propertyArray = this.getPropertyArray();
+                const configSet = propertyArray.get(selectedOption.getIndex()).getPropertySet().getProperty('config').getPropertySet();
+
+                view.getFormView().update(configSet, false);
+
                 const key = selectedOption.getOption().displayValue.getApplicationKey();
                 if (key) {
                     saveAndForceValidate(selectedOption);
