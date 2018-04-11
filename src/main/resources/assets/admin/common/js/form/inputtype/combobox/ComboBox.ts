@@ -146,10 +146,8 @@ module api.form.inputtype.combobox {
 
         private comboBoxFilter(item: api.ui.selector.Option<string>, args: any) {
             // Do not change to one-liner `return !(...);`. Bugs expected with UglifyJs + SlickGrid filter compilation.
-            if (args && args.searchString) {
-                return item.displayValue.toUpperCase().indexOf(args.searchString.toUpperCase()) !== -1;
-            }
-            return true;
+            const isEmptyInput = args == null || args.searchString == null;
+            return isEmptyInput || item.displayValue.toUpperCase().indexOf(args.searchString.toUpperCase()) !== -1;
         }
 
         protected getNumberOfValids(): number {
