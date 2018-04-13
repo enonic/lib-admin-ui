@@ -11,18 +11,6 @@ module api.ui.mask {
             this.masked = itemToMask;
 
             if (this.masked) {
-                // pass the mousewheel event to the masked element to be able to scroll
-                this.onMouseWheel((event: WheelEvent) => {
-
-                    let evt = this.cloneWheelEvent(event);
-                    this.masked.getHTMLElement().dispatchEvent(evt);
-
-                    if (this.isBrowserFirefox()) { //scrolling manually ff as dispatch event not working
-                        this.triggerScroll(event);
-                    }
-
-                });
-
                 this.masked.onHidden((event: api.dom.ElementHiddenEvent) => {
                     if (event.getTarget() === this.masked) {
                         this.hide();
@@ -35,12 +23,17 @@ module api.ui.mask {
                         this.positionOver(this.masked);
                     }
                 });
+                this.masked.onClicked(event => {
+                    if (this.masked.hasClass('masked')) {
+                        this.getHTMLElement().dispatchEvent(this.cloneMouseEvent(event));
+                    }
+                });
             }
             api.dom.Body.get().appendChild(this);
         }
 
-        private cloneWheelEvent(e: WheelEvent): WheelEvent {
-            return api.ObjectHelper.create(WheelEvent, e.type, {
+        private cloneMouseEvent(e: MouseEvent): MouseEvent {
+            return api.ObjectHelper.create(MouseEvent, e.type, {
                 bubbles: e.bubbles,
                 cancelable: e.cancelable,
                 cancelBubble: e.cancelBubble,
@@ -52,10 +45,6 @@ module api.ui.mask {
                 clientY: e.clientY,
                 layerX: e.layerX,
                 layerY: e.layerY,
-                deltaX: e.deltaX,
-                deltaY: e.deltaY,
-                deltaZ: e.deltaZ,
-                deltaMode: e.deltaMode,
                 ctrlKey: e.ctrlKey,
                 altKey: e.altKey,
                 shiftKey: e.shiftKey,
@@ -70,6 +59,12 @@ module api.ui.mask {
             if (this.masked) {
                 this.positionOver(this.masked);
             }
+            this.masked.addClass('masked');
+        }
+
+        hide() {
+            super.hide();
+            this.masked.removeClass('masked');
         }
 
         private positionOver(masked: api.dom.Element) {
@@ -125,18 +120,5 @@ module api.ui.mask {
                 setWidth(maskedDimensions.width).
                 setHeight(maskedDimensions.height);
         }
-
-        private isBrowserFirefox(): boolean {
-            return /Firefox/i.test(navigator.userAgent);
-        }
-
-        private triggerScroll(event: WheelEvent) {
-            wemjq(this.masked.getHTMLElement()).stop().animate({
-                // converting ff wheel deltaY from lines to px (approximate)
-                scrollTop: this.masked.getHTMLElement().scrollTop + event.deltaY * 25
-            }, 600 / Math.abs(event.deltaY), 'linear');
-        }
-
     }
-
 }
