@@ -26,6 +26,8 @@ module api.ui.dialog {
 
         protected header: api.ui.dialog.ModalDialogHeader;
 
+        protected dialogContainer: api.dom.DivEl;
+
         private body: api.dom.DivEl;
 
         private footer: api.dom.DivEl;
@@ -81,13 +83,14 @@ module api.ui.dialog {
 
             this.closeIcon = new DivEl('cancel-button-top');
             this.closeIcon.onClicked(this.closeIconCallback);
+            this.appendChild(this.closeIcon);
 
             this.header = this.createHeader(config.title || '');
 
             this.contentPanel = new ModalDialogContentPanel();
 
             this.body = new DivEl('modal-dialog-body');
-            this.body.appendChildren(this.closeIcon, this.contentPanel);
+            this.body.appendChild(this.contentPanel);
 
             this.footer = new DivEl('modal-dialog-footer');
             this.footer.appendChild(this.buttonRow);
@@ -348,6 +351,15 @@ module api.ui.dialog {
         }
 
         show() {
+
+            if (!this.dialogContainer) {
+                this.dialogContainer = new DivEl('dialog-container');
+            }
+            if (!this.dialogContainer.hasChild(this)) {
+                this.dialogContainer.appendChild(this);
+            }
+            api.dom.Body.get().appendChild(this.dialogContainer);
+
             this.blurBackground();
             super.show();
             this.buttonRow.focusDefaultAction();
@@ -369,6 +381,8 @@ module api.ui.dialog {
 
             this.unBlurBackground();
             super.hide(true);
+
+            api.dom.Body.get().removeChild(this.dialogContainer);
         }
 
         getButtonRow(): ButtonRow {

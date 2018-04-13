@@ -65,6 +65,8 @@ module api.ui.dialog {
             api.ui.mask.BodyMask.get().addClass('confirmation-dialog-mask');
             api.dom.Body.get().appendChild(this);
             super.open();
+
+            this.dialogContainer.addClass('confirmation-dialog-container')
         }
 
         close() {
