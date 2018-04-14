@@ -23,35 +23,8 @@ module api.ui.mask {
                         this.positionOver(this.masked);
                     }
                 });
-                this.masked.onClicked(event => {
-                    if (this.masked.hasClass('masked')) {
-                        this.getHTMLElement().dispatchEvent(this.cloneMouseEvent(event));
-                    }
-                });
             }
             api.dom.Body.get().appendChild(this);
-        }
-
-        private cloneMouseEvent(e: MouseEvent): MouseEvent {
-            return api.ObjectHelper.create(MouseEvent, e.type, {
-                bubbles: e.bubbles,
-                cancelable: e.cancelable,
-                cancelBubble: e.cancelBubble,
-                view: e.view,
-                detail: e.detail,
-                screenX: e.screenX,
-                screenY: e.screenY,
-                clientX: e.clientX,
-                clientY: e.clientY,
-                layerX: e.layerX,
-                layerY: e.layerY,
-                ctrlKey: e.ctrlKey,
-                altKey: e.altKey,
-                shiftKey: e.shiftKey,
-                metaKey: e.metaKey,
-                button: e.button,
-                relatedTarget: e.relatedTarget
-            });
         }
 
         show() {
@@ -59,12 +32,6 @@ module api.ui.mask {
             if (this.masked) {
                 this.positionOver(this.masked);
             }
-            this.masked.addClass('masked');
-        }
-
-        hide() {
-            super.hide();
-            this.masked.removeClass('masked');
         }
 
         private positionOver(masked: api.dom.Element) {
