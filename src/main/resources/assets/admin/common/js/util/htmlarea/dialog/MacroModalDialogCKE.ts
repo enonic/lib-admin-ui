@@ -28,14 +28,19 @@ module api.util.htmlarea.dialog {
             this.macroSelector.getLoader().setApplicationKeys(applicationKeys);
             this.macroDockedPanel.setContent(content);
 
-            let onResize = api.util.AppHelper.debounce(() => {
-                let formView = this.macroDockedPanel.getConfigForm();
+            (<CKEDITOR.editor>this.getEditor()).focusManager.add(new CKEDITOR.dom.element(this.getHTMLElement()), true);
+            this.setupResizeListener();
+        }
+
+        private setupResizeListener() {
+            const onResize = api.util.AppHelper.debounce(() => {
+                const formView = this.macroDockedPanel.getConfigForm();
 
                 if (!formView) {
                     return;
                 }
 
-                let dialogHeight = this.getEl().getHeight();
+                const dialogHeight = this.getEl().getHeight();
                 if (dialogHeight >= (wemjq('body').height() - 100)) {
                     formView.getEl().setHeightPx(0.5 * dialogHeight);
                 }
@@ -54,7 +59,7 @@ module api.util.htmlarea.dialog {
         }
 
         protected getMainFormItems(): FormItem[] {
-            let macroSelector = this.createMacroSelector('macroId');
+            const macroSelector = this.createMacroSelector('macroId');
 
             this.setFirstFocusField(macroSelector.getInput());
 
@@ -64,13 +69,13 @@ module api.util.htmlarea.dialog {
         }
 
         private createMacroSelector(id: string): FormItem {
-            let loader = new api.macro.resource.MacrosLoader();
-            let macroSelector = api.macro.MacroComboBox.create().setLoader(loader).setMaximumOccurrences(1).build();
+            const loader = new api.macro.resource.MacrosLoader();
+            const macroSelector = api.macro.MacroComboBox.create().setLoader(loader).setMaximumOccurrences(1).build();
             const formItemBuilder = new ModalDialogFormItemBuilder(id, i18n('dialog.macro.formitem.macro')).setValidator(
                 Validators.required).setInputEl(macroSelector);
             const formItem = this.createFormItem(formItemBuilder);
 
-            let macroSelectorComboBox = macroSelector.getComboBox();
+            const macroSelectorComboBox = macroSelector.getComboBox();
 
             this.macroSelector = macroSelector;
             this.addClass('macro-selector');
@@ -93,7 +98,7 @@ module api.util.htmlarea.dialog {
         }
 
         protected initializeActions() {
-            let submitAction = new api.ui.Action(i18n('action.insert'));
+            const submitAction = new api.ui.Action(i18n('action.insert'));
             this.setSubmitAction(submitAction);
 
             this.addAction(submitAction.onExecuted(() => {
@@ -117,8 +122,8 @@ module api.util.htmlarea.dialog {
         }
 
         protected validate(): boolean {
-            let mainFormValid = super.validate();
-            let configPanelValid = this.macroDockedPanel.validateMacroForm();
+            const mainFormValid = super.validate();
+            const configPanelValid = this.macroDockedPanel.validateMacroForm();
 
             return mainFormValid && configPanelValid;
         }

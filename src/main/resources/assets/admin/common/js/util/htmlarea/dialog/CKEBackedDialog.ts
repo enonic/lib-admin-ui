@@ -12,11 +12,13 @@ module api.util.htmlarea.dialog {
             this.ckeOriginalDialog = config.dialog;
             this.hideOriginalCKEDialog();
             this.setDialogInputValues();
+            (<CKEDITOR.editor>this.getEditor()).focusManager.add(new CKEDITOR.dom.element(this.getHTMLElement()), true);
         }
 
         close() {
             super.close();
             this.ckeOriginalDialog.getElement().$.style.display = 'block';
+            (<HTMLElement>document.getElementsByClassName('cke_dialog_background_cover')[0]).style.left = '';
             this.ckeOriginalDialog.hide();
         }
 
@@ -26,5 +28,9 @@ module api.util.htmlarea.dialog {
         }
 
         protected abstract setDialogInputValues();
+
+        protected getElemFromOriginalDialog(pageId: string, elementId: string): CKEDITOR.ui.dialog.uiElement {
+            return this.ckeOriginalDialog.getContentElement(pageId, elementId);
+        }
     }
 }

@@ -3,6 +3,7 @@
 ///<reference path='LinkModalDialog.ts' />
 ///<reference path='LinkModalDialogCKE.ts' />
 ///<reference path='ImageModalDialog.ts' />
+///<reference path='ImageModalDialogCKE.ts' />
 ///<reference path='AnchorModalDialog.ts' />
 ///<reference path='AnchorModalDialogCKE.ts' />
 ///<reference path='MacroDockedPanel.ts' />

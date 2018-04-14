@@ -36,7 +36,7 @@ module api.util.htmlarea.editor {
             {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize', 'Sourcedialog']}
         ];
 
-        private plugins: string = 'autogrow,sourcedialog,macro';
+        private plugins: string = 'autogrow,sourcedialog,macro,image2';
 
         setEditableSourceCode(value: boolean): HTMLAreaBuilderCKE {
             this.editableSourceCode = value;
@@ -179,6 +179,7 @@ module api.util.htmlarea.editor {
                 removeButtons: this.toolsToExlcude,
                 extraPlugins: this.plugins + (this.inline ? ',sharedspace' : ''),
                 autoGrow_onStartup: true,
+                // image2_alignClasses: [ 'align-left', 'align-center', 'align-right' ], // use instead of inline styles if possible
                 contentsCss: this.assetsUri + '/admin/common/styles/api/util/htmlarea/html-editor.css', // for classic mode only
                 sharedSpaces: this.inline ? {top: this.fixedToolbarContainer} : null
             };
@@ -242,6 +243,9 @@ module api.util.htmlarea.editor {
                 case 'link':
                     this.notifyLinkDialog(dialogShowEvent);
                     break;
+                case 'image2':
+                    this.notifyImageDialog(dialogShowEvent);
+                    break;
                 }
             });
 
@@ -254,12 +258,12 @@ module api.util.htmlarea.editor {
             this.publishCreateDialogEvent(event);
         }
 
-        // private notifyImageDialog(config: any) {
-        //     let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-        //         api.util.htmlarea.dialog.HtmlAreaDialogType.IMAGE).setContent(this.content).build();
-        //     this.publishCreateDialogEvent(event);
-        // }
-        //
+        private notifyImageDialog(config: any) {
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+                api.util.htmlarea.dialog.HtmlAreaDialogType.IMAGE_CKE).setContent(this.content).build();
+            this.publishCreateDialogEvent(event);
+        }
+
         private notifyAnchorDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 api.util.htmlarea.dialog.HtmlAreaDialogType.ANCHOR_CKE).build();

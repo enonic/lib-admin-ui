@@ -19,6 +19,9 @@ module api.util.htmlarea.dialog {
             case HtmlAreaDialogType.IMAGE:
                 modalDialog = this.openImageDialog(event.getConfig(), event.getContent());
                 break;
+            case HtmlAreaDialogType.IMAGE_CKE:
+                modalDialog = this.openImageDialogCKE(event.getConfig(), event.getContent());
+                break;
             case HtmlAreaDialogType.LINK:
                 modalDialog = this.openLinkDialog(event.getConfig());
                 break;
@@ -75,6 +78,10 @@ module api.util.htmlarea.dialog {
 
         private static openImageDialog(config: HtmlAreaImage, content: api.content.ContentSummary): ModalDialog {
             return this.openDialog(new ImageModalDialog(config, content));
+        }
+
+        private static openImageDialogCKE(config: eventInfo, content: api.content.ContentSummary): ModalDialog {
+            return this.openDialog(new ImageModalDialogCKE(config, content));
         }
 
         private static openAnchorDialog(editor: HtmlAreaEditor): ModalDialog {

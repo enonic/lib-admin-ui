@@ -63,8 +63,10 @@ module api.util.htmlarea.dialog {
                 this.link = LinkModalDialogCKE.anchorPrefix + this.getOriginalAnchorElem().getValue();
                 break;
             default:
+                const val = this.getOriginalUrlElem().getValue();
                 const protocol: string = this.getOriginalProtocolElem().getValue();
-                this.link = protocol + this.getOriginalUrlElem().getValue();
+                this.link = api.util.StringHelper.isEmpty(val) ? api.util.StringHelper.EMPTY_STRING : protocol +
+                                                                                                      this.getOriginalUrlElem().getValue();
             }
         }
 
@@ -404,10 +406,6 @@ module api.util.htmlarea.dialog {
                 this.createAnchor();
                 break;
             }
-        }
-
-        private getElemFromOriginalDialog(pageId: string, elementId: string): CKEDITOR.ui.dialog.uiElement {
-            return this.ckeOriginalDialog.getContentElement(pageId, elementId);
         }
 
         private getOriginalLinkTypeElem(): CKEDITOR.ui.dialog.uiElement {

@@ -230,7 +230,9 @@ module api.form.inputtype.text {
                     this.setEditorContent(id, property);
 
                     if (this.notInLiveEdit()) {
-                        this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper, id);
+                        if (api.BrowserHelper.isIE()) {
+                            this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper, id);
+                        }
                     }
 
                     this.removeTooltipFromEditorArea(textAreaWrapper);

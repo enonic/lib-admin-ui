@@ -860,7 +860,8 @@
     function setWrapperAlign(widget, alignClasses) {
         var wrapper = widget.wrapper,
             align = widget.data.align,
-            hasCaption = widget.data.hasCaption;
+            hasCaption = widget.data.hasCaption,
+            keepSize = widget.data.lock;
 
         if (alignClasses) {
             // Remove all align classes first.
@@ -891,13 +892,23 @@
                     wrapper.removeStyle('text-align');
                 }
 
+                wrapper.setStyle('margin', 'auto');
+                if (!keepSize) {
+                    wrapper.setStyle('width', '60%');
+                }
                 wrapper.removeStyle('float');
             }
             else {
-                if (align == 'none') {
+                if (align == 'none' || align == null) {
                     wrapper.removeStyle('float');
+                    wrapper.removeStyle('margin');
+                    wrapper.removeStyle('width');
                 } else {
                     wrapper.setStyle('float', align);
+                    wrapper.setStyle('margin', '15px');
+                    if (!keepSize) {
+                        wrapper.setStyle('width', '40%');
+                    }
                 }
 
                 wrapper.removeStyle('text-align');
