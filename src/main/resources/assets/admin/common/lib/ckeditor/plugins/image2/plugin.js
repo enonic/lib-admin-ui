@@ -892,6 +892,7 @@
                     wrapper.removeStyle('text-align');
                 }
 
+                wrapper.removeStyle('width');
                 wrapper.setStyle('margin', 'auto');
                 if (!keepSize) {
                     wrapper.setStyle('width', '60%');
@@ -904,6 +905,7 @@
                     wrapper.removeStyle('margin');
                     wrapper.removeStyle('width');
                 } else {
+                    wrapper.removeStyle('width');
                     wrapper.setStyle('float', align);
                     wrapper.setStyle('margin', '15px');
                     if (!keepSize) {
