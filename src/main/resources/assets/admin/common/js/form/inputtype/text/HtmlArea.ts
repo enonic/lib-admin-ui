@@ -1,6 +1,5 @@
 module api.form.inputtype.text {
-    declare var CONFIG;
-
+    import eventInfo = CKEDITOR.eventInfo;
     import support = api.form.inputtype.support;
     import Property = api.data.Property;
     import Value = api.data.Value;
@@ -14,6 +13,9 @@ module api.form.inputtype.text {
     import ApplicationKey = api.application.ApplicationKey;
     import Promise = Q.Promise;
     import AppHelper = api.util.AppHelper;
+    declare var CONFIG;
+
+
 
     export class HtmlArea
         extends support.BaseInputTypeNotManagingAdd {
@@ -206,6 +208,11 @@ module api.form.inputtype.text {
             };
 
             if (this.isCKEditor) {
+                const ckeKeydownHandler = (ckEvent: eventInfo) => {
+                    const e: KeyboardEvent = ckEvent.data.domEvent.$;
+                    keydownHandler(e);
+                };
+
                 const editor = new _HTMLAreaBuilder()
                     .setEditorContainerId(id)
                     .setAssetsUri(assetsUri)
@@ -213,7 +220,7 @@ module api.form.inputtype.text {
                     .onCreateDialog(createDialogHandler)
                     .setFocusHandler(focusHandler.bind(this))
                     .setBlurHandler(blurHandler.bind(this))
-                    // .setKeydownHandler(keydownHandler)
+                    .setKeydownHandler(ckeKeydownHandler)
                     .setNodeChangeHandler(notifyValueChanged)
                     .setContentPath(this.contentPath)
                     .setContent(this.content)
@@ -222,7 +229,6 @@ module api.form.inputtype.text {
                         include: this.inputConfig['include'],
                         exclude: this.inputConfig['exclude']
                     })
-                    // .setForcedRootBlock(this.inputConfig['forcedRootBlock'] ? this.inputConfig['forcedRootBlock'][0].value : 'p')
                     .setEditableSourceCode(this.editableSourceCode)
                     .createEditor();
 

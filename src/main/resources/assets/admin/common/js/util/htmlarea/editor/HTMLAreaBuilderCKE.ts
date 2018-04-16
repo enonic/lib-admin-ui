@@ -14,17 +14,14 @@ module api.util.htmlarea.editor {
         private editorContainerId: string;
         private focusHandler: (e: FocusEvent) => void;
         private blurHandler: (e: FocusEvent) => void;
-        // private keydownHandler: (e: KeyboardEvent) => void;
-        // private keyupHandler: (e: KeyboardEvent) => void;
+        private keydownHandler: (e: eventInfo) => void;
         private nodeChangeHandler: (e: any) => void;
         private createDialogListeners: { (event: CreateHtmlAreaDialogEvent): void }[] = [];
         private inline: boolean = false;
         private fixedToolbarContainer: string;
-        // private convertUrls: boolean = false;
         private hasActiveDialog: boolean = false;
         private customToolConfig: any;
         private editableSourceCode: boolean;
-        // private forcedRootBlock: string;
         private toolsToExlcude: string = '';
         private toolsToInclude: string[] = [];
 
@@ -81,15 +78,10 @@ module api.util.htmlarea.editor {
             return this;
         }
 
-        // setKeydownHandler(keydownHandler: (e: KeyboardEvent) => void): HTMLAreaBuilderCKE {
-        //     this.keydownHandler = keydownHandler;
-        //     return this;
-        // }
-
-        // setKeyupHandler(keyupHandler: (e: KeyboardEvent) => void): HTMLAreaBuilderCKE {
-        //     this.keyupHandler = keyupHandler;
-        //     return this;
-        // }
+        setKeydownHandler(keydownHandler: (e: eventInfo) => void): HTMLAreaBuilderCKE {
+            this.keydownHandler = keydownHandler;
+            return this;
+        }
 
         setNodeChangeHandler(nodeChangeHandler: (e: any) => void): HTMLAreaBuilderCKE {
             this.nodeChangeHandler = api.util.AppHelper.debounce((e) => {
@@ -119,11 +111,6 @@ module api.util.htmlarea.editor {
             return this;
         }
 
-        // setConvertUrls(convertUrls: boolean): HTMLAreaBuilderCKE {
-        //     this.convertUrls = convertUrls;
-        //     return this;
-        // }
-
         setApplicationKeys(applicationKeys: ApplicationKey[]): HTMLAreaBuilderCKE {
             this.applicationKeys = applicationKeys;
             return this;
@@ -152,12 +139,6 @@ module api.util.htmlarea.editor {
             return this;
         }
 
-        // setForcedRootBlock(el: string): HTMLAreaBuilderCKE {
-        //     this.forcedRootBlock = el;
-        //
-        //     return this;
-        // }
-
         private checkRequiredFieldsAreSet() {
             if (!this.assetsUri || !this.editorContainerId || !this.content) {
                 throw new Error('some required fields are missing for tinymce editor');
@@ -179,7 +160,6 @@ module api.util.htmlarea.editor {
                 removeButtons: this.toolsToExlcude,
                 extraPlugins: this.plugins + (this.inline ? ',sharedspace' : ''),
                 autoGrow_onStartup: true,
-                // image2_alignClasses: [ 'align-left', 'align-center', 'align-right' ], // use instead of inline styles if possible
                 contentsCss: this.assetsUri + '/admin/common/styles/api/util/htmlarea/html-editor.css', // for classic mode only
                 sharedSpaces: this.inline ? {top: this.fixedToolbarContainer} : null
             };
@@ -212,6 +192,24 @@ module api.util.htmlarea.editor {
                 }
                 if (this.blurHandler) {
                     this.blurHandler(<any>e);
+                }
+            });
+
+            ckeditor.on('key', (e: eventInfo) => {
+                if (e.data.keyCode === 9) { // tab pressed
+                    ckeditor.execCommand('indent');
+                    e.cancel();
+                    return;
+                }
+
+                if (e.data.keyCode === 2228233) { // shift + tab pressed
+                    ckeditor.execCommand('outdent');
+                    e.cancel();
+                    return;
+                }
+
+                if (this.keydownHandler) {
+                    this.keydownHandler(e);
                 }
             });
 
