@@ -135,7 +135,7 @@ module api.ui.grid {
 
             this.loadMask.onRemoved(() => {
                 this.loadMask = null;
-            })
+            });
         }
 
         setSelectionModel(selectionModel: Slick.SelectionModel<T, any>) {
