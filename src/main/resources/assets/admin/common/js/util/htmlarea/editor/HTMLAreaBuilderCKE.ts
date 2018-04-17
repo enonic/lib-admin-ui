@@ -30,7 +30,7 @@ module api.util.htmlarea.editor {
             {name: 'gr2', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
             {name: 'gr3', items: ['BulletedList', 'NumberedList', 'Outdent', 'Indent']},
             {name: 'gr4', items: ['SpecialChar', 'Anchor', 'Image', 'Macro', 'Link', 'Unlink']},
-            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize', 'Sourcedialog']}
+            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize']}
         ];
 
         private plugins: string = 'autogrow,sourcedialog,macro,image2';
@@ -141,20 +141,34 @@ module api.util.htmlarea.editor {
 
         private checkRequiredFieldsAreSet() {
             if (!this.assetsUri || !this.editorContainerId || !this.content) {
-                throw new Error('some required fields are missing for tinymce editor');
+                throw new Error('some required fields are missing for CKEditor');
             }
         }
 
         public createEditor(): HTMLAreaEditor {
             this.checkRequiredFieldsAreSet();
+            this.adjustToolsList();
 
+            const config: CKEDITOR.config = this.createConfig();
+            const ckeditor: HTMLAreaEditor = this.inline ? CKEDITOR.inline(this.editorContainerId, config) : CKEDITOR.replace(
+                this.editorContainerId, config);
+
+            this.listenCKEditorEvents(ckeditor);
+            this.setupDialogsToOpen(ckeditor);
+
+            return ckeditor;
+        }
+
+        private adjustToolsList() {
             if (this.editableSourceCode && !this.isToolExcluded('Code')) {
-                this.includeTool('Code');
+                this.includeTool('Sourcedialog');
             }
 
             this.tools.push({name: 'custom', items: this.toolsToInclude});
+        }
 
-            const config: CKEDITOR.config = {
+        private createConfig(): CKEDITOR.config {
+            return {
                 toolbar: this.tools,
                 removePlugins: 'resize',
                 removeButtons: this.toolsToExlcude,
@@ -163,10 +177,9 @@ module api.util.htmlarea.editor {
                 contentsCss: this.assetsUri + '/admin/common/styles/api/util/htmlarea/html-editor.css', // for classic mode only
                 sharedSpaces: this.inline ? {top: this.fixedToolbarContainer} : null
             };
+        }
 
-            const ckeditor: HTMLAreaEditor = this.inline ? CKEDITOR.inline(this.editorContainerId, config) : CKEDITOR.replace(
-                this.editorContainerId, config);
-
+        private listenCKEditorEvents(ckeditor: HTMLAreaEditor) {
             ckeditor.on('change', () => {
                 if (this.nodeChangeHandler) {
                     this.nodeChangeHandler(null);
@@ -212,7 +225,9 @@ module api.util.htmlarea.editor {
                     this.keydownHandler(e);
                 }
             });
+        }
 
+        private setupDialogsToOpen(ckeditor: HTMLAreaEditor) {
             ckeditor.addCommand('openMacroDialog', {
                 exec: (editor) => {
                     this.notifyMacroDialog(editor);
@@ -220,7 +235,7 @@ module api.util.htmlarea.editor {
                 }
             });
 
-            ckeditor.setKeystroke(CKEDITOR.CTRL + 70, 'find');
+            ckeditor.setKeystroke(CKEDITOR.CTRL + 70, 'find'); // open find dialog on CTRL + F
 
             CKEDITOR.plugins.addExternal('macro', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'macroCKE.js');
 
@@ -246,8 +261,6 @@ module api.util.htmlarea.editor {
                     break;
                 }
             });
-
-            return ckeditor;
         }
 
         private notifyLinkDialog(config: any) {

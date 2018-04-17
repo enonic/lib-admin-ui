@@ -15,8 +15,6 @@ module api.form.inputtype.text {
     import AppHelper = api.util.AppHelper;
     declare var CONFIG;
 
-
-
     export class HtmlArea
         extends support.BaseInputTypeNotManagingAdd {
 
