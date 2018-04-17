@@ -19,7 +19,7 @@ module api.ui.grid {
 
         private rowManagerPlugin: Slick.RowMoveManager<T>; // RowMoveManager
 
-        private loadMask: api.ui.mask.LoadMask;
+        protected loadMask: api.ui.mask.LoadMask;
 
         private debounceSelectionChange: boolean;
 
@@ -101,17 +101,11 @@ module api.ui.grid {
 
         mask() {
             if (this.isVisible()) {
+                if (!this.loadMask && this.isAdded()) {
+                    this.createLoadMask();
+                }
                 if (this.loadMask) {
                     this.loadMask.show();
-                } else { //lazy mask init
-                    if (this.getParentElement()) {
-                        this.createLoadMask();
-                        this.loadMask.show();
-                    } else {
-                        this.onAdded(() => {
-                            this.createLoadMask();
-                        });
-                    }
                 }
             }
         }
@@ -138,6 +132,10 @@ module api.ui.grid {
         private createLoadMask() {
             this.loadMask = new api.ui.mask.LoadMask(this);
             this.getParentElement().appendChild(this.loadMask);
+
+            this.loadMask.onRemoved(() => {
+                this.loadMask = null;
+            });
         }
 
         setSelectionModel(selectionModel: Slick.SelectionModel<T, any>) {

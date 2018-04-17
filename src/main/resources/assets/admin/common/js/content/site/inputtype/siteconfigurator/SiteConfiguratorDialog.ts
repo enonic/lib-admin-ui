@@ -209,7 +209,6 @@ module api.content.site.inputtype.siteconfigurator {
         }
 
         show() {
-            api.dom.Body.get().appendChild(this);
             super.show();
         }
 

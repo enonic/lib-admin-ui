@@ -136,7 +136,6 @@ module api.util.htmlarea.dialog {
         }
 
         show() {
-            api.dom.Body.get().appendChild(this);
             super.show();
             if (this.firstFocusField) {
                 this.focusFirstField();
