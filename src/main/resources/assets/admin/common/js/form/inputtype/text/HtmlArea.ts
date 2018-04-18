@@ -37,7 +37,7 @@ module api.form.inputtype.text {
 
             super(config);
 
-            this.isCKEditor = this.isNew();
+            this.isCKEditor = CONFIG.isCkeUsed;
             this.addClass('html-area');
             this.editors = [];
             this.contentPath = config.contentPath;
@@ -50,12 +50,6 @@ module api.form.inputtype.text {
                 new api.security.auth.IsAuthenticatedRequest().sendAndParse().then((loginResult: api.security.auth.LoginResult) => {
                     this.editableSourceCode = loginResult.isContentExpert();
                 });
-        }
-
-        private isNew() {
-            const isNewRegExp = /^true$/i;
-
-            return isNewRegExp.test(this.getContext().inputConfig.new && this.getContext().inputConfig.new[0].value);
         }
 
         getValueType(): ValueType {
