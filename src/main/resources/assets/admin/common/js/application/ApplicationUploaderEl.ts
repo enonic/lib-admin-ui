@@ -10,8 +10,8 @@ module api.application {
                 config.url = api.util.UriHelper.getRestUri('application/install');
             }
 
-            if (config.allowTypes == null) {
-                config.allowTypes = [{title: 'Application files', extensions: 'jar,zip'}];
+            if (config.allowExtensions == null) {
+                config.allowExtensions = [{title: 'Application files', extensions: 'jar,zip'}];
             }
 
             super(config);

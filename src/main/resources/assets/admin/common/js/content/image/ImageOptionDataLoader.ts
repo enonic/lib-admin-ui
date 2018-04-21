@@ -4,51 +4,52 @@ module api.content.image {
     import OptionDataLoaderData = api.ui.selector.OptionDataLoaderData;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import Option = api.ui.selector.Option;
+    import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
 
     export class ImageOptionDataLoader
-        extends ContentSummaryOptionDataLoader<ImageTreeSelectorItem> {
+        extends ContentSummaryOptionDataLoader<MediaTreeSelectorItem> {
 
-        private preloadedDataListeners: {(data: ImageTreeSelectorItem[]): void}[] = [];
+        private preloadedDataListeners: {(data: MediaTreeSelectorItem[]): void}[] = [];
 
-        fetch(node: TreeNode<Option<ImageTreeSelectorItem>>): wemQ.Promise<ImageTreeSelectorItem> {
+        fetch(node: TreeNode<Option<MediaTreeSelectorItem>>): wemQ.Promise<MediaTreeSelectorItem> {
             return super.fetch(node).then((data) => {
                 return this.wrapItem(data);
             });
         }
 
-        fetchChildren(parentNode: TreeNode<Option<ImageTreeSelectorItem>>, from: number = 0,
-                      size: number = -1): wemQ.Promise<OptionDataLoaderData<ImageTreeSelectorItem>> {
+        fetchChildren(parentNode: TreeNode<Option<MediaTreeSelectorItem>>, from: number = 0,
+                      size: number = -1): wemQ.Promise<OptionDataLoaderData<MediaTreeSelectorItem>> {
             return super.fetchChildren(parentNode, from, size).then((data: OptionDataLoaderData<ContentTreeSelectorItem>) => {
                     return this.createOptionData(data.getData(), data.getHits(), data.getTotalHits());
                 }
             );
         }
 
-        protected sendPreLoadRequest(ids: string): Q.Promise<ImageTreeSelectorItem[]> {
+        protected sendPreLoadRequest(ids: string): Q.Promise<MediaTreeSelectorItem[]> {
             let contentIds = ids.split(';').map((id) => {
                 return new ContentId(id);
             });
 
             return api.content.form.inputtype.image.ImageContentLoader.queueContentLoadRequest(contentIds)
                 .then(((contents: ContentSummary[]) => {
-                    const data = contents.map(content => new ImageTreeSelectorItem(content, false));
+                    const data = contents.map(content => new MediaTreeSelectorItem(content, false));
                     this.notifyPreloadedData(data);
                     return data;
                 }));
         }
 
-        onPreloadedData(listener: (data: ImageTreeSelectorItem[]) => void) {
+        onPreloadedData(listener: (data: MediaTreeSelectorItem[]) => void) {
             this.preloadedDataListeners.push(listener);
         }
 
-        unPreloadedData(listener: (data: ImageTreeSelectorItem[]) => void) {
-            this.preloadedDataListeners = this.preloadedDataListeners.filter((currentListener: (data: ImageTreeSelectorItem[])=>void)=> {
+        unPreloadedData(listener: (data: MediaTreeSelectorItem[]) => void) {
+            this.preloadedDataListeners = this.preloadedDataListeners.filter((currentListener: (data: MediaTreeSelectorItem[])=>void)=> {
                 return currentListener !== listener;
             });
         }
 
-        notifyPreloadedData(data: ImageTreeSelectorItem[]) {
-            this.preloadedDataListeners.forEach((listener: (data: ImageTreeSelectorItem[]) => void) => {
+        notifyPreloadedData(data: MediaTreeSelectorItem[]) {
+            this.preloadedDataListeners.forEach((listener: (data: MediaTreeSelectorItem[]) => void) => {
                 listener.call(this, data);
             });
         }
@@ -65,14 +66,14 @@ module api.content.image {
             super.notifyLoadedData(items, postLoad, silent);
         }
 
-        private wrapItems(items: ContentTreeSelectorItem[] = []): ImageTreeSelectorItem[] {
+        private wrapItems(items: ContentTreeSelectorItem[] = []): MediaTreeSelectorItem[] {
             return items.map(item =>
-                new ImageTreeSelectorItem(item.getContent(), item.isSelectable(), item.isExpandable())
+                new MediaTreeSelectorItem(item.getContent(), item.isSelectable(), item.isExpandable())
             );
         }
 
-        private wrapItem(item: ContentTreeSelectorItem): ImageTreeSelectorItem {
-            return item ? new ImageTreeSelectorItem(item.getContent(), item.isSelectable(), item.isExpandable()) : null;
+        private wrapItem(item: ContentTreeSelectorItem): MediaTreeSelectorItem {
+            return item ? new MediaTreeSelectorItem(item.getContent(), item.isSelectable(), item.isExpandable()) : null;
         }
 
         static create(): ImageOptionDataLoaderBuilder {
@@ -112,74 +113,6 @@ module api.content.image {
 
         build(): ImageOptionDataLoader {
             return new ImageOptionDataLoader(this);
-        }
-    }
-
-    export class ImageTreeSelectorItem
-        extends ContentTreeSelectorItem {
-
-        private imageSelectorDisplayValue: ImageSelectorDisplayValue;
-
-        constructor(content: ContentSummary, selectable?: boolean, expandable?: boolean) {
-            super(content, selectable, expandable);
-            this.imageSelectorDisplayValue =
-                !!content ? ImageSelectorDisplayValue.fromContentSummary(content) : ImageSelectorDisplayValue.makeEmpty();
-        }
-
-        setDisplayValue(value: ImageSelectorDisplayValue): ImageTreeSelectorItem {
-            this.imageSelectorDisplayValue = value;
-            return this;
-        }
-
-        getImageUrl(): string {
-            return this.imageSelectorDisplayValue.getImageUrl();
-        }
-
-        isEmptyContent(): boolean {
-            return this.imageSelectorDisplayValue.isEmptyContent();
-        }
-
-        getContentSummary(): ContentSummary {
-            return this.imageSelectorDisplayValue.getContentSummary();
-        }
-
-        getTypeLocaleName(): string {
-            return this.imageSelectorDisplayValue.getTypeLocaleName();
-        }
-
-        getId(): string {
-            return this.imageSelectorDisplayValue.getId();
-        }
-
-        getContentId(): api.content.ContentId {
-            return this.imageSelectorDisplayValue.getContentId();
-        }
-
-        getContentPath(): api.content.ContentPath {
-            return this.imageSelectorDisplayValue.getContentPath();
-        }
-
-        getPath(): api.content.ContentPath {
-            return this.imageSelectorDisplayValue.getPath();
-        }
-
-        equals(o: api.Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, api.ClassHelper.getClass(this))) {
-                return false;
-            }
-
-            if (!super.equals(o)) {
-                return false;
-            }
-
-            let other = <ImageTreeSelectorItem>o;
-
-            if (!ObjectHelper.equals(this.imageSelectorDisplayValue, other.imageSelectorDisplayValue)) {
-                return false;
-            }
-
-            return true;
         }
     }
 }

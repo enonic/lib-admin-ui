@@ -52,6 +52,10 @@ module api.ui.uploader {
             return this;
         }
 
+        getFileName() {
+            return this.file.name;
+        }
+
         getProgress(): number {
             return this.file.percent;
         }

@@ -2,13 +2,14 @@ module api.content.image {
     import KeyEventsHandler = api.event.KeyEventsHandler;
     import DropdownGrid = api.ui.selector.DropdownGrid;
     import ComboBoxOptionFilterInput = api.ui.selector.combobox.ComboBoxOptionFilterInput;
+    import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
 
     export class ImageContentComboboxKeyEventsHandler
         extends KeyEventsHandler {
 
         private static CELLS_IN_ROW: number = 3;
         private input: ComboBoxOptionFilterInput;
-        private grid: DropdownGrid<ImageTreeSelectorItem>;
+        private grid: DropdownGrid<MediaTreeSelectorItem>;
         private lastSelectedCol: number = 0;
         public static debug: boolean = false;
 

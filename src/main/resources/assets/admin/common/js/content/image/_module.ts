@@ -2,7 +2,6 @@
 ///<reference path='ImageErrorEvent.ts' />
 ///<reference path='ImageContentComboboxKeyEventsHandler.ts' />
 ///<reference path='ImageOptionDataLoader.ts' />
-///<reference path='ImageSelectorDisplayValue.ts' />
 ///<reference path='ImageContentComboBox.ts' />
 ///<reference path='ImageSelectorViewer.ts' />
 ///<reference path='ImageSelectorSelectedOptionsView.ts' />

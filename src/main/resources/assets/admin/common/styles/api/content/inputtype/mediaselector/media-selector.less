@@ -1,0 +1,35 @@
+.media-selector {
+  position: relative;
+
+  .combobox-wrapper {
+    margin-right: 37px;
+  }
+
+  .media-uploader-el {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    .progress-bar {
+      display: none !important;
+      height: 37px;
+      margin: 0;
+    }
+
+    &:focus {
+      .dropzone {
+        box-shadow: 0 0 5px @admin-input-blue;
+        border: 1px solid @admin-input-blue;
+      }
+    }
+
+    width: 100%;
+    max-width: initial !important;
+
+    .image-selector-dropzone()
+  }
+
+
+}
+
+

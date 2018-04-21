@@ -7,8 +7,8 @@
 ///<reference path='ContentResourceRequest.ts' />
 ///<reference path='ApplyContentPermissionsRequest.ts' />
 ///<reference path='GetContentByIdRequest.ts' />
-///<reference path='GetContentSummaryByIdRequest' />
-///<reference path='GetContentSummaryByIds' />
+///<reference path='GetContentSummaryByIdRequest.ts' />
+///<reference path='GetContentSummaryByIds.ts' />
 ///<reference path='GetContentByPathRequest.ts' />
 ///<reference path='GetContentPermissionsByIdRequest.ts' />
 ///<reference path='GetContentPermissionsByIdsRequest.ts' />
