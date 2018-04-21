@@ -11,7 +11,7 @@ module api.util.htmlarea.dialog {
     import Content = api.content.Content;
     import Option = api.ui.selector.Option;
     import i18n = api.util.i18n;
-    import ImageTreeSelectorItem = api.content.image.ImageTreeSelectorItem;
+    import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
 
     export class ImageModalDialog extends ModalDialog {
 
@@ -73,7 +73,7 @@ module api.util.htmlarea.dialog {
         private loadImage() {
             let loader = this.imageSelector.getLoader();
 
-            let singleLoadListener = (items: ImageTreeSelectorItem[]) => {
+            let singleLoadListener = (items: MediaTreeSelectorItem[]) => {
                 let imageContent = this.getImageContent(items);
                 if (imageContent) {
                     this.imageSelector.setValue(imageContent.getId());
@@ -126,7 +126,7 @@ module api.util.htmlarea.dialog {
 
             formItem.addClass('image-selector');
 
-            imageSelectorComboBox.onOptionSelected((event: SelectedOptionEvent<ImageTreeSelectorItem>) => {
+            imageSelectorComboBox.onOptionSelected((event: SelectedOptionEvent<MediaTreeSelectorItem>) => {
                 let imageContent = event.getSelectedOption().getOption().displayValue;
                 if (!imageContent.getContentId()) {
                     return;
@@ -182,19 +182,19 @@ module api.util.htmlarea.dialog {
             });
         }
 
-        private getImageContent(images: ImageTreeSelectorItem[]): ImageTreeSelectorItem {
-            let filteredImages = images.filter((image: ImageTreeSelectorItem) => {
+        private getImageContent(images: MediaTreeSelectorItem[]): MediaTreeSelectorItem {
+            let filteredImages = images.filter((image: MediaTreeSelectorItem) => {
                 return this.imageElement.src.indexOf(image.getId()) > 0;
             });
 
             return filteredImages.length > 0 ? filteredImages[0] : null;
         }
 
-        private createImgElForExistingImage(imageContent: ImageTreeSelectorItem) {
+        private createImgElForExistingImage(imageContent: MediaTreeSelectorItem) {
             this.image = this.createImgElForPreview(imageContent, true);
         }
 
-        private createImgElForNewImage(imageContent: ImageTreeSelectorItem) {
+        private createImgElForNewImage(imageContent: MediaTreeSelectorItem) {
             this.image = this.createImgElForPreview(imageContent, false);
         }
 
@@ -223,7 +223,7 @@ module api.util.htmlarea.dialog {
             this.imagePreviewContainer.insertChild(this.image, 0);
         }
 
-        private createImgElForPreview(imageContent: ImageTreeSelectorItem, isExistingImg: boolean = false): api.dom.ImgEl {
+        private createImgElForPreview(imageContent: MediaTreeSelectorItem, isExistingImg: boolean = false): api.dom.ImgEl {
             let imgSrcAttr = isExistingImg
                 ? new api.dom.ElementHelper(this.imageElement).getAttribute('src')
                 : this.generateDefaultImgSrc(imageContent.getContentId().toString());

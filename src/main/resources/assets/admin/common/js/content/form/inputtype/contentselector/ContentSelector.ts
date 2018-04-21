@@ -11,27 +11,30 @@ module api.content.form.inputtype.contentselector {
     import ContentInputTypeManagingAdd = api.content.form.inputtype.ContentInputTypeManagingAdd;
     import StringHelper = api.util.StringHelper;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
+    import DivEl = api.dom.DivEl;
 
     export class ContentSelector
         extends ContentInputTypeManagingAdd<ContentTreeSelectorItem> {
 
-        private contentComboBox: api.content.ContentComboBox<ContentTreeSelectorItem>;
+        protected contentComboBox: api.content.ContentComboBox<ContentTreeSelectorItem>;
 
-        private draggingIndex: number;
+        protected comboBoxWrapper: DivEl;
 
-        private treeMode: boolean;
+        protected draggingIndex: number;
 
-        private hideToggleIcon: boolean;
+        protected treeMode: boolean;
 
-        private showStatus: boolean;
+        protected hideToggleIcon: boolean;
 
-        private static contentIdBatch: ContentId[] = [];
+        protected showStatus: boolean;
 
-        private static loadSummariesResult: Deferred<ContentSummary[]>;
+        protected static contentIdBatch: ContentId[] = [];
+
+        protected static loadSummariesResult: Deferred<ContentSummary[]>;
 
         public static debug: boolean = false;
 
-        private static loadSummaries: () => void = api.util.AppHelper.debounce(
+        protected static loadSummaries: () => void = api.util.AppHelper.debounce(
             ContentSelector.doFetchSummaries,
             10, false);
 
@@ -82,17 +85,23 @@ module api.content.form.inputtype.contentselector {
             return null;
         }
 
+        protected createOptionDataLoader() {
+            return ContentSummaryOptionDataLoader.create().setAllowedContentPaths(
+                this.allowedContentPaths).setContentTypeNames(this.allowedContentTypes).setRelationshipType(
+                this.relationshipType).setContent(this.config.content).setLoadStatus(this.showStatus).build();
+
+        }
+
         layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
             if (!ValueTypes.REFERENCE.equals(propertyArray.getType())) {
                 propertyArray.convertValues(ValueTypes.REFERENCE);
             }
             super.layout(input, propertyArray);
 
-            const optionDataLoader = ContentSummaryOptionDataLoader.create().setAllowedContentPaths(
-                this.allowedContentPaths).setContentTypeNames(this.allowedContentTypes).setRelationshipType(
-                this.relationshipType).setContent(this.config.content).setLoadStatus(this.showStatus).build();
-
+            const optionDataLoader = this.createOptionDataLoader();
             const comboboxValue = this.getValueFromPropertyArray(propertyArray);
+
+            this.comboBoxWrapper = new api.dom.DivEl('combobox-wrapper');
 
             this.contentComboBox = api.content.ContentComboBox.create()
                 .setComboBoxName(input.getName())
@@ -110,7 +119,8 @@ module api.content.form.inputtype.contentselector {
                 this.validate(false);
             });
 
-            this.appendChild(this.contentComboBox);
+            this.comboBoxWrapper.appendChild(this.contentComboBox);
+            this.appendChild(this.comboBoxWrapper);
 
             const contentIds: ContentId[] = [];
             propertyArray.forEach((property: Property) => {
@@ -136,19 +146,23 @@ module api.content.form.inputtype.contentselector {
                 this.contentComboBox.onOptionSelected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
                     this.fireFocusSwitchEvent(event);
 
-                    const reference = api.util.Reference.from(event.getSelectedOption().getOption().displayValue.getContentId());
+                    const contentId: ContentId = event.getSelectedOption().getOption().displayValue.getContentId();
 
-                    const value = new Value(reference, ValueTypes.REFERENCE);
-                    if (this.contentComboBox.countSelected() === 1) { // overwrite initial value
-                        this.getPropertyArray().set(0, value);
-                    } else if (!this.getPropertyArray().containsValue(value)) {
-                        this.getPropertyArray().add(value);
-                    }
+                    if(contentId) {
+                        const reference = api.util.Reference.from(event.getSelectedOption().getOption().displayValue.getContentId());
 
+                        const value = new Value(reference, ValueTypes.REFERENCE);
+                        if (this.contentComboBox.countSelected() === 1) { // overwrite initial value
+                            this.getPropertyArray().set(0, value);
+                        } else if (!this.getPropertyArray().containsValue(value)) {
+                            this.getPropertyArray().add(value);
+                        }
                     this.updateSelectedOptionIsEditable(event.getSelectedOption());
                     this.refreshSortable();
                     this.updateSelectedOptionStyle();
                     this.validate(false);
+                    }
+
                 });
 
                 this.contentComboBox.onOptionDeselected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
@@ -164,7 +178,7 @@ module api.content.form.inputtype.contentselector {
             });
         }
 
-        private removePropertyWithId(id: string) {
+        protected removePropertyWithId(id: string) {
             let length = this.getPropertyArray().getSize();
             for (let i = 0; i < length; i++) {
                 if (this.getPropertyArray().get(i).getValue().getString() === id) {
@@ -201,7 +215,7 @@ module api.content.form.inputtype.contentselector {
                 });
         }
 
-        private doLoadContent(contentIds: ContentId[]): wemQ.Promise<api.content.ContentSummary[]> {
+        protected doLoadContent(contentIds: ContentId[]): wemQ.Promise<api.content.ContentSummary[]> {
 
             ContentSelector.contentIdBatch = ContentSelector.contentIdBatch.concat(contentIds);
 
@@ -217,7 +231,7 @@ module api.content.form.inputtype.contentselector {
             });
         }
 
-        private setupSortable() {
+        protected setupSortable() {
             wemjq(this.getHTMLElement()).find('.selected-options').sortable({
                 axis: 'y',
                 containment: 'parent',
@@ -249,7 +263,7 @@ module api.content.form.inputtype.contentselector {
             this.draggingIndex = -1;
         }
 
-        private updateSelectedOptionStyle() {
+        protected updateSelectedOptionStyle() {
             if (this.getPropertyArray().getSize() > 1) {
                 this.addClass('multiple-occurrence').removeClass('single-occurrence');
             } else {
@@ -257,13 +271,13 @@ module api.content.form.inputtype.contentselector {
             }
         }
 
-        private updateSelectedOptionIsEditable(selectedOption: SelectedOption<ContentTreeSelectorItem>) {
+        protected updateSelectedOptionIsEditable(selectedOption: SelectedOption<ContentTreeSelectorItem>) {
             let selectedContentId = selectedOption.getOption().displayValue.getContentId();
             let refersToItself = selectedContentId.toString() === this.config.content.getId();
             selectedOption.getOptionView().toggleClass('non-editable', refersToItself);
         }
 
-        private refreshSortable() {
+        protected refreshSortable() {
             wemjq(this.getHTMLElement()).find('.selected-options').sortable('refresh');
         }
 

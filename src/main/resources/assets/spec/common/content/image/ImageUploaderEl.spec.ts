@@ -15,22 +15,22 @@ module ImageUploaderElSpec {
 
         describe('constructor', () => {
 
-            describe('what happens when allowTypes and selfIsDropzone are set in the config', () => {
+            describe('what happens when allowExtensions and selfIsDropzone are set in the config', () => {
                 beforeEach(() => {
 
                     const config: MediaUploaderElConfig = <MediaUploaderElConfig>{};
 
                     config.selfIsDropzone = false;
-                    config.allowTypes = [
+                    config.allowExtensions = [
                         {title: 'Test title', extensions: 'test extensions'}
                     ];
 
                     imageUploaderEl = createUploader(config);
                 });
 
-                it('allowTypes is initialized from config', () => {
-                    expect(imageUploaderEl.getAllowedTypes()[0].title).toEqual('Test title');
-                    expect(imageUploaderEl.getAllowedTypes()[0].extensions).toEqual('test extensions');
+                it('allowExtensions is initialized from config', () => {
+                    expect(imageUploaderEl.getAllowedExtensions()[0].title).toEqual('Test title');
+                    expect(imageUploaderEl.getAllowedExtensions()[0].extensions).toEqual('test extensions');
                 });
 
                 it('selfIsDropzone is initialized from config', () => {
@@ -38,11 +38,11 @@ module ImageUploaderElSpec {
                 });
             });
 
-            describe('what happens when allowTypes and selfIsDropzone are empty in the config', () => {
+            describe('what happens when allowExtensions and selfIsDropzone are empty in the config', () => {
 
-                it('allowTypes is initialized by default', () => {
-                    expect(imageUploaderEl.getAllowedTypes()[0].title).toEqual('Image files');
-                    expect(imageUploaderEl.getAllowedTypes()[0].extensions).toEqual('jpg,jpeg,gif,png,svg');
+                it('allowExtensions is initialized by default', () => {
+                    expect(imageUploaderEl.getAllowedExtensions()[0].title).toEqual('Image files');
+                    expect(imageUploaderEl.getAllowedExtensions()[0].extensions).toEqual('jpg,jpeg,gif,png,svg');
                 });
 
                 it('selfIsDropzone is enabled', () => {

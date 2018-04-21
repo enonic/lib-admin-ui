@@ -2,9 +2,10 @@ module api.content.image {
 
     import LoadMask = api.ui.mask.LoadMask;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
+    import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
 
     export class ImageSelectorSelectedOptionView
-        extends api.ui.selector.combobox.BaseSelectedOptionView<ImageTreeSelectorItem> {
+        extends api.ui.selector.combobox.BaseSelectedOptionView<MediaTreeSelectorItem> {
 
         private static IMAGE_SIZE: number = 270;
 
@@ -22,14 +23,14 @@ module api.content.image {
 
         private selectionChangeListeners: { (option: ImageSelectorSelectedOptionView, checked: boolean): void; }[] = [];
 
-        constructor(option: api.ui.selector.Option<ImageTreeSelectorItem>) {
+        constructor(option: api.ui.selector.Option<MediaTreeSelectorItem>) {
             super(option);
         }
 
-        setOption(option: api.ui.selector.Option<ImageTreeSelectorItem>) {
+        setOption(option: api.ui.selector.Option<MediaTreeSelectorItem>) {
             super.setOption(option);
 
-            let displayValue: ImageTreeSelectorItem = option.displayValue;
+            let displayValue: MediaTreeSelectorItem = option.displayValue;
 
             if (displayValue.getContentSummary()) {
                 const isMissingContent = option.displayValue.isEmptyContent();
@@ -42,7 +43,7 @@ module api.content.image {
             }
         }
 
-        private updateIconSrc(content: ImageTreeSelectorItem) {
+        private updateIconSrc(content: MediaTreeSelectorItem) {
             const newIconSrc = content.getImageUrl() + '?thumbnail=false&size=' + ImageSelectorSelectedOptionView.IMAGE_SIZE;
 
             if (this.icon.getSrc().indexOf(newIconSrc) === -1) {

@@ -25,8 +25,8 @@ module api.content.image {
         private static STANDOUT_CLASS: string = 'standout';
 
         constructor(config: api.ui.uploader.MediaUploaderElConfig) {
-            if (config.allowTypes == null) {
-                config.allowTypes = [
+            if (config.allowExtensions == null) {
+                config.allowExtensions = [
                     {title: 'Image files', extensions: 'jpg,jpeg,gif,png,svg'}
                 ];
             }

@@ -20,14 +20,14 @@ module api.content.form.inputtype.image {
 
     import ContentInputTypeManagingAdd = api.content.form.inputtype.ContentInputTypeManagingAdd;
     import StringHelper = api.util.StringHelper;
-    import ImageSelectorDisplayValue = api.content.image.ImageSelectorDisplayValue;
     import ImageSelectorSelectedOptionsView = api.content.image.ImageSelectorSelectedOptionsView;
     import ImageOptionDataLoader = api.content.image.ImageOptionDataLoader;
     import ImageSelectorSelectedOptionView = api.content.image.ImageSelectorSelectedOptionView;
-    import ImageTreeSelectorItem = api.content.image.ImageTreeSelectorItem;
+    import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
+    import MediaSelectorDisplayValue = api.content.media.MediaSelectorDisplayValue;
 
     export class ImageSelector
-        extends ContentInputTypeManagingAdd<ImageTreeSelectorItem> {
+        extends ContentInputTypeManagingAdd<MediaTreeSelectorItem> {
 
         private contentComboBox: api.content.image.ImageContentComboBox;
 
@@ -56,7 +56,7 @@ module api.content.form.inputtype.image {
             return this.contentComboBox;
         }
 
-        protected getContentPath(raw: ImageTreeSelectorItem): api.content.ContentPath {
+        protected getContentPath(raw: MediaTreeSelectorItem): api.content.ContentPath {
             return raw.getContentSummary().getPath();
         }
 
@@ -85,14 +85,14 @@ module api.content.form.inputtype.image {
         private createSelectedOptionsView(): ImageSelectorSelectedOptionsView {
             let selectedOptionsView = new ImageSelectorSelectedOptionsView();
 
-            selectedOptionsView.onEditSelectedOptions((options: SelectedOption<ImageTreeSelectorItem>[]) => {
-                options.forEach((option: SelectedOption<ImageTreeSelectorItem>) => {
+            selectedOptionsView.onEditSelectedOptions((options: SelectedOption<MediaTreeSelectorItem>[]) => {
+                options.forEach((option: SelectedOption<MediaTreeSelectorItem>) => {
                     this.notifyEditContentRequested(option.getOption().displayValue.getContentSummary());
                 });
             });
 
-            selectedOptionsView.onRemoveSelectedOptions((options: SelectedOption<ImageTreeSelectorItem>[]) => {
-                options.forEach((option: SelectedOption<ImageTreeSelectorItem>) => {
+            selectedOptionsView.onRemoveSelectedOptions((options: SelectedOption<MediaTreeSelectorItem>[]) => {
+                options.forEach((option: SelectedOption<MediaTreeSelectorItem>) => {
                     this.contentComboBox.deselect(option.getOption().displayValue);
                 });
                 this.validate(false);
@@ -132,10 +132,10 @@ module api.content.form.inputtype.image {
                 .setTreeModeTogglerAllowed(!this.hideToggleIcon)
                 .build();
 
-            let comboBox: ComboBox<ImageTreeSelectorItem> = contentComboBox.getComboBox();
+            let comboBox: ComboBox<MediaTreeSelectorItem> = contentComboBox.getComboBox();
 
-            const onPreloadedData = (data: ImageTreeSelectorItem[]) => {
-                data.forEach((item: ImageTreeSelectorItem) => {
+            const onPreloadedData = (data: MediaTreeSelectorItem[]) => {
+                data.forEach((item: MediaTreeSelectorItem) => {
                     this.contentComboBox.select(item);
                 });
                 this.isPendingPreload = false;
@@ -160,7 +160,7 @@ module api.content.form.inputtype.image {
                 }
             });
 
-            comboBox.onOptionDeselected((event: SelectedOptionEvent<ImageTreeSelectorItem>) => {
+            comboBox.onOptionDeselected((event: SelectedOptionEvent<MediaTreeSelectorItem>) => {
                 // property not found.
                 const option = event.getSelectedOption();
                 if (option.getOption().displayValue.getContentSummary()) {
@@ -174,7 +174,7 @@ module api.content.form.inputtype.image {
                 this.validate(false);
             });
 
-            comboBox.onOptionSelected((event: SelectedOptionEvent<ImageTreeSelectorItem>) => {
+            comboBox.onOptionSelected((event: SelectedOptionEvent<MediaTreeSelectorItem>) => {
                 this.fireFocusSwitchEvent(event);
 
                 if (!this.isLayoutInProgress()) {
@@ -188,7 +188,7 @@ module api.content.form.inputtype.image {
                 this.validate(false);
             });
 
-            comboBox.onOptionMoved((moved: SelectedOption<ImageTreeSelectorItem>) => {
+            comboBox.onOptionMoved((moved: SelectedOption<MediaTreeSelectorItem>) => {
 
                 this.getPropertyArray().set(moved.getIndex(), ValueTypes.REFERENCE.newValue(moved.getOption().value));
                 this.validate(false);
@@ -263,10 +263,10 @@ module api.content.form.inputtype.image {
 
             this.uploader.onUploadStarted((event: FileUploadStartedEvent<Content>) => {
                 event.getUploadItems().forEach((uploadItem: UploadItem<Content>) => {
-                    const value = new ImageTreeSelectorItem(null).setDisplayValue(
-                        ImageSelectorDisplayValue.fromUploadItem(uploadItem));
+                    const value = new MediaTreeSelectorItem(null).setDisplayValue(
+                        MediaSelectorDisplayValue.fromUploadItem(uploadItem));
 
-                    const option = <api.ui.selector.Option<ImageTreeSelectorItem>>{
+                    const option = <api.ui.selector.Option<MediaTreeSelectorItem>>{
                         value: value.getId(),
                         displayValue: value
                     };
@@ -293,7 +293,7 @@ module api.content.form.inputtype.image {
 
                 let selectedOption = this.selectedOptionsView.getById(item.getId());
                 let option = selectedOption.getOption();
-                option.displayValue = new ImageTreeSelectorItem(createdContent);
+                option.displayValue = new MediaTreeSelectorItem(createdContent);
                 option.value = createdContent.getContentId().toString();
 
                 selectedOption.getOptionView().setOption(option);

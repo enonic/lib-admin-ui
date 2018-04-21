@@ -142,6 +142,7 @@
 ///<reference path='content/util/_module.ts' />
 ///<reference path='content/_module.ts' />
 ///<reference path='content/order/_module.ts' />
+///<reference path='content/media/_module.ts' />
 ///<reference path='content/image/_module.ts' />
 ///<reference path='content/page/_module.ts' />
 ///<reference path='content/page/region/_module.ts' />
@@ -157,6 +158,7 @@
 ///<reference path='content/site/inputtype/siteconfigurator/_module.ts' />
 ///<reference path='content/form/inputtype/authappselector/_module.ts' />
 ///<reference path='content/form/inputtype/customselector/_module.ts' />
+///<reference path='content/form/inputtype/mediaselector/_module.ts' />
 
 ///<reference path='issue/event/_module.ts' />
 

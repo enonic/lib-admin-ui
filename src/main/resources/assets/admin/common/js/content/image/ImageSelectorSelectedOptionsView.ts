@@ -3,19 +3,21 @@ module api.content.image {
     import Option = api.ui.selector.Option;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
+    import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
+    import MediaSelectorDisplayValue = api.content.media.MediaSelectorDisplayValue;
 
     export class ImageSelectorSelectedOptionsView
-        extends api.ui.selector.combobox.BaseSelectedOptionsView<ImageTreeSelectorItem> {
+        extends api.ui.selector.combobox.BaseSelectedOptionsView<MediaTreeSelectorItem> {
 
-        private activeOption: SelectedOption<ImageTreeSelectorItem>;
+        private activeOption: SelectedOption<MediaTreeSelectorItem>;
 
-        private selection: SelectedOption<ImageTreeSelectorItem>[] = [];
+        private selection: SelectedOption<MediaTreeSelectorItem>[] = [];
 
         private toolbar: SelectionToolbar;
 
-        private editSelectedOptionsListeners: { (option: SelectedOption<ImageTreeSelectorItem>[]): void }[] = [];
+        private editSelectedOptionsListeners: { (option: SelectedOption<MediaTreeSelectorItem>[]): void }[] = [];
 
-        private removeSelectedOptionsListeners: { (option: SelectedOption<ImageTreeSelectorItem>[]): void }[] = [];
+        private removeSelectedOptionsListeners: { (option: SelectedOption<MediaTreeSelectorItem>[]): void }[] = [];
 
         private mouseClickListener: (event: MouseEvent) => void;
 
@@ -57,7 +59,7 @@ module api.content.image {
 
         private addOptionMovedEventHandler() {
             //when dragging selected image in chrome it looses focus; bringing focus back
-            this.onOptionMoved((moved: SelectedOption<ImageTreeSelectorItem>) => {
+            this.onOptionMoved((moved: SelectedOption<MediaTreeSelectorItem>) => {
                 let selectedOptionMoved: boolean = moved.getOptionView().hasClass('editing');
 
                 if (selectedOptionMoved) {
@@ -75,10 +77,10 @@ module api.content.image {
             setTimeout(() => this.clickDisabled = false, 50);
         }
 
-        removeOption(optionToRemove: Option<ImageTreeSelectorItem>, silent: boolean = false) {
+        removeOption(optionToRemove: Option<MediaTreeSelectorItem>, silent: boolean = false) {
             const selectedOption = this.getByOption(optionToRemove);
 
-            this.selection = this.selection.filter((option: SelectedOption<ImageTreeSelectorItem>) => {
+            this.selection = this.selection.filter((option: SelectedOption<MediaTreeSelectorItem>) => {
                 return option.getOption().value !== selectedOption.getOption().value;
             });
 
@@ -87,7 +89,7 @@ module api.content.image {
             super.removeOption(optionToRemove, silent);
         }
 
-        removeSelectedOptions(options: SelectedOption<ImageTreeSelectorItem>[]) {
+        removeSelectedOptions(options: SelectedOption<MediaTreeSelectorItem>[]) {
             this.notifyRemoveSelectedOptions(options);
             // clear the selection;
             this.selection.length = 0;
@@ -95,11 +97,11 @@ module api.content.image {
             this.resetActiveOption();
         }
 
-        createSelectedOption(option: Option<ImageTreeSelectorItem>): SelectedOption<ImageTreeSelectorItem> {
-            return new SelectedOption<ImageTreeSelectorItem>(new ImageSelectorSelectedOptionView(option), this.count());
+        createSelectedOption(option: Option<MediaTreeSelectorItem>): SelectedOption<MediaTreeSelectorItem> {
+            return new SelectedOption<MediaTreeSelectorItem>(new ImageSelectorSelectedOptionView(option), this.count());
         }
 
-        addOption(option: Option<ImageTreeSelectorItem>, silent: boolean = false, keyCode: number = -1): boolean {
+        addOption(option: Option<MediaTreeSelectorItem>, silent: boolean = false, keyCode: number = -1): boolean {
             const selectedOption = this.getByOption(option);
             if (!selectedOption) {
                 this.addNewOption(option, silent, keyCode);
@@ -115,8 +117,8 @@ module api.content.image {
             return false;
         }
 
-        private addNewOption(option: Option<ImageTreeSelectorItem>, silent: boolean, keyCode: number = -1) {
-            let selectedOption: SelectedOption<ImageTreeSelectorItem> = this.createSelectedOption(option);
+        private addNewOption(option: Option<MediaTreeSelectorItem>, silent: boolean, keyCode: number = -1) {
+            let selectedOption: SelectedOption<MediaTreeSelectorItem> = this.createSelectedOption(option);
             this.getSelectedOptions().push(selectedOption);
 
             let optionView: ImageSelectorSelectedOptionView = <ImageSelectorSelectedOptionView>selectedOption.getOptionView();
@@ -133,27 +135,27 @@ module api.content.image {
             }
         }
 
-        updateUploadedOption(option: Option<ImageTreeSelectorItem>) {
+        updateUploadedOption(option: Option<MediaTreeSelectorItem>) {
             let selectedOption = this.getByOption(option);
             let content = option.displayValue.getContentSummary();
 
-            let newOption = <Option<ImageTreeSelectorItem>>{
+            let newOption = <Option<MediaTreeSelectorItem>>{
                 value: content.getId(),
-                displayValue: new ImageTreeSelectorItem(content)
+                displayValue: new MediaTreeSelectorItem(content)
             };
 
             selectedOption.getOptionView().setOption(newOption);
         }
 
-        makeEmptyOption(id: string): Option<ImageTreeSelectorItem> {
-            return <Option<ImageTreeSelectorItem>>{
+        makeEmptyOption(id: string): Option<MediaTreeSelectorItem> {
+            return <Option<MediaTreeSelectorItem>>{
                 value: id,
-                displayValue: new ImageTreeSelectorItem(null).setDisplayValue(ImageSelectorDisplayValue.makeEmpty()),
+                displayValue: new MediaTreeSelectorItem(null).setDisplayValue(MediaSelectorDisplayValue.makeEmpty()),
                 empty: true
             };
         }
 
-        private uncheckOthers(option: SelectedOption<ImageTreeSelectorItem>) {
+        private uncheckOthers(option: SelectedOption<MediaTreeSelectorItem>) {
             let selectedOptions = this.getSelectedOptions();
             for (let i = 0; i < selectedOptions.length; i++) {
                 let view = <ImageSelectorSelectedOptionView>selectedOptions[i].getOptionView();
@@ -163,7 +165,7 @@ module api.content.image {
             }
         }
 
-        private removeOptionViewAndRefocus(option: SelectedOption<ImageTreeSelectorItem>) {
+        private removeOptionViewAndRefocus(option: SelectedOption<MediaTreeSelectorItem>) {
             let index = this.isLast(option.getIndex()) ? (this.isFirst(option.getIndex()) ? -1 : option.getIndex() - 1) : option.getIndex();
 
             this.notifyRemoveSelectedOptions([option]);
@@ -174,7 +176,7 @@ module api.content.image {
             }
         }
 
-        private setActiveOption(option: SelectedOption<ImageTreeSelectorItem>) {
+        private setActiveOption(option: SelectedOption<MediaTreeSelectorItem>) {
 
             if (this.activeOption) {
                 this.activeOption.getOptionView().removeClass('editing');
@@ -225,7 +227,7 @@ module api.content.image {
             api.dom.Body.get().onClicked(this.mouseClickListener);
         }
 
-        private handleOptionViewRendered(option: SelectedOption<ImageTreeSelectorItem>, optionView: ImageSelectorSelectedOptionView) {
+        private handleOptionViewRendered(option: SelectedOption<MediaTreeSelectorItem>, optionView: ImageSelectorSelectedOptionView) {
             optionView.onClicked(() => this.handleOptionViewClicked(option, optionView));
 
             optionView.getCheckbox().onKeyDown((event: KeyboardEvent) => this.handleOptionViewKeyDownEvent(event, option, optionView));
@@ -242,7 +244,7 @@ module api.content.image {
             }
         }
 
-        private handleOptionViewClicked(option: SelectedOption<ImageTreeSelectorItem>, optionView: ImageSelectorSelectedOptionView) {
+        private handleOptionViewClicked(option: SelectedOption<MediaTreeSelectorItem>, optionView: ImageSelectorSelectedOptionView) {
             if (this.clickDisabled) {
                 return;
             }
@@ -257,7 +259,7 @@ module api.content.image {
             optionView.getCheckbox().giveFocus();
         }
 
-        private handleOptionViewKeyDownEvent(event: KeyboardEvent, option: SelectedOption<ImageTreeSelectorItem>,
+        private handleOptionViewKeyDownEvent(event: KeyboardEvent, option: SelectedOption<MediaTreeSelectorItem>,
                                              optionView: ImageSelectorSelectedOptionView) {
             let checkbox = optionView.getCheckbox();
 
@@ -288,7 +290,7 @@ module api.content.image {
             }
         }
 
-        private handleOptionViewChecked(checked: boolean, option: SelectedOption<ImageTreeSelectorItem>,
+        private handleOptionViewChecked(checked: boolean, option: SelectedOption<MediaTreeSelectorItem>,
                                         optionView: ImageSelectorSelectedOptionView) {
             if (checked) {
                 if (this.selection.indexOf(option) < 0) {
@@ -364,36 +366,36 @@ module api.content.image {
             }
         }
 
-        private notifyRemoveSelectedOptions(option: SelectedOption<ImageTreeSelectorItem>[]) {
+        private notifyRemoveSelectedOptions(option: SelectedOption<MediaTreeSelectorItem>[]) {
             this.removeSelectedOptionsListeners.forEach((listener) => {
                 listener(option);
             });
         }
 
-        onRemoveSelectedOptions(listener: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
+        onRemoveSelectedOptions(listener: (option: SelectedOption<MediaTreeSelectorItem>[]) => void) {
             this.removeSelectedOptionsListeners.push(listener);
         }
 
-        unRemoveSelectedOptions(listener: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
+        unRemoveSelectedOptions(listener: (option: SelectedOption<MediaTreeSelectorItem>[]) => void) {
             this.removeSelectedOptionsListeners = this.removeSelectedOptionsListeners
-                .filter(function (curr: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
+                .filter(function (curr: (option: SelectedOption<MediaTreeSelectorItem>[]) => void) {
                     return curr !== listener;
                 });
         }
 
-        private notifyEditSelectedOptions(option: SelectedOption<ImageTreeSelectorItem>[]) {
+        private notifyEditSelectedOptions(option: SelectedOption<MediaTreeSelectorItem>[]) {
             this.editSelectedOptionsListeners.forEach((listener) => {
                 listener(option);
             });
         }
 
-        onEditSelectedOptions(listener: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
+        onEditSelectedOptions(listener: (option: SelectedOption<MediaTreeSelectorItem>[]) => void) {
             this.editSelectedOptionsListeners.push(listener);
         }
 
-        unEditSelectedOptions(listener: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
+        unEditSelectedOptions(listener: (option: SelectedOption<MediaTreeSelectorItem>[]) => void) {
             this.editSelectedOptionsListeners = this.editSelectedOptionsListeners
-                .filter(function (curr: (option: SelectedOption<ImageTreeSelectorItem>[]) => void) {
+                .filter(function (curr: (option: SelectedOption<MediaTreeSelectorItem>[]) => void) {
                     return curr !== listener;
                 });
         }

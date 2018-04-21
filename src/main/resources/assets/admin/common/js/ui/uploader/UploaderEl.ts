@@ -24,19 +24,21 @@ module api.ui.uploader {
         allowDrop?: boolean;
         selfIsDropzone?: boolean;       // allow drop no matter if the dropzone is visible
         resultAlwaysVisisble?: boolean; // never hide the result
-        allowTypes?: {title: string; extensions: string}[];
+        allowExtensions?: { title: string; extensions: string }[];
+        allowMimeTypes?: string[];
         allowMultiSelection?: boolean;
         showCancel?: boolean;
         showResult?: boolean;
         maximumOccurrences?: number;
         deferred?: boolean;
-        params?: {[key: string]: any};
+        params?: { [key: string]: any };
         value?: string;
         disabled?: boolean;
         hideDefaultDropZone?: boolean;
     }
 
-    export class UploaderEl<MODEL extends api.Equitable> extends api.dom.FormInputEl {
+    export class UploaderEl<MODEL extends api.Equitable>
+        extends api.dom.FormInputEl {
 
         protected config: UploaderElConfig;
         protected uploader: any;       // qq.FineUploaderBasic
@@ -54,12 +56,12 @@ module api.ui.uploader {
 
         private resultContainer: api.dom.DivEl;
 
-        private uploadStartedListeners: {(event: FileUploadStartedEvent<MODEL>): void }[] = [];
-        private uploadProgressListeners: {(event: FileUploadProgressEvent<MODEL>): void }[] = [];
-        private fileUploadedListeners: {(event: FileUploadedEvent<MODEL>): void }[] = [];
+        private uploadStartedListeners: { (event: FileUploadStartedEvent<MODEL>): void }[] = [];
+        private uploadProgressListeners: { (event: FileUploadProgressEvent<MODEL>): void }[] = [];
+        private fileUploadedListeners: { (event: FileUploadedEvent<MODEL>): void }[] = [];
         private uploadCompleteListeners: { (event: FileUploadCompleteEvent<MODEL>): void }[] = [];
         private uploadFailedListeners: { (event: FileUploadFailedEvent<MODEL>): void }[] = [];
-        private uploadResetListeners: {(): void }[] = [];
+        private uploadResetListeners: { (): void }[] = [];
         private dropzoneDragEnterListeners: { (event: DragEvent): void }[] = [];
         private dropzoneDragLeaveListeners: { (event: DragEvent): void }[] = [];
         private dropzoneDropListeners: { (event: DragEvent): void }[] = [];
@@ -230,8 +232,11 @@ module api.ui.uploader {
             if (this.config.resultAlwaysVisisble == null) {
                 this.config.resultAlwaysVisisble = false;
             }
-            if (this.config.allowTypes == null) {
-                this.config.allowTypes = [];
+            if (this.config.allowExtensions == null) {
+                this.config.allowExtensions = [];
+            }
+            if (this.config.allowMimeTypes == null) {
+                this.config.allowMimeTypes = [];
             }
             if (this.config.deferred == null) {
                 this.config.deferred = false;
@@ -408,7 +413,7 @@ module api.ui.uploader {
             throw new Error('Should be overridden by inheritors');
         }
 
-        setParams(params: {[key: string]: any}): UploaderEl<MODEL> {
+        setParams(params: { [key: string]: any }): UploaderEl<MODEL> {
             if (this.uploader) {
                 this.uploader.setParams(params);
             }
@@ -478,12 +483,16 @@ module api.ui.uploader {
             return !this.config.disabled;
         }
 
-        getParams(): {[key: string]: any} {
+        getParams(): { [key: string]: any } {
             return this.config.params;
         }
 
-        getAllowedTypes(): {title: string; extensions: string}[] {
-            return this.config.allowTypes;
+        getAllowedExtensions(): { title: string; extensions: string }[] {
+            return this.config.allowExtensions;
+        }
+
+        getAllowedMimeTypes(): string[] {
+            return this.config.allowMimeTypes;
         }
 
         private findUploadItemById(id: number): UploadItem<MODEL> {
@@ -605,7 +614,9 @@ module api.ui.uploader {
                     filenameParam: 'name'
                 },
                 validation: {
-                    acceptFiles: this.getFileExtensions(this.config.allowTypes),
+                    acceptFiles: this.getFileExtensions(this.config.allowExtensions)
+                        .concat(this.config.allowMimeTypes)
+                        .join(',')
                 },
                 text: {
                     fileInputTitle: ''
@@ -644,11 +655,11 @@ module api.ui.uploader {
             return uploader;
         }
 
-        private getFileExtensions(allowTypes: {title: string; extensions: string}[]): string {
-            let result = '';
-            allowTypes.forEach(allowType => {
+        private getFileExtensions(allowExtensions: { title: string; extensions: string }[]): string[] {
+            let result = [];
+            allowExtensions.forEach(allowType => {
                 if (allowType.extensions) {
-                    result += '.' + allowType.extensions.split(',').join(',.') + ',';
+                    result = result.concat(allowType.extensions.split(',').map(extension => '.' + extension));
                 }
             });
             return result;
@@ -820,13 +831,13 @@ module api.ui.uploader {
         }
 
         private notifyDropzoneDragEnter(event: DragEvent) {
-            this.dropzoneDragEnterListeners.forEach((listener: (event: DragEvent)=>void) => {
+            this.dropzoneDragEnterListeners.forEach((listener: (event: DragEvent) => void) => {
                 listener(event);
             });
         }
 
         private notifyDropzoneDragLeave(event: DragEvent) {
-            this.dropzoneDragLeaveListeners.forEach((listener: (event: DragEvent)=>void) => {
+            this.dropzoneDragLeaveListeners.forEach((listener: (event: DragEvent) => void) => {
                 listener(event);
             });
         }
@@ -838,43 +849,44 @@ module api.ui.uploader {
         }
 
         private notifyFileUploadStarted(uploadItems: UploadItem<MODEL>[]) {
-            this.uploadStartedListeners.forEach((listener: (event: FileUploadStartedEvent<MODEL>)=>void) => {
+            this.uploadStartedListeners.forEach((listener: (event: FileUploadStartedEvent<MODEL>) => void) => {
                 listener(new FileUploadStartedEvent<MODEL>(uploadItems));
             });
         }
 
         private notifyFileUploadProgress(uploadItem: UploadItem<MODEL>) {
-            this.uploadProgressListeners.forEach((listener: (event: FileUploadProgressEvent<MODEL>)=>void) => {
+            this.uploadProgressListeners.forEach((listener: (event: FileUploadProgressEvent<MODEL>) => void) => {
                 listener(new FileUploadProgressEvent<MODEL>(uploadItem));
             });
         }
 
         private notifyFileUploaded(uploadItem: UploadItem<MODEL>) {
-            this.fileUploadedListeners.forEach((listener: (event: FileUploadedEvent<MODEL>)=>void) => {
+            this.fileUploadedListeners.forEach((listener: (event: FileUploadedEvent<MODEL>) => void) => {
                 listener.call(this, new FileUploadedEvent<MODEL>(uploadItem));
             });
         }
 
         private notifyUploadCompleted(uploadItems: UploadItem<MODEL>[]) {
-            this.uploadCompleteListeners.forEach((listener: (event: FileUploadCompleteEvent<MODEL>)=>void) => {
+            this.uploadCompleteListeners.forEach((listener: (event: FileUploadCompleteEvent<MODEL>) => void) => {
                 listener(new FileUploadCompleteEvent<MODEL>(uploadItems));
             });
         }
 
         private notifyUploadReset() {
-            this.uploadResetListeners.forEach((listener: ()=>void) => {
+            this.uploadResetListeners.forEach((listener: () => void) => {
                 listener.call(this);
             });
         }
 
         private notifyUploadFailed(uploadItem: UploadItem<MODEL>) {
-            this.uploadFailedListeners.forEach((listener: (event: FileUploadFailedEvent<MODEL>)=>void) => {
+            this.uploadFailedListeners.forEach((listener: (event: FileUploadFailedEvent<MODEL>) => void) => {
                 listener(new FileUploadFailedEvent<MODEL>(uploadItem));
             });
         }
     }
 
-    export class DropzoneContainer extends api.dom.DivEl {
+    export class DropzoneContainer
+        extends api.dom.DivEl {
 
         private dropzone: api.dom.AEl;
 

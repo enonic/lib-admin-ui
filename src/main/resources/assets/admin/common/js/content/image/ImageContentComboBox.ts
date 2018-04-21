@@ -5,9 +5,10 @@ module api.content.image {
     import ContentTypeName = api.schema.content.ContentTypeName;
     import OptionDataHelper = api.ui.selector.OptionDataHelper;
     import ComboBox = api.ui.selector.combobox.ComboBox;
+    import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
 
     export class ImageContentComboBox
-        extends ContentComboBox<ImageTreeSelectorItem> {
+        extends ContentComboBox<MediaTreeSelectorItem> {
 
         constructor(builder: ImageContentComboBoxBuilder) {
             let loader = builder.loader || ImageOptionDataLoader.create().setContent(builder.content).setContentTypeNames(
@@ -25,13 +26,13 @@ module api.content.image {
         getContent(contentId: ContentId): ContentSummary {
             let option = this.getOptionByValue(contentId.toString());
             if (option) {
-                return (<ImageTreeSelectorItem>option.displayValue).getContentSummary();
+                return (<MediaTreeSelectorItem>option.displayValue).getContentSummary();
             }
             return null;
         }
 
-        getComboBox(): ComboBox<ImageTreeSelectorItem> {
-            return <ComboBox<ImageTreeSelectorItem>>super.getComboBox();
+        getComboBox(): ComboBox<MediaTreeSelectorItem> {
+            return <ComboBox<MediaTreeSelectorItem>>super.getComboBox();
         }
 
         protected toggleGridOptions(treeMode: boolean) {
@@ -44,16 +45,16 @@ module api.content.image {
             return true;
         }
 
-        protected createOption(data: Object, readOnly?: boolean): Option<ImageTreeSelectorItem> {
+        protected createOption(data: Object, readOnly?: boolean): Option<MediaTreeSelectorItem> {
 
             let option;
 
-            if (api.ObjectHelper.iFrameSafeInstanceOf(data, ImageTreeSelectorItem)) {
-                option = this.optionsFactory.createOption(<ImageTreeSelectorItem>data, readOnly);
+            if (api.ObjectHelper.iFrameSafeInstanceOf(data, MediaTreeSelectorItem)) {
+                option = this.optionsFactory.createOption(<MediaTreeSelectorItem>data, readOnly);
             } else if (api.ObjectHelper.iFrameSafeInstanceOf(data, ContentSummary)) {
                 option = {
                     value: (<ContentSummary>data).getId(),
-                    displayValue: new ImageTreeSelectorItem(<ContentSummary>data)
+                    displayValue: new MediaTreeSelectorItem(<ContentSummary>data)
                 };
             }
 
@@ -70,12 +71,12 @@ module api.content.image {
     }
 
     export class ImageContentComboBoxBuilder
-        extends ContentComboBoxBuilder<ImageTreeSelectorItem> {
+        extends ContentComboBoxBuilder<MediaTreeSelectorItem> {
 
         comboBoxName: string = 'imageContentSelector';
 
-        selectedOptionsView: SelectedOptionsView<ImageTreeSelectorItem> =
-            <SelectedOptionsView<ImageTreeSelectorItem>> new ImageSelectorSelectedOptionsView();
+        selectedOptionsView: SelectedOptionsView<MediaTreeSelectorItem> =
+            <SelectedOptionsView<MediaTreeSelectorItem>> new ImageSelectorSelectedOptionsView();
 
         optionDisplayValueViewer: ImageSelectorViewer = new ImageSelectorViewer();
 
@@ -118,7 +119,7 @@ module api.content.image {
             return this;
         }
 
-        setOptionDataHelper(value: OptionDataHelper<ImageTreeSelectorItem>): ImageContentComboBoxBuilder {
+        setOptionDataHelper(value: OptionDataHelper<MediaTreeSelectorItem>): ImageContentComboBoxBuilder {
             super.setOptionDataHelper(value);
             return this;
         }
