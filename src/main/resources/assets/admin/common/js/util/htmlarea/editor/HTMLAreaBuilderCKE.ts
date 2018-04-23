@@ -174,6 +174,7 @@ module api.util.htmlarea.editor {
                 removeButtons: this.toolsToExlcude,
                 extraPlugins: this.plugins + (this.inline ? ',sharedspace' : ''),
                 autoGrow_onStartup: true,
+                image2_disableResizer: true,
                 contentsCss: this.assetsUri + '/admin/common/styles/api/util/htmlarea/html-editor.css', // for classic mode only
                 sharedSpaces: this.inline ? {top: this.fixedToolbarContainer} : null
             };
@@ -248,7 +249,8 @@ module api.util.htmlarea.editor {
                     this.notifyCodeDialog(dialogShowEvent);
                     break;
                 case 'specialchar':
-                    this.notifySpecialCharDialog(dialogShowEvent);
+                    dialogShowEvent.data.hide();
+                    this.notifySpecialCharDialog(dialogShowEvent.editor);
                     break;
                 case 'find':
                     this.notifySearchReplaceDialog(dialogShowEvent);

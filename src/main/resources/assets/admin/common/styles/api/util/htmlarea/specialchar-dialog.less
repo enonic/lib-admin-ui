@@ -1,20 +1,21 @@
 .html-area-modal-dialog.special-char-modal-dialog {
-  a.cke_specialchar {
-    text-decoration: none;
-    color: @admin-black;
-  }
+  .chars-block {
+    &__char {
+      text-decoration: none;
+      color: @admin-black;
+      text-decoration: none;
+      color: black;
+      cursor: default;
+      display: inline-block;
+      height: 15px;
+      width: 12px;
+      padding: .2em .3em;
+      text-align: center;
+      border: 2px solid transparent;
 
-  .cke_dialog_ui_vbox table, .cke_dialog_ui_hbox table {
-    margin: 0;
-  }
-
-  .cke_dialog_page_contents {
-    overflow-x: auto;
-  }
-
-  &._0-240, &._240-360, &._360-540 {
-    .cke_dialog_ui_hbox_last {
-      display: none;
+      &:hover {
+        border-color: #888;
+      }
     }
   }
 }

@@ -18,13 +18,15 @@ module api.util.htmlarea.dialog {
         close() {
             super.close();
             this.ckeOriginalDialog.getElement().$.style.display = 'block';
-            (<HTMLElement>document.getElementsByClassName('cke_dialog_background_cover')[0]).style.left = '';
+            (<HTMLElement>this.ckeOriginalDialog.getElement().$.ownerDocument.getElementsByClassName(
+                'cke_dialog_background_cover')[0]).style.left = '';
             this.ckeOriginalDialog.hide();
         }
 
         private hideOriginalCKEDialog() {
             this.ckeOriginalDialog.getElement().$.style.display = 'none';
-            (<HTMLElement>document.getElementsByClassName('cke_dialog_background_cover')[0]).style.left = '-10000px';
+            (<HTMLElement>this.ckeOriginalDialog.getElement().$.ownerDocument.getElementsByClassName(
+                'cke_dialog_background_cover')[0]).style.left = '-10000px';
         }
 
         protected abstract setDialogInputValues();

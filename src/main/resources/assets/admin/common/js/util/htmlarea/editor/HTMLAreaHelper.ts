@@ -52,12 +52,11 @@ module api.util.htmlarea.editor {
             return processedContent;
         }
 
-        public static prepareEditorImageSrcsBeforeSave(editor: HtmlAreaEditor): string {
-            const content = editor.getContent();
-            const regex = /<img.*?data-src="(.*?)".*?>/g;
-            let processedContent = editor.getContent();
+        public static prepareEditorImageSrcsBeforeSave(editorContent: string): string {
+            const regex: RegExp = /<img.*?data-src="(.*?)".*?>/g;
+            let processedContent: string = editorContent;
 
-            AppHelper.whileTruthy(() => regex.exec(content), (imgTags) => {
+            AppHelper.whileTruthy(() => regex.exec(editorContent), (imgTags) => {
                 const imgTag = imgTags[0];
 
                 if (imgTag.indexOf('<img ') === 0 && imgTag.indexOf(ImageModalDialog.imagePrefix) > 0) {
