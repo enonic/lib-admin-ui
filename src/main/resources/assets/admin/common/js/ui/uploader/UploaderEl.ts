@@ -110,8 +110,6 @@ module api.ui.uploader {
             } else {
                 this.onRendered(initHandlerOnEvent);
             }
-
-            this.onRemoved(() => this.destroyHandler());
         }
 
         private initUploadButton() {
