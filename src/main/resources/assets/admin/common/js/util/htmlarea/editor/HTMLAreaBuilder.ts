@@ -14,12 +14,10 @@ module api.util.htmlarea.editor {
         private focusHandler: (e: FocusEvent) => void;
         private blurHandler: (e: FocusEvent) => void;
         private keydownHandler: (e: KeyboardEvent) => void;
-        private keyupHandler: (e: KeyboardEvent) => void;
         private nodeChangeHandler: (e: any) => void;
         private createDialogListeners: {(event: CreateHtmlAreaDialogEvent): void}[] = [];
         private inline: boolean = false;
         private fixedToolbarContainer: string;
-        private convertUrls: boolean = false;
         private hasActiveDialog: boolean = false;
         private customToolConfig: any;
         private editableSourceCode: boolean;
@@ -97,11 +95,6 @@ module api.util.htmlarea.editor {
             return this;
         }
 
-        setKeyupHandler(keyupHandler: (e: KeyboardEvent) => void): HTMLAreaBuilder {
-            this.keyupHandler = keyupHandler;
-            return this;
-        }
-
         setNodeChangeHandler(nodeChangeHandler: (e: any) => void): HTMLAreaBuilder {
             this.nodeChangeHandler =  api.util.AppHelper.debounce((e) => {
                 nodeChangeHandler(e);
@@ -127,11 +120,6 @@ module api.util.htmlarea.editor {
 
         setContentPath(contentPath: api.content.ContentPath): HTMLAreaBuilder {
             this.contentPath = contentPath;
-            return this;
-        }
-
-        setConvertUrls(convertUrls: boolean): HTMLAreaBuilder {
-            this.convertUrls = convertUrls;
             return this;
         }
 
@@ -210,7 +198,7 @@ module api.util.htmlarea.editor {
                 },
                 inline: this.inline,
                 fixed_toolbar_container: this.fixedToolbarContainer,
-                convert_urls: this.convertUrls,
+                convert_urls: false,
 
                 toolbar: [
                     this.tools
@@ -282,9 +270,6 @@ module api.util.htmlarea.editor {
                         }
                     });
                     editor.on('keyup', (e) => {
-                        if (this.keyupHandler) {
-                            this.keyupHandler(e);
-                        }
                         if (this.nodeChangeHandler) {
                             this.nodeChangeHandler(e);
                         }

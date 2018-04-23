@@ -27,3 +27,4 @@
 // =include tinymce/themes/mobile/theme.min.js
 // =include bower_components/webcomponentsjs/webcomponents-lite.min.js
 // =include tinymce/plugins/*/plugin.min.js
+// =include ckeditor/ckeditor.js

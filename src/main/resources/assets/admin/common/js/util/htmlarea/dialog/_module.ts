@@ -1,9 +1,14 @@
 ///<reference path='ModalDialog.ts' />
+///<reference path='CKEBackedDialog.ts' />
 ///<reference path='LinkModalDialog.ts' />
+///<reference path='LinkModalDialogCKE.ts' />
 ///<reference path='ImageModalDialog.ts' />
+///<reference path='ImageModalDialogCKE.ts' />
 ///<reference path='AnchorModalDialog.ts' />
+///<reference path='AnchorModalDialogCKE.ts' />
 ///<reference path='MacroDockedPanel.ts' />
 ///<reference path='MacroModalDialog.ts' />
+///<reference path='MacroModalDialogCKE.ts' />
 ///<reference path='CreateHtmlAreaDialogEvent.ts' />
 ///<reference path='HTMLAreaDialogHandler.ts' />
 ///<reference path='ImageCroppingNameView.ts' />
@@ -12,5 +17,8 @@
 ///<reference path='ImageCroppingOptionViewer.ts' />
 ///<reference path='ImageCroppingSelector.ts' />
 ///<reference path='SearchReplaceModalDialog.ts' />
+///<reference path='FindAndReplaceDialogCKE.ts' />
 ///<reference path='CodeDialog.ts' />
+///<reference path='CodeDialogCKE.ts' />
 ///<reference path='CharMapDialog.ts' />
+///<reference path='SpecialCharDialogCKE.ts' />

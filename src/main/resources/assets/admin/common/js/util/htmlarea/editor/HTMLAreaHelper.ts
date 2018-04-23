@@ -7,11 +7,8 @@ module api.util.htmlarea.editor {
         private static getConvertedImageSrc(imgSrc: string): string {
             let contentId = HTMLAreaHelper.extractContentIdFromImgSrc(imgSrc);
             let scaleValue = HTMLAreaHelper.extractScaleParamFromImgSrc(imgSrc);
-            let imageUrl = new api.content.util.ContentImageUrlResolver().
-                    setContentId(new api.content.ContentId(contentId)).
-                    setScaleWidth(true).setScale(scaleValue).
-                    setSize(ImageModalDialog.maxImageWidth).
-                    resolve();
+            let imageUrl = new api.content.util.ContentImageUrlResolver().setContentId(new api.content.ContentId(contentId)).setScaleWidth(
+                true).setScale(scaleValue).setSize(ImageModalDialog.maxImageWidth).resolve();
 
             return ` src="${imageUrl}" data-src="${imgSrc}"`;
         }
@@ -55,12 +52,11 @@ module api.util.htmlarea.editor {
             return processedContent;
         }
 
-        public static prepareEditorImageSrcsBeforeSave(editor: HtmlAreaEditor): string {
-            const content = editor.getContent();
-            const regex = /<img.*?data-src="(.*?)".*?>/g;
-            let processedContent = editor.getContent();
+        public static prepareEditorImageSrcsBeforeSave(editorContent: string): string {
+            const regex: RegExp = /<img.*?data-src="(.*?)".*?>/g;
+            let processedContent: string = editorContent;
 
-            AppHelper.whileTruthy(() => regex.exec(content), (imgTags) => {
+            AppHelper.whileTruthy(() => regex.exec(editorContent), (imgTags) => {
                 const imgTag = imgTags[0];
 
                 if (imgTag.indexOf('<img ') === 0 && imgTag.indexOf(ImageModalDialog.imagePrefix) > 0) {
@@ -109,14 +105,14 @@ module api.util.htmlarea.editor {
             image.parentElement.className = '';
 
             switch (alignment) {
-                case 'left':
-                case 'right':
-                    styleAttr = StringHelper.format(styleFormat, alignment, '15px', '40');
-                    break;
-                case 'center':
-                    styleAttr = StringHelper.format(styleFormat, 'none', 'auto', '60');
-                    image.parentElement.classList.add(alignment);
-                    break;
+            case 'left':
+            case 'right':
+                styleAttr = StringHelper.format(styleFormat, alignment, '15px', '40');
+                break;
+            case 'center':
+                styleAttr = StringHelper.format(styleFormat, 'none', 'auto', '60');
+                image.parentElement.classList.add(alignment);
+                break;
             case 'justify':
                 image.parentElement.classList.add(alignment);
                 break;
