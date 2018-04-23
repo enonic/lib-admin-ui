@@ -47,8 +47,11 @@ module api.content.form.inputtype.mediaselector {
             super.readConfig(inputConfig);
 
             const allowedContentTypes: string[] = ContentTypeName.getMediaTypes().map(type => type.toString());
-            const allowedMediaTypes: string[] = this.allowedContentTypes.filter(value => allowedContentTypes.indexOf(value) >= 0);
+            let allowedMediaTypes: string[] = this.allowedContentTypes.filter(value => allowedContentTypes.indexOf(value) >= 0);
 
+            if(allowedMediaTypes.length == 0) {
+                allowedMediaTypes = allowedContentTypes;
+            }
             /* if(allowedContentTypes.length > 0 && allowedMediaTypes.length == 0) {
                  this.allowedContentTypes = [ContentTypeName.NONE.toString()];
              } else {*/
