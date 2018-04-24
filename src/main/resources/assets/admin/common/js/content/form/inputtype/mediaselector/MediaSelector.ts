@@ -16,11 +16,12 @@ module api.content.form.inputtype.mediaselector {
     import Value = api.data.Value;
     import GetMimeTypesByContentTypeNamesRequest = api.schema.content.GetMimeTypesByContentTypeNamesRequest;
     import MediaUploaderElConfig = api.ui.uploader.MediaUploaderElConfig;
+    import SelectedOption = api.ui.selector.combobox.SelectedOption;
 
     export class MediaSelector
         extends ContentSelector {
 
-        private uploader: MediaUploaderEl;
+        protected uploader: MediaUploaderEl;
 
         constructor(config?: api.content.form.inputtype.ContentInputTypeViewContext) {
             super(config);
@@ -30,16 +31,15 @@ module api.content.form.inputtype.mediaselector {
         layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
 
             return super.layout(input, propertyArray).then(() => {
-                /*    if(this.allowedContentTypes.length == 1 && this.allowedContentTypes[0] == ContentTypeName.NONE.toString()) {
-                        return wemQ(null);
-                    }*/
-                return this.createUploader().then(() => {
-                    this.comboBoxWrapper.appendChild(this.uploader);
+                if (this.config.content) {
+                    return this.createUploader().then((mediaUploader) => {
+                        this.comboBoxWrapper.appendChild(this.uploader = mediaUploader);
 
-                    if(!this.contentComboBox.getComboBox().isVisible()) {
-                       this.uploader.hide();
-                    }
-                });
+                        if (!this.contentComboBox.getComboBox().isVisible()) {
+                            this.uploader.hide();
+                        }
+                    });
+                }
             });
         }
 
@@ -49,7 +49,7 @@ module api.content.form.inputtype.mediaselector {
             const allowedContentTypes: string[] = ContentTypeName.getMediaTypes().map(type => type.toString());
             let allowedMediaTypes: string[] = this.allowedContentTypes.filter(value => allowedContentTypes.indexOf(value) >= 0);
 
-            if(allowedMediaTypes.length == 0) {
+            if (allowedMediaTypes.length == 0) {
                 allowedMediaTypes = allowedContentTypes;
             }
             /* if(allowedContentTypes.length > 0 && allowedMediaTypes.length == 0) {
@@ -70,7 +70,7 @@ module api.content.form.inputtype.mediaselector {
 
         }
 
-        private createUploader(): wemQ.Promise<void> {
+        protected createUploader(): wemQ.Promise<MediaUploaderEl> {
             let multiSelection = (this.getInput().getOccurrences().getMaximum() !== 1);
 
             const config: MediaUploaderElConfig = {
@@ -91,18 +91,16 @@ module api.content.form.inputtype.mediaselector {
                     .sendAndParse()
                     .then((mimeTypes: string[]) => {
                         config.allowMimeTypes = mimeTypes;
-                        return this.doInitUploader(config);
+                        return this.doInitUploader(new MediaUploaderEl(config));
                     });
             } else {
-                return wemQ(this.doInitUploader(config));
+                return wemQ(this.doInitUploader(new MediaUploaderEl(config)));
             }
         }
 
-        private doInitUploader(config: MediaUploaderElConfig) {
+        protected doInitUploader(uploader: MediaUploaderEl): MediaUploaderEl {
 
-            this.uploader = new MediaUploaderEl(config);
-
-            this.uploader.onUploadStarted((event: FileUploadStartedEvent<Content>) => {
+            uploader.onUploadStarted((event: FileUploadStartedEvent<Content>) => {
                 event.getUploadItems().forEach((uploadItem: UploadItem<Content>) => {
                     const value = new MediaTreeSelectorItem(null).setDisplayValue(
                         MediaSelectorDisplayValue.fromUploadItem(uploadItem));
@@ -115,11 +113,11 @@ module api.content.form.inputtype.mediaselector {
                 });
             });
 
-            this.uploader.onUploadProgress(() => {
-                this.uploader.setMaximumOccurrences(this.getRemainingOccurrences());
+            uploader.onUploadProgress(() => {
+                uploader.setMaximumOccurrences(this.getRemainingOccurrences());
             });
 
-            this.uploader.onFileUploaded((event: FileUploadedEvent<Content>) => {
+            uploader.onFileUploaded((event: FileUploadedEvent<Content>) => {
                 let item = event.getUploadItem();
                 let createdContent = item.getModel();
 
@@ -130,13 +128,60 @@ module api.content.form.inputtype.mediaselector {
 
                 selectedOption.getOptionView().setOption(option);
 
+                this.selectedOptionHandler(selectedOption);
+
                 this.setContentIdProperty(createdContent.getContentId());
                 this.validate(false);
 
-                this.uploader.setMaximumOccurrences(this.getRemainingOccurrences());
+                uploader.setMaximumOccurrences(this.getRemainingOccurrences());
             });
 
-            this.uploader.onUploadFailed((event: FileUploadFailedEvent<Content>) => {
+            this.initFailedListener(uploader);
+
+            uploader.onClicked(() => {
+                uploader.setMaximumOccurrences(this.getRemainingOccurrences());
+            });
+
+            this.onDragEnter((event: DragEvent) => {
+                event.stopPropagation();
+                uploader.giveFocus();
+                uploader.setDefaultDropzoneVisible(true, true);
+            });
+
+            uploader.onDropzoneDragLeave(() => {
+                uploader.giveBlur();
+                uploader.setDefaultDropzoneVisible(false);
+            });
+
+            uploader.onDropzoneDrop(() => {
+                uploader.setMaximumOccurrences(this.getRemainingOccurrences());
+                uploader.setDefaultDropzoneVisible(false);
+            });
+
+            const comboBox: ComboBox<ContentTreeSelectorItem> = this.contentComboBox.getComboBox();
+
+            comboBox.onHidden(() => {
+                // hidden on max occurrences reached
+                if (uploader) {
+                    uploader.hide();
+                }
+            });
+            comboBox.onShown(() => {
+                // shown on occurrences between min and max
+                if (uploader) {
+                    uploader.show();
+                }
+            });
+
+            return uploader;
+        }
+
+        protected selectedOptionHandler(selectedOption: SelectedOption<ContentTreeSelectorItem>) {
+            return;
+        }
+
+        protected initFailedListener(uploader: MediaUploaderEl) {
+            uploader.onUploadFailed((event: FileUploadFailedEvent<Content>) => {
                 let item = event.getUploadItem();
 
                 let selectedOption = this.getSelectedOptionsView().getById(item.getId());
@@ -144,46 +189,11 @@ module api.content.form.inputtype.mediaselector {
                     this.getSelectedOptionsView().removeOption(selectedOption.getOption());
                 }
 
-                this.uploader.setMaximumOccurrences(this.getRemainingOccurrences());
-            });
-
-            this.uploader.onClicked(() => {
-                this.uploader.setMaximumOccurrences(this.getRemainingOccurrences());
-            });
-
-            this.onDragEnter((event: DragEvent) => {
-                event.stopPropagation();
-                this.uploader.giveFocus();
-                this.uploader.setDefaultDropzoneVisible(true, true);
-            });
-
-            this.uploader.onDropzoneDragLeave(() => {
-                this.uploader.giveBlur();
-                this.uploader.setDefaultDropzoneVisible(false);
-            });
-
-            this.uploader.onDropzoneDrop(() => {
-                this.uploader.setMaximumOccurrences(this.getRemainingOccurrences());
-                this.uploader.setDefaultDropzoneVisible(false);
-            });
-
-            const comboBox: ComboBox<ContentTreeSelectorItem> = this.contentComboBox.getComboBox();
-
-            comboBox.onHidden(() => {
-                // hidden on max occurrences reached
-                if (this.uploader) {
-                    this.uploader.hide();
-                }
-            });
-            comboBox.onShown(() => {
-                // shown on occurrences between min and max
-                if (this.uploader) {
-                    this.uploader.show();
-                }
+                uploader.setMaximumOccurrences(this.getRemainingOccurrences());
             });
         }
 
-        private getRemainingOccurrences(): number {
+        protected getRemainingOccurrences(): number {
             let inputMaximum = this.getInput().getOccurrences().getMaximum();
             let countSelected = this.getSelectedOptionsView().count();
             let rest = -1;
@@ -197,7 +207,7 @@ module api.content.form.inputtype.mediaselector {
             return rest;
         }
 
-        private setContentIdProperty(contentId: api.content.ContentId) {
+        protected setContentIdProperty(contentId: api.content.ContentId) {
             let reference = api.util.Reference.from(contentId);
 
             let value = new Value(reference, ValueTypes.REFERENCE);
