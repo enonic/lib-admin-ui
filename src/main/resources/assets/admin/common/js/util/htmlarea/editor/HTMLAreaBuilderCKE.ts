@@ -26,14 +26,14 @@ module api.util.htmlarea.editor {
         private toolsToInclude: string[] = [];
 
         private tools: any[] = [
-            {name: 'gr1', items: ['Format', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'Blockquote']},
-            {name: 'gr2', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
-            {name: 'gr3', items: ['BulletedList', 'NumberedList', 'Outdent', 'Indent']},
-            {name: 'gr4', items: ['SpecialChar', 'Anchor', 'Image', 'Macro', 'Link', 'Unlink']},
-            {name: 'gr5', items: ['Table', '-', 'PasteText', '-', 'Maximize']}
+            ['Format', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'Code', 'Blockquote'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['BulletedList', 'NumberedList', 'Outdent', 'Indent'],
+            ['SpecialChar', 'Anchor', 'Image', 'Macro', 'Link', 'Unlink'],
+            ['Table', '-', 'PasteText', 'Maximize']
         ];
 
-        private plugins: string = 'autogrow,sourcedialog,macro,image2';
+        private plugins: string = 'autogrow,sourcedialog,macro,image2,codeTag';
 
         setEditableSourceCode(value: boolean): HTMLAreaBuilderCKE {
             this.editableSourceCode = value;
@@ -130,10 +130,14 @@ module api.util.htmlarea.editor {
             this.customToolConfig = tools;
 
             if (tools['exclude'] && tools['exclude'] instanceof Array) {
-                this.toolsToExlcude = tools['exclude'].join();
+                this.toolsToExlcude = tools['exclude'].map(tool => tool.value).join().replace(/\s+/g,',');
+                if (this.toolsToExlcude === '*') {
+                    this.tools = [];
+                }
             }
+
             if (tools['include'] && tools['include'] instanceof Array) {
-                this.includeTools(tools['include']);
+                this.includeTools(tools['include'].map(tool => tool.value).join().replace(/\|/g,'-').split(/\s+/));
             }
 
             return this;
@@ -164,7 +168,7 @@ module api.util.htmlarea.editor {
                 this.includeTool('Sourcedialog');
             }
 
-            this.tools.push({name: 'custom', items: this.toolsToInclude});
+            this.tools.push(this.toolsToInclude);
         }
 
         private createConfig(): CKEDITOR.config {
@@ -173,6 +177,8 @@ module api.util.htmlarea.editor {
                 removePlugins: 'resize',
                 removeButtons: this.toolsToExlcude,
                 extraPlugins: this.plugins + (this.inline ? ',sharedspace' : ''),
+                extraAllowedContent: 'code',
+                format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
                 autoGrow_onStartup: true,
                 image2_disableResizer: true,
                 contentsCss: this.assetsUri + '/admin/common/styles/api/util/htmlarea/html-editor.css', // for classic mode only
