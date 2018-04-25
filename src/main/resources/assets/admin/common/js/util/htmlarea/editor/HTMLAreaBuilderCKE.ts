@@ -181,7 +181,7 @@ module api.util.htmlarea.editor {
                 format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
                 autoGrow_onStartup: true,
                 image2_disableResizer: true,
-                contentsCss: this.assetsUri + '/admin/common/styles/api/util/htmlarea/html-editor.css', // for classic mode only
+                contentsCss: this.assetsUri + '/admin/common/styles/html-editor.css', // for classic mode only
                 sharedSpaces: this.inline ? {top: this.fixedToolbarContainer} : null
             };
         }
