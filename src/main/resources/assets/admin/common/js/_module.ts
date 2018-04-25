@@ -161,6 +161,8 @@
 ///<reference path='content/form/inputtype/authappselector/_module.ts' />
 ///<reference path='content/form/inputtype/customselector/_module.ts' />
 
+///<reference path='util/htmlarea/dialog/_module.ts' />
+
 ///<reference path='issue/event/_module.ts' />
 
 ///<reference path='aggregation/_module.ts' />

@@ -5,12 +5,12 @@ module api.content.site.inputtype.siteconfigurator {
     import PrincipalSelector = api.content.form.inputtype.principalselector.PrincipalSelector;
     import ImageSelector = api.content.form.inputtype.image.ImageSelector;
     import ComboBox = api.ui.selector.combobox.ComboBox;
-    import CreateHtmlAreaDialogEvent = api.util.htmlarea.dialog.CreateHtmlAreaDialogEvent;
     import Application = api.application.Application;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
     import HtmlAreaResizeEvent = api.form.inputtype.text.HtmlAreaResizeEvent;
     import ModalDialogConfig = api.ui.dialog.ModalDialogConfig;
     import AppHelper = api.util.AppHelper;
+    import CreateHtmlAreaDialogEvent = api.util.htmlarea.editor.CreateHtmlAreaDialogEvent;
 
     export class SiteConfiguratorDialog extends api.ui.dialog.ModalDialog {
 
