@@ -59,6 +59,7 @@ module api.ui.selector.combobox {
             super.setOption(option);
 
             this.setValues(option.displayValue);
+            this.optionDisplayValue = option.displayValue;
         }
 
         private setValues(values: T) {

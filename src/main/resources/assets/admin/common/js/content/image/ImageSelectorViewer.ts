@@ -1,29 +1,31 @@
 module api.content.image {
 
+    import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
+
     export class ImageSelectorViewer
-        extends api.ui.NamesAndIconViewer<ImageTreeSelectorItem> {
+        extends api.ui.NamesAndIconViewer<MediaTreeSelectorItem> {
 
         constructor() {
             super();
         }
 
-        resolveDisplayName(object: ImageTreeSelectorItem): string {
+        resolveDisplayName(object: MediaTreeSelectorItem): string {
             return object.getDisplayName();
         }
 
-        resolveUnnamedDisplayName(object: ImageTreeSelectorItem): string {
+        resolveUnnamedDisplayName(object: MediaTreeSelectorItem): string {
             return object.getTypeLocaleName();
         }
 
-        resolveSubName(object: ImageTreeSelectorItem): string {
+        resolveSubName(object: MediaTreeSelectorItem): string {
             return object.getPath() ? object.getPath().toString() : '';
         }
 
-        resolveIconUrl(object: ImageTreeSelectorItem): string {
+        resolveIconUrl(object: MediaTreeSelectorItem): string {
             return object.getImageUrl() + '&size=270';
         }
 
-        resolveHint(object: api.content.image.ImageTreeSelectorItem): string {
+        resolveHint(object: MediaTreeSelectorItem): string {
             return object.getPath().toString();
         }
 

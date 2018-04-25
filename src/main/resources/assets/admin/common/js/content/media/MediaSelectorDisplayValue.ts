@@ -1,10 +1,10 @@
-module api.content.image {
+module api.content.media {
 
     import ContentSummary = api.content.ContentSummary;
     import UploadItem = api.ui.uploader.UploadItem;
     import ContentTypeName = api.schema.content.ContentTypeName;
 
-    export class ImageSelectorDisplayValue {
+    export class MediaSelectorDisplayValue {
 
         private uploadItem: UploadItem<ContentSummary>;
 
@@ -12,33 +12,33 @@ module api.content.image {
 
         private empty: boolean;
 
-        static fromUploadItem(item: UploadItem<ContentSummary>): ImageSelectorDisplayValue {
-            return new ImageSelectorDisplayValue().setUploadItem(item);
+        static fromUploadItem(item: UploadItem<ContentSummary>): MediaSelectorDisplayValue {
+            return new MediaSelectorDisplayValue().setUploadItem(item);
         }
 
         static fromContentSummary(content: ContentSummary) {
-            return new ImageSelectorDisplayValue().setContentSummary(content);
+            return new MediaSelectorDisplayValue().setContentSummary(content);
         }
 
         static makeEmpty() {
-            return new ImageSelectorDisplayValue().setEmpty(true);
+            return new MediaSelectorDisplayValue().setEmpty(true);
         }
 
         isEmptyContent(): boolean {
             return this.empty;
         }
 
-        setEmpty(value: boolean): ImageSelectorDisplayValue {
+        setEmpty(value: boolean): MediaSelectorDisplayValue {
             this.empty = value;
             return this;
         }
 
-        setUploadItem(item: UploadItem<ContentSummary>): ImageSelectorDisplayValue {
+        setUploadItem(item: UploadItem<ContentSummary>): MediaSelectorDisplayValue {
             this.uploadItem = item;
             return this;
         }
 
-        setContentSummary(contentSummary: ContentSummary): ImageSelectorDisplayValue {
+        setContentSummary(contentSummary: ContentSummary): MediaSelectorDisplayValue {
             this.content = contentSummary;
             return this;
         }
@@ -76,7 +76,7 @@ module api.content.image {
         }
 
         getDisplayName(): string {
-            return this.content ? this.content.getDisplayName() : null;
+            return this.content ? this.content.getDisplayName() : this.uploadItem ? this.uploadItem.getFileName() : null;
         }
 
         getType(): ContentTypeName {
@@ -92,7 +92,7 @@ module api.content.image {
         }
 
         getPath(): ContentPath {
-            return this.content ? this.content.getPath() : null;
+            return this.content ? this.content.getPath() : this.uploadItem ? new ContentPath([]) : null;
         }
 
         equals(o: api.Equitable): boolean {
@@ -101,7 +101,7 @@ module api.content.image {
                 return false;
             }
 
-            let other = <ImageSelectorDisplayValue>o;
+            let other = <MediaSelectorDisplayValue>o;
 
             if (!ObjectHelper.equals(this.uploadItem, other.uploadItem)) {
                 return false;

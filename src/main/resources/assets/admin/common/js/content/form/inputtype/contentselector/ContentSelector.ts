@@ -11,27 +11,30 @@ module api.content.form.inputtype.contentselector {
     import ContentInputTypeManagingAdd = api.content.form.inputtype.ContentInputTypeManagingAdd;
     import StringHelper = api.util.StringHelper;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
+    import DivEl = api.dom.DivEl;
 
     export class ContentSelector
         extends ContentInputTypeManagingAdd<ContentTreeSelectorItem> {
 
-        private contentComboBox: api.content.ContentComboBox<ContentTreeSelectorItem>;
+        protected contentComboBox: api.content.ContentComboBox<ContentTreeSelectorItem>;
 
-        private draggingIndex: number;
+        protected comboBoxWrapper: DivEl;
 
-        private treeMode: boolean;
+        protected draggingIndex: number;
 
-        private hideToggleIcon: boolean;
+        protected treeMode: boolean;
 
-        private showStatus: boolean;
+        protected hideToggleIcon: boolean;
 
-        private static contentIdBatch: ContentId[] = [];
+        protected showStatus: boolean;
 
-        private static loadSummariesResult: Deferred<ContentSummary[]>;
+        protected static contentIdBatch: ContentId[] = [];
+
+        protected static loadSummariesResult: Deferred<ContentSummary[]>;
 
         public static debug: boolean = false;
 
-        private static loadSummaries: () => void = api.util.AppHelper.debounce(
+        protected static loadSummaries: () => void = api.util.AppHelper.debounce(
             ContentSelector.doFetchSummaries,
             10, false);
 
@@ -42,16 +45,14 @@ module api.content.form.inputtype.contentselector {
         protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
 
             const isTreeModeConfig = inputConfig['treeMode'] ? inputConfig['treeMode'][0] : {};
-            this.treeMode = !StringHelper.isBlank(isTreeModeConfig['value']) ?
-                            isTreeModeConfig['value'].toLowerCase() == 'true' : false;
+            this.treeMode = !StringHelper.isBlank(isTreeModeConfig['value']) ? isTreeModeConfig['value'].toLowerCase() == 'true' : false;
 
             const showStatusConfig = inputConfig['showStatus'] ? inputConfig['showStatus'][0] : {};
-            this.showStatus = !StringHelper.isBlank(showStatusConfig['value']) ?
-                              showStatusConfig['value'].toLowerCase() == 'true' : false;
+            this.showStatus = !StringHelper.isBlank(showStatusConfig['value']) ? showStatusConfig['value'].toLowerCase() == 'true' : false;
 
             const hideToggleIconConfig = inputConfig['hideToggleIcon'] ? inputConfig['hideToggleIcon'][0] : {};
-            this.hideToggleIcon = !StringHelper.isBlank(hideToggleIconConfig['value']) ?
-                                  hideToggleIconConfig['value'].toLowerCase() == 'true' : false;
+            this.hideToggleIcon =
+                !StringHelper.isBlank(hideToggleIconConfig['value']) ? hideToggleIconConfig['value'].toLowerCase() == 'true' : false;
 
             super.readConfig(inputConfig);
         }
@@ -82,35 +83,31 @@ module api.content.form.inputtype.contentselector {
             return null;
         }
 
+        protected createOptionDataLoader() {
+            return ContentSummaryOptionDataLoader.create().setAllowedContentPaths(
+                this.allowedContentPaths).setContentTypeNames(this.allowedContentTypes).setRelationshipType(
+                this.relationshipType).setContent(this.config.content).setLoadStatus(this.showStatus).build();
+
+        }
+
         layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
             if (!ValueTypes.REFERENCE.equals(propertyArray.getType())) {
                 propertyArray.convertValues(ValueTypes.REFERENCE);
             }
-            super.layout(input, propertyArray);
+            return super.layout(input, propertyArray).then(() => {
+                this.contentComboBox = this.createContentComboBox(input, propertyArray);
 
-            const optionDataLoader = ContentSummaryOptionDataLoader.create().setAllowedContentPaths(
-                this.allowedContentPaths).setContentTypeNames(this.allowedContentTypes).setRelationshipType(
-                this.relationshipType).setContent(this.config.content).setLoadStatus(this.showStatus).build();
+                this.comboBoxWrapper = new api.dom.DivEl('combobox-wrapper');
+                this.comboBoxWrapper.appendChild(this.contentComboBox);
 
-            const comboboxValue = this.getValueFromPropertyArray(propertyArray);
+                this.appendChild(this.comboBoxWrapper);
 
-            this.contentComboBox = api.content.ContentComboBox.create()
-                .setComboBoxName(input.getName())
-                .setMaximumOccurrences(input.getOccurrences().getMaximum())
-                .setLoader(optionDataLoader)
-                .setValue(comboboxValue)
-                .setRemoveMissingSelectedOptions(true)
-                .setTreegridDropdownEnabled(this.treeMode)
-                .setTreeModeTogglerAllowed(!this.hideToggleIcon)
-                .setShowStatus(this.showStatus)
-                .build();
+                return this.doLayout(propertyArray);
 
-            this.contentComboBox.getComboBox().onContentMissing((ids: string[]) => {
-                ids.forEach(id => this.removePropertyWithId(id));
-                this.validate(false);
             });
+        }
 
-            this.appendChild(this.contentComboBox);
+        protected doLayout(propertyArray: PropertyArray): wemQ.Promise<void> {
 
             const contentIds: ContentId[] = [];
             propertyArray.forEach((property: Property) => {
@@ -124,6 +121,8 @@ module api.content.form.inputtype.contentselector {
 
             return this.doLoadContent(contentIds).then((contents: api.content.ContentSummary[]) => {
 
+                this.setupSortable();
+
                 //TODO: original value doesn't work because of additional request, so have to select manually
                 contents.forEach((content: api.content.ContentSummary) => {
                     this.contentComboBox.select(new ContentTreeSelectorItem(content));
@@ -133,38 +132,63 @@ module api.content.form.inputtype.contentselector {
                     this.updateSelectedOptionIsEditable(selectedOption);
                 });
 
-                this.contentComboBox.onOptionSelected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
-                    this.fireFocusSwitchEvent(event);
-
-                    const reference = api.util.Reference.from(event.getSelectedOption().getOption().displayValue.getContentId());
-
-                    const value = new Value(reference, ValueTypes.REFERENCE);
-                    if (this.contentComboBox.countSelected() === 1) { // overwrite initial value
-                        this.getPropertyArray().set(0, value);
-                    } else if (!this.getPropertyArray().containsValue(value)) {
-                        this.getPropertyArray().add(value);
-                    }
-
-                    this.updateSelectedOptionIsEditable(event.getSelectedOption());
-                    this.refreshSortable();
-                    this.updateSelectedOptionStyle();
-                    this.validate(false);
-                });
-
-                this.contentComboBox.onOptionDeselected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
-
-                    this.getPropertyArray().remove(event.getSelectedOption().getIndex());
-                    this.updateSelectedOptionStyle();
-                    this.validate(false);
-                });
-
-                this.setupSortable();
-
                 this.setLayoutInProgress(false);
             });
         }
 
-        private removePropertyWithId(id: string) {
+        protected createContentComboBox(input: api.form.Input, propertyArray: PropertyArray): ContentComboBox<ContentTreeSelectorItem> {
+            const optionDataLoader = this.createOptionDataLoader();
+            const comboboxValue = this.getValueFromPropertyArray(propertyArray);
+
+            const contentComboBox = api.content.ContentComboBox.create()
+                .setComboBoxName(input.getName())
+                .setMaximumOccurrences(input.getOccurrences().getMaximum())
+                .setLoader(optionDataLoader)
+                .setValue(comboboxValue)
+                .setRemoveMissingSelectedOptions(true)
+                .setTreegridDropdownEnabled(this.treeMode)
+                .setTreeModeTogglerAllowed(!this.hideToggleIcon)
+                .setShowStatus(this.showStatus)
+                .build();
+
+            contentComboBox.getComboBox().onContentMissing((ids: string[]) => {
+                ids.forEach(id => this.removePropertyWithId(id));
+                this.validate(false);
+            });
+
+            contentComboBox.onOptionSelected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
+                this.fireFocusSwitchEvent(event);
+
+                const contentId: ContentId = event.getSelectedOption().getOption().displayValue.getContentId();
+
+                if (contentId) {
+                    const reference = api.util.Reference.from(event.getSelectedOption().getOption().displayValue.getContentId());
+
+                    const value = new Value(reference, ValueTypes.REFERENCE);
+                    if (contentComboBox.countSelected() === 1) { // overwrite initial value
+                        this.getPropertyArray().set(0, value);
+                    } else if (!this.getPropertyArray().containsValue(value)) {
+                        this.getPropertyArray().add(value);
+                    }
+                    this.updateSelectedOptionIsEditable(event.getSelectedOption());
+                    this.refreshSortable();
+                    this.updateSelectedOptionStyle();
+                    this.validate(false);
+                }
+
+            });
+
+            contentComboBox.onOptionDeselected((event: SelectedOptionEvent<ContentTreeSelectorItem>) => {
+
+                this.getPropertyArray().remove(event.getSelectedOption().getIndex());
+                this.updateSelectedOptionStyle();
+                this.validate(false);
+            });
+
+            return contentComboBox;
+        }
+
+        protected removePropertyWithId(id: string) {
             let length = this.getPropertyArray().getSize();
             for (let i = 0; i < length; i++) {
                 if (this.getPropertyArray().get(i).getValue().getString() === id) {
@@ -178,7 +202,7 @@ module api.content.form.inputtype.contentselector {
 
         update(propertyArray: api.data.PropertyArray, unchangedOnly: boolean): Q.Promise<void> {
             return super.update(propertyArray, unchangedOnly).then(() => {
-                if (!unchangedOnly || !this.contentComboBox.isDirty()) {
+                if (!unchangedOnly || !this.contentComboBox.isDirty() && this.contentComboBox.isRendered()) {
                     let value = this.getValueFromPropertyArray(propertyArray);
                     this.contentComboBox.setValue(value);
                 }
@@ -201,7 +225,7 @@ module api.content.form.inputtype.contentselector {
                 });
         }
 
-        private doLoadContent(contentIds: ContentId[]): wemQ.Promise<api.content.ContentSummary[]> {
+        protected doLoadContent(contentIds: ContentId[]): wemQ.Promise<api.content.ContentSummary[]> {
 
             ContentSelector.contentIdBatch = ContentSelector.contentIdBatch.concat(contentIds);
 
@@ -217,7 +241,7 @@ module api.content.form.inputtype.contentselector {
             });
         }
 
-        private setupSortable() {
+        protected setupSortable() {
             wemjq(this.getHTMLElement()).find('.selected-options').sortable({
                 axis: 'y',
                 containment: 'parent',
@@ -249,7 +273,7 @@ module api.content.form.inputtype.contentselector {
             this.draggingIndex = -1;
         }
 
-        private updateSelectedOptionStyle() {
+        protected updateSelectedOptionStyle() {
             if (this.getPropertyArray().getSize() > 1) {
                 this.addClass('multiple-occurrence').removeClass('single-occurrence');
             } else {
@@ -257,13 +281,13 @@ module api.content.form.inputtype.contentselector {
             }
         }
 
-        private updateSelectedOptionIsEditable(selectedOption: SelectedOption<ContentTreeSelectorItem>) {
+        protected updateSelectedOptionIsEditable(selectedOption: SelectedOption<ContentTreeSelectorItem>) {
             let selectedContentId = selectedOption.getOption().displayValue.getContentId();
             let refersToItself = selectedContentId.toString() === this.config.content.getId();
             selectedOption.getOptionView().toggleClass('non-editable', refersToItself);
         }
 
-        private refreshSortable() {
+        protected refreshSortable() {
             wemjq(this.getHTMLElement()).find('.selected-options').sortable('refresh');
         }
 

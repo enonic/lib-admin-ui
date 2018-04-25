@@ -10,7 +10,8 @@ module api.content.form.inputtype.upload {
         extensions: string;
     }
 
-    export class MediaUploader extends api.form.inputtype.support.BaseInputTypeSingleOccurrence {
+    export class MediaUploader
+        extends api.form.inputtype.support.BaseInputTypeSingleOccurrence {
         private config: api.content.form.inputtype.ContentInputTypeViewContext;
         private mediaUploaderEl: api.ui.uploader.MediaUploaderEl;
         private uploaderWrapper: api.dom.DivEl;
@@ -201,9 +202,10 @@ module api.content.form.inputtype.upload {
                 predefinedAllowTypes = this.getAllowTypeFromFileName(attachmentFileName);
             }
 
-            let allowTypesConfig: MediaUploaderConfigAllowType[] = predefinedAllowTypes || (<any>(this.config.inputConfig)).allowTypes ||
+            let allowTypesConfig: MediaUploaderConfigAllowType[] = predefinedAllowTypes ||
+                                                                   (<any>(this.config.inputConfig)).allowExtensions ||
                 [];
-            let allowTypes = allowTypesConfig.map((allowType: MediaUploaderConfigAllowType) => {
+            let allowExtensions = allowTypesConfig.map((allowType: MediaUploaderConfigAllowType) => {
                 return {title: allowType.name, extensions: allowType.extensions};
             });
 
@@ -214,7 +216,7 @@ module api.content.form.inputtype.upload {
                     content: this.getContext().content.getContentId().toString()
                 },
                 operation: api.ui.uploader.MediaUploaderElOperation.update,
-                allowTypes: allowTypes,
+                allowExtensions: allowExtensions,
                 name: this.getContext().input.getName(),
                 maximumOccurrences: 1,
                 allowMultiSelection: false,
@@ -240,5 +242,6 @@ module api.content.form.inputtype.upload {
             this.mediaUploaderEl.unBlur(listener);
         }
     }
+
     api.form.inputtype.InputTypeManager.register(new api.Class('MediaUploader', MediaUploader));
 }
