@@ -22,6 +22,8 @@ module api.query {
 
         static ID: string = '_id';
 
+        static PUBLISH_FROM: string = 'publish.from';
+
         weight: number;
 
         name: string;
