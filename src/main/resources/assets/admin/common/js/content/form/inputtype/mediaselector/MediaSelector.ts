@@ -52,11 +52,8 @@ module api.content.form.inputtype.mediaselector {
             if (allowedMediaTypes.length == 0) {
                 allowedMediaTypes = allowedContentTypes;
             }
-            /* if(allowedContentTypes.length > 0 && allowedMediaTypes.length == 0) {
-                 this.allowedContentTypes = [ContentTypeName.NONE.toString()];
-             } else {*/
+
             this.allowedContentTypes = allowedMediaTypes;
-            // }
         }
 
         protected createOptionDataLoader() {
@@ -176,7 +173,7 @@ module api.content.form.inputtype.mediaselector {
             return uploader;
         }
 
-        protected selectedOptionHandler(selectedOption: SelectedOption<ContentTreeSelectorItem>) {
+        protected selectedOptionHandler(_selectedOption: SelectedOption<ContentTreeSelectorItem>) {
             return;
         }
 

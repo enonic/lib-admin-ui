@@ -71,7 +71,7 @@ module api.content.form.inputtype.image {
             return selectedOptionsView;
         }
 
-        protected createContentComboBox(input: api.form.Input, propertyArray: PropertyArray): api.content.image.ImageContentComboBox {
+        protected createContentComboBox(input: api.form.Input, _propertyArray: PropertyArray): api.content.image.ImageContentComboBox {
 
             let value = this.getPropertyArray().getProperties().map((property) => {
                 return property.getString();
@@ -154,7 +154,7 @@ module api.content.form.inputtype.image {
             });
         }
 
-        protected doLayout(propertyArray: PropertyArray): wemQ.Promise<void> {
+        protected doLayout(_propertyArray: PropertyArray): wemQ.Promise<void> {
             return wemQ(null);
         }
 
