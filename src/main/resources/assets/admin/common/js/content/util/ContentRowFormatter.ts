@@ -37,9 +37,9 @@ module api.content.util {
                     let iconCls = 'sort-dialog-trigger ';
                     if (!childOrder.isManual()) {
                         if (childOrder.isDesc()) {
-                            iconCls += childOrder.isNumeric() ? 'icon-sort-num-desc' : 'icon-sort-alpha-desc';
+                            iconCls += childOrder.isAlpha() ? 'icon-sort-alpha-desc' : 'icon-sort-num-desc';
                         } else {
-                            iconCls += childOrder.isNumeric() ? 'icon-sort-num-asc' : 'icon-sort-alpha-asc';
+                            iconCls += childOrder.isAlpha() ? 'icon-sort-alpha-asc' : 'icon-sort-num-asc';
                         }
                     } else {
                         iconCls += 'icon-menu';

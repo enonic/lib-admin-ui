@@ -64,13 +64,12 @@ module api.content.order {
             return api.ObjectHelper.stringEquals(ChildOrder.DESC_ORDER_DIRECTION_VALUE.toLowerCase(), order.getDirection().toLowerCase());
         }
 
-        isNumeric(): boolean {
+        isAlpha(): boolean {
             if (this.orderExpressions.length === 0) {
-                return ChildOrder.DEFAULT_ORDER_FIELD_VALUE == api.query.QueryField.MODIFIED_TIME;
+                return false;
             }
-
             let order = (<FieldOrderExpr>this.orderExpressions[0]);
-            return api.ObjectHelper.stringEquals(api.query.QueryField.MODIFIED_TIME.toLowerCase(), order.getFieldName().toLowerCase());
+            return api.ObjectHelper.stringEquals(api.query.QueryField.DISPLAY_NAME.toLowerCase(), order.getFieldName().toLowerCase());
         }
 
         isDefault(): boolean {
