@@ -1,6 +1,5 @@
 module api.util.htmlarea.editor {
 
-    import CreateHtmlAreaDialogEvent = api.util.htmlarea.dialog.CreateHtmlAreaDialogEvent;
     import HTMLAreaEditor = CKEDITOR.editor;
     import eventInfo = CKEDITOR.eventInfo;
 
@@ -273,25 +272,25 @@ module api.util.htmlarea.editor {
 
         private notifyLinkDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-                api.util.htmlarea.dialog.HtmlAreaDialogType.LINK_CKE).setContent(this.content).build();
+                HtmlAreaDialogType.LINK_CKE).setContent(this.content).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyImageDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-                api.util.htmlarea.dialog.HtmlAreaDialogType.IMAGE_CKE).setContent(this.content).build();
+                HtmlAreaDialogType.IMAGE_CKE).setContent(this.content).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyAnchorDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-                api.util.htmlarea.dialog.HtmlAreaDialogType.ANCHOR_CKE).build();
+                HtmlAreaDialogType.ANCHOR_CKE).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyMacroDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-                api.util.htmlarea.dialog.HtmlAreaDialogType.MACRO_CKE).setContentPath(this.contentPath).setApplicationKeys(
+                HtmlAreaDialogType.MACRO_CKE).setContentPath(this.contentPath).setApplicationKeys(
                 this.applicationKeys).setContent(
                 this.content).setApplicationKeys(this.applicationKeys).build();
             this.publishCreateDialogEvent(event);
@@ -299,19 +298,19 @@ module api.util.htmlarea.editor {
 
         private notifySearchReplaceDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-                api.util.htmlarea.dialog.HtmlAreaDialogType.SEARCHREPLACE_CKE).build();
+                HtmlAreaDialogType.SEARCHREPLACE_CKE).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyCodeDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-                api.util.htmlarea.dialog.HtmlAreaDialogType.CODE_CKE).build();
+                HtmlAreaDialogType.CODE_CKE).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifySpecialCharDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-                api.util.htmlarea.dialog.HtmlAreaDialogType.SPECIALCHAR_CKE).build();
+                HtmlAreaDialogType.SPECIALCHAR_CKE).build();
             this.publishCreateDialogEvent(event);
         }
 

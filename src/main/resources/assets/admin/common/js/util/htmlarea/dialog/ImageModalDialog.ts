@@ -12,6 +12,7 @@ module api.util.htmlarea.dialog {
     import Option = api.ui.selector.Option;
     import i18n = api.util.i18n;
     import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
+    import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
 
     export class ImageModalDialog extends ModalDialog {
 
@@ -31,9 +32,6 @@ module api.util.htmlarea.dialog {
         private imageLoadMask: api.ui.mask.LoadMask;
         private dropzoneContainer: api.ui.uploader.DropzoneContainer;
         private imageSelectorFormItem: FormItem;
-
-        static imagePrefix: string = 'image://';
-        static maxImageWidth: number = 640;
 
         constructor(config: HtmlAreaImage, content: api.content.ContentSummary) {
             super(<ImageModalDialogConfig>{
@@ -229,7 +227,7 @@ module api.util.htmlarea.dialog {
                 : this.generateDefaultImgSrc(imageContent.getContentId().toString());
             let imgDataSrcAttr = isExistingImg
                 ? new api.dom.ElementHelper(this.imageElement).getAttribute('data-src')
-                : ImageModalDialog.imagePrefix + imageContent.getContentId().toString();
+                : HTMLAreaHelper.imagePrefix + imageContent.getContentId().toString();
 
             let imageEl = new api.dom.ImgEl(imgSrcAttr);
             imageEl.getEl().setAttribute('alt', imageContent.getDisplayName());
@@ -244,8 +242,7 @@ module api.util.htmlarea.dialog {
 
         private generateDefaultImgSrc(contentId: string): string {
             return new api.content.util.ContentImageUrlResolver().setContentId(new api.content.ContentId(contentId)).setScaleWidth(
-                true).setSize(
-                ImageModalDialog.maxImageWidth).resolve();
+                true).setSize(HTMLAreaHelper.maxImageWidth).resolve();
         }
 
         private removePreview() {

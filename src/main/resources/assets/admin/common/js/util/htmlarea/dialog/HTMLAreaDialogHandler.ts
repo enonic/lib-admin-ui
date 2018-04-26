@@ -2,6 +2,9 @@ module api.util.htmlarea.dialog {
 
     import eventInfo = CKEDITOR.eventInfo;
 
+    import CreateHtmlAreaDialogEvent = api.util.htmlarea.editor.CreateHtmlAreaDialogEvent;
+    import HtmlAreaDialogType = api.util.htmlarea.editor.HtmlAreaDialogType;
+
     export class HTMLAreaDialogHandler {
 
         private static modalDialog: ModalDialog;
@@ -23,7 +26,7 @@ module api.util.htmlarea.dialog {
                 modalDialog = this.openImageDialogCKE(event.getConfig(), event.getContent());
                 break;
             case HtmlAreaDialogType.LINK:
-                modalDialog = this.openLinkDialog(event.getConfig());
+                modalDialog = this.openLinkDialog(event.getConfig(), event.getContent());
                 break;
             case HtmlAreaDialogType.LINK_CKE:
                 modalDialog = this.openLinkDialogCKE(event.getConfig());
@@ -51,6 +54,7 @@ module api.util.htmlarea.dialog {
                 break;
             case HtmlAreaDialogType.SPECIALCHAR_CKE:
                 modalDialog = this.openSpecialCharDialogCKE(event.getConfig());
+                modalDialog = this.openLinkDialog(event.getConfig(), event.getContent());
                 break;
             }
 
@@ -68,8 +72,8 @@ module api.util.htmlarea.dialog {
             return this.modalDialog;
         }
 
-        private static openLinkDialog(config: HtmlAreaAnchor): ModalDialog {
-            return this.openDialog(new LinkModalDialog(config));
+        private static openLinkDialog(config: HtmlAreaAnchor, content: api.content.ContentSummary): ModalDialog {
+            return this.openDialog(new LinkModalDialog(config, content));
         }
 
         private static openLinkDialogCKE(config: eventInfo): ModalDialog {

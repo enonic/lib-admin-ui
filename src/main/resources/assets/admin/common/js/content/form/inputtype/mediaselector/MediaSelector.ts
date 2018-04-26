@@ -75,7 +75,7 @@ module api.content.form.inputtype.mediaselector {
                     parent: this.config.content.getContentId().toString()
                 },
                 operation: api.ui.uploader.MediaUploaderElOperation.create,
-                name: 'media-selector-upload-dialog',
+                name: 'media-selector-upload-el',
                 showCancel: false,
                 showResult: false,
                 maximumOccurrences: this.getRemainingOccurrences(),
