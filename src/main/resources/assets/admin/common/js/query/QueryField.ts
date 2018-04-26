@@ -22,7 +22,7 @@ module api.query {
 
         static ID: string = '_id';
 
-        static PUBLISH_FROM: string = 'publish.from';
+        static PUBLISH_FIRST: string = 'publish.first';
 
         weight: number;
 
