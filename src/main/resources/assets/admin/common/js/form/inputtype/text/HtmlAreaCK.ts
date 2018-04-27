@@ -347,7 +347,7 @@ module api.form.inputtype.text {
             }
         }
 
-        private getEditor(editorId: string): any {
+        private getEditor(editorId: string): CKEDITOR.editor {
             return CKEDITOR.instances[editorId];
         }
 
@@ -358,7 +358,7 @@ module api.form.inputtype.text {
         }
 
         private getEditorContent(editor: HtmlAreaOccurrenceInfo) {
-            return this.getEditor(editor.id).getSnapshot();
+            return this.getEditor(editor.id).getData();
         }
 
         private setEditorContent(editorId: string, property: Property): void {
@@ -377,7 +377,7 @@ module api.form.inputtype.text {
         }
 
         private notifyValueChanged(id: string, occurrence: api.dom.Element) {
-            const value: string = HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id).getSnapshot());
+            const value: string = HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id).getData());
             const valueObj: api.data.Value = ValueTypes.STRING.newValue(value);
             this.notifyOccurrenceValueChanged(occurrence, valueObj);
         }
