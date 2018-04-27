@@ -21,7 +21,8 @@
     "gulp-typescript": "^4.0.1",
     "gulp-uglify-es": "^1.0.1",
     "tslint": "5.9.1",
-    "typescript": "^2.7.2"
+    "typescript": "^2.7.2",
+    "hoek": "^5.0.3"
   },
   "engines": {
     "node": ">= 8.10.0",
