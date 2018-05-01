@@ -18,7 +18,7 @@ module api.util.htmlarea.dialog {
         extends CKEBackedDialog {
 
         private imagePreviewContainer: api.dom.DivEl;
-        private imageHasCaptionField: FormItem;
+        private imageCaptionField: FormItem;
         private imageAltTextField: FormItem;
         private imageUploaderEl: api.content.image.ImageUploaderEl;
         private imageElement: HTMLImageElement;
@@ -65,7 +65,10 @@ module api.util.htmlarea.dialog {
         }
 
         protected setDialogInputValues() {
-            (<api.ui.Checkbox>this.imageHasCaptionField.getInput()).setChecked(this.getOriginalHasCaptionElem().getValue());
+            const caption: string = !!this.ckeOriginalDialog.getSelectedElement()
+                ? this.ckeOriginalDialog.getSelectedElement().getText()
+                : '';
+            (<api.dom.InputEl>this.imageCaptionField.getInput()).setValue(caption);
             (<api.dom.InputEl>this.imageAltTextField.getInput()).setValue(this.getOriginalAltTextElem().getValue());
         }
 
@@ -101,17 +104,15 @@ module api.util.htmlarea.dialog {
             this.addUploaderAndPreviewControls();
             this.setFirstFocusField(this.imageSelectorFormItem.getInput());
 
-            this.imageHasCaptionField = this.createFormItem(
-                new ModalDialogFormItemBuilder('caption', i18n('dialog.image.formitem.caption')).setInputEl(
-                    api.ui.Checkbox.create().build()));
+            this.imageCaptionField = this.createFormItem(new ModalDialogFormItemBuilder('caption', i18n('dialog.image.formitem.caption')));
             this.imageAltTextField = this.createFormItem(new ModalDialogFormItemBuilder('altText', i18n('dialog.image.formitem.alttext')));
 
-            this.imageHasCaptionField.addClass('caption').hide();
+            this.imageCaptionField.addClass('caption').hide();
             this.imageAltTextField.addClass('alttext').hide();
 
             return [
                 this.imageSelectorFormItem,
-                this.imageHasCaptionField,
+                this.imageCaptionField,
                 this.imageAltTextField
             ];
         }
@@ -153,7 +154,7 @@ module api.util.htmlarea.dialog {
                 this.displayValidationErrors(false);
                 this.removePreview();
                 this.imageToolbar.remove();
-                this.imageHasCaptionField.hide();
+                this.imageCaptionField.hide();
                 this.imageAltTextField.hide();
                 this.imageUploaderEl.show();
                 this.imagePreviewScrollHandler.toggleScrollButtons();
@@ -220,7 +221,7 @@ module api.util.htmlarea.dialog {
             });
 
             this.hideUploadMasks();
-            this.imageHasCaptionField.show();
+            this.imageCaptionField.show();
             this.imageAltTextField.show();
             this.imageUploaderEl.hide();
             this.imagePreviewContainer.insertChild(this.image, 0);
@@ -365,6 +366,9 @@ module api.util.htmlarea.dialog {
                     (<any>this.ckeOriginalDialog).widget.parts.image.setAttribute('data-src',
                         this.image.getEl().getAttribute('data-src'));
                     (<any>this.ckeOriginalDialog).widget.parts.image.setStyle('max-width', '100%');
+                    if (this.hasCaption()) {
+                        this.setCaptionText();
+                    }
                     this.close();
                 }
             }));
@@ -391,11 +395,20 @@ module api.util.htmlarea.dialog {
         }
 
         private hasCaption(): boolean {
-            return (<api.ui.Checkbox>this.imageHasCaptionField.getInput()).isChecked();
+            return !api.util.StringHelper.isEmpty(this.getCaptionFieldValue());
         }
 
         private setCaptionFieldValue(value: string) {
-            (<api.dom.InputEl>this.imageHasCaptionField.getInput()).setValue(value);
+            (<api.dom.InputEl>this.imageCaptionField.getInput()).setValue(value);
+        }
+
+        private setCaptionText() {
+            (<any>this.ckeOriginalDialog).widget.element.$.parentElement.getElementsByTagName('figcaption')[0].textContent =
+                this.getCaptionFieldValue();
+        }
+
+        private getCaptionFieldValue() {
+            return (<api.dom.InputEl>this.imageCaptionField.getInput()).getValue().trim();
         }
 
         private getAltTextFieldValue() {
