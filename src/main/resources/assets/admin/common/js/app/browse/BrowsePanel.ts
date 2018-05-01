@@ -78,11 +78,20 @@ module api.app.browse {
 
             this.treeGrid.onSelectionChanged(selectionChangedHandler);
 
-            let highlightingChangedDebouncedHandler = api.util.AppHelper.debounce(((node: TreeNode<Object>) => {
-                this.onHighlightingChanged(node);
-            }).bind(this), 200, false);
+            const highlightingChangedDebouncedHandler = api.util.AppHelper.debounceWithInterrupt(
+                (node: TreeNode<Object>, callback?: Function) => {
+                    this.onHighlightingChanged(node).then(() => {
+                        if (callback) {
+                            callback();
+                        }
+                    });
+                }, 200);
 
-            this.treeGrid.onHighlightingChanged(highlightingChangedDebouncedHandler);
+            let highlightingChangedHandler = (highlightedNode: TreeNode<Object>, force: boolean, callback: Function) => {
+                highlightingChangedDebouncedHandler([highlightedNode, callback], force);
+            };
+
+            this.treeGrid.onHighlightingChanged(highlightingChangedHandler);
 
             ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
                 this.checkFilterPanelToBeShownFullScreen(item);
@@ -134,21 +143,23 @@ module api.app.browse {
             return deferred.promise;
         }
 
-        private onHighlightingChanged(node: TreeNode<Object>) {
+        private onHighlightingChanged(node: TreeNode<Object>): wemQ.Promise<any> {
             if (!node) {
                 if (this.treeGrid.getSelectedDataList().length === 0) {
-                    this.getBrowseActions().updateActionsEnabledState([]);
                     this.getBrowseItemPanel().togglePreviewForItem();
+                    return this.getBrowseActions().updateActionsEnabledState([]);
                 }
 
-                return;
+                return wemQ(null);
             }
 
-            let browseItem: BrowseItem<M> = this.treeNodeToBrowseItem(node);
-            this.getBrowseActions().updateActionsEnabledState([browseItem]);
-            this.checkIfItemIsRenderable(browseItem).then(() => {
+            const browseItem: BrowseItem<M> = this.treeNodeToBrowseItem(node);
+            const updateActionsPromise = this.getBrowseActions().updateActionsEnabledState([browseItem]);
+            const togglePreviewPromise = this.checkIfItemIsRenderable(browseItem).then(() => {
                 this.getBrowseItemPanel().togglePreviewForItem(browseItem);
             });
+
+            return wemQ.all([updateActionsPromise, togglePreviewPromise]);
         }
 
         protected createToolbar(): api.ui.toolbar.Toolbar {

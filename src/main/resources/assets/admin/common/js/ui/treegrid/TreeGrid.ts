@@ -640,15 +640,20 @@ module api.ui.treegrid {
             this.grid.subscribeOnContextMenu((event) => {
                 event.preventDefault();
                 this.setActive(false);
+                this.contextMenu.hide();
+
                 let cell = this.grid.getCellFromEvent(event);
                 if (!this.grid.isRowSelected(cell.row)) {
-                    this.highlightRowByNode(this.gridData.getItem(cell.row));
+                    this.highlightRowByNode(this.gridData.getItem(cell.row), true, () => this.showContextMenuAt(event.pageX, event.pageY));
+                } else {
+                    this.showContextMenuAt(event.pageX, event.pageY);
                 }
-                this.contextMenu.showAt(event.pageX, event.pageY);
-                this.notifyContextMenuShown(event.pageX, event.pageY);
-                this.setActive(true);
             });
+        }
 
+        onHighlightingChanged(listener: (node: TreeNode<DATA>, force: boolean, callback: Function) => void) {
+            this.highlightingChangeListeners.push(listener);
+            return this;
         }
 
         private navigateUp() {
@@ -716,20 +721,11 @@ module api.ui.treegrid {
             this.notifyHighlightingChanged();
         }
 
-        private highlightRowByNode(node: TreeNode<DATA>) {
-            if (this.selectionOnClick === SelectionOnClickType.SELECT) {
-                return;
-            }
-            if (!this.highlightedNode || this.highlightedNode !== node) {
-                this.unhighlightCurrentRow();
-                this.highlightedNode = node;
-                this.notifyHighlightingChanged();
-            }
-
-            let row = this.getRowByNode(node);
-            if (row) {
-                row.addClass('selected');
-            }
+        unHighlightingChanged(listener: (node: TreeNode<DATA>, force: boolean, callback: Function) => void) {
+            this.highlightingChangeListeners = this.highlightingChangeListeners.filter((curr) => {
+                return curr != listener;
+            });
+            return this;
         }
 
         private unhighlightCurrentRow(skipEvent: boolean = false) {
@@ -1693,10 +1689,10 @@ module api.ui.treegrid {
             this.triggerSelectionChangedListeners();
         }
 
-        private notifyHighlightingChanged(): void {
-            this.highlightingChangeListeners.forEach((listener: Function) => {
-                listener(this.highlightedNode);
-            });
+        private showContextMenuAt(x: number, y: number) {
+            this.contextMenu.showAt(x, y);
+            this.notifyContextMenuShown(x, y);
+            this.setActive(true);
         }
 
         triggerSelectionChangedListeners() {
@@ -1705,16 +1701,26 @@ module api.ui.treegrid {
             });
         }
 
-        onHighlightingChanged(listener: (node: TreeNode<DATA>) => void) {
-            this.highlightingChangeListeners.push(listener);
-            return this;
+        private highlightRowByNode(node: TreeNode<DATA>, immediateNotification: boolean = false, callback?: Function) {
+            if (this.selectionOnClick === SelectionOnClickType.SELECT) {
+                return;
+            }
+            if (!this.highlightedNode || this.highlightedNode !== node) {
+                this.unhighlightCurrentRow();
+                this.highlightedNode = node;
+                this.notifyHighlightingChanged(immediateNotification, callback);
+            }
+
+            let row = this.getRowByNode(node);
+            if (row) {
+                row.addClass('selected');
+            }
         }
 
-        unHighlightingChanged(listener: (node: TreeNode<DATA>) => void) {
-            this.highlightingChangeListeners = this.highlightingChangeListeners.filter((curr) => {
-                return curr != listener;
+        private notifyHighlightingChanged(force: boolean = false, callback?: Function): void {
+            this.highlightingChangeListeners.forEach((listener: Function) => {
+                listener(this.highlightedNode, force, callback);
             });
-            return this;
         }
 
         onSelectionChanged(listener: (currentSelection: TreeNode<DATA>[], fullSelection: TreeNode<DATA>[], highlighted: boolean) => void) {
