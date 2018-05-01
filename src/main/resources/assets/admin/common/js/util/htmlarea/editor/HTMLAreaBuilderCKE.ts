@@ -129,14 +129,14 @@ module api.util.htmlarea.editor {
             this.customToolConfig = tools;
 
             if (tools['exclude'] && tools['exclude'] instanceof Array) {
-                this.toolsToExlcude = tools['exclude'].map(tool => tool.value).join().replace(/\s+/g,',');
+                this.toolsToExlcude = tools['exclude'].map(tool => tool.value).join().replace(/\s+/g, ',');
                 if (this.toolsToExlcude === '*') {
                     this.tools = [];
                 }
             }
 
             if (tools['include'] && tools['include'] instanceof Array) {
-                this.includeTools(tools['include'].map(tool => tool.value).join().replace(/\|/g,'-').split(/\s+/));
+                this.includeTools(tools['include'].map(tool => tool.value).join().replace(/\|/g, '-').split(/\s+/));
             }
 
             return this;
@@ -180,6 +180,8 @@ module api.util.htmlarea.editor {
                 format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
                 autoGrow_onStartup: true,
                 image2_disableResizer: true,
+                disallowedContent: 'img[width,height]',
+                uploadUrl: api.util.UriHelper.getRestUri('content/createMedia'),
                 contentsCss: this.assetsUri + '/admin/common/styles/html-editor.css', // for classic mode only
                 sharedSpaces: this.inline ? {top: this.fixedToolbarContainer} : null
             };
@@ -229,6 +231,43 @@ module api.util.htmlarea.editor {
 
                 if (this.keydownHandler) {
                     this.keydownHandler(e);
+                }
+            });
+
+            ckeditor.on('fileUploadRequest', (evt) => {
+                const fileLoader = evt.data.fileLoader;
+                const formData = new FormData();
+                const xhr = fileLoader.xhr;
+
+                xhr.open('POST', fileLoader.uploadUrl, true);
+                formData.append('file', fileLoader.file, fileLoader.fileName);
+                formData.set('parent', this.content.getPath().toString());
+                formData.set('name', fileLoader.fileName);
+                fileLoader.xhr.send(formData);
+
+                // Prevented the default behavior.
+                evt.stop();
+            });
+
+            // parse image upload response so cke understands it
+            ckeditor.on('fileUploadResponse', (evt) => {
+                // Prevent the default response handler.
+                evt.stop();
+
+                // Get XHR and response.
+                const data = evt.data;
+                const xhr = data.fileLoader.xhr;
+                const response = xhr.responseText.split('|');
+
+                if (response[1]) {
+                    // An error occurred during upload.
+                    data.message = response[1];
+                    evt.cancel();
+                } else {
+                    const mediaContent = JSON.parse(response[0]);
+                    const url: string = new api.content.util.ContentImageUrlResolver().setContentId(
+                        mediaContent.id).setScaleWidth(true).setSize(api.util.htmlarea.dialog.ImageModalDialogCKE.maxImageWidth).resolve();
+                    data.url = url;
                 }
             });
         }
