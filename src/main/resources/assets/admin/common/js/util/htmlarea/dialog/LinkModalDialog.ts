@@ -147,7 +147,7 @@ module api.util.htmlarea.dialog {
         private getSubject(): string {
             if (!this.isEmail() || this.getHref().indexOf(LinkModalDialog.subjectPrefix) === -1) {
                 return api.util.StringHelper.EMPTY_STRING;
-            }
+             }
             let emailArr = this.getHref().split(LinkModalDialog.subjectPrefix);
             return decodeURI(emailArr[1].replace(LinkModalDialog.subjectPrefix, api.util.StringHelper.EMPTY_STRING));
         }
@@ -159,7 +159,8 @@ module api.util.htmlarea.dialog {
 
         private createContentPanel(): Panel {
             return this.createFormPanel([
-                this.createSelectorFormItem('contentId', i18n('dialog.link.formitem.target'), this.createContentSelector(this.getContentId),
+                this.createSelectorFormItem('contentId', i18n('dialog.link.formitem.target'),
+                    this.createContentSelector(this.getContentId, api.schema.content.ContentTypeName.getMediaTypes()),
                     true),
                 this.createTargetCheckbox('contentTarget', this.isContentLink)
             ]);
