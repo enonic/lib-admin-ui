@@ -349,6 +349,8 @@
                     alt: this.data.alt
                 });
 
+                this.parts.image.setStyle('max-width', '100%');
+
                 // If shifting non-captioned -> captioned, remove classes
                 // related to styles from <img/>.
                 if (this.oldData && !this.oldData.hasCaption && this.data.hasCaption) {
