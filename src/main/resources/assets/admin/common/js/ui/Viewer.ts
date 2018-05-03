@@ -69,6 +69,7 @@ module api.ui {
 
         setReadonly(readonly: boolean) {
             this.setEditable(!readonly);
+            this.toggleClass('readonly', readonly);
         }
 
         setEditable(editable: boolean) {

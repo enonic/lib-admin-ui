@@ -14,7 +14,7 @@ module api.ui.selector.combobox {
 
         private optionMovedListeners: {(moved: SelectedOption<T>) : void}[] = [];
 
-        private readonly: boolean = false;
+        protected readonly: boolean = false;
 
         private editable: boolean = true;
 
