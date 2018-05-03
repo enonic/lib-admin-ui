@@ -29,7 +29,7 @@ module api.util.htmlarea.editor {
             ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
             ['BulletedList', 'NumberedList', 'Outdent', 'Indent'],
             ['SpecialChar', 'Anchor', 'Image', 'Macro', 'Link', 'Unlink'],
-            ['Table', '-', 'PasteText', 'Maximize']
+            ['Table', 'Maximize']
         ];
 
         private plugins: string = 'autogrow,sourcedialog,macro,image2,codeTag';
