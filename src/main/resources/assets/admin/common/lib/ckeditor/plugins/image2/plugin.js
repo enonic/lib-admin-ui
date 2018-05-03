@@ -349,7 +349,10 @@
                     alt: this.data.alt
                 });
 
-                this.parts.image.setStyle('max-width', '100%');
+                this.parts.image.setStyle('max-width', '100%'); // change #2
+                setTimeout(function () { // change #3
+                    this.dragHandlerContainer.setStyle('display', 'none');
+                }.bind(this), 100);
 
                 // If shifting non-captioned -> captioned, remove classes
                 // related to styles from <img/>.
@@ -859,7 +862,7 @@
         }
     };
 
-    function setWrapperAlign(widget, alignClasses) {
+    function setWrapperAlign(widget, alignClasses) { // change #1
         var wrapper = widget.wrapper,
             align = widget.data.align,
             hasCaption = widget.data.hasCaption,
