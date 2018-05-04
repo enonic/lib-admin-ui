@@ -54,7 +54,6 @@ module api.util.htmlarea.dialog {
                 break;
             case HtmlAreaDialogType.SPECIALCHAR_CKE:
                 modalDialog = this.openSpecialCharDialogCKE(event.getConfig());
-                modalDialog = this.openLinkDialog(event.getConfig(), event.getContent());
                 break;
             }
 
