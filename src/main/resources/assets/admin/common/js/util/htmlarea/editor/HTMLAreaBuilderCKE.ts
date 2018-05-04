@@ -234,7 +234,7 @@ module api.util.htmlarea.editor {
                 }
             });
 
-            ckeditor.on('fileUploadRequest', (evt) => {
+            ckeditor.on('fileUploadRequest', (evt: eventInfo) => {
                 const fileLoader = evt.data.fileLoader;
                 const formData = new FormData();
                 const xhr = fileLoader.xhr;
@@ -250,7 +250,7 @@ module api.util.htmlarea.editor {
             });
 
             // parse image upload response so cke understands it
-            ckeditor.on('fileUploadResponse', (evt) => {
+            ckeditor.on('fileUploadResponse', (evt: eventInfo) => {
                 // Prevent the default response handler.
                 evt.stop();
 

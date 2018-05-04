@@ -14,6 +14,13 @@ module api.util.htmlarea.dialog {
     import i18n = api.util.i18n;
     import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
 
+    /**
+     * NB: Modifications were made for native image plugin in image2/plugin.js:
+     * 1. setWrapperAlign() method updated to make image wrapper element have inline alignment styles we used to have
+     * 2. data() function updated to set 'max-width: 100%' on all images, including dropped/pasted images
+     * 3. data() function updated to set inline style 'display: none;' on drag handler container
+     * Update those in case ckeditor lib is updated
+     */
     export class ImageModalDialogCKE
         extends CKEBackedDialog {
 
@@ -365,7 +372,6 @@ module api.util.htmlarea.dialog {
                     this.ckeOriginalDialog.getButton('ok').click();
                     (<any>this.ckeOriginalDialog).widget.parts.image.setAttribute('data-src',
                         this.image.getEl().getAttribute('data-src'));
-                    (<any>this.ckeOriginalDialog).widget.parts.image.setStyle('max-width', '100%');
                     if (this.hasCaption()) {
                         this.setCaptionText();
                     }
