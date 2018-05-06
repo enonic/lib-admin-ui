@@ -4,6 +4,7 @@ module api.util.htmlarea.dialog {
     import eventInfo = CKEDITOR.eventInfo;
     import DivEl = api.dom.DivEl;
     import SpanEl = api.dom.SpanEl;
+    import DialogButton = api.ui.dialog.DialogButton;
 
     export class SpecialCharDialogCKE
         extends ModalDialog {
@@ -64,6 +65,13 @@ module api.util.htmlarea.dialog {
                     this.close();
                 }
             });
+        }
+
+        addCancelButtonToBottom(buttonLabel: string = i18n('action.cancel')): DialogButton {
+            const cancelButton: DialogButton = super.addCancelButtonToBottom(buttonLabel);
+            this.setFirstFocusField(cancelButton);
+
+            return cancelButton;
         }
 
     }
