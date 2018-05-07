@@ -38,6 +38,14 @@
     }
   }
 
+  &.readonly {
+    pointer-events: none;
+
+    .inplace-toggle {
+      display: none;
+    }
+  }
+
   &.edit-mode {
     h2 {
       display: none;

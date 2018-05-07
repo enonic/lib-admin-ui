@@ -108,6 +108,9 @@ module api.ui.security {
 
         createSelectedOption(option: Option<Principal>): SelectedOption<Principal> {
             let optionView = !option.empty ? new PrincipalSelectedOptionView(option) : new RemovedPrincipalSelectedOptionView(option);
+            if (this.readonly) {
+                optionView.setReadonly(true);
+            }
             return new SelectedOption<Principal>(<any>optionView, this.count());
         }
 
