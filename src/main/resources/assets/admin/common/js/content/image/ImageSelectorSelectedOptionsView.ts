@@ -118,15 +118,21 @@ module api.content.image {
         }
 
         private addNewOption(option: Option<MediaTreeSelectorItem>, silent: boolean, keyCode: number = -1) {
-            let selectedOption: SelectedOption<MediaTreeSelectorItem> = this.createSelectedOption(option);
+            const selectedOption: SelectedOption<MediaTreeSelectorItem> = this.createSelectedOption(option);
             this.getSelectedOptions().push(selectedOption);
 
-            let optionView: ImageSelectorSelectedOptionView = <ImageSelectorSelectedOptionView>selectedOption.getOptionView();
+            const optionView: ImageSelectorSelectedOptionView = <ImageSelectorSelectedOptionView>selectedOption.getOptionView();
 
             optionView.onRendered(() => {
                 this.handleOptionViewRendered(selectedOption, optionView);
                 optionView.setOption(option);
             });
+
+            // moved onChecked handler from handleOptionViewRendered because onChecked may be triggered before (on file upload for ex.)
+            optionView.onChecked(
+                (_view: ImageSelectorSelectedOptionView, checked: boolean) => this.handleOptionViewChecked(checked, selectedOption,
+                    optionView));
+
             this.appendChild(optionView);
             this.updateStickyToolbar();
 
@@ -233,9 +239,6 @@ module api.content.image {
             optionView.getCheckbox().onKeyDown((event: KeyboardEvent) => this.handleOptionViewKeyDownEvent(event, option, optionView));
 
             optionView.getCheckbox().onFocus(() => this.setActiveOption(option));
-
-            optionView.onChecked(
-                (_view: ImageSelectorSelectedOptionView, checked: boolean) => this.handleOptionViewChecked(checked, option, optionView));
 
             optionView.getIcon().onLoaded(() => this.handleOptionViewImageLoaded(optionView));
 
