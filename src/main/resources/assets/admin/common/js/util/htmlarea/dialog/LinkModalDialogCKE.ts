@@ -341,6 +341,7 @@ module api.util.htmlarea.dialog {
 
             this.getOriginalLinkTypeElem().setValue('url', false);
             this.getOriginalTargetElem().setValue(target, false);
+            this.getOriginalProtocolElem().setValue('', false);
             this.getOriginalUrlElem().setValue(url, false);
         }
 
@@ -350,6 +351,7 @@ module api.util.htmlarea.dialog {
             const url: string = LinkModalDialogCKE.downloadPrefix + contentSelectorValue;
 
             this.getOriginalLinkTypeElem().setValue('url', false);
+            this.getOriginalProtocolElem().setValue('', false);
             this.getOriginalUrlElem().setValue(url, false);
         }
 
