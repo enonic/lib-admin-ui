@@ -2,6 +2,8 @@ module api.util.htmlarea.editor {
 
     import HTMLAreaEditor = CKEDITOR.editor;
     import eventInfo = CKEDITOR.eventInfo;
+    import NotificationMessage = api.notify.NotificationMessage;
+    import NotifyManager = api.notify.NotifyManager;
 
     export class HTMLAreaBuilderCKE {
 
@@ -157,6 +159,8 @@ module api.util.htmlarea.editor {
                 this.editorContainerId, config);
 
             this.listenCKEditorEvents(ckeditor);
+            this.handleFileUpload(ckeditor);
+            this.handleNativeNotifications(ckeditor);
             this.setupDialogsToOpen(ckeditor);
 
             return ckeditor;
@@ -233,7 +237,9 @@ module api.util.htmlarea.editor {
                     this.keydownHandler(e);
                 }
             });
+        }
 
+        private handleFileUpload(ckeditor: HTMLAreaEditor) {
             ckeditor.on('fileUploadRequest', (evt: eventInfo) => {
                 const fileLoader = evt.data.fileLoader;
                 const formData = new FormData();
@@ -269,6 +275,57 @@ module api.util.htmlarea.editor {
                         mediaContent.id).setScaleWidth(true).setSize(api.util.htmlarea.dialog.ImageModalDialogCKE.maxImageWidth).resolve();
                     data.url = url;
                 }
+            });
+        }
+
+        private handleNativeNotifications(ckeditor: HTMLAreaEditor) {
+            const progressNotifications: Object = {};
+
+            ckeditor.on('notificationShow', function (evt: eventInfo) {
+                const notification: any = evt.data.notification;
+
+                switch (notification.type) {
+                case 'success':
+                    NotifyManager.get().showSuccess(notification.message);
+                    break;
+                case 'info':
+                case 'progress':
+                    NotifyManager.get().showFeedback(notification.message);
+                    break;
+                case 'warning':
+                    NotifyManager.get().showError(notification.message);
+                    break;
+                }
+                // Do not show the default notification.
+                evt.cancel();
+            });
+
+            ckeditor.on('notificationUpdate', function (evt: eventInfo) {
+                const message: string = evt.data.options ? evt.data.options.message : evt.data.notification.message;
+                const messageId: string = evt.data.notification.id;
+                const type: string = (evt.data.options && evt.data.options.type) ? evt.data.options.type : evt.data.notification.type;
+
+                switch (type) {
+                case 'success':
+                    NotifyManager.get().showSuccess(message);
+                    NotifyManager.get().hide(progressNotifications[messageId]);
+                    delete progressNotifications[messageId];
+                    break;
+                case 'progress':
+                    if (progressNotifications[messageId]) {
+                        const notificationMessage: NotificationMessage = NotifyManager.get().getNotification(
+                            progressNotifications[messageId]);
+                        if (notificationMessage) {
+                            notificationMessage.setText(message);
+                        }
+                    } else {
+                        progressNotifications[messageId] = api.notify.NotifyManager.get().showFeedback(message, false);
+                    }
+                    break;
+                }
+
+                // Do not show the default notification.
+                evt.cancel();
             });
         }
 
