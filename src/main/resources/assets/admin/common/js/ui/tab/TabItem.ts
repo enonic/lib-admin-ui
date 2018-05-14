@@ -41,7 +41,9 @@ module api.ui.tab {
                 this.setFocusable(false);
             }
 
-            this.onClicked(() => this.select());
+            const handler = builder.clickHandler || (() => this.select());
+
+            this.onClicked(handler);
         }
 
         private createRemoveButton() {
@@ -189,6 +191,8 @@ module api.ui.tab {
 
         focusable: boolean = true;
 
+        clickHandler: () => void;
+
         setLabel(label: string): TabItemBuilder {
             this.label = label;
             return this;
@@ -221,6 +225,11 @@ module api.ui.tab {
 
         setFocusable(focusable: boolean): TabItemBuilder {
             this.focusable = focusable;
+            return this;
+        }
+
+        setClickHandler(handler: () => void) {
+            this.clickHandler = handler;
             return this;
         }
 
