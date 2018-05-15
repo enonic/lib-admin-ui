@@ -8,6 +8,8 @@ module api.query {
 
         static ALL: string = '_alltext';
 
+        static CREATED_TIME: string = 'createdTime';
+
         static MODIFIED_TIME: string = 'modifiedTime';
 
         static TIMESTAMP: string = '_timestamp';
