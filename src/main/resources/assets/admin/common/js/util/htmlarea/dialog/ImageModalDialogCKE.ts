@@ -18,8 +18,11 @@ module api.util.htmlarea.dialog {
      * NB: Modifications were made for native image plugin in image2/plugin.js:
      * 1. setWrapperAlign() method updated to make image wrapper element have inline alignment styles we used to have
      * 2. data() function updated to set 'max-width: 100%' on all images, including dropped/pasted images
-     * 3. data() function updated to set inline style 'display: none;' on drag handler container
-     * 4. init value of  widget's 'data.lock' parameter set to false to make dropped/pasted images align correctly
+     * 3. init value of  widget's 'data.lock' parameter set to false to make dropped/pasted images align correctly
+     *
+     * NB: Modifications were made in ckeditor.js (VERY SORRY FOR THAT):
+     * LINE 1279: updateDragHandlerPosition() function updated to set inline style 'display: none;' on drag handler container
+     *
      * Update those in case ckeditor lib is updated
      */
     export class ImageModalDialogCKE
