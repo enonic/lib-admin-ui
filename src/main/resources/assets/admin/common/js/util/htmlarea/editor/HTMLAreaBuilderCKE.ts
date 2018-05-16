@@ -349,11 +349,11 @@ module api.util.htmlarea.editor {
 
         private setupKeyboardShortcuts(ckeditor: HTMLAreaEditor) {
             const commandDef: CKEDITOR.commandDefinition = {
-                exec: function (editor) {
+                exec: function (editor: HTMLAreaEditor) {
                     editor.applyStyle(new CKEDITOR.style(<any>{element: this.name})); // name is command name
                     return true;
                 }
-            }
+            };
 
             ckeditor.addCommand('h1', commandDef);
             ckeditor.addCommand('h2', commandDef);
