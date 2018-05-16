@@ -30,6 +30,7 @@ module api.util.htmlarea.dialog {
 
             this.textArea = new TextArea('source-textarea');
             this.appendChildToContentPanel(this.textArea);
+            this.setFirstFocusField(this.textArea);
         }
 
         protected initializeActions() {

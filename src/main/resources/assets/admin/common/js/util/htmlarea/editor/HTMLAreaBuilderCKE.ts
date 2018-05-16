@@ -162,6 +162,7 @@ module api.util.htmlarea.editor {
             this.handleFileUpload(ckeditor);
             this.handleNativeNotifications(ckeditor);
             this.setupDialogsToOpen(ckeditor);
+            this.setupKeyboardShortcuts(ckeditor);
 
             return ckeditor;
         }
@@ -180,7 +181,7 @@ module api.util.htmlarea.editor {
                 removePlugins: 'resize',
                 removeButtons: this.toolsToExlcude,
                 extraPlugins: this.plugins + (this.inline ? ',sharedspace' : ''),
-                extraAllowedContent: 'code',
+                extraAllowedContent: 'code address',
                 format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
                 autoGrow_onStartup: true,
                 image2_disableResizer: true,
@@ -192,49 +193,31 @@ module api.util.htmlarea.editor {
         }
 
         private listenCKEditorEvents(ckeditor: HTMLAreaEditor) {
-            ckeditor.on('change', () => {
-                if (this.nodeChangeHandler) {
-                    this.nodeChangeHandler(null);
-                }
-            });
+            if (this.nodeChangeHandler) {
+                ckeditor.on('change', this.nodeChangeHandler.bind(this));
+            }
 
-            ckeditor.on('focus', (e) => {
-                if (this.focusHandler) {
-                    this.focusHandler(<any>e);
-                }
-            });
+            if (this.focusHandler) {
+                ckeditor.on('focus', this.focusHandler.bind(this));
+            }
 
-            ckeditor.on('maximize', (e) => {
+            if (this.keydownHandler) {
+                ckeditor.on('key', this.keydownHandler.bind(this));
+            }
+
+            ckeditor.on('maximize', (e: eventInfo) => {
                 if (e.data === 2) { // fullscreen off
                     api.ui.responsive.ResponsiveManager.fireResizeEvent();
                 }
             });
 
-            ckeditor.on('blur', (e) => {
+            ckeditor.on('blur', (e: eventInfo) => {
                 if (this.hasActiveDialog) {
-                    //e.stopImmediatePropagation();
+                    e.stop();
                     this.hasActiveDialog = false;
                 }
                 if (this.blurHandler) {
                     this.blurHandler(<any>e);
-                }
-            });
-
-            ckeditor.on('key', (e: eventInfo) => {
-                if (e.data.keyCode === 9) { // tab pressed
-                    ckeditor.execCommand('indent');
-                    e.cancel();
-                    return;
-                }
-
-                if (e.data.keyCode === 2228233) { // shift + tab pressed
-                    ckeditor.execCommand('outdent');
-                    e.cancel();
-                    return;
-                }
-
-                if (this.keydownHandler) {
-                    this.keydownHandler(e);
                 }
             });
         }
@@ -337,8 +320,6 @@ module api.util.htmlarea.editor {
                 }
             });
 
-            ckeditor.setKeystroke(CKEDITOR.CTRL + 70, 'find'); // open find dialog on CTRL + F
-
             CKEDITOR.plugins.addExternal('macro', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'macroCKE.js');
 
             ckeditor.on('dialogShow', (dialogShowEvent: eventInfo) => {
@@ -363,6 +344,42 @@ module api.util.htmlarea.editor {
                     this.notifyImageDialog(dialogShowEvent);
                     break;
                 }
+            });
+        }
+
+        private setupKeyboardShortcuts(ckeditor: HTMLAreaEditor) {
+            const commandDef: CKEDITOR.commandDefinition = {
+                exec: function (editor) {
+                    editor.applyStyle(new CKEDITOR.style(<any>{element: this.name})); // name is command name
+                    return true;
+                }
+            }
+
+            ckeditor.addCommand('h1', commandDef);
+            ckeditor.addCommand('h2', commandDef);
+            ckeditor.addCommand('h3', commandDef);
+            ckeditor.addCommand('h4', commandDef);
+            ckeditor.addCommand('h5', commandDef);
+            ckeditor.addCommand('h6', commandDef);
+            ckeditor.addCommand('p', commandDef);
+            ckeditor.addCommand('div', commandDef);
+            ckeditor.addCommand('address', commandDef);
+
+            ckeditor.on('instanceReady', () => {
+                ckeditor.setKeystroke(9, 'indent'); // Indent on TAB
+                ckeditor.setKeystroke(CKEDITOR.SHIFT + 9, 'outdent'); // Outdent on SHIFT + TAB
+                ckeditor.setKeystroke(CKEDITOR.CTRL + 70, 'find'); // open find dialog on CTRL + F
+                ckeditor.setKeystroke(CKEDITOR.CTRL + 75, 'link'); // open link dialog on CTRL + K
+                ckeditor.setKeystroke(CKEDITOR.CTRL + 76, 'image'); // open link dialog on CTRL + L
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 49, 'h1'); // apply Heading 1 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 50, 'h2'); // apply Heading 2 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 51, 'h3'); // apply Heading 3 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 52, 'h4'); // apply Heading 4 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 53, 'h5'); // apply Heading 5 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 54, 'h6'); // apply Heading 6 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 55, 'p'); // apply the 'Normal' format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 56, 'div'); // apply the 'Normal (DIV)' format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 57, 'address'); // apply the 'Address' format
             });
         }
 
