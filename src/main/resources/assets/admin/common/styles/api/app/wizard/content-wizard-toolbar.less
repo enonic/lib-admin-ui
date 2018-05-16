@@ -18,7 +18,14 @@
   }
 
   .content-status {
-    border-right: 1px solid @admin-bg-light-gray;
+    &:after {
+      content: '.';
+      font-size: 0;
+      height: 100%;
+      border-right: 1px solid @admin-bg-light-gray;
+      display: inline-block;
+      vertical-align: top;
+    }
 
     .status {
       margin-right: 14px;
