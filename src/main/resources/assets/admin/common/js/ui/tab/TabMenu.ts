@@ -65,26 +65,26 @@ module api.ui.tab {
                 }
             });
 
-            this.menuEl.onKeyDown((event: KeyboardEvent) => {
-                if (this.isKeyNext(event)) {
-                    this.focusNextTab();
-                } else if (this.isKeyPrevious(event)) {
-                    this.focusPreviousTab();
-                } else if (KeyHelper.isApplyKey(event)) {
-                    const tab = this.tabs[this.focusIndex];
-                    if (tab) {
-                        tab.select();
-                    }
-                }
-
-                if (KeyHelper.isEscKey(event) && this.isMenuVisible()) {
-                    this.hideMenu();
-                }
-
-                AppHelper.lockEvent(event);
-            });
+            this.menuEl.onKeyDown((event: KeyboardEvent) => this.handleMenuKeyDown(event));
 
             api.dom.Body.get().onClicked((event: MouseEvent) => this.hideMenuOnOutsideClick(event));
+        }
+
+        protected handleMenuKeyDown(event: KeyboardEvent) {
+            if (this.isKeyNext(event)) {
+                this.focusNextTab();
+            } else if (this.isKeyPrevious(event)) {
+                this.focusPreviousTab();
+            } else if (KeyHelper.isApplyKey(event)) {
+                const tab = this.getFocusedTab();
+                if (tab) {
+                    tab.select();
+                }
+            } else if (KeyHelper.isEscKey(event) && this.isMenuVisible()) {
+                this.hideMenu();
+            }
+
+            AppHelper.lockEvent(event);
         }
 
         isEnabled(): boolean {
@@ -103,6 +103,10 @@ module api.ui.tab {
 
         returnFocusFromMenu(): boolean {
             return this.giveFocus();
+        }
+
+        getFocusedTab(): TabMenuItem {
+            return this.tabs[this.focusIndex];
         }
 
         focusNextTab(): boolean {
