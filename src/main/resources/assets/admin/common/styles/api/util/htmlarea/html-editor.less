@@ -205,8 +205,14 @@
   display: none !important;
 }
 
-.cke_widget_drag_handler_container {
-  display: block !important;
+body.cke_editable, .edit-mode {
+  .cke_widget_drag_handler_container {
+    display: block !important;
+  }
+}
+
+*[data-portal-component-type="text"]:not(.edit-mode) .cke_widget_wrapper:hover>.cke_widget_element {
+  outline: none;
 }
 
 .cke_dialog a {

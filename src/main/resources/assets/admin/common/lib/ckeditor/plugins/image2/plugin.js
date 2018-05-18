@@ -350,9 +350,6 @@
                 });
 
                 this.parts.image.setStyle('max-width', '100%'); // change #2
-                setTimeout(function () { // change #3
-                    this.dragHandlerContainer.setStyle('display', 'none');
-                }.bind(this), 100);
 
                 // If shifting non-captioned -> captioned, remove classes
                 // related to styles from <img/>.
@@ -383,7 +380,7 @@
                         height: image.getAttribute('height') || '',
 
                         // Lock ratio is on by default (https://dev.ckeditor.com/ticket/10833).
-                        lock: false //this.ready ? helpers.checkHasNaturalRatio(image) : true // change #4
+                        lock: false //this.ready ? helpers.checkHasNaturalRatio(image) : true // change #3
                     };
 
                 // If we used 'a' in widget#parts definition, it could happen that
