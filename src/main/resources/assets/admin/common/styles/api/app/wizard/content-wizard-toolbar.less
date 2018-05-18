@@ -5,15 +5,59 @@
   justify-content: flex-start;
   align-items: flex-end;
   align-content: stretch;
+  padding-right: 1px;
+  height: @app-header-height;
+  line-height: @app-header-height;
 
   & > * {
     flex: 0 0 auto;
   }
 
-  padding-left: 15px;
-  padding-right: 1px;
-  height: @app-header-height;
-  line-height: @app-header-height;
+  .invalid-mark {
+    border-right: 0 none !important;
+  }
+
+  .content-status {
+    &:after {
+      content: '.';
+      font-size: 0;
+      height: 100%;
+      border-right: 1px solid @admin-bg-light-gray;
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    .status {
+      margin-right: 14px;
+    }
+
+    .author {
+      display: none;
+    }
+  }
+
+  &.invalid {
+    .content-status {
+      margin-left: 4px;
+    }
+  }
+
+  &._0-240, &._240-360, &._360-540, &._540-720 {
+    &:not(.invalid) {
+      .content-status {
+        display: none;
+      }
+    }
+    &.invalid {
+      .content-status {
+        margin-left: 0;
+
+        .status {
+          display: none;
+        }
+      }
+    }
+  }
 
   .@{_COMMON_PREFIX}button {
     line-height: @app-header-height;
