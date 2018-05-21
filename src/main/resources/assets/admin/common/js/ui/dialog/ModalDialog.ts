@@ -5,6 +5,7 @@ module api.ui.dialog {
     import Element = api.dom.Element;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
     import Body = api.dom.Body;
+    import ResponsiveItem = api.ui.responsive.ResponsiveItem;
     import i18n = api.util.i18n;
 
     export interface ConfirmationConfig {
@@ -61,6 +62,8 @@ module api.ui.dialog {
         public static debug: boolean = false;
 
         private resizeObserver: any;
+
+        private responsiveItem: ResponsiveItem;
 
         constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
             super('modal-dialog', api.StyleHelper.COMMON_PREFIX);
@@ -169,6 +172,7 @@ module api.ui.dialog {
         }
 
         private initListeners() {
+            this.responsiveItem = new ResponsiveItem(this);
             this.handleClickOutsideDialog();
             this.handleFocusInOutEvents();
 
@@ -182,6 +186,7 @@ module api.ui.dialog {
 
             this.adjustHeight();
             this.adjustOverflow();
+            this.responsiveItem.update();
         }
 
         private handleResize() {
