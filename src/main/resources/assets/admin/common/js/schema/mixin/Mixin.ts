@@ -6,10 +6,13 @@ module api.schema.mixin {
 
         private formItems: api.form.FormItem[];
 
+        private external: boolean;
+
         constructor(builder: MixinBuilder) {
             super(builder);
             this.formItems = builder.formItems;
             this.schemaKey = builder.schemaKey;
+            this.external = builder.external;
         }
 
         getMixinName(): MixinName {
@@ -22,6 +25,10 @@ module api.schema.mixin {
 
         getSchemaKey(): string {
             return this.schemaKey;
+        }
+
+        isExternal(): boolean {
+            return this.external;
         }
 
         equals(o: api.Equitable): boolean {
@@ -41,6 +48,9 @@ module api.schema.mixin {
             }
 
             if (!api.ObjectHelper.arrayEquals(this.formItems, other.formItems)) {
+                return false;
+            }
+            if (!api.ObjectHelper.booleanEquals(this.external, other.external)) {
                 return false;
             }
 
@@ -63,11 +73,14 @@ module api.schema.mixin {
 
         formItems: api.form.FormItem[];
 
+        external: boolean;
+
         constructor(source?: Mixin) {
             super(source);
             if (source) {
                 this.schemaKey = source.getSchemaKey();
                 this.formItems = source.getFormItems();
+                this.external = source.isExternal();
             }
         }
 
@@ -85,6 +98,7 @@ module api.schema.mixin {
                 });
             }
             this.schemaKey = 'mixin:' + this.name;
+            this.external = mixinJson.external;
             return this;
         }
 

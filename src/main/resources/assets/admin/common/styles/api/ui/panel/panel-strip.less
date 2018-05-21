@@ -19,8 +19,55 @@
     border-bottom: 1px solid @admin-medium-gray-border;
 
     box-sizing: border-box !important;
-  }
 
+    &.enabled {
+
+      .toggler {
+
+        &:after {
+          content: "-";
+          line-height: 16px;
+          font-size: 20px;
+        }
+      }
+    }
+    &.disabled {
+
+      .toggler {
+
+        &:after {
+          content: '+';
+        }
+      }
+    }
+
+    .toggler {
+      display: inline-block;
+      float: right;
+      padding: 0 5px;
+      overflow: hidden;
+      z-index: @z-index-mask - 2;
+      cursor: pointer;
+
+      &:after {
+        display: block;
+        content: "";
+        height: 20px;
+        width: 20px;
+        text-align: center;
+        line-height: 20px;
+        font-size: 16px;
+        border-radius: 50%;
+        color: white;
+        background: @form-button-bg-hover;
+      }
+
+      &:hover:after {
+        color: @admin-dark-gray;
+      }
+
+    }
+  }
 }
 
 .panel-strip-scrollable {

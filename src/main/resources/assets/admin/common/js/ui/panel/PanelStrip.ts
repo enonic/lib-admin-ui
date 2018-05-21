@@ -43,8 +43,14 @@ module api.ui.panel {
             let previousChildrenIndex = this.countExistingChildren(index);
             let headerEl;
             if (header) {
-                headerEl = new api.dom.H2El('panel-strip-panel-header');
-                headerEl.getEl().setInnerHtml(header);
+                headerEl = new PanelStripHeader(header, panel.isExpandable());
+
+                headerEl.onEnableChanged((state) => {
+                    panel.setExpandState(state);
+                });
+
+                panel.setOuterHeader(headerEl);
+
                 this.insertChild(headerEl, previousChildrenIndex);
             }
             this.panels.splice(index, 0, panel);
