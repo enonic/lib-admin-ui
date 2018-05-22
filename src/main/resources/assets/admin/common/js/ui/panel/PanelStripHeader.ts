@@ -2,6 +2,7 @@ module api.ui.panel {
 
     import SpanEl = api.dom.SpanEl;
     import DivEl = api.dom.DivEl;
+    import i18n = api.util.i18n;
 
     export class PanelStripHeader
         extends DivEl {
@@ -10,19 +11,22 @@ module api.ui.panel {
 
         private toggler: DivEl;
 
+        private tooltip: Tooltip;
+
         private enableChangedListeners: { (value: boolean): void }[] = [];
 
-        constructor(text: string, isTogglerEnabled: boolean = false) {
+        constructor(text: string, isTogglerAllowed: boolean = false) {
             super();
             this.addClass('panel-strip-panel-header');
             this.text = new SpanEl().setHtml(text);
 
-            if (isTogglerEnabled) {
+            if (isTogglerAllowed) {
                 this.toggler = new DivEl('toggler');
 
                 this.toggler.onClicked(() => {
                     this.setTogglerState(!this.hasClass('enabled'));
                 });
+                this.tooltip = new Tooltip(this.toggler, '', 200).setMode(Tooltip.MODE_GLOBAL_STATIC);
 
                 this.setTogglerState(false);
             }
@@ -50,13 +54,10 @@ module api.ui.panel {
                 changed = true;
             }
 
-            /* if (enabled) {
-                 this.toggler.setHtml("-");
-             } else {
-                 this.toggler.setHtml("+");
-             }*/
             this.toggleClass('enabled', enabled);
             this.toggleClass('disabled', !enabled);
+
+            this.tooltip.setText(i18n(enabled ? 'tooltip.xdata.disable' : 'tooltip.xdata.enable'));
 
             if (changed && !silent) {
                 this.notifyEnableChanged(enabled);
