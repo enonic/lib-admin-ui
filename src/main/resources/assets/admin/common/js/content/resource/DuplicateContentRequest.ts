@@ -6,7 +6,7 @@ module api.content.resource {
     export type DuplicatableId = {
         id: ContentId,
         withChildren: boolean
-    }
+    };
 
     export class DuplicateContentRequest
         extends ContentResourceRequest<TaskIdJson, TaskId> {
