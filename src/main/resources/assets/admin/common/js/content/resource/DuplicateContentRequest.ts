@@ -5,7 +5,7 @@ module api.content.resource {
 
     export type DuplicatableId = {
         id: ContentId,
-        withChildren: boolean
+        includeChildren: boolean
     };
 
     export class DuplicateContentRequest
