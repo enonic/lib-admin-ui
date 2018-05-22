@@ -9,7 +9,7 @@
 
     var template = '<img alt="" src="" />',
         templateBlock = new CKEDITOR.template(
-            '<figure class="{captionedClass}">' +
+            '<figure style="margin: 0" class="{captionedClass}">' +
             template +
             '<figcaption>{captionPlaceholder}</figcaption>' +
             '</figure>'),
