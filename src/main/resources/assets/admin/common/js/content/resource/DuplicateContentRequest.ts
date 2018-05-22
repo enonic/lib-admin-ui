@@ -3,17 +3,12 @@ module api.content.resource {
     import TaskIdJson = api.task.TaskIdJson;
     import TaskId = api.task.TaskId;
 
-    export type DuplicatableId = {
-        id: ContentId,
-        withChildren: boolean
-    };
-
     export class DuplicateContentRequest
         extends ContentResourceRequest<TaskIdJson, TaskId> {
 
-        private ids: DuplicatableId[];
+        private ids: ContentIds;
 
-        constructor(ids: DuplicatableId[]) {
+        constructor(ids: ContentIds) {
             super();
             this.setHeavyOperation(true);
             super.setMethod('POST');
@@ -22,7 +17,7 @@ module api.content.resource {
 
         getParams(): Object {
             return {
-                duplicatableIds: this.ids
+                contentIds: this.ids.map(id => id.toString())
             };
         }
 
