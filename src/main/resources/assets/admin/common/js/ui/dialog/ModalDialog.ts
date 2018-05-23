@@ -276,7 +276,9 @@ module api.ui.dialog {
         private isIgnoredElementClicked(element: HTMLElement): boolean {
             let ignoredElementClicked = false;
             if (element && element.className && element.className.indexOf) {
-                ignoredElementClicked = element.className.indexOf('mce-') > -1 || element.className.indexOf('html-area-modal-dialog') > -1;
+                ignoredElementClicked =
+                    element.className.indexOf('mce-') > -1 || element.className.indexOf('html-area-modal-dialog') > -1 ||
+                    element.className.indexOf('cke_') > -1;
             }
             ignoredElementClicked = ignoredElementClicked || this.listOfClickIgnoredElements.some((elem: Element) => {
                 return elem.getHTMLElement() === element || elem.getEl().contains(element);
