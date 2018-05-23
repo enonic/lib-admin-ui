@@ -573,7 +573,12 @@
 
                 hasCaption: function (shift, oldValue, newValue) {
                     // This action is for real state change only.
-                    if (!shift.changed.hasCaption) {
+                    var isDragAndDrop = !!shift.widget.data.src && !oldValue && !shift.widget.data.hasCaption; // #5
+                    if (isDragAndDrop) { // #5
+                        shift.widget.data.hasCaption = true;
+                    }
+
+                    if (!shift.changed.hasCaption && !isDragAndDrop) { // #5
                         return;
                     }
 
@@ -590,11 +595,11 @@
                     shift.deflate();
 
                     // There was no caption, but the caption is to be added.
-                    if (newValue) {
+                    if (newValue || isDragAndDrop) { // #5
                         // Create new <figure> from widget template.
                         var figure = CKEDITOR.dom.element.createFromHtml(templateBlock.output({
                             captionedClass: captionedClass,
-                            captionPlaceholder: editor.lang.image2.captionPlaceholder
+                            captionPlaceholder: isDragAndDrop ? '' : editor.lang.image2.captionPlaceholder // #5
                         }), doc);
 
                         // Replace element with <figure>.
@@ -611,10 +616,13 @@
                     // The caption was present, but now it's to be removed.
                     else {
                         // Unwrap <img/> or <a><img/></a> from figure.
-                        imageOrLink.replace(shift.element);
+                        // imageOrLink.replace(shift.element);
+                        if (shift.widget.parts.caption) {
+                            shift.widget.parts.caption.remove();
+                        }
 
                         // Update widget's element.
-                        shift.element = imageOrLink;
+                        // shift.element = imageOrLink;
                     }
                 },
 
@@ -684,7 +692,7 @@
             }
 
             function unwrapFromCentering(element) {
-                var imageOrLink = element.findOne('a,img');
+                var imageOrLink = element.findOne('a,figure'); // #4
 
                 imageOrLink.replace(element);
 
@@ -1426,7 +1434,7 @@
                 command.refresh(editor, editor.elementPath());
             });
 
-            if (value in {right: 1, left: 1, center: 1}) {
+            if (value in {right: 1, left: 1, center: 1, justify: 1}) {
                 command.on('exec', function (evt) {
                     var widget = getFocusedWidget(editor);
 

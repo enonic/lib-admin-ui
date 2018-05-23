@@ -19,6 +19,8 @@ module api.util.htmlarea.dialog {
      * 1. setWrapperAlign() method updated to make image wrapper element have inline alignment styles we used to have
      * 2. data() function updated to set 'max-width: 100%' on all images, including dropped/pasted images
      * 3. init value of  widget's 'data.lock' parameter set to false to make dropped/pasted images align correctly
+     * 4. unwrapFromCentering() updated to correctly handle image alignment with respect to figure tag
+     * 5. hasCaption() updated to wrap image into figure tag on drag and drop
      *
      * NB: Modifications were made in ckeditor.js (VERY SORRY FOR THAT):
      * LINE 1279: updateDragHandlerPosition() function updated to set inline style 'display: none;' on drag handler container
@@ -376,9 +378,7 @@ module api.util.htmlarea.dialog {
                     this.ckeOriginalDialog.getButton('ok').click();
                     (<any>this.ckeOriginalDialog).widget.parts.image.setAttribute('data-src',
                         this.image.getEl().getAttribute('data-src'));
-                    if (this.hasCaption()) {
-                        this.setCaptionText();
-                    }
+                    this.setCaptionText();
                     this.close();
                 }
             }));
@@ -389,13 +389,12 @@ module api.util.htmlarea.dialog {
         private updateOriginalDialogInputValues(): void {
             const src: string = this.image.getEl().getAttribute('src');
             const altText: string = this.getAltTextFieldValue();
-            const hasCaption: boolean = this.hasCaption();
             const alignment: string = this.image.getHTMLElement().style.textAlign;
             const keepSize: boolean = this.image.getEl().getAttribute('data-src').indexOf('keepSize=true') > 0;
 
             this.getOriginalUrlElem().setValue(src, false);
             this.getOriginalAltTextElem().setValue(altText, false);
-            this.getOriginalHasCaptionElem().setValue(hasCaption, false);
+            this.getOriginalHasCaptionElem().setValue(true, false);
             this.getOriginalAlignmentElem().setValue(alignment, false);
             // using plugin's lock button state to tell it if keepSize is true or not
             // plugin is modified to set required inline styles
@@ -404,16 +403,12 @@ module api.util.htmlarea.dialog {
             }
         }
 
-        private hasCaption(): boolean {
-            return !api.util.StringHelper.isEmpty(this.getCaptionFieldValue());
-        }
-
         private setCaptionFieldValue(value: string) {
             (<api.dom.InputEl>this.imageCaptionField.getInput()).setValue(value);
         }
 
         private setCaptionText() {
-            (<any>this.ckeOriginalDialog).widget.element.$.parentElement.getElementsByTagName('figcaption')[0].textContent =
+            (<any>this.ckeOriginalDialog).widget.parts.image.$.parentElement.getElementsByTagName('figcaption')[0].textContent =
                 this.getCaptionFieldValue();
         }
 
