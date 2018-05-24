@@ -476,30 +476,24 @@ module api.ui.treegrid {
             this.grid.toggleRow(data.row);
         }
 
-        private onRowHighlighted(elem: ElementHelper, data: Slick.OnClickEventData) {
-            const node = this.gridData.getItem(data.row);
-            const clickedRow = wemjq(elem.getHTMLElement()).closest('.slick-row');
-            const isRowSelected = this.grid.isRowSelected(data.row);
-            const isMultipleRowsSelected = this.grid.getSelectedRows().length > 1;
-            const isRowHighlighted = clickedRow.hasClass('selected');
+        public setContextMenu(contextMenu: TreeGridContextMenu) {
+            this.contextMenu = contextMenu;
+            this.grid.subscribeOnContextMenu((event) => {
+                event.preventDefault();
+                this.setActive(false);
+                this.contextMenu.hide();
 
-            if (elem.hasClass('sort-dialog-trigger') && (isRowSelected || isRowHighlighted)) {
-                if (isMultipleRowsSelected) {
-                    this.grid.selectRow(data.row);
+                let cell = this.grid.getCellFromEvent(event);
+
+                if (!this.grid.isRowSelected(cell.row)) {
+                    if (!this.highlightedNode || this.getRowIndexByNode(this.highlightedNode) != cell.row) {
+                        this.highlightRowByNode(this.gridData.getItem(cell.row), true,
+                            () => this.showContextMenuAt(event.pageX, event.pageY));
+                        return;
+                    }
                 }
-                return;
-            }
-
-            // Clear selection and highlighting if something was selected or highlighted from before
-            if (this.isSelectionNotEmpty() || isRowHighlighted) {
-                this.unselectAllRows();
-                this.root.clearStashedSelection();
-                this.triggerSelectionChangedListeners();
-            }
-
-            if (!isRowHighlighted) {
-                this.highlightRowByNode(node);
-            }
+                this.showContextMenuAt(event.pageX, event.pageY);
+            });
         }
 
         private isSelectionNotEmpty() {
@@ -635,20 +629,28 @@ module api.ui.treegrid {
             return;
         }
 
-        public setContextMenu(contextMenu: TreeGridContextMenu) {
-            this.contextMenu = contextMenu;
-            this.grid.subscribeOnContextMenu((event) => {
-                event.preventDefault();
-                this.setActive(false);
-                this.contextMenu.hide();
+        private onRowHighlighted(elem: ElementHelper, data: Slick.OnClickEventData) {
+            const node = this.gridData.getItem(data.row);
+            const clickedRow = wemjq(elem.getHTMLElement()).closest('.slick-row');
+            const isRowSelected = this.grid.isRowSelected(data.row);
+            const isMultipleRowsSelected = this.grid.getSelectedRows().length > 1;
+            const isRowHighlighted = clickedRow.hasClass('selected');
 
-                let cell = this.grid.getCellFromEvent(event);
-                if (!this.grid.isRowSelected(cell.row)) {
-                    this.highlightRowByNode(this.gridData.getItem(cell.row), true, () => this.showContextMenuAt(event.pageX, event.pageY));
-                } else {
-                    this.showContextMenuAt(event.pageX, event.pageY);
+            if (elem.hasClass('sort-dialog-trigger') && (isRowSelected || isRowHighlighted)) {
+                if (isMultipleRowsSelected) {
+                    this.grid.selectRow(data.row);
                 }
-            });
+                return;
+            }
+
+            // Clear selection and highlighting if something was selected or highlighted from before
+            if (this.isSelectionNotEmpty() || isRowHighlighted) {
+                this.clearAllSelection();
+            }
+
+            if (!isRowHighlighted) {
+                this.highlightRowByNode(node);
+            }
         }
 
         onHighlightingChanged(listener: (node: TreeNode<DATA>, force: boolean, callback: Function) => void) {
@@ -1705,7 +1707,14 @@ module api.ui.treegrid {
             if (this.selectionOnClick === SelectionOnClickType.SELECT) {
                 return;
             }
-            if (!this.highlightedNode || this.highlightedNode !== node) {
+
+            const isCurRowHighlighted = this.highlightedNode && this.highlightedNode == node;
+
+            if (this.isSelectionNotEmpty() || isCurRowHighlighted) {
+                this.clearAllSelection();
+            }
+
+            if (!isCurRowHighlighted) {
                 this.unhighlightCurrentRow();
                 this.highlightedNode = node;
                 this.notifyHighlightingChanged(immediateNotification, callback);
@@ -1713,8 +1722,14 @@ module api.ui.treegrid {
 
             let row = this.getRowByNode(node);
             if (row) {
-                row.addClass('selected');
+                row.toggleClass('selected', true);
             }
+        }
+
+        private clearAllSelection() {
+            this.unselectAllRows();
+            this.root.clearStashedSelection();
+            this.triggerSelectionChangedListeners();
         }
 
         private notifyHighlightingChanged(force: boolean = false, callback?: Function): void {
