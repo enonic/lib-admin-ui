@@ -27,14 +27,14 @@ module api.util.htmlarea.editor {
         private toolsToInclude: string[] = [];
 
         private tools: any[] = [
-            ['Format', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'Code', 'Blockquote'],
+            ['Format', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'Blockquote'],
             ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
             ['BulletedList', 'NumberedList', 'Outdent', 'Indent'],
             ['SpecialChar', 'Anchor', 'Image', 'Macro', 'Link', 'Unlink'],
             ['Table', 'Maximize']
         ];
 
-        private plugins: string = 'autogrow,sourcedialog,macro,image2,codeTag';
+        private plugins: string = 'autogrow,sourcedialog,macro,image2';
 
         setEditableSourceCode(value: boolean): HTMLAreaBuilderCKE {
             this.editableSourceCode = value;
@@ -163,12 +163,13 @@ module api.util.htmlarea.editor {
             this.handleNativeNotifications(ckeditor);
             this.setupDialogsToOpen(ckeditor);
             this.setupKeyboardShortcuts(ckeditor);
+            this.addCustomLangEntries(ckeditor);
 
             return ckeditor;
         }
 
         private adjustToolsList() {
-            if (this.editableSourceCode && !this.isToolExcluded('Code')) {
+            if (this.editableSourceCode) {
                 this.includeTool('Sourcedialog');
             }
 
@@ -176,7 +177,7 @@ module api.util.htmlarea.editor {
         }
 
         private createConfig(): CKEDITOR.config {
-            return {
+            const config: CKEDITOR.config = {
                 toolbar: this.tools,
                 removePlugins: 'resize',
                 removeButtons: this.toolsToExlcude,
@@ -190,6 +191,13 @@ module api.util.htmlarea.editor {
                 contentsCss: this.assetsUri + '/admin/common/styles/html-editor.css', // for classic mode only
                 sharedSpaces: this.inline ? {top: this.fixedToolbarContainer} : null
             };
+
+            if (!this.isToolExcluded('Code')) {
+                config.format_tags = config.format_tags + ';code';
+                config['format_code'] = {element: 'code'};
+            }
+
+            return config;
         }
 
         private listenCKEditorEvents(ckeditor: HTMLAreaEditor) {
@@ -382,6 +390,14 @@ module api.util.htmlarea.editor {
                 ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 55, 'p'); // apply the 'Normal' format
                 ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 56, 'div'); // apply the 'Normal (DIV)' format
                 ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 57, 'address'); // apply the 'Address' format
+            });
+        }
+
+        private addCustomLangEntries(ckeditor: HTMLAreaEditor) {
+            ckeditor.on('langLoaded', (evt : eventInfo) => {
+                if (evt.editor.lang.format) {
+                    evt.editor.lang.format.tag_code='Сode';
+                }
             });
         }
 
