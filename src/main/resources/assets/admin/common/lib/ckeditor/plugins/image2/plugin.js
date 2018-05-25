@@ -9,7 +9,7 @@
 
     var template = '<img alt="" src="" />',
         templateBlock = new CKEDITOR.template(
-            '<figure style="margin: 0" class="{captionedClass}">' +
+            '<figure style="margin: 0" class="{captionedClass}">' +  // #6
             template +
             '<figcaption>{captionPlaceholder}</figcaption>' +
             '</figure>'),
@@ -316,6 +316,10 @@
                 // Image can't be aligned when floating is disallowed (https://dev.ckeditor.com/ticket/11004).
                 if (this.data.align != 'none' && !editor.filter.checkFeature(features.align)) {
                     this.data.align = 'none';
+                }
+
+                if (!this.data.align || this.data.align === 'none') { // #7
+                    this.data.align = 'block';
                 }
 
                 // Convert the internal form of the widget from the old state to the new one.
@@ -910,7 +914,7 @@
                 wrapper.removeStyle('float');
             }
             else {
-                if (align == 'none' || align == null) {
+                if (align == 'none' || align == null || align == 'block') { // #7
                     wrapper.removeStyle('float');
                     wrapper.removeStyle('margin');
                     wrapper.removeStyle('width');
@@ -1434,7 +1438,7 @@
                 command.refresh(editor, editor.elementPath());
             });
 
-            if (value in {right: 1, left: 1, center: 1, justify: 1}) {
+            if (value in {right: 1, left: 1, center: 1, block: 1}) { // #7
                 command.on('exec', function (evt) {
                     var widget = getFocusedWidget(editor);
 
@@ -1454,7 +1458,7 @@
 
             command.on('refresh', function (evt) {
                 var widget = getFocusedWidget(editor),
-                    allowed = {right: 1, left: 1, center: 1};
+                    allowed = {right: 1, left: 1, center: 1, block: 1}; // #7
 
                 if (!widget) {
                     return;
