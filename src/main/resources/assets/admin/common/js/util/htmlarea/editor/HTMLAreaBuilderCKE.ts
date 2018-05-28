@@ -152,7 +152,7 @@ module api.util.htmlarea.editor {
 
         private checkRequiredFieldsAreSet() {
             if (!this.assetsUri || !this.editorContainerId || !this.content) {
-                throw new Error('some required fields are mignsffkglikdfrfsing for CKEditor');
+                throw new Error('some required fields are missing for CKEditor');
             }
         }
 
