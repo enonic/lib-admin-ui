@@ -34,7 +34,7 @@ module api.util.htmlarea.editor {
             ['Table', 'Maximize']
         ];
 
-        private plugins: string = 'autogrow,sourcedialog,macro,image2';
+        private plugins: string = 'autogrow,sourcedialog,macro,image2,quicktable';
 
         setEditableSourceCode(value: boolean): HTMLAreaBuilderCKE {
             this.editableSourceCode = value;
