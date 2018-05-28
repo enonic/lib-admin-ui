@@ -21,7 +21,7 @@ module api.ui.panel {
             this.text = new SpanEl().setHtml(text);
 
             if (isTogglerAllowed) {
-                this.toggler = new DivEl('toggler');
+                this.toggler = new DivEl('x-data-toggler');
 
                 this.toggler.onClicked(() => {
                     this.setTogglerState(!this.hasClass('enabled'));

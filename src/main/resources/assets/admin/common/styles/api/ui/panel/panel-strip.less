@@ -22,44 +22,38 @@
 
     &.enabled {
 
-      .toggler {
+      .x-data-toggler {
 
-        &:after {
-          content: "-";
-          line-height: 16px;
-          font-size: 20px;
-        }
+        .icon-close();
+
+        padding-top: 5px;
+        font-size: 12px;
       }
     }
+
     &.disabled {
 
-      .toggler {
+      .x-data-toggler {
 
-        &:after {
+        &:before {
+          font-size: 26px;
+          font-weight: 900;
           content: '+';
         }
       }
     }
 
-    .toggler {
+    .x-data-toggler {
       display: inline-block;
       float: right;
-      padding: 0 5px;
+      padding: 0 15px;
       overflow: hidden;
       z-index: @z-index-mask - 2;
       cursor: pointer;
 
-      &:after {
+      &:before {
         display: block;
         content: "";
-        height: 20px;
-        width: 20px;
-        text-align: center;
-        line-height: 20px;
-        font-size: 16px;
-        border-radius: 50%;
-        color: white;
-        background: @form-button-bg-hover;
       }
 
       &:hover:after {
