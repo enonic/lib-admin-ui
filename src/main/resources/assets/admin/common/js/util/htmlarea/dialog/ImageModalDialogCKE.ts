@@ -21,6 +21,8 @@ module api.util.htmlarea.dialog {
      * 3. init value of  widget's 'data.lock' parameter set to false to make dropped/pasted images align correctly
      * 4. unwrapFromCentering() updated to correctly handle image alignment with respect to figure tag
      * 5. hasCaption() updated to wrap image into figure tag on drag and drop
+     * 6. templateBlock variable updated to set margin:0 on figure tag when inserted
+     * 7. updated image plugin to enable justify button on toolbar
      *
      * NB: Modifications were made in ckeditor.js (VERY SORRY FOR THAT):
      * LINE 1279: updateDragHandlerPosition() function updated to set inline style 'display: none;' on drag handler container
