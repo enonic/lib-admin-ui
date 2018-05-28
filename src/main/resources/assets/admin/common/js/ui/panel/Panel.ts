@@ -47,7 +47,7 @@ module api.ui.panel {
             return false;
         }
 
-        setExpandState(value: boolean) {
+        setExpandState(_value: boolean) {
             return;
         }
 
