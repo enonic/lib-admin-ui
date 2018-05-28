@@ -5,6 +5,12 @@ module api.util.htmlarea.editor {
     import NotificationMessage = api.notify.NotificationMessage;
     import NotifyManager = api.notify.NotifyManager;
 
+    /**
+     * NB: Modifications were made in ckeditor.js (VERY SORRY FOR THAT):
+     * LINE 126: getFrameDocument() function updated to fix issue #542 in MS EDGE
+     *
+     * Update those in case ckeditor lib is updated
+     */
     export class HTMLAreaBuilderCKE {
 
         private content: api.content.ContentSummary; // used for image dialog
@@ -146,7 +152,7 @@ module api.util.htmlarea.editor {
 
         private checkRequiredFieldsAreSet() {
             if (!this.assetsUri || !this.editorContainerId || !this.content) {
-                throw new Error('some required fields are missing for CKEditor');
+                throw new Error('some required fields are mignsffkglikdfrfsing for CKEditor');
             }
         }
 
