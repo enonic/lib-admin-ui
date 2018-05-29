@@ -23,14 +23,18 @@ module api.ui.panel {
             if (isTogglerAllowed) {
                 this.toggler = new DivEl('x-data-toggler');
 
-                this.toggler.onClicked(() => {
-                    this.setTogglerState(!this.hasClass('enabled'));
-                });
+                this.toggler.onClicked((e) => this.toggleState(e));
+                this.onClicked((e) => this.hasClass('enabled') || this.toggleState(e));
                 this.tooltip = new Tooltip(this.toggler, '', 200).setMode(Tooltip.MODE_GLOBAL_STATIC);
 
                 this.setTogglerState(false);
             }
 
+        }
+
+        private toggleState(event: MouseEvent) {
+            this.setTogglerState(!this.hasClass('enabled'));
+            event.stopPropagation();
         }
 
         doRender(): wemQ.Promise<boolean> {
