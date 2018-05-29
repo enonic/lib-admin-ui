@@ -763,8 +763,11 @@ module api.ui.treegrid {
             this.removeHighlighting(skipEvent);
         }
 
-        private unselectAllRows() {
-            this.unhighlightRows();
+        private unselectAllRows(unhighlight: boolean = true) {
+
+            if (unhighlight) {
+                this.unhighlightRows();
+            }
             if (this.grid.getSelectedRows().length > 0) {
                 this.grid.clearSelection();
             }
@@ -1711,7 +1714,7 @@ module api.ui.treegrid {
             const isCurRowHighlighted = this.highlightedNode && this.highlightedNode == node;
 
             if (this.isSelectionNotEmpty() || isCurRowHighlighted) {
-                this.clearAllSelection();
+                this.clearAllSelection(false);
             }
 
             if (!isCurRowHighlighted) {
@@ -1726,8 +1729,8 @@ module api.ui.treegrid {
             }
         }
 
-        private clearAllSelection() {
-            this.unselectAllRows();
+        private clearAllSelection(unhighlight: boolean = true) {
+            this.unselectAllRows(unhighlight);
             this.root.clearStashedSelection();
             this.triggerSelectionChangedListeners();
         }

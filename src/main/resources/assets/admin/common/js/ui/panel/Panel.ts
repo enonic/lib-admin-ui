@@ -3,9 +3,12 @@ module api.ui.panel {
     /**
      * Use Panel when you need a container that needs 100% height.
      */
-    export class Panel extends api.dom.DivEl {
+    export class Panel
+        extends api.dom.DivEl {
 
         private doOffset: boolean;
+
+        protected outerHeader: PanelStripHeader;
 
         constructor(className?: string) {
             super('panel' + (className ? ' ' + className : ''));
@@ -34,6 +37,18 @@ module api.ui.panel {
 
                 return rendered;
             });
+        }
+
+        setOuterHeader(header: PanelStripHeader) {
+            this.outerHeader = header;
+        }
+
+        isExpandable(): boolean {
+            return false;
+        }
+
+        setExpandState(_value: boolean) {
+            return;
         }
 
         protected calculateOffset() {

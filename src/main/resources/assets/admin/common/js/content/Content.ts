@@ -99,12 +99,6 @@ module api.content {
             return copy;
         }
 
-        private trimExtraData(extraData: ExtraData): ExtraData {
-            let copy = extraData.clone();
-            copy.getData().getRoot().removeEmptyValues();
-            return copy;
-        }
-
         public containsChildContentId(contentId: ContentId): wemQ.Promise<boolean> {
             const page = this.getPage();
 
@@ -132,19 +126,10 @@ module api.content {
             return api.ObjectHelper.equals(data, otherData);
         }
 
-        extraDataEquals(other: ExtraData[], ignoreEmptyValues: boolean = false): boolean {
-            let extraData;
-            let otherExtraData;
-            if (ignoreEmptyValues) {
-                extraData = this.extraData.map((m) => this.trimExtraData(m)).filter((m) => !m.getData().isEmpty());
-                otherExtraData = other.map((m) => this.trimExtraData(m)).filter((m) => !m.getData().isEmpty());
-            } else {
-                extraData = this.extraData;
-                otherExtraData = other;
-            }
+        extraDataEquals(other: ExtraData[]): boolean {
             let comparator = new api.content.util.ExtraDataByMixinNameComparator();
 
-            return api.ObjectHelper.arrayEquals(extraData.sort(comparator.compare), otherExtraData.sort(comparator.compare));
+            return api.ObjectHelper.arrayEquals(this.extraData.sort(comparator.compare), other.sort(comparator.compare));
         }
 
         equals(o: api.Equitable, ignoreEmptyValues: boolean = false, shallow: boolean = false): boolean {
@@ -163,7 +148,7 @@ module api.content {
                     return false;
                 }
 
-                if (!this.extraDataEquals(other.getAllExtraData(), ignoreEmptyValues)) {
+                if (!this.extraDataEquals(other.getAllExtraData())) {
                     return false;
                 }
             }
