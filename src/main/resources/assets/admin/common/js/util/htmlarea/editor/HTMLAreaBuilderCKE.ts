@@ -164,6 +164,7 @@ module api.util.htmlarea.editor {
             this.setupDialogsToOpen(ckeditor);
             this.setupKeyboardShortcuts(ckeditor);
             this.addCustomLangEntries(ckeditor);
+            this.removeUnwantedMenuItems(ckeditor);
 
             return ckeditor;
         }
@@ -196,6 +197,9 @@ module api.util.htmlarea.editor {
                 config.format_tags = config.format_tags + ';code';
                 config['format_code'] = {element: 'code'};
             }
+
+            config['qtRows']= 10; // Count of rows
+            config['qtColumns']= 10; // Count of columns
 
             return config;
         }
@@ -398,6 +402,14 @@ module api.util.htmlarea.editor {
                 if (evt.editor.lang.format) {
                     evt.editor.lang.format.tag_code='Сode';
                 }
+            });
+        }
+
+        private removeUnwantedMenuItems(ckeditor: HTMLAreaEditor) {
+            ckeditor.on('instanceReady', () => {
+                ckeditor.removeMenuItem('table');
+                ckeditor.removeMenuItem('tablecell_properties');
+                ckeditor.removeMenuItem('paste');
             });
         }
 
