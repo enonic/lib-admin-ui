@@ -5,19 +5,15 @@
     margin: 0;
     position: static;
     padding-top: 30px;
-    padding-bottom: 60px;
-
   }
 
   .panel-strip-panel-header {
     padding-left: 10px;
-    padding-top: 30px;
+    padding-top: 60px;
     font-size: 25px;
     line-height: 20px;
     max-width: 660px;
-    width: 100%;
     border-bottom: 1px solid @admin-medium-gray-border;
-
     box-sizing: border-box !important;
 
     &.enabled {
@@ -26,12 +22,17 @@
 
         .icon-close();
 
-        padding-top: 5px;
+        padding: 5px 15px 0 15px;
         font-size: 12px;
       }
     }
 
     &.disabled {
+      height: 53px;
+      margin: 60px 15px 0 10px;
+      background-color: @admin-bg-light-gray;
+      padding: 15px 15px 0 10px;
+      border-bottom: none;
 
       .x-data-toggler {
 
@@ -46,7 +47,6 @@
     .x-data-toggler {
       display: inline-block;
       float: right;
-      padding: 0 15px;
       overflow: hidden;
       z-index: @z-index-mask - 2;
       cursor: pointer;
