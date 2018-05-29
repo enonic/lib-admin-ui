@@ -200,6 +200,7 @@ module api.util.htmlarea.editor {
 
             config['qtRows']= 10; // Count of rows
             config['qtColumns']= 10; // Count of columns
+            config['qtWidth']= '100%'; // table width
 
             return config;
         }
