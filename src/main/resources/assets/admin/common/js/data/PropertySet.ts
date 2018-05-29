@@ -134,6 +134,10 @@ module api.data {
             this.propertyArrayByName[array.getName()] = array;
 
             this.registerPropertyArrayListeners(array);
+
+            array.getProperties().forEach((property) => {
+                this.forwardPropertyAddedEvent(new PropertyAddedEvent(property));
+            });
         }
 
         addProperty(name: string, value: Value): Property {
@@ -207,6 +211,18 @@ module api.data {
             }
             if (!array || array.isEmpty()) {
                 delete this.propertyArrayByName[name];
+            }
+        }
+
+        removeAllProperties() {
+            for (const name in this.propertyArrayByName) {
+                if (this.propertyArrayByName.hasOwnProperty(name)) {
+                    let propertyArray: PropertyArray = this.propertyArrayByName[name];
+                    for (let i = 0; i < propertyArray.getSize(); i++) {
+                        propertyArray.remove(i);
+                    }
+                    delete this.propertyArrayByName[name];
+                }
             }
         }
 
@@ -480,6 +496,15 @@ module api.data {
             });
 
             return copy;
+        }
+
+        addPropertiesFromSet(sourceSet: PropertySet): PropertySet {
+            api.ObjectHelper.objectPropertyIterator(sourceSet.propertyArrayByName, (_name: string, sourcePropertyArray: PropertyArray) => {
+                let propertyArrayCopy = sourcePropertyArray.copy(this);
+                this.addPropertyArray(propertyArrayCopy);
+            });
+
+            return this;
         }
 
         toJson(): PropertyArrayJson[] {

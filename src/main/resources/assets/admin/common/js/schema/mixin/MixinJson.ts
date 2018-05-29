@@ -4,5 +4,7 @@ module api.schema.mixin {
 
         form:api.form.json.FormJson;
 
+        external: boolean;
+
     }
 }
