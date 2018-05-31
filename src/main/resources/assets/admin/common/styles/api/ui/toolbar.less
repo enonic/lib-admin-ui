@@ -1,3 +1,17 @@
+.toolbar-button() {
+  .menu-action-button();
+
+  display: inline-block;
+  vertical-align: top;
+  height: 100%;
+  line-height: 41px;
+  padding: 0 14px;
+
+  &.pull-right {
+    float: right;
+  }
+}
+
 .toolbar {
   @toolbar-height: 41px;
 
@@ -18,18 +32,7 @@
   }
 
   > .@{_COMMON_PREFIX}button {
-    .menu-action-button();
-
-    display: inline-block;
-    vertical-align: top;
-    height: 100%;
-    line-height: 41px;
-    padding: 0 14px;
-
-    &.pull-right {
-      float: right;
-    }
-
+    .toolbar-button();
   }
 
   .toggle-slide {
