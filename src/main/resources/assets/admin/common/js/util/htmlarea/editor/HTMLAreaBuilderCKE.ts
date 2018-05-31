@@ -191,7 +191,6 @@ module api.util.htmlarea.editor {
                 extraPlugins: this.plugins + (this.inline ? ',sharedspace' : ''),
                 extraAllowedContent: 'code address',
                 format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
-                autoGrow_onStartup: true,
                 image2_disableResizer: true,
                 disallowedContent: 'img[width,height]',
                 uploadUrl: api.util.UriHelper.getRestUri('content/createMedia'),
@@ -405,9 +404,9 @@ module api.util.htmlarea.editor {
         }
 
         private addCustomLangEntries(ckeditor: HTMLAreaEditor) {
-            ckeditor.on('langLoaded', (evt : eventInfo) => {
+            ckeditor.on('langLoaded', (evt: eventInfo) => {
                 if (evt.editor.lang.format) {
-                    evt.editor.lang.format.tag_code='Сode';
+                    evt.editor.lang.format.tag_code = 'Сode';
                 }
             });
         }
