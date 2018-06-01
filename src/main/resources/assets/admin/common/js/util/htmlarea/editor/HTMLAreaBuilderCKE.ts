@@ -25,6 +25,7 @@ module api.util.htmlarea.editor {
         private nodeChangeHandler: (e: any) => void;
         private createDialogListeners: { (event: CreateHtmlAreaDialogEvent): void }[] = [];
         private inline: boolean = false;
+        private isFullscreenMode = false;
         private fixedToolbarContainer: string;
         private hasActiveDialog: boolean = false;
         private customToolConfig: any;
@@ -37,10 +38,8 @@ module api.util.htmlarea.editor {
             ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
             ['BulletedList', 'NumberedList', 'Outdent', 'Indent'],
             ['SpecialChar', 'Anchor', 'Image', 'Macro', 'Link', 'Unlink'],
-            ['Table', 'Maximize']
+            ['Table']
         ];
-
-        private plugins: string = 'autogrow,sourcedialog,macro,image2,quicktable';
 
         setEditableSourceCode(value: boolean): HTMLAreaBuilderCKE {
             this.editableSourceCode = value;
@@ -54,6 +53,11 @@ module api.util.htmlarea.editor {
 
         setEditorContainerId(id: string): HTMLAreaBuilderCKE {
             this.editorContainerId = id;
+            return this;
+        }
+
+        setFullscreenMode(value: boolean): HTMLAreaBuilderCKE {
+            this.isFullscreenMode = value;
             return this;
         }
 
@@ -180,6 +184,10 @@ module api.util.htmlarea.editor {
                 this.includeTool('Sourcedialog');
             }
 
+            if (!this.inline && !this.isFullscreenMode) {
+                this.includeTool('Fullscreen');
+            }
+
             this.tools.push(this.toolsToInclude);
         }
 
@@ -188,7 +196,7 @@ module api.util.htmlarea.editor {
                 toolbar: this.tools,
                 removePlugins: 'resize',
                 removeButtons: this.toolsToExlcude,
-                extraPlugins: this.plugins + (this.inline ? ',sharedspace' : ''),
+                extraPlugins: this.getExtraPlugins(),
                 extraAllowedContent: 'code address',
                 format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
                 image2_disableResizer: true,
@@ -208,6 +216,18 @@ module api.util.htmlarea.editor {
             config['qtWidth']= '100%'; // table width
 
             return config;
+        }
+
+        private getExtraPlugins(): string {
+            if (this.inline) {
+                return 'autogrow,sourcedialog,image2,sharedspace,quicktable';
+            }
+
+            if (this.isFullscreenMode) {
+                return 'sourcedialog,image2,quicktable';
+            }
+
+            return 'autogrow,sourcedialog,image2,quicktable';
         }
 
         private listenCKEditorEvents(ckeditor: HTMLAreaEditor) {
@@ -340,7 +360,36 @@ module api.util.htmlarea.editor {
                 }
             });
 
-            CKEDITOR.plugins.addExternal('macro', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'macroCKE.js');
+            ckeditor.addCommand('openFullscreenDialog', {
+                exec: (editor) => {
+                    const config: any = { editor: editor };
+                    config.assetsUri = this.assetsUri;
+                    config.content = this.content;
+                    config.createDialogListeners = this.createDialogListeners;
+                    config.editableSourceCode = this.editableSourceCode;
+                    config.keydownHandler = this.keydownHandler;
+                    config.contentPath = this.contentPath;
+                    config.applicationKeys = this.applicationKeys;
+                    config.customToolConfig = this.customToolConfig;
+
+                    this.notifyFullscreenDialog(config);
+                    return true;
+                }
+            });
+
+            ckeditor.ui.addButton('Macro', {
+                icon: CKEDITOR.plugins.getPath('macro') + 'icons/macro.png',
+                label: 'Insert macro',
+                toolbar: 'tools,10',
+                command: 'openMacroDialog'
+            });
+
+            ckeditor.ui.addButton('Fullscreen', {
+                label: 'Fullscreen',
+                command: 'openFullscreenDialog',
+                toolbar: 'tools,10',
+                icon: 'maximize'
+            });
 
             ckeditor.on('dialogShow', (dialogShowEvent: eventInfo) => {
                 switch (dialogShowEvent.data.getName()) {
@@ -460,6 +509,12 @@ module api.util.htmlarea.editor {
         private notifySpecialCharDialog(config: any) {
             let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.SPECIALCHAR_CKE).build();
+            this.publishCreateDialogEvent(event);
+        }
+
+        private notifyFullscreenDialog(config: any) {
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+                HtmlAreaDialogType.FULLSCREEN_CKE).build();
             this.publishCreateDialogEvent(event);
         }
 

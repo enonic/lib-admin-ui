@@ -55,6 +55,9 @@ module api.util.htmlarea.dialog {
             case HtmlAreaDialogType.SPECIALCHAR_CKE:
                 modalDialog = this.openSpecialCharDialogCKE(event.getConfig());
                 break;
+            case HtmlAreaDialogType.FULLSCREEN_CKE:
+                modalDialog = this.openFullscreenDialogCKE(event.getConfig());
+                break;
             }
 
             if (modalDialog) {
@@ -127,6 +130,10 @@ module api.util.htmlarea.dialog {
 
         private static openSpecialCharDialogCKE(config: eventInfo): ModalDialog {
             return this.openDialog(new SpecialCharDialogCKE(config));
+        }
+
+        private static openFullscreenDialogCKE(config: any): ModalDialog {
+            return this.openDialog(new FullscreenDialogCKE(config));
         }
 
         private static openDialog(dialog: ModalDialog): ModalDialog {

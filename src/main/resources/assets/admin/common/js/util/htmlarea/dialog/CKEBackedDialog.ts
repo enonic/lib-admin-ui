@@ -18,8 +18,6 @@ module api.util.htmlarea.dialog {
         close() {
             super.close();
             this.ckeOriginalDialog.getElement().$.style.display = 'block';
-            (<HTMLElement>this.ckeOriginalDialog.getElement().$.ownerDocument.getElementsByClassName(
-                'cke_dialog_background_cover')[0]).style.left = '';
             this.ckeOriginalDialog.hide();
         }
 

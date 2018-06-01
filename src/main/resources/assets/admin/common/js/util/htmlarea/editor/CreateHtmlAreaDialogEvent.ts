@@ -5,7 +5,7 @@ module api.util.htmlarea.editor {
 
     export enum HtmlAreaDialogType {
         ANCHOR, ANCHOR_CKE, IMAGE, IMAGE_CKE, LINK, LINK_CKE, MACRO, MACRO_CKE, SEARCHREPLACE, SEARCHREPLACE_CKE, CODE, CODE_CKE, CHARMAP,
-        SPECIALCHAR_CKE
+        SPECIALCHAR_CKE, FULLSCREEN_CKE
     }
 
     export class CreateHtmlAreaDialogEvent
