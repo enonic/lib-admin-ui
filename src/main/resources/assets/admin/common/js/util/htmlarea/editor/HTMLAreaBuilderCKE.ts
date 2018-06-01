@@ -170,6 +170,7 @@ module api.util.htmlarea.editor {
             this.setupDialogsToOpen(ckeditor);
             this.setupKeyboardShortcuts(ckeditor);
             this.addCustomLangEntries(ckeditor);
+            this.removeUnwantedMenuItems(ckeditor);
 
             return ckeditor;
         }
@@ -190,7 +191,6 @@ module api.util.htmlarea.editor {
                 extraPlugins: this.plugins + (this.inline ? ',sharedspace' : ''),
                 extraAllowedContent: 'code address',
                 format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
-                autoGrow_onStartup: true,
                 image2_disableResizer: true,
                 disallowedContent: 'img[width,height]',
                 uploadUrl: api.util.UriHelper.getRestUri('content/createMedia'),
@@ -202,6 +202,10 @@ module api.util.htmlarea.editor {
                 config.format_tags = config.format_tags + ';code';
                 config['format_code'] = {element: 'code'};
             }
+
+            config['qtRows']= 10; // Count of rows
+            config['qtColumns']= 10; // Count of columns
+            config['qtWidth']= '100%'; // table width
 
             return config;
         }
@@ -400,10 +404,18 @@ module api.util.htmlarea.editor {
         }
 
         private addCustomLangEntries(ckeditor: HTMLAreaEditor) {
-            ckeditor.on('langLoaded', (evt : eventInfo) => {
+            ckeditor.on('langLoaded', (evt: eventInfo) => {
                 if (evt.editor.lang.format) {
-                    evt.editor.lang.format.tag_code='Сode';
+                    evt.editor.lang.format.tag_code = 'Сode';
                 }
+            });
+        }
+
+        private removeUnwantedMenuItems(ckeditor: HTMLAreaEditor) {
+            ckeditor.on('instanceReady', () => {
+                ckeditor.removeMenuItem('table');
+                ckeditor.removeMenuItem('tablecell_properties');
+                ckeditor.removeMenuItem('paste');
             });
         }
 
