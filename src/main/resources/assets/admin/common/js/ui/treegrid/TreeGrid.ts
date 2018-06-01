@@ -149,13 +149,17 @@ module api.ui.treegrid {
 
         private initToolbar(showToolbar: boolean) {
             if (showToolbar) {
-                this.toolbar = new TreeGridToolbar(this);
+                this.toolbar = this.createToolbar();
                 this.appendChild(this.toolbar);
                 // make sure it won't left from the cloned grid
                 this.removeClass('no-toolbar');
             } else {
                 this.addClass('no-toolbar');
             }
+        }
+
+        protected createToolbar(): TreeGridToolbar {
+            return new TreeGridToolbar(this);
         }
 
         private initKeyBindings(builder: TreeGridBuilder<DATA>) {

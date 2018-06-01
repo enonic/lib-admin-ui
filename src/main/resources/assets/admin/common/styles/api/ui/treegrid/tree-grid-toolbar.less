@@ -4,9 +4,14 @@
   height: 40px;
   margin-top: -40px;
   background-color: @admin-bg-almost-white;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
 
   .@{_COMMON_PREFIX}button {
+    .toolbar-button();
     border: none;
+    flex: 0 0 auto;
 
     &.selection-toggler {
       position: relative;
@@ -117,7 +122,7 @@
     line-height: 40px;
     padding-left: 16px;
     padding-right: 5px;
-    vertical-align: top;
+    align-self: center;
 
 
     label {
@@ -145,6 +150,28 @@
         }
       }
     }
+  }
+
+  .left-wrapper, .center-wrapper, .right-wrapper {
+    display: flex;
+    flex: 1 1;
+    align-items: stretch;
+
+    > * {
+      flex: 0 0 auto;
+    }
+  }
+
+  .left-wrapper {
+    justify-content: flex-start;
+  }
+
+  .center-wrapper {
+    flex: 0 0 auto;
+  }
+
+  .right-wrapper {
+    justify-content: flex-end;
   }
 
 }
