@@ -25,7 +25,7 @@ module api.util.htmlarea.editor {
         private nodeChangeHandler: (e: any) => void;
         private createDialogListeners: { (event: CreateHtmlAreaDialogEvent): void }[] = [];
         private inline: boolean = false;
-        private isFullscreenMode = false;
+        private isFullscreenMode: boolean = false;
         private fixedToolbarContainer: string;
         private hasActiveDialog: boolean = false;
         private customToolConfig: any;

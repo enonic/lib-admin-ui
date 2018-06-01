@@ -82,7 +82,7 @@ module api.util.htmlarea.dialog {
         }
 
         private removeTooltip() {
-            this.getHTMLElement().getElementsByTagName("iframe")[0].removeAttribute('title');
+            this.getHTMLElement().getElementsByTagName('iframe')[0].removeAttribute('title');
         }
 
         protected layout() {
