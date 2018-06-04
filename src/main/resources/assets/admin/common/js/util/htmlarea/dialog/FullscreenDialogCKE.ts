@@ -23,6 +23,7 @@ module api.util.htmlarea.dialog {
 
             this.config = config;
 
+            (<CKEDITOR.editor>this.getEditor()).focusManager.lock();
             this.addListeners();
         }
 
@@ -52,9 +53,12 @@ module api.util.htmlarea.dialog {
         }
 
         hide() {
+            (<CKEDITOR.editor>this.getEditor()).focusManager.unlock();
             this.getEditor().setData(this.fseditor.getData());
-            this.getEditor().focus();
             this.fseditor.destroy();
+            setTimeout(() => {
+                (<CKEDITOR.editor>this.getEditor()).focus();
+            }, 50);
             super.hide();
         }
 
