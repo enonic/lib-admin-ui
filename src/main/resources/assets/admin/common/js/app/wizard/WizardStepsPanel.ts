@@ -18,7 +18,14 @@ module api.app.wizard {
             panel.onShown(() => {
                 item.show();
             });
-            return super.insertNavigablePanel(item, panel, header, index, select);
+
+            super.insertNavigablePanel(item, panel, header, index, select);
+
+            if (item.getIconCls()) {
+                this.getHeader(index).addClass('step-icon ' + item.getIconCls());
+            }
+
+            return index;
         }
     }
 }

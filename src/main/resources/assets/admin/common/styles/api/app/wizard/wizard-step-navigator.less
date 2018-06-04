@@ -6,11 +6,16 @@
   color: @admin-font-gray1;
   overflow: hidden;
 
-  li {
+  .tab-bar-item {
     float: left;
     padding: 10px 15px 10px 25px;
     line-height: 20px;
     cursor: pointer;
+
+   &.step-icon {
+     font-size: 20px;
+     padding-bottom: 0;
+   }
 
     &:hover {
       color: darken(@admin-font-gray1, 10%);

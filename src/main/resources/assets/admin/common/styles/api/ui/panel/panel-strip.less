@@ -12,6 +12,7 @@
   }
 
   .panel-strip-panel-header {
+    position: relative;
     padding-left: 10px;
     padding-top: 60px;
     font-size: 25px;
@@ -19,6 +20,14 @@
     max-width: 660px;
     border-bottom: 1px solid @admin-medium-gray-border;
     box-sizing: border-box !important;
+
+    &.step-icon:before {
+      position: absolute;
+      right: 0;
+      top: 55px;
+      padding-right: 15px;
+      font-size: 18px;
+    }
 
     &:not(.disabled) + .x-data-wizard-step-form{
       padding-bottom: 50px;

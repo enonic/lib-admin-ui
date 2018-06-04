@@ -8,6 +8,8 @@ module api.ui.tab {
 
         private labelEl: api.dom.AEl;
 
+        private iconCls: string;
+
         private active: boolean = false;
 
         private closeAction: api.ui.Action;
@@ -26,6 +28,8 @@ module api.ui.tab {
 
             this.labelEl = new api.dom.AEl('label');
             this.appendChild(this.labelEl);
+
+            this.iconCls = builder.iconCls;
 
             this.setLabel(builder.label, builder.markUnnamed, builder.addLabelTitleAttribute);
 
@@ -71,6 +75,10 @@ module api.ui.tab {
             return this.index;
         }
 
+        getIconCls(): string {
+            return this.iconCls;
+        }
+
         setLabel(newValue: string, markUnnamed: boolean = false, addLabelTitleAttribute: boolean = true) {
             if (this.label === newValue) {
                 return;
@@ -78,10 +86,15 @@ module api.ui.tab {
 
             let oldValue = this.label;
             this.label = newValue;
-            this.labelEl.setHtml(newValue);
+            if (this.iconCls) {
+                this.addClass('step-icon');
+                this.labelEl.addClass(this.iconCls);
+            } else {
+                this.labelEl.setHtml(newValue);
+            }
 
             if (addLabelTitleAttribute) {
-                this.labelEl.getEl().setAttribute('title', newValue);
+                this.getEl().setAttribute('title', newValue);
             }
 
             this.labelEl.toggleClass('unnamed', markUnnamed);
@@ -191,6 +204,8 @@ module api.ui.tab {
 
         focusable: boolean = true;
 
+        iconCls: string;
+
         clickHandler: () => void;
 
         setLabel(label: string): TabItemBuilder {
@@ -230,6 +245,12 @@ module api.ui.tab {
 
         setClickHandler(handler: () => void) {
             this.clickHandler = handler;
+            return this;
+        }
+
+        setIconCls(value: string): TabItemBuilder {
+            this.iconCls = value;
+
             return this;
         }
 
