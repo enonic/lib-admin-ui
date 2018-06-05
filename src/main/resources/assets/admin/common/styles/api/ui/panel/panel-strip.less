@@ -21,12 +21,20 @@
     border-bottom: 1px solid @admin-medium-gray-border;
     box-sizing: border-box !important;
 
-    &.step-icon:before {
-      position: absolute;
-      right: 0;
-      top: 55px;
-      padding-right: 15px;
-      font-size: 18px;
+    &.step-icon {
+
+      padding-left: 30px;
+
+      &:before {
+        position: absolute;
+        left: 5px;
+        padding-right: 15px;
+        font-size: 16px;
+      }
+
+      &.icon-masks:before {
+        font-size: 18px;
+      }
     }
 
     &:not(.disabled) + .x-data-wizard-step-form{
@@ -54,7 +62,7 @@
 
     &.disabled {
       height: 53px;
-      margin: 10px 15px 0 10px;
+      margin-top: 10px;
       background-color: @admin-bg-light-gray;
       padding: 15px 15px 0 10px;
       border-bottom: none;
