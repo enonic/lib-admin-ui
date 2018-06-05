@@ -9,9 +9,43 @@
     }
   }
 
+
+  .wizard-step-navigator {
+
+    .tab-bar-item.step-icon {
+
+      .label {
+        display: none;
+      }
+    }
+  }
+
+
   &.minimized {
     .fold-button {
       display: inline-flex;
+    }
+
+    .wizard-step-navigator .tab-bar-item {
+
+      .label {
+        font-size: 14px;
+      }
+
+      &.step-icon {
+
+        &:not(.active) {
+          color: inherit;
+        }
+
+        .label {
+          display: block;
+        }
+
+        &:before {
+          display: none;
+        }
+      }
     }
   }
 

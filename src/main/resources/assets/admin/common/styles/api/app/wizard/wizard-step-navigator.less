@@ -8,13 +8,20 @@
 
   .tab-bar-item {
     float: left;
-    padding: 10px 15px 10px 25px;
+    padding: 10px 15px 6px 25px;
     line-height: 20px;
     cursor: pointer;
 
    &.step-icon {
-     font-size: 20px;
-     padding-bottom: 0;
+     &.active:before {
+       line-height: 0px;
+       padding-left: 15px;
+       padding-right: 20px;
+     }
+     &:before {
+       font-size: 20px;
+       padding-bottom: 0;
+     }
    }
 
     &:hover {
@@ -26,8 +33,11 @@
       color: @admin-font-gray3;
       padding-bottom: 0;
 
-      &:before {
+      &:not(.step-icon):before {
         content: " ";
+      }
+
+      &:before {
         display: block;
         float: left;
         height: 0;

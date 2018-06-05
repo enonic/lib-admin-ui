@@ -135,23 +135,6 @@ module api.ui.panel {
                    this.getHeader(curStrip).getEl().getHeightWithBorder();
         }
 
-        showHeaderByIndex(index: number) {
-            let headerToShow = this.getHeader(index);
-            if (!headerToShow) {
-                return;
-            }
-
-            this.listenToScroll = false;
-            wemjq(this.getScrollable().getHTMLElement()).animate({
-                scrollTop: index === 0 ? 0 : this.getScroll() - this.getScrollOffset() +
-                                             headerToShow.getEl().getOffsetToParent().top
-            }, {
-                duration: 500,
-                complete: () => {
-                    this.listenToScroll = true;
-                }
-            });
-        }
     }
 
 }

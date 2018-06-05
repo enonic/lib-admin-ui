@@ -86,11 +86,11 @@ module api.ui.tab {
 
             let oldValue = this.label;
             this.label = newValue;
+
+            this.labelEl.setHtml(newValue);
+
             if (this.iconCls) {
-                this.addClass('step-icon');
-                this.labelEl.addClass(this.iconCls);
-            } else {
-                this.labelEl.setHtml(newValue);
+                this.addClass('step-icon ' + this.iconCls);
             }
 
             if (addLabelTitleAttribute) {

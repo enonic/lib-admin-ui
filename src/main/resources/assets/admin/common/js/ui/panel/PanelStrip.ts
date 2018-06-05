@@ -181,19 +181,20 @@ module api.ui.panel {
         }
 
         showPanelByIndex(index: number) {
-            let panelToShow = this.getPanel(index);
-            if (panelToShow == null) {
+            const headerToShow = this.getHeader(index);
+            if (!headerToShow && index > 0) {
                 return;
             }
 
-            wemjq(this.scrollable.getHTMLElement()).animate({
-                scrollTop: index === 0 ? 0 : this.getScroll() - this.offset +
-                                            panelToShow.getEl().getOffsetToParent().top +
-                                            panelToShow.getEl().getPaddingTop() -
-                                            this.headers[index].getEl().getHeightWithBorder()
+            wemjq(this.getScrollable().getHTMLElement()).animate({
+                scrollTop: index === 0 ? 0 : this.getScroll()
+                                             - this.offset
+                                             + (headerToShow.getEl().getPaddingTop() / 2)
+                                             + headerToShow.getEl().getOffsetToParent().top
             }, {
                 duration: 500,
                 complete: () => {
+                    const panelToShow = this.getPanel(index);
                     this.notifyPanelShown(panelToShow, index, this.getPanelShown());
                     this.panelShown = panelToShow;
                 }
