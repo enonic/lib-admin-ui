@@ -129,6 +129,10 @@ module api.ui.selector.list {
             }
         }
 
+        replaceItems(items: I[], append: boolean = false) {
+            items.forEach(item => this.replaceItem(item, append));
+        }
+
         getItemCount(): number {
             return this.items.length;
         }
