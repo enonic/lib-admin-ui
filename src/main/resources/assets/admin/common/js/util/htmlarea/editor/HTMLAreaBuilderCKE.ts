@@ -250,8 +250,7 @@ module api.util.htmlarea.editor {
                     if (exists) {
                         NotifyManager.get().showWarning(`File ${fileLoader.fileName} already exists!`);
                         (<any>evt.editor.document.findOne('.cke_widget_uploadimage')).remove(); // removing upload preview image
-                    }
-                    else {
+                    } else {
                         this.uploadFile(fileLoader);
                     }
                 }).catch((reason: any) => {
