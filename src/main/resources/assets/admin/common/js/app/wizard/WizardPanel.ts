@@ -647,6 +647,10 @@ module api.app.wizard {
             return this.steps;
         }
 
+        getStepNavigator(): WizardStepNavigator {
+            return this.stepNavigator;
+        }
+
         setSteps(steps: WizardStep[]) {
             steps.forEach((step: WizardStep, index: number) => {
                 this.addStep(step, index === 0);

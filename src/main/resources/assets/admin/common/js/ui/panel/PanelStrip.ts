@@ -188,7 +188,8 @@ module api.ui.panel {
 
             wemjq(this.scrollable.getHTMLElement()).animate({
                 scrollTop: index === 0 ? 0 : this.getScroll() - this.offset +
-                                            panelToShow.getEl().getOffsetToParent().top -
+                                            panelToShow.getEl().getOffsetToParent().top +
+                                            panelToShow.getEl().getPaddingTop() -
                                             this.headers[index].getEl().getHeightWithBorder()
             }, {
                 duration: 500,
