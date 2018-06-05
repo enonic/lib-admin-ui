@@ -43,6 +43,22 @@ module api.ui.button {
             return this.dropdownHandle;
         }
 
+        addMenuActions(actions: api.ui.Action[]) {
+            this.menu.addActions(actions);
+        }
+
+        removeMenuActions(actions: api.ui.Action[]) {
+            this.menu.removeActions(actions);
+        }
+
+        addMenuSeparator() {
+            this.menu.addSeparator();
+        }
+
+        removeMenuSeparator() {
+            this.menu.removeSeparator();
+        }
+
         private initMenu(actions: Action[]) {
             this.menu = new Menu(actions);
             this.setDropdownHandleEnabled(actions.length > 0);
@@ -124,6 +140,10 @@ module api.ui.button {
                 this.removeClass('minimized');
                 this.updateActionEnabled();
             }
+        }
+
+        isMinimized() {
+            return this.hasClass('minimized');
         }
 
         setEnabled(enable: boolean) {
