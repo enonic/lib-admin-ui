@@ -4,6 +4,7 @@ module api.util.htmlarea.editor {
     import eventInfo = CKEDITOR.eventInfo;
     import NotificationMessage = api.notify.NotificationMessage;
     import NotifyManager = api.notify.NotifyManager;
+    import i18n = api.util.i18n;
 
     /**
      * NB: Modifications were made in ckeditor.js (VERY SORRY FOR THAT):
@@ -246,9 +247,9 @@ module api.util.htmlarea.editor {
             ckeditor.on('fileUploadRequest', (evt: eventInfo) => {
                 const fileLoader = evt.data.fileLoader;
 
-                this.isFileExisting(fileLoader.fileName).then((exists: boolean) => {
+                this.fileExists(fileLoader.fileName).then((exists: boolean) => {
                     if (exists) {
-                        NotifyManager.get().showWarning(`File ${fileLoader.fileName} already exists!`);
+                        NotifyManager.get().showWarning(i18n('notify.editor.fileExists', fileLoader.fileName));
                         (<any>evt.editor.document.findOne('.cke_widget_uploadimage')).remove(); // removing upload preview image
                     } else {
                         this.uploadFile(fileLoader);
@@ -284,7 +285,7 @@ module api.util.htmlarea.editor {
             });
         }
 
-        private isFileExisting(fileName: string): wemQ.Promise<boolean> {
+        private fileExists(fileName: string): wemQ.Promise<boolean> {
             return new api.content.resource.GetContentByPathRequest(
                 new api.content.ContentPath([this.content.getPath().toString(), fileName])).sendAndParse().then(() => {
                 return true;
