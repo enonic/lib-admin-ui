@@ -67,7 +67,9 @@ module api.ui.security.acl {
                 });
 
                 if (this.accessSelector.getValue() === Access.CUSTOM) {
-                    this.permissionSelector.show();
+                    this.permissionSelector.onAdded(() => {
+                        this.permissionSelector.show();
+                    });
                 }
                 this.appendChild(this.permissionSelector);
             }
