@@ -249,7 +249,7 @@ module api.util.htmlarea.editor {
 
                 this.fileExists(fileLoader.fileName).then((exists: boolean) => {
                     if (exists) {
-                        NotifyManager.get().showWarning(i18n('notify.editor.fileExists', fileLoader.fileName));
+                        NotifyManager.get().showWarning(i18n('notify.fileExists', fileLoader.fileName));
                         (<any>evt.editor.document.findOne('.cke_widget_uploadimage')).remove(); // removing upload preview image
                     } else {
                         this.uploadFile(fileLoader);
