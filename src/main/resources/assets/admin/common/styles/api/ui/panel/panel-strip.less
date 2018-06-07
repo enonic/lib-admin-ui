@@ -21,14 +21,17 @@
     border-bottom: 1px solid @admin-medium-gray-border;
     box-sizing: border-box !important;
 
+    span {
+      color: @admin-black;
+    }
+
     &.step-icon {
 
-      padding-left: 30px;
+      padding-left: 35px;
 
       &:before {
         position: absolute;
-        left: 5px;
-        padding-right: 15px;
+        left: 10px;
         font-size: 16px;
       }
     }
@@ -44,6 +47,7 @@
       }
 
       .x-data-toggler {
+        float: right;
 
         .icon-close();
 
@@ -64,11 +68,16 @@
       border-bottom: none;
       cursor: pointer;
 
+      span {
+        padding-left: 10px;
+      }
+
       + .x-data-wizard-step-form + .panel-strip-panel-header.enabled {
         padding-top: 60px;
       }
 
       .x-data-toggler {
+        float: left;
 
         &:before {
           font-size: 26px;
@@ -80,7 +89,6 @@
 
     .x-data-toggler {
       display: inline-block;
-      float: right;
       overflow: hidden;
       z-index: @z-index-mask - 2;
       cursor: pointer;

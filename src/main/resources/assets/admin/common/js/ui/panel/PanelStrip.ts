@@ -180,7 +180,8 @@ module api.ui.panel {
             }
         }
 
-        showPanelByIndex(index: number) {
+        showPanelByIndex(index: number): wemQ.Promise<void> {
+            const deferred = wemQ.defer<void>();
             const headerToShow = this.getHeader(index);
             if (!headerToShow && index > 0) {
                 return;
@@ -197,8 +198,12 @@ module api.ui.panel {
                     const panelToShow = this.getPanel(index);
                     this.notifyPanelShown(panelToShow, index, this.getPanelShown());
                     this.panelShown = panelToShow;
+
+                    deferred.resolve(null);
                 }
             });
+
+            return deferred.promise;
         }
 
         getScroll(): number {
