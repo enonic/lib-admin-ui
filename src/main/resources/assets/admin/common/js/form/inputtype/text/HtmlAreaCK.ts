@@ -116,8 +116,6 @@ module api.form.inputtype.text {
                 this.resetInputHeight();
                 textAreaWrapper.addClass(focusedEditorCls);
 
-                this.getEl().getParent().scrollIntoView();
-
                 this.notifyFocused(e);
 
                 AppHelper.dispatchCustomEvent('focusin', this);
@@ -137,9 +135,6 @@ module api.form.inputtype.text {
             const blurHandler = (e) => {
                 //checking if remove occurence button clicked or not
                 AppHelper.dispatchCustomEvent('focusout', this);
-
-                // making editor's area scrollable when it shrinks on blur
-                e.editor.document.getBody().getParent().setStyle('overflow-y', 'auto');
 
                 if (!isMouseOverRemoveOccurenceButton) {
                     this.setStaticInputHeight();
