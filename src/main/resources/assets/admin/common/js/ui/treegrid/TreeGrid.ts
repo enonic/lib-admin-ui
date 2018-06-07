@@ -64,7 +64,7 @@ module api.ui.treegrid {
 
         private loadBufferSize: number;
 
-        private loading: boolean = false;
+        protected loading: boolean = false;
 
         private scrollable: api.dom.Element;
 
