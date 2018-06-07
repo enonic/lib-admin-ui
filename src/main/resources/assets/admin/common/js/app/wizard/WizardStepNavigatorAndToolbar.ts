@@ -160,7 +160,7 @@ module api.app.wizard {
 
         private addNumbersToStepLabel(tab: TabBarItem, index: number) {
             this.removeNumbersFromStepLabel(tab);
-            tab.setLabel((index + 1) + ' - ' + tab.getLabel());
+            tab.setLabel((index + 1) + '. ' + tab.getLabel());
         }
 
         private removeNumbersFromStepLabels() {
@@ -169,7 +169,7 @@ module api.app.wizard {
         }
 
         private removeNumbersFromStepLabel(tab: TabBarItem) {
-            const numberRegEx = /^(\d+\s-\s)/;
+            const numberRegEx = /^(\d+.\s)/;
             tab.setLabel(tab.getLabel().replace(numberRegEx, ''));
         }
     }
