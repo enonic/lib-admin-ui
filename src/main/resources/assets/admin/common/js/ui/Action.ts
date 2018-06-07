@@ -101,13 +101,8 @@ module api.ui {
         setLabel(value: string) {
 
             if (value !== this.label) {
-                let label = this.label;
-
                 this.label = value;
-
-                if (!!label) {
-                    this.notifyPropertyChanged();
-                }
+                this.notifyPropertyChanged();
             }
         }
 

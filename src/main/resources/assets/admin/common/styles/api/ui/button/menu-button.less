@@ -30,45 +30,41 @@
   .@{_COMMON_PREFIX}dropdown-handle {
     left: 0;
     width: 40px;
-    background-color: @admin-green;
     border-radius: 0;
-    
-    &:after {
-      margin-left: -6px;
-      border-top: 10px solid @admin-white;
-    }
 
-    &:hover {
-      background-color: lighten(@admin-green, 10%);
-      span {
-        color: @admin-white;
+    &:not([disabled]) {
+      &:after {
+        margin-left: -6px;
+        border-top: 10px solid @form-button-bg;
+      }
+      &:hover:after {
+        border-top-color: darken(@form-button-bg, 20%);
       }
     }
-    &[disabled], &[disabled]:hover {
-      background-color: @form-button-bg-disabled;
+    &[disabled]:after {
+      border-top-color: @form-button-bg-disabled;
     }
   }
 
   .action-button {
+    .menu-action-button();
     position: relative;
     height: 100%;
     border: none;
+    border-left: 1px solid @admin-medium-gray-border;
     min-width: 126px;
     margin-left: 41px;
-    background-color: @admin-green;
     text-align: center;
-    span {
-      color: @admin-white;
+    vertical-align: top;
+
+    span i {
+      color: @admin-button-blue2;
+      font-style: normal;
     }
 
-    &:disabled {
-      background-color: @form-button-bg;
-    }
-
-    &:not(:disabled):hover {
-      background-color: lighten(@admin-green, 10%);
-      span {
-        color: @admin-white;
+    &:hover {
+      span i {
+        color: @admin-button-blue3;
       }
     }
   }
@@ -88,6 +84,11 @@
   .menu-item {
     .ellipsis();
     display: block !important;
+
+    i {
+      color: @admin-button-blue2;
+      font-style: normal;
+    }
 
     &.separated {
       border-bottom: 1px solid @admin-medium-gray-border;

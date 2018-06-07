@@ -4,6 +4,8 @@ module api.ui.button {
 
     export class MenuButton extends api.dom.DivEl {
 
+        private actionPropertyListener: () => void;
+
         private dropdownHandle: DropdownHandle;
 
         private actionButton: ActionButton;
@@ -13,9 +15,12 @@ module api.ui.button {
         constructor(mainAction: Action, menuActions: Action[] = []) {
             super('menu-button');
 
+            this.actionPropertyListener = this.updateActionEnabled.bind(this);
+
+            this.menu = new Menu(menuActions);
             this.initDropdownHandle();
             this.initActionButton(mainAction);
-            this.initMenu(menuActions);
+            this.initActions(menuActions);
 
             this.initListeners();
 
@@ -45,10 +50,12 @@ module api.ui.button {
 
         addMenuActions(actions: api.ui.Action[]) {
             this.menu.addActions(actions);
+            this.initActions(actions);
         }
 
         removeMenuActions(actions: api.ui.Action[]) {
             this.menu.removeActions(actions);
+            this.releaseActions(actions);
         }
 
         addMenuSeparator() {
@@ -59,14 +66,23 @@ module api.ui.button {
             this.menu.removeSeparator();
         }
 
-        private initMenu(actions: Action[]) {
-            this.menu = new Menu(actions);
-            this.setDropdownHandleEnabled(actions.length > 0);
+        private initActions(actions: Action[]) {
+            this.setDropdownHandleEnabled(this.getMenuActions().length > 0);
 
             this.updateActionEnabled();
 
-            this.getMenuActions().forEach((action) => {
-                action.onPropertyChanged(this.updateActionEnabled.bind(this));
+            actions.forEach((action) => {
+                action.onPropertyChanged(this.actionPropertyListener);
+            });
+        }
+
+        private releaseActions(actions: Action[]) {
+            this.setDropdownHandleEnabled(this.getMenuActions().length > 0);
+
+            this.updateActionEnabled();
+
+            actions.forEach(action => {
+                action.unPropertyChanged(this.actionPropertyListener);
             });
         }
 
@@ -126,7 +142,7 @@ module api.ui.button {
                 const action = this.actionButton.getAction();
                 const actions = [action, ...this.getMenuActions()];
                 this.menu.setActions(actions);
-                action.onPropertyChanged(this.updateActionEnabled.bind(this));
+                action.onPropertyChanged(this.actionPropertyListener);
                 this.addClass('minimized');
                 this.updateActionEnabled();
             }
@@ -136,7 +152,7 @@ module api.ui.button {
             if (this.hasClass('minimized')) {
                 const action = this.actionButton.getAction();
                 this.menu.removeAction(action);
-                action.unPropertyChanged(this.updateActionEnabled.bind(this));
+                action.unPropertyChanged(this.actionPropertyListener);
                 this.removeClass('minimized');
                 this.updateActionEnabled();
             }

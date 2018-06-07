@@ -23,7 +23,7 @@ module api.ui.menu {
         }
 
         setLabel(label: string) {
-            this.getEl().setInnerHtml(label);
+            this.getEl().setInnerHtml(label, false);
         }
 
         getAction(): api.ui.Action {
