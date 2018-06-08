@@ -38,14 +38,16 @@ module api.ui.menu {
             let actionMenuItem = new ActionMenuItem(action);
             this.actionListEl.appendChild(actionMenuItem);
             actionMenuItem.onClicked(() => {
-                this.removeClass('expanded');
+                this.removeClass('down');
+                this.labelEl.removeClass('down');
             });
         }
 
         private foldMenuOnOutsideClick(evt: Event): void {
             if (!this.getEl().contains(<HTMLElement> evt.target)) {
                 // click outside menu
-                this.removeClass('expanded');
+                this.removeClass('down');
+                this.labelEl.removeClass('down');
             }
         }
     }
