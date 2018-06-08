@@ -161,7 +161,7 @@ module api.content {
         }
 
         isPublished(): boolean {
-            return api.content.CompareStatusChecker.isPublished(this.getCompareStatus());
+            return !!this.getCompareStatus() && api.content.CompareStatusChecker.isPublished(this.getCompareStatus());
         }
 
         isOnline(): boolean {
