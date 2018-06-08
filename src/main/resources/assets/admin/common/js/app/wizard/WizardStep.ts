@@ -6,9 +6,14 @@ module api.app.wizard {
 
         private stepForm: WizardStepForm;
 
-        constructor(label: string, stepForm: WizardStepForm) {
+        constructor(label: string, stepForm: WizardStepForm, iconCls?: string) {
             this.tabBarItem =
-                new api.ui.tab.TabBarItemBuilder().setAddLabelTitleAttribute(false).setLabel(label).setFocusable(false).build();
+                new api.ui.tab.TabBarItemBuilder()
+                    .setAddLabelTitleAttribute(true)
+                    .setLabel(label)
+                    .setFocusable(false)
+                    .setIconCls(iconCls)
+                    .build();
             this.stepForm = stepForm;
         }
 

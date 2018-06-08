@@ -36,11 +36,6 @@
       right: 30px;
     }
 
-    .remove {
-      .icon-close;
-      right: 5px;
-    }
-
     .remove, .edit {
       &:extend(.icon);
       .focusable();
@@ -51,6 +46,12 @@
       text-decoration: none;
       cursor: pointer;
       top: 9px;
+    }
+
+    .remove {
+      .icon-close;
+      right: 0;
+      top: 5px;
     }
 
     &.non-editable {

@@ -45,17 +45,14 @@ module api.app.wizard {
                 }
             });
 
-            this.stepNavigator.onNavigationItemRemoved(() => {
-                if (this.isMinimized()) {
-                    this.addNumbersToStepLabels(); // updating step numbers
-                }
-            });
+            this.stepNavigator.onNavigationItemRemoved(() => this.renumerateSteps());
+            this.stepNavigator.onNavigationItemAdded(() => this.renumerateSteps());
+        }
 
-            this.stepNavigator.onNavigationItemAdded(() => {
-                if (this.isMinimized()) {
-                    this.addNumbersToStepLabels(); // updating step numbers
-                }
-            });
+        renumerateSteps() {
+            if (this.isMinimized()) {
+                this.addNumbersToStepLabels(); // updating step numbers
+            }
         }
 
         doRender(): Q.Promise<boolean> {
@@ -151,26 +148,17 @@ module api.app.wizard {
 
         private addNumbersToStepLabels() {
             this.stepNavigator.getNavigationItems().filter((tab: TabBarItem) => this.isTabVisible(tab)).forEach(
-                (tab: TabBarItem, index) => this.addNumbersToStepLabel(tab, index));
+                (tab: TabBarItem, index) => tab.numerate(index + 1));
         }
 
         private isTabVisible(tab: TabBarItem): boolean {
             return tab.getHTMLElement().style.display !== 'none';
         }
 
-        private addNumbersToStepLabel(tab: TabBarItem, index: number) {
-            this.removeNumbersFromStepLabel(tab);
-            tab.setLabel((index + 1) + ' - ' + tab.getLabel());
-        }
-
         private removeNumbersFromStepLabels() {
             this.stepNavigator.getNavigationItems().forEach(
-                (tab: TabBarItem) => this.removeNumbersFromStepLabel(tab));
+                (tab: TabBarItem) => tab.unnumerate());
         }
 
-        private removeNumbersFromStepLabel(tab: TabBarItem) {
-            const numberRegEx = /^(\d+\s-\s)/;
-            tab.setLabel(tab.getLabel().replace(numberRegEx, ''));
-        }
     }
 }

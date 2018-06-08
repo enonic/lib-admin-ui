@@ -12,6 +12,7 @@
   }
 
   .panel-strip-panel-header {
+    position: relative;
     padding-left: 10px;
     padding-top: 60px;
     font-size: 25px;
@@ -19,6 +20,21 @@
     max-width: 660px;
     border-bottom: 1px solid @admin-medium-gray-border;
     box-sizing: border-box !important;
+
+    span {
+      color: @admin-black;
+    }
+
+    &.step-icon {
+
+      padding-left: 35px;
+
+      &:before {
+        position: absolute;
+        left: 10px;
+        font-size: 16px;
+      }
+    }
 
     &:not(.disabled) + .x-data-wizard-step-form{
       padding-bottom: 50px;
@@ -31,11 +47,11 @@
       }
 
       .x-data-toggler {
+        float: right;
 
         .icon-close();
 
-        padding: 5px 15px 0 15px;
-        font-size: 12px;
+        padding: 0 7px 0 15px;
       }
 
       > .panel {
@@ -45,17 +61,22 @@
 
     &.disabled {
       height: 53px;
-      margin: 10px 15px 0 10px;
+      margin-top: 10px;
       background-color: @admin-bg-light-gray;
       padding: 15px 15px 0 10px;
       border-bottom: none;
       cursor: pointer;
+
+      span {
+        padding-left: 10px;
+      }
 
       + .x-data-wizard-step-form + .panel-strip-panel-header.enabled {
         padding-top: 60px;
       }
 
       .x-data-toggler {
+        float: left;
 
         &:before {
           font-size: 26px;
@@ -67,7 +88,6 @@
 
     .x-data-toggler {
       display: inline-block;
-      float: right;
       overflow: hidden;
       z-index: @z-index-mask - 2;
       cursor: pointer;

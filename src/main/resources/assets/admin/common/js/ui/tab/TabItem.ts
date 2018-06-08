@@ -1,5 +1,7 @@
 module api.ui.tab {
 
+    import SpanEl = api.dom.SpanEl;
+
     export class TabItem extends api.dom.LiEl implements api.ui.NavigationItem {
 
         private index: number;
@@ -7,6 +9,8 @@ module api.ui.tab {
         private label: string;
 
         private labelEl: api.dom.AEl;
+
+        private iconCls: string;
 
         private active: boolean = false;
 
@@ -20,12 +24,18 @@ module api.ui.tab {
 
         private selectedListeners: {(event: TabItemSelectedEvent):void}[] = [];
 
+        private indexEl: SpanEl;
+
+        static tabIndexFormat: string = `{0}. `;
+
         constructor(builder: TabItemBuilder, classes?: string) {
 
             super('tab-item' + (!classes ? '' : ' ' + classes));
 
             this.labelEl = new api.dom.AEl('label');
             this.appendChild(this.labelEl);
+
+            this.iconCls = builder.iconCls;
 
             this.setLabel(builder.label, builder.markUnnamed, builder.addLabelTitleAttribute);
 
@@ -44,6 +54,22 @@ module api.ui.tab {
             const handler = builder.clickHandler || (() => this.select());
 
             this.onClicked(handler);
+        }
+
+        numerate(index: number) {
+            this.unnumerate();
+            this.indexEl = new SpanEl('tab-item-index');
+            this.indexEl.setHtml(api.util.StringHelper.format(api.ui.tab.TabItem.tabIndexFormat, index ));
+            this.insertChild(this.indexEl, 0);
+        }
+
+        unnumerate() {
+            if (!this.indexEl) {
+                return;
+            }
+
+            this.removeChild(this.indexEl);
+            this.indexEl = null;
         }
 
         private createRemoveButton() {
@@ -71,6 +97,10 @@ module api.ui.tab {
             return this.index;
         }
 
+        getIconCls(): string {
+            return this.iconCls;
+        }
+
         setLabel(newValue: string, markUnnamed: boolean = false, addLabelTitleAttribute: boolean = true) {
             if (this.label === newValue) {
                 return;
@@ -78,10 +108,15 @@ module api.ui.tab {
 
             let oldValue = this.label;
             this.label = newValue;
+
             this.labelEl.setHtml(newValue);
 
+            if (this.iconCls) {
+                this.addClass('step-icon ' + this.iconCls);
+            }
+
             if (addLabelTitleAttribute) {
-                this.labelEl.getEl().setAttribute('title', newValue);
+                this.getEl().setAttribute('title', newValue);
             }
 
             this.labelEl.toggleClass('unnamed', markUnnamed);
@@ -191,6 +226,8 @@ module api.ui.tab {
 
         focusable: boolean = true;
 
+        iconCls: string;
+
         clickHandler: () => void;
 
         setLabel(label: string): TabItemBuilder {
@@ -230,6 +267,12 @@ module api.ui.tab {
 
         setClickHandler(handler: () => void) {
             this.clickHandler = handler;
+            return this;
+        }
+
+        setIconCls(value: string): TabItemBuilder {
+            this.iconCls = value;
+
             return this;
         }
 

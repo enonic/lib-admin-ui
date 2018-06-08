@@ -178,13 +178,13 @@ module api.ui.tab {
                 });
         }
 
-        private notifyTabAddedListeners(tab: TabBarItem) {
+        notifyTabAddedListeners(tab: TabBarItem) {
             this.navigationItemAddedListeners.forEach((listener: (event: NavigatorEvent)=>void) => {
                 listener.call(this, new NavigatorEvent(tab));
             });
         }
 
-        private notifyTabRemovedListeners(index: number) {
+        notifyTabRemovedListeners(index: number) {
             this.navigationItemRemovedListeners.forEach((listener: (index: number)=>void) => {
                 listener.call(this, index);
             });

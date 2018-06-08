@@ -134,6 +134,7 @@ module api.ui.panel {
             return this.getHeader(curStrip + 1) ? this.getHeader(curStrip + 1).getEl().getHeightWithBorder() :
                    this.getHeader(curStrip).getEl().getHeightWithBorder();
         }
+
     }
 
 }
