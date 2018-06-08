@@ -4,7 +4,7 @@ module api.ui.button {
 
         constructor(className?: string) {
             super();
-            this.addClass('close-button icon-small icon-close');
+            this.addClass('close-button icon-close');
             if (className) {
                 this.addClass(className);
             }
