@@ -9,7 +9,7 @@ module api.app.wizard {
         constructor(label: string, stepForm: WizardStepForm, iconCls?: string) {
             this.tabBarItem =
                 new api.ui.tab.TabBarItemBuilder()
-                    .setAddLabelTitleAttribute(!!iconCls || false)
+                    .setAddLabelTitleAttribute(true)
                     .setLabel(label)
                     .setFocusable(false)
                     .setIconCls(iconCls)

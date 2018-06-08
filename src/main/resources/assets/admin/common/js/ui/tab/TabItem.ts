@@ -1,5 +1,7 @@
 module api.ui.tab {
 
+    import SpanEl = api.dom.SpanEl;
+
     export class TabItem extends api.dom.LiEl implements api.ui.NavigationItem {
 
         private index: number;
@@ -21,6 +23,10 @@ module api.ui.tab {
         private closedListeners: {(event: TabItemClosedEvent):void}[] = [];
 
         private selectedListeners: {(event: TabItemSelectedEvent):void}[] = [];
+
+        private indexEl: SpanEl;
+
+        static tabIndexFormat: string = `{0}. `;
 
         constructor(builder: TabItemBuilder, classes?: string) {
 
@@ -48,6 +54,22 @@ module api.ui.tab {
             const handler = builder.clickHandler || (() => this.select());
 
             this.onClicked(handler);
+        }
+
+        numerate(index: number) {
+            this.unnumerate();
+            this.indexEl = new SpanEl('tab-item-index');
+            this.indexEl.setHtml(api.util.StringHelper.format(api.ui.tab.TabItem.tabIndexFormat, index ));
+            this.insertChild(this.indexEl, 0);
+        }
+
+        unnumerate() {
+            if (!this.indexEl) {
+                return;
+            }
+
+            this.removeChild(this.indexEl);
+            this.indexEl = null;
         }
 
         private createRemoveButton() {
