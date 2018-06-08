@@ -11,13 +11,15 @@ module api.app.wizard {
         }
 
         insertNavigablePanel(item: TabBarItem, panel: Panel, header: string, index: number, select?: boolean): number {
-            panel.onHidden(() => {
-                item.hide();
-            });
+            if (panel.isExpandable()) {
+                panel.onHidden(() => {
+                    item.hide();
+                });
 
-            panel.onShown(() => {
-                item.show();
-            });
+                panel.onShown(() => {
+                    item.show();
+                });
+            }
 
             super.insertNavigablePanel(item, panel, header, index, select);
 

@@ -11,6 +11,7 @@ module api.util.htmlarea.dialog {
     import Content = api.content.Content;
     import Option = api.ui.selector.Option;
     import eventInfo = CKEDITOR.eventInfo;
+    import ContentId = api.content.ContentId;
     import i18n = api.util.i18n;
     import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
 
@@ -94,23 +95,26 @@ module api.util.htmlarea.dialog {
         }
 
         private loadImage() {
-            const loader = this.imageSelector.getLoader();
+            const imageId: string = this.extractImageId();
 
-            const singleLoadListener = (items: MediaTreeSelectorItem[]) => {
-                const imageContent = this.getImageContent(items);
-                if (imageContent) {
-                    this.imageSelector.setValue(imageContent.getId());
-                    this.createImgElForExistingImage(imageContent);
-                    this.previewImage();
-                    this.imageSelectorFormItem.addClass('selected-item-preview');
-                }
-                this.imageSelector.unLoaded(singleLoadListener);
+            new api.content.resource.GetContentByIdRequest(new ContentId(imageId)).sendAndParse().then((imageContent: Content) => {
+                this.imageSelector.setValue(imageContent.getId());
+                this.createImgElForExistingImage(imageContent);
+                this.previewImage();
+                this.imageSelectorFormItem.addClass('selected-item-preview');
+            }).catch((reason: any) => {
+                api.DefaultErrorHandler.handle(reason);
+            }).done();
+        }
 
-                return wemQ(null);
-            };
-            this.imageSelector.onLoaded(singleLoadListener);
+        private extractImageId(): string {
+            const src: string = this.imageElement.src;
 
-            loader.load();
+            if (src.indexOf('?') > -1) {
+                return src.substring(src.lastIndexOf('/') + 1, src.indexOf('?'));
+            }
+
+            return src.substring(src.lastIndexOf('/') + 1);
         }
 
         protected getMainFormItems(): FormItem[] {
@@ -205,20 +209,12 @@ module api.util.htmlarea.dialog {
             });
         }
 
-        private getImageContent(images: MediaTreeSelectorItem[]): MediaTreeSelectorItem {
-            const filteredImages = images.filter((image: MediaTreeSelectorItem) => {
-                return this.imageElement.src.indexOf(image.getId()) > 0;
-            });
-
-            return filteredImages.length > 0 ? filteredImages[0] : null;
-        }
-
-        private createImgElForExistingImage(imageContent: MediaTreeSelectorItem) {
-            this.image = this.createImgElForPreview(imageContent, true);
+        private createImgElForExistingImage(imageContent: Content) {
+            this.image = this.createImgElForPreview(imageContent.getContentId().toString(), true);
         }
 
         private createImgElForNewImage(imageContent: MediaTreeSelectorItem) {
-            this.image = this.createImgElForPreview(imageContent, false);
+            this.image = this.createImgElForPreview(imageContent.getContentId().toString(), false);
         }
 
         private previewImage() {
@@ -242,13 +238,13 @@ module api.util.htmlarea.dialog {
             this.imagePreviewContainer.insertChild(this.image, 0);
         }
 
-        private createImgElForPreview(imageContent: MediaTreeSelectorItem, isExistingImg: boolean = false): api.dom.ImgEl {
+        private createImgElForPreview(imageContentId: string, isExistingImg: boolean = false): api.dom.ImgEl {
             const imgSrcAttr = isExistingImg
                 ? new api.dom.ElementHelper(this.imageElement).getAttribute('src')
-                : this.generateDefaultImgSrc(imageContent.getContentId().toString());
+                : this.generateDefaultImgSrc(imageContentId);
             const imgDataSrcAttr = isExistingImg
                 ? new api.dom.ElementHelper(this.imageElement).getAttribute('data-src')
-                : ImageModalDialogCKE.imagePrefix + imageContent.getContentId().toString();
+                : ImageModalDialogCKE.imagePrefix + imageContentId;
 
             const imageEl = new api.dom.ImgEl(imgSrcAttr);
             imageEl.getEl().setAttribute('data-src', imgDataSrcAttr);
