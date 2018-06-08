@@ -4,6 +4,7 @@ module api.util.htmlarea.editor {
     import eventInfo = CKEDITOR.eventInfo;
     import NotificationMessage = api.notify.NotificationMessage;
     import NotifyManager = api.notify.NotifyManager;
+    import i18n = api.util.i18n;
 
     /**
      * NB: Modifications were made in ckeditor.js (VERY SORRY FOR THAT):
@@ -245,14 +246,17 @@ module api.util.htmlarea.editor {
         private handleFileUpload(ckeditor: HTMLAreaEditor) {
             ckeditor.on('fileUploadRequest', (evt: eventInfo) => {
                 const fileLoader = evt.data.fileLoader;
-                const formData = new FormData();
-                const xhr = fileLoader.xhr;
 
-                xhr.open('POST', fileLoader.uploadUrl, true);
-                formData.append('file', fileLoader.file, fileLoader.fileName);
-                formData.set('parent', this.content.getPath().toString());
-                formData.set('name', fileLoader.fileName);
-                fileLoader.xhr.send(formData);
+                this.fileExists(fileLoader.fileName).then((exists: boolean) => {
+                    if (exists) {
+                        NotifyManager.get().showWarning(i18n('notify.fileExists', fileLoader.fileName));
+                        (<any>evt.editor.document.findOne('.cke_widget_uploadimage')).remove(); // removing upload preview image
+                    } else {
+                        this.uploadFile(fileLoader);
+                    }
+                }).catch((reason: any) => {
+                    api.DefaultErrorHandler.handle(reason);
+                }).done();
 
                 // Prevented the default behavior.
                 evt.stop();
@@ -279,6 +283,29 @@ module api.util.htmlarea.editor {
                     data.url = url;
                 }
             });
+        }
+
+        private fileExists(fileName: string): wemQ.Promise<boolean> {
+            return new api.content.resource.GetContentByPathRequest(
+                new api.content.ContentPath([this.content.getPath().toString(), fileName])).sendAndParse().then(() => {
+                return true;
+            }).catch((reason: any) => {
+                if (reason.statusCode === 404) { // good, no file with such name
+                    return false;
+                }
+
+                throw new Error(reason);
+            });
+        }
+
+        private uploadFile(fileLoader: any) {
+            const formData = new FormData();
+            const xhr = fileLoader.xhr;
+            xhr.open('POST', fileLoader.uploadUrl, true);
+            formData.append('file', fileLoader.file, fileLoader.fileName);
+            formData.set('parent', this.content.getPath().toString());
+            formData.set('name', fileLoader.fileName);
+            fileLoader.xhr.send(formData);
         }
 
         private handleNativeNotifications(ckeditor: HTMLAreaEditor) {
