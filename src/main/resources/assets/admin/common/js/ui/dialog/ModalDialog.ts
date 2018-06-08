@@ -366,6 +366,7 @@ module api.ui.dialog {
                 this.dialogContainer.appendChild(this);
             }
             api.dom.Body.get().appendChild(this.dialogContainer);
+            this.responsiveItem.update();
 
             this.blurBackground();
             super.show();
