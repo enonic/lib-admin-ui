@@ -21,3 +21,4 @@
 ///<reference path='CodeDialogCKE.ts' />
 ///<reference path='CharMapDialog.ts' />
 ///<reference path='SpecialCharDialogCKE.ts' />
+///<reference path='FullscreenDialogCKE.ts' />

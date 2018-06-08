@@ -223,7 +223,7 @@ module api.form.inputtype.text {
 
                 this.removeTooltipFromEditorArea(textAreaWrapper);
 
-                this.moveButtonToBottomBar(textAreaWrapper, '.cke_button__maximize');
+                this.moveButtonToBottomBar(textAreaWrapper, '.cke_button__fullscreen');
                 this.moveButtonToBottomBar(textAreaWrapper, '.cke_button__sourcedialog');
 
                 const removeButtonEL = wemjq(textAreaWrapper.getParentElement().getParentElement().getHTMLElement()).find(
