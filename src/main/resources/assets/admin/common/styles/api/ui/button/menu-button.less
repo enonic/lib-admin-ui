@@ -43,9 +43,16 @@
     .ellipsis();
     display: block !important;
 
+    color: @admin-font-gray2;
     i {
-      color: @admin-button-blue2;
+      color: @admin-button-blue1;
       font-style: normal;
+    }
+
+    &:hover {
+      i {
+        color: @admin-button-blue2;
+      }
     }
 
     &.separated {
@@ -134,7 +141,7 @@
       span {
         color: @admin-font-gray2;
         i {
-          color: @admin-button-blue2;
+          color: @admin-button-blue1;
           font-style: normal;
         }
       }
@@ -144,7 +151,7 @@
         span {
           color: @admin-font-gray3;
           i {
-            color: @admin-button-blue3;
+            color: @admin-button-blue2;
           }
         }
       }
