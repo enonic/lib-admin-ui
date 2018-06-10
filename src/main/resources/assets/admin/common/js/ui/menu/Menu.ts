@@ -1,10 +1,11 @@
 module api.ui.menu {
 
-    export class Menu extends api.dom.UlEl {
+    export class Menu
+        extends api.dom.UlEl {
 
         private menuItems: MenuItem[] = [];
         private hideOnItemClick: boolean = true;
-        private itemClickListeners: {(item: MenuItem):void}[] = [];
+        private itemClickListeners: { (item: MenuItem): void }[] = [];
 
         constructor(actions: api.ui.Action[] = []) {
             super('menu');
@@ -78,9 +79,23 @@ module api.ui.menu {
         }
 
         private notifyItemClicked(item: MenuItem) {
-            this.itemClickListeners.forEach((listener: (item: MenuItem)=>void) => {
+            this.itemClickListeners.forEach((listener: (item: MenuItem) => void) => {
                 listener(item);
             });
+        }
+
+        addSeparator() {
+            this.toggleSeparator(true);
+        }
+
+        removeSeparator() {
+            this.toggleSeparator(false);
+        }
+
+        private toggleSeparator(toggle: boolean) {
+            if (this.menuItems.length > 0) {
+                this.menuItems[this.menuItems.length - 1].toggleClass('separated', toggle);
+            }
         }
 
         private createMenuItem(action: api.ui.Action): MenuItem {
