@@ -45,14 +45,7 @@
 
     color: @admin-font-gray2;
     i {
-      color: @admin-button-blue1;
       font-style: normal;
-    }
-
-    &:hover {
-      i {
-        color: @admin-button-blue2;
-      }
     }
 
     &.separated {
@@ -141,20 +134,29 @@
       span {
         color: @admin-font-gray2;
         i {
-          color: @admin-button-blue1;
           font-style: normal;
         }
       }
 
       &:not([disabled]):hover {
         background-color: transparent;
+
         span {
           color: @admin-font-gray3;
           i {
-            color: @admin-button-blue2;
+            color: @admin-font-gray3;
           }
         }
       }
     }
+
+    .menu-item {
+      color: @admin-font-gray2;
+
+      &:hover {
+        color: @admin-font-gray3;
+      }
+    }
+
   }
 }
