@@ -132,6 +132,13 @@ module api.ui.tab {
             return this.label;
         }
 
+        getFullLabel(): string {
+            if (!this.indexEl) {
+                return this.label;
+            }
+            return this.getHTMLElement().innerText;
+        }
+
         setActive(value: boolean) {
             this.active = value;
             this.toggleClass('active', value);

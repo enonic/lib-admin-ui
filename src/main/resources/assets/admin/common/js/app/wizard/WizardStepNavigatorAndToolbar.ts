@@ -41,7 +41,7 @@ module api.app.wizard {
             this.stepNavigator.onNavigationItemActivated((event: ActivatedEvent) => {
                 const tabBarItem: TabBarItem = this.stepNavigator.getNavigationItem(event.getIndex());
                 if (tabBarItem) {
-                    this.foldButton.setLabel(tabBarItem.getLabel());
+                    this.foldButton.setLabel(tabBarItem.getFullLabel());
                 }
             });
 
@@ -136,7 +136,7 @@ module api.app.wizard {
             this.removeChild(this.stepNavigator);
             this.foldButton.push(this.stepNavigator, 300);
             this.addNumbersToStepLabels();
-            this.foldButton.setLabel(this.stepNavigator.getSelectedNavigationItem().getLabel());
+            this.foldButton.setLabel(this.stepNavigator.getSelectedNavigationItem().getFullLabel());
         }
 
         private maximize() {
