@@ -88,9 +88,10 @@ module api.ui.panel {
         }
 
         insertNavigablePanel(item: NavigationItem, panel: Panel, header: string, index: number, select?: boolean): number {
-            this.navigator.insertNavigationItem(item, index);
             let panelHeader = select ? null : header;
             super.insertPanel(panel, index, panelHeader);
+
+            this.navigator.insertNavigationItem(item, index);
 
             // select corresponding step on focus
             panel.onFocus(() => {

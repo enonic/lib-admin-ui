@@ -647,6 +647,10 @@ module api.app.wizard {
             return this.steps;
         }
 
+        protected getHeader(index: number): api.dom.H2El {
+            return this.stepsPanel.getHeader(index);
+        }
+
         getStepNavigator(): WizardStepNavigator {
             return this.stepNavigator;
         }

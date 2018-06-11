@@ -23,10 +23,6 @@ module api.app.wizard {
 
             super.insertNavigablePanel(item, panel, header, index, select);
 
-            if (item.getIconCls()) {
-                this.getHeader(index).addClass('step-icon ' + item.getIconCls());
-            }
-
             return index;
         }
     }
