@@ -57,6 +57,11 @@
       > .panel {
         padding-bottom: 50px;
       }
+
+      span:before {
+        content: '+';
+        margin-right: 10px;
+      }
     }
 
     &.disabled {
@@ -102,6 +107,10 @@
       }
 
     }
+  }
+
+  .wizard-step-form + .panel-strip-panel-header.disabled {
+    margin-top: 15px;
   }
 }
 
