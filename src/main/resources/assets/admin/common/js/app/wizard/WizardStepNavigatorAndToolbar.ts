@@ -16,8 +16,6 @@ module api.app.wizard {
 
         private stepNavigator: WizardStepNavigator;
 
-        private fittingWidth: number;
-
         private helpTextToggleButton: api.dom.DivEl;
 
         constructor(stepNavigator: WizardStepNavigator, stepToolbar?: Toolbar) {
@@ -25,7 +23,6 @@ module api.app.wizard {
             this.stepNavigator = stepNavigator;
             this.stepToolbar = stepToolbar;
             this.foldButton = new api.ui.toolbar.FoldButton();
-            this.fittingWidth = 0;
 
             this.initListeners();
         }
@@ -78,38 +75,44 @@ module api.app.wizard {
             return this.helpTextToggleButton;
         }
 
-        private isStepNavigatorFit(): boolean {
-            if (this.stepNavigator.isVisible()) {
-                return this.isVisibleStepNavigatorFit();
-            }
+        private calculateStepsWidth(): number {
+            const steps = this.stepNavigator.getChildren();
 
-            return this.isNonVisibleStepNavigatorFit();
+            const stepMargin = (step) => step.isVisible() ? step.getEl().getWidthWithMargin() : 0;
+            return steps.reduce((totalStepWidth, step) => totalStepWidth + stepMargin(step), 0);
         }
 
         private isVisibleStepNavigatorFit(): boolean {
-            // StepNavigator fits if summary width of its steps < width of StepNavigator
-            // StepNavigator width is calculated in CSS
             const width = this.stepNavigator.getEl().getWidthWithoutPadding();
-            const steps = this.stepNavigator.getChildren();
-            const stepMargin = (step) => step.isVisible() ? step.getEl().getWidthWithMargin() : 0;
-            const stepsWidth = steps.reduce((totalStepWidth, step) => totalStepWidth + stepMargin(step), 0);
-
-            // Update fitting width to check, when toolbar is minimized
-            this.fittingWidth = stepsWidth;
+            const stepsWidth = this.calculateStepsWidth();
 
             return width > stepsWidth;
         }
 
-        private isNonVisibleStepNavigatorFit(): boolean {
+        private isStepNavigatorFit(): boolean {
             // StepNavigator is minimized and not visible, or not rendered yet
             // Check with saved width
+
+            if (this.foldButton.isRendered()) {
+                if (this.stepNavigator.isVisible()) {
+                    return this.isVisibleStepNavigatorFit();
+                } else {
+                    this.maximize();
+                    const value = this.isVisibleStepNavigatorFit();
+                    this.minimize();
+
+                    return value;
+                }
+            }
+
             const help = this.helpTextToggleButton;
             const width = (!!help && help.isVisible())
                 ? this.getEl().getWidthWithoutPadding() - help.getEl().getWidthWithMargin()
                 : this.getEl().getWidthWithoutPadding();
 
+            const calculated = this.calculateStepsWidth();
             // Add to pixels delta to made the check work as it should, when scale is not 100%
-            const fittingWidth = Math.min(this.fittingWidth, WizardStepNavigatorAndToolbar.maxFittingWidth) + 2;
+            const fittingWidth = Math.min(calculated, WizardStepNavigatorAndToolbar.maxFittingWidth) + 2;
 
             return width > fittingWidth;
         }
@@ -136,7 +139,9 @@ module api.app.wizard {
             this.removeChild(this.stepNavigator);
             this.foldButton.push(this.stepNavigator, 300);
             this.addNumbersToStepLabels();
-            this.foldButton.setLabel(this.stepNavigator.getSelectedNavigationItem().getFullLabel());
+            if (this.stepNavigator.getSelectedNavigationItem()) {
+                this.foldButton.setLabel(this.stepNavigator.getSelectedNavigationItem().getFullLabel());
+            }
         }
 
         private maximize() {
