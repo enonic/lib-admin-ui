@@ -195,6 +195,7 @@ module api.util.htmlarea.editor {
         private createConfig(): CKEDITOR.config {
             const config: CKEDITOR.config = {
                 toolbar: this.tools,
+                entities: false,
                 removePlugins: 'resize',
                 removeButtons: this.toolsToExlcude,
                 extraPlugins: this.getExtraPlugins(),
