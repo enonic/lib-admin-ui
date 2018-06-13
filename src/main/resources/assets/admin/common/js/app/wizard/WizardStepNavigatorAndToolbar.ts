@@ -96,13 +96,13 @@ module api.app.wizard {
             if (this.foldButton.isRendered()) {
                 if (this.stepNavigator.isVisible()) {
                     return this.isVisibleStepNavigatorFit();
-                } else {
-                    this.maximize();
-                    const value = this.isVisibleStepNavigatorFit();
-                    this.minimize();
-
-                    return value;
                 }
+
+                this.maximize();
+                const value = this.isVisibleStepNavigatorFit();
+                this.minimize();
+
+                return value;
             }
 
             const help = this.helpTextToggleButton;
@@ -121,13 +121,11 @@ module api.app.wizard {
             const isMinimized: boolean = this.isMinimized();
             const isUpdateNeeded: boolean = this.isStepNavigatorFit() === isMinimized;
 
-            if (isUpdateNeeded) {
-                if (isMinimized) {
-                    this.maximize();
-                } else {
-                    this.minimize();
-                }
+            if (!isUpdateNeeded) {
+                return;
             }
+
+            isMinimized ? this.maximize() : this.minimize();
         }
 
         private isMinimized(): boolean {
