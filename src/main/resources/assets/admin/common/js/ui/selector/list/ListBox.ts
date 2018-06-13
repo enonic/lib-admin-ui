@@ -17,6 +17,10 @@ module api.ui.selector.list {
             super(className);
         }
 
+        public setReadOnly(value: boolean) {
+            this.toggleClass('readonly', value);
+        }
+
         setEmptyText(text: string) {
             this.emptyText = text;
             this.addEmptyView();
