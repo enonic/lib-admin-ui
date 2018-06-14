@@ -390,7 +390,9 @@ module api.ui.dialog {
             this.unBlurBackground();
             super.hide(true);
 
-            api.dom.Body.get().removeChild(this.dialogContainer);
+            if (this.dialogContainer.getParentElement()) {
+                api.dom.Body.get().removeChild(this.dialogContainer);
+            }
         }
 
         getButtonRow(): ButtonRow {
