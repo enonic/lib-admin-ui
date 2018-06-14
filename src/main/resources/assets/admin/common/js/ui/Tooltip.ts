@@ -117,7 +117,7 @@ module api.ui {
         }
 
         isVisible(): boolean {
-            return this.tooltipEl && this.tooltipEl.isVisible();
+            return !!this.tooltipEl && this.tooltipEl.isVisible();
         }
 
         showAfter(ms: number): Tooltip {
