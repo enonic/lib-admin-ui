@@ -39,9 +39,9 @@ module api.ui.button {
             this.onClicked(() => this.action.execute());
 
             this.action.onPropertyChanged((changedAction: api.ui.Action) => {
-                const becameDisabled = this.isEnabled() !== changedAction.isEnabled();
+                const toggledEnabled = this.isEnabled() !== changedAction.isEnabled();
                 const becameHidden = !changedAction.isVisible() && this.isVisible();
-                if (this.tooltip && (becameDisabled || becameHidden)) {
+                if (this.tooltip && (toggledEnabled || becameHidden)) {
                     this.tooltip.hide();
                 }
                 this.setEnabled(changedAction.isEnabled());
