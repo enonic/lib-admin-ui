@@ -69,6 +69,15 @@ module api.security {
             return this.request.getAllowedTypes();
         }
 
+        setRequiredRoles(roles: PrincipalKey[]): FindPrincipalListRequest {
+            this.request.setRequiredRoles(roles);
+            return this;
+        }
+
+        getRequiredRoles(): PrincipalKey[] {
+            return this.request.getRequiredRoles();
+        }
+
         setSearchQuery(query: string): FindPrincipalListRequest {
             this.request.setSearchQuery(query);
             return this;

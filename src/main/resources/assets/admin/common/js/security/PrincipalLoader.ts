@@ -43,6 +43,11 @@ module api.security {
             return this;
         }
 
+        setRequiredRoles(principalKeys: PrincipalKey[]): PrincipalLoader {
+            this.getRequest().setRequiredRoles(principalKeys);
+            return this;
+        }
+
         search(searchString: string): wemQ.Promise<Principal[]> {
             this.getRequest().setSearchQuery(searchString);
             return this.load();

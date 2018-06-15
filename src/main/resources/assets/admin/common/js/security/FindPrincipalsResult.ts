@@ -28,7 +28,7 @@ module api.security {
 
         static fromJson(json: FindPrincipalsResultJson): FindPrincipalsResult {
             let principals = json.principals.map(principalJson => Principal.fromJson(principalJson));
-            return new FindPrincipalsResult(principals, principals.length, json.totalSize);
+            return new FindPrincipalsResult(principals, json.hits, json.totalSize);
         }
     }
 

@@ -14,6 +14,8 @@ module api.security {
 
         private static ROLE_CMS_EXPERT: string = 'cms.expert';
 
+        private static ROLE_CONTENT_MANAGER_APP: string = 'cms.cm.app';
+
         /* */
 
         public static EVERYONE: PrincipalKey = PrincipalKey.ofRole(RoleKeys.ROLE_EVERYONE);
@@ -28,6 +30,8 @@ module api.security {
 
         public static CMS_EXPERT: PrincipalKey = PrincipalKey.ofRole(RoleKeys.ROLE_CMS_EXPERT);
 
+        public static CONTENT_MANAGER_APP: PrincipalKey = PrincipalKey.ofRole(RoleKeys.ROLE_CONTENT_MANAGER_APP);
+
         /* */
 
         private static contentAdminRoles: string[] = [RoleKeys.ROLE_ADMIN, RoleKeys.ROLE_CMS_ADMIN];
@@ -35,6 +39,9 @@ module api.security {
         private static userAdminRoles: string[] = [RoleKeys.ROLE_ADMIN, RoleKeys.ROLE_USER_ADMIN];
 
         private static contentExpertRoles: string[] = [RoleKeys.ROLE_ADMIN, RoleKeys.ROLE_CMS_ADMIN, RoleKeys.ROLE_CMS_EXPERT];
+
+        private static contentAppRoles: string[] = [RoleKeys.ROLE_ADMIN, RoleKeys.ROLE_CMS_ADMIN, RoleKeys.ROLE_CMS_EXPERT,
+            RoleKeys.ROLE_CONTENT_MANAGER_APP];
 
         /* */
 
@@ -48,6 +55,10 @@ module api.security {
 
         public static isContentExpert(principalKey: PrincipalKey): boolean {
             return !!principalKey && RoleKeys.contentExpertRoles.some(roleId => principalKey.getId() === roleId);
+        }
+
+        public static isContentApp(principalKey: PrincipalKey): boolean {
+            return !!principalKey && RoleKeys.contentAppRoles.some(roleId => principalKey.getId() === roleId);
         }
 
         public static isAdmin(principalKey: PrincipalKey): boolean {
