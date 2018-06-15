@@ -79,6 +79,15 @@ module api.dom {
             return this.el['disabled'];
         }
 
+        setAutocomplete(value: boolean): ElementHelper {
+            this.el['autocomplete'] = value ? 'on' : 'off';
+            return this;
+        }
+
+        hasAutocomplete(): boolean {
+            return this.el['autocomplete'] === 'on';
+        }
+
         getId(): string {
             return this.el.id;
         }

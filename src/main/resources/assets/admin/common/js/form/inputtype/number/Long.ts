@@ -26,6 +26,7 @@ module api.content.form.inputtype.number.long {
 
             let inputEl = api.ui.text.TextInput.middle(undefined, this.getPropertyValue(property));
             inputEl.setName(this.getInput().getName() + '-' + property.getIndex());
+            inputEl.setAutocomplete(true);
 
             inputEl.onValueChanged((event: api.ValueChangedEvent) => {
 
