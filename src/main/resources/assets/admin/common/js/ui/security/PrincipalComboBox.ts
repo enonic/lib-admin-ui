@@ -23,6 +23,7 @@ module api.ui.security {
                 new PrincipalViewer()).setDelayedInputValueChangedHandling(500);
 
             super(richComboBoxBuilder);
+            this.addClass('principal-combobox');
         }
 
         getLoader() {
