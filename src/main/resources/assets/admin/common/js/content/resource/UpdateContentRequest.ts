@@ -104,7 +104,7 @@ module api.content.resource {
             return {
                 contentId: this.id,
                 requireValid: this.requireValid,
-                contentName: this.name.isUnnamed() ? ContentName.UNNAMED_PREFIX : this.name.toString(),
+                contentName: this.name.isUnnamed() ? this.name.getValue() : this.name.toString(),
                 data: this.data.toJson(),
                 meta: (this.meta || []).map((extraData: ExtraData) => extraData.toJson()),
                 displayName: this.displayName,
