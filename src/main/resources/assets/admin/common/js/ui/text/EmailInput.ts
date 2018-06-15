@@ -29,6 +29,7 @@ module api.ui.text {
             this.blurListeners = [];
 
             this.input = this.createInput();
+            this.input.setAutocomplete(true);
 
             this.setWrappedInput(this.input);
 
