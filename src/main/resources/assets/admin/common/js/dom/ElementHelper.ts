@@ -147,7 +147,7 @@ module api.dom {
         }
 
         setValue(value: string): ElementHelper {
-            this.el['value'] = value;
+            this.el['value'] = value || '';
             return this;
         }
 
