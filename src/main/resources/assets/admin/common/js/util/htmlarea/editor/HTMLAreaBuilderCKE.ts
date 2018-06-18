@@ -176,6 +176,7 @@ module api.util.htmlarea.editor {
             this.setupKeyboardShortcuts(ckeditor);
             this.addCustomLangEntries(ckeditor);
             this.removeUnwantedMenuItems(ckeditor);
+            this.updateEditorDragOverStyling(ckeditor);
 
             return ckeditor;
         }
@@ -493,6 +494,32 @@ module api.util.htmlarea.editor {
                 ckeditor.removeMenuItem('table');
                 ckeditor.removeMenuItem('tablecell_properties');
                 ckeditor.removeMenuItem('paste');
+            });
+        }
+
+        private updateEditorDragOverStyling(ckeditor: HTMLAreaEditor) {
+            ckeditor.on('instanceReady', () => {
+                let isDragOver: boolean = false;
+
+                ckeditor.document.$.addEventListener('dragenter', () => {
+                    if (!isDragOver) {
+                        isDragOver = true;
+                        ckeditor.container.addClass('dragover');
+                    }
+                });
+
+                ckeditor.document.$.addEventListener('dragleave', (e: any) => {
+                    if (!e.relatedTarget || !ckeditor.document.$.contains(e.relatedTarget)) {
+                        isDragOver = false;
+                        ckeditor.container.removeClass('dragover');
+                    }
+
+                });
+
+                ckeditor.on('drop', () => {
+                    isDragOver = false;
+                    ckeditor.container.removeClass('dragover');
+                });
             });
         }
 
