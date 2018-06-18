@@ -176,6 +176,7 @@ module api.app.wizard {
 
         disableNameInput() {
             this.nameEl.getEl().setAttribute('disabled', 'disabled');
+            this.toggleNameGeneration(true);
         }
 
         getName(): string {
@@ -222,7 +223,7 @@ module api.app.wizard {
             this.updateNameGeneratedStatus();
         }
 
-        disableNameGeneration(value: boolean) {
+        toggleNameGeneration(value: boolean) {
             if (value) {
                 this.setAutoGenerationEnabled(false);
             }
