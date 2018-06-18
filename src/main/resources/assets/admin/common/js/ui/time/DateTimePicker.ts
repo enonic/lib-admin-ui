@@ -46,7 +46,8 @@ module api.ui.time {
 
     }
 
-    export class DateTimePicker extends Picker {
+    export class DateTimePicker
+        extends Picker<DateTimePickerPopup> {
 
         constructor(builder: DateTimePickerBuilder) {
             super(builder, 'date-time-picker');
