@@ -11,6 +11,8 @@ module api.app.browse {
 
         private removeListeners: { (event: MouseEvent): void }[] = [];
 
+        private removeTooltip: string;
+
         constructor(viewer: api.ui.Viewer<M>, item: BrowseItem<M>) {
             super('browse-selection-item');
             this.viewer = viewer;
@@ -26,8 +28,19 @@ module api.app.browse {
             });
         }
 
+        setRemoveButtonTooltip(text: string) {
+            if (this.isRendered()) {
+                this.removeEl.getEl().setTitle(text);
+            } else {
+                this.removeTooltip = text;
+            }
+        }
+
         private initRemoveButton() {
             let removeEl = new api.dom.DivEl('icon remove');
+            if (this.removeTooltip) {
+                removeEl.getEl().setTitle(this.removeTooltip);
+            }
             removeEl.onClicked(this.notifyRemoveClicked.bind(this));
             return removeEl;
         }
