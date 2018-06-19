@@ -54,3 +54,4 @@
 ///<reference path='HasUnpublishedChildrenRequest.ts' />
 ///<reference path='ContentTreeSelectorItem.ts' />
 ///<reference path='ContentAndStatusTreeSelectorItem.ts' />
+///<reference path='ContentQueryRequestHelper.ts' />
