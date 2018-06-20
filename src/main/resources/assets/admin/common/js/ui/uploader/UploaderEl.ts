@@ -97,6 +97,8 @@ module api.ui.uploader {
 
             this.initDebouncedUploadStart();
 
+            this.initDropHandler();
+
             let initHandlerOnEvent = () => {
                 this.initHandler();
 
@@ -129,6 +131,64 @@ module api.ui.uploader {
                 this.notifyFileUploadStarted(this.uploadedItems);
                 this.uploader.uploadStoredFiles();
             }, 250, false);
+        }
+
+        private initDropHandler() {
+            this.onDropzoneDrop((dropEvent: DragEvent) => {
+                this.handleDraggedUrls(dropEvent);
+            });
+        }
+
+        private handleDraggedUrls(dropEvent: DragEvent) {
+            const isFileDropped: boolean = dropEvent.dataTransfer.files.length > 0;
+
+            if (this.isUploading() || isFileDropped) {
+                return;
+            }
+
+            const data: string = dropEvent.dataTransfer.getData('text/html');
+            const isImgUrlDragged: boolean = data && !!data.match(/<img[\s\S]+data:/i);
+
+            if (!isImgUrlDragged) {
+                return;
+            }
+
+            this.extractImagesFromDragData(data).map((img) => img.getAttribute('src')).filter(
+                this.isSrcWithData).forEach(this.uploadDraggedImg.bind(this));
+        }
+
+        private extractImagesFromDragData(data: string): HTMLElement[] {
+            const tempDiv: HTMLElement = document.createElement('div');
+            tempDiv.innerHTML = data;
+
+            return [].slice.call(tempDiv.getElementsByTagName('img'));
+        }
+
+        private isSrcWithData(imgSrc: string): boolean {
+            return imgSrc && imgSrc.substring(0, 5) == 'data:';
+        }
+
+        private uploadDraggedImg(imgSrc: string) {
+            const request: XMLHttpRequest = new XMLHttpRequest();
+            request.open('GET', imgSrc, true);
+            request.responseType = 'blob';
+            request.onload = () => {
+                const uploadedFile: Blob = request.response;
+                const file: File = new File([uploadedFile], this.generateUniqueName(imgSrc));
+                this.uploader.addFiles([file]);
+            };
+            request.send();
+        }
+
+        private generateUniqueName(imgSrc: string): string {
+            const imgFormatRegExp: RegExpMatchArray = imgSrc.match(/image\/([a-z]+?);/i);
+            const type: string = imgFormatRegExp ? imgFormatRegExp[1] ? imgFormatRegExp[1] : 'jpg' : 'jpg';
+
+            const date: Date = new Date();
+            const dateParts: number[] =
+                [date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
+
+            return 'image-' + dateParts.map(api.util.DateHelper.padNumber).join('') + '.' + type;
         }
 
         private initDropzone() {
