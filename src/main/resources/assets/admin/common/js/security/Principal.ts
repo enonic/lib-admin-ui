@@ -124,9 +124,13 @@ module api.security {
 
         fromJson(json: api.security.PrincipalJson): PrincipalBuilder {
             super.fromJson(json);
-            this.key = PrincipalKey.fromString(json.key);
+            this.key = this.getKeyFromJson(json);
             this.modifiedTime = json.modifiedTime ? new Date(Date.parse(json.modifiedTime)) : null;
             return this;
+        }
+
+        protected getKeyFromJson(json: api.security.PrincipalJson): PrincipalKey {
+            return json.key ? PrincipalKey.fromString(json.key) : null;
         }
 
         setKey(key: PrincipalKey): PrincipalBuilder {

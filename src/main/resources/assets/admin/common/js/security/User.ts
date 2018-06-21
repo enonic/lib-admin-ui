@@ -110,6 +110,11 @@ module api.security {
             return this;
         }
 
+        protected getKeyFromJson(json: api.security.UserJson): PrincipalKey {
+            const key = super.getKeyFromJson(json);
+            return json.name ? PrincipalKey.ofUser(key.getUserStore(), json.name) : key;
+        }
+
         setEmail(value: string): UserBuilder {
             this.email = value;
             return this;
