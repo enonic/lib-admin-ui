@@ -23,7 +23,8 @@ module api.ui.time {
         }
     }
 
-    export class TimePicker extends Picker {
+    export class TimePicker
+        extends Picker<TimePickerPopup> {
 
         constructor(builder: TimePickerBuilder) {
             super(builder, 'time-picker');
