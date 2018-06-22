@@ -568,7 +568,7 @@
                     // Finally set display for figure.
                     if (!alignClasses && el.is('figure')) {
                         if (newValue == 'center') {
-                            el.setStyle('display', 'inline-block');
+                            el.setStyle('display', 'block'); // #8
                         } else {
                             el.removeStyle('display');
                         }
