@@ -24,6 +24,7 @@ module api.util.htmlarea.dialog {
      * 5. hasCaption() updated to wrap image into figure tag on drag and drop
      * 6. templateBlock variable updated to set margin:0 on figure tag when inserted
      * 7. updated image plugin to enable justify button on toolbar
+     * 8. centered figure will have 'display: block' instead of inline-block to properly display svg
      *
      * NB: Modifications were made in ckeditor.js (VERY SORRY FOR THAT):
      * LINE 1279: updateDragHandlerPosition() function updated to set inline style 'display: none;' on drag handler container
