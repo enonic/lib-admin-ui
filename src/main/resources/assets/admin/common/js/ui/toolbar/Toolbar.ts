@@ -78,7 +78,7 @@ module api.ui.toolbar {
         }
 
         protected foldOrExpand() {
-            if (!this.isVisible()) {
+            if (!this.isRendered() || !this.isVisible()) {
                 return;
             }
 
