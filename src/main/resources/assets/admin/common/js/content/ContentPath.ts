@@ -36,7 +36,7 @@ module api.content {
             if (elements.length === 0) {
                 this.refString = ContentPath.ELEMENT_DIVIDER;
             } else {
-                this.refString = ContentPath.ELEMENT_DIVIDER + this.elements.join(ContentPath.ELEMENT_DIVIDER);
+                this.refString = (ContentPath.ELEMENT_DIVIDER + this.elements.join(ContentPath.ELEMENT_DIVIDER)).replace(/\/\//g, '/');
             }
         }
 
