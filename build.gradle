@@ -114,6 +114,7 @@ jar {
         exclude 'ckeditor/plugins/sharedspace/plugin.js'
         exclude 'ckeditor/plugins/macro/icons/macro.png'
         exclude 'ckeditor/plugins/find/dialogs/*.*'
+        exclude 'ckeditor/plugins/widget/images/*.*'
         exclude 'ckeditor/skins/moono-lisa/**/*.*'
         exclude 'ckeditor/lang/en*.js'
         exclude 'ckeditor/lang/no.js'
