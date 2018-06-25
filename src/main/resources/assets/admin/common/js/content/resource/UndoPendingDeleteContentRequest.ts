@@ -31,8 +31,8 @@ module api.content.resource {
         static showResponse(result: number) {
             if (result > 0) {
                 api.notify.showSuccess(result == 1 ?
-                                       `The item is successfully undeleted` :
-                                       `The items are successfully undeleted`);
+                                       `Item is undeleted` :
+                                       `Items are undeleted`);
             } else {
                 api.notify.showWarning(`No items found to undelete`);
             }
