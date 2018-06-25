@@ -10,7 +10,8 @@ module api.content.form.inputtype.customselector {
     import ContentInputTypeViewContext = api.content.form.inputtype.ContentInputTypeViewContext;
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
 
-    export class CustomSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd {
+    export class CustomSelector
+        extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
         public static debug: boolean = false;
 
@@ -33,17 +34,26 @@ module api.content.form.inputtype.customselector {
         }
 
         private readConfig(context: ContentInputTypeViewContext): void {
-            let serviceUrl = context.inputConfig['service'][0]['value'];
-            let serviceParams = context.inputConfig['param'] || [];
-            let contentPath = context.contentPath.toString();
+            const cfg = context.inputConfig;
+            const serviceCfg = cfg['service'];
+            let serviceUrl;
+            if (serviceCfg) {
+                serviceUrl = serviceCfg[0] ? serviceCfg[0]['value'] : undefined;
+            }
+            const serviceParams = cfg['param'] || [];
+            const contentPath = context.contentPath.toString();
 
-            let params = serviceParams.reduce((prev, curr) => {
+            const params = serviceParams.reduce((prev, curr) => {
                 prev[curr['@value']] = curr['value'];
                 return prev;
             }, {});
 
-            this.requestPath = StringHelper.format(CustomSelector.portalUrl, contentPath, UriHelper.appendUrlParams(serviceUrl, params));
+            if (serviceUrl) {
+                this.requestPath =
+                    StringHelper.format(CustomSelector.portalUrl, contentPath, UriHelper.appendUrlParams(serviceUrl, params));
+            }
         }
+
 
         getValueType(): ValueType {
             return ValueTypes.STRING;

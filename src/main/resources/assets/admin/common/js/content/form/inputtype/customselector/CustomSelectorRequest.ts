@@ -30,6 +30,10 @@ module api.content.form.inputtype.customselector {
             this.requestPath = requestPath;
         }
 
+        hasRequestPath(): boolean {
+            return !!this.requestPath;
+        }
+
         isPartiallyLoaded(): boolean {
             return !!this.results && this.results.length > 0 && !this.loaded;
         }

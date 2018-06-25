@@ -2,14 +2,17 @@ module api.content.form.inputtype.customselector {
 
     import PostLoader = api.util.loader.PostLoader;
 
-    export class CustomSelectorLoader extends PostLoader<CustomSelectorResponse, CustomSelectorItem> {
+    export class CustomSelectorLoader
+        extends PostLoader<CustomSelectorResponse, CustomSelectorItem> {
 
         protected request: CustomSelectorRequest;
 
         constructor(requestPath: string) {
             super();
 
-            this.getRequest().setRequestPath(requestPath);
+            if (requestPath) {
+                this.getRequest().setRequestPath(requestPath);
+            }
         }
 
         protected createRequest(): CustomSelectorRequest {
@@ -31,8 +34,18 @@ module api.content.form.inputtype.customselector {
             this.getRequest().setQuery(value);
         }
 
-        protected sendPreLoadRequest(ids: string): Q.Promise<CustomSelectorItem[]> {
 
+        sendRequest(): Q.Promise<CustomSelectorItem[]> {
+            if (!this.request.hasRequestPath()) {
+                return wemQ.reject('Service is not configured');
+            }
+            return super.sendRequest();
+        }
+
+        protected sendPreLoadRequest(ids: string): Q.Promise<CustomSelectorItem[]> {
+            if (!this.request.hasRequestPath()) {
+                return wemQ.reject('Service is not configured');
+            }
             return this.getRequest().setIds(ids.split(';')).sendAndParse().then((results) => {
                 this.getRequest().setIds([]);
                 return results;
