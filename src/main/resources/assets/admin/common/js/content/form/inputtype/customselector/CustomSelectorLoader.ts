@@ -35,7 +35,6 @@ module api.content.form.inputtype.customselector {
             this.getRequest().setQuery(value);
         }
 
-
         sendRequest(): Q.Promise<CustomSelectorItem[]> {
             if (!this.request.hasRequestPath()) {
                 return wemQ.reject(i18n('field.customSelector.noService'));
