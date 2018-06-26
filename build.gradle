@@ -50,6 +50,7 @@ task copyCompiled( type: Copy ) {
     from( "$resourcesDir/assets" ) {
         include '**/_all.js'
         include '**/_all.css'
+        include '**/_all.lite.css'
         include '**/html-editor.css'
     }
     into 'build/resources/main/assets'
