@@ -6,7 +6,9 @@ module api.app.wizard {
 
         private header: WizardHeader;
 
-        private validityChangedListeners: {(event: ValidityChangedEvent):void}[] = [];
+        private prevValue: boolean;
+
+        private validityChangedListeners: { (event: ValidityChangedEvent): void }[] = [];
 
         constructor() {
             this.steps = [];
@@ -32,6 +34,12 @@ module api.app.wizard {
             let index = this.steps.indexOf(step);
             if (index >= 0) {
                 this.steps.splice(index, 1);
+
+                if (!this.prevValue) {
+                    if (this.isAllValid()) {
+                        this.notifyValidityChanged(true);
+                    }
+                }
             }
         }
 
@@ -59,18 +67,20 @@ module api.app.wizard {
             return true;
         }
 
-        onValidityChanged(listener: (event: ValidityChangedEvent)=>void) {
+        onValidityChanged(listener: (event: ValidityChangedEvent) => void) {
             this.validityChangedListeners.push(listener);
         }
 
-        unValidityChanged(listener: (event: ValidityChangedEvent)=>void) {
+        unValidityChanged(listener: (event: ValidityChangedEvent) => void) {
             this.validityChangedListeners = this.validityChangedListeners.filter((curr) => {
                 return curr !== listener;
             });
         }
 
         notifyValidityChanged(valid: boolean) {
-            this.validityChangedListeners.forEach((listener: (event: ValidityChangedEvent)=>void)=> {
+            this.prevValue = valid;
+
+            this.validityChangedListeners.forEach((listener: (event: ValidityChangedEvent) => void) => {
                 listener.call(this, new ValidityChangedEvent(valid));
             });
         }
