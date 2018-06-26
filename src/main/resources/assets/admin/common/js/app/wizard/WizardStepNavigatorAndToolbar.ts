@@ -8,7 +8,7 @@ module api.app.wizard {
 
         static maxFittingWidth: number = 675;
 
-        private static MINIMIZED: string = 'minimized';
+        private static FOLDED: string = 'folded';
 
         private foldButton: api.ui.toolbar.FoldButton;
 
@@ -47,7 +47,7 @@ module api.app.wizard {
         }
 
         renumerateSteps() {
-            if (this.isMinimized()) {
+            if (this.isFolded()) {
                 this.addNumbersToStepLabels(); // updating step numbers
             }
         }
@@ -118,7 +118,7 @@ module api.app.wizard {
         }
 
         checkAndMinimize() {
-            const isMinimized: boolean = this.isMinimized();
+            const isMinimized: boolean = this.isFolded();
             const isUpdateNeeded: boolean = this.isStepNavigatorFit() === isMinimized;
 
             if (!isUpdateNeeded) {
@@ -126,22 +126,22 @@ module api.app.wizard {
             }
 
             if (isMinimized) {
-                this.maximize()
+                this.maximize();
             } else {
-                this.minimize()
+                this.minimize();
             }
         }
 
-        isMinimized(): boolean {
-            return this.hasClass(WizardStepNavigatorAndToolbar.MINIMIZED);
+        private isFolded(): boolean {
+            return this.hasClass(WizardStepNavigatorAndToolbar.FOLDED);
         }
 
-        private isFolded(): boolean {
+        private isMinimized(): boolean {
             return !!this.foldButton && this.foldButton.getDropdown().hasChild(this.stepNavigator);
         }
 
         private minimize() {
-            this.addClass(WizardStepNavigatorAndToolbar.MINIMIZED);
+            this.addClass(WizardStepNavigatorAndToolbar.FOLDED);
             this.fold();
             this.addNumbersToStepLabels();
             if (this.stepNavigator.getSelectedNavigationItem()) {
@@ -150,31 +150,33 @@ module api.app.wizard {
         }
 
         private maximize() {
-            this.removeClass(WizardStepNavigatorAndToolbar.MINIMIZED);
+            this.removeClass(WizardStepNavigatorAndToolbar.FOLDED);
             this.unfold();
             this.removeNumbersFromStepLabels();
         }
 
         private fold() {
-            if (!this.isFolded()) {
+            if (!this.isMinimized()) {
                 this.removeChild(this.stepNavigator);
                 this.foldButton.push(this.stepNavigator, 300);
             }
         }
 
         private unfold() {
-            if (this.isFolded()) {
+            if (this.isMinimized()) {
                 this.foldButton.pop();
                 this.stepNavigator.insertAfterEl(this.foldButton);
             }
         }
 
-        toggleFolded(fold: boolean) {
-            if (fold) {
+        changeOrientation(horizontal: boolean) {
+            const mustBeFolded = horizontal && this.isFolded();
+            if (mustBeFolded) {
                 this.fold();
             } else {
                 this.unfold();
             }
+            this.checkAndMinimize();
         }
 
         private addNumbersToStepLabels() {

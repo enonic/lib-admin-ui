@@ -577,11 +577,8 @@ module api.app.wizard {
 
             if (this.helpTextToggleButton) {
                 const maximized = !this.minimized;
-                const mustBeFolded = maximized && this.stepNavigatorAndToolbarContainer.isMinimized();
-
                 this.helpTextToggleButton.setVisible(maximized);
-                this.stepNavigatorAndToolbarContainer.toggleFolded(mustBeFolded);
-                this.stepNavigatorAndToolbarContainer.checkAndMinimize();
+                this.stepNavigatorAndToolbarContainer.changeOrientation(maximized);
             }
         }
 
