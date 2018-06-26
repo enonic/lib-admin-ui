@@ -833,7 +833,7 @@ module api.app.wizard {
         }
 
         unValidityChanged(listener: (event: ValidityChangedEvent) => void) {
-            this.validityManager.onValidityChanged(listener);
+            this.validityManager.unValidityChanged(listener);
         }
 
         notifyValidityChanged(valid: boolean) {
