@@ -125,17 +125,24 @@ module api.app.wizard {
                 return;
             }
 
-            isMinimized ? this.maximize() : this.minimize();
+            if (isMinimized) {
+                this.maximize()
+            } else {
+                this.minimize()
+            }
         }
 
-        private isMinimized(): boolean {
+        isMinimized(): boolean {
             return this.hasClass(WizardStepNavigatorAndToolbar.MINIMIZED);
+        }
+
+        private isFolded(): boolean {
+            return !!this.foldButton && this.foldButton.getDropdown().hasChild(this.stepNavigator);
         }
 
         private minimize() {
             this.addClass(WizardStepNavigatorAndToolbar.MINIMIZED);
-            this.removeChild(this.stepNavigator);
-            this.foldButton.push(this.stepNavigator, 300);
+            this.fold();
             this.addNumbersToStepLabels();
             if (this.stepNavigator.getSelectedNavigationItem()) {
                 this.foldButton.setLabel(this.stepNavigator.getSelectedNavigationItem().getFullLabel());
@@ -144,9 +151,30 @@ module api.app.wizard {
 
         private maximize() {
             this.removeClass(WizardStepNavigatorAndToolbar.MINIMIZED);
-            this.foldButton.pop();
-            this.stepNavigator.insertAfterEl(this.foldButton);
+            this.unfold();
             this.removeNumbersFromStepLabels();
+        }
+
+        private fold() {
+            if (!this.isFolded()) {
+                this.removeChild(this.stepNavigator);
+                this.foldButton.push(this.stepNavigator, 300);
+            }
+        }
+
+        private unfold() {
+            if (this.isFolded()) {
+                this.foldButton.pop();
+                this.stepNavigator.insertAfterEl(this.foldButton);
+            }
+        }
+
+        toggleFolded(fold: boolean) {
+            if (fold) {
+                this.fold();
+            } else {
+                this.unfold();
+            }
         }
 
         private addNumbersToStepLabels() {
