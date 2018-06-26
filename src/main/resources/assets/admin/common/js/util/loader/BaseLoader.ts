@@ -21,11 +21,11 @@ module api.util.loader {
 
         private searchString: string;
 
-        private loadedDataListeners: {(event: LoadedDataEvent<OBJECT>): Q.Promise<any>}[] = [];
+        private loadedDataListeners: { (event: LoadedDataEvent<OBJECT>): Q.Promise<any> }[] = [];
 
-        private loadingDataListeners: {(event: LoadingDataEvent): void}[] = [];
+        private loadingDataListeners: { (event: LoadingDataEvent): void }[] = [];
 
-        private loaderErrorListeners: {(event: LoaderErrorEvent): void}[] = [];
+        private loaderErrorListeners: { (event: LoaderErrorEvent): void }[] = [];
 
         private comparator: Comparator<OBJECT>;
 
@@ -154,14 +154,17 @@ module api.util.loader {
 
         notifyLoadedData(results: OBJECT[], postLoad?: boolean, silent: boolean = false) {
             this.status = LoaderStatus.LOADED;
-            if(!silent) {
-                this.loadedDataListeners.reduce(Q.when, Q(new LoadedDataEvent<OBJECT>(results, postLoad)));
+            if (!silent) {
+                const evt = new LoadedDataEvent<OBJECT>(results, postLoad);
+                this.loadedDataListeners.reduce((prev, curr) => {
+                    return wemQ.when(prev, () => curr(evt));
+                }, wemQ(null)).catch(this.handleLoadError.bind(this, false));
             }
         }
 
         notifyLoadingData(postLoad?: boolean, silent: boolean = false) {
             this.status = LoaderStatus.LOADING;
-            if(!silent) {
+            if (!silent) {
                 this.loadingDataListeners.forEach((listener: (event: LoadingDataEvent) => void) => {
                     listener.call(this, new LoadingDataEvent(postLoad));
                 });
@@ -177,13 +180,13 @@ module api.util.loader {
         }
 
         unLoadedData(listener: (event: LoadedDataEvent<OBJECT>) => Q.Promise<any>) {
-            this.loadedDataListeners = this.loadedDataListeners.filter((currentListener: (event: LoadedDataEvent<OBJECT>)=>void)=> {
+            this.loadedDataListeners = this.loadedDataListeners.filter((currentListener: (event: LoadedDataEvent<OBJECT>) => void) => {
                 return currentListener !== listener;
             });
         }
 
         unLoadingData(listener: (event: LoadingDataEvent) => void) {
-            this.loadingDataListeners = this.loadingDataListeners.filter((currentListener: (event: LoadingDataEvent)=>void)=> {
+            this.loadingDataListeners = this.loadingDataListeners.filter((currentListener: (event: LoadingDataEvent) => void) => {
                 return currentListener !== listener;
             });
         }

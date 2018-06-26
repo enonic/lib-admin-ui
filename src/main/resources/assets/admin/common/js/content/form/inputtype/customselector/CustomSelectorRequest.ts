@@ -1,6 +1,7 @@
 module api.content.form.inputtype.customselector {
 
     import ResourceRequest = api.rest.ResourceRequest;
+    import i18n = api.util.i18n;
 
     export interface CustomSelectorResponse {
         total: number;
@@ -8,7 +9,8 @@ module api.content.form.inputtype.customselector {
         hits: CustomSelectorItem[];
     }
 
-    export class CustomSelectorRequest extends ResourceRequest<CustomSelectorResponse, CustomSelectorItem[]> {
+    export class CustomSelectorRequest
+        extends ResourceRequest<CustomSelectorResponse, CustomSelectorItem[]> {
 
         public static DEFAULT_SIZE: number = 10;
 
@@ -84,16 +86,16 @@ module api.content.form.inputtype.customselector {
             const errors = [];
             const isInvalid = (value) => value == null || value == null;
             if (isInvalid(result.total)) {
-                errors.push(`'total'`);
+                errors.push(i18n('field.customSelector.total'));
             }
             if (isInvalid(result.count)) {
-                errors.push(`'count'`);
+                errors.push(i18n('field.customSelector.count'));
             }
             if (isInvalid(result.hits)) {
-                errors.push(`'hits'`);
+                errors.push(i18n('field.customSelector.hits'));
             }
             if (errors.length > 0) {
-                throw new Error(`Fields ${errors.join(', ')} must be present in service response`);
+                throw new Error(i18n('field.customSelector.errors', errors.join(', ')));
             }
         }
 
