@@ -576,10 +576,9 @@ module api.app.wizard {
             }
 
             if (this.helpTextToggleButton) {
-                this.helpTextToggleButton.setVisible(!this.minimized);
-                // Additional resize after button is shown, but
-                // ResponsiveManager already handled callded checkAndMinimize
-                this.stepNavigatorAndToolbarContainer.checkAndMinimize();
+                const maximized = !this.minimized;
+                this.helpTextToggleButton.setVisible(maximized);
+                this.stepNavigatorAndToolbarContainer.changeOrientation(maximized);
             }
         }
 
