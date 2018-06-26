@@ -54,7 +54,6 @@ module api.content.form.inputtype.customselector {
             }
         }
 
-
         getValueType(): ValueType {
             return ValueTypes.STRING;
         }
