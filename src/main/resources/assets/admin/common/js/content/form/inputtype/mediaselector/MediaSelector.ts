@@ -43,10 +43,14 @@ module api.content.form.inputtype.mediaselector {
             });
         }
 
+        protected getDefaultContentTypes(): ContentTypeName[] {
+            return ContentTypeName.getMediaTypes();
+        }
+
         protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
             super.readConfig(inputConfig);
 
-            const allowedContentTypes: string[] = ContentTypeName.getMediaTypes().map(type => type.toString());
+            const allowedContentTypes: string[] = this.getDefaultContentTypes().map(type => type.toString());
             let allowedMediaTypes: string[] = this.allowedContentTypes.filter(value => allowedContentTypes.indexOf(value) >= 0);
 
             if (allowedMediaTypes.length == 0) {
