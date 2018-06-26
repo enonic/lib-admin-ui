@@ -85,14 +85,15 @@ module api.content.form.inputtype.customselector {
         private validateResponse(result: CustomSelectorResponse) {
             const errors = [];
             const isInvalid = (value) => value == null || value == null;
+
             if (isInvalid(result.total)) {
-                errors.push(i18n('field.customSelector.total'));
+                errors.push(`'total'`);
             }
             if (isInvalid(result.count)) {
-                errors.push(i18n('field.customSelector.count'));
+                errors.push(`'count'`);
             }
             if (isInvalid(result.hits)) {
-                errors.push(i18n('field.customSelector.hits'));
+                errors.push(`'hits'`);
             }
             if (errors.length > 0) {
                 throw new Error(i18n('field.customSelector.errors', errors.join(', ')));
