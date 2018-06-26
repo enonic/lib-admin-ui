@@ -34,7 +34,6 @@ module api.content.form.inputtype.customselector {
             this.getRequest().setQuery(value);
         }
 
-
         sendRequest(): Q.Promise<CustomSelectorItem[]> {
             if (!this.request.hasRequestPath()) {
                 return wemQ.reject('Service is not configured');
