@@ -6,9 +6,9 @@ module api.dom {
 
         private static instance: WindowDOM = new WindowDOM();
 
-        private onBeforeUnloadListeners: {(event: UIEvent): void;}[] = [];
+        private onBeforeUnloadListeners: { (event: UIEvent): void; }[] = [];
 
-        private onUnloadListeners: {(event: UIEvent): void;}[] = [];
+        private onUnloadListeners: { (event: UIEvent): void; }[] = [];
 
         static get(): WindowDOM {
             return WindowDOM.instance;
@@ -17,13 +17,12 @@ module api.dom {
         constructor() {
             this.el = window;
 
-            this.el.onbeforeunload = (event) => {
-                this.onBeforeUnloadListeners.forEach((listener) => listener(event));
+            const handle = function (event, listeners) {
+                listeners.forEach(l => l(event));
             };
 
-            this.el.onunload = (event) => {
-                this.onUnloadListeners.forEach((listener) => listener(event));
-            };
+            this.el.onbeforeunload = event => handle(event, this.onBeforeUnloadListeners);
+            this.el.onunload = event => handle(event, this.onUnloadListeners);
         }
 
         asWindow(): Window {
@@ -47,7 +46,7 @@ module api.dom {
                 i++;
             }
             while (i < 10);
-            return  null;
+            return null;
         }
 
         getParent(): WindowDOM {
@@ -111,9 +110,7 @@ module api.dom {
         }
 
         unBeforeUnload(listener: (event: UIEvent) => void) {
-            this.onBeforeUnloadListeners = this.onBeforeUnloadListeners.filter((curr) => {
-                return curr !== listener;
-            });
+            this.onBeforeUnloadListeners = this.onBeforeUnloadListeners.filter(curr => curr !== listener);
             return this;
         }
 
@@ -122,10 +119,24 @@ module api.dom {
         }
 
         unUnload(listener: (event: UIEvent) => void) {
-            this.onUnloadListeners = this.onUnloadListeners.filter((curr) => {
-                return curr !== listener;
-            });
+            this.onUnloadListeners = this.onUnloadListeners.filter(curr => curr !== listener);
             return this;
+        }
+
+        onFocus(listener: (event: UIEvent) => void) {
+            this.el.addEventListener('focus', listener);
+        }
+
+        unFocus(listener: (event: UIEvent) => void) {
+            this.el.removeEventListener('focus', listener);
+        }
+
+        onBlur(listener: (event: UIEvent) => void) {
+            this.el.addEventListener('blur', listener);
+        }
+
+        unBlur(listener: (event: UIEvent) => void) {
+            this.el.removeEventListener('blur', listener);
         }
     }
 
