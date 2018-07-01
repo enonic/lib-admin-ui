@@ -17,7 +17,7 @@ module api.dom {
         constructor() {
             this.el = window;
 
-            const handle = function (event, listeners) {
+            const handle = function (event: UIEvent, listeners: { (event: UIEvent): void; }[]) {
                 listeners.forEach(l => l(event));
             };
 
