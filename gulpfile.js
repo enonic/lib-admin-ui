@@ -117,10 +117,10 @@ gulp.task('clean', function () {
     return del(paths, {dot: true});
 });
 
-gulp.task('less', ['less-admin-full', 'less-admin-lite', 'less-html-editor']);
-gulp.task('ts', sequence('ts-admin', ['ts-spec']));
-gulp.task('combine', ['combine-js']);
+gulp.task('less', gulp.parallel('less-admin-full', 'less-admin-lite', 'less-html-editor'));
+gulp.task('ts', gulp.series('ts-admin', gulp.task('ts-spec')));
+gulp.task('combine', gulp.task('combine-js'));
 
-gulp.task('all', sequence(['less', 'combine'], 'lint', 'ts'));
-gulp.task('all:no-lint', sequence(['less', 'combine'], 'ts'));
-gulp.task('default', ['all']);
+gulp.task('all', gulp.series(gulp.parallel('less', 'combine'), 'lint', 'ts'));
+gulp.task('all:no-lint', gulp.series(gulp.parallel('less', 'combine'), 'ts'));
+gulp.task('default', gulp.task('all'));
