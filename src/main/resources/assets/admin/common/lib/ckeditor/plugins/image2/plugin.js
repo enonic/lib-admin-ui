@@ -384,7 +384,7 @@
                         height: image.getAttribute('height') || '',
 
                         // Lock ratio is on by default (https://dev.ckeditor.com/ticket/10833).
-                        lock: false //this.ready ? helpers.checkHasNaturalRatio(image) : true // change #3
+                        lock: image.getAttribute('data-src') && image.getAttribute('data-src').indexOf('keepSize=true') > 0 // change #3
                     };
 
                 // If we used 'a' in widget#parts definition, it could happen that
