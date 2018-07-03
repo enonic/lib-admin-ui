@@ -199,7 +199,7 @@ module api.util.htmlarea.editor {
                 removePlugins: 'resize',
                 removeButtons: this.toolsToExlcude,
                 extraPlugins: this.getExtraPlugins(),
-                extraAllowedContent: 'code address',
+                extraAllowedContent: 'code address dl dt dd',
                 format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
                 image2_disableResizer: true,
                 disallowedContent: 'img[width,height]',
