@@ -9,6 +9,7 @@ module api.util.htmlarea.editor {
     /**
      * NB: Modifications were made in ckeditor.js (VERY SORRY FOR THAT):
      * LINE 126: getFrameDocument() function updated to fix issue #542 in MS EDGE
+     * LINE 1253: cke_widget_drag_handler_container initial styling updated to have display:none;
      *
      * Update those in case ckeditor lib is updated
      */
@@ -477,6 +478,14 @@ module api.util.htmlarea.editor {
                 ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 55, 'p'); // apply the 'Normal' format
                 ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 56, 'div'); // apply the 'Normal (DIV)' format
                 ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 57, 'address'); // apply the 'Address' format
+            });
+
+            ckeditor.on('key', function (evt: eventInfo) { // stopping select all from propagating
+                if (evt.data.keyCode == CKEDITOR.CTRL + 65) {
+                    if (evt.data.domEvent && evt.data.domEvent.stopPropagation) {
+                        evt.data.domEvent.stopPropagation();
+                    }
+                }
             });
         }
 
