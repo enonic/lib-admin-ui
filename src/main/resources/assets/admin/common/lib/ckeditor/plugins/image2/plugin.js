@@ -872,7 +872,7 @@
     };
 
     function setWrapperAlign(widget, alignClasses) { // change #1
-        var wrapper = widget.wrapper,
+        var wrapper = widget.wrapper.findOne('figure') || widget.wrapper,
             align = widget.data.align,
             hasCaption = widget.data.hasCaption,
             keepSize = widget.data.lock;
