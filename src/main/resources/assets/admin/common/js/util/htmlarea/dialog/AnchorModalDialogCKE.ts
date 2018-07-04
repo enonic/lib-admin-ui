@@ -45,8 +45,16 @@ module api.util.htmlarea.dialog {
 
             this.addAction(submitAction.onExecuted(() => {
                 if (this.validate()) {
-                    this.ckeOriginalDialog.setValueOf('info', 'txtName', this.nameField.getInput().getEl().getValue());
-                    this.ckeOriginalDialog.getButton('ok').click();
+                    const value: string = this.nameField.getInput().getEl().getValue();
+                    const isAnythingSelected: boolean = !!this.getEditor().getSelection().getSelectedText();
+
+                    if (isAnythingSelected) {
+                        this.ckeOriginalDialog.setValueOf('info', 'txtName', value);
+                        this.ckeOriginalDialog.getButton('ok').click();
+                    } else {
+                        this.getEditor().insertHtml(`<a id="${value}" name="${value}">&nbsp;</a>`);
+                    }
+
                     this.close();
                 }
             }));
