@@ -130,7 +130,7 @@ module api.util.htmlarea.editor {
 
         private includeTools(tools: any[]) {
             tools.forEach((tool: any) => {
-                this.includeTool(tool);
+                this.includeTool(this.mapTool(tool));
             });
         }
 
@@ -153,6 +153,84 @@ module api.util.htmlarea.editor {
             }
 
             return this;
+        }
+
+        // Todo:
+        // This method maps plugin names used by TinyMCE to the new ones used by CKEditor.
+        // This is to ensure that old inputtype configs are still working correctly with the new editor.
+        // Remove this method in 7.0
+        private mapTool(value: string): string {
+            const lowerCaseValue = value.trim().toLowerCase();
+
+            let mappedValue = '';
+
+            switch (lowerCaseValue) {
+                case 'alignleft':
+                    mappedValue = 'JustifyLeft';
+                    break;
+
+                case 'aligncenter':
+                    mappedValue = 'JustifyCenter';
+                    break;
+
+                case 'alignright':
+                    mappedValue = 'JustifyRight';
+                    break;
+
+                case 'alignjustify':
+                    mappedValue = 'JustifyBlock';
+                    break;
+
+                case 'styleselect':
+                    mappedValue = 'Format';
+                    break;
+
+                case 'bullist':
+                    mappedValue = 'BulletedList';
+                    break;
+
+                case 'numlist':
+                    mappedValue = 'NumberedList';
+                    break;
+
+                case 'charmap':
+                    mappedValue = 'SpecialChar';
+                    break;
+
+                case 'strikethrough':
+                    mappedValue = 'Strike';
+                    break;
+
+                case 'ltr':
+                    mappedValue = 'BidiLtr';
+                    break;
+
+                case 'rtl':
+                    mappedValue = 'BidiRtl';
+                    break;
+
+                case 'forecolor':
+                    mappedValue = 'TextColor';
+                    break;
+
+                case 'backcolor':
+                    mappedValue = 'BGColor';
+                    break;
+
+                case 'hr':
+                    mappedValue = 'HorizontalRule';
+                    break;
+
+                case 'visualblocks':
+                    mappedValue = 'ShowBlocks';
+                    break;
+
+                default:
+                    mappedValue = value.charAt(0).toUpperCase() + value.slice(1);
+            }
+
+            return mappedValue;
+
         }
 
         private checkRequiredFieldsAreSet() {
