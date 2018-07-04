@@ -35,7 +35,7 @@ module api.util.htmlarea.editor {
         private toolsToInclude: string[] = [];
 
         private tools: any[] = [
-            ['Format', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'Blockquote'],
+            ['Format', 'Bold', 'Italic', 'Underline'],
             ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
             ['BulletedList', 'NumberedList', 'Outdent', 'Indent'],
             ['SpecialChar', 'Anchor', 'Image', 'Macro', 'Link', 'Unlink'],
