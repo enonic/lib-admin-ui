@@ -8,7 +8,7 @@
     "css-mqpacker": "^6.0.2",
     "cssnano": "^3.10.0",
     "del": "^3.0.0",
-    "enonic-admin-artifacts": "^1.5.2",
+    "enonic-admin-artifacts": "^1.5.3",
     "gulp": "^3.9.1",
     "gulp-if": "^2.0.2",
     "gulp-include": "^2.3.0",
