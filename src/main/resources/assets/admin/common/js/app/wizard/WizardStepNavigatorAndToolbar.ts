@@ -106,7 +106,7 @@ module api.app.wizard {
             }
 
             const help = this.helpTextToggleButton;
-            const width = (!!help && help.isVisible())
+            const width = (help && help.isVisible())
                 ? this.getEl().getWidthWithoutPadding() - help.getEl().getWidthWithMargin()
                 : this.getEl().getWidthWithoutPadding();
 

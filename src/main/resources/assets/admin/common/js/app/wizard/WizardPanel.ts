@@ -575,11 +575,11 @@ module api.app.wizard {
                 this.stepNavigator.selectNavigationItem(navigationIndex, false, true);
             }
 
+            const maximized = !this.minimized;
             if (this.helpTextToggleButton) {
-                const maximized = !this.minimized;
                 this.helpTextToggleButton.setVisible(maximized);
-                this.stepNavigatorAndToolbarContainer.changeOrientation(maximized);
             }
+            this.stepNavigatorAndToolbarContainer.changeOrientation(maximized);
         }
 
         private toggleHelpTextShown() {
