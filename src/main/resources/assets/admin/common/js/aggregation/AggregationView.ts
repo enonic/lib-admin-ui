@@ -1,6 +1,7 @@
 module api.aggregation {
 
-    export class AggregationView extends api.dom.DivEl {
+    export class AggregationView
+        extends api.dom.DivEl {
 
         private parentGroupView: api.aggregation.AggregationGroupView;
 
@@ -8,7 +9,7 @@ module api.aggregation {
 
         private bucketSelectionChangedListeners: Function[] = [];
 
-        private displayNameMap: {[name:string]:string} = {};
+        private displayNameMap: { [name: string]: string } = {};
 
         constructor(aggregation: api.aggregation.Aggregation, parentGroupView: api.aggregation.AggregationGroupView) {
             super('aggregation-view');
@@ -16,9 +17,14 @@ module api.aggregation {
             this.parentGroupView = parentGroupView;
         }
 
-        setDisplayNamesMap(displayNameMap: {[name:string]:string}): void {
+        setDisplayNamesMap(displayNameMap: { [name: string]: string }): void {
             this.displayNameMap = displayNameMap;
             this.setDisplayNames();
+        }
+
+        setTooltipActive(flag: boolean) {
+            // using var to make typescript happy
+            if (flag) {}
         }
 
         setDisplayNames(): void {
