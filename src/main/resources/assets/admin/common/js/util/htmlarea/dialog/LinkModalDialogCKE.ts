@@ -45,9 +45,10 @@ module api.util.htmlarea.dialog {
         }
 
         private createAnchorPanelIfNeeded() {
-            const anchors: any[] = CKEDITOR.plugins.link.getEditorAnchors(this.getEditor()).map((anchor: any) => {
-                return anchor.id;
-            });
+            const anchors: any[] = CKEDITOR.plugins.link.getEditorAnchors(this.getEditor())
+                .filter((anchor: any) => !!anchor.id) // filter anchors with missing id's
+                .map((anchor: any) => anchor.id)
+                .filter((item, pos, self) => self.indexOf(item) == pos); // filter duplicates cke returns;
 
             if (anchors.length > 0) {
                 this.dockedPanel.addItem(this.tabNames.anchor, true, this.createAnchorPanel(anchors), this.isAnchor());

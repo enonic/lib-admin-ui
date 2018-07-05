@@ -19,7 +19,7 @@ module api.util.htmlarea.dialog {
      * NB: Modifications were made for native image plugin in image2/plugin.js:
      * 1. setWrapperAlign() method updated to make image wrapper element have inline alignment styles we used to have
      * 2. data() function updated to set 'max-width: 100%' on all images, including dropped/pasted images
-     * 3. init value of  widget's 'data.lock' parameter set to false to make dropped/pasted images align correctly
+     * 3. widget's'data.lock' is used to store keepSize value; init value of 'data.lock' set by keepSize param value;
      * 4. unwrapFromCentering() updated to correctly handle image alignment with respect to figure tag
      * 5. hasCaption() updated to wrap image into figure tag on drag and drop
      * 6. templateBlock variable updated to set margin:0 on figure tag when inserted

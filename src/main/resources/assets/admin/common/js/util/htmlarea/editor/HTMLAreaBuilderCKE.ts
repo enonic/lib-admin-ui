@@ -22,6 +22,7 @@ module api.util.htmlarea.editor {
         private editorContainerId: string;
         private focusHandler: (e: FocusEvent) => void;
         private blurHandler: (e: FocusEvent) => void;
+        private mouseLeaveHandler: (e: MouseEvent, mousePressed?: boolean) => void;
         private keydownHandler: (e: eventInfo) => void;
         private nodeChangeHandler: (e: any) => void;
         private createDialogListeners: { (event: CreateHtmlAreaDialogEvent): void }[] = [];
@@ -87,6 +88,11 @@ module api.util.htmlarea.editor {
 
         setBlurHandler(blurHandler: (e: FocusEvent) => void): HTMLAreaBuilderCKE {
             this.blurHandler = blurHandler;
+            return this;
+        }
+
+        setMouseLeaveHandler(mouseLeaveHandler: (e: MouseEvent, mousePressed?: boolean) => void): HTMLAreaBuilderCKE {
+            this.mouseLeaveHandler = mouseLeaveHandler;
             return this;
         }
 
@@ -199,7 +205,7 @@ module api.util.htmlarea.editor {
                 removePlugins: 'resize',
                 removeButtons: this.toolsToExlcude,
                 extraPlugins: this.getExtraPlugins(),
-                extraAllowedContent: 'code address',
+                extraAllowedContent: 'code address img[data-src] dl dt dd',
                 format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
                 image2_disableResizer: true,
                 disallowedContent: 'img[width,height]',
@@ -213,9 +219,9 @@ module api.util.htmlarea.editor {
                 config['format_code'] = {element: 'code'};
             }
 
-            config['qtRows']= 10; // Count of rows
-            config['qtColumns']= 10; // Count of columns
-            config['qtWidth']= '100%'; // table width
+            config['qtRows'] = 10; // Count of rows
+            config['qtColumns'] = 10; // Count of columns
+            config['qtWidth'] = '100%'; // table width
 
             return config;
         }
@@ -248,6 +254,22 @@ module api.util.htmlarea.editor {
             ckeditor.on('maximize', (e: eventInfo) => {
                 if (e.data === 2) { // fullscreen off
                     api.ui.responsive.ResponsiveManager.fireResizeEvent();
+                }
+            });
+
+            const editorEl = document.getElementById(this.editorContainerId);
+            let mousePressed: boolean = false;
+
+            editorEl.addEventListener('mousedown', () => mousePressed = true);
+            editorEl.addEventListener('mouseup', () => mousePressed = false);
+            editorEl.addEventListener('mouseleave', (e: MouseEvent) => {
+                if (this.mouseLeaveHandler) {
+                    this.mouseLeaveHandler(e, mousePressed);
+                }
+            });
+            api.dom.Body.get().onMouseUp(() => {
+                if (mousePressed) {
+                    mousePressed = false;
                 }
             });
 
@@ -390,7 +412,7 @@ module api.util.htmlarea.editor {
 
             ckeditor.addCommand('openFullscreenDialog', {
                 exec: (editor) => {
-                    const config: any = { editor: editor };
+                    const config: any = {editor: editor};
                     config.assetsUri = this.assetsUri;
                     config.content = this.content;
                     config.createDialogListeners = this.createDialogListeners;
