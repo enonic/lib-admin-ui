@@ -281,6 +281,7 @@ module api.util.htmlarea.editor {
                 extraAllowedContent: 'code address dl dt dd;img[data-src]',
                 format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
                 image2_disableResizer: true,
+                image2_captionedClass: '',
                 disallowedContent: 'img[width,height]',
                 uploadUrl: api.util.UriHelper.getRestUri('content/createMedia'),
                 contentsCss: this.assetsUri + '/admin/common/styles/html-editor.css', // for classic mode only
