@@ -520,7 +520,7 @@ module api.util.htmlarea.dialog {
         }
 
         private getOriginalAnchorElem(): CKEDITOR.ui.dialog.uiElement {
-            return (<any>this.getElemFromOriginalDialog('info', 'anchorOptions')).getChild([0, 0, 1]);
+            return (<any>this.getElemFromOriginalDialog('info', 'anchorOptions')).getChild([0, 0, 0]);
         }
 
         private getOriginalProtocolElem(): CKEDITOR.ui.dialog.uiElement {
