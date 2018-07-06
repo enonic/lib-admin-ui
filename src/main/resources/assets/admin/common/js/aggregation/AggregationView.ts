@@ -23,8 +23,9 @@ module api.aggregation {
         }
 
         setTooltipActive(flag: boolean) {
-            // using var to make typescript happy
-            if (flag) {}
+            if (flag) {
+                // using var to make typescript happy
+            }
         }
 
         setDisplayNames(): void {
