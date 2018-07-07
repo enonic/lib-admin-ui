@@ -22,6 +22,7 @@ module api.util.htmlarea.dialog {
      * 3. widget's'data.lock' is used to store keepSize value; init value of 'data.lock' set by keepSize param value;
      * 4. unwrapFromCentering() updated to correctly handle image alignment with respect to figure tag
      * 5. hasCaption() updated to wrap image into figure tag on drag and drop
+     * 6. figcaption related code fixed to work as in tinymce
      * 7. updated image plugin to enable justify button on toolbar
      * 8. centered figure will have 'display: block' instead of inline-block to properly display svg. UPD: no display style to correspond
      * with tinymce styles

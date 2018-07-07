@@ -11,7 +11,7 @@
         templateBlock = new CKEDITOR.template(
             '<figure class="{captionedClass}">' +
             template +
-            '<figcaption style="text-align: left">{captionPlaceholder}</figcaption>' + // #2
+            '<figcaption style="text-align:left">{captionPlaceholder}</figcaption>' + // #2 // #6
             '</figure>'),
         alignmentsObj = {left: 0, center: 1, right: 2},
         regexPercent = /^\s*(\d+\%)\s*$/i;
@@ -990,7 +990,7 @@
             }
 
             // No center wrapper has been found.
-            else if (name == 'figure' && el.hasClass(captionedClass)) {
+            else if (name == 'figure') { // #6
                 image = el.getFirst('img') || el.getFirst('a').getFirst('img');
 
                 // Upcast linked image like <a><img/></a>.
@@ -1623,9 +1623,9 @@
                     attributes: '!src,alt,width,height'
                 },
                 figure: {
-                    classes: '!' + editor.config.image2_captionedClass
+                    classes: editor.config.image2_captionedClass // #6
                 },
-                figcaption: true
+                figcaption: {} // #6
             };
 
         if (alignClasses) {
@@ -1643,6 +1643,7 @@
 
             rules.img.styles = 'float,text-align'; // #2
             rules.figure.styles = 'float,display';
+            rules.figcaption.styles = 'text-align'; // #6
         }
 
         return rules;
