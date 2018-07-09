@@ -219,6 +219,12 @@ module api.form.inputtype.text {
                     if (api.BrowserHelper.isIE()) {
                         this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper, id);
                     }
+
+                    this.onRemoved(() => api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this));
+
+                    this.onOccurrenceRendered(() => this.resetInputHeight());
+
+                    this.onOccurrenceRemoved(() => this.resetInputHeight());
                 }
 
                 this.removeTooltipFromEditorArea(textAreaWrapper);
@@ -266,12 +272,6 @@ module api.form.inputtype.text {
                 this.updateEditorToolbarPos(inputOccurence);
                 this.updateEditorToolbarWidth(inputOccurence, this.getEditorInfo(editorId));
             });
-
-            this.onRemoved(() => api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this));
-
-            this.onOccurrenceRendered(() => this.resetInputHeight());
-
-            this.onOccurrenceRemoved(() => this.resetInputHeight());
         }
 
         private updateStickyEditorToolbar(inputOccurence: Element, editorInfo: HtmlAreaOccurrenceInfo) {
