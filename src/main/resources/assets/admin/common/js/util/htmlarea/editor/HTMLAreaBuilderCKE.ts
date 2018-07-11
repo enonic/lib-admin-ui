@@ -598,8 +598,9 @@ module api.util.htmlarea.editor {
                     evt.editor.lang.format.tag_code = 'Сode';
                 }
 
-                const linkTooltipPostfix: string = '(Ctrl/Cmd + K)';
-                const imageTooltipPostfix: string = '(Ctrl/Cmd + L)';
+                const tooltipPrefix = BrowserHelper.isOSX() ? '\u2318' : 'Ctrl';
+                const linkTooltipPostfix: string = `(${tooltipPrefix}+K)`;
+                const imageTooltipPostfix: string = `(${tooltipPrefix}+L)`;
 
                 if (evt.editor.lang.link && evt.editor.lang.link.toolbar.indexOf(linkTooltipPostfix) < 0) {
                     evt.editor.lang.link.toolbar = evt.editor.lang.link.toolbar + ' ' + linkTooltipPostfix;
