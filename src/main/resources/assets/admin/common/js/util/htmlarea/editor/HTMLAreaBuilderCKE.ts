@@ -357,7 +357,6 @@ module api.util.htmlarea.editor {
             });
 
             ckeditor.on('blur', (e: eventInfo) => {
-                e.editor.getSelection().reset(); // that makes cke cleanup
 
                 if (this.hasActiveDialog) {
                     e.stop();
