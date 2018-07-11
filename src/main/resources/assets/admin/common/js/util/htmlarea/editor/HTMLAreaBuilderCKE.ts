@@ -281,6 +281,9 @@ module api.util.htmlarea.editor {
             const config: CKEDITOR.config = {
                 toolbar: this.tools,
                 entities: false,
+                keystrokes: [
+                    [CKEDITOR.CTRL + 76, null], // disabling default Link keystroke to remove it's wrong tooltip
+                ],
                 removePlugins: 'resize',
                 removeButtons: this.toolsToExlcude,
                 extraPlugins: this.getExtraPlugins(),
@@ -594,6 +597,17 @@ module api.util.htmlarea.editor {
             ckeditor.on('langLoaded', (evt: eventInfo) => {
                 if (evt.editor.lang.format) {
                     evt.editor.lang.format.tag_code = 'Сode';
+                }
+
+                const linkTooltipPostfix: string = '(Ctrl/Cmd + K)';
+                const imageTooltipPostfix: string = '(Ctrl/Cmd + L)';
+
+                if (evt.editor.lang.link && evt.editor.lang.link.toolbar.indexOf(linkTooltipPostfix) < 0) {
+                    evt.editor.lang.link.toolbar = evt.editor.lang.link.toolbar + ' ' + linkTooltipPostfix;
+                }
+
+                if (evt.editor.lang.common && evt.editor.lang.common.image.indexOf(imageTooltipPostfix) < 0) {
+                    evt.editor.lang.common.image = evt.editor.lang.common.image + ' ' + imageTooltipPostfix;
                 }
             });
         }
