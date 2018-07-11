@@ -991,7 +991,7 @@
 
             // No center wrapper has been found.
             else if (name == 'figure') { // #6
-                image = el.getFirst('img') || el.getFirst('a').getFirst('img');
+                image = el.getFirst('img') ? el.getFirst('img') : el.getFirst('a') ? el.getFirst('a').getFirst('img') : null;
 
                 // Upcast linked image like <a><img/></a>.
             } else if (isLinkedOrStandaloneImage(el)) {
