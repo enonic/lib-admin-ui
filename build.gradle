@@ -110,6 +110,8 @@ jar {
         exclude 'ckeditor/plugins/image2/icons/*.*'
         exclude 'ckeditor/plugins/image2/lang/*.*'
         exclude 'ckeditor/plugins/link/dialogs/*.*'
+        exclude 'ckeditor/plugins/link/images/*.*'
+        exclude 'ckeditor/plugins/link/icons/*.*'
         exclude 'ckeditor/plugins/specialchar/dialogs/*.*'
         exclude 'ckeditor/plugins/specialchar/dialogs/lang/*.*'
         exclude 'ckeditor/plugins/quicktable/plugin.js'
