@@ -1,5 +1,7 @@
 module api.aggregation {
 
+    import Tooltip = api.ui.Tooltip;
+
     export class BucketView extends api.dom.DivEl {
 
         private bucket: api.aggregation.Bucket;
@@ -12,6 +14,8 @@ module api.aggregation {
 
         private displayName: string;
 
+        private tooltip: Tooltip;
+
         constructor(bucket: api.aggregation.Bucket, parentAggregationView: api.aggregation.AggregationView, select: boolean,
                     displayName?: string) {
 
@@ -21,6 +25,8 @@ module api.aggregation {
             this.displayName = displayName || bucket.getDisplayName();
 
             this.checkbox = api.ui.Checkbox.create().setLabelText(this.resolveLabelValue()).setChecked(select).build();
+            this.tooltip = new Tooltip(this.checkbox, bucket.getKey(), 1000);
+            this.tooltip.setActive(false);
 
             this.checkbox.onValueChanged((event: api.ValueChangedEvent) => {
                 this.notifySelectionChanged(eval(event.getOldValue()), eval(event.getNewValue()));
@@ -28,6 +34,10 @@ module api.aggregation {
             this.appendChild(this.checkbox);
 
             this.updateUI();
+        }
+
+        setTooltipActive(flag: boolean) {
+            this.tooltip.setActive(flag);
         }
 
         private resolveLabelValue(): string {
