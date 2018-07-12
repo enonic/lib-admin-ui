@@ -27,12 +27,22 @@ module api.util.htmlarea.dialog {
 
         protected getMainFormItems(): FormItem[] {
             const formItemBuilder = new ModalDialogFormItemBuilder('name', i18n('dialog.anchor.formitem.name')).setValidator(
-                Validators.required);
+                AnchorModalDialogCKE.validationRequiredAnchor);
             this.nameField = this.createFormItem(formItemBuilder);
 
             this.setFirstFocusField(this.nameField.getInput());
 
             return [this.nameField];
+        }
+
+        private static validationRequiredAnchor(input: api.dom.FormInputEl): string {
+            return Validators.required(input) || AnchorModalDialogCKE.validAnchor(input);
+        }
+
+        private static validAnchor(input: api.dom.FormInputEl): string {
+            const regexUrl = /^\w[\w.]*$/;
+            const value = input.getValue();
+            return !regexUrl.test(value) ? i18n('field.value.invalid') : undefined;
         }
 
         protected setDialogInputValues() {
