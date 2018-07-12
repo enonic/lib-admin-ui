@@ -378,19 +378,20 @@ module api.ui.dialog {
             super.show();
             this.buttonRow.focusDefaultAction();
 
-            this.onResize(this.resizeHandler);
             if (this.resizeObserver) {
                 this.resizeObserver.observe(this.body.getHTMLElement());
+            } else {
+                this.onResize(this.resizeHandler);
             }
 
             wemjq(this.body.getHTMLElement()).css('height', '');
         }
 
         hide() {
-            this.unResize(this.resizeHandler);
-
             if (this.resizeObserver) {
                 this.resizeObserver.unobserve(this.body.getHTMLElement());
+            } else {
+                this.unResize(this.resizeHandler);
             }
 
             this.unBlurBackground();

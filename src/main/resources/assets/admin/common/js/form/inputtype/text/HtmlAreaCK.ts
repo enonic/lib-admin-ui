@@ -80,9 +80,6 @@ module api.form.inputtype.text {
                     });
                 }
             });
-            textAreaEl.onRemoved(() => {
-                this.destroyEditor(editorId);
-            });
 
             textAreaWrapper.appendChild(textAreaEl);
 
@@ -219,6 +216,12 @@ module api.form.inputtype.text {
                     if (api.BrowserHelper.isIE()) {
                         this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper, id);
                     }
+
+                    this.onRemoved(() => api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this));
+
+                    this.onOccurrenceRendered(() => this.resetInputHeight());
+
+                    this.onOccurrenceRemoved(() => this.resetInputHeight());
                 }
 
                 this.removeTooltipFromEditorArea(textAreaWrapper);
@@ -266,12 +269,6 @@ module api.form.inputtype.text {
                 this.updateEditorToolbarPos(inputOccurence);
                 this.updateEditorToolbarWidth(inputOccurence, this.getEditorInfo(editorId));
             });
-
-            this.onRemoved(() => api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this));
-
-            this.onOccurrenceRendered(() => this.resetInputHeight());
-
-            this.onOccurrenceRemoved(() => this.resetInputHeight());
         }
 
         private updateStickyEditorToolbar(inputOccurence: Element, editorInfo: HtmlAreaOccurrenceInfo) {
@@ -318,8 +315,8 @@ module api.form.inputtype.text {
         private editorLowerEdgeIsVisible(inputOccurence: Element): boolean {
             const distToTopOfScrlblArea = this.calcDistToTopOfScrlbleArea(inputOccurence);
             const editorToolbarHeight = wemjq(inputOccurence.getHTMLElement()).find(this.getToolbarClass()).outerHeight(true);
-            const mceStatusToolbarHeight = wemjq(inputOccurence.getHTMLElement()).find(this.getBottomBarClass()).outerHeight(true);
-            return (inputOccurence.getEl().getHeightWithoutPadding() - editorToolbarHeight - mceStatusToolbarHeight +
+            const statusToolbarHeight = wemjq(inputOccurence.getHTMLElement()).find(this.getBottomBarClass()).outerHeight(true);
+            return (inputOccurence.getEl().getHeightWithoutPadding() - editorToolbarHeight - statusToolbarHeight +
                     distToTopOfScrlblArea) > 0;
         }
 
@@ -419,7 +416,6 @@ module api.form.inputtype.text {
 
                 this.destroyEditor(editorId);
                 this.reInitEditor(editorId);
-                tinymce.execCommand('mceAddEditor', false, editorId);
             });
         }
 
@@ -427,7 +423,6 @@ module api.form.inputtype.text {
             const editorId = wemjq('textarea', ui.item)[0].id;
 
             this.reInitEditor(editorId);
-            tinymce.execCommand('mceAddEditor', false, editorId);
 
             this.getEditor(editorId).focus();
         }
