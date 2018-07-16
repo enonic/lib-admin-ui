@@ -10,4 +10,3 @@
 ///<reference path='GetPublishStatusesResult.ts' />
 ///<reference path='HasUnpublishedChildrenResult.ts' />
 ///<reference path='ContentTreeSelectorListResult.ts' />
-///<reference path='AggregateContentTypesResult.ts' />
