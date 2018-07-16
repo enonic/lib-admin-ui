@@ -13,7 +13,6 @@
 ///<reference path='Content.ts' />
 ///<reference path='ExtraData.ts' />
 
-///<reference path='FragmentContentSummaryLoader.ts' />
 ///<reference path='ContentTreeSelectorQueryRequest.ts' />
 ///<reference path='ContentTreeSelectorItemViewer.ts' />
 

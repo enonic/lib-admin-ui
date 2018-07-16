@@ -4,7 +4,6 @@
 ///<reference path='PermissionsJson.ts' />
 ///<reference path='ContentPermissionsJson.ts' />
 ///<reference path='ExtraDataJson.ts' />
-///<reference path='ContentPublishItemJson.ts' />
 ///<reference path='ContentQueryResultJson.ts' />
 ///<reference path='CompareContentResultJson.ts' />
 ///<reference path='CompareContentResultsJson.ts' />

@@ -20,7 +20,6 @@
 ///<reference path='PageDescriptorLoader.ts' />
 
 ///<reference path='PageTemplateKey.ts' />
-///<reference path='PageTemplateName.ts' />
 
 ///<reference path='PageTemplate.ts' />
 
