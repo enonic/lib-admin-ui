@@ -204,8 +204,8 @@ module api.util.htmlarea.dialog {
         }
 
         private insertUpdatedMacroIntoTextArea(macroString: string) {
-            this.selectedMacro.element.setHtml(
-                this.selectedMacro.element.getHtml().replace(this.selectedMacro.macroText, macroString));
+            this.selectedMacro.element.setText(
+                this.selectedMacro.element.getText().replace(this.selectedMacro.macroText, macroString));
             (<CKEDITOR.editor>this.getEditor()).fire('saveSnapshot'); // to trigger change event
         }
 
