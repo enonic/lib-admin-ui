@@ -190,6 +190,23 @@ module api.ui.treegrid {
             child.setParent(this);
         }
 
+        updateChild(child: TreeNode<DATA>) {
+            if (!child) {
+                return;
+            }
+            for (let curChildIndex in this.children) {
+                if (this.children[curChildIndex].getId() == child.getId()) {
+                    this.children[curChildIndex] = child;
+
+                    this.removeDuplicates();
+                    this.clearViewers();
+                    child.setParent(this);
+
+                    break;
+                }
+            }
+        }
+
         removeChild(child: TreeNode<DATA>) {
             let children: TreeNode<DATA>[] = [];
             for (let i = 0; i < this.children.length; i++) {

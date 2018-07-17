@@ -52,6 +52,10 @@ module api.ui.selector {
             this.optionsTreeGrid.addOption(option);
         }
 
+        updateOption(option: Option<OPTION_DISPLAY_VALUE>) {
+            this.optionsTreeGrid.updateOption(option);
+        }
+
         getSelectedOptions(): Option<OPTION_DISPLAY_VALUE>[] {
             return this.optionsTreeGrid.getSelectedNodes().map(selectedNode => {
                 return this.getOptionByValue(selectedNode.getDataId());
