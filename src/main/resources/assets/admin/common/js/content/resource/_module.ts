@@ -17,7 +17,6 @@
 ///<reference path='GetContentAttachmentsRequest.ts' />
 ///<reference path='CreateContentRequest.ts' />
 ///<reference path='OrderContentRequest.ts' />
-///<reference path='OrderChildContentRequest.ts' />
 ///<reference path='UpdateContentRequest.ts' />
 ///<reference path='DuplicateContentRequest.ts' />
 ///<reference path='MoveContentRequest.ts' />

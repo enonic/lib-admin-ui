@@ -13,8 +13,6 @@
 ///<reference path='ActiveContentVersionJson.ts' />
 ///<reference path='ChildOrderJson.ts' />
 ///<reference path='SetChildOrderJson.ts' />
-///<reference path='ReorderChildContentJson.ts' />
-///<reference path='ReorderChildContentsJson.ts' />
 ///<reference path='OrderExprJson.ts' />
 ///<reference path='OrderExprWrapperJson.ts' />
 ///<reference path='SetOrderUpdateJson.ts' />
