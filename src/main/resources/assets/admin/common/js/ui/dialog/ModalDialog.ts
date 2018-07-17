@@ -41,6 +41,8 @@ module api.ui.dialog {
 
         protected closeIcon: DivEl;
 
+        private cancelButton: DialogButton;
+
         protected confirmationDialog: ConfirmationDialog;
 
         private static openDialogsCounter: number = 0;
@@ -301,14 +303,18 @@ module api.ui.dialog {
             return this.cancelAction;
         }
 
+        getCancelButton(): DialogButton {
+            return this.cancelButton;
+        }
+
         addCancelButtonToBottom(buttonLabel: string = i18n('action.cancel')): DialogButton {
-            let cancelAction = new Action(buttonLabel);
+            const cancelAction = new Action(buttonLabel);
             cancelAction.setIconClass('cancel-button-bottom force-enabled');
             cancelAction.onExecuted(() => this.cancelAction.execute());
 
-            const cancelButton = this.buttonRow.addAction(cancelAction);
-            cancelButton.getEl().setAttribute('data-button-text', i18n('action.ok'));
-            return cancelButton;
+            this.cancelButton = this.buttonRow.addAction(cancelAction);
+            this.cancelButton.getEl().setAttribute('data-button-text', i18n('action.ok'));
+            return this.cancelButton;
         }
 
         setTitle(value: string, escapeHtml: boolean = true) {
@@ -372,25 +378,28 @@ module api.ui.dialog {
             super.show();
             this.buttonRow.focusDefaultAction();
 
-            this.onResize(this.resizeHandler);
             if (this.resizeObserver) {
                 this.resizeObserver.observe(this.body.getHTMLElement());
+            } else {
+                this.onResize(this.resizeHandler);
             }
 
             wemjq(this.body.getHTMLElement()).css('height', '');
         }
 
         hide() {
-            this.unResize(this.resizeHandler);
-
             if (this.resizeObserver) {
                 this.resizeObserver.unobserve(this.body.getHTMLElement());
+            } else {
+                this.unResize(this.resizeHandler);
             }
 
             this.unBlurBackground();
             super.hide(true);
 
-            api.dom.Body.get().removeChild(this.dialogContainer);
+            if (this.dialogContainer.getParentElement()) {
+                api.dom.Body.get().removeChild(this.dialogContainer);
+            }
         }
 
         getButtonRow(): ButtonRow {

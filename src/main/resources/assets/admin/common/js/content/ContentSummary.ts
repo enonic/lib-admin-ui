@@ -2,6 +2,14 @@ module api.content {
 
     import Thumbnail = api.thumb.Thumbnail;
     import ContentState = api.schema.content.ContentState;
+    import ValueExpr = api.query.expr.ValueExpr;
+    import ContentQuery = api.content.query.ContentQuery;
+    import QueryExpr = api.query.expr.QueryExpr;
+    import CompareExpr = api.query.expr.CompareExpr;
+    import FieldExpr = api.query.expr.FieldExpr;
+    import ContentQueryRequest = api.content.resource.ContentQueryRequest;
+    import ContentSummaryJson = api.content.json.ContentSummaryJson;
+    import ContentQueryResult = api.content.resource.result.ContentQueryResult;
 
     export class ContentSummary extends ContentIdBaseItem {
 
@@ -152,6 +160,19 @@ module api.content {
 
         isRequireValid(): boolean {
             return this.requireValid;
+        }
+
+        isReferencedBy(contentIds: ContentId[]): wemQ.Promise<boolean> {
+            const values = contentIds.map(contentId => ValueExpr.string(contentId.toString()));
+
+            const contentQuery: ContentQuery = new ContentQuery();
+            contentQuery.setMustBeReferencedById(this.getContentId());
+            contentQuery.setQueryExpr(new QueryExpr(CompareExpr.In(new FieldExpr(api.query.QueryField.ID), values)));
+
+            return new ContentQueryRequest<ContentSummaryJson, ContentSummary>(contentQuery).sendAndParse().then(
+                (contentQueryResult: ContentQueryResult<ContentSummary, ContentSummaryJson>) => {
+                    return contentQueryResult.getMetadata().getTotalHits() > 0;
+                });
         }
 
         getId(): string {

@@ -18,12 +18,14 @@ module api.util.htmlarea.dialog {
     /**
      * NB: Modifications were made for native image plugin in image2/plugin.js:
      * 1. setWrapperAlign() method updated to make image wrapper element have inline alignment styles we used to have
-     * 2. data() function updated to set 'max-width: 100%' on all images, including dropped/pasted images
-     * 3. init value of  widget's 'data.lock' parameter set to false to make dropped/pasted images align correctly
+     * 2. align updated to behave same is in tiny
+     * 3. widget's'data.lock' is used to store keepSize value; init value of 'data.lock' set by keepSize param value;
      * 4. unwrapFromCentering() updated to correctly handle image alignment with respect to figure tag
      * 5. hasCaption() updated to wrap image into figure tag on drag and drop
-     * 6. templateBlock variable updated to set margin:0 on figure tag when inserted
+     * 6. figcaption related code fixed to work as in tinymce
      * 7. updated image plugin to enable justify button on toolbar
+     * 8. centered figure will have 'display: block' instead of inline-block to properly display svg. UPD: no display style to correspond
+     * with tinymce styles
      *
      * NB: Modifications were made in ckeditor.js (VERY SORRY FOR THAT):
      * LINE 1279: updateDragHandlerPosition() function updated to set inline style 'display: none;' on drag handler container

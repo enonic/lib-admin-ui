@@ -49,7 +49,9 @@ module api.form {
 
         public layout(validate: boolean = true): wemQ.Promise<void> {
             return super.layout(validate).then(() => {
-                this.formSetOccurrencesContainer.onDescendantAdded(() => this.setTitle());
+                if (this.formItemOccurrence.isMultiple()) {
+                    this.formSetOccurrencesContainer.onDescendantAdded(() => this.setTitle());
+                }
             });
         }
 
@@ -79,7 +81,9 @@ module api.form {
                     new api.content.event.EditContentEvent([summaryAndStatus]).fire();
                 });
 
-                formItemView.onBlur(() => this.setTitle());
+                if (this.formItemOccurrence.isMultiple()) {
+                    formItemView.onBlur(() => this.setTitle());
+                }
             });
         }
 

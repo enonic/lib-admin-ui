@@ -6,6 +6,8 @@ module api.dom {
             super('input', className, prefix, originalValue);
             this.setType(type || 'text');
 
+            this.setAutocomplete(false);
+
             this.onInput(this.handleInput.bind(this));
         }
 
@@ -39,6 +41,15 @@ module api.dom {
 
         getPlaceholder(): string {
             return this.getEl().getAttribute('placeholder');
+        }
+
+        setAutocomplete(value: boolean): InputEl {
+            this.getEl().setAutocomplete(value);
+            return this;
+        }
+
+        hasAutocomplete(): boolean {
+            return this.getEl().hasAutocomplete();
         }
 
         getPattern(): string {

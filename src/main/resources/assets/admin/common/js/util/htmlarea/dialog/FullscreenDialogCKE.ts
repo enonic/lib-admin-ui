@@ -49,6 +49,7 @@ module api.util.htmlarea.dialog {
         show() {
             super.show();
             this.initEditor();
+            this.addCKEListeners();
             this.fseditor.setData(this.getEditor().getData());
         }
 
@@ -63,7 +64,7 @@ module api.util.htmlarea.dialog {
         }
 
         private initEditor() {
-            const fseditor = new HTMLAreaBuilderCKE()
+            this.fseditor = new HTMLAreaBuilderCKE()
                 .setEditorContainerId(this.textArea.getId())
                 .setAssetsUri(CONFIG.assetsUri)
                 .setInline(false)
@@ -76,13 +77,26 @@ module api.util.htmlarea.dialog {
                 .setEditableSourceCode(this.config.editableSourceCode)
                 .setFullscreenMode(true)
                 .createEditor();
+        }
 
-            fseditor.on('instanceReady', () => {
+        private addCKEListeners() {
+            this.fseditor.on('instanceReady', () => {
                 this.removeTooltip();
-                fseditor.focus();
+                this.fseditor.focus();
+
+                this.addEscButtonHandler();
+            });
+        }
+
+        private addEscButtonHandler() {
+            this.fseditor.addCommand('esc', {
+                exec: () => {
+                    this.close();
+                    return true;
+                }
             });
 
-            this.fseditor = fseditor;
+            this.fseditor.setKeystroke(27, 'esc'); // close dialog when esc pressed inside editor
         }
 
         private removeTooltip() {

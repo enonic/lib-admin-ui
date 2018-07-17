@@ -575,12 +575,11 @@ module api.app.wizard {
                 this.stepNavigator.selectNavigationItem(navigationIndex, false, true);
             }
 
+            const maximized = !this.minimized;
             if (this.helpTextToggleButton) {
-                this.helpTextToggleButton.setVisible(!this.minimized);
-                // Additional resize after button is shown, but
-                // ResponsiveManager already handled callded checkAndMinimize
-                this.stepNavigatorAndToolbarContainer.checkAndMinimize();
+                this.helpTextToggleButton.setVisible(maximized);
             }
+            this.stepNavigatorAndToolbarContainer.changeOrientation(maximized);
         }
 
         private toggleHelpTextShown() {
@@ -834,7 +833,7 @@ module api.app.wizard {
         }
 
         unValidityChanged(listener: (event: ValidityChangedEvent) => void) {
-            this.validityManager.onValidityChanged(listener);
+            this.validityManager.unValidityChanged(listener);
         }
 
         notifyValidityChanged(valid: boolean) {

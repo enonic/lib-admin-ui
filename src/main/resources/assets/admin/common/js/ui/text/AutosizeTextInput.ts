@@ -9,6 +9,7 @@ module api.ui.text {
             super(className, size, originalValue);
 
             this.addClass('autosize');
+            this.setAutocomplete(true);
 
             // Create <div> element with the same styles as this text input.
             // This clone <div> is displayed as inline element so its width matches to its text length.

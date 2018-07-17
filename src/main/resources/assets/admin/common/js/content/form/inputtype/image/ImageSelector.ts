@@ -79,15 +79,12 @@ module api.content.form.inputtype.image {
 
             this.isPendingPreload = !StringHelper.isBlank(value);
 
-            let contentTypes = this.allowedContentTypes.length
-                ? this.allowedContentTypes : [ContentTypeName.IMAGE.toString(), ContentTypeName.MEDIA_VECTOR.toString()];
-
             const optionDataLoader = ImageOptionDataLoader
                 .create()
                 .setContent(this.config.content)
                 .setInputName(input.getName())
                 .setAllowedContentPaths(this.allowedContentPaths)
-                .setContentTypeNames(contentTypes)
+                .setContentTypeNames(this.allowedContentTypes)
                 .setRelationshipType(this.relationshipType)
                 .build();
 
@@ -193,6 +190,10 @@ module api.content.form.inputtype.image {
             });
 
             return uploader;
+        }
+
+        protected getDefaultContentTypes(): ContentTypeName[] {
+            return [ContentTypeName.IMAGE, ContentTypeName.MEDIA_VECTOR];
         }
 
         protected selectedOptionHandler(selectedOption: SelectedOption<MediaTreeSelectorItem>) {

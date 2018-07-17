@@ -1,7 +1,7 @@
 .modal-dialog-margin-mixin(@label-width: @form-label-width) {
   .form-view {
     .input-view {
-      label {
+      & > label {
         float: left;
         max-width: @label-width - 10px;
       }
@@ -71,6 +71,24 @@
     overflow: visible;
   }
 
+  &.link-modal-dialog {
+
+    .input-view {
+
+      .edit {
+        display: block;
+      }
+
+      &.invalid {
+        .media-uploader-el .upload-button {
+          right: 10px;
+          top: 10px;
+        }
+      }
+
+    }
+  }
+
   &._540-720 {
     .modal-dialog-margin-mixin();
   }
@@ -82,6 +100,17 @@
       }
       .form-view.display-validation-errors .input-view label + .input-wrapper {
         margin-left: 0;
+      }
+    }
+    &.link-modal-dialog,
+    &.search-and-replace-modal-dialog {
+      .dialog-content .form-view .input-view {
+        .checkbox label::before {
+          margin-left: 0;
+        }
+        .checkbox label {
+          padding-left: 22px;
+        }
       }
     }
   }
@@ -181,10 +210,19 @@
 
   }
 
-  &.link-modal-dialog, &.search-and-replace-modal-dialog {
-    input[type="checkbox"] + label:before {
-      position: absolute;
-      margin-left: 108px;
+  &.link-modal-dialog,
+  &.search-and-replace-modal-dialog {
+    input[type="checkbox"] + label {
+      padding-left: 130px;
+      padding-right: 0;
+      box-sizing: border-box;
+      .ellipsis();
+      &::before {
+        position: absolute;
+        margin-top: 2px;
+        margin-left: 108px;
+        left: 0;
+      }
     }
 
     .dialog-content .panel {

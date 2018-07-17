@@ -52,6 +52,10 @@
     .slick-cell, .slick-cell * {
       cursor: move;
     }
+
+    .modified {
+      text-align: right;
+    }
   }
 
   h6 {
@@ -89,6 +93,15 @@
   }
 
   .modal-dialog-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
     h2 {
       float: left;
       line-height: 38px;
@@ -119,7 +132,7 @@
         margin: 0 30px;
         overflow: hidden;
         white-space: pre;
-        color: @admin-button-blue2;
+        line-height: 20px;
         .ellipsis();
 
         &::before {

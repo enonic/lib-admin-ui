@@ -16,6 +16,16 @@
   }
 }
 
+.picker-dialog-button(@margin) {
+  .ok-button {
+    background: @admin-button-blue2;
+    padding: 4px 19px 4px 19px;
+    position: relative;
+    display: block;
+    margin: @margin;
+  }
+}
+
 .date-picker-mixin(@width: 100%, @padding: 10px) {
   .date-picker-dialog {
     .picker-dialog(@width, @padding);
@@ -135,6 +145,15 @@
       display: block;
       line-height: 25px;
     }
+  }
+}
+
+.picker-dialog-mixin() {
+  overflow: auto;
+
+  &.reverted {
+    bottom: 37px;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3), 0 -5px 10px 0 rgba(0, 0, 0, 0.3);
   }
 }
 

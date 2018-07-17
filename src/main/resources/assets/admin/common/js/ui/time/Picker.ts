@@ -1,8 +1,15 @@
 module api.ui.time {
 
-    export class Picker extends api.dom.DivEl {
+    import Element = api.dom.Element;
+    import Button = api.ui.button.Button;
+    import i18n = api.util.i18n;
 
-        protected popup: any;
+    export class Picker<T extends Element>
+        extends api.dom.DivEl {
+
+        protected popup: T;
+
+        protected popupOkButton: Button;
 
         protected selectedDate: Date;
 
@@ -61,7 +68,7 @@ module api.ui.time {
 
             this.input.onFocus((e: FocusEvent) =>
                 setTimeout(() => {
-                    if (!this.popup.isVisible()) {
+                    if (!this.popup || !this.popup.isVisible()) {
                         e.preventDefault();
                         this.showPopup();
                     }
@@ -111,13 +118,23 @@ module api.ui.time {
             this.appendChild(wrapper);
         }
 
+        private initCloseButton() {
+            this.popupOkButton = new Button(i18n('action.ok'));
+            this.popupOkButton.addClass('ok-button');
+            this.popupOkButton.onClicked(() => {
+                this.hidePopup();
+            });
+            this.popup.appendChild(this.popupOkButton);
+        }
+
         private createPopup() {
-            if (!!this.popup) {
+            if (this.popup) {
                 return;
             }
 
             this.initPopup(this.builder);
             this.setupPopupListeners(this.builder);
+            this.initCloseButton();
 
             this.popup.insertAfterEl(this.input);
         }
@@ -130,14 +147,35 @@ module api.ui.time {
 
         protected showPopup() {
             this.createPopup();
+            this.resolvePosition();
             this.popup.show();
         }
 
+        private resolvePosition() {
+            this.popup.removeClass('reverted');
+            this.popup.getEl().setHeight('auto');
+
+            const rect = this.getEl().getBoundingClientRect();
+            const height = this.popup.getEl().getHeightWithBorder();
+            const viewHeight = api.dom.Body.get().getEl().getHeightWithBorder();
+
+            const spaceToBottom = viewHeight - rect.bottom;
+            const spaceToTop = rect.top;
+
+            if (height > spaceToBottom) {
+                if (height <= spaceToTop) {
+                    this.popup.addClass('reverted');
+                } else {
+                    this.popup.getEl().setHeightPx(spaceToBottom - 5);
+                }
+            }
+        }
+
         protected togglePopupVisibility() {
-            if (!this.popup) {
-                this.showPopup();
+            if (this.popup && this.popup.isVisible()) {
+                this.hidePopup();
             } else {
-                this.popup.setVisible(!this.popup.isVisible());
+                this.showPopup();
             }
         }
 

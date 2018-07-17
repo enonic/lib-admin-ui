@@ -42,6 +42,7 @@ module api.form.inputtype.text {
 
             let inputEl = api.ui.text.TextInput.middle(undefined, property.getString());
             inputEl.setName(this.getInput().getName() + '-' + index);
+            inputEl.setAutocomplete(true);
 
             inputEl.onValueChanged((event: api.ValueChangedEvent) => {
                 const isValid = this.isValid(event.getNewValue(), inputEl);

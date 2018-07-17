@@ -79,6 +79,15 @@ module api.dom {
             return this.el['disabled'];
         }
 
+        setAutocomplete(value: boolean): ElementHelper {
+            this.el['autocomplete'] = value ? 'on' : 'off';
+            return this;
+        }
+
+        hasAutocomplete(): boolean {
+            return this.el['autocomplete'] === 'on';
+        }
+
         getId(): string {
             return this.el.id;
         }
@@ -147,7 +156,7 @@ module api.dom {
         }
 
         setValue(value: string): ElementHelper {
-            this.el['value'] = value;
+            this.el['value'] = value || '';
             return this;
         }
 

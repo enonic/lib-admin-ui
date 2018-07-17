@@ -1,5 +1,7 @@
 module api.content.resource {
 
+    import i18n = api.util.i18n;
+
     import UndoPendingDeleteContentResultJson = api.content.json.UndoPendingDeleteContentResultJson;
 
     export class UndoPendingDeleteContentRequest extends ContentResourceRequest<UndoPendingDeleteContentResultJson, number> {
@@ -30,11 +32,9 @@ module api.content.resource {
 
         static showResponse(result: number) {
             if (result > 0) {
-                api.notify.showSuccess(result == 1 ?
-                                       `The item is successfully undeleted` :
-                                       `The items are successfully undeleted`);
+                api.notify.showSuccess(result == 1 ? i18n('notify.item.undeleted') : i18n('notify.items.undeleted'));
             } else {
-                api.notify.showWarning(`No items found to undelete`);
+                api.notify.showWarning(i18n('notify.nothingToUndelete'));
             }
         }
     }

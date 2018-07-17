@@ -29,7 +29,7 @@ module api.util.htmlarea.dialog {
                 modalDialog = this.openLinkDialog(event.getConfig(), event.getContent());
                 break;
             case HtmlAreaDialogType.LINK_CKE:
-                modalDialog = this.openLinkDialogCKE(event.getConfig());
+                modalDialog = this.openLinkDialogCKE(event.getConfig(), event.getContent());
                 break;
             case HtmlAreaDialogType.MACRO:
                 modalDialog = this.openMacroDialog(event.getConfig(), event.getContent(), event.getApplicationKeys());
@@ -78,8 +78,8 @@ module api.util.htmlarea.dialog {
             return this.openDialog(new LinkModalDialog(config, content));
         }
 
-        private static openLinkDialogCKE(config: eventInfo): ModalDialog {
-            return this.openDialog(new LinkModalDialogCKE(config));
+        private static openLinkDialogCKE(config: eventInfo, content: api.content.ContentSummary): ModalDialog {
+            return this.openDialog(new LinkModalDialogCKE(config, content));
         }
 
         private static openImageDialog(config: HtmlAreaImage, content: api.content.ContentSummary): ModalDialog {

@@ -1,41 +1,27 @@
-.principal-selected-option-view {
-  position: relative;
-  padding: 5px 42px 5px 5px;
-  .clearfix();
+.principal-combobox {
 
-  .names-and-icon-view {
-    float: left;
-    margin: 0 10px 0 0;
-    min-width: 200px;
-  }
+  .principal-selected-option-view {
+    position: relative;
+    padding: 5px 42px 5px 5px;
+    .clearfix();
 
-  &.removed {
-    .@{_COMMON_PREFIX}main-name {
-      text-decoration: line-through;
+    .names-and-icon-view {
+      float: left;
+      margin: 0 10px 0 0;
+      min-width: 200px;
+    }
+
+    &.removed {
+      .@{_COMMON_PREFIX}main-name {
+        text-decoration: line-through;
+      }
     }
   }
-}
 
-.principal-viewer-compact {
+  .principal-viewer-compact {
 
-  .user-icon {
-    cursor: default;
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    background-color: @admin-bg-dark-gray;
-    color: @admin-white;
-    font-size: 12px;
-    line-height: 25px;
-    text-align: center;
-    overflow: hidden;
-    float: left;
-    margin: 0 3px;
-    border-radius: 25px;
-    border: 2px solid transparent;
-
-    &.active {
-      border: 2px solid @admin-blue;
+    .user-icon {
+      float: left;
     }
   }
 }

@@ -63,7 +63,7 @@ module api.util.htmlarea.editor {
 
                 if (imgTag.indexOf('<img ') === 0 && imgTag.indexOf(HTMLAreaHelper.imagePrefix) > 0) {
                     const dataSrc = /<img.*?data-src="(.*?)".*?>/.exec(imgTag)[1];
-                    const src = /<img.*?src="(.*?)".*?>/.exec(imgTags[0])[1];
+                    const src = /<img.*?\ssrc="(.*?)".*?>/.exec(imgTags[0])[1];
 
                     const convertedImg = imgTag.replace(src, dataSrc).replace(` data-src="${dataSrc}"`, StringHelper.EMPTY_STRING);
                     processedContent = processedContent.replace(imgTag, convertedImg);
