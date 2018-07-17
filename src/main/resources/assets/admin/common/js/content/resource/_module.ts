@@ -31,7 +31,6 @@
 ///<reference path='UpdateContentRequest.ts' />
 ///<reference path='PublishContentRequest.ts' />
 ///<reference path='UnpublishContentRequest.ts' />
-///<reference path='ResolvePublishDependenciesRequest.ts' />
 ///<reference path='CompareContentRequest.ts' />
 ///<reference path='GetPublishStatusesRequest.ts' />
 ///<reference path='ContentSummaryFetcher.ts' />
