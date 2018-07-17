@@ -29,8 +29,6 @@
 ///<reference path='EffectivePermissionMemberJson.ts' />
 ///<reference path='GetContentVersionsForViewResultsJson.ts' />
 ///<reference path='ContentVersionViewJson.ts' />
-///<reference path='ContentDependencyGroupJson.ts' />
-///<reference path='ContentDependencyJson.ts' />
 ///<reference path='ContentsExistJson.ts' />
 // /<reference path='UnpublishContentJson.ts' />
 ///<reference path='ContentPublishTimeRangeJson.ts' />
