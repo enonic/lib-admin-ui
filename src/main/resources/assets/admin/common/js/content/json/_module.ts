@@ -34,5 +34,4 @@
 ///<reference path='ContentPublishTimeRangeJson.ts' />
 ///<reference path='GetPublishStatusResultJson.ts' />
 ///<reference path='GetPublishStatusesResultJson.ts' />
-///<reference path='UndoPendingDeleteContentResultJson.ts' />
 ///<reference path='HasUnpublishedChildrenJson.ts' />
