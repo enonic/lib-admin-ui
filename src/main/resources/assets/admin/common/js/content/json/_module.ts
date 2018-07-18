@@ -7,10 +7,6 @@
 ///<reference path='ContentQueryResultJson.ts' />
 ///<reference path='CompareContentResultJson.ts' />
 ///<reference path='CompareContentResultsJson.ts' />
-///<reference path='ContentVersionJson.ts' />
-///<reference path='GetContentVersionsResultsJson.ts' />
-///<reference path='GetActiveContentVersionsResultsJson.ts' />
-///<reference path='ActiveContentVersionJson.ts' />
 ///<reference path='ChildOrderJson.ts' />
 ///<reference path='SetChildOrderJson.ts' />
 ///<reference path='OrderExprJson.ts' />
@@ -25,8 +21,6 @@
 ///<reference path='EffectivePermissionJson.ts' />
 ///<reference path='EffectivePermissionAccessJson.ts' />
 ///<reference path='EffectivePermissionMemberJson.ts' />
-///<reference path='GetContentVersionsForViewResultsJson.ts' />
-///<reference path='ContentVersionViewJson.ts' />
 ///<reference path='ContentsExistJson.ts' />
 // /<reference path='UnpublishContentJson.ts' />
 ///<reference path='ContentPublishTimeRangeJson.ts' />

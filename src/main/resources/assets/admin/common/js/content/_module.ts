@@ -22,7 +22,5 @@
 ///<reference path='Branch.ts' />
 ///<reference path='ContentSummaryAndCompareStatus.ts' />
 ///<reference path='ContentSummaryAndCompareStatusViewer.ts' />
-///<reference path='ContentVersion.ts' />
-///<reference path='ContentVersions.ts' />
 
 ///<reference path='Widget.ts' />

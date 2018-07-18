@@ -33,9 +33,6 @@
 ///<reference path='CompareContentRequest.ts' />
 ///<reference path='ContentSummaryFetcher.ts' />
 ///<reference path='ContentSummaryAndCompareStatusFetcher.ts' />
-///<reference path='GetActiveContentVersionsRequest.ts' />
-///<reference path='GetContentVersionsRequest.ts' />
-///<reference path='GetContentVersionsForViewRequest.ts' />
 ///<reference path='GetNearestSiteRequest.ts' />
 ///<reference path='ContentsExistRequest.ts' />
 ///<reference path='WidgetDescriptorResourceRequest.ts' />
