@@ -17,7 +17,7 @@ CKEDITOR.plugins.add('macro', {
                 var range = editor.getSelection().getRanges()[0];
 
                 if (!path.lastElement || !range.startContainer.equals(range.endContainer)) {
-                    updateButtonState();
+                    this.setState(CKEDITOR.TRISTATE_OFF);
                     return;
                 }
 
@@ -35,7 +35,7 @@ CKEDITOR.plugins.add('macro', {
                 }
 
                 if (!!selectedMacro) {
-                    updateButtonState();
+                    this.setState(CKEDITOR.TRISTATE_ON);
                     return;
                 }
 
@@ -48,7 +48,7 @@ CKEDITOR.plugins.add('macro', {
                     }
                 }
 
-                updateButtonState();
+                this.setState(!!selectedMacro ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF);
             },
 
             contextSensitive: 1
@@ -74,18 +74,21 @@ CKEDITOR.plugins.add('macro', {
          */
         editor.on('instanceReady', function () {
             editor.editable().on('click', function () {
-                if (editor.elementPath().lastElement.equals(selectedElement)) {
-                    editor.fire("selectionChange", {selection: editor.getSelection(), path: editor.elementPath()});
+                if (isSameElementSelected()) {
+                    triggerSelectionChange();
                 }
             });
 
             editor.on('key', function (e) {
                 var key = e.data.keyCode;
+                var isNavigationKeyPressed = key === 37 || key === 38 || key === 39 || key === 40; // navigation keys: left, top, right, bottom
 
-                if (key === 37 || key === 38 || key === 39 || key === 40) { // navigation keys: left, top, right, bottom
-                    if (editor.elementPath().lastElement.equals(selectedElement)) {
-                        editor.fire("selectionChange", {selection: editor.getSelection(), path: editor.elementPath()});
-                    }
+                if (!isNavigationKeyPressed) {
+                    return;
+                }
+
+                if (isSameElementSelected()) {
+                    triggerSelectionChange();
                 }
             });
         });
@@ -111,8 +114,12 @@ CKEDITOR.plugins.add('macro', {
             return result;
         }
 
-        function updateButtonState() {
-            this.setState(!!selectedMacro ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF);
+        function isSameElementSelected() {
+            return editor.elementPath().lastElement.equals(selectedElement);
+        }
+
+        function triggerSelectionChange() {
+            editor.fire("selectionChange", {selection: editor.getSelection(), path: editor.elementPath()});
         }
     }
 });
