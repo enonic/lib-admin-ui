@@ -30,6 +30,4 @@
 ///<reference path='ContentsExistJson.ts' />
 // /<reference path='UnpublishContentJson.ts' />
 ///<reference path='ContentPublishTimeRangeJson.ts' />
-///<reference path='GetPublishStatusResultJson.ts' />
-///<reference path='GetPublishStatusesResultJson.ts' />
 ///<reference path='HasUnpublishedChildrenJson.ts' />

@@ -6,7 +6,5 @@
 ///<reference path='CompareContentResults.ts' />
 ///<reference path='CompareContentResult.ts' />
 ///<reference path='ContentsExistResult.ts' />
-///<reference path='GetPublishStatusResult.ts' />
-///<reference path='GetPublishStatusesResult.ts' />
 ///<reference path='HasUnpublishedChildrenResult.ts' />
 ///<reference path='ContentTreeSelectorListResult.ts' />
