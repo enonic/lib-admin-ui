@@ -3,6 +3,7 @@ CKEDITOR.plugins.add('macro', {
 
         var selectedMacro = null;
         var selectedElement = null;
+        var selectionRange = null;
 
         editor.addCommand('openMacroDialogNative', {
             exec: function (editor) {
@@ -13,40 +14,9 @@ CKEDITOR.plugins.add('macro', {
             refresh: function (editor, path) {
                 selectedMacro = null;
                 selectedElement = path.lastElement;
+                selectionRange = editor.getSelection().getRanges()[0];
 
-                var range = editor.getSelection().getRanges()[0];
-
-                if (!path.lastElement || !range.startContainer.equals(range.endContainer)) {
-                    this.setState(CKEDITOR.TRISTATE_OFF);
-                    return;
-                }
-
-                var regexMacroWithBody = /\[(\w+)\s?.*?\](.+?)\[\/(\w+)\]/g;
-                var content = path.lastElement.getText();
-
-                var result;
-                while (result = regexMacroWithBody.exec(content)) {
-                    if (result[1] === result[3] && range.startOffset > result.index &&
-                        range.endOffset < (result.index + result[0].length)) {
-                        selectedMacro = makeMakroObject(result, path.lastElement);
-                        selectedMacro.body = result[2];
-                        break;
-                    }
-                }
-
-                if (!!selectedMacro) {
-                    this.setState(CKEDITOR.TRISTATE_ON);
-                    return;
-                }
-
-                var regexMacroNoBody = /\[(\w+)\s.+?\/\]/g;
-
-                while (result = regexMacroNoBody.exec(content)) {
-                    if (range.startOffset > result.index && range.endOffset < (result.index + result[0].length)) {
-                        selectedMacro = makeMakroObject(result, path.lastElement);
-                        break;
-                    }
-                }
+                doRefresh();
 
                 this.setState(!!selectedMacro ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF);
             },
@@ -93,7 +63,21 @@ CKEDITOR.plugins.add('macro', {
             });
         });
 
-        function makeMakroObject(regexResult, element) {
+        function doRefresh() {
+            if (!selectedElement || !selectionRange.startContainer.equals(selectionRange.endContainer)) {
+                return;
+            }
+
+            checkMacroWithBodySelected();
+
+            if (!!selectedMacro) {
+                return;
+            }
+
+            checkMacroNoBodySelected();
+        }
+
+        function makeMakroObject(regexResult) {
             var regexMacroAttributes = /([\w]+)(?:\s*=\s*")([^"]+)(?:")/g;
             var attributes = [];
             var attributesString = regexResult[0].match(/\[(.*?)\]/)[1];
@@ -107,11 +91,40 @@ CKEDITOR.plugins.add('macro', {
                 macroText: regexResult[0],
                 name: regexResult[1],
                 attributes: attributes,
-                element: element
+                element: selectedElement
             };
 
-
             return result;
+        }
+
+        function checkMacroWithBodySelected() {
+            var regexMacroWithBody = /\[(\w+)\s?.*?\](.+?)\[\/(\w+)\]/g;
+
+            var result;
+            while (result = regexMacroWithBody.exec(selectedElement.getText())) {
+                if (result[1] === result[3] && isSelectionWithinMacro(result)) {
+                    selectedMacro = makeMakroObject(result);
+                    selectedMacro.body = result[2];
+                    break;
+                }
+            }
+        }
+
+        function checkMacroNoBodySelected() {
+            var regexMacroNoBody = /\[(\w+)\s.+?\/\]/g;
+
+            var result;
+            while (result = regexMacroNoBody.exec(selectedElement.getText())) {
+                if (isSelectionWithinMacro(result)) {
+                    selectedMacro = makeMakroObject(result);
+                    break;
+                }
+            }
+        }
+
+        function isSelectionWithinMacro(macroRegexResult) {
+            return selectionRange.startOffset > macroRegexResult.index && selectionRange.endOffset <
+                   (macroRegexResult.index + macroRegexResult[0].length);
         }
 
         function isSameElementSelected() {
