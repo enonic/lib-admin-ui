@@ -3,7 +3,6 @@
 ///<reference path='ContentServerEventsHandler.ts' />
 ///<reference path='ContentServerEvent.ts' />
 ///<reference path='ContentServerChange.ts' />
-///<reference path='ContentNamedEvent.ts' />
 ///<reference path='BatchContentServerEvent.ts' />
 ///<reference path='EditContentEvent.ts' />
 ///<reference path='ContentRequiresSaveEvent.ts' />
