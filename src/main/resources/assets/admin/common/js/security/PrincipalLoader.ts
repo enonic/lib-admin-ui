@@ -4,7 +4,7 @@ module api.security {
 
     export class PrincipalLoader extends PostLoader<PrincipalListJson, Principal> {
 
-        protected request: FindPrincipalListRequest;
+        protected request: FindPrincipalWithRolesListRequest;
 
         private skipPrincipalKeys: { [key:string]:PrincipalKey; };
 
@@ -16,11 +16,11 @@ module api.security {
             this.setAllowedTypes([PrincipalType.GROUP, PrincipalType.USER, PrincipalType.ROLE]);
         }
 
-        protected createRequest(): FindPrincipalListRequest {
-            return new FindPrincipalListRequest().setSize(10);
+        protected createRequest(): FindPrincipalWithRolesListRequest {
+            return new FindPrincipalWithRolesListRequest().setSize(10);
         }
 
-        protected getRequest(): FindPrincipalListRequest {
+        protected getRequest(): FindPrincipalWithRolesListRequest {
             return this.request;
         }
 

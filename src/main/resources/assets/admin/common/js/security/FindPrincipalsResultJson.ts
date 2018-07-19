@@ -4,8 +4,6 @@ module api.security {
 
         principals: api.security.PrincipalJson[];
 
-        hits: number;
-
         totalSize: number;
     }
 }

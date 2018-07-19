@@ -1,8 +1,9 @@
 module api.security {
 
-    export class FindPrincipalsRequest
-        extends api.security.SecurityResourceRequest<FindPrincipalsResultJson, FindPrincipalsResult> {
+    export class FindPrincipalsWithRolesRequest
+        extends api.security.SecurityResourceRequest<FindPrincipalsWithRolesResultJson, FindPrincipalsWithRolesResult> {
 
+        private requiredRoles: PrincipalKey[];
         private allowedTypes: PrincipalType[];
         private searchQuery: string;
         private userStoreKey: UserStoreKey;
@@ -18,6 +19,7 @@ module api.security {
         getParams(): Object {
             return {
                 types: this.enumToStrings(this.allowedTypes),
+                roles: this.rolesToString(this.requiredRoles),
                 query: this.searchQuery || null,
                 userStoreKey: this.userStoreKey ? this.userStoreKey.toString() : null,
                 from: this.from || null,
@@ -26,18 +28,18 @@ module api.security {
         }
 
         getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'principals');
+            return api.rest.Path.fromParent(super.getResourcePath(), 'principalsWithRoles');
         }
 
-        sendAndParse(): wemQ.Promise<FindPrincipalsResult> {
-            return this.send().then((response: api.rest.JsonResponse<FindPrincipalsResultJson>) => {
+        sendAndParse(): wemQ.Promise<FindPrincipalsWithRolesResult> {
+            return this.send().then((response: api.rest.JsonResponse<FindPrincipalsWithRolesResultJson>) => {
                 let principals: Principal[] = response.getResult().principals.map((principalJson: PrincipalJson) => {
                     return this.fromJsonToPrincipal(principalJson);
                 });
                 if (this.filterPredicate) {
                     principals = principals.filter(this.filterPredicate);
                 }
-                return new FindPrincipalsResult(principals, response.getResult().principals.length, response.getResult().totalSize);
+                return new FindPrincipalsWithRolesResult(principals, response.getResult().unfilteredSize, response.getResult().hasMore);
             });
         }
 
@@ -45,12 +47,16 @@ module api.security {
             return types ? types.map((type: PrincipalType) => PrincipalType[type].toUpperCase()).join(',') : undefined;
         }
 
-        setUserStoreKey(key: UserStoreKey): FindPrincipalsRequest {
+        private rolesToString(roles: PrincipalKey[]): string {
+            return roles ? roles.map(role => role.toString()).join(',') : undefined;
+        }
+
+        setUserStoreKey(key: UserStoreKey): FindPrincipalsWithRolesRequest {
             this.userStoreKey = key;
             return this;
         }
 
-        setAllowedTypes(types: PrincipalType[]): FindPrincipalsRequest {
+        setAllowedTypes(types: PrincipalType[]): FindPrincipalsWithRolesRequest {
             this.allowedTypes = types;
             return this;
         }
@@ -59,7 +65,16 @@ module api.security {
             return this.allowedTypes;
         }
 
-        setFrom(from: number): FindPrincipalsRequest {
+        setRequiredRoles(roles: PrincipalKey[]): FindPrincipalsWithRolesRequest {
+            this.requiredRoles = roles;
+            return this;
+        }
+
+        getRequiredRoles(): PrincipalKey[] {
+            return this.requiredRoles;
+        }
+
+        setFrom(from: number): FindPrincipalsWithRolesRequest {
             this.from = from;
             return this;
         }
@@ -68,12 +83,12 @@ module api.security {
             return this.from;
         }
 
-        setSize(size: number): FindPrincipalsRequest {
+        setSize(size: number): FindPrincipalsWithRolesRequest {
             this.size = size;
             return this;
         }
 
-        setSearchQuery(query: string): FindPrincipalsRequest {
+        setSearchQuery(query: string): FindPrincipalsWithRolesRequest {
             this.searchQuery = query;
             return this;
         }

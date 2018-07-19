@@ -1,8 +1,9 @@
 module api.security {
 
-    export class FindPrincipalListRequest extends api.security.SecurityResourceRequest<PrincipalListJson, Principal[]> {
+    export class FindPrincipalWithRolesListRequest
+        extends api.security.SecurityResourceRequest<PrincipalListJson, Principal[]> {
 
-        private request: FindPrincipalsRequest;
+        private request: FindPrincipalsWithRolesRequest;
 
         private loaded: boolean;
 
@@ -10,17 +11,17 @@ module api.security {
 
         constructor() {
             super();
-            this.request = new api.security.FindPrincipalsRequest();
+            this.request = new api.security.FindPrincipalsWithRolesRequest();
         }
 
         sendAndParse(): wemQ.Promise<Principal[]> {
-            return this.request.sendAndParse().then((result: FindPrincipalsResult) => {
+            return this.request.sendAndParse().then((result: FindPrincipalsWithRolesResult) => {
 
                 if (this.getFrom() === 0) {
                     this.results = [];
                 }
-                this.setFrom(this.getFrom() + result.getHits());
-                this.loaded = this.getFrom() >= result.getTotalHits();
+                this.setFrom(this.getFrom() + result.getUnfilteredSize());
+                this.loaded = !result.getHasMore();
 
                 this.results = this.results.concat(result.getPrincipals());
 
@@ -36,12 +37,12 @@ module api.security {
             return this.loaded;
         }
 
-        setFrom(value: number): FindPrincipalListRequest {
+        setFrom(value: number): FindPrincipalWithRolesListRequest {
             this.request.setFrom(value);
             return this;
         }
 
-        setSize(value: number): FindPrincipalListRequest {
+        setSize(value: number): FindPrincipalWithRolesListRequest {
             this.request.setSize(value);
             return this;
         }
@@ -51,16 +52,16 @@ module api.security {
             this.loaded = false;
         }
 
-        getFrom() : number {
+        getFrom(): number {
             return this.request.getFrom();
         }
 
-        setUserStoreKey(key: UserStoreKey): FindPrincipalListRequest {
+        setUserStoreKey(key: UserStoreKey): FindPrincipalWithRolesListRequest {
             this.request.setUserStoreKey(key);
             return this;
         }
 
-        setAllowedTypes(types: PrincipalType[]): FindPrincipalListRequest {
+        setAllowedTypes(types: PrincipalType[]): FindPrincipalWithRolesListRequest {
             this.request.setAllowedTypes(types);
             return this;
         }
@@ -69,7 +70,16 @@ module api.security {
             return this.request.getAllowedTypes();
         }
 
-        setSearchQuery(query: string): FindPrincipalListRequest {
+        setRequiredRoles(roles: PrincipalKey[]): FindPrincipalWithRolesListRequest {
+            this.request.setRequiredRoles(roles);
+            return this;
+        }
+
+        getRequiredRoles(): PrincipalKey[] {
+            return this.request.getRequiredRoles();
+        }
+
+        setSearchQuery(query: string): FindPrincipalWithRolesListRequest {
             this.request.setSearchQuery(query);
             return this;
         }

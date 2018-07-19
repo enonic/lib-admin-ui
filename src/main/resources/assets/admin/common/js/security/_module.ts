@@ -23,9 +23,13 @@
 ///<reference path='GetDefaultUserStoreRequest.ts'/>
 ///<reference path='PrincipalListJson.ts'/>
 ///<reference path='FindPrincipalsRequest.ts'/>
+///<reference path='FindPrincipalsWithRolesRequest.ts'/>
 ///<reference path='FindPrincipalsResult.ts'/>
+///<reference path='FindPrincipalsWithRolesResult.ts'/>
 ///<reference path='FindPrincipalListRequest.ts'/>
+///<reference path='FindPrincipalWithRolesListRequest.ts'/>
 ///<reference path='FindPrincipalsResultJson.ts'/>
+///<reference path='FindPrincipalsWithRolesResultJson.ts'/>
 ///<reference path='GetPrincipalByKeyRequest.ts'/>
 ///<reference path='GetPrincipalsByKeysRequest.ts'/>
 ///<reference path='GetPrincipalsByUserStoreRequest.ts'/>
