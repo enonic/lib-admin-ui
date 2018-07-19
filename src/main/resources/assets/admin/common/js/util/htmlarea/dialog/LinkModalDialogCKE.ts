@@ -152,8 +152,8 @@ module api.util.htmlarea.dialog {
             };
 
             return this.createFormPanel([
-                this.createFormItemWithPostponedValue('url', i18n('dialog.link.formitem.url'), getUrl, Validators.required,
-                    'https://example.com/mypage'),
+                this.createFormItemWithPostponedValue('url', i18n('dialog.link.formitem.url'), getUrl,
+                    LinkModalDialogCKE.validationRequiredUrl, 'https://example.com/mypage'),
                 this.createTargetCheckbox('urlTarget', this.isUrl)
             ]);
         }
@@ -207,6 +207,10 @@ module api.util.htmlarea.dialog {
 
         private static validationRequiredEmail(input: api.dom.FormInputEl): string {
             return Validators.required(input) || Validators.validEmail(input);
+        }
+
+        private static validationRequiredUrl(input: api.dom.FormInputEl): string {
+            return Validators.required(input) || Validators.validUrl(input);
         }
 
         private getTarget(isTabSelected: boolean): boolean {
