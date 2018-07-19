@@ -9,9 +9,9 @@
 
     var template = '<img alt="" src="" />',
         templateBlock = new CKEDITOR.template(
-            '<figure style="margin: 0" class="{captionedClass}">' +  // #6
+            '<figure class="{captionedClass}">' +
             template +
-            '<figcaption>{captionPlaceholder}</figcaption>' +
+            '<figcaption style="text-align:left">{captionPlaceholder}</figcaption>' + // #2 // #6
             '</figure>'),
         alignmentsObj = {left: 0, center: 1, right: 2},
         regexPercent = /^\s*(\d+\%)\s*$/i;
@@ -353,8 +353,6 @@
                     alt: this.data.alt
                 });
 
-                this.parts.image.setStyle('max-width', '100%'); // change #2
-
                 // If shifting non-captioned -> captioned, remove classes
                 // related to styles from <img/>.
                 if (this.oldData && !this.oldData.hasCaption && this.data.hasCaption) {
@@ -401,7 +399,7 @@
                 // Note: Center alignment is detected during upcast, so only left/right cases
                 // are checked below.
                 if (!data.align) {
-                    var alignElement = data.hasCaption ? this.element : image;
+                    var alignElement = image; // #2
 
                     // Read the initial left/right alignment from the class set on element.
                     if (alignClasses) {
@@ -419,7 +417,11 @@
                     }
                     // Read initial float style from figure/image and then remove it.
                     else {
-                        data.align = alignElement.getStyle('float') || 'none';
+                        var align = alignElement.getStyle('text-align') || 'block'; // <#2>
+                        if (align == 'justify') {
+                            align = 'block';
+                        }
+                        data.align = align; // </#2>
                         alignElement.removeStyle('float');
                     }
                 }
@@ -541,38 +543,38 @@
                 align: function (shift, oldValue, newValue) {
                     var el = shift.element;
 
-                    // Alignment changed.
-                    if (shift.changed.align) {
-                        // No caption in the new state.
-                        if (!shift.newData.hasCaption) {
-                            // Changed to "center" (non-captioned).
-                            if (newValue == 'center') {
-                                shift.deflate();
-                                shift.element = wrapInCentering(editor, el);
-                            }
-
-                            // Changed to "non-center" from "center" while caption removed.
-                            if (!shift.changed.hasCaption && oldValue == 'center' && newValue != 'center') {
-                                shift.deflate();
-                                shift.element = unwrapFromCentering(el);
-                            }
-                        }
-                    }
+                    // Alignment changed. // <#2>
+                    // if (shift.changed.align) {
+                    //     // No caption in the new state.
+                    //     if (!shift.newData.hasCaption) {
+                    //         // Changed to "center" (non-captioned).
+                    //         if (newValue == 'center') {
+                    //             shift.deflate();
+                    //             shift.element = wrapInCentering(editor, el);
+                    //         }
+                    //
+                    //         // Changed to "non-center" from "center" while caption removed.
+                    //         if (!shift.changed.hasCaption && oldValue == 'center' && newValue != 'center') {
+                    //             shift.deflate();
+                    //             shift.element = unwrapFromCentering(el);
+                    //         }
+                    //     }
+                    // }
 
                     // Alignment remains and "center" removed caption.
-                    else if (newValue == 'center' && shift.changed.hasCaption && !shift.newData.hasCaption) {
-                        shift.deflate();
-                        shift.element = wrapInCentering(editor, el);
-                    }
+                    // else if (newValue == 'center' && shift.changed.hasCaption && !shift.newData.hasCaption) {
+                    //     shift.deflate();
+                    //     shift.element = wrapInCentering(editor, el);
+                    // }
 
                     // Finally set display for figure.
-                    if (!alignClasses && el.is('figure')) {
-                        if (newValue == 'center') {
-                            el.setStyle('display', 'block'); // #8
-                        } else {
-                            el.removeStyle('display');
-                        }
-                    }
+                    // if (!alignClasses && el.is('figure')) {
+                    //     if (newValue == 'center') {
+                    //         el.setStyle('display', 'block'); // #8
+                    //     } else {
+                    //         el.removeStyle('display');
+                    //     }
+                    // } // </#2>
                 },
 
                 hasCaption: function (shift, oldValue, newValue) {
@@ -872,7 +874,7 @@
     };
 
     function setWrapperAlign(widget, alignClasses) { // change #1
-        var wrapper = widget.wrapper,
+        var wrapper = widget.wrapper.findOne('figure') || widget.wrapper,
             align = widget.data.align,
             hasCaption = widget.data.hasCaption,
             keepSize = widget.data.lock;
@@ -899,36 +901,39 @@
                 wrapper.addClass(alignClasses[alignmentsObj[align]]);
             }
         } else {
-            if (align == 'center') {
-                if (hasCaption) {
-                    wrapper.setStyle('text-align', 'center');
-                } else {
-                    wrapper.removeStyle('text-align');
-                }
+            if (align == 'none' || align == null || align == 'block') { // #7 // <#2>
+                align = 'justify';
+            }
 
-                wrapper.removeStyle('width');
+            wrapper.removeClass('center');
+            wrapper.removeClass('justify');
+            wrapper.removeStyle('float');
+            wrapper.removeStyle('margin');
+            wrapper.removeStyle('width');
+
+            if (widget.parts.image) {
+                widget.parts.image.setStyle('text-align', align);
+                widget.parts.image.setStyle('width', keepSize ? 'auto' : '100%');
+            }
+
+            if (align == 'center') {
+                wrapper.setStyle('float', 'none');
                 wrapper.setStyle('margin', 'auto');
                 if (!keepSize) {
                     wrapper.setStyle('width', '60%');
                 }
-                wrapper.removeStyle('float');
+                wrapper.addClass('center');
             }
-            else {
-                if (align == 'none' || align == null || align == 'block') { // #7
-                    wrapper.removeStyle('float');
-                    wrapper.removeStyle('margin');
-                    wrapper.removeStyle('width');
-                } else {
-                    wrapper.removeStyle('width');
-                    wrapper.setStyle('float', align);
-                    wrapper.setStyle('margin', '15px');
-                    if (!keepSize) {
-                        wrapper.setStyle('width', '40%');
-                    }
+            else if (align == 'justify') { // #7
+                wrapper.addClass('justify');
+            } else {
+                wrapper.setStyle('float', align);
+                wrapper.setStyle('margin', '15px');
+                if (!keepSize) {
+                    wrapper.setStyle('width', '40%');
                 }
-
-                wrapper.removeStyle('text-align');
             }
+            // </#2>
         }
     }
 
@@ -985,8 +990,8 @@
             }
 
             // No center wrapper has been found.
-            else if (name == 'figure' && el.hasClass(captionedClass)) {
-                image = el.getFirst('img') || el.getFirst('a').getFirst('img');
+            else if (name == 'figure') { // #6
+                image = el.getFirst('img') ? el.getFirst('img') : el.getFirst('a') ? el.getFirst('a').getFirst('img') : null;
 
                 // Upcast linked image like <a><img/></a>.
             } else if (isLinkedOrStandaloneImage(el)) {
@@ -1051,13 +1056,14 @@
                 // 		<figure class="image">...</figure>
                 // 	</div>
                 //
-                if (align == 'center' && el.name == 'figure') {
-                    el = el.wrapWith(new CKEDITOR.htmlParser.element('div',
-                        alignClasses ? {'class': alignClasses[1]} : {style: 'text-align:center'}));
-                }
+                // if (align == 'center' && el.name == 'figure') { // <#2>
+                //     el = el.wrapWith(new CKEDITOR.htmlParser.element('div',
+                //         alignClasses ? {'class': alignClasses[1]} : {style: 'text-align:center'}));
+                // }
 
                 // If left/right, add float style to the downcasted element.
-                else if (align in {left: 1, right: 1}) {
+                // else
+                if (align in {left: 1, right: 1}) { // </#2>
                     if (alignClasses) {
                         attrsHolder.addClass(alignClasses[alignmentsObj[align]]);
                     } else {
@@ -1617,9 +1623,9 @@
                     attributes: '!src,alt,width,height'
                 },
                 figure: {
-                    classes: '!' + editor.config.image2_captionedClass
+                    classes: editor.config.image2_captionedClass // #6
                 },
-                figcaption: true
+                figcaption: {} // #6
             };
 
         if (alignClasses) {
@@ -1635,8 +1641,9 @@
             rules.div.styles = 'text-align';
             rules.p.styles = 'text-align';
 
-            rules.img.styles = 'float';
+            rules.img.styles = 'float,text-align'; // #2
             rules.figure.styles = 'float,display';
+            rules.figcaption.styles = 'text-align'; // #6
         }
 
         return rules;

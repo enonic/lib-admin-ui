@@ -68,7 +68,7 @@ module api.ui.time {
 
             this.input.onFocus((e: FocusEvent) =>
                 setTimeout(() => {
-                    if (!this.popup.isVisible()) {
+                    if (!this.popup || !this.popup.isVisible()) {
                         e.preventDefault();
                         this.showPopup();
                     }
@@ -147,14 +147,35 @@ module api.ui.time {
 
         protected showPopup() {
             this.createPopup();
+            this.resolvePosition();
             this.popup.show();
         }
 
+        private resolvePosition() {
+            this.popup.removeClass('reverted');
+            this.popup.getEl().setHeight('auto');
+
+            const rect = this.getEl().getBoundingClientRect();
+            const height = this.popup.getEl().getHeightWithBorder();
+            const viewHeight = api.dom.Body.get().getEl().getHeightWithBorder();
+
+            const spaceToBottom = viewHeight - rect.bottom;
+            const spaceToTop = rect.top;
+
+            if (height > spaceToBottom) {
+                if (height <= spaceToTop) {
+                    this.popup.addClass('reverted');
+                } else {
+                    this.popup.getEl().setHeightPx(spaceToBottom - 5);
+                }
+            }
+        }
+
         protected togglePopupVisibility() {
-            if (!this.popup) {
-                this.showPopup();
+            if (this.popup && this.popup.isVisible()) {
+                this.hidePopup();
             } else {
-                this.popup.setVisible(!this.popup.isVisible());
+                this.showPopup();
             }
         }
 

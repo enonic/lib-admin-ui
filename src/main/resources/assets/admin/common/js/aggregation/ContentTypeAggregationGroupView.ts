@@ -10,6 +10,8 @@ module api.aggregation {
             this.appendChild(mask);
             this.onRendered(() => mask.show());
 
+            this.setTooltipActive(true);
+
             let request = new api.schema.content.GetAllContentTypesRequest();
             request.sendAndParse().done((contentTypes: api.schema.content.ContentTypeSummary[]) => {
 

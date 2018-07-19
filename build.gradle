@@ -13,7 +13,7 @@ repositories {
 
 
 group = 'com.enonic.lib'
-version = '1.3.0-SNAPSHOT'
+version = '1.4.0-SNAPSHOT'
 
 jar {
     baseName = 'lib-admin-ui'
@@ -109,6 +109,11 @@ jar {
         exclude 'ckeditor/plugins/image2/dialogs/*.*'
         exclude 'ckeditor/plugins/image2/icons/*.*'
         exclude 'ckeditor/plugins/image2/lang/*.*'
+        exclude 'ckeditor/plugins/link/dialogs/*.*'
+        exclude 'ckeditor/plugins/link/images/*.*'
+        exclude 'ckeditor/plugins/link/icons/*.*'
+        exclude 'ckeditor/plugins/specialchar/dialogs/*.*'
+        exclude 'ckeditor/plugins/specialchar/dialogs/lang/*.*'
         exclude 'ckeditor/plugins/quicktable/plugin.js'
         exclude 'ckeditor/plugins/quicktable/lang/*.*'
         exclude 'ckeditor/plugins/autogrow/plugin.js'

@@ -13,6 +13,16 @@ module api.util.htmlarea.dialog {
     import i18n = api.util.i18n;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
     import eventInfo = CKEDITOR.eventInfo;
+    import MediaUploaderEl = api.ui.uploader.MediaUploaderEl;
+    import FileUploadedEvent = api.ui.uploader.FileUploadedEvent;
+    import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
+    import UploadItem = api.ui.uploader.UploadItem;
+    import MediaSelectorDisplayValue = api.content.media.MediaSelectorDisplayValue;
+    import MediaTreeSelectorItem = api.content.media.MediaTreeSelectorItem;
+    import ContentSummary = api.content.ContentSummary;
+    import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
+    import BaseSelectedOptionsView = api.ui.selector.combobox.BaseSelectedOptionsView;
+    import ContentComboBox = api.content.ContentComboBox;
 
     export class LinkModalDialogCKE
         extends CKEBackedDialog {
@@ -21,6 +31,8 @@ module api.util.htmlarea.dialog {
         private textFormItem: FormItem;
         private toolTipFormItem: FormItem;
 
+        private contentId: ContentId;
+
         private tabNames: any;
 
         private static contentPrefix: string = 'content://';
@@ -28,12 +40,13 @@ module api.util.htmlarea.dialog {
         private static emailPrefix: string = 'mailto:';
         private static anchorPrefix: string = '#';
 
-        constructor(config: eventInfo) {
+        constructor(config: eventInfo, content: ContentSummary) {
             super(<HtmlAreaModalDialogConfig>{
                 editor: config.editor,
                 dialog: config.data,
                 title: i18n('dialog.link.title'),
                 cls: 'link-modal-dialog',
+                content: content,
                 confirmation: {
                     yesCallback: () => this.getSubmitAction().execute(),
                     noCallback: () => this.close(),
@@ -42,6 +55,11 @@ module api.util.htmlarea.dialog {
 
             this.createAnchorPanelIfNeeded();
             this.setFirstFocusField(this.textFormItem.getInput());
+        }
+
+        protected initializeConfig(params: ImageModalDialogConfig) {
+            super.initializeConfig(params);
+            this.contentId = params.content.getContentId();
         }
 
         private createAnchorPanelIfNeeded() {
@@ -134,8 +152,8 @@ module api.util.htmlarea.dialog {
             };
 
             return this.createFormPanel([
-                this.createFormItemWithPostponedValue('url', i18n('dialog.link.formitem.url'), getUrl, Validators.required,
-                    'https://example.com/mypage'),
+                this.createFormItemWithPostponedValue('url', i18n('dialog.link.formitem.url'), getUrl,
+                    LinkModalDialogCKE.validationRequiredUrl, 'https://example.com/mypage'),
                 this.createTargetCheckbox('urlTarget', this.isUrl)
             ]);
         }
@@ -189,6 +207,10 @@ module api.util.htmlarea.dialog {
 
         private static validationRequiredEmail(input: api.dom.FormInputEl): string {
             return Validators.required(input) || Validators.validEmail(input);
+        }
+
+        private static validationRequiredUrl(input: api.dom.FormInputEl): string {
+            return Validators.required(input) || Validators.validUrl(input);
         }
 
         private getTarget(isTabSelected: boolean): boolean {
@@ -294,6 +316,9 @@ module api.util.htmlarea.dialog {
             const formItemBuilder = new ModalDialogFormItemBuilder(id, label).setValidator(Validators.required).setInputEl(contentSelector);
             const formItem = this.createFormItem(formItemBuilder);
 
+            const mediaUploader = this.createMediaUploader(contentSelector);
+            mediaUploader.insertAfterEl(contentSelector);
+
             if (!addValueValidation) {
                 return formItem;
             }
@@ -301,23 +326,86 @@ module api.util.htmlarea.dialog {
             contentSelector.onValueChanged((event) => {
                 if (contentSelector.getLoader().isLoaded()) {
 
-                    if (event.getNewValue()) {
-                        const newValueContent = contentSelector.getContent(new api.content.ContentId(event.getNewValue()));
-
-                        const isMedia = !!newValueContent ? newValueContent.getType().isDescendantOfMedia() : false;
-
-                        new api.content.page.IsRenderableRequest(
-                            new api.content.ContentId(event.getNewValue())).sendAndParse().then((renderable: boolean) => {
-                            formItem.setValidator(() =>
-                                isMedia || renderable ? '' : i18n('dialog.link.formitem.nonrenderable'));
-                        });
-                    } else {
+                    if (!event.getNewValue()) {
                         formItem.setValidator(Validators.required);
                     }
                 }
             });
 
             return formItem;
+        }
+
+        private createMediaUploader(contentSelector: ContentComboBox<ContentTreeSelectorItem>): MediaUploaderEl {
+            const mediaUploader = new MediaUploaderEl({
+                params: {
+                    parent: this.contentId.toString()
+                },
+                operation: api.ui.uploader.MediaUploaderElOperation.create,
+                name: 'media-selector-upload-el',
+                showCancel: false,
+                showResult: false,
+                maximumOccurrences: 1,
+                allowMultiSelection: false
+            });
+
+            mediaUploader.onUploadStarted((event: FileUploadStartedEvent<Content>) => {
+                event.getUploadItems().forEach((uploadItem: UploadItem<Content>) => {
+                    const value = new MediaTreeSelectorItem(null).setDisplayValue(
+                        MediaSelectorDisplayValue.fromUploadItem(uploadItem));
+
+                    const option = <api.ui.selector.Option<MediaTreeSelectorItem>>{
+                        value: value.getId(),
+                        displayValue: value
+                    };
+                    contentSelector.selectOption(option);
+                });
+            });
+
+            mediaUploader.onFileUploaded((event: FileUploadedEvent<Content>) => {
+                let item = event.getUploadItem();
+                let createdContent = item.getModel();
+
+                let selectedOption = contentSelector.getSelectedOptionView().getById(item.getId());
+                let option = selectedOption.getOption();
+                option.displayValue = new MediaTreeSelectorItem(createdContent);
+                option.value = createdContent.getContentId().toString();
+
+                selectedOption.getOptionView().setOption(option);
+            });
+
+            mediaUploader.onUploadFailed((event: FileUploadFailedEvent<Content>) => {
+                let item = event.getUploadItem();
+
+                let selectedOption = contentSelector.getSelectedOptionView().getById(item.getId());
+                if (!!selectedOption) {
+                    (<BaseSelectedOptionsView<ContentTreeSelectorItem>>contentSelector.getSelectedOptionView()).removeOption(
+                        selectedOption.getOption());
+                }
+            });
+
+            this.onDragEnter((event: DragEvent) => {
+                event.stopPropagation();
+                mediaUploader.giveFocus();
+                mediaUploader.setDefaultDropzoneVisible(true, true);
+            });
+
+            mediaUploader.onDropzoneDragLeave(() => {
+                mediaUploader.giveBlur();
+                mediaUploader.setDefaultDropzoneVisible(false);
+            });
+
+            mediaUploader.onDropzoneDrop(() => {
+                mediaUploader.setDefaultDropzoneVisible(false);
+            });
+
+            contentSelector.getComboBox().onHidden(() => {
+                mediaUploader.hide();
+            });
+            contentSelector.getComboBox().onShown(() => {
+                mediaUploader.show();
+            });
+
+            return mediaUploader;
         }
 
         private validateDockPanel(): boolean {
@@ -436,7 +524,7 @@ module api.util.htmlarea.dialog {
         }
 
         private getOriginalAnchorElem(): CKEDITOR.ui.dialog.uiElement {
-            return (<any>this.getElemFromOriginalDialog('info', 'anchorOptions')).getChild([0, 0, 1]);
+            return (<any>this.getElemFromOriginalDialog('info', 'anchorOptions')).getChild([0, 0, 0]);
         }
 
         private getOriginalProtocolElem(): CKEDITOR.ui.dialog.uiElement {

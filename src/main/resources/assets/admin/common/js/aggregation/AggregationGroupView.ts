@@ -25,6 +25,10 @@ module api.aggregation {
             this.appendChild(this.titleEl);
         }
 
+        setTooltipActive(flag: boolean) {
+            this.aggregationViews.forEach(av => av.setTooltipActive(flag));
+        }
+
         private addAggregationView(aggregationView: api.aggregation.AggregationView) {
             this.appendChild(aggregationView);
 

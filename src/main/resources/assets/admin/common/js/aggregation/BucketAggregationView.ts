@@ -52,6 +52,10 @@ module api.aggregation {
             this.bucketViews.push(bucketView);
         }
 
+        setTooltipActive(flag: boolean) {
+            this.bucketViews.forEach(bv => bv.setTooltipActive(flag));
+        }
+
         getSelectedValues(): api.aggregation.Bucket[] {
 
             let selectedBuckets: api.aggregation.Bucket[] = [];
