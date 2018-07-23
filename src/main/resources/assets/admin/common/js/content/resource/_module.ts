@@ -2,12 +2,9 @@
 ///<reference path='MoveAllowedTargetsRequest.ts' />
 ///<reference path='ContentSummaryPreLoader.ts' />
 ///<reference path='ContentSummaryLoader.ts' />
-///<reference path='FragmentContentSummaryRequest.ts' />
-///<reference path='MoveContentSummaryLoader.ts' />
 ///<reference path='ContentResourceRequest.ts' />
 ///<reference path='ApplyContentPermissionsRequest.ts' />
 ///<reference path='GetContentByIdRequest.ts' />
-///<reference path='GetContentSummaryByIdRequest.ts' />
 ///<reference path='GetContentSummaryByIds.ts' />
 ///<reference path='GetContentByPathRequest.ts' />
 ///<reference path='GetContentPermissionsByIdRequest.ts' />
