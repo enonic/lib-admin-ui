@@ -5,6 +5,7 @@ module api.util.htmlarea.editor {
     import NotificationMessage = api.notify.NotificationMessage;
     import NotifyManager = api.notify.NotifyManager;
     import i18n = api.util.i18n;
+    import ApplicationKey = api.application.ApplicationKey;
 
     /**
      * NB: Modifications were made in ckeditor.js (VERY SORRY FOR THAT):

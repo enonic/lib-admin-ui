@@ -1,5 +1,7 @@
 module api.content.page.region {
 
+    import ApplicationKey = api.application.ApplicationKey;
+
     export class LayoutDescriptorLoader extends api.util.loader.BaseLoader<LayoutDescriptorsJson, LayoutDescriptor> {
 
         protected request: GetLayoutDescriptorsByApplicationsRequest;
