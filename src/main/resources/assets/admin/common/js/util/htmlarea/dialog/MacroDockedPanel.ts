@@ -163,7 +163,7 @@ module api.util.htmlarea.dialog {
 
         public validateMacroForm(): boolean {
             let isValid = true;
-            let form = <FormView>(this.configPanel.getFirstChild());
+            const form = <FormView>(this.configPanel.getFirstChild());
 
             if (form) {
                 isValid = form.validate(false).isValid();
@@ -172,11 +172,11 @@ module api.util.htmlarea.dialog {
             return isValid;
         }
 
-        public setMacroDescriptor(macroDescriptor: MacroDescriptor) {
+        public setMacroDescriptor(macroDescriptor: MacroDescriptor, data?: PropertySet) {
             this.macroDescriptor = macroDescriptor;
             this.previewResolved = false;
 
-            this.initPropertySetForDescriptor();
+            this.initPropertySetForDescriptor(data);
             this.showDescriptorConfigView(macroDescriptor);
         }
 
@@ -194,11 +194,11 @@ module api.util.htmlarea.dialog {
             }
         }
 
-        private initPropertySetForDescriptor() {
+        private initPropertySetForDescriptor(data?: PropertySet) {
             if (!!this.data) {
                 this.data.unChanged(this.formValueChangedHandler);
             }
-            this.data = new PropertySet();
+            this.data = !!data ? data : new PropertySet();
             this.data.onChanged(this.formValueChangedHandler);
         }
 

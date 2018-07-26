@@ -75,6 +75,13 @@ module api.ui.selector {
             this.getGrid().getDataView().addItem(data);
         }
 
+        updateOption(option: Option<OPTION_DISPLAY_VALUE>) {
+            const data = this.dataToTreeNode(option, this.getRoot().getCurrentRoot());
+
+            this.getRoot().getCurrentRoot().updateChild(data);
+            this.getGrid().getDataView().updateItem(this.getDataId(option), data);
+        }
+
         setReadonlyChecker(checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
             this.optionsFactory.setReadonlyChecker(checker);
         }

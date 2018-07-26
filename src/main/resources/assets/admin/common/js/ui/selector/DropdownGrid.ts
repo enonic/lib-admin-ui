@@ -185,6 +185,10 @@ module api.ui.selector {
             this.getGridData().deleteItem(option.value);
         }
 
+        updateOption(option: Option<OPTION_DISPLAY_VALUE>) {
+            this.getGridData().updateItem(option.value, option);
+        }
+
         hasOptions(): boolean {
             return this.getGridData().getLength() > 0;
         }

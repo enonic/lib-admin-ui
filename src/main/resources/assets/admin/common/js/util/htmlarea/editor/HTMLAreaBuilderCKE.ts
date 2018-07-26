@@ -311,14 +311,14 @@ module api.util.htmlarea.editor {
 
         private getExtraPlugins(): string {
             if (this.inline) {
-                return 'autogrow,sourcedialog,image2,sharedspace,quicktable';
+                return 'macro,autogrow,sourcedialog,image2,sharedspace,quicktable';
             }
 
             if (this.isFullscreenMode) {
-                return 'sourcedialog,image2,quicktable';
+                return 'macro,sourcedialog,image2,quicktable';
             }
 
-            return 'autogrow,sourcedialog,image2,quicktable';
+            return 'macro,autogrow,sourcedialog,image2,quicktable';
         }
 
         private listenCKEditorEvents(ckeditor: HTMLAreaEditor) {
@@ -486,11 +486,13 @@ module api.util.htmlarea.editor {
 
         private setupDialogsToOpen(ckeditor: HTMLAreaEditor) {
             ckeditor.addCommand('openMacroDialog', {
-                exec: (editor) => {
-                    this.notifyMacroDialog(editor);
+                exec: (editor, data: any) => {
+                    this.notifyMacroDialog({editor: editor, macro: data});
                     return true;
                 }
             });
+
+            CKEDITOR.plugins.addExternal('macro', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'macroCKE.js');
 
             ckeditor.addCommand('openFullscreenDialog', {
                 exec: (editor) => {
@@ -507,13 +509,6 @@ module api.util.htmlarea.editor {
                     this.notifyFullscreenDialog(config);
                     return true;
                 }
-            });
-
-            ckeditor.ui.addButton('Macro', {
-                icon: CKEDITOR.plugins.getPath('macro') + 'icons/macro.png',
-                label: 'Insert macro',
-                toolbar: 'tools,10',
-                command: 'openMacroDialog'
             });
 
             ckeditor.ui.addButton('Fullscreen', {
@@ -621,25 +616,25 @@ module api.util.htmlarea.editor {
         }
 
         private notifyLinkDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.LINK_CKE).setContent(this.content).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyImageDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.IMAGE_CKE).setContent(this.content).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyAnchorDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.ANCHOR_CKE).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyMacroDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.MACRO_CKE).setContentPath(this.contentPath).setApplicationKeys(
                 this.applicationKeys).setContent(
                 this.content).setApplicationKeys(this.applicationKeys).build();
@@ -647,25 +642,25 @@ module api.util.htmlarea.editor {
         }
 
         private notifySearchReplaceDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.SEARCHREPLACE_CKE).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyCodeDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.CODE_CKE).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifySpecialCharDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.SPECIALCHAR_CKE).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyFullscreenDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.FULLSCREEN_CKE).build();
             this.publishCreateDialogEvent(event);
         }
