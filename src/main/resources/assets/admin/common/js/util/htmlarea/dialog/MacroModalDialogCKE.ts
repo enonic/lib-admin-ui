@@ -5,6 +5,12 @@ module api.util.htmlarea.dialog {
     import ApplicationKey = api.application.ApplicationKey;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
+    import MacroDescriptor = api.macro.MacroDescriptor;
+    import GetMacrosRequest = api.macro.resource.GetMacrosRequest;
+    import PropertySet = api.data.PropertySet;
+    import MacrosLoader = api.macro.resource.MacrosLoader;
+    import MacroComboBox = api.macro.MacroComboBox;
+    import ContentSummary = api.content.ContentSummary;
     import i18n = api.util.i18n;
 
     export class MacroModalDialogCKE
@@ -12,21 +18,31 @@ module api.util.htmlarea.dialog {
 
         private macroDockedPanel: MacroDockedPanel;
 
-        private macroSelector: api.macro.MacroComboBox;
+        private applicationKeys: ApplicationKey[];
 
-        constructor(config: any, content: api.content.ContentSummary, applicationKeys: ApplicationKey[]) {
+        private selectedMacro: SelectedMacro;
+
+        private macroFormItem: FormItem;
+
+        private content: ContentSummary;
+
+        constructor(config: any, content: ContentSummary, applicationKeys: ApplicationKey[]) {
             super(<HtmlAreaModalDialogConfig>{
-                editor: config,
+                editor: config.editor,
                 title: i18n('dialog.macro.title'),
+                macro: config.macro,
+                applicationKeys: applicationKeys,
                 cls: 'macro-modal-dialog',
+                content: content,
                 confirmation: {
                     yesCallback: () => this.getSubmitAction().execute(),
                     noCallback: () => this.close(),
                 }
             });
 
-            this.macroSelector.getLoader().setApplicationKeys(applicationKeys);
-            this.macroDockedPanel.setContent(content);
+            this.addClass('macro-selector');
+            this.initMacroSelectorListeners();
+            this.initFieldsValues();
 
             (<CKEDITOR.editor>this.getEditor()).focusManager.add(new CKEDITOR.dom.element(this.getHTMLElement()), true);
             this.setupResizeListener();
@@ -49,52 +65,113 @@ module api.util.htmlarea.dialog {
             ResponsiveManager.onAvailableSizeChanged(this, onResize);
         }
 
-        protected layout() {
-            super.layout();
-            this.appendChildToContentPanel(this.macroDockedPanel = this.makeMacroDockedPanel());
+        protected initializeConfig(config: any) {
+            super.initializeConfig(config);
+
+            this.selectedMacro = !!config.macro.name ? config.macro : null;
+            this.applicationKeys = config.applicationKeys;
+            this.content = config.content;
         }
 
-        private makeMacroDockedPanel(): MacroDockedPanel {
-            return new MacroDockedPanel();
+        protected layout() {
+            super.layout();
+            this.appendChildToContentPanel(this.macroDockedPanel = this.createMacroDockedPanel());
+        }
+
+        private createMacroDockedPanel(): MacroDockedPanel {
+            const macroDockedPanel: MacroDockedPanel = new MacroDockedPanel();
+            macroDockedPanel.setContent(this.content);
+
+            return macroDockedPanel;
         }
 
         protected getMainFormItems(): FormItem[] {
-            const macroSelector = this.createMacroSelector('macroId');
+            this.macroFormItem = this.createMacroFormItem();
 
-            this.setFirstFocusField(macroSelector.getInput());
+            this.setFirstFocusField(this.macroFormItem.getInput());
 
             return [
-                macroSelector
+                this.macroFormItem
             ];
         }
 
-        private createMacroSelector(id: string): FormItem {
-            const loader = new api.macro.resource.MacrosLoader();
-            const macroSelector = api.macro.MacroComboBox.create().setLoader(loader).setMaximumOccurrences(1).build();
-            const formItemBuilder = new ModalDialogFormItemBuilder(id, i18n('dialog.macro.formitem.macro')).setValidator(
+        private createMacroFormItem(): FormItem {
+            const macroSelector: MacroComboBox =
+                MacroComboBox.create().setLoader(this.createMacrosLoader()).setMaximumOccurrences(1).build();
+            const formItemBuilder = new ModalDialogFormItemBuilder('macroId', i18n('dialog.macro.formitem.macro')).setValidator(
                 Validators.required).setInputEl(macroSelector);
-            const formItem = this.createFormItem(formItemBuilder);
 
-            const macroSelectorComboBox = macroSelector.getComboBox();
+            return this.createFormItem(formItemBuilder);
+        }
 
-            this.macroSelector = macroSelector;
-            this.addClass('macro-selector');
-
-            macroSelectorComboBox.onOptionSelected((event: SelectedOptionEvent<api.macro.MacroDescriptor>) => {
-                formItem.addClass('selected-item-preview');
+        private initMacroSelectorListeners() {
+            (<MacroComboBox>this.macroFormItem.getInput()).getComboBox().onOptionSelected((event: SelectedOptionEvent<MacroDescriptor>) => {
+                this.macroFormItem.addClass('selected-item-preview');
                 this.addClass('shows-preview');
 
                 this.macroDockedPanel.setMacroDescriptor(event.getSelectedOption().getOption().displayValue);
             });
 
-            macroSelectorComboBox.onOptionDeselected(() => {
-                formItem.removeClass('selected-item-preview');
+            (<MacroComboBox>this.macroFormItem.getInput()).getComboBox().onOptionDeselected(() => {
+                this.macroFormItem.removeClass('selected-item-preview');
                 this.removeClass('shows-preview');
                 this.displayValidationErrors(false);
                 api.ui.responsive.ResponsiveManager.fireResizeEvent();
             });
+        }
 
-            return formItem;
+        private initFieldsValues() {
+            if (!this.selectedMacro) {
+                return;
+            }
+
+            this.getSelectedMacroDescriptor().then((macro: MacroDescriptor) => {
+                if (!macro) {
+                    return;
+                }
+
+                (<MacroComboBox>this.macroFormItem.getInput()).setValue(macro.getKey().getRefString());
+                this.macroFormItem.addClass('selected-item-preview');
+                this.addClass('shows-preview');
+
+                this.macroDockedPanel.setMacroDescriptor(macro, this.makeData());
+            });
+        }
+
+        private createMacrosLoader(): MacrosLoader {
+            const loader = new MacrosLoader();
+            loader.setApplicationKeys(this.applicationKeys);
+
+            return loader;
+        }
+
+        private getSelectedMacroDescriptor(): wemQ.Promise<MacroDescriptor> {
+            return this.fetchMacros().then((macros: MacroDescriptor[]) => {
+                return macros.filter((macro: MacroDescriptor) => macro.getKey().getName() === this.selectedMacro.name).pop();
+            }).catch((reason: any) => {
+                api.DefaultErrorHandler.handle(reason);
+                return null;
+            });
+        }
+
+        private fetchMacros(): wemQ.Promise<MacroDescriptor[]> {
+            const request: GetMacrosRequest = new GetMacrosRequest();
+            request.setApplicationKeys(this.applicationKeys);
+
+            return request.sendAndParse();
+        }
+
+        private makeData(): PropertySet {
+            const data: PropertySet = new PropertySet();
+
+            this.selectedMacro.attributes.forEach(item => {
+                data.addString(item[0], item[1]);
+            });
+            if (this.selectedMacro.body) {
+                data.addString('body', this.selectedMacro.body);
+            }
+
+            return data;
         }
 
         protected initializeActions() {
@@ -113,12 +190,23 @@ module api.util.htmlarea.dialog {
 
         private insertMacroIntoTextArea(): void {
             this.macroDockedPanel.getMacroPreviewString().then((macroString: string) => {
-                (<CKEDITOR.editor>this.getEditor()).insertHtml(api.util.StringHelper.escapeHtml(macroString));
+                if (this.selectedMacro) {
+                    this.insertUpdatedMacroIntoTextArea(macroString);
+                } else {
+                    (<CKEDITOR.editor>this.getEditor()).insertHtml(macroString);
+                }
+
                 this.close();
             }).catch((reason: any) => {
                 api.DefaultErrorHandler.handle(reason);
                 api.notify.showError(i18n('dialog.macro.error'));
             });
+        }
+
+        private insertUpdatedMacroIntoTextArea(macroString: string) {
+            this.selectedMacro.element.setText(
+                this.selectedMacro.element.getText().replace(this.selectedMacro.macroText, macroString));
+            (<CKEDITOR.editor>this.getEditor()).fire('saveSnapshot'); // to trigger change event
         }
 
         protected validate(): boolean {
@@ -129,7 +217,15 @@ module api.util.htmlarea.dialog {
         }
 
         isDirty(): boolean {
-            return this.macroSelector.isDirty();
+            return (<MacroComboBox>this.macroFormItem.getInput()).isDirty();
         }
+    }
+
+    export interface SelectedMacro {
+        macroText: string;
+        name: string;
+        attributes: any[];
+        element: CKEDITOR.dom.element;
+        body?: string;
     }
 }
