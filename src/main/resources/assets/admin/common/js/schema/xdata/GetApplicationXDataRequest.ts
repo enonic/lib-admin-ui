@@ -5,6 +5,7 @@ module api.schema.xdata {
     import Mixin = api.schema.mixin.Mixin;
     import MixinJson = api.schema.mixin.MixinJson;
     import ContentTypeName = api.schema.content.ContentTypeName;
+    import ApplicationKey = api.application.ApplicationKey;
 
     export class GetApplicationXDataRequest
         extends MixinResourceRequest<MixinListJson, Mixin[]> {
