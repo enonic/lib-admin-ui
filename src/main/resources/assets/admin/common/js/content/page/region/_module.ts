@@ -36,11 +36,8 @@
 ///<reference path='PartDescriptor.ts' />
 ///<reference path='PartComponent.ts' />
 ///<reference path='PartComponentType.ts' />
-///<reference path='PartDescriptorViewer.ts' />
-///<reference path='PartDescriptorLoader.ts' />
 ///<reference path='PartDescriptorResourceRequest.ts' />
 ///<reference path='PartDescriptorsResourceRequest.ts' />
-///<reference path='GetPartDescriptorsByApplicationsRequest.ts' />
 ///<reference path='GetPartDescriptorsByApplicationRequest.ts' />
 ///<reference path='PartDescriptorCache.ts' />
 
@@ -50,12 +47,9 @@
 ///<reference path='LayoutDescriptor.ts' />
 ///<reference path='LayoutComponentType.ts' />
 ///<reference path='LayoutComponent.ts' />
-///<reference path='LayoutDescriptorViewer.ts' />
-///<reference path='LayoutDescriptorLoader.ts' />
 ///<reference path='LayoutDescriptorResourceRequest.ts' />
 ///<reference path='LayoutDescriptorsResourceRequest.ts' />
 ///<reference path='GetLayoutDescriptorsByApplicationRequest.ts' />
-///<reference path='GetLayoutDescriptorsByApplicationsRequest.ts' />
 ///<reference path='LayoutRegionsMerger.ts' />
 ///<reference path='LayoutDescriptorCache.ts' />
 
@@ -68,5 +62,3 @@
 ///<reference path='ComponentAddedEvent.ts' />
 ///<reference path='ComponentRemovedEvent.ts' />
 ///<reference path='Region.ts' />
-
-///<reference path='FragmentResourceRequest.ts' />

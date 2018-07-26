@@ -1,7 +1,5 @@
 ///<reference path='ContentSummaryRequest.ts' />
-///<reference path='MoveAllowedTargetsRequest.ts' />
 ///<reference path='ContentSummaryPreLoader.ts' />
-///<reference path='ContentSummaryLoader.ts' />
 ///<reference path='ContentResourceRequest.ts' />
 ///<reference path='GetContentByIdRequest.ts' />
 ///<reference path='GetContentSummaryByIds.ts' />
@@ -16,7 +14,6 @@
 ///<reference path='ContentSummaryAndCompareStatusFetcher.ts' />
 ///<reference path='GetNearestSiteRequest.ts' />
 ///<reference path='ContentsExistRequest.ts' />
-///<reference path='WidgetDescriptorResourceRequest.ts' />
 ///<reference path='GetContentIdsByParentRequest.ts' />
 ///<reference path='ContentTreeSelectorItem.ts' />
 ///<reference path='ContentAndStatusTreeSelectorItem.ts' />

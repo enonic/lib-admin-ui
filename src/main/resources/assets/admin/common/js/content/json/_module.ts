@@ -22,4 +22,3 @@
 ///<reference path='ContentsExistJson.ts' />
 // /<reference path='UnpublishContentJson.ts' />
 ///<reference path='ContentPublishTimeRangeJson.ts' />
-///<reference path='HasUnpublishedChildrenJson.ts' />
