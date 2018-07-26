@@ -37,7 +37,7 @@ module api.data {
         }
 
         valueToString(): string {
-            throw new Error('A value of type Data cannot be made into a string');
+            return null;
         }
 
         valueEquals(a: PropertySet, b: PropertySet): boolean {

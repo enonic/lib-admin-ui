@@ -11,6 +11,7 @@ module api.form.inputtype.text {
     import ApplicationKey = api.application.ApplicationKey;
     import Promise = Q.Promise;
     import AppHelper = api.util.AppHelper;
+    import PropertySet = api.data.PropertySet;
     declare var CONFIG;
 
     export class HtmlAreaCK
@@ -47,19 +48,19 @@ module api.form.inputtype.text {
         }
 
         getValueType(): ValueType {
-            return ValueTypes.STRING;
+            return ValueTypes.DATA;
         }
 
         newInitialValue(): Value {
-            return super.newInitialValue() || ValueTypes.STRING.newValue('');
+            return super.newInitialValue() || new Value(new PropertySet(), ValueTypes.DATA);
         }
 
         createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
-            if (!ValueTypes.STRING.equals(property.getType())) {
-                property.convertValueType(ValueTypes.STRING);
+            if (!ValueTypes.DATA.equals(property.getType())) {
+                property.convertValueType(ValueTypes.DATA);
             }
 
-            const value = HTMLAreaHelper.prepareImgSrcsInValueForEdit(property.getString());
+            const value = HTMLAreaHelper.prepareImgSrcsInValueForEdit(this.getStringValue(property.getPropertySet()));
             const textAreaEl = new api.ui.text.TextArea(this.getInput().getName() + '-' + index, value);
 
             const editorId = textAreaEl.getId();
@@ -86,6 +87,15 @@ module api.form.inputtype.text {
             this.setFocusOnEditorAfterCreate(textAreaWrapper, editorId);
 
             return textAreaWrapper;
+        }
+
+        valueBreaksRequiredContract(value: Value): boolean {
+            return value.isNull() || !value.getType().equals(ValueTypes.DATA) ||
+                   api.util.StringHelper.isBlank(this.getStringValue(value.getPropertySet()));
+        }
+
+        private getStringValue(propertySet: PropertySet) {
+            return propertySet.getString('value', 0);
         }
 
         updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
@@ -358,25 +368,24 @@ module api.form.inputtype.text {
             return this.getEditor(editor.id).getData();
         }
 
-        private setEditorContent(editorId: string, property: Property): void {
-            const editor = this.getEditor(editorId);
-            const content: string = property.hasNonNullValue() ? HTMLAreaHelper.prepareImgSrcsInValueForEdit(property.getString()) : '';
-
-            if (editor) {
-                editor.setData(content);
-            } else {
-                console.log(`Editor with id '${editorId}' not found`);
-            }
+        private setStringValue(propertySet: PropertySet, value: string) {
+            propertySet.setString('value', 0, value);
         }
 
         private notInLiveEdit(): boolean {
             return !(wemjq(this.getHTMLElement()).parents('.inspection-panel').length > 0);
         }
 
-        private notifyValueChanged(id: string, occurrence: api.dom.Element) {
-            const value: string = HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id).getData());
-            const valueObj: api.data.Value = ValueTypes.STRING.newValue(value);
-            this.notifyOccurrenceValueChanged(occurrence, valueObj);
+        private setEditorContent(editorId: string, property: Property): void {
+            const editor = this.getEditor(editorId);
+            const content: string = property.hasNonNullValue() ? HTMLAreaHelper.prepareImgSrcsInValueForEdit(
+                this.getStringValue(property.getPropertySet())) : '';
+
+            if (editor) {
+                editor.setData(content);
+            } else {
+                console.log(`Editor with id '${editorId}' not found`);
+            }
         }
 
         private isNotActiveElement(htmlAreaIframe: HTMLElement): boolean {
@@ -389,8 +398,13 @@ module api.form.inputtype.text {
             return element.getEl().getTagName().toLowerCase() === 'iframe';
         }
 
-        valueBreaksRequiredContract(value: Value): boolean {
-            return value.isNull() || !value.getType().equals(ValueTypes.STRING) || api.util.StringHelper.isBlank(value.getString());
+        private notifyValueChanged(id: string, occurrence: api.dom.Element) {
+            const value: string = HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id).getData());
+
+            const valueObj: api.data.Value = this.newInitialValue();
+            this.setStringValue(valueObj.getPropertySet(), value);
+
+            this.notifyOccurrenceValueChanged(occurrence, valueObj);
         }
 
         hasInputElementValidUserInput(_inputElement: api.dom.Element) {
