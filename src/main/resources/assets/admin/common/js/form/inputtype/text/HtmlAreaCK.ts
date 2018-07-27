@@ -12,6 +12,7 @@ module api.form.inputtype.text {
     import Promise = Q.Promise;
     import AppHelper = api.util.AppHelper;
     import PropertySet = api.data.PropertySet;
+    import Reference = api.util.Reference;
     declare var CONFIG;
 
     export class HtmlAreaCK
@@ -96,6 +97,10 @@ module api.form.inputtype.text {
 
         private getStringValue(propertySet: PropertySet) {
             return propertySet.getString('value', 0);
+        }
+
+        private setStringValue(propertySet: PropertySet, value: string) {
+            propertySet.setString('value', 0, value);
         }
 
         updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
@@ -368,10 +373,6 @@ module api.form.inputtype.text {
             return this.getEditor(editor.id).getData();
         }
 
-        private setStringValue(propertySet: PropertySet, value: string) {
-            propertySet.setString('value', 0, value);
-        }
-
         private notInLiveEdit(): boolean {
             return !(wemjq(this.getHTMLElement()).parents('.inspection-panel').length > 0);
         }
@@ -404,7 +405,35 @@ module api.form.inputtype.text {
             const valueObj: api.data.Value = this.newInitialValue();
             this.setStringValue(valueObj.getPropertySet(), value);
 
+            this.parseReferences(valueObj, value);
+
             this.notifyOccurrenceValueChanged(occurrence, valueObj);
+        }
+
+        private parseReferences(valueObj: api.data.Value, value: string) {
+            const contentRegexp = /<a\s+(?:[^>]*?\s+)?href=("|'|\\'|\\")(content:\/\/|media:\/\/download\/)(.+?)\1/g;
+            const imageRegexp = /<img\s+(?:[^>]*?\s+)?src=("|'|\\'|\\")(image:\/\/)(.+?)\1/g;
+
+            let contentMatch = contentRegexp.exec(value);
+            let imageMatch = imageRegexp.exec(value);
+
+            while (contentMatch) {
+                const contentReferenceId = contentMatch.length == 4 ? contentMatch[3] : null;
+
+                if (contentReferenceId) {
+                    valueObj.getPropertySet().addReference('references', Reference.from(new api.content.ContentId(contentReferenceId)));
+                }
+                contentMatch = contentRegexp.exec(value);
+            }
+
+            while (imageMatch) {
+                const imageReferenceId = imageMatch.length == 4 ? imageMatch[3] : null;
+
+                if (imageReferenceId) {
+                    valueObj.getPropertySet().addReference('references', Reference.from(new api.content.ContentId(imageReferenceId)));
+                }
+                imageMatch = imageRegexp.exec(value);
+            }
         }
 
         hasInputElementValidUserInput(_inputElement: api.dom.Element) {
