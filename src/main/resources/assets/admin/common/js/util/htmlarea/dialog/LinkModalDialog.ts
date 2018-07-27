@@ -5,13 +5,14 @@ module api.util.htmlarea.dialog {
     import Panel = api.ui.panel.Panel;
     import DockedPanel = api.ui.panel.DockedPanel;
     import Validators = api.ui.form.Validators;
+    import InputAlignment = api.ui.InputAlignment;
+    import TextInput = api.ui.text.TextInput;
     import Dropdown = api.ui.selector.dropdown.Dropdown;
     import DropdownConfig = api.ui.selector.dropdown.DropdownConfig;
     import Option = api.ui.selector.Option;
-    import InputAlignment = api.ui.InputAlignment;
-    import TextInput = api.ui.text.TextInput;
     import i18n = api.util.i18n;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
+    import eventInfo = CKEDITOR.eventInfo;
     import MediaUploaderEl = api.ui.uploader.MediaUploaderEl;
     import FileUploadedEvent = api.ui.uploader.FileUploadedEvent;
     import FileUploadStartedEvent = api.ui.uploader.FileUploadStartedEvent;
@@ -24,11 +25,9 @@ module api.util.htmlarea.dialog {
     import ContentComboBox = api.content.ContentComboBox;
 
     export class LinkModalDialog
-        extends ModalDialog {
+        extends CKEBackedDialog {
         private dockedPanel: DockedPanel;
-        private link: HTMLElement;
-        private linkText: string;
-        private onlyTextSelected: boolean;
+        private link: string;
         private textFormItem: FormItem;
         private toolTipFormItem: FormItem;
 
@@ -39,11 +38,12 @@ module api.util.htmlarea.dialog {
         private static contentPrefix: string = 'content://';
         private static downloadPrefix: string = 'media://download/';
         private static emailPrefix: string = 'mailto:';
-        private static subjectPrefix: string = '?subject=';
+        private static anchorPrefix: string = '#';
 
-        constructor(config: HtmlAreaAnchor, content: ContentSummary) {
+        constructor(config: eventInfo, content: ContentSummary) {
             super(<HtmlAreaModalDialogConfig>{
                 editor: config.editor,
+                dialog: config.data,
                 title: i18n('dialog.link.title'),
                 cls: 'link-modal-dialog',
                 content: content,
@@ -53,21 +53,8 @@ module api.util.htmlarea.dialog {
                 }
             });
 
-            this.link = config.element;
-            this.linkText = config.text;
-
-            if (config.anchorList.length > 0) {
-                this.dockedPanel.addItem(this.tabNames.anchor, true, this.createAnchorPanel(config.anchorList), this.isAnchor());
-            }
-
-            this.onlyTextSelected = config.onlyTextSelected;
-            if (this.onlyTextSelected) {
-                this.setFirstFocusField(this.textFormItem.getInput());
-            } else {
-                this.setFirstFocusField(this.toolTipFormItem.getInput());
-                this.textFormItem.hide();
-                this.textFormItem.removeValidator();
-            }
+            this.createAnchorPanelIfNeeded();
+            this.setFirstFocusField(this.textFormItem.getInput());
         }
 
         protected initializeConfig(params: ImageModalDialogConfig) {
@@ -75,81 +62,55 @@ module api.util.htmlarea.dialog {
             this.contentId = params.content.getContentId();
         }
 
-        private getHref(): string {
-            return this.link ? this.link.getAttribute('href') : api.util.StringHelper.EMPTY_STRING;
-        }
+        private createAnchorPanelIfNeeded() {
+            const anchors: any[] = CKEDITOR.plugins.link.getEditorAnchors(this.getEditor())
+                .filter((anchor: any) => !!anchor.id) // filter anchors with missing id's
+                .map((anchor: any) => anchor.id)
+                .filter((item, pos, self) => self.indexOf(item) == pos); // filter duplicates cke returns;
 
-        private getLinkText(): string {
-            return this.link ? this.link['text'] : this.linkText;
-        }
-
-        private getToolTip(): string {
-            if (this.link) {
-                const linkTitleAttrValue = this.link.getAttribute('title');
-
-                if (linkTitleAttrValue) {
-                    return linkTitleAttrValue;
-                }
+            if (anchors.length > 0) {
+                this.dockedPanel.addItem(this.tabNames.anchor, true, this.createAnchorPanel(anchors), this.isAnchor());
             }
+        }
 
-            return api.util.StringHelper.EMPTY_STRING;
+        protected setDialogInputValues() {
+            switch (this.getOriginalLinkTypeElem().getValue()) {
+            case 'email':
+                this.link = LinkModalDialog.emailPrefix + this.getOriginalEmailElem().getValue();
+                break;
+            case 'anchor':
+                this.link = LinkModalDialog.anchorPrefix + this.getOriginalAnchorElem().getValue();
+                break;
+            default:
+                const val = this.getOriginalUrlElem().getValue();
+                const protocol: string = this.getOriginalProtocolElem().getValue();
+                this.link = api.util.StringHelper.isEmpty(val) ? api.util.StringHelper.EMPTY_STRING : protocol +
+                                                                                                      this.getOriginalUrlElem().getValue();
+            }
         }
 
         private isContentLink(): boolean {
-            return this.getHref().indexOf(LinkModalDialog.contentPrefix) === 0;
-        }
-
-        private getContentId(): string {
-            if (this.link && this.isContentLink()) {
-                return this.getHref().replace(LinkModalDialog.contentPrefix, api.util.StringHelper.EMPTY_STRING);
-            }
-            return api.util.StringHelper.EMPTY_STRING;
+            return this.link.indexOf(LinkModalDialog.contentPrefix) === 0;
         }
 
         private isDownloadLink(): boolean {
-            return this.getHref().indexOf(LinkModalDialog.downloadPrefix) === 0;
-        }
-
-        private getDownloadId(): string {
-            return this.isDownloadLink()
-                ? this.getHref().replace(LinkModalDialog.downloadPrefix, api.util.StringHelper.EMPTY_STRING)
-                : api.util.StringHelper.EMPTY_STRING;
+            return this.link.indexOf(LinkModalDialog.downloadPrefix) === 0;
         }
 
         private isUrl(): boolean {
             return this.link ? !(this.isContentLink() || this.isDownloadLink() || this.isEmail()) : false;
         }
 
-        private getUrl(): string {
-            return this.isUrl() ? this.getHref() : api.util.StringHelper.EMPTY_STRING;
-        }
-
         private isEmail(): boolean {
-            return this.getHref().indexOf(LinkModalDialog.emailPrefix) === 0;
-        }
-
-        private getEmail(): string {
-            if (!this.isEmail()) {
-                return api.util.StringHelper.EMPTY_STRING;
-            }
-            let emailArr = this.getHref().split(LinkModalDialog.subjectPrefix);
-            return emailArr[0].replace(LinkModalDialog.emailPrefix, api.util.StringHelper.EMPTY_STRING);
+            return this.link.indexOf(LinkModalDialog.emailPrefix) === 0;
         }
 
         private isAnchor(): boolean {
-            return this.getHref().indexOf('#') === 0;
+            return this.link.indexOf(LinkModalDialog.anchorPrefix) === 0;
         }
 
         private getAnchor(): string {
-            return this.isAnchor() ? this.getHref() : api.util.StringHelper.EMPTY_STRING;
-        }
-
-        private getSubject(): string {
-            if (!this.isEmail() || this.getHref().indexOf(LinkModalDialog.subjectPrefix) === -1) {
-                return api.util.StringHelper.EMPTY_STRING;
-             }
-            let emailArr = this.getHref().split(LinkModalDialog.subjectPrefix);
-            return decodeURI(emailArr[1].replace(LinkModalDialog.subjectPrefix, api.util.StringHelper.EMPTY_STRING));
+            return this.isAnchor() ? this.link : api.util.StringHelper.EMPTY_STRING;
         }
 
         protected layout() {
@@ -158,26 +119,66 @@ module api.util.htmlarea.dialog {
         }
 
         private createContentPanel(): Panel {
+            const getContentId: Function = () => {
+                if (this.link && this.isContentLink()) {
+                    return this.link.replace(LinkModalDialog.contentPrefix, api.util.StringHelper.EMPTY_STRING);
+                }
+                return api.util.StringHelper.EMPTY_STRING;
+            };
+
             return this.createFormPanel([
-                this.createSelectorFormItem('contentId', i18n('dialog.link.formitem.target'),
-                    this.createContentSelector(this.getContentId, api.schema.content.ContentTypeName.getMediaTypes()),
+                this.createSelectorFormItem('contentId', i18n('dialog.link.formitem.target'), this.createContentSelector(getContentId),
                     true),
                 this.createTargetCheckbox('contentTarget', this.isContentLink)
             ]);
         }
 
         private createDownloadPanel(): Panel {
+            const getDownloadId: Function = () => {
+                return this.isDownloadLink()
+                    ? this.link.replace(LinkModalDialog.downloadPrefix, api.util.StringHelper.EMPTY_STRING)
+                    : api.util.StringHelper.EMPTY_STRING;
+            };
+
             return this.createFormPanel([
                 this.createSelectorFormItem('downloadId', i18n('dialog.link.formitem.target'),
-                    this.createContentSelector(this.getDownloadId, api.schema.content.ContentTypeName.getMediaTypes()))
+                    this.createContentSelector(getDownloadId, api.schema.content.ContentTypeName.getMediaTypes()))
             ]);
         }
 
         private createUrlPanel(): Panel {
+            const getUrl: Function = () => {
+                return this.isUrl() ? this.link : api.util.StringHelper.EMPTY_STRING;
+            };
+
             return this.createFormPanel([
-                this.createFormItemWithPostponedValue('url', i18n('dialog.link.formitem.url'), this.getUrl, Validators.required,
-                    'https://example.com/mypage'),
+                this.createFormItemWithPostponedValue('url', i18n('dialog.link.formitem.url'), getUrl,
+                    LinkModalDialog.validationRequiredUrl, 'https://example.com/mypage'),
                 this.createTargetCheckbox('urlTarget', this.isUrl)
+            ]);
+        }
+
+        private createEmailPanel(): Panel {
+            const getEmail: Function = () => {
+                if (!this.isEmail()) {
+                    return api.util.StringHelper.EMPTY_STRING;
+                }
+
+                return this.link.replace(LinkModalDialog.emailPrefix, api.util.StringHelper.EMPTY_STRING);
+            };
+
+            const getSubject: Function = () => {
+                return this.getOriginalSubjElem().getValue();
+            };
+
+            const emailFormItem: FormItem = this.createFormItemWithPostponedValue('email', i18n('dialog.link.formitem.email'), getEmail,
+                LinkModalDialog.validationRequiredEmail);
+
+            emailFormItem.getLabel().addClass('required');
+
+            return this.createFormPanel([
+                emailFormItem,
+                this.createFormItemWithPostponedValue('subject', i18n('dialog.link.formitem.subject'), getSubject)
             ]);
         }
 
@@ -187,42 +188,59 @@ module api.util.htmlarea.dialog {
             ]);
         }
 
-        private createEmailPanel(): Panel {
-            let emailFormItem: FormItem = this.createFormItemWithPostponedValue('email', i18n('dialog.link.formitem.email'), this.getEmail,
-                LinkModalDialog.validationRequiredEmail);
+        private createAnchorDropdown(anchorList: string[]): FormItem {
+            const dropDown = new Dropdown<string>('anchor', <DropdownConfig<string>>{});
 
-            emailFormItem.getLabel().addClass('required');
+            anchorList.forEach((anchor: string) => {
+                dropDown.addOption(<Option<string>>{value: LinkModalDialog.anchorPrefix + anchor, displayValue: anchor});
+            });
 
-            return this.createFormPanel([
-                emailFormItem,
-                this.createFormItemWithPostponedValue('subject', i18n('dialog.link.formitem.subject'), this.getSubject)
-            ]);
+            if (this.getAnchor()) {
+                dropDown.setValue(this.getAnchor());
+            }
+
+            const formItemBuilder = new ModalDialogFormItemBuilder('anchor', i18n('dialog.link.tabname.anchor')).setValidator(
+                Validators.required).setInputEl(dropDown);
+
+            return this.createFormItem(formItemBuilder);
         }
 
         private static validationRequiredEmail(input: api.dom.FormInputEl): string {
             return Validators.required(input) || Validators.validEmail(input);
         }
 
+        private static validationRequiredUrl(input: api.dom.FormInputEl): string {
+            return Validators.required(input) || Validators.validUrl(input);
+        }
+
         private getTarget(isTabSelected: boolean): boolean {
-            return isTabSelected ? !api.util.StringHelper.isBlank(this.link.getAttribute('target')) : false;
+            return isTabSelected ? this.getOriginalTargetElem().getValue() === '_blank' : false;
         }
 
         private createTargetCheckbox(id: string, isTabSelectedFn: Function): FormItem {
-            let checkbox = api.ui.Checkbox.create().setLabelText(i18n('dialog.link.formitem.openinnewtab')).setInputAlignment(
+            const checkbox = api.ui.Checkbox.create().setLabelText(i18n('dialog.link.formitem.openinnewtab')).setInputAlignment(
                 InputAlignment.RIGHT).build();
 
             this.onAdded(() => {
                 checkbox.setChecked(this.getTarget(isTabSelectedFn.call(this)));
             });
 
-            let formItemBuilder = new ModalDialogFormItemBuilder(id).setInputEl(checkbox);
+            const formItemBuilder = new ModalDialogFormItemBuilder(id).setInputEl(checkbox);
             return this.createFormItem(formItemBuilder);
         }
 
         protected getMainFormItems(): FormItem [] {
+            const getLinkText: Function = () => {
+                return <string>this.ckeOriginalDialog.getValueOf('info', 'linkDisplayText');
+            };
+
+            const getTooltip: Function = () => {
+                return this.getOriginalTitleElem().getValue();
+            };
+
             this.textFormItem =
-                this.createFormItemWithPostponedValue('linkText', i18n('dialog.link.formitem.text'), this.getLinkText, Validators.required);
-            this.toolTipFormItem = this.createFormItemWithPostponedValue('toolTip', i18n('dialog.link.formitem.tooltip'), this.getToolTip);
+                this.createFormItemWithPostponedValue('linkText', i18n('dialog.link.formitem.text'), getLinkText, Validators.required);
+            this.toolTipFormItem = this.createFormItemWithPostponedValue('toolTip', i18n('dialog.link.formitem.tooltip'), getTooltip);
 
             return [this.textFormItem, this.toolTipFormItem];
         }
@@ -230,7 +248,7 @@ module api.util.htmlarea.dialog {
         private createDockedPanel(): DockedPanel {
             this.initTabNames();
 
-            let dockedPanel = new DockedPanel();
+            const dockedPanel = new DockedPanel();
             dockedPanel.addItem(this.tabNames.url, true, this.createUrlPanel());
             dockedPanel.addItem(this.tabNames.content, true, this.createContentPanel());
             dockedPanel.addItem(this.tabNames.download, true, this.createDownloadPanel());
@@ -262,12 +280,13 @@ module api.util.htmlarea.dialog {
         }
 
         protected initializeActions() {
-            let submitAction = new api.ui.Action(this.link ? i18n('action.update') : i18n('action.insert'));
+            const submitAction = new api.ui.Action(this.link ? i18n('action.update') : i18n('action.insert'));
             this.setSubmitAction(submitAction);
 
             this.addAction(submitAction.onExecuted(() => {
                 if (this.validate()) {
-                    this.createLink();
+                    this.updateOriginalDialogInputValues();
+                    this.ckeOriginalDialog.getButton('ok').click();
                     this.close();
                 }
             }));
@@ -307,17 +326,7 @@ module api.util.htmlarea.dialog {
             contentSelector.onValueChanged((event) => {
                 if (contentSelector.getLoader().isLoaded()) {
 
-                    if (event.getNewValue()) {
-                        const newValueContent = contentSelector.getContent(new api.content.ContentId(event.getNewValue()));
-
-                        const isMedia = !!newValueContent ? newValueContent.getType().isDescendantOfMedia() : false;
-
-                        new api.content.page.IsRenderableRequest(
-                            new api.content.ContentId(event.getNewValue())).sendAndParse().then((renderable: boolean) => {
-                            formItem.setValidator(() =>
-                                isMedia || renderable ? '' : i18n('dialog.link.formitem.nonrenderable'));
-                        });
-                    } else {
+                    if (!event.getNewValue()) {
                         formItem.setValidator(Validators.required);
                     }
                 }
@@ -399,138 +408,127 @@ module api.util.htmlarea.dialog {
             return mediaUploader;
         }
 
-        private createAnchorDropdown(anchorList: string[]): FormItem {
-            let dropDown = new Dropdown<string>('anchor', <DropdownConfig<string>>{});
-
-            anchorList.forEach((anchor: string) => {
-                dropDown.addOption(<Option<string>>{value: '#' + anchor, displayValue: anchor});
-            });
-
-            if (this.getAnchor()) {
-                dropDown.setValue(this.getAnchor());
-            }
-
-            const formItemBuilder = new ModalDialogFormItemBuilder('anchor', i18n('dialog.link.tabname.anchor')).setValidator(
-                Validators.required).setInputEl(dropDown);
-
-            return this.createFormItem(formItemBuilder);
-        }
-
         private validateDockPanel(): boolean {
-            let form = <Form>this.dockedPanel.getDeck().getPanelShown().getFirstChild();
+            const form = <Form>this.dockedPanel.getDeck().getPanelShown().getFirstChild();
 
             return form.validate(true).isValid();
         }
 
         protected validate(): boolean {
-            let mainFormValid = super.validate();
-            let dockPanelValid = this.validateDockPanel();
+            const mainFormValid = super.validate();
+            const dockPanelValid = this.validateDockPanel();
 
             return mainFormValid && dockPanelValid;
         }
 
-        private createContentLink(): api.dom.AEl {
-            let contentSelector = <api.content.ContentComboBox<ContentTreeSelectorItem>>this.getFieldById('contentId');
-            let targetCheckbox = <api.ui.Checkbox>this.getFieldById('contentTarget');
+        private createContentLink() {
+            const contentSelectorValue: string = (<api.content.ContentComboBox<ContentTreeSelectorItem>>this.getFieldById(
+                'contentId')).getValue();
+            const isOpenInNewTab: boolean = (<api.ui.Checkbox>this.getFieldById('contentTarget')).isChecked();
+            const url: string = LinkModalDialog.contentPrefix + contentSelectorValue;
+            const target: string = isOpenInNewTab ? '_blank' : '';
 
-            let linkEl = new api.dom.AEl();
-            linkEl.setUrl(LinkModalDialog.contentPrefix + contentSelector.getValue(), targetCheckbox.isChecked() ? '_blank' : null);
-
-            return linkEl;
+            this.getOriginalLinkTypeElem().setValue('url', false);
+            this.getOriginalTargetElem().setValue(target, false);
+            this.getOriginalProtocolElem().setValue('', false);
+            this.getOriginalUrlElem().setValue(url, false);
         }
 
-        private createDownloadLink(): api.dom.AEl {
-            let contentSelector = <api.content.ContentComboBox<ContentTreeSelectorItem>>this.getFieldById('downloadId');
+        private createDownloadLink() {
+            const contentSelectorValue: string = (<api.content.ContentComboBox<ContentTreeSelectorItem>>this.getFieldById(
+                'downloadId')).getValue();
+            const url: string = LinkModalDialog.downloadPrefix + contentSelectorValue;
 
-            let linkEl = new api.dom.AEl();
-            linkEl.setUrl(LinkModalDialog.downloadPrefix + contentSelector.getValue());
-
-            return linkEl;
+            this.getOriginalLinkTypeElem().setValue('url', false);
+            this.getOriginalProtocolElem().setValue('', false);
+            this.getOriginalUrlElem().setValue(url, false);
         }
 
-        private createUrlLink(): api.dom.AEl {
-            let url = (<api.ui.text.TextInput>this.getFieldById('url')).getValue();
-            let targetCheckbox = <api.ui.Checkbox>this.getFieldById('urlTarget');
+        private createUrlLink() {
+            const url: string = (<api.ui.text.TextInput>this.getFieldById('url')).getValue();
+            const isOpenInNewTab: boolean = (<api.ui.Checkbox>this.getFieldById('urlTarget')).isChecked();
+            const target: string = isOpenInNewTab ? '_blank' : '';
 
-            let linkEl = new api.dom.AEl();
-            linkEl.setUrl(url, targetCheckbox.isChecked() ? '_blank' : null);
-
-            return linkEl;
+            this.getOriginalLinkTypeElem().setValue('url', false);
+            this.getOriginalTargetElem().setValue(target, false);
+            this.getOriginalUrlElem().setValue(url, false);
         }
 
-        private createAnchor(): api.dom.AEl {
-            let anchorName = (<api.ui.text.TextInput>this.getFieldById('anchor')).getValue();
+        private createEmailLink() {
+            const email = (<api.ui.text.TextInput>this.getFieldById('email')).getValue();
+            const subject = (<api.ui.text.TextInput>this.getFieldById('subject')).getValue();
 
-            let linkEl = new api.dom.AEl();
-            linkEl.setUrl(anchorName);
-
-            return linkEl;
+            this.getOriginalLinkTypeElem().setValue('email', false);
+            this.getOriginalEmailElem().setValue(email, false);
+            this.getOriginalSubjElem().setValue(subject, false);
         }
 
-        private createEmailLink(): api.dom.AEl {
-            let email = (<api.ui.text.TextInput>this.getFieldById('email')).getValue();
-            let subject = (<api.ui.text.TextInput>this.getFieldById('subject')).getValue();
+        private createAnchor() {
+            const anchorName = (<api.ui.text.TextInput>this.getFieldById('anchor')).getValue().replace(LinkModalDialog.anchorPrefix,
+                api.util.StringHelper.EMPTY_STRING);
 
-            let linkEl = new api.dom.AEl();
-            linkEl.setUrl(LinkModalDialog.emailPrefix + email + (subject ? LinkModalDialog.subjectPrefix + encodeURI(subject) : ''));
-
-            return linkEl;
+            this.getOriginalLinkTypeElem().setValue('anchor', false);
+            this.getOriginalAnchorElem().setValue(anchorName, false);
         }
 
-        private createLink(): void {
-            let linkEl: api.dom.AEl;
-            let deck = <api.ui.panel.NavigatedDeckPanel>this.dockedPanel.getDeck();
-            let selectedTab = <api.ui.tab.TabBarItem>deck.getSelectedNavigationItem();
-            let linkText: string = this.onlyTextSelected ? (<api.ui.text.TextInput>this.getFieldById('linkText')).getValue().trim() : '';
-            let toolTip: string = (<api.ui.text.TextInput>this.getFieldById('toolTip')).getValue().trim();
+        private updateOriginalDialogInputValues(): void {
+            const deck = <api.ui.panel.NavigatedDeckPanel>this.dockedPanel.getDeck();
+            const selectedTab = <api.ui.tab.TabBarItem>deck.getSelectedNavigationItem();
+            const linkText: string = (<api.ui.text.TextInput>this.getFieldById('linkText')).getValue().trim();
+            const toolTip: string = (<api.ui.text.TextInput>this.getFieldById('toolTip')).getValue().trim();
+
+            this.ckeOriginalDialog.setValueOf('info', 'linkDisplayText', linkText);
+            this.getOriginalTitleElem().setValue(toolTip, false);
 
             switch (selectedTab.getLabel()) {
             case (this.tabNames.content):
-                linkEl = this.createContentLink();
+                this.createContentLink();
                 break;
             case (this.tabNames.url):
-                linkEl = this.createUrlLink();
+                this.createUrlLink();
                 break;
             case (this.tabNames.download):
-                linkEl = this.createDownloadLink();
+                this.createDownloadLink();
                 break;
             case (this.tabNames.email):
-                linkEl = this.createEmailLink();
+                this.createEmailLink();
                 break;
             case (this.tabNames.anchor):
-                linkEl = this.createAnchor();
+                this.createAnchor();
                 break;
             }
+        }
 
-            if (linkText) {
-                linkEl.setHtml(linkText);
-            }
-            if (toolTip) {
-                linkEl.setTitle(toolTip);
-            }
+        private getOriginalLinkTypeElem(): CKEDITOR.ui.dialog.uiElement {
+            return this.getElemFromOriginalDialog('info', 'linkType');
+        }
 
-            if (this.link) {
-                if (!linkText && this.link.hasChildNodes()) {
-                    linkEl.setHtml(this.link.innerHTML, false);
-                }
+        private getOriginalTargetElem(): CKEDITOR.ui.dialog.uiElement {
+            return this.getElemFromOriginalDialog('target', 'linkTargetType');
+        }
 
-                this.link.parentElement.replaceChild(linkEl.getHTMLElement(), this.link);
-            } else {
-                if (this.onlyTextSelected) {
-                    this.getEditor().insertContent(linkEl.toString());
-                } else {
-                    let linkAttrs = {
-                        href: linkEl.getHref(),
-                        target: linkEl.getTarget() ? linkEl.getTarget() : null,
-                        rel: null,
-                        // tslint:disable-next-line:object-literal-key-quotes
-                        'class': null,
-                        title: linkEl.getTitle()
-                    };
+        private getOriginalUrlElem(): CKEDITOR.ui.dialog.uiElement {
+            return (<any>this.getElemFromOriginalDialog('info', 'urlOptions')).getChild([0, 1]);
+        }
 
-                    this.getEditor().execCommand('mceInsertLink', false, linkAttrs);
-                }
-            }
+        private getOriginalEmailElem(): CKEDITOR.ui.dialog.uiElement {
+            return (<any>this.getElemFromOriginalDialog('info', 'emailOptions')).getChild(0);
+        }
+
+        private getOriginalSubjElem(): CKEDITOR.ui.dialog.uiElement {
+            return (<any>this.getElemFromOriginalDialog('info', 'emailOptions')).getChild(1);
+        }
+
+        private getOriginalTitleElem(): CKEDITOR.ui.dialog.uiElement {
+            return this.getElemFromOriginalDialog('advanced', 'advTitle');
+        }
+
+        private getOriginalAnchorElem(): CKEDITOR.ui.dialog.uiElement {
+            return (<any>this.getElemFromOriginalDialog('info', 'anchorOptions')).getChild([0, 0, 0]);
+        }
+
+        private getOriginalProtocolElem(): CKEDITOR.ui.dialog.uiElement {
+            return (<any>this.getElemFromOriginalDialog('info', 'urlOptions')).getChild([0, 0]);
         }
 
         protected createFormItemWithPostponedValue(id: string, label: string, getValueFn: Function,

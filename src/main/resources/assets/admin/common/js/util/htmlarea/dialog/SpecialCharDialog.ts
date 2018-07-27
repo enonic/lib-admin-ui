@@ -6,7 +6,7 @@ module api.util.htmlarea.dialog {
     import SpanEl = api.dom.SpanEl;
     import DialogButton = api.ui.dialog.DialogButton;
 
-    export class SpecialCharDialogCKE
+    export class SpecialCharDialog
         extends ModalDialog {
 
         constructor(config: eventInfo) {
