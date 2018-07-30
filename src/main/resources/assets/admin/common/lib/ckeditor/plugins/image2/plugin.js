@@ -1492,7 +1492,6 @@
                 if (!enabled) {
                     this.setState(CKEDITOR.TRISTATE_DISABLED);
                 } else {
-                    // console.log(evt.data.editor.elementPath().lastElement);
                     this.setState(
                         ( widget.data.align == value ) ? (
                             CKEDITOR.TRISTATE_ON
