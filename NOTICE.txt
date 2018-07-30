@@ -41,10 +41,6 @@ Licenses used by Enonic XP Admin UI library
     MIT License
     https://github.com/mleibman/SlickGrid/blob/master/MIT-LICENSE.txt
 
-    Tiny MCE
-    GNU LGPL 2.1
-    https://raw.githubusercontent.com/tinymce/tinymce/master/LICENSE.TXT
-
     Web Components
     BSD "style" license:
     https://github.com/webcomponents/webcomponentsjs/blob/master/LICENSE.md

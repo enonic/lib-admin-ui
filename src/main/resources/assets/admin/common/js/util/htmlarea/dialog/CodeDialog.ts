@@ -1,23 +1,28 @@
 module api.util.htmlarea.dialog {
     import TextArea = api.ui.text.TextArea;
-    import Action = api.ui.Action;
     import i18n = api.util.i18n;
+    import eventInfo = CKEDITOR.eventInfo;
 
-    export class CodeDialog extends ModalDialog {
+    export class CodeDialog
+        extends CKEBackedDialog {
 
         private textArea: TextArea;
 
-        private okAction: Action;
-
-        constructor(editor: HtmlAreaEditor) {
+        constructor(config: eventInfo) {
             super(<HtmlAreaModalDialogConfig>{
-                editor: editor,
+                editor: config.editor,
+                dialog: config.data,
                 title: i18n('dialog.sourcecode.title'), cls: 'source-code-modal-dialog',
                 confirmation: {
-                    yesCallback: () => this.okAction.execute(),
+                    yesCallback: () => this.getSubmitAction().execute(),
                     noCallback: () => this.close(),
                 }
             });
+
+        }
+
+        protected setDialogInputValues() {
+            this.textArea.setValue(<string>this.ckeOriginalDialog.getValueOf('main', 'data'));
         }
 
         protected layout() {
@@ -25,29 +30,16 @@ module api.util.htmlarea.dialog {
 
             this.textArea = new TextArea('source-textarea');
             this.appendChildToContentPanel(this.textArea);
-        }
-
-        open() {
-            super.open();
-
-            this.textArea.setValue(this.getEditor().getContent({source_view: true}));
-            this.getEl().setAttribute('spellcheck', 'false');
-            this.textArea.giveFocus();
+            this.setFirstFocusField(this.textArea);
         }
 
         protected initializeActions() {
-            this.okAction = new Action(i18n('action.ok'));
+            const submitAction = new api.ui.Action(i18n('action.ok'));
+            this.setSubmitAction(submitAction);
 
-            this.addAction(this.okAction.onExecuted(() => {
-                this.getEditor().focus();
-
-                this.getEditor().undoManager.transact(() => {
-                    this.getEditor().setContent(this.textArea.getValue());
-                });
-
-                this.getEditor().selection.setCursorLocation();
-                this.getEditor().nodeChanged();
-
+            this.addAction(submitAction.onExecuted(() => {
+                this.ckeOriginalDialog.setValueOf('main', 'data', this.textArea.getValue());
+                this.ckeOriginalDialog.getButton('ok').click();
                 this.close();
             }));
 
