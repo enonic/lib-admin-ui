@@ -120,6 +120,17 @@
 
             // Integrate with link commands (link plugin).
             linkCommandIntegrator(editor);
+
+            // toggle image toolbar button state      // #9
+            editor.on('selectionChange', function (evt) {
+                var isImageSelected = evt.data.path.lastElement.hasClass('cke_widget_image');
+                var newState = isImageSelected ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF;
+                var oldState = editor.getCommand('image').state;
+
+                if (oldState !== newState) {
+                    editor.getCommand('image').setState(newState);
+                }
+            });
         }
     });
 
