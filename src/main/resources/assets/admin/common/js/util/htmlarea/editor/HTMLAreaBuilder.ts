@@ -1,7 +1,18 @@
 module api.util.htmlarea.editor {
 
-    import ApplicationKey = api.application.ApplicationKey;
+    import HTMLAreaEditor = CKEDITOR.editor;
+    import eventInfo = CKEDITOR.eventInfo;
+    import NotificationMessage = api.notify.NotificationMessage;
+    import NotifyManager = api.notify.NotifyManager;
+    import i18n = api.util.i18n;
 
+    /**
+     * NB: Modifications were made in ckeditor.js (VERY SORRY FOR THAT):
+     * LINE 126: getFrameDocument() function updated to fix issue #542 in MS EDGE
+     * LINE 1253: cke_widget_drag_handler_container initial styling updated to have display:none;
+     *
+     * Update those in case ckeditor lib is updated
+     */
     export class HTMLAreaBuilder {
 
         private content: api.content.ContentSummary; // used for image dialog
@@ -9,41 +20,28 @@ module api.util.htmlarea.editor {
         private applicationKeys: ApplicationKey[]; // used for macro dialog
 
         private assetsUri: string;
-        private selector: string;
+        private editorContainerId: string;
         private focusHandler: (e: FocusEvent) => void;
         private blurHandler: (e: FocusEvent) => void;
-        private keydownHandler: (e: KeyboardEvent) => void;
+        private mouseLeaveHandler: (e: MouseEvent, mousePressed?: boolean) => void;
+        private keydownHandler: (e: eventInfo) => void;
         private nodeChangeHandler: (e: any) => void;
-        private createDialogListeners: {(event: CreateHtmlAreaDialogEvent): void}[] = [];
+        private createDialogListeners: { (event: CreateHtmlAreaDialogEvent): void }[] = [];
         private inline: boolean = false;
+        private isFullscreenMode: boolean = false;
         private fixedToolbarContainer: string;
         private hasActiveDialog: boolean = false;
         private customToolConfig: any;
         private editableSourceCode: boolean;
-        private forcedRootBlock: string;
+        private toolsToExlcude: string = '';
+        private toolsToInclude: string[] = [];
 
-        private tools: string = [
-            'styleselect',
-            'alignleft aligncenter alignright alignjustify',
-            'bullist numlist outdent indent',
-            'charmap anchor image macro link unlink',
-            'table',
-            'pastetext'
-        ].join(' | ');
-
-        private plugins: string[] = [
-            'autoresize',
-            'directionality',
-            'fullscreen',
-            'hr',
-            'lists',
-            'paste',
-            'preview',
-            'table',
-            'textcolor',
-            'visualblocks',
-            'visualchars',
-            'charmap'
+        private tools: any[] = [
+            ['Format', 'Bold', 'Italic', 'Underline'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['BulletedList', 'NumberedList', 'Outdent', 'Indent'],
+            ['SpecialChar', 'Anchor', 'Image', 'Macro', 'Link', 'Unlink'],
+            ['Table']
         ];
 
         setEditableSourceCode(value: boolean): HTMLAreaBuilder {
@@ -56,8 +54,13 @@ module api.util.htmlarea.editor {
             return this;
         }
 
-        setSelector(selector: string): HTMLAreaBuilder {
-            this.selector = selector;
+        setEditorContainerId(id: string): HTMLAreaBuilder {
+            this.editorContainerId = id;
+            return this;
+        }
+
+        setFullscreenMode(value: boolean): HTMLAreaBuilder {
+            this.isFullscreenMode = value;
             return this;
         }
 
@@ -89,13 +92,18 @@ module api.util.htmlarea.editor {
             return this;
         }
 
-        setKeydownHandler(keydownHandler: (e: KeyboardEvent) => void): HTMLAreaBuilder {
+        setMouseLeaveHandler(mouseLeaveHandler: (e: MouseEvent, mousePressed?: boolean) => void): HTMLAreaBuilder {
+            this.mouseLeaveHandler = mouseLeaveHandler;
+            return this;
+        }
+
+        setKeydownHandler(keydownHandler: (e: eventInfo) => void): HTMLAreaBuilder {
             this.keydownHandler = keydownHandler;
             return this;
         }
 
         setNodeChangeHandler(nodeChangeHandler: (e: any) => void): HTMLAreaBuilder {
-            this.nodeChangeHandler =  api.util.AppHelper.debounce((e) => {
+            this.nodeChangeHandler = api.util.AppHelper.debounce((e) => {
                 nodeChangeHandler(e);
             }, 200);
 
@@ -127,269 +135,455 @@ module api.util.htmlarea.editor {
             return this;
         }
 
-        private excludeTools(tools: any[]) {
-            let strTools = this.tools;
-            tools.forEach((toolStr: any) => {
-                toolStr.value.split(' ').forEach((tool: string) => {
-                    if (tool === '*') {
-                        strTools = '';
-                    } else {
-                        strTools = strTools.replace(tool, '');
-                    }
-                });
-            });
-            this.tools = strTools;
-        }
-
         private includeTools(tools: any[]) {
             tools.forEach((tool: any) => {
-                this.includeTool(tool.value);
+                this.includeTool(tool);
             });
         }
 
         private includeTool(tool: string) {
-            this.tools += ' ' + tool;
+            this.toolsToInclude.push(tool);
         }
 
         setTools(tools: any): HTMLAreaBuilder {
             this.customToolConfig = tools;
 
             if (tools['exclude'] && tools['exclude'] instanceof Array) {
-                this.excludeTools(tools['exclude']);
+                this.toolsToExlcude = tools['exclude'].map(tool => tool.value).join().replace(/\s+/g, ',');
+                if (this.toolsToExlcude === '*') {
+                    this.tools = [];
+                }
             }
+
             if (tools['include'] && tools['include'] instanceof Array) {
-                this.includeTools(tools['include']);
+                this.includeTools(tools['include'].map(tool => tool.value).join().replace(/\|/g, '-').split(/\s+/));
             }
-
-            return this;
-        }
-
-        setForcedRootBlock(el: string): HTMLAreaBuilder {
-            this.forcedRootBlock = el;
 
             return this;
         }
 
         private checkRequiredFieldsAreSet() {
-            if (!this.assetsUri || !this.selector || !this.content) {
-                throw new Error('some required fields are missing for tinymce editor');
+            if (!this.assetsUri || !this.editorContainerId || !this.content) {
+                throw new Error('some required fields are missing for CKEditor');
             }
         }
 
-        public createEditor(): wemQ.Promise<HtmlAreaEditor> {
+        public createEditor(): HTMLAreaEditor {
             this.checkRequiredFieldsAreSet();
+            this.adjustToolsList();
 
-            if (this.inline && this.editableSourceCode && !this.isToolExcluded('code')) {
-                this.includeTool('code');
-            }
+            const config: CKEDITOR.config = this.createConfig();
+            const ckeditor: HTMLAreaEditor = this.inline ? CKEDITOR.inline(this.editorContainerId, config) : CKEDITOR.replace(
+                this.editorContainerId, config);
 
-            let deferred = wemQ.defer<HtmlAreaEditor>();
+            this.listenCKEditorEvents(ckeditor);
+            this.handleFileUpload(ckeditor);
+            this.handleNativeNotifications(ckeditor);
+            this.setupDialogsToOpen(ckeditor);
+            this.setupKeyboardShortcuts(ckeditor);
+            this.addCustomLangEntries(ckeditor);
+            this.removeUnwantedMenuItems(ckeditor);
 
-            tinymce.init({
-                selector: this.selector,
-                forced_root_block : this.forcedRootBlock,
-                document_base_url: this.assetsUri + '/admin/common/lib/tinymce/',
-                skin_url: this.assetsUri + '/admin/common/lib/tinymce/skins/lightgray',
-                content_css: this.assetsUri + '/admin/common/styles/html-editor.css',
-                theme: 'modern',
-                mobile: {
-                    theme: 'mobile'
-                },
-                inline: this.inline,
-                fixed_toolbar_container: this.fixedToolbarContainer,
-                convert_urls: false,
-
-                toolbar: [
-                    this.tools
-                ],
-
-                formats: {
-                    alignleft: [
-                        {
-                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'left'},
-                            inline: 'span'
-                        },
-                        {selector: 'table', collapsed: false, styles: {float: 'left'}}
-                    ],
-                    aligncenter: [
-                        {
-                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'center'},
-                            inline: 'span'
-                        },
-                        {selector: 'table', collapsed: false, styles: {marginLeft: 'auto', marginRight: 'auto'}}
-                    ],
-                    alignright: [
-                        {
-                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'right'},
-                            inline: 'span'
-                        },
-                        {selector: 'table', collapsed: false, styles: {float: 'right'}}
-                    ],
-                    alignjustify: [
-                        {
-                            selector: 'img,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
-                            styles: {textAlign: 'justify'},
-                            inline: 'span'
-                        }
-                    ]
-                },
-                branding: false,
-                menubar: false,
-                statusbar: true,
-                paste_as_text: true,
-                browser_spellcheck: true,
-                verify_html: false,
-                verify_css_classes: false,
-                plugins: this.plugins,
-                external_plugins: this.getExternalPlugins(),
-                object_resizing: 'table',
-                autoresize_min_height: 100,
-                autoresize_bottom_margin: 0,
-
-                setup: (editor) => {
-                    editor.addCommand('openLinkDialog', this.notifyLinkDialog, this);
-                    editor.addCommand('openAnchorDialog', this.notifyAnchorDialog, this);
-                    editor.addCommand('openImageDialog', this.notifyImageDialog, this);
-                    editor.addCommand('openMacroDialog', this.notifyMacroDialog, this);
-                    editor.addCommand('openSearchReplaceDialog', this.notifySearchReplaceDialog, this);
-                    editor.addCommand('openCodeDialog', this.notifyCodeDialog, this);
-                    editor.addCommand('openCharMapDialog', this.notifyCharMapDialog, this);
-
-                    editor.on('NodeChange', (e) => {
-                        if (e.element && /^(FIGCAPTION)$/.test(e.element.nodeName) && /<[^>]*>/.test(e.element.innerHTML)) {
-                            e.preventDefault();
-                            e.element.innerHTML = '';
-                        }
-
-                        if (this.nodeChangeHandler) {
-                            setTimeout(() => this.nodeChangeHandler(e), 30);
-                        }
-                    });
-                    editor.on('keyup', (e) => {
-                        if (this.nodeChangeHandler) {
-                            this.nodeChangeHandler(e);
-                        }
-                    });
-                    editor.on('focus', (e) => {
-                        if (this.focusHandler) {
-                            this.focusHandler(e);
-                        }
-                    });
-                    editor.on('blur', (e) => {
-                        if (this.hasActiveDialog) {
-                            e.stopImmediatePropagation();
-                            this.hasActiveDialog = false;
-                        }
-                        if (this.blurHandler) {
-                            this.blurHandler(e);
-                        }
-                    });
-                    editor.on('keydown', (e) => {
-                        if (e.keyCode === 9 && !e.altKey && !e.ctrlKey) { // tab pressed
-                            editor.execCommand(e.shiftKey ? 'Outdent' : 'Indent');
-                            e.preventDefault();
-                        } else if (e.keyCode === 46 || e.keyCode === 8) { // DELETE
-                            let selectedNode = editor.selection.getRng().startContainer;
-                            if (/^(FIGURE)$/.test(selectedNode.nodeName)) {
-                                e.preventDefault();
-                                selectedNode.remove();
-                            }
-                        }
-
-                        if (this.keydownHandler) {
-                            this.keydownHandler(e);
-                        }
-                    });
-
-                    let dragParentElement;
-                    editor.on('dragstart', (e) => {
-                        dragParentElement = e.target.parentElement || e.target.parentNode;
-                    });
-
-                    editor.on('drop', (e) => {
-                        if (dragParentElement) {
-                            // prevent browser from handling the drop
-                            e.preventDefault();
-
-                            e.target.appendChild(dragParentElement);
-                            dragParentElement = undefined;
-                        }
-                    });
-
-                    // BlockFormat shortcuts keys
-                    for (let i = 1; i <= 6; i++) {
-                        editor.addShortcut('ctrl+shift+' + i, '', ['FormatBlock', false, 'h' + i]);
-                    }
-
-                },
-                init_instance_callback: (editor) => {
-                    deferred.resolve(editor);
-                }
-            });
-            return deferred.promise;
+            return ckeditor;
         }
 
-        private getExternalPlugins(): any {
-            const externalPlugins: any = {
-                link: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/link.js',
-                anchor: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/anchor.js',
-                image: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/image.js',
-                macro: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/macro.js',
-                searchreplace: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/searchreplace.js',
-                charmap: this.assetsUri + '/admin/common/js/util/htmlarea/plugins/charmap.js'
+        private adjustToolsList() {
+            if (this.editableSourceCode) {
+                this.includeTool('Sourcedialog');
+            }
+
+            if (!this.inline && !this.isFullscreenMode) {
+                this.includeTool('Fullscreen');
+            }
+
+            this.tools.push(this.toolsToInclude);
+        }
+
+        private createConfig(): CKEDITOR.config {
+            const config: CKEDITOR.config = {
+                toolbar: this.tools,
+                entities: false,
+                keystrokes: [
+                    [CKEDITOR.CTRL + 76, null], // disabling default Link keystroke to remove it's wrong tooltip
+                ],
+                removePlugins: 'resize',
+                removeButtons: this.toolsToExlcude,
+                extraPlugins: this.getExtraPlugins(),
+                extraAllowedContent: 'code address dl dt dd script;img[data-src]',
+                format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
+                image2_disableResizer: true,
+                image2_captionedClass: '',
+                disallowedContent: 'img[width,height]',
+                uploadUrl: api.util.UriHelper.getRestUri('content/createMedia'),
+                contentsCss: this.assetsUri + '/admin/common/styles/html-editor.css', // for classic mode only
+                sharedSpaces: this.inline ? {top: this.fixedToolbarContainer} : null
             };
 
-            if (this.editableSourceCode) {
-                externalPlugins['code'] = this.assetsUri + '/admin/common/js/util/htmlarea/plugins/code.js';
+            if (!this.isToolExcluded('Code')) {
+                config.format_tags = config.format_tags + ';code';
+                config['format_code'] = {element: 'code'};
             }
 
-            return externalPlugins;
+            config['qtRows'] = 10; // Count of rows
+            config['qtColumns'] = 10; // Count of columns
+            config['qtWidth'] = '100%'; // table width
+
+            return config;
+        }
+
+        private getExtraPlugins(): string {
+            if (this.inline) {
+                return 'macro,autogrow,sourcedialog,image2,sharedspace,quicktable';
+            }
+
+            if (this.isFullscreenMode) {
+                return 'macro,sourcedialog,image2,quicktable';
+            }
+
+            return 'macro,autogrow,sourcedialog,image2,quicktable';
+        }
+
+        private listenCKEditorEvents(ckeditor: HTMLAreaEditor) {
+            if (this.nodeChangeHandler) {
+                ckeditor.on('change', this.nodeChangeHandler.bind(this));
+            }
+
+            if (this.focusHandler) {
+                ckeditor.on('focus', this.focusHandler.bind(this));
+            }
+
+            if (this.keydownHandler) {
+                ckeditor.on('key', this.keydownHandler.bind(this));
+            }
+
+            ckeditor.on('maximize', (e: eventInfo) => {
+                if (e.data === 2) { // fullscreen off
+                    api.ui.responsive.ResponsiveManager.fireResizeEvent();
+                }
+            });
+
+            const editorEl = document.getElementById(this.editorContainerId);
+            let mousePressed: boolean = false;
+
+            editorEl.addEventListener('mousedown', () => mousePressed = true);
+            editorEl.addEventListener('mouseup', () => mousePressed = false);
+            editorEl.addEventListener('mouseleave', (e: MouseEvent) => {
+                if (this.mouseLeaveHandler) {
+                    this.mouseLeaveHandler(e, mousePressed);
+                }
+            });
+            api.dom.Body.get().onMouseUp(() => {
+                if (mousePressed) {
+                    mousePressed = false;
+                }
+            });
+
+            ckeditor.on('blur', (e: eventInfo) => {
+
+                if (this.hasActiveDialog) {
+                    e.stop();
+                    this.hasActiveDialog = false;
+                }
+                if (this.blurHandler) {
+                    this.blurHandler(<any>e);
+                }
+            });
+        }
+
+        private handleFileUpload(ckeditor: HTMLAreaEditor) {
+            ckeditor.on('fileUploadRequest', (evt: eventInfo) => {
+                const fileLoader = evt.data.fileLoader;
+
+                this.fileExists(fileLoader.fileName).then((exists: boolean) => {
+                    if (exists) {
+                        NotifyManager.get().showWarning(i18n('notify.fileExists', fileLoader.fileName));
+                        (<any>evt.editor.document.findOne('.cke_widget_uploadimage')).remove(); // removing upload preview image
+                    } else {
+                        this.uploadFile(fileLoader);
+                    }
+                }).catch((reason: any) => {
+                    api.DefaultErrorHandler.handle(reason);
+                }).done();
+
+                // Prevented the default behavior.
+                evt.stop();
+            });
+
+            // parse image upload response so cke understands it
+            ckeditor.on('fileUploadResponse', (evt: eventInfo) => {
+                // Prevent the default response handler.
+                evt.stop();
+
+                // Get XHR and response.
+                const data = evt.data;
+                const xhr = data.fileLoader.xhr;
+                const response = xhr.responseText.split('|');
+
+                if (response[1]) {
+                    // An error occurred during upload.
+                    data.message = response[1];
+                    evt.cancel();
+                } else {
+                    const mediaContent = JSON.parse(response[0]);
+                    const url: string = new api.content.util.ContentImageUrlResolver().setContentId(
+                        mediaContent.id).setScaleWidth(true).setSize(api.util.htmlarea.dialog.ImageModalDialog.maxImageWidth).resolve();
+                    data.url = url;
+                }
+            });
+        }
+
+        private fileExists(fileName: string): wemQ.Promise<boolean> {
+            return new api.content.resource.GetContentByPathRequest(
+                new api.content.ContentPath([this.content.getPath().toString(), fileName])).sendAndParse().then(() => {
+                return true;
+            }).catch((reason: any) => {
+                if (reason.statusCode === 404) { // good, no file with such name
+                    return false;
+                }
+
+                throw new Error(reason);
+            });
+        }
+
+        private uploadFile(fileLoader: any) {
+            const formData = new FormData();
+            const xhr = fileLoader.xhr;
+            xhr.open('POST', fileLoader.uploadUrl, true);
+            formData.append('file', fileLoader.file, fileLoader.fileName);
+            formData.set('parent', this.content.getPath().toString());
+            formData.set('name', fileLoader.fileName);
+            fileLoader.xhr.send(formData);
+        }
+
+        private handleNativeNotifications(ckeditor: HTMLAreaEditor) {
+            const progressNotifications: Object = {};
+
+            ckeditor.on('notificationShow', function (evt: eventInfo) {
+                const notification: any = evt.data.notification;
+
+                switch (notification.type) {
+                case 'success':
+                    NotifyManager.get().showSuccess(notification.message);
+                    break;
+                case 'info':
+                case 'progress':
+                    NotifyManager.get().showFeedback(notification.message);
+                    break;
+                case 'warning':
+                    NotifyManager.get().showError(notification.message);
+                    break;
+                }
+                // Do not show the default notification.
+                evt.cancel();
+            });
+
+            ckeditor.on('notificationUpdate', function (evt: eventInfo) {
+                const message: string = evt.data.options ? evt.data.options.message : evt.data.notification.message;
+                const messageId: string = evt.data.notification.id;
+                const type: string = (evt.data.options && evt.data.options.type) ? evt.data.options.type : evt.data.notification.type;
+
+                switch (type) {
+                case 'success':
+                    NotifyManager.get().showSuccess(message);
+                    NotifyManager.get().hide(progressNotifications[messageId]);
+                    delete progressNotifications[messageId];
+                    break;
+                case 'progress':
+                    if (progressNotifications[messageId]) {
+                        const notificationMessage: NotificationMessage = NotifyManager.get().getNotification(
+                            progressNotifications[messageId]);
+                        if (notificationMessage) {
+                            notificationMessage.setText(message);
+                        }
+                    } else {
+                        progressNotifications[messageId] = api.notify.NotifyManager.get().showFeedback(message, false);
+                    }
+                    break;
+                }
+
+                // Do not show the default notification.
+                evt.cancel();
+            });
+        }
+
+        private setupDialogsToOpen(ckeditor: HTMLAreaEditor) {
+            ckeditor.addCommand('openMacroDialog', {
+                exec: (editor, data: any) => {
+                    this.notifyMacroDialog({editor: editor, macro: data});
+                    return true;
+                }
+            });
+
+            CKEDITOR.plugins.addExternal('macro', this.assetsUri + '/admin/common/js/util/htmlarea/plugins/', 'macro.js');
+
+            ckeditor.addCommand('openFullscreenDialog', {
+                exec: (editor) => {
+                    const config: any = {editor: editor};
+                    config.assetsUri = this.assetsUri;
+                    config.content = this.content;
+                    config.createDialogListeners = this.createDialogListeners;
+                    config.editableSourceCode = this.editableSourceCode;
+                    config.keydownHandler = this.keydownHandler;
+                    config.contentPath = this.contentPath;
+                    config.applicationKeys = this.applicationKeys;
+                    config.customToolConfig = this.customToolConfig;
+
+                    this.notifyFullscreenDialog(config);
+                    return true;
+                }
+            });
+
+            ckeditor.ui.addButton('Fullscreen', {
+                label: 'Fullscreen',
+                command: 'openFullscreenDialog',
+                toolbar: 'tools,10',
+                icon: 'maximize'
+            });
+
+            ckeditor.on('dialogShow', (dialogShowEvent: eventInfo) => {
+                switch (dialogShowEvent.data.getName()) {
+                case 'anchor':
+                    this.notifyAnchorDialog(dialogShowEvent);
+                    break;
+                case 'sourcedialog':
+                    this.notifyCodeDialog(dialogShowEvent);
+                    break;
+                case 'specialchar':
+                    dialogShowEvent.data.hide();
+                    this.notifySpecialCharDialog(dialogShowEvent.editor);
+                    break;
+                case 'find':
+                    this.notifySearchReplaceDialog(dialogShowEvent);
+                    break;
+                case 'link':
+                    this.notifyLinkDialog(dialogShowEvent);
+                    break;
+                case 'image2':
+                    this.notifyImageDialog(dialogShowEvent);
+                    break;
+                }
+            });
+        }
+
+        private setupKeyboardShortcuts(ckeditor: HTMLAreaEditor) {
+            const commandDef: CKEDITOR.commandDefinition = {
+                exec: function (editor: HTMLAreaEditor) {
+                    editor.applyStyle(new CKEDITOR.style(<any>{element: this.name})); // name is command name
+                    return true;
+                }
+            };
+
+            ckeditor.addCommand('h1', commandDef);
+            ckeditor.addCommand('h2', commandDef);
+            ckeditor.addCommand('h3', commandDef);
+            ckeditor.addCommand('h4', commandDef);
+            ckeditor.addCommand('h5', commandDef);
+            ckeditor.addCommand('h6', commandDef);
+            ckeditor.addCommand('p', commandDef);
+            ckeditor.addCommand('div', commandDef);
+            ckeditor.addCommand('address', commandDef);
+
+            ckeditor.on('instanceReady', () => {
+                ckeditor.setKeystroke(9, 'indent'); // Indent on TAB
+                ckeditor.setKeystroke(CKEDITOR.SHIFT + 9, 'outdent'); // Outdent on SHIFT + TAB
+                ckeditor.setKeystroke(CKEDITOR.CTRL + 70, 'find'); // open find dialog on CTRL + F
+                ckeditor.setKeystroke(CKEDITOR.CTRL + 75, 'link'); // open link dialog on CTRL + K
+                ckeditor.setKeystroke(CKEDITOR.CTRL + 76, 'image'); // open link dialog on CTRL + L
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 49, 'h1'); // apply Heading 1 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 50, 'h2'); // apply Heading 2 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 51, 'h3'); // apply Heading 3 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 52, 'h4'); // apply Heading 4 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 53, 'h5'); // apply Heading 5 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.ALT + 54, 'h6'); // apply Heading 6 format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 55, 'p'); // apply the 'Normal' format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 56, 'div'); // apply the 'Normal (DIV)' format
+                ckeditor.setKeystroke(CKEDITOR.CTRL + CKEDITOR.SHIFT + 57, 'address'); // apply the 'Address' format
+            });
+
+            ckeditor.on('key', function (evt: eventInfo) { // stopping select all from propagating
+                if (evt.data.keyCode == CKEDITOR.CTRL + 65) {
+                    if (evt.data.domEvent && evt.data.domEvent.stopPropagation) {
+                        evt.data.domEvent.stopPropagation();
+                    }
+                }
+            });
+        }
+
+        private addCustomLangEntries(ckeditor: HTMLAreaEditor) {
+            ckeditor.on('langLoaded', (evt: eventInfo) => {
+                if (evt.editor.lang.format) {
+                    evt.editor.lang.format.tag_code = 'Сode';
+                }
+
+                const tooltipPrefix = BrowserHelper.isOSX() ? '\u2318' : 'Ctrl';
+                const linkTooltipPostfix: string = `(${tooltipPrefix}+K)`;
+                const imageTooltipPostfix: string = `(${tooltipPrefix}+L)`;
+
+                if (evt.editor.lang.link && evt.editor.lang.link.toolbar.indexOf(linkTooltipPostfix) < 0) {
+                    evt.editor.lang.link.toolbar = evt.editor.lang.link.toolbar + ' ' + linkTooltipPostfix;
+                }
+
+                if (evt.editor.lang.common && evt.editor.lang.common.image.indexOf(imageTooltipPostfix) < 0) {
+                    evt.editor.lang.common.image = evt.editor.lang.common.image + ' ' + imageTooltipPostfix;
+                }
+            });
+        }
+
+        private removeUnwantedMenuItems(ckeditor: HTMLAreaEditor) {
+            ckeditor.on('instanceReady', () => {
+                ckeditor.removeMenuItem('table');
+                ckeditor.removeMenuItem('tablecell_properties');
+                ckeditor.removeMenuItem('paste');
+            });
         }
 
         private notifyLinkDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.LINK).setContent(this.content).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyImageDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.IMAGE).setContent(this.content).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyAnchorDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.ANCHOR).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyMacroDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.MACRO).setContentPath(this.contentPath).setApplicationKeys(
-                this.applicationKeys).setType(HtmlAreaDialogType.MACRO).setContent(
+                this.applicationKeys).setContent(
                 this.content).setApplicationKeys(this.applicationKeys).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifySearchReplaceDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.SEARCHREPLACE).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyCodeDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
                 HtmlAreaDialogType.CODE).build();
             this.publishCreateDialogEvent(event);
         }
 
-        private notifyCharMapDialog(config: any) {
-            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
-                HtmlAreaDialogType.CHARMAP).build();
+        private notifySpecialCharDialog(config: any) {
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+                HtmlAreaDialogType.SPECIALCHAR).build();
+            this.publishCreateDialogEvent(event);
+        }
+
+        private notifyFullscreenDialog(config: any) {
+            const event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+                HtmlAreaDialogType.FULLSCREEN).build();
             this.publishCreateDialogEvent(event);
         }
 

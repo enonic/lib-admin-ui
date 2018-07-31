@@ -373,7 +373,6 @@ module api.app.wizard {
             this.mainToolbar = this.createMainToolbar();
             if (this.mainToolbar) {
                 this.mainToolbar.addClass('rendering');
-                this.appendChild(this.mainToolbar);
             }
 
             let headerAndNavigatorContainer = new api.dom.DivEl('header-and-navigator-container');
@@ -413,6 +412,7 @@ module api.app.wizard {
             });
             this.formPanel.appendChildren(headerAndNavigatorContainer, this.stepsPanel);
 
+            let leftPanel: Panel;
             this.livePanel = this.createLivePanel();
             if (this.livePanel) {
                 this.livePanel.addClass('rendering');
@@ -454,14 +454,32 @@ module api.app.wizard {
                     });
                 }
 
-                this.appendChild(this.splitPanel);
-
+                leftPanel = this.splitPanel;
             } else {
+                leftPanel = this.formPanel;
+            }
 
-                this.appendChild(this.formPanel);
+            const leftPanelAndToolbar = new Panel();
+            leftPanelAndToolbar.appendChild(leftPanel);
+            if (this.mainToolbar) {
+                leftPanelAndToolbar.prependChild(this.mainToolbar);
+            }
+
+            const detailsSplitPanel = this.createWizardAndDetailsSplitPanel(leftPanelAndToolbar);
+            if (detailsSplitPanel) {
+                detailsSplitPanel.addClass('rendering');
+                detailsSplitPanel.onRendered(() => detailsSplitPanel.removeClass('rendering'));
+                this.appendChild(detailsSplitPanel);
+            } else {
+                this.appendChild(leftPanelAndToolbar);
             }
 
             return wemQ(rendered);
+        }
+
+        protected createWizardAndDetailsSplitPanel(_leftPanel: Panel): api.ui.panel.SplitPanel {
+            // underscore prevents ts unused param check
+            return null;
         }
 
         onDataLoaded(listener: (item: EQUITABLE) => void) {
@@ -642,6 +660,10 @@ module api.app.wizard {
             return this.wizardActions.getActions();
         }
 
+        getWizardActions(): WizardActions<EQUITABLE> {
+            return this.wizardActions;
+        }
+
         getSteps(): WizardStep[] {
             return this.steps;
         }
@@ -811,15 +833,18 @@ module api.app.wizard {
         }
 
         private createSplitPanel(firstPanel: api.ui.panel.Panel, secondPanel: api.ui.panel.Panel): api.ui.panel.SplitPanel {
-            let splitPanel = new api.ui.panel.SplitPanelBuilder(firstPanel, secondPanel)
+            const builder = new api.ui.panel.SplitPanelBuilder(firstPanel, secondPanel)
                 .setFirstPanelMinSize(280, api.ui.panel.SplitPanelUnit.PIXEL)
                 .setAlignment(api.ui.panel.SplitPanelAlignment.VERTICAL);
 
             if (wemjq(window).width() > this.splitPanelThreshold) {
-                splitPanel.setFirstPanelSize(38, api.ui.panel.SplitPanelUnit.PERCENT);
+                builder.setFirstPanelSize(38, api.ui.panel.SplitPanelUnit.PERCENT);
             }
 
-            return splitPanel.build();
+            const splitPanel = builder.build();
+            splitPanel.addClass('wizard-and-preview');
+
+            return splitPanel;
         }
 
         private notifyClosed(checkCanClose: boolean) {

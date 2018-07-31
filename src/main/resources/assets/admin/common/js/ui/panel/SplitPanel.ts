@@ -160,7 +160,8 @@ module api.ui.panel {
         }
     }
 
-    export class SplitPanel extends Panel {
+    export class SplitPanel
+        extends Panel {
 
         private firstPanel: Panel;
 
@@ -464,7 +465,7 @@ module api.ui.panel {
             throw Error('SplitPanel allows adding children in constructor only.');
         }
 
-        appendChildren<T extends api.dom.Element>(..._children:T[]): api.dom.Element {
+        appendChildren<T extends api.dom.Element>(..._children: T[]): api.dom.Element {
             throw Error('SplitPanel allows adding children in constructor only.');
         }
 
@@ -619,6 +620,9 @@ module api.ui.panel {
         }
 
         foldSecondPanel() {
+            if (this.secondPanelIsHidden) {
+                return;
+            }
 
             this.splitterIsHidden = true;
             this.hideSplitter();

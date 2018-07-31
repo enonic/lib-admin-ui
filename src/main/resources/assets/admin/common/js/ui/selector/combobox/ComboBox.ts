@@ -398,6 +398,8 @@ module api.ui.selector.combobox {
                 this.selectedOptionsView.updateOption(option, newOption);
                 this.comboBoxDropdown.markSelections(selectedOptions);
             }
+
+            this.comboBoxDropdown.updateOption(newOption);
         }
 
         setIgnoreNextFocus(value: boolean): ComboBox<OPTION_DISPLAY_VALUE> {

@@ -1,12 +1,13 @@
 module api.form.inputtype.text {
+    import eventInfo = CKEDITOR.eventInfo;
     import support = api.form.inputtype.support;
     import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
     import Element = api.dom.Element;
-    import HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
     import HTMLAreaHelper = api.util.htmlarea.editor.HTMLAreaHelper;
+    import _HTMLAreaBuilder = api.util.htmlarea.editor.HTMLAreaBuilder;
     import ApplicationKey = api.application.ApplicationKey;
     import Promise = Q.Promise;
     import AppHelper = api.util.AppHelper;
@@ -29,7 +30,6 @@ module api.form.inputtype.text {
         private inputConfig: any;
 
         constructor(config: api.content.form.inputtype.ContentInputTypeViewContext) {
-
             super(config);
 
             this.addClass('html-area');
@@ -80,9 +80,6 @@ module api.form.inputtype.text {
                     });
                 }
             });
-            textAreaEl.onRemoved(() => {
-                this.destroyEditor(editorId);
-            });
 
             textAreaWrapper.appendChild(textAreaEl);
 
@@ -127,7 +124,7 @@ module api.form.inputtype.text {
                     return;
                 }
                 this.notifyValueChanged(id, textAreaWrapper);
-                new HtmlAreaResizeEvent(this).fire();
+                new HtmlAreaResizeEvent(<any>this).fire();
             };
 
             let isMouseOverRemoveOccurenceButton = false;
@@ -143,7 +140,9 @@ module api.form.inputtype.text {
                 this.notifyBlurred(e);
             };
 
-            const keydownHandler = (e) => {
+            const keydownHandler = (ckEvent: eventInfo) => {
+                const e: KeyboardEvent = ckEvent.data.domEvent.$;
+
                 if ((e.metaKey || e.ctrlKey) && e.keyCode === 83) {  // Cmd-S or Ctrl-S
                     e.preventDefault();
 
@@ -191,21 +190,44 @@ module api.form.inputtype.text {
                 textAreaWrapper.addClass(focusedEditorCls);
             };
 
-            new HTMLAreaBuilder().setSelector('textarea.' + id.replace(/\./g, '_')).setAssetsUri(assetsUri).setInline(
-                false).onCreateDialog(
-                createDialogHandler).setFocusHandler(focusHandler).setBlurHandler(blurHandler).setKeydownHandler(
-                keydownHandler).setNodeChangeHandler(notifyValueChanged).setContentPath(
-                this.contentPath).setContent(this.content).setApplicationKeys(this.applicationKeys).setTools({
-                include: this.inputConfig['include'],
-                exclude: this.inputConfig['exclude']
-            }).setForcedRootBlock(
-                this.inputConfig['forcedRootBlock'] ? this.inputConfig['forcedRootBlock'][0].value : 'p').setEditableSourceCode(
-                this.editableSourceCode).createEditor().then((editor: HtmlAreaEditor) => {
+            const editor = new _HTMLAreaBuilder()
+                .setEditorContainerId(id)
+                .setAssetsUri(assetsUri)
+                .setInline(false)
+                .onCreateDialog(createDialogHandler)
+                .setFocusHandler(focusHandler)
+                .setBlurHandler(blurHandler)
+                .setKeydownHandler(keydownHandler)
+                .setNodeChangeHandler(notifyValueChanged)
+                .setContentPath(this.contentPath)
+                .setContent(this.content)
+                .setApplicationKeys(this.applicationKeys)
+                .setTools({
+                    include: this.inputConfig['include'],
+                    exclude: this.inputConfig['exclude']
+                })
+                .setEditableSourceCode(this.editableSourceCode)
+                .createEditor();
+
+            editor.on('loaded', () => {
                 this.setEditorContent(id, property);
+
                 if (this.notInLiveEdit()) {
-                    this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper, id);
+                    if (api.BrowserHelper.isIE()) {
+                        this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper, id);
+                    }
+
+                    this.onRemoved(() => api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this));
+
+                    this.onOccurrenceRendered(() => this.resetInputHeight());
+
+                    this.onOccurrenceRemoved(() => this.resetInputHeight());
                 }
+
                 this.removeTooltipFromEditorArea(textAreaWrapper);
+
+                this.moveButtonToBottomBar(textAreaWrapper, '.cke_button__fullscreen');
+                this.moveButtonToBottomBar(textAreaWrapper, '.cke_button__sourcedialog');
 
                 const removeButtonEL = wemjq(textAreaWrapper.getParentElement().getParentElement().getHTMLElement()).find(
                     '.remove-button')[0];
@@ -216,13 +238,13 @@ module api.form.inputtype.text {
                     isMouseOverRemoveOccurenceButton = false;
                 });
 
-                this.onShown(() => {
-                    // invoke auto resize on shown in case contents have been updated while inactive
-                    if (editor['contentAreaContainer'] || editor['bodyElement']) {
-                        editor.execCommand('mceAutoResize', false, null, {skip_focus: true});
-                    }
-                });
             });
+
+        }
+
+        private moveButtonToBottomBar(inputOccurence: Element, buttonClass: string): void {
+            wemjq(inputOccurence.getHTMLElement()).find(buttonClass).appendTo(
+                wemjq(inputOccurence.getHTMLElement()).find('.cke_bottom'));
         }
 
         private setFocusOnEditorAfterCreate(inputOccurence: Element, id: string): void {
@@ -247,12 +269,6 @@ module api.form.inputtype.text {
                 this.updateEditorToolbarPos(inputOccurence);
                 this.updateEditorToolbarWidth(inputOccurence, this.getEditorInfo(editorId));
             });
-
-            this.onRemoved(() => api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this));
-
-            this.onOccurrenceRendered(() => this.resetInputHeight());
-
-            this.onOccurrenceRemoved(() => this.resetInputHeight());
         }
 
         private updateStickyEditorToolbar(inputOccurence: Element, editorInfo: HtmlAreaOccurrenceInfo) {
@@ -285,11 +301,11 @@ module api.form.inputtype.text {
         }
 
         private getToolbarClass(): string {
-            return '.mce-toolbar-grp';
+            return '.cke_top';
         }
 
         private getBottomBarClass(): string {
-            return '.mce-statusbar';
+            return '.cke_bottom';
         }
 
         private editorTopEdgeIsVisible(inputOccurence: Element): boolean {
@@ -299,8 +315,8 @@ module api.form.inputtype.text {
         private editorLowerEdgeIsVisible(inputOccurence: Element): boolean {
             const distToTopOfScrlblArea = this.calcDistToTopOfScrlbleArea(inputOccurence);
             const editorToolbarHeight = wemjq(inputOccurence.getHTMLElement()).find(this.getToolbarClass()).outerHeight(true);
-            const mceStatusToolbarHeight = wemjq(inputOccurence.getHTMLElement()).find(this.getBottomBarClass()).outerHeight(true);
-            return (inputOccurence.getEl().getHeightWithoutPadding() - editorToolbarHeight - mceStatusToolbarHeight +
+            const statusToolbarHeight = wemjq(inputOccurence.getHTMLElement()).find(this.getBottomBarClass()).outerHeight(true);
+            return (inputOccurence.getEl().getHeightWithoutPadding() - editorToolbarHeight - statusToolbarHeight +
                     distToTopOfScrlblArea) > 0;
         }
 
@@ -328,8 +344,8 @@ module api.form.inputtype.text {
             }
         }
 
-        private getEditor(editorId: string): any {
-            return tinymce.get(editorId);
+        private getEditor(editorId: string): CKEDITOR.editor {
+            return CKEDITOR.instances[editorId];
         }
 
         isDirty(): boolean {
@@ -339,7 +355,7 @@ module api.form.inputtype.text {
         }
 
         private getEditorContent(editor: HtmlAreaOccurrenceInfo) {
-            return this.getEditor(editor.id).getContent();
+            return this.getEditor(editor.id).getData();
         }
 
         private setEditorContent(editorId: string, property: Property): void {
@@ -347,8 +363,7 @@ module api.form.inputtype.text {
             const content: string = property.hasNonNullValue() ? HTMLAreaHelper.prepareImgSrcsInValueForEdit(property.getString()) : '';
 
             if (editor) {
-                editor.setContent(content);
-                HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
+                editor.setData(content);
             } else {
                 console.log(`Editor with id '${editorId}' not found`);
             }
@@ -359,7 +374,7 @@ module api.form.inputtype.text {
         }
 
         private notifyValueChanged(id: string, occurrence: api.dom.Element) {
-            const value: string = HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id).getContent());
+            const value: string = HTMLAreaHelper.prepareEditorImageSrcsBeforeSave(this.getEditor(id).getData());
             const valueObj: api.data.Value = ValueTypes.STRING.newValue(value);
             this.notifyOccurrenceValueChanged(occurrence, valueObj);
         }
@@ -401,7 +416,6 @@ module api.form.inputtype.text {
 
                 this.destroyEditor(editorId);
                 this.reInitEditor(editorId);
-                tinymce.execCommand('mceAddEditor', false, editorId);
             });
         }
 
@@ -409,7 +423,6 @@ module api.form.inputtype.text {
             const editorId = wemjq('textarea', ui.item)[0].id;
 
             this.reInitEditor(editorId);
-            tinymce.execCommand('mceAddEditor', false, editorId);
 
             this.getEditor(editorId).focus();
         }

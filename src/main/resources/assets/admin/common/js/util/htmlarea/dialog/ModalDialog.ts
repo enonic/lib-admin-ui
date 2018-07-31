@@ -279,10 +279,7 @@ module api.util.htmlarea.dialog {
             this.onKeyDown((event: KeyboardEvent) => {
                 if(event.which === 13) { // enter
                     if(this.isTextInput(<Element>event.target)) {
-                        setTimeout(() => { // TinyMCE in FF behaves bad without timeout
-                            this.submitAction.execute();
-                        }, 50);
-
+                        this.submitAction.execute();
                     }
                 }
             });
@@ -291,25 +288,5 @@ module api.util.htmlarea.dialog {
         private isTextInput(element: Element): boolean {
             return element.tagName.toUpperCase() === 'INPUT' && element.id.indexOf('TextInput') > 0;
         }
-    }
-
-    export interface HtmlAreaAnchor {
-        editor: HtmlAreaEditor;
-        element: HTMLElement;
-        text: string;
-        anchorList: string[];
-        onlyTextSelected: boolean;
-    }
-
-    export interface HtmlAreaImage {
-        editor: HtmlAreaEditor;
-        element: HTMLElement;
-        container: HTMLElement;
-        callback: Function;
-    }
-
-    export interface HtmlAreaMacro {
-        editor: HtmlAreaEditor;
-        callback: Function;
     }
 }

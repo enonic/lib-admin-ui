@@ -1,11 +1,11 @@
 module api.util.htmlarea.dialog {
 
     import TextArea = api.ui.text.TextArea;
-    import HTMLAreaBuilderCKE = api.util.htmlarea.editor.HTMLAreaBuilderCKE;
+    import HTMLAreaBuilderCKE = api.util.htmlarea.editor.HTMLAreaBuilder;
     import CreateHtmlAreaDialogEvent = api.util.htmlarea.editor.CreateHtmlAreaDialogEvent;
     declare var CONFIG;
 
-    export class FullscreenDialogCKE
+    export class FullscreenDialog
         extends ModalDialog {
 
         private textArea: TextArea;
