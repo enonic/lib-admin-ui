@@ -12,6 +12,7 @@ module api.form.inputtype.text {
     import Promise = Q.Promise;
     import AppHelper = api.util.AppHelper;
     import PropertySet = api.data.PropertySet;
+    import Reference = api.util.Reference;
     declare var CONFIG;
 
     export class HtmlArea
@@ -96,6 +97,10 @@ module api.form.inputtype.text {
 
         private getStringValue(propertySet: PropertySet) {
             return propertySet.getString('value', 0);
+        }
+
+        private setStringValue(propertySet: PropertySet, value: string) {
+            propertySet.setString('value', 0, value);
         }
 
         updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
@@ -383,10 +388,6 @@ module api.form.inputtype.text {
             return !(wemjq(this.getHTMLElement()).parents('.inspection-panel').length > 0);
         }
 
-        private setStringValue(propertySet: PropertySet, value: string) {
-            propertySet.setString('value', 0, value);
-        }
-
         private isNotActiveElement(htmlAreaIframe: HTMLElement): boolean {
             const activeElement = wemjq(document.activeElement).get(0);
 
@@ -403,7 +404,36 @@ module api.form.inputtype.text {
             const valueObj: api.data.Value = this.newInitialValue();
             this.setStringValue(valueObj.getPropertySet(), value);
 
+            this.parseReferences(valueObj, value);
+
             this.notifyOccurrenceValueChanged(occurrence, valueObj);
+        }
+
+        private parseReferences(valueObj: api.data.Value, value: string) {
+            const contentRegexp = /<a\s+(?:[^>]*?\s+)?href=("|'|\\'|\\")(content:\/\/|media:\/\/download\/)(.+?)\1/g;
+            const imageRegexp = /<img\s+(?:[^>]*?\s+)?src=("|'|\\'|\\")(image:\/\/)(.+?)\1/g;
+
+            const references = this.extractReferences(value, contentRegexp).concat(this.extractReferences(value, imageRegexp));
+
+            if (references.length > 0) {
+                valueObj.getPropertySet().addReferences('references', references);
+            }
+        }
+
+        private extractReferences(value: string, regexp: RegExp): Reference[] {
+            let match = regexp.exec(value);
+            let result: Reference[] = [];
+
+            while (match) {
+                const contentReferenceId = match.length == 4 ? match[3] : null;
+
+                if (contentReferenceId) {
+                    result.push(Reference.from(new api.content.ContentId(contentReferenceId)));
+                }
+                match = regexp.exec(value);
+            }
+
+            return result;
         }
 
         hasInputElementValidUserInput(_inputElement: api.dom.Element) {
