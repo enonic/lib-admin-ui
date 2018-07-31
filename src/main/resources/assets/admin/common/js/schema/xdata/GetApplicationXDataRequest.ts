@@ -1,13 +1,12 @@
 module api.schema.xdata {
 
-    import MixinResourceRequest = api.schema.mixin.MixinResourceRequest;
     import MixinListJson = api.schema.mixin.MixinListJson;
     import Mixin = api.schema.mixin.Mixin;
     import MixinJson = api.schema.mixin.MixinJson;
     import ContentTypeName = api.schema.content.ContentTypeName;
 
     export class GetApplicationXDataRequest
-        extends MixinResourceRequest<MixinListJson, Mixin[]> {
+        extends XDataResourceRequest<MixinListJson, Mixin[]> {
 
         private contentTypeName: ContentTypeName;
 
