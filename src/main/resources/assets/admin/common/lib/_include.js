@@ -22,9 +22,5 @@
 // =include mousetrap-global-bind.min.js
 // =include q.js
 // =include noconflict.js
-// =include tinymce/tinymce.min.js
-// =include tinymce/themes/modern/theme.js
-// =include tinymce/themes/mobile/theme.min.js
 // =include bower_components/webcomponentsjs/webcomponents-lite.min.js
-// =include tinymce/plugins/*/plugin.min.js
 // =include ckeditor/ckeditor.js

@@ -9,7 +9,6 @@
     }
   }
 
-
   .wizard-step-navigator {
 
     .tab-bar-item.step-icon {
@@ -222,5 +221,11 @@
 ._0-240, ._240-360, ._360-540, ._540-720, ._720-960 {
   .wizard-step-navigator-and-toolbar {
     padding-left: 0;
+  }
+}
+
+body.mobile-statistics-panel {
+  .help-text-button {
+    z-index: 1; // make sure help icons doesn't overlay details panel
   }
 }

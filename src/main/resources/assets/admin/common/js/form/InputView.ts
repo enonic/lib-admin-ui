@@ -5,7 +5,6 @@ module api.form {
     import i18n = api.util.i18n;
     import StringHelper = api.util.StringHelper;
     import Value = api.data.Value;
-    declare var CONFIG;
 
     export interface InputViewConfig {
 
@@ -183,10 +182,6 @@ module api.form {
             );
 
             if (inputtype.InputTypeManager.isRegistered(inputType.getName())) {
-                if (inputType.getName() === 'HtmlArea' && CONFIG.isCkeUsed) {
-                    return inputtype.InputTypeManager.createView('HtmlAreaCK', inputTypeViewContext);
-                }
-
                 return inputtype.InputTypeManager.createView(inputType.getName(), inputTypeViewContext);
             }
 

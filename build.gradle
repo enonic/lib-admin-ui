@@ -98,7 +98,6 @@ jar {
     fileTree("$buildDir/assets/admin/common/lib") {
         exclude '_all.js'
         exclude '**/*.css'
-        exclude '**/fonts/tinymce*.*'
         exclude 'ckeditor/config.js'
         exclude 'ckeditor/styles.js'
         exclude 'ckeditor/plugins/sourcedialog/*.*'

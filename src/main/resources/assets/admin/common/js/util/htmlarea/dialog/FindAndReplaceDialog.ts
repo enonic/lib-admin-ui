@@ -10,7 +10,7 @@ module api.util.htmlarea.dialog {
     import button = CKEDITOR.ui.dialog.button;
 
     // With this dialog we hide original cke dialog and replicate all actions from our dialog to original one
-    export class FindAndReplaceDialogCKE
+    export class FindAndReplaceDialog
         extends CKEBackedDialog {
 
         private findInput: TextInput;
