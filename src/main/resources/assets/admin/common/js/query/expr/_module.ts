@@ -11,7 +11,6 @@
 ///<reference path='DynamicOrderExpr.ts' />
 ///<reference path='FieldOrderExpr.ts' />
 ///<reference path='LogicalExpr.ts' />
-///<reference path='NotExpr.ts' />
 
 ///<reference path='CompareOperator.ts' />
 ///<reference path='LogicalOperator.ts' />

@@ -1,4 +1,3 @@
-///<reference path='ContentSummaryRequest.ts' />
 ///<reference path='ContentSummaryPreLoader.ts' />
 ///<reference path='ContentResourceRequest.ts' />
 ///<reference path='GetContentByIdRequest.ts' />

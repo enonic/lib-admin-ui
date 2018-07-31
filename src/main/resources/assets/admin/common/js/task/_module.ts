@@ -2,7 +2,6 @@
 ///<reference path='TaskIdJson.ts' />
 ///<reference path='TaskState.ts' />
 ///<reference path='TaskInfoJson.ts' />
-///<reference path='TaskInfosJson.ts' />
 ///<reference path='TaskProgressJson.ts' />
 ///<reference path='TaskProgress.ts' />
 ///<reference path='TaskInfo.ts' />

@@ -22,10 +22,7 @@
 
 ///<reference path='AggregationSelection.ts' />
 ///<reference path='AggregationGroupView.ts' />
-///<reference path='ContentTypeAggregationGroupView.ts' />
 
-///<reference path='AggregationEntryViewSelectionChangedEvent.ts' />
 ///<reference path='BucketViewSelectionChangedEvent.ts' />
 
 ///<reference path='AggregationSelection.ts' />
-///<reference path='PrincipalAggregationGroupView.ts' />
