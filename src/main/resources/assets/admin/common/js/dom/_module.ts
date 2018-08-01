@@ -9,7 +9,6 @@
 ///<reference path='ElementShownEvent.ts' />
 ///<reference path='ElementHiddenEvent.ts' />
 ///<reference path='ElementRemovedEvent.ts' />
-///<reference path='ElementResizedEvent.ts' />
 ///<reference path='AEl.ts' />
 ///<reference path='BrEl.ts' />
 ///<reference path='IEl.ts' />
