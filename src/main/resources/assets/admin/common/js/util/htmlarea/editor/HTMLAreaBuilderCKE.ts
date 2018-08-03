@@ -257,6 +257,7 @@ module api.util.htmlarea.editor {
             this.listenCKEditorEvents(ckeditor);
             this.handleFileUpload(ckeditor);
             this.handleNativeNotifications(ckeditor);
+            this.handleTooltipForClickableElements(ckeditor);
             this.setupDialogsToOpen(ckeditor);
             this.setupKeyboardShortcuts(ckeditor);
             this.addCustomLangEntries(ckeditor);
@@ -381,6 +382,28 @@ module api.util.htmlarea.editor {
 
         private toogleToolbarButtonState(ckeditor: HTMLAreaEditor, name: string, isActive: boolean) {
             ckeditor.getCommand(name).setState(isActive ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF);
+        }
+
+        private handleTooltipForClickableElements(ckeditor: HTMLAreaEditor) {
+            let tooltipElem: CKEDITOR.dom.element = null;
+            const tooltipText = i18n('editor.dblclicktoedit');
+
+            const mouseOverHandler = api.util.AppHelper.debounce((ev: eventInfo) => {
+                const targetEl: CKEDITOR.dom.element = ev.data.getTarget();
+                const isClickableElement: boolean = targetEl.is('a') || targetEl.is('img'); // imgs, links, anchors
+
+                if (isClickableElement) {
+                    tooltipElem.setAttribute('title', tooltipText);
+                } else {
+                    tooltipElem.removeAttribute('title');
+                }
+
+            }, 200);
+
+            ckeditor.on('instanceReady', () => {
+                tooltipElem = this.inline ? ckeditor.container : ckeditor.document.getBody().getParent();
+                ckeditor.editable().on('mouseover', mouseOverHandler);
+            });
         }
 
         private handleFileUpload(ckeditor: HTMLAreaEditor) {
@@ -623,6 +646,11 @@ module api.util.htmlarea.editor {
 
                 if (evt.editor.lang.common && evt.editor.lang.common.image.indexOf(imageTooltipPostfix) < 0) {
                     evt.editor.lang.common.image = evt.editor.lang.common.image + ' ' + imageTooltipPostfix;
+                }
+
+                // anchor tooltip
+                if (evt.editor.lang.fakeobjects) {
+                    evt.editor.lang.fakeobjects.anchor = i18n('editor.dblclicktoedit');
                 }
             });
         }
