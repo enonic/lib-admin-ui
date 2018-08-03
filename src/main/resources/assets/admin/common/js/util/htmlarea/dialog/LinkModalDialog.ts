@@ -23,6 +23,8 @@ module api.util.htmlarea.dialog {
     import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
     import BaseSelectedOptionsView = api.ui.selector.combobox.BaseSelectedOptionsView;
     import ContentComboBox = api.content.ContentComboBox;
+    import ContentId = api.content.ContentId;
+    import Content = api.content.Content;
 
     export class LinkModalDialog
         extends CKEBackedDialog {

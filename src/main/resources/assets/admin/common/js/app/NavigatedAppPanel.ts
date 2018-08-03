@@ -5,8 +5,11 @@ module api.app {
     import AppBarTabMenuItem = api.app.bar.AppBarTabMenuItem;
     import NavigatorEvent = api.ui.NavigatorEvent;
     import i18n = api.util.i18n;
+    import AppPanel = api.app.AppPanel;
+    import ShowBrowsePanelEvent = api.app.ShowBrowsePanelEvent;
 
-    export class NavigatedAppPanel<M extends api.Equitable> extends AppPanel<M> {
+    export class NavigatedAppPanel<M extends api.Equitable>
+        extends AppPanel<M> {
 
         private appBarTabMenu: api.app.bar.AppBarTabMenu;
 

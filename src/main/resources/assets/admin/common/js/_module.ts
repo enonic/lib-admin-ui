@@ -112,12 +112,6 @@
 ///<reference path='util/htmlarea/_module.ts' />
 ///<reference path='form/inputtype/text/_module.ts' />
 
-///<reference path='security/form/inputtype/_module.ts' />
-///<reference path='security/form/_module.ts' />
-
-///<reference path='site/json/_module.ts' />
-///<reference path='site/_module.ts' />
-
 ///<reference path='item/_module.ts' />
 
 ///<reference path='application/_module.ts' />
@@ -127,7 +121,6 @@
 
 ///<reference path='schema/_module.ts' />
 ///<reference path='schema/mixin/_module.ts'/>
-///<reference path='schema/xdata/_module.ts'/>
 ///<reference path='schema/content/_module.ts' />
 ///<reference path='schema/content/inputtype/_module.ts' />
 ///<reference path='schema/relationshiptype/_module.ts' />
@@ -176,7 +169,6 @@
 ///<reference path='app/browse/_module.ts' />
 ///<reference path='app/browse/filter/_module.ts' />
 
-///<reference path='app/delete/_module.ts' />
 ///<reference path='app/wizard/_module.ts' />
 
 ///<reference path='system/_module.ts' />

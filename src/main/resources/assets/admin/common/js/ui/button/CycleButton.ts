@@ -1,6 +1,10 @@
 module api.ui.button {
 
-    export class CycleButton extends api.ui.button.Button {
+    import Button = api.ui.button.Button;
+    import Action = api.ui.Action;
+
+    export class CycleButton
+        extends Button {
 
         private actionList: Action[];
 
