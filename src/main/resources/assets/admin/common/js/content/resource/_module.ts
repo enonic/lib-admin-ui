@@ -42,6 +42,7 @@
 ///<reference path='GetContentVersionsForViewRequest.ts' />
 ///<reference path='GetNearestSiteRequest.ts' />
 ///<reference path='ContentsExistRequest.ts' />
+///<reference path='ContentsExistByPathRequest.ts' />
 ///<reference path='WidgetDescriptorResourceRequest.ts' />
 ///<reference path='GetWidgetsByInterfaceRequest.ts' />
 ///<reference path='ResolveDependencyResult.ts' />
@@ -54,3 +55,4 @@
 ///<reference path='HasUnpublishedChildrenRequest.ts' />
 ///<reference path='ContentTreeSelectorItem.ts' />
 ///<reference path='ContentAndStatusTreeSelectorItem.ts' />
+///<reference path='LoadImageRequest.ts' />
