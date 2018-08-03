@@ -366,6 +366,21 @@ module api.util.htmlarea.editor {
                     this.blurHandler(<any>e);
                 }
             });
+
+            ckeditor.on('selectionChange', (e: eventInfo) => {
+                const selectedElement: CKEDITOR.dom.element = e.data.path.lastElement;
+                const isLinkSelected: boolean = selectedElement.is('a') && selectedElement.hasAttribute('href');
+                const isAnchorSelected: boolean = selectedElement.hasClass('cke_anchor');
+                const isImageSelected: boolean = selectedElement.hasClass('cke_widget_image');
+
+                this.toogleToolbarButtonState(ckeditor, 'link', isLinkSelected);
+                this.toogleToolbarButtonState(ckeditor, 'anchor', isAnchorSelected);
+                this.toogleToolbarButtonState(ckeditor, 'image', isImageSelected);
+            });
+        }
+
+        private toogleToolbarButtonState(ckeditor: HTMLAreaEditor, name: string, isActive: boolean) {
+            ckeditor.getCommand(name).setState(isActive ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF);
         }
 
         private handleFileUpload(ckeditor: HTMLAreaEditor) {
