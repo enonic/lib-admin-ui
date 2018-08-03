@@ -2,6 +2,7 @@ module api.schema.content {
 
     import BaseLoader = api.util.loader.BaseLoader;
     import ContentTypeSummaryListJson = api.schema.content.ContentTypeSummaryListJson;
+    import ContentId = api.content.ContentId;
 
     export class ContentTypeSummaryLoader
         extends BaseLoader<ContentTypeSummaryListJson, ContentTypeSummary> {

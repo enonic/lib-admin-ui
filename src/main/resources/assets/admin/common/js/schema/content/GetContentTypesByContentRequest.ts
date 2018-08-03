@@ -1,9 +1,11 @@
 module api.schema.content {
 
+    import ContentId = api.content.ContentId;
+
     export class GetContentTypesByContentRequest
         extends ContentTypeResourceRequest<ContentTypeSummaryListJson, ContentTypeSummary[]> {
 
-        private contentId: api.content.ContentId;
+        private contentId: ContentId;
 
         constructor(content: ContentId) {
             super();
