@@ -120,6 +120,7 @@ jar {
         exclude 'ckeditor/plugins/macro/icons/macro.png'
         exclude 'ckeditor/plugins/find/dialogs/*.*'
         exclude 'ckeditor/plugins/widget/images/*.*'
+        exclude 'ckeditor/plugins/pastefromword/filter/*.*'
         exclude 'ckeditor/skins/moono-lisa/**/*.*'
         exclude 'ckeditor/lang/en*.js'
         exclude 'ckeditor/lang/no.js'
