@@ -26,7 +26,7 @@ module api.util.htmlarea.dialog {
 
         private createCharsBlock(): api.dom.Element {
             const charsBlock: DivEl = new DivEl('chars-block');
-            const chars: [string] = this.getEditor().config.specialChars;
+            const chars: string[] = this.getEditor().config.specialChars;
             const lang: any = this.getEditor().lang.specialchar;
             let character: any;
             let charDesc: string;
