@@ -24,6 +24,8 @@ module api.content.resource {
 
         private from: number = 0;
 
+        private loadingFrom: number;
+
         private size: number = ContentSelectorQueryRequest.DEFAULT_SIZE;
 
         private expand: api.rest.Expand = api.rest.Expand.SUMMARY;
@@ -147,7 +149,17 @@ module api.content.resource {
             };
         }
 
+        private isConcurrentLoad() {
+            return this.from === this.loadingFrom;
+        }
+
         sendAndParse(): wemQ.Promise<ContentSummary[]> {
+
+            if (this.isConcurrentLoad()) {
+                return wemQ(this.results);
+            }
+
+            this.loadingFrom = this.from;
             return this.send().then((response: api.rest.JsonResponse<ContentQueryResultJson<ContentSummaryJson>>) => {
 
                 let responseResult: ContentQueryResultJson<ContentSummaryJson> = response.getResult();
