@@ -172,6 +172,7 @@ module api.content.resource {
                 if (this.from === 0) {
                     this.results = [];
                 }
+                this.loadingFrom = undefined;
                 this.from += responseResult.metadata['hits'];
                 this.loaded = this.from >= responseResult.metadata['totalHits'];
 
