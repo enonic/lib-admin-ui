@@ -370,11 +370,13 @@ module api.util.htmlarea.editor {
 
             ckeditor.on('selectionChange', (e: eventInfo) => {
                 const selectedElement: CKEDITOR.dom.element = e.data.path.lastElement;
-                const isLinkSelected: boolean = selectedElement.is('a') && selectedElement.hasAttribute('href');
                 const isAnchorSelected: boolean = selectedElement.hasClass('cke_anchor');
                 const isImageSelected: boolean = selectedElement.hasClass('cke_widget_image');
+                const isLinkSelected: boolean = (selectedElement.is('a') && selectedElement.hasAttribute('href'));
+                const isImageWithLinkSelected = isImageSelected &&
+                                                (<CKEDITOR.dom.element>selectedElement.findOne('figure').getFirst()).is('a');
 
-                this.toogleToolbarButtonState(ckeditor, 'link', isLinkSelected);
+                this.toogleToolbarButtonState(ckeditor, 'link', isLinkSelected || isImageWithLinkSelected);
                 this.toogleToolbarButtonState(ckeditor, 'anchor', isAnchorSelected);
                 this.toogleToolbarButtonState(ckeditor, 'image', isImageSelected);
             });
