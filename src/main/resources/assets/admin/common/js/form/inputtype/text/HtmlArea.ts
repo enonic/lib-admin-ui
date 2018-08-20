@@ -44,6 +44,20 @@ module api.form.inputtype.text {
                 new api.security.auth.IsAuthenticatedRequest().sendAndParse().then((loginResult: api.security.auth.LoginResult) => {
                     this.editableSourceCode = loginResult.isContentExpert();
                 });
+
+            this.setupEventListeners();
+        }
+
+        private setupEventListeners() {
+            this.onRemoved(() => {
+                api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this);
+            });
+
+            this.onRendered(() => {
+                this.onOccurrenceRendered(() => this.resetInputHeight());
+
+                this.onOccurrenceRemoved(() => this.resetInputHeight());
+            });
         }
 
         getValueType(): ValueType {
@@ -248,11 +262,9 @@ module api.form.inputtype.text {
                 this.updateEditorToolbarWidth(inputOccurence, this.getEditorInfo(editorId));
             });
 
-            this.onRemoved(() => api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this));
-
-            this.onOccurrenceRendered(() => this.resetInputHeight());
-
-            this.onOccurrenceRemoved(() => this.resetInputHeight());
+            this.onRemoved(() => {
+                this.destroyEditor(editorId);
+            });
         }
 
         private updateStickyEditorToolbar(inputOccurence: Element, editorInfo: HtmlAreaOccurrenceInfo) {

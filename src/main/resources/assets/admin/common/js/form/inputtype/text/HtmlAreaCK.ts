@@ -44,6 +44,20 @@ module api.form.inputtype.text {
                 new api.security.auth.IsAuthenticatedRequest().sendAndParse().then((loginResult: api.security.auth.LoginResult) => {
                     this.editableSourceCode = loginResult.isContentExpert();
                 });
+
+            this.setupEventListeners();
+        }
+
+        private setupEventListeners() {
+            this.onRemoved(() => {
+                api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this);
+            });
+
+            this.onRendered(() => {
+                this.onOccurrenceRendered(() => this.resetInputHeight());
+
+                this.onOccurrenceRemoved(() => this.resetInputHeight());
+            });
         }
 
         getValueType(): ValueType {
@@ -217,11 +231,9 @@ module api.form.inputtype.text {
                         this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper, id);
                     }
 
-                    this.onRemoved(() => api.ui.responsive.ResponsiveManager.unAvailableSizeChanged(this));
-
-                    this.onOccurrenceRendered(() => this.resetInputHeight());
-
-                    this.onOccurrenceRemoved(() => this.resetInputHeight());
+                    this.onRemoved(() => {
+                        this.destroyEditor(id);
+                    });
                 }
 
                 this.removeTooltipFromEditorArea(textAreaWrapper);
@@ -462,11 +474,7 @@ module api.form.inputtype.text {
         private destroyEditor(id: string): void {
             const editor = this.getEditor(id);
             if (editor) {
-                try {
-                    editor.destroy(false);
-                } catch (e) {
-                    //error thrown in FF on tab close - XP-2624
-                }
+                editor.destroy(false);
             }
         }
 
