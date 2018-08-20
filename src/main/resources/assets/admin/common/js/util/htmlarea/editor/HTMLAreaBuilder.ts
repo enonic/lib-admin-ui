@@ -205,6 +205,7 @@ module api.util.htmlarea.editor {
             const config: CKEDITOR.config = {
                 toolbar: this.tools,
                 entities: false,
+                title: '',
                 keystrokes: [
                     [CKEDITOR.CTRL + 76, null], // disabling default Link keystroke to remove it's wrong tooltip
                 ],
