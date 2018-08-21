@@ -193,7 +193,7 @@ module api.util.htmlarea.dialog {
                 if (this.selectedMacro) {
                     this.insertUpdatedMacroIntoTextArea(macroString);
                 } else {
-                    (<CKEDITOR.editor>this.getEditor()).insertHtml(macroString);
+                    this.getEditor().insertText(macroString);
                 }
 
                 this.close();
