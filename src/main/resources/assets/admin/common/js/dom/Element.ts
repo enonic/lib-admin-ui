@@ -786,7 +786,7 @@ module api.dom {
         private isInViewport(): boolean {
             const container = this.getFirstNonEmptyAncestor();
 
-            if (container.isEmptyElement()) {
+            if (!container || container.isEmptyElement()) {
                 return false;
             }
 
