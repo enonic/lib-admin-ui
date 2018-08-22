@@ -159,20 +159,26 @@ module api.dom {
             // Do not generate id unless the distance to Element in the class hierarchy of this is larger than 1
             // This should result in that no id's are generated for new Element or classes extending Element directly
             // (which should prevent id-generation of direct instances of most api.dom classes)
-            let distance = api.ClassHelper.distanceTo(this, Element);
+            const distance = api.ClassHelper.distanceTo(this, Element);
             if (builder.generateId || distance > 1) {
-                let id = ElementRegistry.registerElement(this);
+                const id = ElementRegistry.registerElement(this);
                 this.setId(id);
+
+                this.onAdded(() => {
+                    // If element was removed and then added to DOM again we need to bring it back to ElementRegistry
+                    if (!ElementRegistry.getElementById(id)) {
+                        ElementRegistry.reRegisterElement(this);
+                    }
+                });
+
+                this.onRemoved(() => {
+                    ElementRegistry.unregisterElement(this);
+                });
             }
 
             if (builder.className) {
                 this.setClass(builder.className);
             }
-            this.onRemoved(() => {
-                if (this.getId()) {
-                    ElementRegistry.unregisterElement(this);
-                }
-            });
         }
 
         private replaceChildElement(replacementChild: Element, existingChild: Element) {
