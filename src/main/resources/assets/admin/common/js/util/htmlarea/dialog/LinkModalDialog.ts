@@ -23,6 +23,8 @@ module api.util.htmlarea.dialog {
     import FileUploadFailedEvent = api.ui.uploader.FileUploadFailedEvent;
     import BaseSelectedOptionsView = api.ui.selector.combobox.BaseSelectedOptionsView;
     import ContentComboBox = api.content.ContentComboBox;
+    import ContentId = api.content.ContentId;
+    import Content = api.content.Content;
 
     export class LinkModalDialog
         extends CKEBackedDialog {
@@ -54,7 +56,28 @@ module api.util.htmlarea.dialog {
             });
 
             this.createAnchorPanelIfNeeded();
-            this.setFirstFocusField(this.textFormItem.getInput());
+
+            if (this.isOnlyTextSelected()) {
+                this.setFirstFocusField(this.textFormItem.getInput());
+            } else {
+                this.setFirstFocusField(this.toolTipFormItem.getInput());
+                this.textFormItem.hide();
+                this.textFormItem.removeValidator();
+            }
+        }
+
+        private isOnlyTextSelected(): boolean {
+            const selectedElement: CKEDITOR.dom.element = this.getEditor().getSelection().getSelectedElement();
+
+            if (!selectedElement) {
+                return true;
+            }
+
+            if (selectedElement.is('a')) {
+                return true;
+            }
+
+            return false;
         }
 
         protected initializeConfig(params: ImageModalDialogConfig) {

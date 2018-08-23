@@ -2,7 +2,6 @@
 ///<reference path='ContentSummaryOptionDataHelper.ts' />
 
 ///<reference path='ContentId.ts' />
-///<reference path='ContentIds.ts' />
 ///<reference path='ContentName.ts' />
 ///<reference path='ContentUnnamed.ts' />
 ///<reference path='ContentPath.ts' />
@@ -13,9 +12,7 @@
 ///<reference path='Content.ts' />
 ///<reference path='ExtraData.ts' />
 
-///<reference path='FragmentContentSummaryLoader.ts' />
 ///<reference path='ContentTreeSelectorQueryRequest.ts' />
-///<reference path='ContentTreeSelectorItemViewer.ts' />
 
 ///<reference path='ContentComboBox.ts' />
 ///<reference path='CompareStatus.ts' />
@@ -23,7 +20,5 @@
 ///<reference path='Branch.ts' />
 ///<reference path='ContentSummaryAndCompareStatus.ts' />
 ///<reference path='ContentSummaryAndCompareStatusViewer.ts' />
-///<reference path='ContentVersion.ts' />
-///<reference path='ContentVersions.ts' />
 
 ///<reference path='Widget.ts' />

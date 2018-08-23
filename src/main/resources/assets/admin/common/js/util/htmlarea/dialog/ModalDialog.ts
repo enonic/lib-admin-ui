@@ -92,7 +92,7 @@ module api.util.htmlarea.dialog {
             return this.submitAction;
         }
 
-        protected getEditor(): any { // change it to CKEDITOR.editor when cke merged
+        protected getEditor(): CKEDITOR.editor {
             return this.editor;
         }
 

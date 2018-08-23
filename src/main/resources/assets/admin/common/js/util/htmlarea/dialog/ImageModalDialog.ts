@@ -70,7 +70,7 @@ module api.util.htmlarea.dialog {
             this.initLoader();
 
             if (this.getOriginalUrlElem().getValue()) {
-                this.imageElement = this.getEditor().widgets.selected[0].parts.image.$;
+                this.imageElement = (<any>this.getEditor().widgets).selected[0].parts.image.$;
                 this.loadImage();
             }
 
