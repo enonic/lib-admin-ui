@@ -122,6 +122,7 @@ jar {
         exclude 'ckeditor/plugins/find/dialogs/*.*'
         exclude 'ckeditor/plugins/widget/images/*.*'
         exclude 'ckeditor/plugins/pastefromword/filter/*.*'
+        exclude 'ckeditor/plugins/magicline/images/*.*'
         exclude 'ckeditor/skins/moono-lisa/**/*.*'
         exclude 'ckeditor/lang/*.js'
     }.each { f -> exclude buildDir.toURI().relativize( file( f.path ).toURI() ).toString() }
