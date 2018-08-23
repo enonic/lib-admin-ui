@@ -27,7 +27,7 @@ module api.app.view {
             this.addDataElements(header, elements);
         }
 
-        addDataElements(header:string, datas:api.dom.Element[]) {
+        addDataElements(header: string, datas: api.dom.Element[]): api.dom.UlEl {
             let dataList = new api.dom.UlEl('data-list');
 
             if (!datas || datas.length === 0) {
@@ -46,6 +46,7 @@ module api.app.view {
             });
 
             this.appendChild(dataList);
+            return dataList;
         }
 
         private addHeader(header:string, dataList:api.dom.UlEl) {

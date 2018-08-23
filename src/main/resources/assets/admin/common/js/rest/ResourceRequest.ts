@@ -1,6 +1,8 @@
 module api.rest {
+    import HttpRequest = api.rest.HttpRequest;
 
-    export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE> {
+    export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE>
+        implements HttpRequest<PARSED_TYPE> {
 
         private restPath: Path;
 
@@ -46,8 +48,8 @@ module api.rest {
 
             this.validate();
 
-            let jsonRequest = new JsonRequest<RAW_JSON_TYPE>().
-                setMethod(this.method).setParams(this.getParams()).setPath(this.getRequestPath()).setTimeout(
+            let jsonRequest = new JsonRequest<RAW_JSON_TYPE>().setMethod(this.method).setParams(this.getParams()).setPath(
+                this.getRequestPath()).setTimeout(
                 !this.heavyOperation ? this.timeoutMillis : 0);
             return jsonRequest.send();
         }

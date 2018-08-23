@@ -13,7 +13,7 @@ module api.util.loader {
 
     export class BaseLoader<JSON, OBJECT> {
 
-        protected request: api.rest.ResourceRequest<JSON, OBJECT[]>;
+        protected request: api.rest.HttpRequest<OBJECT[]>;
 
         private status: LoaderStatus = LoaderStatus.NOT_STARTED;
 
@@ -29,15 +29,15 @@ module api.util.loader {
 
         private comparator: Comparator<OBJECT>;
 
-        constructor(request?: api.rest.ResourceRequest<JSON, OBJECT[]>) {
+        constructor(request?: api.rest.HttpRequest<OBJECT[]>) {
             this.setRequest(request || this.createRequest());
         }
 
-        protected createRequest(): api.rest.ResourceRequest<JSON, OBJECT[]> {
+        protected createRequest(): api.rest.HttpRequest<OBJECT[]> {
             throw new Error('Must be implemented in deriving classes!');
         }
 
-        protected getRequest(): api.rest.ResourceRequest<JSON, OBJECT[]> {
+        protected getRequest(): api.rest.HttpRequest<OBJECT[]> {
             return this.request;
         }
 
@@ -112,7 +112,7 @@ module api.util.loader {
             return this;
         }
 
-        setRequest(request: api.rest.ResourceRequest<JSON, OBJECT[]>) {
+        setRequest(request: api.rest.HttpRequest<OBJECT[]>) {
             this.request = request;
         }
 
