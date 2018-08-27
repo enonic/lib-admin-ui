@@ -90,41 +90,28 @@ jar {
     exclude 'assets/spec/**'
     exclude 'assets/**/*.ts'   // let dev/**/admin.d.ts through to be used by other apps
     exclude 'assets/**/*.less' // let dev/**/*.less through to be used by other apps
+
+    // COMMON/LIB excludes
+    // Exclude complex files, that only present after the first build and must be evaluated dynamically
+    def whitelist = [
+        /.*_all\.js$/,
+        /.*\.css$/,
+        /.*ckeditor\/config\.js$/,
+        /.*ckeditor\/styles\.js$/,
+        /.*ckeditor\/skins\/moono-lisa.*/,
+        /.*(ckeditor\/plugins\/(sourcedialog|image2|link|specialchar|quicktable|autogrow|sharedspace|find|widget|pastefromword|magicline)\/(plugin\.js|dialogs|icons|images|filter|(lang\/(en|es|fr|no|pl|pt|ru|sv)))).*/,
+        /.*(ckeditor\/lang\/(en|es|fr|no|pl|pt|ru|sv)).*/,
+    ] as List
+
     if (isProd()) {
         exclude '**/*.map'
+    } else {
+        whitelist.add( /.*\.map$/ )
     }
-    // exclude libs sources
-    def buildDir = file('build/resources/main')
-    fileTree("$buildDir/assets/admin/common/lib") {
-        exclude '_all.js'
-        exclude '**/*.css'
-        exclude 'ckeditor/config.js'
-        exclude 'ckeditor/styles.js'
-        exclude 'ckeditor/plugins/sourcedialog/*.*'
-        exclude 'ckeditor/plugins/sourcedialog/dialogs/*.*'
-        exclude 'ckeditor/plugins/sourcedialog/icons/*.*'
-        exclude 'ckeditor/plugins/sourcedialog/lang/*.*'
-        exclude 'ckeditor/plugins/image2/plugin.js'
-        exclude 'ckeditor/plugins/image2/dialogs/*.*'
-        exclude 'ckeditor/plugins/image2/icons/*.*'
-        exclude 'ckeditor/plugins/image2/lang/*.*'
-        exclude 'ckeditor/plugins/link/dialogs/*.*'
-        exclude 'ckeditor/plugins/link/images/*.*'
-        exclude 'ckeditor/plugins/link/icons/*.*'
-        exclude 'ckeditor/plugins/specialchar/dialogs/*.*'
-        exclude 'ckeditor/plugins/specialchar/dialogs/lang/*.*'
-        exclude 'ckeditor/plugins/quicktable/plugin.js'
-        exclude 'ckeditor/plugins/quicktable/lang/*.*'
-        exclude 'ckeditor/plugins/autogrow/plugin.js'
-        exclude 'ckeditor/plugins/sharedspace/plugin.js'
-        exclude 'ckeditor/plugins/macro/icons/macro.png'
-        exclude 'ckeditor/plugins/find/dialogs/*.*'
-        exclude 'ckeditor/plugins/widget/images/*.*'
-        exclude 'ckeditor/plugins/pastefromword/filter/*.*'
-        exclude 'ckeditor/plugins/magicline/images/*.*'
-        exclude 'ckeditor/skins/moono-lisa/**/*.*'
-        exclude 'ckeditor/lang/*.js'
-    }.each { f -> exclude buildDir.toURI().relativize( file( f.path ).toURI() ).toString() }
+
+    exclude {
+        FileTreeElement el -> !el.directory && el.relativePath.contains('common/lib') && (!whitelist.any { re -> el.relativePath.toString().matches( re ) })
+    }
 
     includeEmptyDirs = false
     dependsOn += copyAll
