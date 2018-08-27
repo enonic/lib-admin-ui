@@ -55,7 +55,8 @@ module api.form {
                 placeholder: this.classPrefix + '-drop-target-placeholder',
                 helper: () => api.ui.DragHelper.get().getHTMLElement(),
                 start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
-                update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui)
+                update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui),
+                stop: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStop(ui)
             });
 
             this.appendChild(this.occurrenceViewsContainer);
@@ -369,6 +370,17 @@ module api.form {
             }
 
             this.draggingIndex = -1;
+        }
+
+        protected handleDnDStop(ui: JQueryUI.SortableUIParams) {
+            const isDraggedToNewPos: boolean = this.draggingIndex === -1;
+            if (isDraggedToNewPos) {
+                return; // everything is already have been handled in update
+            }
+            const draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
+            api.util.assert(draggedElement.hasClass(this.classPrefix + '-occurrence-view'));
+            const draggedToIndex = draggedElement.getSiblingIndex();
+            this.formItemOccurrences.refreshOccurence(draggedToIndex);
         }
 
         toggleHelpText(show?: boolean) {
