@@ -255,6 +255,7 @@ module api.content {
                     .setEditable(true)
                     .setDraggable(true)
             );
+            this.addClass('content-selected-option-view');
         }
 
         resolveIconUrl(content: ContentTreeSelectorItem): string {
@@ -290,7 +291,7 @@ module api.content {
 
         optionDataHelper: OptionDataHelper<ContentTreeSelectorItem> = new ContentSummaryOptionDataHelper();
 
-        optionDisplayValueViewer: Viewer<any> = <Viewer<any>>new ContentSummaryViewer();
+        optionDisplayValueViewer: Viewer<ContentTreeSelectorItem> = new ContentTreeSelectorItemViewer();
 
         maximumOccurrences: number = 0;
 

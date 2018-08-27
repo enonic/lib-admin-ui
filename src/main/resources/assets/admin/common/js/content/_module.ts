@@ -13,7 +13,7 @@
 ///<reference path='ExtraData.ts' />
 
 ///<reference path='ContentTreeSelectorQueryRequest.ts' />
-
+///<reference path='ContentTreeSelectorItemViewer.ts' />
 ///<reference path='ContentComboBox.ts' />
 ///<reference path='CompareStatus.ts' />
 ///<reference path='PublishStatus.ts' />

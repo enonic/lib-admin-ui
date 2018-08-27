@@ -6,7 +6,7 @@ module api.content.image {
         extends api.ui.NamesAndIconViewer<MediaTreeSelectorItem> {
 
         constructor() {
-            super();
+            super('image-selector-viewer');
         }
 
         resolveDisplayName(object: MediaTreeSelectorItem): string {
