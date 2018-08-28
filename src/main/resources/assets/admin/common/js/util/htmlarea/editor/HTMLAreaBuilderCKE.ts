@@ -288,7 +288,7 @@ module api.util.htmlarea.editor {
                 removePlugins: 'resize',
                 removeButtons: this.toolsToExlcude,
                 extraPlugins: this.getExtraPlugins(),
-                extraAllowedContent: 'code address dl dt dd script;img[data-src]',
+                extraAllowedContent: 'iframe code address dl dt dd script;img[data-src]',
                 format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;div',
                 image2_disableResizer: true,
                 image2_captionedClass: '',
