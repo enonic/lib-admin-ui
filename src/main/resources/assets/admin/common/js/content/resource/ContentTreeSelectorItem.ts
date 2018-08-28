@@ -84,6 +84,10 @@ module api.content.resource {
             return this.content ? this.content.isSite() : null;
         }
 
+        getLanguage(): string {
+            return this.content ? this.content.getLanguage() : null;
+        }
+
         isSelectable(): boolean {
             return this.selectable;
         }

@@ -236,8 +236,6 @@ module api.form.inputtype.text {
                     });
                 }
 
-                this.removeTooltipFromEditorArea(textAreaWrapper);
-
                 this.moveButtonToBottomBar(textAreaWrapper, '.cke_button__fullscreen');
                 this.moveButtonToBottomBar(textAreaWrapper, '.cke_button__sourcedialog');
 
@@ -409,10 +407,6 @@ module api.form.inputtype.text {
 
             // TODO
             return true;
-        }
-
-        private removeTooltipFromEditorArea(inputOccurence: Element) {
-            wemjq(inputOccurence.getHTMLElement()).find('iframe').removeAttr('title');
         }
 
         handleDnDStart(ui: JQueryUI.SortableUIParams): void {

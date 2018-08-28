@@ -126,17 +126,11 @@ module api.app {
             return this.namesView;
         }
 
-        /**
-         * protected, to be used by inheritors
-         */
         getIconImageEl(): api.dom.ImgEl {
             return this.iconImageEl;
         }
 
-        /**
-         * protected, to be used by inheritors
-         */
-        getWrapperDivEl(): api.dom.DivEl {
+        protected getWrapperDivEl(): api.dom.DivEl {
             return this.wrapperDivEl;
         }
 
