@@ -4,6 +4,7 @@ module api.util.htmlarea.editor {
     import eventInfo = CKEDITOR.eventInfo;
     import NotificationMessage = api.notify.NotificationMessage;
     import NotifyManager = api.notify.NotifyManager;
+    import ContentsExistByPathResult = api.content.resource.result.ContentsExistByPathResult;
     import i18n = api.util.i18n;
     import ApplicationKey = api.application.ApplicationKey;
 
@@ -297,8 +298,7 @@ module api.util.htmlarea.editor {
                 const isAnchorSelected: boolean = selectedElement.hasClass('cke_anchor');
                 const isImageSelected: boolean = selectedElement.hasClass('cke_widget_image');
                 const isLinkSelected: boolean = (selectedElement.is('a') && selectedElement.hasAttribute('href'));
-                const isImageWithLinkSelected = isImageSelected &&
-                                                (<CKEDITOR.dom.element>selectedElement.findOne('figure').getFirst()).is('a');
+                const isImageWithLinkSelected = isImageSelected && !!selectedElement.findOne('a');
 
                 this.toogleToolbarButtonState(ckeditor, 'link', isLinkSelected || isImageWithLinkSelected);
                 this.toogleToolbarButtonState(ckeditor, 'anchor', isAnchorSelected);
@@ -375,16 +375,12 @@ module api.util.htmlarea.editor {
         }
 
         private fileExists(fileName: string): wemQ.Promise<boolean> {
-            return new api.content.resource.GetContentByPathRequest(
-                new api.content.ContentPath([this.content.getPath().toString(), fileName])).sendAndParse().then(() => {
-                return true;
-            }).catch((reason: any) => {
-                if (reason.statusCode === 404) { // good, no file with such name
-                    return false;
-                }
+            const contentPath: string = new api.content.ContentPath([this.content.getPath().toString(), fileName]).toString();
 
-                throw new Error(reason);
-            });
+            return new api.content.resource.ContentsExistByPathRequest([contentPath]).sendAndParse().then(
+                (result: ContentsExistByPathResult) => {
+                    return result.contentExists(contentPath);
+                });
         }
 
         private uploadFile(fileLoader: any) {

@@ -4,6 +4,8 @@
 ///<reference path='GetContentSummaryByIds.ts' />
 ///<reference path='GetContentByPathRequest.ts' />
 ///<reference path='ListContentByIdRequest.ts' />
+///<reference path='ContentsExistByPathRequest.ts' />
+///<reference path='CreateMediaFromUrlRequest.ts' />
 ///<reference path='isContentReadOnlyRequest.ts' />
 ///<reference path='BatchContentRequest.ts' />
 ///<reference path='ContentQueryRequest.ts' />
