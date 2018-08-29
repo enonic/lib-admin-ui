@@ -579,12 +579,7 @@
 
                 hasCaption: function (shift, oldValue, newValue) {
                     // This action is for real state change only.
-                    var isDragAndDrop = !!shift.widget.data.src && !oldValue && !shift.widget.data.hasCaption; // #5
-                    if (isDragAndDrop) { // #5
-                        shift.widget.data.hasCaption = true;
-                    }
-
-                    if (!shift.changed.hasCaption && !isDragAndDrop) { // #5
+                    if (!shift.changed.hasCaption) {
                         return;
                     }
 
@@ -601,11 +596,11 @@
                     shift.deflate();
 
                     // There was no caption, but the caption is to be added.
-                    if (newValue || isDragAndDrop) { // #5
+                    if (newValue) { // #5
                         // Create new <figure> from widget template.
                         var figure = CKEDITOR.dom.element.createFromHtml(templateBlock.output({
                             captionedClass: captionedClass,
-                            captionPlaceholder: isDragAndDrop ? '' : editor.lang.image2.captionPlaceholder // #5
+                            captionPlaceholder: editor.lang.image2.captionPlaceholder // #5
                         }), doc);
 
                         // Replace element with <figure>.
@@ -874,7 +869,7 @@
     };
 
     function setWrapperAlign(widget, alignClasses) { // change #1
-        var wrapper = widget.wrapper.findOne('figure') || widget.wrapper,
+        var wrapper = widget.wrapper.findOne('figure') || widget.wrapper.getParent() || widget.wrapper,
             align = widget.data.align,
             hasCaption = widget.data.hasCaption,
             keepSize = widget.data.lock;
@@ -903,6 +898,11 @@
         } else {
             if (align == 'none' || align == null || align == 'block') { // #7 // <#2>
                 align = 'justify';
+            }
+
+            if (!wrapper.is('figure')) {
+                wrapper.setStyle('text-align', align);
+                return;
             }
 
             wrapper.removeClass('center');
