@@ -160,7 +160,7 @@ module api.util.htmlarea.dialog {
         private createContentPanel(): Panel {
             return this.createFormPanel([
                 this.createSelectorFormItem('contentId', i18n('dialog.link.formitem.target'),
-                    this.createContentSelector(this.getContentId, api.schema.content.ContentTypeName.getMediaTypes()),
+                    this.createContentSelector(this.getContentId),
                     true),
                 this.createTargetCheckbox('contentTarget', this.isContentLink)
             ]);
@@ -307,17 +307,7 @@ module api.util.htmlarea.dialog {
             contentSelector.onValueChanged((event) => {
                 if (contentSelector.getLoader().isLoaded()) {
 
-                    if (event.getNewValue()) {
-                        const newValueContent = contentSelector.getContent(new api.content.ContentId(event.getNewValue()));
-
-                        const isMedia = !!newValueContent ? newValueContent.getType().isDescendantOfMedia() : false;
-
-                        new api.content.page.IsRenderableRequest(
-                            new api.content.ContentId(event.getNewValue())).sendAndParse().then((renderable: boolean) => {
-                            formItem.setValidator(() =>
-                                isMedia || renderable ? '' : i18n('dialog.link.formitem.nonrenderable'));
-                        });
-                    } else {
+                    if (!event.getNewValue()) {
                         formItem.setValidator(Validators.required);
                     }
                 }
