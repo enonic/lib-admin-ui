@@ -1,6 +1,4 @@
-module api.content.form.inputtype.time {
-
-    import support = api.form.inputtype.support;
+module api.form.inputtype.time {
 
     import Property = api.data.Property;
     import Value = api.data.Value;
@@ -10,7 +8,8 @@ module api.content.form.inputtype.time {
     /**
      * Uses [[api.data.ValueType]] [[api.data.ValueTypeLocalDate]].
      */
-    export class Date extends support.BaseInputTypeNotManagingAdd {
+    export class Date
+        extends api.form.inputtype.support.BaseInputTypeNotManagingAdd {
 
         getValueType(): ValueType {
             return ValueTypes.LOCAL_DATE;

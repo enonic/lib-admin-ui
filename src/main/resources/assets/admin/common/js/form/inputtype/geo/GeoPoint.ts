@@ -1,6 +1,4 @@
-module api.content.form.inputtype.geo {
-
-    import support = api.form.inputtype.support;
+module api.form.inputtype.geo {
 
     import ValueTypes = api.data.ValueTypes;
     import ValueType = api.data.ValueType;
@@ -8,7 +6,8 @@ module api.content.form.inputtype.geo {
     import Property = api.data.Property;
 
     // TODO: GeoPoint is not dependent on the content domain and should therefore be moved to api.form.inputtype.geo
-    export class GeoPoint extends support.BaseInputTypeNotManagingAdd {
+    export class GeoPoint
+        extends api.form.inputtype.support.BaseInputTypeNotManagingAdd {
 
         getValueType(): ValueType {
             return ValueTypes.GEO_POINT;

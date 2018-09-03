@@ -106,7 +106,7 @@
 ///<reference path='form/inputtype/checkbox/_module.ts' />
 ///<reference path='form/inputtype/number/_module.ts' />
 ///<reference path='form/inputtype/time/_module.ts' />
-///<reference path='form/inputtype/publish/_module.ts' />
+///<reference path='form/inputtype/geo/_module.ts' />
 
 ///<reference path='util/htmlarea/_module.ts' />
 ///<reference path='form/inputtype/text/_module.ts' />
@@ -147,7 +147,6 @@
 ///<reference path='content/form/inputtype/principalselector/_module.ts' />
 ///<reference path='content/form/inputtype/mediaselector/_module.ts' />
 ///<reference path='content/form/inputtype/image/_module.ts' />
-///<reference path='content/form/inputtype/geo/_module.ts' />
 ///<reference path='content/site/inputtype/siteconfigurator/_module.ts' />
 ///<reference path='content/form/inputtype/authappselector/_module.ts' />
 ///<reference path='content/form/inputtype/customselector/_module.ts' />

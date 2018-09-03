@@ -1,6 +1,6 @@
 module api.form.inputtype.text {
+
     import eventInfo = CKEDITOR.eventInfo;
-    import support = api.form.inputtype.support;
     import Property = api.data.Property;
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
@@ -14,7 +14,7 @@ module api.form.inputtype.text {
     declare var CONFIG;
 
     export class HtmlArea
-        extends support.BaseInputTypeNotManagingAdd {
+        extends api.form.inputtype.support.BaseInputTypeNotManagingAdd {
 
         private editors: HtmlAreaOccurrenceInfo[];
         private content: api.content.ContentSummary;

@@ -1,4 +1,5 @@
 module api.form.inputtype.text {
+
     import Event = api.event.Event;
 
     export class HtmlAreaResizeEvent extends Event {
