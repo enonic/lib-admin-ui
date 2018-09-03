@@ -88,7 +88,6 @@
 ///<reference path='ui/selector/list/_module.ts' />
 ///<reference path='ui/selector/combobox/_module.ts' />
 ///<reference path='ui/selector/dropdown/_module.ts' />
-///<reference path='ui/tags/_module.ts' />
 ///<reference path='ui/geo/_module.ts' />
 ///<reference path='ui/time/_module.ts' />
 ///<reference path='ui/image/_module.ts' />
@@ -148,7 +147,6 @@
 ///<reference path='content/form/inputtype/principalselector/_module.ts' />
 ///<reference path='content/form/inputtype/mediaselector/_module.ts' />
 ///<reference path='content/form/inputtype/image/_module.ts' />
-///<reference path='content/form/inputtype/tag/_module.ts' />
 ///<reference path='content/form/inputtype/geo/_module.ts' />
 ///<reference path='content/site/inputtype/siteconfigurator/_module.ts' />
 ///<reference path='content/form/inputtype/authappselector/_module.ts' />
