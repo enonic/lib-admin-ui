@@ -19,3 +19,4 @@ node_modules/
 _all.*
 src/main/resources/spec/coverage
 src/main/resources/**/html-editor.css
+src/main/resources/assets/spec/coverage/

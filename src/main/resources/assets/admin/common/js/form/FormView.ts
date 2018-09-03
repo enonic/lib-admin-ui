@@ -119,6 +119,15 @@ module api.form {
             return deferred.promise;
         }
 
+        clean() {
+            this.formItemLayer.clean();
+            this.formItemViews.forEach((view: FormItemView) => {
+                if (api.ObjectHelper.iFrameSafeInstanceOf(view, FormOptionSetView)) {
+                    (<FormOptionSetView>view).clean();
+                }
+            });
+        }
+
         public update(propertySet: PropertySet, unchangedOnly?: boolean): wemQ.Promise<void> {
             if (FormView.debug) {
                 console.debug('FormView.update' + (unchangedOnly ? ' (unchanged only)' : ''), this, propertySet);

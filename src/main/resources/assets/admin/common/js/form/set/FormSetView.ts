@@ -416,6 +416,10 @@ module api.form {
             return focusGiven;
         }
 
+        clean() {
+            this.formItemOccurrences.clean();
+        }
+
         reset() {
             this.formItemOccurrences.reset();
         }

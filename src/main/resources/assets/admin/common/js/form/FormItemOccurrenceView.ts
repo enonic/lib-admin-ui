@@ -62,6 +62,10 @@ module api.form {
             throw new Error('Must be implemented by inheritor');
         }
 
+        clean() {
+            // empty
+        }
+
         giveFocus(): boolean {
             return false;
         }

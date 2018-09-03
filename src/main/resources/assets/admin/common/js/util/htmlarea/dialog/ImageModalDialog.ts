@@ -321,7 +321,6 @@ module api.util.htmlarea.dialog {
                 const item = event.getUploadItem();
                 const createdContent = item.getModel();
 
-                //new api.content.ContentUpdatedEvent(this.contentId).fire();
                 this.imageSelector.setContent(createdContent);
             });
 

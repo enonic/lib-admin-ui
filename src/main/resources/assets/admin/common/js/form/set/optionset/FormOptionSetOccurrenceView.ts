@@ -93,6 +93,14 @@ module api.form {
             });
         }
 
+        clean() {
+            this.formItemViews.forEach((view: FormItemView) => {
+                if (api.ObjectHelper.iFrameSafeInstanceOf(view, FormOptionSetOptionView)) {
+                    (<FormOptionSetOptionView>view).clean();
+                }
+            });
+        }
+
         private renderSelectionValidationMessage(selectionValidationRecording: ValidationRecording) {
             if (selectionValidationRecording.isValid()) {
                 this.selectionValidationMessage.addClass('empty');
