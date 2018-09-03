@@ -52,8 +52,9 @@ module api.ui.text {
         }
 
         private updateButtonState() {
-            const textEdited = this.persistedValue != this.area.getValue();
-            this.okButton.setEnabled(textEdited);
+            const newValue: string = this.area.getValue().trim();
+            const textEdited = this.persistedValue !== newValue;
+            this.okButton.setEnabled(textEdited && newValue.length > 0);
         }
 
         public setEditMode(flag: boolean, cancel?: boolean) {
@@ -64,7 +65,7 @@ module api.ui.text {
                 this.area.setValue(this.persistedValue, true, true);
             }
             this.toggleClass('edit-mode', flag);
-            const newValue = this.area.getValue();
+            const newValue = this.area.getValue().trim();
             if (flag) {
                 this.persistedValue = newValue;
                 this.okButton.setEnabled(false);
