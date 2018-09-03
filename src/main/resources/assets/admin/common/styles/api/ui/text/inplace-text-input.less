@@ -38,6 +38,15 @@
     }
   }
 
+  &.invalid {
+    .inplace-toggle {
+      pointer-events: none;
+      &:before {
+        color: @admin-input-red;
+      }
+    }
+  }
+
   &.readonly {
     pointer-events: none;
 
