@@ -47,7 +47,7 @@ module api.ui.text {
                 this.input.setValue(this.persistedValue, true);
             }
             this.toggleClass('edit-mode', flag);
-            const newValue = this.input.getValue();
+            const newValue = this.input.getValue().trim();
             if (flag) {
                 this.persistedValue = newValue;
             } else {
