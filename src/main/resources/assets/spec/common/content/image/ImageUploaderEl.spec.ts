@@ -4,6 +4,7 @@ module ImageUploaderElSpec {
     import Spy = jasmine.Spy;
     import Rect = api.ui.image.Rect;
     import MediaUploaderElConfig = api.ui.uploader.MediaUploaderElConfig;
+    import UploadItem = api.ui.uploader.UploadItem;
 
     describe('api.content.image.ImageUploaderEl', () => {
 
@@ -97,7 +98,7 @@ module ImageUploaderElSpec {
                         });
 
                         it('image editors are removed on event handling', () => {
-                            imageUploaderEl['notifyFileUploadStarted']('value');
+                            imageUploaderEl['notifyFileUploadStarted']([new UploadItem<api.content.Content>(<any>{name: 'value'})]);
                             expect(imageUploaderEl['imageEditors'].length).toEqual(0);
                         });
                     });
