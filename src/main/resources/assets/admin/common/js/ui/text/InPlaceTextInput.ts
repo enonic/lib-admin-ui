@@ -38,7 +38,7 @@ module api.ui.text {
         private createInput(originalValue: string, size: string) {
             this.input = new TextInput('inplace-input', size, originalValue);
 
-            this.input.onValueChanged(event => {
+            this.input.onValueChanged(() => {
                 const isValid = this.isInputValid();
                 this.input.toggleClass('invalid', !isValid);
                 this.toggleClass('invalid', !isValid);
