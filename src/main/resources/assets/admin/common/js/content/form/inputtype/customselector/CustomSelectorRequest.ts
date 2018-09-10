@@ -48,7 +48,7 @@ module api.content.form.inputtype.customselector {
 
         getParams(): Object {
             return {
-                ids: JSON.stringify(this.ids),
+                ids: this.ids.toString(),
                 query: this.query || null,
                 start: this.start || null,
                 count: this.count || null
