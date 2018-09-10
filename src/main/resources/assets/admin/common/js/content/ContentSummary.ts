@@ -162,12 +162,12 @@ module api.content {
             return this.requireValid;
         }
 
-        isReferencedBy(contentIds: ContentId[]): wemQ.Promise<boolean> {
-            const values = contentIds.map(contentId => ValueExpr.string(contentId.toString()));
+        isReferencedBy(contentId: ContentId): wemQ.Promise<boolean> {
 
             const contentQuery: ContentQuery = new ContentQuery();
-            contentQuery.setMustBeReferencedById(this.getContentId());
-            contentQuery.setQueryExpr(new QueryExpr(CompareExpr.In(new FieldExpr(api.query.QueryField.ID), values)));
+            contentQuery.setMustBeReferencedById(contentId);
+            contentQuery.setQueryExpr(
+                new QueryExpr(CompareExpr.eq(new FieldExpr(api.query.QueryField.ID), ValueExpr.string(this.getContentId().toString()))));
 
             return new ContentQueryRequest<ContentSummaryJson, ContentSummary>(contentQuery).sendAndParse().then(
                 (contentQueryResult: ContentQueryResult<ContentSummary, ContentSummaryJson>) => {
