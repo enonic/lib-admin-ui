@@ -46,14 +46,14 @@ module api.content.form.inputtype.customselector {
             this.loaded = false;
         }
 
-        getParams(): Object {
-            return {
-                ids: this.ids.toString(),
-                query: this.query || null,
-                start: this.start || null,
-                count: this.count || null
-            };
-        }
+    getParams(): Object {
+        return {
+            ids: this.ids.toString(),
+            query: this.query || null,
+            start: this.start || null,
+            count: this.count || null
+        };
+    }
 
         getRequestPath(): api.rest.Path {
             return api.rest.Path.fromString(this.requestPath);
