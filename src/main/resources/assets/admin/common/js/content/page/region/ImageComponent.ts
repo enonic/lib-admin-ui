@@ -84,6 +84,7 @@ module api.content.page.region {
 
         doReset() {
             this.setImage(null, null);
+            this.config = new PropertyTree();
         }
 
         isEmpty(): boolean {
