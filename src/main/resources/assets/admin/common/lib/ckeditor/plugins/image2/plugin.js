@@ -1501,7 +1501,11 @@
             return;
         }
 
-        CKEDITOR.on('dialogDefinition', function (evt) {
+        editor.on('contentDomUnload', function (evt) {
+            CKEDITOR.removeListener('dialogDefinition', df);
+        });
+
+        var df = function (evt) {
             var dialog = evt.data;
 
             if (dialog.name == 'link') {
@@ -1551,7 +1555,9 @@
                     }
                 };
             }
-        });
+        };
+
+        CKEDITOR.on('dialogDefinition', df);
 
         // Overwrite default behaviour of unlink command.
         editor.getCommand('unlink').on('exec', function (evt) {
