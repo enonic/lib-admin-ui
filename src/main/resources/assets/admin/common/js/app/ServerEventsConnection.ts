@@ -160,6 +160,9 @@ module api.app {
             if (eventType.indexOf('repository.') === 0) {
                 return api.content.event.RepositoryEvent.fromJson(eventJson);
             }
+            if (eventType.indexOf('task.') === 0) {
+                return api.task.TaskEvent.fromJson(<api.task.TaskEventJson>eventJson);
+            }
 
             return null;
         }
