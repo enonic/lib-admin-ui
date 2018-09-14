@@ -7,3 +7,4 @@
 ///<reference path='TaskInfo.ts' />
 ///<reference path='TaskResourceRequest.ts' />
 ///<reference path='GetTaskInfoRequest.ts' />
+///<reference path='TaskEvent.ts' />
