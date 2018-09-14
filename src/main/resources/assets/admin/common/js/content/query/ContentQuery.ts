@@ -119,6 +119,9 @@ module api.content.query {
             if (!api.ObjectHelper.anyArrayEquals(this.queryFilters, other.queryFilters)) {
                 return false;
             }
+            if (!api.ObjectHelper.equals(this.mustBeReferencedById, other.mustBeReferencedById)) {
+                return false;
+            }
 
             if ((!this.queryExpr && other.queryExpr) ||
                 (this.queryExpr && !other.queryExpr) ||

@@ -172,8 +172,8 @@ module api.content {
             return api.content.CompareStatusChecker.isNew(this.getCompareStatus());
         }
 
-        isReferencedBy(contentIds: ContentId[]): wemQ.Promise<boolean> {
-            return this.contentSummary ? this.contentSummary.isReferencedBy(contentIds) : wemQ(false);
+        isReferencedBy(contentId: ContentId): wemQ.Promise<boolean> {
+            return this.contentSummary ? this.contentSummary.isReferencedBy(contentId) : wemQ(false);
         }
     }
 }
