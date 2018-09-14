@@ -1,9 +1,7 @@
-module api.content.site.inputtype.siteconfigurator {
+module api.form.inputtype.appconfig {
+
     import FormView = api.form.FormView;
     import InputView = api.form.InputView;
-    import ContentSelector = api.content.form.inputtype.contentselector.ContentSelector;
-    import PrincipalSelector = api.content.form.inputtype.principalselector.PrincipalSelector;
-    import ImageSelector = api.content.form.inputtype.image.ImageSelector;
     import ComboBox = api.ui.selector.combobox.ComboBox;
     import Application = api.application.Application;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
@@ -11,8 +9,11 @@ module api.content.site.inputtype.siteconfigurator {
     import ModalDialogConfig = api.ui.dialog.ModalDialogConfig;
     import AppHelper = api.util.AppHelper;
     import CreateHtmlAreaDialogEvent = api.util.htmlarea.editor.CreateHtmlAreaDialogEvent;
+    import BaseInputTypeManagingAdd = api.form.inputtype.support.BaseInputTypeManagingAdd;
+    import ContentSummary = api.content.ContentSummary;
 
-    export class SiteConfiguratorDialog extends api.ui.dialog.ModalDialog {
+    export class ApplicationConfiguratorDialog
+        extends api.ui.dialog.ModalDialog {
 
         public static debug: boolean = false;
 
@@ -39,12 +40,11 @@ module api.content.site.inputtype.siteconfigurator {
 
             this.appendChildToHeader(this.getHeaderContent(application));
 
-            //this.setTitleConfig(this.initHeader(application));
             this.formView = formView;
             this.okCallback = okCallback;
             this.cancelCallback = cancelCallback;
 
-            this.addClass('site-configurator-dialog');
+            this.addClass('application-configurator-dialog');
 
             CreateHtmlAreaDialogEvent.on(() => {
                 this.addClass('masked');
@@ -78,8 +78,8 @@ module api.content.site.inputtype.siteconfigurator {
 
         doRender(): Q.Promise<boolean> {
             return super.doRender().then((rendered) => {
-                if (SiteConfiguratorDialog.debug) {
-                    console.debug('SiteConfiguratorDialog.doRender');
+                if (ApplicationConfiguratorDialog.debug) {
+                    console.debug('ApplicationConfiguratorDialog.doRender');
                 }
 
                 this.appendChildToContentPanel(this.formView);
@@ -95,10 +95,11 @@ module api.content.site.inputtype.siteconfigurator {
                     wemjq(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().focus();
                     this.updateTabbable();
 
-                    this.handleSelectorsDropdowns(this.formView);
-                    this.handleDialogClose(this.formView);
-
-                    setTimeout(() => ResponsiveManager.fireResizeEvent(), 100);
+                    setTimeout(() => {
+                        ResponsiveManager.fireResizeEvent();
+                        this.handleSelectorsDropdowns(this.formView);
+                        this.handleDialogClose(this.formView);
+                    }, 100);
 
                     return rendered;
                 });
@@ -133,79 +134,38 @@ module api.content.site.inputtype.siteconfigurator {
         }
 
         private handleSelectorsDropdowns(formView: FormView) {
-            let comboboxes = this.getComboboxesFromFormView(formView);
+            const comboBoxes = this.findComboboxes(formView);
 
-            this.getContentPanel().onScroll(() => {
-                comboboxes.forEach((comboBox: ComboBox<any>) => {
+            const debouncedHideDropdowns = api.util.AppHelper.debounce(() => {
+                comboBoxes.forEach((comboBox: ComboBox<any>) => {
                     comboBox.hideDropdown();
                 });
-            });
+            }, 100, true);
+
+            this.getContentPanel().onScrolled(debouncedHideDropdowns);
         }
 
-        private getComboboxesFromFormView(formView: FormView): ComboBox<any>[] {
-            let comboboxArray = [];
+        private findComboboxes(element: api.dom.Element): ComboBox<any>[] {
+            if (element instanceof ComboBox) {
+                return [<ComboBox<any>>element];
+            }
 
-            formView.getChildren().forEach((element: api.dom.Element) => {
-                this.findComboboxesInElement(element, comboboxArray);
-            });
-
-            return comboboxArray;
+            return api.util.ArrayHelper.flatten(element.getChildren().map(child => this.findComboboxes(child)));
         }
 
         private handleDialogClose(formView: FormView) {
-            let imageSelector;
             formView.getChildren().forEach((element: api.dom.Element) => {
                 if (api.ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
-                    imageSelector = (<InputView> element).getInputTypeView().getElement();
-                    if (api.ObjectHelper.iFrameSafeInstanceOf(imageSelector, ImageSelector)) {
-                        (<ImageSelector> imageSelector).onEditContentRequest(this.close.bind(this));
+                    const inputTypeView = (<InputView> element).getInputTypeView();
+                    if (api.ObjectHelper.iFrameSafeInstanceOf(inputTypeView, BaseInputTypeManagingAdd)) {
+                        (<BaseInputTypeManagingAdd> inputTypeView).onEditContentRequest((content: ContentSummary) => {
+                            if (content.isImage()) {
+                                this.close();
+                            }
+                        });
                     }
                 }
             });
-        }
-
-        private findComboboxesInElement(element: api.dom.Element, comboboxArray: ComboBox<any>[]) {
-            if (api.ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
-                this.findComboboxInItemView(<InputView> element, comboboxArray);
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(element, api.form.FieldSetView)) {
-                let fieldSetView: api.form.FieldSetView = <api.form.FieldSetView> element;
-                fieldSetView.getFormItemViews().forEach((formItemView: api.form.FormItemView) => {
-                    this.findComboboxesInElement(formItemView, comboboxArray);
-                });
-            }
-        }
-
-        private findComboboxInItemView(itemView: api.form.FormItemView, comboboxArray: ComboBox<any>[]) {
-            let inputView: InputView = <InputView> itemView;
-            if (this.isContentOrImageOrPrincipalOrComboSelectorInput(inputView)) {
-                let combobox = this.getComboboxFromSelectorInputView(inputView);
-                if (combobox) {
-                    comboboxArray.push(combobox);
-                }
-            }
-        }
-
-        private getComboboxFromSelectorInputView(inputView: InputView): ComboBox<any> {
-            let contentComboBox;
-            let inputTypeView = inputView.getInputTypeView();
-            if (api.ObjectHelper.iFrameSafeInstanceOf(inputTypeView, ContentSelector)) {
-                contentComboBox = (<ContentSelector> inputTypeView).getContentComboBox();
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(inputTypeView, ImageSelector)) {
-                contentComboBox = (<ImageSelector> inputTypeView).getContentComboBox();
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(inputTypeView, PrincipalSelector)) {
-                contentComboBox = (<PrincipalSelector> inputTypeView).getPrincipalComboBox();
-            } else {
-                return (<api.form.inputtype.combobox.ComboBox> inputTypeView).getComboBox();
-            }
-            return !!contentComboBox ? contentComboBox.getComboBox() : null;
-        }
-
-        private isContentOrImageOrPrincipalOrComboSelectorInput(inputView: InputView): boolean {
-            return !!inputView &&
-                   (api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), ContentSelector) ||
-                    api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), ImageSelector) ||
-                    api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), PrincipalSelector) ||
-                    api.ObjectHelper.iFrameSafeInstanceOf(inputView.getInputTypeView(), api.form.inputtype.combobox.ComboBox));
         }
 
         show() {

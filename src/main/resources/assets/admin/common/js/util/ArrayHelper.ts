@@ -92,10 +92,16 @@ module api.util {
             return false;
         }
 
-        static filter(array:Equitable[], el: Equitable):Equitable[] {
+        static filter(array: Equitable[], el: Equitable): Equitable[] {
             return array.filter((curEl) => {
                 return !curEl.equals(el);
             });
+        }
+
+        static flatten(array: Array<any>): Array<any> {
+            return array.reduce((flatArray: any, toFlattenArray: any) => {
+                return flatArray.concat(Array.isArray(toFlattenArray) ? ArrayHelper.flatten(toFlattenArray) : toFlattenArray);
+            }, []);
         }
     }
 

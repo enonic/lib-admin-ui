@@ -7,7 +7,6 @@ module api.content.form.inputtype.contentselector {
     import ValueTypes = api.data.ValueTypes;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Deferred = Q.Deferred;
     import ContentInputTypeManagingAdd = api.content.form.inputtype.ContentInputTypeManagingAdd;
     import StringHelper = api.util.StringHelper;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
@@ -30,13 +29,11 @@ module api.content.form.inputtype.contentselector {
 
         protected static contentIdBatch: ContentId[] = [];
 
-        protected static loadSummariesResult: Deferred<ContentSummary[]>;
+        protected static loadSummariesResult: wemQ.Deferred<ContentSummary[]>;
 
         public static debug: boolean = false;
 
-        protected static loadSummaries: () => void = api.util.AppHelper.debounce(
-            ContentSelector.doFetchSummaries,
-            10, false);
+        protected static loadSummaries: () => void = api.util.AppHelper.debounce(ContentSelector.doFetchSummaries, 10, false);
 
         constructor(config?: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('relationship', config);

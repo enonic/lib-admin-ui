@@ -144,12 +144,12 @@
 ///<reference path='content/form/inputtype/_module.ts' />
 ///<reference path='content/form/inputtype/upload/_module.ts' />
 ///<reference path='content/form/inputtype/contentselector/_module.ts' />
-///<reference path='content/form/inputtype/principalselector/_module.ts' />
 ///<reference path='content/form/inputtype/mediaselector/_module.ts' />
 ///<reference path='content/form/inputtype/image/_module.ts' />
-///<reference path='content/site/inputtype/siteconfigurator/_module.ts' />
-///<reference path='content/form/inputtype/authappselector/_module.ts' />
 ///<reference path='content/form/inputtype/customselector/_module.ts' />
+
+///<reference path='form/inputtype/principal/_module.ts' />
+///<reference path='form/inputtype/appconfig/_module.ts' />
 
 ///<reference path='util/htmlarea/dialog/_module.ts' />
 

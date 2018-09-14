@@ -1,4 +1,4 @@
-.site-configurator {
+.application-configurator {
 
   .@{_COMMON_PREFIX}combobox.readonly {
     display: none;
@@ -45,12 +45,10 @@
 
           .@{_COMMON_PREFIX}wrapper:before {
             content: "!";
-            background: #cb0300;
-            color: #fff;
             display: block;
-            position: relative;
-            left: 6px;
-            top: 6px;
+            position: absolute;
+            background: @admin-red;
+            color: @admin-white;
           }
 
           a.edit {
@@ -115,11 +113,11 @@
   }
 }
 
-.wizard-panel .wizard-steps-panel .wizard-step-form .site-configurator .form-view {
+.wizard-panel .wizard-steps-panel .wizard-step-form .application-configurator .form-view {
   margin: 10px 0 0 0;
 }
 
-.site-configurator-dialog {
+.application-configurator-dialog {
 
   &.animated {
     transition: margin-top 0.2s;

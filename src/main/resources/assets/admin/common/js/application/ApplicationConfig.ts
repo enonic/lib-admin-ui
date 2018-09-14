@@ -1,15 +1,16 @@
-module api.content.site {
+module api.application {
     import PropertySet = api.data.PropertySet;
     import PropertyTree = api.data.PropertyTree;
     import ApplicationKey = api.application.ApplicationKey;
 
-    export class SiteConfig implements api.Equitable, api.Cloneable {
+    export class ApplicationConfig
+        implements api.Equitable, api.Cloneable {
 
         private applicationKey: ApplicationKey;
 
         private config: PropertySet;
 
-        constructor(builder: SiteConfigBuilder) {
+        constructor(builder: ApplicationConfigBuilder) {
             this.applicationKey = builder.applicationKey;
             this.config = builder.config;
         }
@@ -31,11 +32,11 @@ module api.content.site {
 
         equals(o: api.Equitable): boolean {
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, SiteConfig)) {
+            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ApplicationConfig)) {
                 return false;
             }
 
-            let other = <SiteConfig>o;
+            let other = <ApplicationConfig>o;
 
             if (!api.ObjectHelper.equals(this.applicationKey, other.applicationKey)) {
                 return false;
@@ -48,23 +49,23 @@ module api.content.site {
             return true;
         }
 
-        clone(): SiteConfig {
+        clone(): ApplicationConfig {
 
-            return new SiteConfigBuilder(this).build();
+            return new ApplicationConfigBuilder(this).build();
         }
 
-        static create(): SiteConfigBuilder {
-            return new SiteConfigBuilder();
+        static create(): ApplicationConfigBuilder {
+            return new ApplicationConfigBuilder();
         }
     }
 
-    export class SiteConfigBuilder {
+    export class ApplicationConfigBuilder {
 
         applicationKey: ApplicationKey;
 
         config: PropertySet;
 
-        constructor(source?: SiteConfig) {
+        constructor(source?: ApplicationConfig) {
             if (source) {
                 this.applicationKey = source.getApplicationKey();
                 if (source.getConfig()) {
@@ -74,27 +75,27 @@ module api.content.site {
             }
         }
 
-        fromData(propertySet: PropertySet): SiteConfigBuilder {
+        fromData(propertySet: PropertySet): ApplicationConfigBuilder {
             api.util.assertNotNull(propertySet, 'data cannot be null');
-            let applicationKey = ApplicationKey.fromString(propertySet.getString('applicationKey'));
-            let siteConfig = propertySet.getPropertySet('config');
+            const applicationKey = ApplicationKey.fromString(propertySet.getString('applicationKey'));
+            const config = propertySet.getPropertySet('config');
             this.setApplicationKey(applicationKey);
-            this.setConfig(siteConfig);
+            this.setConfig(config);
             return this;
         }
 
-        setApplicationKey(value: api.application.ApplicationKey): SiteConfigBuilder {
+        setApplicationKey(value: api.application.ApplicationKey): ApplicationConfigBuilder {
             this.applicationKey = value;
             return this;
         }
 
-        setConfig(value: PropertySet): SiteConfigBuilder {
+        setConfig(value: PropertySet): ApplicationConfigBuilder {
             this.config = value;
             return this;
         }
 
-        build(): SiteConfig {
-            return new SiteConfig(this);
+        build(): ApplicationConfig {
+            return new ApplicationConfig(this);
         }
     }
 
