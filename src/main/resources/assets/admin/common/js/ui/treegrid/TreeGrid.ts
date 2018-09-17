@@ -624,7 +624,6 @@ module api.ui.treegrid {
         }
 
         private onEnterKeyPress() {
-            console.log('tree grid enter');
             if (this.highlightedNode) {
                 this.editItem(this.highlightedNode);
             }
