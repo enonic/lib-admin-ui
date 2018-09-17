@@ -1,2 +1,3 @@
 rootProject.name = 'lib-admin-ui'
 
+enableFeaturePreview('STABLE_PUBLISHING')
