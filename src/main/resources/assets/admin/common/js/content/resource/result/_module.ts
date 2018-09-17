@@ -2,6 +2,7 @@
 ///<reference path='ListContentResult.ts' />
 ///<reference path='BatchContentResult.ts' />
 ///<reference path='ContentQueryResult.ts' />
+///<reference path='ContentsExistByPathResult.ts' />
 ///<reference path='ResolvePublishDependenciesResult.ts' />
 ///<reference path='CompareContentResults.ts' />
 ///<reference path='CompareContentResult.ts' />

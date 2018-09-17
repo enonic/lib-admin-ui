@@ -407,7 +407,7 @@ module api.util.htmlarea.dialog {
         }
 
         private setCaptionText() {
-            (<any>this.ckeOriginalDialog).widget.parts.image.$.parentElement.getElementsByTagName('figcaption')[0].textContent =
+            (<any>this.ckeOriginalDialog).widget.parts.image.getAscendant('figure').findOne('figcaption').$.textContent =
                 this.getCaptionFieldValue();
         }
 

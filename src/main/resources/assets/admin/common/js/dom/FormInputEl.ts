@@ -104,7 +104,7 @@ module api.dom {
                     if (FormInputEl.debug) {
                         console.debug(`not dirty and not user input, update originalValue from "${this.originalValue}" to "${value}"`);
                     }
-                    this.originalValue = String(value);
+                    this.originalValue = value ? String(value) : '';
                 } else {
                     // update dirty according to new value and original value
                     // to keep dirty state consistent

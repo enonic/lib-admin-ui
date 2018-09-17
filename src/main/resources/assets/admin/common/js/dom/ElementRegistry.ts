@@ -26,6 +26,11 @@ module api.dom {
             return id;
         }
 
+        public static reRegisterElement(el: api.dom.Element) {
+            const id = el.getId();
+            ElementRegistry.elements[id] = el;
+        }
+
         public static unregisterElement(el: api.dom.Element) {
             if (el) {
                 delete ElementRegistry.elements[el.getId()];

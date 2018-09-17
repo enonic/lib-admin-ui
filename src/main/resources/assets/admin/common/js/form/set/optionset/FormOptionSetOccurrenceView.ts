@@ -89,6 +89,8 @@ module api.form {
                         this.notifyValidityChanged(new RecordingValidityChangedEvent(this.currentValidationState,
                             this.resolveValidationRecordingPath()).setIncludeChildren(true));
                     }
+
+                    this.validate(false);
                 });
             });
         }

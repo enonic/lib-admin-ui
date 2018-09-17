@@ -3,28 +3,32 @@ module api.app.view {
     import SpanEl = api.dom.SpanEl;
     import StringHelper = api.util.StringHelper;
 
-    export class ItemDataGroup extends api.dom.DivEl {
+    export class ItemDataGroup
+        extends api.dom.DivEl {
 
         private header: api.dom.H2El;
 
-        private empty: boolean;
+        private dataLists: api.dom.UlEl[] = [];
 
         constructor(title: string, className?: string) {
             super(!!className ? className + ' item-data-group' : 'item-data-group');
             this.header = new api.dom.H2El();
             this.header.getEl().setInnerHtml(title);
             this.appendChild(this.header);
-
-            this.empty = true;
         }
 
-        addDataList(header: string, ...datas: string[]) {
-            this.addDataArray(header, datas);
+        clearList() {
+            this.dataLists.forEach(this.removeChild.bind(this));
+            this.dataLists.length = 0;
         }
 
-        addDataArray(header: string, datas: string[]) {
+        addDataList(header: string, ...datas: string[]): api.dom.UlEl {
+            return this.addDataArray(header, datas);
+        }
+
+        addDataArray(header: string, datas: string[]): api.dom.UlEl {
             const elements = datas.filter(text => !StringHelper.isBlank(text)).map(text => new SpanEl().setHtml(text, false));
-            this.addDataElements(header, elements);
+            return this.addDataElements(header, elements);
         }
 
         addDataElements(header: string, datas: api.dom.Element[]): api.dom.UlEl {
@@ -42,14 +46,17 @@ module api.app.view {
                 const dataElement = new api.dom.LiEl();
                 dataElement.appendChild(data);
                 dataList.appendChild(dataElement);
-                this.empty = false;
             });
-
+            this.dataLists.push(dataList);
             this.appendChild(dataList);
             return dataList;
         }
 
-        private addHeader(header:string, dataList:api.dom.UlEl) {
+        getHeader(): api.dom.H2El {
+            return this.header;
+        }
+
+        private addHeader(header: string, dataList: api.dom.UlEl) {
             let headerElement = new api.dom.LiEl();
             headerElement.addClass('list-header');
 
@@ -58,7 +65,7 @@ module api.app.view {
         }
 
         isEmpty(): boolean {
-            return this.empty;
+            return this.dataLists.length === 0;
         }
     }
 }

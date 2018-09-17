@@ -97,7 +97,7 @@ module api.ui.uploader {
 
             this.initDebouncedUploadStart();
 
-            let initHandlerOnEvent = () => {
+            const initHandlerOnEvent = () => {
                 this.initHandler();
 
                 if (this.config.deferred) {
@@ -155,7 +155,7 @@ module api.ui.uploader {
                 }
             });
 
-            let resetHandler = () => {
+            const resetHandler = () => {
                 this.reset();
                 return false;
             };
@@ -273,12 +273,12 @@ module api.ui.uploader {
                 return this;
             }
 
-            let newItemsToAppend: Element[] = [];
-            let existingItems: Element[] = [];
+            const newItemsToAppend: Element[] = [];
+            const existingItems: Element[] = [];
 
             this.parseValues(value).forEach((val) => {
                 if (val) {
-                    let existingItem = this.getExistingItem(val);
+                    const existingItem = this.getExistingItem(val);
                     if (!existingItem) {
                         newItemsToAppend.push(this.createResultItem(val));
                     } else {
@@ -320,7 +320,7 @@ module api.ui.uploader {
 
         parseValues(jsonString: string): string[] {
             try {
-                let o = JSON.parse(jsonString);
+                const o = JSON.parse(jsonString);
 
                 // Handle non-exception-throwing cases:
                 // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
@@ -495,7 +495,7 @@ module api.ui.uploader {
 
         private findUploadItemById(id: number): UploadItem<MODEL> {
             for (let i = 0; i < this.uploadedItems.length; i++) {
-                let uploadItem = this.uploadedItems[i];
+                const uploadItem = this.uploadedItems[i];
                 if (uploadItem.getId() === String(id)) {
                     return uploadItem;
                 }
@@ -504,14 +504,14 @@ module api.ui.uploader {
         }
 
         private submitCallback(id: number, name: string) {
-            let file: FineUploaderFile = this.uploader.getFile(id);
+            const file: FineUploaderFile = this.uploader.getFile(id);
             file.id = id;
 
             if (name.lastIndexOf('.') > 0) {
                 name = name.substr(0, name.lastIndexOf('.'));
             }
 
-            let uploadFile = new UploadItem<MODEL>(file);
+            const uploadFile = new UploadItem<MODEL>(file);
             this.uploadedItems.push(uploadFile.setName(name));
 
             this.setProgressVisible();
@@ -522,18 +522,18 @@ module api.ui.uploader {
         }
 
         private statusChangeCallback(id: number, _oldStatus: string, newStatus: string) {
-            let uploadItem = this.findUploadItemById(id);
+            const uploadItem = this.findUploadItemById(id);
             if (!!uploadItem) {
                 uploadItem.setStatus(newStatus);
             }
         }
 
         private progressCallback(id: number, _name: string, uploadedBytes: number, totalBytes: number) {
-            let percent = Math.round(uploadedBytes / totalBytes * 100);
+            const percent = Math.round(uploadedBytes / totalBytes * 100);
 
             this.progress.setValue(percent);
 
-            let uploadItem = this.findUploadItemById(id);
+            const uploadItem = this.findUploadItemById(id);
             if (uploadItem) {
                 uploadItem.setProgress(percent);
                 this.notifyFileUploadProgress(uploadItem);
@@ -543,9 +543,9 @@ module api.ui.uploader {
         private fileCompleteCallback(id: number, _name: string, response: any, xhrOrXdr: XMLHttpRequest) {
             if (xhrOrXdr && xhrOrXdr.status === 200) {
                 try {
-                    let uploadItem = this.findUploadItemById(id);
+                    const uploadItem = this.findUploadItemById(id);
                     if (uploadItem) {
-                        let model: MODEL = this.createModel(JSON.parse(xhrOrXdr.response));
+                        const model: MODEL = this.createModel(JSON.parse(xhrOrXdr.response));
                         uploadItem.setModel(model);
                         this.notifyFileUploaded(uploadItem);
                     }
@@ -558,15 +558,15 @@ module api.ui.uploader {
         private errorCallback(id: number, name: string, _errorReason: any, xhrOrXdr: XMLHttpRequest) {
             if (xhrOrXdr && xhrOrXdr.status !== 200) {
                 try {
-                    let responseObj = JSON.parse(xhrOrXdr.response);
-                    let error = new api.rest.RequestError(responseObj.status, responseObj.message);
+                    const responseObj = JSON.parse(xhrOrXdr.response);
+                    const error = new api.rest.RequestError(responseObj.status, responseObj.message);
                     api.DefaultErrorHandler.handle(error);
                 } catch (e) {
                     console.warn('Failed to parse the response', xhrOrXdr.response, e);
                     api.notify.NotifyManager.get().showError(this.getErrorMessage(name));
                 }
 
-                let uploadItem = this.findUploadItemById(id);
+                const uploadItem = this.findUploadItemById(id);
                 if (uploadItem) {
                     uploadItem.setModel(null);
                     this.notifyUploadFailed(uploadItem);
@@ -576,7 +576,7 @@ module api.ui.uploader {
         }
 
         private allCompleteCallback() {
-            let values = [];
+            const values = [];
             this.uploadedItems.forEach((item) => {
                 if (item.getStatus() === qq.status.UPLOAD_SUCCESSFUL) {
                     if (item.getModel()) {
@@ -599,7 +599,7 @@ module api.ui.uploader {
         }
 
         protected initUploader() {
-            let uploader = new qq.FineUploaderBasic({
+            const uploader = new qq.FineUploaderBasic({
                 debug: false,
                 button: document.getElementById(this.dropzone.getId()),
                 multiple: this.config.allowMultiSelection,
@@ -667,7 +667,7 @@ module api.ui.uploader {
             if (this.config.allowDrop) {
                 this.extraDropzoneIds.push(id);
                 if (this.dragAndDropper) {
-                    let elem = document.getElementById(id);
+                    const elem = document.getElementById(id);
                     if (elem) {
                         this.dragAndDropper.setupExtraDropzone(elem);
                     }
@@ -676,7 +676,7 @@ module api.ui.uploader {
         }
 
         private getDropzoneElements(): HTMLElement[] {
-            let dropElements = [];
+            const dropElements = [];
             if (this.config.selfIsDropzone) {
                 dropElements.push(document.getElementById(this.getId()));
             } else {
@@ -684,7 +684,7 @@ module api.ui.uploader {
             }
 
             this.extraDropzoneIds.forEach(id => {
-                let elem = document.getElementById(id);
+                const elem = document.getElementById(id);
                 if (elem) {
                     dropElements.push(elem);
                 }
@@ -694,10 +694,10 @@ module api.ui.uploader {
         }
 
         private disableInputFocus() {
-            let focusableElements: NodeListOf<HTMLInputElement> = this.getDefaultDropzoneContainer().getHTMLElement().getElementsByTagName(
-                'input');
+            const focusableElements: NodeListOf<HTMLInputElement> =
+                this.getDefaultDropzoneContainer().getHTMLElement().getElementsByTagName('input');
             for (let i = 0; i < focusableElements.length; i++) {
-                let el = <HTMLInputElement>focusableElements.item(i);
+                const el = <HTMLInputElement>focusableElements.item(i);
                 el.tabIndex = -1;
             }
         }
@@ -710,7 +710,7 @@ module api.ui.uploader {
             this.toggleClass('uploading', false);
         }
 
-        private isUploading(): boolean {
+        protected isUploading(): boolean {
             return this.hasClass('uploading');
         }
 
@@ -846,7 +846,7 @@ module api.ui.uploader {
             });
         }
 
-        private notifyFileUploadStarted(uploadItems: UploadItem<MODEL>[]) {
+        protected notifyFileUploadStarted(uploadItems: UploadItem<MODEL>[]) {
             this.uploadStartedListeners.forEach((listener: (event: FileUploadStartedEvent<MODEL>) => void) => {
                 listener(new FileUploadStartedEvent<MODEL>(uploadItems));
             });
@@ -858,7 +858,7 @@ module api.ui.uploader {
             });
         }
 
-        private notifyFileUploaded(uploadItem: UploadItem<MODEL>) {
+        protected notifyFileUploaded(uploadItem: UploadItem<MODEL>) {
             this.fileUploadedListeners.forEach((listener: (event: FileUploadedEvent<MODEL>) => void) => {
                 listener.call(this, new FileUploadedEvent<MODEL>(uploadItem));
             });

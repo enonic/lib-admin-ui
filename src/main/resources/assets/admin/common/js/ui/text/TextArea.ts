@@ -21,7 +21,7 @@ module api.ui.text {
             this.attendant.appendChild(this.clone);
 
             this.onAdded(() => this.attendant.insertAfterEl(this));
-
+            this.onRendered(() => this.updateSize());
             this.onShown(() => this.updateSize());
             this.onFocus(() => this.updateSize());
             this.onValueChanged(() => this.updateSize());
