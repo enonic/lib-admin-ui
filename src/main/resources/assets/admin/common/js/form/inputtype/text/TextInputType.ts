@@ -1,14 +1,14 @@
 module api.form.inputtype.text {
 
-    import support = api.form.inputtype.support;
-    import i18n = api.util.i18n;
     import NumberHelper = api.util.NumberHelper;
     import DivEl = api.dom.DivEl;
     import FormInputEl = api.dom.FormInputEl;
     import Element = api.dom.Element;
     import ValueTypes = api.data.ValueTypes;
+    import i18n = api.util.i18n;
 
-    export abstract class TextInputType extends support.BaseInputTypeNotManagingAdd {
+    export abstract class TextInputType
+        extends api.form.inputtype.support.BaseInputTypeNotManagingAdd {
 
         private maxLength: number;
 

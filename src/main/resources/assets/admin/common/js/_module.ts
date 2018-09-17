@@ -88,7 +88,6 @@
 ///<reference path='ui/selector/list/_module.ts' />
 ///<reference path='ui/selector/combobox/_module.ts' />
 ///<reference path='ui/selector/dropdown/_module.ts' />
-///<reference path='ui/tags/_module.ts' />
 ///<reference path='ui/geo/_module.ts' />
 ///<reference path='ui/time/_module.ts' />
 ///<reference path='ui/image/_module.ts' />
@@ -107,7 +106,7 @@
 ///<reference path='form/inputtype/checkbox/_module.ts' />
 ///<reference path='form/inputtype/number/_module.ts' />
 ///<reference path='form/inputtype/time/_module.ts' />
-///<reference path='form/inputtype/publish/_module.ts' />
+///<reference path='form/inputtype/geo/_module.ts' />
 
 ///<reference path='util/htmlarea/_module.ts' />
 ///<reference path='form/inputtype/text/_module.ts' />
@@ -145,14 +144,12 @@
 ///<reference path='content/form/inputtype/_module.ts' />
 ///<reference path='content/form/inputtype/upload/_module.ts' />
 ///<reference path='content/form/inputtype/contentselector/_module.ts' />
-///<reference path='content/form/inputtype/principalselector/_module.ts' />
 ///<reference path='content/form/inputtype/mediaselector/_module.ts' />
 ///<reference path='content/form/inputtype/image/_module.ts' />
-///<reference path='content/form/inputtype/tag/_module.ts' />
-///<reference path='content/form/inputtype/geo/_module.ts' />
-///<reference path='content/site/inputtype/siteconfigurator/_module.ts' />
-///<reference path='content/form/inputtype/authappselector/_module.ts' />
 ///<reference path='content/form/inputtype/customselector/_module.ts' />
+
+///<reference path='form/inputtype/principal/_module.ts' />
+///<reference path='form/inputtype/appconfig/_module.ts' />
 
 ///<reference path='util/htmlarea/dialog/_module.ts' />
 

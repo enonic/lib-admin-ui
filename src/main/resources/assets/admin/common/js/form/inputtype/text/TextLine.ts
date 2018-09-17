@@ -4,10 +4,10 @@ module api.form.inputtype.text {
     import Value = api.data.Value;
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;
-    import i18n = api.util.i18n;
     import FormInputEl = api.dom.FormInputEl;
     import Element = api.dom.Element;
     import StringHelper = api.util.StringHelper;
+    import i18n = api.util.i18n;
 
     export class TextLine extends TextInputType {
 
