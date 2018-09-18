@@ -6,6 +6,10 @@ module api.ui.dialog {
     import ManagedActionManager = api.managedaction.ManagedActionManager;
     import ManagedActionExecutor = api.managedaction.ManagedActionExecutor;
     import ManagedActionState = api.managedaction.ManagedActionState;
+    import TaskEvent = api.task.TaskEvent;
+    import TaskEventType = api.task.TaskEventType;
+    import TaskInfo = api.task.TaskInfo;
+    import TaskProgress = api.task.TaskProgress;
 
     export type ManagedActionsModalDialog = ModalDialog & ManagedActionExecutor;
 
@@ -18,12 +22,6 @@ module api.ui.dialog {
     }
 
     export class ProgressBarManager {
-
-        // If the content is still being processed after this time, show the progress bar (in ms)
-        static progressBarDelay: number = 200;
-
-        // Interval of task polling when processing the content (in ms)
-        static pollInterval: number = 500;
 
         static processingClass: string = 'is-processing';
 
@@ -44,6 +42,8 @@ module api.ui.dialog {
         private progressCompleteListeners: ((taskState: TaskState) => void)[] = [];
 
         private state: ProgressBarManagerState = ProgressBarManagerState.DISABLED;
+
+        private taskHandler: (event: TaskEvent) => void;
 
         constructor(config: ProgressBarManagerConfig) {
             this.managingElement = config.managingElement;
@@ -167,65 +167,91 @@ module api.ui.dialog {
             });
         }
 
-        pollTask(taskId: api.task.TaskId, elapsed: number = 0) {
-            if (elapsed === 0) {
-                this.state = ProgressBarManagerState.PREPARING;
-                ManagedActionManager.instance().notifyManagedActionStateChanged(ManagedActionState.PREPARING, this.managingElement);
-            }
+        pollTask(taskId: api.task.TaskId) {
+            this.state = ProgressBarManagerState.PREPARING;
+            ManagedActionManager.instance().notifyManagedActionStateChanged(ManagedActionState.PREPARING, this.managingElement);
 
-            const interval = ProgressBarManager.pollInterval;
+            let taskEventsComing: boolean = false; // no events coming might mean that task is finished before we've got here
 
-            setTimeout(() => {
-                if (!this.isEnabled() && (elapsed >= ProgressBarManager.progressBarDelay)) {
-                    this.enableProgressBar();
+            this.taskHandler = (event: TaskEvent) => {
+                if (!event.getTaskInfo().getId().equals(taskId)) {
+                    return;
                 }
 
-                new api.task.GetTaskInfoRequest(taskId).sendAndParse().then((task: api.task.TaskInfo) => {
-                    let state = task.getState();
-                    if (!task) {
-                        return; // task probably expired, stop polling
-                    }
+                if (event.getEventType() === TaskEventType.REMOVED) {
+                    return;
+                }
 
-                    const progress = task.getProgress();
-                    let progressJson;
-                    try {
-                        progressJson = JSON.parse(progress.getInfo());
-                    } catch (e) {
-                        // the info is not in JSON format
-                        progressJson = {
-                            state: 'SUCCESS',
-                            message: progress.getInfo()
-                        };
-                    }
+                taskEventsComing = true;
 
-                    switch (state) {
-                    case TaskState.FINISHED:
-                        switch (progressJson.state) {
-                        case 'ERROR':
-                            this.handleFailed(progressJson.message);
-                            break;
-                        case 'SUCCESS':
-                            this.handleSucceeded(progressJson.message);
-                            break;
-                        case 'WARNING':
-                            this.handleWarning(progressJson.message);
-                            break;
-                        }
-                        break;
-                    case TaskState.FAILED:
-                        this.handleFailed(progressJson.message);
-                        break;
-                    default:
-                        this.setProgressValue(task.getProgressPercentage());
-                        this.pollTask(taskId, elapsed + interval);
-                    }
-                }).catch((reason: any) => {
-                    this.handleProcessingComplete();
+                this.handleTaskEvent(event.getTaskInfo());
+            };
 
-                    api.DefaultErrorHandler.handle(reason);
-                });
+            TaskEvent.on(this.taskHandler);
 
-            }, interval);
+            // have to check if task was finished before we started listening task events
+            new api.task.GetTaskInfoRequest(taskId).sendAndParse().then((taskInfo: TaskInfo) => {
+                if (!taskEventsComing) {
+                    this.handleTaskEvent(taskInfo);
+                }
+            });
+        }
+
+        private handleTaskEvent(taskInfo: TaskInfo) {
+            if (taskInfo.getState() === TaskState.FINISHED) {
+                this.handleTaskFinished(taskInfo);
+            } else if (taskInfo.getState() === TaskState.FAILED) {
+                this.handleTaskFailed(taskInfo);
+            } else {
+                this.handleTaskProgress(taskInfo);
+            }
+        }
+
+        private handleTaskFinished(taskInfo: TaskInfo) {
+            const progressInfoJson: any = this.getProgressInfoJson(taskInfo.getProgress());
+
+            switch (progressInfoJson.state) {
+            case 'ERROR':
+                this.handleFailed(progressInfoJson.message);
+                break;
+            case 'SUCCESS':
+                this.handleSucceeded(progressInfoJson.message);
+                break;
+            case 'WARNING':
+                this.handleWarning(progressInfoJson.message);
+                break;
+            }
+
+            TaskEvent.un(this.taskHandler);
+        }
+
+        private handleTaskFailed(taskInfo: TaskInfo) {
+            const progressInfoJson: any = this.getProgressInfoJson(taskInfo.getProgress());
+            this.handleFailed(progressInfoJson.message);
+
+            TaskEvent.un(this.taskHandler);
+        }
+
+        private handleTaskProgress(taskInfo: TaskInfo) {
+            if (!this.isEnabled()) {
+                this.enableProgressBar();
+            }
+            this.setProgressValue(taskInfo.getProgressPercentage());
+        }
+
+        private getProgressInfoJson(taskProgress: TaskProgress): any {
+            let progressJson;
+            try {
+                progressJson = JSON.parse(taskProgress.getInfo());
+            } catch (e) {
+                // the info is not in JSON format
+                progressJson = {
+                    state: 'SUCCESS',
+                    message: taskProgress.getInfo()
+                };
+            }
+
+            return progressJson;
         }
     }
 }
