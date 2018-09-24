@@ -133,7 +133,6 @@
     .clearfix();
 
     .names-and-icon-view {
-      float: left;
 
       .@{_COMMON_PREFIX}names-view h6 {
         height: auto;
@@ -141,6 +140,12 @@
         line-height: 30px;
 
         .ellipsis();
+      }
+
+      .@{_COMMON_PREFIX}names-view p {
+        // clear ellipsis to enable new line
+        white-space: normal;
+        text-overflow: unset;
       }
     }
   }
