@@ -74,6 +74,11 @@ module api.content.site.inputtype.siteconfigurator {
                 ResponsiveManager.unAvailableSizeChanged(this);
                 HtmlAreaResizeEvent.un(availableSizeChangedListener);
             });
+
+            this.onRendered(() => {
+                wemjq(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().focus();
+                this.updateTabbable();
+            });
         }
 
         doRender(): Q.Promise<boolean> {
@@ -91,9 +96,6 @@ module api.content.site.inputtype.siteconfigurator {
 
                 return this.formView.layout().then(() => {
                     this.addClass('animated');
-
-                    wemjq(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().focus();
-                    this.updateTabbable();
 
                     this.handleSelectorsDropdowns(this.formView);
                     this.handleDialogClose(this.formView);
