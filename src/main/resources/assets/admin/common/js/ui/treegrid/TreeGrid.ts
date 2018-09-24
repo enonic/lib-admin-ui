@@ -184,7 +184,7 @@ module api.ui.treegrid {
                     new KeyBinding('right', this.onRightKeyPress.bind(this)),
                     new KeyBinding('mod+a', this.onAwithModKeyPress.bind(this)),
                     new KeyBinding('space', this.onSpaceKeyPress.bind(this)),
-                    new KeyBinding('enter', this.onEnterKeyPress.bind(this), KeyBindingAction.KEYUP)
+                    new KeyBinding('enter', this.onEnterKeyPress.bind(this))
                 ]);
             }
         }
