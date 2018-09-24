@@ -51,7 +51,6 @@ task copyCompiled( type: Copy ) {
         include '**/_all.js'
         include '**/_all.css'
         include '**/_all.lite.css'
-        include '**/html-editor.css'
     }
     into 'build/resources/main/assets'
     includeEmptyDirs = false
@@ -96,11 +95,6 @@ jar {
     def whitelist = [
         /.*_all\.js$/,
         /.*\.css$/,
-        /.*ckeditor\/config\.js$/,
-        /.*ckeditor\/styles\.js$/,
-        /.*ckeditor\/skins\/moono-lisa.*/,
-        /.*(ckeditor\/plugins\/(sourcedialog|image2|link|specialchar|quicktable|autogrow|sharedspace|find|widget|pastefromword|magicline)\/(plugin\.js|dialogs|icons|images|filter|(lang\/(en|es|fr|no|pl|pt|ru|sv)))).*/,
-        /.*(ckeditor\/lang\/(en|es|fr|no|pl|pt|ru|sv)).*/,
     ] as List
 
     if (isProd()) {
@@ -130,7 +124,6 @@ task flush( type: Delete, dependsOn: clean ) {
     description = 'Clean the project from built sources and dependencies'
     delete '.xp'
     delete fileTree("$resourcesDir/assets/admin/common") { include '**/_all.*' }
-    delete "$resourcesDir/assets/admin/common/styles/html-editor.css"
 }
 
 def loadConfiguration() {

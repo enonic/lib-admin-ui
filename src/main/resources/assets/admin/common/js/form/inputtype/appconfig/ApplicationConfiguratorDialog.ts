@@ -5,12 +5,10 @@ module api.form.inputtype.appconfig {
     import ComboBox = api.ui.selector.combobox.ComboBox;
     import Application = api.application.Application;
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
-    import HtmlAreaResizeEvent = api.form.inputtype.text.HtmlAreaResizeEvent;
     import ModalDialogConfig = api.ui.dialog.ModalDialogConfig;
-    import AppHelper = api.util.AppHelper;
-    import CreateHtmlAreaDialogEvent = api.util.htmlarea.editor.CreateHtmlAreaDialogEvent;
     import BaseInputTypeManagingAdd = api.form.inputtype.support.BaseInputTypeManagingAdd;
     import ContentSummary = api.content.ContentSummary;
+    import AppHelper = api.util.AppHelper;
 
     export class ApplicationConfiguratorDialog
         extends api.ui.dialog.ModalDialog {
@@ -46,34 +44,28 @@ module api.form.inputtype.appconfig {
 
             this.addClass('application-configurator-dialog');
 
-            CreateHtmlAreaDialogEvent.on(() => {
-                this.addClass('masked');
-                this.addClass('await-confirmation');
-
-                api.util.htmlarea.dialog.HTMLAreaDialogHandler.getOpenDialog().onRemoved(() => {
-                    this.removeClass('masked');
-                    this.removeClass('await-confirmation');
-                });
-            });
-
-            const availableSizeChangedListener = () => {
-                const content = this.getContentPanel();
-                const contentHeight = content.getEl().getHeightWithoutPadding();
-                const contentChildrenHeight = content.getChildren().reduce((prev, curr) => {
-                    return prev + curr.getEl().getHeightWithMargin();
-                }, 0);
-
-                const isScrollable = contentHeight < contentChildrenHeight;
-
-                this.toggleClass('scrollable', isScrollable);
-            };
-
+            const availableSizeChangedListener = () => this.handleAvailableSizeChanged();
             ResponsiveManager.onAvailableSizeChanged(this, availableSizeChangedListener);
-            HtmlAreaResizeEvent.on(availableSizeChangedListener);
             this.onRemoved(() => {
                 ResponsiveManager.unAvailableSizeChanged(this);
-                HtmlAreaResizeEvent.un(availableSizeChangedListener);
             });
+        }
+
+        toggleMask(enable: boolean) {
+            this.toggleClass('masked', enable);
+            this.toggleClass('await-confirmation', enable);
+        }
+
+        handleAvailableSizeChanged() {
+            const content = this.getContentPanel();
+            const contentHeight = content.getEl().getHeightWithoutPadding();
+            const contentChildrenHeight = content.getChildren().reduce((prev, curr) => {
+                return prev + curr.getEl().getHeightWithMargin();
+            }, 0);
+
+            const isScrollable = contentHeight < contentChildrenHeight;
+
+            this.toggleClass('scrollable', isScrollable);
         }
 
         doRender(): Q.Promise<boolean> {

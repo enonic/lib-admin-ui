@@ -23,4 +23,3 @@
 // =include q.js
 // =include noconflict.js
 // =include bower_components/webcomponentsjs/webcomponents-lite.min.js
-// =include ckeditor/ckeditor.js

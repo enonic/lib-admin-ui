@@ -10,7 +10,6 @@
 ///<reference path='lib/crossroads.d.ts' />
 ///<reference path='lib/jquery.slimscroll.d.ts' />
 ///<reference path='lib/noconflict.d.ts' />
-///<reference path='lib/ckeditor.d.ts' />
 
 ///<reference path='util/_module.ts' />
 
@@ -108,7 +107,6 @@
 ///<reference path='form/inputtype/time/_module.ts' />
 ///<reference path='form/inputtype/geo/_module.ts' />
 
-///<reference path='util/htmlarea/_module.ts' />
 ///<reference path='form/inputtype/text/_module.ts' />
 
 ///<reference path='item/_module.ts' />
@@ -150,8 +148,6 @@
 
 ///<reference path='form/inputtype/principal/_module.ts' />
 ///<reference path='form/inputtype/appconfig/_module.ts' />
-
-///<reference path='util/htmlarea/dialog/_module.ts' />
 
 ///<reference path='issue/event/_module.ts' />
 
