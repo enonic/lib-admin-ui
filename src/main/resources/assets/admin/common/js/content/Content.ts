@@ -42,7 +42,7 @@ module api.content {
             return this.attachments;
         }
 
-        getExtraData(name: api.schema.mixin.MixinName): ExtraData {
+        getExtraData(name: api.schema.xdata.XDataName): ExtraData {
             return this.extraData.filter((item: ExtraData) => item.getName().equals(name))[0];
         }
 
