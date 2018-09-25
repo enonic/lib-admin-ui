@@ -78,7 +78,7 @@ module api.ui.selector.list {
         }
 
         private doAddItem(readOnly: boolean, items: I[], silent: boolean = false) {
-            if (this.getItemCount() == 0) {
+            if (this.getItemCount() === 0) {
                 this.removeEmptyView();
             }
             this.items = this.items.concat(items);
@@ -112,7 +112,7 @@ module api.ui.selector.list {
                 if (!silent) {
                     this.notifyItemsRemoved(itemsRemoved);
                 }
-                if (this.getItemCount() == 0) {
+                if (this.getItemCount() === 0) {
                     this.addEmptyView();
                 }
             }

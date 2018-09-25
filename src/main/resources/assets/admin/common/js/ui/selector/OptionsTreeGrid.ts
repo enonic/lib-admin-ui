@@ -193,7 +193,7 @@ module api.ui.selector {
                 const child = parentNode.getChildren()[i];
                 const childOption = child.getData().displayValue;
                 if (childOption) {
-                    if (this.treeDataHelper.getDataId(childOption) == defaultOptionId) {
+                    if (this.treeDataHelper.getDataId(childOption) === defaultOptionId) {
                         this.scrollToRow(this.getGrid().getDataView().getRowById(child.getId()), true); // found target data node
                         return;
                     }

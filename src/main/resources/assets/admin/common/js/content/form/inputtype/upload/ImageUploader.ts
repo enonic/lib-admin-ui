@@ -179,7 +179,7 @@ module api.content.form.inputtype.upload {
                 container = this.getPropertyContainer(this.getProperty());
             }
             if (container && crop && zoom) {
-                if (this.isCropAutoPositioned && container.getPropertySets('zoomPosition').length == 0) {
+                if (this.isCropAutoPositioned && container.getPropertySets('zoomPosition').length === 0) {
                     return;
                 }
                 container.setDoubleByPath('zoomPosition.left', zoom.x);
@@ -200,7 +200,7 @@ module api.content.form.inputtype.upload {
                 container = this.getPropertyContainer(this.getProperty());
             }
             if (container && focus) {
-                if (this.isFocusAutoPositioned && container.getPropertySets('focalPoint').length == 0) {
+                if (this.isFocusAutoPositioned && container.getPropertySets('focalPoint').length === 0) {
                     return;
                 }
                 container.setDoubleByPath('focalPoint.x', focus.x);
@@ -270,7 +270,7 @@ module api.content.form.inputtype.upload {
         private writeOrientation(content: Content, orientation: number) {
             const container = this.getPropertyContainer(this.getProperty());
 
-            if (container && orientation == this.readOriginalOrientation(content)) {
+            if (container && orientation === this.readOriginalOrientation(content)) {
                 container.removeProperty('orientation', 0);
             } else {
                 container.setLongByPath('orientation', orientation);
@@ -336,7 +336,7 @@ module api.content.form.inputtype.upload {
 
             const orientation = this.readOrientation(content);
             const originalOrientation = this.readOriginalOrientation(content);
-            if (orientation != 1 || orientation != originalOrientation) {
+            if (orientation !== 1 || orientation !== originalOrientation) {
                 this.imageUploader.setOrientation(orientation, originalOrientation);
             }
         }

@@ -75,7 +75,7 @@ module api.notify {
             const registryArray = Object.keys(this.registry).map((key) => this.registry[key].opts);
 
             return registryArray.some((registryEntry) =>
-                registryEntry.message == opts.message && registryEntry.type == opts.type);
+                registryEntry.message === opts.message && registryEntry.type === opts.type);
         }
 
         private createNotification(opts: NotifyOpts): NotificationMessage {
@@ -201,7 +201,7 @@ module api.notify {
 
         static get(): NotifyManager {
 
-            if (window != window.parent) {
+            if (window !== window.parent) {
 
                 return this.getFromParentIFrame();
             }
@@ -215,7 +215,7 @@ module api.notify {
 
         private static getFromParentIFrame(): NotifyManager {
             let context = window;
-            while (context != window.parent) {
+            while (context !== window.parent) {
                 context = window.parent;
             }
 

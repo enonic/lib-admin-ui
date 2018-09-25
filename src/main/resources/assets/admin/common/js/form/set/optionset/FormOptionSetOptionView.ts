@@ -387,7 +387,7 @@ module api.form {
                 property.getPropertySet().forEach((prop) => {
                     this.removeNonDataProperties(prop);
                 });
-            } else if(property.getName() != '_selected') {
+            } else if (property.getName() !== '_selected') {
                 property.getParent().removeProperty(property.getName(), property.getIndex());
             }
         }

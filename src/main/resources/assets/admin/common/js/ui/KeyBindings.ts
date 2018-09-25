@@ -98,7 +98,7 @@ module api.ui {
             if (KeyBindings.debug) {
                 console.log('KeyBindings[#' + this.instance + '].shelveBindings(): ');
             }
-            if (keyBindings.length == 0) {
+            if (keyBindings.length === 0) {
                 Mousetrap.reset();
 
                 this.shelves.push(this.activeBindings);
@@ -130,7 +130,7 @@ module api.ui {
          */
         public unshelveBindings(keyBindings: KeyBinding[] = []) {
 
-            if (this.shelves.length == 0) {
+            if (this.shelves.length === 0) {
                 if (KeyBindings.debug) {
                     console.log('KeyBindings[#' + this.instance + '].unshelveBindings(): nothing to unshelve');
                 }
@@ -141,7 +141,7 @@ module api.ui {
             if (KeyBindings.debug) {
                 console.log('KeyBindings[#' + this.instance + '].unshelveBindings(): unshelving... ');
             }
-            if (keyBindings.length == 0) {
+            if (keyBindings.length === 0) {
 
                 this.activeBindings.clear();
                 Mousetrap.reset();
@@ -167,7 +167,7 @@ module api.ui {
                         previousMousetraps.delete(previousKey);
                     }
                 });
-                if (previousMousetraps.size == 0) {
+                if (previousMousetraps.size === 0) {
                     this.shelves.pop();
                 }
             }
@@ -177,7 +177,7 @@ module api.ui {
             const activeBindings: KeyBinding[] = this.toArray(this.activeBindings);
 
             return activeBindings.some((curBinding: KeyBinding) => {
-                return curBinding == keyBinding ? true : false;
+                return curBinding === keyBinding;
             });
         }
 

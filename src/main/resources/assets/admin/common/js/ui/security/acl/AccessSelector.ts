@@ -61,7 +61,7 @@ module api.ui.security.acl {
         }
 
         setValue(value: Access, silent?: boolean): AccessSelector {
-            let option = accessOptions.filter((accessOption: AccessOption) => accessOption.value == value)[0];
+            let option = accessOptions.filter((accessOption: AccessOption) => accessOption.value === value)[0];
             if (option) {
                 this.selectNavigationItem(accessOptions.indexOf(option));
                 if (!silent) {

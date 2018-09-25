@@ -34,11 +34,11 @@ module api.content.resource {
 
             let other = <ContentAndStatusTreeSelectorItem>o;
 
-            if (this.compareStatus != other.compareStatus) {
+            if (this.compareStatus !== other.compareStatus) {
                 return false;
             }
 
-            if (this.publishStatus != other.publishStatus) {
+            if (this.publishStatus !== other.publishStatus) {
                 return false;
             }
 

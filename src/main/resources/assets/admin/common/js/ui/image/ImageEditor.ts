@@ -279,7 +279,7 @@ module api.ui.image {
         }
 
         setSrc(src: string) {
-            if (src && this.originalImage.getSrc() != src) {
+            if (src && this.originalImage.getSrc() !== src) {
                 this.originalImage.setSrc(src);
             }
         }
@@ -764,7 +764,7 @@ module api.ui.image {
             });
 
             const isEditorDirty = () => {
-                return !this.focusData.auto || !this.cropData.auto || this.orientation != this.originalOrientation;
+                return !this.focusData.auto || !this.cropData.auto || this.orientation !== this.originalOrientation;
             };
 
             this.onFocusAutoPositionedChanged((auto) => {
@@ -944,7 +944,7 @@ module api.ui.image {
         setOrientation(orientation: number, originalOrientation?: number, render: boolean = true, silent?: boolean) {
             this.orientation = Math.min(Math.max(orientation, 1), 8);
 
-            if (this.originalOrientation == undefined && !originalOrientation) {
+            if (this.originalOrientation == null && !originalOrientation) {
                 this.originalOrientation = this.orientation;
             } else if (originalOrientation) {
                 this.originalOrientation = originalOrientation;

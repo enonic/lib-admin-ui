@@ -11,7 +11,7 @@ module api.ui.treegrid.actions {
 
             treeGrid.onSelectionChanged(() => {
 
-                if (this.isDisabled() != treeGrid.isEmpty()) {
+                if (this.isDisabled() !== treeGrid.isEmpty()) {
                     this.setDisabled(treeGrid.isEmpty());
                 }
 

@@ -54,7 +54,7 @@ module api.ui.panel {
                 return;
             }
             let changed: boolean = false;
-            if (this.hasClass('enabled') != enabled) {
+            if (this.hasClass('enabled') !== enabled) {
                 changed = true;
             }
 

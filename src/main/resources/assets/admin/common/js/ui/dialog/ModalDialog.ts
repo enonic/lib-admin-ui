@@ -661,9 +661,9 @@ module api.ui.dialog {
             }
 
             this.buttonContainer.getChildren()
-                .filter((button: DialogButton) => button.getAction() == action)
+                .filter((button: DialogButton) => button.getAction() === action)
                 .forEach((button: DialogButton) => {
-                    if (this.defaultElement == button) {
+                    if (this.defaultElement === button) {
                         this.resetDefaultElement();
                     }
                     this.buttonContainer.removeChild(button);

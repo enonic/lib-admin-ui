@@ -70,7 +70,7 @@ module api.content.form.inputtype {
         private handleContentUpdatedEvent() {
             let contentUpdatedOrMovedListener = (statuses: ContentSummaryAndCompareStatus[], oldPaths?: ContentPath[]) => {
 
-                if (this.getSelectedOptions().length == 0) {
+                if (this.getSelectedOptions().length === 0) {
                     return;
                 }
 
@@ -112,7 +112,7 @@ module api.content.form.inputtype {
 
         private handleContentDeletedEvent() {
             this.contentDeletedListener = (paths: ContentServerChangeItem[], pending?: boolean) => {
-                if (this.getSelectedOptions().length == 0) {
+                if (this.getSelectedOptions().length === 0) {
                     return;
                 }
 

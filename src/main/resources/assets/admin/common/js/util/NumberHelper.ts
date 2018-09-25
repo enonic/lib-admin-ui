@@ -20,7 +20,7 @@ module api.util {
         }
 
         static toNumber(value: string): number {
-            if(value != null && value != undefined && value.trim().length > 0) {
+            if (value != null && value.trim().length > 0) {
                 const result = Number(value);
 
                 return !isNaN(result) ? result : null;

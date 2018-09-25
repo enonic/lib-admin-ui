@@ -128,10 +128,10 @@ module api.ui.toolbar {
 
             while (button) {
                 if (button.isVisible()) {
-                    return this.getChildren().filter((child) => child.getId() == button.getId())[0];
+                    return this.getChildren().filter((child) => child.getId() === button.getId())[0];
                 }
                 const prevEl = button.getPreviousElement();
-                if (prevEl && button.getParentElement() != prevEl.getParentElement()) {
+                if (prevEl && button.getParentElement() !== prevEl.getParentElement()) {
                     return null;
                 }
                 button = button.getPreviousElement();

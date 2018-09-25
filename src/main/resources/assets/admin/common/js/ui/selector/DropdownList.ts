@@ -172,7 +172,7 @@ module api.ui.selector {
             }
             if (selectedOption) {
                 let row = this.dropdownGrid.getRowByValue(selectedOption.value);
-                if(row != undefined) {
+                if (row !== undefined) {
                     this.dropdownGrid.navigateToRow(row);
                 }
             } else {

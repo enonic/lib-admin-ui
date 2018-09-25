@@ -33,7 +33,7 @@ module api.schema.content.inputtype {
         protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
             const isContextDependentConfig = inputConfig['context'] ? inputConfig['context'][0] : {};
             const value = isContextDependentConfig['value'] || '';
-            this.isContextDependent = value.toLowerCase() == 'true';
+            this.isContextDependent = value.toLowerCase() === 'true';
         }
 
         getValueType(): ValueType {
