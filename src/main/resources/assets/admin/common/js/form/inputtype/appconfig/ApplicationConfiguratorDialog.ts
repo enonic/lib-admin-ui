@@ -49,6 +49,11 @@ module api.form.inputtype.appconfig {
             this.onRemoved(() => {
                 ResponsiveManager.unAvailableSizeChanged(this);
             });
+
+            this.onRendered(() => {
+                wemjq(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().focus();
+                this.updateTabbable();
+            });
         }
 
         toggleMask(enable: boolean) {
@@ -83,9 +88,6 @@ module api.form.inputtype.appconfig {
 
                 return this.formView.layout().then(() => {
                     this.addClass('animated');
-
-                    wemjq(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().focus();
-                    this.updateTabbable();
 
                     setTimeout(() => {
                         ResponsiveManager.fireResizeEvent();

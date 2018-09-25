@@ -1,21 +1,21 @@
 module api.content {
 
-    import MixinName = api.schema.mixin.MixinName;
     import PropertyTree = api.data.PropertyTree;
+    import XDataName = api.schema.xdata.XDataName;
 
     export class ExtraData implements api.Cloneable, api.Equitable {
 
-        private name: MixinName;
+        private name: XDataName;
 
         private data: PropertyTree;
 
-        constructor(name: MixinName, data: PropertyTree) {
+        constructor(name: XDataName, data: PropertyTree) {
             this.name = name;
             this.data = data;
         }
 
-        getName(): MixinName {
-            return this.name;
+        static fromJson(metadataJson: api.content.json.ExtraDataJson): ExtraData {
+            return new ExtraData(new XDataName(metadataJson.name), PropertyTree.fromJson(metadataJson.data));
         }
 
         getData(): PropertyTree {
@@ -51,8 +51,8 @@ module api.content {
             };
         }
 
-        static fromJson(metadataJson: api.content.json.ExtraDataJson): ExtraData {
-            return new ExtraData(new MixinName(metadataJson.name), PropertyTree.fromJson(metadataJson.data));
+        getName(): XDataName {
+            return this.name;
         }
 
     }
