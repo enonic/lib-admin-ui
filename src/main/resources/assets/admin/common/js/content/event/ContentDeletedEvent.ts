@@ -33,7 +33,7 @@ module api.content.event {
         }
 
         isEmpty(): boolean {
-            return this.contentDeletedItems.length === 0 && this.undeletedItems.length == 0;
+            return this.contentDeletedItems.length === 0 && this.undeletedItems.length === 0;
         }
 
         fire(contextWindow: Window = window) {

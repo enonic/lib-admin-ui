@@ -24,7 +24,7 @@ module api.ui.treegrid.actions {
                 let oldLabel = this.getLabel();
                 let newLabel = fullSelection.length ? fullSelection.length.toString() : '';
 
-                if (oldLabel == newLabel) {
+                if (oldLabel === newLabel) {
                     return;
                 }
                 this.tooltip.setText(this.isActive() ? i18n('field.selection.hide') : i18n('field.selection.show'));

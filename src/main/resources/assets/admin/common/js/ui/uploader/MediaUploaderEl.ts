@@ -64,7 +64,7 @@ module api.ui.uploader {
         }
 
         private isSrcWithData(imgSrc: string): boolean {
-            return imgSrc && imgSrc.substring(0, 5) == 'data:';
+            return imgSrc && imgSrc.substring(0, 5) === 'data:';
         }
 
         private uploadDraggedImg(imgSrc: string) {

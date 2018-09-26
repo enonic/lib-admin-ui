@@ -529,7 +529,7 @@ module api.ui.selector.combobox {
         handleRowSelected(index: number, keyCode: number = -1) {
             let option = this.getOptionByRow(index);
             if (option) {
-                if (option.selectable == false) {
+                if (!option.selectable) {
                     this.comboBoxDropdown.markSelections(this.getSelectedOptions());
                 } else if (!option.readOnly) {
                     if (!this.isOptionSelected(option)) {

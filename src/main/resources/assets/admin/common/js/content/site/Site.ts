@@ -2,6 +2,7 @@ module api.content.site {
 
     import Property = api.data.Property;
     import ApplicationKey = api.application.ApplicationKey;
+    import ApplicationConfig = api.application.ApplicationConfig;
 
     export class Site extends api.content.Content implements api.Equitable, api.Cloneable {
 
@@ -17,13 +18,13 @@ module api.content.site {
             return this.getContentData().getString('description');
         }
 
-        getSiteConfigs(): SiteConfig[] {
+        getSiteConfigs(): ApplicationConfig[] {
 
-            let siteConfigs: SiteConfig[] = [];
+            let siteConfigs: ApplicationConfig[] = [];
             this.getContentData().forEachProperty('siteConfig', (applicationProperty: Property) => {
                 let siteConfigData = applicationProperty.getPropertySet();
                 if (siteConfigData) {
-                    let siteConfig = SiteConfig.create().fromData(siteConfigData).build();
+                    let siteConfig = ApplicationConfig.create().fromData(siteConfigData).build();
                     siteConfigs.push(siteConfig);
                 }
             });
@@ -32,7 +33,7 @@ module api.content.site {
         }
 
         getApplicationKeys(): ApplicationKey[] {
-            return this.getSiteConfigs().map((config: SiteConfig) => config.getApplicationKey());
+            return this.getSiteConfigs().map((config: ApplicationConfig) => config.getApplicationKey());
         }
 
         equals(o: api.Equitable, ignoreEmptyValues: boolean = false, shallow: boolean = false): boolean {

@@ -135,7 +135,7 @@ module api.content {
 
             const postLoad: boolean = from > 0;
 
-            if(parentNode.getRoot().getId() == parentNode.getId()) {
+            if (parentNode.getRoot().getId() === parentNode.getId()) {
                 this.notifyLoadingData(postLoad);
             }
 

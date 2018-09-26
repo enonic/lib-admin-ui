@@ -7,7 +7,6 @@ module api.content.form.inputtype.contentselector {
     import ValueTypes = api.data.ValueTypes;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Deferred = Q.Deferred;
     import ContentInputTypeManagingAdd = api.content.form.inputtype.ContentInputTypeManagingAdd;
     import StringHelper = api.util.StringHelper;
     import ContentTreeSelectorItem = api.content.resource.ContentTreeSelectorItem;
@@ -30,13 +29,11 @@ module api.content.form.inputtype.contentselector {
 
         protected static contentIdBatch: ContentId[] = [];
 
-        protected static loadSummariesResult: Deferred<ContentSummary[]>;
+        protected static loadSummariesResult: wemQ.Deferred<ContentSummary[]>;
 
         public static debug: boolean = false;
 
-        protected static loadSummaries: () => void = api.util.AppHelper.debounce(
-            ContentSelector.doFetchSummaries,
-            10, false);
+        protected static loadSummaries: () => void = api.util.AppHelper.debounce(ContentSelector.doFetchSummaries, 10, false);
 
         constructor(config?: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('relationship', config);
@@ -45,14 +42,14 @@ module api.content.form.inputtype.contentselector {
         protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
 
             const isTreeModeConfig = inputConfig['treeMode'] ? inputConfig['treeMode'][0] : {};
-            this.treeMode = !StringHelper.isBlank(isTreeModeConfig['value']) ? isTreeModeConfig['value'].toLowerCase() == 'true' : false;
+            this.treeMode = !StringHelper.isBlank(isTreeModeConfig['value']) ? isTreeModeConfig['value'].toLowerCase() === 'true' : false;
 
             const showStatusConfig = inputConfig['showStatus'] ? inputConfig['showStatus'][0] : {};
-            this.showStatus = !StringHelper.isBlank(showStatusConfig['value']) ? showStatusConfig['value'].toLowerCase() == 'true' : false;
+            this.showStatus = !StringHelper.isBlank(showStatusConfig['value']) ? showStatusConfig['value'].toLowerCase() === 'true' : false;
 
             const hideToggleIconConfig = inputConfig['hideToggleIcon'] ? inputConfig['hideToggleIcon'][0] : {};
             this.hideToggleIcon =
-                !StringHelper.isBlank(hideToggleIconConfig['value']) ? hideToggleIconConfig['value'].toLowerCase() == 'true' : false;
+                !StringHelper.isBlank(hideToggleIconConfig['value']) ? hideToggleIconConfig['value'].toLowerCase() === 'true' : false;
 
             super.readConfig(inputConfig);
         }

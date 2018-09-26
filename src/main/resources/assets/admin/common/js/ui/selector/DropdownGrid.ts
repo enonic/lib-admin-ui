@@ -262,7 +262,7 @@ module api.ui.selector {
         addSelections(selectedOptions: Option<OPTION_DISPLAY_VALUE>[]) {
             selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
                 let row = this.getGridData().getRowById(selectedOption.value);
-                if (row != undefined && !this.getGrid().isRowSelected(row)) {
+                if (row !== undefined && !this.getGrid().isRowSelected(row)) {
                     this.getGrid().addSelectedRow(row);
                 }
             });

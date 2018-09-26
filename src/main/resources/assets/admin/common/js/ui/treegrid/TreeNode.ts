@@ -195,7 +195,7 @@ module api.ui.treegrid {
                 return;
             }
             for (let curChildIndex in this.children) {
-                if (this.children[curChildIndex].getId() == child.getId()) {
+                if (this.children[curChildIndex].getId() === child.getId()) {
                     this.children[curChildIndex] = child;
 
                     this.removeDuplicates();
@@ -240,7 +240,7 @@ module api.ui.treegrid {
         }
 
         isEmptyDataId(): boolean {
-            return this.dataId === '' || this.dataId == TreeNode.EMPTY_DATA_ID_PREFFIX + this.id;
+            return this.dataId === '' || this.dataId === TreeNode.EMPTY_DATA_ID_PREFFIX + this.id;
         }
 
         /*

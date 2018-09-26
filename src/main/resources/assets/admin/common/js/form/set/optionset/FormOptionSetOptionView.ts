@@ -43,13 +43,13 @@ module api.form {
 
         private checkboxEnabledStatusHandler: () => void = (() => {
             this.setCheckBoxDisabled();
-        }).bind(this);
+        });
 
         private radioDeselectHandler: (event: PropertyValueChangedEvent) => void = ((event: PropertyValueChangedEvent) => {
             if (event.getPreviousValue().getString() === this.getName()) {
                 this.deselectHandle();
             }
-        }).bind(this);
+        });
 
         private subscribedOnDeselect: boolean = false;
 
@@ -58,7 +58,7 @@ module api.form {
                 className: 'form-option-set-option-view',
                 context: config.context,
                 formItem: config.formOptionSetOption,
-                parent: config.parent //null
+                parent: config.parent // null
             });
 
             this.parentDataSet = config.parentDataSet;
@@ -128,22 +128,22 @@ module api.form {
                     });
                 });
 
-                api.content.event.BeforeContentSavedEvent.on(() => {
-                    if (this.getThisPropertyFromSelectedOptionsArray() == null && this.requiresClean) {
-                        this.resetAllFormItems();
-                        this.cleanValidationForThisOption();
-                        this.requiresClean = false;
-                    } else if(this.isChildOfDeselectedParent()) {
-                        this.removeNonDefaultOptionFromSelectionArray();
-                    }
-                });
-
                 deferred.resolve(null);
             }).catch((reason: any) => {
                 api.DefaultErrorHandler.handle(reason);
             }).done();
 
             return deferred.promise;
+        }
+
+        clean() {
+            if (this.getThisPropertyFromSelectedOptionsArray() == null && this.requiresClean) {
+                this.resetAllFormItems();
+                this.cleanValidationForThisOption();
+                this.requiresClean = false;
+            } else if (this.isChildOfDeselectedParent()) {
+                this.removeNonDefaultOptionFromSelectionArray();
+            }
         }
 
         private getOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
@@ -387,7 +387,7 @@ module api.form {
                 property.getPropertySet().forEach((prop) => {
                     this.removeNonDataProperties(prop);
                 });
-            } else if(property.getName() != '_selected') {
+            } else if (property.getName() !== '_selected') {
                 property.getParent().removeProperty(property.getName(), property.getIndex());
             }
         }

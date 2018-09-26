@@ -190,6 +190,12 @@ module api.form {
             });
         }
 
+        clean() {
+            this.occurrenceViews.forEach((view: V) => {
+                view.clean();
+            });
+        }
+
         createNewOccurrenceView(_occurrence: FormItemOccurrence<V>): V {
             throw new Error('Must be implemented by inheritor');
         }

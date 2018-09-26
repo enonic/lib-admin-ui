@@ -166,6 +166,14 @@ module api.form {
             });
         }
 
+        clean() {
+            this.formItemViews.forEach((view: FormItemView) => {
+                if (api.ObjectHelper.iFrameSafeInstanceOf(view, FormOptionSetOptionView)) {
+                    (<FormOptionSetOptionView>view).clean();
+                }
+            });
+        }
+
         update(propertySet: PropertySet, unchangedOnly?: boolean): wemQ.Promise<void> {
             if (FormItemLayer.debug) {
                 console.debug('FormItemLayer.update' + (unchangedOnly ? ' (unchanged only)' : ''), this, propertySet);

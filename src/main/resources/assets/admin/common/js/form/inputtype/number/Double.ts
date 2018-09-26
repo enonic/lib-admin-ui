@@ -1,4 +1,4 @@
-module api.content.form.inputtype.number.double {
+module api.form.inputtype.number {
 
     import ValueType = api.data.ValueType;
     import ValueTypes = api.data.ValueTypes;

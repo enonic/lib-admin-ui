@@ -23,7 +23,8 @@
     "radix": true,
     "switch-default": false,
     "triple-equals": [
-      false
+      true,
+      "allow-null-check"
     ],
     "use-isnan": true,
     "arrow-parens": false,

@@ -111,7 +111,7 @@ module api.content.media {
                 return false;
             }
 
-            if (this.empty != other.empty) {
+            if (this.empty !== other.empty) {
                 return false;
             }
 

@@ -108,11 +108,11 @@ module api.content.resource {
                 return false;
             }
 
-            if (this.selectable != other.selectable) {
+            if (this.selectable !== other.selectable) {
                 return false;
             }
 
-            if (this.expandable != other.expandable) {
+            if (this.expandable !== other.expandable) {
                 return false;
             }
 

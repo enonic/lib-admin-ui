@@ -57,8 +57,8 @@ module api.app.browse {
                 let browseItems: api.app.browse.BrowseItem<M>[] = this.treeNodesToBrowseItems(fullSelection);
                 let changes = this.getBrowseItemPanel().setItems(browseItems);
 
-                if (highlighted && ((fullSelection.length == 0 && changes.getRemoved().length === 1) ||
-                                    (fullSelection.length == 1 && changes.getAdded().length === 1))) {
+                if (highlighted && ((fullSelection.length === 0 && changes.getRemoved().length === 1) ||
+                                    (fullSelection.length === 1 && changes.getAdded().length === 1))) {
                     return;
                 }
 

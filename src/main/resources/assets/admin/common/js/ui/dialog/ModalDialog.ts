@@ -411,9 +411,7 @@ module api.ui.dialog {
         }
 
         protected hasSubDialog(): boolean {
-            // html area can spawn sub dialogs so check none is open
-            return !!api.util.htmlarea.dialog.HTMLAreaDialogHandler.getOpenDialog() ||
-                   (this.confirmationDialog && this.confirmationDialog.isVisible());
+            return this.confirmationDialog && this.confirmationDialog.isVisible();
         }
 
         private hasTabbable(): boolean {
@@ -663,9 +661,9 @@ module api.ui.dialog {
             }
 
             this.buttonContainer.getChildren()
-                .filter((button: DialogButton) => button.getAction() == action)
+                .filter((button: DialogButton) => button.getAction() === action)
                 .forEach((button: DialogButton) => {
-                    if (this.defaultElement == button) {
+                    if (this.defaultElement === button) {
                         this.resetDefaultElement();
                     }
                     this.buttonContainer.removeChild(button);

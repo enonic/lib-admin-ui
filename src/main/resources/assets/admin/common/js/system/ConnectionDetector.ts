@@ -101,7 +101,7 @@ module api.system {
                 }
                 this.authenticated = status.isAuthenticated();
 
-                if (this.readonly != status.isReadonly()) {
+                if (this.readonly !== status.isReadonly()) {
                     this.readonly = status.isReadonly();
                     this.notifyReadonlyStatusChanged(this.readonly);
                 }

@@ -26,7 +26,7 @@ module api.form {
 
         isValid(): boolean {
             return this.breaksMinimumOccurrencesArray.length === 0 && this.breaksMaximumOccurrencesArray.length === 0
-                   && this.additionalValidationRecords.size == 0;
+                   && this.additionalValidationRecords.size === 0;
         }
 
         isMinimumOccurrencesValid(): boolean {
@@ -162,7 +162,7 @@ module api.form {
          * Should be moved to ObjectHelper.ts after changing gulp to webpack in common module
          * */
         private mapEquals(mapA: Map<string, Equitable>, mapB: Map<string, Equitable>): boolean {
-            if (mapA.size != mapB.size) {
+            if (mapA.size !== mapB.size) {
                 return false;
             }
 

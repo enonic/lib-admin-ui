@@ -15,7 +15,7 @@ module api.system {
         constructor(json: StatusJson) {
             this.version = json.version;
             this.installation = json.installation;
-            this.readonly = json.readonly == 'true';
+            this.readonly = json.readonly === 'true';
             if (json.context) {
                 this.authenticated = json.context.authenticated;
                 this.principals = json.context.principals ?

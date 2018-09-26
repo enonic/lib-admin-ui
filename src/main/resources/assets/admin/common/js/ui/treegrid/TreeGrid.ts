@@ -490,7 +490,7 @@ module api.ui.treegrid {
                 let cell = this.grid.getCellFromEvent(event);
 
                 if (!this.grid.isRowSelected(cell.row)) {
-                    if (!this.highlightedNode || this.getRowIndexByNode(this.highlightedNode) != cell.row) {
+                    if (!this.highlightedNode || this.getRowIndexByNode(this.highlightedNode) !== cell.row) {
                         this.highlightRowByNode(this.gridData.getItem(cell.row), true,
                             () => this.showContextMenuAt(event.pageX, event.pageY));
                         return;
@@ -700,7 +700,7 @@ module api.ui.treegrid {
                 // When search is applied content nodes get different Ids,
                 // so we should try to search by dataId and not by nodeId
 
-                let nodesByDataId = this.grid.getDataView().getItems().filter(item => item.getDataId() == node.getDataId());
+                let nodesByDataId = this.grid.getDataView().getItems().filter(item => item.getDataId() === node.getDataId());
                 if (!nodesByDataId || nodesByDataId.length === 0 || !nodesByDataId[0].isVisible()) {
                     return null;
                 }
@@ -729,7 +729,7 @@ module api.ui.treegrid {
 
         unHighlightingChanged(listener: (node: TreeNode<DATA>, force: boolean, callback: Function) => void) {
             this.highlightingChangeListeners = this.highlightingChangeListeners.filter((curr) => {
-                return curr != listener;
+                return curr !== listener;
             });
             return this;
         }
@@ -1007,7 +1007,7 @@ module api.ui.treegrid {
         }
 
         isEmpty(): boolean {
-            return this.getGrid().getDataLength() == 0;
+            return this.getGrid().getDataLength() === 0;
         }
 
         /**
@@ -1374,7 +1374,7 @@ module api.ui.treegrid {
         }
 
         deleteNode(data: DATA): void {
-            if (this.highlightedNode && this.highlightedNode.getDataId() == this.getDataId(data)) {
+            if (this.highlightedNode && this.highlightedNode.getDataId() === this.getDataId(data)) {
                 this.unhighlightCurrentRow();
             }
             this.deleteRootNode(this.root.getDefaultRoot(), data);
@@ -1715,7 +1715,7 @@ module api.ui.treegrid {
                 return;
             }
 
-            const isCurRowHighlighted = this.highlightedNode && this.highlightedNode == node;
+            const isCurRowHighlighted = this.highlightedNode && this.highlightedNode === node;
 
             if (this.isSelectionNotEmpty() || isCurRowHighlighted) {
                 this.clearAllSelection(false);
@@ -1822,7 +1822,7 @@ module api.ui.treegrid {
         }
 
         isNodeHighlighted(node: TreeNode<DATA>) {
-            return node == this.highlightedNode;
+            return node === this.highlightedNode;
         }
 
         protected handleItemMetadata(row: number) {
