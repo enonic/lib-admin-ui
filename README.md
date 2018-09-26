@@ -2,6 +2,7 @@
 
 [![Travis Build Status][travis-image]][travis-url]
 [![License][license-image]][license-url]
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c8f8e91531474e9d83e0113747e57587)](https://www.codacy.com/app/enonic/lib-admin-ui?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=enonic/lib-admin-ui&amp;utm_campaign=Badge_Grade)
 
 UI framework, that provides [Enonic](https://enonic.com) applications with core components and styles.
 
