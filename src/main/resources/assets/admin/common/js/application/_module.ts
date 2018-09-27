@@ -1,6 +1,8 @@
 ///<reference path='ApplicationKey.ts' />
 ///<reference path='Application.ts' />
+///<reference path='ApplicationInstallResult.ts' />
 ///<reference path='ApplicationResourceRequest.ts' />
+///<reference path='InstallUrlApplicationRequest.ts' />
 ///<reference path='ApplicationConfig.ts' />
 ///<reference path='GetApplicationRequest.ts' />
 ///<reference path='ListApplicationsRequest.ts' />
@@ -13,5 +15,10 @@
 ///<reference path='ApplicationBasedName.ts' />
 ///<reference path='ApplicationCaches.ts' />
 ///<reference path='ApplicationBasedCache.ts' />
+///<reference path='MarketApplication.ts' />
+///<reference path='MarketHelper.ts' />
+///<reference path='MarketApplicationResponse.ts' />
+///<reference path='MarketApplicationMetadata.ts' />
+///<reference path='ListMarketApplicationsRequest.ts' />
 ///<reference path='ListSiteApplicationsRequest.ts' />
 ///<reference path='ListAuthApplicationsRequest.ts' />
