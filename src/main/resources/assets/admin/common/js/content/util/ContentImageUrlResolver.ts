@@ -1,10 +1,13 @@
 module api.content.util {
 
+    declare var CONFIG;
     export class ContentImageUrlResolver extends api.icon.IconUrlResolver {
 
         private contentId: ContentId;
 
         private size: string = '';
+
+        private width: string = '';
 
         private ts: string = null;
 
@@ -31,6 +34,11 @@ module api.content.util {
 
         setScaleWidth(value: boolean): ContentImageUrlResolver {
             this.scaleWidth = '' + value;
+            return this;
+        }
+
+        setWidth(value: string): ContentImageUrlResolver {
+            this.width = value;
             return this;
         }
 
@@ -63,6 +71,21 @@ module api.content.util {
             }
             if (this.scale) {
                 url = this.appendParam('scale', this.scale, url);
+            }
+
+            return api.util.UriHelper.getRestUri(url);
+        }
+
+        generate(): string {
+
+            let url = this.appendParam('id', this.contentId.toString(), CONFIG.imagePreviewUrl);
+
+            if (this.scale) {
+                url = this.appendParam('scale', this.scale, url);
+            }
+
+            if (this.width) {
+                url = this.appendParam('width', this.width, url);
             }
 
             return api.util.UriHelper.getRestUri(url);
