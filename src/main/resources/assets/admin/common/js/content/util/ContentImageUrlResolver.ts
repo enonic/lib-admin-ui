@@ -1,6 +1,5 @@
 module api.content.util {
 
-    declare var CONFIG;
     export class ContentImageUrlResolver extends api.icon.IconUrlResolver {
 
         private contentId: ContentId;
@@ -20,11 +19,6 @@ module api.content.util {
 
         setSize(value: number): ContentImageUrlResolver {
             this.size = '' + Math.floor(value);
-            return this;
-        }
-
-        setWidth(value: string): ContentImageUrlResolver {
-            this.size = value;
             return this;
         }
 
@@ -63,21 +57,6 @@ module api.content.util {
             }
 
             return api.util.UriHelper.getRestUri(url);
-        }
-
-        generate(): string {
-
-            let url = this.appendParam('id', this.contentId.toString(), CONFIG.imagePreviewUrl);
-
-            if (this.scale) {
-                url = this.appendParam('scale', this.scale, url);
-            }
-
-            if (this.size) {
-                url = this.appendParam('width', this.size, url);
-            }
-
-            return url;
         }
     }
 }
