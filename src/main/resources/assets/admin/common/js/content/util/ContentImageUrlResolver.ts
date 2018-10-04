@@ -77,7 +77,7 @@ module api.content.util {
                 url = this.appendParam('width', this.size, url);
             }
 
-            return api.util.UriHelper.getRestUri(url);
+            return url;
         }
     }
 }
