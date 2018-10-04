@@ -154,8 +154,6 @@
 
 ///<reference path='aggregation/_module.ts' />
 
-///<reference path='rendering/_module.ts' />
-
 ///<reference path='app/_module.ts' />
 ///<reference path='app/view/_module.ts' />
 ///<reference path='app/bar/_module.ts' />
