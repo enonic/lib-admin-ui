@@ -65,6 +65,10 @@ module api.data {
             return this.array.map(callBack);
         }
 
+        some(callBack: (property: Property, index: number) => boolean): boolean {
+            return this.array.some(callBack);
+        }
+
         containsValue(value: Value): boolean {
             let result = false;
 
