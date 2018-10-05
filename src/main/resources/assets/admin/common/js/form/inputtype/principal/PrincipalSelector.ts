@@ -6,6 +6,7 @@ module api.content.form.inputtype.principalselector {
     import ValueTypes = api.data.ValueTypes;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
     import PrincipalSelectedOptionView = api.ui.security.PrincipalSelectedOptionView;
+    import InputTypeViewContext = api.form.inputtype.InputTypeViewContext;
 
     export class PrincipalSelector extends api.form.inputtype.support.BaseInputTypeManagingAdd {
 
@@ -13,7 +14,7 @@ module api.content.form.inputtype.principalselector {
 
         private comboBox: api.ui.security.PrincipalComboBox;
 
-        constructor(config?: api.content.form.inputtype.ContentInputTypeViewContext) {
+        constructor(config?: InputTypeViewContext) {
             super('relationship');
             this.addClass('input-type-view');
             this.readConfig(config.inputConfig);

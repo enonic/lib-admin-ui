@@ -4,12 +4,14 @@ module api.content {
     import Property = api.data.Property;
     import PropertyTree = api.data.PropertyTree;
     import RoleKeys = api.security.RoleKeys;
+    import Attachments = api.content.attachment.Attachments;
+    import AttachmentsBuilder = api.content.attachment.AttachmentsBuilder;
 
     export class Content extends ContentSummary implements api.Equitable, api.Cloneable {
 
         private data: PropertyTree;
 
-        private attachments: api.content.attachment.Attachments;
+        private attachments: Attachments;
 
         private extraData: ExtraData[] = [];
 
@@ -38,7 +40,7 @@ module api.content {
             return this.data;
         }
 
-        getAttachments(): api.content.attachment.Attachments {
+        getAttachments(): Attachments {
             return this.attachments;
         }
 
@@ -51,7 +53,7 @@ module api.content {
         }
 
         getProperty(propertyName: string): Property {
-            return !!propertyName ? this.data.getProperty(propertyName) : null;
+            return propertyName ? this.data.getProperty(propertyName) : null;
         }
 
         getPage(): api.content.page.Page {
@@ -205,7 +207,7 @@ module api.content {
 
         data: PropertyTree;
 
-        attachments: api.content.attachment.Attachments;
+        attachments: Attachments;
 
         extraData: ExtraData[];
 
@@ -236,7 +238,7 @@ module api.content {
             super.fromContentSummaryJson(json);
 
             this.data = PropertyTree.fromJson(json.data);
-            this.attachments = new api.content.attachment.AttachmentsBuilder().fromJson(json.attachments).build();
+            this.attachments = new AttachmentsBuilder().fromJson(json.attachments).build();
             this.extraData = [];
             json.meta.forEach((extraDataJson: api.content.json.ExtraDataJson) => {
                 this.extraData.push(ExtraData.fromJson(extraDataJson));
@@ -263,14 +265,14 @@ module api.content {
             return this;
         }
 
-        setAttachments(value: api.content.attachment.Attachments): ContentBuilder {
+        setAttachments(value: Attachments): ContentBuilder {
             this.attachments = value;
             return this;
         }
 
         setPage(value: api.content.page.Page): ContentBuilder {
             this.pageObj = value;
-            this.page = value ? true : false;
+            this.page = !!value;
             return this;
         }
 

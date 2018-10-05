@@ -120,32 +120,21 @@
 ///<reference path='schema/mixin/_module.ts'/>
 ///<reference path='schema/xdata/_module.ts'/>
 ///<reference path='schema/content/_module.ts' />
-///<reference path='schema/content/inputtype/_module.ts' />
 ///<reference path='schema/relationshiptype/_module.ts' />
 
 ///<reference path='thumb/_module.ts' />
 ///<reference path='content/json/_module.ts' />
 ///<reference path='content/query/_module.ts' />
 ///<reference path='content/attachment/_module.ts' />
-///<reference path='content/button/_module.ts' />
 ///<reference path='content/event/_module.ts' />
 ///<reference path='content/resource/result/_module.ts' />
 ///<reference path='content/resource/_module.ts' />
 ///<reference path='content/util/_module.ts' />
 ///<reference path='content/_module.ts' />
 ///<reference path='content/order/_module.ts' />
-///<reference path='content/media/_module.ts' />
-///<reference path='content/image/_module.ts' />
 ///<reference path='content/page/_module.ts' />
 ///<reference path='content/page/region/_module.ts' />
 ///<reference path='content/site/_module.ts' />
-///<reference path='content/form/_module.ts' />
-///<reference path='content/form/inputtype/_module.ts' />
-///<reference path='content/form/inputtype/upload/_module.ts' />
-///<reference path='content/form/inputtype/contentselector/_module.ts' />
-///<reference path='content/form/inputtype/mediaselector/_module.ts' />
-///<reference path='content/form/inputtype/image/_module.ts' />
-///<reference path='content/form/inputtype/customselector/_module.ts' />
 
 ///<reference path='form/inputtype/principal/_module.ts' />
 ///<reference path='form/inputtype/appconfig/_module.ts' />
