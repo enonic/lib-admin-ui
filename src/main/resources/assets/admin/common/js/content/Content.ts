@@ -187,9 +187,9 @@ module api.content {
             let type = new api.schema.content.ContentTypeName(json.type);
 
             if (type.isSite()) {
-                return new site.SiteBuilder().fromContentJson(json).build();
+                return new api.content.site.SiteBuilder().fromContentJson(json).build();
             } else if (type.isPageTemplate()) {
-                return new page.PageTemplateBuilder().fromContentJson(json).build();
+                return new api.content.page.PageTemplateBuilder().fromContentJson(json).build();
             }
             return new ContentBuilder().fromContentJson(json).build();
         }
