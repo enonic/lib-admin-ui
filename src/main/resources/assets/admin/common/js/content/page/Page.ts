@@ -2,7 +2,6 @@ module api.content.page {
 
     import PropertyTree = api.data.PropertyTree;
     import Component = api.content.page.region.Component;
-    import GetContentByIdRequest = api.content.resource.GetContentByIdRequest;
     import Region = api.content.page.region.Region;
     import ComponentTypeWrapperJson = api.content.page.region.ComponentTypeWrapperJson;
 
@@ -108,21 +107,6 @@ module api.content.page {
             return new PageBuilder(this).build();
         }
 
-        public doRegionComponentsContainId(id: ContentId): wemQ.Promise<boolean> {
-            let fragments: ContentId[] = [];
-            let containsId = this.getRegions() && this.doRegionsContainId(this.getRegions().getRegions(), id, fragments);
-            if (!containsId && fragments.length > 0) {
-                return wemQ.all(fragments.map(fragmentId => new GetContentByIdRequest(fragmentId).sendAndParse()))
-                    .then((fragmentContents: Content[]) => {
-                        return fragmentContents.some((fragmentContent: Content) => {
-                            return fragmentContent.getPage().doesFragmentContainId(id);
-                        });
-                    });
-            } else {
-                return wemQ(containsId);
-            }
-        }
-
         public doesFragmentContainId(id: ContentId): boolean {
             let containsId = false;
             let fragmentCmp = this.getFragment();
@@ -133,7 +117,7 @@ module api.content.page {
             return containsId;
         }
 
-        private doRegionsContainId(regions: Region[], id: ContentId, fragments: ContentId[] = []): boolean {
+        public doRegionsContainId(regions: Region[], id: ContentId, fragments: ContentId[] = []): boolean {
             return regions.some((region: Region) => {
                 return region.getComponents().some((component: Component) => {
                     if (ObjectHelper.iFrameSafeInstanceOf(component.getType(), api.content.page.region.FragmentComponentType)) {

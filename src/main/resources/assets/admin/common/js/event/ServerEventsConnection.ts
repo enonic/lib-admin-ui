@@ -1,4 +1,4 @@
-module api.app {
+module api.event {
 
     import EventJson = api.event.EventJson;
 
@@ -9,9 +9,9 @@ module api.app {
 
         private ws: WebSocket;
         private reconnectInterval: number;
-        private serverEventReceivedListeners: {(event: api.event.Event):void}[] = [];
-        private connectionLostListeners: {():void}[] = [];
-        private connectionRestoredListeners: {():void}[] = [];
+        private serverEventReceivedListeners: { (event: api.event.Event): void }[] = [];
+        private connectionLostListeners: { (): void }[] = [];
+        private connectionRestoredListeners: { (): void }[] = [];
         private connected: boolean = false;
         private disconnectTimeoutHandle: number;
         private keepConnected: boolean = false;
@@ -67,7 +67,7 @@ module api.app {
 
                 // attempt to reconnect
                 if (this.keepConnected) {
-                    setTimeout(()=> {
+                    setTimeout(() => {
                         if (this.keepConnected) {
                             this.doConnect(wsUrl);
                         }
@@ -180,7 +180,7 @@ module api.app {
         }
 
         private notifyServerEvent(serverEvent: api.event.Event) {
-            this.serverEventReceivedListeners.forEach((listener: (event: api.event.Event)=>void)=> {
+            this.serverEventReceivedListeners.forEach((listener: (event: api.event.Event) => void) => {
                 listener.call(this, serverEvent);
             });
         }
@@ -191,13 +191,13 @@ module api.app {
 
         unServerEvent(listener: (event: api.event.Event) => void) {
             this.serverEventReceivedListeners =
-                this.serverEventReceivedListeners.filter((currentListener: (event: api.event.Event)=>void)=> {
+                this.serverEventReceivedListeners.filter((currentListener: (event: api.event.Event) => void) => {
                     return currentListener !== listener;
                 });
         }
 
         private notifyConnectionLost() {
-            this.connectionLostListeners.forEach((listener: (event: any) => void) =>  {
+            this.connectionLostListeners.forEach((listener: (event: any) => void) => {
                 listener.call(this);
             });
         }
@@ -208,7 +208,7 @@ module api.app {
 
         unConnectionLost(listener: () => void) {
             this.connectionLostListeners =
-                this.connectionLostListeners.filter((currentListener: () => void) =>  {
+                this.connectionLostListeners.filter((currentListener: () => void) => {
                     return currentListener !== listener;
                 });
         }
@@ -225,11 +225,10 @@ module api.app {
 
         unConnectionRestored(listener: () => void) {
             this.connectionRestoredListeners =
-                this.connectionRestoredListeners.filter((currentListener: () => void) =>  {
+                this.connectionRestoredListeners.filter((currentListener: () => void) => {
                     return currentListener !== listener;
                 });
         }
 
     }
-
 }

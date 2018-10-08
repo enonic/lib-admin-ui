@@ -5,6 +5,7 @@ module api.content.event {
     import NodeServerChange = api.event.NodeServerChange;
     import NodeServerChangeType = api.event.NodeServerChangeType;
     import NodeServerChangeItem = api.event.NodeServerChangeItem;
+    import ContentPath = api.content.ContentPath;
 
     export class ContentServerChangeItem extends NodeServerChangeItem<ContentPath> {
 
@@ -46,16 +47,15 @@ module api.content.event {
         toString(): string {
             return NodeServerChangeType[this.type] + ': <' +
                    this.changeItems.map((item) => item.getPath().toString()).join(', ') + !!this.newContentPaths
-                ? this.newContentPaths.map((contentPath) => contentPath.toString()).join(', ')
-                : '' +
-                  '>';
+                   ? this.newContentPaths.map((contentPath) => contentPath.toString()).join(', ')
+                   : '' +
+                     '>';
         }
 
         static fromJson(nodeEventJson: NodeEventJson): ContentServerChange {
 
-            let changeItems = nodeEventJson.data.nodes.
-                filter((node) => node.path.indexOf('/content') === 0).
-                map((node: NodeEventNodeJson) => ContentServerChangeItem.fromJson(node));
+            let changeItems = nodeEventJson.data.nodes.filter((node) => node.path.indexOf('/content') === 0).map(
+                (node: NodeEventNodeJson) => ContentServerChangeItem.fromJson(node));
 
             if (changeItems.length === 0) {
                 return null;
@@ -65,9 +65,8 @@ module api.content.event {
 
             if (NodeServerChangeType.MOVE === nodeEventType || NodeServerChangeType.RENAME === nodeEventType) {
 
-                let newContentPaths = nodeEventJson.data.nodes.
-                    filter((node) => node.newPath.indexOf('/content') === 0).
-                    map((node: NodeEventNodeJson) => api.content.ContentPath.fromString(node.newPath.substr('/content'.length)));
+                let newContentPaths = nodeEventJson.data.nodes.filter((node) => node.newPath.indexOf('/content') === 0).map(
+                    (node: NodeEventNodeJson) => api.content.ContentPath.fromString(node.newPath.substr('/content'.length)));
 
                 return new ContentServerChange(nodeEventType, changeItems, newContentPaths);
             } else {

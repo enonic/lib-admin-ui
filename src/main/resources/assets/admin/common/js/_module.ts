@@ -127,8 +127,6 @@
 ///<reference path='content/query/_module.ts' />
 ///<reference path='content/attachment/_module.ts' />
 ///<reference path='content/event/_module.ts' />
-///<reference path='content/resource/result/_module.ts' />
-///<reference path='content/resource/_module.ts' />
 ///<reference path='content/util/_module.ts' />
 ///<reference path='content/_module.ts' />
 ///<reference path='content/order/_module.ts' />

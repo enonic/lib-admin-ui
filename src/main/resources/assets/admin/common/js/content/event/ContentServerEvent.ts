@@ -1,6 +1,9 @@
 module api.content.event {
 
-    export class ContentServerEvent extends api.event.NodeServerEvent {
+    import ContentServerChange = api.content.event.ContentServerChange;
+
+    export class ContentServerEvent
+        extends api.event.NodeServerEvent {
 
         constructor(change: ContentServerChange) {
             super(change);

@@ -122,7 +122,7 @@ module api.content {
                 value += ' ' + PublishStatusFormatter.formatStatus(this.getPublishStatus()).toLowerCase();
             }
 
-            return api.content.util.ContentRowFormatter.makeClassName(value);
+            return value.toLowerCase().replace('_', '-').replace(' ', '_') || 'unknown';
         }
 
         equals(o: api.Equitable): boolean {
@@ -133,15 +133,15 @@ module api.content {
 
             let other = <ContentSummaryAndCompareStatus>o;
 
-            if (!api.ObjectHelper.equals(this.uploadItem, other.uploadItem)) {
+            if (!api.ObjectHelper.equals(this.uploadItem, other.getUploadItem())) {
                 return false;
             }
 
-            if (!api.ObjectHelper.equals(this.contentSummary, other.contentSummary)) {
+            if (!api.ObjectHelper.equals(this.contentSummary, other.getContentSummary())) {
                 return false;
             }
 
-            if (this.compareStatus !== other.compareStatus) {
+            if (this.compareStatus !== other.getCompareStatus()) {
                 return false;
             }
 
@@ -170,10 +170,6 @@ module api.content {
 
         isNew(): boolean {
             return api.content.CompareStatusChecker.isNew(this.getCompareStatus());
-        }
-
-        isReferencedBy(contentId: ContentId): wemQ.Promise<boolean> {
-            return this.contentSummary ? this.contentSummary.isReferencedBy(contentId) : wemQ(false);
         }
     }
 }

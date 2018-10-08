@@ -3,6 +3,7 @@ module api.system {
     export class ConnectionDetector {
 
         private intervalId: number = -1;
+
         private pollIntervalMs: number;
 
         private connected: boolean = true;

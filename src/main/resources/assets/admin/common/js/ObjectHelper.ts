@@ -273,5 +273,9 @@ module api {
                 }
             }
         }
+
+        static propertyExists(object: Object, key: string) {
+            return !!object && object.hasOwnProperty(key) && !!object[key];
+        }
     }
 }

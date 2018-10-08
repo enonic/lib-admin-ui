@@ -101,20 +101,6 @@ module api.content {
             return copy;
         }
 
-        public containsChildContentId(contentId: ContentId): wemQ.Promise<boolean> {
-            const page = this.getPage();
-
-            if (page) {
-                if (page.doesFragmentContainId(contentId)) {
-                    return wemQ(true);
-                }
-
-                return page.doRegionComponentsContainId(contentId);
-            }
-
-            return wemQ(false);
-        }
-
         dataEquals(other: PropertyTree, ignoreEmptyValues: boolean = false): boolean {
             let data;
             let otherData;
@@ -180,26 +166,6 @@ module api.content {
 
         newBuilder(): ContentBuilder {
             return new ContentBuilder(this);
-        }
-
-        static fromJson(json: api.content.json.ContentJson): Content {
-
-            let type = new api.schema.content.ContentTypeName(json.type);
-
-            if (type.isSite()) {
-                return new api.content.site.SiteBuilder().fromContentJson(json).build();
-            } else if (type.isPageTemplate()) {
-                return new api.content.page.PageTemplateBuilder().fromContentJson(json).build();
-            }
-            return new ContentBuilder().fromContentJson(json).build();
-        }
-
-        static fromJsonArray(jsonArray: api.content.json.ContentJson[]): Content[] {
-            let array: Content[] = [];
-            jsonArray.forEach((json: api.content.json.ContentJson) => {
-                array.push(Content.fromJson(json));
-            });
-            return array;
         }
     }
 

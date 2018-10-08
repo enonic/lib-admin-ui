@@ -8,7 +8,4 @@
 ///<reference path='AppLauncherEvent.ts' />
 ///<reference path='AppPanel.ts' />
 ///<reference path='AppManager.ts'/>
-///<reference path='ServerEventsConnection.ts' />
-///<reference path='ServerEventsListener.ts'/>
-///<reference path='ServerEventAggregator.ts'/>
 ///<reference path='NavigatedAppPanel.ts'/>
