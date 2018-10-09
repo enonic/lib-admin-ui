@@ -89,7 +89,6 @@
 ///<reference path='ui/selector/dropdown/_module.ts' />
 ///<reference path='ui/geo/_module.ts' />
 ///<reference path='ui/time/_module.ts' />
-///<reference path='ui/image/_module.ts' />
 ///<reference path='ui/security/_module.ts' />
 ///<reference path='ui/security/acl/_module.ts' />
 
@@ -134,7 +133,6 @@
 ///<reference path='content/page/region/_module.ts' />
 ///<reference path='content/site/_module.ts' />
 
-///<reference path='form/inputtype/principal/_module.ts' />
 ///<reference path='form/inputtype/appconfig/_module.ts' />
 
 ///<reference path='issue/event/_module.ts' />
