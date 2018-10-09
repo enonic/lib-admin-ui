@@ -22,7 +22,7 @@ module api.ui.dialog {
         skipTabbable?: boolean;
     }
 
-    export class ModalDialog
+    export abstract class ModalDialog
         extends DivEl {
 
         protected header: api.ui.dialog.ModalDialogHeader;
@@ -683,6 +683,16 @@ module api.ui.dialog {
                 this.defaultElement.giveFocus();
             }
         }
+    }
+
+    export function applyMixins(derivedCtor: any, baseCtors: any[]) {
+        baseCtors.forEach(baseCtor => {
+            Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+                if (!derivedCtor.prototype[name]) {
+                    derivedCtor.prototype[name] = baseCtor.prototype[name];
+                }
+            });
+        });
     }
 
 }

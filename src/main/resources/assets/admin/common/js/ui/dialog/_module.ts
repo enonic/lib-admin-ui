@@ -4,3 +4,4 @@
 ///<reference path='DropdownButtonRow.ts' />
 ///<reference path='ProgressBarManagerState.ts' />
 ///<reference path='ProgressBarManager.ts' />
+///<reference path='TaskProgressInterface.ts' />
