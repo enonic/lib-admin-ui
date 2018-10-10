@@ -6,7 +6,6 @@
 ///<reference path='ContentSummary.ts' />
 ///<reference path='ContentSummaryViewer.ts' />
 ///<reference path='ContentMetadata.ts' />
-///<reference path='Content.ts' />
 ///<reference path='ExtraData.ts' />
 ///<reference path='CompareStatus.ts' />
 ///<reference path='PublishStatus.ts' />

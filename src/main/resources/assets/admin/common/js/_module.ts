@@ -131,7 +131,6 @@
 ///<reference path='content/order/_module.ts' />
 ///<reference path='content/page/_module.ts' />
 ///<reference path='content/page/region/_module.ts' />
-///<reference path='content/site/_module.ts' />
 
 ///<reference path='form/inputtype/appconfig/_module.ts' />
 
