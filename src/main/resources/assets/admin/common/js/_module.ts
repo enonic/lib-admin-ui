@@ -124,7 +124,6 @@
 ///<reference path='thumb/_module.ts' />
 ///<reference path='content/json/_module.ts' />
 ///<reference path='content/query/_module.ts' />
-///<reference path='content/attachment/_module.ts' />
 ///<reference path='content/event/_module.ts' />
 ///<reference path='content/util/_module.ts' />
 ///<reference path='content/_module.ts' />
