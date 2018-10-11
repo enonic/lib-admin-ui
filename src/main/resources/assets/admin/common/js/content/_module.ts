@@ -5,10 +5,5 @@
 ///<reference path='ContentIdBaseItem.ts' />
 ///<reference path='ContentSummary.ts' />
 ///<reference path='ContentSummaryViewer.ts' />
-///<reference path='ContentMetadata.ts' />
 ///<reference path='ExtraData.ts' />
-///<reference path='CompareStatus.ts' />
-///<reference path='PublishStatus.ts' />
-///<reference path='ContentSummaryAndCompareStatus.ts' />
-///<reference path='ContentSummaryAndCompareStatusViewer.ts' />
 ///<reference path='Widget.ts' />
