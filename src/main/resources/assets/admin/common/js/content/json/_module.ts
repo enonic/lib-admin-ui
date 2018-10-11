@@ -4,10 +4,7 @@
 ///<reference path='PermissionsJson.ts' />
 ///<reference path='ContentPermissionsJson.ts' />
 ///<reference path='ExtraDataJson.ts' />
-///<reference path='ContentQueryResultJson.ts' />
 ///<reference path='ContentsExistByPathJson.ts' />
-///<reference path='CompareContentResultJson.ts' />
-///<reference path='CompareContentResultsJson.ts' />
 ///<reference path='ChildOrderJson.ts' />
 ///<reference path='SetChildOrderJson.ts' />
 ///<reference path='OrderExprJson.ts' />

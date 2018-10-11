@@ -56,11 +56,11 @@ module api.ui.uploader {
 
         private resultContainer: api.dom.DivEl;
 
-        private uploadStartedListeners: { (event: FileUploadStartedEvent<MODEL>): void }[] = [];
-        private uploadProgressListeners: { (event: FileUploadProgressEvent<MODEL>): void }[] = [];
-        private fileUploadedListeners: { (event: FileUploadedEvent<MODEL>): void }[] = [];
-        private uploadCompleteListeners: { (event: FileUploadCompleteEvent<MODEL>): void }[] = [];
-        private uploadFailedListeners: { (event: FileUploadFailedEvent<MODEL>): void }[] = [];
+        private uploadStartedListeners: { (event: UploadStartedEvent<MODEL>): void }[] = [];
+        private uploadProgressListeners: { (event: UploadProgressEvent<MODEL>): void }[] = [];
+        private fileUploadedListeners: { (event: UploadedEvent<MODEL>): void }[] = [];
+        private uploadCompleteListeners: { (event: UploadCompleteEvent<MODEL>): void }[] = [];
+        private uploadFailedListeners: { (event: UploadFailedEvent<MODEL>): void }[] = [];
         private uploadResetListeners: { (): void }[] = [];
         private dropzoneDragEnterListeners: { (event: DragEvent): void }[] = [];
         private dropzoneDragLeaveListeners: { (event: DragEvent): void }[] = [];
@@ -738,41 +738,41 @@ module api.ui.uploader {
             wemjq(this.uploader.getInputButton().getInput()).simulate('click');
         }
 
-        onUploadStarted(listener: (event: FileUploadStartedEvent<MODEL>) => void) {
+        onUploadStarted(listener: (event: UploadStartedEvent<MODEL>) => void) {
             this.uploadStartedListeners.push(listener);
         }
 
-        unUploadStarted(listener: (event: FileUploadStartedEvent<MODEL>) => void) {
+        unUploadStarted(listener: (event: UploadStartedEvent<MODEL>) => void) {
             this.uploadStartedListeners = this.uploadStartedListeners.filter((currentListener) => {
                 return listener !== currentListener;
             });
         }
 
-        onUploadProgress(listener: (event: FileUploadProgressEvent<MODEL>) => void) {
+        onUploadProgress(listener: (event: UploadProgressEvent<MODEL>) => void) {
             this.uploadProgressListeners.push(listener);
         }
 
-        unUploadProgress(listener: (event: FileUploadProgressEvent<MODEL>) => void) {
+        unUploadProgress(listener: (event: UploadProgressEvent<MODEL>) => void) {
             this.uploadProgressListeners = this.uploadProgressListeners.filter((currentListener) => {
                 return listener !== currentListener;
             });
         }
 
-        onFileUploaded(listener: (event: FileUploadedEvent<MODEL>) => void) {
+        onFileUploaded(listener: (event: UploadedEvent<MODEL>) => void) {
             this.fileUploadedListeners.push(listener);
         }
 
-        unFileUploaded(listener: (event: FileUploadedEvent<MODEL>) => void) {
+        unFileUploaded(listener: (event: UploadedEvent<MODEL>) => void) {
             this.fileUploadedListeners = this.fileUploadedListeners.filter((currentListener) => {
                 return listener !== currentListener;
             });
         }
 
-        onUploadCompleted(listener: (event: FileUploadCompleteEvent<MODEL>) => void) {
+        onUploadCompleted(listener: (event: UploadCompleteEvent<MODEL>) => void) {
             this.uploadCompleteListeners.push(listener);
         }
 
-        unUploadCompleted(listener: (event: FileUploadCompleteEvent<MODEL>) => void) {
+        unUploadCompleted(listener: (event: UploadCompleteEvent<MODEL>) => void) {
             this.uploadCompleteListeners = this.uploadCompleteListeners.filter((currentListener) => {
                 return listener !== currentListener;
             });
@@ -788,11 +788,11 @@ module api.ui.uploader {
             });
         }
 
-        onUploadFailed(listener: (event: FileUploadFailedEvent<MODEL>) => void) {
+        onUploadFailed(listener: (event: UploadFailedEvent<MODEL>) => void) {
             this.uploadFailedListeners.push(listener);
         }
 
-        unUploadFailed(listener: (event: FileUploadFailedEvent<MODEL>) => void) {
+        unUploadFailed(listener: (event: UploadFailedEvent<MODEL>) => void) {
             this.uploadFailedListeners = this.uploadFailedListeners.filter((currentListener) => {
                 return listener !== currentListener;
             });
@@ -847,26 +847,26 @@ module api.ui.uploader {
         }
 
         protected notifyFileUploadStarted(uploadItems: UploadItem<MODEL>[]) {
-            this.uploadStartedListeners.forEach((listener: (event: FileUploadStartedEvent<MODEL>) => void) => {
-                listener(new FileUploadStartedEvent<MODEL>(uploadItems));
+            this.uploadStartedListeners.forEach((listener: (event: UploadStartedEvent<MODEL>) => void) => {
+                listener(new UploadStartedEvent<MODEL>(uploadItems));
             });
         }
 
         private notifyFileUploadProgress(uploadItem: UploadItem<MODEL>) {
-            this.uploadProgressListeners.forEach((listener: (event: FileUploadProgressEvent<MODEL>) => void) => {
-                listener(new FileUploadProgressEvent<MODEL>(uploadItem));
+            this.uploadProgressListeners.forEach((listener: (event: UploadProgressEvent<MODEL>) => void) => {
+                listener(new UploadProgressEvent<MODEL>(uploadItem));
             });
         }
 
         protected notifyFileUploaded(uploadItem: UploadItem<MODEL>) {
-            this.fileUploadedListeners.forEach((listener: (event: FileUploadedEvent<MODEL>) => void) => {
-                listener.call(this, new FileUploadedEvent<MODEL>(uploadItem));
+            this.fileUploadedListeners.forEach((listener: (event: UploadedEvent<MODEL>) => void) => {
+                listener.call(this, new UploadedEvent<MODEL>(uploadItem));
             });
         }
 
         private notifyUploadCompleted(uploadItems: UploadItem<MODEL>[]) {
-            this.uploadCompleteListeners.forEach((listener: (event: FileUploadCompleteEvent<MODEL>) => void) => {
-                listener(new FileUploadCompleteEvent<MODEL>(uploadItems));
+            this.uploadCompleteListeners.forEach((listener: (event: UploadCompleteEvent<MODEL>) => void) => {
+                listener(new UploadCompleteEvent<MODEL>(uploadItems));
             });
         }
 
@@ -877,8 +877,8 @@ module api.ui.uploader {
         }
 
         private notifyUploadFailed(uploadItem: UploadItem<MODEL>) {
-            this.uploadFailedListeners.forEach((listener: (event: FileUploadFailedEvent<MODEL>) => void) => {
-                listener(new FileUploadFailedEvent<MODEL>(uploadItem));
+            this.uploadFailedListeners.forEach((listener: (event: UploadFailedEvent<MODEL>) => void) => {
+                listener(new UploadFailedEvent<MODEL>(uploadItem));
             });
         }
     }

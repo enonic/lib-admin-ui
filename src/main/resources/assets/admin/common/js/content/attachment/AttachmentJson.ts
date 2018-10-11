@@ -2,12 +2,12 @@ module api.content.attachment {
 
     export interface AttachmentJson {
 
-        name:string;
+        name: string;
 
-        label:string;
+        label: string;
 
-        mimeType:string;
+        mimeType: string;
 
-        size:number;
+        size: number;
     }
 }
