@@ -90,7 +90,6 @@
 ///<reference path='ui/geo/_module.ts' />
 ///<reference path='ui/time/_module.ts' />
 ///<reference path='ui/security/_module.ts' />
-///<reference path='ui/security/acl/_module.ts' />
 
 ///<reference path='ui/locale/_module.ts' />
 

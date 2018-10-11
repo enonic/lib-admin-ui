@@ -1,8 +1,6 @@
 ///<reference path='ContentSummaryJson.ts' />
 ///<reference path='PermissionsJson.ts' />
-///<reference path='ContentPermissionsJson.ts' />
 ///<reference path='ExtraDataJson.ts' />
-///<reference path='ContentsExistByPathJson.ts' />
 ///<reference path='ChildOrderJson.ts' />
 ///<reference path='SetChildOrderJson.ts' />
 ///<reference path='OrderExprJson.ts' />
@@ -13,6 +11,5 @@
 ///<reference path='EffectivePermissionJson.ts' />
 ///<reference path='EffectivePermissionAccessJson.ts' />
 ///<reference path='EffectivePermissionMemberJson.ts' />
-///<reference path='ContentsExistJson.ts' />
 // /<reference path='UnpublishContentJson.ts' />
 ///<reference path='ContentPublishTimeRangeJson.ts' />
