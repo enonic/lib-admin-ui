@@ -1,6 +1,4 @@
-///<reference path='ContentIdBaseItemJson.ts' />
 ///<reference path='ContentSummaryJson.ts' />
-///<reference path='ContentJson.ts' />
 ///<reference path='PermissionsJson.ts' />
 ///<reference path='ContentPermissionsJson.ts' />
 ///<reference path='ExtraDataJson.ts' />
@@ -11,7 +9,6 @@
 ///<reference path='OrderExprWrapperJson.ts' />
 ///<reference path='SetOrderUpdateJson.ts' />
 ///<reference path='SetOrderUpdateJson.ts' />
-///<reference path='ResolvePublishContentResultJson.ts' />
 ///<reference path='WidgetDescriptorJson.ts' />
 ///<reference path='EffectivePermissionJson.ts' />
 ///<reference path='EffectivePermissionAccessJson.ts' />
