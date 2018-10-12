@@ -29,7 +29,7 @@ module api.content.page {
         }
 
         hasController(): boolean {
-            return !!this.controller;
+            return this.controller != null;
         }
 
         getController(): DescriptorKey {
@@ -37,7 +37,7 @@ module api.content.page {
         }
 
         hasTemplate(): boolean {
-            return !!this.template;
+            return this.template != null;
         }
 
         getTemplate(): PageTemplateKey {
@@ -110,7 +110,7 @@ module api.content.page {
         public doesFragmentContainId(id: ContentId): boolean {
             let containsId = false;
             let fragmentCmp = this.getFragment();
-            if (!!fragmentCmp && ObjectHelper.iFrameSafeInstanceOf(fragmentCmp.getType(), api.content.page.region.ImageComponentType)) {
+            if (fragmentCmp && ObjectHelper.iFrameSafeInstanceOf(fragmentCmp.getType(), api.content.page.region.ImageComponentType)) {
                 containsId = (<api.content.page.region.ImageComponent>fragmentCmp).getImage().equals(id);
             }
 
