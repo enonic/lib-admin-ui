@@ -22,7 +22,7 @@ module api.ui.dialog {
         skipTabbable?: boolean;
     }
 
-    export abstract class ModalDialog
+    export class ModalDialog
         extends DivEl {
 
         protected header: api.ui.dialog.ModalDialogHeader;
