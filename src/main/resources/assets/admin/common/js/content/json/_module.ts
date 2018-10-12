@@ -1,6 +1,5 @@
 ///<reference path='ContentSummaryJson.ts' />
 ///<reference path='PermissionsJson.ts' />
-///<reference path='ExtraDataJson.ts' />
 ///<reference path='ChildOrderJson.ts' />
 ///<reference path='SetChildOrderJson.ts' />
 ///<reference path='OrderExprJson.ts' />
@@ -8,8 +7,5 @@
 ///<reference path='SetOrderUpdateJson.ts' />
 ///<reference path='SetOrderUpdateJson.ts' />
 ///<reference path='WidgetDescriptorJson.ts' />
-///<reference path='EffectivePermissionJson.ts' />
-///<reference path='EffectivePermissionAccessJson.ts' />
-///<reference path='EffectivePermissionMemberJson.ts' />
 // /<reference path='UnpublishContentJson.ts' />
 ///<reference path='ContentPublishTimeRangeJson.ts' />
