@@ -1,14 +1,7 @@
 ///<reference path='DescriptorJson.ts' />
 ///<reference path='PageDescriptorJson.ts' />
 ///<reference path='PageDescriptorsJson.ts' />
-///<reference path='PageJson.ts' />
 ///<reference path='DescriptorName.ts' />
 ///<reference path='Descriptor.ts' />
 ///<reference path='DescriptorKey.ts' />
 ///<reference path='PageDescriptor.ts' />
-///<reference path='PageDescriptorCache.ts' />
-///<reference path='PageDescriptorResourceRequest.ts' />
-///<reference path='GetPageDescriptorsByApplicationRequest.ts' />
-///<reference path='PageTemplateKey.ts' />
-///<reference path='Page.ts' />
-///<reference path='PageMode.ts' />
