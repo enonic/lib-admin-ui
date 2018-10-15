@@ -4,7 +4,7 @@ module api.app.wizard {
 
         private tabBarItem: T;
 
-        private stepForm: WizardStepForm;
+        protected stepForm: WizardStepForm;
 
         constructor(tabBarItem: T, stepForm: WizardStepForm) {
 
@@ -32,9 +32,11 @@ module api.app.wizard {
             if (show) {
                 this.tabBarItem.show();
                 this.stepForm.show();
+                this.stepForm.showOuterHeader();
             } else {
                 this.tabBarItem.hide();
                 this.stepForm.hide();
+                this.stepForm.hideOuterHeader();
             }
         }
     }

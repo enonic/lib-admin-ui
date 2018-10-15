@@ -43,6 +43,18 @@ module api.ui.panel {
             this.outerHeader = header;
         }
 
+        showOuterHeader() {
+            if (this.outerHeader) {
+                this.outerHeader.show();
+            }
+        }
+
+        hideOuterHeader() {
+            if (this.outerHeader) {
+                this.outerHeader.hide();
+            }
+        }
+
         isExpandable(): boolean {
             return false;
         }
