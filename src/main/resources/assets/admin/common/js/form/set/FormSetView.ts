@@ -134,16 +134,45 @@ module api.form {
             container.onHidden(() => this.setCollapseButtonCaption());
         }
 
-        private makeAddButton(): api.ui.button.Button {
-            const addButton = new api.ui.button.Button(i18n('button.add', this.formSet.getLabel()));
-            addButton.addClass('small');
-            addButton.onClicked(() => {
-                this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), false);
-                if ((<FormSetOccurrences<V>> this.formItemOccurrences).isCollapsed()) {
-                    this.collapseButton.getHTMLElement().click();
+        validate(silent: boolean = true, viewToSkipValidation: FormItemOccurrenceView = null): ValidationRecording {
+
+            if (!this.formItemOccurrences) {
+                throw new Error(`Can't validate before layout is done`);
+            }
+
+            const validationRecordingPath = this.resolveValidationRecordingPath();
+            const wholeRecording = new ValidationRecording();
+            const occurrenceViews = this.formItemOccurrences.getOccurrenceViews().filter(view => view !== viewToSkipValidation);
+            let numberOfValids = 0;
+
+            occurrenceViews.forEach((occurrenceView: FormSetOccurrenceView) => {
+                let recordingForOccurrence = occurrenceView.validate(silent);
+                if (recordingForOccurrence.isValid()) {
+                    numberOfValids++;
                 }
+                wholeRecording.flatten(recordingForOccurrence);
             });
-            return addButton;
+
+            if (numberOfValids < this.getOccurrences().getMinimum()) {
+                wholeRecording.breaksMinimumOccurrences(validationRecordingPath);
+            }
+            if (this.getOccurrences().maximumBreached(numberOfValids)) {
+                wholeRecording.breaksMaximumOccurrences(validationRecordingPath);
+            }
+
+            if (!silent && wholeRecording.validityChanged(this.previousValidationRecording)) {
+                const event = new RecordingValidityChangedEvent(wholeRecording, validationRecordingPath);
+                event.setIncludeChildren(true);
+
+                this.notifyValidityChanged(event);
+            }
+
+            // display only errors related to occurrences
+            this.renderValidationErrors(wholeRecording);
+
+            this.previousValidationRecording = wholeRecording;
+
+            return wholeRecording;
         }
 
         private setCollapseButtonCaption() {
@@ -238,42 +267,16 @@ module api.form {
             throw new Error('Must be implemented by inheritor');
         }
 
-        validate(silent: boolean = true, viewToSkipValidation: FormItemOccurrenceView = null): ValidationRecording {
-
-            if (!this.formItemOccurrences) {
-                throw new Error(`Can't validate before layout is done`);
-            }
-
-            const validationRecordingPath = this.resolveValidationRecordingPath();
-            const wholeRecording = new ValidationRecording();
-            const occurrenceViews = this.formItemOccurrences.getOccurrenceViews().filter(view => view !== viewToSkipValidation);
-            let numberOfValids = 0;
-
-            occurrenceViews.forEach((occurrenceView: FormSetOccurrenceView) => {
-                let recordingForOccurrence = occurrenceView.validate(silent);
-                if (recordingForOccurrence.isValid()) {
-                    numberOfValids++;
+        private makeAddButton(): api.ui.button.Button {
+            const addButton = new api.ui.button.Button(i18n('button.add', this.formSet.getLabel()));
+            addButton.addClass('small');
+            addButton.onClicked(() => {
+                this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences());
+                if ((<FormSetOccurrences<V>> this.formItemOccurrences).isCollapsed()) {
+                    this.collapseButton.getHTMLElement().click();
                 }
-                wholeRecording.flatten(recordingForOccurrence);
             });
-
-            if (numberOfValids < this.getOccurrences().getMinimum()) {
-                wholeRecording.breaksMinimumOccurrences(validationRecordingPath);
-            }
-            if (this.getOccurrences().maximumBreached(numberOfValids)) {
-                wholeRecording.breaksMaximumOccurrences(validationRecordingPath);
-            }
-
-            if (!silent && wholeRecording.validityChanged(this.previousValidationRecording)) {
-                this.notifyValidityChanged(new RecordingValidityChangedEvent(wholeRecording, validationRecordingPath));
-            }
-
-            // display only errors related to occurrences
-            this.renderValidationErrors(wholeRecording);
-
-            this.previousValidationRecording = wholeRecording;
-
-            return wholeRecording;
+            return addButton;
         }
 
         broadcastFormSizeChanged() {
