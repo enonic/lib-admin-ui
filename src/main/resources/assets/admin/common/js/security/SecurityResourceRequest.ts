@@ -21,13 +21,12 @@ module api.security {
             let pKey: PrincipalKey = PrincipalKey.fromString(json.key);
             if (pKey.isRole()) {
                 return Role.fromJson(<api.security.RoleJson>json);
-
             } else if (pKey.isGroup()) {
                 return Group.fromJson(<api.security.GroupJson>json);
-
             } else if (pKey.isUser()) {
                 return User.fromJson(<api.security.UserJson>json);
             }
+            return null;
         }
     }
 }
