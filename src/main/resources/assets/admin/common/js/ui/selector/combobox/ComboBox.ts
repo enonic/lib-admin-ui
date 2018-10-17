@@ -55,6 +55,8 @@ module api.ui.selector.combobox {
 
         onDropdownShownCallback?: () => wemQ.Promise<void>;
 
+        requestMissingOptions?: (missingOptionIds: string[]) => wemQ.Promise<Object>;
+
         createColumns?: GridColumn<T>[];
     }
 
@@ -121,6 +123,8 @@ module api.ui.selector.combobox {
 
         private onDropdownShownCallback: () => wemQ.Promise<void>;
 
+        private requestMissingOptions: (missingOptionIds: string[]) => wemQ.Promise<Object>;
+
         private keyEventsHandler: KeyEventsHandler;
 
         public static debug: boolean = false;
@@ -166,6 +170,8 @@ module api.ui.selector.combobox {
                     return api.util.PromiseHelper.newResolvedVoidPromise();
                 };
             }
+
+            this.requestMissingOptions = config.requestMissingOptions || (() => wemQ({}));
 
             this.noOptionsText = config.noOptionsText;
 
@@ -476,20 +482,17 @@ module api.ui.selector.combobox {
             return selectedOptions;
         }
 
-        // tslint:disable-next-line:max-line-length
         private selectExistingAndHandleMissing(optionIds: string[],
                                                missingOptionIds: string[]): wemQ.Promise<Option<OPTION_DISPLAY_VALUE>[]> {
             const nonExistingIds: string[] = [];
             const selectedOptions = this.selectExistingOptions(optionIds);
 
-            return new api.content.resource.ContentsExistRequest(missingOptionIds).sendAndParse()
-                .then((result: api.content.resource.result.ContentsExistResult) => {
-
+            return this.requestMissingOptions(missingOptionIds).then((result: Object) => {
                     optionIds.forEach((val) => {
                         if (val.trim().length > 0) {
                             const option = this.getOptionByValue(val);
                             if (option == null) {
-                                const contentExists = result.contentExists(val);
+                                const contentExists = api.ObjectHelper.propertyExists(result, val);
                                 if (this.displayMissingSelectedOptions && (contentExists || !this.removeMissingSelectedOptions)) {
                                     const selectedOption = (<BaseSelectedOptionsView<OPTION_DISPLAY_VALUE>> this.selectedOptionsView)
                                         .makeEmptyOption(val);

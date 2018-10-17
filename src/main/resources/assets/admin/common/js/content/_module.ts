@@ -1,6 +1,3 @@
-///<reference path='ContentSummaryOptionDataLoader.ts' />
-///<reference path='ContentSummaryOptionDataHelper.ts' />
-
 ///<reference path='ContentId.ts' />
 ///<reference path='ContentName.ts' />
 ///<reference path='ContentUnnamed.ts' />
@@ -11,14 +8,9 @@
 ///<reference path='ContentMetadata.ts' />
 ///<reference path='Content.ts' />
 ///<reference path='ExtraData.ts' />
-
-///<reference path='ContentTreeSelectorQueryRequest.ts' />
-///<reference path='ContentTreeSelectorItemViewer.ts' />
-///<reference path='ContentComboBox.ts' />
 ///<reference path='CompareStatus.ts' />
 ///<reference path='PublishStatus.ts' />
 ///<reference path='Branch.ts' />
 ///<reference path='ContentSummaryAndCompareStatus.ts' />
 ///<reference path='ContentSummaryAndCompareStatusViewer.ts' />
-
 ///<reference path='Widget.ts' />

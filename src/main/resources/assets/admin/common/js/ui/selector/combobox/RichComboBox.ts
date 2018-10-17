@@ -86,7 +86,8 @@ module api.ui.selector.combobox {
                     ? <OptionDataLoader<OPTION_DISPLAY_VALUE>>builder.loader
                     : null,
                 onDropdownShownCallback: this.loadOptionsAfterShowDropdown.bind(this),
-                createColumns: builder.createColumns
+                createColumns: builder.createColumns,
+                requestMissingOptions: builder.requestMissingOptions
             };
         }
 
@@ -450,6 +451,8 @@ module api.ui.selector.combobox {
 
         createColumns: GridColumn<T>[];
 
+        requestMissingOptions: (missingOptionIds: string[]) => wemQ.Promise<Object>;
+
         setComboBoxName(comboBoxName: string): RichComboBoxBuilder<T> {
             this.comboBoxName = comboBoxName;
             return this;
@@ -541,6 +544,11 @@ module api.ui.selector.combobox {
 
         setCreateColumns(value: GridColumn<T>[]): RichComboBoxBuilder<T> {
             this.createColumns = value;
+            return this;
+        }
+
+        setRequestMissingOptions(requestMissingOptions: (missingOptionIds: string[]) => wemQ.Promise<Object>): RichComboBoxBuilder<T> {
+            this.requestMissingOptions = requestMissingOptions;
             return this;
         }
 

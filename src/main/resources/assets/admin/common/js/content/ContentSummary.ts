@@ -2,14 +2,6 @@ module api.content {
 
     import Thumbnail = api.thumb.Thumbnail;
     import ContentState = api.schema.content.ContentState;
-    import ValueExpr = api.query.expr.ValueExpr;
-    import ContentQuery = api.content.query.ContentQuery;
-    import QueryExpr = api.query.expr.QueryExpr;
-    import CompareExpr = api.query.expr.CompareExpr;
-    import FieldExpr = api.query.expr.FieldExpr;
-    import ContentQueryRequest = api.content.resource.ContentQueryRequest;
-    import ContentSummaryJson = api.content.json.ContentSummaryJson;
-    import ContentQueryResult = api.content.resource.result.ContentQueryResult;
 
     export class ContentSummary extends ContentIdBaseItem {
 
@@ -162,19 +154,6 @@ module api.content {
             return this.requireValid;
         }
 
-        isReferencedBy(contentId: ContentId): wemQ.Promise<boolean> {
-
-            const contentQuery: ContentQuery = new ContentQuery();
-            contentQuery.setMustBeReferencedById(contentId);
-            contentQuery.setQueryExpr(
-                new QueryExpr(CompareExpr.eq(new FieldExpr(api.query.QueryField.ID), ValueExpr.string(this.getContentId().toString()))));
-
-            return new ContentQueryRequest<ContentSummaryJson, ContentSummary>(contentQuery).sendAndParse().then(
-                (contentQueryResult: ContentQueryResult<ContentSummary, ContentSummaryJson>) => {
-                    return contentQueryResult.getMetadata().getTotalHits() > 0;
-                });
-        }
-
         getId(): string {
             return this.id;
         }
@@ -231,73 +210,73 @@ module api.content {
 
             let other = <ContentSummary>o;
 
-            if (!api.ObjectHelper.stringEquals(this.id, other.id)) {
+            if (!api.ObjectHelper.stringEquals(this.id, other.getId())) {
                 return false;
             }
-            if (!api.ObjectHelper.equals(this.name, other.name)) {
+            if (!api.ObjectHelper.equals(this.name, other.getName())) {
                 return false;
             }
-            if (!api.ObjectHelper.stringEquals(this.displayName, other.displayName)) {
+            if (!api.ObjectHelper.stringEquals(this.displayName, other.getDisplayName())) {
                 return false;
             }
-            if (!api.ObjectHelper.equals(this.path, other.path)) {
+            if (!api.ObjectHelper.equals(this.path, other.getPath())) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.root, other.root)) {
+            if (!api.ObjectHelper.booleanEquals(this.root, other.isRoot())) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.children, other.children)) {
+            if (!api.ObjectHelper.booleanEquals(this.children, other.hasChildren())) {
                 return false;
             }
-            if (!api.ObjectHelper.equals(this.type, other.type)) {
+            if (!api.ObjectHelper.equals(this.type, other.getType())) {
                 return false;
             }
-            if (!api.ObjectHelper.stringEquals(this.iconUrl, other.iconUrl)) {
+            if (!api.ObjectHelper.stringEquals(this.iconUrl, other.getIconUrl())) {
                 return false;
             }
-            if (!api.ObjectHelper.equals(this.thumbnail, other.thumbnail)) {
+            if (!api.ObjectHelper.equals(this.thumbnail, other.getThumbnail())) {
                 return false;
             }
-            if (!api.ObjectHelper.stringEquals(this.modifier, other.modifier)) {
+            if (!api.ObjectHelper.stringEquals(this.modifier, other.getModifier())) {
                 return false;
             }
-            if (!api.ObjectHelper.objectEquals(this.owner, other.owner)) {
+            if (!api.ObjectHelper.objectEquals(this.owner, other.getOwner())) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.page, other.page)) {
+            if (!api.ObjectHelper.booleanEquals(this.page, other.isPage())) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.valid, other.valid)) {
+            if (!api.ObjectHelper.booleanEquals(this.valid, other.isValid())) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.requireValid, other.requireValid)) {
+            if (!api.ObjectHelper.booleanEquals(this.requireValid, other.isRequireValid())) {
                 return false;
             }
-            if (!api.ObjectHelper.dateEquals(this.createdTime, other.createdTime)) {
+            if (!api.ObjectHelper.dateEquals(this.createdTime, other.getCreatedTime())) {
                 return false;
             }
-            if (!api.ObjectHelper.dateEquals(this.modifiedTime, other.modifiedTime)) {
+            if (!api.ObjectHelper.dateEquals(this.modifiedTime, other.getModifiedTime())) {
                 return false;
             }
-            if (!api.ObjectHelper.dateEquals(this.publishFromTime, other.publishFromTime)) {
+            if (!api.ObjectHelper.dateEquals(this.publishFromTime, other.getPublishFromTime())) {
                 return false;
             }
-            if (!api.ObjectHelper.dateEquals(this.publishToTime, other.publishToTime)) {
+            if (!api.ObjectHelper.dateEquals(this.publishToTime, other.getPublishToTime())) {
                 return false;
             }
-            if (!api.ObjectHelper.dateEquals(this.publishFirstTime, other.publishFirstTime)) {
+            if (!api.ObjectHelper.dateEquals(this.publishFirstTime, other.getPublishFirstTime())) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.deletable, other.deletable)) {
+            if (!api.ObjectHelper.booleanEquals(this.deletable, other.isDeletable())) {
                 return false;
             }
-            if (!api.ObjectHelper.booleanEquals(this.editable, other.editable)) {
+            if (!api.ObjectHelper.booleanEquals(this.editable, other.isEditable())) {
                 return false;
             }
-            if (!api.ObjectHelper.stringEquals(this.language, other.language)) {
+            if (!api.ObjectHelper.stringEquals(this.language, other.getLanguage())) {
                 return false;
             }
-            if (!api.ObjectHelper.objectEquals(this.contentState, other.contentState)) {
+            if (!api.ObjectHelper.objectEquals(this.contentState, other.getContentState())) {
                 return false;
             }
             return true;

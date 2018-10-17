@@ -1,15 +1,19 @@
 module api.content.event {
 
-    export class EditContentEvent extends api.event.Event {
+    import Event = api.event.Event;
+    import ContentSummaryAndCompareStatus = api.content.ContentSummaryAndCompareStatus;
 
-        private model: api.content.ContentSummaryAndCompareStatus[];
+    export class EditContentEvent
+        extends Event {
 
-        constructor(model: api.content.ContentSummaryAndCompareStatus[]) {
+        private model: ContentSummaryAndCompareStatus[];
+
+        constructor(model: ContentSummaryAndCompareStatus[]) {
             super();
             this.model = model;
         }
 
-        getModels(): api.content.ContentSummaryAndCompareStatus[] {
+        getModels(): ContentSummaryAndCompareStatus[] {
             return this.model;
         }
 

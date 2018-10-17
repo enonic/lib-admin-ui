@@ -4,12 +4,14 @@ module api.content {
     import Property = api.data.Property;
     import PropertyTree = api.data.PropertyTree;
     import RoleKeys = api.security.RoleKeys;
+    import Attachments = api.content.attachment.Attachments;
+    import AttachmentsBuilder = api.content.attachment.AttachmentsBuilder;
 
     export class Content extends ContentSummary implements api.Equitable, api.Cloneable {
 
         private data: PropertyTree;
 
-        private attachments: api.content.attachment.Attachments;
+        private attachments: Attachments;
 
         private extraData: ExtraData[] = [];
 
@@ -38,7 +40,7 @@ module api.content {
             return this.data;
         }
 
-        getAttachments(): api.content.attachment.Attachments {
+        getAttachments(): Attachments {
             return this.attachments;
         }
 
@@ -51,7 +53,7 @@ module api.content {
         }
 
         getProperty(propertyName: string): Property {
-            return !!propertyName ? this.data.getProperty(propertyName) : null;
+            return propertyName ? this.data.getProperty(propertyName) : null;
         }
 
         getPage(): api.content.page.Page {
@@ -97,20 +99,6 @@ module api.content {
             let copy = data.copy();
             copy.getRoot().removeEmptyValues();
             return copy;
-        }
-
-        public containsChildContentId(contentId: ContentId): wemQ.Promise<boolean> {
-            const page = this.getPage();
-
-            if (page) {
-                if (page.doesFragmentContainId(contentId)) {
-                    return wemQ(true);
-                }
-
-                return page.doRegionComponentsContainId(contentId);
-            }
-
-            return wemQ(false);
         }
 
         dataEquals(other: PropertyTree, ignoreEmptyValues: boolean = false): boolean {
@@ -179,33 +167,13 @@ module api.content {
         newBuilder(): ContentBuilder {
             return new ContentBuilder(this);
         }
-
-        static fromJson(json: api.content.json.ContentJson): Content {
-
-            let type = new api.schema.content.ContentTypeName(json.type);
-
-            if (type.isSite()) {
-                return new site.SiteBuilder().fromContentJson(json).build();
-            } else if (type.isPageTemplate()) {
-                return new page.PageTemplateBuilder().fromContentJson(json).build();
-            }
-            return new ContentBuilder().fromContentJson(json).build();
-        }
-
-        static fromJsonArray(jsonArray: api.content.json.ContentJson[]): Content[] {
-            let array: Content[] = [];
-            jsonArray.forEach((json: api.content.json.ContentJson) => {
-                array.push(Content.fromJson(json));
-            });
-            return array;
-        }
     }
 
     export class ContentBuilder extends ContentSummaryBuilder {
 
         data: PropertyTree;
 
-        attachments: api.content.attachment.Attachments;
+        attachments: Attachments;
 
         extraData: ExtraData[];
 
@@ -236,7 +204,7 @@ module api.content {
             super.fromContentSummaryJson(json);
 
             this.data = PropertyTree.fromJson(json.data);
-            this.attachments = new api.content.attachment.AttachmentsBuilder().fromJson(json.attachments).build();
+            this.attachments = new AttachmentsBuilder().fromJson(json.attachments).build();
             this.extraData = [];
             json.meta.forEach((extraDataJson: api.content.json.ExtraDataJson) => {
                 this.extraData.push(ExtraData.fromJson(extraDataJson));
@@ -263,14 +231,14 @@ module api.content {
             return this;
         }
 
-        setAttachments(value: api.content.attachment.Attachments): ContentBuilder {
+        setAttachments(value: Attachments): ContentBuilder {
             this.attachments = value;
             return this;
         }
 
         setPage(value: api.content.page.Page): ContentBuilder {
             this.pageObj = value;
-            this.page = value ? true : false;
+            this.page = !!value;
             return this;
         }
 
