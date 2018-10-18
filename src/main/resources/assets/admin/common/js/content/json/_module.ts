@@ -1,5 +1,4 @@
 ///<reference path='ContentSummaryJson.ts' />
-///<reference path='PermissionsJson.ts' />
 ///<reference path='ChildOrderJson.ts' />
 ///<reference path='SetChildOrderJson.ts' />
 ///<reference path='OrderExprJson.ts' />

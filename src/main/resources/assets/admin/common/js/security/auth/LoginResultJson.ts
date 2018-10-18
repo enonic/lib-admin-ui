@@ -1,10 +1,12 @@
 module api.security.auth {
 
+    import PrincipalJson = api.security.PrincipalJson;
+
     export interface LoginResultJson {
 
         authenticated: boolean;
 
-        user: api.security.UserJson;
+        user: PrincipalJson;
 
         principals: string[];
 

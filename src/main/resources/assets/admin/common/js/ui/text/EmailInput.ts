@@ -4,6 +4,7 @@ module api.ui.text {
     import StringHelper = api.util.StringHelper;
     import CheckEmailAvailabilityRequest = api.security.CheckEmailAvailabilityRequest;
     import i18n = api.util.i18n;
+    import UserStoreKey = api.security.UserStoreKey;
 
     export class EmailInput
         extends api.dom.CompositeFormInputEl {
@@ -16,7 +17,7 @@ module api.ui.text {
 
         private checkTimeout: number;
 
-        private userStoreKey: api.security.UserStoreKey;
+        private userStoreKey: UserStoreKey;
 
         private focusListeners: { (event: FocusEvent): void }[];
 
@@ -80,7 +81,7 @@ module api.ui.text {
             return this;
         }
 
-        setUserStoreKey(userStoreKey: api.security.UserStoreKey): EmailInput {
+        setUserStoreKey(userStoreKey: UserStoreKey): EmailInput {
             this.userStoreKey = userStoreKey;
             return this;
         }
