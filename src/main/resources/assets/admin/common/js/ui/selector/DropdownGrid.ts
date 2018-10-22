@@ -78,7 +78,7 @@ module api.ui.selector {
         }
 
         reload(): wemQ.Promise<void> {
-            return api.util.PromiseHelper.newResolvedVoidPromise();
+            return wemQ(null);
         }
 
         getElement(): api.dom.Element {

@@ -7,14 +7,6 @@
 ///<reference path='UserItemJson.ts'/>
 ///<reference path='Principal.ts'/>
 ///<reference path='PrincipalJson.ts'/>
-///<reference path='UserJson.ts'/>
-///<reference path='GroupJson.ts'/>
-///<reference path='RoleJson.ts'/>
-///<reference path='User.ts'/>
-///<reference path='Group.ts'/>
-///<reference path='Role.ts'/>
-///<reference path='UserStore.ts'/>
-///<reference path='UserStoreJson.ts'/>
 ///<reference path='SecurityResourceRequest.ts'/>
 ///<reference path='PrincipalListJson.ts'/>
 ///<reference path='FindPrincipalsRequest.ts'/>
@@ -22,7 +14,6 @@
 ///<reference path='FindPrincipalListRequest.ts'/>
 ///<reference path='FindPrincipalsResultJson.ts'/>
 ///<reference path='GetPrincipalsByKeysRequest.ts'/>
-///<reference path='GetPrincipalsByUserStoreRequest.ts'/>
 ///<reference path='CheckEmailAvailabilityRequest.ts'/>
 ///<reference path='PrincipalLoader.ts' />
 ///<reference path='AuthConfig.ts'/>

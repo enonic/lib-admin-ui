@@ -4,19 +4,19 @@ module api.security.auth {
 
         private authenticated: boolean;
 
-        private user: api.security.User;
+        private user: Principal;
 
-        private principals: api.security.PrincipalKey[];
+        private principals: PrincipalKey[];
 
         private message: string;
 
         constructor(json: LoginResultJson) {
             this.authenticated = json.authenticated;
             if (json.user) {
-                this.user = api.security.User.fromJson(json.user);
+                this.user = Principal.fromJson(json.user);
             }
             this.principals = json.principals ?
-                              json.principals.map((principal) => api.security.PrincipalKey.fromString(principal)) : [];
+                              json.principals.map((principal) => PrincipalKey.fromString(principal)) : [];
             this.message = json.message;
         }
 
@@ -36,11 +36,11 @@ module api.security.auth {
             return this.principals.some(principalKey => RoleKeys.isContentExpert(principalKey));
         }
 
-        getUser(): api.security.User {
+        getUser(): Principal {
             return this.user;
         }
 
-        getPrincipals(): api.security.PrincipalKey[] {
+        getPrincipals(): PrincipalKey[] {
             return this.principals;
         }
 

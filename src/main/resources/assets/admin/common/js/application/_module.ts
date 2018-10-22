@@ -14,7 +14,6 @@
 ///<reference path='ApplicationCache.ts' />
 ///<reference path='ApplicationBasedName.ts' />
 ///<reference path='ApplicationCaches.ts' />
-///<reference path='ApplicationBasedCache.ts' />
 ///<reference path='MarketApplication.ts' />
 ///<reference path='MarketHelper.ts' />
 ///<reference path='MarketApplicationResponse.ts' />

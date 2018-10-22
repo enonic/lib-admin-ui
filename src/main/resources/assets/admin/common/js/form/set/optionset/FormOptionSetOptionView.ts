@@ -123,8 +123,7 @@ module api.form {
 
                 this.formItemViews.forEach((formItemView: FormItemView) => {
                     formItemView.onEditContentRequest((content: api.content.ContentSummary) => {
-                        let summaryAndStatus = api.content.ContentSummaryAndCompareStatus.fromContentSummary(content);
-                        new api.content.event.EditContentEvent([summaryAndStatus]).fire();
+                        new api.content.event.FormEditEvent(content).fire();
                     });
                 });
 

@@ -6,7 +6,6 @@ module api.ui.security {
     import SelectedOption = api.ui.selector.combobox.SelectedOption;
     import BaseSelectedOptionsView = api.ui.selector.combobox.BaseSelectedOptionsView;
     import PrincipalKey = api.security.PrincipalKey;
-    import User = api.security.User;
     import SelectedOptionView = api.ui.selector.combobox.SelectedOptionView;
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
     import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
@@ -179,7 +178,7 @@ module api.ui.security {
     export class PrincipalSelectedOptionsViewCompact
         extends BaseSelectedOptionsView<Principal> {
 
-        private currentUser: User;
+        private currentUser: Principal;
 
         constructor() {
             super('principal-selected-options-view-compact');
