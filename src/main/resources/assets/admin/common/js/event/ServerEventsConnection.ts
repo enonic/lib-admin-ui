@@ -10,6 +10,7 @@ module api.event {
         private ws: WebSocket;
         private reconnectInterval: number;
         private serverEventReceivedListeners: { (event: api.event.Event): void }[] = [];
+        private unknownServerEventReceivedListeners: { (eventJson: EventJson): void }[] = [];
         private connectionLostListeners: { (): void }[] = [];
         private connectionRestoredListeners: { (): void }[] = [];
         private connected: boolean = false;
@@ -126,15 +127,17 @@ module api.event {
         }
 
         private handleServerEvent(eventJson: api.event.NodeEventJson): void {
-            let clientEvent: api.event.Event = this.translateServerEvent(eventJson);
+            const clientEvent: api.event.Event = this.translateServerEvent(eventJson);
 
             if (clientEvent) {
                 this.notifyServerEvent(clientEvent);
+            } else {
+                this.notifyUnknownEvent(eventJson);
             }
         }
 
         private translateServerEvent(eventJson: EventJson): api.event.Event {
-            let eventType = eventJson.type;
+            const eventType = eventJson.type;
 
             if (eventType === 'application') {
                 return api.application.ApplicationEvent.fromJson(<api.application.ApplicationEventJson>eventJson);
@@ -192,6 +195,23 @@ module api.event {
         unServerEvent(listener: (event: api.event.Event) => void) {
             this.serverEventReceivedListeners =
                 this.serverEventReceivedListeners.filter((currentListener: (event: api.event.Event) => void) => {
+                    return currentListener !== listener;
+                });
+        }
+
+        private notifyUnknownEvent(eventJson: EventJson) {
+            this.unknownServerEventReceivedListeners.forEach((listener: (eventJson: EventJson) => void) => {
+                listener.call(this, eventJson);
+            });
+        }
+
+        onUnknownServerEvent(listener: (eventJson: EventJson) => void) {
+            this.unknownServerEventReceivedListeners.push(listener);
+        }
+
+        unUnknownServerEvent(listener: (eventJson: EventJson) => void) {
+            this.unknownServerEventReceivedListeners =
+                this.unknownServerEventReceivedListeners.filter((currentListener: (eventJson: EventJson) => void) => {
                     return currentListener !== listener;
                 });
         }
