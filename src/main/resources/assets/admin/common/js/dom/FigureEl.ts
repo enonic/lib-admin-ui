@@ -9,6 +9,7 @@ module api.dom {
         constructor(image: api.dom.ImgEl, className?: string) {
             super(new NewElementBuilder().setTagName('figure').setClassName(className));
 
+            this.image = image;
             this.appendChild(image);
         }
 
@@ -20,6 +21,10 @@ module api.dom {
                 this.caption = new FigcaptionEl(caption);
                 this.insertAfterEl(this.image);
             }
+        }
+
+        getImage(): ImgEl {
+            return this.image;
         }
     }
 
