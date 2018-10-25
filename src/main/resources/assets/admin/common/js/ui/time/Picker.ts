@@ -199,6 +199,10 @@ module api.ui.time {
             return this.input.giveFocus();
         }
 
+        forceSelectedDateTimeChangedEvent() {
+            this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate));
+        }
+
         onSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
             this.selectedDateTimeChangedListeners.push(listener);
         }

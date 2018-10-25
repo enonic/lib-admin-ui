@@ -39,12 +39,14 @@ module api.form.inputtype.time {
         }
 
         updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
-            let localTime = <api.ui.time.TimePicker> occurrence;
+            const localTime = <api.ui.time.TimePicker> occurrence;
 
             if (!unchangedOnly || !localTime.isDirty() || !localTime.isValid()) {
 
                 let value = this.getValueFromProperty(property);
                 localTime.setSelectedTime(value.hours, value.minutes);
+            } else if (localTime.isDirty()) {
+                localTime.forceSelectedDateTimeChangedEvent();
             }
         }
 

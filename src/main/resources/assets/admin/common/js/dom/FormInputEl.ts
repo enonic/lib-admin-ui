@@ -131,6 +131,10 @@ module api.dom {
             this.getEl().setValue(value);
         }
 
+        forceChangedEvent() {
+            this.notifyValueChanged(new api.ValueChangedEvent(this.oldValue, this.getValue()));
+        }
+
         isDirty(): boolean {
             return this.dirty;
         }

@@ -6,6 +6,7 @@ module api.form.inputtype.support {
     import ValueType = api.data.ValueType;
     import InputTypeView = api.form.inputtype.InputTypeView;
     import i18n = api.util.i18n;
+    import FormInputEl = api.dom.FormInputEl;
 
     export class BaseInputTypeNotManagingAdd extends api.dom.DivEl implements InputTypeView {
 
@@ -291,6 +292,21 @@ module api.form.inputtype.support {
         }
 
         updateInputOccurrenceElement(_occurrence: api.dom.Element, _property: Property, _unchangedOnly?: boolean) {
+            const formInputEl = ObjectHelper.iFrameSafeInstanceOf(_occurrence, FormInputEl) ? <FormInputEl> _occurrence :
+                ObjectHelper.iFrameSafeInstanceOf(_occurrence.getFirstChild(), FormInputEl) ? <FormInputEl> _occurrence.getFirstChild() :
+                    null;
+
+            if (!formInputEl) {
+                return;
+            }
+            if (!_unchangedOnly || !formInputEl.isDirty()) {
+                this.updateFormInputElValue(formInputEl, _property);
+            } else if (formInputEl.isDirty()) {
+                formInputEl.forceChangedEvent();
+            }
+        }
+
+        protected updateFormInputElValue(_occurrence: FormInputEl, _property: Property) {
             throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
         }
 

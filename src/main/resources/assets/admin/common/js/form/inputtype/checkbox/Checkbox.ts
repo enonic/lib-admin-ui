@@ -66,6 +66,8 @@ module api.form.inputtype.checkbox {
             }
             if ((!unchangedOnly || !this.checkbox.isDirty()) && property.hasNonNullValue()) {
                 this.checkbox.setChecked(property.getBoolean());
+            } else if (this.checkbox.isDirty()) {
+                this.checkbox.forceChangedEvent();
             }
             return wemQ<void>(null);
         }
