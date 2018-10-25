@@ -32,7 +32,7 @@ module api.security {
         sendAndParse(): wemQ.Promise<Principal[]> {
 
             return this.send().then((response: api.rest.JsonResponse<PrincipalJson[]>) => {
-                return response.getResult().map(principal => this.fromJsonToPrincipal(principal));
+                return response.getResult().map(principal => Principal.fromJson(principal));
             });
         }
 

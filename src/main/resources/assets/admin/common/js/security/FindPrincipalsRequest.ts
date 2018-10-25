@@ -32,7 +32,7 @@ module api.security {
             return this.send().
                 then((response: api.rest.JsonResponse<FindPrincipalsResultJson>) => {
                     let principals: Principal[] = response.getResult().principals.map((principalJson: PrincipalJson) => {
-                        return this.fromJsonToPrincipal(principalJson);
+                        return Principal.fromJson(principalJson);
                     });
                     if (this.filterPredicate) {
                         principals = principals.filter(this.filterPredicate);

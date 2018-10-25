@@ -3,9 +3,11 @@ module api.content {
     import Thumbnail = api.thumb.Thumbnail;
     import ContentState = api.schema.content.ContentState;
 
-    export class ContentSummary extends ContentIdBaseItem {
+    export class ContentSummary {
 
         private id: string;
+
+        private contentId: ContentId;
 
         private name: ContentName;
 
@@ -54,7 +56,6 @@ module api.content {
         private contentState: ContentState;
 
         constructor(builder: ContentSummaryBuilder) {
-            super(builder);
             this.name = builder.name;
             this.displayName = builder.displayName;
             this.path = builder.path;
@@ -70,6 +71,7 @@ module api.content {
             this.requireValid = builder.requireValid;
 
             this.id = builder.id;
+            this.contentId = builder.contentId;
             this.createdTime = builder.createdTime;
             this.modifiedTime = builder.modifiedTime;
             this.publishFromTime = builder.publishFromTime;
@@ -158,6 +160,10 @@ module api.content {
             return this.id;
         }
 
+        getContentId(): ContentId {
+            return this.contentId;
+        }
+
         getCreatedTime(): Date {
             return this.createdTime;
         }
@@ -204,13 +210,12 @@ module api.content {
                 return false;
             }
 
-            if (!super.equals(o)) {
-                return false;
-            }
-
             let other = <ContentSummary>o;
 
             if (!api.ObjectHelper.stringEquals(this.id, other.getId())) {
+                return false;
+            }
+            if (!api.ObjectHelper.equals(this.contentId, other.contentId)) {
                 return false;
             }
             if (!api.ObjectHelper.equals(this.name, other.getName())) {
@@ -295,9 +300,11 @@ module api.content {
         }
     }
 
-    export class ContentSummaryBuilder extends ContentIdBaseItemBuilder {
+    export class ContentSummaryBuilder {
 
         id: string;
+
+        contentId: ContentId;
 
         name: ContentName;
 
@@ -346,9 +353,9 @@ module api.content {
         contentState: ContentState;
 
         constructor(source?: ContentSummary) {
-            super(source);
             if (source) {
                 this.id = source.getId();
+                this.contentId = source.getContentId();
                 this.name = source.getName();
                 this.displayName = source.getDisplayName();
                 this.path = source.getPath();
@@ -376,8 +383,6 @@ module api.content {
         }
 
         fromContentSummaryJson(json: api.content.json.ContentSummaryJson): ContentSummaryBuilder {
-            super.fromContentIdBaseItemJson(json);
-
             this.name = ContentName.fromString(json.name);
             this.displayName = json.displayName;
             this.path = ContentPath.fromString(json.path);
@@ -394,6 +399,7 @@ module api.content {
             this.language = json.language;
 
             this.id = json.id;
+            this.contentId = new ContentId(json.id);
             this.createdTime = json.createdTime ? new Date(Date.parse(json.createdTime)) : null;
             this.modifiedTime = json.modifiedTime ? new Date(Date.parse(json.modifiedTime)) : null;
             this.publishFirstTime = json.publish && json.publish.first ? new Date(Date.parse(json.publish.first)) : null;

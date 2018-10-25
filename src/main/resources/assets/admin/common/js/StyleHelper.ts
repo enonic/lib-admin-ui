@@ -6,8 +6,6 @@ module api {
 
         static ADMIN_PREFIX: string = 'xp-admin-';
 
-        static PAGE_EDITOR_PREFIX: string = 'xp-page-editor-';
-
         static ICON_PREFIX: string = 'icon-';
 
         static currentPrefix: string = '';
