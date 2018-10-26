@@ -3,14 +3,36 @@ module api.dom {
     export class FigureEl
         extends Element {
 
+        private className: string;
         private image: ImgEl;
         private caption: FigcaptionEl;
 
-        constructor(image: api.dom.ImgEl, className?: string) {
-            super(new NewElementBuilder().setTagName('figure').setClassName(className));
+        constructor(className?: string) {
+            super(new NewElementBuilder().setTagName('figure'));
+
+            if (className) {
+                super.setClass(className);
+
+                this.className = className;
+            }
+        }
+
+        setClass(className: string): api.dom.Element {
+            return super.setClass((this.className || '') + ' ' + className);
+        }
+
+        setImage(image: api.dom.ImgEl, clearCaption: boolean = true) {
+
+            if (this.image) {
+                this.image.replaceWith(image);
+            } else {
+                this.appendChild(image);
+            }
+            if (!!this.caption && clearCaption) {
+                this.removeChild(this.caption);
+            }
 
             this.image = image;
-            this.appendChild(image);
         }
 
         setCaption(caption: string) {
@@ -25,6 +47,13 @@ module api.dom {
 
         getImage(): ImgEl {
             return this.image;
+        }
+
+        removeChildren() {
+            delete this.image;
+            delete this.caption;
+
+            return super.removeChildren();
         }
     }
 
