@@ -12,9 +12,7 @@ module api.ui.locale {
                 this.clearSelection();
             });
             let builder = new api.ui.selector.combobox.RichComboBoxBuilder<Locale>().
-                setMaximumOccurrences(maxOccurrences || 0).
-                setComboBoxName('localeSelector').
-                setIdentifierMethod('getTag').
+                setMaximumOccurrences(maxOccurrences || 0).setComboBoxName('localeSelector').setIdentifierMethod('getId').
                 setLoader(new LocaleLoader()).
                 setValue(value).
                 setSelectedOptionsView(localeSelectedOptionsView).

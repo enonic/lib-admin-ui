@@ -2,6 +2,13 @@ module api.locale {
 
     export class Locale implements api.Equitable {
 
+        private static TH: string = 'th-TH-u-nu-thai-x-lvariant-TH';
+        private static TH_TAG: string = 'th-TH-TH';
+        private static JP: string = 'ja-JP-u-ca-japanese-x-lvariant-JP';
+        private static JP_TAG: string = 'ja-JP-JP';
+        private static NO: string = 'nn-NO-x-lvariant-NY';
+        private static NO_TAG: string = 'nn-NO-NY';
+
         private tag: string;
         private displayName: string;
         private language: string;
@@ -40,6 +47,31 @@ module api.locale {
         }
 
         public getTag() {
+            return this.tag;
+        }
+
+        public getId() {
+            if (this.tag === 'nn-NO' && this.variant === 'NY') {
+                return Locale.NO;
+            }
+
+            return this.tag;
+        }
+
+        // handling some special locale cases
+        public getProcessedTag() {
+            if (this.tag === Locale.JP) {
+                return Locale.JP_TAG;
+            }
+
+            if (this.tag === Locale.TH) {
+                return Locale.TH_TAG;
+            }
+
+            if (this.tag === 'nn-NO' && this.variant === 'NY') {
+                return Locale.NO_TAG;
+            }
+
             return this.tag;
         }
 

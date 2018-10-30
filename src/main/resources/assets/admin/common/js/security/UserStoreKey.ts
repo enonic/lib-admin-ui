@@ -1,6 +1,9 @@
 module api.security {
 
-    export class UserStoreKey extends UserItemKey {
+    import UserItemKey = api.security.UserItemKey;
+
+    export class UserStoreKey
+        extends UserItemKey {
 
         public static SYSTEM: UserStoreKey = new UserStoreKey('system');
 

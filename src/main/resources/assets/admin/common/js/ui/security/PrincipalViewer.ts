@@ -2,7 +2,6 @@ module api.ui.security {
 
     import Principal = api.security.Principal;
     import PrincipalType = api.security.PrincipalType;
-    import User = api.security.User;
 
     export class PrincipalViewer extends api.ui.NamesAndIconViewer<Principal> {
 
@@ -39,7 +38,7 @@ module api.ui.security {
 
     export class PrincipalViewerCompact extends api.ui.Viewer<Principal> {
 
-        private currentUser: User;
+        private currentUser: Principal;
 
         constructor() {
             super('principal-viewer-compact');
@@ -63,7 +62,7 @@ module api.ui.security {
             this.appendChild(icon);
         }
 
-        setCurrentUser(user: User) {
+        setCurrentUser(user: Principal) {
             this.currentUser = user;
         }
     }

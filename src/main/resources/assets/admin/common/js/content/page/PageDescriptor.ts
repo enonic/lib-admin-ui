@@ -4,14 +4,14 @@ module api.content.page {
         extends Descriptor
         implements api.Cloneable {
 
-        private regions: region.RegionDescriptor[];
+        private regions: api.content.page.region.RegionDescriptor[];
 
         constructor(builder: PageDescriptorBuilder) {
             super(builder);
             this.regions = builder.regions;
         }
 
-        public getRegions(): region.RegionDescriptor[] {
+        public getRegions(): api.content.page.region.RegionDescriptor[] {
             return this.regions;
         }
 
@@ -40,7 +40,7 @@ module api.content.page {
     export class PageDescriptorBuilder
         extends DescriptorBuilder {
 
-        regions: region.RegionDescriptor[];
+        regions: api.content.page.region.RegionDescriptor[];
 
         constructor(source?: PageDescriptor) {
             if (source) {
@@ -71,12 +71,12 @@ module api.content.page {
             return this;
         }
 
-        public addRegion(value: region.RegionDescriptor): PageDescriptorBuilder {
+        public addRegion(value: api.content.page.region.RegionDescriptor): PageDescriptorBuilder {
             this.regions.push(value);
             return this;
         }
 
-        public setRegions(value: region.RegionDescriptor[]): PageDescriptorBuilder {
+        public setRegions(value: api.content.page.region.RegionDescriptor[]): PageDescriptorBuilder {
             this.regions = value;
             return this;
         }

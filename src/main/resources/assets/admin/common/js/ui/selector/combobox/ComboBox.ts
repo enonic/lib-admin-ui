@@ -166,9 +166,7 @@ module api.ui.selector.combobox {
 
             this.onDropdownShownCallback = config.onDropdownShownCallback;
             if (!config.onDropdownShownCallback) {
-                this.onDropdownShownCallback = () => {
-                    return api.util.PromiseHelper.newResolvedVoidPromise();
-                };
+                this.onDropdownShownCallback = () => wemQ(null);
             }
 
             this.requestMissingOptions = config.requestMissingOptions || (() => wemQ({}));

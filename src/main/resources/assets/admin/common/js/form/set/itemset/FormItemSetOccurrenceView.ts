@@ -77,8 +77,7 @@ module api.form {
                 });
 
                 formItemView.onEditContentRequest((content: api.content.ContentSummary) => {
-                    const summaryAndStatus = api.content.ContentSummaryAndCompareStatus.fromContentSummary(content);
-                    new api.content.event.EditContentEvent([summaryAndStatus]).fire();
+                    new api.content.event.FormEditEvent(content).fire();
                 });
 
                 if (this.formItemOccurrence.isMultiple()) {
