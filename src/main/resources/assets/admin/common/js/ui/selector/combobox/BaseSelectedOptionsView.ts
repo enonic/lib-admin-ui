@@ -12,7 +12,7 @@ module api.ui.selector.combobox {
 
         private optionAddedListeners: {(added: SelectedOptionEvent<T>): void;}[] = [];
 
-        private optionMovedListeners: {(moved: SelectedOption<T>) : void}[] = [];
+        private optionMovedListeners: { (moved: SelectedOption<T>, fromIndex: number): void }[] = [];
 
         protected readonly: boolean = false;
 
@@ -86,15 +86,8 @@ module api.ui.selector.combobox {
             // must be implemented by children
         }
 
-        private handleMovedOccurrence(fromIndex: number, toIndex: number) {
-
-            this.moveOccurrence(fromIndex, toIndex);
-
-            this.getSelectedOptions().forEach((option: SelectedOption<T>, index: number) => {
-                if (Math.min(fromIndex, toIndex) <= index && index <= Math.max(fromIndex, toIndex)) {
-                    this.notifyOptionMoved(option);
-                }
-            });
+        onOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void) {
+            this.optionMovedListeners.push(listener);
         }
 
         setMaximumOccurrences(value: number) {
@@ -245,20 +238,27 @@ module api.ui.selector.combobox {
             });
         }
 
-        onOptionMoved(listener: (moved: SelectedOption<T>) => void) {
-            this.optionMovedListeners.push(listener);
-        }
-
-        unOptionMoved(listener: (moved: SelectedOption<T>) => void) {
+        unOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void) {
             this.optionMovedListeners =
-                this.optionMovedListeners.filter((current: (option: SelectedOption<T>)=>void) => {
+                this.optionMovedListeners.filter((current: (option: SelectedOption<T>, fromIndex: number) => void) => {
                     return listener !== current;
                 });
         }
 
-        protected notifyOptionMoved(moved: SelectedOption<T>) {
-            this.optionMovedListeners.forEach((listener: (option: SelectedOption<T>) => void) => {
-                listener(moved);
+        protected notifyOptionMoved(moved: SelectedOption<T>, fromIndex: number) {
+            this.optionMovedListeners.forEach((listener: (option: SelectedOption<T>, fromIndex: number) => void) => {
+                listener(moved, fromIndex);
+            });
+        }
+
+        private handleMovedOccurrence(fromIndex: number, toIndex: number) {
+
+            this.moveOccurrence(fromIndex, toIndex);
+
+            this.getSelectedOptions().forEach((option: SelectedOption<T>, index: number) => {
+                if (Math.min(fromIndex, toIndex) <= index && index <= Math.max(fromIndex, toIndex)) {
+                    this.notifyOptionMoved(option, fromIndex);
+                }
             });
         }
     }

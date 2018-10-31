@@ -9,6 +9,8 @@ module api.content.form.inputtype.customselector {
     import UriHelper = api.util.UriHelper;
     import ContentInputTypeViewContext = api.content.form.inputtype.ContentInputTypeViewContext;
     import RichComboBox = api.ui.selector.combobox.RichComboBox;
+    import SelectedOption = api.ui.selector.combobox.SelectedOption;
+    import SelectedOptionsView = api.ui.selector.combobox.SelectedOptionsView;
 
     export class CustomSelector
         extends api.form.inputtype.support.BaseInputTypeManagingAdd {
@@ -20,8 +22,6 @@ module api.content.form.inputtype.customselector {
         private requestPath: string;
 
         private comboBox: RichComboBox<CustomSelectorItem>;
-
-        private draggingIndex: number;
 
         constructor(context: api.content.form.inputtype.ContentInputTypeViewContext) {
             super('custom-selector');
@@ -161,40 +161,22 @@ module api.content.form.inputtype.customselector {
             this.comboBox.unBlur(listener);
         }
 
+        private getSelectedOptionsView(): SelectedOptionsView<CustomSelectorItem> {
+            return <SelectedOptionsView<CustomSelectorItem>> this.comboBox.getSelectedOptionView();
+        }
+
         private setupSortable() {
             this.updateSelectedOptionStyle();
-            wemjq(this.getHTMLElement()).find('.selected-options').sortable({
-                axis: 'y',
-                containment: 'parent',
-                handle: '.drag-control',
-                tolerance: 'pointer',
-                start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
-                update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui)
-            });
+            this.getSelectedOptionsView().onOptionMoved(this.handleMove.bind(this));
+        }
+
+        private handleMove(moved: SelectedOption<any>, fromIndex: number) {
+            this.getPropertyArray().move(fromIndex, moved.getIndex());
         }
 
         private refreshSortable() {
             this.updateSelectedOptionStyle();
-            wemjq(this.getHTMLElement()).find('.selected-options').sortable('refresh');
-        }
-
-        private handleDnDStart(ui: JQueryUI.SortableUIParams): void {
-
-            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
-            this.draggingIndex = draggedElement.getSiblingIndex();
-
-            ui.placeholder.html('Drop form item set here');
-        }
-
-        private handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
-
-            if (this.draggingIndex >= 0) {
-                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
-                let draggedToIndex = draggedElement.getSiblingIndex();
-                this.getPropertyArray().move(this.draggingIndex, draggedToIndex);
-            }
-
-            this.draggingIndex = -1;
+            this.getSelectedOptionsView().refreshSortable();
         }
 
         private updateSelectedOptionStyle() {
