@@ -183,6 +183,8 @@ module api.content.form.inputtype.contentselector {
                 this.validate(false);
             });
 
+            contentComboBox.onOptionMoved(this.handleMove.bind(this));
+
             return contentComboBox;
         }
 
@@ -241,8 +243,6 @@ module api.content.form.inputtype.contentselector {
 
         protected setupSortable() {
             this.getSelectedOptionsView().setOccurrencesSortable(true);
-            this.getSelectedOptionsView().onOptionMoved(this.handleMove.bind(this));
-
             this.updateSelectedOptionStyle();
         }
 
