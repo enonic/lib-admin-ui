@@ -50,7 +50,7 @@ module api.event {
         }
 
         // tslint:disable-next-line:no-unused-expression
-        protected onUnknownServerEvent(eventJson: EventJson) {
+        protected onUnknownServerEvent(_eventJson: EventJson) {
             //
         }
 
