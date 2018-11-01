@@ -103,6 +103,10 @@ module api.util {
                 return flatArray.concat(Array.isArray(toFlattenArray) ? ArrayHelper.flatten(toFlattenArray) : toFlattenArray);
             }, []);
         }
+
+        static filterFn(array: Equitable[], fn: (value: Equitable, index?: number) => boolean): Equitable[] {
+            return array.filter(fn);
+        }
     }
 
 }

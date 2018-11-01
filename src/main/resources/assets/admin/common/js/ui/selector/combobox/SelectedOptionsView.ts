@@ -45,5 +45,7 @@ module api.ui.selector.combobox {
         setReadonly(readonly: boolean);
 
         setEditable(editable: boolean);
+
+        refreshSortable();
     }
 }
