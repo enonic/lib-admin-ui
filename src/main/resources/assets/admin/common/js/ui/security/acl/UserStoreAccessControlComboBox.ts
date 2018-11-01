@@ -8,19 +8,18 @@ module api.ui.security.acl {
     import SelectedOptionView = api.ui.selector.combobox.SelectedOptionView;
     import SelectedOptionsView = api.ui.selector.combobox.SelectedOptionsView;
 
-    export class UserStoreAccessControlComboBox extends api.ui.selector.combobox.RichComboBox<UserStoreAccessControlEntry> {
+    export class UserStoreAccessControlComboBox
+        extends api.ui.selector.combobox.RichComboBox<UserStoreAccessControlEntry> {
 
         private aceSelectedOptionsView: UserStoreACESelectedOptionsView;
 
         constructor() {
             let aceSelectedOptionsView = new UserStoreACESelectedOptionsView();
 
-            let builder = new api.ui.selector.combobox.RichComboBoxBuilder<UserStoreAccessControlEntry>().
-                setMaximumOccurrences(0).
-                setComboBoxName('principalSelector').setLoader(new UserStoreAccessControlEntryLoader()).setSelectedOptionsView(
-                aceSelectedOptionsView).
-                setOptionDisplayValueViewer(new UserStoreAccessControlEntryViewer()).
-                setDelayedInputValueChangedHandling(500);
+            let builder = new api.ui.selector.combobox.RichComboBoxBuilder<UserStoreAccessControlEntry>().setMaximumOccurrences(
+                0).setComboBoxName('principalSelector').setLoader(new UserStoreAccessControlEntryLoader()).setSelectedOptionsView(
+                aceSelectedOptionsView).setOptionDisplayValueViewer(
+                new UserStoreAccessControlEntryViewer()).setDelayedInputValueChangedHandling(500);
 
             super(builder);
 
@@ -37,8 +36,8 @@ module api.ui.security.acl {
     }
 
     class UserStoreACESelectedOptionView
-    extends UserStoreAccessControlEntryView
-    implements SelectedOptionView<UserStoreAccessControlEntry> {
+        extends UserStoreAccessControlEntryView
+        implements SelectedOptionView<UserStoreAccessControlEntry> {
 
         private option: Option<UserStoreAccessControlEntry>;
 
@@ -59,14 +58,14 @@ module api.ui.security.acl {
     }
 
     class UserStoreACESelectedOptionsView
-    extends UserStoreAccessControlListView
-    implements SelectedOptionsView<UserStoreAccessControlEntry> {
+        extends UserStoreAccessControlListView
+        implements SelectedOptionsView<UserStoreAccessControlEntry> {
 
         private maximumOccurrences: number;
         private list: SelectedOption<UserStoreAccessControlEntry>[] = [];
 
-        private selectedOptionRemovedListeners: {(removed: SelectedOptionEvent<UserStoreAccessControlEntry>): void;}[] = [];
-        private selectedOptionAddedListeners: {(added: SelectedOptionEvent<UserStoreAccessControlEntry>): void;}[] = [];
+        private selectedOptionRemovedListeners: { (removed: SelectedOptionEvent<UserStoreAccessControlEntry>): void; }[] = [];
+        private selectedOptionAddedListeners: { (added: SelectedOptionEvent<UserStoreAccessControlEntry>): void; }[] = [];
 
         constructor(className?: string) {
             super(className);
@@ -116,7 +115,7 @@ module api.ui.security.acl {
         }
 
         addOption(option: Option<UserStoreAccessControlEntry>, silent: boolean = false, keyCode: number = -1): boolean {
-            if(option.readOnly) {
+            if (option.readOnly) {
                 this.addItemReadOnly(option.displayValue);
             } else {
                 this.addItem(option.displayValue);
@@ -197,30 +196,34 @@ module api.ui.security.acl {
                                index: number) => selectedOption.setIndex(index));
         }
 
+        refreshSortable() {
+            return;
+        }
+
         private notifySelectedOptionRemoved(removed: SelectedOptionEvent<UserStoreAccessControlEntry>) {
             this.selectedOptionRemovedListeners.forEach((listener) => {
                 listener(removed);
             });
         }
 
-        onOptionDeselected(listener: {(removed: SelectedOptionEvent<UserStoreAccessControlEntry>): void;}) {
+        onOptionDeselected(listener: { (removed: SelectedOptionEvent<UserStoreAccessControlEntry>): void; }) {
             this.selectedOptionRemovedListeners.push(listener);
         }
 
-        unOptionDeselected(listener: {(removed: SelectedOptionEvent<UserStoreAccessControlEntry>): void;}) {
+        unOptionDeselected(listener: { (removed: SelectedOptionEvent<UserStoreAccessControlEntry>): void; }) {
             this.selectedOptionRemovedListeners = this.selectedOptionRemovedListeners
-                .filter(function (curr: {(removed: SelectedOptionEvent<UserStoreAccessControlEntry>): void;}) {
+                .filter(function (curr: { (removed: SelectedOptionEvent<UserStoreAccessControlEntry>): void; }) {
                     return curr !== listener;
                 });
         }
 
-        onOptionSelected(listener: {(added: SelectedOptionEvent<UserStoreAccessControlEntry>): void;}) {
+        onOptionSelected(listener: { (added: SelectedOptionEvent<UserStoreAccessControlEntry>): void; }) {
             this.selectedOptionAddedListeners.push(listener);
         }
 
-        unOptionSelected(listener: {(added: SelectedOptionEvent<UserStoreAccessControlEntry>): void;}) {
+        unOptionSelected(listener: { (added: SelectedOptionEvent<UserStoreAccessControlEntry>): void; }) {
             this.selectedOptionAddedListeners = this.selectedOptionAddedListeners
-                .filter(function (curr: {(added: SelectedOptionEvent<UserStoreAccessControlEntry>): void;}) {
+                .filter(function (curr: { (added: SelectedOptionEvent<UserStoreAccessControlEntry>): void; }) {
                     return curr !== listener;
                 });
         }
@@ -231,11 +234,11 @@ module api.ui.security.acl {
             });
         }
 
-        onOptionMoved(_listener: {(moved: SelectedOption<UserStoreAccessControlEntry>): void;}) {
+        onOptionMoved(_listener: { (moved: SelectedOption<UserStoreAccessControlEntry>): void; }) {
             // must be implemented by children
         }
 
-        unOptionMoved(_listener: {(moved: SelectedOption<UserStoreAccessControlEntry>): void;}) {
+        unOptionMoved(_listener: { (moved: SelectedOption<UserStoreAccessControlEntry>): void; }) {
             // must be implemented by children
         }
 

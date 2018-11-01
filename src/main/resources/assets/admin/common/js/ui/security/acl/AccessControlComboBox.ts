@@ -7,20 +7,17 @@ module api.ui.security.acl {
     import AccessControlEntryLoader = api.security.acl.AccessControlEntryLoader;
     import SelectedOptionEvent = api.ui.selector.combobox.SelectedOptionEvent;
 
-    export class AccessControlComboBox extends api.ui.selector.combobox.RichComboBox<AccessControlEntry> {
+    export class AccessControlComboBox
+        extends api.ui.selector.combobox.RichComboBox<AccessControlEntry> {
 
         private aceSelectedOptionsView: ACESelectedOptionsView;
 
         constructor() {
-            let builder = new api.ui.selector.combobox.RichComboBoxBuilder<AccessControlEntry>().
-                setMaximumOccurrences(0).
-                setComboBoxName('principalSelector').
-                setIdentifierMethod('getPrincipalKey').
-                setLoader(new AccessControlEntryLoader()).
-                setHideComboBoxWhenMaxReached(false).
-                setSelectedOptionsView(new ACESelectedOptionsView()).
-                setOptionDisplayValueViewer(new AccessControlEntryViewer()).
-                setDelayedInputValueChangedHandling(500);
+            let builder = new api.ui.selector.combobox.RichComboBoxBuilder<AccessControlEntry>().setMaximumOccurrences(0).setComboBoxName(
+                'principalSelector').setIdentifierMethod('getPrincipalKey').setLoader(
+                new AccessControlEntryLoader()).setHideComboBoxWhenMaxReached(false).setSelectedOptionsView(
+                new ACESelectedOptionsView()).setOptionDisplayValueViewer(
+                new AccessControlEntryViewer()).setDelayedInputValueChangedHandling(500);
 
             super(builder);
 
@@ -36,7 +33,9 @@ module api.ui.security.acl {
         }
     }
 
-    class ACESelectedOptionView extends AccessControlEntryView implements api.ui.selector.combobox.SelectedOptionView<AccessControlEntry> {
+    class ACESelectedOptionView
+        extends AccessControlEntryView
+        implements api.ui.selector.combobox.SelectedOptionView<AccessControlEntry> {
 
         private option: Option<AccessControlEntry>;
 
@@ -61,13 +60,15 @@ module api.ui.security.acl {
 
     }
 
-    class ACESelectedOptionsView extends AccessControlListView implements api.ui.selector.combobox.SelectedOptionsView<AccessControlEntry> {
+    class ACESelectedOptionsView
+        extends AccessControlListView
+        implements api.ui.selector.combobox.SelectedOptionsView<AccessControlEntry> {
 
         private maximumOccurrences: number;
         private list: SelectedOption<AccessControlEntry>[] = [];
 
-        private selectedOptionRemovedListeners: {(removed: SelectedOptionEvent<AccessControlEntry>): void;}[] = [];
-        private selectedOptionAddedListeners: {(added: SelectedOptionEvent<AccessControlEntry>): void;}[] = [];
+        private selectedOptionRemovedListeners: { (removed: SelectedOptionEvent<AccessControlEntry>): void; }[] = [];
+        private selectedOptionAddedListeners: { (added: SelectedOptionEvent<AccessControlEntry>): void; }[] = [];
 
         setReadonly(readonly: boolean) {
             this.getSelectedOptions().forEach((option: SelectedOption<AccessControlEntry>) => {
@@ -189,30 +190,34 @@ module api.ui.security.acl {
             this.list.forEach((selectedOption: SelectedOption<AccessControlEntry>, index: number) => selectedOption.setIndex(index));
         }
 
+        refreshSortable() {
+            return;
+        }
+
         private notifySelectedOptionRemoved(removed: SelectedOptionEvent<AccessControlEntry>) {
             this.selectedOptionRemovedListeners.forEach((listener) => {
                 listener(removed);
             });
         }
 
-        onOptionDeselected(listener: {(removed: SelectedOptionEvent<AccessControlEntry>): void;}) {
+        onOptionDeselected(listener: { (removed: SelectedOptionEvent<AccessControlEntry>): void; }) {
             this.selectedOptionRemovedListeners.push(listener);
         }
 
-        unOptionDeselected(listener: {(removed: SelectedOptionEvent<AccessControlEntry>): void;}) {
+        unOptionDeselected(listener: { (removed: SelectedOptionEvent<AccessControlEntry>): void; }) {
             this.selectedOptionRemovedListeners = this.selectedOptionRemovedListeners
-                .filter(function (curr: {(removed: SelectedOptionEvent<AccessControlEntry>): void;}) {
+                .filter(function (curr: { (removed: SelectedOptionEvent<AccessControlEntry>): void; }) {
                     return curr !== listener;
                 });
         }
 
-        onOptionSelected(listener: {(added: SelectedOptionEvent<AccessControlEntry>): void;}) {
+        onOptionSelected(listener: { (added: SelectedOptionEvent<AccessControlEntry>): void; }) {
             this.selectedOptionAddedListeners.push(listener);
         }
 
-        unOptionSelected(listener: {(added: SelectedOptionEvent<AccessControlEntry>): void;}) {
+        unOptionSelected(listener: { (added: SelectedOptionEvent<AccessControlEntry>): void; }) {
             this.selectedOptionAddedListeners = this.selectedOptionAddedListeners
-                .filter(function (curr: {(added: SelectedOptionEvent<AccessControlEntry>): void;}) {
+                .filter(function (curr: { (added: SelectedOptionEvent<AccessControlEntry>): void; }) {
                     return curr !== listener;
                 });
         }
@@ -223,11 +228,11 @@ module api.ui.security.acl {
             });
         }
 
-        onOptionMoved(_listener: {(moved: SelectedOption<AccessControlEntry>): void;}) {
+        onOptionMoved(_listener: { (moved: SelectedOption<AccessControlEntry>): void; }) {
             // must be implemented by children
         }
 
-        unOptionMoved(_listener: {(moved: SelectedOption<AccessControlEntry>): void;}) {
+        unOptionMoved(_listener: { (moved: SelectedOption<AccessControlEntry>): void; }) {
             // must be implemented by children
         }
 
