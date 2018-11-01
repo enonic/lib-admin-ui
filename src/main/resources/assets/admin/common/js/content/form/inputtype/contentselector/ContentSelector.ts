@@ -20,8 +20,6 @@ module api.content.form.inputtype.contentselector {
 
         protected comboBoxWrapper: DivEl;
 
-        protected draggingIndex: number;
-
         protected treeMode: boolean;
 
         protected hideToggleIcon: boolean;
@@ -171,7 +169,7 @@ module api.content.form.inputtype.contentselector {
                         this.getPropertyArray().add(value);
                     }
                     this.updateSelectedOptionIsEditable(event.getSelectedOption());
-                    this.refreshSortable();
+                    this.getSelectedOptionsView().refreshSortable();
                     this.updateSelectedOptionStyle();
                     this.validate(false);
                 }
@@ -184,6 +182,8 @@ module api.content.form.inputtype.contentselector {
                 this.updateSelectedOptionStyle();
                 this.validate(false);
             });
+
+            contentComboBox.onOptionMoved(this.handleMove.bind(this));
 
             return contentComboBox;
         }
@@ -242,35 +242,12 @@ module api.content.form.inputtype.contentselector {
         }
 
         protected setupSortable() {
-            wemjq(this.getHTMLElement()).find('.selected-options').sortable({
-                axis: 'y',
-                containment: 'parent',
-                handle: '.drag-control',
-                tolerance: 'pointer',
-                start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
-                update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui)
-            });
-
+            this.getSelectedOptionsView().setOccurrencesSortable(true);
             this.updateSelectedOptionStyle();
         }
 
-        private handleDnDStart(ui: JQueryUI.SortableUIParams): void {
-
-            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
-            this.draggingIndex = draggedElement.getSiblingIndex();
-
-            ui.placeholder.html('Drop form item set here');
-        }
-
-        private handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
-
-            if (this.draggingIndex >= 0) {
-                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
-                let draggedToIndex = draggedElement.getSiblingIndex();
-                this.getPropertyArray().move(this.draggingIndex, draggedToIndex);
-            }
-
-            this.draggingIndex = -1;
+        private handleMove(moved: SelectedOption<ContentTreeSelectorItem>, fromIndex: number) {
+            this.getPropertyArray().move(fromIndex, moved.getIndex());
         }
 
         protected updateSelectedOptionStyle() {
@@ -285,10 +262,6 @@ module api.content.form.inputtype.contentselector {
             let selectedContentId = selectedOption.getOption().displayValue.getContentId();
             let refersToItself = selectedContentId.toString() === this.config.content.getId();
             selectedOption.getOptionView().toggleClass('non-editable', refersToItself);
-        }
-
-        protected refreshSortable() {
-            wemjq(this.getHTMLElement()).find('.selected-options').sortable('refresh');
         }
 
         protected getNumberOfValids(): number {

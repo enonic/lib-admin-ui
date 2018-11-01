@@ -97,6 +97,10 @@ module api.util {
                 return !curEl.equals(el);
             });
         }
+
+        static filterFn(array: Equitable[], fn: (value: Equitable, index?: number) => boolean): Equitable[] {
+            return array.filter(fn);
+        }
     }
 
 }
