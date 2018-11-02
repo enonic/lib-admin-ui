@@ -24,6 +24,10 @@ module api.form.inputtype.number {
             return NumberHelper.toNumber(configProperty['value']);
         }
 
+        protected updateFormInputElValue(occurrence: api.dom.FormInputEl, property: api.data.Property) {
+            occurrence.setValue(this.getPropertyValue(property));
+        }
+
         protected isValid(value: string, recording ?: api.form.inputtype.InputValidationRecording): boolean {
             if (api.util.StringHelper.isEmpty(value)) {
                 return true;

@@ -58,6 +58,8 @@ module api.form.inputtype.radiobutton {
         updateProperty(property: api.data.Property, unchangedOnly: boolean): Q.Promise<void> {
             if ((!unchangedOnly || !this.selector.isDirty())) {
                 this.selector.setValue(property.hasNonNullValue() ? property.getString() : '');
+            } else if (this.selector.isDirty()) {
+                this.selector.forceChangedEvent();
             }
             return wemQ<any>(null);
         }

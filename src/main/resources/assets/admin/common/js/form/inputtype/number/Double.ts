@@ -39,14 +39,6 @@ module api.form.inputtype.number {
             return inputEl;
         }
 
-        updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly ?: boolean) {
-            let input = <api.ui.text.TextInput> occurrence;
-
-            if (!unchangedOnly || !input.isDirty()) {
-                input.setValue(this.getPropertyValue(property));
-            }
-        }
-
         resetInputOccurrenceElement(occurrence: api.dom.Element) {
             let input = <api.ui.text.TextInput> occurrence;
 
