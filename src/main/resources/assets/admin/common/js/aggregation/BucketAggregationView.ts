@@ -43,6 +43,17 @@ module api.aggregation {
             return isSelected;
         }
 
+        selectBucketViewByKey(key: string, supressEvent?: boolean) {
+            this.bucketViews.some((bucketView: api.aggregation.BucketView) => {
+                if (bucketView.getName() === key) {
+                    bucketView.select(supressEvent);
+                    return true;
+                }
+
+                return false;
+            });
+        }
+
         private addBucket(bucketView: api.aggregation.BucketView) {
             this.appendChild(bucketView);
             bucketView.onSelectionChanged((event: api.aggregation.BucketViewSelectionChangedEvent) => {

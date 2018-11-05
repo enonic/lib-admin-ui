@@ -88,6 +88,10 @@ module api.aggregation {
             this.checkbox.setChecked(false, supressEvent);
         }
 
+        select(supressEvent?: boolean) {
+            this.checkbox.setChecked(true, supressEvent);
+        }
+
         private updateUI() {
 
             this.updateLabel();
