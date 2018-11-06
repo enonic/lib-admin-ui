@@ -517,6 +517,23 @@ module api.data {
             return jsonArray;
         }
 
+        getStringValues(): { name: string; value: string }[] {
+            const result = [];
+
+            api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
+
+                if (propertyArray.getType().equals(ValueTypes.STRING)) {
+                    const value = propertyArray.getValue(0);
+                    result.push({
+                        name: name,
+                        value: value.isNull() ? '' : propertyArray.getValue(0).getString()
+                    });
+                }
+            });
+
+            return result;
+        }
+
         private registerPropertyArrayListeners(array: PropertyArray) {
             if (PropertySet.debug) {
                 console.debug('PropertySet[' + this.getPropertyPath().toString() + '].registerPropertyArrayListeners: ' + array.getName());
