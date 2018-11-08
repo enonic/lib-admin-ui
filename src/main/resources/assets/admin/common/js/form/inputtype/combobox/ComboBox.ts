@@ -71,15 +71,16 @@ module api.form.inputtype.combobox {
         }
 
         update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
-            let superPromise = super.update(propertyArray, unchangedOnly);
+            const superPromise = super.update(propertyArray, unchangedOnly);
 
             if (!unchangedOnly || !this.comboBox.isDirty()) {
                 return superPromise.then(() => {
                     this.comboBox.setValue(this.getValueFromPropertyArray(propertyArray));
                 });
-            } else {
-                return superPromise;
+            } else if (this.comboBox.isDirty()) {
+                this.comboBox.forceChangedEvent();
             }
+            return superPromise;
         }
 
         reset() {

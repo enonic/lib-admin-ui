@@ -14,6 +14,7 @@ module api.event {
             this.applications = applications;
             this.serverEventsConnection = ServerEventsConnection.getInstance();
             this.serverEventsConnection.onServerEvent((event: Event) => this.onServerEvent(event));
+            this.serverEventsConnection.onUnknownServerEvent((eventJson: EventJson) => this.onUnknownServerEvent(eventJson));
         }
 
         getApplications(): Application[] {
@@ -46,6 +47,11 @@ module api.event {
 
         protected onServerEvent(event: Event) {
             this.fireEvent(event);
+        }
+
+        // tslint:disable-next-line:no-unused-expression
+        protected onUnknownServerEvent(_eventJson: EventJson) {
+            //
         }
 
         protected fireEvent(event: Event) {

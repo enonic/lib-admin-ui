@@ -42,10 +42,13 @@ module api.form.inputtype.time {
         }
 
         updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly?: boolean) {
-            let datePicker = <api.ui.time.DatePicker> occurrence;
+            const datePicker = <api.ui.time.DatePicker> occurrence;
+
             if (!unchangedOnly || !datePicker.isDirty()) {
                 let date = property.hasNonNullValue() ? property.getLocalDate().toDate() : null;
                 datePicker.setSelectedDate(date);
+            } else if (datePicker.isDirty()) {
+                datePicker.forceSelectedDateTimeChangedEvent();
             }
         }
 

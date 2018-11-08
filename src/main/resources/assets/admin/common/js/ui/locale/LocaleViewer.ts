@@ -15,7 +15,8 @@ module api.ui.locale {
         }
 
         setObject(locale: Locale) {
-            this.namesView.setMainName(api.util.StringHelper.format(this.displayNamePattern, locale.getDisplayName(), locale.getTag()));
+            this.namesView.setMainName(
+                api.util.StringHelper.format(this.displayNamePattern, locale.getDisplayName(), locale.getProcessedTag()));
 
             return super.setObject(locale);
         }

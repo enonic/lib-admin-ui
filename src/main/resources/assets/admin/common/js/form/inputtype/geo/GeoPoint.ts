@@ -34,12 +34,9 @@ module api.form.inputtype.geo {
             return geoPoint;
         }
 
-        updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly: boolean) {
-            let geoPoint = <api.ui.geo.GeoPoint> occurrence;
-
-            if (!unchangedOnly || !geoPoint.isDirty()) {
-                geoPoint.setGeoPoint(property.getGeoPoint());
-            }
+        protected updateFormInputElValue(occurrence: api.dom.FormInputEl, property: Property) {
+            const geoPoint = <api.ui.geo.GeoPoint> occurrence;
+            geoPoint.setGeoPoint(property.getGeoPoint());
         }
 
         resetInputOccurrenceElement(occurrence: api.dom.Element) {

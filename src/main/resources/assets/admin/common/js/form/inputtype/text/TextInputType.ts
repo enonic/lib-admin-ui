@@ -27,6 +27,10 @@ module api.form.inputtype.text {
             this.maxLength = maxLength > 0 ? maxLength : null;
         }
 
+        protected updateFormInputElValue(occurrence: api.dom.FormInputEl, property: api.data.Property) {
+            occurrence.setValue(property.getString());
+        }
+
         protected initOccurenceListeners(inputEl: FormInputEl) {
 
             if (NumberHelper.isNumber(this.maxLength)) {
