@@ -22,4 +22,4 @@
 // =include mousetrap-global-bind.min.js
 // =include q.js
 // =include noconflict.js
-// =include bower_components/webcomponentsjs/webcomponents-lite.min.js
+// =include webcomponentsjs/webcomponents-lite.js
