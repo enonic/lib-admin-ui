@@ -27,6 +27,14 @@ module api.app.bar {
         setTabId(tabId: AppBarTabId) {
             this.tabId = tabId;
         }
+
+        lock() {
+            this.getCloseAction().setEnabled(false);
+        }
+
+        unlock() {
+            this.getCloseAction().setEnabled(true);
+        }
     }
 
     export class AppBarTabMenuItemBuilder extends api.ui.tab.TabMenuItemBuilder {
