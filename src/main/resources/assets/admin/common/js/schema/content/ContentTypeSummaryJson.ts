@@ -6,7 +6,7 @@ module api.schema.content {
 
         allowChildContent:boolean;
 
-        contentDisplayNameScript: string;
+        displayNameExpression: string;
 
         final: boolean;
 
