@@ -72,7 +72,7 @@ module api.app.wizard {
 
                 let currentDisplayName = event.getNewValue() || '';
 
-                if (this.displayNameGenerator && this.displayNameGenerator.hasScript()) {
+                if (this.displayNameGenerator && this.displayNameGenerator.hasExpression()) {
                     let generatedDisplayName = this.displayNameGenerator.execute() || '';
 
                     this.displayNameProgrammaticallySet =
@@ -129,7 +129,7 @@ module api.app.wizard {
                 this.nameEl.setValue(this.generateName(displayName));
             }
 
-            if (this.displayNameGenerator && this.displayNameGenerator.hasScript()) {
+            if (this.displayNameGenerator && this.displayNameGenerator.hasExpression()) {
                 if (!forceDisplayNameProgrammaticallySet) {
                     let generatedDisplayName = this.displayNameGenerator.execute();
                     this.displayNameProgrammaticallySet = generatedDisplayName === displayName;
