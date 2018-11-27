@@ -12,7 +12,7 @@ module api.schema.content {
 
         private superType: api.schema.content.ContentTypeName;
 
-        private contentDisplayNameScript: string;
+        private displayNameExpression: string;
 
         private modifier: string;
 
@@ -26,7 +26,7 @@ module api.schema.content {
             this.final = builder.final;
             this.abstract = builder.abstract;
             this.superType = builder.superType;
-            this.contentDisplayNameScript = builder.contentDisplayNameScript;
+            this.displayNameExpression = builder.displayNameExpression;
             this.owner = builder.owner;
             this.modifier = builder.modifier;
             this.metadata = builder.metadata;
@@ -72,12 +72,12 @@ module api.schema.content {
             return this.superType;
         }
 
-        hasContentDisplayNameScript(): boolean {
-            return !api.util.StringHelper.isBlank(this.contentDisplayNameScript);
+        hasDisplayNameExpression(): boolean {
+            return !api.util.StringHelper.isBlank(this.displayNameExpression);
         }
 
-        getContentDisplayNameScript(): string {
-            return this.contentDisplayNameScript;
+        getDisplayNameExpression(): string {
+            return this.displayNameExpression;
         }
 
         getOwner(): string {
@@ -116,7 +116,7 @@ module api.schema.content {
                 return false;
             }
 
-            if (!ObjectHelper.stringEquals(this.contentDisplayNameScript, other.contentDisplayNameScript)) {
+            if (!ObjectHelper.stringEquals(this.displayNameExpression, other.displayNameExpression)) {
                 return false;
             }
 
@@ -160,7 +160,7 @@ module api.schema.content {
 
         superType: api.schema.content.ContentTypeName;
 
-        contentDisplayNameScript: string;
+        displayNameExpression: string;
 
         modifier: string;
 
@@ -175,7 +175,7 @@ module api.schema.content {
                 this.abstract = source.isAbstract();
                 this.final = source.isFinal();
                 this.superType = source.getSuperType();
-                this.contentDisplayNameScript = source.getContentDisplayNameScript();
+                this.displayNameExpression = source.getDisplayNameExpression();
                 this.modifier = source.getModifier();
                 this.owner = source.getOwner();
                 this.metadata = source.getMetadata();
@@ -189,7 +189,7 @@ module api.schema.content {
             this.final = json.final;
             this.abstract = json.abstract;
             this.superType = json.superType ? new api.schema.content.ContentTypeName(json.superType) : null;
-            this.contentDisplayNameScript = json.contentDisplayNameScript;
+            this.displayNameExpression = json.displayNameExpression;
             this.owner = json.owner;
             this.modifier = json.modifier;
             this.metadata = MixinNames.create().fromStrings(json.metadata).build();

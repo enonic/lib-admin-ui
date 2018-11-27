@@ -2,7 +2,7 @@ module api.app.wizard {
 
     export interface DisplayNameGenerator {
 
-        hasScript(): boolean;
+        hasExpression(): boolean;
 
         execute(): string;
     }
