@@ -1808,6 +1808,13 @@ module api.ui.treegrid {
             this.highlightCurrentNode();
         }
 
+        invalidateNodes(nodes: TreeNode<DATA>[]) {
+            this.grid.invalidateRows(nodes.map(node => this.getRowIndexByNode(node)));
+            this.grid.renderGrid();
+
+            this.highlightCurrentNode();
+        }
+
         initAndRender() {
             this.initData(this.getRoot().getCurrentRoot().treeToList());
             this.invalidate();
