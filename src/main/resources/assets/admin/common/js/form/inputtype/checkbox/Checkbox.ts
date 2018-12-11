@@ -7,7 +7,8 @@ module api.form.inputtype.checkbox {
     import BaseInputTypeSingleOccurrence = api.form.inputtype.support.BaseInputTypeSingleOccurrence;
     import InputAlignment = api.ui.InputAlignment;
 
-    export class Checkbox extends BaseInputTypeSingleOccurrence {
+    export class Checkbox
+        extends BaseInputTypeSingleOccurrence {
 
         private checkbox: api.ui.Checkbox;
 
@@ -67,9 +68,13 @@ module api.form.inputtype.checkbox {
             if ((!unchangedOnly || !this.checkbox.isDirty()) && property.hasNonNullValue()) {
                 this.checkbox.setChecked(property.getBoolean());
             } else if (this.checkbox.isDirty()) {
-                this.checkbox.forceChangedEvent();
+                this.resetPropertyValue();
             }
             return wemQ<void>(null);
+        }
+
+        resetPropertyValue() {
+            this.getProperty().setValue(ValueTypes.BOOLEAN.newValue(this.checkbox.getValue()));
         }
 
         reset() {
