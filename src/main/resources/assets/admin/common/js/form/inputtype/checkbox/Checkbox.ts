@@ -68,12 +68,12 @@ module api.form.inputtype.checkbox {
             if ((!unchangedOnly || !this.checkbox.isDirty()) && property.hasNonNullValue()) {
                 this.checkbox.setChecked(property.getBoolean());
             } else if (this.checkbox.isDirty()) {
-                this.resetDirtyValue();
+                this.resetPropertyValue();
             }
             return wemQ<void>(null);
         }
 
-        resetDirtyValue() {
+        resetPropertyValue() {
             this.getProperty().setValue(ValueTypes.BOOLEAN.newValue(this.checkbox.getValue()));
         }
 
