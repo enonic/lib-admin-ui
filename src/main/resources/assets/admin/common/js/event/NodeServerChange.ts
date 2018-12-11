@@ -10,7 +10,8 @@ module api.event {
         PENDING,
         RENAME,
         SORT,
-        MOVE
+        MOVE,
+        UPDATE_PERMISSIONS
     }
 
     export class NodeServerChangeItem<PATH_TYPE> {
@@ -79,6 +80,8 @@ module api.event {
                 return NodeServerChangeType.RENAME;
             case 'node.sorted':
                 return NodeServerChangeType.SORT;
+            case 'node.permissionsUpdated':
+                return NodeServerChangeType.UPDATE_PERMISSIONS;
             default:
                 return NodeServerChangeType.UNKNOWN;
             }
