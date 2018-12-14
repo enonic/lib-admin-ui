@@ -44,3 +44,4 @@
 ///<reference path='DlEl.ts' />
 ///<reference path='DdDtEl.ts' />
 ///<reference path='LinkEl.ts' />
+///<reference path='FigureEl.ts' />
