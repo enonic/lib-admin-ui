@@ -215,6 +215,18 @@ module api.data {
             });
         }
 
+        removeAll(silent?: boolean) {
+            for (let property of this.array) {
+                if (silent) {
+                    this.unregisterPropertyListeners(property);
+                    property.detach();
+                } else {
+                    this.remove(property.getIndex());
+                }
+            }
+            this.array = [];
+        }
+
         remove(index: number) {
 
             let propertyToRemove = this.get(index);

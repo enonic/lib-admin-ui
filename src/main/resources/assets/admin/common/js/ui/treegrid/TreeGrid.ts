@@ -1809,6 +1809,9 @@ module api.ui.treegrid {
         }
 
         invalidateNodes(nodes: TreeNode<DATA>[]) {
+            if (!nodes.length) {
+                return;
+            }
             this.grid.invalidateRows(nodes.map(node => this.getRowIndexByNode(node)));
             this.grid.renderGrid();
 
