@@ -6,6 +6,10 @@ module api.ui {
             return event.keyCode >= 48 && event.keyCode <= 57;
         }
 
+        static isAlpha(event: KeyboardEvent): boolean {
+            return event.keyCode >= 65 && event.keyCode <= 90;
+        }
+
         static isDash(event: KeyboardEvent): boolean {
             return event.keyCode === 189;
         }
