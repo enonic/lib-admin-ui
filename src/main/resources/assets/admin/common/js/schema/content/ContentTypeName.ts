@@ -91,6 +91,22 @@ module api.schema.content {
             return ContentTypeName.MEDIA_VECTOR.equals(this);
         }
 
+        isAudioMedia(): boolean {
+            return ContentTypeName.MEDIA_AUDIO.equals(this);
+        }
+
+        isVideoMedia(): boolean {
+            return ContentTypeName.MEDIA_VIDEO.equals(this);
+        }
+
+        isDocumentMedia(): boolean {
+            return ContentTypeName.MEDIA_DOCUMENT.equals(this);
+        }
+
+        isTextMedia(): boolean {
+            return ContentTypeName.MEDIA_TEXT.equals(this);
+        }
+
         isShortcut(): boolean {
             return ContentTypeName.SHORTCUT.equals(this);
         }
