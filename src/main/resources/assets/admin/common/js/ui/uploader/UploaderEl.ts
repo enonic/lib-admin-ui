@@ -121,6 +121,12 @@ module api.ui.uploader {
             this.uploadButton = new api.dom.DivEl('upload-button');
             this.uploadButton.setId('upload-button-' + new Date().getTime());
             this.uploadButton.onClicked(() => this.showFileSelectionDialog());
+            this.uploadButton.onKeyPressed((event: KeyboardEvent) => {
+                if (KeyHelper.isEnterKey(event)) {
+                    this.showFileSelectionDialog();
+                }
+            });
+            this.uploadButton.getEl().setTabIndex(0);
             this.appendChild(this.uploadButton);
         }
 
