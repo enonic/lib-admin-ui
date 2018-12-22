@@ -10,7 +10,7 @@ module api.ui {
 
         private emptyDisplayName: string = '<' + i18n('field.displayName') + '>';
 
-        private namesAndIconView: api.app.NamesAndIconView;
+        protected namesAndIconView: api.app.NamesAndIconView;
 
         private relativePath: boolean;
 

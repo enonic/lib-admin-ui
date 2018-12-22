@@ -18,6 +18,7 @@ module api.content.page.region {
                 .setKey(api.content.page.DescriptorKey.fromString(json.key))
                 .setName(new api.content.page.DescriptorName(json.name))
                 .setDisplayName(json.displayName)
+                .setDescription(json.description)
                 .setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null)
                 .build();
         }
@@ -42,6 +43,11 @@ module api.content.page.region {
 
         public setDisplayName(value: string): PartDescriptorBuilder {
             this.displayName = value;
+            return this;
+        }
+
+        public setDescription(value: string): PartDescriptorBuilder {
+            this.description = value;
             return this;
         }
 

@@ -8,12 +8,15 @@ module api.content.page {
 
         private displayName: string;
 
+        private description: string;
+
         private config: api.form.Form;
 
         constructor(builder: DescriptorBuilder) {
             this.name = builder.name;
             this.key = builder.key;
             this.displayName = builder.displayName;
+            this.description = builder.description;
             this.config = builder.config;
         }
 
@@ -27,6 +30,10 @@ module api.content.page {
 
         getDisplayName(): string {
             return this.displayName;
+        }
+
+        getDescription(): string {
+            return this.description;
         }
 
         getConfig(): api.form.Form {
@@ -46,6 +53,8 @@ module api.content.page {
 
         displayName: string;
 
+        description: string;
+
         config: api.form.Form;
 
         constructor(source?: Descriptor) {
@@ -53,6 +62,7 @@ module api.content.page {
                 this.key = source.getKey();
                 this.name = source.getName();
                 this.displayName = source.getDisplayName();
+                this.description = source.getDescription();
                 this.config = source.getConfig();
             }
         }

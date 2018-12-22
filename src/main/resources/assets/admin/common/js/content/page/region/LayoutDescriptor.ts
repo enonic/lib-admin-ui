@@ -27,6 +27,7 @@ module api.content.page.region {
             return LayoutDescriptor.create().setKey(api.content.page.DescriptorKey.fromString(json.key))
                 .setName(new api.content.page.DescriptorName(json.name))
                 .setDisplayName(json.displayName)
+                .setDescription(json.description)
                 .setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null)
                 .setRegions(json.regions.map(regionJson => {
                     return api.content.page.region.RegionDescriptor.fromJson(regionJson);
@@ -59,6 +60,11 @@ module api.content.page.region {
 
         public setDisplayName(value: string): LayoutDescriptorBuilder {
             this.displayName = value;
+            return this;
+        }
+
+        public setDescription(value: string): LayoutDescriptorBuilder {
+            this.description = value;
             return this;
         }
 

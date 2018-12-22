@@ -24,6 +24,7 @@ module api.content.page {
             return PageDescriptor.create()
                 .setName(new DescriptorName(json.name))
                 .setDisplayName(json.displayName)
+                .setDescription(json.description)
                 .setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null)
                 .setKey(DescriptorKey.fromString(json.key))
                 .setRegions(json.regions.map(regionJson => {
@@ -63,6 +64,11 @@ module api.content.page {
 
         public setDisplayName(value: string): PageDescriptorBuilder {
             this.displayName = value;
+            return this;
+        }
+
+        public setDescription(value: string): PageDescriptorBuilder {
+            this.description = value;
             return this;
         }
 
