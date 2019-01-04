@@ -1,9 +1,10 @@
 module api.security {
-    export class AuthConfig implements api.Equitable {
+    export class IdProviderConfig
+        implements api.Equitable {
         private applicationKey: api.application.ApplicationKey;
         private config: api.data.PropertyTree;
 
-        constructor(builder: AuthConfigBuilder) {
+        constructor(builder: IdProviderConfigBuilder) {
             this.applicationKey = builder.applicationKey;
             this.config = builder.config;
         }
@@ -16,63 +17,63 @@ module api.security {
             return this.config;
         }
 
+        static create(): IdProviderConfigBuilder {
+            return new IdProviderConfigBuilder();
+        }
+
+        static fromJson(json: IdProviderConfigJson): IdProviderConfig {
+            return new IdProviderConfigBuilder().fromJson(json).build();
+        }
+
         equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, AuthConfig)) {
+            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, IdProviderConfig)) {
                 return false;
             }
 
-            let other = <AuthConfig> o;
+            let other = <IdProviderConfig> o;
 
             return this.applicationKey.equals(other.applicationKey) &&
                    this.config.equals(other.config);
         }
 
-        toJson(): AuthConfigJson {
+        toJson(): IdProviderConfigJson {
             return {
                 applicationKey: this.applicationKey.toString(),
                 config: this.config.toJson()
             };
         }
 
-        clone(): AuthConfig {
-            return AuthConfig.create().
+        clone(): IdProviderConfig {
+            return IdProviderConfig.create().
                 setApplicationKey(this.applicationKey).
                 setConfig(this.config.copy()).
                 build();
         }
 
-        static create(): AuthConfigBuilder {
-            return new AuthConfigBuilder();
-        }
-
-        static fromJson(json: AuthConfigJson): AuthConfig {
-            return new AuthConfigBuilder().fromJson(json).build();
-        }
-
     }
 
-    export class AuthConfigBuilder {
+    export class IdProviderConfigBuilder {
         applicationKey: api.application.ApplicationKey;
         config: api.data.PropertyTree;
 
-        setApplicationKey(applicationKey: api.application.ApplicationKey): AuthConfigBuilder {
+        setApplicationKey(applicationKey: api.application.ApplicationKey): IdProviderConfigBuilder {
             this.applicationKey = applicationKey;
             return this;
         }
 
-        setConfig(config: api.data.PropertyTree): AuthConfigBuilder {
+        setConfig(config: api.data.PropertyTree): IdProviderConfigBuilder {
             this.config = config;
             return this;
         }
 
-        fromJson(json: api.security.AuthConfigJson): AuthConfigBuilder {
+        fromJson(json: api.security.IdProviderConfigJson): IdProviderConfigBuilder {
             this.applicationKey = api.application.ApplicationKey.fromString(json.applicationKey);
             this.config = json.config != null ? api.data.PropertyTree.fromJson(json.config) : null;
             return this;
         }
 
-        build(): AuthConfig {
-            return new AuthConfig(this);
+        build(): IdProviderConfig {
+            return new IdProviderConfig(this);
         }
     }
 }
