@@ -671,7 +671,7 @@ module api.ui.panel {
             this.secondPanel.getEl().setRightPx(-this.secondPanel.getEl().getWidthWithBorder());
         }
 
-        private getSplitterThickness(): number {
+        getSplitterThickness(): number {
             return this.splitterIsHidden ? 0 : this.splitterThickness;
         }
 
