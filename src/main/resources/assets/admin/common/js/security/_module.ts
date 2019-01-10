@@ -1,6 +1,6 @@
 ///<reference path='PrincipalType.ts'/>
 ///<reference path='UserItemKey.ts'/>
-///<reference path='UserStoreKey.ts'/>
+///<reference path='IdProviderKey.ts'/>
 ///<reference path='PrincipalKey.ts'/>
 ///<reference path='RoleKeys.ts'/>
 ///<reference path='UserItem.ts'/>

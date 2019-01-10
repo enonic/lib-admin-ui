@@ -4,7 +4,7 @@ module api.security {
 
         private allowedTypes: PrincipalType[];
         private searchQuery: string;
-        private userStoreKey: UserStoreKey;
+        private idProviderKey: IdProviderKey;
         private filterPredicate: (principal: Principal) => boolean;
         private from: number;
         private size: number;
@@ -18,7 +18,7 @@ module api.security {
             return {
                 types: this.enumToStrings(this.allowedTypes).join(','),
                 query: this.searchQuery || null,
-                userStoreKey: this.userStoreKey ? this.userStoreKey.toString() : null,
+                idProviderKey: this.idProviderKey ? this.idProviderKey.toString() : null,
                 from: this.from || null,
                 size: this.size || null
             };
@@ -47,8 +47,8 @@ module api.security {
             });
         }
 
-        setUserStoreKey(key: UserStoreKey): FindPrincipalsRequest {
-            this.userStoreKey = key;
+        setIdProviderKey(key: IdProviderKey): FindPrincipalsRequest {
+            this.idProviderKey = key;
             return this;
         }
 

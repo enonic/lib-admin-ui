@@ -6,7 +6,7 @@ module api.security {
 
     export class CheckEmailAvailabilityRequest extends SecurityResourceRequest<CheckEmailAvailabilityResponse, boolean> {
 
-        private userStoreKey: UserStoreKey;
+        private idProviderKey: IdProviderKey;
 
         private email: string;
 
@@ -16,15 +16,15 @@ module api.security {
             this.email = email;
         }
 
-        setUserStoreKey(key: UserStoreKey): CheckEmailAvailabilityRequest {
-            this.userStoreKey = key;
+        setIdProviderKey(key: IdProviderKey): CheckEmailAvailabilityRequest {
+            this.idProviderKey = key;
             return this;
         }
 
         getParams(): Object {
             return {
                 email: this.email,
-                userStoreKey: this.userStoreKey ? this.userStoreKey.toString() : undefined
+                idProviderKey: this.idProviderKey ? this.idProviderKey.toString() : undefined
             };
         }
 
