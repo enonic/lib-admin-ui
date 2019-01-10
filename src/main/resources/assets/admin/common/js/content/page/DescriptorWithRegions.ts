@@ -45,11 +45,13 @@ module api.content.page {
         }
 
         static fromJson(json: DescriptorWithRegionsJson): DescriptorWithRegionsBuilder {
+            const builder: DescriptorWithRegionsBuilder = (<DescriptorWithRegionsBuilder>super.fromJson(json));
 
-            return (<DescriptorWithRegionsBuilder>super.fromJson(json))
-                .setRegions(json.regions.map(regionJson => {
-                    return api.content.page.region.RegionDescriptor.fromJson(regionJson);
-                }));
+            builder.regions = json.regions.map(regionJson => {
+                return api.content.page.region.RegionDescriptor.fromJson(regionJson);
+            });
+
+            return builder;
         }
     }
 }
