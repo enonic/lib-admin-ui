@@ -1,63 +1,22 @@
 module api.content.page.region {
 
-    export class PartDescriptor
-        extends api.content.page.Descriptor
-        implements api.Cloneable {
+    export class PartDescriptor extends Descriptor {
 
-        public clone(): PartDescriptor {
-            return new PartDescriptorBuilder(this).build();
+        getIconCls(): string {
+            return 'part';
         }
 
-        public static create(): PartDescriptorBuilder {
-            return new PartDescriptorBuilder();
+        static fromJson(json: DescriptorJson): PartDescriptor {
+            return PartDescriptor.create(DescriptorBuilder.fromJson(json));
         }
 
-        public static fromJson(json: PartDescriptorJson): PartDescriptor {
+        private static create(builder: DescriptorBuilder): PartDescriptor {
+            return new PartDescriptor(builder);
+        }
 
-            return PartDescriptor.create()
-                .setKey(api.content.page.DescriptorKey.fromString(json.key))
-                .setName(new api.content.page.DescriptorName(json.name))
-                .setDisplayName(json.displayName)
-                .setDescription(json.description)
-                .setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null)
-                .build();
+        clone(): PartDescriptor {
+            return new PartDescriptor(new DescriptorBuilder(this));
         }
     }
 
-    export class PartDescriptorBuilder
-        extends api.content.page.DescriptorBuilder {
-
-        constructor(source?: PartDescriptor) {
-            super(source);
-        }
-
-        public setKey(value: api.content.page.DescriptorKey): PartDescriptorBuilder {
-            this.key = value;
-            return this;
-        }
-
-        public setName(value: api.content.page.DescriptorName): PartDescriptorBuilder {
-            this.name = value;
-            return this;
-        }
-
-        public setDisplayName(value: string): PartDescriptorBuilder {
-            this.displayName = value;
-            return this;
-        }
-
-        public setDescription(value: string): PartDescriptorBuilder {
-            this.description = value;
-            return this;
-        }
-
-        public setConfig(value: api.form.Form): PartDescriptorBuilder {
-            this.config = value;
-            return this;
-        }
-
-        public build(): PartDescriptor {
-            return new PartDescriptor(this);
-        }
-    }
 }

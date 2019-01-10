@@ -20,6 +20,10 @@ module api.content.page {
             this.config = builder.config;
         }
 
+        static fromJson(json: DescriptorJson): Descriptor {
+            return DescriptorBuilder.fromJson(json).build();
+        }
+
         getKey(): DescriptorKey {
             return this.key;
         }
@@ -40,8 +44,12 @@ module api.content.page {
             return this.config;
         }
 
+        getIconCls(): string {
+            return '';
+        }
+
         clone(): Descriptor {
-            throw new Error('Must be implemented in inheritor');
+            return new DescriptorBuilder(this).build();
         }
     }
 
@@ -67,4 +75,5 @@ module api.content.page {
             }
         }
     }
+
 }
