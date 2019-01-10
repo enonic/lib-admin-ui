@@ -1,88 +1,21 @@
 module api.content.page {
 
-    export class PageDescriptor
-        extends Descriptor
-        implements api.Cloneable {
+    export class PageDescriptor extends DescriptorWithRegions {
 
-        private regions: api.content.page.region.RegionDescriptor[];
-
-        constructor(builder: PageDescriptorBuilder) {
-            super(builder);
-            this.regions = builder.regions;
+        getIconCls(): string {
+            return 'file';
         }
 
-        public getRegions(): api.content.page.region.RegionDescriptor[] {
-            return this.regions;
+        static fromJson(json: DescriptorWithRegionsJson): PageDescriptor {
+            return PageDescriptor.create(DescriptorWithRegionsBuilder.fromJson(json));
         }
 
-        public static create(): PageDescriptorBuilder {
-            return new PageDescriptorBuilder();
+        private static create(builder: DescriptorWithRegionsBuilder): PageDescriptor {
+            return new PageDescriptor(builder);
         }
 
-        public static fromJson(json: api.content.page.PageDescriptorJson): PageDescriptor {
-
-            return PageDescriptor.create()
-                .setName(new DescriptorName(json.name))
-                .setDisplayName(json.displayName)
-                .setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null)
-                .setKey(DescriptorKey.fromString(json.key))
-                .setRegions(json.regions.map(regionJson => {
-                    return api.content.page.region.RegionDescriptor.fromJson(regionJson);
-                }))
-                .build();
-        }
-
-        public clone(): PageDescriptor {
-            return new PageDescriptorBuilder(this).build();
-        }
-    }
-
-    export class PageDescriptorBuilder
-        extends DescriptorBuilder {
-
-        regions: api.content.page.region.RegionDescriptor[];
-
-        constructor(source?: PageDescriptor) {
-            if (source) {
-                super(source);
-                this.regions = source.getRegions();
-            } else {
-                this.regions = [];
-            }
-        }
-
-        public setKey(key: DescriptorKey): PageDescriptorBuilder {
-            this.key = key;
-            return this;
-        }
-
-        public setName(value: DescriptorName): PageDescriptorBuilder {
-            this.name = value;
-            return this;
-        }
-
-        public setDisplayName(value: string): PageDescriptorBuilder {
-            this.displayName = value;
-            return this;
-        }
-
-        public setConfig(value: api.form.Form): PageDescriptorBuilder {
-            this.config = value;
-            return this;
-        }
-
-        public addRegion(value: api.content.page.region.RegionDescriptor): PageDescriptorBuilder {
-            this.regions.push(value);
-            return this;
-        }
-
-        public setRegions(value: api.content.page.region.RegionDescriptor[]): PageDescriptorBuilder {
-            this.regions = value;
-            return this;
-        }
-
-        public build(): PageDescriptor {
-            return new PageDescriptor(this);
+        clone(): PageDescriptor {
+            return new PageDescriptor(new DescriptorWithRegionsBuilder(this));
         }
     }
 }

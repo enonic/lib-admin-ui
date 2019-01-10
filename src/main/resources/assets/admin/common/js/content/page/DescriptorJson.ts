@@ -2,13 +2,15 @@ module api.content.page {
 
     export interface DescriptorJson {
 
-        key:string;
+        key: string;
 
-        name:string;
+        name: string;
 
-        displayName:string;
+        displayName: string;
 
-        controller:string;
+        description: string;
+
+        controller: string;
 
         config: api.form.json.FormJson;
     }

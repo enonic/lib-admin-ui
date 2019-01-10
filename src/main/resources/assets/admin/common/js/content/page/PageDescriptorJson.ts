@@ -1,7 +1,6 @@
 module api.content.page {
 
-    export interface PageDescriptorJson extends DescriptorJson {
+    export interface PageDescriptorJson extends DescriptorWithRegionsJson {
 
-        regions:api.content.page.region.RegionsDescriptorJson[];
     }
 }
