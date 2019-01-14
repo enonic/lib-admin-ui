@@ -1,6 +1,6 @@
 ///<reference path='PrincipalType.ts'/>
 ///<reference path='UserItemKey.ts'/>
-///<reference path='UserStoreKey.ts'/>
+///<reference path='IdProviderKey.ts'/>
 ///<reference path='PrincipalKey.ts'/>
 ///<reference path='RoleKeys.ts'/>
 ///<reference path='UserItem.ts'/>
@@ -16,6 +16,6 @@
 ///<reference path='GetPrincipalsByKeysRequest.ts'/>
 ///<reference path='CheckEmailAvailabilityRequest.ts'/>
 ///<reference path='PrincipalLoader.ts' />
-///<reference path='AuthConfig.ts'/>
-///<reference path='AuthConfigJson.ts'/>
+///<reference path='IdProviderConfig.ts'/>
+///<reference path='IdProviderConfigJson.ts'/>
 ///<reference path='IdProviderMode.ts'/>

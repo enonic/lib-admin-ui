@@ -1685,15 +1685,29 @@ module api.ui.treegrid {
             return this.gridData.getItem(rowIndex);
         }
 
+        private isSelectionEqual(selection: TreeNode<DATA>[]): boolean {
+            const currentSelection = this.root.getCurrentSelection();
+
+            if (selection.length !== currentSelection.length) {
+                return false;
+            }
+
+            return selection.every((node: TreeNode<DATA>) => currentSelection.indexOf(node) > -1);
+        }
+
         private notifySelectionChanged(rows: number[]): void {
-            let currentSelection: TreeNode<DATA>[] = [];
+            const newSelection: TreeNode<DATA>[] = [];
             if (rows) {
                 rows.forEach((rowIndex) => {
-                    currentSelection.push(this.gridData.getItem(rowIndex));
+                    newSelection.push(this.gridData.getItem(rowIndex));
                 });
             }
 
-            this.root.setCurrentSelection(currentSelection);
+            if (this.isSelectionEqual(newSelection)) {
+                return;
+            }
+
+            this.root.setCurrentSelection(newSelection);
 
             this.triggerSelectionChangedListeners();
         }

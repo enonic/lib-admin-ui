@@ -4,10 +4,11 @@ module api.security.auth {
     import ApplicationListResult = api.application.ApplicationListResult;
     import Application = api.application.Application;
 
+    //TODO: rename
     export class AuthApplicationLoader extends BaseLoader<ApplicationListResult, Application> {
 
         constructor() {
-            super(new api.application.ListAuthApplicationsRequest());
+            super(new api.application.ListIdProviderApplicationsRequest());
         }
 
         filterFn(application: api.application.Application) {

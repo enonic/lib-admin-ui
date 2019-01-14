@@ -33,8 +33,8 @@ module api.security {
             }));
         }
 
-        setUserStoreKey(key: UserStoreKey): PrincipalLoader {
-            this.getRequest().setUserStoreKey(key);
+        setIdProviderKey(key: IdProviderKey): PrincipalLoader {
+            this.getRequest().setIdProviderKey(key);
             return this;
         }
 

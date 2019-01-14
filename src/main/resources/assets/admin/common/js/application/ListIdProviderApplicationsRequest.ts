@@ -1,6 +1,7 @@
 module api.application {
 
-    export class ListAuthApplicationsRequest extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
+    export class ListIdProviderApplicationsRequest
+        extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
 
         constructor() {
             super();
