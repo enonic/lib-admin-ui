@@ -20,4 +20,4 @@
 ///<reference path='MarketApplicationMetadata.ts' />
 ///<reference path='ListMarketApplicationsRequest.ts' />
 ///<reference path='ListSiteApplicationsRequest.ts' />
-///<reference path='ListAuthApplicationsRequest.ts' />
+///<reference path='ListIdProviderApplicationsRequest.ts' />

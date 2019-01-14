@@ -4,7 +4,7 @@ module api.ui.text {
     import StringHelper = api.util.StringHelper;
     import CheckEmailAvailabilityRequest = api.security.CheckEmailAvailabilityRequest;
     import i18n = api.util.i18n;
-    import UserStoreKey = api.security.UserStoreKey;
+    import IdProviderKey = api.security.IdProviderKey;
 
     export class EmailInput
         extends api.dom.CompositeFormInputEl {
@@ -17,7 +17,7 @@ module api.ui.text {
 
         private checkTimeout: number;
 
-        private userStoreKey: UserStoreKey;
+        private idProviderKey: IdProviderKey;
 
         private focusListeners: { (event: FocusEvent): void }[];
 
@@ -81,8 +81,8 @@ module api.ui.text {
             return this;
         }
 
-        setUserStoreKey(userStoreKey: UserStoreKey): EmailInput {
-            this.userStoreKey = userStoreKey;
+        setIdProviderKey(idProviderKey: IdProviderKey): EmailInput {
+            this.idProviderKey = idProviderKey;
             return this;
         }
 
@@ -104,7 +104,7 @@ module api.ui.text {
                 if (email === this.originEmail) {
                     promise = wemQ(true);
                 } else {
-                    promise = new CheckEmailAvailabilityRequest(email).setUserStoreKey(this.userStoreKey).sendAndParse();
+                    promise = new CheckEmailAvailabilityRequest(email).setIdProviderKey(this.idProviderKey).sendAndParse();
                 }
                 promise.then((available: boolean) => {
                     this.updateStatus(available ? 'available' : 'notavailable');

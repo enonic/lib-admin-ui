@@ -55,8 +55,8 @@ module api.security {
             return this.request.getFrom();
         }
 
-        setUserStoreKey(key: UserStoreKey): FindPrincipalListRequest {
-            this.request.setUserStoreKey(key);
+        setIdProviderKey(key: IdProviderKey): FindPrincipalListRequest {
+            this.request.setIdProviderKey(key);
             return this;
         }
 

@@ -1,6 +1,6 @@
 module api.security {
 
-    export interface AuthConfigJson {
+    export interface IdProviderConfigJson {
         applicationKey: string;
         config: api.data.PropertyArrayJson[];
     }

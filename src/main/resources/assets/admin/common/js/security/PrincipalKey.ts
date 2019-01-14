@@ -4,15 +4,33 @@ module api.security {
 
         private static SEPARATOR: string = ':';
 
-        private static ANONYMOUS_PRINCIPAL: PrincipalKey = PrincipalKey.ofUser(UserStoreKey.SYSTEM, 'anonymous');
+        private static ANONYMOUS_PRINCIPAL: PrincipalKey = PrincipalKey.ofUser(IdProviderKey.SYSTEM, 'anonymous');
 
-        private static SU_PRINCIPAL: PrincipalKey = PrincipalKey.ofUser(UserStoreKey.SYSTEM, 'su');
+        private static SU_PRINCIPAL: PrincipalKey = PrincipalKey.ofUser(IdProviderKey.SYSTEM, 'su');
 
-        private userStore: UserStoreKey;
+        private idProvider: IdProviderKey;
 
         private type: PrincipalType;
 
         private refString: string;
+
+        constructor(idProvider: IdProviderKey, type: PrincipalType, principalId: string) {
+            super(principalId);
+
+            api.util.assert((type === PrincipalType.ROLE) || (!!idProvider), 'Principal id provider cannot be null');
+            api.util.assertNotNull(type, 'Principal type cannot be null');
+            this.idProvider = idProvider;
+            this.type = type;
+
+            if (type === PrincipalType.ROLE) {
+                this.refString =
+                    PrincipalType[type].toLowerCase() + PrincipalKey.SEPARATOR + principalId;
+            } else {
+                this.refString =
+                    PrincipalType[type].toLowerCase() + PrincipalKey.SEPARATOR + idProvider.toString() + PrincipalKey.SEPARATOR +
+                    principalId;
+            }
+        }
 
         static fromString(str: string): PrincipalKey {
             if (str === PrincipalKey.ANONYMOUS_PRINCIPAL.refString) {
@@ -37,32 +55,15 @@ module api.security {
                     throw new Error('Not a valid principal key [' + str + ']');
                 }
 
-                const userStore = str.substring(sepIndex + 1, sepIndex2) || '';
+                const idProvider = str.substring(sepIndex + 1, sepIndex2) || '';
                 const principalId = str.substring(sepIndex2 + 1, str.length);
 
-                return new PrincipalKey(new UserStoreKey(userStore), type, principalId);
+                return new PrincipalKey(new IdProviderKey(idProvider), type, principalId);
             }
         }
 
-        constructor(userStore: UserStoreKey, type: PrincipalType, principalId: string) {
-            super(principalId);
-
-            api.util.assert(( type === PrincipalType.ROLE ) || (!!userStore), 'Principal user store cannot be null');
-            api.util.assertNotNull(type, 'Principal type cannot be null');
-            this.userStore = userStore;
-            this.type = type;
-
-            if (type === PrincipalType.ROLE) {
-                this.refString =
-                PrincipalType[type].toLowerCase() + PrincipalKey.SEPARATOR + principalId;
-            } else {
-                this.refString =
-                PrincipalType[type].toLowerCase() + PrincipalKey.SEPARATOR + userStore.toString() + PrincipalKey.SEPARATOR + principalId;
-            }
-        }
-
-        getUserStore(): UserStoreKey {
-            return this.userStore;
+        public static ofUser(idProvider: IdProviderKey, userId: string): PrincipalKey {
+            return new PrincipalKey(idProvider, PrincipalType.USER, userId);
         }
 
         getType(): PrincipalType {
@@ -89,16 +90,8 @@ module api.security {
             return this.refString;
         }
 
-        toPath(toParent: boolean = false): string {
-            let path = this.isRole() ? '/roles/' :
-                api.util.StringHelper.format('/{0}/{1}/', this.getUserStore().toString(),
-                    PrincipalType[this.getType()].toLowerCase().replace(/(group|user)/g, '$&s'));
-
-            if (!toParent) {
-                path += this.getId();
-            }
-
-            return path;
+        public static ofGroup(idProvider: IdProviderKey, groupId: string): PrincipalKey {
+            return new PrincipalKey(idProvider, PrincipalType.GROUP, groupId);
         }
 
         equals(o: api.Equitable): boolean {
@@ -125,16 +118,24 @@ module api.security {
             return PrincipalKey.SU_PRINCIPAL;
         }
 
-        public static ofUser(userStore: UserStoreKey, userId: string): PrincipalKey {
-            return new PrincipalKey(userStore, PrincipalType.USER, userId);
-        }
-
-        public static ofGroup(userStore: UserStoreKey, groupId: string): PrincipalKey {
-            return new PrincipalKey(userStore, PrincipalType.GROUP, groupId);
-        }
-
         public static ofRole(roleId: string): PrincipalKey {
-            return new PrincipalKey(UserStoreKey.SYSTEM, PrincipalType.ROLE, roleId);
+            return new PrincipalKey(IdProviderKey.SYSTEM, PrincipalType.ROLE, roleId);
+        }
+
+        getIdProvider(): IdProviderKey {
+            return this.idProvider;
+        }
+
+        toPath(toParent: boolean = false): string {
+            let path = this.isRole() ? '/roles/' :
+                       api.util.StringHelper.format('/{0}/{1}/', this.getIdProvider().toString(),
+                           PrincipalType[this.getType()].toLowerCase().replace(/(group|user)/g, '$&s'));
+
+            if (!toParent) {
+                path += this.getId();
+            }
+
+            return path;
         }
     }
 }

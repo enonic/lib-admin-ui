@@ -27,7 +27,7 @@ module api.application {
 
         private config: api.form.Form;
 
-        private authConfig: api.form.Form;
+        private idProviderConfig: api.form.Form;
 
         private applicationDependencies: api.application.ApplicationKey[] = [];
 
@@ -53,7 +53,7 @@ module api.application {
             this.version = builder.version;
             this.local = builder.local;
             this.config = builder.config;
-            this.authConfig = builder.authConfig;
+            this.idProviderConfig = builder.idProviderConfig;
             this.applicationDependencies = builder.applicationDependencies;
             this.contentTypeDependencies = builder.contentTypeDependencies;
             this.metaSteps = builder.metaSteps;
@@ -114,8 +114,8 @@ module api.application {
             return this.config;
         }
 
-        getAuthForm(): api.form.Form {
-            return this.authConfig;
+        getIdProviderForm(): api.form.Form {
+            return this.idProviderConfig;
         }
 
         getMinSystemVersion(): string {
@@ -200,7 +200,7 @@ module api.application {
 
         config: api.form.Form;
 
-        authConfig: api.form.Form;
+        idProviderConfig: api.form.Form;
 
         applicationDependencies: api.application.ApplicationKey[];
 
@@ -254,7 +254,7 @@ module api.application {
             this.local = json.local;
 
             this.config = json.config != null ? api.form.Form.fromJson(json.config) : null;
-            this.authConfig = json.authConfig != null ? api.form.Form.fromJson(json.authConfig) : null;
+            this.idProviderConfig = json.idProviderConfig != null ? api.form.Form.fromJson(json.idProviderConfig) : null;
             this.minSystemVersion = json.minSystemVersion;
             this.maxSystemVersion = json.maxSystemVersion;
             this.iconUrl = json.iconUrl;
