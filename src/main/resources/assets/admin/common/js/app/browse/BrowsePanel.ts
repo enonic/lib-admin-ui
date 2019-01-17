@@ -9,6 +9,7 @@ module api.app.browse {
     import TreeGridActions = api.ui.treegrid.actions.TreeGridActions;
     import SplitPanelAlignment = api.ui.panel.SplitPanelAlignment;
     import SplitPanelUnit = api.ui.panel.SplitPanelUnit;
+    import SplitPanel = api.ui.panel.SplitPanel;
 
     export class BrowsePanel<M extends api.Equitable>
         extends api.ui.panel.Panel
@@ -182,6 +183,10 @@ module api.app.browse {
             return null;
         }
 
+        protected createMainContentSplitPanel(gridAndItemsSplitPanel: SplitPanel): SplitPanel {
+            return gridAndItemsSplitPanel;
+        }
+
         doRender(): wemQ.Promise<boolean> {
             return super.doRender().then((rendered) => {
                 if (!this.browseItemPanel) {
@@ -191,6 +196,7 @@ module api.app.browse {
                     .setAlignment(SplitPanelAlignment.VERTICAL)
                     .setFirstPanelSize(38, SplitPanelUnit.PERCENT)
                     .build();
+                const mainContentSplitPanel = this.createMainContentSplitPanel(this.gridAndItemsSplitPanel);
 
                 this.browseToolbar.addClass('browse-toolbar');
                 this.gridAndItemsSplitPanel.addClass('content-grid-and-browse-split-panel');
@@ -212,19 +218,19 @@ module api.app.browse {
                     // Prevent toolbar and gridPanel not being visible when the width/height
                     // is requested and elements resize/change position/etc.
                     setTimeout(() => {
-                        this.gridAndToolbarPanel.appendChild(this.browseToolbar);
+                        this.gridAndToolbarPanel.appendChild(this.browseToolbar); // 1
                     });
                     this.browseToolbar.onRendered(() => {
                         setTimeout(() => {
-                            this.gridAndToolbarPanel.appendChild(this.gridAndItemsSplitPanel);
+                            this.gridAndToolbarPanel.appendChild(mainContentSplitPanel);
                         });
                     });
                 } else {
-                    this.appendChild(this.browseToolbar);
+                    this.appendChild(this.browseToolbar); // 2
                     // Hack: Same hack.
                     this.browseToolbar.onRendered(() => {
                         setTimeout(() => {
-                            this.appendChild(this.gridAndItemsSplitPanel);
+                            this.appendChild(mainContentSplitPanel);
                         });
                     });
                 }
