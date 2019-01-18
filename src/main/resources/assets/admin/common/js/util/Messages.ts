@@ -2,8 +2,10 @@ module api.util {
 
     let messages: Object = {};
 
-    export function i18nInit(bundle: Object) {
+    export function i18nInit(bundle: Object): wemQ.Promise<void> {
         messages = bundle;
+
+        return wemQ(null);
     }
 
     export function i18n(key: string, ...args: any[]): string {
