@@ -460,19 +460,19 @@ module api.app.wizard {
             }
 
             const leftPanelAndToolbar = new Panel();
-            leftPanelAndToolbar.appendChild(leftPanel);
             if (this.mainToolbar) {
                 leftPanelAndToolbar.prependChild(this.mainToolbar);
             }
 
-            const detailsSplitPanel = this.createWizardAndDetailsSplitPanel(leftPanelAndToolbar);
+            const detailsSplitPanel = this.createWizardAndDetailsSplitPanel(leftPanel);
             if (detailsSplitPanel) {
                 detailsSplitPanel.addClass('rendering');
                 detailsSplitPanel.onRendered(() => detailsSplitPanel.removeClass('rendering'));
-                this.appendChild(detailsSplitPanel);
+                leftPanelAndToolbar.appendChild(detailsSplitPanel);
             } else {
-                this.appendChild(leftPanelAndToolbar);
+                leftPanelAndToolbar.appendChild(leftPanel);
             }
+            this.appendChild(leftPanelAndToolbar);
 
             return wemQ(rendered);
         }
