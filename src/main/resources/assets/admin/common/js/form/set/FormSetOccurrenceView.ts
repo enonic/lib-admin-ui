@@ -5,6 +5,7 @@ module api.form {
     import PropertyValueChangedEvent = api.data.PropertyValueChangedEvent;
     import ConfirmationDialog = api.ui.dialog.ConfirmationDialog;
     import i18n = api.util.i18n;
+    import Value = api.data.Value;
 
     export class FormSetOccurrenceView extends FormItemOccurrenceView {
 
@@ -49,20 +50,24 @@ module api.form {
 
         private initFormDataChangeListener() {
             this.formDataChangedListener = (event: PropertyValueChangedEvent) => {
+                const eventPropertyName: string = event.getProperty().getName();
+                const newValue: Value = event.getNewValue();
+
                 this.formItemViews.filter(
-                    (formItemView: FormItemView) => formItemView.getFormItem().getName() === event.getProperty().getName()).forEach(
+                    (formItemView: FormItemView) => formItemView.getFormItem().getName() === eventPropertyName).forEach(
                     (formItemView: FormItemView) => {
-                        if (!!this.dirtyFormItemViewsMap[formItemView.getFormItem().getName()]) {
-                            if (event.getNewValue().equals(
-                                this.dirtyFormItemViewsMap[formItemView.getFormItem().getName()]['originalValue'])) {
-                                delete this.dirtyFormItemViewsMap[formItemView.getFormItem().getName()];
+                        const formItemName: string = formItemView.getFormItem().getName();
+
+                        if (!!this.dirtyFormItemViewsMap[formItemName]) {
+                            if (newValue.equals(this.dirtyFormItemViewsMap[formItemName]['originalValue'])) {
+                                delete this.dirtyFormItemViewsMap[formItemName];
                             } else {
-                                this.dirtyFormItemViewsMap[formItemView.getFormItem().getName()]['currentValue'] = event.getNewValue();
+                                this.dirtyFormItemViewsMap[formItemName]['currentValue'] = newValue;
                             }
                         } else {
-                            this.dirtyFormItemViewsMap[formItemView.getFormItem().getName()] = {
+                            this.dirtyFormItemViewsMap[formItemName] = {
                                 originalValue: event.getPreviousValue(),
-                                currentValue: event.getNewValue()
+                                currentValue: newValue
                             };
                         }
                     });
