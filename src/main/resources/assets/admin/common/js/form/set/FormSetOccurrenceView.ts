@@ -2,6 +2,10 @@ module api.form {
 
     import PropertySet = api.data.PropertySet;
     import PropertyArray = api.data.PropertyArray;
+    import PropertyValueChangedEvent = api.data.PropertyValueChangedEvent;
+    import ConfirmationDialog = api.ui.dialog.ConfirmationDialog;
+    import i18n = api.util.i18n;
+    import Value = api.data.Value;
 
     export class FormSetOccurrenceView extends FormItemOccurrenceView {
 
@@ -23,20 +27,67 @@ module api.form {
 
         protected occurrenceContainerClassName: string;
 
+        private dirtyFormItemViewsMap: object = {};
+
+        private deleteOccurrenceConfirmationDialog: ConfirmationDialog;
+
+        private formDataChangedListener: (event: PropertyValueChangedEvent) => void;
+
         constructor(className: string, formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>) {
             super(className, formItemOccurrence);
+
+            this.initConfirmationDialog();
+            this.initFormDataChangeListener();
+        }
+
+        private initConfirmationDialog() {
+            this.deleteOccurrenceConfirmationDialog = new ConfirmationDialog()
+                .setQuestion(i18n('dialog.confirm.occurrences.delete'))
+                .setYesCallback(() => {
+                    this.notifyRemoveButtonClicked();
+                });
+        }
+
+        private initFormDataChangeListener() {
+            this.formDataChangedListener = (event: PropertyValueChangedEvent) => {
+                const eventPropertyName: string = event.getProperty().getName();
+                const newValue: Value = event.getNewValue();
+
+                this.formItemViews.filter(
+                    (formItemView: FormItemView) => formItemView.getFormItem().getName() === eventPropertyName).forEach(
+                    (formItemView: FormItemView) => {
+                        const formItemName: string = formItemView.getFormItem().getName();
+
+                        if (!!this.dirtyFormItemViewsMap[formItemName]) {
+                            if (newValue.equals(this.dirtyFormItemViewsMap[formItemName]['originalValue'])) {
+                                delete this.dirtyFormItemViewsMap[formItemName];
+                            } else {
+                                this.dirtyFormItemViewsMap[formItemName]['currentValue'] = newValue;
+                            }
+                        } else {
+                            this.dirtyFormItemViewsMap[formItemName] = {
+                                originalValue: event.getPreviousValue(),
+                                currentValue: newValue
+                            };
+                        }
+                    });
+            };
         }
 
         public layout(validate: boolean = true): wemQ.Promise<void> {
 
-            let deferred = wemQ.defer<void>();
+            const deferred = wemQ.defer<void>();
 
             this.removeChildren();
 
             this.removeButton = new api.dom.AEl('remove-button');
             this.appendChild(this.removeButton);
             this.removeButton.onClicked((event: MouseEvent) => {
-                this.notifyRemoveButtonClicked();
+                if (this.isDirty()) {
+                    this.deleteOccurrenceConfirmationDialog.open();
+                } else {
+                    this.notifyRemoveButtonClicked();
+                }
                 event.stopPropagation();
                 event.preventDefault();
                 return false;
@@ -65,7 +116,7 @@ module api.form {
             this.formSetOccurrencesContainer = new api.dom.DivEl(this.occurrenceContainerClassName);
             this.appendChild(this.formSetOccurrencesContainer);
 
-            let layoutPromise: wemQ.Promise<FormItemView[]> = this.formItemLayer.setFormItems(this.getFormItems()).setParentElement(
+            const layoutPromise: wemQ.Promise<FormItemView[]> = this.formItemLayer.setFormItems(this.getFormItems()).setParentElement(
                 this.formSetOccurrencesContainer).setParent(this).layout(this.propertySet, validate);
 
             layoutPromise.then((formItemViews: FormItemView[]) => {
@@ -74,6 +125,8 @@ module api.form {
                 if (validate) {
                     this.validate(true);
                 }
+
+                this.propertySet.onPropertyValueChanged(this.formDataChangedListener);
 
                 this.subscribeOnItemEvents();
 
@@ -86,6 +139,10 @@ module api.form {
             return deferred.promise;
         }
 
+        private isDirty(): boolean {
+            return Object.keys(this.dirtyFormItemViewsMap).length > 0;
+        }
+
         protected initValidationMessageBlock() {
             // must be implemented by children
         }
@@ -96,10 +153,10 @@ module api.form {
 
         validate(silent: boolean = true): ValidationRecording {
 
-            let allRecordings = new ValidationRecording();
+            const allRecordings = new ValidationRecording();
 
             this.formItemViews.forEach((formItemView: FormItemView) => {
-                let currRecording = formItemView.validate(silent);
+                const currRecording = formItemView.validate(silent);
                 allRecordings.flatten(currRecording);
             });
 
@@ -136,12 +193,16 @@ module api.form {
         }
 
         update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
+            console.log('update');
             let set = propertyArray.getSet(this.formItemOccurrence.getIndex());
             if (!set) {
                 set = propertyArray.addSet();
             }
             this.ensureSelectionArrayExists(set);
+            this.dirtyFormItemViewsMap = {};
+            this.propertySet.unPropertyValueChanged(this.formDataChangedListener);
             this.propertySet = set;
+            this.propertySet.onPropertyValueChanged(this.formDataChangedListener);
             return this.formItemLayer.update(this.propertySet, unchangedOnly);
         }
 
