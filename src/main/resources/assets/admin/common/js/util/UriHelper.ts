@@ -59,13 +59,13 @@ module api.util {
         }
 
         /**
-         * Creates an URI to a portal path.
+         * Adds a prefix to a site path.
          *
-         * @param path path to append to base portal URI.
-         * @returns {string} the URI to a portal path.
+         * @param path path to append to base site URI.
+         * @returns {string} the URI to a site path.
          */
-        static getPortalUri(path: string): string {
-            return UriHelper.getAdminUri(UriHelper.joinPath('portal', UriHelper.relativePath(path)));
+        static addSitePrefix(path: string): string {
+            return UriHelper.getAdminUri(UriHelper.joinPath('site', UriHelper.relativePath(path)));
         }
 
         static relativePath(path: string): string {
@@ -104,12 +104,12 @@ module api.util {
             return StringHelper.isBlank(url) ? StringHelper.EMPTY_STRING : url.split(/\?|&/i)[0];
         }
 
-        static decodeUrlParams(url: string): {[key: string]: string} {
+        static decodeUrlParams(url: string): { [key: string]: string } {
             if (StringHelper.isBlank(url)) {
                 return {};
             }
             let array = url.split(/\?|&/i);
-            let params: {[name: string]: string} = {};
+            let params: { [name: string]: string } = {};
             let param;
             if (array.length > 1) {
                 for (let i = 1; i < array.length; i++) {
@@ -128,7 +128,7 @@ module api.util {
          * @param prefix
          * @returns {string}
          */
-        static encodeUrlParams(params: {[name: string]: any}, prefix?: string): string {
+        static encodeUrlParams(params: { [name: string]: any }, prefix?: string): string {
             if (!params) {
                 return StringHelper.EMPTY_STRING;
             }
@@ -147,7 +147,7 @@ module api.util {
             return urlArray.join('&');
         }
 
-        static appendUrlParams(url: string, params: {[name: string]: any}): string {
+        static appendUrlParams(url: string, params: { [name: string]: any }): string {
             if (!params || Object.keys(params).length === 0) {
                 return url;
             }
