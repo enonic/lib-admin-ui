@@ -115,6 +115,11 @@ module api.ui.selector.dropdown {
             this.onRendered(() => this.doUpdateDropdownTopPositionAndWidth());
         }
 
+        clearInput() {
+            this.input.reset();
+            this.input.forceChangedEvent();
+        }
+
         isValid(): boolean {
             return this.input.isValid();
         }
