@@ -597,7 +597,9 @@ module api.ui.selector.combobox {
 
             if (this.maximumOccurrencesReached()) {
                 this.input.setMaximumReached();
-                if (this.setNextInputFocusWhenMaxReached && !this.ignoreNextFocus) {
+                // Moving focus to the next input upon selecting an option with the Enter key is handled
+                // in api.form.inputtype.combobox.fireFocusSwitchEvent, hence the check for keyCode...
+                if (keyCode !== 13 && this.setNextInputFocusWhenMaxReached && !this.ignoreNextFocus) {
                     api.dom.FormEl.moveFocusToNextFocusable(this.input, 'input, select');
                 }
                 this.dropdownHandle.setEnabled(false);

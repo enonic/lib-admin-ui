@@ -45,6 +45,7 @@
 ///<reference path='notify/_module.ts' />
 
 ///<reference path='rest/_module.ts' />
+///<reference path='util/Messages.ts' />
 
 ///<reference path='data/_module-doc.ts' />
 ///<reference path='data/_module.ts' />

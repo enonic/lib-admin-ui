@@ -16,5 +16,4 @@
 ///<reference path='Reference.ts' />
 ///<reference path='LocalDateTime.ts' />
 ///<reference path='DateTime.ts' />
-///<reference path='Messages.ts' />
 ///<reference path='Timezone.ts' />

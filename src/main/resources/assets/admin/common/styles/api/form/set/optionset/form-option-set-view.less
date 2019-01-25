@@ -1,5 +1,9 @@
 .form-view {
 
+  .selection-message {
+    display: none;
+  }
+
   &:not(.display-validation-errors) .form-option-set-occurrence-view .form-option-set-option-view {
     &.selected.invalid {
       .option-items-container .input-view {
@@ -28,6 +32,10 @@
         color: @input-red-text;
         font-size: 14px;
         padding: 10px 10px 0 10px;
+
+        &.empty {
+          display: none;
+        }
       }
 
       .form-option-set-option-view.invalid {
@@ -101,10 +109,6 @@
   }
 
   .occurrence-views-container .form-option-set-occurrence-view {
-
-    .selection-message:empty {
-      display: none;
-    }
 
     .form-occurrence-draggable-label {
       margin-left: 0;
