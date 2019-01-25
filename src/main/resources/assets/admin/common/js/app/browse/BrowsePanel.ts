@@ -218,7 +218,7 @@ module api.app.browse {
                     // Prevent toolbar and gridPanel not being visible when the width/height
                     // is requested and elements resize/change position/etc.
                     setTimeout(() => {
-                        this.gridAndToolbarPanel.appendChild(this.browseToolbar); // 1
+                        this.gridAndToolbarPanel.appendChild(this.browseToolbar);
                     });
                     this.browseToolbar.onRendered(() => {
                         setTimeout(() => {
@@ -226,7 +226,7 @@ module api.app.browse {
                         });
                     });
                 } else {
-                    this.appendChild(this.browseToolbar); // 2
+                    this.appendChild(this.browseToolbar);
                     // Hack: Same hack.
                     this.browseToolbar.onRendered(() => {
                         setTimeout(() => {
