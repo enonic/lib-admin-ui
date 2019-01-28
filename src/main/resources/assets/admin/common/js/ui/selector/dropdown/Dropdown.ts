@@ -116,8 +116,14 @@ module api.ui.selector.dropdown {
         }
 
         clearInput() {
+            const oldValue = this.input.getValue();
             this.input.reset();
-            this.input.forceChangedEvent();
+            this.notifyOptionFilterInputValueChanged(oldValue, '');
+            this.dropdownList.setFilterArgs({searchString: ''});
+        }
+
+        navigateToSelectedOption() {
+            this.dropdownList.navigateToRow(this.getSelectedOption());
         }
 
         isValid(): boolean {
