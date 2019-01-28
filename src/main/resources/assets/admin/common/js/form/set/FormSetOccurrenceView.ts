@@ -236,6 +236,14 @@ module api.form {
 
         refresh() {
             this.removeButton.setVisible(this.formItemOccurrence.isRemoveButtonRequired());
+
+            this.refreshViews();
+        }
+
+        refreshViews() {
+            this.formItemViews.forEach(itemView => {
+                itemView.refresh();
+            });
         }
 
         public reset() {
