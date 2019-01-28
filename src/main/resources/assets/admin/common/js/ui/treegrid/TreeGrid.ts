@@ -854,10 +854,6 @@ module api.ui.treegrid {
             return this.root;
         }
 
-        isNewlySelected(): boolean {
-            return this.getRoot().isNewlySelected();
-        }
-
         isActive(): boolean {
             return this.active;
         }

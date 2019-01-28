@@ -15,8 +15,6 @@ module api.ui.treegrid {
 
         private filtered: boolean;
 
-        private newlySelected: boolean;
-
         private selectionChangeType: SelectionChangeType;
 
         private currentSelection: TreeNode<DATA>[];
@@ -33,8 +31,6 @@ module api.ui.treegrid {
             this.currentSelection = [];
 
             this.stashedSelection = [];
-
-            this.updateNewlySelected([]);
 
             this.selectionChangeType = SelectionChangeType.NONE;
         }
@@ -91,30 +87,6 @@ module api.ui.treegrid {
             this.filtered = filtered;
         }
 
-        isNewlySelected(): boolean {
-            return this.newlySelected;
-        }
-
-        // Should be called before selection changed
-        private updateNewlySelected(newSelection: TreeNode<DATA>[]) {
-            const isEmpty = (selection: TreeNode<DATA>[]) => (!selection || selection.length === 0);
-            const isUnary = (selection: TreeNode<DATA>[]) => (!!selection && selection.length === 1);
-            const isNew = (selection: TreeNode<DATA>) => {
-                return this.getFullSelection().map(el => el.getDataId()).every(id => id !== selection.getDataId());
-            };
-
-            const curr = this.currentSelection;
-            const stash = this.stashedSelection;
-
-            const firstSelection = newSelection[0];
-
-            if (isUnary(newSelection) && firstSelection && isNew(firstSelection)) {
-                this.newlySelected = isEmpty(stash);
-            } else { // isMultiary or isEmpty
-                this.newlySelected = isEmpty(curr) && isEmpty(stash);
-            }
-        }
-
         getSelectionChangeType(): SelectionChangeType {
             return this.selectionChangeType;
         }
@@ -148,10 +120,6 @@ module api.ui.treegrid {
 
         setCurrentSelection(selection: TreeNode<DATA>[]) {
             this.selectionChangeType = this.calcSelectionChangeType(selection);
-
-            if (this.isSelectionChanged()) {
-                this.updateNewlySelected(selection);
-            }
 
             this.currentSelection = selection;
 
