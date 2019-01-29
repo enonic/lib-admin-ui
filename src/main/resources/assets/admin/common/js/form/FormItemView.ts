@@ -58,6 +58,10 @@ module api.form {
             //to be implemented on demand in inheritors
         }
 
+        hasNonDefaultValues(): boolean {
+            return false; //to be implemented on demand in inheritors
+        }
+
         getContext(): FormContext {
             return this.context;
         }

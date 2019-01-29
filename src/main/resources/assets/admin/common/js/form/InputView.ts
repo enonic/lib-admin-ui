@@ -1,6 +1,7 @@
 module api.form {
     import PropertyArray = api.data.PropertyArray;
     import PropertySet = api.data.PropertySet;
+    import Property = api.data.Property;
     import BaseInputTypeNotManagingAdd = api.form.inputtype.support.BaseInputTypeNotManagingAdd;
     import i18n = api.util.i18n;
     import StringHelper = api.util.StringHelper;
@@ -167,6 +168,12 @@ module api.form {
 
         refresh() {
             this.inputTypeView.refresh();
+        }
+
+        hasNonDefaultValues(): boolean {
+            return this.propertyArray.some((property: Property) => {
+                return !StringHelper.isEmpty(property.getValue().getString()) && !property.getValue().equals(this.input.getDefaultValue());
+            });
         }
 
         public getInputTypeView(): api.form.inputtype.InputTypeView {

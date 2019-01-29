@@ -50,27 +50,21 @@ module api.form {
 
         private initFormDataChangeListener() {
             this.formDataChangedListener = (event: PropertyValueChangedEvent) => {
-                const eventPropertyName: string = event.getProperty().getName();
                 const newValue: Value = event.getNewValue();
+                const propertyPathAsString: string = event.getPath().toString();
 
-                this.formItemViews.filter(
-                    (formItemView: FormItemView) => formItemView.getFormItem().getName() === eventPropertyName).forEach(
-                    (formItemView: FormItemView) => {
-                        const formItemName: string = formItemView.getFormItem().getName();
-
-                        if (!!this.dirtyFormItemViewsMap[formItemName]) {
-                            if (newValue.equals(this.dirtyFormItemViewsMap[formItemName]['originalValue'])) {
-                                delete this.dirtyFormItemViewsMap[formItemName];
-                            } else {
-                                this.dirtyFormItemViewsMap[formItemName]['currentValue'] = newValue;
-                            }
-                        } else {
-                            this.dirtyFormItemViewsMap[formItemName] = {
-                                originalValue: event.getPreviousValue(),
-                                currentValue: newValue
-                            };
-                        }
-                    });
+                if (!!this.dirtyFormItemViewsMap[propertyPathAsString]) {
+                    if (newValue.equals(this.dirtyFormItemViewsMap[propertyPathAsString]['originalValue'])) {
+                        delete this.dirtyFormItemViewsMap[propertyPathAsString];
+                    } else {
+                        this.dirtyFormItemViewsMap[propertyPathAsString]['currentValue'] = newValue;
+                    }
+                } else {
+                    this.dirtyFormItemViewsMap[propertyPathAsString] = {
+                        originalValue: event.getPreviousValue(),
+                        currentValue: newValue
+                    };
+                }
             };
         }
 
@@ -83,7 +77,8 @@ module api.form {
             this.removeButton = new api.dom.AEl('remove-button');
             this.appendChild(this.removeButton);
             this.removeButton.onClicked((event: MouseEvent) => {
-                if (this.isDirty()) {
+                if (this.isDirty() || this.hasNonDefaultValues()) {
+                    this.deleteOccurrenceConfirmationDialog.setTitle(i18n('dialog.confirm.occurrences.title', this.label.getTitle()));
                     this.deleteOccurrenceConfirmationDialog.open();
                 } else {
                     this.notifyRemoveButtonClicked();
@@ -143,6 +138,10 @@ module api.form {
             return Object.keys(this.dirtyFormItemViewsMap).length > 0;
         }
 
+        hasNonDefaultValues(): boolean {
+            return this.formItemViews.some(formItemView => formItemView.hasNonDefaultValues());
+        }
+
         protected initValidationMessageBlock() {
             // must be implemented by children
         }
@@ -193,7 +192,6 @@ module api.form {
         }
 
         update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
-            console.log('update');
             let set = propertyArray.getSet(this.formItemOccurrence.getIndex());
             if (!set) {
                 set = propertyArray.addSet();
@@ -247,6 +245,7 @@ module api.form {
         }
 
         public reset() {
+            this.dirtyFormItemViewsMap = {};
             return this.formItemLayer.reset();
         }
 

@@ -33,5 +33,9 @@ module api.form {
         setTitle(label: string) {
             this.title.nodeValue = label.trim();
         }
+
+        getTitle(): string {
+            return this.title.nodeValue;
+        }
     }
 }
