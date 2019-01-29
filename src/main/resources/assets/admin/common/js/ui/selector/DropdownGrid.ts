@@ -326,9 +326,7 @@ module api.ui.selector {
         }
 
         resetActiveSelection() {
-            if (this.getGrid().getActiveCell()) {
-                this.getGrid().resetActiveCell();
-            }
+            this.getGrid().resetActiveCell();
         }
 
         setCustomHeight(height: number) {

@@ -166,10 +166,7 @@ module api.ui.selector {
             this.dropdownGrid.navigateToFirstRow();
         }
 
-        navigateToRowIfNotActive(selectedOption?: Option<OPTION_DISPLAY_VALUE>) {
-            if (this.getActiveRow() > -1) {
-                return;
-            }
+        navigateToRow(selectedOption?: Option<OPTION_DISPLAY_VALUE>) {
             if (selectedOption) {
                 let row = this.dropdownGrid.getRowByValue(selectedOption.value);
                 if (row !== undefined) {
@@ -178,6 +175,13 @@ module api.ui.selector {
             } else {
                 this.dropdownGrid.navigateToFirstRow();
             }
+        }
+
+        navigateToRowIfNotActive(selectedOption?: Option<OPTION_DISPLAY_VALUE>) {
+            if (this.getActiveRow() > -1) {
+                return;
+            }
+            this.navigateToRow(selectedOption);
         }
 
         navigateToNextRow() {

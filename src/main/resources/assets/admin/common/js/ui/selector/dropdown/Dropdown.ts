@@ -115,6 +115,17 @@ module api.ui.selector.dropdown {
             this.onRendered(() => this.doUpdateDropdownTopPositionAndWidth());
         }
 
+        clearInput() {
+            const oldValue = this.input.getValue();
+            this.input.reset();
+            this.notifyOptionFilterInputValueChanged(oldValue, '');
+            this.dropdownList.setFilterArgs({searchString: ''});
+        }
+
+        navigateToSelectedOption() {
+            this.dropdownList.navigateToRow(this.getSelectedOption());
+        }
+
         isValid(): boolean {
             return this.input.isValid();
         }
