@@ -75,27 +75,27 @@ describe('api.util.UriHelper', () => {
         });
     });
 
-    describe('getPortalUri', () => {
-        it("should return '/admin/portal' string if no CONFIG.baseUri is present", () => {
+    describe('addSitePrefix', () => {
+        it("should return '/admin/site' string if no CONFIG.baseUri is present", () => {
             let config = window['CONFIG'];
             window['CONFIG'] = undefined;
-            expect(uh.getPortalUri(undefined)).toBe('/admin/portal');
-            expect(uh.getPortalUri('a/b/c')).toBe('/admin/portal/a/b/c');
+            expect(uh.addSitePrefix(undefined)).toBe('/admin/site');
+            expect(uh.addSitePrefix('a/b/c')).toBe('/admin/site/a/b/c');
             window['CONFIG'] = config;
         });
-        it('should return CONFIG.baseUri/admin/portal if invalid arguments are passed', () => {
-            let expected = window['CONFIG'].baseUri + '/admin/portal';
-            expect(uh.getPortalUri(undefined)).toBe(expected);
-            expect(uh.getPortalUri('')).toBe(expected);
-            expect(uh.getPortalUri('/')).toBe(expected);
-            expect(uh.getPortalUri(null)).toBe(expected);
+        it('should return CONFIG.baseUri/admin/site if invalid arguments are passed', () => {
+            let expected = window['CONFIG'].baseUri + '/admin/site';
+            expect(uh.addSitePrefix(undefined)).toBe(expected);
+            expect(uh.addSitePrefix('')).toBe(expected);
+            expect(uh.addSitePrefix('/')).toBe(expected);
+            expect(uh.addSitePrefix(null)).toBe(expected);
         });
         it('should escape appended path', () => {
-            expect(uh.getPortalUri('/a/b/c?d=1&e=false&foo=bar')).toBe(
-                window['CONFIG'].baseUri + '/admin/portal/a/b/c?d=1&e=false&foo=bar');
+            expect(uh.addSitePrefix('/a/b/c?d=1&e=false&foo=bar')).toBe(
+                window['CONFIG'].baseUri + '/admin/site/a/b/c?d=1&e=false&foo=bar');
         });
         it('should append path to base uri', () => {
-            expect(uh.getPortalUri('a/b/c?d=1&e=false&foo=bar')).toBe(window['CONFIG'].baseUri + '/admin/portal/a/b/c?d=1&e=false&foo=bar');
+            expect(uh.addSitePrefix('a/b/c?d=1&e=false&foo=bar')).toBe(window['CONFIG'].baseUri + '/admin/site/a/b/c?d=1&e=false&foo=bar');
         });
     });
 
