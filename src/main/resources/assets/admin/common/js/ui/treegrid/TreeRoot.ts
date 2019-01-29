@@ -1,5 +1,12 @@
 module api.ui.treegrid {
 
+    export enum SelectionChangeType {
+        ADDED,
+        REMOVED,
+        MIXED,
+        NONE
+    }
+
     export class TreeRoot<DATA> {
 
         private defaultRoot: TreeNode<DATA>;
@@ -8,7 +15,7 @@ module api.ui.treegrid {
 
         private filtered: boolean;
 
-        private newlySelected: boolean;
+        private selectionChangeType: SelectionChangeType;
 
         private currentSelection: TreeNode<DATA>[];
 
@@ -25,7 +32,7 @@ module api.ui.treegrid {
 
             this.stashedSelection = [];
 
-            this.updateNewlySelected([]);
+            this.selectionChangeType = SelectionChangeType.NONE;
         }
 
         getDefaultRoot(): TreeNode<DATA> {
@@ -80,38 +87,45 @@ module api.ui.treegrid {
             this.filtered = filtered;
         }
 
-        isNewlySelected(): boolean {
-            return this.newlySelected;
-        }
-
-        // Should be called before selection changed
-        private updateNewlySelected(newSelection: TreeNode<DATA>[]) {
-            const isEmpty = (selection: TreeNode<DATA>[]) => (!selection || selection.length === 0);
-            const isUnary = (selection: TreeNode<DATA>[]) => (selection.length === 1);
-            const isNew = (selection: TreeNode<DATA>) => {
-                return this.getFullSelection().map(el => el.getDataId()).every(id => id !== selection.getDataId());
-            };
-
-            const curr = this.currentSelection;
-            const stash = this.stashedSelection;
-
-            if (isUnary(newSelection) && isNew(newSelection[0])) {
-                this.newlySelected = isEmpty(stash);
-            } else { // isMultiary or isEmpty
-                this.newlySelected = isEmpty(curr) && isEmpty(stash);
-            }
+        getSelectionChangeType(): SelectionChangeType {
+            return this.selectionChangeType;
         }
 
         getCurrentSelection(): TreeNode<DATA>[] {
             return this.currentSelection;
         }
 
+        calcSelectionChangeType(selection: TreeNode<DATA>[]): SelectionChangeType {
+            const currentIds = this.currentSelection.map((el) => el.getDataId());
+            const selectedIds = selection.map((el) => el.getDataId());
+
+            const contains = (ids: string[], id: string) => ids.indexOf(id) > -1;
+            const addedSelection = selectedIds.some(id => !contains(currentIds, id));
+            const removedSelection = currentIds.some(id => !contains(selectedIds, id));
+
+            if (addedSelection) {
+                if (removedSelection) {
+                    return SelectionChangeType.MIXED;
+                }
+                return SelectionChangeType.ADDED;
+            } else if (removedSelection) {
+                return SelectionChangeType.REMOVED;
+            }
+            return SelectionChangeType.NONE;
+        }
+
+        isSelectionChanged(): boolean {
+            return this.selectionChangeType != null && this.selectionChangeType !== SelectionChangeType.NONE;
+        }
+
         setCurrentSelection(selection: TreeNode<DATA>[]) {
-            this.updateNewlySelected(selection);
+            this.selectionChangeType = this.calcSelectionChangeType(selection);
 
             this.currentSelection = selection;
 
-            this.cleanStashedSelection();
+            if (this.isSelectionChanged()) {
+                this.cleanStashedSelection();
+            }
         }
 
         getStashedSelection(): TreeNode<DATA>[] {
@@ -126,8 +140,7 @@ module api.ui.treegrid {
         }
 
         getFullSelection(uniqueOnly: boolean = true): TreeNode<DATA>[] {
-            let fullSelection = this.currentSelection.
-                concat(this.stashedSelection);
+            let fullSelection = this.currentSelection.concat(this.stashedSelection);
             if (uniqueOnly) {
                 let fullIds = fullSelection.map((el) => {
                     return el.getDataId();
@@ -156,16 +169,24 @@ module api.ui.treegrid {
         }
 
         clearStashedSelection() {
+            this.selectionChangeType = this.stashedSelection.length > 0 ? SelectionChangeType.REMOVED : SelectionChangeType.NONE;
             this.stashedSelection = [];
         }
 
         removeSelections(dataIds: string[]) {
+            const currentSelectionSize = this.currentSelection.length;
+            const stashedSelectionSize = this.stashedSelection.length;
+
             this.currentSelection = this.currentSelection.filter((el) => {
                 return dataIds.indexOf(el.getDataId()) < 0;
             });
             this.stashedSelection = this.stashedSelection.filter((el) => {
                 return dataIds.indexOf(el.getDataId()) < 0;
             });
+
+            const selectionHasChanged = currentSelectionSize !== this.currentSelection.length ||
+                                        stashedSelectionSize !== this.stashedSelection.length;
+            this.selectionChangeType = selectionHasChanged ? SelectionChangeType.REMOVED : SelectionChangeType.NONE;
         }
 
         updateSelection(dataId: string, data: DATA) {

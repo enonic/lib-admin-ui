@@ -858,10 +858,6 @@ module api.ui.treegrid {
             return this.root;
         }
 
-        isNewlySelected(): boolean {
-            return this.getRoot().isNewlySelected();
-        }
-
         isActive(): boolean {
             return this.active;
         }
@@ -1689,16 +1685,6 @@ module api.ui.treegrid {
             return this.gridData.getItem(rowIndex);
         }
 
-        private isSelectionEqual(selection: TreeNode<DATA>[]): boolean {
-            const currentSelection = this.root.getCurrentSelection();
-
-            if (selection.length !== currentSelection.length) {
-                return false;
-            }
-
-            return selection.every((node: TreeNode<DATA>) => currentSelection.indexOf(node) > -1);
-        }
-
         private notifySelectionChanged(rows: number[]): void {
             const newSelection: TreeNode<DATA>[] = [];
             if (rows) {
@@ -1707,13 +1693,13 @@ module api.ui.treegrid {
                 });
             }
 
-            if (this.isSelectionEqual(newSelection)) {
-                return;
-            }
+            const selectionWasRemoved = this.root.getSelectionChangeType() === SelectionChangeType.REMOVED;
 
             this.root.setCurrentSelection(newSelection);
 
-            this.triggerSelectionChangedListeners();
+            if (this.root.isSelectionChanged() || selectionWasRemoved) {
+                this.triggerSelectionChangedListeners();
+            }
         }
 
         private showContextMenuAt(x: number, y: number) {
