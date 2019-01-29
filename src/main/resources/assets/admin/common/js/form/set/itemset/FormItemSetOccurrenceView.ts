@@ -86,12 +86,6 @@ module api.form {
             });
         }
 
-        refreshViews() {
-            this.formItemViews.forEach(itemView => {
-                itemView.refresh();
-            });
-        }
-
         validate(silent: boolean = true): ValidationRecording {
 
             let allRecordings = new ValidationRecording();

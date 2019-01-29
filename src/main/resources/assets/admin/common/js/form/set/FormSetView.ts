@@ -267,6 +267,10 @@ module api.form {
             throw new Error('Must be implemented by inheritor');
         }
 
+        refresh() {
+            this.formItemOccurrences.refreshOccurrenceViews();
+        }
+
         private makeAddButton(): api.ui.button.Button {
             const addButton = new api.ui.button.Button(i18n('button.add', this.formSet.getLabel()));
             addButton.addClass('small');

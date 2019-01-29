@@ -114,5 +114,9 @@ module api.form {
         resetOccurrenceView(occurrenceView: FormSetOccurrenceView) {
             occurrenceView.reset();
         }
+
+        refreshOccurence(index: number) {
+            this.occurrenceViews[index].refreshViews();
+        }
     }
 }

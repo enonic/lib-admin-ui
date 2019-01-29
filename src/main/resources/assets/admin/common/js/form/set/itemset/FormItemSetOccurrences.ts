@@ -50,9 +50,5 @@ module api.form {
             });
             return newOccurrenceView;
         }
-
-        refreshOccurence(index: number) {
-            this.occurrenceViews[index].refreshViews();
-        }
     }
 }

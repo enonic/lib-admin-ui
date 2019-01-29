@@ -81,6 +81,12 @@ module api.form {
             }
         }
 
+        refresh() {
+            this.formItemViews.forEach((formItemView: FormItemView) => {
+                formItemView.refresh();
+            });
+        }
+
         public layout(validate: boolean = true): wemQ.Promise<void> {
             let deferred = wemQ.defer<void>();
 
