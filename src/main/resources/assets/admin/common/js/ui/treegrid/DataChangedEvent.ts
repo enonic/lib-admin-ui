@@ -1,18 +1,18 @@
 module api.ui.treegrid {
 
+    export enum DataChangedType {
+        ADDED,
+        UPDATED,
+        DELETED
+    }
+
     export class DataChangedEvent<DATA> {
-
-        public static ADDED: string = 'added';
-
-        public static UPDATED: string = 'updated';
-
-        public static DELETED: string = 'deleted';
 
         private treeNodes: TreeNode<DATA>[];
 
-        private type: string;
+        private type: DataChangedType;
 
-        constructor(treeNode: TreeNode<DATA>[], action: string) {
+        constructor(treeNode: TreeNode<DATA>[], action: DataChangedType) {
             this.treeNodes = treeNode;
             this.type = action;
         }
@@ -21,7 +21,7 @@ module api.ui.treegrid {
             return this.treeNodes;
         }
 
-        public getType(): string {
+        public getType(): DataChangedType {
             return this.type;
         }
 

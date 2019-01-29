@@ -194,6 +194,10 @@ module api.ui.treegrid {
             this.highlightCurrentNode();
         }
 
+        public hasHighlightedNode(): boolean {
+            return this.highlightedNode != null;
+        }
+
         public getFirstSelectedOrHighlightedNode(): TreeNode<DATA> {
             return this.highlightedNode ? this.highlightedNode : this.getRoot().getFullSelection()[0];
         }
@@ -1400,7 +1404,7 @@ module api.ui.treegrid {
                 if (node && parent) {
                     parent.removeChild(node);
                     parent.setMaxChildren(parent.getMaxChildren() - 1);
-                    this.notifyDataChanged(new DataChangedEvent<DATA>([node], DataChangedEvent.DELETED));
+                    this.notifyDataChanged(new DataChangedEvent<DATA>([node], DataChangedType.DELETED));
                 }
             });
 
@@ -1467,7 +1471,7 @@ module api.ui.treegrid {
                                 if (!stashedParentNode) {
                                     this.gridData.setItems(root.treeToList(), this.idPropertyName);
                                 }
-                                this.notifyDataChanged(new DataChangedEvent<DATA>([node], DataChangedEvent.ADDED));
+                                this.notifyDataChanged(new DataChangedEvent<DATA>([node], DataChangedType.ADDED));
 
                                 if (parentNode !== root) {
                                     this.refreshNodeData(parentNode).then((refreshedNode: TreeNode<DATA>) => {
@@ -1541,12 +1545,12 @@ module api.ui.treegrid {
             root.treeToList().forEach((child: TreeNode<DATA>) => {
                 this.refreshNodeData(child);
             });
-            this.notifyDataChanged(new DataChangedEvent<DATA>(deleted, DataChangedEvent.DELETED));
+            this.notifyDataChanged(new DataChangedEvent<DATA>(deleted, DataChangedType.DELETED));
         }
 
         initData(nodes: TreeNode<DATA>[]) {
             this.gridData.setItems(nodes, this.idPropertyName);
-            this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedEvent.ADDED));
+            this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
             this.resetCurrentSelection(nodes);
         }
 

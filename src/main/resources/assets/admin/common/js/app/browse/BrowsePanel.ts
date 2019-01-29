@@ -47,9 +47,9 @@ module api.app.browse {
             this.filterPanel = this.createFilterPanel();
             this.browseToolbar = this.createToolbar();
 
-            let selectionChangedHandler = (currentSelection: TreeNode<Object>[],
-                                           fullSelection: TreeNode<Object>[],
-                                           highlighted: boolean) => {
+            const selectionChangedHandler = (currentSelection: TreeNode<Object>[],
+                                             fullSelection: TreeNode<Object>[],
+                                             highlighted: boolean) => {
                 if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
                     this.updateSelectionModeShownItems(currentSelection, fullSelection);
                 }
@@ -75,6 +75,18 @@ module api.app.browse {
                 }
 
             };
+
+            this.treeGrid.onDataChanged(() => {
+                const noHighlightedNode = !this.treeGrid.hasHighlightedNode();
+
+                // Highlighted nodes updated in a separate listener
+                if (noHighlightedNode) {
+                    this.getBrowseActions().updateActionsEnabledState(this.getBrowseItemPanel().getItems())
+                        .then(() => this.getBrowseItemPanel().updatePreviewPanel())
+                        .catch(api.DefaultErrorHandler.handle);
+                }
+
+            });
 
             this.treeGrid.onSelectionChanged(selectionChangedHandler);
 
