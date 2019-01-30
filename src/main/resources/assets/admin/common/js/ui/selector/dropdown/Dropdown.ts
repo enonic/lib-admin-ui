@@ -29,6 +29,8 @@ module api.ui.selector.dropdown {
         noOptionsText?: string;
 
         createColumns?: GridColumn<OPTION_DISPLAY_VALUE>[];
+
+        listMaxHeight?: number;
     }
 
     export class Dropdown<OPTION_DISPLAY_VALUE>
@@ -87,7 +89,7 @@ module api.ui.selector.dropdown {
             let filter = config.filter || this.defaultFilter;
 
             this.dropdownList = new DropdownList(<DropdownGridConfig<OPTION_DISPLAY_VALUE>>{
-                maxHeight: 200,
+                maxHeight: config.listMaxHeight || 200,
                 width: this.input.getEl().getWidth(),
                 optionDisplayValueViewer: config.optionDisplayValueViewer,
                 filter: filter,
