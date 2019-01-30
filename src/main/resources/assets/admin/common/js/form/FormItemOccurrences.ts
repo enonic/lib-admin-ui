@@ -336,6 +336,10 @@ module api.form {
             });
         }
 
+        hasNonDefaultValues(): boolean {
+            return this.occurrenceViews.some((currOccurrenceView: V) => currOccurrenceView.hasNonDefaultValues());
+        }
+
         getOccurrenceViewElementBefore(index: number): V {
             if (index < 1) {
                 return null;

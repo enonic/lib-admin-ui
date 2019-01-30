@@ -62,6 +62,10 @@ module api.form {
             throw new Error('Must be implemented by inheritor');
         }
 
+        hasNonDefaultValues(): boolean {
+            return false;
+        }
+
         clean() {
             // empty
         }
