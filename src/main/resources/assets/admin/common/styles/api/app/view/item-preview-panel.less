@@ -5,33 +5,35 @@
   display: flex;
   flex-direction: column;
 
-  > .frame-wrapper {
-    display: none;
+  .frame-wrapper {
+    display: flex;
     flex: 1;
 
-    iframe {
+    > iframe {
       flex: 1;
       width: 100%;
       border: 0 none;
       margin: 0;
       padding: 0;
       overflow: auto;
-
+      background-color: @admin-white;
     }
   }
 
   &.page-preview, &.media-preview {
-    > .frame-wrapper {
-      display: flex;
-    }
-    > img {
-      display: none;
+    .frame-wrapper {
+      > iframe {
+        display: block;
+      }
+      > img {
+        display: none;
+      }
     }
   }
 
   &.no-preview {
 
-    > .frame-wrapper, > img {
+    .frame-wrapper {
       display: none;
     }
 
