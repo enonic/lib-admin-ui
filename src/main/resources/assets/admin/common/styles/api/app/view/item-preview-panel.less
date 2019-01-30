@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
 
-  .frame-wrapper {
+  .wrapper {
     display: flex;
     flex: 1;
 
@@ -21,7 +21,7 @@
   }
 
   &.page-preview, &.media-preview {
-    .frame-wrapper {
+    .wrapper {
       > iframe {
         display: block;
       }
@@ -33,7 +33,7 @@
 
   &.no-preview {
 
-    .frame-wrapper {
+    .wrapper {
       display: none;
     }
 

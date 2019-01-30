@@ -10,7 +10,7 @@ module api.app.view {
 
         protected frame: IFrameEl;
 
-        protected frameWrapper: DivEl;
+        protected wrapper: DivEl;
 
         protected toolbar: ItemPreviewToolbar<M>;
 
@@ -22,9 +22,9 @@ module api.app.view {
             this.mask = new LoadMask(this);
             this.frame = new IFrameEl();
             this.frame.onLoaded(() => this.mask.hide());
-            this.frameWrapper = new DivEl('frame-wrapper');
-            this.frameWrapper.appendChild(this.frame);
-            this.appendChildren(this.toolbar, this.frameWrapper, this.mask);
+            this.wrapper = new DivEl('wrapper');
+            this.wrapper.appendChild(this.frame);
+            this.appendChildren(this.toolbar, this.wrapper, this.mask);
         }
 
         createToolbar(): ItemPreviewToolbar<M> {
