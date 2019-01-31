@@ -35,7 +35,9 @@
   &.no-preview {
 
     .wrapper {
-      display: none;
+      > iframe {
+        display: none;
+      }
     }
 
     &.icon-blocked:before {
@@ -51,8 +53,14 @@
 
     .no-preview-message {
       .watermark-text(21px, true);
-      margin-top: -20px;
-      z-index: 2;
+      display: flex;
+      position: relative;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+      top: 0;
+      margin: 0 auto;
+      background: @admin-white;
     }
   }
 }
