@@ -30,6 +30,10 @@ module api.form.inputtype.support {
         constructor(className: string) {
             super('input-type-view' + (className ? ' ' + className : ''));
 
+            this.initListeners();
+        }
+
+        private initListeners() {
             this.propertyArrayListener = (...args: any[]) => {
                 if (!this.ignorePropertyChange) {
                     if (BaseInputTypeManagingAdd.debug) {
@@ -38,6 +42,12 @@ module api.form.inputtype.support {
                     this.update(this.propertyArray, true).done();
                 }
             };
+
+            this.onRemoved(() => {
+                if (this.propertyArray) {
+                    this.removePropertyArrayListeners();
+                }
+            });
         }
 
         protected fireFocusSwitchEvent(event: SelectedOptionEvent<any>) {
@@ -117,10 +127,7 @@ module api.form.inputtype.support {
                 if (BaseInputTypeManagingAdd.debug) {
                     console.debug('BaseInputTypeManagingAdd.registerPropertyArray: unregister old first ', this.propertyArray);
                 }
-                this.propertyArray.unPropertyValueChanged(this.propertyArrayListener);
-                this.propertyArray.unPropertyAdded(this.propertyArrayListener);
-                this.propertyArray.unPropertyRemoved(this.propertyArrayListener);
-                this.propertyArray.unPropertyIndexChanged(this.propertyArrayListener);
+                this.removePropertyArrayListeners();
             }
             if (propertyArray) {
                 if (BaseInputTypeManagingAdd.debug) {
@@ -134,6 +141,13 @@ module api.form.inputtype.support {
                 propertyArray.onPropertyIndexChanged(this.propertyArrayListener);
             }
             this.propertyArray = propertyArray;
+        }
+
+        private removePropertyArrayListeners() {
+            this.propertyArray.unPropertyValueChanged(this.propertyArrayListener);
+            this.propertyArray.unPropertyAdded(this.propertyArrayListener);
+            this.propertyArray.unPropertyRemoved(this.propertyArrayListener);
+            this.propertyArray.unPropertyIndexChanged(this.propertyArrayListener);
         }
 
         private ensureOccurrenceLimits(propertyArray: PropertyArray) {

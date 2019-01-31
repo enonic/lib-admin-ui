@@ -27,11 +27,21 @@ module api.form.inputtype.support {
             api.util.assertNotNull(ctx, 'CONTEXT cannot be null');
             this.context = ctx;
 
+            this.initListeners();
+        }
+
+        private initListeners() {
             this.propertyListener = (event: api.data.PropertyValueChangedEvent) => {
                 if (!this.ignorePropertyChange) {
                     this.updateProperty(event.getProperty(), true).done();
                 }
             };
+
+            this.onRemoved(() => {
+                if (!!this.property) {
+                    this.property.unPropertyValueChanged(this.propertyListener);
+                }
+            });
         }
 
         availableSizeChanged() {

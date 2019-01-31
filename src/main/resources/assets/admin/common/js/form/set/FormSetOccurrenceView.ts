@@ -66,6 +66,12 @@ module api.form {
                     };
                 }
             };
+
+            this.onRemoved(() => {
+                if (!!this.propertySet) {
+                    this.propertySet.unPropertyValueChanged(this.formDataChangedListener);
+                }
+            });
         }
 
         public layout(validate: boolean = true): wemQ.Promise<void> {

@@ -33,7 +33,36 @@ module api.form.inputtype.support {
 
             this.requiredContractBroken = this.inputTypeView.valueBreaksRequiredContract(property != null ? property.getValue() : null);
 
+            this.initListeners();
+
+            this.registerProperty(property);
+
+            this.inputOccurrence = inputOccurrence;
+
+            this.dragControl = new api.dom.DivEl('drag-control');
+            this.appendChild(this.dragControl);
+
+            this.removeButtonEl = new api.dom.AEl('remove-button');
+            this.removeButtonEl.onClicked((event: MouseEvent) => {
+                this.notifyRemoveButtonClicked();
+                event.stopPropagation();
+                event.preventDefault();
+                return false;
+            });
+
+            let inputWrapper = new api.dom.DivEl('input-wrapper');
+            this.appendChild(inputWrapper);
+
+            inputWrapper.appendChild(this.inputElement);
+
+            this.appendChild(this.removeButtonEl);
+
+            this.refresh();
+        }
+
+        private initListeners() {
             let ignorePropertyChange = false;
+
             this.inputTypeView.onOccurrenceValueChanged((occurrence: api.dom.Element, value: api.data.Value) => {
                 // check if this is our occurrence because all views will receive occurrence value changed event
                 if (this.inputElement === occurrence) {
@@ -65,29 +94,11 @@ module api.form.inputtype.support {
                 }
             };
 
-            this.registerProperty(property);
-
-            this.inputOccurrence = inputOccurrence;
-
-            this.dragControl = new api.dom.DivEl('drag-control');
-            this.appendChild(this.dragControl);
-
-            this.removeButtonEl = new api.dom.AEl('remove-button');
-            this.removeButtonEl.onClicked((event: MouseEvent) => {
-                this.notifyRemoveButtonClicked();
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
+            this.onRemoved(() => {
+                if (!!this.property) {
+                    this.property.unPropertyValueChanged(this.propertyValueChangedHandler);
+                }
             });
-
-            let inputWrapper = new api.dom.DivEl('input-wrapper');
-            this.appendChild(inputWrapper);
-
-            inputWrapper.appendChild(this.inputElement);
-
-            this.appendChild(this.removeButtonEl);
-
-            this.refresh();
         }
 
         update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
