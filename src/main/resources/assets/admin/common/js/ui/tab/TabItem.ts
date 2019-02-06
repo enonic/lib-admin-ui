@@ -50,6 +50,7 @@ module api.ui.tab {
             const handler = builder.clickHandler || (() => this.select());
 
             this.onClicked(handler);
+            this.onTouchStart(handler);
         }
 
         numerate(index: number) {
