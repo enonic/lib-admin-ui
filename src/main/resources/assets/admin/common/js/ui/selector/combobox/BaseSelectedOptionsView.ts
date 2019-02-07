@@ -1,6 +1,8 @@
 module api.ui.selector.combobox {
 
-    export class BaseSelectedOptionsView<T> extends api.dom.DivEl implements SelectedOptionsView<T> {
+    export class BaseSelectedOptionsView<T>
+        extends api.dom.DivEl
+        implements SelectedOptionsView<T> {
 
         private list: SelectedOption<T>[] = [];
 
@@ -8,9 +10,9 @@ module api.ui.selector.combobox {
 
         private maximumOccurrences: number;
 
-        private optionRemovedListeners: {(removed: SelectedOptionEvent<T>): void;}[] = [];
+        private optionRemovedListeners: { (removed: SelectedOptionEvent<T>): void; }[] = [];
 
-        private optionAddedListeners: {(added: SelectedOptionEvent<T>): void;}[] = [];
+        private optionAddedListeners: { (added: SelectedOptionEvent<T>): void; }[] = [];
 
         private optionMovedListeners: { (moved: SelectedOption<T>, fromIndex: number): void }[] = [];
 
@@ -84,10 +86,6 @@ module api.ui.selector.combobox {
 
         protected handleDnDStop(): void {
             // must be implemented by children
-        }
-
-        onOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void) {
-            this.optionMovedListeners.push(listener);
         }
 
         setMaximumOccurrences(value: number) {
@@ -212,28 +210,32 @@ module api.ui.selector.combobox {
             });
         }
 
-        onOptionDeselected(listener: {(removed: SelectedOptionEvent<T>): void;}) {
+        onOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; }) {
             this.optionRemovedListeners.push(listener);
         }
 
-        unOptionDeselected(listener: {(removed: SelectedOptionEvent<T>): void;}) {
-            this.optionRemovedListeners = this.optionRemovedListeners.filter(function (curr: {(removed: SelectedOptionEvent<T>): void;}) {
+        unOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; }) {
+            this.optionRemovedListeners = this.optionRemovedListeners.filter(function (curr: { (removed: SelectedOptionEvent<T>): void; }) {
                 return curr !== listener;
             });
         }
 
-        onOptionSelected(listener: (added: SelectedOptionEvent<T>)=>void) {
+        onOptionSelected(listener: (added: SelectedOptionEvent<T>) => void) {
             this.optionAddedListeners.push(listener);
         }
 
-        unOptionSelected(listener: (added: SelectedOptionEvent<T>)=>void) {
-            this.optionAddedListeners = this.optionAddedListeners.filter((current: (added: SelectedOptionEvent<T>)=>void) => {
+        unOptionSelected(listener: (added: SelectedOptionEvent<T>) => void) {
+            this.optionAddedListeners = this.optionAddedListeners.filter((current: (added: SelectedOptionEvent<T>) => void) => {
                 return listener !== current;
             });
         }
 
+        onOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void) {
+            this.optionMovedListeners.push(listener);
+        }
+
         protected notifyOptionSelected(added: SelectedOptionEvent<T>) {
-            this.optionAddedListeners.forEach((listener: (added: SelectedOptionEvent<T>)=>void) => {
+            this.optionAddedListeners.forEach((listener: (added: SelectedOptionEvent<T>) => void) => {
                 listener(added);
             });
         }
@@ -254,12 +256,7 @@ module api.ui.selector.combobox {
         private handleMovedOccurrence(fromIndex: number, toIndex: number) {
 
             this.moveOccurrence(fromIndex, toIndex);
-
-            this.getSelectedOptions().forEach((option: SelectedOption<T>, index: number) => {
-                if (Math.min(fromIndex, toIndex) <= index && index <= Math.max(fromIndex, toIndex)) {
-                    this.notifyOptionMoved(option, fromIndex);
-                }
-            });
+            this.notifyOptionMoved(this.list[toIndex], fromIndex);
         }
     }
 }
