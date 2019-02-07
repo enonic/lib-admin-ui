@@ -202,9 +202,7 @@ module api.data {
         }
 
         move(index: number, destinationIndex: number) {
-            let toBeMoved = this.array[index];
             api.util.ArrayHelper.moveElement(index, destinationIndex, this.array);
-            toBeMoved.setIndex(destinationIndex);
 
             this.forEach((property: Property, i: number) => {
                 property.setIndex(i);
