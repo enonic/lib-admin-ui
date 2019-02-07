@@ -230,14 +230,14 @@ module api.ui.selector.combobox {
             });
         }
 
-        onOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void) {
-            this.optionMovedListeners.push(listener);
-        }
-
         protected notifyOptionSelected(added: SelectedOptionEvent<T>) {
             this.optionAddedListeners.forEach((listener: (added: SelectedOptionEvent<T>) => void) => {
                 listener(added);
             });
+        }
+
+        onOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void) {
+            this.optionMovedListeners.push(listener);
         }
 
         unOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void) {
