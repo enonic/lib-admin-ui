@@ -21,8 +21,8 @@ module api.application {
             return this;
         }
 
-        setVersion(version: string): ListMarketApplicationsRequest {
-            this.version = version;
+        setVersion(version: string, preprocess: boolean = true): ListMarketApplicationsRequest {
+            this.version = preprocess ? version.replace(/-.*$/,'') : version;
             return this;
         }
 
