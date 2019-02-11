@@ -91,9 +91,8 @@ module api.content.form.inputtype.principalselector {
                 this.validate(false);
             });
 
-            comboBox.onOptionMoved((selectedOption: api.ui.selector.combobox.SelectedOption<api.security.Principal>) => {
-                let selectedOptionView: PrincipalSelectedOptionView = <PrincipalSelectedOptionView> selectedOption.getOptionView();
-                this.saveToSet(selectedOptionView.getOption(), selectedOption.getIndex());
+            comboBox.onOptionMoved((selectedOption: api.ui.selector.combobox.SelectedOption<api.security.Principal>, fromIndex: number) => {
+                this.getPropertyArray().move(fromIndex, selectedOption.getIndex());
                 this.validate(false);
             });
 
