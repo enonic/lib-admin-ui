@@ -38,9 +38,9 @@ module api.ui.selector.combobox {
 
         unOptionDeselected(listener: {(removed: SelectedOptionEvent<T>): void;});
 
-        onOptionMoved(listener: (moved: SelectedOption<T>) => void);
+        onOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void);
 
-        unOptionMoved(listener: (moved: SelectedOption<T>) => void);
+        unOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void);
 
         setReadonly(readonly: boolean);
 
