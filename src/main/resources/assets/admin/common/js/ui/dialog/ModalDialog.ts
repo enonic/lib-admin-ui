@@ -20,6 +20,7 @@ module api.ui.dialog {
         confirmation?: ConfirmationConfig;
         closeIconCallback?: () => void;
         skipTabbable?: boolean;
+        class?: string;
     }
 
     export class ModalDialog
@@ -38,6 +39,8 @@ module api.ui.dialog {
         private buttonRow: ButtonRow;
 
         private cancelAction: Action;
+
+        private elementToFocusOnShow: Element;
 
         protected closeIcon: DivEl;
 
@@ -67,59 +70,47 @@ module api.ui.dialog {
 
         private responsiveItem: ResponsiveItem;
 
+        protected config: ModalDialogConfig;
+
         constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
             super('modal-dialog', api.StyleHelper.COMMON_PREFIX);
+            this.config = config;
 
-            this.buttonRow = config.buttonRow || new ButtonRow();
-            this.skipTabbable = config.skipTabbable || false;
-
-            this.cancelAction = this.createDefaultCancelAction();
-            this.closeIconCallback = config.closeIconCallback || (() => {
-                if (this.cancelAction) {
-                    this.cancelAction.execute();
-                } else {
-                    this.close();
-                }
-            });
-
-            this.clickOutsideCallback = (() => {
-                this.confirmBeforeClose();
-            });
-
-            this.closeIcon = new DivEl('cancel-button-top');
-            this.closeIcon.onClicked(this.closeIconCallback);
-            this.appendChild(this.closeIcon);
-
-            this.header = this.createHeader(config.title || '');
-
-            this.contentPanel = new ModalDialogContentPanel();
-
-            this.body = new DivEl('modal-dialog-body');
-            this.body.appendChild(this.contentPanel);
-
-            this.footer = new DivEl('modal-dialog-footer');
-            this.footer.appendChild(this.buttonRow);
-
-            let wrapper = new DivEl('modal-dialog-wrapper');
-            wrapper.appendChildren<Element>(this.header, this.body, this.footer);
-
-            this.appendChild(wrapper);
-
-            this.initConfirmationDialog(config.confirmation);
+            this.initElements();
+            this.postInitElements();
             this.initListeners();
         }
 
-        protected getBody(): api.dom.DivEl {
-            return this.body;
+        protected initElements() {
+            this.buttonRow = this.config.buttonRow || new ButtonRow();
+            this.skipTabbable = this.config.skipTabbable || false;
+            this.cancelAction = this.createDefaultCancelAction();
+            this.closeIcon = new DivEl('cancel-button-top');
+            this.header = this.createHeader(this.config.title || '');
+            this.contentPanel = new ModalDialogContentPanel();
+            this.body = new DivEl('modal-dialog-body');
+            this.footer = new DivEl('modal-dialog-footer');
+            this.initConfirmationDialog();
         }
 
-        onCloseButtonClicked(listener: (e: MouseEvent) => void) {
-            return this.closeIcon.onClicked(listener);
+        private createDefaultCancelAction() {
+            const cancelAction = new Action(i18n('action.cancel'), 'esc', true);
+            cancelAction.setIconClass('cancel-button-top');
+            cancelAction.setLabel('');
+            cancelAction.onExecuted(() => {
+                this.close();
+            });
+            this.buttonRow.addToActions(cancelAction);
+            return cancelAction;
         }
 
-        private initConfirmationDialog(confirmation: ConfirmationConfig) {
-            if (confirmation) {
-                const {yesCallback, noCallback, question = i18n('dialog.confirm.applyChanges')} = confirmation;
+        protected createHeader(title: string): api.ui.dialog.ModalDialogHeader {
+            return new DefaultModalDialogHeader(title);
+        }
+
+        private initConfirmationDialog() {
+            if (this.config.confirmation) {
+                const {yesCallback, noCallback, question = i18n('dialog.confirm.applyChanges')} = this.config.confirmation;
 
                 this.confirmationDialog = new ConfirmationDialog()
                     .setQuestion(question)
@@ -134,75 +125,42 @@ module api.ui.dialog {
             }
         }
 
-        private adjustOverflow() {
-
-            const bodyEl = wemjq(this.getBody().getHTMLElement());
-            const bodyHeight = parseInt(bodyEl.css('height'), 10);
-            if (bodyHeight === 0) {
-                return;
-            }
-            const showScrollbar = (bodyHeight >= parseInt(bodyEl.css('max-height'), 10));
-
-            wemjq(bodyEl).css('overflow', showScrollbar ? 'auto' : 'visible');
+        protected postInitElements() {
+            //
         }
 
-        private adjustHeight() {
-            const dialogHeight = this.getEl().getHeightWithBorder();
-
-            if (dialogHeight === 0 || dialogHeight % 2 === 0) {
-
-                return;
-            }
-
-            const borderBottom = parseFloat(wemjq(this.getHTMLElement()).css('border-bottom'));
-            const dialogHeightWithoutBorder = borderBottom ? dialogHeight - borderBottom : dialogHeight;
-
-            if (dialogHeightWithoutBorder % 2 === 0 && borderBottom) {
-                wemjq(this.getHTMLElement()).css('border-bottom-width', '0px');
-
-                return;
-            }
-            let borderHeight = 1;
-            if (dialogHeightWithoutBorder % 1 !== 0) {
-                borderHeight = Math.ceil(dialogHeightWithoutBorder) - dialogHeightWithoutBorder;
-                if (Math.ceil(dialogHeightWithoutBorder) % 2 === 1) {
-                    borderHeight++;
-                }
-            }
-
-            wemjq(this.getHTMLElement()).css('border-bottom', `${borderHeight}px solid transparent`);
-        }
-
-        private initListeners() {
+        protected initListeners() {
             this.responsiveItem = new ResponsiveItem(this);
             this.handleClickOutsideDialog();
             this.handleFocusInOutEvents();
 
             this.handleResize();
-        }
 
-        protected resizeHandler() {
-            if (!this.isVisible()) {
-                return;
-            }
+            this.onRendered(() => {
+                if (!this.skipTabbable) {
+                    this.updateTabbable();
+                }
 
-            this.adjustHeight();
-            this.adjustOverflow();
-            this.responsiveItem.update();
-        }
+                if (this.elementToFocusOnShow) {
+                    this.elementToFocusOnShow.giveFocus();
+                } else {
+                    this.buttonRow.focusDefaultAction();
+                }
+            });
 
-        private handleResize() {
-            this.resizeHandler = api.util.AppHelper.debounce(this.resizeHandler.bind(this), 50);
-            ResponsiveManager.onAvailableSizeChanged(Body.get(), this.resizeHandler);
+            this.closeIconCallback = this.config.closeIconCallback || (() => {
+                if (this.cancelAction) {
+                    this.cancelAction.execute();
+                } else {
+                    this.close();
+                }
+            });
 
-            const resizeObserver = window['ResizeObserver'];
-            if (resizeObserver) {
-                this.resizeObserver = new resizeObserver(this.resizeHandler);
-            }
-        }
+            this.clickOutsideCallback = (() => {
+                this.confirmBeforeClose();
+            });
 
-        private isActive() {
-            return super.isVisible() && !this.hasClass('masked');
+            this.closeIcon.onClicked(this.closeIconCallback);
         }
 
         private handleClickOutsideDialog() {
@@ -225,6 +183,28 @@ module api.ui.dialog {
             this.onAdded(() => {
                 api.dom.Body.get().onMouseDown(mouseClickListener);
             });
+        }
+
+        private isActive() {
+            return super.isVisible() && !this.isMasked();
+        }
+
+        isMasked(): boolean {
+            return this.hasClass('masked');
+        }
+
+        private isIgnoredElementClicked(element: HTMLElement): boolean {
+            let ignoredElementClicked = false;
+            if (element && element.className && element.className.indexOf) {
+                ignoredElementClicked =
+                    element.className.indexOf('mce-') > -1 || element.className.indexOf('html-area-modal-dialog') > -1 ||
+                    element.className.indexOf('cke_') > -1;
+            }
+            ignoredElementClicked = ignoredElementClicked || this.listOfClickIgnoredElements.some((elem: Element) => {
+                return elem.getHTMLElement() === element || elem.getEl().contains(element);
+            });
+
+            return ignoredElementClicked;
         }
 
         private handleFocusInOutEvents() {
@@ -260,8 +240,164 @@ module api.ui.dialog {
             });
         }
 
-        protected createHeader(title: string): api.ui.dialog.ModalDialogHeader {
-            return new DefaultModalDialogHeader(title);
+        private hasTabbable(): boolean {
+            return !!this.tabbable && this.tabbable.length > 0;
+        }
+
+        protected hasSubDialog(): boolean {
+            return this.confirmationDialog && this.confirmationDialog.isVisible();
+        }
+
+        private handleResize() {
+            this.resizeHandler = api.util.AppHelper.debounce(this.resizeHandler.bind(this), 50);
+            ResponsiveManager.onAvailableSizeChanged(Body.get(), this.resizeHandler);
+
+            const resizeObserver = window['ResizeObserver'];
+            if (resizeObserver) {
+                this.resizeObserver = new resizeObserver(this.resizeHandler);
+            }
+        }
+
+        protected resizeHandler() {
+            if (!this.isVisible()) {
+                return;
+            }
+
+            this.adjustHeight();
+            this.adjustOverflow();
+            this.responsiveItem.update();
+        }
+
+        private adjustHeight() {
+            const dialogHeight = this.getEl().getHeightWithBorder();
+
+            if (dialogHeight === 0 || dialogHeight % 2 === 0) {
+
+                return;
+            }
+
+            const borderBottom = parseFloat(wemjq(this.getHTMLElement()).css('border-bottom'));
+            const dialogHeightWithoutBorder = borderBottom ? dialogHeight - borderBottom : dialogHeight;
+
+            if (dialogHeightWithoutBorder % 2 === 0 && borderBottom) {
+                wemjq(this.getHTMLElement()).css('border-bottom-width', '0px');
+
+                return;
+            }
+            let borderHeight = 1;
+            if (dialogHeightWithoutBorder % 1 !== 0) {
+                borderHeight = Math.ceil(dialogHeightWithoutBorder) - dialogHeightWithoutBorder;
+                if (Math.ceil(dialogHeightWithoutBorder) % 2 === 1) {
+                    borderHeight++;
+                }
+            }
+
+            wemjq(this.getHTMLElement()).css('border-bottom', `${borderHeight}px solid transparent`);
+        }
+
+        private adjustOverflow() {
+
+            const bodyEl = wemjq(this.getBody().getHTMLElement());
+            const bodyHeight = parseInt(bodyEl.css('height'), 10);
+            if (bodyHeight === 0) {
+                return;
+            }
+            const showScrollbar = (bodyHeight >= parseInt(bodyEl.css('max-height'), 10));
+
+            wemjq(bodyEl).css('overflow', showScrollbar ? 'auto' : 'visible');
+        }
+
+        protected getBody(): api.dom.DivEl {
+            return this.body;
+        }
+
+        protected updateTabbable() {
+            this.tabbable = this.getTabbableElements();
+        }
+
+        confirmBeforeClose() {
+            if (this.confirmationDialog && this.isDirty()) {
+                this.confirmationDialog.open();
+                this.addClass('await-confirmation');
+            } else {
+                this.close();
+            }
+        }
+
+        isDirty(): boolean {
+            return false;
+        }
+
+        close() {
+            const isSingleDialogGroup = ModalDialog.openDialogsCounter === 1 ||
+                                        (ModalDialog.openDialogsCounter === 2 && !!this.confirmationDialog &&
+                                         !!this.confirmationDialog.isVisible());
+            if (isSingleDialogGroup) {
+                api.ui.mask.BodyMask.get().hide();
+            }
+
+            this.hide();
+
+            api.ui.KeyBindings.get().unshelveBindings();
+
+            if (ModalDialog.openDialogsCounter > 0) {
+                ModalDialog.openDialogsCounter--;
+            }
+            this.notifyClosed();
+        }
+
+        private notifyClosed() {
+            this.onClosedListeners.forEach((listener) => {
+                listener();
+            });
+        }
+
+        hide() {
+            if (this.resizeObserver) {
+                this.resizeObserver.unobserve(this.body.getHTMLElement());
+            } else {
+                this.unResize(this.resizeHandler);
+            }
+
+            this.unBlurBackground();
+            super.hide(true);
+
+            if (this.dialogContainer.getParentElement()) {
+                api.dom.Body.get().removeChild(this.dialogContainer);
+            }
+        }
+
+        private unBlurBackground() {
+            api.dom.Body.get().getHTMLElement().classList.remove('blurred');
+        }
+
+        doRender(): Q.Promise<boolean> {
+            return super.doRender().then((rendered: boolean) => {
+                if (this.config.class) {
+                    this.addClass(this.config.class);
+                }
+                this.appendChild(this.closeIcon);
+                this.body.appendChild(this.contentPanel);
+                this.footer.appendChild(this.buttonRow);
+
+                const wrapper = new DivEl('modal-dialog-wrapper');
+                wrapper.appendChildren<Element>(this.header, this.body, this.footer);
+                this.appendChild(wrapper);
+
+                return rendered;
+            });
+        }
+
+        onCloseButtonClicked(listener: (e: MouseEvent) => void) {
+            return this.closeIcon.onClicked(listener);
+        }
+
+        mask() {
+            this.addClass('masked');
+        }
+
+        unmask() {
+            this.removeClass('masked');
         }
 
         addClickIgnoredElement(elem: Element) {
@@ -273,30 +409,6 @@ module api.ui.dialog {
             if (elementIndex > -1) {
                 this.listOfClickIgnoredElements.splice(elementIndex, 1);
             }
-        }
-
-        private isIgnoredElementClicked(element: HTMLElement): boolean {
-            let ignoredElementClicked = false;
-            if (element && element.className && element.className.indexOf) {
-                ignoredElementClicked =
-                    element.className.indexOf('mce-') > -1 || element.className.indexOf('html-area-modal-dialog') > -1 ||
-                    element.className.indexOf('cke_') > -1;
-            }
-            ignoredElementClicked = ignoredElementClicked || this.listOfClickIgnoredElements.some((elem: Element) => {
-                return elem.getHTMLElement() === element || elem.getEl().contains(element);
-            });
-            return ignoredElementClicked;
-        }
-
-        private createDefaultCancelAction() {
-            let cancelAction = new Action(i18n('action.cancel'), 'esc', true);
-            cancelAction.setIconClass('cancel-button-top');
-            cancelAction.setLabel('');
-            cancelAction.onExecuted(() => {
-                this.close();
-            });
-            this.buttonRow.addToActions(cancelAction);
-            return cancelAction;
         }
 
         getCancelAction(): Action {
@@ -363,109 +475,6 @@ module api.ui.dialog {
             this.buttonRow.removeAction(action);
         }
 
-        show() {
-
-            if (!this.dialogContainer) {
-                this.dialogContainer = new DivEl('dialog-container');
-            }
-            if (!this.dialogContainer.hasChild(this)) {
-                this.dialogContainer.appendChild(this);
-            }
-            api.dom.Body.get().appendChild(this.dialogContainer);
-            this.responsiveItem.update();
-
-            this.blurBackground();
-            super.show();
-            this.buttonRow.focusDefaultAction();
-
-            if (this.resizeObserver) {
-                this.resizeObserver.observe(this.body.getHTMLElement());
-            } else {
-                this.onResize(this.resizeHandler);
-            }
-
-            wemjq(this.body.getHTMLElement()).css('height', '');
-        }
-
-        hide() {
-            if (this.resizeObserver) {
-                this.resizeObserver.unobserve(this.body.getHTMLElement());
-            } else {
-                this.unResize(this.resizeHandler);
-            }
-
-            this.unBlurBackground();
-            super.hide(true);
-
-            if (this.dialogContainer.getParentElement()) {
-                api.dom.Body.get().removeChild(this.dialogContainer);
-            }
-        }
-
-        getButtonRow(): ButtonRow {
-            return this.buttonRow;
-        }
-
-        getContentPanel(): ModalDialogContentPanel {
-            return this.contentPanel;
-        }
-
-        protected hasSubDialog(): boolean {
-            return this.confirmationDialog && this.confirmationDialog.isVisible();
-        }
-
-        private hasTabbable(): boolean {
-            return !!this.tabbable && this.tabbable.length > 0;
-        }
-
-        protected updateTabbable() {
-            this.tabbable = this.getTabbableElements();
-        }
-
-        private getTabbedIndex(): number {
-            let activeElement = document.activeElement;
-            let tabbedIndex = 0;
-            if (this.hasTabbable()) {
-                for (let i = 0; i < this.tabbable.length; i++) {
-                    if (activeElement === this.tabbable[i].getHTMLElement()) {
-                        tabbedIndex = i;
-                        break;
-                    }
-                }
-            }
-            return tabbedIndex;
-        }
-
-        private focusNextTabbable() {
-            if (this.hasTabbable()) {
-                let tabbedIndex = this.getTabbedIndex();
-                tabbedIndex = tabbedIndex + 1 >= this.tabbable.length ? 0 : tabbedIndex + 1;
-                this.tabbable[tabbedIndex].giveFocus();
-            }
-        }
-
-        private focusPreviousTabbable() {
-            if (this.hasTabbable()) {
-                let tabbedIndex = this.getTabbedIndex();
-                tabbedIndex = tabbedIndex - 1 < 0 ? this.tabbable.length - 1 : tabbedIndex - 1;
-                this.tabbable[tabbedIndex].giveFocus();
-            }
-        }
-
-        private blurBackground() {
-            if (this.isBlurredBackgroundNeeded()) {
-                api.dom.Body.get().getHTMLElement().classList.add('blurred');
-            }
-        }
-
-        protected isBlurredBackgroundNeeded(): boolean {
-            return true;
-        }
-
-        private unBlurBackground() {
-            api.dom.Body.get().getHTMLElement().classList.remove('blurred');
-        }
-
         open() {
 
             api.ui.mask.BodyMask.get().show();
@@ -500,35 +509,83 @@ module api.ui.dialog {
             ModalDialog.openDialogsCounter++;
         }
 
-        isDirty(): boolean {
-            return false;
-        }
+        show() {
 
-        confirmBeforeClose() {
-            if (this.confirmationDialog && this.isDirty()) {
-                this.confirmationDialog.open();
-                this.addClass('await-confirmation');
+            if (!this.dialogContainer) {
+                this.dialogContainer = new DivEl('dialog-container');
+            }
+            if (!this.dialogContainer.hasChild(this)) {
+                this.dialogContainer.appendChild(this);
+            }
+            api.dom.Body.get().appendChild(this.dialogContainer);
+            this.responsiveItem.update();
+
+            this.blurBackground();
+
+            super.show();
+
+            if (this.isRendered()) {
+                if (this.elementToFocusOnShow) {
+                    this.elementToFocusOnShow.giveFocus();
+                } else {
+                    this.buttonRow.focusDefaultAction();
+                }
+            }
+            if (this.resizeObserver) {
+                this.resizeObserver.observe(this.body.getHTMLElement());
             } else {
-                this.close();
+                this.onResize(this.resizeHandler);
+            }
+
+            wemjq(this.body.getHTMLElement()).css('height', '');
+        }
+
+        private blurBackground() {
+            if (this.isBlurredBackgroundNeeded()) {
+                api.dom.Body.get().getHTMLElement().classList.add('blurred');
             }
         }
 
-        close() {
-            const isSingleDialogGroup = ModalDialog.openDialogsCounter === 1 ||
-                                        (ModalDialog.openDialogsCounter === 2 && !!this.confirmationDialog &&
-                                         !!this.confirmationDialog.isVisible());
-            if (isSingleDialogGroup) {
-                api.ui.mask.BodyMask.get().hide();
+        protected isBlurredBackgroundNeeded(): boolean {
+            return true;
+        }
+
+        private focusNextTabbable() {
+            if (this.hasTabbable()) {
+                let tabbedIndex = this.getTabbedIndex();
+                tabbedIndex = tabbedIndex + 1 >= this.tabbable.length ? 0 : tabbedIndex + 1;
+                this.tabbable[tabbedIndex].giveFocus();
             }
+        }
 
-            this.hide();
-
-            api.ui.KeyBindings.get().unshelveBindings();
-
-            if (ModalDialog.openDialogsCounter > 0) {
-                ModalDialog.openDialogsCounter--;
+        private focusPreviousTabbable() {
+            if (this.hasTabbable()) {
+                let tabbedIndex = this.getTabbedIndex();
+                tabbedIndex = tabbedIndex - 1 < 0 ? this.tabbable.length - 1 : tabbedIndex - 1;
+                this.tabbable[tabbedIndex].giveFocus();
             }
-            this.notifyClosed();
+        }
+
+        private getTabbedIndex(): number {
+            let activeElement = document.activeElement;
+            let tabbedIndex = 0;
+            if (this.hasTabbable()) {
+                for (let i = 0; i < this.tabbable.length; i++) {
+                    if (activeElement === this.tabbable[i].getHTMLElement()) {
+                        tabbedIndex = i;
+                        break;
+                    }
+                }
+            }
+            return tabbedIndex;
+        }
+
+        getButtonRow(): ButtonRow {
+            return this.buttonRow;
+        }
+
+        getContentPanel(): ModalDialogContentPanel {
+            return this.contentPanel;
         }
 
         onClosed(onCloseCallback: () => void) {
@@ -538,12 +595,6 @@ module api.ui.dialog {
         unClosed(listener: { (): void; }) {
             this.onClosedListeners = this.onClosedListeners.filter(function (curr: { (): void; }) {
                 return curr !== listener;
-            });
-        }
-
-        private notifyClosed() {
-            this.onClosedListeners.forEach((listener) => {
-                listener();
             });
         }
 
@@ -561,6 +612,10 @@ module api.ui.dialog {
             this.resizeListeners.forEach((listener) => {
                 listener();
             });
+        }
+
+        public setElementToFocusOnShow(element: Element) {
+            this.elementToFocusOnShow = element;
         }
     }
 
