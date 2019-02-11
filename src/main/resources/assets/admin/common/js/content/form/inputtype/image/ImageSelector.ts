@@ -1,7 +1,6 @@
 module api.content.form.inputtype.image {
 
     import PropertyArray = api.data.PropertyArray;
-    import ValueTypes = api.data.ValueTypes;
     import ContentSummary = api.content.ContentSummary;
     import ContentTypeName = api.schema.content.ContentTypeName;
     import ComboBox = api.ui.selector.combobox.ComboBox;
@@ -136,9 +135,8 @@ module api.content.form.inputtype.image {
                 this.validate(false);
             });
 
-            comboBox.onOptionMoved((moved: SelectedOption<MediaTreeSelectorItem>) => {
-
-                this.getPropertyArray().set(moved.getIndex(), ValueTypes.REFERENCE.newValue(moved.getOption().value));
+            comboBox.onOptionMoved((moved: SelectedOption<MediaTreeSelectorItem>, fromIndex: number) => {
+                this.getPropertyArray().move(fromIndex, moved.getIndex());
                 this.validate(false);
             });
 
