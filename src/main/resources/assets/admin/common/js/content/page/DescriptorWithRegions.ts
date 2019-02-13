@@ -2,7 +2,9 @@ module api.content.page {
 
     import RegionDescriptor = api.content.page.region.RegionDescriptor;
 
-    export class DescriptorWithRegions extends Descriptor {
+    export class DescriptorWithRegions
+        extends Descriptor
+        implements api.Equitable {
 
         private regions: RegionDescriptor[];
 
@@ -21,6 +23,16 @@ module api.content.page {
 
         clone(): DescriptorWithRegions {
             return new DescriptorWithRegionsBuilder(this).build();
+        }
+
+        equals(o: Equitable): boolean {
+            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PageDescriptor)) {
+                return false;
+            }
+
+            let other = <PageDescriptor>o;
+
+            return super.equals(other) && api.ObjectHelper.arrayEquals(this.regions, other.getRegions());
         }
     }
 
