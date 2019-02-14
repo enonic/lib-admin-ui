@@ -1,14 +1,18 @@
 module api.ui.mask {
 
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
+
     export class Mask extends api.dom.DivEl {
 
         private masked: api.dom.Element;
+
+        private removeWhenMaskedRemoved: boolean;
 
         constructor(itemToMask?: api.dom.Element) {
             super('mask', api.StyleHelper.COMMON_PREFIX);
 
             this.masked = itemToMask;
+            this.removeWhenMaskedRemoved = true;
 
             if (this.masked) {
                 this.masked.onHidden((event: api.dom.ElementHiddenEvent) => {
@@ -16,7 +20,11 @@ module api.ui.mask {
                         this.hide();
                     }
                 });
-                this.masked.onRemoved(() => this.remove());
+                this.masked.onRemoved(() => {
+                    if (this.removeWhenMaskedRemoved) {
+                        this.remove();
+                    }
+                });
                 // Masked element might have been resized on window resize
                 ResponsiveManager.onAvailableSizeChanged(api.dom.Body.get(), () => {
                     if (this.isVisible()) {
@@ -25,6 +33,10 @@ module api.ui.mask {
                 });
             }
             api.dom.Body.get().appendChild(this);
+        }
+
+        setRemoveWhenMaskedRemoved(value: boolean) {
+            this.removeWhenMaskedRemoved = value;
         }
 
         show() {

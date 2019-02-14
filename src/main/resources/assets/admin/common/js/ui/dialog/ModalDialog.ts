@@ -44,6 +44,8 @@ module api.ui.dialog {
 
         protected closeIcon: DivEl;
 
+        protected loadMask: api.ui.mask.LoadMask;
+
         private cancelButton: DialogButton;
 
         protected confirmationDialog: ConfirmationDialog;
@@ -90,6 +92,7 @@ module api.ui.dialog {
             this.contentPanel = new ModalDialogContentPanel();
             this.body = new DivEl('modal-dialog-body');
             this.footer = new DivEl('modal-dialog-footer');
+            this.loadMask = new api.ui.mask.LoadMask(this.contentPanel);
             this.initConfirmationDialog();
         }
 
@@ -126,7 +129,7 @@ module api.ui.dialog {
         }
 
         protected postInitElements() {
-            //
+            this.loadMask.setRemoveWhenMaskedRemoved(false);
         }
 
         protected initListeners() {
@@ -383,6 +386,8 @@ module api.ui.dialog {
                 const wrapper = new DivEl('modal-dialog-wrapper');
                 wrapper.appendChildren<Element>(this.header, this.body, this.footer);
                 this.appendChild(wrapper);
+
+                this.appendChildToContentPanel(this.loadMask);
 
                 return rendered;
             });
