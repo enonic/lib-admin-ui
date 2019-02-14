@@ -187,6 +187,10 @@ module api.ui.panel {
                 return;
             }
 
+            for (let i=0; i<=index; i++) {
+                this.getPanel(i).forceRender();
+            }
+
             wemjq(this.getScrollable().getHTMLElement()).animate({
                 scrollTop: index === 0 ? 0 : this.getScroll()
                                              - this.offset

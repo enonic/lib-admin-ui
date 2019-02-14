@@ -96,6 +96,8 @@ module api.dom {
 
         private rendering: boolean;
 
+        private lazyRenderer: boolean = false;
+
         private childrenAddedDuringInit: boolean;
 
         public static debug: boolean = false;
@@ -106,6 +108,7 @@ module api.dom {
         private renderedListeners: {(event: ElementRenderedEvent): void}[] = [];
         private shownListeners: {(event: ElementShownEvent): void}[] = [];
         private hiddenListeners: {(event: ElementHiddenEvent): void}[] = [];
+        private lazyRenderListeners: {(): void}[] = [];
 
         constructor(builder: ElementBuilder) {
             this.children = [];
@@ -805,6 +808,37 @@ module api.dom {
             );
         }
 
+        public isLazyRenderer() {
+            return this.lazyRenderer;
+        }
+
+        public notifyForceRender() {
+            this.lazyRenderListeners.forEach((listener) => {
+                listener();
+            });
+        }
+
+        public forceRender() {
+
+            this.traverse((el: Element) => {
+                if (!el.isLazyRenderer()) {
+                    return;
+                }
+
+                el.notifyForceRender();
+            });
+        }
+
+        private onForceRender(listener: () => void) {
+            this.lazyRenderListeners.push(listener);
+        }
+
+        private unForceRender(listener: () => void) {
+            this.lazyRenderListeners = this.lazyRenderListeners.filter((curr) => {
+                return curr !== listener;
+            });
+        }
+
         private lazyRender(childEl: Element): Element {
             const scrollableParentEl = wemjq(this.getHTMLElement()).scrollParent();
             const hasNoScrollableParent = scrollableParentEl[0]['nodeName'].indexOf('document') > -1;
@@ -814,21 +848,31 @@ module api.dom {
                 return this.appendChild(childEl);
             }
 
-            const onParentScroll = () => {
+            this.lazyRenderer = true;
+
+            const render = () => {
+                scrollableParent.unScroll(renderOnScroll);
+                this.unForceRender(render);
+
+                this.appendChild(childEl);
+
+                this.lazyRenderer = (this.lazyRenderListeners.length > 0);
+            };
+
+            const renderOnScroll = () => {
                 if (this.isInViewport()) {
                     const lastScrollHeight = scrollableParentEl.scrollTop();
 
-                    this.appendChild(childEl);
+                    render();
 
                     if (lastScrollHeight !== scrollableParentEl.scrollTop()) {
                         scrollableParentEl.scrollTop(lastScrollHeight);
                     }
-
-                    scrollableParent.unScroll(onParentScroll);
                 }
             };
 
-            scrollableParent.onScroll(onParentScroll);
+            scrollableParent.onScroll(renderOnScroll);
+            this.onForceRender(render);
         }
 
         /*
