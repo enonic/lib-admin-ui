@@ -12,18 +12,24 @@ module api.ui.dialog {
         private noAction: api.ui.Action;
 
         constructor(config: ModalDialogConfig = {}) {
-            super((() => {
-                config.title = config.title || i18n('dialog.confirm.title');
-                config.closeIconCallback = config.closeIconCallback || (() => this.close());
-                return config;
-            })());
+            super({
+                title: config.title || i18n('dialog.confirm.title'),
+                closeIconCallback: config.closeIconCallback || (() => this.close()),
+                class: 'confirmation-dialog'
+            });
+        }
 
-            this.addClass('confirmation-dialog');
+        protected initElements() {
+            super.initElements();
 
             this.questionEl = new api.dom.H6El('question');
-            this.appendChildToContentPanel(this.questionEl);
-
             this.noAction = new api.ui.Action(i18n('action.no'), 'esc');
+            this.yesAction = new api.ui.Action(i18n('action.yes'));
+        }
+
+        protected initListeners() {
+            super.initListeners();
+
             this.noAction.onExecuted(() => {
                 this.close();
 
@@ -32,7 +38,6 @@ module api.ui.dialog {
                 }
             });
 
-            this.yesAction = new api.ui.Action(i18n('action.yes'));
             this.yesAction.onExecuted(() => {
                 this.close();
 
@@ -40,10 +45,16 @@ module api.ui.dialog {
                     this.yesCallback();
                 }
             });
+        }
 
-            this.addAction(this.yesAction, true);
-            this.addAction(this.noAction);
+        doRender(): Q.Promise<boolean> {
+            return super.doRender().then((rendered) => {
+                this.appendChildToContentPanel(this.questionEl);
+                this.addAction(this.yesAction, true);
+                this.addAction(this.noAction);
 
+                return rendered;
+            });
         }
 
         setQuestion(question: string): ConfirmationDialog {
