@@ -424,12 +424,12 @@ module api.ui.dialog {
             return this.cancelButton;
         }
 
-        addCancelButtonToBottom(buttonLabel: string = i18n('action.cancel')): DialogButton {
-            const cancelAction = new Action(buttonLabel);
+        addCancelButtonToBottom(buttonLabel?: string, useDefault?: boolean): DialogButton {
+            const cancelAction = new Action(buttonLabel || i18n('action.cancel'));
             cancelAction.setIconClass('cancel-button-bottom force-enabled');
             cancelAction.onExecuted(() => this.cancelAction.execute());
 
-            this.cancelButton = this.buttonRow.addAction(cancelAction);
+            this.cancelButton = this.buttonRow.addAction(cancelAction, useDefault);
             this.cancelButton.getEl().setAttribute('data-button-text', i18n('action.ok'));
             return this.cancelButton;
         }
