@@ -1,6 +1,7 @@
 module api.content.page.region {
 
-    export class RegionDescriptor {
+    export class RegionDescriptor
+        implements api.Equitable {
 
         private name: string;
 
@@ -18,6 +19,16 @@ module api.content.page.region {
 
         public static fromJson(json: RegionsDescriptorJson): RegionDescriptor {
            return RegionDescriptor.create().setName(json.name).build();
+        }
+
+        equals(o: api.Equitable): boolean {
+            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, RegionDescriptor)) {
+                return false;
+            }
+
+            let other = <RegionDescriptor>o;
+
+            return this.name === other.getName();
         }
 
     }

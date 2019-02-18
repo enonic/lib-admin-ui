@@ -1,21 +1,30 @@
 module api.app.view {
 
-    export class ItemPreviewPanel<M extends api.Equitable>
-        extends api.ui.panel.Panel {
+    import DivEl = api.dom.DivEl;
+    import LoadMask = api.ui.mask.LoadMask;
+    import IFrameEl = api.dom.IFrameEl;
+    import Panel = api.ui.panel.Panel;
 
-        protected frame: api.dom.IFrameEl;
+    export class ItemPreviewPanel<M extends api.Equitable>
+        extends Panel {
+
+        protected frame: IFrameEl;
+
+        protected wrapper: DivEl;
 
         protected toolbar: ItemPreviewToolbar<M>;
 
-        protected mask: api.ui.mask.LoadMask;
+        protected mask: LoadMask;
 
         constructor(className?: string) {
             super('item-preview-panel' + (className ? ' ' + className : ''));
             this.toolbar = this.createToolbar();
-            this.mask = new api.ui.mask.LoadMask(this);
-            this.frame = new api.dom.IFrameEl();
+            this.mask = new LoadMask(this);
+            this.frame = new IFrameEl();
             this.frame.onLoaded(() => this.mask.hide());
-            this.appendChildren<api.dom.Element>(this.toolbar, this.frame, this.mask);
+            this.wrapper = new DivEl('wrapper');
+            this.wrapper.appendChild(this.frame);
+            this.appendChildren(this.toolbar, this.wrapper, this.mask);
         }
 
         createToolbar(): ItemPreviewToolbar<M> {
