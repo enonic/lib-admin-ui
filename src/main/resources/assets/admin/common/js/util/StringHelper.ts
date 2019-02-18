@@ -94,12 +94,15 @@ module api.util {
             if (StringHelper.isEmpty(str) || StringHelper.isEmpty(left) || StringHelper.isEmpty(right)) {
                 return StringHelper.EMPTY_STRING;
             }
-            let start = str.indexOf(left);
+            const start = str.indexOf(left);
             if (start !== -1) {
-                let end = str.indexOf(right, start + left.length);
+                const end = str.indexOf(right, start + left.length);
+
                 if (end !== -1) {
                     return str.substring(start + left.length, end);
                 }
+
+                return str.slice(start + left.length);
             }
             return StringHelper.EMPTY_STRING;
         }
