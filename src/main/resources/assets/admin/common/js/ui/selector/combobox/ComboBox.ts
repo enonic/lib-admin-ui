@@ -1114,11 +1114,11 @@ module api.ui.selector.combobox {
             this.selectedOptionsView.unOptionDeselected(listener);
         }
 
-        onOptionMoved(listener: { (moved: SelectedOption<OPTION_DISPLAY_VALUE>): void; }) {
+        onOptionMoved(listener: { (moved: SelectedOption<OPTION_DISPLAY_VALUE>, fromIndex: number): void; }) {
             this.selectedOptionsView.onOptionMoved(listener);
         }
 
-        unOptionMoved(listener: { (moved: SelectedOption<OPTION_DISPLAY_VALUE>): void; }) {
+        unOptionMoved(listener: { (moved: SelectedOption<OPTION_DISPLAY_VALUE>, fromIndex: number): void; }) {
             this.selectedOptionsView.unOptionMoved(listener);
         }
 

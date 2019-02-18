@@ -9,6 +9,14 @@ module api.form.inputtype.appconfig {
     import BaseInputTypeManagingAdd = api.form.inputtype.support.BaseInputTypeManagingAdd;
     import ContentSummary = api.content.ContentSummary;
     import AppHelper = api.util.AppHelper;
+    import Action = api.ui.Action;
+
+    export interface ApplicationConfiguratorDialogConfig
+        extends ModalDialogConfig {
+        formView: FormView;
+        application: Application;
+        cancelCallback: () => void;
+    }
 
     export class ApplicationConfiguratorDialog
         extends api.ui.dialog.ModalDialog {
@@ -17,12 +25,16 @@ module api.form.inputtype.appconfig {
 
         private formView: FormView;
 
-        private okCallback: () => void;
+        private okAction: Action;
 
-        private cancelCallback: () => void;
+        protected config: ApplicationConfiguratorDialogConfig;
 
         constructor(application: Application, formView: FormView, okCallback?: () => void, cancelCallback?: () => void) {
-            super(<ModalDialogConfig>{
+            super(<ApplicationConfiguratorDialogConfig>{
+                application: application,
+                formView: formView,
+                cancelCallback: cancelCallback,
+                class: 'application-configurator-dialog',
                 confirmation: {
                     yesCallback: () => {
                         if (okCallback) {
@@ -35,14 +47,17 @@ module api.form.inputtype.appconfig {
                     }
                 }
             });
+        }
 
-            this.appendChildToHeader(this.getHeaderContent(application));
+        protected initElements() {
+            super.initElements();
 
-            this.formView = formView;
-            this.okCallback = okCallback;
-            this.cancelCallback = cancelCallback;
+            this.formView = this.config.formView;
+            this.okAction = new Action('Apply');
+        }
 
-            this.addClass('application-configurator-dialog');
+        protected initListeners() {
+            super.initListeners();
 
             const availableSizeChangedListener = () => this.handleAvailableSizeChanged();
             ResponsiveManager.onAvailableSizeChanged(this, availableSizeChangedListener);
@@ -54,10 +69,18 @@ module api.form.inputtype.appconfig {
                 wemjq(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().focus();
                 this.updateTabbable();
             });
+
+            this.getCancelAction().onExecuted(this.config.cancelCallback);
+
+            this.okAction.onExecuted(this.config.confirmation.yesCallback);
         }
 
         toggleMask(enable: boolean) {
-            this.toggleClass('masked', enable);
+            if (enable) {
+                this.mask();
+            } else {
+                this.unmask();
+            }
             this.toggleClass('await-confirmation', enable);
         }
 
@@ -79,10 +102,10 @@ module api.form.inputtype.appconfig {
                     console.debug('ApplicationConfiguratorDialog.doRender');
                 }
 
+                this.appendChildToHeader(this.getHeaderContent());
                 this.appendChildToContentPanel(this.formView);
 
-                this.addOkButton(this.okCallback);
-                this.getCancelAction().onExecuted(() => this.cancelCallback());
+                this.addAction(this.okAction, true, true);
 
                 this.addCancelButtonToBottom();
 
@@ -100,19 +123,9 @@ module api.form.inputtype.appconfig {
             });
         }
 
-        private addOkButton(okCallback: () => void) {
-            let okAction = new api.ui.Action('Apply');
-            this.addAction(okAction, true, true);
-            okAction.onExecuted(() => {
-                if (okCallback) {
-                    okCallback();
-                }
-                this.close();
-            });
-        }
-
-        protected getHeaderContent(application: Application): api.app.NamesAndIconView {
-            let namesAndIconView = new api.app.NamesAndIconView(new api.app.NamesAndIconViewBuilder().setSize(
+        protected getHeaderContent(): api.app.NamesAndIconView {
+            const application: Application = this.config.application;
+            const namesAndIconView = new api.app.NamesAndIconView(new api.app.NamesAndIconViewBuilder().setSize(
                 api.app.NamesAndIconViewSize.large)).setMainName(application.getDisplayName()).setSubName(
                 application.getName() + '-' + application.getVersion());
 

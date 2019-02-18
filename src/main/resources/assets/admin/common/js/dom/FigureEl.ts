@@ -18,7 +18,7 @@ module api.dom {
         }
 
         setClass(className: string): api.dom.Element {
-            return super.setClass((this.className || '') + ' ' + className);
+            return super.setClass((this.className ? this.className + ' ' : '') + className);
         }
 
         setImage(image: api.dom.ImgEl, clearCaption: boolean = true) {
