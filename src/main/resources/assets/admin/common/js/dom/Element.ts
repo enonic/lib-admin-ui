@@ -109,6 +109,7 @@ module api.dom {
         private shownListeners: {(event: ElementShownEvent): void}[] = [];
         private hiddenListeners: {(event: ElementHiddenEvent): void}[] = [];
         private lazyRenderListeners: {(): void}[] = [];
+        private lazyRenderedListeners: {(): void}[] = [];
 
         constructor(builder: ElementBuilder) {
             this.children = [];
@@ -818,6 +819,41 @@ module api.dom {
             });
         }
 
+        public notifyLazyRendered() {
+            this.lazyRenderedListeners.forEach((listener) => {
+                listener();
+            });
+            this.lazyRenderedListeners = [];
+            if (!!this.parentElement) {
+                this.parentElement.notifyLazyRendered();
+            }
+        }
+
+        public onLazyRendered(listener: () => void) {
+
+            if (this.containsLazyRenderers()) {
+                this.lazyRenderedListeners.push(listener);
+            } else {
+                listener();
+            }
+        }
+
+        private containsLazyRenderers(): boolean {
+            if (this.isLazyRenderer()) {
+                return true;
+            }
+
+            let result = false;
+
+            this.traverse((el: Element) => {
+                if (el.isLazyRenderer()) {
+                    result = true;
+                }
+            });
+
+            return result;
+        }
+
         public forceRender() {
 
             this.traverse((el: Element) => {
@@ -851,12 +887,22 @@ module api.dom {
             this.lazyRenderer = true;
 
             const render = () => {
-                scrollableParent.unScroll(renderOnScroll);
-                this.unForceRender(render);
+                const onAdded = () => {
+                    console.log('Added ', childEl.getHTMLElement());
+                    scrollableParent.unScroll(renderOnScroll);
+                    this.unForceRender(render);
+
+                    if (this.lazyRenderListeners.length === 0) {
+                        console.log('Notifying about lazy rendered for ', this.getHTMLElement());
+                        this.lazyRenderer = false;
+                        this.notifyLazyRendered();
+                    }
+                    childEl.unAdded(onAdded);
+                };
+
+                childEl.onAdded(onAdded);
 
                 this.appendChild(childEl);
-
-                this.lazyRenderer = (this.lazyRenderListeners.length > 0);
             };
 
             const renderOnScroll = () => {

@@ -180,32 +180,47 @@ module api.ui.panel {
             }
         }
 
+        private scrollToPanel(index: number, callback: () => void) {
+            const headerToShow = this.getHeader(index);
+            const scrollTop = index === 0 ?
+                                 0 : this.getScroll()
+                                     - this.offset
+                                     + (headerToShow.getEl().getPaddingTop() / 2)
+                                     + headerToShow.getEl().getOffsetToParent().top;
+
+            console.log(scrollTop);
+
+            wemjq(this.getScrollable().getHTMLElement()).animate({
+                scrollTop: scrollTop
+            }, {
+                duration: 500,
+                complete: () => callback
+            });
+        }
+
         showPanelByIndex(index: number): wemQ.Promise<void> {
             const deferred = wemQ.defer<void>();
             const headerToShow = this.getHeader(index);
             if (!headerToShow && index > 0) {
-                return;
+                deferred.resolve(null);
+                return deferred.promise;
             }
+
+            const onScrolled = () => {
+                const panelToShow = this.getPanel(index);
+                this.notifyPanelShown(panelToShow, index, this.getPanelShown());
+                this.panelShown = panelToShow;
+
+                deferred.resolve(null);
+            };
+
+            this.getPanel(index).onLazyRendered(() =>
+                setTimeout(() => this.scrollToPanel(index, onScrolled), 500)
+            );
 
             for (let i=0; i<=index; i++) {
                 this.getPanel(i).forceRender();
             }
-
-            wemjq(this.getScrollable().getHTMLElement()).animate({
-                scrollTop: index === 0 ? 0 : this.getScroll()
-                                             - this.offset
-                                             + (headerToShow.getEl().getPaddingTop() / 2)
-                                             + headerToShow.getEl().getOffsetToParent().top
-            }, {
-                duration: 500,
-                complete: () => {
-                    const panelToShow = this.getPanel(index);
-                    this.notifyPanelShown(panelToShow, index, this.getPanelShown());
-                    this.panelShown = panelToShow;
-
-                    deferred.resolve(null);
-                }
-            });
 
             return deferred.promise;
         }
