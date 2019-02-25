@@ -308,5 +308,9 @@ module api.form {
         hasHelpText(): boolean {
             return this.formItemLayer.hasHelpText();
         }
+
+        setLazyRender(value: boolean) {
+            this.formItemLayer.setLazyRender(value);
+        }
     }
 }

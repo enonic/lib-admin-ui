@@ -17,6 +17,8 @@ module api.form {
         parent: FormOptionSetOccurrenceView;
 
         parentDataSet: PropertySet;
+
+        lazyRender?: boolean;
     }
 
     export class FormOptionSetOptionView extends FormItemView {
@@ -70,6 +72,7 @@ module api.form {
             this.addClass(this.formOptionSetOption.getPath().getElements().length % 2 ? 'even' : 'odd');
 
             this.formItemLayer = new FormItemLayer(config.context);
+            this.formItemLayer.setLazyRender(config.lazyRender);
 
             this.requiresClean = false;
         }

@@ -16,6 +16,8 @@ module api.form {
 
         private parent: FormItemOccurrenceView;
 
+        private lazyRender: boolean = true;
+
         public static debug: boolean = false;
 
         constructor(context: FormContext) {
@@ -86,7 +88,8 @@ module api.form {
                         context: this.context,
                         fieldSet: fieldSet,
                         parent: this.parent,
-                        dataSet: propertySet
+                        dataSet: propertySet,
+                        lazyRender: this.lazyRender
                     });
                 }
 
@@ -125,7 +128,8 @@ module api.form {
                         context: this.context,
                         formOptionSetOption: formOptionSetOption,
                         parent: this.parent,
-                        parentDataSet: propertySet
+                        parentDataSet: propertySet,
+                        lazyRender: this.lazyRender
                     });
                 }
 
@@ -136,7 +140,7 @@ module api.form {
             });
 
             this.parentEl.onRendered(() => {
-                this.formItemViews.map(formItemView => this.parentEl.appendChild(formItemView, true));
+                this.formItemViews.map(formItemView => this.parentEl.appendChild(formItemView, this.lazyRender));
             });
 
             // Bind next focus targets
@@ -204,6 +208,10 @@ module api.form {
             return this.formItemViews.some((formItemView: FormItemView) => {
                 return formItemView.hasHelpText();
             });
+        }
+
+        setLazyRender(value: boolean) {
+            this.lazyRender = value;
         }
     }
 }
