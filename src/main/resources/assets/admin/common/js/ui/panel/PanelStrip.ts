@@ -188,13 +188,11 @@ module api.ui.panel {
                                      + (headerToShow.getEl().getPaddingTop() / 2)
                                      + headerToShow.getEl().getOffsetToParent().top;
 
-            console.log(scrollTop);
-
             wemjq(this.getScrollable().getHTMLElement()).animate({
                 scrollTop: scrollTop
             }, {
                 duration: 500,
-                complete: () => callback
+                complete: callback
             });
         }
 
@@ -206,20 +204,35 @@ module api.ui.panel {
                 return deferred.promise;
             }
 
+            let formMask;
+            const containsLazyRenderers = this.getPanel(index).containsLazyRenderers();
+
             const onScrolled = () => {
                 const panelToShow = this.getPanel(index);
                 this.notifyPanelShown(panelToShow, index, this.getPanelShown());
                 this.panelShown = panelToShow;
+                if (formMask) {
+                    formMask.hide();
+                }
 
                 deferred.resolve(null);
             };
 
-            this.getPanel(index).onLazyRendered(() =>
-                setTimeout(() => this.scrollToPanel(index, onScrolled), 500)
-            );
+            if (containsLazyRenderers) {
+                formMask = new api.ui.mask.LoadMask(this.getScrollable());
+                formMask.show();
+
+                this.getPanel(index).onLazyRendered(() =>
+                    setTimeout(() => this.scrollToPanel(index, onScrolled), 200)
+                );
+            }
 
             for (let i=0; i<=index; i++) {
                 this.getPanel(i).forceRender();
+            }
+
+            if (!containsLazyRenderers) {
+                this.scrollToPanel(index, onScrolled);
             }
 
             return deferred.promise;

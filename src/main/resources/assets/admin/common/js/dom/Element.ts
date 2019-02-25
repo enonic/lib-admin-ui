@@ -814,13 +814,13 @@ module api.dom {
         }
 
         public notifyForceRender() {
-            this.lazyRenderListeners.forEach((listener) => {
+            this.lazyRenderListeners.forEach(listener => {
                 listener();
             });
         }
 
         public notifyLazyRendered() {
-            this.lazyRenderedListeners.forEach((listener) => {
+            this.lazyRenderedListeners.forEach(listener => {
                 listener();
             });
             this.lazyRenderedListeners = [];
@@ -838,7 +838,7 @@ module api.dom {
             }
         }
 
-        private containsLazyRenderers(): boolean {
+        public containsLazyRenderers(): boolean {
             if (this.isLazyRenderer()) {
                 return true;
             }
@@ -888,12 +888,10 @@ module api.dom {
 
             const render = () => {
                 const onAdded = () => {
-                    console.log('Added ', childEl.getHTMLElement());
                     scrollableParent.unScroll(renderOnScroll);
                     this.unForceRender(render);
 
                     if (this.lazyRenderListeners.length === 0) {
-                        console.log('Notifying about lazy rendered for ', this.getHTMLElement());
                         this.lazyRenderer = false;
                         this.notifyLazyRendered();
                     }
