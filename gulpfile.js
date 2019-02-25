@@ -111,7 +111,7 @@ gulp.task('clean', function () {
     return del(paths, {dot: true});
 });
 
-gulp.task('less', gulp.parallel('less-admin-full', 'less-admin-lite'));
+gulp.task('less', gulp.series('less-admin-full', 'less-admin-lite'));
 gulp.task('ts', gulp.series('ts-admin', gulp.task('ts-spec')));
 gulp.task('combine', gulp.task('combine-js'));
 

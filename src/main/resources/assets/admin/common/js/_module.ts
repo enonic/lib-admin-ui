@@ -8,7 +8,6 @@
 ///<reference path='lib/slickgrid-plugins.d.ts' />
 ///<reference path='lib/hasher.d.ts' />
 ///<reference path='lib/crossroads.d.ts' />
-///<reference path='lib/jquery.slimscroll.d.ts' />
 ///<reference path='lib/noconflict.d.ts' />
 
 ///<reference path='util/_module.ts' />

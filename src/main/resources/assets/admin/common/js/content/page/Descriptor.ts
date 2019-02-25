@@ -1,6 +1,7 @@
 module api.content.page {
 
-    export class Descriptor implements api.Cloneable {
+    export class Descriptor
+        implements api.Cloneable, api.Equitable {
 
         private key: DescriptorKey;
 
@@ -50,6 +51,20 @@ module api.content.page {
 
         clone(): Descriptor {
             return new DescriptorBuilder(this).build();
+        }
+
+        equals(o: api.Equitable): boolean {
+            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Descriptor)) {
+                return false;
+            }
+
+            let other = <Descriptor>o;
+
+            return this.name.toString() === other.getName().toString() &&
+                   this.key.equals(other.getKey()) &&
+                   this.displayName === other.getDisplayName() &&
+                   this.description === other.getDescription() &&
+                   this.config.equals(other.getConfig());
         }
     }
 

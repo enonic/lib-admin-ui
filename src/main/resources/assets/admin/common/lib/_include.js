@@ -3,7 +3,6 @@
 // =include jquery-migrate-3.0.1.min.js
 // =include jquery-ui.min.js
 // =include jquery.simulate.js
-// =include jquery.slimscroll.min.js
 // =include codemirror/codemirror.js
 // =include codemirror/addon/loadmode.js
 // =include signals.js
