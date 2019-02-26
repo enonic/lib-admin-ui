@@ -813,12 +813,6 @@ module api.dom {
             return this.lazyRenderer;
         }
 
-        public notifyForceRender() {
-            this.lazyRenderListeners.forEach(listener => {
-                listener();
-            });
-        }
-
         public notifyLazyRendered() {
             this.lazyRenderedListeners.forEach(listener => {
                 listener();
@@ -865,6 +859,12 @@ module api.dom {
             });
         }
 
+        public notifyForceRender() {
+            this.lazyRenderListeners.forEach(listener => {
+                listener();
+            });
+        }
+
         private onForceRender(listener: () => void) {
             this.lazyRenderListeners.push(listener);
         }
@@ -888,6 +888,7 @@ module api.dom {
 
             const render = () => {
                 const onAdded = () => {
+                    childEl.unAdded(onAdded);
                     scrollableParent.unScroll(renderOnScroll);
                     this.unForceRender(render);
 
@@ -895,7 +896,6 @@ module api.dom {
                         this.lazyRenderer = false;
                         this.notifyLazyRendered();
                     }
-                    childEl.unAdded(onAdded);
                 };
 
                 childEl.onAdded(onAdded);

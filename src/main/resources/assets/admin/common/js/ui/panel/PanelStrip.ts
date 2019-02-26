@@ -204,35 +204,33 @@ module api.ui.panel {
                 return deferred.promise;
             }
 
-            let formMask;
-            const containsLazyRenderers = this.getPanel(index).containsLazyRenderers();
-
             const onScrolled = () => {
                 const panelToShow = this.getPanel(index);
                 this.notifyPanelShown(panelToShow, index, this.getPanelShown());
                 this.panelShown = panelToShow;
-                if (formMask) {
-                    formMask.hide();
-                }
 
                 deferred.resolve(null);
             };
 
-            if (containsLazyRenderers) {
-                formMask = new api.ui.mask.LoadMask(this.getScrollable());
-                formMask.show();
+            const isForceRenderRequired = this.panels.slice(0, index).some(panel => panel.containsLazyRenderers());
 
-                this.getPanel(index).onLazyRendered(() =>
-                    setTimeout(() => this.scrollToPanel(index, onScrolled), 200)
-                );
+            if (!isForceRenderRequired) {
+                this.scrollToPanel(index, onScrolled);
+
+                return deferred.promise;
             }
+
+            const formMask = new api.ui.mask.LoadMask(this.getScrollable());
+            formMask.show();
+
+            deferred.promise.then(() => formMask.hide());
+
+            this.getPanel(index).onLazyRendered(() =>
+                setTimeout(() => this.scrollToPanel(index, onScrolled), 500)
+            );
 
             for (let i=0; i<=index; i++) {
                 this.getPanel(i).forceRender();
-            }
-
-            if (!containsLazyRenderers) {
-                this.scrollToPanel(index, onScrolled);
             }
 
             return deferred.promise;
