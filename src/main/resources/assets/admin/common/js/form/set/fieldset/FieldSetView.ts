@@ -11,6 +11,8 @@ module api.form {
         parent: FormItemOccurrenceView;
 
         dataSet?: PropertySet;
+
+        lazyRender?: boolean;
     }
 
     export class FieldSetView extends FormItemView {
@@ -32,6 +34,7 @@ module api.form {
             });
 
             this.formItemLayer = new FormItemLayer(config.context);
+            this.formItemLayer.setLazyRender(config.lazyRender);
 
             this.fieldSet = config.fieldSet;
             this.propertySet = config.dataSet;
