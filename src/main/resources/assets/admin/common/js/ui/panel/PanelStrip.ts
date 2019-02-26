@@ -180,28 +180,58 @@ module api.ui.panel {
             }
         }
 
+        private scrollToPanel(index: number, callback: () => void) {
+            const headerToShow = this.getHeader(index);
+            const scrollTop = index === 0 ?
+                                 0 : this.getScroll()
+                                     - this.offset
+                                     + (headerToShow.getEl().getPaddingTop() / 2)
+                                     + headerToShow.getEl().getOffsetToParent().top;
+
+            wemjq(this.getScrollable().getHTMLElement()).animate({
+                scrollTop: scrollTop
+            }, {
+                duration: 500,
+                complete: callback
+            });
+        }
+
         showPanelByIndex(index: number): wemQ.Promise<void> {
             const deferred = wemQ.defer<void>();
             const headerToShow = this.getHeader(index);
             if (!headerToShow && index > 0) {
-                return;
+                deferred.resolve(null);
+                return deferred.promise;
             }
 
-            wemjq(this.getScrollable().getHTMLElement()).animate({
-                scrollTop: index === 0 ? 0 : this.getScroll()
-                                             - this.offset
-                                             + (headerToShow.getEl().getPaddingTop() / 2)
-                                             + headerToShow.getEl().getOffsetToParent().top
-            }, {
-                duration: 500,
-                complete: () => {
-                    const panelToShow = this.getPanel(index);
-                    this.notifyPanelShown(panelToShow, index, this.getPanelShown());
-                    this.panelShown = panelToShow;
+            const onScrolled = () => {
+                const panelToShow = this.getPanel(index);
+                this.notifyPanelShown(panelToShow, index, this.getPanelShown());
+                this.panelShown = panelToShow;
 
-                    deferred.resolve(null);
-                }
-            });
+                deferred.resolve(null);
+            };
+
+            const isForceRenderRequired = this.panels.slice(0, index).some(panel => panel.containsLazyRenderers());
+
+            if (!isForceRenderRequired) {
+                this.scrollToPanel(index, onScrolled);
+
+                return deferred.promise;
+            }
+
+            const formMask = new api.ui.mask.LoadMask(this.getScrollable());
+            formMask.show();
+
+            deferred.promise.then(() => formMask.hide());
+
+            this.getPanel(index).onLazyRendered(() =>
+                setTimeout(() => this.scrollToPanel(index, onScrolled), 500)
+            );
+
+            for (let i=0; i<=index; i++) {
+                this.getPanel(i).forceRender();
+            }
 
             return deferred.promise;
         }
