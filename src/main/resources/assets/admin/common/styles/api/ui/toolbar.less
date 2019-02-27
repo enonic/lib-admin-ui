@@ -49,4 +49,41 @@
     }
   }
 
+  .progress-bar {
+    height: 40px;
+    min-width: 167px; // Width of the Publish menu button
+    background-color: @form-button-bg-disabled;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &:after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      line-height: 40px;
+      color: @admin-white;
+      font-size: 14px;
+      font-family: @admin-font-family;
+      text-align: center;
+    }
+
+    .progress-label {
+      line-height: 40px;
+    }
+
+    .minimized {
+      .progress-bar {
+        min-width: 105px;
+
+        &:after {
+          margin: 0 15px;
+          left: 0;
+        }
+      }
+    }
+  }
 }
+
