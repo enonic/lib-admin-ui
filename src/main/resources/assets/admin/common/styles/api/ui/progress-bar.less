@@ -1,4 +1,5 @@
 .progress-bar {
+  display: none;
   background-color: @admin-bg-light-gray;
   height: 20px;
 
@@ -17,5 +18,16 @@
     text-align: center;
     color: @admin-white;
     line-height: 20px;
+  }
+}
+
+.progress-message {
+  display: none;
+}
+
+body.is-processing {
+
+  .progress-bar {
+    display: block;
   }
 }

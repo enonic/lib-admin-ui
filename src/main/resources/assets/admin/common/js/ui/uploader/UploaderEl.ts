@@ -275,7 +275,6 @@ module api.ui.uploader {
                 }
             } else {
                 this.setDefaultDropzoneVisible();
-                this.getResultContainer().removeChildren();
                 return this;
             }
 
@@ -354,6 +353,7 @@ module api.ui.uploader {
                 this.uploader.cancelAll();
             }
 
+            this.setResultVisible(true);
             this.uploadedItems.forEach((uploadItem: UploadItem<MODEL>) => uploadItem.notifyUploadStopped());
 
             this.uploadedItems.length = 0;
@@ -362,6 +362,7 @@ module api.ui.uploader {
         }
 
         reset(): UploaderEl<MODEL> {
+            this.finishUpload();
             this.setValue(null);
             this.notifyUploadReset();
             this.setProgressVisible(false);
@@ -713,6 +714,7 @@ module api.ui.uploader {
         }
 
         private finishUpload() {
+            this.setProgressVisible(false);
             this.toggleClass('uploading', false);
         }
 
