@@ -128,7 +128,7 @@ module api.util {
          * @param prefix
          * @returns {string}
          */
-        static encodeUrlParams(params: { [name: string]: any }, prefix?: string): string {
+        static encodeUrlParams(params: { [name: string]: any }, prefix?: string, encode: boolean = true): string {
             if (!params) {
                 return StringHelper.EMPTY_STRING;
             }
@@ -139,15 +139,17 @@ module api.util {
                     let prefixedKey = prefix ? prefix + '[' + key + ']' : key;
                     if (typeof value === 'object') {
                         urlArray.push(this.encodeUrlParams(value, prefixedKey));
-                    } else {
+                    } else if (encode) {
                         urlArray.push(encodeURIComponent(prefixedKey) + '=' + encodeURIComponent(value));
+                    } else {
+                        urlArray.push(prefixedKey + '=' + value);
                     }
                 }
             }
             return urlArray.join('&');
         }
 
-        static appendUrlParams(url: string, params: { [name: string]: any }): string {
+        static appendUrlParams(url: string, params: { [name: string]: any }, encode: boolean = true): string {
             if (!params || Object.keys(params).length === 0) {
                 return url;
             }
@@ -155,7 +157,7 @@ module api.util {
             let urlParams = UriHelper.decodeUrlParams(url);
             let hasParams = Object.keys(urlParams).length > 0;
 
-            return url + (hasParams ? '&' : '?') + UriHelper.encodeUrlParams(params);
+            return url + (hasParams ? '&' : '?') + UriHelper.encodeUrlParams(params, '', encode);
         }
     }
 }
