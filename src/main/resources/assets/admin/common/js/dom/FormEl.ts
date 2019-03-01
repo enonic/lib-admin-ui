@@ -32,7 +32,7 @@ module api.dom {
 
             // set focus to the next visible input
             for (let i = index + 1; i < focusableElements.length; i++) {
-                let nextFocusable = api.dom.Element.fromHtmlElement(<HTMLElement>focusableElements.item(i));
+                let nextFocusable = api.dom.Element.fromHtmlElement(<HTMLElement>focusableElements[i]);
                 if (!nextFocusable.isVisible() ||
                     (!ignoreTabIndex && nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0 )) {
                     continue;
@@ -64,7 +64,7 @@ module api.dom {
             do {
                 index = index - 1;
                 if (0 <= index) {
-                    nextFocusable = api.dom.Element.fromHtmlElement(<HTMLElement>focusableElements.item(index));
+                    nextFocusable = api.dom.Element.fromHtmlElement(<HTMLElement>focusableElements[index]);
                 }
             } while (nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0);
 
@@ -83,7 +83,7 @@ module api.dom {
             let index = -1;
             let inputHTMLElement = el.getHTMLElement();
             for (let i = 0; i < elements.length; i++) {
-                if (inputHTMLElement === elements.item(i)) {
+                if (inputHTMLElement === elements[i]) {
                     index = i;
                     break;
                 }
