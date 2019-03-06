@@ -2,7 +2,10 @@ module api.ui.menu {
 
     export class TreeContextMenu
         extends api.dom.DlEl {
+
         private itemClickListeners: { (): void }[] = [];
+
+        private itemExpandedListeners: { (heightChange: number): void }[] = [];
 
         private actions: api.ui.Action[] = [];
 
@@ -30,19 +33,19 @@ module api.ui.menu {
         }
 
         private addAction(action: api.ui.Action): TreeMenuItem {
-            let childActions = action.getChildActions();
-            let menuItem = this.createMenuItem(action);
-            let subItems = [];
+            const childActions = action.getChildActions();
+            const menuItem = this.createMenuItem(action);
             this.appendChild(menuItem);
             this.actions.push(action);
 
             if (childActions.length > 0) {
-                for (let i = 0; i < childActions.length; i++) {
-                    subItems.push(this.addAction(childActions[i]));
-                }
+                const subItems = action.getChildActions().map(a => this.addAction(a));
                 menuItem.onClicked(() => {
-                    for (let i = 0; i < subItems.length; i++) {
-                        subItems[i].toggleExpand();
+                    const oldHeight = this.getEl().getHeightWithBorder();
+                    subItems.forEach(item => item.toggleExpand());
+                    const newHeight = this.getEl().getHeightWithBorder();
+                    if (subItems.length > 0) {
+                        this.notifyItemExpanded(newHeight - oldHeight);
                     }
                 });
             } else {
@@ -91,6 +94,22 @@ module api.ui.menu {
         private notifyItemClicked() {
             this.itemClickListeners.forEach((listener: () => void) => {
                 listener();
+            });
+        }
+
+        onItemExpanded(listener: (heightChange: number) => void) {
+            this.itemExpandedListeners.push(listener);
+        }
+
+        unItemExpanded(listener: (heightChange: number) => void) {
+            this.itemExpandedListeners = this.itemExpandedListeners.filter((currentListener: (heightChange: number) => void) => {
+                return listener !== currentListener;
+            });
+        }
+
+        private notifyItemExpanded(heightChange: number) {
+            this.itemExpandedListeners.forEach((listener: (heightChange: number) => void) => {
+                listener(heightChange);
             });
         }
 
