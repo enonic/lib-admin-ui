@@ -2,6 +2,7 @@ module api.application {
 
     import ApplicationKey = api.application.ApplicationKey;
     import MarketApplicationJson = api.application.json.MarketApplicationJson;
+    import i18n = api.util.i18n;
 
     export class MarketApplication {
 
@@ -123,30 +124,21 @@ module api.application {
 
         public static formatStatus(appStatus: MarketAppStatus, progress?: number): string {
 
-            let status;
+            let status = i18n('status.unknown');
 
             switch (appStatus) {
             case MarketAppStatus.NOT_INSTALLED:
-                status = 'Install';
+                status = i18n('action.install');
                 break;
             case MarketAppStatus.INSTALLED:
-                status = 'Installed';
+                status = i18n('status.installed');
                 break;
             case MarketAppStatus.INSTALLING:
                 status = new api.ui.ProgressBar(progress).toString();
                 break;
             case MarketAppStatus.OLDER_VERSION_INSTALLED:
-                status = 'Update';
+                status = i18n('action.update');
                 break;
-            case MarketAppStatus.UNKNOWN:
-                status = 'Unknown';
-                break;
-            default:
-                status = 'Unknown';
-            }
-
-            if (!!MarketAppStatus[status]) {
-                return 'Unknown';
             }
 
             return status;
