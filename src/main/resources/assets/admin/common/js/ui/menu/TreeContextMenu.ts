@@ -44,8 +44,9 @@ module api.ui.menu {
                     const oldHeight = this.getEl().getHeightWithBorder();
                     subItems.forEach(item => item.toggleExpand());
                     const newHeight = this.getEl().getHeightWithBorder();
-                    if (subItems.length > 0) {
-                        this.notifyItemExpanded(newHeight - oldHeight);
+                    const heightChange = newHeight - oldHeight;
+                    if (heightChange !== 0) {
+                        this.notifyItemExpanded(heightChange);
                     }
                 });
             } else {
