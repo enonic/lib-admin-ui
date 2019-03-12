@@ -76,10 +76,6 @@ module api.form {
                     }
                 });
 
-                formItemView.onEditContentRequest((content: api.content.ContentSummary) => {
-                    new api.content.event.FormEditEvent(content).fire();
-                });
-
                 if (this.formItemOccurrence.isMultiple()) {
                     formItemView.onBlur(() => this.setTitle());
                 }
