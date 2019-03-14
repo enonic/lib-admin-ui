@@ -99,7 +99,13 @@ module api.content.form.inputtype.upload {
 
             this.updateOccurrences();
 
-            new api.content.event.ContentRequiresSaveEvent(this.getContext().content.getContentId()).fire();
+            new DeleteAttachmentRequest()
+                .setContentId(this.getContext().content.getContentId())
+                .addAttachmentName(itemName)
+                .sendAndParse()
+                .then((content: Content) => {
+                    new api.content.event.ContentRequiresSaveEvent(content.getContentId()).fire();
+                });
         }
 
         private addItemCallback() {
