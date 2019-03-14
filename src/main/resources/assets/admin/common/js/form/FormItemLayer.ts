@@ -77,7 +77,8 @@ module api.form {
                         context: this.context,
                         formItemSet: formItemSet,
                         parent: this.parent,
-                        parentDataSet: propertySet
+                        parentDataSet: propertySet,
+                        occurrencesLazyRender: this.lazyRender
                     });
                 }
 
