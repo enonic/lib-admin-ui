@@ -13,6 +13,8 @@ module api.ui.selector.list {
         private emptyText: string;
         private emptyView: api.dom.DivEl;
 
+        private sortFunc: (a: I, b: I) => number;
+
         constructor(className?: string) {
             super(className);
         }
@@ -137,6 +139,10 @@ module api.ui.selector.list {
             items.forEach(item => this.replaceItem(item, append));
         }
 
+        setSortItemViewsFunc(sortFunc: (a: I, b: I) => number) {
+            this.sortFunc = sortFunc;
+        }
+
         getItemCount(): number {
             return this.items.length;
         }
@@ -189,7 +195,13 @@ module api.ui.selector.list {
         private addItemView(item: I, readOnly: boolean = false) {
             let itemView = this.createItemView(item, readOnly);
             this.itemViews[this.getItemId(item)] = itemView;
-            this.appendChild(itemView);
+            if (this.sortFunc) {
+                const pos: number = this.items.sort(this.sortFunc).indexOf(item);
+                this.insertChild(itemView, pos);
+            } else {
+                this.appendChild(itemView);
+            }
+
         }
 
         private addEmptyView() {
