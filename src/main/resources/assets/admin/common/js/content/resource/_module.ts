@@ -15,6 +15,7 @@
 ///<reference path='GetPermittedActionsRequest.ts' />
 ///<reference path='GetContentRootPermissionsRequest.ts' />
 ///<reference path='GetContentAttachmentsRequest.ts' />
+///<reference path='DeleteAttachmentRequest.ts' />
 ///<reference path='CreateContentRequest.ts' />
 ///<reference path='OrderContentRequest.ts' />
 ///<reference path='OrderChildContentRequest.ts' />

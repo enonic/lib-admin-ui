@@ -4,6 +4,8 @@ module api.content.form.inputtype.upload {
     import Attachment = api.content.attachment.Attachment;
     import FileUploaderEl = api.ui.uploader.FileUploaderEl;
     import AttachmentUploaderEl = api.content.attachment.AttachmentUploaderEl;
+    import Content = api.content.Content;
+    import DeleteAttachmentRequest = api.content.resource.DeleteAttachmentRequest;
 
     export class AttachmentUploader extends FileUploader {
 
@@ -99,7 +101,13 @@ module api.content.form.inputtype.upload {
 
             this.updateOccurrences();
 
-            new api.content.event.ContentRequiresSaveEvent(this.getContext().content.getContentId()).fire();
+            new DeleteAttachmentRequest()
+                .setContentId(this.getContext().content.getContentId())
+                .addAttachmentName(itemName)
+                .sendAndParse()
+                .then((content: Content) => {
+                    new api.content.event.ContentRequiresSaveEvent(content.getContentId()).fire();
+                });
         }
 
         private addItemCallback() {
