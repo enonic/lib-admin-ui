@@ -79,7 +79,7 @@ module api.form {
 
         toggleHelpText(show?: boolean) {
             this.formItemLayer.toggleHelpText(show);
-            if (!!this.helpText) {
+            if (this.helpText) {
                 this.helpText.toggleHelpText(show);
             }
         }

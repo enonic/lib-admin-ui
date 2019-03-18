@@ -11,9 +11,13 @@ module api.form {
         parent: FormItemSetOccurrenceView;
 
         parentDataSet: PropertySet;
+
+        occurrencesLazyRender?: boolean;
     }
 
     export class FormItemSetView extends FormSetView<FormItemSetOccurrenceView> {
+
+        private occurrencesLazyRender: boolean;
 
         constructor(config: FormItemSetViewConfig) {
             super(<FormItemViewConfig> {
@@ -26,6 +30,7 @@ module api.form {
             this.formSet = config.formItemSet;
             this.classPrefix = 'form-item-set';
             this.helpText = this.formSet.getHelpText();
+            this.occurrencesLazyRender = config.occurrencesLazyRender;
 
             this.addClass(this.formSet.getPath().getElements().length % 2 ? 'even' : 'odd');
             if (this.formSet.getOccurrences().getMaximum() === 1) {
@@ -40,7 +45,8 @@ module api.form {
                 occurrenceViewContainer: this.occurrenceViewsContainer,
                 formItemSet: <FormItemSet> this.formSet,
                 parent: this.getParent(),
-                propertyArray: this.getPropertyArray(this.parentDataSet)
+                propertyArray: this.getPropertyArray(this.parentDataSet),
+                lazyRender: this.occurrencesLazyRender
             });
         }
     }

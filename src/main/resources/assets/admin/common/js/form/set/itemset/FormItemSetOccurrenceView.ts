@@ -13,6 +13,8 @@ module api.form {
         parent: FormItemSetOccurrenceView;
 
         dataSet: PropertySet;
+
+        lazyRender?: boolean;
     }
 
     export class FormItemSetOccurrenceView extends FormSetOccurrenceView {
@@ -27,6 +29,7 @@ module api.form {
             this.propertySet = config.dataSet;
 
             this.formItemLayer = new FormItemLayer(config.context);
+            this.formItemLayer.setLazyRender(config.lazyRender);
         }
 
         private setTitle() {

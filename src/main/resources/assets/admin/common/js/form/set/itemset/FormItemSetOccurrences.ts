@@ -12,12 +12,16 @@ module api.form {
         parent: FormItemSetOccurrenceView;
 
         propertyArray: PropertyArray;
+
+        lazyRender?: boolean;
     }
 
     /*
      * A kind of a controller, which adds/removes FormItemSetOccurrenceView-s
      */
     export class FormItemSetOccurrences extends FormSetOccurrences<FormItemSetOccurrenceView> {
+
+        private lazyRender: boolean;
 
         constructor(config: FormItemSetOccurrencesConfig) {
             super(<FormItemOccurrencesConfig>{
@@ -31,23 +35,26 @@ module api.form {
             this.formSet = config.formItemSet;
             this.parent = config.parent;
             this.occurrencesCollapsed = false;
+            this.lazyRender = config.lazyRender;
         }
 
         createNewOccurrenceView(occurrence: FormSetOccurrence<FormItemSetOccurrenceView>): FormItemSetOccurrenceView {
 
-            let dataSet = this.getSetFromArray(occurrence);
+            const dataSet = this.getSetFromArray(occurrence);
 
-            let newOccurrenceView = new FormItemSetOccurrenceView(<FormItemSetOccurrenceViewConfig>{
+            const newOccurrenceView = new FormItemSetOccurrenceView(<FormItemSetOccurrenceViewConfig>{
                 context: this.context,
                 formSetOccurrence: occurrence,
                 formItemSet: <FormItemSet> this.formSet,
                 parent: this.parent,
-                dataSet: dataSet
+                dataSet: dataSet,
+                lazyRender: this.lazyRender
             });
 
             newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<FormItemSetOccurrenceView>) => {
                 this.removeOccurrenceView(event.getView());
             });
+
             return newOccurrenceView;
         }
     }
