@@ -235,6 +235,13 @@ module api.data {
                 }
                 if (this.propertyArrayByName.hasOwnProperty(name)) {
                     let propertyArray: PropertyArray = this.propertyArrayByName[name];
+
+                    if (propertyArray.getSize() === 0) {
+                        if (propertyArray.getType().equals(api.data.ValueTypes.REFERENCE)) {
+                            return false;
+                        }
+                    }
+
                     propertyArray.forEach((property: Property) => {
                         if (!isEmpty) {
                             return;
