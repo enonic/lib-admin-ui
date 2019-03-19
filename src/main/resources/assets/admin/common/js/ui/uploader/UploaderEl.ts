@@ -521,9 +521,9 @@ module api.ui.uploader {
             const uploadFile = new UploadItem<MODEL>(file);
             this.uploadedItems.push(uploadFile.setName(name));
 
-            this.setProgressVisible();
-
             this.startUpload();
+
+            this.setProgressVisible();
 
             this.debouncedUploadStart();
         }
