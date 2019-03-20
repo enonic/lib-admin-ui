@@ -63,8 +63,8 @@ module api.ui.selector.list {
                 if (!silent) {
                     this.notifyItemsRemoved(removedItems);
                 }
-                this.layoutList(this.items);
             }
+            this.layoutList(this.items);
         }
 
         addItem(item: I, silent: boolean = false) {
