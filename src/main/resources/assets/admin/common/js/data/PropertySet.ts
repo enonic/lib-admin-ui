@@ -377,6 +377,20 @@ module api.data {
             return this.propertyArrayByName[name];
         }
 
+        getPropertyArrays(): PropertyArray[] {
+            const arrays = [];
+
+            for (const name in this.propertyArrayByName) {
+                if (this.propertyArrayByName.hasOwnProperty(name)) {
+                    const array = this.getPropertyArray(name);
+                    if (array) {
+                        arrays.push(array);
+                    }
+                }
+            }
+            return arrays;
+        }
+
         /**
          * Calls the given callback for each property in the set.
          */
