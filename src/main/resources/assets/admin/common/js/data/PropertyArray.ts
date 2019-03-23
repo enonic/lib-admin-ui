@@ -233,8 +233,12 @@ module api.data {
                                 PropertyPath.fromParent(this.getParentPropertyPath(), new PropertyPathElement(name, index)));
             }
 
-            this.array = <Property[]>api.util.ArrayHelper.filterFn(this.array,
-                (property: Property) => !propertyToRemove.getValue().equals(property.getValue()));
+            if (propertyToRemove.getValue().isNull()) {
+                this.array.splice(index, 1);
+            } else {
+                this.array = <Property[]>api.util.ArrayHelper.filterFn(this.array,
+                    (property: Property) => !propertyToRemove.getValue().equals(property.getValue()));
+            }
 
             this.forEach((property: Property, i: number) => {
                 property.setIndex(i);
