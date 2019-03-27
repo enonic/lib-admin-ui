@@ -79,7 +79,13 @@
                 // store the interaction data
                 $.data( this, drag.datakey, data );
                 // bind the mousedown event, which starts drag interactions
-                $event.add( this, "touchstart mousedown", drag.init, data );
+                $event.add( this, "mousedown", drag.init, data );
+
+                try {
+                    this.addEventListener('touchstart', drag.init, {passive: true});
+                } catch {
+                    this.addEventListener('touchstart', drag.init);
+                }
                 // prevent image dragging in IE...
                 if ( this.attachEvent )
                     this.attachEvent("ondragstart", drag.dontstart );
@@ -94,7 +100,8 @@
                 // remove the stored data
                 $.removeData( this, drag.datakey );
                 // remove the mousedown event
-                $event.remove( this, "touchstart mousedown", drag.init );
+                $event.remove( this, "mousedown", drag.init );
+                this.removeEventListener('touchstart', drag.init);
                 // enable text selection
                 drag.textselect( true );
                 // un-prevent image dragging in IE...

@@ -405,7 +405,11 @@ if (typeof Slick === "undefined") {
                 // Work around http://crbug.com/312427.
                 if (navigator.userAgent.toLowerCase().match(/webkit/) &&
                     navigator.userAgent.toLowerCase().match(/macintosh/)) {
-                    $canvas.on("mousewheel", handleMouseWheel);
+                    try {
+                        $canvas[0].addEventListener('mousewheel', handleMouseWheel, {passive: true});
+                    } catch {
+                        $canvas[0].addEventListener('mousewheel', handleMouseWheel);
+                    }
                 }
                 restoreCssFromHiddenInit();
             }

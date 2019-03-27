@@ -5611,5 +5611,3 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ih()
     })) : ih();
 }).call(this);
-
-//# sourceMappingURL=webcomponents-bundle.js.map

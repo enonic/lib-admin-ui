@@ -234,8 +234,20 @@ module api.dom {
         }
 
         addEventListener(eventName: string, f: (event: Event) => any): ElementHelper {
+            if (eventName === 'touchstart' || eventName === 'mousewheel') {
+                return this.addPassiveEventListener(eventName, f);
+            }
             this.el.addEventListener(eventName, f);
             return this;
+        }
+
+        private addPassiveEventListener(eventName: string, f: (event: Event) => any): ElementHelper {
+            try {
+                this.el.addEventListener(eventName, f, {passive: true});
+                return this;
+            } catch {
+                return this.addEventListener(eventName, f);
+            }
         }
 
         removeEventListener(eventName: string, f: (event: Event) => any): ElementHelper {

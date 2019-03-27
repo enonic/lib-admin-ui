@@ -584,7 +584,11 @@ module api.ui.grid {
         subscribeOnScrolled(callback: (e: Event) => void) {
             if (this.getHTMLElement().addEventListener) {
                 this.getHTMLElement().addEventListener('DOMMouseScroll', callback, false); // firefox
-                this.getHTMLElement().addEventListener('mousewheel', callback, false);     // chrome
+                try {
+                    this.getHTMLElement().addEventListener('mousewheel', callback, {passive: true});
+                } catch {
+                    this.getHTMLElement().addEventListener('mousewheel', callback);
+                }
             }
         }
 
