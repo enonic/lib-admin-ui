@@ -249,7 +249,7 @@ module api.data {
                         if (type.equals(api.data.ValueTypes.BOOLEAN) && property.getValue().getBoolean() === false) {
                             return;
                         }
-                        if (type.equals(api.data.ValueTypes.DATA) && !property.getValue().getPropertySet().isEmpty()) {
+                        if (type.equals(api.data.ValueTypes.DATA) && property.getValue().getPropertySet().isEmpty()) {
                             return;
                         }
                         isEmpty = false;
