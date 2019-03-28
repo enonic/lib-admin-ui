@@ -46,6 +46,10 @@ module api.ui.dialog {
 
         protected loadMask: api.ui.mask.LoadMask;
 
+        private renderedListenerForLoadMask: () => void;
+
+        private shownListenerForLoadMask: () => void;
+
         private cancelButton: DialogButton;
 
         protected confirmationDialog: ConfirmationDialog;
@@ -93,6 +97,14 @@ module api.ui.dialog {
             this.body = new DivEl('modal-dialog-body');
             this.footer = new DivEl('modal-dialog-footer');
             this.loadMask = new api.ui.mask.LoadMask(this.contentPanel);
+            this.renderedListenerForLoadMask = () => {
+                this.loadMask.show();
+                this.unRendered(this.renderedListenerForLoadMask);
+            };
+            this.shownListenerForLoadMask = () => {
+                this.loadMask.show();
+                this.unShown(this.shownListenerForLoadMask);
+            };
             this.initConfirmationDialog();
         }
 
@@ -621,6 +633,25 @@ module api.ui.dialog {
 
         public setElementToFocusOnShow(element: Element) {
             this.elementToFocusOnShow = element;
+        }
+
+        protected showLoadMask() {
+            if (this.isVisible()) {
+                this.loadMask.show();
+            } else {
+                if (this.isRendered()) {
+                    this.onShown(this.shownListenerForLoadMask);
+                } else {
+                    this.onRendered(this.renderedListenerForLoadMask);
+                }
+            }
+
+        }
+
+        protected hideLoadMask() {
+            this.loadMask.hide();
+            this.unRendered(this.renderedListenerForLoadMask);
+            this.unShown(this.shownListenerForLoadMask);
         }
     }
 
