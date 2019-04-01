@@ -68,7 +68,7 @@ module api.form {
             };
 
             this.onRemoved(() => {
-                if (!!this.propertySet) {
+                if (this.propertySet) {
                     this.propertySet.unPropertyValueChanged(this.formDataChangedListener);
                 }
             });

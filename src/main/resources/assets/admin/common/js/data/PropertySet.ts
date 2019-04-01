@@ -263,7 +263,11 @@ module api.data {
             this.doRemoveEmptyValues(this);
         }
 
-        private doRemoveEmptyValues(propertySet: api.data.PropertySet) {
+        removeEmptySets() {
+            this.doRemoveEmptyArrays(this);
+        }
+
+        private doRemoveEmptyValues(propertySet: PropertySet) {
             let toRemove = [];
             propertySet.forEach((property) => {
                 let type = property.getType();
@@ -282,6 +286,17 @@ module api.data {
                 }
             });
             this.removeProperties(toRemove);
+            this.removeEmptyArrays(propertySet);
+        }
+
+        private doRemoveEmptyArrays(propertySet: PropertySet) {
+            propertySet.forEach((property) => {
+                const type = property.getType();
+                if (type.equals(api.data.ValueTypes.DATA)) {
+                    const propertySetValue = property.getValue().getPropertySet();
+                    this.removeEmptyArrays(propertySetValue);
+                }
+            });
             this.removeEmptyArrays(propertySet);
         }
 
