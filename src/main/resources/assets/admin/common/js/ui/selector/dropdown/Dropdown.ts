@@ -276,7 +276,9 @@ module api.ui.selector.dropdown {
             let option = this.getOptionByRow(index);
             if (option != null) {
                 this.selectOption(option, silent);
-                api.dom.FormEl.moveFocusToNextFocusable(this.input);
+                if (!silent) {
+                    api.dom.FormEl.moveFocusToNextFocusable(this.input);
+                }
             }
         }
 
