@@ -1836,7 +1836,8 @@ module api.ui.treegrid {
         }
 
         isNodeHighlighted(node: TreeNode<DATA>) {
-            return node === this.highlightedNode;
+            // grid could've been refreshed resulting in new nodeIds, so compare dataIds
+            return node !== null && this.highlightedNode !== null && node.getDataId() === this.highlightedNode.getDataId();
         }
 
         protected handleItemMetadata(row: number) {
