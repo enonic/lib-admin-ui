@@ -5,7 +5,8 @@ module api.form.inputtype.number {
     import Value = api.data.Value;
     import Property = api.data.Property;
 
-    export class Long extends NumberInputType {
+    export class Long
+        extends NumberInputType {
 
         constructor(config: api.form.inputtype.InputTypeViewContext) {
             super(config);
@@ -37,9 +38,19 @@ module api.form.inputtype.number {
                 inputEl.updateValidationStatusOnUserInput(isValid);
             });
 
-            property.onPropertyValueChanged(() =>  this.updateInputOccurrenceElement(inputEl, property, true));
+            this.initPropertyListeners(property, inputEl);
 
             return inputEl;
+        }
+
+        private initPropertyListeners(property: Property, inputEl: api.ui.text.TextInput) {
+            const propertyValueChangedListener = () => this.updateInputOccurrenceElement(inputEl, property, true);
+
+            property.onPropertyValueChanged(propertyValueChangedListener);
+
+            inputEl.onRemoved(() => {
+                property.unPropertyValueChanged(propertyValueChangedListener);
+            });
         }
 
         protected isValid(value: string, recording?: api.form.inputtype.InputValidationRecording): boolean {
@@ -54,7 +65,7 @@ module api.form.inputtype.number {
         }
 
         resetInputOccurrenceElement(occurrence: api.dom.Element) {
-            let input = <api.ui.text.TextInput> occurrence;
+            let input = <api.ui.text.TextInput>occurrence;
 
             input.resetBaseValues();
         }
