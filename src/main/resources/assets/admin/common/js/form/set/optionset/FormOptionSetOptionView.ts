@@ -421,7 +421,7 @@ module api.form {
 
         update(propertySet: api.data.PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
             this.parentDataSet = propertySet;
-            const propertyArray = this.getOptionItemsPropertyArray(propertySet);
+            const propertyArray: PropertyArray = this.getOptionItemsPropertyArray(propertySet);
 
             return this.formItemLayer.update(propertyArray.getSet(0), unchangedOnly).then(() => {
                 if (!this.isRadioSelection()) {
@@ -430,7 +430,14 @@ module api.form {
                     if (this.getThisPropertyFromSelectedOptionsArray() == null) {
                         wemjq(this.getHTMLElement()).find('input:radio').first().prop('checked', false);
                     }
-                    this.subscribedOnDeselect = false;
+
+                    const selectedProperty = this.getSelectedOptionsArray().get(0);
+                    if (selectedProperty) {
+                        this.subscribeOnRadioDeselect(selectedProperty);
+                        this.subscribedOnDeselect = true;
+                    } else {
+                        this.subscribedOnDeselect = false;
+                    }
                 }
 
                 this.updateViewState();
