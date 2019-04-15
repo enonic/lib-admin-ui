@@ -12,6 +12,7 @@ module api.ui.selector.combobox {
     import GridColumn = api.ui.grid.GridColumn;
     import i18n = api.util.i18n;
     import KeyEventsHandler = api.event.KeyEventsHandler;
+    import BrowserHelper = api.BrowserHelper;
 
     export interface ComboBoxConfig<T> {
 
@@ -332,6 +333,11 @@ module api.ui.selector.combobox {
         giveInputFocus() {
             this.input.setReadOnly(false);
             this.input.giveFocus();
+
+            if (BrowserHelper.isIE()) { // issue with getting focus in IE
+                this.input.giveBlur();
+                this.input.giveFocus();
+            }
         }
 
         getComboBoxDropdownGrid(): DropdownGrid<OPTION_DISPLAY_VALUE> {
