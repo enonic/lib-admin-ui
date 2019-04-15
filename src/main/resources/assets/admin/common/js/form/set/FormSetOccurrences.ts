@@ -118,5 +118,31 @@ module api.form {
         refreshOccurence(index: number) {
             this.occurrenceViews[index].refreshViews();
         }
+
+        update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
+            if (propertyArray.isEmpty()) {
+                return this.updateNoData(propertyArray, unchangedOnly);
+            } else {
+                return super.update(propertyArray, unchangedOnly);
+            }
+        }
+
+        private updateNoData(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
+            const promises: wemQ.Promise<void>[] = [];
+            const occurrencesViewClone: V[] = [].concat(this.occurrenceViews);
+            const occurrencesNoDataSize: number = this.constructOccurrencesForNoData().length;
+
+            for (let i = 0; i < occurrencesNoDataSize; i++) {
+                promises.push(this.updateOccurrenceView(occurrencesViewClone[i], propertyArray, unchangedOnly));
+            }
+
+            for (let i = occurrencesNoDataSize; i < occurrencesViewClone.length; i++) {
+                this.removeOccurrenceView(occurrencesViewClone[i]);
+            }
+
+            this.propertyArray = propertyArray;
+
+            return wemQ.all(promises).spread<void>(() => wemQ<void>(null));
+        }
     }
 }
