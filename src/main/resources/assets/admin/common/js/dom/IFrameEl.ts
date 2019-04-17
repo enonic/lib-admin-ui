@@ -12,19 +12,22 @@ module api.dom {
         }
 
         public setSrc(src: string): api.dom.IFrameEl {
-            this.getEl().setAttribute('src', src);
-            return this;
-        }
+            const currentSrc = this.getEl().getAttribute('src');
 
-        public getSrc(): string {
-            return this.getEl().getAttribute('src');
+            if(currentSrc === src) {
+                this.refresh();
+            } else {
+                this.getEl().setAttribute('src', src);
+            }
+
+            return this;
         }
 
         public refresh() {
             const src = this.getEl().getAttribute('src');
             this.getEl().setAttribute('src', '');
 
-            setTimeout(() => this.getEl().setAttribute('src', src), 10);
+            setTimeout(() => this.getEl().setAttribute('src', src), 50);
 
         }
 
