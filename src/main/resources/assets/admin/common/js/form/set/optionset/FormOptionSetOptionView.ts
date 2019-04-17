@@ -7,6 +7,7 @@ module api.form {
     import ValueTypes = api.data.ValueTypes;
     import Occurrences = api.form.Occurrences;
     import PropertyValueChangedEvent = api.data.PropertyValueChangedEvent;
+    import Checkbox = api.ui.Checkbox;
 
     export interface FormOptionSetOptionViewConfig {
 
@@ -108,7 +109,7 @@ module api.form {
 
             let layoutPromise: wemQ.Promise<FormItemView[]> = this.formItemLayer.setFormItems(
                 this.formOptionSetOption.getFormItems()).setParentElement(this.optionItemsContainer).setParent(this.getParent()).layout(
-                optionItemsPropertySet, validate && this.getThisPropertyFromSelectedOptionsArray() != null);
+                optionItemsPropertySet, validate && this.isSelected());
 
             layoutPromise.then((formItemViews: FormItemView[]) => {
 
@@ -145,7 +146,7 @@ module api.form {
         }
 
         clean() {
-            if (this.getThisPropertyFromSelectedOptionsArray() == null && this.requiresClean) {
+            if (!this.isSelected() && this.requiresClean) {
                 this.resetAllFormItems();
                 this.cleanValidationForThisOption();
                 this.requiresClean = false;
@@ -177,6 +178,10 @@ module api.form {
                 }
             });
             return result;
+        }
+
+        private isSelected(): boolean {
+            return !!this.getThisPropertyFromSelectedOptionsArray();
         }
 
         getName(): string {
@@ -249,11 +254,11 @@ module api.form {
         }
 
         private makeSelectionCheckbox(): api.ui.Checkbox {
-            let checked = this.getThisPropertyFromSelectedOptionsArray() != null;
-            let button = api.ui.Checkbox.create()
-                                        .setLabelText(this.formOptionSetOption.getLabel())
-                                        .setChecked(checked)
-                                        .build();
+            const checked: boolean = this.isSelected();
+            const button: Checkbox = Checkbox.create()
+                .setLabelText(this.formOptionSetOption.getLabel())
+                .setChecked(checked)
+                .build();
 
             this.checkbox = button;
 
@@ -263,7 +268,7 @@ module api.form {
                     this.selectHandle(button.getFirstChild());
                     this.notifySelectionChanged();
                 } else {
-                    let property = this.getThisPropertyFromSelectedOptionsArray();
+                    const property: Property = this.getThisPropertyFromSelectedOptionsArray();
                     if (!!property) {
                         this.getSelectedOptionsArray().remove(property.getIndex());
                     }
@@ -307,12 +312,13 @@ module api.form {
         }
 
         private deselectHandle() {
-            this.expand(this.isOptionSetExpandedByDefault);
             this.disableFormItems();
 
             if(!this.isOptionSetExpandedByDefault) {
+                this.collapse();
                 this.optionItemsContainer.hide();
             }
+
             this.cleanValidationForThisOption();
             this.cleanSelectionMessageForThisOption();
             this.removeClass('selected');
@@ -332,7 +338,7 @@ module api.form {
                     this.removeClass('selected');
                 }
             } else if(this.checkbox.isChecked()) {
-                let property = this.getThisPropertyFromSelectedOptionsArray();
+                const property: Property = this.getThisPropertyFromSelectedOptionsArray();
                 if (!!property) {
                     this.getSelectedOptionsArray().remove(property.getIndex());
                 }
@@ -362,8 +368,12 @@ module api.form {
             wemjq(this.getEl().getHTMLElement()).find('.selection-message').addClass('empty');
         }
 
-        private expand(condition: boolean = true) {
-            this.toggleClass('expanded', condition);
+        private expand() {
+            this.addClass('expanded');
+        }
+
+        private collapse() {
+            this.removeClass('expanded');
         }
 
         private enableFormItems() {
@@ -427,8 +437,10 @@ module api.form {
                 if (!this.isRadioSelection()) {
                     this.subscribeCheckboxOnPropertyEvents();
                 } else {
-                    if (this.getThisPropertyFromSelectedOptionsArray() == null) {
-                        wemjq(this.getHTMLElement()).find('input:radio').first().prop('checked', false);
+                    const isSelected: boolean = this.isSelected();
+                    wemjq(this.getHTMLElement()).find('input:radio').first().prop('checked', isSelected);
+                    if (isSelected) {
+                        this.optionItemsContainer.show();
                     }
 
                     const selectedProperty = this.getSelectedOptionsArray().get(0);
@@ -445,16 +457,22 @@ module api.form {
         }
 
         private updateViewState() {
-            this.expand(this.isOptionSetExpandedByDefault || this.getThisPropertyFromSelectedOptionsArray() != null);
+            const isSelected: boolean = this.isSelected();
 
-            if (!this.getThisPropertyFromSelectedOptionsArray()) {
+            if (this.isOptionSetExpandedByDefault || isSelected) {
+                this.expand();
+            } else {
+                this.collapse();
+            }
+
+            if (!isSelected) {
                 if (this.isOptionSetExpandedByDefault) {
                     this.disableFormItems();
                 }
                 this.cleanValidationForThisOption();
             }
 
-            this.toggleClass('selected', !!this.getThisPropertyFromSelectedOptionsArray());
+            this.toggleClass('selected', isSelected);
         }
 
         broadcastFormSizeChanged() {
@@ -488,7 +506,7 @@ module api.form {
 
         validate(silent: boolean = true): ValidationRecording {
 
-            if (this.getThisPropertyFromSelectedOptionsArray() == null) {
+            if (!this.isSelected()) {
                 return new ValidationRecording();
             }
 
