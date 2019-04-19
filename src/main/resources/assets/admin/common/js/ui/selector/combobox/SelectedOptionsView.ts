@@ -8,7 +8,7 @@ module api.ui.selector.combobox {
 
         createSelectedOption(option: api.ui.selector.Option<T>): SelectedOption<T>;
 
-        addOption(option: api.ui.selector.Option<T>, silent: boolean, keyCode: number): boolean;
+        addOption(option: api.ui.selector.Option<T>, silent: boolean, keyCode: number, index?: number): boolean;
 
         updateOption(option: api.ui.selector.Option<T>, newOption: api.ui.selector.Option<T>, silent?: boolean);
 

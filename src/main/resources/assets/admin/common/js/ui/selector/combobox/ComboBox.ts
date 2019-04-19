@@ -50,6 +50,8 @@ module api.ui.selector.combobox {
 
         treegridDropdownAllowed?: boolean;
 
+        addNewOptionsToTheBottom?: boolean;
+
         optionDataHelper?: OptionDataHelper<T>;
 
         optionDataLoader?: OptionDataLoader<T>;
@@ -122,6 +124,8 @@ module api.ui.selector.combobox {
 
         private skipAutoDropShowOnValueChange: boolean = false;
 
+        private addNewOptionsToTheBottom: boolean = true;
+
         private onDropdownShownCallback: () => wemQ.Promise<void>;
 
         private requestMissingOptions: (missingOptionIds: string[]) => wemQ.Promise<Object>;
@@ -163,6 +167,10 @@ module api.ui.selector.combobox {
 
             if (config.skipAutoDropShowOnValueChange) {
                 this.skipAutoDropShowOnValueChange = config.skipAutoDropShowOnValueChange;
+            }
+
+            if (config.addNewOptionsToTheBottom != null) {
+                this.addNewOptionsToTheBottom = config.addNewOptionsToTheBottom;
             }
 
             this.onDropdownShownCallback = config.onDropdownShownCallback;
@@ -540,7 +548,7 @@ module api.ui.selector.combobox {
                     this.comboBoxDropdown.markSelections(this.getSelectedOptions());
                 } else if (!option.readOnly) {
                     if (!this.isOptionSelected(option)) {
-                        this.selectOption(option, false, keyCode);
+                        this.selectOption(option, false, keyCode, true);
                     } else {
                         this.deselectOption(option);
                     }
@@ -586,13 +594,18 @@ module api.ui.selector.combobox {
             }
         }
 
-        selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false, keyCode: number = -1) {
+        selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false, keyCode: number = -1, userInput: boolean = false) {
             api.util.assertNotNull(option, 'option cannot be null');
             if (this.isOptionSelected(option)) {
                 return;
             }
 
-            let added = this.selectedOptionsView.addOption(option, silent, keyCode);
+            let added;
+            if (!this.addNewOptionsToTheBottom && userInput) {
+                added = this.selectedOptionsView.addOption(option, silent, keyCode, 0);
+            } else {
+                added = this.selectedOptionsView.addOption(option, silent, keyCode);
+            }
             if (!added) {
                 return;
             }

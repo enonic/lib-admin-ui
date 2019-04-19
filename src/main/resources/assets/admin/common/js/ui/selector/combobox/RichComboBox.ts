@@ -87,7 +87,8 @@ module api.ui.selector.combobox {
                     : null,
                 onDropdownShownCallback: this.loadOptionsAfterShowDropdown.bind(this),
                 createColumns: builder.createColumns,
-                requestMissingOptions: builder.requestMissingOptions
+                requestMissingOptions: builder.requestMissingOptions,
+                addNewOptionsToTheBottom: builder.addNewOptionsToTheBottom
             };
         }
 
@@ -447,6 +448,8 @@ module api.ui.selector.combobox {
 
         skipAutoDropShowOnValueChange: boolean;
 
+        addNewOptionsToTheBottom: boolean;
+
         optionDataHelper: OptionDataHelper<T>;
 
         createColumns: GridColumn<T>[];
@@ -499,6 +502,11 @@ module api.ui.selector.combobox {
 
         setHideComboBoxWhenMaxReached(value: boolean): RichComboBoxBuilder<T> {
             this.hideComboBoxWhenMaxReached = value;
+            return this;
+        }
+
+        setAddNewOptionsToTheBottom(value: boolean): RichComboBoxBuilder<T> {
+            this.addNewOptionsToTheBottom = value;
             return this;
         }
 

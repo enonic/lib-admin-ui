@@ -148,17 +148,22 @@ module api.data {
             this.registerPropertyListeners(property);
         }
 
-        add(value: Value): Property {
+        add(value: Value, index?: number): Property {
             this.checkType(value.getType());
 
             let property = Property.create().
                 setArray(this).
                 setName(this.name).
-                setIndex(this.array.length).
+                setIndex(index != null ? index : this.array.length).
                 setValue(value).
                 build();
 
-            this.array.push(property);
+            if(index != null) {
+                this.array.splice(index, 0, property);
+                this.reindex();
+            } else {
+                this.array.push(property);
+            }
 
             if (this.tree) {
                 // Attached any detached PropertySet...
@@ -208,9 +213,7 @@ module api.data {
         move(index: number, destinationIndex: number) {
             api.util.ArrayHelper.moveElement(index, destinationIndex, this.array);
 
-            this.forEach((property: Property, i: number) => {
-                property.setIndex(i);
-            });
+            this.reindex();
         }
 
         removeAll(silent?: boolean) {
@@ -235,9 +238,7 @@ module api.data {
 
             this.array.splice(index, 1);
 
-            this.forEach((property: Property, i: number) => {
-                property.setIndex(i);
-            });
+            this.reindex();
 
             this.notifyPropertyRemoved(propertyToRemove);
             this.unregisterPropertyListeners(propertyToRemove);
@@ -376,6 +377,12 @@ module api.data {
             propertySet.unPropertyRemoved(this.propertyRemovedEventHandler);
             propertySet.unPropertyIndexChanged(this.propertyIndexChangedEventHandler);
             propertySet.unPropertyValueChanged(this.propertyValueChangedEventHandler);
+        }
+
+        private reindex() {
+            this.forEach((property: Property, i: number) => {
+                property.setIndex(i);
+            });
         }
 
         onPropertyAdded(listener: {(event: PropertyAddedEvent): void;}) {

@@ -96,24 +96,32 @@ module api.ui.selector.combobox {
             return this.maximumOccurrences;
         }
 
-        createSelectedOption(option: api.ui.selector.Option<T>): SelectedOption<T> {
-            return new SelectedOption<T>(new BaseSelectedOptionView(option, this.editable, !this.readonly), this.count());
+        createSelectedOption(option: api.ui.selector.Option<T>, index?: number): SelectedOption<T> {
+            return new SelectedOption<T>(new BaseSelectedOptionView(option, this.editable, !this.readonly),
+                index != null ? index : this.count());
         }
 
-        addOption(option: api.ui.selector.Option<T>, silent: boolean = false, keyCode: number): boolean {
+        addOption(option: api.ui.selector.Option<T>, silent: boolean = false, keyCode: number, index?: number): boolean {
 
             if (this.isSelected(option) || this.maximumOccurrencesReached()) {
                 return false;
             }
 
-            let selectedOption: SelectedOption<T> = this.createSelectedOption(option);
+            let selectedOption: SelectedOption<T> = this.createSelectedOption(option, index);
+
+            if(index != null) {
+                this.getSelectedOptions().splice(index, 0, selectedOption);
+                this.insertChild(selectedOption.getOptionView(), index);
+
+                this.reindexSelectedOptions();
+
+            } else {
+                this.getSelectedOptions().push(selectedOption);
+                this.appendChild(selectedOption.getOptionView());
+            }
 
             let optionView = selectedOption.getOptionView();
             optionView.onRemoveClicked(() => this.removeOption(option));
-
-            this.getSelectedOptions().push(selectedOption);
-
-            this.appendChild(selectedOption.getOptionView());
 
             if (!silent) {
                 this.notifyOptionSelected(new SelectedOptionEvent(selectedOption, keyCode));
@@ -202,6 +210,12 @@ module api.ui.selector.combobox {
                 displayValue: null,
                 empty: true
             };
+        }
+
+        private reindexSelectedOptions() {
+            this.getSelectedOptions().forEach((curOption: SelectedOption<T>, i: number) => {
+                curOption.setIndex(i);
+            });
         }
 
         protected notifyOptionDeselected(removed: SelectedOption<T>) {
