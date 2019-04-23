@@ -407,7 +407,7 @@ if (typeof Slick === "undefined") {
                     navigator.userAgent.toLowerCase().match(/macintosh/)) {
                     try {
                         $canvas[0].addEventListener('mousewheel', handleMouseWheel, {passive: true});
-                    } catch {
+                    } catch (e) {
                         $canvas[0].addEventListener('mousewheel', handleMouseWheel);
                     }
                 }

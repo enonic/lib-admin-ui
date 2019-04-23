@@ -130,14 +130,22 @@ module api.form {
 
         layout(validate: boolean = true): wemQ.Promise<void> {
 
-            let occurrences;
+            const occurrences: FormItemOccurrence<V>[] = this.constructOccurrences();
+
+            return this.layoutOccurrences(occurrences, validate);
+        }
+
+        private constructOccurrences(): FormItemOccurrence<V>[] {
             if (this.propertyArray.getSize() > 0) {
-                occurrences = this.constructOccurrencesForData();
-            } else {
-                occurrences = this.constructOccurrencesForNoData();
+                return this.constructOccurrencesForData();
             }
 
-            let layoutPromises: wemQ.Promise<V>[] = [];
+            return this.constructOccurrencesForNoData();
+        }
+
+        private layoutOccurrences(occurrences: FormItemOccurrence<V>[], validate: boolean = true): wemQ.Promise<void> {
+            const layoutPromises: wemQ.Promise<V>[] = [];
+
             occurrences.forEach((occurrence: FormItemOccurrence<V>) => {
                 layoutPromises.push(this.addOccurrence(occurrence, validate));
             });
@@ -151,19 +159,29 @@ module api.form {
             }
 
             // first trim existing occurrences if there are too many
-            let arraySize = propertyArray.getSize();
-            let occurrencesViewClone = [].concat(this.occurrenceViews);
+            this.trimExtraOccurrences(propertyArray);
+
+            // next update propertyArray because it's used for creation of new occurrences
+            this.propertyArray = propertyArray;
+
+            // next update existing occurrences and add missing ones if there are not enough
+            return this.updateExistingOccurrences(unchangedOnly);
+        }
+
+        private trimExtraOccurrences(propertyArray: PropertyArray) {
+            const arraySize: number = propertyArray.getSize();
+            const occurrencesViewClone = [].concat(this.occurrenceViews);
+
             if (occurrencesViewClone.length > arraySize) {
                 for (let i = arraySize; i < occurrencesViewClone.length; i++) {
                     this.removeOccurrenceView(occurrencesViewClone[i]);
                 }
             }
+        }
 
-            // next update propertyArray because it's used for creation of new occurrences
-            this.propertyArray = propertyArray;
+        private updateExistingOccurrences(unchangedOnly?: boolean): wemQ.Promise<void> {
+            const promises = [];
 
-            let promises = [];
-            // next update existing occurrences and add missing ones if there are not enough
             this.propertyArray.forEach((_property: api.data.Property, index: number) => {
                 let occurrenceView = this.occurrenceViews[index];
                 let occurrence = this.occurrences[index];
@@ -171,7 +189,7 @@ module api.form {
                     // update occurrence index
                     occurrence.setIndex(index);
                     // update occurence view
-                    promises.push(this.updateOccurrenceView(occurrenceView, propertyArray, unchangedOnly));
+                    promises.push(this.updateOccurrenceView(occurrenceView, this.propertyArray, unchangedOnly));
                 } else {
                     promises.push(this.createAndAddOccurrence(index));
                 }

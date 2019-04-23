@@ -83,7 +83,7 @@
 
                 try {
                     this.addEventListener('touchstart', drag.init, {passive: true});
-                } catch {
+                } catch (e) {
                     this.addEventListener('touchstart', drag.init);
                 }
                 // prevent image dragging in IE...
