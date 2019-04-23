@@ -1,20 +1,34 @@
 module api.dom {
 
-    export class IFrameEl extends api.dom.Element {
+    export class IFrameEl
+        extends api.dom.Element {
 
         private loaded: boolean = false;
 
         constructor(className?: string) {
-            super(new NewElementBuilder().
-                setTagName('iframe').
-                setClassName(className));
+            super(new NewElementBuilder().setTagName('iframe').setClassName(className));
 
             this.onLoaded(() => this.loaded = true);
         }
 
         public setSrc(src: string): api.dom.IFrameEl {
-            this.getEl().setAttribute('src', src);
+            const currentSrc = this.getEl().getAttribute('src');
+
+            if(currentSrc === src) {
+                this.refresh();
+            } else {
+                this.getEl().setAttribute('src', src);
+            }
+
             return this;
+        }
+
+        public refresh() {
+            const src = this.getEl().getAttribute('src');
+            this.getEl().setAttribute('src', '');
+
+            setTimeout(() => this.getEl().setAttribute('src', src), 50);
+
         }
 
         isLoaded() {
