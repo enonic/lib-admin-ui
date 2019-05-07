@@ -489,7 +489,7 @@ module api.ui.selector.combobox {
         private selectExistingAndHandleMissing(optionIds: string[],
                                                missingOptionIds: string[]): wemQ.Promise<Option<OPTION_DISPLAY_VALUE>[]> {
             const nonExistingIds: string[] = [];
-            const selectedOptions = this.selectExistingOptions(optionIds);
+            const selectedOptions = [];
 
             return this.requestMissingOptions(missingOptionIds).then((result: Object) => {
                     optionIds.forEach((val) => {
@@ -500,12 +500,16 @@ module api.ui.selector.combobox {
                                 if (this.displayMissingSelectedOptions && (contentExists || !this.removeMissingSelectedOptions)) {
                                     const selectedOption = (<BaseSelectedOptionsView<OPTION_DISPLAY_VALUE>> this.selectedOptionsView)
                                         .makeEmptyOption(val);
+
                                     selectedOptions.push(selectedOption);
                                     this.selectOption(selectedOption, true);
                                 }
                                 if (!contentExists) {
                                     nonExistingIds.push(val);
                                 }
+                            } else {
+                                selectedOptions.push(option);
+                                this.selectOption(option, true);
                             }
                         }
                     });
