@@ -20,7 +20,7 @@ module api.util {
         }
 
         static propertyTreesEqualIgnoreEmptyValues(config: PropertyTree, otherConfig: PropertyTree): boolean {
-            if ((!config || config.isEmpty()) && (!otherConfig || otherConfig.isEmpty())) {
+            if (PropertyTreeHelper.bothEmpty(config, otherConfig)) {
                 return true;
             }
 
@@ -28,6 +28,14 @@ module api.util {
             const otherData: PropertyTree = otherConfig ? PropertyTreeHelper.trimPropertyTree(otherConfig) : otherConfig;
 
             return api.ObjectHelper.equals(data, otherData);
+        }
+
+        private static bothEmpty(config: PropertyTree, otherConfig: PropertyTree): boolean {
+            if ((!config || config.isEmpty()) && (!otherConfig || otherConfig.isEmpty())) {
+                return true;
+            }
+
+            return false;
         }
     }
 }
