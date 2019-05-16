@@ -31,11 +31,15 @@ module api.util {
         }
 
         private static bothEmpty(config: PropertyTree, otherConfig: PropertyTree): boolean {
-            if ((!config || config.isEmpty()) && (!otherConfig || otherConfig.isEmpty())) {
+            if (PropertyTreeHelper.isEmpty(config) && PropertyTreeHelper.isEmpty(otherConfig)) {
                 return true;
             }
 
             return false;
+        }
+
+        private static isEmpty(config: PropertyTree): boolean {
+            return !config || config.isEmpty();
         }
     }
 }
