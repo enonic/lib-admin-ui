@@ -24,8 +24,8 @@ module api.util {
                 return true;
             }
 
-            const data: PropertyTree = !!config ? PropertyTreeHelper.trimPropertyTree(config) : config;
-            const otherData: PropertyTree = !!otherConfig ? PropertyTreeHelper.trimPropertyTree(otherConfig) : otherConfig;
+            const data: PropertyTree = config ? PropertyTreeHelper.trimPropertyTree(config) : config;
+            const otherData: PropertyTree = otherConfig ? PropertyTreeHelper.trimPropertyTree(otherConfig) : otherConfig;
 
             return api.ObjectHelper.equals(data, otherData);
         }
