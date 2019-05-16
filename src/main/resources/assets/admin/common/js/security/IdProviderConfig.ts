@@ -1,4 +1,7 @@
 module api.security {
+
+    import PropertyTreeHelper = api.util.PropertyTreeHelper;
+
     export class IdProviderConfig
         implements api.Equitable {
         private applicationKey: api.application.ApplicationKey;
@@ -25,7 +28,7 @@ module api.security {
             return new IdProviderConfigBuilder().fromJson(json).build();
         }
 
-        equals(o: api.Equitable): boolean {
+        equals(o: api.Equitable, ignoreEmptyValues: boolean = false): boolean {
             if (!api.ObjectHelper.iFrameSafeInstanceOf(o, IdProviderConfig)) {
                 return false;
             }
@@ -33,7 +36,7 @@ module api.security {
             let other = <IdProviderConfig> o;
 
             return this.applicationKey.equals(other.applicationKey) &&
-                   this.config.equals(other.config);
+                   PropertyTreeHelper.propertyTreesEqual(this.config, other.config, ignoreEmptyValues);
         }
 
         toJson(): IdProviderConfigJson {
