@@ -21,7 +21,7 @@ module api.util {
                                             ? PropertyTreeHelper.trimPropertyTree(otherConfig)
                                             : otherConfig;
 
-            return ObjectHelper.equals(data, otherData);
+            return api.ObjectHelper.equals(data, otherData);
         }
     }
 }
