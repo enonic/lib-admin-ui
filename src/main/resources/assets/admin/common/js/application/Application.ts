@@ -66,6 +66,10 @@ module api.application {
             return this.displayName;
         }
 
+        hasDescription(): boolean {
+            return !!this.description;
+        }
+
         getDescription(): string {
             return this.description;
         }
@@ -136,6 +140,10 @@ module api.application {
 
         getMetaSteps(): api.schema.mixin.MixinNames {
             return this.metaSteps;
+        }
+
+        hasIconUrl(): boolean {
+            return !!this.iconUrl;
         }
 
         getIconUrl(): string {

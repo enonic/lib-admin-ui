@@ -1369,7 +1369,11 @@ module api.ui.treegrid {
                         });
                     });
 
-                    return wemQ.all(updates);
+                    return wemQ.all(updates).then(() => {
+                        this.notifyDataChanged(new DataChangedEvent<DATA>(nodesToUpdate, DataChangedType.UPDATED));
+
+                        return wemQ(null);
+                    });
                 }).catch(reason => this.handleError(reason));
         }
 
