@@ -673,7 +673,6 @@ module api.dom {
             let parent = this.parentElement;
             let index = parent.unregisterChildElement(this);
             parent.registerChildElement(replacement, index);
-            parent.registerChildElement(replacement, index);
 
             // Run init of replacement if parent is rendered
             if (parent.isRendered()) {
