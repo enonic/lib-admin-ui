@@ -1,6 +1,5 @@
 // =include fineuploader/fine-uploader.min.js
-// =include jquery-3.1.1.min.js
-// =include jquery-migrate-3.0.1.min.js
+// =include jquery-3.4.1.min.js
 // =include jquery-ui.min.js
 // =include jquery.simulate.js
 // =include codemirror/codemirror.js
