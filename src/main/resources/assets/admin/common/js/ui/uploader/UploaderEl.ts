@@ -526,7 +526,7 @@ module api.ui.uploader {
             const file: FineUploaderFile = this.uploader.getFile(id);
             file.id = id;
 
-            const uploadFile: UploadItem<any> = new UploadItem<MODEL>(file);
+            const uploadFile = new UploadItem<MODEL>(file);
             uploadFile.setName(this.removeFileNameExtension(name));
 
             return uploadFile;
