@@ -129,6 +129,7 @@ module api.content.form.inputtype.customselector {
                 this.validate(false);
             });
 
+            comboBox.onOptionMoved((moved: SelectedOption<any>, fromIndex: number) => this.handleMove(moved, fromIndex));
             comboBox.onValueLoaded(() => this.validate(false));
 
             return comboBox;
