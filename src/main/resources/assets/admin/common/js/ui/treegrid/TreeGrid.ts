@@ -290,7 +290,7 @@ module api.ui.treegrid {
 
         private unhighlightRowOnMouseClick(e: Event): void {
             if (!!this.highlightedNode && this.isClickOutsideGridViewport(<HTMLElement> e.target)) {
-                this.unhighlightRows();
+                this.removeHighlighting();
             }
         }
 
@@ -411,7 +411,7 @@ module api.ui.treegrid {
                         highlightTo = data.row > firstSelectedRow ? data.row : firstSelectedRow;
                     }
 
-                    this.unhighlightCurrentRow();
+                    this.removeHighlighting();
 
                     for (let i = highlightFrom; i <= highlightTo; i++) {
                         if (!this.grid.isRowSelected(i)) {
@@ -431,7 +431,7 @@ module api.ui.treegrid {
         private onClickWithCmd(data: Slick.OnClickEventData) {
             const node = this.gridData.getItem(data.row);
             if (!this.grid.isRowSelected(data.row) && this.highlightedNode !== node) {
-                this.unhighlightCurrentRow(true);
+                this.removeHighlighting(true);
             }
             this.grid.toggleRow(data.row);
         }
@@ -476,9 +476,9 @@ module api.ui.treegrid {
             }
 
             if (this.grid.getSelectedRows().length > 1) {
-                this.unhighlightRows(true);
+                this.removeHighlighting(true);
             } else if (!this.grid.isRowSelected(data.row) && this.highlightedNode !== node) {
-                this.unhighlightCurrentRow(true);
+                this.removeHighlighting(true);
             }
 
             this.grid.toggleRow(data.row);
@@ -639,10 +639,10 @@ module api.ui.treegrid {
 
         private onRowHighlighted(elem: ElementHelper, data: Slick.OnClickEventData) {
             const node = this.gridData.getItem(data.row);
-            const clickedRow = wemjq(elem.getHTMLElement()).closest('.slick-row');
+            const clickedCell = wemjq(elem.getHTMLElement()).closest('.slick-cell');
             const isRowSelected = this.grid.isRowSelected(data.row);
             const isMultipleRowsSelected = this.grid.getSelectedRows().length > 1;
-            const isRowHighlighted = clickedRow.hasClass('selected');
+            const isRowHighlighted = clickedCell.hasClass('highlight');
 
             if (elem.hasClass('sort-dialog-trigger') && (isRowSelected || isRowHighlighted)) {
                 if (isMultipleRowsSelected) {
@@ -738,43 +738,24 @@ module api.ui.treegrid {
             return this;
         }
 
-        private unhighlightCurrentRow(skipEvent: boolean = false) {
+        removeHighlighting(skipEvent: boolean = false) {
             if (!this.highlightedNode) {
                 return;
             }
-            let row = this.getRowByNode(this.highlightedNode);
-            this.unhighlightRow(row, skipEvent);
-        }
 
-        private unhighlightRow(row: JQuery, skipEvent: boolean = false) {
-            this.removeHighlighting(skipEvent);
-            if (!row) {
-                return;
-            }
-            row.removeClass('selected');
-        }
-
-        removeHighlighting(skipEvent: boolean = false) {
             this.highlightedNode = null;
+
+            this.grid.removeCellCssStyles('highlight');
 
             if (!skipEvent) {
                 this.notifyHighlightingChanged();
             }
         }
 
-        private unhighlightRows(skipEvent: boolean = false) {
-            if (!this.highlightedNode) {
-                return;
-            }
-
-            wemjq(this.grid.getHTMLElement()).find('.slick-row.selected').removeClass('selected');
-            this.removeHighlighting(skipEvent);
-        }
-
         private unselectAllRows(unhighlight: boolean = true) {
 
             if (unhighlight) {
-                this.unhighlightRows();
+                this.removeHighlighting();
             }
             if (this.grid.getSelectedRows().length > 0) {
                 this.grid.clearSelection();
@@ -1107,7 +1088,7 @@ module api.ui.treegrid {
             let node = root.findNode(dataId);
 
             if (node) {
-                this.unhighlightCurrentRow(true);
+                this.removeHighlighting(true);
 
                 if (expand) {
                     this.recursivelyExpandNode(node);
@@ -1127,7 +1108,7 @@ module api.ui.treegrid {
         }
 
         selectAll() {
-            this.unhighlightCurrentRow(true);
+            this.removeHighlighting(true);
             let rows = [];
             for (let i = 0; i < this.gridData.getLength(); i++) {
                 if (!api.util.StringHelper.isEmpty(this.gridData.getItem(i).getDataId())) {
@@ -1138,7 +1119,7 @@ module api.ui.treegrid {
         }
 
         deselectAll() {
-            this.unhighlightCurrentRow(true);
+            this.removeHighlighting(true);
             this.grid.clearSelection();
         }
 
@@ -1375,7 +1356,7 @@ module api.ui.treegrid {
 
         deleteNode(data: DATA): void {
             if (this.highlightedNode && this.highlightedNode.getDataId() === this.getDataId(data)) {
-                this.unhighlightCurrentRow();
+                this.removeHighlighting();
             }
             this.deleteRootNode(this.root.getDefaultRoot(), data);
             if (this.root.isFiltered()) {
@@ -1726,14 +1707,20 @@ module api.ui.treegrid {
             }
 
             if (!isCurRowHighlighted) {
-                this.unhighlightCurrentRow();
+                this.removeHighlighting();
                 this.highlightedNode = node;
                 this.notifyHighlightingChanged(immediateNotification, callback);
             }
 
             let row = this.getRowByNode(node);
             if (row) {
-                row.toggleClass('selected', true);
+                const rowIndex: number = this.getRowIndexByNode(node);
+                const stylesHash: Slick.CellCssStylesHash = {};
+                stylesHash[rowIndex] = {};
+                this.columns.forEach((col: GridColumn<DATA>) => {
+                    stylesHash[rowIndex][col.id] = 'highlight';
+                });
+                this.grid.setCellCssStyles('highlight', stylesHash);
             }
         }
 
