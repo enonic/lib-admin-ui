@@ -11,9 +11,7 @@ module api.content {
         private refString: string;
 
         public static fromParent(parent: ContentPath, name: string): ContentPath {
-
-            let elements = parent.elements;
-            elements.push(name);
+            const elements: string[] = [].concat(parent.getElements(), name);
             return new ContentPath(elements);
         }
 
