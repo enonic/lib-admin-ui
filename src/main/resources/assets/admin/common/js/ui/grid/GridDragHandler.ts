@@ -2,6 +2,8 @@ module api.ui.grid {
 
     import Element = api.dom.Element;
     import TreeGrid = api.ui.treegrid.TreeGrid;
+    import TreeNode = api.ui.treegrid.TreeNode;
+    import ElementHelper = api.dom.ElementHelper;
 
     export class GridDragHandler<MODEL> {
 
@@ -27,12 +29,12 @@ module api.ui.grid {
         }
 
         protected handleDragStart() {
-            let draggableClass = this.contentGrid.getOptions().getSelectedCellCssClass() || '';
+            let draggableClass: string = this.contentGrid.getOptions().getSelectedCellCssClass() || '';
             draggableClass = (' ' + draggableClass).replace(/\s/g, '.');
-            let row = Element.fromString(draggableClass).getParentElement();
+            let row: Element = Element.fromString(draggableClass).getParentElement();
 
-            let nodes = this.contentGrid.getRoot().getCurrentRoot().treeToList();
-            let draggedNode = nodes[row.getSiblingIndex()];
+            const nodes: TreeNode<MODEL>[] = this.contentGrid.getRoot().getCurrentRoot().treeToList();
+            const draggedNode: TreeNode<MODEL> = nodes[row.getSiblingIndex()];
             this.contentGrid.collapseNode(draggedNode);
 
             row = Element.fromString(draggableClass).getParentElement();
@@ -43,18 +45,19 @@ module api.ui.grid {
             row.getEl().setDisplay('none');
 
             this.rowHeight = row.getEl().getHeight();
-            let proxyEl = Element.fromString('.slick-reorder-proxy').getEl();
-            this.draggableItem.getEl().setTop(proxyEl.getTop()).setPosition('absolute');
-            let gridClasses = (' ' + this.contentGrid.getGrid().getEl().getClass()).replace(/\s/g, '.');
+            const proxyEl: ElementHelper = Element.fromString('.slick-reorder-proxy').getEl();
+            const top: string = proxyEl.getTop();
+            this.draggableItem.getEl().setTop(top).setPosition('absolute');
+            const gridClasses: string = (' ' + this.contentGrid.getGrid().getEl().getClass()).replace(/\s/g, '.');
 
-            wemjq('.tree-grid ' + gridClasses + ' .slick-viewport').append(wemjq(this.draggableItem.getHTMLElement()));
+            wemjq('.tree-grid ' + gridClasses + ' .slick-viewport').get(0).appendChild(this.draggableItem.getHTMLElement());
         }
 
         private handleDrag() {
             if (!this.draggableItem) {
                 this.handleDragStart();
             }
-            let top = Element.fromString('.slick-reorder-proxy').getEl().getTopPx();
+            const top: number = Element.fromString('.slick-reorder-proxy').getEl().getTopPx();
             this.draggableItem.getEl().setTopPx(top /*- this.rowHeight*//* / 2*/).setZindex(2);
         }
 
@@ -65,18 +68,17 @@ module api.ui.grid {
         }
 
         protected handleBeforeMoveRows(_event: Event, data: DragEventData): boolean {
-
             if (!this.draggableItem) {
                 this.handleDragStart();
             }
-            const gridClasses = (' ' + this.contentGrid.getGrid().getEl().getClass()).replace(/\s/g, '.');
-            const children = Element.fromSelector('.tree-grid ' + gridClasses + ' .grid-canvas .slick-row', false);
+            const gridClasses: string = (' ' + this.contentGrid.getGrid().getEl().getClass()).replace(/\s/g, '.');
+            const children: Element[] = Element.fromSelector('.tree-grid ' + gridClasses + ' .grid-canvas .slick-row', false);
 
             if (children && !children[0].getPreviousElement()) {
                 children.shift();
             }
 
-            const setMarginTop = (element: Element, margin: string) => element.getEl().setMarginTop(margin);
+            const setMarginTop: Function = (element: Element, margin: string) => element.getEl().setMarginTop(margin);
 
             children.forEach((child: Element, index: number) => {
                 if (data.rows[0] <= data.insertBefore) { //move item down
@@ -99,22 +101,22 @@ module api.ui.grid {
         }
 
         protected handleMoveRows(_event: Event, args: DragEventData) {
-            let dataView = this.contentGrid.getGrid().getDataView();
-            let draggableRow = args.rows[0];
+            const dataView: DataView<TreeNode<MODEL>> = this.contentGrid.getGrid().getDataView();
+            const draggableRow: number = args.rows[0];
 
-            let rowDataId = this.getModelId(dataView.getItem(draggableRow).getData());
-            let insertTarget = args.insertBefore;
+            const rowDataId: any = this.getModelId(dataView.getItem(draggableRow).getData());
+            const insertTarget: number = args.insertBefore;
 
             // when dragging forwards/down insertBefore is the target element
             // when dragging backwards/up insertBefore is one position after the target element
-            let insertBefore = draggableRow < insertTarget ? insertTarget + 1 : insertTarget;
+            const insertBefore: number = draggableRow < insertTarget ? insertTarget + 1 : insertTarget;
 
-            let moveBeforeRowDataId = ((dataView.getLength() - 1) <= insertTarget)
+            const moveBeforeRowDataId: number = ((dataView.getLength() - 1) <= insertTarget)
                 ? null
                 : this.getModelId(dataView.getItem(insertBefore).getData());
 
             // draggable count in new data
-            let selectedRow = this.makeMovementInNodes(draggableRow, insertTarget);
+            const selectedRow: number = this.makeMovementInNodes(draggableRow, insertTarget);
 
             if (selectedRow <= this.contentGrid.getRoot().getCurrentRoot().treeToList().length - 1) {
                 this.contentGrid.getGrid().setSelectedRows([selectedRow]);
@@ -125,11 +127,10 @@ module api.ui.grid {
         }
 
         protected makeMovementInNodes(draggableRow: number, insertBefore: number): number {
+            const root: TreeNode<MODEL> = this.contentGrid.getRoot().getCurrentRoot();
+            const rootChildren: TreeNode<MODEL>[] = root.treeToList();
 
-            let root = this.contentGrid.getRoot().getCurrentRoot();
-            let rootChildren = root.treeToList();
-
-            let item = rootChildren.slice(draggableRow, draggableRow + 1)[0];
+            const item: TreeNode<MODEL> = rootChildren.slice(draggableRow, draggableRow + 1)[0];
             rootChildren.splice(rootChildren.indexOf(item), 1);
             rootChildren.splice(insertBefore, 0, item);
 
