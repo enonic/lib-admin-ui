@@ -45,8 +45,9 @@
         function ensureData(from, to) {
             if (req) {
                 req.abort();
-                for (var i = req.fromPage; i <= req.toPage; i++)
+                for (var i = req.fromPage; i <= req.toPage; i++) {
                     data[i * PAGESIZE] = undefined;
+                }
             }
 
             if (from < 0) {
@@ -60,11 +61,13 @@
             var fromPage = Math.floor(from / PAGESIZE);
             var toPage = Math.floor(to / PAGESIZE);
 
-            while (data[fromPage * PAGESIZE] !== undefined && fromPage < toPage)
+            while (data[fromPage * PAGESIZE] !== undefined && fromPage < toPage) {
                 fromPage++;
+            }
 
-            while (data[toPage * PAGESIZE] !== undefined && fromPage < toPage)
+            while (data[toPage * PAGESIZE] !== undefined && fromPage < toPage) {
                 toPage--;
+            }
 
             if (fromPage > toPage || ((fromPage == toPage) && data[fromPage * PAGESIZE] !== undefined)) {
                 // TODO:  look-ahead
@@ -72,7 +75,8 @@
                 return;
             }
 
-            var url = "http://octopart.com/api/v3/parts/search?apikey=68b25f31&include[]=short_description&show[]=uid&show[]=manufacturer&show[]=mpn&show[]=brand&show[]=octopart_url&show[]=short_description&q=" + searchstr + "&start=" + (fromPage * PAGESIZE) + "&limit=" + (((toPage - fromPage) * PAGESIZE) + PAGESIZE);
+            var url = "http://octopart.com/api/v3/parts/search?apikey=68b25f31&include[]=short_description&show[]=uid&show[]=manufacturer&show[]=mpn&show[]=brand&show[]=octopart_url&show[]=short_description&q=" +
+                      searchstr + "&start=" + (fromPage * PAGESIZE) + "&limit=" + (((toPage - fromPage) * PAGESIZE) + PAGESIZE);
 
             if (sortcol != null) {
                 url += ("&sortby=" + sortcol + ((sortdir > 0) ? "+asc" : "+desc"));
@@ -83,8 +87,9 @@
             }
 
             h_request = setTimeout(function () {
-                for (var i = fromPage; i <= toPage; i++)
-                    data[i * PAGESIZE] = null; // null indicates a 'requested but not available yet'
+                for (var i = fromPage; i <= toPage; i++) {
+                    data[i * PAGESIZE] = null;
+                } // null indicates a 'requested but not available yet'
 
                 onDataLoading.notify({from: from, to: to});
 
@@ -109,7 +114,7 @@
 
         function onSuccess(resp) {
             var from = resp.request.start, to = from + resp.results.length;
-            data.length = Math.min(parseInt(resp.hits),1000); // limitation of the API
+            data.length = Math.min(parseInt(resp.hits), 1000); // limitation of the API
 
             for (var i = 0; i < resp.results.length; i++) {
                 var item = resp.results[i].item;
@@ -125,8 +130,9 @@
 
 
         function reloadData(from, to) {
-            for (var i = from; i <= to; i++)
+            for (var i = from; i <= to; i++) {
                 delete data[i];
+            }
 
             ensureData(from, to);
         }
@@ -165,5 +171,5 @@
     }
 
     // Slick.Data.RemoteModel
-    $.extend(true, window, { Slick: { Data: { RemoteModel: RemoteModel }}});
+    $.extend(true, window, {Slick: {Data: {RemoteModel: RemoteModel}}});
 })(jQuery);

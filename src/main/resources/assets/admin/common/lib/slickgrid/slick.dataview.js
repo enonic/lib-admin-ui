@@ -53,7 +53,7 @@
         var groupingInfoDefaults = {
             getter: null,
             formatter: null,
-            comparer: function(a, b) {
+            comparer: function (a, b) {
                 return (a.value === b.value ? 0 :
                         (a.value > b.value ? 1 : -1)
                 );
@@ -210,12 +210,12 @@
             }
         }
 
-        function getFilteredItems(){
+        function getFilteredItems() {
             return filteredItems;
         }
 
 
-        function getFilter(){
+        function getFilter() {
             return filter;
         }
 
@@ -372,27 +372,45 @@
             refresh();
         }
 
+        function addItem(item) {
+            items.push(item);
+            updateIdxById(items.length - 1);
+            refresh();
+        }
+
+        function deleteItem(id) {
+            var idx = idxById[id];
+            if (idx === undefined) {
+                throw new Error("Invalid id");
+            }
+            delete idxById[id];
+            items.splice(idx, 1);
+            updateIdxById(idx);
+            refresh();
+        }
+
         function sortedAddItem(item) {
-            // NOTE: assumes 'items' are sorted!
-            if(!sortComparer) {
+            if (!sortComparer) {
                 throw new Error("sortedAddItem() requires a sort comparer, use sort()");
             }
             insertItem(sortedIndex(item), item);
         }
 
-        function sortedUpdateItem(item) {
-            // NOTE: assumes 'items' are sorted!
-            if(!sortComparer) {
+        function sortedUpdateItem(id, item) {
+            if (idxById[id] === undefined || id !== item[idProperty]) {
+                throw new Error("Invalid or non-matching id " + idxById[id]);
+            }
+            if (!sortComparer) {
                 throw new Error("sortedUpdateItem() requires a sort comparer, use sort()");
             }
-            var old_item = getItemById(item.id);
-            if(sortComparer(old_item, item) !== 0) {
+            var oldItem = getItemById(id);
+            if (sortComparer(oldItem, item) !== 0) {
                 // item affects sorting -> must use sorted add
-                deleteItem(item.id);
+                deleteItem(id);
                 sortedAddItem(item);
             }
             else { // update does not affect sorting -> regular update works fine
-                updateItem(item.id, item);
+                updateItem(id, item);
             }
         }
 
@@ -409,23 +427,6 @@
                 }
             }
             return low;
-        }
-
-        function addItem(item) {
-            items.push(item);
-            updateIdxById(items.length - 1);
-            refresh();
-        }
-
-        function deleteItem(id) {
-            var idx = idxById[id];
-            if (idx === undefined) {
-                throw new Error("Invalid id");
-            }
-            delete idxById[id];
-            items.splice(idx, 1);
-            updateIdxById(idx);
-            refresh();
         }
 
         function getLength() {
@@ -469,10 +470,6 @@
 
             return null;
         }
-
-
-
-
 
         function expandCollapseAllGroups(level, collapse) {
             if (level == null) {
@@ -650,7 +647,7 @@
                 }
 
                 if (gi.aggregators.length && (
-                        gi.aggregateEmpty || g.rows.length || (g.groups && g.groups.length))) {
+                    gi.aggregateEmpty || g.rows.length || (g.groups && g.groups.length))) {
                     addGroupTotals(g);
                 }
 
@@ -867,8 +864,8 @@
                     r = rows[i];
 
                     if ((groupingInfos.length && (eitherIsNonData = (item.__nonDataRow) || (r.__nonDataRow)) &&
-                            item.__group !== r.__group ||
-                            item.__group && !item.equals(r))
+                        item.__group !== r.__group ||
+                        item.__group && !item.equals(r))
                         || (eitherIsNonData &&
                             // no good way to compare totals since they are arbitrary DTOs
                             // deep object comparison is pretty expensive
@@ -964,60 +961,6 @@
          * @method syncGridSelection
          */
         function syncGridSelection(grid, preserveHidden, preserveHiddenOnSelectionChange) {
-            var dv = this;
-            var inHandler;
-            var selectedRowIds = dv.mapRowsToIds(grid.getSelectedRows());
-            var onSelectedRowIdsChanged = new Slick.Event();
-
-            function setSelectedRowIds(rowIds) {
-                if (selectedRowIds.join(",") == rowIds.join(",")) {
-                    return;
-                }
-
-                selectedRowIds = rowIds;
-
-                onSelectedRowIdsChanged.notify({
-                    "grid": grid,
-                    "ids": selectedRowIds,
-                    "dataView": dv
-                }, new Slick.EventData(), dv);
-            }
-
-            function update() {
-                if (selectedRowIds.length > 0) {
-                    inHandler = true;
-                    var selectedRows = dv.mapIdsToRows(selectedRowIds);
-                    if (!preserveHidden) {
-                        setSelectedRowIds(dv.mapRowsToIds(selectedRows));
-                    }
-                    grid.setSelectedRows(selectedRows);
-                    inHandler = false;
-                }
-            }
-
-            grid.onSelectedRowsChanged.subscribe(function(e, args) {
-                if (inHandler) { return; }
-                var newSelectedRowIds = dv.mapRowsToIds(grid.getSelectedRows());
-                if (!preserveHiddenOnSelectionChange || !grid.getOptions().multiSelect) {
-                    setSelectedRowIds(newSelectedRowIds);
-                } else {
-                    // keep the ones that are hidden
-                    var existing = $.grep(selectedRowIds, function(id) { return dv.getRowById(id) === undefined; });
-                    // add the newly selected ones
-                    setSelectedRowIds(existing.concat(newSelectedRowIds));
-                }
-            });
-
-            dv.onRowsChanged.subscribe(update);
-
-            dv.onRowCountChanged.subscribe(update);
-
-            return onSelectedRowIdsChanged;
-        }
-
-        // extend the functionality of syncGridSelection. This is an object that should be newed into existence.
-
-        function gridSelectionExtender(grid, preserveHidden, preserveHiddenOnSelectionChange) {
             var self = this;
             var inHandler;
             var selectedRowIds = self.mapRowsToIds(grid.getSelectedRows());
@@ -1049,14 +992,18 @@
                 }
             }
 
-            grid.onSelectedRowsChanged.subscribe(function(e, args) {
-                if (inHandler) { return; }
+            grid.onSelectedRowsChanged.subscribe(function (e, args) {
+                if (inHandler) {
+                    return;
+                }
                 var newSelectedRowIds = self.mapRowsToIds(grid.getSelectedRows());
                 if (!preserveHiddenOnSelectionChange || !grid.getOptions().multiSelect) {
                     setSelectedRowIds(newSelectedRowIds);
                 } else {
                     // keep the ones that are hidden
-                    var existing = $.grep(selectedRowIds, function(id) { return self.getRowById(id) === undefined; });
+                    var existing = $.grep(selectedRowIds, function (id) {
+                        return self.getRowById(id) === undefined;
+                    });
                     // add the newly selected ones
                     setSelectedRowIds(existing.concat(newSelectedRowIds));
                 }
@@ -1101,9 +1048,13 @@
                 }
             }
 
-            grid.onCellCssStylesChanged.subscribe(function(e, args) {
-                if (inHandler) { return; }
-                if (key != args.key) { return; }
+            grid.onCellCssStylesChanged.subscribe(function (e, args) {
+                if (inHandler) {
+                    return;
+                }
+                if (key != args.key) {
+                    return;
+                }
                 if (args.hash) {
                     storeCellCssStyles(args.hash);
                 } else {
@@ -1155,9 +1106,9 @@
             "updateItem": updateItem,
             "insertItem": insertItem,
             "addItem": addItem,
+            "deleteItem": deleteItem,
             "sortedAddItem": sortedAddItem,
             "sortedUpdateItem": sortedUpdateItem,
-            "deleteItem": deleteItem,
             "syncGridSelection": syncGridSelection,
             "syncGridCellCssStyles": syncGridCellCssStyles,
 

@@ -29,7 +29,7 @@ module api.ui {
             this.checkbox.getEl().setAttribute('type', 'checkbox');
             this.addClass(this.getInputAlignmentAsString(inputAlignment));
 
-            wemjq(this.checkbox.getHTMLElement()).change((e) => {
+            wemjq(this.checkbox.getHTMLElement()).on('change', (e) => {
                 if (Checkbox.debug) {
                     console.debug('Checkbox on change', e);
                 }
