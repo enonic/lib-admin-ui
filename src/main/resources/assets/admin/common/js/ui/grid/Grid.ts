@@ -250,7 +250,7 @@ module api.ui.grid {
         }
 
         getSelectedRows(): number[] {
-            return this.slickGrid.getSelectedRows();
+            return this.slickGrid.getSelectedRows().slice();
         }
 
         getSelectedRowItems(): T[] {
