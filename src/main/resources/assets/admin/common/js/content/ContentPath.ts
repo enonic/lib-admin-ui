@@ -16,14 +16,11 @@ module api.content {
         }
 
         public static fromString(path: string): ContentPath {
-
-            let elements: string[];
+            let elements: string[] = [];
 
             if (path.indexOf('/') === 0 && path.length > 1) {
                 path = path.substr(1);
                 elements = path.split(ContentPath.ELEMENT_DIVIDER);
-            } else if (path === '/') {
-                elements = [];
             }
 
             return new ContentPath(elements);
