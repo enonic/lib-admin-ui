@@ -462,6 +462,11 @@ module api.data {
         }
 
         public syncEmptyArrays(target: PropertySet) {
+
+            if(!target) {
+                return;
+            }
+
             target.getPropertyArrays().forEach((propertyArray: PropertyArray) => {
                 if (!this.getPropertyArray(propertyArray.getName())) {
 
