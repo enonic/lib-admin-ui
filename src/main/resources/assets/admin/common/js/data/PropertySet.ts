@@ -461,6 +461,33 @@ module api.data {
             return true;
         }
 
+        public syncEmptyArrays(target: PropertySet) {
+            target.getPropertyArrays().forEach((propertyArray: PropertyArray) => {
+                if (!this.getPropertyArray(propertyArray.getName())) {
+
+                    this.addPropertyArray(propertyArray.copy(this));
+                }
+
+                propertyArray.forEach(((property, index) => {
+                    if (property.getType().equals(api.data.ValueTypes.DATA)) {
+
+                        const targetPropertySet = property.getValue().getPropertySet();
+
+                        const thisPropertyArray = this.getPropertyArray(propertyArray.getName());
+                        const thisProperty = thisPropertyArray.get(index);
+                        if (thisProperty && thisProperty.getType().equals(api.data.ValueTypes.DATA)) {
+
+                            const thisPropertySet = thisProperty.getValue().getPropertySet();
+
+                            if (thisPropertySet) {
+                                thisPropertySet.syncEmptyArrays(targetPropertySet);
+                            }
+                        }
+                    }
+                }));
+            });
+        }
+
         public diff(other: PropertySet): PropertyTreeDiff {
             let checkedProperties: String[] = [];
             let diff = this.doDiff(other, checkedProperties);
