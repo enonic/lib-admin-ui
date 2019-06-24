@@ -149,7 +149,7 @@ module api.form {
         }
 
         isEmpty(): boolean {
-            return this.formItemViews.every(formItemView => formItemView.isEmpty());
+            return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
         }
 
         protected initValidationMessageBlock() {

@@ -3,7 +3,7 @@ module api.ui.dialog {
     import i18n = api.util.i18n;
 
     export class NotificationDialog
-        extends ModalDialog {
+        extends api.ui.dialog.ModalDialog {
 
         private text: string;
 
