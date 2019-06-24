@@ -473,20 +473,16 @@ module api.data {
                     this.addPropertyArray(propertyArray.copy(this));
                 }
 
+                const thisPropertyArray = this.getPropertyArray(propertyArray.getName());
+
                 propertyArray.forEach(((property, index) => {
                     if (property.getType().equals(api.data.ValueTypes.DATA)) {
 
-                        const targetPropertySet = property.getValue().getPropertySet();
+                        const targetPropertySet = property.getPropertySet();
+                        const thisPropertySet = thisPropertyArray.getSet(index);
 
-                        const thisPropertyArray = this.getPropertyArray(propertyArray.getName());
-                        const thisProperty = thisPropertyArray.get(index);
-                        if (thisProperty && thisProperty.getType().equals(api.data.ValueTypes.DATA)) {
-
-                            const thisPropertySet = thisProperty.getValue().getPropertySet();
-
-                            if (thisPropertySet) {
-                                thisPropertySet.syncEmptyArrays(targetPropertySet);
-                            }
+                        if (thisPropertySet) {
+                            thisPropertySet.syncEmptyArrays(targetPropertySet);
                         }
                     }
                 }));
