@@ -36,9 +36,7 @@ module api.form {
 
         private formItemLayer: FormItemLayer;
 
-        private selectionChangedListeners: {(): void}[] = [];
-
-        private deselectedListeners: { (): void }[] = [];
+        private selectionChangedListeners: { (): void }[] = [];
 
         private checkbox: api.ui.Checkbox;
 
@@ -332,8 +330,6 @@ module api.form {
             this.removeClass('selected');
             this.requiresClean = true;
 
-            this.notifyDeselected();
-
             if (!this.isEmpty()) {
                 this.notificationDialog.open();
             }
@@ -563,20 +559,6 @@ module api.form {
 
         private notifySelectionChanged() {
             this.selectionChangedListeners.forEach((listener: () => void) => listener());
-        }
-
-        onDeselected(listener: () => void) {
-            this.deselectedListeners.push(listener);
-        }
-
-        unDeselected(listener: () => void) {
-            this.deselectedListeners.filter((currentListener: () => void) => {
-                return listener === currentListener;
-            });
-        }
-
-        private notifyDeselected() {
-            this.deselectedListeners.forEach((listener: () => void) => listener());
         }
 
         giveFocus(): boolean {
