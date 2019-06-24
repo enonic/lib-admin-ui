@@ -8,6 +8,8 @@ module api.form {
     import Occurrences = api.form.Occurrences;
     import PropertyValueChangedEvent = api.data.PropertyValueChangedEvent;
     import Checkbox = api.ui.Checkbox;
+    import NotificationDialog = api.ui.dialog.NotificationDialog;
+    import i18n = api.util.i18n;
 
     export interface FormOptionSetOptionViewConfig {
 
@@ -36,11 +38,15 @@ module api.form {
 
         private selectionChangedListeners: {(): void}[] = [];
 
+        private deselectedListeners: { (): void }[] = [];
+
         private checkbox: api.ui.Checkbox;
 
         private requiresClean: boolean;
 
         private isOptionSetExpandedByDefault: boolean;
+
+        private notificationDialog: NotificationDialog;
 
         protected helpText: HelpTextContainer;
 
@@ -74,6 +80,8 @@ module api.form {
 
             this.formItemLayer = new FormItemLayer(config.context);
             this.formItemLayer.setLazyRender(config.lazyRender);
+
+            this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
 
             this.requiresClean = false;
         }
@@ -323,6 +331,12 @@ module api.form {
             this.cleanSelectionMessageForThisOption();
             this.removeClass('selected');
             this.requiresClean = true;
+
+            this.notifyDeselected();
+
+            if (!this.isEmpty()) {
+                this.notificationDialog.open();
+            }
         }
 
         private removeNonDefaultOptionFromSelectionArray() {
@@ -521,6 +535,10 @@ module api.form {
             return recording;
         }
 
+        isEmpty(): boolean {
+            return this.formItemViews.every(formItemView => formItemView.isEmpty());
+        }
+
         onValidityChanged(listener: (event: RecordingValidityChangedEvent)=>void) {
             this.formItemViews.forEach((formItemView: FormItemView)=> {
                 formItemView.onValidityChanged(listener);
@@ -545,6 +563,20 @@ module api.form {
 
         private notifySelectionChanged() {
             this.selectionChangedListeners.forEach((listener: () => void) => listener());
+        }
+
+        onDeselected(listener: () => void) {
+            this.deselectedListeners.push(listener);
+        }
+
+        unDeselected(listener: () => void) {
+            this.deselectedListeners.filter((currentListener: () => void) => {
+                return listener === currentListener;
+            });
+        }
+
+        private notifyDeselected() {
+            this.deselectedListeners.forEach((listener: () => void) => listener());
         }
 
         giveFocus(): boolean {
