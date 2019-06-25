@@ -2,6 +2,8 @@ module api.content {
 
     import Thumbnail = api.thumb.Thumbnail;
     import ContentState = api.schema.content.ContentState;
+    import WorkflowState = api.content.WorkflowState;
+    import Workflow = api.content.Workflow;
 
     export class ContentSummary {
 

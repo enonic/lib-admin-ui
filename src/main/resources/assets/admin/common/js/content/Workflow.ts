@@ -1,6 +1,7 @@
 module api.content {
 
     import WorkflowJson = api.content.json.WorkflowJson;
+    import WorkflowState = api.content.WorkflowState;
 
     export class Workflow
         implements api.Equitable {
