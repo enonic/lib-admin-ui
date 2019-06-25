@@ -5,6 +5,20 @@
     color: @admin-white;
   }
 
+  &.ready .names-and-icon-view .@{_COMMON_PREFIX}wrapper:before {
+    content: "";
+    background-image: url('../../../icons/ready.svg');
+    background-color: @admin-white;
+  }
+
+  &.in-progress .names-and-icon-view .@{_COMMON_PREFIX}wrapper:before {
+    content: "";
+    background-image: url('../../../icons/in-progress.svg');
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+  }
+
   &.pending-delete .names-and-icon-view .@{_COMMON_PREFIX}names-view {
     .@{_COMMON_PREFIX}main-name, .@{_COMMON_PREFIX}sub-name {
       text-decoration: line-through;

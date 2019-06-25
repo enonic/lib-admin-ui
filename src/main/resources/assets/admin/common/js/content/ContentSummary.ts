@@ -55,6 +55,8 @@ module api.content {
 
         private contentState: ContentState;
 
+        private workflow: Workflow;
+
         constructor(builder: ContentSummaryBuilder) {
             this.name = builder.name;
             this.displayName = builder.displayName;
@@ -82,6 +84,7 @@ module api.content {
             this.childOrder = builder.childOrder;
             this.language = builder.language;
             this.contentState = builder.contentState;
+            this.workflow = builder.workflow;
         }
 
         getName(): ContentName {
@@ -204,6 +207,18 @@ module api.content {
             return this.contentState;
         }
 
+        getWorkflow(): Workflow {
+            return this.workflow;
+        }
+
+        isReady(): boolean {
+            return !!this.workflow && this.workflow.getState() === WorkflowState.READY;
+        }
+
+        isInProgress(): boolean {
+            return !!this.workflow && this.workflow.getState() === WorkflowState.IN_PROGRESS;
+        }
+
         equals(o: api.Equitable): boolean {
 
             if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentSummary)) {
@@ -284,6 +299,9 @@ module api.content {
             if (!api.ObjectHelper.objectEquals(this.contentState, other.getContentState())) {
                 return false;
             }
+            if (!api.ObjectHelper.equals(this.workflow, other.getWorkflow())) {
+                return false;
+            }
             return true;
         }
 
@@ -352,6 +370,8 @@ module api.content {
 
         contentState: ContentState;
 
+        workflow: Workflow;
+
         constructor(source?: ContentSummary) {
             if (source) {
                 this.id = source.getId();
@@ -379,6 +399,7 @@ module api.content {
                 this.childOrder = source.getChildOrder();
                 this.language = source.getLanguage();
                 this.contentState = source.getContentState();
+                this.workflow = source.getWorkflow();
             }
         }
 
@@ -412,6 +433,7 @@ module api.content {
             this.childOrder = api.content.order.ChildOrder.fromJson(json.childOrder);
 
             this.contentState = ContentState.fromString(json.contentState);
+            this.workflow = Workflow.fromJson(json.workflow);
 
             return this;
         }
@@ -488,6 +510,11 @@ module api.content {
 
         setPublishFirstTime(value: Date): ContentSummaryBuilder {
             this.publishFirstTime = value;
+            return this;
+        }
+
+        setWorkflow(value: Workflow): ContentSummaryBuilder {
+            this.workflow = value;
             return this;
         }
 

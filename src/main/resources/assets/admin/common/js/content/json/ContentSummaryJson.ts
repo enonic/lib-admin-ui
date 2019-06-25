@@ -36,5 +36,7 @@ module api.content.json {
         language: string;
 
         contentState: string;
+
+        workflow: WorkflowJson;
     }
 }
