@@ -461,6 +461,34 @@ module api.data {
             return true;
         }
 
+        public syncEmptyArrays(target: PropertySet) {
+
+            if(!target) {
+                return;
+            }
+
+            target.getPropertyArrays().forEach((propertyArray: PropertyArray) => {
+                if (!this.getPropertyArray(propertyArray.getName())) {
+
+                    this.addPropertyArray(propertyArray.copy(this));
+                }
+
+                const thisPropertyArray = this.getPropertyArray(propertyArray.getName());
+
+                propertyArray.forEach(((property, index) => {
+                    if (property.getType().equals(api.data.ValueTypes.DATA)) {
+
+                        const targetPropertySet = property.getPropertySet();
+                        const thisPropertySet = thisPropertyArray.getSet(index);
+
+                        if (thisPropertySet) {
+                            thisPropertySet.syncEmptyArrays(targetPropertySet);
+                        }
+                    }
+                }));
+            });
+        }
+
         public diff(other: PropertySet): PropertyTreeDiff {
             let checkedProperties: String[] = [];
             let diff = this.doDiff(other, checkedProperties);
