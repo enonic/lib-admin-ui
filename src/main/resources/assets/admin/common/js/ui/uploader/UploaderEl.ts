@@ -72,6 +72,7 @@ module api.ui.uploader {
         private renderedInitHandler: (event: ElementRenderedEvent) => void;
 
         public static debug: boolean = false;
+        private static FORBIDDEN_CHARS: RegExp = /[/*?|:]/g;
 
         constructor(config: UploaderElConfig) {
             super('div', 'uploader-el');
@@ -511,21 +512,36 @@ module api.ui.uploader {
         }
 
         private submitCallback(id: number, name: string) {
-            const file: FineUploaderFile = this.uploader.getFile(id);
-            file.id = id;
-
-            if (name.lastIndexOf('.') > 0) {
-                name = name.substr(0, name.lastIndexOf('.'));
-            }
-
-            const uploadFile = new UploadItem<MODEL>(file);
-            this.uploadedItems.push(uploadFile.setName(name));
+            this.uploader.setName(id, this.sanitizeName(name));
+            this.uploadedItems.push(this.processFile(id, name));
 
             this.startUpload();
 
             this.setProgressVisible();
 
             this.debouncedUploadStart();
+        }
+
+        private processFile(id: number, name: string): UploadItem<MODEL> {
+            const file: FineUploaderFile = this.uploader.getFile(id);
+            file.id = id;
+
+            const uploadFile = new UploadItem<MODEL>(file);
+            uploadFile.setName(this.removeFileNameExtension(name));
+
+            return uploadFile;
+        }
+
+        private sanitizeName(name: string): string {
+            return name.replace(UploaderEl.FORBIDDEN_CHARS, '_');
+        }
+
+        private removeFileNameExtension(name: string): string {
+            if (name.lastIndexOf('.') > 0) {
+                return name.substr(0, name.lastIndexOf('.'));
+            }
+
+            return name;
         }
 
         private statusChangeCallback(id: number, _oldStatus: string, newStatus: string) {
