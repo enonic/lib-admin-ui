@@ -8,3 +8,4 @@
 ///<reference path='WidgetDescriptorJson.ts' />
 // /<reference path='UnpublishContentJson.ts' />
 ///<reference path='ContentPublishTimeRangeJson.ts' />
+///<reference path='WorkflowJson.ts' />
