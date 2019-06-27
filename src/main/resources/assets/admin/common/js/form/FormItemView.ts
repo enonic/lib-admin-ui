@@ -62,6 +62,10 @@ module api.form {
             return false; //to be implemented on demand in inheritors
         }
 
+        isEmpty(): boolean {
+            throw new Error('Must be implemented by inheritor');
+        }
+
         getContext(): FormContext {
             return this.context;
         }

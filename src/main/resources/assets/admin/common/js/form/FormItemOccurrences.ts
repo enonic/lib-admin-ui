@@ -358,6 +358,10 @@ module api.form {
             return this.occurrenceViews.some((currOccurrenceView: V) => currOccurrenceView.hasNonDefaultValues());
         }
 
+        isEmpty(): boolean {
+            return this.occurrenceViews.every((currOccurrenceView: V) => currOccurrenceView.isEmpty());
+        }
+
         getOccurrenceViewElementBefore(index: number): V {
             if (index < 1) {
                 return null;
