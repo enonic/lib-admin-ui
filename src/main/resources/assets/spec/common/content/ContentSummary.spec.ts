@@ -64,7 +64,8 @@ module ContentSummarySpec {
             thumbnail: null,
             type: 'myapplication:my_type',
             workflow: {
-                state: 'READY'
+                state: 'READY',
+                checks: {}
             }
         };
     }
