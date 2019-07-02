@@ -42,6 +42,10 @@ module api.content {
             return new WorkflowBuilder(this);
         }
 
+        static create(): WorkflowBuilder {
+            return new WorkflowBuilder();
+        }
+
         static fromJson(json: WorkflowJson): Workflow {
             return new WorkflowBuilder().fromJson(json).build();
         }
