@@ -7,8 +7,10 @@
 ///<reference path='ValueTypeDouble.ts' />
 ///<reference path='ValueTypeLocalDate.ts' />
 ///<reference path='ValueTypeLocalDateTime.ts' />
+///<reference path='ValueTypeLocalDateTimeRange.ts' />
 ///<reference path='ValueTypeLocalTime.ts' />
 ///<reference path='ValueTypeDateTime.ts' />
+///<reference path='ValueTypeDateTimeRange.ts' />
 ///<reference path='ValueTypeGeoPoint.ts' />
 ///<reference path='ValueTypeBinaryReference.ts' />
 ///<reference path='ValueTypeReference.ts' />

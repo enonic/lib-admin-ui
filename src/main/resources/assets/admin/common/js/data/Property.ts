@@ -7,6 +7,8 @@ module api.data {
     import DateTime = api.util.DateTime;
     import LocalDateTime = api.util.LocalDateTime;
     import LocalDate = api.util.LocalDate;
+    import DateTimeRange = api.util.DateTimeRange;
+    import LocalDateTimeRange = api.util.LocalDateTimeRange;
 
     /**
      * A Property has a [[name]] and a [[value]],
@@ -194,12 +196,20 @@ module api.data {
             return this.value.getDateTime();
         }
 
+        getDateTimeRange(): DateTimeRange {
+            return this.value.getDateTimeRange();
+        }
+
         getLocalDate(): LocalDate {
             return this.value.getLocalDate();
         }
 
         getLocalDateTime(): LocalDateTime {
             return this.value.getLocalDateTime();
+        }
+
+        getLocalDateTimeRange(): LocalDateTimeRange {
+            return this.value.getLocalDateTimeRange();
         }
 
         getLocalTime(): LocalTime {

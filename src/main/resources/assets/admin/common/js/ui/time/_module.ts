@@ -13,4 +13,5 @@
 ///<reference path='TimePicker.ts' />
 ///<reference path='TimePickerPopup.ts' />
 ///<reference path='DateTimePicker.ts' />
+///<reference path='DateTimeRangePicker.ts' />
 ///<reference path='DateTimePickerPopup.ts' />
