@@ -80,30 +80,33 @@ module api.ui.time {
             this.startPicker = this.createPicker(builder, 0);
             this.endLabel = builder.endLabel;
             this.endPicker = this.createPicker(builder, 1);
+            this.startPicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
+                if (event.getDate() && api.util.StringHelper.isBlank(this.endPicker.getTextInput().getValue())) {
+                    this.endPicker.giveFocus();
+                }
+            });
         }
 
         doRender(): Q.Promise<boolean> {
             return super.doRender().then((rendered: boolean) => {
-                const dashSpacer = new api.dom.SpanEl('spacer');
-                dashSpacer.setHtml('&mdash;', false);
-
                 let startEl: api.dom.Element;
                 let endEl: api.dom.Element;
                 if (this.startLabel) {
                     startEl = new api.dom.DivEl();
-                    startEl.appendChildren<api.dom.Element>(new api.dom.LabelEl(this.startLabel), this.startPicker);
+                    startEl.appendChildren<api.dom.Element>(new api.dom.LabelEl(this.startLabel, this.startPicker, 'start-label'),
+                        this.startPicker);
                 } else {
                     startEl = this.startPicker;
                 }
 
                 if (this.endLabel) {
                     endEl = new api.dom.DivEl();
-                    endEl.appendChildren<api.dom.Element>(new api.dom.LabelEl(this.endLabel), this.endPicker);
+                    endEl.appendChildren<api.dom.Element>(new api.dom.LabelEl(this.endLabel, this.endPicker, 'end-label'), this.endPicker);
                 } else {
                     endEl = this.endPicker;
                 }
 
-                this.appendChildren(startEl, dashSpacer, endEl);
+                this.appendChildren(startEl, endEl);
 
                 return rendered;
             });
@@ -114,6 +117,7 @@ module api.ui.time {
                 .setStartingDayOfWeek(builder.startingDayOfWeek)
                 .setCloseOnSelect(builder.closeOnSelect)
                 .setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent)
+                .setCloseOnSelect(true)
                 .setTimezone(builder.timezone);
 
             switch (index) {

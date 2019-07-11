@@ -17,11 +17,7 @@ module api.data {
 
         static LOCAL_DATE_TIME: ValueTypeLocalDateTime = new ValueTypeLocalDateTime();
 
-        static LOCAL_DATE_TIME_RANGE: ValueTypeLocalDateTime = new ValueTypeLocalDateTimeRange();
-
         static DATE_TIME: ValueTypeDateTime = new ValueTypeDateTime();
-
-        static DATE_TIME_RANGE: ValueTypeDateTime = new ValueTypeDateTimeRange();
 
         static LONG: ValueTypeLong = new ValueTypeLong();
 
@@ -42,9 +38,7 @@ module api.data {
             ValueTypes.LOCAL_DATE,
             ValueTypes.LOCAL_TIME,
             ValueTypes.LOCAL_DATE_TIME,
-            ValueTypes.LOCAL_DATE_TIME_RANGE,
             ValueTypes.DATE_TIME,
-            ValueTypes.DATE_TIME_RANGE,
             ValueTypes.LONG,
             ValueTypes.BOOLEAN,
             ValueTypes.DOUBLE,

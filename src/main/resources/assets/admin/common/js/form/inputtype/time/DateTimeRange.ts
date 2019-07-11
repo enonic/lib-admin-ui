@@ -6,16 +6,17 @@ module api.form.inputtype.time {
     import ValueTypes = api.data.ValueTypes;
     import DateTimeRangePickerBuilder = api.ui.time.DateTimeRangePickerBuilder;
     import DateTimeRangePicker = api.ui.time.DateTimeRangePicker;
-    import LocalDateTimeRange = api.util.LocalDateTimeRange;
     import i18n = api.util.i18n;
+    import PropertySet = api.data.PropertySet;
 
     declare const Date: DateConstructor;
 
     export class DateTimeRange
         extends api.form.inputtype.support.BaseInputTypeNotManagingAdd {
 
-        private valueType: ValueType = ValueTypes.LOCAL_DATE_TIME_RANGE;
-        private range: api.util.DateTimeRange | LocalDateTimeRange;
+        private valueType: ValueType = ValueTypes.DATA;
+        private useTimezone: boolean;
+        private pSet: PropertySet;
 
         private errors: {
             noStart: string
@@ -33,9 +34,9 @@ module api.form.inputtype.time {
             this.readConfig(config.inputConfig);
         }
 
-        private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
+        private readConfig(inputConfig: { [element: string]: any; }): void {
             if (this.readConfigValue(inputConfig, 'timezone') === 'true') {
-                this.valueType = ValueTypes.DATE_TIME_RANGE;
+                this.useTimezone = true;
             }
 
             this.errors = {
@@ -53,9 +54,8 @@ module api.form.inputtype.time {
             };
         }
 
-        private readConfigValue(inputConfig: { [element: string]: { [name: string]: string }[]; }, name: string): string {
-            const namedConfig = inputConfig[name];
-            return namedConfig && namedConfig[0] && namedConfig[0].value;
+        private readConfigValue(inputConfig: { [element: string]: any; }, name: string): string {
+            return inputConfig[name];
         }
 
         getValueType(): ValueType {
@@ -67,12 +67,16 @@ module api.form.inputtype.time {
         }
 
         createInputOccurrenceElement(_index: number, property: Property): api.dom.Element {
-            if (this.valueType === ValueTypes.DATE_TIME_RANGE) {
-                this.range = new api.util.DateTimeRange(null, null);
+            if (property.hasNullValue()) {
+                this.pSet = new PropertySet();
+                property.setValue(new Value(this.pSet, ValueTypes.DATA));
+            } else {
+                this.pSet = property.getPropertySet();
+            }
+            if (this.useTimezone) {
                 return this.createInputAsDateTime(property);
             }
 
-            this.range = new api.util.LocalDateTimeRange(null, null);
             return this.createInputAsLocalDateTime(property);
         }
 
@@ -81,14 +85,16 @@ module api.form.inputtype.time {
 
             if (!unchangedOnly || !dateTimePicker.isDirty()) {
 
-                const date = property.hasNonNullValue()
-                             ? this.valueType === ValueTypes.DATE_TIME_RANGE
-                               ? property.getDateTimeRange()
-                               : property.getLocalDateTimeRange()
-                             : null;
+                if (property.hasNullValue()) {
+                    this.pSet = new PropertySet();
+                    property.setValue(new Value(this.pSet, ValueTypes.DATA));
+                } else {
+                    this.pSet = property.getPropertySet();
+                }
+                const [from, to] = this.getFromTo();
 
-                dateTimePicker.setStartDateTime(date.getFrom() ? date.getFrom().toDate() : null);
-                dateTimePicker.setEndDateTime(date.getTo() ? date.getTo().toDate() : null);
+                dateTimePicker.setStartDateTime(from ? from.toDate() : null);
+                dateTimePicker.setEndDateTime(to ? to.toDate() : null);
 
             } else if (dateTimePicker.isDirty()) {
                 dateTimePicker.forceSelectedDateTimeChangedEvent();
@@ -111,8 +117,16 @@ module api.form.inputtype.time {
         }
 
         valueBreaksRequiredContract(value: Value): boolean {
-            return value.isNull() ||
-                   !(value.getType().equals(ValueTypes.LOCAL_DATE_TIME_RANGE) || value.getType().equals(ValueTypes.DATE_TIME_RANGE));
+            if (value.isNull() || !(value.getType().equals(ValueTypes.DATA))) {
+                return true;
+            }
+
+            const pSet = value.getPropertySet();
+            const from = pSet.getProperty('from');
+            const to = pSet.getProperty('to');
+
+            return from && from.getType() !== ValueTypes.DATE_TIME && from.getType() !== ValueTypes.LOCAL_DATE_TIME
+                   || to && to.getType() !== ValueTypes.DATE_TIME && to.getType() !== ValueTypes.LOCAL_DATE_TIME;
         }
 
         private createInputAsLocalDateTime(property: Property): DateTimeRangePicker {
@@ -120,62 +134,21 @@ module api.form.inputtype.time {
                 .setStartLabel(this.labels.start)
                 .setEndLabel(this.labels.end);
 
-            this.setLocalDates(rangeBuilder, property);
+            this.setFromTo(rangeBuilder, property);
 
             const rangePicker = rangeBuilder.build();
 
             rangePicker.onStartDateTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
-                (<LocalDateTimeRange>this.range).setFrom(event.getDate() ? api.util.LocalDateTime.fromDate(event.getDate()) : null);
-                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.range, ValueTypes.LOCAL_DATE_TIME_RANGE));
+                this.pSet.setLocalDateTimeByPath('from', event.getDate() ? api.util.LocalDateTime.fromDate(event.getDate()) : null);
+                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.pSet, ValueTypes.DATA));
             });
 
             rangePicker.onEndDateTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
-                (<LocalDateTimeRange>this.range).setTo(event.getDate() ? api.util.LocalDateTime.fromDate(event.getDate()) : null);
-                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.range, ValueTypes.LOCAL_DATE_TIME_RANGE));
+                this.pSet.setLocalDateTimeByPath('to', event.getDate() ? api.util.LocalDateTime.fromDate(event.getDate()) : null);
+                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.pSet, ValueTypes.DATA));
             });
 
             return rangePicker;
-        }
-
-        private setDates(builder: DateTimeRangePickerBuilder, prop: Property) {
-            if (!ValueTypes.DATE_TIME_RANGE.equals(prop.getType())) {
-                prop.convertValueType(ValueTypes.DATE_TIME_RANGE);
-            }
-
-            if (prop.hasNonNullValue()) {
-                const range: api.util.DateTimeRange = this.range = prop.getDateTimeRange();
-                const from = range.getFrom();
-                const to = range.getTo();
-                if (from || to) {
-                    if (from) {
-                        builder.setStartDate(from.toDate());
-                    }
-                    if (to) {
-                        builder.setEndDate(to.toDate());
-                    }
-                    builder.setTimezone((from || to).getTimezone());
-                }
-            }
-        }
-
-        private setLocalDates(builder: DateTimeRangePickerBuilder, prop: Property) {
-            if (!ValueTypes.LOCAL_DATE_TIME_RANGE.equals(prop.getType())) {
-                prop.convertValueType(ValueTypes.LOCAL_DATE_TIME_RANGE);
-            }
-
-            if (prop.hasNonNullValue()) {
-                const range: api.util.LocalDateTimeRange = this.range = prop.getLocalDateTimeRange();
-                const from = range.getFrom();
-                const to = range.getTo();
-                if (from || to) {
-                    if (from) {
-                        builder.setStartDate(from.toDate());
-                    }
-                    if (to) {
-                        builder.setEndDate(to.toDate());
-                    }
-                }
-            }
         }
 
         private createInputAsDateTime(property: Property): DateTimeRangePicker {
@@ -184,27 +157,59 @@ module api.form.inputtype.time {
                 .setEndLabel(this.labels.end)
                 .setUseLocalTimezoneIfNotPresent(true);
 
-            this.setDates(rangeBuilder, property);
+            this.setFromTo(rangeBuilder, property);
 
             const rangePicker = rangeBuilder.build();
 
             rangePicker.onStartDateTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
-                (<api.util.DateTimeRange>this.range).setFrom(event.getDate() ? api.util.DateTime.fromDate(event.getDate()) : null);
-                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.range, ValueTypes.DATE_TIME_RANGE));
+                this.pSet.setDateTimeByPath('from', event.getDate() ? api.util.DateTime.fromDate(event.getDate()) : null);
+                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.pSet, ValueTypes.DATA));
             });
 
             rangePicker.onEndDateTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
-                (<api.util.DateTimeRange>this.range).setTo(event.getDate() ? api.util.DateTime.fromDate(event.getDate()) : null);
-                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.range, ValueTypes.DATE_TIME_RANGE));
+                this.pSet.setDateTimeByPath('to', event.getDate() ? api.util.DateTime.fromDate(event.getDate()) : null);
+                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.pSet, ValueTypes.DATA));
             });
 
             return rangePicker;
         }
 
+        private setFromTo(builder: DateTimeRangePickerBuilder, property: Property) {
+            if (property.hasNonNullValue()) {
+                const [from, to] = this.getFromTo();
+                if (from || to) {
+                    if (from) {
+                        builder.setStartDate(from.toDate());
+                    }
+                    if (to) {
+                        builder.setEndDate(to.toDate());
+                    }
+                    if (this.useTimezone) {
+                        builder.setTimezone((<util.DateTime>(from || to)).getTimezone());
+                    }
+                }
+            }
+        }
+
+        private getFromTo(pSet: PropertySet = this.pSet): util.DateTime[] | util.LocalDateTime[] {
+            if (!pSet) {
+                return [];
+            }
+            let from;
+            let to;
+            if (this.useTimezone) {
+                from = pSet.getDateTime('from');
+                to = pSet.getDateTime('to');
+            } else {
+                from = pSet.getLocalDateTime('from');
+                to = pSet.getLocalDateTime('to');
+            }
+            return [from, to];
+        }
+
         protected additionalValidate(recording: api.form.inputtype.InputValidationRecording) {
-            if (recording.isValid() && this.range) {
-                const from = this.range.getFrom();
-                const to = this.range.getTo();
+            if (recording.isValid()) {
+                const [from, to] = this.getFromTo();
 
                 if (to) {
                     if (!from) {

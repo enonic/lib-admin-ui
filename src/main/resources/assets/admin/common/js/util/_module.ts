@@ -15,8 +15,6 @@
 ///<reference path='BinaryReference.ts' />
 ///<reference path='Reference.ts' />
 ///<reference path='LocalDateTime.ts' />
-///<reference path='LocalDateTimeRange.ts' />
 ///<reference path='DateTime.ts' />
-///<reference path='DateTimeRange.ts' />
 ///<reference path='Timezone.ts' />
 ///<reference path='PropertyTreeHelper.ts' />

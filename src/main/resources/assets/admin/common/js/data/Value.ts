@@ -86,13 +86,6 @@ module api.data {
             return <api.util.DateTime>this.value;
         }
 
-        getDateTimeRange(): api.util.DateTimeRange {
-            if (this.isNull()) {
-                return null;
-            }
-            return <api.util.DateTimeRange>this.value;
-        }
-
         getLocalDate(): api.util.LocalDate {
             if (this.isNull()) {
                 return null;
@@ -105,13 +98,6 @@ module api.data {
                 return null;
             }
             return <api.util.LocalDateTime>this.value;
-        }
-
-        getLocalDateTimeRange(): api.util.LocalDateTimeRange {
-            if (this.isNull()) {
-                return null;
-            }
-            return <api.util.LocalDateTimeRange>this.value;
         }
 
         getLocalTime(): api.util.LocalTime {
