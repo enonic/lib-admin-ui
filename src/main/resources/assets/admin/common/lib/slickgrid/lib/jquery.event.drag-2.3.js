@@ -119,6 +119,9 @@
                 // check the which directive
                 if ( event.which != 0 && dd.which > 0 && event.which != dd.which )
                     return;
+                if (!dd) {
+                    return;
+                }
                 // check for suppressed selector
                 if ( $( event.target ).is( dd.not ) )
                     return;
