@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
-    <g id="Page-1" stroke="transparent" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-        <g id="in-progress" sketch:type="MSLayerGroup">
-            <g id="Page-1" sketch:type="MSShapeGroup">
-                <g id="warning">
-                    <path d="M8.00029755,1.4495 L14.7047976,14.8125 L1.29529757,14.8125 L7.99979755,1.4495 L8.00029755,1.4495 L8.00029755,1.4495 Z M8.00029755,2.22044605e-16 C7.65529755,2.22044605e-16 7.31079755,0.2325 7.04879755,0.6975 L0.219297569,14.3085 C-0.303702431,15.2385 0.141297568,16 1.20829757,16 L14.7912975,16 C15.8582975,16 16.3037975,15.239 15.7802976,14.3085 L15.7802976,14.3085 L8.95079755,0.6975 C8.68929755,0.2325 8.34429755,0 7.99929755,0 L7.99929755,0 L8.00029755,2.22044605e-16 L8.00029755,2.22044605e-16 Z" id="Shape" fill="#000000"></path>
-                    <path d="M8,1.5 L15,15 L1,15 L8,1.5 Z" id="Triangle" fill="#F8E81C"></path>
-                    <path d="M9,13 C9,13.5525 8.5525,14 8,14 C7.4475,14 7,13.5525 7,13 C7,12.4475 7.4475,12 8,12 C8.5525,12 9,12.4475 9,13 L9,13 L9,13 Z" id="Shape" fill="#000000"></path>
-                    <path d="M8,11 C7.4475,11 7,10.5525 7,10 L7,7 C7,6.4475 7.4475,6 8,6 C8.5525,6 9,6.4475 9,7 L9,10 C9,10.5525 8.5525,11 8,11 L8,11 L8,11 Z" id="Shape" fill="#000000"></path>
-                </g>
-            </g>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>in-progress</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="in-progress">
+            <path d="M8,0 C12.431891,0 16,3.56810897 16,8 C16,12.431891 12.431891,16 8,16 C3.56810897,16 0,12.431891 0,8 C0,3.56810897 3.56810897,0 8,0 L8,0 Z" id="Shape" fill="#CBAD00" fill-rule="nonzero"></path>
+            <rect id="backgroundrect" x="0" y="0" width="16" height="16"></rect>
+            <text id="!" font-family="PTSans-Bold, PT Sans" font-size="14" font-weight="bold" fill="#FFFFFF">
+                <tspan x="5.942" y="13">!</tspan>
+            </text>
         </g>
     </g>
 </svg>
