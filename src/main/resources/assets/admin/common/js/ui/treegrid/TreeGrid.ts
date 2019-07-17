@@ -1533,11 +1533,12 @@ module api.ui.treegrid {
             this.gridData.setItems(nodes, this.idPropertyName);
             this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
             this.resetCurrentSelection(nodes);
+            this.resetHighlightedNode(nodes);
         }
 
         private resetCurrentSelection(nodes: TreeNode<DATA>[]) {
-            let selection: any = [];
-            let selectionIds = this.root.getFullSelection().map(el => el.getDataId());
+            const selection: number[] = [];
+            const selectionIds: string[] = this.root.getFullSelection().map(el => el.getDataId());
 
             selectionIds.forEach((selectionId) => {
                 nodes.forEach((node, index) => {
@@ -1548,6 +1549,21 @@ module api.ui.treegrid {
             });
 
             this.grid.setSelectedRows(selection);
+        }
+
+        private resetHighlightedNode(nodes: TreeNode<DATA>[]) {
+            if (!this.hasHighlightedNode()) {
+                return;
+            }
+
+            nodes.some((node) => {
+                if (node.getDataId() === this.highlightedNode.getDataId()) {
+                    this.highlightedNode = node;
+                    return true;
+                }
+
+                return false;
+            });
         }
 
         expandNode(node?: TreeNode<DATA>, expandAll: boolean = false): wemQ.Promise<boolean> {
