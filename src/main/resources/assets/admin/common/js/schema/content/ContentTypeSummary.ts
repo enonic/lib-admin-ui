@@ -14,6 +14,8 @@ module api.schema.content {
 
         private displayNameExpression: string;
 
+        private displayNameLabel: string;
+
         private modifier: string;
 
         private owner: string;
@@ -30,6 +32,7 @@ module api.schema.content {
             this.owner = builder.owner;
             this.modifier = builder.modifier;
             this.metadata = builder.metadata;
+            this.displayNameLabel = builder.displayNameLabel;
         }
 
         getContentTypeName(): api.schema.content.ContentTypeName {
@@ -80,6 +83,10 @@ module api.schema.content {
             return this.displayNameExpression;
         }
 
+        getDisplayNameLabel(): string {
+            return this.displayNameLabel;
+        }
+
         getOwner(): string {
             return this.owner;
         }
@@ -117,6 +124,10 @@ module api.schema.content {
             }
 
             if (!ObjectHelper.stringEquals(this.displayNameExpression, other.displayNameExpression)) {
+                return false;
+            }
+
+            if (!ObjectHelper.stringEquals(this.displayNameLabel, other.displayNameLabel)) {
                 return false;
             }
 
@@ -162,6 +173,8 @@ module api.schema.content {
 
         displayNameExpression: string;
 
+        displayNameLabel: string;
+
         modifier: string;
 
         owner: string;
@@ -176,6 +189,7 @@ module api.schema.content {
                 this.final = source.isFinal();
                 this.superType = source.getSuperType();
                 this.displayNameExpression = source.getDisplayNameExpression();
+                this.displayNameLabel = source.getDisplayNameLabel();
                 this.modifier = source.getModifier();
                 this.owner = source.getOwner();
                 this.metadata = source.getMetadata();
@@ -190,6 +204,7 @@ module api.schema.content {
             this.abstract = json.abstract;
             this.superType = json.superType ? new api.schema.content.ContentTypeName(json.superType) : null;
             this.displayNameExpression = json.displayNameExpression;
+            this.displayNameLabel = json.displayNameLabel;
             this.owner = json.owner;
             this.modifier = json.modifier;
             this.metadata = MixinNames.create().fromStrings(json.metadata).build();

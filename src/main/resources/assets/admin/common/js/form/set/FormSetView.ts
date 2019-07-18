@@ -275,6 +275,10 @@ module api.form {
             return this.formItemOccurrences.hasNonDefaultValues();
         }
 
+        isEmpty(): boolean {
+            return this.formItemOccurrences.isEmpty();
+        }
+
         private makeAddButton(): api.ui.button.Button {
             const addButton = new api.ui.button.Button(i18n('button.add', this.formSet.getLabel()));
             addButton.addClass('small');

@@ -66,6 +66,10 @@ module api.form {
             return false;
         }
 
+        isEmpty(): boolean {
+            throw false;
+        }
+
         clean() {
             // empty
         }

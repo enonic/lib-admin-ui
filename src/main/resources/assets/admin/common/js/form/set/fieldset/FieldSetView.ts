@@ -159,6 +159,10 @@ module api.form {
             return recording;
         }
 
+        isEmpty(): boolean {
+            return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
+        }
+
         onValidityChanged(listener: (event: RecordingValidityChangedEvent)=>void) {
 
             this.formItemViews.forEach((formItemView: FormItemView)=> {

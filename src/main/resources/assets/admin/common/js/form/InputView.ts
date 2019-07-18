@@ -176,6 +176,12 @@ module api.form {
             });
         }
 
+        isEmpty(): boolean {
+            return !this.propertyArray.some((property: Property) => {
+                return !StringHelper.isEmpty(property.getValue().getString());
+            });
+        }
+
         public getInputTypeView(): api.form.inputtype.InputTypeView {
             return this.inputTypeView;
         }

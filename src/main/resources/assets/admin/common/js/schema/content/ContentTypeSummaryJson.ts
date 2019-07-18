@@ -1,21 +1,24 @@
 module api.schema.content {
 
-    export interface ContentTypeSummaryJson extends api.schema.SchemaJson {
+    export interface ContentTypeSummaryJson
+        extends api.schema.SchemaJson {
 
-        abstract:boolean;
+        abstract: boolean;
 
-        allowChildContent:boolean;
+        allowChildContent: boolean;
 
         displayNameExpression: string;
 
+        displayNameLabel: string;
+
         final: boolean;
 
-        superType:string;
+        superType: string;
 
-        owner:string;
+        owner: string;
 
-        modifier:string;
+        modifier: string;
 
-        metadata:string[];
+        metadata: string[];
     }
 }

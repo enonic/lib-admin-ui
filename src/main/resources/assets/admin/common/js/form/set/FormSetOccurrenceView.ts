@@ -148,6 +148,10 @@ module api.form {
             return this.formItemViews.some(formItemView => formItemView.hasNonDefaultValues());
         }
 
+        isEmpty(): boolean {
+            return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
+        }
+
         protected initValidationMessageBlock() {
             // must be implemented by children
         }

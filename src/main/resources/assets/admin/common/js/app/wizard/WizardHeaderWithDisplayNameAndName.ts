@@ -8,8 +8,15 @@ module api.app.wizard {
 
         displayNameGenerator: DisplayNameGenerator;
 
+        displayNameLabel: string;
+
         setDisplayNameGenerator(value: DisplayNameGenerator): WizardHeaderWithDisplayNameAndNameBuilder {
             this.displayNameGenerator = value;
+            return this;
+        }
+
+        setDisplayNameLabel(value: string): WizardHeaderWithDisplayNameAndNameBuilder {
+            this.displayNameLabel = value;
             return this;
         }
 
@@ -19,7 +26,8 @@ module api.app.wizard {
 
     }
 
-    export class WizardHeaderWithDisplayNameAndName extends WizardHeader {
+    export class WizardHeaderWithDisplayNameAndName
+        extends WizardHeader {
 
         private displayNameGenerator: DisplayNameGenerator;
 
@@ -52,7 +60,9 @@ module api.app.wizard {
             }, 100);
 
             this.displayNameEl = api.ui.text.AutosizeTextInput.large();
-            this.displayNameEl.setPlaceholder('<' + i18n('field.displayName') + '>').setName(api.query.QueryField.DISPLAY_NAME);
+            this.displayNameEl.setPlaceholder(
+                '<' + (builder.displayNameLabel ? builder.displayNameLabel : i18n('field.displayName')) + '>').setName(
+                api.query.QueryField.DISPLAY_NAME);
             this.displayNameEl.onValueChanged(debounceNotify(QueryField.DISPLAY_NAME));
             this.appendChild(this.displayNameEl);
 
@@ -76,9 +86,9 @@ module api.app.wizard {
                     let generatedDisplayName = this.displayNameGenerator.execute() || '';
 
                     this.displayNameProgrammaticallySet =
-                    generatedDisplayName.toLowerCase() === currentDisplayName.toLowerCase() ||
-                    generatedDisplayName.trim().toLowerCase() === currentDisplayName.toLowerCase() ||
-                    api.util.StringHelper.isEmpty(currentDisplayName);
+                        generatedDisplayName.toLowerCase() === currentDisplayName.toLowerCase() ||
+                        generatedDisplayName.trim().toLowerCase() === currentDisplayName.toLowerCase() ||
+                        api.util.StringHelper.isEmpty(currentDisplayName);
 
                     if (this.displayNameProgrammaticallySet) {
                         this.displayNameEl.addClass('generated');

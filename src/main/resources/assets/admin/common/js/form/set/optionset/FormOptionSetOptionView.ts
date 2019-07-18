@@ -8,6 +8,8 @@ module api.form {
     import Occurrences = api.form.Occurrences;
     import PropertyValueChangedEvent = api.data.PropertyValueChangedEvent;
     import Checkbox = api.ui.Checkbox;
+    import NotificationDialog = api.ui.dialog.NotificationDialog;
+    import i18n = api.util.i18n;
 
     export interface FormOptionSetOptionViewConfig {
 
@@ -34,13 +36,15 @@ module api.form {
 
         private formItemLayer: FormItemLayer;
 
-        private selectionChangedListeners: {(): void}[] = [];
+        private selectionChangedListeners: { (): void }[] = [];
 
         private checkbox: api.ui.Checkbox;
 
         private requiresClean: boolean;
 
         private isOptionSetExpandedByDefault: boolean;
+
+        private notificationDialog: NotificationDialog;
 
         protected helpText: HelpTextContainer;
 
@@ -74,6 +78,8 @@ module api.form {
 
             this.formItemLayer = new FormItemLayer(config.context);
             this.formItemLayer.setLazyRender(config.lazyRender);
+
+            this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
 
             this.requiresClean = false;
         }
@@ -323,6 +329,10 @@ module api.form {
             this.cleanSelectionMessageForThisOption();
             this.removeClass('selected');
             this.requiresClean = true;
+
+            if (!this.isEmpty()) {
+                this.notificationDialog.open();
+            }
         }
 
         private removeNonDefaultOptionFromSelectionArray() {
@@ -519,6 +529,10 @@ module api.form {
             this.toggleClass('invalid', !recording.isValid());
 
             return recording;
+        }
+
+        isEmpty(): boolean {
+            return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
         }
 
         onValidityChanged(listener: (event: RecordingValidityChangedEvent)=>void) {
