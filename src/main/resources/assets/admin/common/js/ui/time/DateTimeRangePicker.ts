@@ -174,9 +174,9 @@ module api.ui.time {
             return this.startPicker.isValid() && this.endPicker.isValid();
         }
 
-        public resetBase() {
-            this.startPicker.resetBase();
-            this.endPicker.resetBase();
+        public reset() {
+            this.startPicker.setSelectedDateTime(null);
+            this.endPicker.setSelectedDateTime(null);
         }
 
     }

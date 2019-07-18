@@ -8,6 +8,7 @@ module api.form.inputtype.time {
     import DateTimeRangePicker = api.ui.time.DateTimeRangePicker;
     import i18n = api.util.i18n;
     import PropertySet = api.data.PropertySet;
+    import LocalDateTime = api.util.LocalDateTime;
 
     declare const Date: DateConstructor;
 
@@ -16,7 +17,8 @@ module api.form.inputtype.time {
 
         private valueType: ValueType = ValueTypes.DATA;
         private useTimezone: boolean;
-        private pSet: PropertySet;
+        private from: api.util.DateTime | api.util.LocalDateTime;
+        private to: api.util.DateTime | api.util.LocalDateTime;
 
         private errors: {
             noStart: string
@@ -67,12 +69,9 @@ module api.form.inputtype.time {
         }
 
         createInputOccurrenceElement(_index: number, property: Property): api.dom.Element {
-            if (property.hasNullValue()) {
-                this.pSet = new PropertySet();
-                property.setValue(new Value(this.pSet, ValueTypes.DATA));
-            } else {
-                this.pSet = property.getPropertySet();
-            }
+
+            [this.from, this.to] = this.getFromTo(property.getPropertySet());
+
             if (this.useTimezone) {
                 return this.createInputAsDateTime(property);
             }
@@ -85,16 +84,10 @@ module api.form.inputtype.time {
 
             if (!unchangedOnly || !dateTimePicker.isDirty()) {
 
-                if (property.hasNullValue()) {
-                    this.pSet = new PropertySet();
-                    property.setValue(new Value(this.pSet, ValueTypes.DATA));
-                } else {
-                    this.pSet = property.getPropertySet();
-                }
-                const [from, to] = this.getFromTo();
+                [this.from, this.to] = this.getFromTo(property.getPropertySet());
 
-                dateTimePicker.setStartDateTime(from ? from.toDate() : null);
-                dateTimePicker.setEndDateTime(to ? to.toDate() : null);
+                dateTimePicker.setStartDateTime(this.from ? this.from.toDate() : null);
+                dateTimePicker.setEndDateTime(this.to ? this.to.toDate() : null);
 
             } else if (dateTimePicker.isDirty()) {
                 dateTimePicker.forceSelectedDateTimeChangedEvent();
@@ -104,7 +97,10 @@ module api.form.inputtype.time {
         resetInputOccurrenceElement(occurrence: api.dom.Element) {
             let input = <DateTimeRangePicker>occurrence;
 
-            input.resetBase();
+            this.from = undefined;
+            this.to = undefined;
+
+            input.reset();
         }
 
         hasInputElementValidUserInput(inputElement: api.dom.Element) {
@@ -139,16 +135,32 @@ module api.form.inputtype.time {
             const rangePicker = rangeBuilder.build();
 
             rangePicker.onStartDateTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
-                this.pSet.setLocalDateTimeByPath('from', event.getDate() ? api.util.LocalDateTime.fromDate(event.getDate()) : null);
-                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.pSet, ValueTypes.DATA));
+                this.from = event.getDate() ? api.util.LocalDateTime.fromDate(event.getDate()) : null;
+                this.notifyOccurrenceValueChanged(rangePicker, this.createLocalDateTimePropertySetValue());
             });
 
             rangePicker.onEndDateTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
-                this.pSet.setLocalDateTimeByPath('to', event.getDate() ? api.util.LocalDateTime.fromDate(event.getDate()) : null);
-                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.pSet, ValueTypes.DATA));
+                this.to = event.getDate() ? api.util.LocalDateTime.fromDate(event.getDate()) : null;
+                this.notifyOccurrenceValueChanged(rangePicker, this.createLocalDateTimePropertySetValue());
             });
 
             return rangePicker;
+        }
+
+        private createLocalDateTimePropertySetValue() {
+            let pSet;
+            if (this.from || this.to) {
+                pSet = new PropertySet();
+                if (this.from) {
+                    pSet.setLocalDateTimeByPath('from', <LocalDateTime>this.from);
+                }
+                if (this.to) {
+                    pSet.setLocalDateTimeByPath('to', <LocalDateTime>this.to);
+                }
+            } else {
+                pSet = null;
+            }
+            return new Value(pSet, ValueTypes.DATA);
         }
 
         private createInputAsDateTime(property: Property): DateTimeRangePicker {
@@ -162,21 +174,28 @@ module api.form.inputtype.time {
             const rangePicker = rangeBuilder.build();
 
             rangePicker.onStartDateTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
-                this.pSet.setDateTimeByPath('from', event.getDate() ? api.util.DateTime.fromDate(event.getDate()) : null);
-                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.pSet, ValueTypes.DATA));
+                this.from = event.getDate() ? api.util.DateTime.fromDate(event.getDate()) : null;
+                this.notifyOccurrenceValueChanged(rangePicker, this.createDateTimePropertySetValue());
             });
 
             rangePicker.onEndDateTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
-                this.pSet.setDateTimeByPath('to', event.getDate() ? api.util.DateTime.fromDate(event.getDate()) : null);
-                this.notifyOccurrenceValueChanged(rangePicker, new Value(this.pSet, ValueTypes.DATA));
+                this.to = event.getDate() ? api.util.DateTime.fromDate(event.getDate()) : null;
+                this.notifyOccurrenceValueChanged(rangePicker, this.createDateTimePropertySetValue());
             });
 
             return rangePicker;
         }
 
+        private createDateTimePropertySetValue() {
+            const pSet = new PropertySet();
+            pSet.setLocalDateTimeByPath('from', <LocalDateTime>this.from);
+            pSet.setLocalDateTimeByPath('to', <LocalDateTime>this.to);
+            return new Value(pSet, ValueTypes.DATA);
+        }
+
         private setFromTo(builder: DateTimeRangePickerBuilder, property: Property) {
             if (property.hasNonNullValue()) {
-                const [from, to] = this.getFromTo();
+                const [from, to] = this.getFromTo(property.getPropertySet());
                 if (from || to) {
                     if (from) {
                         builder.setStartDate(from.toDate());
@@ -191,7 +210,7 @@ module api.form.inputtype.time {
             }
         }
 
-        private getFromTo(pSet: PropertySet = this.pSet): util.DateTime[] | util.LocalDateTime[] {
+        private getFromTo(pSet: PropertySet): util.DateTime[] | util.LocalDateTime[] {
             if (!pSet) {
                 return [];
             }
@@ -208,25 +227,25 @@ module api.form.inputtype.time {
         }
 
         protected additionalValidate(recording: api.form.inputtype.InputValidationRecording) {
-            if (recording.isValid()) {
-                const [from, to] = this.getFromTo();
+            recording.setAdditionalValidationRecord(undefined);
 
-                if (to) {
-                    if (!from) {
+            if (recording.isValid()) {
+                if (this.to) {
+                    if (!this.from) {
                         recording.setBreaksMinimumOccurrences(true);
                         recording.setAdditionalValidationRecord(
                             api.form.AdditionalValidationRecord.create()
                                 .setOverwriteDefault(true)
                                 .setMessage(this.errors.noStart)
                                 .build());
-                    } else if (to.toDate() < new Date()) {
+                    } else if (this.to.toDate() < new Date()) {
                         recording.setBreaksMinimumOccurrences(true);
                         recording.setAdditionalValidationRecord(
                             api.form.AdditionalValidationRecord.create()
                                 .setOverwriteDefault(true)
                                 .setMessage(this.errors.endInPast)
                                 .build());
-                    } else if (to.toDate() < from.toDate()) {
+                    } else if (this.to.toDate() < this.from.toDate()) {
                         recording.setBreaksMinimumOccurrences(true);
                         recording.setAdditionalValidationRecord(
                             api.form.AdditionalValidationRecord.create()
