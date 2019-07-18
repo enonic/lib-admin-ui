@@ -552,10 +552,10 @@ module api.data {
             api.ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
 
                 if (propertyArray.getType().equals(ValueTypes.STRING)) {
-                    const value = propertyArray.getValue(0);
+                    const value = propertyArray.getValue(0) || ValueTypes.STRING.newNullValue();
                     result.push({
                         name: name,
-                        value: value.isNull() ? '' : propertyArray.getValue(0).getString()
+                        value: value.isNull() ? '' : value.getString()
                     });
                 }
             });
