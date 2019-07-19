@@ -1,0 +1,32 @@
+.date-time-range-picker {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  background: @admin-bg-light-gray;
+
+  > div {
+    flex: 1;
+    margin: 10px;
+    min-width: 140px;
+  }
+}
+
+.form-view.display-validation-errors {
+  .input-view.invalid {
+    .date-time-range-picker {
+      background: transparent;
+
+      > div {
+        margin: 0;
+
+        &:first-child {
+          margin-right: 10px;
+        }
+
+        &:last-child {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+}

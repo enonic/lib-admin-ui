@@ -164,6 +164,8 @@ module api.form {
 
         public reset() {
             this.inputTypeView.reset();
+            // reset validation
+            this.handleInputValidationRecording(new api.form.inputtype.InputValidationRecording());
         }
 
         refresh() {
