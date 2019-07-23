@@ -49,6 +49,7 @@ module ContentSummarySpec {
             id: 'aaa',
             isPage: false,
             isRoot: true,
+            inherited: false,
             isValid: true,
             language: 'en',
             modifiedTime: '2013-08-23T12:55:09.162Z',
