@@ -31,6 +31,8 @@ module api.content {
 
         private page: boolean;
 
+        private inherited: boolean;
+
         private valid: boolean;
 
         private requireValid: boolean;
@@ -67,6 +69,7 @@ module api.content {
             this.modifier = builder.modifier;
             this.owner = builder.owner;
             this.page = builder.page;
+            this.inherited = builder.inherited;
             this.valid = builder.valid;
             this.requireValid = builder.requireValid;
 
@@ -146,6 +149,10 @@ module api.content {
 
         isImage(): boolean {
             return this.type.isImage();
+        }
+
+        isInherited(): boolean {
+            return this.inherited;
         }
 
         isValid(): boolean {
@@ -251,6 +258,9 @@ module api.content {
             if (!api.ObjectHelper.booleanEquals(this.page, other.isPage())) {
                 return false;
             }
+            if (!api.ObjectHelper.booleanEquals(this.inherited, other.isInherited())) {
+                return false;
+            }
             if (!api.ObjectHelper.booleanEquals(this.valid, other.isValid())) {
                 return false;
             }
@@ -328,6 +338,8 @@ module api.content {
 
         page: boolean;
 
+        inherited: boolean;
+
         valid: boolean;
 
         requireValid: boolean;
@@ -367,6 +379,7 @@ module api.content {
                 this.modifier = source.getModifier();
                 this.owner = source.getOwner();
                 this.page = source.isPage();
+                this.inherited = source.isInherited();
                 this.valid = source.isValid();
                 this.requireValid = source.isRequireValid();
                 this.createdTime = source.getCreatedTime();
@@ -394,6 +407,7 @@ module api.content {
             this.modifier = json.modifier;
             this.owner = json.owner ? api.security.PrincipalKey.fromString(json.owner) : null;
             this.page = json.isPage;
+            this.inherited = json.inherited;
             this.valid = json.isValid;
             this.requireValid = json.requireValid;
             this.language = json.language;
@@ -433,6 +447,11 @@ module api.content {
 
         setContentState(value: ContentState): ContentSummaryBuilder {
             this.contentState = value;
+            return this;
+        }
+
+        setInherited(value: boolean): ContentSummaryBuilder {
+            this.inherited = value;
             return this;
         }
 

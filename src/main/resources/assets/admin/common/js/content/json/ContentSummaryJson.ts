@@ -23,6 +23,8 @@ module api.content.json {
 
         owner: string;
 
+        inherited: boolean;
+
         isPage: boolean;
 
         isValid: boolean;
