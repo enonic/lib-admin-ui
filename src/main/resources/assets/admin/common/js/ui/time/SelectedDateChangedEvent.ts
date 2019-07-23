@@ -4,12 +4,19 @@ module api.ui.time {
 
         private date: Date;
 
-        constructor(selectedDate: Date) {
+        private userInput: boolean;
+
+        constructor(selectedDate: Date, userInput?: boolean) {
             this.date = selectedDate;
+            this.userInput = userInput;
         }
 
         getDate(): Date {
             return this.date;
+        }
+
+        isUserInput(): boolean {
+            return this.userInput;
         }
     }
 

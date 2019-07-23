@@ -81,7 +81,7 @@ module api.ui.time {
             this.endLabel = builder.endLabel;
             this.endPicker = this.createPicker(builder, 1);
             this.startPicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
-                if (event.getDate() && api.util.StringHelper.isBlank(this.endPicker.getTextInput().getValue())) {
+                if (event.isUserInput() && event.getDate() && api.util.StringHelper.isBlank(this.endPicker.getTextInput().getValue())) {
                     this.endPicker.giveFocus();
                 }
             });
@@ -138,11 +138,11 @@ module api.ui.time {
         }
 
         public setStartDateTime(date: Date) {
-            this.startPicker.setSelectedDateTime(date);
+            this.startPicker.setSelectedDateTime(date, false);
         }
 
         public setEndDateTime(date: Date) {
-            this.endPicker.setSelectedDateTime(date);
+            this.endPicker.setSelectedDateTime(date, false);
         }
 
         onStartDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
