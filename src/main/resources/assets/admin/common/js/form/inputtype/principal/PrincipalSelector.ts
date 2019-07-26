@@ -35,9 +35,9 @@ module api.form.inputtype.principal {
                     } else {
                         val = cfg;
                     }
-                    return !!val ? PrincipalType[val] : undefined;
+                    return val ? PrincipalType[val] : null;
                 })
-                .filter((val) => val !== undefined);
+                .filter((val) => val !== null);
 
             const skipPrincipalsConfig = inputConfig['skipPrincipals'] || [];
             this.skipPrincipals = [].concat(skipPrincipalsConfig)
@@ -50,9 +50,9 @@ module api.form.inputtype.principal {
                     } else {
                         val = cfg;
                     }
-                    return !!val ? api.security.PrincipalKey.fromString(val) : undefined;
+                    return !!val ? api.security.PrincipalKey.fromString(val) : null;
                 })
-                .filter((val) => val !== undefined);
+                .filter((val) => val !== null);
         }
 
         public getPrincipalComboBox(): api.ui.security.PrincipalComboBox {
@@ -67,6 +67,7 @@ module api.form.inputtype.principal {
             return null;
         }
 
+        /*global wemQ*/
         layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
 
             super.layout(input, propertyArray);
