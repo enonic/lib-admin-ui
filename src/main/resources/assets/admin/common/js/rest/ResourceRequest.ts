@@ -12,6 +12,8 @@ module api.rest {
 
         private timeoutMillis: number;
 
+        private isFormRequest: boolean = false;
+
         constructor() {
             this.restPath = Path.fromString(api.util.UriHelper.getRestUri(''));
         }
@@ -40,6 +42,10 @@ module api.rest {
             this.heavyOperation = value;
         }
 
+        setIsFormRequest(value: boolean) {
+            this.isFormRequest = value;
+        }
+
         validate() {
             // Override to ensure any validation of ResourceRequest before sending.
         }
@@ -48,9 +54,12 @@ module api.rest {
 
             this.validate();
 
-            let jsonRequest = new JsonRequest<RAW_JSON_TYPE>().setMethod(this.method).setParams(this.getParams()).setPath(
-                this.getRequestPath()).setTimeout(
-                !this.heavyOperation ? this.timeoutMillis : 0);
+            const jsonRequest = new JsonRequest<RAW_JSON_TYPE>()
+                .setMethod(this.method)
+                .setParams(this.getParams())
+                .setPath(this.getRequestPath())
+                .setTimeout(!this.heavyOperation ? this.timeoutMillis : 0)
+                .setIsFormRequest(this.isFormRequest);
             return jsonRequest.send();
         }
 
