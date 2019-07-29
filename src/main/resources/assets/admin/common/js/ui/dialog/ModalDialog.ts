@@ -409,6 +409,10 @@ module api.ui.dialog {
             return this.closeIcon.onClicked(listener);
         }
 
+        unCloseButtonClicked(listener: (e: MouseEvent) => void) {
+            return this.closeIcon.unClicked(listener);
+        }
+
         mask() {
             this.addClass('masked');
         }
