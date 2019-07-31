@@ -97,9 +97,6 @@ module api.form.inputtype.time {
         resetInputOccurrenceElement(occurrence: api.dom.Element) {
             let input = <DateTimeRangePicker>occurrence;
 
-            this.from = undefined;
-            this.to = undefined;
-
             input.reset();
         }
 
