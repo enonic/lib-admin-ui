@@ -12,6 +12,8 @@ module api.rest {
 
         private timeoutMillis: number = 10000;
 
+        private isFormRequest: boolean = false;
+
         setPath(value: Path): JsonRequest<RAW_JSON_TYPE> {
             this.path = value;
             return this;
@@ -29,6 +31,11 @@ module api.rest {
 
         setTimeout(timeoutMillis: number): JsonRequest<RAW_JSON_TYPE> {
             this.timeoutMillis = timeoutMillis;
+            return this;
+        }
+
+        setIsFormRequest(value: boolean): JsonRequest<RAW_JSON_TYPE> {
+            this.isFormRequest = value;
             return this;
         }
 
@@ -63,8 +70,9 @@ module api.rest {
 
             if ('POST' === this.method.toUpperCase()) {
                 this.preparePOSTRequest(request);
-                let paramString = JSON.stringify(this.params);
-                request.send(paramString);
+
+                const data: any = this.isFormRequest ? this.createFormData() : JSON.stringify(this.params);
+                request.send(data);
             } else {
                 this.prepareGETRequest(request).send();
             }
@@ -88,7 +96,19 @@ module api.rest {
             request.open(this.method, UriHelper.getUri(this.path.toString()), true);
             request.timeout = this.timeoutMillis;
             request.setRequestHeader('Accept', 'application/json');
-            request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            if (!this.isFormRequest) {
+                request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            }
+        }
+
+        private createFormData(): FormData {
+            const formData: FormData = new FormData();
+
+            for (const key of Object.keys(this.params)) {
+                formData.append(key, this.params[key]);
+            }
+
+            return formData;
         }
     }
 }
