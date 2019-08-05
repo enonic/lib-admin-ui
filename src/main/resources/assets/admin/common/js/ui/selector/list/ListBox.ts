@@ -9,6 +9,7 @@ module api.ui.selector.list {
 
         private itemsAddedListeners: { (items: I[]): void }[] = [];
         private itemsRemovedListeners: { (items: I[]): void }[] = [];
+        private itemsChangedListeners: { (items: I[]): void }[] = [];
 
         private emptyText: string;
         private emptyView: api.dom.DivEl;
@@ -120,23 +121,33 @@ module api.ui.selector.list {
             }
         }
 
-        replaceItem(item: I, append: boolean = false) {
-            const index = this.items.map(value => this.getItemId(value)).indexOf(this.getItemId(item));
-            if (index > -1) {
-                if (append) {
-                    const newItems = this.items.slice(0, index).concat(this.items.slice(index + 1));
-                    newItems.unshift(item);
-                    this.items = newItems;
-                } else {
-                    this.items[index] = item;
-                }
-            } else if (append) {
-                this.items.unshift(item);
-            }
+        replaceItem(item: I, append: boolean = false, silent?: boolean) {
+            this.replaceItems([item], append, silent);
         }
 
-        replaceItems(items: I[], append: boolean = false) {
-            items.forEach(item => this.replaceItem(item, append));
+        replaceItems(items: I[], append: boolean = false, silent?: boolean) {
+            items.forEach(item => {
+                const index = this.items.map(value => this.getItemId(value)).indexOf(this.getItemId(item));
+                if (index > -1) {
+                    if (append) {
+                        const newItems = this.items.slice(0, index).concat(this.items.slice(index + 1));
+                        newItems.unshift(item);
+                        this.items = newItems;
+                    } else {
+                        this.items[index] = item;
+                    }
+
+                    const itemView = this.getItemView(item);
+                    if (itemView) {
+                        this.updateItemView(itemView, item);
+                    }
+                } else if (append) {
+                    this.items.unshift(item);
+                }
+            });
+            if (!silent) {
+                this.notifyItemsChanged(items);
+            }
         }
 
         setSortItemViewsFunc(sortFunc: (a: I, b: I) => number) {
@@ -149,6 +160,10 @@ module api.ui.selector.list {
 
         protected createItemView(_item: I, _readOnly: boolean): api.dom.Element {
             throw new Error('You must override createListItem to create views for list items');
+        }
+
+        protected updateItemView(_itemView: api.dom.Element, _item: I) {
+            // override to update item view when data item has been changed
         }
 
         protected getItemId(_item: I): string {
@@ -249,6 +264,21 @@ module api.ui.selector.list {
             });
         }
 
+        public onItemsChanged(listener: (items: I[]) => void) {
+            this.itemsChangedListeners.push(listener);
+        }
+
+        public unItemsChanged(listener: (items: I[]) => void) {
+            this.itemsChangedListeners = this.itemsChangedListeners.filter((current) => {
+                return current !== listener;
+            });
+        }
+
+        private notifyItemsChanged(items: I[]) {
+            this.itemsChangedListeners.forEach((listener) => {
+                listener(items);
+            });
+        }
     }
 
 }
