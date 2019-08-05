@@ -383,6 +383,10 @@ module api.dom {
             return this;
         }
 
+        getMaxHeight(): number {
+            return parseFloat(this.getComputedProperty('max-height')) || 0;
+        }
+
         setMinHeight(value: string): ElementHelper {
             this.el.style.minHeight = value;
             return this;
@@ -391,6 +395,10 @@ module api.dom {
         setMinHeightPx(value: number): ElementHelper {
             this.setMinHeight(value + 'px');
             return this;
+        }
+
+        getMinHeight(): number {
+            return parseFloat(this.getComputedProperty('min-height')) || 0;
         }
 
         getHeightWithoutPadding(): number {
