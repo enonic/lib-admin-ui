@@ -68,6 +68,8 @@ module api.ui.dialog {
 
         private clickOutsideCallback: () => void;
 
+        protected debouncedResizeHandler: () => void;
+
         private skipTabbable: boolean;
 
         public static debug: boolean = false;
@@ -264,12 +266,16 @@ module api.ui.dialog {
         }
 
         private handleResize() {
-            this.resizeHandler = api.util.AppHelper.debounce(this.resizeHandler.bind(this), 50);
-            ResponsiveManager.onAvailableSizeChanged(Body.get(), this.resizeHandler);
+            const debouncedResize = api.util.AppHelper.debounce(() => this.resizeHandler(), 50);
+            this.debouncedResizeHandler = () => {
+                this.body.getEl().getHTMLElement().style.removeProperty('overflow');
+                debouncedResize();
+            };
+            ResponsiveManager.onAvailableSizeChanged(Body.get(), this.debouncedResizeHandler);
 
             const resizeObserver = window['ResizeObserver'];
             if (resizeObserver) {
-                this.resizeObserver = new resizeObserver(this.resizeHandler);
+                this.resizeObserver = new resizeObserver(this.debouncedResizeHandler);
             }
         }
 
@@ -371,7 +377,7 @@ module api.ui.dialog {
             if (this.resizeObserver) {
                 this.resizeObserver.unobserve(this.body.getHTMLElement());
             } else {
-                this.unResize(this.resizeHandler);
+                this.unResize(this.debouncedResizeHandler);
             }
 
             this.unBlurBackground();
@@ -555,7 +561,7 @@ module api.ui.dialog {
             if (this.resizeObserver) {
                 this.resizeObserver.observe(this.body.getHTMLElement());
             } else {
-                this.onResize(this.resizeHandler);
+                this.onResize(this.debouncedResizeHandler);
             }
 
             wemjq(this.body.getHTMLElement()).css('height', '');
