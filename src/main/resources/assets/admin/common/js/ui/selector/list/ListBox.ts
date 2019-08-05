@@ -126,13 +126,13 @@ module api.ui.selector.list {
         }
 
         replaceItems(items: I[], append: boolean = false, silent?: boolean) {
-            items.forEach(item => {
-                const index = this.items.map(value => this.getItemId(value)).indexOf(this.getItemId(item));
+            const indexes = this.items.map(value => this.getItemId(value));
+            items.forEach((item) => {
+                const index = indexes.indexOf(this.getItemId(item));
                 if (index > -1) {
                     if (append) {
-                        const newItems = this.items.slice(0, index).concat(this.items.slice(index + 1));
-                        newItems.unshift(item);
-                        this.items = newItems;
+                        this.items.splice(index, 1);
+                        this.items.unshift(item);
                     } else {
                         this.items[index] = item;
                     }
