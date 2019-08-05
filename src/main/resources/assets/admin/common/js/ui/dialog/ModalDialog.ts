@@ -68,7 +68,7 @@ module api.ui.dialog {
 
         private clickOutsideCallback: () => void;
 
-        protected debouncedResizeHandler: () => void;
+        protected handleResize: () => void;
 
         private skipTabbable: boolean;
 
@@ -148,10 +148,10 @@ module api.ui.dialog {
 
         protected initListeners() {
             this.responsiveItem = new ResponsiveItem(this);
-            this.handleClickOutsideDialog();
-            this.handleFocusInOutEvents();
+            this.initClickOutsideDialogHandlers();
+            this.initFocusInOutEventsHandlers();
 
-            this.handleResize();
+            this.initResizeHandler();
 
             this.onRendered(() => {
                 if (!this.skipTabbable) {
@@ -180,7 +180,7 @@ module api.ui.dialog {
             this.closeIcon.onClicked(this.closeIconCallback);
         }
 
-        private handleClickOutsideDialog() {
+        private initClickOutsideDialogHandlers() {
             const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
                 const noConfirmationDialog = !this.confirmationDialog || !this.confirmationDialog.isVisible();
                 if (this.isActive() && noConfirmationDialog) {
@@ -224,7 +224,7 @@ module api.ui.dialog {
             return ignoredElementClicked;
         }
 
-        private handleFocusInOutEvents() {
+        private initFocusInOutEventsHandlers() {
             let buttonRowIsFocused: boolean = false;
             let buttonRowFocusOutTimeout: number;
             const focusOutTimeout: number = 10;
@@ -265,17 +265,17 @@ module api.ui.dialog {
             return this.confirmationDialog && this.confirmationDialog.isVisible();
         }
 
-        private handleResize() {
-            const debouncedResize = api.util.AppHelper.debounce(() => this.resizeHandler(), 50);
-            this.debouncedResizeHandler = () => {
-                this.body.getEl().getHTMLElement().style.removeProperty('overflow');
-                debouncedResize();
+        private initResizeHandler() {
+            const debouncedResizeHandler = api.util.AppHelper.debounce(() => this.resizeHandler(), 50);
+            this.handleResize = () => {
+                this.body.removeClass('non-scrollable');
+                debouncedResizeHandler();
             };
-            ResponsiveManager.onAvailableSizeChanged(Body.get(), this.debouncedResizeHandler);
+            ResponsiveManager.onAvailableSizeChanged(Body.get(), this.handleResize);
 
             const resizeObserver = window['ResizeObserver'];
             if (resizeObserver) {
-                this.resizeObserver = new resizeObserver(this.debouncedResizeHandler);
+                this.resizeObserver = new resizeObserver(this.handleResize);
             }
         }
 
@@ -318,14 +318,13 @@ module api.ui.dialog {
 
         private adjustOverflow() {
 
-            const bodyEl = wemjq(this.getBody().getHTMLElement());
-            const bodyHeight = parseInt(bodyEl.css('height'), 10);
+            const bodyHeight = this.body.getEl().getHeight();
             if (bodyHeight === 0) {
                 return;
             }
-            const showScrollbar = (bodyHeight >= parseInt(bodyEl.css('max-height'), 10));
+            const showScrollbar = bodyHeight >= this.body.getEl().getMaxHeight();
 
-            wemjq(bodyEl).css('overflow', showScrollbar ? 'auto' : 'visible');
+            this.body.toggleClass('non-scrollable', !showScrollbar);
         }
 
         protected getBody(): api.dom.DivEl {
@@ -377,7 +376,7 @@ module api.ui.dialog {
             if (this.resizeObserver) {
                 this.resizeObserver.unobserve(this.body.getHTMLElement());
             } else {
-                this.unResize(this.debouncedResizeHandler);
+                this.unResize(this.handleResize);
             }
 
             this.unBlurBackground();
@@ -561,7 +560,7 @@ module api.ui.dialog {
             if (this.resizeObserver) {
                 this.resizeObserver.observe(this.body.getHTMLElement());
             } else {
-                this.onResize(this.debouncedResizeHandler);
+                this.onResize(this.handleResize);
             }
 
             wemjq(this.body.getHTMLElement()).css('height', '');
