@@ -273,9 +273,8 @@ module api.ui.dialog {
             };
             ResponsiveManager.onAvailableSizeChanged(Body.get(), this.handleResize);
 
-            const resizeObserver = window['ResizeObserver'];
-            if (resizeObserver) {
-                this.resizeObserver = new resizeObserver(this.handleResize);
+            if (window['ResizeObserver']) {
+                this.resizeObserver = new window['ResizeObserver'](this.handleResize);
             }
         }
 
