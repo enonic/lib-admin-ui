@@ -266,15 +266,18 @@ module api.ui.dialog {
         }
 
         private initResizeHandler() {
-            const debouncedResizeHandler = api.util.AppHelper.debounce(() => this.resizeHandler(), 50);
-            this.handleResize = () => {
+            this.handleResize = api.util.AppHelper.runOnceAndDebounce(() => {
                 this.body.removeClass('non-scrollable');
-                debouncedResizeHandler();
-            };
-            ResponsiveManager.onAvailableSizeChanged(Body.get(), this.handleResize);
+                this.resizeHandler();
+            }, 50);
+            ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
+                this.handleResize();
+            });
 
             if (window['ResizeObserver']) {
-                this.resizeObserver = new window['ResizeObserver'](this.handleResize);
+                this.resizeObserver = new window['ResizeObserver'](() => {
+                    this.handleResize();
+                });
             }
         }
 
