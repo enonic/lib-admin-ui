@@ -156,6 +156,10 @@ module api.event {
                     event = api.issue.event.IssueServerEvent.fromJson(<api.event.NodeEventJson>eventJson);
                 }
 
+                if (api.layer.event.LayerServerEvent.is(<api.event.NodeEventJson>eventJson)) {
+                    event = api.layer.event.LayerServerEvent.fromJson(<api.event.NodeEventJson>eventJson);
+                }
+
                 if (event && event.getNodeChange()) {
                     return event;
                 }

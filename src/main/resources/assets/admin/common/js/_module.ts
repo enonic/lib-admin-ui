@@ -141,6 +141,8 @@
 
 ///<reference path='app/wizard/_module.ts' />
 
+///<reference path='layer/event/_module.ts' />
+
 ///<reference path='system/_module.ts' />
 
 ///<reference path='main.ts' />
