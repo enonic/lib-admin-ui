@@ -56,6 +56,15 @@ task copyCompiled( type: Copy ) {
     includeEmptyDirs = false
 }
 
+task copyFlags( type: Copy ) {
+    description = 'Copy compiled JS and CSS files'
+    from( "node_modules/flag-icon-css/flags" ) {
+        include '**/*.svg'
+    }
+    into 'build/resources/main/assets/admin/common/flags'
+    includeEmptyDirs = false
+}
+
 task copyDTS( type: Copy ) {
     description = 'Copy Typescript definitions to /dev/d.ts folder.'
     from( "$resourcesDir/assets/admin/common/js" ) {
@@ -82,7 +91,9 @@ task copyAll {
     dependsOn 'copyCompiled'
     dependsOn 'copyDTS'
     dependsOn 'copyStyles'
+    dependsOn 'copyFlags'
     tasks.findByName('copyCompiled').mustRunAfter 'compile'
+    tasks.findByName('copyFlags').mustRunAfter 'copyCompiled'
 }
 
 jar {

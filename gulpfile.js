@@ -1,6 +1,5 @@
 const gulp = require('gulp');
 const gulpIf = require('gulp-if');
-const sequence = require('gulp-sequence');
 const less = require('gulp-less');
 const postcss = require('gulp-postcss');
 const browsers = require('browserslist-config-enonic');
