@@ -2,27 +2,25 @@ module api.ui.locale {
 
     import Locale = api.locale.Locale;
 
-    export class LocaleViewer extends api.ui.Viewer<Locale> {
-
-        private namesView: api.app.NamesView;
+    export class LocaleViewer
+        extends api.ui.NamesAndIconViewer<Locale> {
 
         private displayNamePattern: string = '{0} ({1})';
 
         constructor(className?: string) {
-            super(className);
-            this.namesView = new api.app.NamesView();
-            this.appendChild(this.namesView);
+            super(`${className || ''} locale-viewer`.trim());
         }
 
-        setObject(locale: Locale) {
-            this.namesView.setMainName(
-                api.util.StringHelper.format(this.displayNamePattern, locale.getDisplayName(), locale.getProcessedTag()));
+        resolveDisplayName(locale: Locale): string {
+            return api.util.StringHelper.format(this.displayNamePattern, locale.getDisplayName(), locale.getProcessedTag());
+        }
 
-            return super.setObject(locale);
+        resolveIconEl(locale: Locale): Flag {
+            return new Flag(locale.getTag());
         }
 
         getPreferredHeight(): number {
-            return 30;
+            return 40;
         }
     }
 }

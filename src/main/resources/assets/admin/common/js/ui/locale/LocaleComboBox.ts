@@ -19,6 +19,8 @@ module api.ui.locale {
                 setOptionDisplayValueViewer(new LocaleViewer()).
                 setDelayedInputValueChangedHandling(500);
             super(builder);
+
+            this.addClass('locale-combobox');
         }
 
         clearSelection(forceClear: boolean = false) {

@@ -2,6 +2,9 @@
   "name": "lib-admin-ui",
   "version": "2.0.0",
   "description": "Admin UI Library",
+  "dependencies": {
+    "flag-icon-css": "^3.3.0"
+  },
   "devDependencies": {
     "autoprefixer": "^8.1.0",
     "browserslist-config-enonic": "^1.0.3",
