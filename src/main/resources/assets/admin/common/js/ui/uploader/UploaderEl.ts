@@ -512,6 +512,7 @@ module api.ui.uploader {
         }
 
         private submitCallback(id: number, name: string) {
+            this.beforeSubmit();
             this.uploader.setName(id, this.sanitizeName(name));
             this.uploadedItems.push(this.processFile(id, name));
 
@@ -520,6 +521,10 @@ module api.ui.uploader {
             this.setProgressVisible();
 
             this.debouncedUploadStart();
+        }
+
+        protected beforeSubmit() {
+            //
         }
 
         private processFile(id: number, name: string): UploadItem<MODEL> {
