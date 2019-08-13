@@ -42,7 +42,7 @@ module api.ui.locale {
         private static mapCode(countryCode: string): string {
             const longCode = countryCode.slice(0, 3);
             const shortCode = countryCode.slice(0, 2);
-            return Flag.NONSTANDARD_CODES[longCode] || Flag.NONSTANDARD_CODES[shortCode] || countryCode;
+            return Flag.NONSTANDARD_CODES[longCode] || Flag.NONSTANDARD_CODES[shortCode] || shortCode;
         }
     }
 }

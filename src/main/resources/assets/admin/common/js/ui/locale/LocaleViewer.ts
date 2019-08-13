@@ -1,6 +1,7 @@
 module api.ui.locale {
 
     import Locale = api.locale.Locale;
+    import Flag = api.ui.locale.Flag;
 
     export class LocaleViewer
         extends api.ui.NamesAndIconViewer<Locale> {
