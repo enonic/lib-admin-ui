@@ -2,7 +2,7 @@ module api.ui.locale {
 
     import DivEl = api.dom.DivEl;
 
-    interface NonstandardCodes {
+    export interface NonstandardCodes {
         [key: string]: string;
     }
 
@@ -29,20 +29,41 @@ module api.ui.locale {
             zh: 'cn'
         });
 
-        constructor(countryCode: string, literal: boolean = false, className: string = '') {
-            super('flag-icon flag-icon-squared flag');
+        private countryCode: string;
 
-            const code = Flag.mapCode(countryCode.toLowerCase());
-            const countryClass = literal ? '' : `flag-icon-${code || Flag.CODE_NONE}`;
-            const classNames = `${countryClass} ${className}`.trim();
-            this.addClass(classNames);
-            this.getEl().setAttribute('data-code', code);
+        constructor(countryCode: string, className: string = '') {
+            super('flag-icon flag-icon-squared flag');
+            if (!api.util.StringHelper.isEmpty(className)) {
+                this.addClass(className);
+            }
+            this.updateCountryCode(countryCode);
         }
 
-        private static mapCode(countryCode: string): string {
+        updateCountryCode(countryCode: string) {
+            const oldCountryCode = this.countryCode || '';
+            const code = this.mapCode(countryCode.toLowerCase());
+            const oldCode = this.mapCode(oldCountryCode.toLowerCase());
+            const countryClass = Flag.createCountryClass(code);
+            const oldCountryClass = Flag.createCountryClass(oldCode);
+            this.getEl().setAttribute('data-code', code);
+            this.addClass(countryClass);
+            this.removeClass(oldCountryClass);
+            this.countryCode = countryCode;
+        }
+
+        protected static createCountryClass(code: string) {
+            return `flag-icon-${code || Flag.CODE_NONE}`;
+        }
+
+        protected mapCode(countryCode: string): string {
+            const codeMap = this.getCodeMap();
             const longCode = countryCode.slice(0, 3);
             const shortCode = countryCode.slice(0, 2);
-            return Flag.NONSTANDARD_CODES[longCode] || Flag.NONSTANDARD_CODES[shortCode] || shortCode;
+            return codeMap[longCode] || codeMap[shortCode] || shortCode;
+        }
+
+        protected getCodeMap(): NonstandardCodes {
+            return Flag.NONSTANDARD_CODES;
         }
     }
 }
