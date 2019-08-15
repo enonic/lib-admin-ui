@@ -41,14 +41,14 @@ module api.ui.locale {
 
         updateCountryCode(countryCode: string) {
             const oldCountryCode = this.countryCode || '';
-            const code = this.mapCode(countryCode.toLowerCase());
+            const code = this.mapCode((countryCode || '').toLowerCase());
             const oldCode = this.mapCode(oldCountryCode.toLowerCase());
             const countryClass = Flag.createCountryClass(code);
             const oldCountryClass = Flag.createCountryClass(oldCode);
-            this.getEl().setAttribute('data-code', code);
+            code ? this.getEl().setAttribute('data-code', code) : this.getEl().removeAttribute('data-code');
             this.addClass(countryClass);
             this.removeClass(oldCountryClass);
-            this.countryCode = countryCode;
+            this.countryCode = countryCode || '';
         }
 
         protected static createCountryClass(code: string) {
