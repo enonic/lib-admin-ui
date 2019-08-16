@@ -267,8 +267,10 @@ module api.ui.dialog {
 
         private initResizeHandler() {
             this.handleResize = api.util.AppHelper.runOnceAndDebounce(() => {
-                this.body.removeClass('non-scrollable');
-                this.resizeHandler();
+                if (this.isVisible()) {
+                    this.body.removeClass('non-scrollable');
+                    this.resizeHandler();
+                }
             }, 50);
             ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
                 this.handleResize();
@@ -282,10 +284,6 @@ module api.ui.dialog {
         }
 
         protected resizeHandler() {
-            if (!this.isVisible()) {
-                return;
-            }
-
             this.adjustHeight();
             this.adjustOverflow();
             this.responsiveItem.update();
@@ -324,7 +322,8 @@ module api.ui.dialog {
             if (bodyHeight === 0) {
                 return;
             }
-            const showScrollbar = bodyHeight >= this.body.getEl().getMaxHeight();
+            const maxBodyHeight = this.body.getEl().getMaxHeight();
+            const showScrollbar = bodyHeight >= maxBodyHeight;
 
             this.body.toggleClass('non-scrollable', !showScrollbar);
         }
