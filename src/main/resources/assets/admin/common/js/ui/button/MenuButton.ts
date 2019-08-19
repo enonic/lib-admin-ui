@@ -96,8 +96,6 @@ module api.ui.button {
         }
 
         private initListeners() {
-            let hideMenu = this.hideMenu.bind(this);
-
             this.dropdownHandle.onClicked(() => {
                 if (this.dropdownHandle.isEnabled()) {
                     this.menu.toggleClass('expanded');
@@ -107,20 +105,20 @@ module api.ui.button {
 
             this.menu.onItemClicked((item: MenuItem) => {
                 if (this.menu.isHideOnItemClick() && item.isEnabled()) {
-                    hideMenu();
+                    this.collapseMenu();
                 }
             });
 
-            this.actionButton.onClicked(hideMenu);
+            this.actionButton.onClicked(() => this.collapseMenu());
 
             this.dropdownHandle.onClicked(() => this.dropdownHandle.giveFocus());
 
             this.menu.onClicked(() => this.dropdownHandle.giveFocus());
 
-            api.util.AppHelper.focusInOut(this, hideMenu);
+            api.util.AppHelper.focusInOut(this, () => this.collapseMenu());
         }
 
-        private hideMenu(): void {
+        collapseMenu(): void {
             this.menu.removeClass('expanded');
             this.dropdownHandle.removeClass('down');
         }
@@ -128,8 +126,7 @@ module api.ui.button {
         setDropdownHandleEnabled(enabled: boolean = true) {
             this.dropdownHandle.setEnabled(enabled);
             if (!enabled) {
-                this.menu.removeClass('expanded');
-                this.dropdownHandle.removeClass('down');
+                this.collapseMenu();
             }
         }
 
