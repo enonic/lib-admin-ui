@@ -3,7 +3,8 @@ module api.ui.security {
     import Principal = api.security.Principal;
     import PrincipalType = api.security.PrincipalType;
 
-    export class PrincipalViewer extends api.ui.NamesAndIconViewer<Principal> {
+    export class PrincipalViewer
+        extends api.ui.NamesAndIconViewer<Principal> {
 
         constructor(className?: string) {
             super(className);
@@ -36,7 +37,8 @@ module api.ui.security {
 
     }
 
-    export class PrincipalViewerCompact extends api.ui.Viewer<Principal> {
+    export class PrincipalViewerCompact
+        extends api.ui.Viewer<Principal> {
 
         private currentUser: Principal;
 
@@ -46,12 +48,15 @@ module api.ui.security {
 
         doLayout(principal: Principal) {
             super.doLayout(principal);
+            if (!principal) {
+                return;
+            }
 
             let displayName = principal.getDisplayName().split(' ').map(word => word.substring(0, 1).toUpperCase());
 
             let icon = new api.dom.SpanEl('user-icon').setHtml(displayName.length >= 2
-                ? displayName.join('').substring(0, 2)
-                : principal.getDisplayName().substring(0, 2).toUpperCase());
+                                                               ? displayName.join('').substring(0, 2)
+                                                               : principal.getDisplayName().substring(0, 2).toUpperCase());
 
             if (this.currentUser && this.currentUser.getKey().equals(principal.getKey())) {
                 icon.addClass('active');
