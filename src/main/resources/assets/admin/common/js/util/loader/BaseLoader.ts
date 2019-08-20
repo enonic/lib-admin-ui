@@ -67,17 +67,21 @@ module api.util.loader {
         }
 
         private handleLoadSuccess(postLoad: boolean = false, results: OBJECT[]): OBJECT[] {
-            this.results = results;
+            this.results = this.processLoadedData(results);
 
             if (this.comparator) {
                 try {
-                    this.results = results.sort(this.comparator.compare);
+                    this.results = this.results.sort(this.comparator.compare);
                 } catch (e) {
                     console.error('Error sorting loaded elements with ' + api.ClassHelper.getClassName(this.comparator) + ': ', e);
                 }
             }
-            this.notifyLoadedData(results, postLoad);
+            this.notifyLoadedData(this.results, postLoad);
 
+            return this.results;
+        }
+
+        protected processLoadedData(results: OBJECT[]): OBJECT[] {
             return results;
         }
 
