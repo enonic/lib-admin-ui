@@ -350,11 +350,14 @@ module api.ui.dialog {
             return false;
         }
 
+        protected isSingleDialogGroup(): boolean {
+            return ModalDialog.openDialogsCounter === 1 ||
+                   (ModalDialog.openDialogsCounter === 2 && !!this.confirmationDialog &&
+                    !!this.confirmationDialog.isVisible());
+        }
+
         close() {
-            const isSingleDialogGroup = ModalDialog.openDialogsCounter === 1 ||
-                                        (ModalDialog.openDialogsCounter === 2 && !!this.confirmationDialog &&
-                                         !!this.confirmationDialog.isVisible());
-            if (isSingleDialogGroup) {
+            if (this.isSingleDialogGroup()) {
                 api.ui.mask.BodyMask.get().hide();
             }
 
@@ -381,7 +384,9 @@ module api.ui.dialog {
                 this.unResize(this.handleResize);
             }
 
-            this.unBlurBackground();
+            if (this.isSingleDialogGroup()) {
+                this.unBlurBackground();
+            }
             super.hide(true);
 
             if (this.dialogContainer.getParentElement()) {
