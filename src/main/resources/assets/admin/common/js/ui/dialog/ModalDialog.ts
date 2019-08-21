@@ -727,8 +727,12 @@ module api.ui.dialog {
             this.appendChild(this.buttonContainer);
         }
 
-        addElement(element: Element) {
-            this.buttonContainer.appendChild(element);
+        addElement(element: Element, prepend?: boolean) {
+            if (prepend) {
+                this.buttonContainer.prependChild(element);
+            } else {
+                this.buttonContainer.appendChild(element);
+            }
         }
 
         getActions(): Action[] {
@@ -745,11 +749,7 @@ module api.ui.dialog {
                 this.setDefaultElement(button);
             }
 
-            if (prepend) {
-                this.buttonContainer.prependChild(button);
-            } else {
-                this.buttonContainer.appendChild(button);
-            }
+            this.addElement(button, prepend);
 
             action.onPropertyChanged(() => {
                 button.setLabel(action.getLabel());
