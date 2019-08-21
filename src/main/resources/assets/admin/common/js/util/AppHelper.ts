@@ -68,6 +68,8 @@ module api.util {
                 timeout = setTimeout(later, wait);
                 if (callNow) {
                     func.apply(context, args);
+                } else {
+                    trailing = true;
                 }
             };
         }
