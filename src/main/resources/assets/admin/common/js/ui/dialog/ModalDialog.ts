@@ -379,9 +379,8 @@ module api.ui.dialog {
         hide() {
             if (this.resizeObserver) {
                 this.resizeObserver.unobserve(this.body.getHTMLElement());
-            } else {
-                this.unResize(this.handleResize);
             }
+            this.unResize(this.handleResize);
 
             if (this.isSingleDialogGroup()) {
                 this.unBlurBackground();
@@ -565,9 +564,8 @@ module api.ui.dialog {
             }
             if (this.resizeObserver) {
                 this.resizeObserver.observe(this.body.getHTMLElement());
-            } else {
-                this.onResize(this.handleResize);
             }
+            this.onResize(this.handleResize);
 
             wemjq(this.body.getHTMLElement()).css('height', '');
         }
