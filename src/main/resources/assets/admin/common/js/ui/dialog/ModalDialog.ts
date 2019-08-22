@@ -374,7 +374,10 @@ module api.ui.dialog {
                 this.unResize(this.resizeHandler);
             }
 
-            this.unBlurBackground();
+            if (ModalDialog.openDialogsCounter === 1) {
+                this.unBlurBackground();
+            }
+
             super.hide(true);
 
             if (this.dialogContainer.getParentElement()) {
