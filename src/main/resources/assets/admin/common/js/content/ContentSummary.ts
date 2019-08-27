@@ -2,7 +2,6 @@ module api.content {
 
     import Thumbnail = api.thumb.Thumbnail;
     import ContentState = api.schema.content.ContentState;
-    import WorkflowState = api.content.WorkflowState;
     import Workflow = api.content.Workflow;
 
     export class ContentSummary {
@@ -221,11 +220,11 @@ module api.content {
         }
 
         isReady(): boolean {
-            return !!this.workflow && this.workflow.getState() === WorkflowState.READY;
+            return !!this.workflow && this.workflow.isReady();
         }
 
         isInProgress(): boolean {
-            return !!this.workflow && this.workflow.getState() === WorkflowState.IN_PROGRESS;
+            return !!this.workflow && this.workflow.isInProgress();
         }
 
         equals(o: api.Equitable): boolean {
