@@ -42,6 +42,14 @@ module api.content {
             return new WorkflowBuilder(this);
         }
 
+        isReady(): boolean {
+            return this.getState() === WorkflowState.READY;
+        }
+
+        isInProgress(): boolean {
+            return this.getState() === WorkflowState.IN_PROGRESS;
+        }
+
         static create(): WorkflowBuilder {
             return new WorkflowBuilder();
         }
