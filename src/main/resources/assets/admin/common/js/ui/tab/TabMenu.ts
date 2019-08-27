@@ -54,7 +54,7 @@ module api.ui.tab {
             });
         }
 
-        private initListeners() {
+        protected initListeners() {
             AppHelper.focusInOut(this, () => {
                 this.hideMenu();
             });
@@ -179,7 +179,7 @@ module api.ui.tab {
             return this.menuEl;
         }
 
-        private toggleMenu() {
+        protected toggleMenu() {
             if (!this.menuVisible) {
                 this.showMenu();
             } else {

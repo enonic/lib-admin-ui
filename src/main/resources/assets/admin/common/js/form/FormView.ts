@@ -50,7 +50,7 @@ module api.form {
         /**
          * Lays out the form.
          */
-        public layout(): wemQ.Promise<void> {
+        public layout(validate: boolean = true): wemQ.Promise<void> {
 
             let deferred = wemQ.defer<void>();
 
@@ -62,8 +62,7 @@ module api.form {
             let formItems = this.form.getFormItems();
             let layoutPromise: wemQ.Promise<FormItemView[]> = this.formItemLayer.
                 setFormItems(formItems).
-                setParentElement(this).
-                layout(this.data);
+                setParentElement(this).layout(this.data, validate);
 
             layoutPromise.then((formItemViews: FormItemView[]) => {
 

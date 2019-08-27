@@ -46,6 +46,34 @@ module api.util {
             };
         }
 
+        // Returns a function, that, will be invoked immediately. Then, as long
+        // as it continues to be invoked, will not be triggered. The function
+        // will be called after it stops being called for N milliseconds and it
+        // was invoked at least once during that interval.
+        static runOnceAndDebounce(func: Function, wait: number): (...args: any[]) => void {
+            let timeout;
+            let trailing = false;
+            return function (..._anyArgs: any[]) {
+                const context = this;
+                const args = arguments;
+                const later = function () {
+                    timeout = null;
+                    if (trailing) {
+                        func.apply(context, args);
+                    }
+                    trailing = false;
+                };
+                const callNow = !trailing && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) {
+                    func.apply(context, args);
+                } else {
+                    trailing = true;
+                }
+            };
+        }
+
         // Handles the result of the initialization, while the result is truthy
         static whileTruthy(initializer: () => any, callback: (value: any) => void): void {
             let result: any;

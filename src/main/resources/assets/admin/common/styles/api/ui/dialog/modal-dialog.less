@@ -48,11 +48,23 @@
     }
   }
 
+  &.grey-header .modal-dialog-header {
+      background-color: @admin-bg-light-gray;
+      padding: 20px 20px 10px 30px;
+  }
+
   .modal-dialog-body {
     padding: 15px 30px 0 30px;
+    overflow: auto;
     flex: 1;
     max-height: 50vh;
+
+    &.non-scrollable {
+      overflow: visible;
+    }
   }
+
+
 
   .modal-dialog-footer {
     padding: 20px 30px;
@@ -184,7 +196,6 @@
   &.locked {
     .dialog-buttons {
       button:not(.force-enabled) {
-        font-family: 'icomoon';
         pointer-events: none;
         opacity: 0.5;
       }

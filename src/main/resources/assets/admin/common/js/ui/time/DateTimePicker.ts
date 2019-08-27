@@ -134,9 +134,9 @@ module api.ui.time {
             }
         }
 
-        public setSelectedDateTime(date: Date) {
+        public setSelectedDateTime(date: Date, userInput?: boolean) {
             this.setDateTime(date);
-            this.setInputValue(false);
+            this.setInputValue(userInput);
         }
 
         private setDateTime(date: Date) {
@@ -150,7 +150,7 @@ module api.ui.time {
         private setInputValue(userInput: boolean = true) {
             this.validUserInput = true;
             this.input.setValue(this.formatDateTime(this.selectedDate), false, userInput);
-            this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate));
+            this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate, userInput));
             this.updateInputStyling();
         }
 

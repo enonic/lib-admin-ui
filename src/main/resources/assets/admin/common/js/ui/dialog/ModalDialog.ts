@@ -68,6 +68,8 @@ module api.ui.dialog {
 
         private clickOutsideCallback: () => void;
 
+        protected handleResize: () => void;
+
         private skipTabbable: boolean;
 
         public static debug: boolean = false;
@@ -146,10 +148,10 @@ module api.ui.dialog {
 
         protected initListeners() {
             this.responsiveItem = new ResponsiveItem(this);
-            this.handleClickOutsideDialog();
-            this.handleFocusInOutEvents();
+            this.initClickOutsideDialogHandlers();
+            this.initFocusInOutEventsHandlers();
 
-            this.handleResize();
+            this.initResizeHandler();
 
             this.onRendered(() => {
                 if (!this.skipTabbable) {
@@ -178,7 +180,7 @@ module api.ui.dialog {
             this.closeIcon.onClicked(this.closeIconCallback);
         }
 
-        private handleClickOutsideDialog() {
+        private initClickOutsideDialogHandlers() {
             const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
                 const noConfirmationDialog = !this.confirmationDialog || !this.confirmationDialog.isVisible();
                 if (this.isActive() && noConfirmationDialog) {
@@ -222,7 +224,7 @@ module api.ui.dialog {
             return ignoredElementClicked;
         }
 
-        private handleFocusInOutEvents() {
+        private initFocusInOutEventsHandlers() {
             let buttonRowIsFocused: boolean = false;
             let buttonRowFocusOutTimeout: number;
             const focusOutTimeout: number = 10;
@@ -263,21 +265,25 @@ module api.ui.dialog {
             return this.confirmationDialog && this.confirmationDialog.isVisible();
         }
 
-        private handleResize() {
-            this.resizeHandler = api.util.AppHelper.debounce(this.resizeHandler.bind(this), 50);
-            ResponsiveManager.onAvailableSizeChanged(Body.get(), this.resizeHandler);
+        private initResizeHandler() {
+            this.handleResize = api.util.AppHelper.runOnceAndDebounce(() => {
+                if (this.isVisible()) {
+                    this.body.removeClass('non-scrollable');
+                    this.resizeHandler();
+                }
+            }, 50);
+            ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
+                this.handleResize();
+            });
 
-            const resizeObserver = window['ResizeObserver'];
-            if (resizeObserver) {
-                this.resizeObserver = new resizeObserver(this.resizeHandler);
+            if (window['ResizeObserver']) {
+                this.resizeObserver = new window['ResizeObserver'](() => {
+                    this.handleResize();
+                });
             }
         }
 
         protected resizeHandler() {
-            if (!this.isVisible()) {
-                return;
-            }
-
             this.adjustHeight();
             this.adjustOverflow();
             this.responsiveItem.update();
@@ -312,14 +318,14 @@ module api.ui.dialog {
 
         private adjustOverflow() {
 
-            const bodyEl = wemjq(this.getBody().getHTMLElement());
-            const bodyHeight = parseInt(bodyEl.css('height'), 10);
+            const bodyHeight = this.body.getEl().getHeight();
             if (bodyHeight === 0) {
                 return;
             }
-            const showScrollbar = (bodyHeight >= parseInt(bodyEl.css('max-height'), 10));
+            const maxBodyHeight = this.body.getEl().getMaxHeight();
+            const showScrollbar = bodyHeight >= maxBodyHeight;
 
-            wemjq(bodyEl).css('overflow', showScrollbar ? 'auto' : 'visible');
+            this.body.toggleClass('non-scrollable', !showScrollbar);
         }
 
         protected getBody(): api.dom.DivEl {
@@ -343,11 +349,14 @@ module api.ui.dialog {
             return false;
         }
 
+        protected isSingleDialogGroup(): boolean {
+            return ModalDialog.openDialogsCounter === 1 ||
+                   (ModalDialog.openDialogsCounter === 2 && !!this.confirmationDialog &&
+                    !!this.confirmationDialog.isVisible());
+        }
+
         close() {
-            const isSingleDialogGroup = ModalDialog.openDialogsCounter === 1 ||
-                                        (ModalDialog.openDialogsCounter === 2 && !!this.confirmationDialog &&
-                                         !!this.confirmationDialog.isVisible());
-            if (isSingleDialogGroup) {
+            if (this.isSingleDialogGroup()) {
                 api.ui.mask.BodyMask.get().hide();
             }
 
@@ -371,13 +380,12 @@ module api.ui.dialog {
             if (this.resizeObserver) {
                 this.resizeObserver.unobserve(this.body.getHTMLElement());
             } else {
-                this.unResize(this.resizeHandler);
+                this.unResize(this.handleResize);
             }
 
-            if (ModalDialog.openDialogsCounter === 1) {
+            if (this.isSingleDialogGroup()) {
                 this.unBlurBackground();
             }
-
             super.hide(true);
 
             if (this.dialogContainer.getParentElement()) {
@@ -410,6 +418,10 @@ module api.ui.dialog {
 
         onCloseButtonClicked(listener: (e: MouseEvent) => void) {
             return this.closeIcon.onClicked(listener);
+        }
+
+        unCloseButtonClicked(listener: (e: MouseEvent) => void) {
+            return this.closeIcon.unClicked(listener);
         }
 
         mask() {
@@ -554,7 +566,7 @@ module api.ui.dialog {
             if (this.resizeObserver) {
                 this.resizeObserver.observe(this.body.getHTMLElement());
             } else {
-                this.onResize(this.resizeHandler);
+                this.onResize(this.handleResize);
             }
 
             wemjq(this.body.getHTMLElement()).css('height', '');
@@ -714,8 +726,12 @@ module api.ui.dialog {
             this.appendChild(this.buttonContainer);
         }
 
-        addElement(element: Element) {
-            this.buttonContainer.appendChild(element);
+        addElement(element: Element, prepend?: boolean) {
+            if (prepend) {
+                this.buttonContainer.prependChild(element);
+            } else {
+                this.buttonContainer.appendChild(element);
+            }
         }
 
         getActions(): Action[] {
@@ -732,11 +748,7 @@ module api.ui.dialog {
                 this.setDefaultElement(button);
             }
 
-            if (prepend) {
-                this.buttonContainer.prependChild(button);
-            } else {
-                this.buttonContainer.appendChild(button);
-            }
+            this.addElement(button, prepend);
 
             action.onPropertyChanged(() => {
                 button.setLabel(action.getLabel());

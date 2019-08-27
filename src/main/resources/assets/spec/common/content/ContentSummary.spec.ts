@@ -63,7 +63,11 @@ module ContentSummarySpec {
                 first: '2016-11-02T10:36:00Z',
             },
             thumbnail: null,
-            type: 'myapplication:my_type'
+            type: 'myapplication:my_type',
+            workflow: {
+                state: 'READY',
+                checks: {}
+            }
         };
     }
 }

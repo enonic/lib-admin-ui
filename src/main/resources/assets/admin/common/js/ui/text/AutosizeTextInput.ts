@@ -1,6 +1,9 @@
 module api.ui.text {
 
-    export class AutosizeTextInput extends TextInput {
+    import StringHelper = api.util.StringHelper;
+
+    export class AutosizeTextInput
+        extends TextInput {
 
         private attendant: api.dom.Element;
         private clone: api.dom.Element;
@@ -51,13 +54,16 @@ module api.ui.text {
             let inputEl = this.getEl();
             let cloneEl = this.clone.getEl();
 
-            cloneEl.setFontSize(inputEl.getFontSize()).
-                setPaddingLeft(inputEl.getPaddingLeft() + 'px').
-                setPaddingRight(inputEl.getPaddingRight() + 'px');
+            cloneEl.setFontSize(inputEl.getFontSize()).setPaddingLeft(inputEl.getPaddingLeft() + 'px').setPaddingRight(
+                inputEl.getPaddingRight() + 'px');
 
             this.attendant.insertAfterEl(this);
 
-            cloneEl.setInnerHtml(this.getValue());
+            let cloneHtml = this.getValue();
+            if (StringHelper.isEmpty(cloneHtml)) {
+                cloneHtml = this.getPlaceholder();
+            }
+            cloneEl.setInnerHtml(cloneHtml);
             // Set input width to text length from the clone <div>
             // or to maximum possible width corresponding to attendant width.
             if (cloneEl.getWidthWithBorder() > this.attendant.getEl().getWidth()) {
