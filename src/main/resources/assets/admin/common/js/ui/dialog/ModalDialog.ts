@@ -514,6 +514,8 @@ module api.ui.dialog {
 
             this.show();
 
+            this.handleResize();
+
             let keyBindings = Action.getKeyBindings(this.buttonRow.getActions());
 
             if (!this.skipTabbable) {
