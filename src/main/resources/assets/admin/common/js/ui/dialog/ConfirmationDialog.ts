@@ -7,9 +7,10 @@ module api.ui.dialog {
         private questionEl: api.dom.H6El;
         private yesCallback: () => void;
         private noCallback: () => void;
+        private invokeNoCallbackOnClose: boolean;
 
-        private yesAction: api.ui.Action;
-        private noAction: api.ui.Action;
+        protected yesAction: api.ui.Action;
+        protected noAction: api.ui.Action;
 
         constructor(config: ModalDialogConfig = {}) {
             super({
@@ -25,12 +26,14 @@ module api.ui.dialog {
             this.questionEl = new api.dom.H6El('question');
             this.noAction = new api.ui.Action(i18n('action.no'), 'esc');
             this.yesAction = new api.ui.Action(i18n('action.yes'));
+            this.invokeNoCallbackOnClose = false;
         }
 
         protected initListeners() {
             super.initListeners();
 
             this.noAction.onExecuted(() => {
+                this.invokeNoCallbackOnClose = false;
                 this.close();
 
                 if (this.noCallback) {
@@ -51,7 +54,7 @@ module api.ui.dialog {
             return super.doRender().then((rendered) => {
                 this.appendChildToContentPanel(this.questionEl);
                 this.addAction(this.yesAction, true);
-                this.addAction(this.noAction);
+                this.addAction(this.noAction).addClass('cancel');
 
                 return rendered;
             });
@@ -72,6 +75,10 @@ module api.ui.dialog {
             return this;
         }
 
+        setInvokeNoCallbackOnClose(value: boolean) {
+            this.invokeNoCallbackOnClose = value;
+        }
+
         open() {
             api.ui.mask.BodyMask.get().addClass('confirmation-dialog-mask');
             api.dom.Body.get().appendChild(this);
@@ -84,6 +91,10 @@ module api.ui.dialog {
             super.close();
             api.ui.mask.BodyMask.get().removeClass('confirmation-dialog-mask');
             this.remove();
+
+            if (this.invokeNoCallbackOnClose) {
+                this.noCallback();
+            }
         }
     }
 
