@@ -42,6 +42,7 @@ module api.ui.dialog {
             });
 
             this.yesAction.onExecuted(() => {
+                this.invokeNoCallbackOnClose = false;
                 this.close();
 
                 if (this.yesCallback) {
