@@ -745,11 +745,15 @@ module api.ui.treegrid {
 
             this.highlightedNode = null;
 
-            this.grid.removeCellCssStyles('highlight');
+            this.removeHighlightingCss();
 
             if (!skipEvent) {
                 this.notifyHighlightingChanged();
             }
+        }
+
+        private removeHighlightingCss() {
+            this.grid.removeCellCssStyles('highlight');
         }
 
         private unselectAllRows(unhighlight: boolean = true) {
@@ -1194,6 +1198,9 @@ module api.ui.treegrid {
                                 highlightedNode.setDataId(this.getDataId(data));
                                 highlightedNode.setData(data);
                                 this.highlightRowByNode(highlightedNode);
+                            }).catch(() => {
+                                this.removeHighlightingCss();
+                                this.notifyHighlightingChanged();
                             });
                         }
                     }
