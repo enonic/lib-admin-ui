@@ -23,6 +23,8 @@ module api.form.inputtype.support {
 
         private propertyValueChangedHandler: (event: PropertyValueChangedEvent) => void;
 
+        private occurrenceValueChangedHandler: (occurrence: api.dom.Element, value: api.data.Value) => void;
+
         public static debug: boolean = false;
 
         constructor(inputOccurrence: InputOccurrence, baseInputTypeView: BaseInputTypeNotManagingAdd, property: Property) {
@@ -63,7 +65,7 @@ module api.form.inputtype.support {
         private initListeners() {
             let ignorePropertyChange = false;
 
-            this.inputTypeView.onOccurrenceValueChanged((occurrence: api.dom.Element, value: api.data.Value) => {
+            this.occurrenceValueChangedHandler = (occurrence: api.dom.Element, value: api.data.Value) => {
                 // check if this is our occurrence because all views will receive occurrence value changed event
                 if (this.inputElement === occurrence) {
                     if (InputOccurrenceView.debug) {
@@ -74,7 +76,9 @@ module api.form.inputtype.support {
                     this.inputTypeView.validate(false);
                     ignorePropertyChange = false;
                 }
-            });
+            };
+
+            this.inputTypeView.onOccurrenceValueChanged(this.occurrenceValueChangedHandler);
 
             this.propertyValueChangedHandler = (event: PropertyValueChangedEvent) => {
 
@@ -95,8 +99,12 @@ module api.form.inputtype.support {
             };
 
             this.onRemoved(() => {
-                if (!!this.property) {
+                if (this.property) {
                     this.property.unPropertyValueChanged(this.propertyValueChangedHandler);
+                }
+
+                if (this.inputTypeView) {
+                    this.inputTypeView.unOccurrenceValueChanged(this.occurrenceValueChangedHandler);
                 }
             });
         }
