@@ -35,10 +35,10 @@ module api.ui.treegrid.actions {
                 }
 
                 if (this.isChecked() || this.isPartial()) {
-                    const isFullSelectionWasStashed = this.isFullSelectionWasStashed();
+                    const isEntireSelectionStashed = this.isEntireSelectionStashed();
                     this.treeGrid.getRoot().clearStashedSelection();
                     this.treeGrid.getGrid().clearSelection();
-                    if (isFullSelectionWasStashed) {
+                    if (isEntireSelectionStashed) {
                         this.treeGrid.triggerSelectionChangedListeners();
                     }
                 } else {
@@ -51,7 +51,7 @@ module api.ui.treegrid.actions {
             });
         }
 
-        protected isFullSelectionWasStashed(): boolean {
+        protected isEntireSelectionStashed(): boolean {
             const root = this.treeGrid.getRoot();
             return root.isFiltered() &&
                    root.getCurrentSelection().length === 0 &&
