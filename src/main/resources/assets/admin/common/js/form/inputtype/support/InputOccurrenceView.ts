@@ -78,7 +78,9 @@ module api.form.inputtype.support {
                 }
             };
 
-            this.inputTypeView.onOccurrenceValueChanged(this.occurrenceValueChangedHandler);
+            this.onAdded(() => {
+                this.inputTypeView.onOccurrenceValueChanged(this.occurrenceValueChangedHandler);
+            });
 
             this.propertyValueChangedHandler = (event: PropertyValueChangedEvent) => {
 
