@@ -7,11 +7,7 @@ module api.util {
         }
 
         public static getTZOffset(): number {
-            let jan = new Date(2016, 0, 1);
-            let jul = new Date(2016, 6, 1);
-            let absoluteOffsetInHrs = Math.min(Math.abs(jan.getTimezoneOffset() / 60), Math.abs(jul.getTimezoneOffset() / 60));
-
-            return jan.getTimezoneOffset() > 0 ? absoluteOffsetInHrs * -1 : absoluteOffsetInHrs;
+            return new Date().getTimezoneOffset()/-60;
         }
 
         // returns true if passed date uses daylight savings time
