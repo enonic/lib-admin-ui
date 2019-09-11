@@ -1,10 +1,11 @@
-module api.ui.dialog {
+import {ActionButton} from '../button/ActionButton';
+import {Action} from '../Action';
 
-    export class DialogButton extends api.ui.button.ActionButton {
+export class DialogButton
+    extends ActionButton {
 
-        constructor(action: api.ui.Action) {
-            super(action, false);
-            this.addClass('dialog-button');
-        }
+    constructor(action: Action) {
+        super(action, false);
+        this.addClass('dialog-button');
     }
 }

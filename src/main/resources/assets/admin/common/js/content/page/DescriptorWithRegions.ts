@@ -1,69 +1,72 @@
-module api.content.page {
+import {RegionDescriptor} from './region/RegionDescriptor';
+import {Equitable} from '../../Equitable';
+import {ObjectHelper} from '../../ObjectHelper';
+import {Descriptor, DescriptorBuilder} from './Descriptor';
+import {DescriptorWithRegionsJson} from './DescriptorWithRegionsJson';
+import {PageDescriptor} from './PageDescriptor';
 
-    import RegionDescriptor = api.content.page.region.RegionDescriptor;
+export class DescriptorWithRegions
+    extends Descriptor
+    implements Equitable {
 
-    export class DescriptorWithRegions
-        extends Descriptor
-        implements api.Equitable {
+    private regions: RegionDescriptor[];
 
-        private regions: RegionDescriptor[];
+    constructor(builder: DescriptorWithRegionsBuilder) {
+        super(<DescriptorBuilder>builder);
+        this.regions = builder.regions;
+    }
 
-        constructor(builder: DescriptorWithRegionsBuilder) {
-            super(<DescriptorBuilder>builder);
-            this.regions = builder.regions;
+    static fromJson(json: DescriptorWithRegionsJson): DescriptorWithRegions {
+        return DescriptorWithRegionsBuilder.fromJson(json).build();
+    }
+
+    public getRegions(): RegionDescriptor[] {
+        return this.regions;
+    }
+
+    clone(): DescriptorWithRegions {
+        return new DescriptorWithRegionsBuilder(this).build();
+    }
+
+    equals(o: Equitable): boolean {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, PageDescriptor)) {
+            return false;
         }
 
-        static fromJson(json: DescriptorWithRegionsJson): DescriptorWithRegions {
-            return DescriptorWithRegionsBuilder.fromJson(json).build();
-        }
+        let other = <PageDescriptor>o;
 
-        public getRegions(): RegionDescriptor[] {
-            return this.regions;
-        }
+        return super.equals(other) && ObjectHelper.arrayEquals(this.regions, other.getRegions());
+    }
+}
 
-        clone(): DescriptorWithRegions {
-            return new DescriptorWithRegionsBuilder(this).build();
-        }
+export class DescriptorWithRegionsBuilder
+    extends DescriptorBuilder {
 
-        equals(o: Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, PageDescriptor)) {
-                return false;
-            }
+    regions: RegionDescriptor[] = [];
 
-            let other = <PageDescriptor>o;
-
-            return super.equals(other) && api.ObjectHelper.arrayEquals(this.regions, other.getRegions());
+    constructor(source?: DescriptorWithRegions) {
+        super(source);
+        if (source) {
+            this.regions = source.getRegions();
         }
     }
 
-    export class DescriptorWithRegionsBuilder extends DescriptorBuilder {
+    static fromJson(json: DescriptorWithRegionsJson): DescriptorWithRegionsBuilder {
+        const builder: DescriptorWithRegionsBuilder = (<DescriptorWithRegionsBuilder>super.fromJson(json));
 
-        regions: RegionDescriptor[] = [];
+        builder.regions = json.regions.map(regionJson => {
+            return RegionDescriptor.fromJson(regionJson);
+        });
 
-        constructor(source?: DescriptorWithRegions) {
-            super(source);
-            if (source) {
-                this.regions = source.getRegions();
-            }
-        }
+        return builder;
+    }
 
-        public setRegions(value: RegionDescriptor[]): DescriptorWithRegionsBuilder {
-            this.regions = value;
-            return this;
-        }
+    public setRegions(value: RegionDescriptor[]): DescriptorWithRegionsBuilder {
+        this.regions = value;
+        return this;
+    }
 
-        public build(): DescriptorWithRegions {
-            return new DescriptorWithRegions(this);
-        }
-
-        static fromJson(json: DescriptorWithRegionsJson): DescriptorWithRegionsBuilder {
-            const builder: DescriptorWithRegionsBuilder = (<DescriptorWithRegionsBuilder>super.fromJson(json));
-
-            builder.regions = json.regions.map(regionJson => {
-                return api.content.page.region.RegionDescriptor.fromJson(regionJson);
-            });
-
-            return builder;
-        }
+    public build(): DescriptorWithRegions {
+        return new DescriptorWithRegions(this);
     }
 }

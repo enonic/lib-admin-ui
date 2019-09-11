@@ -1,15 +1,12 @@
-module api.ui.tab {
+export class TabItemEvent {
 
-    export class TabItemEvent {
+    private tab: TabItem;
 
-        private tab: TabItem;
+    constructor(tab: TabItem) {
+        this.tab = tab;
+    }
 
-        constructor(tab: TabItem) {
-            this.tab = tab;
-        }
-
-        getTab(): TabItem {
-            return this.tab;
-        }
+    getTab(): TabItem {
+        return this.tab;
     }
 }

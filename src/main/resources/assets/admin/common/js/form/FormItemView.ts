@@ -1,136 +1,143 @@
-module api.form {
-    import PropertySet = api.data.PropertySet;
+import {PropertySet} from '../data/PropertySet';
+import {DivEl} from '../dom/DivEl';
+import {ContentSummary} from '../content/ContentSummary';
+import {FormContext} from './FormContext';
+import {FormItem} from './FormItem';
+import {FormItemOccurrenceView} from './FormItemOccurrenceView';
+import {assertNotNull} from '../util/Assert';
+import {ValidationRecording} from './ValidationRecording';
+import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
 
-    export interface FormItemViewConfig {
+export interface FormItemViewConfig {
 
-        className: string;
+    className: string;
 
-        context: FormContext;
+    context: FormContext;
 
-        formItem: FormItem;
+    formItem: FormItem;
 
-        parent: FormItemOccurrenceView;
+    parent: FormItemOccurrenceView;
+}
+
+export class FormItemView
+    extends DivEl {
+
+    private context: FormContext;
+
+    private formItem: FormItem;
+
+    private parent: FormItemOccurrenceView;
+
+    private editContentRequestListeners: { (content: ContentSummary): void }[] = [];
+
+    private highlightOnValidityChanged: boolean;
+
+    constructor(config: FormItemViewConfig) {
+        super(config.className);
+        assertNotNull(config.context, 'context cannot be null');
+        assertNotNull(config.formItem, 'formItem cannot be null');
+        this.context = config.context;
+        this.formItem = config.formItem;
+        this.parent = config.parent;
+        this.highlightOnValidityChanged = false;
     }
 
-    export class FormItemView extends api.dom.DivEl {
+    public setHighlightOnValidityChange(highlight: boolean) {
+        this.highlightOnValidityChanged = highlight;
+    }
 
-        private context: FormContext;
+    broadcastFormSizeChanged() {
+        throw new Error('Must be implemented by inheritors');
+    }
 
-        private formItem: FormItem;
+    layout(): Q.Promise<void> {
+        throw new Error('Must be implemented by inheritors');
+    }
 
-        private parent: FormItemOccurrenceView;
+    update(_propertyArray: PropertySet, _unchangedOnly?: boolean): Q.Promise<void> {
+        throw new Error('Must be implemented by inheritors');
+    }
 
-        private editContentRequestListeners: {(content: api.content.ContentSummary): void}[] = [];
+    reset() {
+        throw new Error('Must be implemented by inheritors');
+    }
 
-        private highlightOnValidityChanged: boolean;
+    refresh() {
+        //to be implemented on demand in inheritors
+    }
 
-        constructor(config: FormItemViewConfig) {
-            super(config.className);
-            api.util.assertNotNull(config.context, 'context cannot be null');
-            api.util.assertNotNull(config.formItem, 'formItem cannot be null');
-            this.context = config.context;
-            this.formItem = config.formItem;
-            this.parent = config.parent;
-            this.highlightOnValidityChanged = false;
-        }
+    hasNonDefaultValues(): boolean {
+        return false; //to be implemented on demand in inheritors
+    }
 
-        public setHighlightOnValidityChange(highlight: boolean) {
-            this.highlightOnValidityChanged = highlight;
-        }
+    isEmpty(): boolean {
+        throw new Error('Must be implemented by inheritor');
+    }
 
-        broadcastFormSizeChanged() {
-            throw new Error('Must be implemented by inheritors');
-        }
+    getContext(): FormContext {
+        return this.context;
+    }
 
-        layout(): wemQ.Promise<void> {
-            throw new Error('Must be implemented by inheritors');
-        }
+    getFormItem(): FormItem {
+        return this.formItem;
+    }
 
-        update(_propertyArray: PropertySet, _unchangedOnly?: boolean): wemQ.Promise<void> {
-            throw new Error('Must be implemented by inheritors');
-        }
+    getParent(): FormItemOccurrenceView {
+        return this.parent;
+    }
 
-        reset() {
-            throw new Error('Must be implemented by inheritors');
-        }
+    public displayValidationErrors(_value: boolean) {
+        throw new Error('Must be implemented by inheritor');
+    }
 
-        refresh() {
-            //to be implemented on demand in inheritors
-        }
+    hasValidUserInput(): boolean {
+        throw new Error('Must be implemented by inheritor');
+    }
 
-        hasNonDefaultValues(): boolean {
-            return false; //to be implemented on demand in inheritors
-        }
+    validate(_silent: boolean = true): ValidationRecording {
 
-        isEmpty(): boolean {
-            throw new Error('Must be implemented by inheritor');
-        }
+        // Default method to avoid having to implement method in Layout-s.
+        return new ValidationRecording();
+    }
 
-        getContext(): FormContext {
-            return this.context;
-        }
+    giveFocus(): boolean {
+        return false;
+    }
 
-        getFormItem(): FormItem {
-            return this.formItem;
-        }
+    highlightOnValidityChange(): boolean {
+        return this.highlightOnValidityChanged;
+    }
 
-        getParent(): FormItemOccurrenceView {
-            return this.parent;
-        }
+    onEditContentRequest(listener: (content: ContentSummary) => void) {
+        this.editContentRequestListeners.push(listener);
+    }
 
-        public displayValidationErrors(_value: boolean) {
-            throw new Error('Must be implemented by inheritor');
-        }
-
-        hasValidUserInput(): boolean {
-            throw new Error('Must be implemented by inheritor');
-        }
-
-        validate(_silent: boolean = true): ValidationRecording {
-
-            // Default method to avoid having to implement method in Layout-s.
-            return new ValidationRecording();
-        }
-
-        giveFocus(): boolean {
-            return false;
-        }
-
-        highlightOnValidityChange(): boolean {
-            return this.highlightOnValidityChanged;
-        }
-
-        onEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
-            this.editContentRequestListeners.push(listener);
-        }
-
-        unEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
-            this.editContentRequestListeners = this.editContentRequestListeners
-                .filter(function (curr: (content: api.content.ContentSummary) => void) {
-                    return curr !== listener;
-                });
-        }
-
-        notifyEditContentRequested(content: api.content.ContentSummary) {
-            this.editContentRequestListeners.forEach((listener) => {
-                listener(content);
+    unEditContentRequest(listener: (content: ContentSummary) => void) {
+        this.editContentRequestListeners = this.editContentRequestListeners
+            .filter(function (curr: (content: ContentSummary) => void) {
+                return curr !== listener;
             });
-        }
+    }
 
-        onValidityChanged(_listener: (event: RecordingValidityChangedEvent)=>void) {
-            //Should be implemented in child classes
-        }
+    notifyEditContentRequested(content: ContentSummary) {
+        this.editContentRequestListeners.forEach((listener) => {
+            listener(content);
+        });
+    }
 
-        unValidityChanged(_listener: (event: RecordingValidityChangedEvent)=>void) {
-            //Should be implemented in child classes
-        }
+    onValidityChanged(_listener: (event: RecordingValidityChangedEvent) => void) {
+        //Should be implemented in child classes
+    }
 
-        toggleHelpText(_show?: boolean) {
-            // TO BE IMPLEMENTED BY INHERITORS
-        }
+    unValidityChanged(_listener: (event: RecordingValidityChangedEvent) => void) {
+        //Should be implemented in child classes
+    }
 
-        hasHelpText(): boolean {
-            return false;
-        }
+    toggleHelpText(_show?: boolean) {
+        // TO BE IMPLEMENTED BY INHERITORS
+    }
+
+    hasHelpText(): boolean {
+        return false;
     }
 }

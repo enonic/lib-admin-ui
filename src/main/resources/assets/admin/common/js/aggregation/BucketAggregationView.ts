@@ -1,136 +1,143 @@
-module api.aggregation {
+import {AggregationView} from './AggregationView';
+import {BucketAggregation} from './BucketAggregation';
+import {BucketView} from './BucketView';
+import {AggregationGroupView} from './AggregationGroupView';
+import {Bucket} from './Bucket';
+import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
+import {Aggregation} from './Aggregation';
+import $ from 'jquery';
 
-    export class BucketAggregationView extends api.aggregation.AggregationView {
+export class BucketAggregationView
+    extends AggregationView {
 
-        private bucketAggregation: api.aggregation.BucketAggregation;
+    private bucketAggregation: BucketAggregation;
 
-        private bucketViews: api.aggregation.BucketView[] = [];
+    private bucketViews: BucketView[] = [];
 
-        private showBucketView: boolean;
+    private showBucketView: boolean;
 
-        constructor(bucketAggregation: api.aggregation.BucketAggregation, parentGroupView: api.aggregation.AggregationGroupView) {
-            super(bucketAggregation, parentGroupView);
+    constructor(bucketAggregation: BucketAggregation, parentGroupView: AggregationGroupView) {
+        super(bucketAggregation, parentGroupView);
 
-            this.bucketAggregation = bucketAggregation;
+        this.bucketAggregation = bucketAggregation;
 
-            this.showBucketView = false;
-            this.bucketAggregation.getBuckets().forEach((bucket: api.aggregation.Bucket) => {
-                this.addBucket(new api.aggregation.BucketView(bucket, this, false, this.getDisplayNameForName(bucket.getKey())));
-                if (bucket.getDocCount() > 0) {
-                    this.showBucketView = true;
-                }
-
-            });
-
-            if (!this.showBucketView) {
-                this.hide();
+        this.showBucketView = false;
+        this.bucketAggregation.getBuckets().forEach((bucket: Bucket) => {
+            this.addBucket(new BucketView(bucket, this, false, this.getDisplayNameForName(bucket.getKey())));
+            if (bucket.getDocCount() > 0) {
+                this.showBucketView = true;
             }
+
+        });
+
+        if (!this.showBucketView) {
+            this.hide();
         }
+    }
 
-        setDisplayNames(): void {
-            this.bucketViews.forEach((bucketView: api.aggregation.BucketView) => {
-                bucketView.setDisplayName(this.getDisplayNameForName(bucketView.getName()));
-            });
-        }
+    setDisplayNames(): void {
+        this.bucketViews.forEach((bucketView: BucketView) => {
+            bucketView.setDisplayName(this.getDisplayNameForName(bucketView.getName()));
+        });
+    }
 
-        hasSelectedEntry(): boolean {
-            let isSelected: boolean = false;
-            this.bucketViews.forEach((bucketView: api.aggregation.BucketView) => {
-                if (bucketView.isSelected()) {
-                    isSelected = true;
-                }
-            });
-            return isSelected;
-        }
-
-        selectBucketViewByKey(key: string, supressEvent?: boolean) {
-            this.bucketViews.some((bucketView: api.aggregation.BucketView) => {
-                if (bucketView.getName() === key) {
-                    bucketView.select(supressEvent);
-                    return true;
-                }
-
-                return false;
-            });
-        }
-
-        private addBucket(bucketView: api.aggregation.BucketView) {
-            this.appendChild(bucketView);
-            bucketView.onSelectionChanged((event: api.aggregation.BucketViewSelectionChangedEvent) => {
-                    this.notifyBucketViewSelectionChanged(event);
-                }
-            );
-            this.bucketViews.push(bucketView);
-        }
-
-        setTooltipActive(flag: boolean) {
-            this.bucketViews.forEach(bv => bv.setTooltipActive(flag));
-        }
-
-        getSelectedValues(): api.aggregation.Bucket[] {
-
-            let selectedBuckets: api.aggregation.Bucket[] = [];
-
-            this.bucketViews.forEach((bucketView: api.aggregation.BucketView) => {
-                if (bucketView.isSelected()) {
-                    selectedBuckets.push(bucketView.getBucket());
-                }
-            });
-
-            return selectedBuckets;
-        }
-
-        deselectFacet(supressEvent?: boolean) {
-            this.bucketViews.forEach((bucketView: api.aggregation.BucketView) => {
-                bucketView.deselect(supressEvent);
-            });
-        }
-
-        update(aggregation: api.aggregation.Aggregation) {
-
-            let selectedBucketNames: string[] = this.getSelectedBucketNames();
-
-            this.bucketAggregation = <api.aggregation.BucketAggregation> aggregation;
-            this.bucketViews = [];
-            this.removeChildren();
-
-            let anyBucketVisible = false;
-
-            this.bucketAggregation.getBuckets().forEach((bucket: api.aggregation.Bucket) => {
-
-                let wasSelected: boolean = (wemjq.inArray(bucket.getKey(), selectedBucketNames)) > -1;
-
-                let bucketView: api.aggregation.BucketView = new api.aggregation.BucketView(bucket, this, wasSelected,
-                    this.getDisplayNameForName(bucket.getKey()));
-
-                this.addBucket(bucketView);
-
-                if (bucket.getDocCount() > 0 || wasSelected) {
-                    anyBucketVisible = true;
-                }
-
-            });
-
-            this.showBucketView = anyBucketVisible;
-
-            if (!this.showBucketView) {
-                this.hide();
-            } else if (!this.isVisible()) {
-                this.show();
+    hasSelectedEntry(): boolean {
+        let isSelected: boolean = false;
+        this.bucketViews.forEach((bucketView: BucketView) => {
+            if (bucketView.isSelected()) {
+                isSelected = true;
             }
+        });
+        return isSelected;
+    }
+
+    selectBucketViewByKey(key: string, supressEvent?: boolean) {
+        this.bucketViews.some((bucketView: BucketView) => {
+            if (bucketView.getName() === key) {
+                bucketView.select(supressEvent);
+                return true;
+            }
+
+            return false;
+        });
+    }
+
+    setTooltipActive(flag: boolean) {
+        this.bucketViews.forEach(bv => bv.setTooltipActive(flag));
+    }
+
+    getSelectedValues(): Bucket[] {
+
+        let selectedBuckets: Bucket[] = [];
+
+        this.bucketViews.forEach((bucketView: BucketView) => {
+            if (bucketView.isSelected()) {
+                selectedBuckets.push(bucketView.getBucket());
+            }
+        });
+
+        return selectedBuckets;
+    }
+
+    deselectFacet(supressEvent?: boolean) {
+        this.bucketViews.forEach((bucketView: BucketView) => {
+            bucketView.deselect(supressEvent);
+        });
+    }
+
+    update(aggregation: Aggregation) {
+
+        let selectedBucketNames: string[] = this.getSelectedBucketNames();
+
+        this.bucketAggregation = <BucketAggregation> aggregation;
+        this.bucketViews = [];
+        this.removeChildren();
+
+        let anyBucketVisible = false;
+
+        this.bucketAggregation.getBuckets().forEach((bucket: Bucket) => {
+
+            let wasSelected: boolean = ($.inArray(bucket.getKey(), selectedBucketNames)) > -1;
+
+            let bucketView: BucketView = new BucketView(bucket, this, wasSelected,
+                this.getDisplayNameForName(bucket.getKey()));
+
+            this.addBucket(bucketView);
+
+            if (bucket.getDocCount() > 0 || wasSelected) {
+                anyBucketVisible = true;
+            }
+
+        });
+
+        this.showBucketView = anyBucketVisible;
+
+        if (!this.showBucketView) {
+            this.hide();
+        } else if (!this.isVisible()) {
+            this.show();
         }
+    }
 
-        private getSelectedBucketNames(): string[] {
+    private addBucket(bucketView: BucketView) {
+        this.appendChild(bucketView);
+        bucketView.onSelectionChanged((event: BucketViewSelectionChangedEvent) => {
+                this.notifyBucketViewSelectionChanged(event);
+            }
+        );
+        this.bucketViews.push(bucketView);
+    }
 
-            let selectedBucketNames: string[] = [];
+    private getSelectedBucketNames(): string[] {
 
-            let selectedBuckets: api.aggregation.Bucket[] = this.getSelectedValues();
+        let selectedBucketNames: string[] = [];
 
-            selectedBuckets.forEach((bucket: api.aggregation.Bucket) => {
-                selectedBucketNames.push(bucket.getKey());
-            });
+        let selectedBuckets: Bucket[] = this.getSelectedValues();
 
-            return selectedBucketNames;
-        }
+        selectedBuckets.forEach((bucket: Bucket) => {
+            selectedBucketNames.push(bucket.getKey());
+        });
+
+        return selectedBucketNames;
     }
 }

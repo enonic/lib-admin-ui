@@ -1,16 +1,13 @@
-module api.schema {
+import {ItemJson} from '../item/ItemJson';
 
-    import ItemJson = api.item.ItemJson;
+export interface SchemaJson
+    extends ItemJson {
 
-    export interface SchemaJson
-        extends ItemJson {
+    displayName: string;
 
-        displayName: string;
+    description: string;
 
-        description: string;
+    name: string;
 
-        name: string;
-
-        iconUrl: string;
-    }
+    iconUrl: string;
 }

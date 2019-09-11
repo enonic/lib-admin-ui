@@ -1,17 +1,18 @@
-module api.dom {
+import {Element} from './Element';
+import {ElementEvent} from './ElementEvent';
 
-    export class ElementRemovedEvent extends ElementEvent {
+export class ElementRemovedEvent
+    extends ElementEvent {
 
-        private parent: Element;
+    private parent: Element;
 
-        constructor(element: Element, parent: Element, target?: Element) {
-            super('removed', element, target);
+    constructor(element: Element, parent: Element, target?: Element) {
+        super('removed', element, target);
 
-            this.parent = parent;
-        }
+        this.parent = parent;
+    }
 
-        getParent(): Element {
-            return this.parent;
-        }
+    getParent(): Element {
+        return this.parent;
     }
 }

@@ -1,8 +1,9 @@
-module api.content.page {
+import {RegionsDescriptorJson} from './region/RegionsDescriptorJson';
+import {DescriptorJson} from './DescriptorJson';
 
-    export interface DescriptorWithRegionsJson extends DescriptorJson {
+export interface DescriptorWithRegionsJson
+    extends DescriptorJson {
 
-        regions: api.content.page.region.RegionsDescriptorJson[];
+    regions: RegionsDescriptorJson[];
 
-    }
 }

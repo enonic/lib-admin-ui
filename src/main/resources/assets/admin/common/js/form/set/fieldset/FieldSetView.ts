@@ -1,203 +1,211 @@
-module api.form {
+import * as Q from 'q';
+import {PropertySet} from '../../../data/PropertySet';
+import {DivEl} from '../../../dom/DivEl';
+import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
+import {ContentSummary} from '../../../content/ContentSummary';
+import {FormContext} from '../../FormContext';
+import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
+import {FieldSet} from './FieldSet';
+import {FormItemView, FormItemViewConfig} from '../../FormItemView';
+import {FormItemLayer} from '../../FormItemLayer';
+import {InputView} from '../../InputView';
+import {ValidationRecording} from '../../ValidationRecording';
+import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
+import {FieldSetLabel} from './FieldSetLabel';
 
-    import PropertySet = api.data.PropertySet;
+export interface FieldSetViewConfig {
 
-    export interface FieldSetViewConfig {
+    context: FormContext;
 
-        context: FormContext;
+    fieldSet: FieldSet;
 
-        fieldSet: FieldSet;
+    parent: FormItemOccurrenceView;
 
-        parent: FormItemOccurrenceView;
+    dataSet?: PropertySet;
 
-        dataSet?: PropertySet;
+    lazyRender?: boolean;
+}
 
-        lazyRender?: boolean;
+export class FieldSetView
+    extends FormItemView {
+
+    private fieldSet: FieldSet;
+
+    private propertySet: PropertySet;
+
+    private formItemViews: FormItemView[] = [];
+
+    private formItemLayer: FormItemLayer;
+
+    constructor(config: FieldSetViewConfig) {
+        super(<FormItemViewConfig>{
+            context: config.context,
+            formItem: config.fieldSet,
+            parent: config.parent,
+            className: 'field-set-view'
+        });
+
+        this.formItemLayer = new FormItemLayer(config.context);
+        this.formItemLayer.setLazyRender(config.lazyRender);
+
+        this.fieldSet = config.fieldSet;
+        this.propertySet = config.dataSet;
     }
 
-    export class FieldSetView extends FormItemView {
+    broadcastFormSizeChanged() {
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.broadcastFormSizeChanged();
+        });
+    }
 
-        private fieldSet: FieldSet;
+    public layout(): Q.Promise<void> {
 
-        private propertySet: PropertySet;
+        return this.doLayout();
+    }
 
-        private formItemViews: FormItemView[] = [];
+    getFormItemViews(): FormItemView[] {
+        return this.formItemViews;
+    }
 
-        private formItemLayer: FormItemLayer;
-
-        constructor(config: FieldSetViewConfig) {
-            super(<FormItemViewConfig>{
-                context: config.context,
-                formItem: config.fieldSet,
-                parent: config.parent,
-                className: 'field-set-view'
-            });
-
-            this.formItemLayer = new FormItemLayer(config.context);
-            this.formItemLayer.setLazyRender(config.lazyRender);
-
-            this.fieldSet = config.fieldSet;
-            this.propertySet = config.dataSet;
+    public update(propertySet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
+        if (InputView.debug) {
+            console.debug('FieldSetView.update' + (unchangedOnly ? ' ( unchanged only)' : ''), propertySet);
         }
+        this.propertySet = propertySet;
 
-        broadcastFormSizeChanged() {
-            this.formItemViews.forEach((formItemView: FormItemView) => {
-                formItemView.broadcastFormSizeChanged();
-            });
-        }
+        return this.formItemLayer.update(propertySet, unchangedOnly);
+    }
 
-        public layout(): wemQ.Promise<void> {
+    public reset() {
+        this.formItemLayer.reset();
+    }
 
-            return this.doLayout();
-        }
+    onEditContentRequest(listener: (content: ContentSummary) => void) {
+        super.onEditContentRequest(listener);
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.onEditContentRequest(listener);
+        });
+    }
 
-        getFormItemViews(): FormItemView[] {
-            return this.formItemViews;
-        }
+    unEditContentRequest(listener: (content: ContentSummary) => void) {
+        super.unEditContentRequest(listener);
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.unEditContentRequest(listener);
+        });
+    }
 
-        private doLayout(): wemQ.Promise<void> {
+    giveFocus(): boolean {
 
-            let deferred = wemQ.defer<void>();
-
-            let label = new FieldSetLabel(this.fieldSet);
-            this.appendChild(label);
-
-            let wrappingDiv = new api.dom.DivEl('field-set-container');
-            this.appendChild(wrappingDiv);
-
-            let layoutPromise: wemQ.Promise<FormItemView[]> = this.formItemLayer.
-                setFormItems(this.fieldSet.getFormItems()).
-                setParentElement(wrappingDiv).
-                setParent(this.getParent()).
-                layout(this.propertySet);
-            layoutPromise.then((formItemViews: FormItemView[]) => {
-                this.formItemViews = formItemViews;
-
-                deferred.resolve(null);
-            }).catch((reason: any) => {
-                let fieldSetValue = this.fieldSet ? this.fieldSet.toFieldSetJson() : {};
-                console.error('Could not render FieldSet view: ' + reason + '\r\n FieldSet value:', JSON.stringify(fieldSetValue));
-                api.DefaultErrorHandler.handle(reason);
-            }).done();
-
-            return deferred.promise;
-        }
-
-        public update(propertySet: PropertySet, unchangedOnly?: boolean): wemQ.Promise<void> {
-            if (InputView.debug) {
-                console.debug('FieldSetView.update' + (unchangedOnly ? ' ( unchanged only)' : ''), propertySet);
-            }
-            this.propertySet = propertySet;
-
-            return this.formItemLayer.update(propertySet, unchangedOnly);
-        }
-
-        public reset() {
-            this.formItemLayer.reset();
-        }
-
-        onEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
-            super.onEditContentRequest(listener);
-            this.formItemViews.forEach((formItemView: FormItemView) => {
-                formItemView.onEditContentRequest(listener);
-            });
-        }
-
-        unEditContentRequest(listener: (content: api.content.ContentSummary) => void) {
-            super.unEditContentRequest(listener);
-            this.formItemViews.forEach((formItemView: FormItemView) => {
-                formItemView.unEditContentRequest(listener);
-            });
-        }
-
-        giveFocus(): boolean {
-
-            let focusGiven = false;
-            if (this.formItemViews.length > 0) {
-                for (let i = 0; i < this.formItemViews.length; i++) {
-                    if (this.formItemViews[i].giveFocus()) {
-                        focusGiven = true;
-                        break;
-                    }
+        let focusGiven = false;
+        if (this.formItemViews.length > 0) {
+            for (let i = 0; i < this.formItemViews.length; i++) {
+                if (this.formItemViews[i].giveFocus()) {
+                    focusGiven = true;
+                    break;
                 }
-
             }
-            return focusGiven;
+
         }
+        return focusGiven;
+    }
 
-        public displayValidationErrors(value: boolean) {
-            this.formItemViews.forEach((view: FormItemView) => {
-                view.displayValidationErrors(value);
-            });
-        }
+    public displayValidationErrors(value: boolean) {
+        this.formItemViews.forEach((view: FormItemView) => {
+            view.displayValidationErrors(value);
+        });
+    }
 
-        public setHighlightOnValidityChange(highlight: boolean) {
-            this.formItemViews.forEach((view: FormItemView) => {
-                view.setHighlightOnValidityChange(highlight);
-            });
-        }
+    public setHighlightOnValidityChange(highlight: boolean) {
+        this.formItemViews.forEach((view: FormItemView) => {
+            view.setHighlightOnValidityChange(highlight);
+        });
+    }
 
-        hasValidUserInput(): boolean {
+    hasValidUserInput(): boolean {
 
-            let result = true;
-            this.formItemViews.forEach((formItemView: FormItemView) => {
-                if (!formItemView.hasValidUserInput()) {
-                    result = false;
-                }
-            });
+        let result = true;
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            if (!formItemView.hasValidUserInput()) {
+                result = false;
+            }
+        });
 
-            return result;
-        }
+        return result;
+    }
 
-        validate(silent: boolean = true): ValidationRecording {
+    validate(silent: boolean = true): ValidationRecording {
 
-            let recording = new ValidationRecording();
-            this.formItemViews.forEach((formItemView: FormItemView)=> {
-                recording.flatten(formItemView.validate(silent));
-            });
+        let recording = new ValidationRecording();
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            recording.flatten(formItemView.validate(silent));
+        });
 
-            return recording;
-        }
+        return recording;
+    }
 
-        isEmpty(): boolean {
-            return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
-        }
+    isEmpty(): boolean {
+        return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
+    }
 
-        onValidityChanged(listener: (event: RecordingValidityChangedEvent)=>void) {
+    onValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
 
-            this.formItemViews.forEach((formItemView: FormItemView)=> {
-                formItemView.onValidityChanged(listener);
-            });
-        }
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.onValidityChanged(listener);
+        });
+    }
 
-        unValidityChanged(listener: (event: RecordingValidityChangedEvent)=>void) {
-            this.formItemViews.forEach((formItemView: FormItemView)=> {
-                formItemView.unValidityChanged(listener);
-            });
-        }
+    unValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.unValidityChanged(listener);
+        });
+    }
 
-        onFocus(listener: (event: FocusEvent) => void) {
-            this.formItemViews.forEach((formItemView) => {
-                formItemView.onFocus(listener);
-            });
-        }
+    onFocus(listener: (event: FocusEvent) => void) {
+        this.formItemViews.forEach((formItemView) => {
+            formItemView.onFocus(listener);
+        });
+    }
 
-        unFocus(listener: (event: FocusEvent) => void) {
-            this.formItemViews.forEach((formItemView) => {
-                formItemView.unFocus(listener);
-            });
-        }
+    unFocus(listener: (event: FocusEvent) => void) {
+        this.formItemViews.forEach((formItemView) => {
+            formItemView.unFocus(listener);
+        });
+    }
 
-        onBlur(listener: (event: FocusEvent) => void) {
-            this.formItemViews.forEach((formItemView) => {
-                formItemView.onBlur(listener);
-            });
-        }
+    onBlur(listener: (event: FocusEvent) => void) {
+        this.formItemViews.forEach((formItemView) => {
+            formItemView.onBlur(listener);
+        });
+    }
 
-        unBlur(listener: (event: FocusEvent) => void) {
-            this.formItemViews.forEach((formItemView) => {
-                formItemView.unBlur(listener);
-            });
-        }
+    unBlur(listener: (event: FocusEvent) => void) {
+        this.formItemViews.forEach((formItemView) => {
+            formItemView.unBlur(listener);
+        });
+    }
+
+    private doLayout(): Q.Promise<void> {
+
+        let deferred = Q.defer<void>();
+
+        let label = new FieldSetLabel(this.fieldSet);
+        this.appendChild(label);
+
+        let wrappingDiv = new DivEl('field-set-container');
+        this.appendChild(wrappingDiv);
+
+        let layoutPromise: Q.Promise<FormItemView[]> = this.formItemLayer.setFormItems(this.fieldSet.getFormItems()).setParentElement(
+            wrappingDiv).setParent(this.getParent()).layout(this.propertySet);
+        layoutPromise.then((formItemViews: FormItemView[]) => {
+            this.formItemViews = formItemViews;
+
+            deferred.resolve(null);
+        }).catch((reason: any) => {
+            let fieldSetValue = this.fieldSet ? this.fieldSet.toFieldSetJson() : {};
+            console.error('Could not render FieldSet view: ' + reason + '\r\n FieldSet value:', JSON.stringify(fieldSetValue));
+            DefaultErrorHandler.handle(reason);
+        }).done();
+
+        return deferred.promise;
     }
 }

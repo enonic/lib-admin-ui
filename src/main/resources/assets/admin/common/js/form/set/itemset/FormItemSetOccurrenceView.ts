@@ -1,114 +1,123 @@
-module api.form {
+import * as Q from 'q';
+import {PropertySet} from '../../../data/PropertySet';
+import {StringHelper} from '../../../util/StringHelper';
+import {FormContext} from '../../FormContext';
+import {FormSetOccurrence} from '../FormSetOccurrence';
+import {FormItemSet} from './FormItemSet';
+import {FormSetOccurrenceView} from '../FormSetOccurrenceView';
+import {FormItemLayer} from '../../FormItemLayer';
+import {ValidationRecording} from '../../ValidationRecording';
+import {FormItemView} from '../../FormItemView';
+import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
+import {FormSet} from '../FormSet';
+import {FormItem} from '../../FormItem';
 
-    import PropertySet = api.data.PropertySet;
+export interface FormItemSetOccurrenceViewConfig {
 
-    export interface FormItemSetOccurrenceViewConfig {
+    context: FormContext;
 
-        context: FormContext;
+    formSetOccurrence: FormSetOccurrence<FormItemSetOccurrenceView>;
 
-        formSetOccurrence: FormSetOccurrence<FormItemSetOccurrenceView>;
+    formItemSet: FormItemSet;
 
-        formItemSet: FormItemSet;
+    parent: FormItemSetOccurrenceView;
 
-        parent: FormItemSetOccurrenceView;
+    dataSet: PropertySet;
 
-        dataSet: PropertySet;
+    lazyRender?: boolean;
+}
 
-        lazyRender?: boolean;
+export class FormItemSetOccurrenceView
+    extends FormSetOccurrenceView {
+
+    private formItemSet: FormItemSet;
+
+    constructor(config: FormItemSetOccurrenceViewConfig) {
+        super('form-item-set-occurrence-view', config.formSetOccurrence);
+        this.occurrenceContainerClassName = 'form-item-set-occurrences-container';
+        this.formItemOccurrence = config.formSetOccurrence;
+        this.formItemSet = config.formItemSet;
+        this.propertySet = config.dataSet;
+
+        this.formItemLayer = new FormItemLayer(config.context);
+        this.formItemLayer.setLazyRender(config.lazyRender);
     }
 
-    export class FormItemSetOccurrenceView extends FormSetOccurrenceView {
+    public layout(validate: boolean = true): Q.Promise<void> {
+        return super.layout(validate).then(() => {
+            if (this.formItemOccurrence.isMultiple()) {
+                this.formSetOccurrencesContainer.onDescendantAdded(() => this.setTitle());
+            }
+        });
+    }
 
-        private formItemSet: FormItemSet;
+    validate(silent: boolean = true): ValidationRecording {
 
-        constructor(config: FormItemSetOccurrenceViewConfig) {
-            super('form-item-set-occurrence-view', config.formSetOccurrence);
-            this.occurrenceContainerClassName = 'form-item-set-occurrences-container';
-            this.formItemOccurrence = config.formSetOccurrence;
-            this.formItemSet = config.formItemSet;
-            this.propertySet = config.dataSet;
+        let allRecordings = new ValidationRecording();
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            let currRecording = formItemView.validate(silent);
+            allRecordings.flatten(currRecording);
+        });
 
-            this.formItemLayer = new FormItemLayer(config.context);
-            this.formItemLayer.setLazyRender(config.lazyRender);
+        if (!silent) {
+            if (allRecordings.validityChanged(this.currentValidationState)) {
+                this.notifyValidityChanged(new RecordingValidityChangedEvent(allRecordings, this.resolveValidationRecordingPath()));
+            }
         }
+        this.currentValidationState = allRecordings;
+        return allRecordings;
+    }
 
-        private setTitle() {
-            const firstNonEmptyInput = wemjq(this.formSetOccurrencesContainer.getHTMLElement())
-                .find('.input-wrapper input, .input-wrapper textarea').toArray()
-                .find(input => {
-                    const value = (input.nodeName === 'INPUT') ? input.value : api.util.StringHelper.htmlToString(input.value);
-                    return value.trim().length > 0;
-                });
+    protected subscribeOnItemEvents() {
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
 
-            if (firstNonEmptyInput) {
-                if (firstNonEmptyInput.nodeName === 'INPUT') {
-                    this.label.setTitle(firstNonEmptyInput.value);
+                if (!this.currentValidationState) {
+                    return; // currentValidationState is initialized on validate() call which may not be triggered in some cases
+                }
+
+                let previousValidState = this.currentValidationState.isValid();
+                if (event.isValid()) {
+                    this.currentValidationState.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
                 } else {
-                    this.label.setTitle(api.util.StringHelper.htmlToString(firstNonEmptyInput.value)); // Strip HTML tags
+                    this.currentValidationState.flatten(event.getRecording());
                 }
-                this.formSetOccurrencesContainer.unDescendantAdded();
+
+                if (previousValidState !== this.currentValidationState.isValid()) {
+                    this.notifyValidityChanged(new RecordingValidityChangedEvent(this.currentValidationState,
+                        this.resolveValidationRecordingPath()).setIncludeChildren(true));
+                }
+            });
+
+            if (this.formItemOccurrence.isMultiple()) {
+                formItemView.onBlur(() => this.setTitle());
             }
-        }
-
-        public layout(validate: boolean = true): wemQ.Promise<void> {
-            return super.layout(validate).then(() => {
-                if (this.formItemOccurrence.isMultiple()) {
-                    this.formSetOccurrencesContainer.onDescendantAdded(() => this.setTitle());
-                }
-            });
-        }
-
-        protected subscribeOnItemEvents() {
-            this.formItemViews.forEach((formItemView: FormItemView) => {
-                formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
-
-                    if (!this.currentValidationState) {
-                        return; // currentValidationState is initialized on validate() call which may not be triggered in some cases
-                    }
-
-                    let previousValidState = this.currentValidationState.isValid();
-                    if (event.isValid()) {
-                        this.currentValidationState.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
-                    } else {
-                        this.currentValidationState.flatten(event.getRecording());
-                    }
-
-                    if (previousValidState !== this.currentValidationState.isValid()) {
-                        this.notifyValidityChanged(new RecordingValidityChangedEvent(this.currentValidationState,
-                            this.resolveValidationRecordingPath()).setIncludeChildren(true));
-                    }
-                });
-
-                if (this.formItemOccurrence.isMultiple()) {
-                    formItemView.onBlur(() => this.setTitle());
-                }
-            });
-        }
-
-        validate(silent: boolean = true): ValidationRecording {
-
-            let allRecordings = new ValidationRecording();
-            this.formItemViews.forEach((formItemView: FormItemView) => {
-                let currRecording = formItemView.validate(silent);
-                allRecordings.flatten(currRecording);
-            });
-
-            if (!silent) {
-                if (allRecordings.validityChanged(this.currentValidationState)) {
-                    this.notifyValidityChanged(new RecordingValidityChangedEvent(allRecordings, this.resolveValidationRecordingPath()));
-                }
-            }
-            this.currentValidationState = allRecordings;
-            return allRecordings;
-        }
-
-        protected getFormSet(): FormSet {
-            return this.formItemSet;
-        }
-
-        protected getFormItems(): FormItem[] {
-            return this.formItemSet.getFormItems();
-        }
+        });
     }
 
+    protected getFormSet(): FormSet {
+        return this.formItemSet;
+    }
+
+    protected getFormItems(): FormItem[] {
+        return this.formItemSet.getFormItems();
+    }
+
+    private setTitle() {
+        const firstNonEmptyInput = $(this.formSetOccurrencesContainer.getHTMLElement())
+            .find('.input-wrapper input, .input-wrapper textarea').toArray()
+            .find(input => {
+                const value = (input.nodeName === 'INPUT') ? input.value : StringHelper.htmlToString(input.value);
+                return value.trim().length > 0;
+            });
+
+        if (firstNonEmptyInput) {
+            if (firstNonEmptyInput.nodeName === 'INPUT') {
+                this.label.setTitle(firstNonEmptyInput.value);
+            } else {
+                this.label.setTitle(StringHelper.htmlToString(firstNonEmptyInput.value)); // Strip HTML tags
+            }
+            this.formSetOccurrencesContainer.unDescendantAdded();
+        }
+    }
 }

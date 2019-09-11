@@ -1,16 +1,12 @@
-module api.item {
+export interface ItemJson {
 
-    export interface ItemJson {
+    id: string;
 
-        id: string;
+    createdTime: string;
 
-        createdTime: string;
+    modifiedTime: string;
 
-        modifiedTime: string;
+    editable: boolean;
 
-        editable: boolean;
-
-        deletable: boolean;
-    }
-
+    deletable: boolean;
 }

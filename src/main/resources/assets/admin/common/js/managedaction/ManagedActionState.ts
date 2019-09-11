@@ -1,8 +1,5 @@
-module api.managedaction {
-
-    export enum ManagedActionState {
-        PREPARING,
-        STARTED,
-        ENDED
-    }
+export enum ManagedActionState {
+    PREPARING,
+    STARTED,
+    ENDED
 }

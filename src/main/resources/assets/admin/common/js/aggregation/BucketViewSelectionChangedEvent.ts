@@ -1,29 +1,28 @@
-module api.aggregation {
+import {BucketView} from './BucketView';
 
-    export class BucketViewSelectionChangedEvent {
+export class BucketViewSelectionChangedEvent {
 
-        private oldValue: boolean;
+    private oldValue: boolean;
 
-        private newValue: boolean;
+    private newValue: boolean;
 
-        private bucketView: api.aggregation.BucketView;
+    private bucketView: BucketView;
 
-        constructor(oldValue: boolean, newValue: boolean, bucketView: api.aggregation.BucketView) {
-            this.oldValue = oldValue;
-            this.newValue = newValue;
-            this.bucketView = bucketView;
-        }
+    constructor(oldValue: boolean, newValue: boolean, bucketView: BucketView) {
+        this.oldValue = oldValue;
+        this.newValue = newValue;
+        this.bucketView = bucketView;
+    }
 
-        getOldValue(): boolean {
-            return this.oldValue;
-        }
+    getOldValue(): boolean {
+        return this.oldValue;
+    }
 
-        getNewValue(): boolean {
-            return this.newValue;
-        }
+    getNewValue(): boolean {
+        return this.newValue;
+    }
 
-        getBucketView(): api.aggregation.BucketView {
-            return this.bucketView;
-        }
+    getBucketView(): BucketView {
+        return this.bucketView;
     }
 }

@@ -1,83 +1,81 @@
-module api.ui.responsive {
+import {WindowDOM} from '../../dom/WindowDOM';
+import {Element} from '../../dom/Element';
 
-    import WindowDOM = api.dom.WindowDOM;
+export class ResponsiveManager {
 
-    export class ResponsiveManager {
+    private static window: WindowDOM = WindowDOM.get();
 
-        private static window: WindowDOM = WindowDOM.get();
+    private static responsiveListeners: ResponsiveListener[] = [];
 
-        private static responsiveListeners: ResponsiveListener[] = [];
-
-        // Custom handler will be executed in addition on element update
-        static onAvailableSizeChanged(el: api.dom.Element,
-                                      handler?: (item: ResponsiveItem) => void): ResponsiveItem {
-            const responsiveItem: ResponsiveItem = new ResponsiveItem(el, handler);
-            let listener = () => {
-                if (el.isVisible()) {
-                    responsiveItem.update();
-                }
-            };
-            let responsiveListener = new ResponsiveListener(responsiveItem, listener);
-
-            this.updateItemOnShown(el, responsiveItem);
-
-            ResponsiveManager.responsiveListeners.push(responsiveListener);
-
-            ResponsiveManager.window.getHTMLElement().addEventListener('availablesizechange', listener);
-            ResponsiveManager.window.onResized(listener);
-
-            return responsiveItem;
-        }
-
-        private static updateItemOnShown(el: api.dom.Element, responsiveItem: ResponsiveItem) {
+    // Custom handler will be executed in addition on element update
+    static onAvailableSizeChanged(el: Element,
+                                  handler?: (item: ResponsiveItem) => void): ResponsiveItem {
+        const responsiveItem: ResponsiveItem = new ResponsiveItem(el, handler);
+        let listener = () => {
             if (el.isVisible()) {
                 responsiveItem.update();
-            } else {
-                let renderedHandler = () => {
-                    responsiveItem.update();
-                    el.unShown(renderedHandler); // update needs
-                };
-                el.onShown(renderedHandler);
             }
-        }
+        };
+        let responsiveListener = new ResponsiveListener(responsiveItem, listener);
 
-        static unAvailableSizeChanged(el: api.dom.Element) {
+        this.updateItemOnShown(el, responsiveItem);
 
-            ResponsiveManager.responsiveListeners =
-                ResponsiveManager.responsiveListeners.filter((curr) => {
-                    if (curr.getItem().getElement() === el) {
-                        ResponsiveManager.window.getHTMLElement().removeEventListener('availablesizechange', curr.getListener());
-                        ResponsiveManager.window.unResized(curr.getListener());
-                        return false;
-                    } else {
-                        return true;
-                    }
-                });
-        }
+        ResponsiveManager.responsiveListeners.push(responsiveListener);
 
-        static unAvailableSizeChangedByItem(item: ResponsiveItem) {
+        ResponsiveManager.window.getHTMLElement().addEventListener('availablesizechange', listener);
+        ResponsiveManager.window.onResized(listener);
 
-            ResponsiveManager.responsiveListeners =
-                ResponsiveManager.responsiveListeners.filter((curr) => {
-                    if (curr.getItem() === item) {
-                        ResponsiveManager.window.getHTMLElement().removeEventListener('availablesizechange', curr.getListener());
-                        ResponsiveManager.window.unResized(curr.getListener());
-                        return false;
-                    } else {
-                        return true;
-                    }
-                });
-        }
+        return responsiveItem;
+    }
 
-        // Manual event triggering
-        static fireResizeEvent() {
-            let customEvent = document.createEvent('Event');
-            customEvent.initEvent('availablesizechange', false, true); // No bubbling
-            ResponsiveManager.window.getHTMLElement().dispatchEvent(customEvent);
-        }
+    static unAvailableSizeChanged(el: Element) {
 
-        static getWindow(): api.dom.WindowDOM {
-            return ResponsiveManager.window;
+        ResponsiveManager.responsiveListeners =
+            ResponsiveManager.responsiveListeners.filter((curr) => {
+                if (curr.getItem().getElement() === el) {
+                    ResponsiveManager.window.getHTMLElement().removeEventListener('availablesizechange', curr.getListener());
+                    ResponsiveManager.window.unResized(curr.getListener());
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+    }
+
+    static unAvailableSizeChangedByItem(item: ResponsiveItem) {
+
+        ResponsiveManager.responsiveListeners =
+            ResponsiveManager.responsiveListeners.filter((curr) => {
+                if (curr.getItem() === item) {
+                    ResponsiveManager.window.getHTMLElement().removeEventListener('availablesizechange', curr.getListener());
+                    ResponsiveManager.window.unResized(curr.getListener());
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+    }
+
+    // Manual event triggering
+    static fireResizeEvent() {
+        let customEvent = document.createEvent('Event');
+        customEvent.initEvent('availablesizechange', false, true); // No bubbling
+        ResponsiveManager.window.getHTMLElement().dispatchEvent(customEvent);
+    }
+
+    static getWindow(): WindowDOM {
+        return ResponsiveManager.window;
+    }
+
+    private static updateItemOnShown(el: Element, responsiveItem: ResponsiveItem) {
+        if (el.isVisible()) {
+            responsiveItem.update();
+        } else {
+            let renderedHandler = () => {
+                responsiveItem.update();
+                el.unShown(renderedHandler); // update needs
+            };
+            el.onShown(renderedHandler);
         }
     }
 }

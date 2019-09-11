@@ -1,49 +1,50 @@
-module api.content.page.region {
+import {Equitable} from '../../../Equitable';
+import {ObjectHelper} from '../../../ObjectHelper';
+import {RegionsDescriptorJson} from './RegionsDescriptorJson';
 
-    export class RegionDescriptor
-        implements api.Equitable {
+export class RegionDescriptor
+    implements Equitable {
 
-        private name: string;
+    private name: string;
 
-        constructor(builder: RegionDescriptorBuilder) {
-            this.name = builder.name;
-        }
-
-        getName(): string {
-            return this.name;
-        }
-
-        public static create(): RegionDescriptorBuilder {
-            return new RegionDescriptorBuilder();
-        }
-
-        public static fromJson(json: RegionsDescriptorJson): RegionDescriptor {
-           return RegionDescriptor.create().setName(json.name).build();
-        }
-
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, RegionDescriptor)) {
-                return false;
-            }
-
-            let other = <RegionDescriptor>o;
-
-            return this.name === other.getName();
-        }
-
+    constructor(builder: RegionDescriptorBuilder) {
+        this.name = builder.name;
     }
 
-    export class RegionDescriptorBuilder {
+    public static create(): RegionDescriptorBuilder {
+        return new RegionDescriptorBuilder();
+    }
 
-        name: string;
+    public static fromJson(json: RegionsDescriptorJson): RegionDescriptor {
+        return RegionDescriptor.create().setName(json.name).build();
+    }
 
-        public setName(value: string): RegionDescriptorBuilder {
-            this.name = value;
-            return this;
+    getName(): string {
+        return this.name;
+    }
+
+    equals(o: Equitable): boolean {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, RegionDescriptor)) {
+            return false;
         }
 
-        public build(): RegionDescriptor {
-            return new RegionDescriptor(this);
-        }
+        let other = <RegionDescriptor>o;
+
+        return this.name === other.getName();
+    }
+
+}
+
+export class RegionDescriptorBuilder {
+
+    name: string;
+
+    public setName(value: string): RegionDescriptorBuilder {
+        this.name = value;
+        return this;
+    }
+
+    public build(): RegionDescriptor {
+        return new RegionDescriptor(this);
     }
 }

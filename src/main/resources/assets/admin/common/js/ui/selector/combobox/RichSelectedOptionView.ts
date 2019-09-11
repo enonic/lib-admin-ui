@@ -1,129 +1,134 @@
-module api.ui.selector.combobox {
+import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
+import {BaseSelectedOptionView} from './BaseSelectedOptionView';
+import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';
+import {DivEl} from '../../../dom/DivEl';
+import {Element} from '../../../dom/Element';
+import {Option} from '../Option';
+import {StringHelper} from '../../../util/StringHelper';
 
-    import NamesAndIconView = api.app.NamesAndIconView;
-    export class RichSelectedOptionView<T> extends api.ui.selector.combobox.BaseSelectedOptionView<T> {
+export class RichSelectedOptionView<T>
+    extends BaseSelectedOptionView<T> {
 
-        private optionDisplayValue: T;
+    private optionDisplayValue: T;
 
-        private size: api.app.NamesAndIconViewSize;
+    private size: NamesAndIconViewSize;
 
-        private draggable: boolean;
+    private draggable: boolean;
 
-        private namesAndIconView: NamesAndIconView;
+    private namesAndIconView: NamesAndIconView;
 
-        constructor(builder: RichSelectedOptionViewBuilder<T>) {
-            super(builder.option);
+    constructor(builder: RichSelectedOptionViewBuilder<T>) {
+        super(builder.option);
 
-            this.optionDisplayValue = builder.option.displayValue;
-            this.size = builder.size;
+        this.optionDisplayValue = builder.option.displayValue;
+        this.size = builder.size;
 
-            this.draggable = builder.draggable;
-            this.setEditable(builder.editable);
-            this.setRemovable(builder.removable);
-        }
-
-        resolveIconUrl(_content: T): string {
-            return '';
-        }
-
-        resolveTitle(_content: T): string {
-            return '';
-        }
-
-        resolveSubTitle(_content: T): string {
-            return '';
-        }
-
-        resolveIconClass(_content: T): string {
-            return '';
-        }
-
-        protected appendActionButtons() {
-            if (this.draggable) {
-                this.appendChild(new api.dom.DivEl('drag-control'));
-            }
-
-            super.appendActionButtons();
-        }
-
-        protected createView(content: T): api.dom.Element {
-
-            this.namesAndIconView = new api.app.NamesAndIconViewBuilder().setSize(this.size).build();
-
-            this.setValues(content);
-
-            return this.namesAndIconView;
-        }
-
-        setOption(option: api.ui.selector.Option<T>): any {
-            super.setOption(option);
-
-            this.setValues(option.displayValue);
-            this.optionDisplayValue = option.displayValue;
-        }
-
-        private setValues(values: T) {
-            this.namesAndIconView.setMainName(this.resolveTitle(values))
-                .setSubName(this.resolveSubTitle(values));
-
-            let url = this.resolveIconUrl(values);
-            if (!api.util.StringHelper.isBlank(url)) {
-                this.namesAndIconView.setIconUrl(url + (url.indexOf('?') === -1 ? '?' : '&') + 'crop=false');
-            } else {
-                this.namesAndIconView.setIconClass(this.resolveIconClass(values));
-            }
-        }
-
-        doRender(): wemQ.Promise<boolean> {
-            this.appendActionButtons();
-            this.appendChild(this.createView(this.optionDisplayValue));
-
-            return wemQ(true);
-        }
-
-        protected getOptionDisplayValue(): T {
-            return this.optionDisplayValue;
-        }
+        this.draggable = builder.draggable;
+        this.setEditable(builder.editable);
+        this.setRemovable(builder.removable);
     }
 
-    export class RichSelectedOptionViewBuilder<T> {
-        option: api.ui.selector.Option<T>;
-        size: api.app.NamesAndIconViewSize = api.app.NamesAndIconViewSize.small;
+    resolveIconUrl(_content: T): string {
+        return '';
+    }
 
-        editable: boolean = false;
-        draggable: boolean = false;
-        removable: boolean = true;
+    resolveTitle(_content: T): string {
+        return '';
+    }
 
-        constructor(option: api.ui.selector.Option<T>) {
-            this.option = option;
+    resolveSubTitle(_content: T): string {
+        return '';
+    }
+
+    resolveIconClass(_content: T): string {
+        return '';
+    }
+
+    setOption(option: Option<T>): any {
+        super.setOption(option);
+
+        this.setValues(option.displayValue);
+        this.optionDisplayValue = option.displayValue;
+    }
+
+    doRender(): Q.Promise<boolean> {
+        this.appendActionButtons();
+        this.appendChild(this.createView(this.optionDisplayValue));
+
+        return Q(true);
+    }
+
+    protected appendActionButtons() {
+        if (this.draggable) {
+            this.appendChild(new DivEl('drag-control'));
         }
 
-        setEditable(value: boolean): RichSelectedOptionViewBuilder<T> {
-            this.editable = value;
+        super.appendActionButtons();
+    }
 
-            return this;
+    protected createView(content: T): Element {
+
+        this.namesAndIconView = new NamesAndIconViewBuilder().setSize(this.size).build();
+
+        this.setValues(content);
+
+        return this.namesAndIconView;
+    }
+
+    protected getOptionDisplayValue(): T {
+        return this.optionDisplayValue;
+    }
+
+    private setValues(values: T) {
+        this.namesAndIconView.setMainName(this.resolveTitle(values))
+            .setSubName(this.resolveSubTitle(values));
+
+        let url = this.resolveIconUrl(values);
+        if (!StringHelper.isBlank(url)) {
+            this.namesAndIconView.setIconUrl(url + (url.indexOf('?') === -1 ? '?' : '&') + 'crop=false');
+        } else {
+            this.namesAndIconView.setIconClass(this.resolveIconClass(values));
         }
+    }
+}
 
-        setDraggable(value: boolean): RichSelectedOptionViewBuilder<T> {
-            this.draggable = value;
+export class RichSelectedOptionViewBuilder<T> {
+    option: Option<T>;
+    size: NamesAndIconViewSize = NamesAndIconViewSize.small;
 
-            return this;
-        }
+    editable: boolean = false;
+    draggable: boolean = false;
+    removable: boolean = true;
 
-        setRemovable(value: boolean): RichSelectedOptionViewBuilder<T> {
-            this.removable = value;
+    constructor(option: Option<T>) {
+        this.option = option;
+    }
 
-            return this;
-        }
+    setEditable(value: boolean): RichSelectedOptionViewBuilder<T> {
+        this.editable = value;
 
-        setSize(size: api.app.NamesAndIconViewSize): RichSelectedOptionViewBuilder<T> {
-            this.size = size;
+        return this;
+    }
 
-            return this;
-        }
+    setDraggable(value: boolean): RichSelectedOptionViewBuilder<T> {
+        this.draggable = value;
 
-        build(): RichSelectedOptionView<T> {
-            return new RichSelectedOptionView(this);
-        }
+        return this;
+    }
+
+    setRemovable(value: boolean): RichSelectedOptionViewBuilder<T> {
+        this.removable = value;
+
+        return this;
+    }
+
+    setSize(size: NamesAndIconViewSize): RichSelectedOptionViewBuilder<T> {
+        this.size = size;
+
+        return this;
+    }
+
+    build(): RichSelectedOptionView<T> {
+        return new RichSelectedOptionView(this);
     }
 }

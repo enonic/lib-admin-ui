@@ -27,7 +27,7 @@ describe('api.application.ApplicationLoader', () => {
         let deferredPromise;
 
         beforeEach(() => {
-            deferredPromise = wemQ.defer();
+            deferredPromise = Q.defer();
 
             spyOn(applicationLoader, 'sendRequest').and.returnValue(deferredPromise.promise);
 
@@ -86,7 +86,7 @@ describe('api.application.ApplicationLoader', () => {
 
             applicationLoader = new ApplicationLoader(filterObject);
 
-            deferredPromise = wemQ.defer();
+            deferredPromise = Q.defer();
 
             spyOn(applicationLoader, 'sendRequest').and.returnValue(deferredPromise.promise);
 

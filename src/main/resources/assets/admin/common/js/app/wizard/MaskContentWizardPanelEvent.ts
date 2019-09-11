@@ -1,35 +1,34 @@
-module api.app.wizard {
+import {ContentId} from '../../content/ContentId';
+import {Event} from '../../event/Event';
+import {ClassHelper} from '../../ClassHelper';
 
-    import ContentId = api.content.ContentId;
+export class MaskContentWizardPanelEvent
+    extends Event {
 
-    export class MaskContentWizardPanelEvent extends api.event.Event {
+    private contentId: ContentId;
 
-        private contentId: ContentId;
+    private mask: boolean;
 
-        private mask: boolean;
+    constructor(contentId: ContentId, mask: boolean = true) {
+        super();
 
-        constructor(contentId: ContentId, mask: boolean = true) {
-            super();
-
-            this.contentId = contentId;
-            this.mask = mask;
-        }
-
-        isMask(): boolean {
-            return this.mask;
-        }
-
-        getContentId(): ContentId {
-            return this.contentId;
-        }
-
-        static on(handler: (event: MaskContentWizardPanelEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
-        }
-
-        static un(handler?: (event: MaskContentWizardPanelEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
-        }
+        this.contentId = contentId;
+        this.mask = mask;
     }
 
+    static on(handler: (event: MaskContentWizardPanelEvent) => void) {
+        Event.bind(ClassHelper.getFullName(this), handler);
+    }
+
+    static un(handler?: (event: MaskContentWizardPanelEvent) => void) {
+        Event.unbind(ClassHelper.getFullName(this), handler);
+    }
+
+    isMask(): boolean {
+        return this.mask;
+    }
+
+    getContentId(): ContentId {
+        return this.contentId;
+    }
 }

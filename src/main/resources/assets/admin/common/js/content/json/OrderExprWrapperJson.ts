@@ -1,10 +1,9 @@
-module api.content.json {
+import {OrderExprJson} from './OrderExprJson';
 
-    export interface OrderExprWrapperJson {
+export interface OrderExprWrapperJson {
 
-        FieldOrderExpr?: OrderExprJson;
+    FieldOrderExpr?: OrderExprJson;
 
-        DynamicOrderExpr? : OrderExprJson;
+    DynamicOrderExpr?: OrderExprJson;
 
-    }
 }

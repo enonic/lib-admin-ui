@@ -1,41 +1,44 @@
-module api.content {
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
+import {StringHelper} from '../util/StringHelper';
+import {Reference} from '../util/Reference';
 
-    export class ContentId implements api.Equitable {
+export class ContentId
+    implements Equitable {
 
-        private value: string;
+    private value: string;
 
-        constructor(value: string) {
-            if (!ContentId.isValidContentId(value)) {
-                throw new Error('Invalid content id: ' + value);
-            }
-            this.value = value;
+    constructor(value: string) {
+        if (!ContentId.isValidContentId(value)) {
+            throw new Error('Invalid content id: ' + value);
+        }
+        this.value = value;
+    }
+
+    static isValidContentId(id: string): boolean {
+        return !StringHelper.isEmpty(id) && !StringHelper.isBlank(id);
+    }
+
+    static fromReference(reference: Reference) {
+        return new ContentId(reference.getNodeId());
+    }
+
+    toString(): string {
+        return this.value;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentId)) {
+            return false;
         }
 
-        toString(): string {
-            return this.value;
+        let other = <ContentId>o;
+
+        if (!ObjectHelper.stringEquals(this.value, other.value)) {
+            return false;
         }
 
-        equals(o: api.Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentId)) {
-                return false;
-            }
-
-            let other = <ContentId>o;
-
-            if (!api.ObjectHelper.stringEquals(this.value, other.value)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        static isValidContentId(id: string): boolean {
-            return !api.util.StringHelper.isEmpty(id) && !api.util.StringHelper.isBlank(id);
-        }
-
-        static fromReference(reference: api.util.Reference) {
-            return new ContentId(reference.getNodeId());
-        }
+        return true;
     }
 }

@@ -1,13 +1,14 @@
-module api.form.inputtype {
+import {FormContext} from '../FormContext';
+import {Input} from '../Input';
+import {PropertyPath} from '../../data/PropertyPath';
 
-    export interface InputTypeViewContext {
+export interface InputTypeViewContext {
 
-        formContext: api.form.FormContext;
+    formContext: FormContext;
 
-        input: api.form.Input;
+    input: Input;
 
-        inputConfig: { [element: string]: { [name: string]: string }[]; };
+    inputConfig: { [element: string]: { [name: string]: string }[]; };
 
-        parentDataPath: api.data.PropertyPath;
-    }
+    parentDataPath: PropertyPath;
 }

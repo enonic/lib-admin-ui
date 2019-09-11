@@ -1,143 +1,146 @@
-module api.macro {
+import {Equitable} from '../Equitable';
+import {Form} from '../form/Form';
+import {MacroJson} from './resource/MacrosJson';
+import {ObjectHelper} from '../ObjectHelper';
+import {MacroKey} from './MacroKey';
 
-    export class MacroDescriptor
-        implements api.Equitable {
+export class MacroDescriptor
+    implements Equitable {
 
-        private macroKey: MacroKey;
+    private macroKey: MacroKey;
 
-        private displayName: string;
+    private displayName: string;
 
-        private description: string;
+    private description: string;
 
-        private form: api.form.Form;
+    private form: Form;
 
-        private iconUrl: string;
+    private iconUrl: string;
 
-        constructor(builder: MacroDescriptorBuilder) {
-            this.macroKey = builder.macroKey;
-            this.displayName = builder.displayName;
-            this.description = builder.description;
-            this.form = builder.form;
-            this.iconUrl = builder.iconUrl;
-        }
-
-        getKey(): MacroKey {
-            return this.macroKey;
-        }
-
-        getName(): string {
-            return this.macroKey.getName();
-        }
-
-        getDisplayName(): string {
-            return this.displayName;
-        }
-
-        getDescription(): string {
-            return this.description;
-        }
-
-        getForm(): api.form.Form {
-            return this.form;
-        }
-
-        getIconUrl(): string {
-            return this.iconUrl;
-        }
-
-        static create(): MacroDescriptorBuilder {
-            return new MacroDescriptorBuilder();
-        }
-
-        static fromJson(json: api.macro.resource.MacroJson): MacroDescriptor {
-            return MacroDescriptor.create()
-                .setKey(MacroKey.fromString(json.key))
-                .setDisplayName(json.displayName)
-                .setDescription(json.description)
-                .setForm(json.form != null ? api.form.Form.fromJson(json.form) : null)
-                .setIconUrl(json.iconUrl)
-                .build();
-        }
-
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, MacroDescriptor)) {
-                return false;
-            }
-
-            let other = <MacroDescriptor>o;
-
-            if (this.displayName !== other.displayName) {
-                return false;
-            }
-
-            if (this.description !== other.description) {
-                return false;
-            }
-
-            if (this.iconUrl !== other.iconUrl) {
-                return false;
-            }
-
-            if (!api.ObjectHelper.equals(this.macroKey, other.macroKey)) {
-                return false;
-            }
-
-            if (!api.ObjectHelper.equals(this.form, other.form)) {
-                return false;
-            }
-
-            return true;
-        }
+    constructor(builder: MacroDescriptorBuilder) {
+        this.macroKey = builder.macroKey;
+        this.displayName = builder.displayName;
+        this.description = builder.description;
+        this.form = builder.form;
+        this.iconUrl = builder.iconUrl;
     }
 
-    export class MacroDescriptorBuilder {
+    static create(): MacroDescriptorBuilder {
+        return new MacroDescriptorBuilder();
+    }
 
-        macroKey: MacroKey;
+    static fromJson(json: MacroJson): MacroDescriptor {
+        return MacroDescriptor.create()
+            .setKey(MacroKey.fromString(json.key))
+            .setDisplayName(json.displayName)
+            .setDescription(json.description)
+            .setForm(json.form != null ? Form.fromJson(json.form) : null)
+            .setIconUrl(json.iconUrl)
+            .build();
+    }
 
-        displayName: string;
+    getKey(): MacroKey {
+        return this.macroKey;
+    }
 
-        description: string;
+    getName(): string {
+        return this.macroKey.getName();
+    }
 
-        form: api.form.Form;
+    getDisplayName(): string {
+        return this.displayName;
+    }
 
-        iconUrl: string;
+    getDescription(): string {
+        return this.description;
+    }
 
-        fromSource(source: MacroDescriptor): MacroDescriptorBuilder {
-            this.macroKey = source.getKey();
-            this.displayName = source.getDisplayName();
-            this.description = source.getDescription();
-            this.form = source.getForm();
-            this.iconUrl = source.getIconUrl();
-            return this;
+    getForm(): Form {
+        return this.form;
+    }
+
+    getIconUrl(): string {
+        return this.iconUrl;
+    }
+
+    equals(o: Equitable): boolean {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, MacroDescriptor)) {
+            return false;
         }
 
-        setKey(key: MacroKey): MacroDescriptorBuilder {
-            this.macroKey = key;
-            return this;
+        let other = <MacroDescriptor>o;
+
+        if (this.displayName !== other.displayName) {
+            return false;
         }
 
-        setDisplayName(displayName: string): MacroDescriptorBuilder {
-            this.displayName = displayName;
-            return this;
+        if (this.description !== other.description) {
+            return false;
         }
 
-        setDescription(description: string): MacroDescriptorBuilder {
-            this.description = description;
-            return this;
+        if (this.iconUrl !== other.iconUrl) {
+            return false;
         }
 
-        setForm(form: api.form.Form): MacroDescriptorBuilder {
-            this.form = form;
-            return this;
+        if (!ObjectHelper.equals(this.macroKey, other.macroKey)) {
+            return false;
         }
 
-        setIconUrl(iconUrl: string): MacroDescriptorBuilder {
-            this.iconUrl = iconUrl;
-            return this;
+        if (!ObjectHelper.equals(this.form, other.form)) {
+            return false;
         }
 
-        build(): MacroDescriptor {
-            return new MacroDescriptor(this);
-        }
+        return true;
+    }
+}
+
+export class MacroDescriptorBuilder {
+
+    macroKey: MacroKey;
+
+    displayName: string;
+
+    description: string;
+
+    form: Form;
+
+    iconUrl: string;
+
+    fromSource(source: MacroDescriptor): MacroDescriptorBuilder {
+        this.macroKey = source.getKey();
+        this.displayName = source.getDisplayName();
+        this.description = source.getDescription();
+        this.form = source.getForm();
+        this.iconUrl = source.getIconUrl();
+        return this;
+    }
+
+    setKey(key: MacroKey): MacroDescriptorBuilder {
+        this.macroKey = key;
+        return this;
+    }
+
+    setDisplayName(displayName: string): MacroDescriptorBuilder {
+        this.displayName = displayName;
+        return this;
+    }
+
+    setDescription(description: string): MacroDescriptorBuilder {
+        this.description = description;
+        return this;
+    }
+
+    setForm(form: Form): MacroDescriptorBuilder {
+        this.form = form;
+        return this;
+    }
+
+    setIconUrl(iconUrl: string): MacroDescriptorBuilder {
+        this.iconUrl = iconUrl;
+        return this;
+    }
+
+    build(): MacroDescriptor {
+        return new MacroDescriptor(this);
     }
 }

@@ -1,39 +1,36 @@
-module api.ui.responsive {
+export class ResponsiveRange {
 
-    export class ResponsiveRange {
+    private minRange: number;
+    private maxRange: number;
+    private rangeClass: string;
 
-        private minRange: number;
-        private maxRange: number;
-        private rangeClass: string;
+    constructor(minRange: number, maxRange?: number, rangeClass?: string) {
+        this.minRange = minRange;
+        this.maxRange = maxRange || 0;
+        this.rangeClass = rangeClass || ('_' + (minRange === 375 ? 360 : minRange) + '-' + (maxRange === 375 ? 360 : maxRange));
+    }
 
-        constructor(minRange: number, maxRange?: number, rangeClass?: string) {
-            this.minRange = minRange;
-            this.maxRange = maxRange || 0;
-            this.rangeClass = rangeClass || ('_' + (minRange === 375 ? 360 : minRange) + '-' + (maxRange === 375 ? 360 : maxRange));
-        }
+    getMinimumRange(): number {
+        return this.minRange;
+    }
 
-        getMinimumRange(): number {
-            return this.minRange;
-        }
+    getMaximumRange(): number {
+        return this.maxRange;
+    }
 
-        getMaximumRange(): number {
-            return this.maxRange;
-        }
+    getRangeClass(): string {
+        return this.rangeClass;
+    }
 
-        getRangeClass(): string {
-            return this.rangeClass;
-        }
+    isFit(size: number): boolean {
+        return (this.minRange <= size) && (size <= this.maxRange);
+    }
 
-        isFit(size: number): boolean {
-            return (this.minRange <= size) && (size <= this.maxRange);
-        }
+    isFitOrSmaller(size: number): boolean {
+        return size <= this.maxRange;
+    }
 
-        isFitOrSmaller(size: number): boolean {
-            return size <= this.maxRange;
-        }
-
-        isFitOrBigger(size: number): boolean {
-            return size > this.minRange;
-        }
+    isFitOrBigger(size: number): boolean {
+        return size > this.minRange;
     }
 }

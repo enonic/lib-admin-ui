@@ -1,62 +1,56 @@
-module api.security.event {
+import {NodeEventJson, NodeEventNodeJson} from '../../event/NodeServerEvent';
+import {NodeServerChange, NodeServerChangeItem, NodeServerChangeType} from '../../event/NodeServerChange';
 
-    import NodeEventJson = api.event.NodeEventJson;
-    import NodeEventNodeJson = api.event.NodeEventNodeJson;
-    import NodeServerChange = api.event.NodeServerChange;
-    import NodeServerChangeType = api.event.NodeServerChangeType;
-    import NodeServerChangeItem = api.event.NodeServerChangeItem;
+export class PrincipalServerChangeItem
+    extends NodeServerChangeItem<string> {
 
-    export class PrincipalServerChangeItem
-        extends NodeServerChangeItem<string> {
+    private id: string;
 
-        private id: string;
+    constructor(id: string, path: string, branch: string) {
+        super(path, branch);
 
-        constructor(id: string, path: string, branch: string) {
-            super(path, branch);
-
-            this.id = id;
-        }
-
-        getId(): string {
-            return this.id;
-        }
-
-        static fromJson(node: NodeEventNodeJson): PrincipalServerChangeItem {
-            return new PrincipalServerChangeItem(node.id, node.path.substr('/identity'.length), node.branch);
-        }
-
+        this.id = id;
     }
 
-    export class PrincipalServerChange
-        extends NodeServerChange<string> {
+    static fromJson(node: NodeEventNodeJson): PrincipalServerChangeItem {
+        return new PrincipalServerChangeItem(node.id, node.path.substr('/identity'.length), node.branch);
+    }
 
-        constructor(type: NodeServerChangeType, changeItems: PrincipalServerChangeItem[], newPrincipalPaths?: string[]) {
-            super(type, changeItems, newPrincipalPaths);
+    getId(): string {
+        return this.id;
+    }
+
+}
+
+export class PrincipalServerChange
+    extends NodeServerChange<string> {
+
+    constructor(type: NodeServerChangeType, changeItems: PrincipalServerChangeItem[], newPrincipalPaths?: string[]) {
+        super(type, changeItems, newPrincipalPaths);
+    }
+
+    static fromJson(nodeEventJson: NodeEventJson): PrincipalServerChange {
+
+        let changedItems = nodeEventJson.data.nodes.filter((node) => node.path.indexOf('/identity') === 0).map(
+            (node: NodeEventNodeJson) => PrincipalServerChangeItem.fromJson(node));
+
+        if (changedItems.length === 0) {
+            return null;
         }
 
-        getChangeType(): NodeServerChangeType {
-            return this.type;
-        }
+        let principalEventType = this.getNodeServerChangeType(nodeEventJson.type);
+        return new PrincipalServerChange(principalEventType, changedItems);
+    }
 
-        toString(): string {
-            return NodeServerChangeType[this.type] + ': <' +
-                   this.changeItems.map((item) => item.getPath()).join(', ') + !!this.newNodePaths
-                ? this.newNodePaths.join(', ')
-                : '' +
-                  '>';
-        }
+    getChangeType(): NodeServerChangeType {
+        return this.type;
+    }
 
-        static fromJson(nodeEventJson: NodeEventJson): PrincipalServerChange {
-
-            let changedItems = nodeEventJson.data.nodes.filter((node) => node.path.indexOf('/identity') === 0).map(
-                (node: NodeEventNodeJson) => PrincipalServerChangeItem.fromJson(node));
-
-            if (changedItems.length === 0) {
-                return null;
-            }
-
-            let principalEventType = this.getNodeServerChangeType(nodeEventJson.type);
-            return new PrincipalServerChange(principalEventType, changedItems);
-        }
+    toString(): string {
+        return NodeServerChangeType[this.type] + ': <' +
+               this.changeItems.map((item) => item.getPath()).join(', ') + !!this.newNodePaths
+               ? this.newNodePaths.join(', ')
+               : '' +
+                 '>';
     }
 }

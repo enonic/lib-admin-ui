@@ -1,222 +1,226 @@
-module api.ui.time {
+import {Element} from '../../dom/Element';
+import {Button} from '../button/Button';
+import {i18n} from '../../util/Messages';
+import {DivEl} from '../../dom/DivEl';
+import {TextInput} from '../text/TextInput';
+import {KeyHelper} from '../KeyHelper';
+import {AppHelper} from '../../util/AppHelper';
+import {FormEl} from '../../dom/FormEl';
+import {StyleHelper} from '../../StyleHelper';
+import {Body} from '../../dom/Body';
 
-    import Element = api.dom.Element;
-    import Button = api.ui.button.Button;
-    import i18n = api.util.i18n;
+export class Picker<T extends Element>
+    extends DivEl {
 
-    export class Picker<T extends Element>
-        extends api.dom.DivEl {
+    protected popup: T;
 
-        protected popup: T;
+    protected popupOkButton: Button;
 
-        protected popupOkButton: Button;
+    protected selectedDate: Date;
 
-        protected selectedDate: Date;
+    protected input: TextInput;
 
-        protected input: api.ui.text.TextInput;
+    protected validUserInput: boolean;
 
-        protected validUserInput: boolean;
+    private builder: any;
 
-        private builder: any;
+    private selectedDateTimeChangedListeners: { (event: SelectedDateChangedEvent): void }[] = [];
 
-        private selectedDateTimeChangedListeners: {(event: SelectedDateChangedEvent) : void}[] = [];
+    constructor(builder: any, className?: string) {
+        super(className);
 
-        constructor(builder: any, className?: string) {
-            super(className);
+        this.builder = builder;
 
-            this.builder = builder;
+        this.validUserInput = true;
 
-            this.validUserInput = true;
+        this.handleShownEvent();
 
-            this.handleShownEvent();
+        this.initData(builder);
 
-            this.initData(builder);
+        this.initInput(builder);
+        this.setupInputListeners();
 
-            this.initInput(builder);
-            this.setupInputListeners();
+        this.wrapChildrenAndAppend();
+    }
 
-            this.wrapChildrenAndAppend();
-        }
+    public resetBase() {
+        this.input.resetBaseValues();
+    }
 
-        protected setupPopupListeners(_builder: any) {
-            this.popup.onShown(() => this.addClass('expanded'));
-            this.popup.onHidden(() => this.removeClass('expanded'));
+    getTextInput(): TextInput {
+        return this.input;
+    }
 
-            // Prevent focus loss on mouse down
-            this.popup.onMouseDown((event: MouseEvent) => {
-                event.preventDefault();
-            });
+    isDirty(): boolean {
+        return this.input.isDirty();
+    }
 
-            this.popup.onKeyDown((event: KeyboardEvent) => {
-                if (api.ui.KeyHelper.isTabKey(event)) {
-                    if (!(document.activeElement === this.input.getEl().getHTMLElement())) {
-                        this.popup.hide();
-                    }
+    isValid(): boolean {
+        return this.validUserInput;
+    }
+
+    updateInputStyling() {
+        this.input.updateValidationStatusOnUserInput(this.validUserInput);
+    }
+
+    giveFocus(): boolean {
+        return this.input.giveFocus();
+    }
+
+    forceSelectedDateTimeChangedEvent() {
+        this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate));
+    }
+
+    onSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
+        this.selectedDateTimeChangedListeners.push(listener);
+    }
+
+    unSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
+        this.selectedDateTimeChangedListeners = this.selectedDateTimeChangedListeners.filter((curr) => {
+            return curr !== listener;
+        });
+    }
+
+    notifySelectedDateTimeChanged(event: SelectedDateChangedEvent) {
+        this.selectedDateTimeChangedListeners.forEach((listener) => {
+            listener(event);
+        });
+    }
+
+    protected setupPopupListeners(_builder: any) {
+        this.popup.onShown(() => this.addClass('expanded'));
+        this.popup.onHidden(() => this.removeClass('expanded'));
+
+        // Prevent focus loss on mouse down
+        this.popup.onMouseDown((event: MouseEvent) => {
+            event.preventDefault();
+        });
+
+        this.popup.onKeyDown((event: KeyboardEvent) => {
+            if (KeyHelper.isTabKey(event)) {
+                if (!(document.activeElement === this.input.getEl().getHTMLElement())) {
+                    this.popup.hide();
                 }
-            });
-        }
+            }
+        });
+    }
 
-        protected setupInputListeners() {
-            api.util.AppHelper.focusInOut(this, () => {
-                this.hidePopup();
-            }, 50, false);
+    protected setupInputListeners() {
+        AppHelper.focusInOut(this, () => {
+            this.hidePopup();
+        }, 50, false);
 
-            this.input.onClicked((e: MouseEvent) => {
-                e.preventDefault();
-                this.togglePopupVisibility();
-            });
+        this.input.onClicked((e: MouseEvent) => {
+            e.preventDefault();
+            this.togglePopupVisibility();
+        });
 
-            this.input.onFocus((e: FocusEvent) =>
-                setTimeout(() => {
-                    if (!this.popup || !this.popup.isVisible()) {
-                        e.preventDefault();
-                        this.showPopup();
-                    }
-                }, 150)
-            );
-
-            this.input.onKeyDown((event: KeyboardEvent) => {
-                if (api.ui.KeyHelper.isEnterKey(event)) {
-                    this.hidePopup();
-                    api.dom.FormEl.moveFocusToNextFocusable(this.input);
-                    event.stopPropagation();
-                    event.preventDefault();
-                } else if (api.ui.KeyHelper.isEscKey(event) || api.ui.KeyHelper.isArrowUpKey(event)) {
-                    this.hidePopup();
-                } else if (api.ui.KeyHelper.isArrowDownKey(event)) {
+        this.input.onFocus((e: FocusEvent) =>
+            setTimeout(() => {
+                if (!this.popup || !this.popup.isVisible()) {
+                    e.preventDefault();
                     this.showPopup();
-                    event.stopPropagation();
-                    event.preventDefault();
                 }
-            });
-        }
+            }, 150)
+        );
 
-        public resetBase() {
-            this.input.resetBaseValues();
-        }
-
-        protected handleShownEvent() {
-            // must be implemented by children
-        }
-
-        protected initData(_builder: any) {
-            // must be implemented by children
-        }
-
-        protected initPopup(_builder: any) {
-            throw new Error('must be implemented by inheritor');
-        }
-
-        protected initInput(_builder: any) {
-            throw new Error('must be implemented by inheritor');
-        }
-
-        protected wrapChildrenAndAppend() {
-            let wrapper = new api.dom.DivEl('wrapper', api.StyleHelper.COMMON_PREFIX);
-            wrapper.appendChild(this.input);
-
-            this.appendChild(wrapper);
-        }
-
-        private initCloseButton() {
-            this.popupOkButton = new Button(i18n('action.ok'));
-            this.popupOkButton.addClass('ok-button');
-            this.popupOkButton.onClicked(() => {
+        this.input.onKeyDown((event: KeyboardEvent) => {
+            if (KeyHelper.isEnterKey(event)) {
                 this.hidePopup();
-            });
-            this.popup.appendChild(this.popupOkButton);
-        }
-
-        private createPopup() {
-            if (this.popup) {
-                return;
-            }
-
-            this.initPopup(this.builder);
-            this.setupPopupListeners(this.builder);
-            this.initCloseButton();
-
-            this.popup.insertAfterEl(this.input);
-        }
-
-        protected hidePopup() {
-            if (this.popup) {
-                this.popup.hide();
-            }
-        }
-
-        protected showPopup() {
-            this.createPopup();
-            this.resolvePosition();
-            this.popup.show();
-        }
-
-        private resolvePosition() {
-            this.popup.removeClass('reverted');
-            this.popup.getEl().setHeight('auto');
-
-            const rect = this.getEl().getBoundingClientRect();
-            const height = this.popup.getEl().getHeightWithBorder();
-            const viewHeight = api.dom.Body.get().getEl().getHeightWithBorder();
-
-            const spaceToBottom = viewHeight - rect.bottom;
-            const spaceToTop = rect.top;
-
-            if (height > spaceToBottom) {
-                if (height <= spaceToTop) {
-                    this.popup.addClass('reverted');
-                } else {
-                    this.popup.getEl().setHeightPx(spaceToBottom - 5);
-                }
-            }
-        }
-
-        protected togglePopupVisibility() {
-            if (this.popup && this.popup.isVisible()) {
+                FormEl.moveFocusToNextFocusable(this.input);
+                event.stopPropagation();
+                event.preventDefault();
+            } else if (KeyHelper.isEscKey(event) || KeyHelper.isArrowUpKey(event)) {
                 this.hidePopup();
-            } else {
+            } else if (KeyHelper.isArrowDownKey(event)) {
                 this.showPopup();
+                event.stopPropagation();
+                event.preventDefault();
             }
+        });
+    }
+
+    protected handleShownEvent() {
+        // must be implemented by children
+    }
+
+    protected initData(_builder: any) {
+        // must be implemented by children
+    }
+
+    protected initPopup(_builder: any) {
+        throw new Error('must be implemented by inheritor');
+    }
+
+    protected initInput(_builder: any) {
+        throw new Error('must be implemented by inheritor');
+    }
+
+    protected wrapChildrenAndAppend() {
+        let wrapper = new DivEl('wrapper', StyleHelper.COMMON_PREFIX);
+        wrapper.appendChild(this.input);
+
+        this.appendChild(wrapper);
+    }
+
+    protected hidePopup() {
+        if (this.popup) {
+            this.popup.hide();
+        }
+    }
+
+    protected showPopup() {
+        this.createPopup();
+        this.resolvePosition();
+        this.popup.show();
+    }
+
+    protected togglePopupVisibility() {
+        if (this.popup && this.popup.isVisible()) {
+            this.hidePopup();
+        } else {
+            this.showPopup();
+        }
+    }
+
+    private initCloseButton() {
+        this.popupOkButton = new Button(i18n('action.ok'));
+        this.popupOkButton.addClass('ok-button');
+        this.popupOkButton.onClicked(() => {
+            this.hidePopup();
+        });
+        this.popup.appendChild(this.popupOkButton);
+    }
+
+    private createPopup() {
+        if (this.popup) {
+            return;
         }
 
-        getTextInput(): api.ui.text.TextInput {
-            return this.input;
-        }
+        this.initPopup(this.builder);
+        this.setupPopupListeners(this.builder);
+        this.initCloseButton();
 
-        isDirty(): boolean {
-            return this.input.isDirty();
-        }
+        this.popup.insertAfterEl(this.input);
+    }
 
-        isValid(): boolean {
-            return this.validUserInput;
-        }
+    private resolvePosition() {
+        this.popup.removeClass('reverted');
+        this.popup.getEl().setHeight('auto');
 
-        updateInputStyling() {
-            this.input.updateValidationStatusOnUserInput(this.validUserInput);
-        }
+        const rect = this.getEl().getBoundingClientRect();
+        const height = this.popup.getEl().getHeightWithBorder();
+        const viewHeight = Body.get().getEl().getHeightWithBorder();
 
-        giveFocus(): boolean {
-            return this.input.giveFocus();
-        }
+        const spaceToBottom = viewHeight - rect.bottom;
+        const spaceToTop = rect.top;
 
-        forceSelectedDateTimeChangedEvent() {
-            this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate));
-        }
-
-        onSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.selectedDateTimeChangedListeners.push(listener);
-        }
-
-        unSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.selectedDateTimeChangedListeners = this.selectedDateTimeChangedListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
-
-        notifySelectedDateTimeChanged(event: SelectedDateChangedEvent) {
-            this.selectedDateTimeChangedListeners.forEach((listener) => {
-                listener(event);
-            });
+        if (height > spaceToBottom) {
+            if (height <= spaceToTop) {
+                this.popup.addClass('reverted');
+            } else {
+                this.popup.getEl().setHeightPx(spaceToBottom - 5);
+            }
         }
     }
 }

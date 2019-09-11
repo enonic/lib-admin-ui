@@ -55,6 +55,38 @@ declare module CrossroadsJs {
         NORM_AS_ARRAY: Function;
 
         NORM_AS_OBJECT: Function;
+        /**
+         * Signal dispatched every time that crossroads.parse can't find a Route that matches the request. Useful for debuging and error handling.
+         */
+        bypassed: Signal;
+        /**
+         * Signal dispatched every time that crossroads.parse find a Route that matches the request. Useful for debuging and for executing tasks that should happen at each routing.
+         */
+        routed: Signal;
+        /**
+         * Sets a default function that should be used to normalize parameters before passing them to the Route.matched, works similarly to Route.rules.normalize_.
+         */
+        normalizeFn: Function;
+        /**
+         * Set if crossroads should typecast route paths. Default value is false (IMPORTANT: on v0.5.0 it was true by default).
+         */
+        shouldTypecast: boolean;
+        /**
+         * String representation of the crossroads version number (e.g. "0.6.0").
+         */
+        VERSION: string;
+        /**
+         * Sets global route matching behavior to greedy so crossroads will try to match every single route with the supplied request (if true it won't stop at first match).
+         */
+        greedy: boolean;
+        /**
+         * Sets if the greedy routes feature is enabled. If false it won't try to match multiple routes (faster).
+         */
+        greedyEnabled: boolean;
+        /**
+         * Sets if Router should care about previous state, so multiple crossroads.parse() calls passing same argument would not trigger the routed, matched and bypassed signals.
+         */
+        ignoreState: boolean;
 
         /**
          * Creates a new route pattern listener and add it to crossroads routes collection.
@@ -91,54 +123,14 @@ declare module CrossroadsJs {
         getNumRoutes(): number;
 
         /**
-         * Signal dispatched every time that crossroads.parse can't find a Route that matches the request. Useful for debuging and error handling.
-         */
-        bypassed: Signal;
-
-        /**
-         * Signal dispatched every time that crossroads.parse find a Route that matches the request. Useful for debuging and for executing tasks that should happen at each routing.
-         */
-        routed: Signal;
-
-        /**
          * Create a new independent Router instance.
          */
         create(): CrossRoadsStatic;
 
         /**
-         * Sets a default function that should be used to normalize parameters before passing them to the Route.matched, works similarly to Route.rules.normalize_.
-         */
-        normalizeFn: Function;
-
-        /**
-         * Set if crossroads should typecast route paths. Default value is false (IMPORTANT: on v0.5.0 it was true by default).
-         */
-        shouldTypecast: boolean;
-
-        /**
-         * String representation of the crossroads version number (e.g. "0.6.0").
-         */
-        VERSION: string;
-
-        /**
-         * Sets global route matching behavior to greedy so crossroads will try to match every single route with the supplied request (if true it won't stop at first match).
-         */
-        greedy: boolean;
-
-        /**
-         * Sets if the greedy routes feature is enabled. If false it won't try to match multiple routes (faster).
-         */
-        greedyEnabled: boolean;
-
-        /**
          * Resets the Router internal state. Will clear reference to previously matched routes (so they won't dispatch switched signal when matching a new route) and reset last request.
          */
         resetState();
-
-        /**
-         * Sets if Router should care about previous state, so multiple crossroads.parse() calls passing same argument would not trigger the routed, matched and bypassed signals.
-         */
-        ignoreState: boolean;
 
         /**
          * Pipe routers, so all crossroads.parse() calls will be forwarded to the other router as well.

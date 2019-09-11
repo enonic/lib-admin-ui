@@ -1,31 +1,33 @@
-module api.query.filter {
+import {Filter} from './Filter';
+import {Value} from '../../data/Value';
+import {FilterTypeWrapperJson} from './FilterTypeWrapperJson';
+import {RangeFilterJson} from './RangeFilterJson';
 
-    export class RangeFilter extends api.query.filter.Filter {
+export class RangeFilter
+    extends Filter {
 
-        private from: api.data.Value;
-        private to: api.data.Value;
-        private fieldName: string;
+    private from: Value;
+    private to: Value;
+    private fieldName: string;
 
-        constructor(fieldName: string, from: api.data.Value, to: api.data.Value) {
-            super();
-            this.fieldName = fieldName;
-            this.from = from;
-            this.to = to;
-        }
+    constructor(fieldName: string, from: Value, to: Value) {
+        super();
+        this.fieldName = fieldName;
+        this.from = from;
+        this.to = to;
+    }
 
-        toJson(): api.query.filter.FilterTypeWrapperJson {
+    toJson(): FilterTypeWrapperJson {
 
-            let json: api.query.filter.RangeFilterJson = {
-                fieldName: this.fieldName,
-                from: this.from != null ? this.from.getString() : null,
-                to: this.to != null ? this.to.getString() : null
-            };
+        let json: RangeFilterJson = {
+            fieldName: this.fieldName,
+            from: this.from != null ? this.from.getString() : null,
+            to: this.to != null ? this.to.getString() : null
+        };
 
-            return <api.query.filter.FilterTypeWrapperJson> {
-                RangeFilter: json
-            };
-
-        }
+        return <FilterTypeWrapperJson> {
+            RangeFilter: json
+        };
 
     }
 

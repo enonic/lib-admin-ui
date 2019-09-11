@@ -1,98 +1,101 @@
-module api.thumb {
+import {Equitable} from '../Equitable';
+import {BinaryReference} from '../util/BinaryReference';
+import {ObjectHelper} from '../ObjectHelper';
+import {ThumbnailJson} from './ThumbnailJson';
 
-    export class Thumbnail implements api.Equitable {
+export class Thumbnail
+    implements Equitable {
 
-        private binaryReference: api.util.BinaryReference;
+    private binaryReference: BinaryReference;
 
-        private mimeType: string;
+    private mimeType: string;
 
-        private size: number;
+    private size: number;
 
-        constructor(builder: ThumbnailBuilder) {
-            this.binaryReference = builder.binaryReference;
-            this.mimeType = builder.mimeType;
-            this.size = builder.size;
-        }
-
-        getBinaryReference(): api.util.BinaryReference {
-            return this.binaryReference;
-        }
-
-        getMimeType(): string {
-            return this.mimeType;
-        }
-
-        getSize(): number {
-            return this.size;
-        }
-
-        toJson(): ThumbnailJson {
-
-            return {
-                binaryReference: this.getBinaryReference().toString(),
-                mimeType: this.getMimeType(),
-                size: this.getSize()
-            };
-        }
-
-        equals(o: api.Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Thumbnail)) {
-                return false;
-            }
-
-            let other = <Thumbnail>o;
-
-            if (!api.ObjectHelper.equals(this.binaryReference, other.binaryReference)) {
-                return false;
-            }
-            if (!api.ObjectHelper.stringEquals(this.mimeType, other.mimeType)) {
-                return false;
-            }
-            if (!api.ObjectHelper.numberEquals(this.size, other.size)) {
-                return false;
-            }
-            return true;
-        }
-
-        public static create(): ThumbnailBuilder {
-            return new ThumbnailBuilder();
-        }
-
+    constructor(builder: ThumbnailBuilder) {
+        this.binaryReference = builder.binaryReference;
+        this.mimeType = builder.mimeType;
+        this.size = builder.size;
     }
 
-    export class ThumbnailBuilder {
+    public static create(): ThumbnailBuilder {
+        return new ThumbnailBuilder();
+    }
 
-        binaryReference: api.util.BinaryReference;
+    getBinaryReference(): BinaryReference {
+        return this.binaryReference;
+    }
 
-        mimeType: string;
+    getMimeType(): string {
+        return this.mimeType;
+    }
 
-        size: number;
+    getSize(): number {
+        return this.size;
+    }
 
-        public fromJson(json: ThumbnailJson): ThumbnailBuilder {
-            this.binaryReference = new api.util.BinaryReference(json.binaryReference);
-            this.mimeType = json.mimeType;
-            this.size = json.size;
-            return this;
+    toJson(): ThumbnailJson {
+
+        return {
+            binaryReference: this.getBinaryReference().toString(),
+            mimeType: this.getMimeType(),
+            size: this.getSize()
+        };
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, Thumbnail)) {
+            return false;
         }
 
-        public setBinaryReference(value: api.util.BinaryReference): ThumbnailBuilder {
-            this.binaryReference = value;
-            return this;
-        }
+        let other = <Thumbnail>o;
 
-        public setMimeType(value: string): ThumbnailBuilder {
-            this.mimeType = value;
-            return this;
+        if (!ObjectHelper.equals(this.binaryReference, other.binaryReference)) {
+            return false;
         }
+        if (!ObjectHelper.stringEquals(this.mimeType, other.mimeType)) {
+            return false;
+        }
+        if (!ObjectHelper.numberEquals(this.size, other.size)) {
+            return false;
+        }
+        return true;
+    }
 
-        public setSize(value: number): ThumbnailBuilder {
-            this.size = value;
-            return this;
-        }
+}
 
-        public build(): Thumbnail {
-            return new Thumbnail(this);
-        }
+export class ThumbnailBuilder {
+
+    binaryReference: BinaryReference;
+
+    mimeType: string;
+
+    size: number;
+
+    public fromJson(json: ThumbnailJson): ThumbnailBuilder {
+        this.binaryReference = new BinaryReference(json.binaryReference);
+        this.mimeType = json.mimeType;
+        this.size = json.size;
+        return this;
+    }
+
+    public setBinaryReference(value: BinaryReference): ThumbnailBuilder {
+        this.binaryReference = value;
+        return this;
+    }
+
+    public setMimeType(value: string): ThumbnailBuilder {
+        this.mimeType = value;
+        return this;
+    }
+
+    public setSize(value: number): ThumbnailBuilder {
+        this.size = value;
+        return this;
+    }
+
+    public build(): Thumbnail {
+        return new Thumbnail(this);
     }
 }

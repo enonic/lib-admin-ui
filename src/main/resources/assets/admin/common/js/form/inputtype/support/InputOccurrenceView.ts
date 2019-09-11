@@ -1,192 +1,190 @@
-module api.form.inputtype.support {
+import * as Q from 'q';
+import {Property} from '../../../data/Property';
+import {PropertyArray} from '../../../data/PropertyArray';
+import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
+import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
+import {Element} from '../../../dom/Element';
+import {AEl} from '../../../dom/AEl';
+import {DivEl} from '../../../dom/DivEl';
+import {Value} from '../../../data/Value';
+import {PropertyPath} from '../../../data/PropertyPath';
+import {InputValidationRecording} from '../InputValidationRecording';
+import {InputOccurrence} from './InputOccurrence';
+import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import PropertyValueChangedEvent = api.data.PropertyValueChangedEvent;
+export class InputOccurrenceView
+    extends FormItemOccurrenceView {
 
-    export class InputOccurrenceView
-        extends api.form.FormItemOccurrenceView {
+    public static debug: boolean = false;
+    private inputOccurrence: InputOccurrence;
+    private property: Property;
+    private inputTypeView: BaseInputTypeNotManagingAdd;
+    private inputElement: Element;
+    private removeButtonEl: AEl;
+    private dragControl: DivEl;
+    private requiredContractBroken: boolean;
+    private propertyValueChangedHandler: (event: PropertyValueChangedEvent) => void;
+    private occurrenceValueChangedHandler: (occurrence: Element, value: Value) => void;
 
-        private inputOccurrence: InputOccurrence;
+    constructor(inputOccurrence: InputOccurrence, baseInputTypeView: BaseInputTypeNotManagingAdd, property: Property) {
+        super('input-occurrence-view', inputOccurrence);
 
-        private property: Property;
+        this.inputTypeView = baseInputTypeView;
+        this.inputElement = this.inputTypeView.createInputOccurrenceElement(inputOccurrence.getIndex(), property);
 
-        private inputTypeView: BaseInputTypeNotManagingAdd;
+        this.requiredContractBroken = this.inputTypeView.valueBreaksRequiredContract(property != null ? property.getValue() : null);
 
-        private inputElement: api.dom.Element;
+        this.initListeners();
 
-        private removeButtonEl: api.dom.AEl;
+        this.registerProperty(property);
 
-        private dragControl: api.dom.DivEl;
+        this.inputOccurrence = inputOccurrence;
 
-        private requiredContractBroken: boolean;
+        this.dragControl = new DivEl('drag-control');
+        this.appendChild(this.dragControl);
 
-        private propertyValueChangedHandler: (event: PropertyValueChangedEvent) => void;
+        this.removeButtonEl = new AEl('remove-button');
+        this.removeButtonEl.onClicked((event: MouseEvent) => {
+            this.notifyRemoveButtonClicked();
+            event.stopPropagation();
+            event.preventDefault();
+            return false;
+        });
 
-        private occurrenceValueChangedHandler: (occurrence: api.dom.Element, value: api.data.Value) => void;
+        let inputWrapper = new DivEl('input-wrapper');
+        this.appendChild(inputWrapper);
 
-        public static debug: boolean = false;
+        inputWrapper.appendChild(this.inputElement);
 
-        constructor(inputOccurrence: InputOccurrence, baseInputTypeView: BaseInputTypeNotManagingAdd, property: Property) {
-            super('input-occurrence-view', inputOccurrence);
+        this.appendChild(this.removeButtonEl);
 
-            this.inputTypeView = baseInputTypeView;
-            this.inputElement = this.inputTypeView.createInputOccurrenceElement(inputOccurrence.getIndex(), property);
+        this.refresh();
+    }
 
-            this.requiredContractBroken = this.inputTypeView.valueBreaksRequiredContract(property != null ? property.getValue() : null);
+    update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
+        let property = propertyArray.get(this.inputOccurrence.getIndex());
 
-            this.initListeners();
+        this.registerProperty(property);
 
-            this.registerProperty(property);
+        this.inputTypeView.updateInputOccurrenceElement(this.inputElement, property, unchangedOnly);
 
-            this.inputOccurrence = inputOccurrence;
+        return Q<void>(null);
+    }
 
-            this.dragControl = new api.dom.DivEl('drag-control');
-            this.appendChild(this.dragControl);
+    reset() {
+        this.inputTypeView.resetInputOccurrenceElement(this.inputElement);
+    }
 
-            this.removeButtonEl = new api.dom.AEl('remove-button');
-            this.removeButtonEl.onClicked((event: MouseEvent) => {
-                this.notifyRemoveButtonClicked();
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
-            });
+    refresh() {
 
-            let inputWrapper = new api.dom.DivEl('input-wrapper');
-            this.appendChild(inputWrapper);
-
-            inputWrapper.appendChild(this.inputElement);
-
-            this.appendChild(this.removeButtonEl);
-
-            this.refresh();
+        if (this.inputOccurrence.oneAndOnly()) {
+            this.addClass('single-occurrence').removeClass('multiple-occurrence');
+        } else {
+            this.addClass('multiple-occurrence').removeClass('single-occurrence');
         }
 
-        private initListeners() {
-            let ignorePropertyChange = false;
+        this.removeButtonEl.setVisible(this.inputOccurrence.isRemoveButtonRequiredStrict());
+    }
 
-            this.occurrenceValueChangedHandler = (occurrence: api.dom.Element, value: api.data.Value) => {
-                // check if this is our occurrence because all views will receive occurrence value changed event
-                if (this.inputElement === occurrence) {
-                    if (InputOccurrenceView.debug) {
-                        console.debug('InputOccurrenceView: onOccurrenceValueChanged ', occurrence, value);
-                    }
-                    ignorePropertyChange = true;
-                    this.property.setValue(value);
-                    this.inputTypeView.validate(false);
-                    ignorePropertyChange = false;
-                }
-            };
+    getDataPath(): PropertyPath {
 
-            this.onAdded(() => {
-                this.inputTypeView.onOccurrenceValueChanged(this.occurrenceValueChangedHandler);
-            });
+        return this.property.getPath();
+    }
 
-            this.propertyValueChangedHandler = (event: PropertyValueChangedEvent) => {
+    getIndex(): number {
+        return this.inputOccurrence.getIndex();
+    }
 
-                const changedProperty = event.getProperty();
-                let newStateOfRequiredContractBroken = this.inputTypeView.valueBreaksRequiredContract(event.getNewValue());
+    getInputElement(): Element {
+        return this.inputElement;
+    }
 
-                if (this.requiredContractBroken !== newStateOfRequiredContractBroken) {
-                    this.requiredContractBroken = newStateOfRequiredContractBroken;
-                    this.inputTypeView.notifyRequiredContractBroken();
-                }
+    hasValidUserInput(recording?: InputValidationRecording): boolean {
+        return this.inputTypeView.hasInputElementValidUserInput(this.inputElement, recording);
+    }
 
-                if (!ignorePropertyChange) {
-                    if (InputOccurrenceView.debug) {
-                        console.debug('InputOccurrenceView: propertyValueChanged', changedProperty);
-                    }
-                    this.inputTypeView.updateInputOccurrenceElement(this.inputElement, changedProperty, true);
-                }
-            };
+    giveFocus(): boolean {
+        return this.inputElement.giveFocus();
+    }
 
-            this.onRemoved(() => {
-                if (this.property) {
-                    this.property.unPropertyValueChanged(this.propertyValueChangedHandler);
-                }
+    onFocus(listener: (event: FocusEvent) => void) {
+        this.inputElement.onFocus(listener);
+    }
 
-                if (this.inputTypeView) {
-                    this.inputTypeView.unOccurrenceValueChanged(this.occurrenceValueChangedHandler);
-                }
-            });
-        }
+    unFocus(listener: (event: FocusEvent) => void) {
+        this.inputElement.unFocus(listener);
+    }
 
-        update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
-            let property = propertyArray.get(this.inputOccurrence.getIndex());
+    onBlur(listener: (event: FocusEvent) => void) {
+        this.inputElement.onBlur(listener);
+    }
 
-            this.registerProperty(property);
+    unBlur(listener: (event: FocusEvent) => void) {
+        this.inputElement.unBlur(listener);
+    }
 
-            this.inputTypeView.updateInputOccurrenceElement(this.inputElement, property, unchangedOnly);
+    private initListeners() {
+        let ignorePropertyChange = false;
 
-            return wemQ<void>(null);
-        }
-
-        reset() {
-            this.inputTypeView.resetInputOccurrenceElement(this.inputElement);
-        }
-
-        private registerProperty(property: Property) {
-            if (this.property) {
+        this.occurrenceValueChangedHandler = (occurrence: Element, value: Value) => {
+            // check if this is our occurrence because all views will receive occurrence value changed event
+            if (this.inputElement === occurrence) {
                 if (InputOccurrenceView.debug) {
-                    console.debug('InputOccurrenceView.registerProperty: unregister old property', this.property);
+                    console.debug('InputOccurrenceView: onOccurrenceValueChanged ', occurrence, value);
                 }
+                ignorePropertyChange = true;
+                this.property.setValue(value);
+                this.inputTypeView.validate(false);
+                ignorePropertyChange = false;
+            }
+        };
+
+        this.onAdded(() => {
+            this.inputTypeView.onOccurrenceValueChanged(this.occurrenceValueChangedHandler);
+        });
+
+        this.propertyValueChangedHandler = (event: PropertyValueChangedEvent) => {
+
+            const changedProperty = event.getProperty();
+            let newStateOfRequiredContractBroken = this.inputTypeView.valueBreaksRequiredContract(event.getNewValue());
+
+            if (this.requiredContractBroken !== newStateOfRequiredContractBroken) {
+                this.requiredContractBroken = newStateOfRequiredContractBroken;
+                this.inputTypeView.notifyRequiredContractBroken();
+            }
+
+            if (!ignorePropertyChange) {
+                if (InputOccurrenceView.debug) {
+                    console.debug('InputOccurrenceView: propertyValueChanged', changedProperty);
+                }
+                this.inputTypeView.updateInputOccurrenceElement(this.inputElement, changedProperty, true);
+            }
+        };
+
+        this.onRemoved(() => {
+            if (this.property) {
                 this.property.unPropertyValueChanged(this.propertyValueChangedHandler);
             }
-            if (property) {
-                if (InputOccurrenceView.debug) {
-                    console.debug('InputOccurrenceView.registerProperty: register new property', property);
-                }
-                property.onPropertyValueChanged(this.propertyValueChangedHandler);
+
+            if (this.inputTypeView) {
+                this.inputTypeView.unOccurrenceValueChanged(this.occurrenceValueChangedHandler);
             }
-            this.property = property;
-        }
+        });
+    }
 
-        refresh() {
-
-            if (this.inputOccurrence.oneAndOnly()) {
-                this.addClass('single-occurrence').removeClass('multiple-occurrence');
-            } else {
-                this.addClass('multiple-occurrence').removeClass('single-occurrence');
+    private registerProperty(property: Property) {
+        if (this.property) {
+            if (InputOccurrenceView.debug) {
+                console.debug('InputOccurrenceView.registerProperty: unregister old property', this.property);
             }
-
-            this.removeButtonEl.setVisible(this.inputOccurrence.isRemoveButtonRequiredStrict());
+            this.property.unPropertyValueChanged(this.propertyValueChangedHandler);
         }
-
-        getDataPath(): api.data.PropertyPath {
-
-            return this.property.getPath();
+        if (property) {
+            if (InputOccurrenceView.debug) {
+                console.debug('InputOccurrenceView.registerProperty: register new property', property);
+            }
+            property.onPropertyValueChanged(this.propertyValueChangedHandler);
         }
-
-        getIndex(): number {
-            return this.inputOccurrence.getIndex();
-        }
-
-        getInputElement(): api.dom.Element {
-            return this.inputElement;
-        }
-
-        hasValidUserInput(recording?: api.form.inputtype.InputValidationRecording): boolean {
-            return this.inputTypeView.hasInputElementValidUserInput(this.inputElement, recording);
-        }
-
-        giveFocus(): boolean {
-            return this.inputElement.giveFocus();
-        }
-
-        onFocus(listener: (event: FocusEvent) => void) {
-            this.inputElement.onFocus(listener);
-        }
-
-        unFocus(listener: (event: FocusEvent) => void) {
-            this.inputElement.unFocus(listener);
-        }
-
-        onBlur(listener: (event: FocusEvent) => void) {
-            this.inputElement.onBlur(listener);
-        }
-
-        unBlur(listener: (event: FocusEvent) => void) {
-            this.inputElement.unBlur(listener);
-        }
+        this.property = property;
     }
 }

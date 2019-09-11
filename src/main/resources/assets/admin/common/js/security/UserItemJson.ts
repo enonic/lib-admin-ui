@@ -1,9 +1,6 @@
-module api.security {
+export interface UserItemJson {
 
-    export interface UserItemJson {
-
-        displayName: string;
-        key: string;
-        description?: string;
-    }
+    displayName: string;
+    key: string;
+    description?: string;
 }

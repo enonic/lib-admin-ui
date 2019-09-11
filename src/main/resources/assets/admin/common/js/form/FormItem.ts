@@ -1,90 +1,98 @@
-module api.form {
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
+import {FormItemTypeWrapperJson} from './json/FormItemTypeWrapperJson';
+import {FormItemSet} from './set/itemset/FormItemSet';
+import {FormOptionSet} from './set/optionset/FormOptionSet';
+import {FormOptionSetOption} from './set/optionset/FormOptionSetOption';
+import {FieldSet} from './set/fieldset/FieldSet';
+import {FormItemPath, FormItemPathElement} from './FormItemPath';
+import {Input} from './Input';
 
-    export class FormItem implements api.Equitable {
+export class FormItem
+    implements Equitable {
 
-        private name: string;
+    private name: string;
 
-        private parent: FormItem;
+    private parent: FormItem;
 
-        constructor(name: string) {
-            this.name = name;
+    constructor(name: string) {
+        this.name = name;
+    }
+
+    public static formItemsToJson(formItems: FormItem[]): FormItemTypeWrapperJson[] {
+
+        let formItemArray: FormItemTypeWrapperJson[] = [];
+        formItems.forEach((formItem: FormItem) => {
+            formItemArray.push(formItem.toFormItemJson());
+        });
+        return formItemArray;
+    }
+
+    setParent(parent: FormItem) {
+        if (!(ObjectHelper.iFrameSafeInstanceOf(parent, FormItemSet) ||
+              ObjectHelper.iFrameSafeInstanceOf(parent, FieldSet) ||
+              ObjectHelper.iFrameSafeInstanceOf(parent, FormOptionSet) ||
+              ObjectHelper.iFrameSafeInstanceOf(parent, FormOptionSetOption))) {
+            throw new Error('A parent FormItem must either be a FormItemSet, FieldSet or a FormOptionSet');
         }
 
-        setParent(parent: FormItem) {
-            if (!(api.ObjectHelper.iFrameSafeInstanceOf(parent, FormItemSet) ||
-                  api.ObjectHelper.iFrameSafeInstanceOf(parent, FieldSet) ||
-                  api.ObjectHelper.iFrameSafeInstanceOf(parent, FormOptionSet) ||
-                  api.ObjectHelper.iFrameSafeInstanceOf(parent, FormOptionSetOption))) {
-                throw new Error('A parent FormItem must either be a FormItemSet, FieldSet or a FormOptionSet');
-            }
+        this.parent = parent;
+    }
 
-            this.parent = parent;
+    getName(): string {
+        return this.name;
+    }
+
+    getPath(): FormItemPath {
+        return this.resolvePath();
+    }
+
+    getParent(): FormItem {
+        return this.parent;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, FormItem)) {
+            return false;
         }
 
-        getName(): string {
-            return this.name;
+        let other = <FormItem>o;
+
+        if (!ObjectHelper.stringEquals(this.name, other.name)) {
+            return false;
         }
 
-        getPath(): FormItemPath {
-            return this.resolvePath();
+        return true;
+    }
+
+    public toFormItemJson(): FormItemTypeWrapperJson {
+
+        if (ObjectHelper.iFrameSafeInstanceOf(this, Input)) {
+            return (<Input><any>this).toInputJson();
+        } else if (ObjectHelper.iFrameSafeInstanceOf(this, FormItemSet)) {
+            return (<FormItemSet><any>this).toFormItemSetJson();
+        } else if (ObjectHelper.iFrameSafeInstanceOf(this, FieldSet)) {
+            return (<FieldSet><any>this).toFieldSetJson();
+        } else if (ObjectHelper.iFrameSafeInstanceOf(this, FormOptionSet)) {
+            return (<FormOptionSet><any>this).toFormOptionSetJson();
+        } else if (ObjectHelper.iFrameSafeInstanceOf(this, FormOptionSetOption)) {
+            return (<FormOptionSetOption><any>this).toFormOptionSetOptionJson();
+        } else {
+            throw new Error('Unsupported FormItem: ' + this);
         }
+    }
 
-        getParent(): FormItem {
-            return this.parent;
-        }
+    private resolvePath(): FormItemPath {
+        return FormItemPath.fromParent(this.resolveParentPath(), FormItemPathElement.fromString(this.name));
+    }
 
-        private resolvePath(): FormItemPath {
-            return FormItemPath.fromParent(this.resolveParentPath(), FormItemPathElement.fromString(this.name));
-        }
+    private resolveParentPath(): FormItemPath {
 
-        private resolveParentPath(): FormItemPath {
-
-            if (this.parent == null) {
-                return FormItemPath.ROOT;
-            } else {
-                return this.parent.getPath();
-            }
-        }
-
-        equals(o: api.Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, FormItem)) {
-                return false;
-            }
-
-            let other = <FormItem>o;
-
-            if (!api.ObjectHelper.stringEquals(this.name, other.name)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        public toFormItemJson(): api.form.json.FormItemTypeWrapperJson {
-
-            if (api.ObjectHelper.iFrameSafeInstanceOf(this, Input)) {
-                return (<Input><any>this).toInputJson();
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(this, FormItemSet)) {
-                return (<api.form.FormItemSet><any>this).toFormItemSetJson();
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(this, FieldSet)) {
-                return (<FieldSet><any>this).toFieldSetJson();
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(this, FormOptionSet)) {
-                return (<api.form.FormOptionSet><any>this).toFormOptionSetJson();
-            } else if (api.ObjectHelper.iFrameSafeInstanceOf(this, FormOptionSetOption)) {
-                return (<api.form.FormOptionSetOption><any>this).toFormOptionSetOptionJson();
-            } else {
-                throw new Error('Unsupported FormItem: ' + this);
-            }
-        }
-
-        public static formItemsToJson(formItems: FormItem[]): api.form.json.FormItemTypeWrapperJson[] {
-
-            let formItemArray: api.form.json.FormItemTypeWrapperJson[] = [];
-            formItems.forEach((formItem: FormItem) => {
-                formItemArray.push(formItem.toFormItemJson());
-            });
-            return formItemArray;
+        if (this.parent == null) {
+            return FormItemPath.ROOT;
+        } else {
+            return this.parent.getPath();
         }
     }
 }

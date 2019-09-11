@@ -1,50 +1,51 @@
-module api.query.expr {
+import {ConstraintExpr} from './ConstraintExpr';
+import {LogicalOperator} from './LogicalOperator';
 
-    export class LogicalExpr implements ConstraintExpr {
+export class LogicalExpr
+    implements ConstraintExpr {
 
-        private left: ConstraintExpr;
-        private right: ConstraintExpr;
-        private operator: LogicalOperator;
+    private left: ConstraintExpr;
+    private right: ConstraintExpr;
+    private operator: LogicalOperator;
 
-        constructor(left: ConstraintExpr, operator: LogicalOperator, right: ConstraintExpr) {
-            this.left = left;
-            this.right = right;
-            this.operator = operator;
-        }
+    constructor(left: ConstraintExpr, operator: LogicalOperator, right: ConstraintExpr) {
+        this.left = left;
+        this.right = right;
+        this.operator = operator;
+    }
 
-        getLeft(): ConstraintExpr {
-            return this.left;
-        }
+    public static and(left: ConstraintExpr, right: ConstraintExpr): LogicalExpr {
+        return new LogicalExpr(left, LogicalOperator.AND, right);
+    }
 
-        getRight(): ConstraintExpr {
-            return this.right;
-        }
+    public static or(left: ConstraintExpr, right: ConstraintExpr): LogicalExpr {
+        return new LogicalExpr(left, LogicalOperator.OR, right);
+    }
 
-        getOperator(): LogicalOperator {
-            return this.operator;
-        }
+    getLeft(): ConstraintExpr {
+        return this.left;
+    }
 
-        toString() {
-            return '(' + this.left.toString() + ' ' + this.operatorAsString() + ' ' + this.right.toString() + ')';
-        }
+    getRight(): ConstraintExpr {
+        return this.right;
+    }
 
-        public static and(left: ConstraintExpr, right: ConstraintExpr): LogicalExpr {
-            return new LogicalExpr(left, LogicalOperator.AND, right);
-        }
+    getOperator(): LogicalOperator {
+        return this.operator;
+    }
 
-        public static or(left: ConstraintExpr, right: ConstraintExpr): LogicalExpr {
-            return new LogicalExpr(left, LogicalOperator.OR, right);
-        }
+    toString() {
+        return '(' + this.left.toString() + ' ' + this.operatorAsString() + ' ' + this.right.toString() + ')';
+    }
 
-        private operatorAsString(): string {
-            switch (this.operator) {
-            case LogicalOperator.AND:
-                return 'AND';
-            case LogicalOperator.OR:
-                return 'OR';
-            default:
-                return '';
-            }
+    private operatorAsString(): string {
+        switch (this.operator) {
+        case LogicalOperator.AND:
+            return 'AND';
+        case LogicalOperator.OR:
+            return 'OR';
+        default:
+            return '';
         }
     }
 }

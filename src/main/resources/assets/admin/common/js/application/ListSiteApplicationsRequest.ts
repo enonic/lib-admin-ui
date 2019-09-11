@@ -1,10 +1,10 @@
-module api.application {
+import {ListApplicationsRequest} from './ListApplicationsRequest';
 
-    export class ListSiteApplicationsRequest extends ListApplicationsRequest {
+export class ListSiteApplicationsRequest
+    extends ListApplicationsRequest {
 
-        constructor() {
-            super('getSiteApplications');
-        }
-
+    constructor() {
+        super('getSiteApplications');
     }
+
 }

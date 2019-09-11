@@ -1,51 +1,52 @@
-module api.form.inputtype {
+import {Class} from '../../Class';
+import {InputTypeViewContext} from './InputTypeViewContext';
+import {InputTypeView} from './InputTypeView';
 
-    /**
-     *      Class to manage input types and their visual representation
-     */
-    export class InputTypeManager {
+/**
+ *      Class to manage input types and their visual representation
+ */
+export class InputTypeManager {
 
-        private static inputTypes: { [name: string]: api.Class; } = {};
+    private static inputTypes: { [name: string]: Class; } = {};
 
-        static isRegistered(inputTypeName: string): boolean {
-            let name = InputTypeManager.normalize(inputTypeName);
-            return InputTypeManager.inputTypes[name] != null;
+    static isRegistered(inputTypeName: string): boolean {
+        let name = InputTypeManager.normalize(inputTypeName);
+        return InputTypeManager.inputTypes[name] != null;
+    }
+
+    static register(inputTypeClass: Class) {
+        let name = InputTypeManager.normalize(inputTypeClass.getName());
+
+        if (!InputTypeManager.isRegistered(name)) {
+            InputTypeManager.inputTypes[name] = inputTypeClass;
+        } else {
+            throw new Error('Input type [' + name + '] is already registered, unregister it first.');
         }
+    }
 
-        static register(inputTypeClass: api.Class) {
-            let name = InputTypeManager.normalize(inputTypeClass.getName());
+    static unregister(inputTypeName: string) {
+        let name = InputTypeManager.normalize(inputTypeName);
 
-            if (!InputTypeManager.isRegistered(name)) {
-                InputTypeManager.inputTypes[name] = inputTypeClass;
-            } else {
-                throw new Error('Input type [' + name + '] is already registered, unregister it first.');
-            }
+        if (InputTypeManager.isRegistered(name)) {
+            InputTypeManager.inputTypes[name] = undefined;
+            console.log('Unregistered input type [' + name + ']');
+        } else {
+            throw new Error('Input type [' + name + '] is not registered.');
         }
+    }
 
-        static unregister(inputTypeName: string) {
-            let name = InputTypeManager.normalize(inputTypeName);
+    static createView(inputTypeName: string, context: InputTypeViewContext): InputTypeView {
+        let name = InputTypeManager.normalize(inputTypeName);
 
-            if (InputTypeManager.isRegistered(name)) {
-                InputTypeManager.inputTypes[name] = undefined;
-                console.log('Unregistered input type [' + name + ']');
-            } else {
-                throw new Error('Input type [' + name + '] is not registered.');
-            }
+        if (InputTypeManager.isRegistered(name)) {
+            let inputTypeClass = InputTypeManager.inputTypes[name];
+            return inputTypeClass.newInstance(context);
+        } else {
+            throw new Error('Input type [' + name + '] need to be registered first.');
         }
+    }
 
-        static createView(inputTypeName: string, context: InputTypeViewContext): InputTypeView {
-            let name = InputTypeManager.normalize(inputTypeName);
-
-            if (InputTypeManager.isRegistered(name)) {
-                let inputTypeClass = InputTypeManager.inputTypes[name];
-                return inputTypeClass.newInstance(context);
-            } else {
-                throw new Error('Input type [' + name + '] need to be registered first.');
-            }
-        }
-
-        private static normalize(inputTypeName: string): string {
-            return (inputTypeName || '').toLowerCase();
-        }
+    private static normalize(inputTypeName: string): string {
+        return (inputTypeName || '').toLowerCase();
     }
 }

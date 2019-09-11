@@ -1,14 +1,12 @@
-module api.ui.treegrid.actions {
+import {Action} from '../../Action';
+import {BrowseItem} from '../../../app/browse/BrowseItem';
+import {BrowseItemsChanges} from '../../../app/browse/BrowseItemsChanges';
+import {Equitable} from '../../../Equitable';
 
-    import Action = api.ui.Action;
-    import BrowseItem = api.app.browse.BrowseItem;
-    import BrowseItemsChanges = api.app.browse.BrowseItemsChanges;
+export interface TreeGridActions<M extends Equitable> {
 
-    export interface TreeGridActions<M extends api.Equitable> {
+    getAllActions(): Action[];
 
-        getAllActions(): Action[];
+    updateActionsEnabledState(browseItems: BrowseItem<M>[], changes?: BrowseItemsChanges<any>): Q.Promise<void>;
 
-        updateActionsEnabledState(browseItems: BrowseItem<M>[], changes?: BrowseItemsChanges<any>): wemQ.Promise<void>;
-
-    }
 }

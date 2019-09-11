@@ -1,262 +1,257 @@
-module api.ui.selector.combobox {
+import {DivEl} from '../../../dom/DivEl';
+import {Element} from '../../../dom/Element';
+import {Option} from '../Option';
+import {ArrayHelper} from '../../../util/ArrayHelper';
 
-    export class BaseSelectedOptionsView<T>
-        extends api.dom.DivEl
-        implements SelectedOptionsView<T> {
+export class BaseSelectedOptionsView<T>
+    extends DivEl
+    implements SelectedOptionsView<T> {
 
-        private list: SelectedOption<T>[] = [];
+    protected readonly: boolean = false;
+    private list: SelectedOption<T>[] = [];
+    private draggingIndex: number;
+    private maximumOccurrences: number;
+    private optionRemovedListeners: { (removed: SelectedOptionEvent<T>): void; }[] = [];
+    private optionAddedListeners: { (added: SelectedOptionEvent<T>): void; }[] = [];
+    private optionMovedListeners: { (moved: SelectedOption<T>, fromIndex: number): void }[] = [];
+    private editable: boolean = true;
 
-        private draggingIndex: number;
+    constructor(className?: string) {
+        super('selected-options' + (className ? ' ' + className : ''));
+    }
 
-        private maximumOccurrences: number;
+    setReadonly(readonly: boolean) {
+        this.readonly = readonly;
+        this.getSelectedOptions().forEach((option: SelectedOption<T>) => {
+            option.getOptionView().setReadonly(readonly);
+        });
+    }
 
-        private optionRemovedListeners: { (removed: SelectedOptionEvent<T>): void; }[] = [];
+    setEditable(editable: boolean) {
+        this.editable = editable;
+        this.getSelectedOptions().forEach((option: SelectedOption<T>) => {
+            option.getOptionView().setEditable(editable);
+        });
+    }
 
-        private optionAddedListeners: { (added: SelectedOptionEvent<T>): void; }[] = [];
+    setOccurrencesSortable(sortable: boolean) {
+        if (this.isRendered()) {
+            this.setSortable(sortable);
+        } else {
+            this.onRendered(() => this.setSortable(sortable));
+        }
+    }
 
-        private optionMovedListeners: { (moved: SelectedOption<T>, fromIndex: number): void }[] = [];
+    refreshSortable() {
+        if (this.hasClass('sortable')) {
+            $(this.getHTMLElement()).sortable('refresh');
+        }
+    }
 
-        protected readonly: boolean = false;
+    setMaximumOccurrences(value: number) {
+        this.maximumOccurrences = value;
+    }
 
-        private editable: boolean = true;
+    getMaximumOccurrences(): number {
+        return this.maximumOccurrences;
+    }
 
-        constructor(className?: string) {
-            super('selected-options' + (className ? ' ' + className : ''));
+    createSelectedOption(option: Option<T>): SelectedOption<T> {
+        return new SelectedOption<T>(new BaseSelectedOptionView(option, this.editable, !this.readonly), this.count());
+    }
+
+    addOption(option: Option<T>, silent: boolean = false, keyCode: number): boolean {
+
+        if (this.isSelected(option) || this.maximumOccurrencesReached()) {
+            return false;
         }
 
-        setReadonly(readonly: boolean) {
-            this.readonly = readonly;
-            this.getSelectedOptions().forEach((option: SelectedOption<T>) => {
-                option.getOptionView().setReadonly(readonly);
-            });
+        let selectedOption: SelectedOption<T> = this.createSelectedOption(option);
+
+        let optionView = selectedOption.getOptionView();
+        optionView.onRemoveClicked(() => this.removeOption(option));
+
+        this.getSelectedOptions().push(selectedOption);
+
+        this.appendChild(selectedOption.getOptionView());
+
+        if (!silent) {
+            this.notifyOptionSelected(new SelectedOptionEvent(selectedOption, keyCode));
         }
 
-        setEditable(editable: boolean) {
-            this.editable = editable;
-            this.getSelectedOptions().forEach((option: SelectedOption<T>) => {
-                option.getOptionView().setEditable(editable);
-            });
-        }
+        return true;
+    }
 
-        setOccurrencesSortable(sortable: boolean) {
-            if (this.isRendered()) {
-                this.setSortable(sortable);
-            } else {
-                this.onRendered(() => this.setSortable(sortable));
+    updateOption(optionToUpdate: Option<T>, newOption: Option<T>) {
+        assertNotNull(optionToUpdate, 'optionToRemove cannot be null');
+
+        let selectedOption = this.getByOption(optionToUpdate);
+        assertNotNull(selectedOption, 'Did not find any selected option to update from option: ' + optionToUpdate.value);
+
+        selectedOption.getOptionView().setOption(newOption);
+    }
+
+    removeOption(optionToRemove: Option<T>, silent: boolean = false) {
+        assertNotNull(optionToRemove, 'optionToRemove cannot be null');
+
+        let selectedOption = this.getByOption(optionToRemove);
+        assertNotNull(selectedOption, 'Did not find any selected option to remove from option: ' + optionToRemove.value);
+
+        selectedOption.getOptionView().remove();
+
+        this.list = this.list.filter((option: SelectedOption<T>) => {
+            return option.getOption().value !== selectedOption.getOption().value;
+        });
+
+        // update item indexes to the right of removed item
+        if (selectedOption.getIndex() < this.list.length) {
+            for (let i: number = selectedOption.getIndex(); i < this.list.length; i++) {
+                this.list[i].setIndex(i);
             }
         }
 
-        refreshSortable() {
-            if (this.hasClass('sortable')) {
-                wemjq(this.getHTMLElement()).sortable('refresh');
-            }
+        if (!silent) {
+            this.notifyOptionDeselected(selectedOption);
         }
+    }
 
-        private setSortable(sortable: boolean) {
-            if (sortable) {
-                wemjq(this.getHTMLElement()).sortable({
-                    cursor: 'move',
-                    tolerance: 'pointer',
-                    placeholder: 'selected-option placeholder',
-                    start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
-                    update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui),
-                    stop: () => this.handleDnDStop()
-                });
-            } else {
-                wemjq(this.getHtml()).sortable('destroy');
-            }
-            this.toggleClass('sortable', sortable);
+    count(): number {
+        return this.list.length;
+    }
+
+    getSelectedOptions(): SelectedOption<T>[] {
+        return this.list;
+    }
+
+    getByIndex(index: number): SelectedOption<T> {
+        return this.list[index];
+    }
+
+    getByOption(option: Option<T>): SelectedOption<T> {
+        return this.getById(option.value);
+    }
+
+    getById(id: string): SelectedOption<T> {
+        return this.list.filter((selectedOption: SelectedOption<T>) => {
+            return selectedOption.getOption().value === id;
+        })[0];
+    }
+
+    isSelected(option: Option<T>): boolean {
+        return this.getByOption(option) != null;
+    }
+
+    maximumOccurrencesReached(): boolean {
+        if (this.maximumOccurrences === 0) {
+            return false;
         }
+        return this.count() >= this.maximumOccurrences;
+    }
 
-        protected handleDnDStart(ui: JQueryUI.SortableUIParams): void {
-            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
-            this.draggingIndex = draggedElement.getSiblingIndex();
-        }
+    moveOccurrence(fromIndex: number, toIndex: number) {
 
-        protected handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
+        ArrayHelper.moveElement(fromIndex, toIndex, this.list);
+        ArrayHelper.moveElement(fromIndex, toIndex, this.getChildren());
 
-            if (this.draggingIndex >= 0) {
-                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
-                let draggedToIndex = draggedElement.getSiblingIndex();
-                this.handleMovedOccurrence(this.draggingIndex, draggedToIndex);
-            }
+        this.list.forEach((selectedOption: SelectedOption<T>, index: number) => selectedOption.setIndex(index));
+    }
 
-            this.draggingIndex = -1;
-        }
+    makeEmptyOption(id: string): Option<T> {
+        return <Option<T>>{
+            value: id,
+            displayValue: null,
+            empty: true
+        };
+    }
 
-        protected handleDnDStop(): void {
-            // must be implemented by children
-        }
+    onOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; }) {
+        this.optionRemovedListeners.push(listener);
+    }
 
-        setMaximumOccurrences(value: number) {
-            this.maximumOccurrences = value;
-        }
+    unOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; }) {
+        this.optionRemovedListeners = this.optionRemovedListeners.filter(function (curr: { (removed: SelectedOptionEvent<T>): void; }) {
+            return curr !== listener;
+        });
+    }
 
-        getMaximumOccurrences(): number {
-            return this.maximumOccurrences;
-        }
+    onOptionSelected(listener: (added: SelectedOptionEvent<T>) => void) {
+        this.optionAddedListeners.push(listener);
+    }
 
-        createSelectedOption(option: api.ui.selector.Option<T>): SelectedOption<T> {
-            return new SelectedOption<T>(new BaseSelectedOptionView(option, this.editable, !this.readonly), this.count());
-        }
+    unOptionSelected(listener: (added: SelectedOptionEvent<T>) => void) {
+        this.optionAddedListeners = this.optionAddedListeners.filter((current: (added: SelectedOptionEvent<T>) => void) => {
+            return listener !== current;
+        });
+    }
 
-        addOption(option: api.ui.selector.Option<T>, silent: boolean = false, keyCode: number): boolean {
+    onOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void) {
+        this.optionMovedListeners.push(listener);
+    }
 
-            if (this.isSelected(option) || this.maximumOccurrencesReached()) {
-                return false;
-            }
-
-            let selectedOption: SelectedOption<T> = this.createSelectedOption(option);
-
-            let optionView = selectedOption.getOptionView();
-            optionView.onRemoveClicked(() => this.removeOption(option));
-
-            this.getSelectedOptions().push(selectedOption);
-
-            this.appendChild(selectedOption.getOptionView());
-
-            if (!silent) {
-                this.notifyOptionSelected(new SelectedOptionEvent(selectedOption, keyCode));
-            }
-
-            return true;
-        }
-
-        updateOption(optionToUpdate: api.ui.selector.Option<T>, newOption: api.ui.selector.Option<T>) {
-            api.util.assertNotNull(optionToUpdate, 'optionToRemove cannot be null');
-
-            let selectedOption = this.getByOption(optionToUpdate);
-            api.util.assertNotNull(selectedOption, 'Did not find any selected option to update from option: ' + optionToUpdate.value);
-
-            selectedOption.getOptionView().setOption(newOption);
-        }
-
-        removeOption(optionToRemove: api.ui.selector.Option<T>, silent: boolean = false) {
-            api.util.assertNotNull(optionToRemove, 'optionToRemove cannot be null');
-
-            let selectedOption = this.getByOption(optionToRemove);
-            api.util.assertNotNull(selectedOption, 'Did not find any selected option to remove from option: ' + optionToRemove.value);
-
-            selectedOption.getOptionView().remove();
-
-            this.list = this.list.filter((option: SelectedOption<T>) => {
-                return option.getOption().value !== selectedOption.getOption().value;
-            });
-
-            // update item indexes to the right of removed item
-            if (selectedOption.getIndex() < this.list.length) {
-                for (let i: number = selectedOption.getIndex(); i < this.list.length; i++) {
-                    this.list[i].setIndex(i);
-                }
-            }
-
-            if (!silent) {
-                this.notifyOptionDeselected(selectedOption);
-            }
-        }
-
-        count(): number {
-            return this.list.length;
-        }
-
-        getSelectedOptions(): SelectedOption<T>[] {
-            return this.list;
-        }
-
-        getByIndex(index: number): SelectedOption<T> {
-            return this.list[index];
-        }
-
-        getByOption(option: api.ui.selector.Option<T>): SelectedOption<T> {
-            return this.getById(option.value);
-        }
-
-        getById(id: string): SelectedOption<T> {
-            return this.list.filter((selectedOption: SelectedOption<T>) => {
-                return selectedOption.getOption().value === id;
-            })[0];
-        }
-
-        isSelected(option: api.ui.selector.Option<T>): boolean {
-            return this.getByOption(option) != null;
-        }
-
-        maximumOccurrencesReached(): boolean {
-            if (this.maximumOccurrences === 0) {
-                return false;
-            }
-            return this.count() >= this.maximumOccurrences;
-        }
-
-        moveOccurrence(fromIndex: number, toIndex: number) {
-
-            api.util.ArrayHelper.moveElement(fromIndex, toIndex, this.list);
-            api.util.ArrayHelper.moveElement(fromIndex, toIndex, this.getChildren());
-
-            this.list.forEach((selectedOption: SelectedOption<T>, index: number) => selectedOption.setIndex(index));
-        }
-
-        makeEmptyOption(id: string): Option<T> {
-            return <Option<T>>{
-                value: id,
-                displayValue: null,
-                empty: true
-            };
-        }
-
-        protected notifyOptionDeselected(removed: SelectedOption<T>) {
-            this.optionRemovedListeners.forEach((listener) => {
-                listener(new SelectedOptionEvent(removed));
-            });
-        }
-
-        onOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; }) {
-            this.optionRemovedListeners.push(listener);
-        }
-
-        unOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; }) {
-            this.optionRemovedListeners = this.optionRemovedListeners.filter(function (curr: { (removed: SelectedOptionEvent<T>): void; }) {
-                return curr !== listener;
-            });
-        }
-
-        onOptionSelected(listener: (added: SelectedOptionEvent<T>) => void) {
-            this.optionAddedListeners.push(listener);
-        }
-
-        unOptionSelected(listener: (added: SelectedOptionEvent<T>) => void) {
-            this.optionAddedListeners = this.optionAddedListeners.filter((current: (added: SelectedOptionEvent<T>) => void) => {
+    unOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void) {
+        this.optionMovedListeners =
+            this.optionMovedListeners.filter((current: (option: SelectedOption<T>, fromIndex: number) => void) => {
                 return listener !== current;
             });
+    }
+
+    protected handleDnDStart(ui: JQueryUI.SortableUIParams): void {
+        let draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item[0]);
+        this.draggingIndex = draggedElement.getSiblingIndex();
+    }
+
+    protected handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
+
+        if (this.draggingIndex >= 0) {
+            let draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item[0]);
+            let draggedToIndex = draggedElement.getSiblingIndex();
+            this.handleMovedOccurrence(this.draggingIndex, draggedToIndex);
         }
 
-        protected notifyOptionSelected(added: SelectedOptionEvent<T>) {
-            this.optionAddedListeners.forEach((listener: (added: SelectedOptionEvent<T>) => void) => {
-                listener(added);
+        this.draggingIndex = -1;
+    }
+
+    protected handleDnDStop(): void {
+        // must be implemented by children
+    }
+
+    protected notifyOptionDeselected(removed: SelectedOption<T>) {
+        this.optionRemovedListeners.forEach((listener) => {
+            listener(new SelectedOptionEvent(removed));
+        });
+    }
+
+    protected notifyOptionSelected(added: SelectedOptionEvent<T>) {
+        this.optionAddedListeners.forEach((listener: (added: SelectedOptionEvent<T>) => void) => {
+            listener(added);
+        });
+    }
+
+    protected notifyOptionMoved(moved: SelectedOption<T>, fromIndex: number) {
+        this.optionMovedListeners.forEach((listener: (option: SelectedOption<T>, fromIndex: number) => void) => {
+            listener(moved, fromIndex);
+        });
+    }
+
+    private setSortable(sortable: boolean) {
+        if (sortable) {
+            $(this.getHTMLElement()).sortable({
+                cursor: 'move',
+                tolerance: 'pointer',
+                placeholder: 'selected-option placeholder',
+                start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
+                update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui),
+                stop: () => this.handleDnDStop()
             });
+        } else {
+            $(this.getHtml()).sortable('destroy');
         }
+        this.toggleClass('sortable', sortable);
+    }
 
-        onOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void) {
-            this.optionMovedListeners.push(listener);
-        }
+    private handleMovedOccurrence(fromIndex: number, toIndex: number) {
 
-        unOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void) {
-            this.optionMovedListeners =
-                this.optionMovedListeners.filter((current: (option: SelectedOption<T>, fromIndex: number) => void) => {
-                    return listener !== current;
-                });
-        }
-
-        protected notifyOptionMoved(moved: SelectedOption<T>, fromIndex: number) {
-            this.optionMovedListeners.forEach((listener: (option: SelectedOption<T>, fromIndex: number) => void) => {
-                listener(moved, fromIndex);
-            });
-        }
-
-        private handleMovedOccurrence(fromIndex: number, toIndex: number) {
-
-            this.moveOccurrence(fromIndex, toIndex);
-            this.notifyOptionMoved(this.list[toIndex], fromIndex);
-        }
+        this.moveOccurrence(fromIndex, toIndex);
+        this.notifyOptionMoved(this.list[toIndex], fromIndex);
     }
 }

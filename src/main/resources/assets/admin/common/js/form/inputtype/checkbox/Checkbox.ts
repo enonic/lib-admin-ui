@@ -1,112 +1,114 @@
-module api.form.inputtype.checkbox {
+import * as Q from 'q';
+import {Property} from '../../../data/Property';
+import {Value} from '../../../data/Value';
+import {ValueType} from '../../../data/ValueType';
+import {ValueTypes} from '../../../data/ValueTypes';
+import {BaseInputTypeSingleOccurrence} from '../support/BaseInputTypeSingleOccurrence';
+import {InputAlignment} from '../../../ui/Checkbox';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {Input} from '../../Input';
+import {ValueChangedEvent} from '../../../ValueChangedEvent';
+import {InputValidationRecording} from '../InputValidationRecording';
+import {InputTypeManager} from '../InputTypeManager';
+import {Class} from '../../../Class';
+import {Checkbox as CheckboxEl} from '../../../ui/Checkbox';
 
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import BaseInputTypeSingleOccurrence = api.form.inputtype.support.BaseInputTypeSingleOccurrence;
-    import InputAlignment = api.ui.InputAlignment;
+export class Checkbox
+    extends BaseInputTypeSingleOccurrence {
 
-    export class Checkbox
-        extends BaseInputTypeSingleOccurrence {
+    public static debug: boolean = false;
+    private checkbox: CheckboxEl;
+    private inputAlignment: InputAlignment = InputAlignment.LEFT;
 
-        private checkbox: api.ui.Checkbox;
+    constructor(config: InputTypeViewContext) {
+        super(config);
+        this.readConfig(config.inputConfig);
+    }
 
-        private inputAlignment: InputAlignment = InputAlignment.LEFT;
+    getValueType(): ValueType {
+        return ValueTypes.BOOLEAN;
+    }
 
-        public static debug: boolean = false;
+    newInitialValue(): Value {
+        return ValueTypes.BOOLEAN.newBoolean(false);
+    }
 
-        constructor(config: api.form.inputtype.InputTypeViewContext) {
-            super(config);
-            this.readConfig(config.inputConfig);
+    layoutProperty(input: Input, property: Property): Q.Promise<void> {
+        let checked = property.hasNonNullValue() ? property.getBoolean() : false;
+        this.checkbox =
+            CheckboxEl.create().setLabelText(input.getLabel()).setChecked(checked).setInputAlignment(this.inputAlignment).build();
+        this.appendChild(this.checkbox);
+
+        if (!ValueTypes.BOOLEAN.equals(property.getType())) {
+            property.convertValueType(ValueTypes.BOOLEAN);
         }
 
-        private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
-            if (inputConfig) {
-                this.setInputAlignment(inputConfig['alignment']);
-            }
+        this.checkbox.onValueChanged((event: ValueChangedEvent) => {
+            let newValue = ValueTypes.BOOLEAN.newValue(event.getNewValue());
+
+            this.saveToProperty(newValue);
+        });
+
+        return Q<void>(null);
+    }
+
+    updateProperty(property: Property, unchangedOnly?: boolean): Q.Promise<void> {
+        if (Checkbox.debug) {
+            console.debug('Checkbox.updateProperty' + (unchangedOnly ? ' (unchanged only)' : ''), property);
         }
-
-        private setInputAlignment(inputAlignmentObj: any) {
-            if (inputAlignmentObj) {
-                let inputAlignment: InputAlignment = InputAlignment[<string>inputAlignmentObj[0].value.toUpperCase()];
-                this.inputAlignment = isNaN(inputAlignment) ? InputAlignment.LEFT : inputAlignment;
-            }
+        if ((!unchangedOnly || !this.checkbox.isDirty()) && property.hasNonNullValue()) {
+            this.checkbox.setChecked(property.getBoolean());
+        } else if (this.checkbox.isDirty()) {
+            this.resetPropertyValue();
         }
+        return Q<void>(null);
+    }
 
-        getValueType(): ValueType {
-            return ValueTypes.BOOLEAN;
-        }
+    resetPropertyValue() {
+        this.getProperty().setValue(ValueTypes.BOOLEAN.newValue(this.checkbox.getValue()));
+    }
 
-        newInitialValue(): Value {
-            return ValueTypes.BOOLEAN.newBoolean(false);
-        }
+    reset() {
+        this.checkbox.resetBaseValues();
+    }
 
-        layoutProperty(input: api.form.Input, property: Property): wemQ.Promise<void> {
-            let checked = property.hasNonNullValue() ? property.getBoolean() : false;
-            this.checkbox =
-                api.ui.Checkbox.create().setLabelText(input.getLabel()).setChecked(checked).setInputAlignment(this.inputAlignment).build();
-            this.appendChild(this.checkbox);
+    giveFocus(): boolean {
+        return this.checkbox.giveFocus();
+    }
 
-            if (!ValueTypes.BOOLEAN.equals(property.getType())) {
-                property.convertValueType(ValueTypes.BOOLEAN);
-            }
+    validate(): InputValidationRecording {
 
-            this.checkbox.onValueChanged((event: api.ValueChangedEvent) => {
-                let newValue = ValueTypes.BOOLEAN.newValue(event.getNewValue());
+        return new InputValidationRecording();
+    }
 
-                this.saveToProperty(newValue);
-            });
+    onFocus(listener: (event: FocusEvent) => void) {
+        this.checkbox.onFocus(listener);
+    }
 
-            return wemQ<void>(null);
-        }
+    unFocus(listener: (event: FocusEvent) => void) {
+        this.checkbox.unFocus(listener);
+    }
 
-        updateProperty(property: Property, unchangedOnly?: boolean): wemQ.Promise<void> {
-            if (Checkbox.debug) {
-                console.debug('Checkbox.updateProperty' + (unchangedOnly ? ' (unchanged only)' : ''), property);
-            }
-            if ((!unchangedOnly || !this.checkbox.isDirty()) && property.hasNonNullValue()) {
-                this.checkbox.setChecked(property.getBoolean());
-            } else if (this.checkbox.isDirty()) {
-                this.resetPropertyValue();
-            }
-            return wemQ<void>(null);
-        }
+    onBlur(listener: (event: FocusEvent) => void) {
+        this.checkbox.onBlur(listener);
+    }
 
-        resetPropertyValue() {
-            this.getProperty().setValue(ValueTypes.BOOLEAN.newValue(this.checkbox.getValue()));
-        }
+    unBlur(listener: (event: FocusEvent) => void) {
+        this.checkbox.unBlur(listener);
+    }
 
-        reset() {
-            this.checkbox.resetBaseValues();
-        }
-
-        giveFocus(): boolean {
-            return this.checkbox.giveFocus();
-        }
-
-        validate(): api.form.inputtype.InputValidationRecording {
-
-            return new api.form.inputtype.InputValidationRecording();
-        }
-
-        onFocus(listener: (event: FocusEvent) => void) {
-            this.checkbox.onFocus(listener);
-        }
-
-        unFocus(listener: (event: FocusEvent) => void) {
-            this.checkbox.unFocus(listener);
-        }
-
-        onBlur(listener: (event: FocusEvent) => void) {
-            this.checkbox.onBlur(listener);
-        }
-
-        unBlur(listener: (event: FocusEvent) => void) {
-            this.checkbox.unBlur(listener);
+    private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
+        if (inputConfig) {
+            this.setInputAlignment(inputConfig['alignment']);
         }
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class('Checkbox', Checkbox));
-
+    private setInputAlignment(inputAlignmentObj: any) {
+        if (inputAlignmentObj) {
+            let inputAlignment: InputAlignment = InputAlignment[<string>inputAlignmentObj[0].value.toUpperCase()];
+            this.inputAlignment = isNaN(inputAlignment) ? InputAlignment.LEFT : inputAlignment;
+        }
+    }
 }
+
+InputTypeManager.register(new Class('Checkbox', Checkbox));

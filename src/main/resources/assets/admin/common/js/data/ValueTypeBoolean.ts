@@ -1,57 +1,60 @@
-module api.data {
+import {StringHelper} from '../util/StringHelper';
+import {ObjectHelper} from '../ObjectHelper';
+import {ValueType} from './ValueType';
+import {Value} from './Value';
 
-    export class ValueTypeBoolean extends ValueType {
+export class ValueTypeBoolean
+    extends ValueType {
 
-        constructor() {
-            super('Boolean');
+    constructor() {
+        super('Boolean');
+    }
+
+    isValid(value: any): boolean {
+        return typeof value === 'boolean';
+    }
+
+    isConvertible(value: string): boolean {
+        if (StringHelper.isBlank(value)) {
+            return false;
         }
-
-        isValid(value: any): boolean {
-            return typeof value === 'boolean';
+        if (!(value === 'true' || value === 'false')) {
+            return false;
         }
+        let convertedValue = Boolean(value);
+        return this.isValid(convertedValue);
+    }
 
-        isConvertible(value: string): boolean {
-            if (api.util.StringHelper.isBlank(value)) {
-                return false;
-            }
-            if (!(value === 'true' || value === 'false' )) {
-                return false;
-            }
-            let convertedValue = Boolean(value);
-            return this.isValid(convertedValue);
+    newValue(value: string): Value {
+        if (!this.isConvertible(value)) {
+            return new Value(null, this);
         }
+        return new Value(this.convertFromString(value), this);
+    }
 
-        newValue(value: string): Value {
-            if (!this.isConvertible(value)) {
-                return new Value(null, this);
-            }
-            return new Value(this.convertFromString(value), this);
-        }
+    fromJsonValue(jsonValue: boolean): Value {
+        return new Value(jsonValue, this);
+    }
 
-        fromJsonValue(jsonValue: boolean): Value {
-            return new Value(jsonValue, this);
-        }
+    valueToString(value: Value): string {
+        return (<Boolean>value.getObject()).toString();
+    }
 
-        private convertFromString(value: string): boolean {
-            if (value === 'true') {
-                return true;
-            } else if (value === 'false') {
-                return false;
-            } else {
-                throw new Error('given string cannot be converted to a Boolean Value: ' + value);
-            }
-        }
+    valueEquals(a: boolean, b: boolean): boolean {
+        return ObjectHelper.booleanEquals(a, b);
+    }
 
-        valueToString(value: Value): string {
-            return (<Boolean>value.getObject()).toString();
-        }
+    newBoolean(value: boolean): Value {
+        return new Value(value, this);
+    }
 
-        valueEquals(a: boolean, b: boolean): boolean {
-            return api.ObjectHelper.booleanEquals(a, b);
-        }
-
-        newBoolean(value: boolean): Value {
-            return new Value(value, this);
+    private convertFromString(value: string): boolean {
+        if (value === 'true') {
+            return true;
+        } else if (value === 'false') {
+            return false;
+        } else {
+            throw new Error('given string cannot be converted to a Boolean Value: ' + value);
         }
     }
 }

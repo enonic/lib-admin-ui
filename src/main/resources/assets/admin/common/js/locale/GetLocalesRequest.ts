@@ -1,42 +1,43 @@
-module api.locale {
+import {LocaleListJson} from './json/LocaleListJson';
+import {LocaleJson} from './json/LocaleJson';
+import {ResourceRequest} from '../rest/ResourceRequest';
+import {Path} from '../rest/Path';
+import {JsonResponse} from '../rest/JsonResponse';
+import {Locale} from './Locale';
 
-    import LocaleListJson = api.locale.json.LocaleListJson;
-    import LocaleJson = api.locale.json.LocaleJson;
+export class GetLocalesRequest
+    extends ResourceRequest<LocaleListJson, Locale[]> {
 
-    export class GetLocalesRequest extends api.rest.ResourceRequest<LocaleListJson, Locale[]> {
+    private searchQuery: string;
 
-        private searchQuery: string;
+    constructor() {
+        super();
+    }
 
-        constructor() {
-            super();
-        }
+    getParams(): Object {
+        return {
+            query: this.searchQuery
+        };
+    }
 
-        getParams(): Object {
-            return {
-                query: this.searchQuery
-            };
-        }
+    getRequestPath(): Path {
+        return Path.fromParent(super.getRestPath(), 'content', 'locales');
+    }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getRestPath(), 'content', 'locales');
-        }
+    setSearchQuery(query: string): GetLocalesRequest {
+        this.searchQuery = query;
+        return this;
+    }
 
-        setSearchQuery(query: string): GetLocalesRequest {
-            this.searchQuery = query;
-            return this;
-        }
+    sendAndParse(): Q.Promise<Locale[]> {
+        return this.send().then((response: JsonResponse<LocaleListJson>) => {
+            return response.getResult().locales.map((localeJson: LocaleJson) => {
+                return Locale.fromJson(localeJson);
+            }).sort(this.sortFunction);
+        });
+    }
 
-        sendAndParse(): wemQ.Promise<Locale[]> {
-            return this.send().
-                then((response: api.rest.JsonResponse<LocaleListJson>) => {
-                    return response.getResult().locales.map((localeJson: LocaleJson) => {
-                        return Locale.fromJson(localeJson);
-                    }).sort(this.sortFunction);
-                });
-        }
-
-        private sortFunction(a: Locale, b: Locale) {
-            return a.getDisplayName().localeCompare(b.getDisplayName());
-        }
+    private sortFunction(a: Locale, b: Locale) {
+        return a.getDisplayName().localeCompare(b.getDisplayName());
     }
 }

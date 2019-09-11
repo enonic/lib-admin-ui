@@ -1,77 +1,74 @@
-module api.content.event {
+import {NodeEventJson, NodeEventNodeJson} from '../../event/NodeServerEvent';
+import {NodeServerChange, NodeServerChangeItem, NodeServerChangeType} from '../../event/NodeServerChange';
+import {ContentPath} from '../ContentPath';
+import {ContentId} from '../ContentId';
 
-    import NodeEventJson = api.event.NodeEventJson;
-    import NodeEventNodeJson = api.event.NodeEventNodeJson;
-    import NodeServerChange = api.event.NodeServerChange;
-    import NodeServerChangeType = api.event.NodeServerChangeType;
-    import NodeServerChangeItem = api.event.NodeServerChangeItem;
-    import ContentPath = api.content.ContentPath;
+export class ContentServerChangeItem
+    extends NodeServerChangeItem<ContentPath> {
 
-    export class ContentServerChangeItem extends NodeServerChangeItem<ContentPath> {
+    contentId: ContentId;
 
-        contentId: api.content.ContentId;
+    constructor(contentPath: ContentPath, branch: string, contentId: ContentId) {
+        super(contentPath, branch);
+        this.contentId = contentId;
+    }
 
-        constructor(contentPath: api.content.ContentPath, branch: string, contentId: api.content.ContentId) {
-            super(contentPath, branch);
-            this.contentId = contentId;
+    static fromJson(node: NodeEventNodeJson): ContentServerChangeItem {
+        return new ContentServerChangeItem(ContentPath.fromString(node.path.substr('/content'.length)),
+            node.branch, new ContentId(node.id));
+    }
+
+    getContentId(): ContentId {
+        return this.contentId;
+    }
+}
+
+export class ContentServerChange
+    extends NodeServerChange<ContentPath> {
+
+    protected changeItems: ContentServerChangeItem[];
+
+    protected newContentPaths: ContentPath[];
+
+    constructor(type: NodeServerChangeType, changeItems: ContentServerChangeItem[], newContentPaths?: ContentPath[]) {
+        super(type, changeItems, newContentPaths);
+    }
+
+    static fromJson(nodeEventJson: NodeEventJson): ContentServerChange {
+
+        let changeItems = nodeEventJson.data.nodes.filter((node) => node.path.indexOf('/content') === 0).map(
+            (node: NodeEventNodeJson) => ContentServerChangeItem.fromJson(node));
+
+        if (changeItems.length === 0) {
+            return null;
         }
 
-        getContentId(): api.content.ContentId {
-            return this.contentId;
-        }
+        let nodeEventType = this.getNodeServerChangeType(nodeEventJson.type);
 
-        static fromJson(node: NodeEventNodeJson): ContentServerChangeItem {
-            return new ContentServerChangeItem(api.content.ContentPath.fromString(node.path.substr('/content'.length)),
-                node.branch, new api.content.ContentId(node.id));
+        if (NodeServerChangeType.MOVE === nodeEventType || NodeServerChangeType.RENAME === nodeEventType) {
+
+            let newContentPaths = nodeEventJson.data.nodes.filter((node) => node.newPath.indexOf('/content') === 0).map(
+                (node: NodeEventNodeJson) => ContentPath.fromString(node.newPath.substr('/content'.length)));
+
+            return new ContentServerChange(nodeEventType, changeItems, newContentPaths);
+        } else {
+            return new ContentServerChange(nodeEventType, changeItems);
         }
     }
 
-    export class ContentServerChange extends NodeServerChange<ContentPath> {
+    getChangeItems(): ContentServerChangeItem[] {
+        return <ContentServerChangeItem[]>this.changeItems;
+    }
 
-        protected changeItems: ContentServerChangeItem[];
+    getNewContentPaths(): ContentPath[] {
+        return this.newContentPaths;
+    }
 
-        protected newContentPaths: ContentPath[];
-
-        constructor(type: NodeServerChangeType, changeItems: ContentServerChangeItem[], newContentPaths?: ContentPath[]) {
-            super(type, changeItems, newContentPaths);
-        }
-
-        getChangeItems(): ContentServerChangeItem[] {
-            return <ContentServerChangeItem[]>this.changeItems;
-        }
-
-        getNewContentPaths(): ContentPath[] {
-            return this.newContentPaths;
-        }
-
-        toString(): string {
-            return NodeServerChangeType[this.type] + ': <' +
-                   this.changeItems.map((item) => item.getPath().toString()).join(', ') + !!this.newContentPaths
-                   ? this.newContentPaths.map((contentPath) => contentPath.toString()).join(', ')
-                   : '' +
-                     '>';
-        }
-
-        static fromJson(nodeEventJson: NodeEventJson): ContentServerChange {
-
-            let changeItems = nodeEventJson.data.nodes.filter((node) => node.path.indexOf('/content') === 0).map(
-                (node: NodeEventNodeJson) => ContentServerChangeItem.fromJson(node));
-
-            if (changeItems.length === 0) {
-                return null;
-            }
-
-            let nodeEventType = this.getNodeServerChangeType(nodeEventJson.type);
-
-            if (NodeServerChangeType.MOVE === nodeEventType || NodeServerChangeType.RENAME === nodeEventType) {
-
-                let newContentPaths = nodeEventJson.data.nodes.filter((node) => node.newPath.indexOf('/content') === 0).map(
-                    (node: NodeEventNodeJson) => api.content.ContentPath.fromString(node.newPath.substr('/content'.length)));
-
-                return new ContentServerChange(nodeEventType, changeItems, newContentPaths);
-            } else {
-                return new ContentServerChange(nodeEventType, changeItems);
-            }
-        }
+    toString(): string {
+        return NodeServerChangeType[this.type] + ': <' +
+               this.changeItems.map((item) => item.getPath().toString()).join(', ') + !!this.newContentPaths
+               ? this.newContentPaths.map((contentPath) => contentPath.toString()).join(', ')
+               : '' +
+                 '>';
     }
 }

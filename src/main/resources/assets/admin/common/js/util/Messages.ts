@@ -1,40 +1,38 @@
-module api.util {
+import * as Q from 'q';
+import {JsonRequest} from '../rest/JsonRequest';
+import {JsonResponse} from '../rest/JsonResponse';
+import {Path} from '../rest/Path';
 
-    import JsonRequest = api.rest.JsonRequest;
-    import JsonResponse = api.rest.JsonResponse;
+let messages: Object;
 
-    let messages: Object;
+export function i18nInit(url: string): Q.Promise<Object> {
 
-    export function i18nInit(url: string): wemQ.Promise<Object> {
-
-        if (!!messages) {
-            return wemQ.resolve(messages);
-        }
-
-        const request = new JsonRequest<KeysJson>();
-        request.setPath(api.rest.Path.fromString(url));
-
-        return request.send().then((response: JsonResponse<KeysJson>) => {
-            messages = response.getResult();
-
-            return messages;
-        });
+    if (!!messages) {
+        return Q.resolve(messages);
     }
 
-    export function i18n(key: string, ...args: any[]): string {
-        let message = '#' + key + '#';
+    const request = new JsonRequest<KeysJson>();
+    request.setPath(Path.fromString(url));
 
-        if (!!messages && (messages[key] != null)) {
-            message = messages[key];
-        }
+    return request.send().then((response: JsonResponse<KeysJson>) => {
+        messages = response.getResult();
 
-        return message.replace(/{(\d+)}/g, function (_substring: string, ...replaceArgs: any[]) {
-            return args[replaceArgs[0]];
-        }).trim();
+        return messages;
+    });
+}
+
+export function i18n(key: string, ...args: any[]): string {
+    let message = '#' + key + '#';
+
+    if (!!messages && (messages[key] != null)) {
+        message = messages[key];
     }
 
-    export interface KeysJson {
-        key: string;
-    }
+    return message.replace(/{(\d+)}/g, function (_substring: string, ...replaceArgs: any[]) {
+        return args[replaceArgs[0]];
+    }).trim();
+}
 
+export interface KeysJson {
+    key: string;
 }

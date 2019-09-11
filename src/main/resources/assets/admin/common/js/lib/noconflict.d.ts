@@ -1,3 +1,2 @@
-declare var wemjq: JQueryStatic;
+declare var $: JQueryStatic;
 
-import wemQ = Q;

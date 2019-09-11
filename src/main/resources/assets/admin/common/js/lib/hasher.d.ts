@@ -10,7 +10,7 @@ declare module HasherJs {
         /**
          * hasher Version Number
          */
-            VERSION : string;
+        VERSION: string;
 
         /**
          * String that should always be added to the end of Hash value.
@@ -20,7 +20,7 @@ declare module HasherJs {
          * <li>avoid conflicts with elements that contain ID equal to hash value;</li>
          * </ul>
          */
-            appendHash : string;
+        appendHash: string;
 
         /**
          * String that should always be added to the beginning of Hash value.
@@ -30,7 +30,7 @@ declare module HasherJs {
          * <li>avoid conflicts with elements that contain ID equal to hash value;</li>
          * </ul>
          */
-            prependHash : string;
+        prependHash: string;
 
         /**
          * String used to split hash paths; used by `hasher.getHashAsArray()` to split paths.
@@ -38,25 +38,25 @@ declare module HasherJs {
          * <li>default value: '/';</li>
          * </ul>
          */
-            separator : string;
+        separator: string;
 
         /**
          * Signal dispatched when hash value changes.
          * - pass current hash as 1st parameter to listeners and previous hash value as 2nd parameter.
          */
-            changed : Signal;
+        changed: Signal;
 
         /**
          * Signal dispatched when hasher is stopped.
          * -  pass current hash as first parameter to listeners
          */
-            stopped : Signal;
+        stopped: Signal;
 
         /**
          * Signal dispatched when hasher is initialized.
          * - pass current hash as first parameter to listeners.
          */
-            initialized : Signal;
+        initialized: Signal;
 
         /**
          * Start listening/dispatching changes in the hash/history.
@@ -97,7 +97,7 @@ declare module HasherJs {
          * with `hasher.appendHash` and `hasher.prependHash`
          * @example hasher.setHash('lorem', 'ipsum', 'dolor') -> '#/lorem/ipsum/dolor'
          */
-        setHash(path:string);
+        setHash(path: string);
 
         /**
          * Set Hash value without keeping previous hash on the history record.
@@ -107,12 +107,12 @@ declare module HasherJs {
          * with `hasher.appendHash` and `hasher.prependHash`
          * @example hasher.replaceHash('lorem', 'ipsum', 'dolor') -> '#/lorem/ipsum/dolor'
          */
-        replaceHash(path:string);
+        replaceHash(path: string);
 
         /**
          * Hash value without '#', `hasher.appendHash` and `hasher.prependHash`.
          */
-        getHash ():string;
+        getHash(): string;
 
         /**
          * Hash value split into an Array.
@@ -123,13 +123,13 @@ declare module HasherJs {
          * Removes all event listeners, stops hasher and destroy hasher object.
          * - IMPORTANT: hasher won't work after calling this method, hasher Object will be deleted.
          */
-        dispose ();
+        dispose();
 
         /**
          * A string representation of the object.
          */
-        toString():string;
+        toString(): string;
     }
 }
 
-declare var hasher:HasherJs.HasherJsStatic;
+declare var hasher: HasherJs.HasherJsStatic;

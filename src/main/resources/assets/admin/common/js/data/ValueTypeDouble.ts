@@ -1,48 +1,52 @@
-module api.data {
+import {NumberHelper} from '../util/NumberHelper';
+import {StringHelper} from '../util/StringHelper';
+import {ObjectHelper} from '../ObjectHelper';
+import {ValueType} from './ValueType';
+import {Value} from './Value';
 
-    export class ValueTypeDouble extends ValueType {
+export class ValueTypeDouble
+    extends ValueType {
 
-        constructor() {
-            super('Double');
+    constructor() {
+        super('Double');
+    }
+
+    isValid(value: any): boolean {
+        return NumberHelper.isNumber(value);
+    }
+
+    isConvertible(value: string): boolean {
+        if (StringHelper.isBlank(value)) {
+            return false;
+        }
+        let convertedValue = Number(value);
+        return this.isValid(convertedValue);
+    }
+
+    newValue(value: string): Value {
+        if (!value) {
+            return this.newNullValue();
         }
 
-        isValid(value: any): boolean {
-            return api.util.NumberHelper.isNumber(value);
+        if (!this.isConvertible(value)) {
+            return this.newNullValue();
         }
+        return new Value(this.convertFromString(value), this);
+    }
 
-        isConvertible(value: string): boolean {
-            if (api.util.StringHelper.isBlank(value)) {
-                return false;
-            }
-            let convertedValue = Number(value);
-            return this.isValid(convertedValue);
-        }
+    fromJsonValue(jsonValue: number): Value {
+        return new Value(jsonValue, this);
+    }
 
-        newValue(value: string): Value {
-            if (!value) {
-                return this.newNullValue();
-            }
+    valueToString(value: Value): string {
+        return (<Number>value.getObject()).toString();
+    }
 
-            if (!this.isConvertible(value)) {
-                return this.newNullValue();
-            }
-            return new Value(this.convertFromString(value), this);
-        }
+    valueEquals(a: number, b: number): boolean {
+        return ObjectHelper.numberEquals(a, b) || (a == null && b == null);
+    }
 
-        fromJsonValue(jsonValue: number): Value {
-            return new Value(jsonValue, this);
-        }
-
-        private convertFromString(value: string): number {
-            return Number(value);
-        }
-
-        valueToString(value: Value): string {
-            return (<Number>value.getObject()).toString();
-        }
-
-        valueEquals(a: number, b: number): boolean {
-            return api.ObjectHelper.numberEquals(a, b) || (a == null && b == null);
-        }
+    private convertFromString(value: string): number {
+        return Number(value);
     }
 }

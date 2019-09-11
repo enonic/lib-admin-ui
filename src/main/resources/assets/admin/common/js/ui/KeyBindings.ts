@@ -1,221 +1,215 @@
-module api.ui {
+import {KeyBinding, KeyBindingAction} from './KeyBinding';
 
-    export class KeyBindings {
+export class KeyBindings {
 
-        private static instanceCount: number = 0;
+    private static instanceCount: number = 0;
 
-        private static INSTANCE: KeyBindings = new KeyBindings();
+    private static INSTANCE: KeyBindings = new KeyBindings();
+    private static debug: boolean = false;
+    private instance: number;
+    private activeBindings: Map<string, KeyBinding> = new Map();
+    private shelves: Map<string, KeyBinding>[] = [];
+    private helpKeyPressedListeners: { (event: ExtendedKeyboardEvent): void }[] = [];
 
-        private instance: number;
+    constructor() {
+        KeyBindings.instanceCount++;
+        this.instance = KeyBindings.instanceCount;
+        if (KeyBindings.debug) {
+            console.log('KeyBindings constructed instance #' + this.instance);
+        }
+        this.initializeHelpKey();
+    }
 
-        private activeBindings: Map<string, KeyBinding> = new Map();
+    public static get(): KeyBindings {
+        return KeyBindings.INSTANCE;
+    }
 
-        private shelves: Map<string, KeyBinding>[] = [];
+    public bindKeys(bindings: KeyBinding[]) {
+        let logMessage = 'Binded keys: [';
+        bindings.forEach((binding: KeyBinding) => {
+            this.bindKey(binding);
+            logMessage += `'${binding.getCombination()}' ,`;
+        });
+        logMessage += ']';
+        if (KeyBindings.debug) {
+            console.log('KeyBindings[#' + this.instance + '].bindKeys(): ' + logMessage);
+        }
+    }
 
-        private static debug: boolean = false;
+    public bindKey(binding: KeyBinding) {
+        if (binding.isGlobal()) {
+            Mousetrap.bindGlobal(binding.getCombination(), binding.getCallback(),
+                binding.getAction() ? KeyBindingAction[binding.getAction()].toLowerCase() : '');
+        } else {
+            Mousetrap.bind(binding.getCombination(), binding.getCallback(),
+                binding.getAction() ? KeyBindingAction[binding.getAction()].toLowerCase() : '');
+        }
+        let bindingKey = this.getBindingKey(binding);
+        this.activeBindings.set(bindingKey, binding);
+    }
 
-        private helpKeyPressedListeners: {(event: ExtendedKeyboardEvent): void}[] = [];
+    public unbindKeys(bindings: KeyBinding[]) {
 
-        public static get(): KeyBindings {
-            return KeyBindings.INSTANCE;
+        let logMessage = 'Binded keys: [';
+
+        bindings.forEach((binding: KeyBinding) => {
+            this.unbindKey(binding);
+            logMessage += `'${binding.getCombination()}' ,`;
+        });
+        if (KeyBindings.debug) {
+            console.log('KeyBindings[#' + this.instance + '].unbindKeys(): ' + logMessage);
+        }
+    }
+
+    public unbindKey(binding: KeyBinding) {
+
+        Mousetrap.unbind(binding.getCombination());
+        this.activeBindings.delete(this.getBindingKey(binding));
+    }
+
+    public trigger(combination: string, action?: string) {
+
+        Mousetrap.trigger(combination, action);
+    }
+
+    public reset() {
+        if (KeyBindings.debug) {
+            console.log('KeyBindings[#' + this.instance + '].reset()');
         }
 
-        constructor() {
-            KeyBindings.instanceCount++;
-            this.instance = KeyBindings.instanceCount;
-            if (KeyBindings.debug) {
-                console.log('KeyBindings constructed instance #' + this.instance);
-            }
-            this.initializeHelpKey();
+        Mousetrap.reset();
+        this.activeBindings.clear();
+        this.shelves = [];
+    }
+
+    public getActiveBindings(): KeyBinding[] {
+        return this.toArray(this.activeBindings);
+    }
+
+    /*
+     * Stores the current bindings on a new shelf and resets.
+     */
+    public shelveBindings(keyBindings: KeyBinding[] = []) {
+        if (KeyBindings.debug) {
+            console.log('KeyBindings[#' + this.instance + '].shelveBindings(): ');
         }
-
-        public bindKeys(bindings: KeyBinding[]) {
-            let logMessage = 'Binded keys: [';
-            bindings.forEach((binding: KeyBinding) => {
-                this.bindKey(binding);
-                logMessage += `'${binding.getCombination()}' ,`;
-            });
-            logMessage += ']';
-            if (KeyBindings.debug) {
-                console.log('KeyBindings[#' + this.instance + '].bindKeys(): ' + logMessage);
-            }
-        }
-
-        public bindKey(binding: KeyBinding) {
-            if (binding.isGlobal()) {
-                Mousetrap.bindGlobal(binding.getCombination(), binding.getCallback(),
-                    binding.getAction() ? KeyBindingAction[binding.getAction()].toLowerCase() : '');
-            } else {
-                Mousetrap.bind(binding.getCombination(), binding.getCallback(),
-                    binding.getAction() ? KeyBindingAction[binding.getAction()].toLowerCase() : '');
-            }
-            let bindingKey = this.getBindingKey(binding);
-            this.activeBindings.set(bindingKey, binding);
-        }
-
-        public unbindKeys(bindings: KeyBinding[]) {
-
-            let logMessage = 'Binded keys: [';
-
-            bindings.forEach((binding: KeyBinding) => {
-                this.unbindKey(binding);
-                logMessage += `'${binding.getCombination()}' ,`;
-            });
-            if (KeyBindings.debug) {
-                console.log('KeyBindings[#' + this.instance + '].unbindKeys(): ' + logMessage);
-            }
-        }
-
-        public unbindKey(binding: KeyBinding) {
-
-            Mousetrap.unbind(binding.getCombination());
-            this.activeBindings.delete(this.getBindingKey(binding));
-        }
-
-        public trigger(combination: string, action?: string) {
-
-            Mousetrap.trigger(combination, action);
-        }
-
-        public reset() {
-            if (KeyBindings.debug) {
-                console.log('KeyBindings[#' + this.instance + '].reset()');
-            }
-
+        if (keyBindings.length === 0) {
             Mousetrap.reset();
+
+            this.shelves.push(this.activeBindings);
+            this.activeBindings = new Map();
+        } else {
+            let curBindings: Map<string, KeyBinding> = new Map();
+
+            keyBindings.forEach(binding => {
+                if (this.activeBindings.get(this.getBindingKey(binding))) {
+                    curBindings.set(this.getBindingKey(binding), this.activeBindings.get(this.getBindingKey(binding)));
+                }
+            });
+
+            if (curBindings.size > 0) {
+                this.unbindKeys(this.toArray(curBindings));
+                this.shelves.push(curBindings);
+            }
+        }
+    }
+
+    /*
+     * Resets current bindings and re-binds those from the last shelf.
+     */
+    public unshelveBindings(keyBindings: KeyBinding[] = []) {
+
+        if (this.shelves.length === 0) {
+            if (KeyBindings.debug) {
+                console.log('KeyBindings[#' + this.instance + '].unshelveBindings(): nothing to unshelve');
+            }
+            return;
+        }
+        const previousMousetraps: Map<string, KeyBinding> = this.shelves[this.shelves.length - 1];
+
+        if (KeyBindings.debug) {
+            console.log('KeyBindings[#' + this.instance + '].unshelveBindings(): unshelving... ');
+        }
+        if (keyBindings.length === 0) {
+
             this.activeBindings.clear();
-            this.shelves = [];
-        }
+            Mousetrap.reset();
 
-        public getActiveBindings(): KeyBinding[] {
-            return this.toArray(this.activeBindings);
-        }
+            const previousBindings: KeyBinding[] = this.toArray(previousMousetraps);
 
-        /*
-         * Stores the current bindings on a new shelf and resets.
-         */
-        public shelveBindings(keyBindings: KeyBinding[] = []) {
-            if (KeyBindings.debug) {
-                console.log('KeyBindings[#' + this.instance + '].shelveBindings(): ');
-            }
-            if (keyBindings.length === 0) {
-                Mousetrap.reset();
+            previousBindings.forEach((previousBinding) => {
+                this.bindKey(previousBinding);
+            });
 
-                this.shelves.push(this.activeBindings);
-                this.activeBindings = new Map();
-            } else {
-                let curBindings: Map<string, KeyBinding> = new Map();
+            this.shelves.pop();
+        } else {
+            const keys = keyBindings.map(binding => this.getBindingKey(binding));
 
-                keyBindings.forEach(binding => {
-                    if (this.activeBindings.get(this.getBindingKey(binding))) {
-                        curBindings.set(this.getBindingKey(binding), this.activeBindings.get(this.getBindingKey(binding)));
-                    }
-                });
+            const previousKeys: string[] = [];
+            previousMousetraps.forEach((_value: KeyBinding, key: string) => {
+                previousKeys.push(key);
+            });
 
-                if (curBindings.size > 0) {
-                    this.unbindKeys(this.toArray(curBindings));
-                    this.shelves.push(curBindings);
+            previousKeys.forEach((previousKey) => {
+                if (keys.indexOf(previousKey) >= 0) {
+                    this.bindKey(previousMousetraps.get(previousKey));
+                    previousMousetraps.delete(previousKey);
                 }
-            }
-        }
-
-        private getBindingKey(binding: KeyBinding): string {
-            return binding.getAction()
-                ? binding.getCombination() + '-' + binding.getAction()
-                : binding.getCombination();
-        }
-
-        /*
-         * Resets current bindings and re-binds those from the last shelf.
-         */
-        public unshelveBindings(keyBindings: KeyBinding[] = []) {
-
-            if (this.shelves.length === 0) {
-                if (KeyBindings.debug) {
-                    console.log('KeyBindings[#' + this.instance + '].unshelveBindings(): nothing to unshelve');
-                }
-                return;
-            }
-            const previousMousetraps: Map<string, KeyBinding> = this.shelves[this.shelves.length - 1];
-
-            if (KeyBindings.debug) {
-                console.log('KeyBindings[#' + this.instance + '].unshelveBindings(): unshelving... ');
-            }
-            if (keyBindings.length === 0) {
-
-                this.activeBindings.clear();
-                Mousetrap.reset();
-
-                const previousBindings: KeyBinding[] = this.toArray(previousMousetraps);
-
-                previousBindings.forEach((previousBinding) => {
-                    this.bindKey(previousBinding);
-                });
-
+            });
+            if (previousMousetraps.size === 0) {
                 this.shelves.pop();
-            } else {
-                const keys = keyBindings.map(binding => this.getBindingKey(binding));
-
-                const previousKeys: string[] = [];
-                previousMousetraps.forEach((_value: KeyBinding, key: string) => {
-                    previousKeys.push(key);
-                });
-
-                previousKeys.forEach((previousKey) => {
-                    if (keys.indexOf(previousKey) >= 0) {
-                        this.bindKey(previousMousetraps.get(previousKey));
-                        previousMousetraps.delete(previousKey);
-                    }
-                });
-                if (previousMousetraps.size === 0) {
-                    this.shelves.pop();
-                }
             }
         }
+    }
 
-        isActive(keyBinding: KeyBinding) {
-            const activeBindings: KeyBinding[] = this.toArray(this.activeBindings);
+    isActive(keyBinding: KeyBinding) {
+        const activeBindings: KeyBinding[] = this.toArray(this.activeBindings);
 
-            return activeBindings.some((curBinding: KeyBinding) => {
-                return curBinding === keyBinding;
+        return activeBindings.some((curBinding: KeyBinding) => {
+            return curBinding === keyBinding;
+        });
+    }
+
+    onHelpKeyPressed(listener: (event: ExtendedKeyboardEvent) => void) {
+        this.helpKeyPressedListeners.push(listener);
+    }
+
+    unHelpKeyPressed(listener: () => void) {
+        this.helpKeyPressedListeners =
+            this.helpKeyPressedListeners.filter((currentListener: (event: ExtendedKeyboardEvent) => void) => {
+                return listener !== currentListener;
             });
-        }
+    }
 
-        private initializeHelpKey() {
-            this.bindKey(new api.ui.KeyBinding('f2', (e: ExtendedKeyboardEvent) => {
-                this.notifyHelpKeyPressed(e);
-            }).setGlobal(true).setAction(KeyBindingAction.KEYDOWN));
+    private getBindingKey(binding: KeyBinding): string {
+        return binding.getAction()
+               ? binding.getCombination() + '-' + binding.getAction()
+               : binding.getCombination();
+    }
 
-            this.bindKey(new api.ui.KeyBinding('f2', (e: ExtendedKeyboardEvent) => {
-                this.notifyHelpKeyPressed(e);
-            }).setGlobal(true).setAction(KeyBindingAction.KEYUP));
-        }
+    private initializeHelpKey() {
+        this.bindKey(new KeyBinding('f2', (e: ExtendedKeyboardEvent) => {
+            this.notifyHelpKeyPressed(e);
+        }).setGlobal(true).setAction(KeyBindingAction.KEYDOWN));
 
-        onHelpKeyPressed(listener: (event: ExtendedKeyboardEvent) => void) {
-            this.helpKeyPressedListeners.push(listener);
-        }
+        this.bindKey(new KeyBinding('f2', (e: ExtendedKeyboardEvent) => {
+            this.notifyHelpKeyPressed(e);
+        }).setGlobal(true).setAction(KeyBindingAction.KEYUP));
+    }
 
-        unHelpKeyPressed(listener: () => void) {
-            this.helpKeyPressedListeners =
-                this.helpKeyPressedListeners.filter((currentListener: (event: ExtendedKeyboardEvent) => void) => {
-                    return listener !== currentListener;
-                });
-        }
+    private notifyHelpKeyPressed(e: ExtendedKeyboardEvent) {
+        this.helpKeyPressedListeners.forEach((listener: (event: ExtendedKeyboardEvent) => void) => {
+            listener.call(this, e);
+        });
+    }
 
-        private notifyHelpKeyPressed(e: ExtendedKeyboardEvent) {
-            this.helpKeyPressedListeners.forEach((listener: (event: ExtendedKeyboardEvent) => void) => {
-                listener.call(this, e);
-            });
-        }
+    private toArray(bindings: Map<string, KeyBinding>): KeyBinding[] {
+        const result: KeyBinding[] = [];
 
-        private toArray(bindings: Map<string, KeyBinding>): KeyBinding[] {
-            const result: KeyBinding[] = [];
+        bindings.forEach((value: KeyBinding) => {
+            result.push(value);
+        });
 
-            bindings.forEach((value: KeyBinding) => {
-                result.push(value);
-            });
-
-            return result;
-        }
+        return result;
     }
 }

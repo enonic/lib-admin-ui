@@ -1,62 +1,66 @@
-module api.content.order {
+import {Equitable} from '../../Equitable';
+import {ObjectHelper} from '../../ObjectHelper';
+import {OrderExpr, OrderExprBuilder} from './OrderExpr';
+import {OrderExprJson} from '../json/OrderExprJson';
 
-    export class FieldOrderExpr extends OrderExpr {
+export class FieldOrderExpr
+    extends OrderExpr {
 
-        private fieldName: string;
+    private fieldName: string;
 
-        constructor(builder: FieldOrderExprBuilder) {
-            super(builder);
-            this.fieldName = builder.fieldName;
+    constructor(builder: FieldOrderExprBuilder) {
+        super(builder);
+        this.fieldName = builder.fieldName;
+    }
+
+    getFieldName(): string {
+        return this.fieldName;
+    }
+
+    toJson(): OrderExprJson {
+        return {
+            fieldName: this.fieldName,
+            direction: this.getDirection()
+        };
+    }
+
+    toString() {
+        return this.fieldName + ' ' + super.getDirection();
+    }
+
+    equals(o: Equitable): boolean {
+        if (!super.equals(o)) {
+            return false;
         }
-
-        getFieldName(): string {
-            return this.fieldName;
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, FieldOrderExpr)) {
+            return false;
         }
-
-        toJson(): json.OrderExprJson {
-            return {
-                fieldName: this.fieldName,
-                direction: this.getDirection()
-            };
+        let other = <FieldOrderExpr>o;
+        if (this.fieldName.toLowerCase() !== other.getFieldName().toLowerCase()) {
+            return false;
         }
+        return true;
+    }
+}
 
-        toString() {
-            return this.fieldName + ' ' + super.getDirection();
-        }
+export class FieldOrderExprBuilder
+    extends OrderExprBuilder {
 
-        equals(o: api.Equitable): boolean {
-            if (!super.equals(o)) {
-                return false;
-            }
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, FieldOrderExpr)) {
-                return false;
-            }
-            let other = <FieldOrderExpr>o;
-            if (this.fieldName.toLowerCase() !== other.getFieldName().toLowerCase()) {
-                return false;
-            }
-            return true;
+    fieldName: string;
+
+    constructor(json?: OrderExprJson) {
+        super(json);
+        if (json) {
+            this.fieldName = json.fieldName;
         }
     }
 
-    export class FieldOrderExprBuilder extends OrderExprBuilder {
+    public setFieldName(value: string): FieldOrderExprBuilder {
+        this.fieldName = value;
+        return this;
+    }
 
-        fieldName: string;
-
-        constructor(json?: json.OrderExprJson) {
-            super(json);
-            if (json) {
-                this.fieldName = json.fieldName;
-            }
-        }
-
-        public setFieldName(value: string): FieldOrderExprBuilder {
-            this.fieldName = value;
-            return this;
-        }
-
-        public build(): FieldOrderExpr {
-            return new FieldOrderExpr(this);
-        }
+    public build(): FieldOrderExpr {
+        return new FieldOrderExpr(this);
     }
 }

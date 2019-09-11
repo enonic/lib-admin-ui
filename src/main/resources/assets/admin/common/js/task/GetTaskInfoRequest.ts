@@ -1,27 +1,31 @@
-module api.task {
+import {Path} from '../rest/Path';
+import {JsonResponse} from '../rest/JsonResponse';
+import {TaskResourceRequest} from './TaskResourceRequest';
+import {TaskInfoJson} from './TaskInfoJson';
+import {TaskInfo} from './TaskInfo';
+import {TaskId} from './TaskId';
 
-    export class GetTaskInfoRequest extends TaskResourceRequest<TaskInfoJson, TaskInfo> {
+export class GetTaskInfoRequest
+    extends TaskResourceRequest<TaskInfoJson, TaskInfo> {
 
-        protected taskId: TaskId;
+    protected taskId: TaskId;
 
-        constructor(taskId: TaskId) {
-            super();
-            this.taskId = taskId;
-        }
-
-        getParams(): Object {
-            return {};
-        }
-
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), this.taskId.toString());
-        }
-
-        sendAndParse(): wemQ.Promise<TaskInfo> {
-            return this.send().then((response: api.rest.JsonResponse<TaskInfoJson>) => {
-                return TaskInfo.fromJson(response.getResult());
-            });
-        }
+    constructor(taskId: TaskId) {
+        super();
+        this.taskId = taskId;
     }
 
+    getParams(): Object {
+        return {};
+    }
+
+    getRequestPath(): Path {
+        return Path.fromParent(super.getResourcePath(), this.taskId.toString());
+    }
+
+    sendAndParse(): Q.Promise<TaskInfo> {
+        return this.send().then((response: JsonResponse<TaskInfoJson>) => {
+            return TaskInfo.fromJson(response.getResult());
+        });
+    }
 }

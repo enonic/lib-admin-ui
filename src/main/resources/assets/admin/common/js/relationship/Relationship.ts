@@ -1,63 +1,62 @@
-module api.relationship {
+import {RelationshipJson} from './json/RelationshipJson';
 
-    export class Relationship {
+export class Relationship {
 
-        private id:string;
-        private createdTime:Date;
-        private creator:string;
-        private modifiedTime:Date;
-        private modifier:string;
-        private type:string;
-        private fromContent:string;
-        private toContent:string;
-        private properties:any;
+    private id: string;
+    private createdTime: Date;
+    private creator: string;
+    private modifiedTime: Date;
+    private modifier: string;
+    private type: string;
+    private fromContent: string;
+    private toContent: string;
+    private properties: any;
 
-        constructor(json:api.relationship.json.RelationshipJson) {
-            this.createdTime = new Date(json.createdTime);
-            this.modifiedTime = new Date(json.modifiedTime);
-            this.type = json.type;
-            this.fromContent = json.fromContent;
-            this.toContent = json.toContent;
-            this.properties = json.properties;
-            this.creator = json.creator;
-            this.modifier = json.modifier;
-            this.id = json.id;
-        }
+    constructor(json: RelationshipJson) {
+        this.createdTime = new Date(json.createdTime);
+        this.modifiedTime = new Date(json.modifiedTime);
+        this.type = json.type;
+        this.fromContent = json.fromContent;
+        this.toContent = json.toContent;
+        this.properties = json.properties;
+        this.creator = json.creator;
+        this.modifier = json.modifier;
+        this.id = json.id;
+    }
 
-        getType():string {
-            return this.type;
-        }
+    getType(): string {
+        return this.type;
+    }
 
-        getCreatedTime():Date {
-            return this.createdTime;
-        }
+    getCreatedTime(): Date {
+        return this.createdTime;
+    }
 
-        getModifiedTime():Date {
-            return this.modifiedTime;
-        }
+    getModifiedTime(): Date {
+        return this.modifiedTime;
+    }
 
-        getCreator():string {
-            return this.creator;
-        }
+    getCreator(): string {
+        return this.creator;
+    }
 
-        getModifier():string {
-            return this.modifier;
-        }
+    getModifier(): string {
+        return this.modifier;
+    }
 
-        getFromContent():string {
-            return this.fromContent;
-        }
+    getFromContent(): string {
+        return this.fromContent;
+    }
 
-        getToContent():string {
-            return this.toContent;
-        }
+    getToContent(): string {
+        return this.toContent;
+    }
 
-        getProperties():any {
-            return this.properties;
-        }
+    getProperties(): any {
+        return this.properties;
+    }
 
-        getId():string {
-            return this.id;
-        }
+    getId(): string {
+        return this.id;
     }
 }

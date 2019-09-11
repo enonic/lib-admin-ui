@@ -1,14 +1,13 @@
-module api.ui.button {
+import {Button} from './Button';
 
-    export class CloseButton extends api.ui.button.Button {
+export class CloseButton
+    extends Button {
 
-        constructor(className?: string) {
-            super();
-            this.addClass('close-button icon-close');
-            if (className) {
-                this.addClass(className);
-            }
+    constructor(className?: string) {
+        super();
+        this.addClass('close-button icon-close');
+        if (className) {
+            this.addClass(className);
         }
     }
-
 }

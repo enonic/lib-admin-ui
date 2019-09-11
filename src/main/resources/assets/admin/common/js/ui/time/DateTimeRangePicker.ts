@@ -1,183 +1,185 @@
-module api.ui.time {
+import {Timezone} from '../../util/Timezone';
+import {DivEl} from '../../dom/DivEl';
+import {DateTimePicker} from './DateTimePicker';
+import {StringHelper} from '../../util/StringHelper';
+import {Element} from '../../dom/Element';
+import {LabelEl} from '../../dom/LabelEl';
 
-    import Timezone = api.util.Timezone;
+export class DateTimeRangePickerBuilder {
 
-    export class DateTimeRangePickerBuilder {
+    startDate: Date;
 
-        startDate: Date;
+    endDate: Date;
 
-        endDate: Date;
+    startLabel: string;
 
-        startLabel: string;
+    endLabel: string;
 
-        endLabel: string;
+    startingDayOfWeek: DayOfWeek = DaysOfWeek.MONDAY;
 
-        startingDayOfWeek: DayOfWeek = DaysOfWeek.MONDAY;
+    closeOnSelect: boolean = false;
 
-        closeOnSelect: boolean = false;
+    timezone: Timezone;
 
-        timezone: Timezone;
+    // use local timezone if timezone value is not initialized
+    useLocalTimezoneIfNotPresent: boolean = false;
 
-        // use local timezone if timezone value is not initialized
-        useLocalTimezoneIfNotPresent: boolean = false;
-
-        setStartDate(value: Date): DateTimeRangePickerBuilder {
-            this.startDate = value;
-            return this;
-        }
-
-        setEndDate(value: Date): DateTimeRangePickerBuilder {
-            this.endDate = value;
-            return this;
-        }
-
-        setStartLabel(value: string): DateTimeRangePickerBuilder {
-            this.startLabel = value;
-            return this;
-        }
-
-        setEndLabel(value: string): DateTimeRangePickerBuilder {
-            this.endLabel = value;
-            return this;
-        }
-
-        setStartingDayOfWeek(value: DayOfWeek): DateTimeRangePickerBuilder {
-            this.startingDayOfWeek = value;
-            return this;
-        }
-
-        setTimezone(value: Timezone): DateTimeRangePickerBuilder {
-            this.timezone = value;
-            return this;
-        }
-
-        setCloseOnSelect(value: boolean): DateTimeRangePickerBuilder {
-            this.closeOnSelect = value;
-            return this;
-        }
-
-        setUseLocalTimezoneIfNotPresent(value: boolean): DateTimeRangePickerBuilder {
-            this.useLocalTimezoneIfNotPresent = value;
-            return this;
-        }
-
-        build(): DateTimeRangePicker {
-            return new DateTimeRangePicker(this);
-        }
-
+    setStartDate(value: Date): DateTimeRangePickerBuilder {
+        this.startDate = value;
+        return this;
     }
 
-    export class DateTimeRangePicker
-        extends api.dom.DivEl {
-        private startLabel: string;
-        private startPicker: api.ui.time.DateTimePicker;
-        private endLabel: string;
-        private endPicker: api.ui.time.DateTimePicker;
+    setEndDate(value: Date): DateTimeRangePickerBuilder {
+        this.endDate = value;
+        return this;
+    }
 
-        constructor(builder: DateTimeRangePickerBuilder) {
-            super('date-time-range-picker');
-            this.startLabel = builder.startLabel;
-            this.startPicker = this.createPicker(builder, 0);
-            this.endLabel = builder.endLabel;
-            this.endPicker = this.createPicker(builder, 1);
-            this.startPicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
-                if (event.isUserInput() && event.getDate() && api.util.StringHelper.isBlank(this.endPicker.getTextInput().getValue())) {
-                    this.endPicker.giveFocus();
-                }
-            });
-        }
+    setStartLabel(value: string): DateTimeRangePickerBuilder {
+        this.startLabel = value;
+        return this;
+    }
 
-        doRender(): Q.Promise<boolean> {
-            return super.doRender().then((rendered: boolean) => {
-                let startEl: api.dom.Element;
-                let endEl: api.dom.Element;
-                if (this.startLabel) {
-                    startEl = new api.dom.DivEl();
-                    startEl.appendChildren<api.dom.Element>(new api.dom.LabelEl(this.startLabel, this.startPicker, 'start-label'),
-                        this.startPicker);
-                } else {
-                    startEl = this.startPicker;
-                }
+    setEndLabel(value: string): DateTimeRangePickerBuilder {
+        this.endLabel = value;
+        return this;
+    }
 
-                if (this.endLabel) {
-                    endEl = new api.dom.DivEl();
-                    endEl.appendChildren<api.dom.Element>(new api.dom.LabelEl(this.endLabel, this.endPicker, 'end-label'), this.endPicker);
-                } else {
-                    endEl = this.endPicker;
-                }
+    setStartingDayOfWeek(value: DayOfWeek): DateTimeRangePickerBuilder {
+        this.startingDayOfWeek = value;
+        return this;
+    }
 
-                this.appendChildren(startEl, endEl);
+    setTimezone(value: Timezone): DateTimeRangePickerBuilder {
+        this.timezone = value;
+        return this;
+    }
 
-                return rendered;
-            });
-        }
+    setCloseOnSelect(value: boolean): DateTimeRangePickerBuilder {
+        this.closeOnSelect = value;
+        return this;
+    }
 
-        private createPicker(builder: DateTimeRangePickerBuilder, index: number = 0): DateTimePicker {
-            const b = new DateTimePickerBuilder()
-                .setStartingDayOfWeek(builder.startingDayOfWeek)
-                .setCloseOnSelect(builder.closeOnSelect)
-                .setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent)
-                .setCloseOnSelect(true)
-                .setTimezone(builder.timezone);
+    setUseLocalTimezoneIfNotPresent(value: boolean): DateTimeRangePickerBuilder {
+        this.useLocalTimezoneIfNotPresent = value;
+        return this;
+    }
 
-            switch (index) {
-            case 1:
-                if (builder.endDate) {
-                    b.setDate(builder.endDate);
-                }
-                break;
-            case 0:
-            default:
-                if (builder.startDate) {
-                    b.setDate(builder.startDate);
-                }
-                break;
+    build(): DateTimeRangePicker {
+        return new DateTimeRangePicker(this);
+    }
+
+}
+
+export class DateTimeRangePicker
+    extends DivEl {
+    private startLabel: string;
+    private startPicker: DateTimePicker;
+    private endLabel: string;
+    private endPicker: DateTimePicker;
+
+    constructor(builder: DateTimeRangePickerBuilder) {
+        super('date-time-range-picker');
+        this.startLabel = builder.startLabel;
+        this.startPicker = this.createPicker(builder, 0);
+        this.endLabel = builder.endLabel;
+        this.endPicker = this.createPicker(builder, 1);
+        this.startPicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
+            if (event.isUserInput() && event.getDate() && StringHelper.isBlank(this.endPicker.getTextInput().getValue())) {
+                this.endPicker.giveFocus();
+            }
+        });
+    }
+
+    doRender(): Q.Promise<boolean> {
+        return super.doRender().then((rendered: boolean) => {
+            let startEl: Element;
+            let endEl: Element;
+            if (this.startLabel) {
+                startEl = new DivEl();
+                startEl.appendChildren<Element>(new LabelEl(this.startLabel, this.startPicker, 'start-label'),
+                    this.startPicker);
+            } else {
+                startEl = this.startPicker;
             }
 
-            return b.build();
-        }
+            if (this.endLabel) {
+                endEl = new DivEl();
+                endEl.appendChildren<Element>(new LabelEl(this.endLabel, this.endPicker, 'end-label'), this.endPicker);
+            } else {
+                endEl = this.endPicker;
+            }
 
-        public setStartDateTime(date: Date) {
-            this.startPicker.setSelectedDateTime(date, false);
-        }
+            this.appendChildren(startEl, endEl);
 
-        public setEndDateTime(date: Date) {
-            this.endPicker.setSelectedDateTime(date, false);
-        }
-
-        onStartDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.startPicker.onSelectedDateTimeChanged(listener);
-        }
-
-        unStartDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.startPicker.unSelectedDateTimeChanged(listener);
-        }
-
-        onEndDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.endPicker.onSelectedDateTimeChanged(listener);
-        }
-
-        unEndDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-            this.endPicker.unSelectedDateTimeChanged(listener);
-        }
-
-        forceSelectedDateTimeChangedEvent() {
-            this.startPicker.forceSelectedDateTimeChangedEvent();
-            this.endPicker.forceSelectedDateTimeChangedEvent();
-        }
-
-        isDirty(): boolean {
-            return this.startPicker.isDirty() || this.endPicker.isDirty();
-        }
-
-        isValid(): boolean {
-            return this.startPicker.isValid() && this.endPicker.isValid();
-        }
-
-        public reset() {
-            this.startPicker.resetBase();
-            this.endPicker.resetBase();
-        }
-
+            return rendered;
+        });
     }
+
+    public setStartDateTime(date: Date) {
+        this.startPicker.setSelectedDateTime(date, false);
+    }
+
+    public setEndDateTime(date: Date) {
+        this.endPicker.setSelectedDateTime(date, false);
+    }
+
+    onStartDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
+        this.startPicker.onSelectedDateTimeChanged(listener);
+    }
+
+    unStartDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
+        this.startPicker.unSelectedDateTimeChanged(listener);
+    }
+
+    onEndDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
+        this.endPicker.onSelectedDateTimeChanged(listener);
+    }
+
+    unEndDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
+        this.endPicker.unSelectedDateTimeChanged(listener);
+    }
+
+    forceSelectedDateTimeChangedEvent() {
+        this.startPicker.forceSelectedDateTimeChangedEvent();
+        this.endPicker.forceSelectedDateTimeChangedEvent();
+    }
+
+    isDirty(): boolean {
+        return this.startPicker.isDirty() || this.endPicker.isDirty();
+    }
+
+    isValid(): boolean {
+        return this.startPicker.isValid() && this.endPicker.isValid();
+    }
+
+    public reset() {
+        this.startPicker.resetBase();
+        this.endPicker.resetBase();
+    }
+
+    private createPicker(builder: DateTimeRangePickerBuilder, index: number = 0): DateTimePicker {
+        const b = new DateTimePickerBuilder()
+            .setStartingDayOfWeek(builder.startingDayOfWeek)
+            .setCloseOnSelect(builder.closeOnSelect)
+            .setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent)
+            .setCloseOnSelect(true)
+            .setTimezone(builder.timezone);
+
+        switch (index) {
+        case 1:
+            if (builder.endDate) {
+                b.setDate(builder.endDate);
+            }
+            break;
+        case 0:
+        default:
+            if (builder.startDate) {
+                b.setDate(builder.startDate);
+            }
+            break;
+        }
+
+        return b.build();
+    }
+
 }

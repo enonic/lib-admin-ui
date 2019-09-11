@@ -1,15 +1,14 @@
-module api.ui.uploader {
+import {Equitable} from '../../Equitable';
 
-    export class UploadFailedEvent<ITEM extends api.Equitable> {
+export class UploadFailedEvent<ITEM extends Equitable> {
 
-        private uploadItem: UploadItem<ITEM>;
+    private uploadItem: UploadItem<ITEM>;
 
-        constructor(uploadItem: UploadItem<ITEM>) {
-            this.uploadItem = uploadItem;
-        }
+    constructor(uploadItem: UploadItem<ITEM>) {
+        this.uploadItem = uploadItem;
+    }
 
-        getUploadItem(): UploadItem<ITEM> {
-            return this.uploadItem;
-        }
+    getUploadItem(): UploadItem<ITEM> {
+        return this.uploadItem;
     }
 }

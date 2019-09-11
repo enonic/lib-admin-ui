@@ -1,15 +1,18 @@
-module api.form.json {
+import {InputJson} from './InputJson';
+import {FormItemSetJson} from './FormItemSetJson';
+import {FieldSetJson} from './FieldSetJson';
+import {FormOptionSetJson} from './FormOptionSetJson';
+import {FormOptionSetOptionJson} from './FormOptionSetOptionJson';
 
-    export interface FormItemTypeWrapperJson {
+export interface FormItemTypeWrapperJson {
 
-        Input?: InputJson;
+    Input?: InputJson;
 
-        FormItemSet?: FormItemSetJson;
+    FormItemSet?: FormItemSetJson;
 
-        FieldSet?: FieldSetJson;
+    FieldSet?: FieldSetJson;
 
-        FormOptionSet?: FormOptionSetJson;
+    FormOptionSet?: FormOptionSetJson;
 
-        FormOptionSetOption?: FormOptionSetOptionJson;
-    }
+    FormOptionSetOption?: FormOptionSetOptionJson;
 }

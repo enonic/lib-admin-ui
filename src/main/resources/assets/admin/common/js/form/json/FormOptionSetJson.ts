@@ -1,11 +1,13 @@
-module api.form.json {
+import {FormSetJson} from './FormSetJson';
+import {FormOptionSetOptionJson} from './FormOptionSetOptionJson';
+import {OccurrencesJson} from './OccurrencesJson';
 
-    export interface FormOptionSetJson extends FormSetJson {
+export interface FormOptionSetJson
+    extends FormSetJson {
 
-        expanded?: boolean;
+    expanded?: boolean;
 
-        options: FormOptionSetOptionJson[];
+    options: FormOptionSetOptionJson[];
 
-        multiselection: OccurrencesJson;
-    }
+    multiselection: OccurrencesJson;
 }

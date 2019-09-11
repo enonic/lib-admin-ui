@@ -1,340 +1,348 @@
-module api.form.inputtype.support {
+import * as $ from 'jquery';
+import * as Q from 'q';
+import {Property} from '../../../data/Property';
+import {PropertyArray} from '../../../data/PropertyArray';
+import {Value} from '../../../data/Value';
+import {ValueType} from '../../../data/ValueType';
+import {InputTypeView} from '../InputTypeView';
+import {i18n} from '../../../util/Messages';
+import {FormInputEl} from '../../../dom/FormInputEl';
+import {DivEl} from '../../../dom/DivEl';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {Input} from '../../Input';
+import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
+import {Element} from '../../../dom/Element';
+import {InputValidationRecording} from '../InputValidationRecording';
+import {OccurrenceAddedEvent} from '../../OccurrenceAddedEvent';
+import {OccurrenceRenderedEvent} from '../../OccurrenceRenderedEvent';
+import {OccurrenceRemovedEvent} from '../../OccurrenceRemovedEvent';
+import {ValueChangedEvent} from '../ValueChangedEvent';
+import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
+import {ClassHelper} from '../../../ClassHelper';
+import {ContentSummary} from '../../../content/ContentSummary';
+import {ObjectHelper} from '../../../ObjectHelper';
+import {InputOccurrenceView} from './InputOccurrenceView';
+import {InputOccurrences} from './InputOccurrences';
+import {assertNotNull} from '../../../util/Assert';
 
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import InputTypeView = api.form.inputtype.InputTypeView;
-    import i18n = api.util.i18n;
-    import FormInputEl = api.dom.FormInputEl;
+export class BaseInputTypeNotManagingAdd
+    extends DivEl
+    implements InputTypeView {
 
-    export class BaseInputTypeNotManagingAdd extends api.dom.DivEl implements InputTypeView {
+    public static debug: boolean = false;
+    protected propertyArray: PropertyArray;
+    protected ignorePropertyChange: boolean;
+    private context: InputTypeViewContext;
+    private input: Input;
+    private inputOccurrences: InputOccurrences;
+    private inputValidityChangedListeners: { (event: InputValidityChangedEvent): void }[] = [];
+    private inputValueChangedListeners: { (occurrence: Element, value: Value): void }[] = [];
+    private previousValidationRecording: InputValidationRecording;
+    /**
+     * The index of child Data being dragged.
+     */
+    private draggingIndex: number;
 
-        private context: api.form.inputtype.InputTypeViewContext;
+    constructor(context: InputTypeViewContext, className?: string) {
+        super('input-type-view' + (className ? ' ' + className : ''));
+        assertNotNull(context, 'context cannot be null');
+        this.context = context;
 
-        private input: api.form.Input;
+        $(this.getHTMLElement()).sortable({
+            axis: 'y',
+            containment: 'parent',
+            handle: '.drag-control',
+            tolerance: 'pointer',
+            start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
+            stop: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStop(ui),
+            update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui)
+        });
+    }
 
-        protected propertyArray: PropertyArray;
+    handleDnDStart(ui: JQueryUI.SortableUIParams): void {
 
-        private inputOccurrences: InputOccurrences;
+        let draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item[0]);
+        this.draggingIndex = draggedElement.getSiblingIndex();
 
-        private inputValidityChangedListeners: {(event: api.form.inputtype.InputValidityChangedEvent) : void}[] = [];
+        ui.placeholder.html('Drop form item set here');
+    }
 
-        private inputValueChangedListeners: {(occurrence: api.dom.Element, value: api.data.Value): void}[] = [];
+    handleDnDStop(_ui: JQueryUI.SortableUIParams): void {
+        //override in child classes if needed
+    }
 
-        private previousValidationRecording: api.form.inputtype.InputValidationRecording;
+    handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
 
-        /**
-         * The index of child Data being dragged.
-         */
-        private draggingIndex: number;
-
-        protected ignorePropertyChange: boolean;
-
-        public static debug: boolean = false;
-
-        constructor(context: api.form.inputtype.InputTypeViewContext, className?: string) {
-            super('input-type-view' + ( className ? ' ' + className : ''));
-            api.util.assertNotNull(context, 'context cannot be null');
-            this.context = context;
-
-            wemjq(this.getHTMLElement()).sortable({
-                axis: 'y',
-                containment: 'parent',
-                handle: '.drag-control',
-                tolerance: 'pointer',
-                start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
-                stop: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStop(ui),
-                update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui)
-            });
+        if (this.draggingIndex >= 0) {
+            let draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item[0]);
+            let draggedToIndex = draggedElement.getSiblingIndex();
+            this.inputOccurrences.moveOccurrence(this.draggingIndex, draggedToIndex);
         }
 
-        handleDnDStart(ui: JQueryUI.SortableUIParams): void {
+        this.draggingIndex = -1;
+    }
 
-            let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
-            this.draggingIndex = draggedElement.getSiblingIndex();
+    availableSizeChanged() {
+        // must be implemented by children
+    }
 
-            ui.placeholder.html('Drop form item set here');
-        }
+    public getContext(): InputTypeViewContext {
+        return this.context;
+    }
 
-        handleDnDStop(_ui: JQueryUI.SortableUIParams): void {
-            //override in child classes if needed
-        }
+    getElement(): Element {
+        return this;
+    }
 
-        handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
+    isManagingAdd(): boolean {
+        return false;
+    }
 
-            if (this.draggingIndex >= 0) {
-                let draggedElement = api.dom.Element.fromHtmlElement(<HTMLElement>ui.item[0]);
-                let draggedToIndex = draggedElement.getSiblingIndex();
-                this.inputOccurrences.moveOccurrence(this.draggingIndex, draggedToIndex);
+    onOccurrenceAdded(listener: (event: OccurrenceAddedEvent) => void) {
+        this.inputOccurrences.onOccurrenceAdded(listener);
+    }
+
+    onOccurrenceRendered(listener: (event: OccurrenceRenderedEvent) => void) {
+        this.inputOccurrences.onOccurrenceRendered(listener);
+    }
+
+    onOccurrenceRemoved(listener: (event: OccurrenceRemovedEvent) => void) {
+        this.inputOccurrences.onOccurrenceRemoved(listener);
+    }
+
+    unOccurrenceAdded(listener: (event: OccurrenceAddedEvent) => void) {
+        this.inputOccurrences.unOccurrenceAdded(listener);
+    }
+
+    unOccurrenceRendered(listener: (event: OccurrenceRenderedEvent) => void) {
+        this.inputOccurrences.onOccurrenceRendered(listener);
+    }
+
+    unOccurrenceRemoved(listener: (event: OccurrenceRemovedEvent) => void) {
+        this.inputOccurrences.unOccurrenceRemoved(listener);
+    }
+
+    onOccurrenceValueChanged(listener: (occurrence: Element, value: Value) => void) {
+        this.inputValueChangedListeners.push(listener);
+    }
+
+    unOccurrenceValueChanged(listener: (occurrence: Element, value: Value) => void) {
+        this.inputValueChangedListeners = this.inputValueChangedListeners.filter((curr) => {
+            return curr !== listener;
+        });
+    }
+
+    onValueChanged(_listener: (event: ValueChangedEvent) => void) {
+        throw new Error('User onOccurrenceValueChanged instead');
+    }
+
+    unValueChanged(_listener: (event: ValueChangedEvent) => void) {
+        throw new Error('User onOccurrenceValueChanged instead');
+    }
+
+    onValidityChanged(listener: (event: InputValidityChangedEvent) => void) {
+        this.inputValidityChangedListeners.push(listener);
+    }
+
+    unValidityChanged(listener: (event: InputValidityChangedEvent) => void) {
+        this.inputValidityChangedListeners.filter((currentListener: (event: InputValidityChangedEvent) => void) => {
+            return listener === currentListener;
+        });
+    }
+
+    public maximumOccurrencesReached(): boolean {
+        return this.inputOccurrences.maximumOccurrencesReached();
+    }
+
+    createAndAddOccurrence() {
+        this.inputOccurrences.createAndAddOccurrence();
+    }
+
+    layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {
+
+        this.input = input;
+        this.propertyArray = propertyArray;
+        this.inputOccurrences =
+            InputOccurrences.create().setBaseInputTypeView(this).setInput(this.input).setPropertyArray(propertyArray).build();
+
+        this.onAdded(() =>
+            this.onOccurrenceAdded(() => {
+                $(this.getHTMLElement()).sortable('refresh');
+            })
+        );
+
+        return this.inputOccurrences.layout().then(() => {
+            $(this.getHTMLElement()).sortable('refresh');
+        });
+    }
+
+    update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
+        this.propertyArray = propertyArray;
+
+        return this.inputOccurrences.update(propertyArray, unchangedOnly);
+    }
+
+    reset() {
+        this.inputOccurrences.reset();
+    }
+
+    refresh() {
+        //to be implemented on demand in inheritors
+    }
+
+    hasValidUserInput(recording?: InputValidationRecording): boolean {
+        return this.inputOccurrences.hasValidUserInput(recording);
+    }
+
+    hasInputElementValidUserInput(_inputElement: Element, _recording?: InputValidationRecording): boolean {
+        throw new Error('Must be implemented by inheritor');
+    }
+
+    onFocus(listener: (event: FocusEvent) => void) {
+        this.inputOccurrences.onFocus(listener);
+    }
+
+    unFocus(listener: (event: FocusEvent) => void) {
+        this.inputOccurrences.unFocus(listener);
+    }
+
+    onBlur(listener: (event: FocusEvent) => void) {
+        this.inputOccurrences.onBlur(listener);
+    }
+
+    unBlur(listener: (event: FocusEvent) => void) {
+        this.inputOccurrences.unBlur(listener);
+    }
+
+    displayValidationErrors(_value: boolean) {
+        // must be implemented by children
+    }
+
+    validate(silent: boolean = true): InputValidationRecording {
+        let recording = this.validateOccurrences();
+
+        if (!this.hasValidUserInput(recording)) {
+            if (!recording.hasAdditionalValidationRecord()) {
+                recording.setAdditionalValidationRecord(
+                    AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                        i18n('field.value.invalid')).build());
             }
-
-            this.draggingIndex = -1;
+        } else {
+            this.additionalValidate(recording);
         }
 
-        availableSizeChanged() {
-            // must be implemented by children
+        if (!silent && recording.validityChanged(this.previousValidationRecording)) {
+            this.notifyValidityChanged(new InputValidityChangedEvent(recording, this.input.getName()));
         }
 
-        public getContext(): api.form.inputtype.InputTypeViewContext {
-            return this.context;
+        this.previousValidationRecording = recording;
+        return recording;
+    }
+
+    notifyRequiredContractBroken() {
+        this.validate(false);
+    }
+
+    getInput(): Input {
+        return this.input;
+    }
+
+    valueBreaksRequiredContract(_value: Value): boolean {
+        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
+    }
+
+    createInputOccurrenceElement(_index: number, _property: Property): Element {
+        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
+    }
+
+    updateInputOccurrenceElement(_occurrence: Element, _property: Property, _unchangedOnly?: boolean) {
+        const formInputEl = ObjectHelper.iFrameSafeInstanceOf(_occurrence, FormInputEl) ? <FormInputEl> _occurrence :
+                            ObjectHelper.iFrameSafeInstanceOf(_occurrence.getFirstChild(), FormInputEl)
+                            ? <FormInputEl> _occurrence.getFirstChild()
+                            :
+                            null;
+
+        if (!formInputEl) {
+            return;
         }
-
-        getElement(): api.dom.Element {
-            return this;
+        if (!_unchangedOnly || !formInputEl.isDirty()) {
+            this.updateFormInputElValue(formInputEl, _property);
+        } else if (formInputEl.isDirty()) {
+            formInputEl.forceChangedEvent();
         }
+    }
 
-        isManagingAdd(): boolean {
-            return false;
+    resetInputOccurrenceElement(_occurrence: Element) {
+        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
+    }
+
+    getValueType(): ValueType {
+        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
+    }
+
+    newInitialValue(): Value {
+        return this.input ? this.input.getDefaultValue() : null;
+    }
+
+    giveFocus(): boolean {
+        if (this.inputOccurrences) {
+            return this.inputOccurrences.giveFocus();
         }
+        return false;
+    }
 
-        onOccurrenceAdded(listener: (event: api.form.OccurrenceAddedEvent)=>void) {
-            this.inputOccurrences.onOccurrenceAdded(listener);
-        }
+    onEditContentRequest(_listener: (content: ContentSummary) => void) {
+        // Adapter for InputTypeView method, to be implemented on demand in inheritors
+    }
 
-        onOccurrenceRendered(listener: (event: api.form.OccurrenceRenderedEvent) => void) {
-            this.inputOccurrences.onOccurrenceRendered(listener);
-        }
+    unEditContentRequest(_listener: (content: ContentSummary) => void) {
+        // Adapter for InputTypeView method, to be implemented on demand in inheritors
+    }
 
-        onOccurrenceRemoved(listener: (event: api.form.OccurrenceRemovedEvent)=>void) {
-            this.inputOccurrences.onOccurrenceRemoved(listener);
-        }
+    protected notifyOccurrenceValueChanged(occurrence: Element, value: Value) {
+        this.inputValueChangedListeners.forEach((listener: (occurrence: Element, value: Value) => void) => {
+            listener(occurrence, value);
+        });
+    }
 
-        unOccurrenceAdded(listener: (event: api.form.OccurrenceAddedEvent)=>void) {
-            this.inputOccurrences.unOccurrenceAdded(listener);
-        }
+    protected additionalValidate(_recording: InputValidationRecording) {
+        //Do nothing
+    }
 
-        unOccurrenceRendered(listener: (event: api.form.OccurrenceRenderedEvent) => void) {
-            this.inputOccurrences.onOccurrenceRendered(listener);
-        }
+    protected getPropertyValue(property: Property): string {
+        return property.hasNonNullValue() ? property.getString() : '';
+    }
 
-        unOccurrenceRemoved(listener: (event: api.form.OccurrenceRemovedEvent)=>void) {
-            this.inputOccurrences.unOccurrenceRemoved(listener);
-        }
+    protected updateFormInputElValue(_occurrence: FormInputEl, _property: Property) {
+        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
+    }
 
-        onOccurrenceValueChanged(listener: (occurrence: api.dom.Element, value: api.data.Value) => void) {
-            this.inputValueChangedListeners.push(listener);
-        }
+    private notifyValidityChanged(event: InputValidityChangedEvent) {
+        this.inputValidityChangedListeners.forEach((listener: (event: InputValidityChangedEvent) => void) => {
+            listener(event);
+        });
+    }
 
-        unOccurrenceValueChanged(listener: (occurrence: api.dom.Element, value: api.data.Value) => void) {
-            this.inputValueChangedListeners = this.inputValueChangedListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
+    private validateOccurrences(): InputValidationRecording {
+        let recording = new InputValidationRecording();
+        let numberOfValids = 0;
+        this.inputOccurrences.getOccurrenceViews().forEach((occurrenceView: InputOccurrenceView) => {
 
-        protected notifyOccurrenceValueChanged(occurrence: api.dom.Element, value: api.data.Value) {
-            this.inputValueChangedListeners.forEach((listener: (occurrence: api.dom.Element, value: api.data.Value)=>void) => {
-                listener(occurrence, value);
-            });
-        }
-
-        onValueChanged(_listener: (event: api.form.inputtype.ValueChangedEvent) => void) {
-            throw new Error('User onOccurrenceValueChanged instead');
-        }
-
-        unValueChanged(_listener: (event: api.form.inputtype.ValueChangedEvent) => void) {
-            throw new Error('User onOccurrenceValueChanged instead');
-        }
-
-        onValidityChanged(listener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) {
-            this.inputValidityChangedListeners.push(listener);
-        }
-
-        unValidityChanged(listener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) {
-            this.inputValidityChangedListeners.filter((currentListener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) => {
-                return listener === currentListener;
-            });
-        }
-
-        private notifyValidityChanged(event: api.form.inputtype.InputValidityChangedEvent) {
-            this.inputValidityChangedListeners.forEach((listener: (event: api.form.inputtype.InputValidityChangedEvent)=>void) => {
-                listener(event);
-            });
-        }
-
-        public maximumOccurrencesReached(): boolean {
-            return this.inputOccurrences.maximumOccurrencesReached();
-        }
-
-        createAndAddOccurrence() {
-            this.inputOccurrences.createAndAddOccurrence();
-        }
-
-        layout(input: api.form.Input, propertyArray: PropertyArray): wemQ.Promise<void> {
-
-            this.input = input;
-            this.propertyArray = propertyArray;
-            this.inputOccurrences = InputOccurrences.create().
-                setBaseInputTypeView(this).
-                setInput(this.input).
-                setPropertyArray(propertyArray).
-                build();
-
-            this.onAdded(() =>
-                this.onOccurrenceAdded(() => {
-                    wemjq(this.getHTMLElement()).sortable('refresh');
-                })
-            );
-
-            return this.inputOccurrences.layout().then(() => {
-                wemjq(this.getHTMLElement()).sortable('refresh');
-            });
-        }
-
-        update(propertyArray: api.data.PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
-            this.propertyArray = propertyArray;
-
-            return this.inputOccurrences.update(propertyArray, unchangedOnly);
-        }
-
-        reset() {
-            this.inputOccurrences.reset();
-        }
-
-        refresh() {
-            //to be implemented on demand in inheritors
-        }
-
-        hasValidUserInput(recording?: api.form.inputtype.InputValidationRecording): boolean {
-            return this.inputOccurrences.hasValidUserInput(recording);
-        }
-
-        hasInputElementValidUserInput(_inputElement: api.dom.Element, _recording?: api.form.inputtype.InputValidationRecording): boolean {
-            throw new Error('Must be implemented by inheritor');
-        }
-
-        onFocus(listener: (event: FocusEvent) => void) {
-            this.inputOccurrences.onFocus(listener);
-        }
-
-        unFocus(listener: (event: FocusEvent) => void) {
-            this.inputOccurrences.unFocus(listener);
-        }
-
-        onBlur(listener: (event: FocusEvent) => void) {
-            this.inputOccurrences.onBlur(listener);
-        }
-
-        unBlur(listener: (event: FocusEvent) => void) {
-            this.inputOccurrences.unBlur(listener);
-        }
-
-        displayValidationErrors(_value: boolean) {
-            // must be implemented by children
-        }
-
-        validate(silent: boolean = true): api.form.inputtype.InputValidationRecording {
-            let recording = this.validateOccurrences();
-
-            if (!this.hasValidUserInput(recording)) {
-                if (!recording.hasAdditionalValidationRecord()) {
-                    recording.setAdditionalValidationRecord(
-                        api.form.AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
-                            i18n('field.value.invalid')).build());
+            let valueFromPropertyArray = this.propertyArray.getValue(occurrenceView.getIndex());
+            if (valueFromPropertyArray) {
+                if (!this.valueBreaksRequiredContract(valueFromPropertyArray) && this.hasValidUserInput(recording)) {
+                    numberOfValids++;
                 }
-            } else {
-                this.additionalValidate(recording);
             }
+        });
 
-            if (!silent && recording.validityChanged(this.previousValidationRecording)) {
-                this.notifyValidityChanged(new api.form.inputtype.InputValidityChangedEvent(recording, this.input.getName()));
-            }
-
-            this.previousValidationRecording = recording;
-            return recording;
+        if (numberOfValids < this.input.getOccurrences().getMinimum()) {
+            recording.setBreaksMinimumOccurrences(true);
+        }
+        if (this.input.getOccurrences().maximumBreached(numberOfValids)) {
+            recording.setBreaksMaximumOccurrences(true);
         }
 
-        protected additionalValidate(_recording: api.form.inputtype.InputValidationRecording) {
-            //Do nothing
-        }
-
-        private validateOccurrences(): api.form.inputtype.InputValidationRecording {
-            let recording = new api.form.inputtype.InputValidationRecording();
-            let numberOfValids = 0;
-            this.inputOccurrences.getOccurrenceViews().forEach((occurrenceView: InputOccurrenceView) => {
-
-                let valueFromPropertyArray = this.propertyArray.getValue(occurrenceView.getIndex());
-                if (valueFromPropertyArray) {
-                    if (!this.valueBreaksRequiredContract(valueFromPropertyArray) && this.hasValidUserInput(recording)) {
-                        numberOfValids++;
-                    }
-                }
-            });
-
-            if (numberOfValids < this.input.getOccurrences().getMinimum()) {
-                recording.setBreaksMinimumOccurrences(true);
-            }
-            if (this.input.getOccurrences().maximumBreached(numberOfValids)) {
-                recording.setBreaksMaximumOccurrences(true);
-            }
-
-            return recording;
-        }
-
-        protected getPropertyValue(property: Property): string {
-            return property.hasNonNullValue() ? property.getString() : '';
-        }
-
-        notifyRequiredContractBroken() {
-            this.validate(false);
-        }
-
-        getInput(): api.form.Input {
-            return this.input;
-        }
-
-        valueBreaksRequiredContract(_value: Value): boolean {
-            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
-        }
-
-        createInputOccurrenceElement(_index: number, _property: Property): api.dom.Element {
-            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
-        }
-
-        updateInputOccurrenceElement(_occurrence: api.dom.Element, _property: Property, _unchangedOnly?: boolean) {
-            const formInputEl = ObjectHelper.iFrameSafeInstanceOf(_occurrence, FormInputEl) ? <FormInputEl> _occurrence :
-                ObjectHelper.iFrameSafeInstanceOf(_occurrence.getFirstChild(), FormInputEl) ? <FormInputEl> _occurrence.getFirstChild() :
-                    null;
-
-            if (!formInputEl) {
-                return;
-            }
-            if (!_unchangedOnly || !formInputEl.isDirty()) {
-                this.updateFormInputElValue(formInputEl, _property);
-            } else if (formInputEl.isDirty()) {
-                formInputEl.forceChangedEvent();
-            }
-        }
-
-        protected updateFormInputElValue(_occurrence: FormInputEl, _property: Property) {
-            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
-        }
-
-        resetInputOccurrenceElement(_occurrence: api.dom.Element) {
-            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
-        }
-
-        getValueType(): ValueType {
-            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
-        }
-
-        newInitialValue(): Value {
-            return this.input ? this.input.getDefaultValue() : null;
-        }
-
-        giveFocus(): boolean {
-            if (this.inputOccurrences) {
-                return this.inputOccurrences.giveFocus();
-            }
-            return false;
-        }
-
-        onEditContentRequest(_listener: (content: api.content.ContentSummary) => void) {
-            // Adapter for InputTypeView method, to be implemented on demand in inheritors
-        }
-
-        unEditContentRequest(_listener: (content: api.content.ContentSummary) => void) {
-            // Adapter for InputTypeView method, to be implemented on demand in inheritors
-        }
+        return recording;
     }
 }

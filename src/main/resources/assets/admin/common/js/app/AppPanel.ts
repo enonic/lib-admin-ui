@@ -1,73 +1,80 @@
-module api.app {
+import {Equitable} from '../Equitable';
+import {DeckPanel} from '../ui/panel/DeckPanel';
+import {BrowsePanel} from './browse/BrowsePanel';
+import {KeyBinding} from '../ui/KeyBinding';
+import {PanelShownEvent} from '../ui/panel/PanelShownEvent';
+import {KeyBindings} from '../ui/KeyBindings';
+import {Action} from '../ui/Action';
+import {AppLauncherEventType} from './AppLauncherEventType';
+import {ShowBrowsePanelEvent} from './ShowBrowsePanelEvent';
 
-    export class AppPanel<M extends api.Equitable>
-        extends api.ui.panel.DeckPanel {
+export class AppPanel<M extends Equitable>
+    extends DeckPanel {
 
-        protected browsePanel: api.app.browse.BrowsePanel<M>;
+    protected browsePanel: BrowsePanel<M>;
 
-        protected currentKeyBindings: api.ui.KeyBinding[];
+    protected currentKeyBindings: KeyBinding[];
 
-        constructor(className?: string) {
-            super(className);
+    constructor(className?: string) {
+        super(className);
 
-            this.onPanelShown(this.handlePanelShown.bind(this));
+        this.onPanelShown(this.handlePanelShown.bind(this));
 
-            this.handleGlobalEvents();
-        }
+        this.handleGlobalEvents();
+    }
 
-        private handlePanelShown(event: api.ui.panel.PanelShownEvent) {
-            if (event.getPanel() === this.browsePanel) {
-                this.browsePanel.refreshFilter();
-            }
+    protected handleGlobalEvents() {
+        ShowBrowsePanelEvent.on(() => this.handleBrowse());
 
-            let previousActions = this.resolveActions(event.getPreviousPanel());
-            api.ui.KeyBindings.get().unbindKeys(api.ui.Action.getKeyBindings(previousActions));
-
-            let nextActions = this.resolveActions(event.getPanel());
-            this.currentKeyBindings = api.ui.Action.getKeyBindings(nextActions);
-            api.ui.KeyBindings.get().bindKeys(this.currentKeyBindings);
-        }
-
-        protected handleGlobalEvents() {
-            ShowBrowsePanelEvent.on(() => this.handleBrowse());
-
-            window.onmessage = (e: MessageEvent) => {
-                if (e.data.appLauncherEvent) {
-                    let eventType: api.app.AppLauncherEventType = api.app.AppLauncherEventType[<string>e.data.appLauncherEvent];
-                    if (eventType === api.app.AppLauncherEventType.Show) {
-                        this.activateCurrentKeyBindings();
-                    }
+        window.onmessage = (e: MessageEvent) => {
+            if (e.data.appLauncherEvent) {
+                let eventType: AppLauncherEventType = AppLauncherEventType[<string>e.data.appLauncherEvent];
+                if (eventType === AppLauncherEventType.Show) {
+                    this.activateCurrentKeyBindings();
                 }
-            };
-        }
-
-        protected handleBrowse() {
-            if (!this.browsePanel) {
-                this.addBrowsePanel(this.createBrowsePanel());
             }
+        };
+    }
 
-            this.showPanel(this.browsePanel);
+    protected handleBrowse() {
+        if (!this.browsePanel) {
+            this.addBrowsePanel(this.createBrowsePanel());
         }
 
-        protected addBrowsePanel(browsePanel: api.app.browse.BrowsePanel<M>) {
-            // limit to 1 browse panel
-            if (!this.browsePanel) {
-                this.browsePanel = browsePanel;
-                this.addPanel(browsePanel);
+        this.showPanel(this.browsePanel);
+    }
 
-                this.currentKeyBindings = api.ui.Action.getKeyBindings(this.resolveActions(browsePanel));
-                this.activateCurrentKeyBindings();
-            }
+    protected addBrowsePanel(browsePanel: BrowsePanel<M>) {
+        // limit to 1 browse panel
+        if (!this.browsePanel) {
+            this.browsePanel = browsePanel;
+            this.addPanel(browsePanel);
+
+            this.currentKeyBindings = Action.getKeyBindings(this.resolveActions(browsePanel));
+            this.activateCurrentKeyBindings();
+        }
+    }
+
+    protected activateCurrentKeyBindings() {
+        if (this.currentKeyBindings) {
+            KeyBindings.get().bindKeys(this.currentKeyBindings);
+        }
+    }
+
+    protected createBrowsePanel(): BrowsePanel<M> {
+        throw new Error('Must be implemented by inheritors');
+    }
+
+    private handlePanelShown(event: PanelShownEvent) {
+        if (event.getPanel() === this.browsePanel) {
+            this.browsePanel.refreshFilter();
         }
 
-        protected activateCurrentKeyBindings() {
-            if (this.currentKeyBindings) {
-                api.ui.KeyBindings.get().bindKeys(this.currentKeyBindings);
-            }
-        }
+        let previousActions = this.resolveActions(event.getPreviousPanel());
+        KeyBindings.get().unbindKeys(Action.getKeyBindings(previousActions));
 
-        protected createBrowsePanel(): api.app.browse.BrowsePanel<M> {
-            throw new Error('Must be implemented by inheritors');
-        }
+        let nextActions = this.resolveActions(event.getPanel());
+        this.currentKeyBindings = Action.getKeyBindings(nextActions);
+        KeyBindings.get().bindKeys(this.currentKeyBindings);
     }
 }

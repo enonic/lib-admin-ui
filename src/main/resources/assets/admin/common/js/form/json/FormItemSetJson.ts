@@ -1,11 +1,12 @@
-module api.form.json {
+import {FormSetJson} from './FormSetJson';
+import {FormItemTypeWrapperJson} from './FormItemTypeWrapperJson';
 
-    export interface FormItemSetJson extends FormSetJson {
+export interface FormItemSetJson
+    extends FormSetJson {
 
-        customText?: string;
+    customText?: string;
 
-        immutable?: boolean;
+    immutable?: boolean;
 
-        items: FormItemTypeWrapperJson[];
-    }
+    items: FormItemTypeWrapperJson[];
 }

@@ -1,37 +1,39 @@
-module api.app.bar {
+import {TabMenuButton} from '../../ui/tab/TabMenuButton';
+import {SpanEl} from '../../dom/SpanEl';
 
-    export class AppBarTabMenuButton extends api.ui.tab.TabMenuButton {
+export class AppBarTabMenuButton
+    extends TabMenuButton {
 
-        private tabCountEl:AppBarTabCount;
+    private tabCountEl: AppBarTabCount;
 
-        constructor() {
-            super();
+    constructor() {
+        super();
 
-            this.tabCountEl = new AppBarTabCount();
-            this.prependChild(this.tabCountEl);
-        }
-
-        setTabCount(value:number) {
-            this.tabCountEl.setCount(value);
-        }
-
-        setEditing(editing:boolean) {
-            if (editing && !this.hasClass('editing')) {
-                this.addClass('editing');
-            } else if (!editing && this.hasClass('editing')) {
-                this.removeClass('editing');
-            }
-        }
+        this.tabCountEl = new AppBarTabCount();
+        this.prependChild(this.tabCountEl);
     }
 
-    export class AppBarTabCount extends api.dom.SpanEl {
+    setTabCount(value: number) {
+        this.tabCountEl.setCount(value);
+    }
 
-        constructor() {
-            super('tab-count');
+    setEditing(editing: boolean) {
+        if (editing && !this.hasClass('editing')) {
+            this.addClass('editing');
+        } else if (!editing && this.hasClass('editing')) {
+            this.removeClass('editing');
         }
+    }
+}
 
-        setCount(value:number) {
-            this.getEl().setInnerHtml(value > 0 ? '' + value : '');
-        }
+export class AppBarTabCount
+    extends SpanEl {
+
+    constructor() {
+        super('tab-count');
+    }
+
+    setCount(value: number) {
+        this.getEl().setInnerHtml(value > 0 ? '' + value : '');
     }
 }

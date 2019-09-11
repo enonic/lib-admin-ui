@@ -1,16 +1,15 @@
-module api.ui {
+import {NavigationItem} from './NavigationItem';
 
-    export class NavigatorEvent {
+export class NavigatorEvent {
 
-        private tab: NavigationItem;
+    private tab: NavigationItem;
 
-        constructor(tab: NavigationItem) {
+    constructor(tab: NavigationItem) {
 
-            this.tab = tab;
-        }
+        this.tab = tab;
+    }
 
-        getItem(): NavigationItem {
-            return this.tab;
-        }
+    getItem(): NavigationItem {
+        return this.tab;
     }
 }

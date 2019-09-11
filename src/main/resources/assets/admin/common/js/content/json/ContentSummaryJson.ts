@@ -1,42 +1,45 @@
-module api.content.json {
+import {ItemJson} from '../../item/ItemJson';
+import {ThumbnailJson} from '../../thumb/ThumbnailJson';
+import {ChildOrderJson} from './ChildOrderJson';
+import {ContentPublishTimeRangeJson} from './ContentPublishTimeRangeJson';
+import {WorkflowJson} from './WorkflowJson';
 
-    export interface ContentSummaryJson
-        extends api.item.ItemJson {
+export interface ContentSummaryJson
+    extends ItemJson {
 
-        name: string;
+    name: string;
 
-        displayName: string;
+    displayName: string;
 
-        path: string;
+    path: string;
 
-        isRoot: boolean;
+    isRoot: boolean;
 
-        hasChildren: boolean;
+    hasChildren: boolean;
 
-        type: string;
+    type: string;
 
-        iconUrl: string;
+    iconUrl: string;
 
-        thumbnail: api.thumb.ThumbnailJson;
+    thumbnail: ThumbnailJson;
 
-        modifier: string;
+    modifier: string;
 
-        owner: string;
+    owner: string;
 
-        isPage: boolean;
+    isPage: boolean;
 
-        isValid: boolean;
+    isValid: boolean;
 
-        requireValid: boolean;
+    requireValid: boolean;
 
-        childOrder: ChildOrderJson;
+    childOrder: ChildOrderJson;
 
-        publish: ContentPublishTimeRangeJson;
+    publish: ContentPublishTimeRangeJson;
 
-        language: string;
+    language: string;
 
-        contentState: string;
+    contentState: string;
 
-        workflow: WorkflowJson;
-    }
+    workflow: WorkflowJson;
 }

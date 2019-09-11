@@ -1,32 +1,33 @@
-module api.util {
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
 
-    export class Link implements api.Equitable {
+export class Link
+    implements Equitable {
 
-        private path: string;
+    private path: string;
 
-        constructor(value: string) {
-            this.path = value;
+    constructor(value: string) {
+        this.path = value;
+    }
+
+    getPath(): string {
+        return this.path;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, Link)) {
+            return false;
         }
 
-        getPath(): string {
-            return this.path;
+        let other = <Link>o;
+
+        if (!ObjectHelper.stringEquals(this.path, other.path)) {
+            return false;
         }
+    }
 
-        equals(o: Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Link)) {
-                return false;
-            }
-
-            let other = <Link>o;
-
-            if (!api.ObjectHelper.stringEquals(this.path, other.path)) {
-                return false;
-            }
-        }
-
-        toString(): string {
-            return this.path;
-        }
+    toString(): string {
+        return this.path;
     }
 }

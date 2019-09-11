@@ -1,60 +1,72 @@
-module api.app.bar {
+import {DivEl} from '../../dom/DivEl';
+import {ActionContainer} from '../../ui/ActionContainer';
+import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
+import {Action} from '../../ui/Action';
+import {ImgEl} from '../../dom/ImgEl';
+import {SpanEl} from '../../dom/SpanEl';
+import {ShowAppLauncherAction} from './ShowAppLauncherAction';
+import {AppBarActions} from './AppBarActions';
+import {Application} from '../Application';
 
-    export class AppBar extends api.dom.DivEl implements api.ui.ActionContainer {
+export class AppBar
+    extends DivEl
+    implements ActionContainer {
 
-        protected application: Application;
+    protected application: Application;
 
-        private appIcon: AppIcon;
+    private appIcon: AppIcon;
 
-        private showAppLauncherAction: ShowAppLauncherAction;
+    private showAppLauncherAction: ShowAppLauncherAction;
 
-        constructor(application: Application) {
-            super('appbar');
+    constructor(application: Application) {
+        super('appbar');
 
-            this.application = application;
+        this.application = application;
 
-            this.showAppLauncherAction = new ShowAppLauncherAction(this.application);
+        this.showAppLauncherAction = new ShowAppLauncherAction(this.application);
 
-            this.appIcon = new AppIcon(this.application);
-            this.appendChild(this.appIcon);
+        this.appIcon = new AppIcon(this.application);
+        this.appendChild(this.appIcon);
 
-            this.onRendered(() => {api.ui.responsive.ResponsiveManager.fireResizeEvent();});
+        this.onRendered(() => {
+            ResponsiveManager.fireResizeEvent();
+        });
 
+    }
+
+    getActions(): Action[] {
+        return [this.showAppLauncherAction];
+    }
+
+    setHomeIconAction() {
+        this.appIcon.setAction(AppBarActions.SHOW_BROWSE_PANEL);
+    }
+}
+
+export class AppIcon
+    extends DivEl {
+
+    constructor(app: Application, action?: Action) {
+
+        super('home-button');
+
+        if (app.getIconUrl()) {
+            let icon = new ImgEl(app.getIconUrl(), 'app-icon');
+            this.appendChild(icon);
         }
 
-        getActions(): api.ui.Action[] {
-            return [this.showAppLauncherAction];
-        }
+        let span = new SpanEl('app-name');
+        span.setHtml(app.getName());
+        this.appendChild(span);
 
-        setHomeIconAction() {
-            this.appIcon.setAction(AppBarActions.SHOW_BROWSE_PANEL);
+        if (action) {
+            this.setAction(action);
         }
     }
 
-    export class AppIcon extends api.dom.DivEl {
-
-        constructor(app: Application, action?: api.ui.Action) {
-
-            super('home-button');
-
-            if (app.getIconUrl()) {
-                let icon = new api.dom.ImgEl(app.getIconUrl(), 'app-icon');
-                this.appendChild(icon);
-            }
-
-            let span = new api.dom.SpanEl('app-name');
-            span.setHtml(app.getName());
-            this.appendChild(span);
-
-            if (action) {
-                this.setAction(action);
-            }
-        }
-
-        setAction(action: api.ui.Action) {
-            this.addClass('clickable');
-            this.onClicked(() => action.execute());
-        }
-
+    setAction(action: Action) {
+        this.addClass('clickable');
+        this.onClicked(() => action.execute());
     }
+
 }

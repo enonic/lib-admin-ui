@@ -1,51 +1,58 @@
-module api.form {
-    import PropertyArray = api.data.PropertyArray;
+import {PropertyArray} from '../../../data/PropertyArray';
+import {Element} from '../../../dom/Element';
+import {FormContext} from '../../FormContext';
+import {FormOptionSet} from './FormOptionSet';
+import {FormOptionSetOccurrenceView, FormOptionSetOccurrenceViewConfig} from './FormOptionSetOccurrenceView';
+import {FormSetOccurrences} from '../FormSetOccurrences';
+import {FormItemOccurrencesConfig} from '../../FormItemOccurrences';
+import {FormSetOccurrence} from '../FormSetOccurrence';
+import {RemoveButtonClickedEvent} from '../../RemoveButtonClickedEvent';
 
-    export interface FormOptionSetOccurrencesConfig {
+export interface FormOptionSetOccurrencesConfig {
 
-        context: FormContext;
+    context: FormContext;
 
-        occurrenceViewContainer: api.dom.Element;
+    occurrenceViewContainer: Element;
 
-        formOptionSet: FormOptionSet;
+    formOptionSet: FormOptionSet;
 
-        parent: FormOptionSetOccurrenceView;
+    parent: FormOptionSetOccurrenceView;
 
-        propertyArray: PropertyArray;
+    propertyArray: PropertyArray;
+}
+
+export class FormOptionSetOccurrences
+    extends FormSetOccurrences<FormOptionSetOccurrenceView> {
+
+    constructor(config: FormOptionSetOccurrencesConfig) {
+        super(<FormItemOccurrencesConfig>{
+            formItem: config.formOptionSet,
+            propertyArray: config.propertyArray,
+            occurrenceViewContainer: config.occurrenceViewContainer,
+            allowedOccurrences: config.formOptionSet.getOccurrences()
+        });
+
+        this.context = config.context;
+        this.formSet = config.formOptionSet;
+        this.parent = config.parent;
+        this.occurrencesCollapsed = false;
     }
 
-    export class FormOptionSetOccurrences extends FormSetOccurrences<FormOptionSetOccurrenceView> {
+    createNewOccurrenceView(occurrence: FormSetOccurrence<FormOptionSetOccurrenceView>): FormOptionSetOccurrenceView {
 
-        constructor(config: FormOptionSetOccurrencesConfig) {
-            super(<FormItemOccurrencesConfig>{
-                formItem: config.formOptionSet,
-                propertyArray: config.propertyArray,
-                occurrenceViewContainer: config.occurrenceViewContainer,
-                allowedOccurrences: config.formOptionSet.getOccurrences()
-            });
+        let dataSet = this.getSetFromArray(occurrence);
 
-            this.context = config.context;
-            this.formSet = config.formOptionSet;
-            this.parent = config.parent;
-            this.occurrencesCollapsed = false;
-        }
+        let newOccurrenceView = new FormOptionSetOccurrenceView(<FormOptionSetOccurrenceViewConfig>{
+            context: this.context,
+            formSetOccurrence: occurrence,
+            formOptionSet: <FormOptionSet> this.formSet,
+            parent: this.parent,
+            dataSet: dataSet
+        });
 
-        createNewOccurrenceView(occurrence: FormSetOccurrence<FormOptionSetOccurrenceView>): FormOptionSetOccurrenceView {
-
-            let dataSet = this.getSetFromArray(occurrence);
-
-            let newOccurrenceView = new FormOptionSetOccurrenceView(<FormOptionSetOccurrenceViewConfig>{
-                context: this.context,
-                formSetOccurrence: occurrence,
-                formOptionSet: <FormOptionSet> this.formSet,
-                parent: this.parent,
-                dataSet: dataSet
-            });
-
-            newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<FormOptionSetOccurrenceView>) => {
-                this.removeOccurrenceView(event.getView());
-            });
-            return newOccurrenceView;
-        }
+        newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<FormOptionSetOccurrenceView>) => {
+            this.removeOccurrenceView(event.getView());
+        });
+        return newOccurrenceView;
     }
 }

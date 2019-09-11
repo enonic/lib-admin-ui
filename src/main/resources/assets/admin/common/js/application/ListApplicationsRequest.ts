@@ -1,38 +1,41 @@
-module api.application {
+import {Path} from '../rest/Path';
+import {JsonResponse} from '../rest/JsonResponse';
+import {ApplicationResourceRequest} from './ApplicationResourceRequest';
+import {ApplicationListResult} from './ApplicationListResult';
+import {Application} from './Application';
 
-    export class ListApplicationsRequest
-        extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
+export class ListApplicationsRequest
+    extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
 
-        private searchQuery: string;
-        private apiName: string;
+    private searchQuery: string;
+    private apiName: string;
 
-        constructor(apiName: string = 'list') {
-            super();
-            super.setMethod('GET');
+    constructor(apiName: string = 'list') {
+        super();
+        super.setMethod('GET');
 
-            this.apiName = apiName;
-        }
+        this.apiName = apiName;
+    }
 
-        getParams(): Object {
-            return {
-                query: this.searchQuery
-            };
-        }
+    getParams(): Object {
+        return {
+            query: this.searchQuery
+        };
+    }
 
-        setSearchQuery(query: string): ListApplicationsRequest {
-            this.searchQuery = query;
-            return this;
-        }
+    setSearchQuery(query: string): ListApplicationsRequest {
+        this.searchQuery = query;
+        return this;
+    }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), this.apiName);
-        }
+    getRequestPath(): Path {
+        return Path.fromParent(super.getResourcePath(), this.apiName);
+    }
 
-        sendAndParse(): wemQ.Promise<Application[]> {
+    sendAndParse(): Q.Promise<Application[]> {
 
-            return this.send().then((response: api.rest.JsonResponse<ApplicationListResult>) => {
-                return Application.fromJsonArray(response.getResult().applications);
-            });
-        }
+        return this.send().then((response: JsonResponse<ApplicationListResult>) => {
+            return Application.fromJsonArray(response.getResult().applications);
+        });
     }
 }

@@ -7,11 +7,17 @@ interface SignalBinding {
     active: boolean;
     context: any;
     params: any;
+
     detach();
+
     execute(paramsArr);
+
     getListener(): Function;
+
     getSignal(): Signal;
+
     isBound(): boolean;
+
     isOnce(): boolean;
 }
 
@@ -41,7 +47,7 @@ interface Signal {
      */
     add(listener: Function, listenerContext?: any, priority?: Number): SignalBinding;
 
-     /**
+    /**
      * Add listener to the signal that should be removed after first execution (will be executed only once).
      *
      * @param listener Signal handler function.

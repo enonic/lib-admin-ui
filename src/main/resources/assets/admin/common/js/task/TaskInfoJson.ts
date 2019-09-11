@@ -1,9 +1,8 @@
-module api.task {
+import {TaskProgressJson} from './TaskProgressJson';
 
-    export interface TaskInfoJson {
-        id: string;
-        description: string;
-        state: string;
-        progress: TaskProgressJson;
-    }
+export interface TaskInfoJson {
+    id: string;
+    description: string;
+    state: string;
+    progress: TaskProgressJson;
 }

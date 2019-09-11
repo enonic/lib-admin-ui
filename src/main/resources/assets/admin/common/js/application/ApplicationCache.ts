@@ -1,37 +1,40 @@
-module api.application {
+import {Cache} from '../cache/Cache';
+import {Application, ApplicationBuilder} from './Application';
+import {ApplicationKey} from './ApplicationKey';
+import {ApplicationEvent, ApplicationEventType} from './ApplicationEvent';
 
-    export class ApplicationCache extends api.cache.Cache<Application, ApplicationKey> {
+export class ApplicationCache
+    extends Cache<Application, ApplicationKey> {
 
-        private static instance: ApplicationCache;
+    private static instance: ApplicationCache;
 
-        constructor() {
-            super();
+    constructor() {
+        super();
 
-            ApplicationEvent.on((event: ApplicationEvent) => {
-                if (event.getEventType() !== ApplicationEventType.PROGRESS) {
-                    console.log('ApplicationCache on ApplicationEvent, deleting: ' + event.getApplicationKey().toString());
-                    this.deleteByKey(event.getApplicationKey());
-                }
-            });
-        }
-
-        copy(object: Application): Application {
-            return new ApplicationBuilder(object).build();
-        }
-
-        getKeyFromObject(object: Application): ApplicationKey {
-            return object.getApplicationKey();
-        }
-
-        getKeyAsString(key: ApplicationKey): string {
-            return key.toString();
-        }
-
-        static get(): ApplicationCache {
-            if (!ApplicationCache.instance) {
-                ApplicationCache.instance = new ApplicationCache();
+        ApplicationEvent.on((event: ApplicationEvent) => {
+            if (event.getEventType() !== ApplicationEventType.PROGRESS) {
+                console.log('ApplicationCache on ApplicationEvent, deleting: ' + event.getApplicationKey().toString());
+                this.deleteByKey(event.getApplicationKey());
             }
-            return ApplicationCache.instance;
+        });
+    }
+
+    static get(): ApplicationCache {
+        if (!ApplicationCache.instance) {
+            ApplicationCache.instance = new ApplicationCache();
         }
+        return ApplicationCache.instance;
+    }
+
+    copy(object: Application): Application {
+        return new ApplicationBuilder(object).build();
+    }
+
+    getKeyFromObject(object: Application): ApplicationKey {
+        return object.getApplicationKey();
+    }
+
+    getKeyAsString(key: ApplicationKey): string {
+        return key.toString();
     }
 }

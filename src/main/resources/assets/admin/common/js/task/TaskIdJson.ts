@@ -1,7 +1,3 @@
-module api.task {
-
-    export interface TaskIdJson {
-        taskId: string;
-    }
-
+export interface TaskIdJson {
+    taskId: string;
 }

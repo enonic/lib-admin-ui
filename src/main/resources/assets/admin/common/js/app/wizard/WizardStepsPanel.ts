@@ -1,29 +1,29 @@
-module api.app.wizard {
+import {TabBarItem} from '../../ui/tab/TabBarItem';
+import {Panel} from '../../ui/panel/Panel';
+import {NavigatedPanelStrip} from '../../ui/panel/NavigatedPanelStrip';
+import {Element} from '../../dom/Element';
+import {WizardStepNavigator} from './WizardStepNavigator';
 
-    import TabBarItem = api.ui.tab.TabBarItem;
-    import Panel = api.ui.panel.Panel;
+export class WizardStepsPanel
+    extends NavigatedPanelStrip {
 
-    export class WizardStepsPanel
-        extends api.ui.panel.NavigatedPanelStrip {
+    constructor(navigator: WizardStepNavigator, scrollable?: Element) {
+        super(navigator, scrollable, 'wizard-steps-panel');
+    }
 
-        constructor(navigator: WizardStepNavigator, scrollable?: api.dom.Element) {
-            super(navigator, scrollable, 'wizard-steps-panel');
+    insertNavigablePanel(item: TabBarItem, panel: Panel, header: string, index: number, select?: boolean): number {
+        if (panel.isExpandable()) {
+            panel.onHidden(() => {
+                item.hide();
+            });
+
+            panel.onShown(() => {
+                item.show();
+            });
         }
 
-        insertNavigablePanel(item: TabBarItem, panel: Panel, header: string, index: number, select?: boolean): number {
-            if (panel.isExpandable()) {
-                panel.onHidden(() => {
-                    item.hide();
-                });
+        super.insertNavigablePanel(item, panel, header, index, select);
 
-                panel.onShown(() => {
-                    item.show();
-                });
-            }
-
-            super.insertNavigablePanel(item, panel, header, index, select);
-
-            return index;
-        }
+        return index;
     }
 }

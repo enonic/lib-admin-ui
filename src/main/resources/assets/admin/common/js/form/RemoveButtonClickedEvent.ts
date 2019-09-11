@@ -1,16 +1,13 @@
-module api.form {
+export class RemoveButtonClickedEvent<V> {
 
-    export class RemoveButtonClickedEvent<V> {
+    private view: V;
 
-        private view: V;
-
-        constructor(view: V) {
-            this.view = view;
-        }
-
-        getView(): V {
-            return this.view;
-        }
-
+    constructor(view: V) {
+        this.view = view;
     }
+
+    getView(): V {
+        return this.view;
+    }
+
 }

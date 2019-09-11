@@ -1,192 +1,187 @@
-module api.ui.time {
+import {LiEl} from '../../dom/LiEl';
+import {Equitable} from '../../Equitable';
+import {ObjectHelper} from '../../ObjectHelper';
 
-    export class CalendarDayBuilder {
+export class CalendarDayBuilder {
 
-        date: Date;
+    date: Date;
 
-        month: number;
+    month: number;
 
-        previousDay: CalendarDay;
+    previousDay: CalendarDay;
 
-        nextDay: CalendarDay;
+    nextDay: CalendarDay;
 
-        setDate(value: Date): CalendarDayBuilder {
-            this.date = value;
-            return this;
+    setDate(value: Date): CalendarDayBuilder {
+        this.date = value;
+        return this;
+    }
+
+    setMonth(value: number): CalendarDayBuilder {
+        this.month = value;
+        return this;
+    }
+
+    setPreviousDay(value: CalendarDay): CalendarDayBuilder {
+        this.previousDay = value;
+        return this;
+    }
+
+    setNextDay(value: CalendarDay): CalendarDayBuilder {
+        this.nextDay = value;
+        return this;
+    }
+
+    build(): CalendarDay {
+        return new CalendarDay(this);
+    }
+}
+
+export class CalendarDay
+    extends LiEl
+    implements Equitable {
+
+    private date: Date;
+
+    private month: number;
+
+    private dayOfWeek: DayOfWeek;
+
+    private previousDay: CalendarDay;
+
+    private nextDay: CalendarDay;
+
+    private selectedDay: boolean = false;
+
+    private calendarDayClickedListeners: { (event: CalendarDayClickedEvent): void }[] = [];
+
+    constructor(builder: CalendarDayBuilder) {
+        super('calendar-day');
+
+        this.date = builder.date;
+        this.month = builder.month;
+        this.previousDay = builder.previousDay;
+        if (this.previousDay) {
+            this.previousDay.nextDay = this;
+        }
+        this.nextDay = builder.nextDay;
+        if (this.nextDay) {
+            this.nextDay.previousDay = this;
         }
 
-        setMonth(value: number): CalendarDayBuilder {
-            this.month = value;
-            return this;
+        if (new Date().toDateString() === builder.date.toDateString()) {
+            this.addClass('today');
         }
 
-        setPreviousDay(value: CalendarDay): CalendarDayBuilder {
-            this.previousDay = value;
-            return this;
+        this.dayOfWeek = DaysOfWeek.getByNumberCode(this.date.getDay());
+        this.setHtml('' + this.date.getDate());
+
+        if (this.isBeforeMonth()) {
+            this.addClass('before-month');
         }
 
-        setNextDay(value: CalendarDay): CalendarDayBuilder {
-            this.nextDay = value;
-            return this;
+        if (this.isAfterMonth()) {
+            this.addClass('after-month');
         }
 
-        build(): CalendarDay {
-            return new CalendarDay(this);
+        this.onClicked(() => this.notifyCalendarDayClicked());
+    }
+
+    getDate(): Date {
+        return this.date;
+    }
+
+    getDayOfMonth(): number {
+        return this.date.getDate();
+    }
+
+    setSelectedDay(value: boolean) {
+        this.selectedDay = value;
+        this.refreshSelectedDay();
+    }
+
+    refreshSelectedDay() {
+        if (this.selectedDay && !this.hasClass('selected-day')) {
+            this.addClass('selected-day');
+        } else if (!this.selectedDay && this.hasClass('selected-day')) {
+            this.removeClass('selected-day');
         }
     }
 
-    export class CalendarDay extends api.dom.LiEl implements api.Equitable {
+    isInMonth(): boolean {
+        return !this.isBeforeMonth() || !this.isAfterMonth();
+    }
 
-        private date: Date;
+    isBeforeMonth(): boolean {
+        return this.date.getMonth() < this.month || (this.month === 0 && this.date.getMonth() === 11);
+    }
 
-        private month: number;
+    isAfterMonth(): boolean {
+        return this.date.getMonth() > this.month || (this.month === 11 && this.date.getMonth() === 0);
+    }
 
-        private dayOfWeek: DayOfWeek;
+    isLastDayOfMonth(month: number): boolean {
+        let lastDateOfMonth = new Date(this.date.getFullYear(), month + 1, 0);
+        return month === this.date.getMonth() && this.date.getDate() === lastDateOfMonth.getDate();
+    }
 
-        private previousDay: CalendarDay;
+    getDayOfWeek(): DayOfWeek {
+        return this.dayOfWeek;
+    }
 
-        private nextDay: CalendarDay;
+    getPrevious(): CalendarDay {
+        if (this.previousDay) {
+            return this.previousDay;
+        } else {
+            let prevDate = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() - 1);
+            this.previousDay = new CalendarDayBuilder().setDate(prevDate).setMonth(this.month).setNextDay(this).build();
+            return this.previousDay;
+        }
+    }
 
-        private selectedDay: boolean = false;
+    getNext(): CalendarDay {
+        if (this.nextDay) {
+            return this.nextDay;
+        } else {
+            let nextDate = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() + 1);
+            this.nextDay = new CalendarDayBuilder().setDate(nextDate).setMonth(this.month).setPreviousDay(this).build();
+            return this.nextDay;
+        }
+    }
 
-        private calendarDayClickedListeners: {(event: CalendarDayClickedEvent) : void}[] = [];
+    equals(o: Equitable): boolean {
 
-        constructor(builder: CalendarDayBuilder) {
-            super('calendar-day');
-
-            this.date = builder.date;
-            this.month = builder.month;
-            this.previousDay = builder.previousDay;
-            if (this.previousDay) {
-                this.previousDay.nextDay = this;
-            }
-            this.nextDay = builder.nextDay;
-            if (this.nextDay) {
-                this.nextDay.previousDay = this;
-            }
-
-            if (new Date().toDateString() === builder.date.toDateString()) {
-                this.addClass('today');
-            }
-
-            this.dayOfWeek = DaysOfWeek.getByNumberCode(this.date.getDay());
-            this.setHtml('' + this.date.getDate());
-
-            if (this.isBeforeMonth()) {
-                this.addClass('before-month');
-            }
-
-            if (this.isAfterMonth()) {
-                this.addClass('after-month');
-            }
-
-            this.onClicked(() => this.notifyCalendarDayClicked());
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, CalendarDay)) {
+            return false;
         }
 
-        getDate(): Date {
-            return this.date;
+        let other = <CalendarDay>o;
+
+        if (!ObjectHelper.dateEquals(this.date, other.date)) {
+            return false;
         }
 
-        getDayOfMonth(): number {
-            return this.date.getDate();
+        if (!ObjectHelper.numberEquals(this.month, other.month)) {
+            return false;
         }
 
-        setSelectedDay(value: boolean) {
-            this.selectedDay = value;
-            this.refreshSelectedDay();
-        }
+        return true;
+    }
 
-        refreshSelectedDay() {
-            if (this.selectedDay && !this.hasClass('selected-day')) {
-                this.addClass('selected-day');
-            } else if (!this.selectedDay && this.hasClass('selected-day')) {
-                this.removeClass('selected-day');
-            }
-        }
+    onCalendarDayClicked(listener: (event: CalendarDayClickedEvent) => void) {
+        this.calendarDayClickedListeners.push(listener);
+    }
 
-        isInMonth(): boolean {
-            return !this.isBeforeMonth() || !this.isAfterMonth();
-        }
+    unCalendarDayClicked(listener: (event: CalendarDayClickedEvent) => void) {
+        this.calendarDayClickedListeners = this.calendarDayClickedListeners.filter((curr) => {
+            return curr !== listener;
+        });
+    }
 
-        isBeforeMonth(): boolean {
-            return this.date.getMonth() < this.month || (this.month === 0 && this.date.getMonth() === 11);
-        }
-
-        isAfterMonth(): boolean {
-            return this.date.getMonth() > this.month || (this.month === 11 && this.date.getMonth() === 0);
-        }
-
-        isLastDayOfMonth(month: number): boolean {
-            let lastDateOfMonth = new Date(this.date.getFullYear(), month + 1, 0);
-            return month === this.date.getMonth() && this.date.getDate() === lastDateOfMonth.getDate();
-        }
-
-        getDayOfWeek(): DayOfWeek {
-            return this.dayOfWeek;
-        }
-
-        getPrevious(): CalendarDay {
-            if (this.previousDay) {
-                return this.previousDay;
-            } else {
-                let prevDate = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() - 1);
-                this.previousDay = new CalendarDayBuilder().
-                    setDate(prevDate).
-                    setMonth(this.month).
-                    setNextDay(this).
-                    build();
-                return this.previousDay;
-            }
-        }
-
-        getNext(): CalendarDay {
-            if (this.nextDay) {
-                return this.nextDay;
-            } else {
-                let nextDate = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() + 1);
-                this.nextDay = new CalendarDayBuilder().
-                    setDate(nextDate).
-                    setMonth(this.month).
-                    setPreviousDay(this).
-                    build();
-                return this.nextDay;
-            }
-        }
-
-        equals(o: api.Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, CalendarDay)) {
-                return false;
-            }
-
-            let other = <CalendarDay>o;
-
-            if (!api.ObjectHelper.dateEquals(this.date, other.date)) {
-                return false;
-            }
-
-            if (!api.ObjectHelper.numberEquals(this.month, other.month)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        onCalendarDayClicked(listener: (event: CalendarDayClickedEvent) => void) {
-            this.calendarDayClickedListeners.push(listener);
-        }
-
-        unCalendarDayClicked(listener: (event: CalendarDayClickedEvent) => void) {
-            this.calendarDayClickedListeners = this.calendarDayClickedListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
-
-        private notifyCalendarDayClicked() {
-            let event = new CalendarDayClickedEvent(this);
-            this.calendarDayClickedListeners.forEach((listener) => {
-                listener(event);
-            });
-        }
+    private notifyCalendarDayClicked() {
+        let event = new CalendarDayClickedEvent(this);
+        this.calendarDayClickedListeners.forEach((listener) => {
+            listener(event);
+        });
     }
 }

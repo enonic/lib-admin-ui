@@ -1,11 +1,12 @@
-module api.form.json {
+import {FormItemJson} from './FormItemJson';
+import {OccurrencesJson} from './OccurrencesJson';
 
-    export interface FormSetJson extends FormItemJson {
+export interface FormSetJson
+    extends FormItemJson {
 
-        helpText?: string;
+    helpText?: string;
 
-        label: string;
+    label: string;
 
-        occurrences: OccurrencesJson;
-    }
+    occurrences: OccurrencesJson;
 }

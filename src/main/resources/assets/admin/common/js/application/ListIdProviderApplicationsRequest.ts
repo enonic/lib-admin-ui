@@ -1,25 +1,28 @@
-module api.application {
+import {Path} from '../rest/Path';
+import {JsonResponse} from '../rest/JsonResponse';
+import {ApplicationResourceRequest} from './ApplicationResourceRequest';
+import {ApplicationListResult} from './ApplicationListResult';
+import {Application} from './Application';
 
-    export class ListIdProviderApplicationsRequest
-        extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
+export class ListIdProviderApplicationsRequest
+    extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
 
-        constructor() {
-            super();
-            super.setMethod('GET');
-        }
+    constructor() {
+        super();
+        super.setMethod('GET');
+    }
 
-        getParams(): Object {
-            return {};
-        }
+    getParams(): Object {
+        return {};
+    }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'getIdProviderApplications');
-        }
+    getRequestPath(): Path {
+        return Path.fromParent(super.getResourcePath(), 'getIdProviderApplications');
+    }
 
-        sendAndParse(): wemQ.Promise<Application[]> {
-            return this.send().then((response: api.rest.JsonResponse<ApplicationListResult>) => {
-                return Application.fromJsonArray(response.getResult().applications);
-            });
-        }
+    sendAndParse(): Q.Promise<Application[]> {
+        return this.send().then((response: JsonResponse<ApplicationListResult>) => {
+            return Application.fromJsonArray(response.getResult().applications);
+        });
     }
 }

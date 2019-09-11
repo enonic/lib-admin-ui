@@ -1,48 +1,48 @@
-module api.form {
+import {ValidationRecordingPath} from './ValidationRecordingPath';
+import {ValidationRecording} from './ValidationRecording';
 
-    export class RecordingValidityChangedEvent {
+export class RecordingValidityChangedEvent {
 
-        private origin: api.form.ValidationRecordingPath;
+    private origin: ValidationRecordingPath;
 
-        private recording: api.form.ValidationRecording;
+    private recording: ValidationRecording;
 
-        private inputValueBroken: boolean = false;
+    private inputValueBroken: boolean = false;
 
-        private includeChildren: boolean = false;
+    private includeChildren: boolean = false;
 
-        constructor(recording: api.form.ValidationRecording, origin: api.form.ValidationRecordingPath) {
-            this.recording = recording;
-            this.origin = origin;
-        }
+    constructor(recording: ValidationRecording, origin: ValidationRecordingPath) {
+        this.recording = recording;
+        this.origin = origin;
+    }
 
-        getOrigin(): api.form.ValidationRecordingPath {
-            return this.origin;
-        }
+    getOrigin(): ValidationRecordingPath {
+        return this.origin;
+    }
 
-        isValid(): boolean {
-            return this.recording.isValid() && !this.inputValueBroken;
-        }
+    isValid(): boolean {
+        return this.recording.isValid() && !this.inputValueBroken;
+    }
 
-        getRecording(): api.form.ValidationRecording {
-            return this.recording;
-        }
+    getRecording(): ValidationRecording {
+        return this.recording;
+    }
 
-        setInputValueBroken(broken: boolean): RecordingValidityChangedEvent {
-            this.inputValueBroken = broken;
-            return this;
-        }
+    setInputValueBroken(broken: boolean): RecordingValidityChangedEvent {
+        this.inputValueBroken = broken;
+        return this;
+    }
 
-        isInputValueBroken(): boolean {
-            return this.inputValueBroken;
-        }
+    isInputValueBroken(): boolean {
+        return this.inputValueBroken;
+    }
 
-        setIncludeChildren(include: boolean): RecordingValidityChangedEvent {
-            this.includeChildren = include;
-            return this;
-        }
+    setIncludeChildren(include: boolean): RecordingValidityChangedEvent {
+        this.includeChildren = include;
+        return this;
+    }
 
-        isIncludeChildren(): boolean {
-            return this.includeChildren;
-        }
+    isIncludeChildren(): boolean {
+        return this.includeChildren;
     }
 }

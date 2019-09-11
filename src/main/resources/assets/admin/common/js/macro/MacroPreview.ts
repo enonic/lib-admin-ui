@@ -1,90 +1,93 @@
-module api.macro {
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
+import {MacroPreviewJson} from './resource/MacroPreviewJson';
+import {PageContributions} from './PageContributions';
 
-    export class MacroPreview implements api.Equitable {
+export class MacroPreview
+    implements Equitable {
 
-        private html: string;
+    private html: string;
 
-        private macroString: string;
+    private macroString: string;
 
-        private pageContributions: PageContributions;
+    private pageContributions: PageContributions;
 
-        constructor(builder: MacroPreviewBuilder) {
-            this.html = builder.html;
-            this.macroString = builder.macroString;
-            this.pageContributions = builder.pageContributions;
-        }
-
-        getHtml(): string {
-            return this.html;
-        }
-
-        getMacroString(): string {
-            return this.macroString;
-        }
-
-        getPageContributions(): PageContributions {
-            return this.pageContributions;
-        }
-
-        static create(): MacroPreviewBuilder {
-            return new MacroPreviewBuilder();
-        }
-
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, MacroPreview)) {
-                return false;
-            }
-
-            let other = <MacroPreview>o;
-
-            if (this.html !== other.html) {
-                return false;
-            }
-
-            if (this.macroString !== other.macroString) {
-                return false;
-            }
-
-            if (!api.ObjectHelper.equals(this.pageContributions, other.pageContributions)) {
-                return false;
-            }
-
-            return true;
-        }
+    constructor(builder: MacroPreviewBuilder) {
+        this.html = builder.html;
+        this.macroString = builder.macroString;
+        this.pageContributions = builder.pageContributions;
     }
 
-    export class MacroPreviewBuilder {
+    static create(): MacroPreviewBuilder {
+        return new MacroPreviewBuilder();
+    }
 
-        html: string;
+    getHtml(): string {
+        return this.html;
+    }
 
-        macroString: string;
+    getMacroString(): string {
+        return this.macroString;
+    }
 
-        pageContributions: PageContributions;
+    getPageContributions(): PageContributions {
+        return this.pageContributions;
+    }
 
-        fromJson(json: api.macro.resource.MacroPreviewJson) {
-            this.html = json.html;
-            this.macroString = json.macro;
-            this.pageContributions = PageContributions.create().fromJson(json.pageContributions).build();
-            return this;
+    equals(o: Equitable): boolean {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, MacroPreview)) {
+            return false;
         }
 
-        setHtml(html: string): MacroPreviewBuilder {
-            this.html = html;
-            return this;
+        let other = <MacroPreview>o;
+
+        if (this.html !== other.html) {
+            return false;
         }
 
-        setMacroString(macroString: string): MacroPreviewBuilder {
-            this.macroString = macroString;
-            return this;
+        if (this.macroString !== other.macroString) {
+            return false;
         }
 
-        setPageContributions(pageContributions: PageContributions): MacroPreviewBuilder {
-            this.pageContributions = pageContributions;
-            return this;
+        if (!ObjectHelper.equals(this.pageContributions, other.pageContributions)) {
+            return false;
         }
 
-        build(): MacroPreview {
-            return new MacroPreview(this);
-        }
+        return true;
+    }
+}
+
+export class MacroPreviewBuilder {
+
+    html: string;
+
+    macroString: string;
+
+    pageContributions: PageContributions;
+
+    fromJson(json: MacroPreviewJson) {
+        this.html = json.html;
+        this.macroString = json.macro;
+        this.pageContributions = PageContributions.create().fromJson(json.pageContributions).build();
+        return this;
+    }
+
+    setHtml(html: string): MacroPreviewBuilder {
+        this.html = html;
+        return this;
+    }
+
+    setMacroString(macroString: string): MacroPreviewBuilder {
+        this.macroString = macroString;
+        return this;
+    }
+
+    setPageContributions(pageContributions: PageContributions): MacroPreviewBuilder {
+        this.pageContributions = pageContributions;
+        return this;
+    }
+
+    build(): MacroPreview {
+        return new MacroPreview(this);
     }
 }

@@ -1,17 +1,16 @@
-module api.query {
+import {QueryField} from './QueryField';
 
-    export class QueryFields {
+export class QueryFields {
 
-        queryFields: QueryField[] = [];
+    queryFields: QueryField[] = [];
 
-        add(queryField: QueryField) {
-            this.queryFields.push(queryField);
-        }
+    add(queryField: QueryField) {
+        this.queryFields.push(queryField);
+    }
 
-        toString(): string {
-            if (this.queryFields) {
-                return this.queryFields.join();
-            }
+    toString(): string {
+        if (this.queryFields) {
+            return this.queryFields.join();
         }
     }
 }

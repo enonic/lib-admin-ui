@@ -1,49 +1,45 @@
-module api.query {
+export class QueryField {
 
-    export class QueryField {
+    static DISPLAY_NAME: string = 'displayName';
 
-        static DISPLAY_NAME: string = 'displayName';
+    static NAME: string = '_name';
 
-        static NAME: string = '_name';
+    static ALL: string = '_alltext';
 
-        static ALL: string = '_alltext';
+    static CREATED_TIME: string = 'createdTime';
 
-        static CREATED_TIME: string = 'createdTime';
+    static MODIFIED_TIME: string = 'modifiedTime';
 
-        static MODIFIED_TIME: string = 'modifiedTime';
+    static TIMESTAMP: string = '_timestamp';
 
-        static TIMESTAMP: string = '_timestamp';
+    static MANUAL_ORDER_VALUE: string = '_manualOrderValue';
 
-        static MANUAL_ORDER_VALUE: string = '_manualOrderValue';
+    static WEIGHT_SEPARATOR: string = '^';
 
-        static WEIGHT_SEPARATOR: string = '^';
+    static CONTENT_TYPE: string = 'type';
 
-        static CONTENT_TYPE: string = 'type';
+    static REFERENCES: string = '_references';
 
-        static REFERENCES: string = '_references';
+    static ID: string = '_id';
 
-        static ID: string = '_id';
+    static PUBLISH_FIRST: string = 'publish.first';
 
-        static PUBLISH_FIRST: string = 'publish.first';
+    weight: number;
 
-        weight: number;
+    name: string;
 
-        name: string;
-
-        constructor(name: string, weight?: number) {
-            this.name = name;
-            if (weight) {
-                this.weight = weight;
-            }
-        }
-
-        toString() {
-            if (this.weight) {
-                return this.name + QueryField.WEIGHT_SEPARATOR + this.weight;
-            } else {
-                return this.name;
-            }
+    constructor(name: string, weight?: number) {
+        this.name = name;
+        if (weight) {
+            this.weight = weight;
         }
     }
 
+    toString() {
+        if (this.weight) {
+            return this.name + QueryField.WEIGHT_SEPARATOR + this.weight;
+        } else {
+            return this.name;
+        }
+    }
 }

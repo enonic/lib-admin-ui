@@ -1,62 +1,63 @@
-module api.form {
+import {FormItemOccurrenceView} from './FormItemOccurrenceView';
+import {FormItemOccurrences} from './FormItemOccurrences';
+import {Occurrences} from './Occurrences';
 
-    export class FormItemOccurrence<V extends FormItemOccurrenceView> {
+export class FormItemOccurrence<V extends FormItemOccurrenceView> {
 
-        private occurrences: FormItemOccurrences<V>;
+    private occurrences: FormItemOccurrences<V>;
 
-        private allowedOccurrences: Occurrences;
+    private allowedOccurrences: Occurrences;
 
-        private index: number;
+    private index: number;
 
-        constructor(occurrences: FormItemOccurrences<V>, index: number, allowedOccurrences: Occurrences) {
-            this.occurrences = occurrences;
-            this.allowedOccurrences = allowedOccurrences;
-            this.index = index;
+    constructor(occurrences: FormItemOccurrences<V>, index: number, allowedOccurrences: Occurrences) {
+        this.occurrences = occurrences;
+        this.allowedOccurrences = allowedOccurrences;
+        this.index = index;
+    }
+
+    setIndex(value: number) {
+        this.index = value;
+    }
+
+    getIndex(): number {
+        return this.index;
+    }
+
+    isRemoveButtonRequired(): boolean {
+        return this.moreThanRequiredOccurrences();
+    }
+
+    isRemoveButtonRequiredStrict(): boolean {
+        return this.occurrences.countOccurrences() === 1 ? false : this.moreThanRequiredOccurrences();
+    }
+
+    showAddButton(): boolean {
+
+        if (!this.isLastOccurrence()) {
+            return false;
         }
 
-        setIndex(value: number) {
-            this.index = value;
-        }
+        return this.lessOccurrencesThanMaximumAllowed();
+    }
 
-        getIndex(): number {
-            return this.index;
-        }
+    public isMultiple(): boolean {
+        return this.allowedOccurrences.multiple();
+    }
 
-        isRemoveButtonRequired(): boolean {
-            return this.moreThanRequiredOccurrences();
-        }
+    public oneAndOnly() {
+        return this.index === 0 && this.occurrences.countOccurrences() === 1;
+    }
 
-        isRemoveButtonRequiredStrict(): boolean {
-            return this.occurrences.countOccurrences() === 1 ? false : this.moreThanRequiredOccurrences();
-        }
+    private moreThanRequiredOccurrences() {
+        return this.occurrences.countOccurrences() > this.allowedOccurrences.getMinimum();
+    }
 
-        showAddButton(): boolean {
+    private lessOccurrencesThanMaximumAllowed(): boolean {
+        return !this.allowedOccurrences.maximumReached(this.occurrences.countOccurrences());
+    }
 
-            if (!this.isLastOccurrence()) {
-                return false;
-            }
-
-            return this.lessOccurrencesThanMaximumAllowed();
-        }
-
-        public isMultiple(): boolean {
-            return this.allowedOccurrences.multiple();
-        }
-
-        public oneAndOnly() {
-            return this.index === 0 && this.occurrences.countOccurrences() === 1;
-        }
-
-        private moreThanRequiredOccurrences() {
-            return this.occurrences.countOccurrences() > this.allowedOccurrences.getMinimum();
-        }
-
-        private lessOccurrencesThanMaximumAllowed(): boolean {
-            return !this.allowedOccurrences.maximumReached(this.occurrences.countOccurrences());
-        }
-
-        private isLastOccurrence() {
-            return this.index === this.occurrences.countOccurrences() - 1;
-        }
+    private isLastOccurrence() {
+        return this.index === this.occurrences.countOccurrences() - 1;
     }
 }

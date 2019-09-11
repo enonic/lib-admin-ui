@@ -1,47 +1,51 @@
-module api.app {
+import {DivEl} from '../dom/DivEl';
+import {H6El} from '../dom/H6El';
+import {PEl} from '../dom/PEl';
+import {StyleHelper} from '../StyleHelper';
+import {Element} from '../dom/Element';
 
-    export class NamesView extends api.dom.DivEl {
+export class NamesView
+    extends DivEl {
 
-        private mainNameEl: api.dom.H6El;
+    private mainNameEl: H6El;
 
-        private subNameEl: api.dom.PEl;
+    private subNameEl: PEl;
 
-        private addTitleAttribute: boolean;
+    private addTitleAttribute: boolean;
 
-        constructor(addTitleAttribute: boolean = true) {
-            super('names-view', api.StyleHelper.COMMON_PREFIX);
+    constructor(addTitleAttribute: boolean = true) {
+        super('names-view', StyleHelper.COMMON_PREFIX);
 
-            this.addTitleAttribute = addTitleAttribute;
+        this.addTitleAttribute = addTitleAttribute;
 
-            this.mainNameEl = new api.dom.H6El('main-name', api.StyleHelper.COMMON_PREFIX);
-            this.appendChild(this.mainNameEl);
+        this.mainNameEl = new H6El('main-name', StyleHelper.COMMON_PREFIX);
+        this.appendChild(this.mainNameEl);
 
-            this.subNameEl = new api.dom.PEl('sub-name', api.StyleHelper.COMMON_PREFIX);
-            this.appendChild(this.subNameEl);
+        this.subNameEl = new PEl('sub-name', StyleHelper.COMMON_PREFIX);
+        this.appendChild(this.subNameEl);
+    }
+
+    setMainName(value: string, escapeHtml: boolean = true): NamesView {
+        this.mainNameEl.setHtml(value, escapeHtml);
+        if (this.addTitleAttribute) {
+            this.mainNameEl.getEl().setAttribute('title', value);
         }
+        return this;
+    }
 
-        setMainName(value: string, escapeHtml: boolean = true): NamesView {
-            this.mainNameEl.setHtml(value, escapeHtml);
-            if (this.addTitleAttribute) {
-                this.mainNameEl.getEl().setAttribute('title', value);
-            }
-            return this;
+    setSubName(value: string, title?: string): NamesView {
+        this.subNameEl.setHtml(value);
+        if (this.addTitleAttribute) {
+            this.subNameEl.getEl().setAttribute('title', title || value);
         }
+        return this;
+    }
 
-        setSubName(value: string, title?: string): NamesView {
-            this.subNameEl.setHtml(value);
-            if (this.addTitleAttribute) {
-                this.subNameEl.getEl().setAttribute('title', title || value);
-            }
-            return this;
-        }
+    setSubNameElements(elements: Element[]): NamesView {
+        elements.forEach((element: Element) => {
+            this.subNameEl.appendChild(element);
+        });
 
-        setSubNameElements(elements: api.dom.Element[]): NamesView {
-            elements.forEach((element: api.dom.Element) => {
-                this.subNameEl.appendChild(element);
-            });
-
-            return this;
-        }
+        return this;
     }
 }

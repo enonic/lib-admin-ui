@@ -1,44 +1,46 @@
-module api.query.aggregation {
+import {AggregationQuery} from './AggregationQuery';
+import {DateRange} from './DateRange';
+import {AggregationQueryTypeWrapperJson} from './AggregationQueryTypeWrapperJson';
+import {DateRangeAggregationQueryJson} from './DateRangeAggregationQueryJson';
 
-    export class DateRangeAggregationQuery extends AggregationQuery {
+export class DateRangeAggregationQuery
+    extends AggregationQuery {
 
-        private fieldName: string;
+    private fieldName: string;
 
-        private ranges: DateRange[] = [];
+    private ranges: DateRange[] = [];
 
-        constructor(name: string) {
-            super(name);
-        }
+    constructor(name: string) {
+        super(name);
+    }
 
-        public setFieldName(fieldName: string) {
-            this.fieldName = fieldName;
-        }
+    public setFieldName(fieldName: string) {
+        this.fieldName = fieldName;
+    }
 
-        public getFieldName(): string {
-            return this.fieldName;
-        }
+    public getFieldName(): string {
+        return this.fieldName;
+    }
 
-        public addRange(range: DateRange) {
+    public addRange(range: DateRange) {
 
-            this.ranges.push(range);
-        }
+        this.ranges.push(range);
+    }
 
-        toJson(): AggregationQueryTypeWrapperJson {
+    toJson(): AggregationQueryTypeWrapperJson {
 
-            let json: DateRangeAggregationQueryJson = <DateRangeAggregationQueryJson>super.toAggregationQueryJson();
-            json.fieldName = this.getFieldName();
-            json.ranges = [];
+        let json: DateRangeAggregationQueryJson = <DateRangeAggregationQueryJson>super.toAggregationQueryJson();
+        json.fieldName = this.getFieldName();
+        json.ranges = [];
 
-            this.ranges.forEach((range: DateRange) => {
-                json.ranges.push(range.toJson());
-            });
+        this.ranges.forEach((range: DateRange) => {
+            json.ranges.push(range.toJson());
+        });
 
-            return <AggregationQueryTypeWrapperJson>
+        return <AggregationQueryTypeWrapperJson>
             {
                 DateRangeAggregationQuery: json
             };
-        }
-
     }
 
 }

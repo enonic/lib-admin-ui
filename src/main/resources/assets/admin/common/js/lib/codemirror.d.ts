@@ -3,7 +3,6 @@
 // Definitions by: https://github.com/fdecampredon
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-
 interface CodeMirrorScrollInfo {
     x: number;
     y: number;
@@ -42,9 +41,9 @@ interface CodeMirrorMarkTextOptions {
     endStyle: string;
 }
 
-
 interface CodeMirrorBookMark {
     clear(): void;
+
     find(): CodeMirrorPosition;
 }
 
@@ -62,12 +61,10 @@ interface CodeMirrorLineInfo {
     bgClass: string;
 }
 
-
 interface CodeMirrorViewPort {
     from: number;
     to: number;
 }
-
 
 interface CodeMirrorChange {
     from: CodeMirrorPosition;
@@ -84,102 +81,169 @@ interface CodeMirrorViewPortChangeListener {
     (editor: CodeMirrorEditor, from: CodeMirrorPosition, to: CodeMirrorPosition): void;
 }
 
-
 interface CodeMirrorStream {
-    eol(): boolean;
-    sol(): boolean;
-    peek(): string;
-    next(): string;
-    eat(match: any): string;
-    eatWhile(match: any): boolean;
-    eatSpace(): boolean;
-    skipToEnd(): void;
-    skipTo(ch: string): boolean;
-    match(pattern: RegExp, consume: boolean, caseFold: boolean): boolean;
-    backUp(n: number): void;
-    column(): number;
-    indentation(): number;
-    current(): string;
     string: string;
     pos: number;
-}
 
+    eol(): boolean;
+
+    sol(): boolean;
+
+    peek(): string;
+
+    next(): string;
+
+    eat(match: any): string;
+
+    eatWhile(match: any): boolean;
+
+    eatSpace(): boolean;
+
+    skipToEnd(): void;
+
+    skipTo(ch: string): boolean;
+
+    match(pattern: RegExp, consume: boolean, caseFold: boolean): boolean;
+
+    backUp(n: number): void;
+
+    column(): number;
+
+    indentation(): number;
+
+    current(): string;
+}
 
 interface CodeMirrorModeDefition {
     (options: CodeMirrorOptions, modeOptions: any): CodeMirrorMode;
 }
 
-
-
 interface CodeMirrorMode {
-    startState(): any;
-    token(stream: CodeMirrorStream, state: any): string;
-    blankLine? (state: any): string;
-    copyState? (state: any): any;
-    indent? (state: any, textAfter: string, text: String): number;
     electricChars?: string;
-}
 
+    startState(): any;
+
+    token(stream: CodeMirrorStream, state: any): string;
+
+    blankLine?(state: any): string;
+
+    copyState?(state: any): any;
+
+    indent?(state: any, textAfter: string, text: String): number;
+}
 
 interface CodeMirrorEditor {
     getValue(): string;
+
     setValue(valu: string): void;
+
     getSelection(): string;
+
     replaceSelection(value: string): void;
+
     setSize(width: number, height: number): void;
+
     focus(): void;
+
     scrollTo(x: number, y: number): void;
+
     getScrollInfo(): CodeMirrorScrollInfo;
+
     setOption(option: string, value: any);
+
     getOption(option: string): any;
+
     getMode(): CodeMirrorMode;
+
     cursorCoords(start: boolean, mode: string): CodeMirrorCoords;
+
     charCoords(pos: CodeMirrorPosition, mode: string): CodeMirrorCoords;
+
     undo(): void;
+
     redo(): void;
+
     historySize(): CodeMirrorHistorySize;
+
     clearHistory(): void;
+
     getHistory(): any;
+
     setHistory(history: any);
+
     indentLine(line: number, dir?: boolean);
+
     getTokenAt(pos: CodeMirrorPosition): CodeMirrorToken;
+
     markText(from: CodeMirrorPosition, to: CodeMirrorPosition, className: string,
              option?: CodeMirrorMarkTextOptions): CodeMirrorBookMark;
-    setBookmark(pos: CodeMirrorPosition): CodeMirrorBookMark;
-    findMarksAt(pos: CodeMirrorPosition): CodeMirrorBookMark[];
-    setMarker(line: number, text: string, className: string): CodeMirrorLineHandle;
-    clarMarker(line: number): void;
-    setLineClass(line: number, className: string, backgroundClassName: string): CodeMirrorLineHandle;
-    hideLine(line: number): CodeMirrorLineHandle;
-    showLine(line: number): CodeMirrorLineHandle;
-    onDeleteLine(line: number, callBack: Function);
-    lineInfo(line: number): CodeMirrorLineInfo;
-    getLineHandler(line: number): CodeMirrorLineHandle;
-    getViewPort(): CodeMirrorViewPort;
-    addWidget(pos: CodeMirrorPosition, node: Node, scrollIntoView: boolean);
-    matchBrackets(): void;
-    lineCount(): number;
-    getCursor(start?: boolean): CodeMirrorPosition;
-    somethingSelected(): boolean;
-    setCursor(pos: CodeMirrorPosition): void;
-    setSelection(start: CodeMirrorPosition, end: CodeMirrorPosition): void;
-    getLine(n: number): string;
-    setLine(n: string, text: string): void;
-    removeLine(n: number): void;
-    getRange(from: CodeMirrorPosition, to: CodeMirrorPosition): string;
-    replaceRange(text: string, from: CodeMirrorPosition, to?: CodeMirrorPosition): void;
-    posFromIndex(index: number): CodeMirrorPosition;
-    indexFromPos(pos: CodeMirrorPosition): number;
-    operation(func: Function): any;
-    compundChange(func: Function): any;
-    refresh(): void;
-    getInputField(): HTMLTextAreaElement;
-    getWrapperElement(): HTMLElement;
-    getScrollerElement(): HTMLElement;
-    getGutterElement(): HTMLElement;
-    getStateAfter(line): any;
-}
 
+    setBookmark(pos: CodeMirrorPosition): CodeMirrorBookMark;
+
+    findMarksAt(pos: CodeMirrorPosition): CodeMirrorBookMark[];
+
+    setMarker(line: number, text: string, className: string): CodeMirrorLineHandle;
+
+    clarMarker(line: number): void;
+
+    setLineClass(line: number, className: string, backgroundClassName: string): CodeMirrorLineHandle;
+
+    hideLine(line: number): CodeMirrorLineHandle;
+
+    showLine(line: number): CodeMirrorLineHandle;
+
+    onDeleteLine(line: number, callBack: Function);
+
+    lineInfo(line: number): CodeMirrorLineInfo;
+
+    getLineHandler(line: number): CodeMirrorLineHandle;
+
+    getViewPort(): CodeMirrorViewPort;
+
+    addWidget(pos: CodeMirrorPosition, node: Node, scrollIntoView: boolean);
+
+    matchBrackets(): void;
+
+    lineCount(): number;
+
+    getCursor(start?: boolean): CodeMirrorPosition;
+
+    somethingSelected(): boolean;
+
+    setCursor(pos: CodeMirrorPosition): void;
+
+    setSelection(start: CodeMirrorPosition, end: CodeMirrorPosition): void;
+
+    getLine(n: number): string;
+
+    setLine(n: string, text: string): void;
+
+    removeLine(n: number): void;
+
+    getRange(from: CodeMirrorPosition, to: CodeMirrorPosition): string;
+
+    replaceRange(text: string, from: CodeMirrorPosition, to?: CodeMirrorPosition): void;
+
+    posFromIndex(index: number): CodeMirrorPosition;
+
+    indexFromPos(pos: CodeMirrorPosition): number;
+
+    operation(func: Function): any;
+
+    compundChange(func: Function): any;
+
+    refresh(): void;
+
+    getInputField(): HTMLTextAreaElement;
+
+    getWrapperElement(): HTMLElement;
+
+    getScrollerElement(): HTMLElement;
+
+    getGutterElement(): HTMLElement;
+
+    getStateAfter(line: any): any;
+}
 
 interface CodeMirrorOptions {
     value?: string;
@@ -206,7 +270,6 @@ interface CodeMirrorOptions {
     //**todo finish
 }
 
-
 declare var CodeMirror: {
     (element: HTMLElement, options?: CodeMirrorOptions): CodeMirrorEditor;
     (element: Function, options?: CodeMirrorOptions): CodeMirrorEditor;
@@ -217,12 +280,12 @@ declare var CodeMirror: {
     defineMIME(mime: string, mode: string);
     connect(target: EventTarget, event: String, func: Function);
     commands: any;
-    modeURL:string;
-    autoLoadMode(codeMirror:CodeMirrorEditor, mode:string);
+    modeURL: string;
+    autoLoadMode(codeMirror: CodeMirrorEditor, mode: string);
 
     tagRangeFinder: (codeMirror: CodeMirrorEditor, line: number, hideEnd: boolean) => number;
     braceRangeFinder: (codeMirror: CodeMirrorEditor, line: number, hideEnd: boolean) => number;
     indentRangeFinder: (codeMirror: CodeMirrorEditor, line: number) => number;
-    newFoldFunction: (rangeFinder?:any, markText?:any, hideEnd?:any) => (codeMirror, line) => void;
+    newFoldFunction: (rangeFinder?: any, markText?: any, hideEnd?: any) => (codeMirror: any, line: any) => void;
 
-}
+};
