@@ -135,7 +135,7 @@ module api {
                 }
             }
 
-            if (!ObjectHelper.stringArrayEquals(keysA, keysB)) {
+            if (!ObjectHelper.stringArrayEquals(keysA.sort(), keysB.sort())) {
                 return false;
             }
 
