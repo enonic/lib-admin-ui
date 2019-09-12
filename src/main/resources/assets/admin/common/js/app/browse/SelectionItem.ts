@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {Equitable} from '../../Equitable';
 import {DivEl} from '../../dom/DivEl';
 import {Viewer} from '../../ui/Viewer';

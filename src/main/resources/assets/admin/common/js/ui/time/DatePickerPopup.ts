@@ -3,6 +3,9 @@ import {AEl} from '../../dom/AEl';
 import {SpanEl} from '../../dom/SpanEl';
 import {H2El} from '../../dom/H2El';
 import {H5El} from '../../dom/H5El';
+import {Calendar, CalendarBuilder} from './Calendar';
+import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
+import {MonthsOfYear} from './MonthsOfYear';
 
 export class DatePickerPopupBuilder {
 

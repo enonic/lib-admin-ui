@@ -1,3 +1,6 @@
+import {TabItemEvent} from './TabItemEvent';
+import {TabItem} from './TabItem';
+
 export class TabItemLabelChangedEvent
     extends TabItemEvent {
 

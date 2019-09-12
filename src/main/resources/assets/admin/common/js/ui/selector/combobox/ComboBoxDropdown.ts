@@ -1,4 +1,6 @@
 import {Option} from '../Option';
+import {DropdownList} from '../DropdownList';
+import {DropdownGridMultipleSelectionEvent} from '../DropdownGridMultipleSelectionEvent';
 
 export class ComboBoxDropdown<OPTION_DISPLAY_VALUE>
     extends DropdownList<OPTION_DISPLAY_VALUE> {

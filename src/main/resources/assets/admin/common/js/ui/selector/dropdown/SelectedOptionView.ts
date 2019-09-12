@@ -1,5 +1,6 @@
 import {DivEl} from '../../../dom/DivEl';
 import {Option} from '../Option';
+import {Viewer} from '../../Viewer';
 
 export class SelectedOptionView<T>
     extends DivEl {

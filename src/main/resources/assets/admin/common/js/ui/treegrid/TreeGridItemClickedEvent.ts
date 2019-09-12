@@ -1,5 +1,6 @@
 import {Event} from '../../event/Event';
 import {ClassHelper} from '../../ClassHelper';
+import {TreeNode} from './TreeNode';
 
 export class TreeGridItemClickedEvent
     extends Event {

@@ -1,3 +1,5 @@
+import * as $ from 'jquery';
+import * as Q from 'q';
 import {StyleHelper} from '../StyleHelper';
 import {StringHelper} from '../util/StringHelper';
 import {ObjectHelper} from '../ObjectHelper';
@@ -12,8 +14,6 @@ import {ElementShownEvent} from './ElementShownEvent';
 import {ElementHiddenEvent} from './ElementHiddenEvent';
 import {ElementRegistry} from './ElementRegistry';
 import {assert, assertNotNull, assertState} from '../util/Assert';
-import * as $ from 'jquery';
-import * as Q from 'q';
 import {ElementEvent} from './ElementEvent';
 
 export class ElementBuilder {

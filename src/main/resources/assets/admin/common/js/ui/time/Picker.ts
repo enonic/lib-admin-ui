@@ -8,6 +8,7 @@ import {AppHelper} from '../../util/AppHelper';
 import {FormEl} from '../../dom/FormEl';
 import {StyleHelper} from '../../StyleHelper';
 import {Body} from '../../dom/Body';
+import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 
 export class Picker<T extends Element>
     extends DivEl {

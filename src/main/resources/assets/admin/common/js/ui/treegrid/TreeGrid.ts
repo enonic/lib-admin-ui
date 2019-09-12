@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {Element} from '../../dom/Element';
 import {ElementHelper} from '../../dom/ElementHelper';
 import {ValidationRecordingViewer} from '../../form/ValidationRecordingViewer';
@@ -16,12 +17,14 @@ import {SpanEl} from '../../dom/SpanEl';
 import {StringHelper} from '../../util/StringHelper';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
 import {TreeNode} from './TreeNode';
-import {TreeRoot} from './TreeRoot';
+import {SelectionChangeType, TreeRoot} from './TreeRoot';
 import {TreeGridBuilder} from './TreeGridBuilder';
-import {DataChangedEvent} from './DataChangedEvent';
+import {DataChangedEvent, DataChangedType} from './DataChangedEvent';
 import {TreeGridToolbar} from './TreeGridToolbar';
 import {TreeGridContextMenu} from './TreeGridContextMenu';
 import {TreeGridItemClickedEvent} from './TreeGridItemClickedEvent';
+import {ContextMenuShownEvent} from './ContextMenuShownEvent';
+import {TreeNodeBuilder} from './TreeNodeBuilder';
 
 export enum SelectionOnClickType {
     HIGHLIGHT,
@@ -41,8 +44,8 @@ export class TreeGrid<DATA>
 
     public static LEVEL_STEP_INDENT: number = 16;
     protected loading: boolean = false;
-    private columns: GridColumn<DATA>[] = [];
-    private gridOptions: GridOptions<DATA>;
+    private columns: GridColumn<TreeNode<DATA>>[] = [];
+    private gridOptions: GridOptions<TreeNode<DATA>>;
     private grid: Grid<TreeNode<DATA>>;
     private gridData: DataView<TreeNode<DATA>>;
     private root: TreeRoot<DATA>;
@@ -255,7 +258,7 @@ export class TreeGrid<DATA>
         return this.grid;
     }
 
-    getOptions(): GridOptions<DATA> {
+    getOptions(): GridOptions<TreeNode<DATA>> {
         return this.gridOptions;
     }
 
@@ -1679,7 +1682,7 @@ export class TreeGrid<DATA>
     private deleteRootNode(root: TreeNode<DATA>, data: DATA): void {
         const dataId = this.getDataId(data);
 
-        AppHelper.whileTruthy(() => root.findNode(dataId), (node) => {
+        AppHelper.whileTruthy(() => root.findNode(dataId), (node: TreeNode<DATA>) => {
             if (node.hasChildren()) {
                 node.getChildren().forEach((child: TreeNode<DATA>) => {
                     this.deleteNode(child.getData());
@@ -1821,7 +1824,7 @@ export class TreeGrid<DATA>
             const rowIndex: number = this.getRowIndexByNode(node);
             const stylesHash: Slick.CellCssStylesHash = {};
             stylesHash[rowIndex] = {};
-            this.columns.forEach((col: GridColumn<DATA>) => {
+            this.columns.forEach((col: GridColumn<TreeNode<DATA>>) => {
                 stylesHash[rowIndex][col.id] = 'highlight';
             });
             this.grid.setCellCssStyles('highlight', stylesHash);

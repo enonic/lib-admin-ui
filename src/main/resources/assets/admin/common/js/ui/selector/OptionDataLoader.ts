@@ -1,5 +1,7 @@
+import * as Q from 'q';
 import {TreeNode} from '../treegrid/TreeNode';
 import {PostLoader} from '../../util/loader/PostLoader';
+import {Option} from './Option';
 
 export abstract class OptionDataLoader<DATA>
     extends PostLoader<JSON, DATA> {

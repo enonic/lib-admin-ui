@@ -1,4 +1,6 @@
 import {Option} from '../Option';
+import {SelectedOptionView} from './SelectedOptionView';
+import {assertNotNull} from '../../../util/Assert';
 
 export class SelectedOption<T> {
 

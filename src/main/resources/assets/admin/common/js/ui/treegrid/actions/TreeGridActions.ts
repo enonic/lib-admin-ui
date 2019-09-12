@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {Action} from '../../Action';
 import {BrowseItem} from '../../../app/browse/BrowseItem';
 import {BrowseItemsChanges} from '../../../app/browse/BrowseItemsChanges';

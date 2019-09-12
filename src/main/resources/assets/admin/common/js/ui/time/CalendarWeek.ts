@@ -1,4 +1,5 @@
 import {UlEl} from '../../dom/UlEl';
+import {CalendarDay} from './CalendarDay';
 
 export class CalendarWeekBuilder {
 

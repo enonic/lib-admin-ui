@@ -1,5 +1,6 @@
 import {Viewer} from '../Viewer';
 import {ArrayHelper} from '../../util/ArrayHelper';
+import {TreeNodeBuilder} from './TreeNodeBuilder';
 
 export class TreeNode<DATA>
     implements Slick.SlickData {

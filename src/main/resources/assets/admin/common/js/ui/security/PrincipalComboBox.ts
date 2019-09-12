@@ -7,6 +7,7 @@ import {PrincipalKey} from '../../security/PrincipalKey';
 import {SelectedOptionView} from '../selector/combobox/SelectedOptionView';
 import {RichComboBox, RichComboBoxBuilder} from '../selector/combobox/RichComboBox';
 import {IsAuthenticatedRequest} from '../../security/auth/IsAuthenticatedRequest';
+import {PrincipalViewer, PrincipalViewerCompact} from './PrincipalViewer';
 
 export class PrincipalComboBox
     extends RichComboBox<Principal> {
@@ -196,4 +197,3 @@ export class PrincipalSelectedOptionsViewCompact
     }
 
 }
-

@@ -1,3 +1,6 @@
+import {TreeNode} from './TreeNode';
+import {TreeNodeBuilder} from './TreeNodeBuilder';
+
 export enum SelectionChangeType {
     ADDED,
     REMOVED,

@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {OptionFilterInputValueChangedEvent} from '../OptionFilterInputValueChangedEvent';
 import {Viewer} from '../../Viewer';
 import {SelectedOption} from './SelectedOption';
@@ -16,6 +17,12 @@ import {ElementHelper} from '../../../dom/ElementHelper';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {LoadingDataEvent} from '../../../util/loader/event/LoadingDataEvent';
 import {LoadedDataEvent} from '../../../util/loader/event/LoadedDataEvent';
+import {SelectedOptionsView} from './SelectedOptionsView';
+import {LoaderComboBox} from './LoaderComboBox';
+import {ComboBox, ComboBoxConfig} from './ComboBox';
+import {SelectedOptionEvent} from './SelectedOptionEvent';
+import {OptionDataLoader} from '../OptionDataLoader';
+import {OptionDataHelper} from '../OptionDataHelper';
 
 export class RichComboBox<OPTION_DISPLAY_VALUE>
     extends CompositeFormInputEl {
@@ -554,4 +561,3 @@ export class RichComboBoxBuilder<T> {
         return new RichComboBox(this);
     }
 }
-

@@ -1,5 +1,9 @@
 import {UlEl} from '../../dom/UlEl';
 import {Navigator} from '../Navigator';
+import {TabBarItem} from './TabBarItem';
+import {NavigatorEvent} from '../NavigatorEvent';
+import {ActivatedEvent} from '../ActivatedEvent';
+import {TabItemEvent} from './TabItemEvent';
 
 export class TabBar
     extends UlEl
@@ -205,4 +209,3 @@ export class TabBar
         });
     }
 }
-

@@ -2,6 +2,12 @@ import {i18n} from '../../util/Messages';
 import {DivEl} from '../../dom/DivEl';
 import {DateHelper} from '../../util/DateHelper';
 import {SpanEl} from '../../dom/SpanEl';
+import {DayOfWeek} from './DayOfWeek';
+import {DaysOfWeek} from './DaysOfWeek';
+import {CalendarDay, CalendarDayBuilder} from './CalendarDay';
+import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
+import {CalendarWeek, CalendarWeekBuilder} from './CalendarWeek';
+import {CalendarDayClickedEvent} from './CalendarDayClickedEvent';
 
 export class CalendarBuilder {
 

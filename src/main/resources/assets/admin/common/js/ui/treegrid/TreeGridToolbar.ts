@@ -4,6 +4,7 @@ import {Button} from '../button/Button';
 import {SelectionController} from './actions/SelectionController';
 import {SelectionPanelToggler} from './actions/SelectionPanelToggler';
 import {StyleHelper} from '../../StyleHelper';
+import {TreeGrid} from './TreeGrid';
 
 export class TreeGridToolbar
     extends DivEl {

@@ -3,6 +3,14 @@ import {DivEl} from '../../dom/DivEl';
 import {Navigator} from '../Navigator';
 import {UlEl} from '../../dom/UlEl';
 import {Body} from '../../dom/Body';
+import {TabMenuButton} from './TabMenuButton';
+import {TabMenuItem} from './TabMenuItem';
+import {NavigatorEvent} from '../NavigatorEvent';
+import {KeyHelper} from '../KeyHelper';
+import {TabBarItem} from './TabBarItem';
+import {HideTabMenuEvent} from './HideTabMenuEvent';
+import {TabItemSelectedEvent} from './TabItemSelectedEvent';
+import {TabItemLabelChangedEvent} from './TabItemLabelChangedEvent';
 
 export class TabMenu
     extends DivEl

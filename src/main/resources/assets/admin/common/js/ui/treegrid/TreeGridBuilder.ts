@@ -1,5 +1,8 @@
 import {GridColumn, GridColumnBuilder, GridColumnConfig} from '../grid/GridColumn';
 import {GridOptions, GridOptionsBuilder} from '../grid/GridOptions';
+import {TreeGridContextMenu} from './TreeGridContextMenu';
+import {TreeNode} from './TreeNode';
+import {TreeGrid} from './TreeGrid';
 
 export class TreeGridBuilder<NODE> {
 
@@ -9,7 +12,7 @@ export class TreeGridBuilder<NODE> {
 
     private contextMenu: TreeGridContextMenu;
 
-    private options: GridOptions<NODE>;
+    private options: GridOptions<TreeNode<NODE>>;
 
     private columns: GridColumn<TreeNode<NODE>>[] = [];
 
@@ -67,14 +70,24 @@ export class TreeGridBuilder<NODE> {
         return val;
     }
 
-    buildDefaultOptions(): GridOptions<NODE> {
-        return new GridOptionsBuilder<NODE>().setDataItemColumnValueExtractor(this.nodeExtractor).setEditable(false).setAutoHeight(
-            false).setEnableAsyncPostRender(true).setAutoRenderGridOnDataChanges(
-            true).// It is necessary to turn off the library key handling. It may cause
+    buildDefaultOptions(): GridOptions<TreeNode<NODE>> {
+        return new GridOptionsBuilder<TreeNode<NODE>>()
+            .setDataItemColumnValueExtractor(this.nodeExtractor)
+            .setEditable(false)
+            .setAutoHeight(false).setEnableAsyncPostRender(true).setAutoRenderGridOnDataChanges(true)
+        // It is necessary to turn off the library key handling. It may cause
         // the conflicts with Mousetrap, which leads to skipping the key events
         // Do not set to true, if you are not fully aware of the result
-        setEnableCellNavigation(false).setEnableColumnReorder(false).setForceFitColumns(true).setHideColumnHeaders(true).setCheckableRows(
-            true).setLeftAlignedCheckbox(true).setRowHeight(45).setHeight('100%').setWidth('100%').build();
+            .setEnableCellNavigation(false)
+            .setEnableColumnReorder(false)
+            .setForceFitColumns(true)
+            .setHideColumnHeaders(true)
+            .setCheckableRows(true)
+            .setLeftAlignedCheckbox(true)
+            .setRowHeight(45)
+            .setHeight('100%')
+            .setWidth('100%')
+            .build();
     }
 
     buildDefaultColumns(): GridColumn<TreeNode<NODE>>[] {
@@ -89,7 +102,7 @@ export class TreeGridBuilder<NODE> {
         return this.contextMenu;
     }
 
-    getOptions(): GridOptions<NODE> {
+    getOptions(): GridOptions<TreeNode<NODE>> {
         return this.options;
     }
 
@@ -120,7 +133,7 @@ export class TreeGridBuilder<NODE> {
         return this;
     }
 
-    setOptions(options: GridOptions<NODE>): TreeGridBuilder<NODE> {
+    setOptions(options: GridOptions<TreeNode<NODE>>): TreeGridBuilder<NODE> {
         this.options = options;
         return this;
     }
@@ -285,14 +298,14 @@ export class TreeGridBuilder<NODE> {
     }
 
     private initOptions(): TreeGridBuilder<NODE> {
-        this.options = new GridOptionsBuilder<NODE>().build();
+        this.options = new GridOptionsBuilder<TreeNode<NODE>>().build();
         return this;
     }
 
     private copyColumns(columns: GridColumn<TreeNode<NODE>>[]): TreeGridBuilder<NODE> {
         this.columns = [];
         columns.forEach((column) => {
-            this.columns.push(new GridColumnBuilder<NODE>(column).build());
+            this.columns.push(new GridColumnBuilder<TreeNode<NODE>>(column).build());
         });
         return this;
     }

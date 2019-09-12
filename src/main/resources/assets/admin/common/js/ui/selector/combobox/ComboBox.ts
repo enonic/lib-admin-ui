@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {Option} from '../Option';
 import {OptionFilterInputValueChangedEvent} from '../OptionFilterInputValueChangedEvent';
 import {DropdownHandle} from '../../button/DropdownHandle';
@@ -22,6 +23,17 @@ import {FormEl} from '../../../dom/FormEl';
 import {AppHelper} from '../../../util/AppHelper';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {Element} from '../../../dom/Element';
+import {SelectedOptionsView} from './SelectedOptionsView';
+import {OptionDataLoader} from '../OptionDataLoader';
+import {OptionDataHelper} from '../OptionDataHelper';
+import {ComboBoxOptionFilterInput} from './ComboBoxOptionFilterInput';
+import {ComboBoxDropdown} from './ComboBoxDropdown';
+import {DropdownGrid, DropdownGridConfig} from '../DropdownGrid';
+import {assert, assertNotNull} from '../../../util/Assert';
+import {SelectedOption} from './SelectedOption';
+import {BaseSelectedOptionsView} from './BaseSelectedOptionsView';
+import {SelectedOptionEvent} from './SelectedOptionEvent';
+import {DropdownGridRowSelectedEvent} from '../DropdownGridRowSelectedEvent';
 
 export interface ComboBoxConfig<T> {
 
@@ -1139,4 +1151,3 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         });
     }
 }
-

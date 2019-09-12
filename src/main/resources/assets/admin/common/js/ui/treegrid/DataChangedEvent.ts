@@ -1,3 +1,5 @@
+import {TreeNode} from './TreeNode';
+
 export enum DataChangedType {
     ADDED,
     UPDATED,

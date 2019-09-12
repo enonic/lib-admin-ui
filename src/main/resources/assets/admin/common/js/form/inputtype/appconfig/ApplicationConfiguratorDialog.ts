@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {FormView} from '../../FormView';
 import {InputView} from '../../InputView';
 import {ComboBox} from '../../../ui/selector/combobox/ComboBox';

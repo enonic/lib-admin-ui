@@ -6,6 +6,7 @@ import {Action} from '../Action';
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
 import {Element} from '../../dom/Element';
 import {ObjectHelper} from '../../ObjectHelper';
+import {FoldButton} from './FoldButton';
 
 export class Toolbar
     extends DivEl
@@ -147,4 +148,3 @@ export class Toolbar
     }
 
 }
-

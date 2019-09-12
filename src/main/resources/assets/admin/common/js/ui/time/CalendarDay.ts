@@ -1,6 +1,9 @@
 import {LiEl} from '../../dom/LiEl';
 import {Equitable} from '../../Equitable';
 import {ObjectHelper} from '../../ObjectHelper';
+import {DayOfWeek} from './DayOfWeek';
+import {CalendarDayClickedEvent} from './CalendarDayClickedEvent';
+import {DaysOfWeek} from './DaysOfWeek';
 
 export class CalendarDayBuilder {
 

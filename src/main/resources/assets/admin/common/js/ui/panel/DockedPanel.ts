@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {TabBar} from '../tab/TabBar';
 import {TabBarItem, TabBarItemBuilder} from '../tab/TabBarItem';
 import {Element} from '../../dom/Element';

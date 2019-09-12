@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {ApplicationInstallResultJson} from './json/ApplicationInstallResultJson';
 import {Path} from '../rest/Path';
 import {JsonResponse} from '../rest/JsonResponse';

@@ -1,4 +1,7 @@
 import {i18n} from '../../../util/Messages';
+import {Checkbox, CheckboxBuilder} from '../../Checkbox';
+import {Tooltip} from '../../Tooltip';
+import {TreeGrid} from '../TreeGrid';
 
 export class SelectionController
     extends Checkbox {

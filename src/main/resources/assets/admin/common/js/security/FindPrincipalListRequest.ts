@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {SecurityResourceRequest} from './SecurityResourceRequest';
 import {FindPrincipalsRequest} from './FindPrincipalsRequest';
 import {PrincipalListJson} from './PrincipalListJson';

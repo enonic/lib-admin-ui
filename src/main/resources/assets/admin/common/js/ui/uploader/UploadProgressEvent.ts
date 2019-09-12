@@ -1,4 +1,5 @@
 import {Equitable} from '../../Equitable';
+import {UploadItem} from './UploadItem';
 
 export class UploadProgressEvent<MODEL extends Equitable> {
 

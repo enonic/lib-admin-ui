@@ -13,6 +13,11 @@ import {StringHelper} from '../../../util/StringHelper';
 import {FormEl} from '../../../dom/FormEl';
 import {AppHelper} from '../../../util/AppHelper';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
+import {DropdownOptionFilterInput} from './DropdownOptionFilterInput';
+import {DropdownList} from '../DropdownList';
+import {DropdownGridConfig} from '../DropdownGrid';
+import {DropdownGridRowSelectedEvent} from '../DropdownGridRowSelectedEvent';
+import {SelectedOptionView} from './SelectedOptionView';
 
 export interface DropdownConfig<OPTION_DISPLAY_VALUE> {
 
@@ -458,4 +463,3 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         });
     }
 }
-

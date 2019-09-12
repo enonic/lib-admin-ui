@@ -3,6 +3,7 @@ import {PrincipalType} from '../../security/PrincipalType';
 import {NamesAndIconViewer} from '../NamesAndIconViewer';
 import {Viewer} from '../Viewer';
 import {SpanEl} from '../../dom/SpanEl';
+import {Tooltip} from '../Tooltip';
 
 export class PrincipalViewer
     extends NamesAndIconViewer<Principal> {
@@ -72,4 +73,3 @@ export class PrincipalViewerCompact
         this.currentUser = user;
     }
 }
-

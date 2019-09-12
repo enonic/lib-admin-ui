@@ -17,4 +17,3 @@ export class SelectedDateChangedEvent {
         return this.userInput;
     }
 }
-

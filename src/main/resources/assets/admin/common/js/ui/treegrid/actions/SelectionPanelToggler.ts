@@ -1,6 +1,9 @@
 import {DivEl} from '../../../dom/DivEl';
 import {i18n} from '../../../util/Messages';
 import {TogglerButton} from '../../button/TogglerButton';
+import {Tooltip} from '../../Tooltip';
+import {TreeGrid} from '../TreeGrid';
+import {TreeNode} from '../TreeNode';
 
 export class SelectionPanelToggler
     extends TogglerButton {

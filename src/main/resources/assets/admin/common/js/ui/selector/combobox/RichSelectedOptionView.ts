@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
 import {BaseSelectedOptionView} from './BaseSelectedOptionView';
 import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';

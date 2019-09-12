@@ -1,5 +1,8 @@
+import * as Q from 'q';
 import {BaseLoader} from '../../../util/loader/BaseLoader';
 import {StringHelper} from '../../../util/StringHelper';
+import {RichComboBox} from './RichComboBox';
+import {ComboBox, ComboBoxConfig} from './ComboBox';
 
 export class LoaderComboBox<OPTION_DISPLAY_VALUE>
     extends ComboBox<OPTION_DISPLAY_VALUE> {

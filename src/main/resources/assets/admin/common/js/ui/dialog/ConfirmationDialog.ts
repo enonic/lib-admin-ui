@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {i18n} from '../../util/Messages';
 import {H6El} from '../../dom/H6El';
 import {Action} from '../Action';

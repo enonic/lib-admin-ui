@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {Path} from '../rest/Path';
 import {JsonResponse} from '../rest/JsonResponse';
 import {TaskResourceRequest} from './TaskResourceRequest';

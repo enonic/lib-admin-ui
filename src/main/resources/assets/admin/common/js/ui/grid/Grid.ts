@@ -5,6 +5,7 @@ import {AppHelper} from '../../util/AppHelper';
 import {GridOptions, GridOptionsBuilder} from './GridOptions';
 import {GridColumn} from './GridColumn';
 import {GridOnClickData} from './GridOnClickData';
+import {DataView} from './DataView';
 
 export class Grid<T extends Slick.SlickData>
     extends DivEl {
@@ -15,13 +16,13 @@ export class Grid<T extends Slick.SlickData>
     private defaultWidth: string = '800px';
     private defaultAutoRenderGridOnDataChanges: boolean = true;
     private slickGrid: Slick.Grid<T>;
-    private dataView: Slick.Data.DataView<T>;
+    private dataView: DataView<T>;
     private checkboxSelectorPlugin: Slick.CheckboxSelectColumn<T>; // CheckboxSelectColumn
     private rowManagerPlugin: Slick.RowMoveManager<T>; // RowMoveManager
     private debounceSelectionChange: boolean;
     private onClickListeners: ((e: any, args: any) => void) [] = [];
 
-    constructor(dataView: Slick.Data.DataView<T>, gridColumns?: GridColumn<T>[], gridOptions?: GridOptions<T>) {
+    constructor(dataView: DataView<T>, gridColumns?: GridColumn<T>[], gridOptions?: GridOptions<T>) {
         super('grid');
 
         let options = gridOptions || this.createOptions();
@@ -81,10 +82,6 @@ export class Grid<T extends Slick.SlickData>
         this.slickGrid.onClick.subscribe(clickListener);
     }
 
-    setItemMetadata(metadataHandler: () => void) {
-        this.dataView.setItemMetadataHandler(metadataHandler);
-    }
-
     mask() {
         if (this.isVisible()) {
             if (!this.loadMask && this.isAdded()) {
@@ -107,7 +104,7 @@ export class Grid<T extends Slick.SlickData>
         this.slickGrid.setSelectionModel(selectionModel);
     }
 
-    getDataView(): Slick.Data.DataView<T> {
+    getDataView(): DataView<T> {
         return this.dataView;
     }
 
@@ -567,7 +564,7 @@ export class Grid<T extends Slick.SlickData>
         throw 'Must be implemented by inheritors';
     }
 
-    private autoRenderGridOnDataChanges(dataView: Slick.Data.DataView<T>) {
+    private autoRenderGridOnDataChanges(dataView: DataView<T>) {
         dataView.onRowCountChanged(() => {
             this.updateRowCount();
             this.renderGrid();

@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {Toolbar} from '../../ui/toolbar/Toolbar';
 import {TabBarItem} from '../../ui/tab/TabBarItem';
 import {ActivatedEvent} from '../../ui/ActivatedEvent';

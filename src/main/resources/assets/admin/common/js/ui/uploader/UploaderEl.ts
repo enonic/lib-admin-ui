@@ -1,3 +1,4 @@
+import qq from 'fine-uploader/lib/core';
 import {UploadItem} from './UploadItem';
 import {Button} from '../button/Button';
 import {Element} from '../../dom/Element';
@@ -20,6 +21,7 @@ import {UploadCompleteEvent} from './UploadCompleteEvent';
 import {UploadFailedEvent} from './UploadFailedEvent';
 import {KeyBindings} from '../KeyBindings';
 import {KeyBinding} from '../KeyBinding';
+import {KeyHelper} from '../KeyHelper';
 
 export interface FineUploaderFile {
     id: number;
@@ -629,7 +631,7 @@ export class UploaderEl<MODEL extends Equitable>
     private handleKeyEvents() {
         this.onKeyPressed((event: KeyboardEvent) => {
             if (this.defaultDropzoneContainer.isVisible() && event.keyCode === 13) {
-                $(this.dropzone.getEl().getHTMLElement()).simulate('click');
+                this.dropzone.getEl().simulate('click');
             }
         });
 

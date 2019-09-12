@@ -1,15 +1,26 @@
 {
   "compilerOptions": {
+    "outDir": "build",
     "module": "commonjs",
-    "sourceMap": true
+    "target": "es5",
+    "lib": ["es2018", "es2017", "es2016", "es2015", "dom"],
+    "sourceMap": true,
+    "allowJs": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true
   },
   "files": [
     "src/main/resources/assets/admin/common/js/_module.ts"
   ],
   "exclude": [
+    ".vscode",
     "build/**/*",
     "src/main/resources/assets/admin/common/lib/_all.js",
     "src/main/resources/assets/admin/common/js/_all.js",
     "src/main/resources/assets/admin/common/js/_all.d.ts"
+  ],
+  "types": [
+    "types"
   ]
 }

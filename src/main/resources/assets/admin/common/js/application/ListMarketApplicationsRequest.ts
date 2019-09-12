@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {ApplicationResourceRequest} from './ApplicationResourceRequest';
 import {MarketApplicationsListJson} from './json/MarketApplicationsListJson';
 import {Path} from '../rest/Path';

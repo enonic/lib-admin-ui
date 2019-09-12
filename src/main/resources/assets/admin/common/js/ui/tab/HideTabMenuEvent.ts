@@ -1,5 +1,6 @@
 import {Event} from '../../event/Event';
 import {ClassHelper} from '../../ClassHelper';
+import {TabMenu} from './TabMenu';
 
 export class HideTabMenuEvent
     extends Event {

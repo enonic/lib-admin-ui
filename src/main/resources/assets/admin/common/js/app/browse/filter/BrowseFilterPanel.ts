@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {i18n} from '../../../util/Messages';
 import {Panel} from '../../../ui/panel/Panel';
 import {AggregationContainer} from '../../../aggregation/AggregationContainer';
@@ -14,7 +15,6 @@ import {SearchInputValues} from '../../../query/SearchInputValues';
 import {LabelEl} from '../../../dom/LabelEl';
 import {ActionButton} from '../../../ui/button/ActionButton';
 import {Action} from '../../../ui/Action';
-import * as Q from 'q';
 
 export class BrowseFilterPanel<T>
     extends Panel {

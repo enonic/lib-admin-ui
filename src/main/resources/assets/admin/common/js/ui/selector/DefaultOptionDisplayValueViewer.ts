@@ -17,4 +17,3 @@ export class DefaultOptionDisplayValueViewer
         return 34;
     }
 }
-

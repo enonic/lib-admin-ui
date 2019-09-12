@@ -1,3 +1,5 @@
+import {TreeNode} from './TreeNode';
+
 export class TreeNodeBuilder<NODE> {
 
     private dataId: string;

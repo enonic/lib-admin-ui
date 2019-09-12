@@ -1,5 +1,7 @@
 import {WindowDOM} from '../../dom/WindowDOM';
 import {Element} from '../../dom/Element';
+import {ResponsiveListener} from './ResponsiveListener';
+import {ResponsiveItem} from './ResponsiveItem';
 
 export class ResponsiveManager {
 

@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {LocaleListJson} from './json/LocaleListJson';
 import {LocaleJson} from './json/LocaleJson';
 import {ResourceRequest} from '../rest/ResourceRequest';

@@ -1,6 +1,8 @@
 import {LoadedDataEvent} from '../../../util/loader/event/LoadedDataEvent';
 import {i18n} from '../../../util/Messages';
 import {BaseLoader} from '../../../util/loader/BaseLoader';
+import {Dropdown, DropdownConfig} from './Dropdown';
+import {Option} from '../Option';
 
 export class RichDropdown<OPTION_DISPLAY_VALUE>
     extends Dropdown<OPTION_DISPLAY_VALUE> {

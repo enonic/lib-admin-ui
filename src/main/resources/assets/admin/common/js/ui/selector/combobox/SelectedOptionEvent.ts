@@ -1,3 +1,5 @@
+import {SelectedOption} from './SelectedOption';
+
 export class SelectedOptionEvent<T> {
 
     private selectedOption: SelectedOption<T>;

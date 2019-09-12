@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {i18n} from '../../util/Messages';
 import {Action} from '../../ui/Action';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';

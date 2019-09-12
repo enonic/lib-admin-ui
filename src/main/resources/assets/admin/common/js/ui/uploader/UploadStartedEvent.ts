@@ -1,4 +1,5 @@
 import {Equitable} from '../../Equitable';
+import {UploadItem} from './UploadItem';
 
 export class UploadStartedEvent<ITEM extends Equitable> {
 

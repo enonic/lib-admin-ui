@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {i18n} from '../../util/Messages';
 import {ModalDialog} from './ModalDialog';
 import {H6El} from '../../dom/H6El';

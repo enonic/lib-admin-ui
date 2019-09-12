@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {Property} from '../../../data/Property';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Input} from '../../Input';

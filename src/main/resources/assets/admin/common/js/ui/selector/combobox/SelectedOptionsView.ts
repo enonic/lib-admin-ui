@@ -1,5 +1,7 @@
 import {DivEl} from '../../../dom/DivEl';
 import {Option} from '../Option';
+import {SelectedOption} from './SelectedOption';
+import {SelectedOptionEvent} from './SelectedOptionEvent';
 
 export interface SelectedOptionsView<T>
     extends DivEl {

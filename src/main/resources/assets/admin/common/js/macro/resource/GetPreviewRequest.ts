@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {ContentPath} from '../../content/ContentPath';
 import {PropertyTree} from '../../data/PropertyTree';
 import {MacroKey} from '../MacroKey';

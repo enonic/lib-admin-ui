@@ -1,7 +1,14 @@
+import * as $ from 'jquery';
+import 'jquery-ui/ui/widgets/sortable';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
 import {Option} from '../Option';
 import {ArrayHelper} from '../../../util/ArrayHelper';
+import {SelectedOptionsView} from './SelectedOptionsView';
+import {SelectedOption} from './SelectedOption';
+import {SelectedOptionEvent} from './SelectedOptionEvent';
+import {BaseSelectedOptionView} from './BaseSelectedOptionView';
+import {assertNotNull} from '../../../util/Assert';
 
 export class BaseSelectedOptionsView<T>
     extends DivEl

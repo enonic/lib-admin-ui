@@ -1,3 +1,5 @@
+import {TabItem} from './TabItem';
+
 export class TabItemEvent {
 
     private tab: TabItem;

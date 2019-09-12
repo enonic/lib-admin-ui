@@ -1,3 +1,5 @@
+import {CalendarDay} from './CalendarDay';
+
 export class CalendarDayClickedEvent {
 
     private calendarDay: CalendarDay;

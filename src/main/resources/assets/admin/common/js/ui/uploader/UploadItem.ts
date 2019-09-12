@@ -1,5 +1,6 @@
 import {Equitable} from '../../Equitable';
 import {ObjectHelper} from '../../ObjectHelper';
+import {FineUploaderFile} from './UploaderEl';
 
 export class UploadItem<MODEL extends Equitable>
     implements Equitable {
@@ -19,7 +20,7 @@ export class UploadItem<MODEL extends Equitable>
     }
 
     getId(): string {
-        return this.file.id + '';
+        return Number(this.file.id).toString();
     }
 
     getModel(): MODEL {
@@ -105,14 +106,9 @@ export class UploadItem<MODEL extends Equitable>
                 return false;
              }*/
 
-        } else if (!this.file && !other.file) {
-            return true;
-        } else {
-            return false;
         }
 
-        return true;
-
+        return (!this.file && !other.file);
     }
 
     isUploaded(): boolean {

@@ -1,3 +1,8 @@
+import * as Q from 'q';
+import {OptionDataLoader} from './OptionDataLoader';
+import {OptionDataHelper} from './OptionDataHelper';
+import {Option} from './Option';
+
 export class OptionsFactory<OPTION_DISPLAY_VALUE> {
 
     private loader: OptionDataLoader<OPTION_DISPLAY_VALUE>;

@@ -1,3 +1,5 @@
+import {ResponsiveItem} from './ResponsiveItem';
+
 export class ResponsiveListener {
 
     private item: ResponsiveItem;

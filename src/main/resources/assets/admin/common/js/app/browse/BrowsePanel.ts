@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 import {ResponsiveRanges} from '../../ui/responsive/ResponsiveRanges';
 import {ResponsiveItem} from '../../ui/responsive/ResponsiveItem';
@@ -17,7 +18,6 @@ import {DefaultErrorHandler} from '../../DefaultErrorHandler';
 import {AppHelper} from '../../util/AppHelper';
 import {ToggleFilterPanelAction} from './action/ToggleFilterPanelAction';
 import {BrowseItemPanel} from './BrowseItemPanel';
-import * as Q from 'q';
 
 export class BrowsePanel<M extends Equitable>
     extends Panel

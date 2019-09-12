@@ -24,4 +24,3 @@ export class SelectorOnBlurEvent
         return this.selector;
     }
 }
-

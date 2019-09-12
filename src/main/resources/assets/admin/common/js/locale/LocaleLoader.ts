@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {BaseLoader} from '../util/loader/BaseLoader';
 import {LocaleListJson} from './json/LocaleListJson';
 import {Locale} from './Locale';

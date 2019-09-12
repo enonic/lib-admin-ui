@@ -1,3 +1,5 @@
+import {DayOfWeek} from './DayOfWeek';
+
 export class DaysOfWeek {
 
     public static MONDAY: DayOfWeek = new DayOfWeek(1, 'M', 'Mon', 'Monday');

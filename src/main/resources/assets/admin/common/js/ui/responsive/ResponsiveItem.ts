@@ -1,5 +1,7 @@
 import {Element} from '../../dom/Element';
 import {ObjectHelper} from '../../ObjectHelper';
+import {ResponsiveRange} from './ResponsiveRange';
+import {ResponsiveRanges} from './ResponsiveRanges';
 
 export class ResponsiveItem {
 

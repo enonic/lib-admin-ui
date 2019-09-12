@@ -1,3 +1,5 @@
+import {MonthOfYear} from './MonthOfYear';
+
 export class MonthsOfYear {
 
     public static JANUARY: MonthOfYear = new MonthOfYear(0, 'J', 'Jan', 'January');

@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {Element, NewElementBuilder} from '../dom/Element';
 import {AEl} from '../dom/AEl';
 
