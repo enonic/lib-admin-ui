@@ -16,7 +16,7 @@ import {Body} from '../../dom/Body';
 import {SpanEl} from '../../dom/SpanEl';
 import {StringHelper} from '../../util/StringHelper';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
-import {TreeNode} from './TreeNode';
+import {TreeNode, TreeNodeBuilder} from './TreeNode';
 import {SelectionChangeType, TreeRoot} from './TreeRoot';
 import {TreeGridBuilder} from './TreeGridBuilder';
 import {DataChangedEvent, DataChangedType} from './DataChangedEvent';
@@ -24,7 +24,6 @@ import {TreeGridToolbar} from './TreeGridToolbar';
 import {TreeGridContextMenu} from './TreeGridContextMenu';
 import {TreeGridItemClickedEvent} from './TreeGridItemClickedEvent';
 import {ContextMenuShownEvent} from './ContextMenuShownEvent';
-import {TreeNodeBuilder} from './TreeNodeBuilder';
 
 export enum SelectionOnClickType {
     HIGHLIGHT,

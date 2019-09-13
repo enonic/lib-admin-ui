@@ -4,7 +4,6 @@ import {StyleHelper} from '../StyleHelper';
 import {StringHelper} from '../util/StringHelper';
 import {ObjectHelper} from '../ObjectHelper';
 import {ClassHelper} from '../ClassHelper';
-import {DefaultErrorHandler} from '../DefaultErrorHandler';
 import {ElementHelper} from './ElementHelper';
 import {ArticleEl} from './ArticleEl';
 import {ElementAddedEvent} from './ElementAddedEvent';
@@ -283,7 +282,7 @@ export class Element {
 
                 return rendered;
             }).catch((reason) => {
-                DefaultErrorHandler.handle(reason);
+                console.error(reason);
                 return false;
             });
         });
@@ -1089,8 +1088,7 @@ export class Element {
 
             return this.initChildren(rendered);
         }).catch((reason) => {
-
-            DefaultErrorHandler.handle(reason);
+            console.error(reason);
             return false;
         });
     }
@@ -1129,7 +1127,7 @@ export class Element {
 
             return rendered;
         }).catch((reason) => {
-            DefaultErrorHandler.handle(reason);
+            console.error(reason);
             return false;
         });
     }
