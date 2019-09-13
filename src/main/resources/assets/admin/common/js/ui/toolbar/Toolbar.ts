@@ -141,6 +141,8 @@ export class Toolbar
             }
             button = button.getPreviousElement();
         }
+
+        return null;
     }
 
     private areAllActionsFolded(): boolean {

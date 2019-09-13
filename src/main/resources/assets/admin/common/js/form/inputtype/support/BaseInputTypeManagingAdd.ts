@@ -178,9 +178,7 @@ export class BaseInputTypeManagingAdd
 
     protected getValueFromPropertyArray(propertyArray: PropertyArray): string {
         return propertyArray.getProperties().map((property) => {
-            if (property.hasNonNullValue()) {
-                return property.getString();
-            }
+            return property.hasNonNullValue() ? property.getString() : '';
         }).join(';');
     }
 

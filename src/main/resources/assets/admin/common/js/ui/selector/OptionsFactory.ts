@@ -45,10 +45,6 @@ export class OptionsFactory<OPTION_DISPLAY_VALUE> {
             return true;
         }
 
-        return readonlyIds.some((id: string) => {
-            if (id === this.helper.getDataId(data)) {
-                return true;
-            }
-        });
+        return readonlyIds.some((id: string) => (id === this.helper.getDataId(data)));
     }
 }

@@ -22,9 +22,11 @@ export class Link
 
         let other = <Link>o;
 
-        if (!ObjectHelper.stringEquals(this.path, other.path)) {
-            return false;
+        if (ObjectHelper.stringEquals(this.path, other.path)) {
+            return true;
         }
+
+        return false;
     }
 
     toString(): string {

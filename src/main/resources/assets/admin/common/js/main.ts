@@ -10,4 +10,5 @@ StyleHelper.setCurrentPrefix(StyleHelper.ADMIN_PREFIX);
 
 declare var require: { context: (directory: string, useSubdirectories: boolean, filter: RegExp) => void };
 const importAll = r => r.keys().forEach(r);
-importAll(require.context('./', true, /^(?!\.[\/\\]types).*/));
+// importAll(require.context('./', true, /^(?!\.[\/\\]types).*/));
+importAll(require.context('./', true, /.+\.(ts|js)/));

@@ -8,10 +8,10 @@
     "allowJs": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "strictNullChecks": true
+    "strictNullChecks": false
   },
   "files": [
-    "src/main/resources/assets/admin/common/js/_module.ts"
+    "src/main/resources/assets/admin/common/js/main.ts"
   ],
   "exclude": [
     ".vscode",

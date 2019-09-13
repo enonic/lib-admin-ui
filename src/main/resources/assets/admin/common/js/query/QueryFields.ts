@@ -12,5 +12,7 @@ export class QueryFields {
         if (this.queryFields) {
             return this.queryFields.join();
         }
+
+        return null;
     }
 }

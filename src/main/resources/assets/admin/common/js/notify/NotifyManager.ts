@@ -77,7 +77,7 @@ export class NotifyManager {
         const opts = NotifyOpts.buildOpts(message);
 
         if (this.messageExistsInRegistry(opts)) {
-            return;
+            return null;
         }
 
         const limitReached = this.queue.length > 0

@@ -4,6 +4,10 @@ import {Equitable} from '../../Equitable';
 import {QueryField} from '../../query/QueryField';
 import {ObjectHelper} from '../../ObjectHelper';
 import {SetChildOrderJson} from '../json/SetChildOrderJson';
+import {OrderExpr} from './OrderExpr';
+import {FieldOrderExpr, FieldOrderExprBuilder} from './FieldOrderExpr';
+import {DynamicOrderExprBuilder} from './DynamicOrderExpr';
+import {ContentId} from '../ContentId';
 
 export class ChildOrder
     implements Equitable {
@@ -35,6 +39,8 @@ export class ChildOrder
                 contentId: contentId.toString()
             };
         }
+
+        return null;
     }
 
     getOrderExpressions(): OrderExpr[] {

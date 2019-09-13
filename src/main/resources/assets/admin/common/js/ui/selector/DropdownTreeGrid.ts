@@ -112,6 +112,8 @@ export class DropdownTreeGrid<OPTION_DISPLAY_VALUE>
                 e.preventDefault();
                 return false;
             }
+
+            return null;
         });
 
         this.getGrid().subscribeOnSelectedRowsChanged((_e, args) => {

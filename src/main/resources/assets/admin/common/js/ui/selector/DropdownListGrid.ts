@@ -1,6 +1,8 @@
 import {Element} from '../../dom/Element';
 import {Grid} from '../grid/Grid';
 import {DataView} from '../grid/DataView';
+import {DropdownGrid, DropdownGridConfig} from './DropdownGrid';
+import {Option} from './Option';
 
 export class DropdownListGrid<OPTION_DISPLAY_VALUE>
     extends DropdownGrid<OPTION_DISPLAY_VALUE> {

@@ -14,16 +14,14 @@ export class FormEl
         const index = FormEl.getIndexOfInput(focusableElements, input);
 
         if (index < 0) {
-            return;
+            return null;
         }
 
         // set focus to the next visible input
         for (let i = index + 1; i < focusableElements.length; i++) {
             let nextFocusable = Element.fromHtmlElement(<HTMLElement>focusableElements[i]);
-            if (!nextFocusable.isVisible() ||
-                (!ignoreTabIndex && nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0)) {
-                continue;
-            } else {
+            if (nextFocusable.isVisible() &&
+                !(!ignoreTabIndex && nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0)) {
                 return nextFocusable;
             }
         }

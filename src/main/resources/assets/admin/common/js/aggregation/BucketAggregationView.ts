@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import {AggregationView} from './AggregationView';
 import {BucketAggregation} from './BucketAggregation';
 import {BucketView} from './BucketView';
@@ -5,7 +6,6 @@ import {AggregationGroupView} from './AggregationGroupView';
 import {Bucket} from './Bucket';
 import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
 import {Aggregation} from './Aggregation';
-import $ from 'jquery';
 
 export class BucketAggregationView
     extends AggregationView {

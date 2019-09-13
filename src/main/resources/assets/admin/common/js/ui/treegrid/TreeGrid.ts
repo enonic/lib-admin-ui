@@ -109,7 +109,7 @@ export class TreeGrid<DATA>
         this.grid = new Grid<TreeNode<DATA>>(this.gridData, this.columns, this.gridOptions);
 
         // Custom row selection required for valid behaviour
-        this.grid.setSelectionModel(<Slick.RowSelectionModel<TreeNode<DATA>, any>>new Slick.RowSelectionModel({
+        this.grid.setSelectionModel(new Slick.RowSelectionModel<TreeNode<DATA>>({
             selectActiveRow: false
         }));
 
@@ -546,6 +546,7 @@ export class TreeGrid<DATA>
                         });
                     }
                 }
+                return Q(null);
             }).catch((reason: any) => {
                 this.initData([]);
                 this.handleError(reason);

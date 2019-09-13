@@ -5,6 +5,7 @@ import {SelectedOption} from '../selector/combobox/SelectedOption';
 import {RichComboBox, RichComboBoxBuilder} from '../selector/combobox/RichComboBox';
 import {SelectedOptionView} from '../selector/combobox/SelectedOptionView';
 import {BaseSelectedOptionsView} from '../selector/combobox/BaseSelectedOptionsView';
+import {LocaleViewer} from './LocaleViewer';
 
 export class LocaleComboBox
     extends RichComboBox<Locale> {
@@ -61,4 +62,3 @@ class LocaleSelectedOptionsView
     }
 
 }
-

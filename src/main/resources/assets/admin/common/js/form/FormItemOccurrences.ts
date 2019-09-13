@@ -256,7 +256,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
 
         let countOccurrences = this.countOccurrences();
         if (this.allowedOccurrences.maximumReached(countOccurrences)) {
-            return;
+            return Q(null);
         }
 
         let occurrenceView: V = this.createNewOccurrenceView(occurrence);

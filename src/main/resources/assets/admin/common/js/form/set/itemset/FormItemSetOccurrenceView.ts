@@ -107,15 +107,17 @@ export class FormItemSetOccurrenceView
         const firstNonEmptyInput = $(this.formSetOccurrencesContainer.getHTMLElement())
             .find('.input-wrapper input, .input-wrapper textarea').toArray()
             .find(input => {
-                const value = (input.nodeName === 'INPUT') ? input.value : StringHelper.htmlToString(input.value);
+                const isInput = input.nodeName === 'INPUT';
+                const value = isInput ? (<HTMLInputElement>input).value : StringHelper.htmlToString(input['value']);
                 return value.trim().length > 0;
             });
 
         if (firstNonEmptyInput) {
-            if (firstNonEmptyInput.nodeName === 'INPUT') {
-                this.label.setTitle(firstNonEmptyInput.value);
+            const isInput = firstNonEmptyInput.nodeName === 'INPUT';
+            if (isInput) {
+                this.label.setTitle((<HTMLInputElement>firstNonEmptyInput).value);
             } else {
-                this.label.setTitle(StringHelper.htmlToString(firstNonEmptyInput.value)); // Strip HTML tags
+                this.label.setTitle(StringHelper.htmlToString(firstNonEmptyInput['value']));
             }
             this.formSetOccurrencesContainer.unDescendantAdded();
         }

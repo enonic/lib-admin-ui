@@ -9,12 +9,12 @@ const path = require('path');
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
-    context: path.join(__dirname, '/src/main/resources/assets'),
+    context: path.join(__dirname, '/src/main/resources/assets/admin/common'),
     entry: {
         'js/bundle': './js/main.ts',
-        'lib/_all': './lib/index.js',
-        'styles/_all': './styles/styles.less',
-        'styles/_all.lite': './styles/styles.lite.less',
+        // 'lib/_all': './lib/index.js',
+        // 'styles/_all': './styles/styles.less',
+        // 'styles/_all.lite': './styles/styles.lite.less',
     },
     output: {
         path: path.join(__dirname, '/build/resources/main/assets'),

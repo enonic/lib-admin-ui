@@ -11,6 +11,7 @@ export class AppHelper {
     static debounce(func: Function, wait: number, immediate: boolean = false): (...args: any[]) => void {
         let timeout;
         return function (..._anyArgs: any[]) {
+            // @ts-ignore
             const context = this;
             const args = arguments;
             const later = function () {
@@ -31,6 +32,7 @@ export class AppHelper {
     static debounceWithInterrupt(func: Function, wait: number, immediate: boolean = false): (args: any[], interrupt?: boolean) => void {
         let timeout;
         return function (_anyArgs: any[], interrupt?: boolean) {
+            // @ts-ignore
             const context = this;
             const args = _anyArgs;
             const later = function () {
@@ -56,6 +58,7 @@ export class AppHelper {
         let timeout;
         let trailing = false;
         return function (..._anyArgs: any[]) {
+            // @ts-ignore
             const context = this;
             const args = arguments;
             const later = function () {

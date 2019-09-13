@@ -43,7 +43,7 @@ export class TextInput
 
         this.onKeyPressed((event: KeyboardEvent) => {
             if (!this.stripCharsRe) {
-                return;
+                return null;
             }
 
             let symbol = String.fromCharCode((<any> event).charCode);
@@ -54,6 +54,8 @@ export class TextInput
                     return false;
                 }
             }
+
+            return null;
         });
 
         const updatePreviousValue = () => {

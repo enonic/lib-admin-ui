@@ -492,7 +492,7 @@ export class Element {
             return this.insertChild(child, this.children.length);
         }
 
-        this.lazyRender(child);
+        return this.lazyRender(child);
     }
 
     appendChildren<T extends Element>(...children: T[]): Element {
@@ -1293,6 +1293,8 @@ export class Element {
 
         scrollableParentEl.onScroll(renderOnScroll);
         this.onForceRender(render);
+
+        return this;
     }
 
     private notifyAdded() {

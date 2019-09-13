@@ -38,7 +38,7 @@ export class ItemDataGroup
         let dataList = new UlEl('data-list');
 
         if (!datas || datas.length === 0) {
-            return;
+            return null;
         }
 
         if (header) {

@@ -2,6 +2,7 @@ import {Element} from '../../dom/Element';
 import {TreeGrid} from '../treegrid/TreeGrid';
 import {TreeNode} from '../treegrid/TreeNode';
 import {ElementHelper} from '../../dom/ElementHelper';
+import {DataView} from './DataView';
 
 export class GridDragHandler<MODEL> {
 
@@ -105,7 +106,7 @@ export class GridDragHandler<MODEL> {
     }
 
     protected handleMoveRows(_event: Event, args: DragEventData) {
-        const dataView: Slick.Data.DataView<TreeNode<MODEL>> = this.contentGrid.getGrid().getDataView();
+        const dataView: DataView<TreeNode<MODEL>> = this.contentGrid.getGrid().getDataView();
         const draggableRow: number = args.rows[0];
 
         const rowDataId: any = this.getModelId(dataView.getItem(draggableRow).getData());
