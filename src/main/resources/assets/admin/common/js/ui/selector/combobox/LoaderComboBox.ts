@@ -1,7 +1,6 @@
 import * as Q from 'q';
 import {BaseLoader} from '../../../util/loader/BaseLoader';
 import {StringHelper} from '../../../util/StringHelper';
-import {RichComboBox} from './RichComboBox';
 import {ComboBox, ComboBoxConfig} from './ComboBox';
 
 export class LoaderComboBox<OPTION_DISPLAY_VALUE>
@@ -26,14 +25,14 @@ export class LoaderComboBox<OPTION_DISPLAY_VALUE>
     protected doSetValue(value: string) {
 
         if (!this.loader.isLoaded()) {
-            if (RichComboBox.debug) {
+            if (LoaderComboBox.debug) {
                 console.debug(this.toString() + '.doSetValue: loader is not loaded, saving temp value = ' + value);
             }
             this.tempValue = value;
         }
         this.doWhenLoaded(() => {
             if (this.tempValue) {
-                if (RichComboBox.debug) {
+                if (LoaderComboBox.debug) {
                     console.debug(this.toString() + '.doSetValue: clearing temp value = ' + this.tempValue);
                 }
                 delete this.tempValue;
@@ -45,7 +44,7 @@ export class LoaderComboBox<OPTION_DISPLAY_VALUE>
 
     protected doGetValue(): string {
         if (!this.loader.isLoaded() && this.tempValue != null) {
-            if (RichComboBox.debug) {
+            if (LoaderComboBox.debug) {
                 console.debug('RichComboBox: loader is not loaded, returning temp value = ' + this.tempValue);
             }
             return this.tempValue;
@@ -67,11 +66,11 @@ export class LoaderComboBox<OPTION_DISPLAY_VALUE>
                 callback();
             }
         } else {
-            if (RichComboBox.debug) {
+            if (LoaderComboBox.debug) {
                 console.debug(this.toString() + '.doWhenLoaded: waiting to be loaded');
             }
             let singleLoadListener = ((data) => {
-                if (RichComboBox.debug) {
+                if (LoaderComboBox.debug) {
                     console.debug(this.toString() + '.doWhenLoaded: on loaded');
                 }
                 callback(data);

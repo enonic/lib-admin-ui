@@ -6,6 +6,7 @@ import {AggregationGroupView} from './AggregationGroupView';
 import {Bucket} from './Bucket';
 import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
 import {Aggregation} from './Aggregation';
+import {ObjectHelper} from '../ObjectHelper';
 
 export class BucketAggregationView
     extends AggregationView {
@@ -32,6 +33,14 @@ export class BucketAggregationView
 
         if (!this.showBucketView) {
             this.hide();
+        }
+    }
+
+    static createAggregationView(aggregation: Aggregation, parentGroupView: AggregationGroupView): BucketAggregationView {
+        if (ObjectHelper.iFrameSafeInstanceOf(aggregation, BucketAggregation)) {
+            return new BucketAggregationView(<BucketAggregation>aggregation, parentGroupView);
+        } else {
+            throw Error('Creating BucketAggregationView of this type of Aggregation is not supported: ' + aggregation);
         }
     }
 

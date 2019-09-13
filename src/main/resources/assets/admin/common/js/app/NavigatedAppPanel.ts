@@ -104,7 +104,7 @@ export class NavigatedAppPanel<M extends Equitable>
             browseMenuItem.setVisibleInMenu(false);
             this.addNavigablePanel(browseMenuItem, browsePanel);
 
-            this.currentKeyBindings = Action.getKeyBindings(this.resolveActions(browsePanel));
+            this.currentKeyBindings = Action.getKeyBindings(browsePanel.getActions());
             this.activateCurrentKeyBindings();
         }
     }

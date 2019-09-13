@@ -7,6 +7,7 @@ import {KeyBindings} from '../ui/KeyBindings';
 import {Action} from '../ui/Action';
 import {AppLauncherEventType} from './AppLauncherEventType';
 import {ShowBrowsePanelEvent} from './ShowBrowsePanelEvent';
+import {Panel} from '../ui/panel/Panel';
 
 export class AppPanel<M extends Equitable>
     extends DeckPanel {
@@ -50,7 +51,7 @@ export class AppPanel<M extends Equitable>
             this.browsePanel = browsePanel;
             this.addPanel(browsePanel);
 
-            this.currentKeyBindings = Action.getKeyBindings(this.resolveActions(browsePanel));
+            this.currentKeyBindings = Action.getKeyBindings(browsePanel.getActions());
             this.activateCurrentKeyBindings();
         }
     }
@@ -65,7 +66,7 @@ export class AppPanel<M extends Equitable>
         throw new Error('Must be implemented by inheritors');
     }
 
-    private handlePanelShown(event: PanelShownEvent) {
+    protected handlePanelShown(event: PanelShownEvent) {
         if (event.getPanel() === this.browsePanel) {
             this.browsePanel.refreshFilter();
         }
@@ -76,5 +77,9 @@ export class AppPanel<M extends Equitable>
         let nextActions = this.resolveActions(event.getPanel());
         this.currentKeyBindings = Action.getKeyBindings(nextActions);
         KeyBindings.get().bindKeys(this.currentKeyBindings);
+    }
+
+    protected resolveActions(panel: Panel): Action[] {
+        return panel.getActions();
     }
 }

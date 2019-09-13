@@ -1,10 +1,6 @@
 import * as Q from 'q';
 import {DivEl} from '../../dom/DivEl';
 import {Action} from '../Action';
-import {ObjectHelper} from '../../ObjectHelper';
-import {WizardPanel} from '../../app/wizard/WizardPanel';
-import {BrowsePanel} from '../../app/browse/BrowsePanel';
-import {ItemViewPanel} from '../../app/view/ItemViewPanel';
 import {ActionContainer} from '../ActionContainer';
 import {PanelStripHeader} from './PanelStripHeader';
 
@@ -12,7 +8,8 @@ import {PanelStripHeader} from './PanelStripHeader';
  * Use Panel when you need a container that needs 100% height.
  */
 export class Panel
-    extends DivEl {
+    extends DivEl
+    implements ActionContainer {
 
     protected outerHeader: PanelStripHeader;
     private doOffset: boolean;
@@ -78,14 +75,7 @@ export class Panel
         this.getEl().setTopPx(top);
     }
 
-    protected resolveActions(panel: Panel): Action[] {
-        let actions = [];
-        if (ObjectHelper.iFrameSafeInstanceOf(panel, WizardPanel) ||
-            ObjectHelper.iFrameSafeInstanceOf(panel, BrowsePanel) ||
-            ObjectHelper.iFrameSafeInstanceOf(panel, ItemViewPanel)) {
-            let actionContainer: ActionContainer = <any>panel;
-            actions = actions.concat(actionContainer.getActions());
-        }
-        return actions;
+    getActions(): Action[] {
+        return [];
     }
 }

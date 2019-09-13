@@ -9,7 +9,6 @@ import {TreeGridActions} from '../../ui/treegrid/actions/TreeGridActions';
 import {SplitPanel, SplitPanelAlignment, SplitPanelBuilder, SplitPanelUnit} from '../../ui/panel/SplitPanel';
 import {Equitable} from '../../Equitable';
 import {Panel} from '../../ui/panel/Panel';
-import {ActionContainer} from '../../ui/ActionContainer';
 import {Toolbar} from '../../ui/toolbar/Toolbar';
 import {TreeGrid} from '../../ui/treegrid/TreeGrid';
 import {BrowseFilterPanel} from './filter/BrowseFilterPanel';
@@ -20,8 +19,7 @@ import {ToggleFilterPanelAction} from './action/ToggleFilterPanelAction';
 import {BrowseItemPanel} from './BrowseItemPanel';
 
 export class BrowsePanel<M extends Equitable>
-    extends Panel
-    implements ActionContainer {
+    extends Panel {
 
     protected browseToolbar: Toolbar;
 

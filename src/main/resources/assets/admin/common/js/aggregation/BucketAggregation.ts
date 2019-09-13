@@ -3,6 +3,7 @@ import {BucketAggregationJson} from './BucketAggregationJson';
 import {BucketWrapperJson} from './BucketWrapperJson';
 import {BucketFactory} from './BucketFactory';
 import {Aggregation} from './Aggregation';
+import {AggregationTypeWrapperJson} from './AggregationTypeWrapperJson';
 
 export class BucketAggregation
     extends Aggregation {
@@ -11,6 +12,26 @@ export class BucketAggregation
 
     constructor(name: string) {
         super(name);
+    }
+
+    public static fromJsonArray(aggregationWrapperJsons: AggregationTypeWrapperJson[]): BucketAggregation[] {
+
+        let aggregations: BucketAggregation[] = [];
+
+        aggregationWrapperJsons.forEach((aggregationJson: AggregationTypeWrapperJson) => {
+            aggregations.push(BucketAggregation.createFromJson(aggregationJson));
+        });
+
+        return aggregations;
+    }
+
+    public static createFromJson(json: AggregationTypeWrapperJson): BucketAggregation {
+
+        if (json.BucketAggregation) {
+            return BucketAggregation.fromJson(<BucketAggregationJson>json.BucketAggregation);
+        } else {
+            throw new Error('Aggregation type not recognized: ' + json);
+        }
     }
 
     public static fromJson(json: BucketAggregationJson): BucketAggregation {

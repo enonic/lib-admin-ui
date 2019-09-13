@@ -117,7 +117,7 @@ export class AggregationGroupView
             let existingAggregationView: AggregationView = this.getAggregationView(aggregation.getName());
 
             if (existingAggregationView == null) {
-                this.addAggregationView(AggregationView.createAggregationView(aggregation, this));
+                this.addAggregationView(BucketAggregationView.createAggregationView(aggregation, this));
             } else {
                 if (ObjectHelper.iFrameSafeInstanceOf(existingAggregationView, BucketAggregationView)) {
 
@@ -151,4 +151,3 @@ export class AggregationGroupView
         return null;
     }
 }
-

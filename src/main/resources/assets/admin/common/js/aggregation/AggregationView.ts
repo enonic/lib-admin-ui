@@ -3,9 +3,6 @@ import {AggregationGroupView} from './AggregationGroupView';
 import {Aggregation} from './Aggregation';
 import {Bucket} from './Bucket';
 import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
-import {ObjectHelper} from '../ObjectHelper';
-import {BucketAggregation} from './BucketAggregation';
-import {BucketAggregationView} from './BucketAggregationView';
 
 export class AggregationView
     extends DivEl {
@@ -22,15 +19,6 @@ export class AggregationView
         super('aggregation-view');
         this.aggregation = aggregation;
         this.parentGroupView = parentGroupView;
-    }
-
-    static createAggregationView(aggregation: Aggregation,
-                                 parentGroupView: AggregationGroupView): AggregationView {
-        if (ObjectHelper.iFrameSafeInstanceOf(aggregation, BucketAggregation)) {
-            return new BucketAggregationView(<BucketAggregation>aggregation, parentGroupView);
-        } else {
-            throw Error('Creating AggregationView of this type of Aggregation is not supported: ' + aggregation);
-        }
     }
 
     setDisplayNamesMap(displayNameMap: { [name: string]: string }): void {

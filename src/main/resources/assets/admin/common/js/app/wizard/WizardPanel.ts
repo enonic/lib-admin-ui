@@ -4,7 +4,6 @@ import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 import {ResponsiveItem} from '../../ui/responsive/ResponsiveItem';
 import {Panel} from '../../ui/panel/Panel';
 import {Equitable} from '../../Equitable';
-import {ActionContainer} from '../../ui/ActionContainer';
 import {Closeable} from '../../ui/Closeable';
 import {AppBarTabId} from '../bar/AppBarTabId';
 import {Element} from '../../dom/Element';
@@ -43,7 +42,7 @@ export interface WizardPanelParams<EQUITABLE extends Equitable> {
 
 export class WizardPanel<EQUITABLE extends Equitable>
     extends Panel
-    implements Closeable, ActionContainer {
+    implements Closeable {
 
     public static debug: boolean = false;
     protected params: WizardPanelParams<EQUITABLE>;
