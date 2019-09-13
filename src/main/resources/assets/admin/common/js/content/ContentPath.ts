@@ -121,7 +121,7 @@ export class ContentPath
 
         let prettyElements: string[] = [];
         this.elements.forEach((element: string) => {
-            if (ContentName.fromString(element).isUnnamed()) {
+            if (element.indexOf(ContentUnnamed.UNNAMED_PREFIX) === 0) {
                 prettyElements.push('<' + ContentUnnamed.getPrettyUnnamed() + '>');
             } else {
                 prettyElements.push(element);

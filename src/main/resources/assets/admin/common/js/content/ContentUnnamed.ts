@@ -9,14 +9,16 @@ export class ContentUnnamed
     extends ContentName
     implements Equitable {
 
+    public static UNNAMED_PREFIX: string = '__unnamed__';
+
     constructor(name: string) {
         super(name);
-        assert(name.indexOf(ContentName.UNNAMED_PREFIX) === 0,
-            'An UnnamedContent must start with [' + ContentName.UNNAMED_PREFIX + ']: ' + name);
+        assert(name.indexOf(ContentUnnamed.UNNAMED_PREFIX) === 0,
+            'An UnnamedContent must start with [' + ContentUnnamed.UNNAMED_PREFIX + ']: ' + name);
     }
 
     public static newUnnamed() {
-        return new ContentUnnamed(ContentName.UNNAMED_PREFIX);
+        return new ContentUnnamed(ContentUnnamed.UNNAMED_PREFIX);
     }
 
     public static prettifyUnnamed(name?: string) {

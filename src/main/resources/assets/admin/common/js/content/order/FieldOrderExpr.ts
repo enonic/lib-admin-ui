@@ -2,6 +2,7 @@ import {Equitable} from '../../Equitable';
 import {ObjectHelper} from '../../ObjectHelper';
 import {OrderExpr, OrderExprBuilder} from './OrderExpr';
 import {OrderExprJson} from '../json/OrderExprJson';
+import {OrderExprWrapperJson} from '../json/OrderExprWrapperJson';
 
 export class FieldOrderExpr
     extends OrderExpr {
@@ -21,6 +22,12 @@ export class FieldOrderExpr
         return {
             fieldName: this.fieldName,
             direction: this.getDirection()
+        };
+    }
+
+    toWrappedJson(): OrderExprWrapperJson {
+        return {
+            FieldOrderExpr: this.toJson()
         };
     }
 

@@ -11,6 +11,8 @@ import {ContentSummaryJson} from './json/ContentSummaryJson';
 import {ContentId} from './ContentId';
 import {ContentName} from './ContentName';
 import {ContentPath} from './ContentPath';
+import {assert} from '../util/Assert';
+import {ContentUnnamed} from './ContentUnnamed';
 
 export class ContentSummary {
 
@@ -413,7 +415,7 @@ export class ContentSummaryBuilder {
     }
 
     fromContentSummaryJson(json: ContentSummaryJson): ContentSummaryBuilder {
-        this.name = ContentName.fromString(json.name);
+        this.name = ContentSummaryBuilder.createName(json.name);
         this.displayName = json.displayName;
         this.path = ContentPath.fromString(json.path);
         this.root = json.isRoot;
@@ -445,6 +447,15 @@ export class ContentSummaryBuilder {
         this.workflow = Workflow.fromJson(json.workflow);
 
         return this;
+    }
+
+    private static createName(name: string) {
+        assert(name != null, 'name cannot be null');
+        if (name.indexOf(ContentUnnamed.UNNAMED_PREFIX) === 0) {
+            return new ContentUnnamed(name);
+        } else {
+            return new ContentName(name);
+        }
     }
 
     setId(value: string): ContentSummaryBuilder {

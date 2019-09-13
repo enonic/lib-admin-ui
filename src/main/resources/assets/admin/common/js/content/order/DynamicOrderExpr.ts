@@ -1,5 +1,6 @@
 import {OrderExpr, OrderExprBuilder} from './OrderExpr';
 import {OrderExprJson} from '../json/OrderExprJson';
+import {OrderExprWrapperJson} from '../json/OrderExprWrapperJson';
 
 export class DynamicOrderExpr
     extends OrderExpr {
@@ -23,6 +24,12 @@ export class DynamicOrderExpr
         return {
             function: this.function,
             direction: this.getDirection()
+        };
+    }
+
+    toWrappedJson(): OrderExprWrapperJson {
+        return {
+            DynamicOrderExpr: this.toJson()
         };
     }
 }

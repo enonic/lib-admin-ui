@@ -2,8 +2,6 @@ import {OrderExprJson} from '../json/OrderExprJson';
 import {OrderExprWrapperJson} from '../json/OrderExprWrapperJson';
 import {Equitable} from '../../Equitable';
 import {ObjectHelper} from '../../ObjectHelper';
-import {FieldOrderExpr} from './FieldOrderExpr';
-import {DynamicOrderExpr} from './DynamicOrderExpr';
 
 export class OrderExpr
     implements Equitable {
@@ -15,15 +13,7 @@ export class OrderExpr
     }
 
     static toArrayJson(expressions: OrderExpr[]): OrderExprWrapperJson[] {
-        let wrappers: OrderExprWrapperJson[] = [];
-        expressions.forEach((expr: OrderExpr) => {
-            if (ObjectHelper.iFrameSafeInstanceOf(expr, FieldOrderExpr)) {
-                wrappers.push(<OrderExprWrapperJson>{FieldOrderExpr: expr.toJson()});
-            } else if (ObjectHelper.iFrameSafeInstanceOf(expr, DynamicOrderExpr)) {
-                wrappers.push(<OrderExprWrapperJson>{DynamicOrderExpr: expr.toJson()});
-            }
-        });
-        return wrappers;
+        return expressions.map(expr => expr.toWrappedJson());
     }
 
     getDirection(): string {
@@ -31,6 +21,10 @@ export class OrderExpr
     }
 
     toJson(): OrderExprJson {
+        throw new Error('Must be implemented by inheritors');
+    }
+
+    toWrappedJson(): OrderExprWrapperJson {
         throw new Error('Must be implemented by inheritors');
     }
 
