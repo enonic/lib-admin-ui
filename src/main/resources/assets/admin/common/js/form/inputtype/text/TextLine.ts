@@ -14,6 +14,7 @@ import {InputTypeName} from '../../InputTypeName';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {TextInputType} from './TextInputType';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
 export class TextLine
     extends TextInputType {
@@ -39,7 +40,7 @@ export class TextLine
 
     createInputOccurrenceElement(index: number, property: Property): Element {
         if (!ValueTypes.STRING.equals(property.getType())) {
-            property.convertValueType(ValueTypes.STRING);
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.STRING);
         }
 
         let inputEl = TextInput.middle(undefined, property.getString());

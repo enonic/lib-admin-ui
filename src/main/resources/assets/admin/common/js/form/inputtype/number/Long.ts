@@ -12,6 +12,7 @@ import {FormInputEl} from '../../../dom/FormInputEl';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {NumberInputType} from './NumberInputType';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
 export class Long
     extends NumberInputType {
@@ -30,7 +31,7 @@ export class Long
 
     createInputOccurrenceElement(_index: number, property: Property): Element {
         if (!ValueTypes.LONG.equals(property.getType())) {
-            property.convertValueType(ValueTypes.LONG);
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.LONG);
         }
 
         let inputEl = TextInput.middle(undefined, this.getPropertyValue(property));

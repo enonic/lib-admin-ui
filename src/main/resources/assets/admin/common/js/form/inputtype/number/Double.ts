@@ -10,6 +10,7 @@ import {InputValidationRecording} from '../InputValidationRecording';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {NumberInputType} from './NumberInputType';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
 export class Double
     extends NumberInputType {
@@ -28,7 +29,7 @@ export class Double
 
     createInputOccurrenceElement(_index: number, property: Property): Element {
         if (!ValueTypes.DOUBLE.equals(property.getType())) {
-            property.convertValueType(ValueTypes.DOUBLE);
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.DOUBLE);
         }
 
         let inputEl = TextInput.middle(undefined, this.getPropertyValue(property));

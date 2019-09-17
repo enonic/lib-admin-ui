@@ -9,6 +9,7 @@ import {SelectedDateChangedEvent} from '../../../ui/time/SelectedDateChangedEven
 import {LocalDate} from '../../../util/LocalDate';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDate]].
@@ -26,7 +27,7 @@ export class Date
 
     createInputOccurrenceElement(_index: number, property: Property): Element {
         if (!ValueTypes.LOCAL_DATE.equals(property.getType())) {
-            property.convertValueType(ValueTypes.LOCAL_DATE);
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.LOCAL_DATE);
         }
 
         let datePickerBuilder = new DatePickerBuilder();

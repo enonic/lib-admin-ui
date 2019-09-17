@@ -10,6 +10,7 @@ import {GeoPoint as GeoPointEl} from '../../../ui/geo/GeoPoint';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
 // TODO: GeoPoint is not dependent on the content domain and should therefore be moved to api.form.inputtype.geo
 export class GeoPoint
@@ -25,7 +26,7 @@ export class GeoPoint
 
     createInputOccurrenceElement(_index: number, property: Property): Element {
         if (!ValueTypes.GEO_POINT.equals(property.getType())) {
-            property.convertValueType(ValueTypes.GEO_POINT);
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.GEO_POINT);
         }
 
         let geoPoint = new GeoPointEl(property.getGeoPoint());

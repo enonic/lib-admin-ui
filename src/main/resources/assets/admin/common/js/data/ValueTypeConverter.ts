@@ -1,4 +1,3 @@
-import {ObjectHelper} from '../ObjectHelper';
 import {LocalDate} from '../util/LocalDate';
 import {LocalDateTime} from '../util/LocalDateTime';
 import {DateTime} from '../util/DateTime';
@@ -6,7 +5,8 @@ import {ValueType} from './ValueType';
 import {Value} from './Value';
 import {ValueTypes} from './ValueTypes';
 import {PropertySet} from './PropertySet';
-import {ValueTypePropertySet} from './ValueTypePropertySet';
+import {Property} from './Property';
+import {PropertyArray} from './PropertyArray';
 
 export class ValueTypeConverter {
 
@@ -173,6 +173,14 @@ export class ValueTypeConverter {
             return ValueTypes.LOCAL_TIME.newValue(dateTime.getHours() + ':' + dateTime.getMinutes() + ':' + dateTime.getSeconds());
         }
         return ValueTypes.LOCAL_TIME.newNullValue();
+    }
+
+    static convertArrayValues(propertyArray: PropertyArray, newType: ValueType): void {
+        propertyArray.convertValues(newType, ValueTypeConverter.convertTo);
+    }
+
+    static convertPropertyValueType(property: Property, newType: ValueType): void {
+        property.convertValueType(newType, ValueTypeConverter.convertTo);
     }
 
 }

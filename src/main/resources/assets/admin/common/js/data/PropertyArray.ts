@@ -14,7 +14,6 @@ import {PropertyPath, PropertyPathElement} from './PropertyPath';
 import {Value} from './Value';
 import {PropertySet} from './PropertySet';
 import {PropertyTree} from './PropertyTree';
-import {ValueTypeConverter} from './ValueTypeConverter';
 import {assert} from '../util/Assert';
 
 /**
@@ -155,12 +154,12 @@ export class PropertyArray
         return this.type;
     }
 
-    convertValues(newType: ValueType) {
+    convertValues(newType: ValueType, converter: (value: Value, toType: ValueType) => Value) {
         this.type = newType;
         this.array.forEach((property: Property) => {
-            let source = property.getValue();
+            const source = property.getValue();
             if (!newType.equals(source.getType())) {
-                let converted = ValueTypeConverter.convertTo(source, newType);
+                const converted = converter(source, newType);
                 property.setValue(converted);
             }
         });

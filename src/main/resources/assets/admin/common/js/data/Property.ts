@@ -127,8 +127,8 @@ export class Property
         }
     }
 
-    convertValueType(type: ValueType) {
-        this.array.convertValues(type);
+    convertValueType(type: ValueType, converter: (value: Value, toType: ValueType) => Value) {
+        this.array.convertValues(type, converter);
     }
 
     /**

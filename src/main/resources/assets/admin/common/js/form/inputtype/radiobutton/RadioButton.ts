@@ -12,6 +12,7 @@ import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
 export class RadioButton
     extends BaseInputTypeSingleOccurrence {
@@ -42,7 +43,7 @@ export class RadioButton
         this.appendChild(this.selector);
 
         if (!ValueTypes.STRING.equals(property.getType())) {
-            property.convertValueType(ValueTypes.STRING);
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.STRING);
             if (!this.isValidOption(property.getString())) {
                 property.setValue(ValueTypes.STRING.newNullValue());
             }

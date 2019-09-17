@@ -17,6 +17,7 @@ import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ComboBoxOption} from './ComboBoxOption';
 import {ComboBoxDisplayValueViewer} from './ComboBoxDisplayValueViewer';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
 export class ComboBox
     extends BaseInputTypeManagingAdd {
@@ -50,7 +51,7 @@ export class ComboBox
 
     layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {
         if (!ValueTypes.STRING.equals(propertyArray.getType())) {
-            propertyArray.convertValues(ValueTypes.STRING);
+            ValueTypeConverter.convertArrayValues(propertyArray, ValueTypes.STRING);
         }
         super.layout(input, propertyArray);
 

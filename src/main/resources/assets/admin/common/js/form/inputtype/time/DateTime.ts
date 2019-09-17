@@ -12,6 +12,7 @@ import {InputTypeName} from '../../InputTypeName';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {DateTime as DateTimeUtil} from '../../../util/DateTime';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDateTime]].
@@ -94,7 +95,7 @@ export class DateTime
         let dateTimeBuilder = new DateTimePickerBuilder();
 
         if (!ValueTypes.LOCAL_DATE_TIME.equals(property.getType())) {
-            property.convertValueType(ValueTypes.LOCAL_DATE_TIME);
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.LOCAL_DATE_TIME);
         }
 
         if (property.hasNonNullValue()) {
@@ -118,7 +119,7 @@ export class DateTime
         dateTimeBuilder.setUseLocalTimezoneIfNotPresent(true);
 
         if (!ValueTypes.DATE_TIME.equals(property.getType())) {
-            property.convertValueType(ValueTypes.DATE_TIME);
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.DATE_TIME);
         }
 
         if (property.hasNonNullValue()) {

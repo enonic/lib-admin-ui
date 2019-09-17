@@ -9,6 +9,7 @@ import {SelectedDateChangedEvent} from '../../../ui/time/SelectedDateChangedEven
 import {LocalTime} from '../../../util/LocalTime';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalTime]].
@@ -26,7 +27,7 @@ export class Time
 
     createInputOccurrenceElement(_index: number, property: Property): Element {
         if (!ValueTypes.LOCAL_TIME.equals(property.getType())) {
-            property.convertValueType(ValueTypes.LOCAL_TIME);
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.LOCAL_TIME);
         }
 
         const value = this.getValueFromProperty(property);

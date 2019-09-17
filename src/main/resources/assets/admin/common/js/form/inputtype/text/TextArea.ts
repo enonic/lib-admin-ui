@@ -13,6 +13,7 @@ import {InputTypeName} from '../../InputTypeName';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {TextInputType} from './TextInputType';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
 export class TextArea
     extends TextInputType {
@@ -36,7 +37,7 @@ export class TextArea
 
     createInputOccurrenceElement(index: number, property: Property): Element {
         if (!ValueTypes.STRING.equals(property.getType())) {
-            property.convertValueType(ValueTypes.STRING);
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.STRING);
         }
 
         const value = property.hasNonNullValue() ? property.getString() : undefined;

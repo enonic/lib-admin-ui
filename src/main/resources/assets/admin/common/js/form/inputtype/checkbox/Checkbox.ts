@@ -4,14 +4,14 @@ import {Value} from '../../../data/Value';
 import {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {BaseInputTypeSingleOccurrence} from '../support/BaseInputTypeSingleOccurrence';
-import {InputAlignment} from '../../../ui/Checkbox';
+import {Checkbox as CheckboxEl, InputAlignment} from '../../../ui/Checkbox';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Input} from '../../Input';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {InputValidationRecording} from '../InputValidationRecording';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
-import {Checkbox as CheckboxEl} from '../../../ui/Checkbox';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
 export class Checkbox
     extends BaseInputTypeSingleOccurrence {
@@ -40,7 +40,7 @@ export class Checkbox
         this.appendChild(this.checkbox);
 
         if (!ValueTypes.BOOLEAN.equals(property.getType())) {
-            property.convertValueType(ValueTypes.BOOLEAN);
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.BOOLEAN);
         }
 
         this.checkbox.onValueChanged((event: ValueChangedEvent) => {
