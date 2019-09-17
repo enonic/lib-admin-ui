@@ -74,7 +74,7 @@ export class ValueType
     fromJsonValue(jsonValue: any): Value {
         if (jsonValue) {
             return this.newValue(jsonValue.toString());
-        } else if ('' === jsonValue) { // NB: empty string is not true in Javascript
+        } else if ('' === jsonValue) {
             return this.newValue(jsonValue);
         } else {
             return this.newNullValue();

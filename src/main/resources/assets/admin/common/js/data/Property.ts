@@ -275,7 +275,7 @@ export class Property
 
         let value: Value;
 
-        if (this.value.isPropertySet() && this.value.isNotNull()) {
+        if (ValueTypes.DATA.isPropertySet(this.value) && this.value.isNotNull()) {
             let destinationTree = destinationPropertyArray.getTree();
             let copiedPropertySet = this.value.getPropertySet().copy(destinationTree);
             value = new Value(copiedPropertySet, ValueTypes.DATA);

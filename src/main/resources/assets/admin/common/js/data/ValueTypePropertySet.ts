@@ -14,10 +14,12 @@ export class ValueTypePropertySet
         if (!(typeof value === 'object')) {
             return false;
         }
-        if (!ObjectHelper.iFrameSafeInstanceOf(value, PropertySet)) {
-            return false;
-        }
-        return true;
+
+        return this.isPropertySet(value);
+    }
+
+    isPropertySet(value: Value) {
+        return this === value.getType();
     }
 
     isConvertible(): boolean {

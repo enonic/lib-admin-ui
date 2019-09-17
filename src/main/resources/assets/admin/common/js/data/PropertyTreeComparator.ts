@@ -1,6 +1,7 @@
 import {PropertyTree} from './PropertyTree';
 import {PropertySet} from './PropertySet';
 import {Property} from './Property';
+import {ValueTypes} from './ValueTypes';
 
 export class PropertyTreeComparator {
 
@@ -27,7 +28,7 @@ export class PropertyTreeComparator {
                             ']');
             }
 
-            if (propertyA.getValue().isPropertySet()) {
+            if (ValueTypes.DATA.isPropertySet(propertyA.getValue())) {
                 let childSetA = propertyA.getPropertySet();
                 let childSetB = propertyB.getPropertySet();
                 this.compareSet(childSetA, childSetB);

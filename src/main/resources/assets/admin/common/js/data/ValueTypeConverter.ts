@@ -6,6 +6,7 @@ import {ValueType} from './ValueType';
 import {Value} from './Value';
 import {ValueTypes} from './ValueTypes';
 import {PropertySet} from './PropertySet';
+import {ValueTypePropertySet} from './ValueTypePropertySet';
 
 export class ValueTypeConverter {
 
@@ -116,7 +117,7 @@ export class ValueTypeConverter {
     }
 
     private static convertToData(value: Value): Value {
-        if (ObjectHelper.iFrameSafeInstanceOf(value.getObject, PropertySet)) {
+        if (ValueTypes.DATA.isPropertySet(value)) {
             return new Value(value.getObject(), ValueTypes.DATA);
         }
         return new Value(new PropertySet(), ValueTypes.DATA);

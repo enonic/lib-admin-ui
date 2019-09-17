@@ -10,9 +10,7 @@ import {GeoPoint} from '../util/GeoPoint';
 import {BinaryReference} from '../util/BinaryReference';
 import {Reference} from '../util/Reference';
 import {Link} from '../util/Link';
-import {assert} from '../util/Assert';
 import {PropertySet} from './PropertySet';
-import {ValueTypes} from './ValueTypes';
 import {ValueType} from './ValueType';
 
 export class Value
@@ -45,7 +43,7 @@ export class Value
     }
 
     isNull(): boolean {
-        return this.value == null || this.value == null;
+        return this.value == null;
     }
 
     getObject(): Object {
@@ -59,17 +57,10 @@ export class Value
         return this.type.valueToString(this);
     }
 
-    isPropertySet(): boolean {
-        return ValueTypes.DATA.toString() === this.type.toString();
-    }
-
     getPropertySet(): PropertySet {
         if (this.isNull()) {
             return null;
         }
-
-        assert(ObjectHelper.iFrameSafeInstanceOf(this.value, PropertySet),
-            'Expected value to be a PropertySet: ' + ClassHelper.getClassName(this.value));
 
         return <PropertySet>this.value;
     }
