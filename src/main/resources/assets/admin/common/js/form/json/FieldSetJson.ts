@@ -1,10 +1,10 @@
-import {LayoutJson} from './LayoutJson';
-import {LayoutTypeWrapperJson} from './LayoutTypeWrapperJson';
+import {FieldSetTypeWrapperJson} from './FieldSetTypeWrapperJson';
+import {FormItemJson} from './FormItemJson';
 
 export interface FieldSetJson
-    extends LayoutJson {
+    extends FormItemJson {
 
-    items: LayoutTypeWrapperJson[];
+    items: FieldSetTypeWrapperJson[];
 
     label: string;
 }

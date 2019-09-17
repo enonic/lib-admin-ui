@@ -1,6 +1,6 @@
 import {FieldSetJson} from './FieldSetJson';
 
-export interface LayoutTypeWrapperJson {
+export interface FieldSetTypeWrapperJson {
 
     FieldSet?: FieldSetJson;
 

@@ -70,10 +70,10 @@ export class FormItemSet
         return this.customText;
     }
 
-    public toFormItemSetJson(): FormItemTypeWrapperJson {
+    public toJson(): FormItemTypeWrapperJson {
 
-        return <FormItemTypeWrapperJson>{
-            FormItemSet: <FormItemSetJson>{
+        return {
+            FormItemSet: {
                 name: this.getName(),
                 customText: this.getCustomText(),
                 helpText: this.getHelpText(),

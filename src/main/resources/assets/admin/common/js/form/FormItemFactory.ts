@@ -22,16 +22,15 @@ export class FormItemFactory {
     static createFormItem(formItemTypeWrapperJson: FormItemTypeWrapperJson): FormItem {
 
         if (formItemTypeWrapperJson.Input) {
-            return FormItemFactory.createInput(<InputJson>formItemTypeWrapperJson.Input);
+            return FormItemFactory.createInput(formItemTypeWrapperJson.Input);
         } else if (formItemTypeWrapperJson.FormItemSet) {
-            return FormItemFactory.createFormItemSet(<FormItemSetJson>formItemTypeWrapperJson.FormItemSet);
+            return FormItemFactory.createFormItemSet(formItemTypeWrapperJson.FormItemSet);
         } else if (formItemTypeWrapperJson.FieldSet) {
-            return FormItemFactory.createFieldSetLayout(<FieldSetJson>formItemTypeWrapperJson.FieldSet);
+            return FormItemFactory.createFieldSetLayout(formItemTypeWrapperJson.FieldSet);
         } else if (formItemTypeWrapperJson.FormOptionSet) {
-            return FormItemFactory.createFormOptionSet(<FormOptionSetJson>formItemTypeWrapperJson.FormOptionSet);
+            return FormItemFactory.createFormOptionSet(formItemTypeWrapperJson.FormOptionSet);
         } else if (formItemTypeWrapperJson.FormOptionSetOption) {
-            return FormItemFactory.createFormOptionSetOption(
-                <FormOptionSetOptionJson>formItemTypeWrapperJson.FormOptionSetOption);
+            return FormItemFactory.createFormOptionSetOption(formItemTypeWrapperJson.FormOptionSetOption);
         }
 
         console.error('Unknown FormItem type: ', formItemTypeWrapperJson);

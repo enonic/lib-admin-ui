@@ -6,7 +6,8 @@ import {FormOptionSet} from './set/optionset/FormOptionSet';
 import {FormOptionSetOption} from './set/optionset/FormOptionSetOption';
 import {FieldSet} from './set/fieldset/FieldSet';
 import {FormItemPath, FormItemPathElement} from './FormItemPath';
-import {Input} from './Input';
+
+export type FormItemParent = FieldSet | FormItemSet | FormOptionSet | FormOptionSetOption;
 
 export class FormItem
     implements Equitable {
@@ -23,19 +24,12 @@ export class FormItem
 
         let formItemArray: FormItemTypeWrapperJson[] = [];
         formItems.forEach((formItem: FormItem) => {
-            formItemArray.push(formItem.toFormItemJson());
+            formItemArray.push(formItem.toJson());
         });
         return formItemArray;
     }
 
-    setParent(parent: FormItem) {
-        if (!(ObjectHelper.iFrameSafeInstanceOf(parent, FormItemSet) ||
-              ObjectHelper.iFrameSafeInstanceOf(parent, FieldSet) ||
-              ObjectHelper.iFrameSafeInstanceOf(parent, FormOptionSet) ||
-              ObjectHelper.iFrameSafeInstanceOf(parent, FormOptionSetOption))) {
-            throw new Error('A parent FormItem must either be a FormItemSet, FieldSet or a FormOptionSet');
-        }
-
+    setParent(parent: FormItemParent) {
         this.parent = parent;
     }
 
@@ -66,21 +60,8 @@ export class FormItem
         return true;
     }
 
-    public toFormItemJson(): FormItemTypeWrapperJson {
-
-        if (ObjectHelper.iFrameSafeInstanceOf(this, Input)) {
-            return (<Input><any>this).toInputJson();
-        } else if (ObjectHelper.iFrameSafeInstanceOf(this, FormItemSet)) {
-            return (<FormItemSet><any>this).toFormItemSetJson();
-        } else if (ObjectHelper.iFrameSafeInstanceOf(this, FieldSet)) {
-            return (<FieldSet><any>this).toFieldSetJson();
-        } else if (ObjectHelper.iFrameSafeInstanceOf(this, FormOptionSet)) {
-            return (<FormOptionSet><any>this).toFormOptionSetJson();
-        } else if (ObjectHelper.iFrameSafeInstanceOf(this, FormOptionSetOption)) {
-            return (<FormOptionSetOption><any>this).toFormOptionSetOptionJson();
-        } else {
-            throw new Error('Unsupported FormItem: ' + this);
-        }
+    public toJson(): FormItemTypeWrapperJson {
+        throw new Error('Unsupported FormItem: ' + this);
     }
 
     private resolvePath(): FormItemPath {

@@ -201,7 +201,7 @@ export class FieldSetView
 
             deferred.resolve(null);
         }).catch((reason: any) => {
-            let fieldSetValue = this.fieldSet ? this.fieldSet.toFieldSetJson() : {};
+            let fieldSetValue = this.fieldSet ? this.fieldSet.toJson() : {};
             console.error('Could not render FieldSet view: ' + reason + '\r\n FieldSet value:', JSON.stringify(fieldSetValue));
             DefaultErrorHandler.handle(reason);
         }).done();

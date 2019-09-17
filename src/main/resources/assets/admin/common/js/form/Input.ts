@@ -263,10 +263,10 @@ export class Input
         return true;
     }
 
-    public toInputJson(): FormItemTypeWrapperJson {
+    public toJson(): FormItemTypeWrapperJson {
 
-        return <FormItemTypeWrapperJson>{
-            Input: <InputJson>{
+        return {
+            Input: {
                 name: this.getName(),
                 customText: this.getCustomText(),
                 helpText: this.getHelpText(),

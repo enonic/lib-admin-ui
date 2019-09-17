@@ -59,10 +59,10 @@ export class FormOptionSet
         return this.multiselection.getMinimum() === 1 && this.multiselection.getMaximum() === 1;
     }
 
-    public toFormOptionSetJson(): FormItemTypeWrapperJson {
+    public toJson(): FormItemTypeWrapperJson {
 
-        return <FormItemTypeWrapperJson>{
-            FormOptionSet: <FormOptionSetJson>{
+        return {
+            FormOptionSet: {
                 name: this.getName(),
                 expanded: this.isExpanded(),
                 options: FormOptionSetOption.optionsToJson(this.getOptions()),

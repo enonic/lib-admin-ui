@@ -44,7 +44,7 @@ export class FormOptionSetOption
     public static optionsToJson(options: FormOptionSetOption[]): FormOptionSetOptionJson[] {
         let jsonArray: FormOptionSetOptionJson[] = [];
         options.forEach((option: FormOptionSetOption) => {
-            jsonArray.push(option.toFormOptionSetOptionJson().FormOptionSetOption);
+            jsonArray.push(option.toJson().FormOptionSetOption);
         });
         return jsonArray;
     }
@@ -79,10 +79,10 @@ export class FormOptionSetOption
         return this.helpTextIsOn;
     }
 
-    public toFormOptionSetOptionJson(): FormItemTypeWrapperJson {
+    public toJson(): FormItemTypeWrapperJson {
 
-        return <FormItemTypeWrapperJson>{
-            FormOptionSetOption: <FormOptionSetOptionJson>{
+        return {
+            FormOptionSetOption: {
                 name: this.getName(),
                 label: this.getLabel(),
                 helpText: this.getHelpText(),

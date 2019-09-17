@@ -40,10 +40,10 @@ export class FieldSet
         return this.formItems;
     }
 
-    public toFieldSetJson(): FormItemTypeWrapperJson {
+    public toJson(): FormItemTypeWrapperJson {
 
-        return <FormItemTypeWrapperJson>{
-            FieldSet: <FieldSetJson>{
+        return {
+            FieldSet: {
                 name: this.getName(),
                 items: FormItem.formItemsToJson(this.getFormItems()),
                 label: this.getLabel()
