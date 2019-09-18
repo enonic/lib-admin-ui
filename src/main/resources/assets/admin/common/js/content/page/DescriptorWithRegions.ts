@@ -3,7 +3,6 @@ import {Equitable} from '../../Equitable';
 import {ObjectHelper} from '../../ObjectHelper';
 import {Descriptor, DescriptorBuilder} from './Descriptor';
 import {DescriptorWithRegionsJson} from './DescriptorWithRegionsJson';
-import {PageDescriptor} from './PageDescriptor';
 
 export class DescriptorWithRegions
     extends Descriptor
@@ -29,11 +28,11 @@ export class DescriptorWithRegions
     }
 
     equals(o: Equitable): boolean {
-        if (!ObjectHelper.iFrameSafeInstanceOf(o, PageDescriptor)) {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, DescriptorWithRegions)) {
             return false;
         }
 
-        let other = <PageDescriptor>o;
+        let other = <DescriptorWithRegions>o;
 
         return super.equals(other) && ObjectHelper.arrayEquals(this.regions, other.getRegions());
     }
