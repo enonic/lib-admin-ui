@@ -213,6 +213,10 @@ module api.form {
             return this.data;
         }
 
+        getForm(): Form {
+            return this.form;
+        }
+
         giveFocus(): boolean {
             let focusGiven = false;
             if (this.formItemViews.length > 0) {
