@@ -23,7 +23,6 @@ import {ValidationRecordingPath} from '../ValidationRecordingPath';
 import {OccurrenceRenderedEvent} from '../OccurrenceRenderedEvent';
 import {OccurrenceAddedEvent} from '../OccurrenceAddedEvent';
 import {OccurrenceRemovedEvent} from '../OccurrenceRemovedEvent';
-import {FormItemSetOccurrenceView} from './itemset/FormItemSetOccurrenceView';
 
 export class FormSetView<V extends FormSetOccurrenceView>
     extends FormItemView {
@@ -405,7 +404,7 @@ export class FormSetView<V extends FormSetOccurrenceView>
 
             this.refreshButtonsState();
 
-            if (ObjectHelper.iFrameSafeInstanceOf(event.getOccurrenceView(), FormItemSetOccurrenceView)) {
+            if (event.getOccurrenceView().hasClass('form-item-set-occurrence-view')) {
                 // force validate, since FormItemSet might have become invalid
                 this.validate(false);
             }

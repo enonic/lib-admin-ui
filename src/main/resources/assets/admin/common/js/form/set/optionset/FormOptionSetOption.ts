@@ -87,7 +87,7 @@ export class FormOptionSetOption
                 label: this.getLabel(),
                 helpText: this.getHelpText(),
                 defaultOption: this.isDefaultOption(),
-                items: FormItem.formItemsToJson(this.getFormItems())
+                items: this.getFormItems().map(formItem => formItem.toJson())
             }
         };
     }

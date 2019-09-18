@@ -20,15 +20,6 @@ export class FormItem
         this.name = name;
     }
 
-    public static formItemsToJson(formItems: FormItem[]): FormItemTypeWrapperJson[] {
-
-        let formItemArray: FormItemTypeWrapperJson[] = [];
-        formItems.forEach((formItem: FormItem) => {
-            formItemArray.push(formItem.toJson());
-        });
-        return formItemArray;
-    }
-
     setParent(parent: FormItemParent) {
         this.parent = parent;
     }

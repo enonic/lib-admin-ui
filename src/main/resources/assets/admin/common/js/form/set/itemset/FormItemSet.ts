@@ -78,7 +78,7 @@ export class FormItemSet
                 customText: this.getCustomText(),
                 helpText: this.getHelpText(),
                 immutable: this.isImmutable(),
-                items: FormItem.formItemsToJson(this.getFormItems()),
+                items: this.getFormItems().map(formItem => formItem.toJson()),
                 label: this.getLabel(),
                 occurrences: this.getOccurrences().toJson()
             }

@@ -87,8 +87,8 @@ export class Form
 
     toJson(): FormJson {
 
-        return <FormJson>{
-            formItems: FormItem.formItemsToJson(this.getFormItems())
+        return {
+            formItems: this.getFormItems().map(formItem => formItem.toJson())
         };
     }
 

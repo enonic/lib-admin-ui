@@ -45,7 +45,7 @@ export class FieldSet
         return {
             FieldSet: {
                 name: this.getName(),
-                items: FormItem.formItemsToJson(this.getFormItems()),
+                items: this.getFormItems().map(formItem => formItem.toJson()),
                 label: this.getLabel()
             }
         };
