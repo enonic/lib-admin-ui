@@ -1,13 +1,23 @@
 module api.dom {
 
+    export enum LinkType {
+        STYLESHEET
+    }
+
     export class LinkEl extends api.dom.Element {
 
-        constructor(href: string, rel: string = 'import', className?: string) {
-            super(new NewElementBuilder().
-            setTagName('link').
-            setClassName(className));
+        constructor(href: string = '#', type: LinkType = LinkType.STYLESHEET) {
+            super(new NewElementBuilder().setTagName('link'));
 
-            this.setHref(href).setRel(rel);
+            this.setHref(href).setType(type);
+        }
+
+        private setType(type: LinkType) {
+            switch (type) {
+                case LinkType.STYLESHEET:
+                    this.setRel('stylesheet');
+                    this.getEl().setAttribute('type', 'text/css');
+            }
         }
 
         private setHref(href: string): api.dom.LinkEl {
@@ -15,7 +25,7 @@ module api.dom {
             return this;
         }
 
-        private setRel(rel: string): api.dom.LinkEl {
+        setRel(rel: string): api.dom.LinkEl {
             this.getEl().setAttribute('rel', rel);
             return this;
         }
@@ -23,14 +33,6 @@ module api.dom {
         setAsync(): api.dom.LinkEl {
             this.getEl().setAttribute('async', '');
             return this;
-        }
-
-        onLoaded(listener: (event: UIEvent) => void) {
-            this.getEl().addEventListener('load', listener);
-        }
-
-        unLoaded(listener: (event: UIEvent) => void) {
-            this.getEl().removeEventListener('load', listener);
         }
     }
 }
