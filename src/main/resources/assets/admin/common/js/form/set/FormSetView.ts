@@ -24,7 +24,7 @@ import {OccurrenceRenderedEvent} from '../OccurrenceRenderedEvent';
 import {OccurrenceAddedEvent} from '../OccurrenceAddedEvent';
 import {OccurrenceRemovedEvent} from '../OccurrenceRemovedEvent';
 
-export class FormSetView<V extends FormSetOccurrenceView>
+export abstract class FormSetView<V extends FormSetOccurrenceView>
     extends FormItemView {
 
     protected parentDataSet: PropertySet;
@@ -54,7 +54,7 @@ export class FormSetView<V extends FormSetOccurrenceView>
      */
     protected draggingIndex: number;
 
-    constructor(config: FormItemViewConfig) {
+    protected constructor(config: FormItemViewConfig) {
         super(config);
     }
 
@@ -312,9 +312,7 @@ export class FormSetView<V extends FormSetOccurrenceView>
         return propertyArray;
     }
 
-    protected initOccurrences(): FormSetOccurrences<V> {
-        throw new Error('Must be implemented by inheritor');
-    }
+    protected abstract initOccurrences(): FormSetOccurrences<V>;
 
     protected notifyValidityChanged(event: RecordingValidityChangedEvent) {
         this.validityChangedListeners.forEach((listener: (event: RecordingValidityChangedEvent) => void) => {

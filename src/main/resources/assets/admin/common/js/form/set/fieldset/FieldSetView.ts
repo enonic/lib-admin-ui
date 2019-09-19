@@ -3,7 +3,6 @@ import {PropertySet} from '../../../data/PropertySet';
 import {DivEl} from '../../../dom/DivEl';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {ContentSummary} from '../../../content/ContentSummary';
-import {FormContext} from '../../FormContext';
 import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
 import {FieldSet} from './FieldSet';
 import {FormItemView, FormItemViewConfig} from '../../FormItemView';
@@ -12,18 +11,17 @@ import {InputView} from '../../InputView';
 import {ValidationRecording} from '../../ValidationRecording';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
 import {FieldSetLabel} from './FieldSetLabel';
+import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
 
-export interface FieldSetViewConfig {
+export interface FieldSetViewConfig extends CreatedFormItemLayerConfig {
 
-    context: FormContext;
+    layerFactory: FormItemLayerFactory;
 
     fieldSet: FieldSet;
 
     parent: FormItemOccurrenceView;
 
     dataSet?: PropertySet;
-
-    lazyRender?: boolean;
 }
 
 export class FieldSetView
@@ -45,8 +43,7 @@ export class FieldSetView
             className: 'field-set-view'
         });
 
-        this.formItemLayer = new FormItemLayer(config.context);
-        this.formItemLayer.setLazyRender(config.lazyRender);
+        this.formItemLayer = config.layerFactory.createLayer(config);
 
         this.fieldSet = config.fieldSet;
         this.propertySet = config.dataSet;

@@ -6,8 +6,11 @@ import {FormSetView} from '../FormSetView';
 import {FormItemViewConfig} from '../../FormItemView';
 import {FormSetOccurrences} from '../FormSetOccurrences';
 import {FormOptionSetOccurrences, FormOptionSetOccurrencesConfig} from './FormOptionSetOccurrences';
+import {FormItemLayerFactory} from '../../FormItemLayerFactory';
 
 export interface FormOptionSetViewConfig {
+
+    layerFactory: FormItemLayerFactory;
 
     context: FormContext;
 
@@ -21,6 +24,8 @@ export interface FormOptionSetViewConfig {
 export class FormOptionSetView
     extends FormSetView<FormOptionSetOccurrenceView> {
 
+    protected layerFactory: FormItemLayerFactory;
+
     constructor(config: FormOptionSetViewConfig) {
         super(<FormItemViewConfig> {
             className: 'form-option-set-view',
@@ -28,6 +33,7 @@ export class FormOptionSetView
             formItem: config.formOptionSet,
             parent: config.parent
         });
+        this.layerFactory = config.layerFactory;
         this.parentDataSet = config.parentDataSet;
         this.formSet = config.formOptionSet;
         this.classPrefix = 'form-option-set';
@@ -41,6 +47,7 @@ export class FormOptionSetView
 
     protected initOccurrences(): FormSetOccurrences<FormOptionSetOccurrenceView> {
         return this.formItemOccurrences = new FormOptionSetOccurrences(<FormOptionSetOccurrencesConfig>{
+            layerFactory: this.layerFactory,
             context: this.getContext(),
             occurrenceViewContainer: this.occurrenceViewsContainer,
             formOptionSet: <FormOptionSet> this.formSet,

@@ -4,7 +4,7 @@ import {FormItem} from '../../FormItem';
 import {FormItemTypeWrapperJson} from '../../json/FormItemTypeWrapperJson';
 import {ObjectHelper} from '../../../ObjectHelper';
 import {FormItemContainer} from '../../FormItemContainer';
-import {FormItemFactory} from '../../FormItemFactory';
+import {FormItemFactory} from '../../FormItemFactoryImpl';
 
 export class FormOptionSetOption
     extends FormItem
@@ -22,23 +22,19 @@ export class FormOptionSetOption
 
     private formItemByName: { [name: string]: FormItem; } = {};
 
-    constructor(optionJson: FormOptionSetOptionJson) {
+    constructor(optionJson: FormOptionSetOptionJson, factory: FormItemFactory) {
         super(optionJson.name);
         this.label = optionJson.label;
         this.defaultOption = optionJson.defaultOption;
         this.helpText = optionJson.helpText;
         if (optionJson.items != null) {
             optionJson.items.forEach((formItemJson) => {
-                let formItem: FormItem = FormItemFactory.createFormItem(formItemJson);
+                let formItem: FormItem = factory.createFormItem(formItemJson);
                 if (formItem) {
                     this.addFormItem(formItem);
                 }
             });
         }
-    }
-
-    public static fromJson(optionJson: FormOptionSetOptionJson): FormOptionSetOption {
-        return new FormOptionSetOption(optionJson);
     }
 
     public static optionsToJson(options: FormOptionSetOption[]): FormOptionSetOptionJson[] {

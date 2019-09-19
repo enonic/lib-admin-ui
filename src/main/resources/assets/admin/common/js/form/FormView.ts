@@ -15,6 +15,7 @@ import {FormContext} from './FormContext';
 import {assert} from '../util/Assert';
 import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
 import {FormOptionSetView} from './set/optionset/FormOptionSetView';
+import {FormItemLayerFactoryImpl} from './FormItemLayerFactory';
 
 /**
  * Creates a UI component representing the given [[Form]] backed by given [[PropertySet]].
@@ -49,7 +50,7 @@ export class FormView
         this.form = form;
         this.data = data;
 
-        this.formItemLayer = new FormItemLayer(context);
+        this.formItemLayer = FormItemLayerFactoryImpl.get().createLayer({context});
     }
 
     /**

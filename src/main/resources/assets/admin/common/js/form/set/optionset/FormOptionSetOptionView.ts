@@ -19,7 +19,6 @@ import {ValueTypeString} from '../../../data/ValueTypeString';
 import {BrowserHelper} from '../../../BrowserHelper';
 import {Element} from '../../../dom/Element';
 import {FormEl} from '../../../dom/FormEl';
-import {FormContext} from '../../FormContext';
 import {FormOptionSetOption} from './FormOptionSetOption';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
 import {FormItemView, FormItemViewConfig} from '../../FormItemView';
@@ -28,18 +27,17 @@ import {FormItemLayer} from '../../FormItemLayer';
 import {FormOptionSet} from './FormOptionSet';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
 import {ValidationRecording} from '../../ValidationRecording';
+import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
 
-export interface FormOptionSetOptionViewConfig {
+export interface FormOptionSetOptionViewConfig extends CreatedFormItemLayerConfig {
 
-    context: FormContext;
+    layerFactory: FormItemLayerFactory;
 
     formOptionSetOption: FormOptionSetOption;
 
     parent: FormOptionSetOccurrenceView;
 
     parentDataSet: PropertySet;
-
-    lazyRender?: boolean;
 }
 
 export class FormOptionSetOptionView
@@ -84,8 +82,7 @@ export class FormOptionSetOptionView
 
         this.addClass(this.formOptionSetOption.getPath().getElements().length % 2 ? 'even' : 'odd');
 
-        this.formItemLayer = new FormItemLayer(config.context);
-        this.formItemLayer.setLazyRender(config.lazyRender);
+        this.formItemLayer = config.layerFactory.createLayer(config);
 
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
 

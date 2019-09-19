@@ -4,7 +4,7 @@ import {Equitable} from '../../../Equitable';
 import {ObjectHelper} from '../../../ObjectHelper';
 import {FormItem} from '../../FormItem';
 import {FormItemContainer} from '../../FormItemContainer';
-import {FormItemFactory} from '../../FormItemFactory';
+import {FormItemFactory} from '../../FormItemFactoryImpl';
 
 export class FieldSet
     extends FormItem
@@ -14,13 +14,13 @@ export class FieldSet
 
     private formItems: FormItem[] = [];
 
-    constructor(fieldSetJson: FieldSetJson) {
+    constructor(fieldSetJson: FieldSetJson, factory: FormItemFactory) {
         super(fieldSetJson.name);
         this.label = fieldSetJson.label;
 
         if (fieldSetJson.items != null) {
             fieldSetJson.items.forEach((formItemJson) => {
-                let formItem = FormItemFactory.createFormItem(formItemJson);
+                let formItem = factory.createFormItem(formItemJson);
                 if (formItem) {
                     this.addFormItem(formItem);
                 }

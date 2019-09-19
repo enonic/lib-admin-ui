@@ -19,19 +19,29 @@ import {FieldSetView, FieldSetViewConfig} from './set/fieldset/FieldSetView';
 import {Input} from './Input';
 import {FormOptionSet} from './set/optionset/FormOptionSet';
 import {FormOptionSetOption} from './set/optionset/FormOptionSetOption';
+import {FormItemLayerFactory} from './FormItemLayerFactory';
 
 export class FormItemLayer {
 
     public static debug: boolean = false;
+
     private context: FormContext;
+
     private formItems: FormItem[];
+
     private parentEl: Element;
+
     private formItemViews: FormItemView[] = [];
+
     private parent: FormItemOccurrenceView;
+
     private lazyRender: boolean = true;
 
-    constructor(context: FormContext) {
+    private formItemLayerFactory: FormItemLayerFactory;
+
+    constructor(context: FormContext, layerFactory: FormItemLayerFactory) {
         this.context = context;
+        this.formItemLayerFactory = layerFactory;
     }
 
     setFormItems(formItems: FormItem[]): FormItemLayer {
@@ -141,6 +151,7 @@ export class FormItemLayer {
                 const fieldSet: FieldSet = <FieldSet>formItem;
                 formItemView = new FieldSetView(<FieldSetViewConfig>{
                     context: this.context,
+                    layerFactory: this.formItemLayerFactory,
                     fieldSet: fieldSet,
                     parent: this.parent,
                     dataSet: propertySet,
@@ -169,6 +180,7 @@ export class FormItemLayer {
                 this.setShowEmptyFormItemSetOccurrences(propertySet, formOptionSet.getName());
 
                 formItemView = new FormOptionSetView(<FormOptionSetViewConfig>{
+                    layerFactory: this.formItemLayerFactory,
                     context: this.context,
                     formOptionSet: formOptionSet,
                     parent: this.parent,
@@ -177,10 +189,10 @@ export class FormItemLayer {
             }
 
             if (ObjectHelper.iFrameSafeInstanceOf(formItem, FormOptionSetOption)) {
-
                 const formOptionSetOption: FormOptionSetOption = <FormOptionSetOption>formItem;
                 formItemView = new FormOptionSetOptionView(<FormOptionSetOptionViewConfig>{
                     context: this.context,
+                    layerFactory: this.formItemLayerFactory,
                     formOptionSetOption: formOptionSetOption,
                     parent: this.parent,
                     parentDataSet: propertySet,

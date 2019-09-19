@@ -8,6 +8,7 @@ import {FormItemContainer} from '../../FormItemContainer';
 import {FormOptionSetOption} from './FormOptionSetOption';
 import {Occurrences} from '../../Occurrences';
 import {FormItem} from '../../FormItem';
+import {FormItemFactory} from '../../FormItemFactoryImpl';
 
 export class FormOptionSet
     extends FormSet
@@ -19,14 +20,15 @@ export class FormOptionSet
 
     private multiselection: Occurrences;
 
-    constructor(formOptionSetJson: FormOptionSetJson) {
+    constructor(formOptionSetJson: FormOptionSetJson, factory: FormItemFactory) {
         super(formOptionSetJson);
         this.expanded = formOptionSetJson.expanded;
         this.multiselection = Occurrences.fromJson(formOptionSetJson.multiselection);
 
         if (formOptionSetJson.options != null) {
             formOptionSetJson.options.forEach((formOptionSetOptionJson: FormOptionSetOptionJson) => {
-                let option = FormOptionSetOption.fromJson(formOptionSetOptionJson);
+                const json = {FormOptionSetOption: formOptionSetOptionJson};
+                const option = <FormOptionSetOption>factory.createFormItem(json);
                 if (option) {
                     this.addSetOption(option);
                 }

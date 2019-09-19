@@ -16,6 +16,8 @@ export interface FormItemSetOccurrenceViewConfig {
 
     context: FormContext;
 
+    layer: FormItemLayer;
+
     formSetOccurrence: FormSetOccurrence<FormItemSetOccurrenceView>;
 
     formItemSet: FormItemSet;
@@ -39,7 +41,7 @@ export class FormItemSetOccurrenceView
         this.formItemSet = config.formItemSet;
         this.propertySet = config.dataSet;
 
-        this.formItemLayer = new FormItemLayer(config.context);
+        this.formItemLayer = config.layer;
         this.formItemLayer.setLazyRender(config.lazyRender);
     }
 

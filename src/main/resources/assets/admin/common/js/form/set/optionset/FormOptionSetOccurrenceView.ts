@@ -25,6 +25,8 @@ import {FormOptionSetOption} from './FormOptionSetOption';
 export interface FormOptionSetOccurrenceViewConfig {
     context: FormContext;
 
+    layer: FormItemLayer;
+
     formSetOccurrence: FormSetOccurrence<FormOptionSetOccurrenceView>;
 
     formOptionSet: FormOptionSet;
@@ -49,7 +51,7 @@ export class FormOptionSetOccurrenceView
         this.propertySet = config.dataSet;
         this.ensureSelectionArrayExists(this.propertySet);
 
-        this.formItemLayer = new FormItemLayer(config.context);
+        this.formItemLayer = config.layer;
     }
 
     clean() {

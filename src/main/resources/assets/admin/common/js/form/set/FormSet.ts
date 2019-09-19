@@ -3,6 +3,7 @@ import {Equitable} from '../../Equitable';
 import {ObjectHelper} from '../../ObjectHelper';
 import {FormItem} from '../FormItem';
 import {Occurrences} from '../Occurrences';
+import {FormItemTypeWrapperJson} from '../json/FormItemTypeWrapperJson';
 
 /**
  * A parent for [[FormItemSet]] and [[FormOptionSet]].
@@ -70,6 +71,10 @@ export class FormSet
         }
 
         return true;
+    }
+
+    toJson(): FormItemTypeWrapperJson {
+        return {};
     }
 
 }

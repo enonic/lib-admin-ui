@@ -2,7 +2,7 @@ import {Equitable} from '../Equitable';
 import {FormJson} from './json/FormJson';
 import {ObjectHelper} from '../ObjectHelper';
 import {FormItem} from './FormItem';
-import {FormItemFactory} from './FormItemFactory';
+import {FormItemFactoryImpl} from './FormItemFactoryImpl';
 import {FormItemContainer} from './FormItemContainer';
 import {Input} from './Input';
 
@@ -24,7 +24,7 @@ export class FormBuilder {
 
     fromJson(json: FormJson): FormBuilder {
         json.formItems.forEach((formItemJson) => {
-            let formItem: FormItem = FormItemFactory.createFormItem(formItemJson);
+            let formItem: FormItem = FormItemFactoryImpl.get().createFormItem(formItemJson);
             if (formItem) {
                 this.addFormItem(formItem);
             }

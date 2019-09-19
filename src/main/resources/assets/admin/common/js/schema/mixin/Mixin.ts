@@ -4,7 +4,7 @@ import {FormItem} from '../../form/FormItem';
 import {ObjectHelper} from '../../ObjectHelper';
 import {Form, FormBuilder} from '../../form/Form';
 import {MixinJson} from './MixinJson';
-import {FormItemFactory} from '../../form/FormItemFactory';
+import {FormItemFactoryImpl} from '../../form/FormItemFactoryImpl';
 import {MixinName} from './MixinName';
 
 export class Mixin
@@ -88,7 +88,7 @@ export class MixinBuilder
         this.formItems = [];
         if (mixinJson.form && mixinJson.form.formItems) {
             mixinJson.form.formItems.forEach((formItemJson) => {
-                let formItem = FormItemFactory.createFormItem(formItemJson);
+                let formItem = FormItemFactoryImpl.get().createFormItem(formItemJson);
                 if (formItem) {
                     this.formItems.push(formItem);
                 }

@@ -9,14 +9,14 @@ import {FormItemPath, FormItemPathElement} from './FormItemPath';
 
 export type FormItemParent = FieldSet | FormItemSet | FormOptionSet | FormOptionSetOption;
 
-export class FormItem
+export abstract class FormItem
     implements Equitable {
 
     private name: string;
 
     private parent: FormItem;
 
-    constructor(name: string) {
+    protected constructor(name: string) {
         this.name = name;
     }
 
@@ -51,9 +51,7 @@ export class FormItem
         return true;
     }
 
-    public toJson(): FormItemTypeWrapperJson {
-        throw new Error('Unsupported FormItem: ' + this);
-    }
+    abstract toJson(): FormItemTypeWrapperJson;
 
     private resolvePath(): FormItemPath {
         return FormItemPath.fromParent(this.resolveParentPath(), FormItemPathElement.fromString(this.name));

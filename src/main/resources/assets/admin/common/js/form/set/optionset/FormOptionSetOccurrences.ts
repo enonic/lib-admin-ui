@@ -7,8 +7,12 @@ import {FormSetOccurrences} from '../FormSetOccurrences';
 import {FormItemOccurrencesConfig} from '../../FormItemOccurrences';
 import {FormSetOccurrence} from '../FormSetOccurrence';
 import {RemoveButtonClickedEvent} from '../../RemoveButtonClickedEvent';
+import {FormItemLayer} from '../../FormItemLayer';
+import {FormItemLayerFactory} from '../../FormItemLayerFactory';
 
 export interface FormOptionSetOccurrencesConfig {
+
+    layerFactory: FormItemLayerFactory;
 
     context: FormContext;
 
@@ -24,6 +28,8 @@ export interface FormOptionSetOccurrencesConfig {
 export class FormOptionSetOccurrences
     extends FormSetOccurrences<FormOptionSetOccurrenceView> {
 
+    protected layerFactory: FormItemLayerFactory;
+
     constructor(config: FormOptionSetOccurrencesConfig) {
         super(<FormItemOccurrencesConfig>{
             formItem: config.formOptionSet,
@@ -32,6 +38,7 @@ export class FormOptionSetOccurrences
             allowedOccurrences: config.formOptionSet.getOccurrences()
         });
 
+        this.layerFactory = config.layerFactory;
         this.context = config.context;
         this.formSet = config.formOptionSet;
         this.parent = config.parent;
@@ -44,6 +51,7 @@ export class FormOptionSetOccurrences
 
         let newOccurrenceView = new FormOptionSetOccurrenceView(<FormOptionSetOccurrenceViewConfig>{
             context: this.context,
+            layer: this.layerFactory.createLayer({context: this.context}),
             formSetOccurrence: occurrence,
             formOptionSet: <FormOptionSet> this.formSet,
             parent: this.parent,

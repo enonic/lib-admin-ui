@@ -5,7 +5,7 @@ import {ObjectHelper} from '../../../ObjectHelper';
 import {FormSet} from '../FormSet';
 import {FormItemContainer} from '../../FormItemContainer';
 import {FormItem} from '../../FormItem';
-import {FormItemFactory} from '../../FormItemFactory';
+import {FormItemFactory} from '../../FormItemFactoryImpl';
 import {Input} from '../../Input';
 
 /**
@@ -25,14 +25,14 @@ export class FormItemSet
 
     private customText: string;
 
-    constructor(formItemSetJson: FormItemSetJson) {
+    constructor(formItemSetJson: FormItemSetJson, factory: FormItemFactory) {
         super(formItemSetJson);
         this.immutable = formItemSetJson.immutable;
         this.customText = formItemSetJson.customText;
 
         if (formItemSetJson.items != null) {
             formItemSetJson.items.forEach((formItemJson) => {
-                let formItem: FormItem = FormItemFactory.createFormItem(formItemJson);
+                let formItem: FormItem = factory.createFormItem(formItemJson);
                 if (formItem) {
                     this.addFormItem(formItem);
                 }
