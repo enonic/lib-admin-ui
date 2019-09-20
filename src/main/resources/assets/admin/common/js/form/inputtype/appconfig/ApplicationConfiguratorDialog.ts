@@ -4,7 +4,6 @@ import {InputView} from '../../InputView';
 import {ComboBox} from '../../../ui/selector/combobox/ComboBox';
 import {Application} from '../../../application/Application';
 import {ResponsiveManager} from '../../../ui/responsive/ResponsiveManager';
-import {ModalDialog, ModalDialogConfig} from '../../../ui/dialog/ModalDialog';
 import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';
 import {ContentSummary} from '../../../content/ContentSummary';
 import {AppHelper} from '../../../util/AppHelper';
@@ -14,16 +13,17 @@ import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';
 import {Element} from '../../../dom/Element';
 import {ArrayHelper} from '../../../util/ArrayHelper';
 import {ObjectHelper} from '../../../ObjectHelper';
+import {ModalDialogWithConfirmation, ModalDialogWithConfirmationConfig} from '../../../ui/dialog/ModalDialogWithConfirmation';
 
 export interface ApplicationConfiguratorDialogConfig
-    extends ModalDialogConfig {
+    extends ModalDialogWithConfirmationConfig {
     formView: FormView;
     application: Application;
     cancelCallback: () => void;
 }
 
 export class ApplicationConfiguratorDialog
-    extends ModalDialog {
+    extends ModalDialogWithConfirmation {
 
     public static debug: boolean = false;
     protected config: ApplicationConfiguratorDialogConfig;

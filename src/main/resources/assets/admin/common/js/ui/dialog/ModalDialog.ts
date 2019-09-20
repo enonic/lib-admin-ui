@@ -12,57 +12,69 @@ import {AppHelper} from '../../util/AppHelper';
 import {BodyMask} from '../mask/BodyMask';
 import {KeyBindings} from '../KeyBindings';
 import {H2El} from '../../dom/H2El';
-import {ConfirmationDialog} from './ConfirmationDialog';
 import {DialogButton} from './DialogButton';
 import {KeyBinding} from '../KeyBinding';
-
-export interface ConfirmationConfig {
-    question?: string;
-    yesCallback: () => void;
-    noCallback?: () => void;
-}
 
 export interface ModalDialogConfig {
     title?: string;
     buttonRow?: ButtonRow;
-    confirmation?: ConfirmationConfig;
     closeIconCallback?: () => void;
     skipTabbable?: boolean;
     class?: string;
 }
 
-export class ModalDialog
+export abstract class ModalDialog
     extends DivEl {
 
     public static debug: boolean = false;
+
     private static openDialogsCounter: number = 0;
+
     protected header: ModalDialogHeader;
+
     protected dialogContainer: DivEl;
+
     protected closeIcon: DivEl;
+
     protected loadMask: LoadMask;
-    protected confirmationDialog: ConfirmationDialog;
+
     protected handleResize: () => void;
+
     protected config: ModalDialogConfig;
+
     private body: DivEl;
+
     private footer: DivEl;
+
     private contentPanel: ModalDialogContentPanel;
+
     private buttonRow: ButtonRow;
+
     private cancelAction: Action;
+
     private elementToFocusOnShow: Element;
+
     private renderedListenerForLoadMask: () => void;
+
     private shownListenerForLoadMask: () => void;
+
     private cancelButton: DialogButton;
+
     private tabbable: Element[];
-    private listOfClickIgnoredElements: Element[] = [];
+
     private onClosedListeners: { (): void; }[] = [];
+
     private resizeListeners: { (): void; }[] = [];
+
     private closeIconCallback: () => void;
-    private clickOutsideCallback: () => void;
+
     private skipTabbable: boolean;
+
     private resizeObserver: any;
+
     private responsiveItem: ResponsiveItem;
 
-    constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
+    protected constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
         super('modal-dialog', StyleHelper.COMMON_PREFIX);
         this.config = config;
 
@@ -71,17 +83,16 @@ export class ModalDialog
         this.initListeners();
     }
 
-    isMasked(): boolean {
-        return this.hasClass('masked');
+    protected static getOpenDialogsCounter(): number {
+        return ModalDialog.openDialogsCounter;
     }
 
-    confirmBeforeClose() {
-        if (this.confirmationDialog && this.isDirty()) {
-            this.confirmationDialog.open();
-            this.addClass('await-confirmation');
-        } else {
-            this.close();
-        }
+    getConfig(): ModalDialogConfig {
+        return this.config;
+    }
+
+    isMasked(): boolean {
+        return this.hasClass('masked');
     }
 
     isDirty(): boolean {
@@ -152,17 +163,6 @@ export class ModalDialog
 
     unmask() {
         this.removeClass('masked');
-    }
-
-    addClickIgnoredElement(elem: Element) {
-        this.listOfClickIgnoredElements.push(elem);
-    }
-
-    removeClickIgnoredElement(elem: Element) {
-        const elementIndex = this.listOfClickIgnoredElements.indexOf(elem);
-        if (elementIndex > -1) {
-            this.listOfClickIgnoredElements.splice(elementIndex, 1);
-        }
     }
 
     getCancelAction(): Action {
@@ -351,7 +351,6 @@ export class ModalDialog
             this.loadMask.show();
             this.unShown(this.shownListenerForLoadMask);
         };
-        this.initConfirmationDialog();
     }
 
     protected createHeader(title: string): ModalDialogHeader {
@@ -364,7 +363,6 @@ export class ModalDialog
 
     protected initListeners() {
         this.responsiveItem = new ResponsiveItem(this);
-        this.initClickOutsideDialogHandlers();
         this.initFocusInOutEventsHandlers();
 
         this.initResizeHandler();
@@ -389,15 +387,7 @@ export class ModalDialog
             }
         });
 
-        this.clickOutsideCallback = (() => {
-            this.confirmBeforeClose();
-        });
-
         this.closeIcon.onClicked(this.closeIconCallback);
-    }
-
-    protected hasSubDialog(): boolean {
-        return this.confirmationDialog && this.confirmationDialog.isVisible();
     }
 
     protected resizeHandler() {
@@ -415,9 +405,7 @@ export class ModalDialog
     }
 
     protected isSingleDialogGroup(): boolean {
-        return ModalDialog.openDialogsCounter === 1 ||
-               (ModalDialog.openDialogsCounter === 2 && !!this.confirmationDialog &&
-                !!this.confirmationDialog.isVisible());
+        return ModalDialog.openDialogsCounter === 1;
     }
 
     protected isBlurredBackgroundNeeded(): boolean {
@@ -454,63 +442,6 @@ export class ModalDialog
         return cancelAction;
     }
 
-    private initConfirmationDialog() {
-        if (this.config.confirmation) {
-            const {yesCallback, noCallback, question = i18n('dialog.confirm.applyChanges')} = this.config.confirmation;
-
-            this.confirmationDialog = new ConfirmationDialog()
-                .setQuestion(question)
-                .setYesCallback(yesCallback || (() => {
-                    this.close();
-                }));
-            if (noCallback) {
-                this.confirmationDialog.setNoCallback(noCallback);
-            }
-
-            this.confirmationDialog.onClosed(() => this.removeClass('await-confirmation'));
-        }
-    }
-
-    private initClickOutsideDialogHandlers() {
-        const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
-            const noConfirmationDialog = !this.confirmationDialog || !this.confirmationDialog.isVisible();
-            if (this.isActive() && noConfirmationDialog) {
-                for (let element = event.target; element; element = (<any>element).parentNode) {
-                    if (element === this.getHTMLElement() || this.isIgnoredElementClicked(<any>element)) {
-                        return;
-                    }
-                }
-                this.clickOutsideCallback();
-            }
-        };
-
-        this.onRemoved(() => {
-            Body.get().unMouseDown(mouseClickListener);
-        });
-
-        this.onAdded(() => {
-            Body.get().onMouseDown(mouseClickListener);
-        });
-    }
-
-    private isActive() {
-        return super.isVisible() && !this.isMasked();
-    }
-
-    private isIgnoredElementClicked(element: HTMLElement): boolean {
-        let ignoredElementClicked = false;
-        if (element && element.className && element.className.indexOf) {
-            ignoredElementClicked =
-                element.className.indexOf('mce-') > -1 || element.className.indexOf('html-area-modal-dialog') > -1 ||
-                element.className.indexOf('cke_') > -1;
-        }
-        ignoredElementClicked = ignoredElementClicked || this.listOfClickIgnoredElements.some((elem: Element) => {
-            return elem.getHTMLElement() === element || elem.getEl().contains(element);
-        });
-
-        return ignoredElementClicked;
-    }
-
     private initFocusInOutEventsHandlers() {
         let buttonRowIsFocused: boolean = false;
         let buttonRowFocusOutTimeout: number;
@@ -540,8 +471,13 @@ export class ModalDialog
         this.buttonRow.onFocusOut(() => {
             buttonRowFocusOutTimeout = setTimeout(() => {
                 buttonRowIsFocused = false;
+                buttonRowIsFocused = false;
             }, focusOutTimeout + 5); // timeout should be > timeout for modal dialog to trigger after
         });
+    }
+
+    protected hasSubDialog(): boolean {
+        return false;
     }
 
     private hasTabbable(): boolean {
