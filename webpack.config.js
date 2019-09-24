@@ -1,6 +1,7 @@
-const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+// const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
+const MiniCssExtractPluginCleanup = require('./util/MiniCssExtractPluginCleanup');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// const CopyWebpackPlugin = require("copy-webpack-plugin");
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
@@ -11,14 +12,17 @@ const isProd = process.env.NODE_ENV === 'production';
 module.exports = {
     context: path.join(__dirname, '/src/main/resources/assets/admin/common'),
     entry: {
-        'js/bundle': './js/main.ts',
+        'js/bundle': './js/entry.ts',
         // 'lib/_all': './lib/index.js',
-        // 'styles/_all': './styles/styles.less',
-        // 'styles/_all.lite': './styles/styles.lite.less',
+        'styles/main': './styles/main.less',
+        'styles/main.lite': './styles/main.lite.less',
     },
     output: {
-        path: path.join(__dirname, '/build/resources/main/assets'),
-        filename: './[name].js'
+        path: path.join(__dirname, '/build/resources/main/assets/admin/common'),
+        filename: './[name].js',
+        libraryTarget: 'umd',
+        library: 'AdminUI',
+        umdNamedDefine: true
     },
     resolve: {
         extensions: ['.ts', '.js', '.less', '.css']
@@ -39,12 +43,12 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(eot|woff|woff2|ttf)$|icomoon.svg/,
+                test: /\.(eot|woff|woff2|ttf)$|icomoon.svg|opensans\-.+/,
                 use: 'file-loader?name=fonts/[name].[ext]'
             },
             {
                 test: /^((?!icomoon).)*\.(svg|png|jpg|gif)$/,
-                use: 'file-loader?name=img/[name].[ext]'
+                use: 'file-loader?name=images/[name].[ext]'
             }
         ]
     },
@@ -63,11 +67,12 @@ module.exports = {
         ]
     },
     plugins: [
-        new ErrorLoggerPlugin(),
+        // new ErrorLoggerPlugin(),
         new MiniCssExtractPlugin({
             filename: '[name].css',
             chunkFilename: './styles/[id].css'
         }),
+        new MiniCssExtractPluginCleanup([/\.js(\.map)?$/]),
         new CircularDependencyPlugin({
             exclude: /a\.js|node_modules/,
             failOnError: true
