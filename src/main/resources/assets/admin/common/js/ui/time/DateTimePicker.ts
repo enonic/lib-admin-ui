@@ -103,12 +103,12 @@ export class DateTimePicker
                 this.popup.hide();
             }
             this.setDate(e.getDate());
-            this.setInputValue();
+            this.setInputValue(true);
         });
 
         this.popup.onSelectedTimeChanged((hours: number, minutes: number) => {
             this.setTime(hours, minutes);
-            this.setInputValue();
+            this.setInputValue(true);
         });
     }
 
@@ -155,7 +155,7 @@ export class DateTimePicker
         }
     }
 
-    private setInputValue(userInput: boolean = true) {
+    private setInputValue(userInput: boolean) {
         this.validUserInput = true;
         this.input.setValue(this.formatDateTime(this.selectedDate), false, userInput);
         this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate, userInput));

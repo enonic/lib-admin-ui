@@ -55,8 +55,7 @@ export class SelectionController
 
     protected isEntireSelectionStashed(): boolean {
         const root = this.treeGrid.getRoot();
-        return root.isFiltered() &&
-               root.getCurrentSelection().length === 0 &&
+        return root.getCurrentSelection().length === 0 &&
                root.getStashedSelection().length !== 0;
     }
 

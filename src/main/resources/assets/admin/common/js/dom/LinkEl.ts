@@ -1,25 +1,23 @@
 import {Element, NewElementBuilder} from './Element';
 
-export class LinkEl
-    extends Element {
+export enum LinkType {
+    STYLESHEET
+}
 
-    constructor(href: string, rel: string = 'import', className?: string) {
-        super(new NewElementBuilder().setTagName('link').setClassName(className));
+export class LinkEl extends Element {
 
-        this.setHref(href).setRel(rel);
+    constructor(href: string = '#', type: LinkType = LinkType.STYLESHEET) {
+        super(new NewElementBuilder().setTagName('link'));
+
+        this.setHref(href).setType(type);
     }
 
-    setAsync(): LinkEl {
-        this.getEl().setAttribute('async', '');
-        return this;
-    }
-
-    onLoaded(listener: (event: UIEvent) => void) {
-        this.getEl().addEventListener('load', listener);
-    }
-
-    unLoaded(listener: (event: UIEvent) => void) {
-        this.getEl().removeEventListener('load', listener);
+    private setType(type: LinkType) {
+        switch (type) {
+            case LinkType.STYLESHEET:
+                this.setRel('stylesheet');
+                this.getEl().setAttribute('type', 'text/css');
+        }
     }
 
     private setHref(href: string): LinkEl {
@@ -27,8 +25,13 @@ export class LinkEl
         return this;
     }
 
-    private setRel(rel: string): LinkEl {
+    setRel(rel: string): LinkEl {
         this.getEl().setAttribute('rel', rel);
+        return this;
+    }
+
+    setAsync(): LinkEl {
+        this.getEl().setAttribute('async', '');
         return this;
     }
 }

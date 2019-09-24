@@ -20,4 +20,3 @@
 // =include mousetrap-global-bind.min.js
 // =include q.js
 // =include noconflict.js
-// =include webcomponentsjs/webcomponents.js
