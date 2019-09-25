@@ -8,7 +8,13 @@ import {StyleHelper} from './StyleHelper';
  */
 StyleHelper.setCurrentPrefix(StyleHelper.ADMIN_PREFIX);
 
-declare var require: { context: (directory: string, useSubdirectories: boolean, filter: RegExp) => void };
-const importAll = r => r.keys().forEach(r);
+// declare var require: { context: (directory: string, useSubdirectories: boolean, filter: RegExp) => void };
+// const importAll = r => r.keys().forEach(r);
 // importAll(require.context('./', true, /^(?!\.[\/\\]types).*/));
 // importAll(require.context('./', true, /.+\.(ts|js)/));
+// importAll(require.context('./app', true, /.+\.(ts|js)/));
+export {StyleHelper} from './StyleHelper';
+// export {KeyBindings} from './ui/KeyBindings';
+export {Element} from './dom/Element';
+export {ElementHelper} from './dom/ElementHelper';
+export {DivEl} from './dom/DivEl';

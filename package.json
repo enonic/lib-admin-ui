@@ -3,7 +3,10 @@
   "version": "2.0.0",
   "description": "Admin UI Library",
   "scripts": {
-    "build": "webpack --hide-modules"
+    "build": "webpack --hide-modules",
+    "lib": "tsc --target es2018 --outDir dist/esm2015",
+    "dts": "tsc --declaration --outDir dist/dts",
+    "dtsMap": "tsc --declarationMap --outDir dist/dts"
   },
   "dependencies": {
     "fine-uploader": "^5.16.2",

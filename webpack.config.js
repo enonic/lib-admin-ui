@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const CopyWebpackPlugin = require("copy-webpack-plugin");
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 
 const path = require('path');
 
@@ -12,8 +13,8 @@ const isProd = process.env.NODE_ENV === 'production';
 module.exports = {
     context: path.join(__dirname, '/src/main/resources/assets/admin/common'),
     entry: {
-        'js/bundle': './js/entry.ts',
-        // 'lib/_all': './lib/index.js',
+        'js/entry': './js/entry.ts',
+        'js/libs': './js/libs.ts',
         'styles/main': './styles/main.less',
         'styles/main.lite': './styles/main.lite.less',
     },
@@ -68,11 +69,15 @@ module.exports = {
     },
     plugins: [
         // new ErrorLoggerPlugin(),
+        // new ProvidePlugin({
+        //     $: 'jquery',
+        //     jQuery: 'jquery'
+        // }),
         new MiniCssExtractPlugin({
             filename: '[name].css',
             chunkFilename: './styles/[id].css'
         }),
-        new MiniCssExtractPluginCleanup([/\.js(\.map)?$/]),
+        new MiniCssExtractPluginCleanup([/main\.(lite\.)?js(\.map)?$/]),
         new CircularDependencyPlugin({
             exclude: /a\.js|node_modules/,
             failOnError: true
