@@ -22,7 +22,7 @@ module.exports = {
         path: path.join(__dirname, '/build/resources/main/assets/admin/common'),
         filename: './[name].js',
         libraryTarget: 'umd',
-        library: 'AdminUI',
+        library: 'CommonUI',
         umdNamedDefine: true
     },
     resolve: {
