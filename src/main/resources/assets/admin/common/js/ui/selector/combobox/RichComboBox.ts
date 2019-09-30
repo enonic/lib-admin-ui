@@ -7,7 +7,6 @@ module api.ui.selector.combobox {
     import PostLoader = api.util.loader.PostLoader;
     import LoaderErrorEvent = api.util.loader.event.LoaderErrorEvent;
     import GridColumn = api.ui.grid.GridColumn;
-    import StringHelper = api.util.StringHelper;
     import i18n = api.util.i18n;
     import KeyEventsHandler = api.event.KeyEventsHandler;
 
@@ -83,8 +82,8 @@ module api.ui.selector.combobox {
                 skipAutoDropShowOnValueChange: true,
                 optionDataHelper: builder.optionDataHelper,
                 optionDataLoader: api.ObjectHelper.iFrameSafeInstanceOf(builder.loader, OptionDataLoader)
-                    ? <OptionDataLoader<OPTION_DISPLAY_VALUE>>builder.loader
-                    : null,
+                                  ? <OptionDataLoader<OPTION_DISPLAY_VALUE>>builder.loader
+                                  : null,
                 onDropdownShownCallback: this.loadOptionsAfterShowDropdown.bind(this),
                 createColumns: builder.createColumns,
                 requestMissingOptions: builder.requestMissingOptions
@@ -280,12 +279,17 @@ module api.ui.selector.combobox {
         }
 
         protected reload(inputValue: string): wemQ.Promise<any> {
-            if (!StringHelper.isBlank(inputValue)) {
-                return this.loader.search(inputValue).catch(api.DefaultErrorHandler.handle);
-            } else {
+            let loadPromise;
+            if (!this.loader.isLoaded()) {
                 this.loader.setSearchString(inputValue);
-                return this.loader.load().catch(api.DefaultErrorHandler.handle);
+                loadPromise = this.loader.load();
+            } else {
+                loadPromise = wemQ(null);
             }
+
+            return loadPromise.then(() => {
+                return this.loader.search(inputValue);
+            }).catch(api.DefaultErrorHandler.handle);
         }
 
         private setupLoader() {
