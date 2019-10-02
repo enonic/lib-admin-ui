@@ -1,5 +1,6 @@
 /// <reference path="../../../../../../../../../node_modules/@types/slickgrid/slick.checkboxselectcolumn.d.ts" />
 /// <reference path="../../types/slickgrid-plugins.d.ts" />
+import * as Q from 'q';
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
 import {DivEl} from '../../dom/DivEl';
 import {LoadMask} from '../mask/LoadMask';
@@ -158,7 +159,7 @@ export class Grid<T extends Slick.SlickData>
         this.slickGrid.unregisterPlugin(plugin);
     }
 
-    doRender() {
+    doRender(): Q.Promise<boolean> {
         if (Grid.debug) {
             console.debug('Grid.doRender');
         }

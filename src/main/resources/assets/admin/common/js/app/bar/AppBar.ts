@@ -6,19 +6,19 @@ import {ImgEl} from '../../dom/ImgEl';
 import {SpanEl} from '../../dom/SpanEl';
 import {ShowAppLauncherAction} from './ShowAppLauncherAction';
 import {AppBarActions} from './AppBarActions';
-import {Application} from '../Application';
+import {AppApplication} from '../AppApplication';
 
 export class AppBar
     extends DivEl
     implements ActionContainer {
 
-    protected application: Application;
+    protected application: AppApplication;
 
     private appIcon: AppIcon;
 
     private showAppLauncherAction: ShowAppLauncherAction;
 
-    constructor(application: Application) {
+    constructor(application: AppApplication) {
         super('appbar');
 
         this.application = application;
@@ -46,7 +46,7 @@ export class AppBar
 export class AppIcon
     extends DivEl {
 
-    constructor(app: Application, action?: Action) {
+    constructor(app: AppApplication, action?: Action) {
 
         super('home-button');
 

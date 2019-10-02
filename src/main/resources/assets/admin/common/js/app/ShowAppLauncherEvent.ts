@@ -1,15 +1,15 @@
 import {Event} from '../event/Event';
 import {ClassHelper} from '../ClassHelper';
-import {Application} from './Application';
+import {AppApplication} from './AppApplication';
 
 export class ShowAppLauncherEvent
     extends Event {
 
-    private application: Application;
+    private application: AppApplication;
 
     private sessionExpired: boolean;
 
-    constructor(application: Application, sessionExpired?: boolean) {
+    constructor(application: AppApplication, sessionExpired?: boolean) {
         super();
         this.application = application;
         this.sessionExpired = !!sessionExpired;
@@ -19,7 +19,7 @@ export class ShowAppLauncherEvent
         Event.bind(ClassHelper.getFullName(this), handler);
     }
 
-    getApplication(): Application {
+    getApplication(): AppApplication {
         return this.application;
     }
 

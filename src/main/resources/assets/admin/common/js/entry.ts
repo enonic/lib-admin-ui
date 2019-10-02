@@ -13,14 +13,14 @@ import {BucketFactory} from './aggregation/BucketFactory';
 import {BucketView} from './aggregation/BucketView';
 import {BucketViewSelectionChangedEvent} from './aggregation/BucketViewSelectionChangedEvent';
 import {DateRangeBucket} from './aggregation/DateRangeBucket';
-import {Application as AppApplication} from './app/Application';
+import {AppApplication} from './app/AppApplication';
 import {AppManager} from './app/AppManager';
 import {AppPanel} from './app/AppPanel';
 import {AppBar, AppIcon} from './app/bar/AppBar';
 import {AppBarActions} from './app/bar/AppBarActions';
 import {AppBarTabId} from './app/bar/AppBarTabId';
 import {AppBarTabMenu} from './app/bar/AppBarTabMenu';
-import {AppBarTabMenuButton, AppBarTabCount} from './app/bar/AppBarTabMenuButton';
+import {AppBarTabCount, AppBarTabMenuButton} from './app/bar/AppBarTabMenuButton';
 import {AppBarTabMenuItem, AppBarTabMenuItemBuilder} from './app/bar/AppBarTabMenuItem';
 import {ShowAppLauncherAction} from './app/bar/ShowAppLauncherAction';
 import {ShowBrowsePanelAction} from './app/bar/ShowBrowsePanelAction';
@@ -37,7 +37,7 @@ import {BrowseFilterSearchEvent} from './app/browse/filter/BrowseFilterSearchEve
 import {ClearFilterButton} from './app/browse/filter/ClearFilterButton';
 import {TextSearchField} from './app/browse/filter/TextSearchField';
 import {SelectionItem} from './app/browse/SelectionItem';
-import {NamesAndIconViewBuilder, NamesAndIconView} from './app/NamesAndIconView';
+import {NamesAndIconView, NamesAndIconViewBuilder} from './app/NamesAndIconView';
 import {NamesView} from './app/NamesView';
 import {NavigatedAppPanel} from './app/NavigatedAppPanel';
 import {ShowAppLauncherEvent} from './app/ShowAppLauncherEvent';
@@ -60,10 +60,10 @@ import {WizardActions} from './app/wizard/WizardActions';
 import {WizardClosedEvent} from './app/wizard/WizardClosedEvent';
 import {WizardHeader} from './app/wizard/WizardHeader';
 import {
-  WizardHeaderWithDisplayNameAndNameBuilder,
-  WizardHeaderWithDisplayNameAndName
+    WizardHeaderWithDisplayNameAndName,
+    WizardHeaderWithDisplayNameAndNameBuilder
 } from './app/wizard/WizardHeaderWithDisplayNameAndName';
-import {WizardPanel, FormState} from './app/wizard/WizardPanel';
+import {FormState, WizardPanel} from './app/wizard/WizardPanel';
 import {WizardStep} from './app/wizard/WizardStep';
 import {WizardStepForm} from './app/wizard/WizardStepForm';
 import {WizardStepNavigator} from './app/wizard/WizardStepNavigator';
@@ -89,7 +89,7 @@ import {ListApplicationsRequest} from './application/ListApplicationsRequest';
 import {ListIdProviderApplicationsRequest} from './application/ListIdProviderApplicationsRequest';
 import {ListMarketApplicationsRequest} from './application/ListMarketApplicationsRequest';
 import {ListSiteApplicationsRequest} from './application/ListSiteApplicationsRequest';
-import {MarketApplication, MarketAppStatusFormatter, MarketApplicationBuilder} from './application/MarketApplication';
+import {MarketApplication, MarketApplicationBuilder, MarketAppStatusFormatter} from './application/MarketApplication';
 import {MarketApplicationMetadata} from './application/MarketApplicationMetadata';
 import {MarketApplicationResponse} from './application/MarketApplicationResponse';
 import {MarketHelper} from './application/MarketHelper';
@@ -101,7 +101,7 @@ import {ContentPath} from './content/ContentPath';
 import {ContentSummary, ContentSummaryBuilder} from './content/ContentSummary';
 import {ContentSummaryViewer} from './content/ContentSummaryViewer';
 import {ContentUnnamed} from './content/ContentUnnamed';
-import {ContentServerChangeItem, ContentServerChange} from './content/event/ContentServerChange';
+import {ContentServerChange, ContentServerChangeItem} from './content/event/ContentServerChange';
 import {ContentServerEvent} from './content/event/ContentServerEvent';
 import {FormEditEvent} from './content/event/FormEditEvent';
 import {RepositoryEvent} from './content/event/RepositoryEvent';
@@ -159,7 +159,7 @@ import {CompositeFormInputEl} from './dom/CompositeFormInputEl';
 import {DdDtEl} from './dom/DdDtEl';
 import {DivEl} from './dom/DivEl';
 import {DlEl} from './dom/DlEl';
-import {ElementBuilder, ElementFromElementBuilder, ElementFromHelperBuilder, NewElementBuilder, Element} from './dom/Element';
+import {Element, ElementBuilder, ElementFromElementBuilder, ElementFromHelperBuilder, NewElementBuilder} from './dom/Element';
 import {ElementAddedEvent} from './dom/ElementAddedEvent';
 import {ElementEvent} from './dom/ElementEvent';
 import {ElementHelper} from './dom/ElementHelper';
@@ -199,12 +199,12 @@ import {WindowDOM} from './dom/WindowDOM';
 import {Event} from './event/Event';
 import {EventBus} from './event/EventBus';
 import {KeyEventsHandler} from './event/KeyEventsHandler';
-import {NodeServerChangeItem, NodeServerChange} from './event/NodeServerChange';
+import {NodeServerChange, NodeServerChangeItem} from './event/NodeServerChange';
 import {NodeServerEvent} from './event/NodeServerEvent';
 import {ServerEventsConnection} from './event/ServerEventsConnection';
 import {ServerEventsListener} from './event/ServerEventsListener';
 import {AdditionalValidationRecord, Builder} from './form/AdditionalValidationRecord';
-import {FormBuilder, Form} from './form/Form';
+import {Form, FormBuilder} from './form/Form';
 import {FormContext, FormContextBuilder} from './form/FormContext';
 import {FormItemFactoryImpl} from './form/FormItemFactoryImpl';
 import {FormItemLayer} from './form/FormItemLayer';
@@ -218,7 +218,7 @@ import {FormOccurrenceDraggableLabel} from './form/FormOccurrenceDraggableLabel'
 import {FormValidityChangedEvent} from './form/FormValidityChangedEvent';
 import {FormView} from './form/FormView';
 import {HelpTextContainer} from './form/HelpTextContainer';
-import {InputBuilder, Input} from './form/Input';
+import {Input, InputBuilder} from './form/Input';
 import {InputLabel} from './form/InputLabel';
 import {ApplicationConfigProvider} from './form/inputtype/appconfig/ApplicationConfigProvider';
 import {ApplicationConfiguratorDialog} from './form/inputtype/appconfig/ApplicationConfiguratorDialog';
@@ -237,7 +237,7 @@ import {BaseInputTypeManagingAdd} from './form/inputtype/support/BaseInputTypeMa
 import {BaseInputTypeNotManagingAdd} from './form/inputtype/support/BaseInputTypeNotManagingAdd';
 import {BaseInputTypeSingleOccurrence} from './form/inputtype/support/BaseInputTypeSingleOccurrence';
 import {InputOccurrence} from './form/inputtype/support/InputOccurrence';
-import {InputOccurrencesBuilder, InputOccurrences} from './form/inputtype/support/InputOccurrences';
+import {InputOccurrences, InputOccurrencesBuilder} from './form/inputtype/support/InputOccurrences';
 import {InputOccurrenceView} from './form/inputtype/support/InputOccurrenceView';
 import {NoInputTypeFoundView} from './form/inputtype/support/NoInputTypeFoundView';
 import {TextArea as TextAreaType} from './form/inputtype/text/TextArea';
@@ -254,7 +254,7 @@ import {OccurrencesJson} from './form/json/OccurrencesJson';
 import {OccurrenceAddedEvent} from './form/OccurrenceAddedEvent';
 import {OccurrenceRemovedEvent} from './form/OccurrenceRemovedEvent';
 import {OccurrenceRenderedEvent} from './form/OccurrenceRenderedEvent';
-import {OccurrencesBuilder, Occurrences} from './form/Occurrences';
+import {Occurrences, OccurrencesBuilder} from './form/Occurrences';
 import {RecordingValidityChangedEvent} from './form/RecordingValidityChangedEvent';
 import {RemoveButtonClickedEvent} from './form/RemoveButtonClickedEvent';
 import {FieldSet} from './form/set/fieldset/FieldSet';
@@ -278,13 +278,13 @@ import {ValidationRecording} from './form/ValidationRecording';
 import {ValidationRecordingPath} from './form/ValidationRecordingPath';
 import {ValidationRecordingViewer} from './form/ValidationRecordingViewer';
 import {IconUrlResolver} from './icon/IconUrlResolver';
-import {IssueServerChangeItem, IssueServerChange} from './issue/event/IssueServerChange';
+import {IssueServerChange, IssueServerChangeItem} from './issue/event/IssueServerChange';
 import {IssueServerEvent} from './issue/event/IssueServerEvent';
 import {BaseItem, BaseItemBuilder} from './item/BaseItem';
 import {GetLocalesRequest} from './locale/GetLocalesRequest';
 import {Locale} from './locale/Locale';
 import {LocaleLoader} from './locale/LocaleLoader';
-import {MacroComboBox, MacroSelectedOptionsView, MacroSelectedOptionView, MacroComboBoxBuilder} from './macro/MacroComboBox';
+import {MacroComboBox, MacroComboBoxBuilder, MacroSelectedOptionsView, MacroSelectedOptionView} from './macro/MacroComboBox';
 import {MacroDescriptor, MacroDescriptorBuilder} from './macro/MacroDescriptor';
 import {MacroKey} from './macro/MacroKey';
 import {MacroPreview, MacroPreviewBuilder} from './macro/MacroPreview';
@@ -298,7 +298,7 @@ import {MacrosLoader} from './macro/resource/MacrosLoader';
 import {PreviewRequest} from './macro/resource/PreviewRequest';
 import {ManagedActionManager} from './managedaction/ManagedActionManager';
 import {Action as MessageAction, Message} from './notify/Message';
-import {showSuccess, showFeedback, showError, showWarning} from './notify/MessageBus';
+import {showError, showFeedback, showSuccess, showWarning} from './notify/MessageBus';
 import {NotificationContainer} from './notify/NotificationContainer';
 import {NotificationMessage} from './notify/NotificationMessage';
 import {NotifyManager} from './notify/NotifyManager';
@@ -307,7 +307,7 @@ import {AggregationQuery} from './query/aggregation/AggregationQuery';
 import {DateRange} from './query/aggregation/DateRange';
 import {DateRangeAggregationQuery} from './query/aggregation/DateRangeAggregationQuery';
 import {Range} from './query/aggregation/Range';
-import {TermsAggregationQuery, TermsAggregationOrderDirection, TermsAggregationOrderType} from './query/aggregation/TermsAggregationQuery';
+import {TermsAggregationOrderDirection, TermsAggregationOrderType, TermsAggregationQuery} from './query/aggregation/TermsAggregationQuery';
 import {CompareExpr} from './query/expr/CompareExpr';
 import {DynamicConstraintExpr} from './query/expr/DynamicConstraintExpr';
 import {DynamicOrderExpr} from './query/expr/DynamicOrderExpr';
@@ -348,7 +348,7 @@ import {AuthResourceRequest} from './security/auth/AuthResourceRequest';
 import {IsAuthenticatedRequest} from './security/auth/IsAuthenticatedRequest';
 import {LoginResult} from './security/auth/LoginResult';
 import {CheckEmailAvailabilityRequest} from './security/CheckEmailAvailabilityRequest';
-import {PrincipalServerChangeItem, PrincipalServerChange} from './security/event/PrincipalServerChange';
+import {PrincipalServerChange, PrincipalServerChangeItem} from './security/event/PrincipalServerChange';
 import {PrincipalServerEvent} from './security/event/PrincipalServerEvent';
 import {FindPrincipalListRequest} from './security/FindPrincipalListRequest';
 import {FindPrincipalsRequest} from './security/FindPrincipalsRequest';
@@ -388,7 +388,7 @@ import {Checkbox, CheckboxBuilder} from './ui/Checkbox';
 import {ConfirmationDialog} from './ui/dialog/ConfirmationDialog';
 import {DialogButton} from './ui/dialog/DialogButton';
 import {DropdownButtonRow} from './ui/dialog/DropdownButtonRow';
-import {DefaultModalDialogHeader, ModalDialogContentPanel, ButtonRow, applyMixins} from './ui/dialog/ModalDialog';
+import {applyMixins, ButtonRow, DefaultModalDialogHeader, ModalDialogContentPanel} from './ui/dialog/ModalDialog';
 import {ModalDialogWithConfirmation} from './ui/dialog/ModalDialogWithConfirmation';
 import {NotificationDialog} from './ui/dialog/NotificationDialog';
 import {ProgressBarManager} from './ui/dialog/ProgressBarManager';
@@ -398,15 +398,15 @@ import {FocusSwitchEvent} from './ui/FocusSwitchEvent';
 import {Fieldset} from './ui/form/Fieldset';
 import {Form as FormUI} from './ui/form/Form';
 import {FormItem, FormItemBuilder} from './ui/form/FormItem';
-import {ValidationResult, ValidationError} from './ui/form/ValidationResult';
+import {ValidationError, ValidationResult} from './ui/form/ValidationResult';
 import {Validators} from './ui/form/Validators';
 import {GeoPoint} from './ui/geo/GeoPoint';
 import {DataView} from './ui/grid/DataView';
 import {Grid} from './ui/grid/Grid';
-import {GridColumnBuilder, GridColumn} from './ui/grid/GridColumn';
+import {GridColumn, GridColumnBuilder} from './ui/grid/GridColumn';
 import {GridDragHandler} from './ui/grid/GridDragHandler';
-import {GridOnClickDataBuilder, GridOnClickData} from './ui/grid/GridOnClickData';
-import {GridOptionsBuilder, GridOptions} from './ui/grid/GridOptions';
+import {GridOnClickData, GridOnClickDataBuilder} from './ui/grid/GridOnClickData';
+import {GridOptions, GridOptionsBuilder} from './ui/grid/GridOptions';
 import {KeyBinding} from './ui/KeyBinding';
 import {KeyBindings} from './ui/KeyBindings';
 import {KeyHelper} from './ui/KeyHelper';
@@ -434,22 +434,22 @@ import {Panel} from './ui/panel/Panel';
 import {PanelShownEvent} from './ui/panel/PanelShownEvent';
 import {PanelStrip} from './ui/panel/PanelStrip';
 import {PanelStripHeader} from './ui/panel/PanelStripHeader';
-import {SplitPanelBuilder, SplitPanel} from './ui/panel/SplitPanel';
+import {SplitPanel, SplitPanelBuilder} from './ui/panel/SplitPanel';
 import {ProgressBar} from './ui/ProgressBar';
-import {RadioGroup, RadioButton} from './ui/RadioGroup';
+import {RadioButton, RadioGroup} from './ui/RadioGroup';
 import {ResponsiveItem} from './ui/responsive/ResponsiveItem';
 import {ResponsiveListener} from './ui/responsive/ResponsiveListener';
 import {ResponsiveManager} from './ui/responsive/ResponsiveManager';
 import {ResponsiveRange} from './ui/responsive/ResponsiveRange';
 import {ResponsiveRanges} from './ui/responsive/ResponsiveRanges';
 import {
-  PrincipalComboBox,
-  PrincipalComboBoxBuilder,
-  PrincipalSelectedOptionView,
-  PrincipalSelectedOptionsView,
-  RemovedPrincipalSelectedOptionView,
-  PrincipalSelectedOptionViewCompact,
-  PrincipalSelectedOptionsViewCompact
+    PrincipalComboBox,
+    PrincipalComboBoxBuilder,
+    PrincipalSelectedOptionsView,
+    PrincipalSelectedOptionsViewCompact,
+    PrincipalSelectedOptionView,
+    PrincipalSelectedOptionViewCompact,
+    RemovedPrincipalSelectedOptionView
 } from './ui/security/PrincipalComboBox';
 import {PrincipalViewer, PrincipalViewerCompact} from './ui/security/PrincipalViewer';
 import {BaseSelectedOptionsView} from './ui/selector/combobox/BaseSelectedOptionsView';
@@ -498,23 +498,23 @@ import {EmailInput} from './ui/text/EmailInput';
 import {PasswordInput} from './ui/text/PasswordInput';
 import {TextArea} from './ui/text/TextArea';
 import {TextInput} from './ui/text/TextInput';
-import {CalendarBuilder, Calendar} from './ui/time/Calendar';
-import {CalendarDayBuilder, CalendarDay} from './ui/time/CalendarDay';
+import {Calendar, CalendarBuilder} from './ui/time/Calendar';
+import {CalendarDay, CalendarDayBuilder} from './ui/time/CalendarDay';
 import {CalendarDayClickedEvent} from './ui/time/CalendarDayClickedEvent';
-import {CalendarWeekBuilder, CalendarWeek} from './ui/time/CalendarWeek';
-import {DatePickerBuilder, DatePicker, DatePickerShownEvent} from './ui/time/DatePicker';
-import {DatePickerPopupBuilder, DatePickerPopup} from './ui/time/DatePickerPopup';
-import {DateTimePickerBuilder, DateTimePicker, DateTimePickerShownEvent} from './ui/time/DateTimePicker';
-import {DateTimePickerPopupBuilder, DateTimePickerPopup} from './ui/time/DateTimePickerPopup';
-import {DateTimeRangePickerBuilder, DateTimeRangePicker} from './ui/time/DateTimeRangePicker';
+import {CalendarWeek, CalendarWeekBuilder} from './ui/time/CalendarWeek';
+import {DatePicker, DatePickerBuilder, DatePickerShownEvent} from './ui/time/DatePicker';
+import {DatePickerPopup, DatePickerPopupBuilder} from './ui/time/DatePickerPopup';
+import {DateTimePicker, DateTimePickerBuilder, DateTimePickerShownEvent} from './ui/time/DateTimePicker';
+import {DateTimePickerPopup, DateTimePickerPopupBuilder} from './ui/time/DateTimePickerPopup';
+import {DateTimeRangePicker, DateTimeRangePickerBuilder} from './ui/time/DateTimeRangePicker';
 import {DayOfWeek} from './ui/time/DayOfWeek';
 import {DaysOfWeek} from './ui/time/DaysOfWeek';
 import {MonthOfYear} from './ui/time/MonthOfYear';
 import {MonthsOfYear} from './ui/time/MonthsOfYear';
 import {Picker} from './ui/time/Picker';
 import {SelectedDateChangedEvent} from './ui/time/SelectedDateChangedEvent';
-import {TimePickerBuilder, TimePicker} from './ui/time/TimePicker';
-import {TimePickerPopupBuilder, TimePickerPopup} from './ui/time/TimePickerPopup';
+import {TimePicker, TimePickerBuilder} from './ui/time/TimePicker';
+import {TimePickerPopup, TimePickerPopupBuilder} from './ui/time/TimePickerPopup';
 import {FoldButton} from './ui/toolbar/FoldButton';
 import {Toolbar} from './ui/toolbar/Toolbar';
 import {Tooltip} from './ui/Tooltip';
@@ -532,7 +532,7 @@ import {TreeNode, TreeNodeBuilder} from './ui/treegrid/TreeNode';
 import {TreeRoot} from './ui/treegrid/TreeRoot';
 import {UploadCompleteEvent} from './ui/uploader/UploadCompleteEvent';
 import {UploadedEvent} from './ui/uploader/UploadedEvent';
-import {UploaderEl, DropzoneContainer} from './ui/uploader/UploaderEl';
+import {DropzoneContainer, UploaderEl} from './ui/uploader/UploaderEl';
 import {UploadFailedEvent} from './ui/uploader/UploadFailedEvent';
 import {UploadItem} from './ui/uploader/UploadItem';
 import {UploadProgressEvent} from './ui/uploader/UploadProgressEvent';
@@ -541,7 +541,7 @@ import {Viewer} from './ui/Viewer';
 import {Animation} from './util/Animation';
 import {AppHelper} from './util/AppHelper';
 import {ArrayHelper} from './util/ArrayHelper';
-import {assert, assertState, assertNotNull, assertNull} from './util/Assert';
+import {assert, assertNotNull, assertNull, assertState} from './util/Assert';
 import {BinaryReference} from './util/BinaryReference';
 import {CookieHelper} from './util/CookieHelper';
 import {DateHelper} from './util/DateHelper';
@@ -559,7 +559,7 @@ import {PostLoader} from './util/loader/PostLoader';
 import {LocalDate, LocalDateBuilder} from './util/LocalDate';
 import {LocalDateTime, LocalDateTimeBuilder} from './util/LocalDateTime';
 import {LocalTime, LocalTimeBuilder} from './util/LocalTime';
-import {Messages, i18n} from './util/Messages';
+import {i18n, Messages} from './util/Messages';
 import {i18nInit} from './util/MessagesInitializer';
 import {NumberHelper} from './util/NumberHelper';
 import {PropertyTreeHelper} from './util/PropertyTreeHelper';
@@ -567,6 +567,11 @@ import {Reference} from './util/Reference';
 import {StringHelper} from './util/StringHelper';
 import {Timezone, TimezoneBuilder} from './util/Timezone';
 import {UriHelper} from './util/UriHelper';
+/*
+ Prefix must match @_CLS_PREFIX in web\admin\common\styles\_module.less
+ */
+import {StyleHelper} from './StyleHelper';
+
 const aggregation = {
   Aggregation,
   AggregationContainer,
@@ -582,7 +587,7 @@ const aggregation = {
   DateRangeBucket
 };
 const app = {
-  Application: AppApplication,
+    AppApplication,
   AppManager,
   AppPanel,
   bar: {
@@ -1450,10 +1455,5 @@ export {PropertyChangedEvent} from './PropertyChangedEvent';
 export {StyleHelper} from './StyleHelper';
 export {ValidityChangedEvent} from './ValidityChangedEvent';
 export {ValueChangedEvent} from './ValueChangedEvent';
-
-/*
- Prefix must match @_CLS_PREFIX in web\admin\common\styles\_module.less
- */
-import {StyleHelper} from './StyleHelper';
 
 StyleHelper.setCurrentPrefix(StyleHelper.ADMIN_PREFIX);

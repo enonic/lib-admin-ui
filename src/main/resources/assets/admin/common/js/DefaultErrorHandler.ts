@@ -1,5 +1,5 @@
 import {ObjectHelper} from './ObjectHelper';
-import {Application} from './app/Application';
+import {AppApplication} from './app/AppApplication';
 import {ShowAppLauncherEvent} from './app/ShowAppLauncherEvent';
 import {AccessDeniedException} from './AccessDeniedException';
 import {Exception, ExceptionType} from './Exception';
@@ -14,7 +14,7 @@ export class DefaultErrorHandler {
             console.error(error);
             throw error;
         } else if (ObjectHelper.iFrameSafeInstanceOf(error, AccessDeniedException)) {
-            let application: Application = Application.getApplication();
+            let application: AppApplication = AppApplication.getApplication();
             let wnd = application.getWindow();
             new ShowAppLauncherEvent(application, true).fire(wnd.parent);
             new ShowAppLauncherEvent(application, true).fire(wnd);

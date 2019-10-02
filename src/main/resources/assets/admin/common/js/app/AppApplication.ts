@@ -7,7 +7,7 @@ export enum ApplicationShowStatus {
     DISPLAYED
 }
 
-export class Application {
+export class AppApplication {
     private id: string;
     private name: string;
     private shortName: string;
@@ -30,8 +30,8 @@ export class Application {
         this.status = ApplicationShowStatus.NOT_DISPLAYED;
     }
 
-    static getApplication(): Application {
-        return window.parent['getApplication'] ? window.parent['getApplication'](Application.getAppId()) : null;
+    static getApplication(): AppApplication {
+        return window.parent['getApplication'] ? window.parent['getApplication'](AppApplication.getAppId()) : null;
     }
 
     static getAppId(): string {
@@ -82,12 +82,12 @@ export class Application {
         this.status = ApplicationShowStatus.DISPLAYED;
     }
 
-    setOpenTabs(value: number): Application {
+    setOpenTabs(value: number): AppApplication {
         this.openTabs = value;
         return this;
     }
 
-    setLoaded(value: boolean): Application {
+    setLoaded(value: boolean): AppApplication {
         this.loaded = value;
         this.notifyLoaded();
         return this;
@@ -97,12 +97,12 @@ export class Application {
         this.status = status;
     }
 
-    setFullSizeIcon(value: boolean): Application {
+    setFullSizeIcon(value: boolean): AppApplication {
         this.fullSizeIcon = value;
         return this;
     }
 
-    setPath(path: Path): Application {
+    setPath(path: Path): AppApplication {
         this.path = path;
         return this;
     }

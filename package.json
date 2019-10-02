@@ -4,6 +4,8 @@
   "description": "Admin UI Library",
   "scripts": {
     "build": "webpack --hide-modules",
+    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "fix": "tslint -p tsconfig.json -c tslint.json --fix",
     "lib": "tsc --target es2018 --outDir dist/esm2015",
     "dts": "tsc --declaration --outDir dist/dts",
     "dtsMap": "tsc --declarationMap --outDir dist/dts"
