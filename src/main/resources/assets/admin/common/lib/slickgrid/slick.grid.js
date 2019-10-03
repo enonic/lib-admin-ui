@@ -547,7 +547,6 @@ if (typeof Slick === "undefined") {
                 createColumnFooter();
                 setupColumnSort();
                 createCssRules();
-                resizeCanvas();
                 bindAncestorScrollEvents();
 
                 $container
@@ -1990,7 +1989,7 @@ if (typeof Slick === "undefined") {
         }
 
         function createCssRules() {
-            $style = $("<style type='text/css' rel='stylesheet' />").appendTo($("head"));
+            $style = $("<style type='text/css' rel='stylesheet' />").on("load", resizeCanvas);
             var rowHeight = (getGalleryRowHeight() - cellHeightDiff);
             var rules = [
                 "." + uid + " .slick-group-header-column { left: 1000px; }",
@@ -2013,9 +2012,11 @@ if (typeof Slick === "undefined") {
             } else {
                 $style[0].appendChild(document.createTextNode(rules.join(" ")));
             }
+
+            $style.appendTo($("head"));
         }
 
-        function getColumnCssRules(idx) {
+        function getColumnCssRules() {
             var i;
             if (!stylesheet) {
                 var sheets = document.styleSheets;
@@ -2027,7 +2028,7 @@ if (typeof Slick === "undefined") {
                 }
 
                 if (!stylesheet) {
-                    throw new Error("Cannot find stylesheet.");
+                    throw new Error("Cannot find SlickGrid stylesheet.");
                 }
 
                 // find and cache column CSS rules
@@ -2048,8 +2049,8 @@ if (typeof Slick === "undefined") {
             }
 
             return {
-                "left": columnCssRulesL[idx],
-                "right": columnCssRulesR[idx]
+                "left": columnCssRulesL,
+                "right": columnCssRulesR
             };
         }
 
@@ -2246,10 +2247,14 @@ if (typeof Slick === "undefined") {
 
         function applyColumnWidths() {
             var x = 0, w, rule;
+            var rules = getColumnCssRules();
             for (var i = 0; i < columns.length; i++) {
                 w = columns[i].width;
 
-                rule = getColumnCssRules(i);
+                rule = {
+                    "left": rules.left[i],
+                    "right": rules.right[i]
+                };
                 rule.left.style.left = x + "px";
                 rule.right.style.right =
                     (((options.frozenColumn != -1 && i > options.frozenColumn) ? canvasWidthR : canvasWidthL) - x - w) + "px";
@@ -2387,7 +2392,6 @@ if (typeof Slick === "undefined") {
                 createColumnFooter();
                 removeCssRules();
                 createCssRules();
-                resizeCanvas();
                 updateCanvasWidth();
                 applyColumnWidths();
                 handleScroll();
