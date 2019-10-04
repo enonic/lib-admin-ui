@@ -13,7 +13,7 @@ import {BucketFactory} from './aggregation/BucketFactory';
 import {BucketView} from './aggregation/BucketView';
 import {BucketViewSelectionChangedEvent} from './aggregation/BucketViewSelectionChangedEvent';
 import {DateRangeBucket} from './aggregation/DateRangeBucket';
-import {AppApplication} from './app/AppApplication';
+import {Application as AppApplication} from './app/Application';
 import {AppManager} from './app/AppManager';
 import {AppPanel} from './app/AppPanel';
 import {AppBar, AppIcon} from './app/bar/AppBar';
@@ -587,7 +587,7 @@ const aggregation = {
   DateRangeBucket
 };
 const app = {
-    AppApplication,
+    Application: AppApplication,
   AppManager,
   AppPanel,
   bar: {

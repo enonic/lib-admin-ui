@@ -2,7 +2,7 @@ import {ActionContainer} from '../../ui/ActionContainer';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 import {AppBar} from './AppBar';
 import {AppBarTabMenu} from './AppBarTabMenu';
-import {AppApplication} from '../AppApplication';
+import {Application} from '../Application';
 
 export class TabbedAppBar
     extends AppBar
@@ -10,7 +10,7 @@ export class TabbedAppBar
 
     private tabMenu: AppBarTabMenu;
 
-    constructor(application: AppApplication) {
+    constructor(application: Application) {
         super(application);
 
         this.tabMenu = new AppBarTabMenu();

@@ -1,5 +1,5 @@
 import {ServerEventsConnection} from './ServerEventsConnection';
-import {AppApplication} from '../app/AppApplication';
+import {Application} from '../app/Application';
 import {Event} from './Event';
 import {EventJson} from './EventJson';
 
@@ -7,16 +7,16 @@ export class ServerEventsListener {
 
     private serverEventsConnection: ServerEventsConnection;
 
-    private applications: AppApplication[];
+    private applications: Application[];
 
-    constructor(applications: AppApplication[]) {
+    constructor(applications: Application[]) {
         this.applications = applications;
         this.serverEventsConnection = ServerEventsConnection.getInstance();
         this.serverEventsConnection.onServerEvent((event: Event) => this.onServerEvent(event));
         this.serverEventsConnection.onUnknownServerEvent((eventJson: EventJson) => this.onUnknownServerEvent(eventJson));
     }
 
-    getApplications(): AppApplication[] {
+    getApplications(): Application[] {
         return this.applications;
     }
 

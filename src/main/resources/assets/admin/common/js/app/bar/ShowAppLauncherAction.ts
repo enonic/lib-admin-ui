@@ -1,11 +1,11 @@
 import {Action} from '../../ui/Action';
-import {AppApplication} from '../AppApplication';
+import {Application} from '../Application';
 import {ShowAppLauncherEvent} from '../ShowAppLauncherEvent';
 
 export class ShowAppLauncherAction
     extends Action {
 
-    constructor(application: AppApplication) {
+    constructor(application: Application) {
         super('Start', 'mod+esc', true);
 
         this.onExecuted(() => {
