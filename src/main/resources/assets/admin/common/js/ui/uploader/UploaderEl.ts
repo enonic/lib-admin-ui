@@ -1,4 +1,4 @@
-import qq from 'fine-uploader/lib/core';
+import qq from 'fine-uploader/lib/s3';
 import {UploadItem} from './UploadItem';
 import {Button} from '../button/Button';
 import {Element} from '../../dom/Element';

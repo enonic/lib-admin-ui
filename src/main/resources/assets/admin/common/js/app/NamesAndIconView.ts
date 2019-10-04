@@ -61,10 +61,10 @@ export class NamesAndIconView
             this.wrapperDivEl = new DivEl('wrapper', StyleHelper.COMMON_PREFIX);
             this.appendChild(this.wrapperDivEl);
 
-            this.iconImageEl = new ImgEl(null, 'font-icon-default');
+            this.iconImageEl = new ImgEl(null, 'fonts-icon-default');
             this.wrapperDivEl.appendChild(this.iconImageEl);
 
-            this.iconDivEl = new DivEl('font-icon-default');
+            this.iconDivEl = new DivEl('fonts-icon-default');
             this.wrapperDivEl.appendChild(this.iconDivEl);
             this.iconDivEl.hide();
         }
@@ -98,7 +98,7 @@ export class NamesAndIconView
 
     setIconClass(value: string): NamesAndIconView {
         this.iconDivEl
-            .setClass('font-icon-default ' + value)
+            .setClass('fonts-icon-default ' + value)
             .removeChildren()
             .getEl().setDisplay('inline-block');
         this.iconImageEl.hide();

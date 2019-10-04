@@ -2,13 +2,13 @@
   "name": "lib-admin-ui",
   "version": "2.0.0",
   "description": "Admin UI Library",
+  "main": "entry.js",
   "scripts": {
-    "build": "webpack --hide-modules",
+    "build:prod": "tsc -p tsconfig.prod.json",
+    "build:dev": "tsc -p tsconfig.dev.json",
+    "build:lib": "webpack --hide-modules",
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "fix": "tslint -p tsconfig.json -c tslint.json --fix",
-    "lib": "tsc --target es2018 --outDir dist/esm2015",
-    "dts": "tsc --declaration --outDir dist/dts",
-    "dtsMap": "tsc --declarationMap --outDir dist/dts"
+    "fix": "tslint -p tsconfig.json -c tslint.json --fix"
   },
   "dependencies": {
     "fine-uploader": "^5.16.2",
@@ -53,8 +53,9 @@
   "browserslist": [
     "extends browserslist-config-enonic"
   ],
+  "types": "types",
   "engines": {
-    "node": ">= 8.10.0",
-    "npm": ">= 5.6.0"
+    "node": ">= 10.16.3",
+    "npm": ">= 6.9.0"
   }
 }

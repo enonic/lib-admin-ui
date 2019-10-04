@@ -21,7 +21,7 @@ jar {
 
 node {
     download = true
-    version = '8.10.0'
+    version = '10.16.3'
 }
 
 def resourcesDir = file( 'src/main/resources' )
@@ -35,62 +35,40 @@ task lint( type: NpmTask, dependsOn: npmInstall ) {
     outputs.upToDateWhen { false }
 }
 
-task webpack( type: NodeTask, dependsOn: lint ) {
+task typescriptPkg( type: NpmTask, dependsOn: lint ) {
+    def buildEnv = isProd() ? 'prod' : 'dev'
     environment = [ 'NODE_ENV': nodeEnvironment() ]
-    description = 'Build UI resources (ts, css, etc).'
+    args = [ 'run', "build:$buildEnv" ]
+}
+
+task typescriptLib( type: NodeTask, dependsOn: lint ) {
+    environment = [ 'NODE_ENV': nodeEnvironment() ]
+    description = 'Build library, that should be included to HTML.'
     inputs.dir 'src/main'
     outputs.dir "${buildDir}/resources/main"
     script = file( './node_modules/webpack/bin/webpack' )
 }
 
-//task copyCompiled( type: Copy ) {
-//    description = 'Copy compiled JS and CSS files'
-//    from( "$resourcesDir/assets" ) {
-//        include '**/_all.js'
-//        include '**/_all.css'
-//        include '**/_all.lite.css'
-//    }
-//    into 'build/resources/main/assets'
-//    includeEmptyDirs = false
-//}
-
-//task copyDTS( type: Copy ) {
-//    description = 'Copy Typescript definitions to /dev/d.ts folder.'
-//    from( "$resourcesDir/assets/admin/common/js" ) {
-//        include '**/*.d.ts'
-//        rename '_all.d.ts', 'admin.d.ts'
-//    }
-//    into 'build/resources/main/dev/d.ts'
-//    includeEmptyDirs = false
-//}
-
-//task copyStyles( type: Copy ) {
-//    description = 'Copy styles from libraries to /dev/styles folder.'
-//    from( "$resourcesDir/assets/admin/common/lib" ) {
-//        include '**/*.css'
-//        into 'lib'
-//    }
-//    includeEmptyDirs = false
-//    into 'build/resources/main/dev'
-//}
-
-//task copyAll {
-//    dependsOn 'webpack'
-//    dependsOn 'copyCompiled'
-//    dependsOn 'copyDTS'
-//    dependsOn 'copyStyles'
-//    tasks.findByName('copyCompiled').mustRunAfter 'compile'
-//}
-
-task copyAll( type: Copy, dependsOn: webpack )  {
-    description = 'Copy Typescript definitions to /dev/d.ts folder.'
-    println "$buildDir/resource/main/assets/admin/common/js"
-    from( "$buildDir/resources/main/assets/admin/common/js" ) {
-        include '**/*.d.ts'
-    }
-    into "$buildDir/resources/main/dev/d.ts"
-    includeEmptyDirs = false
+task copyPackage( type: Copy ) {
+    include 'package.json'
+    into "$buildDir/resources/main/dev/"
 }
+
+task typescript {
+    dependsOn 'typescriptPkg'
+    dependsOn 'typescriptLib'
+    dependsOn 'copyPackage'
+}
+
+//task copyAll( type: Copy, dependsOn: webpack )  {
+//    description = 'Copy Typescript definitions to /dev/d.ts folder.'
+//    println "$buildDir/resource/main/assets/admin/common/js"
+//    from( "$buildDir/resources/main/assets/admin/common/js" ) {
+//        include '**/*.d.ts'
+//    }
+//    into "$buildDir/resources/main/dev/d.ts"
+//    includeEmptyDirs = false
+//}
 
 jar {
     exclude 'assets/spec/**'
@@ -116,7 +94,7 @@ jar {
     }
 
     includeEmptyDirs = false
-    dependsOn += copyAll
+    dependsOn += typescript
 }
 
 task npmInstallForce( type: NpmTask ) {

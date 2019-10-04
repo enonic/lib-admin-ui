@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "outDir": "build/resources/main/dev/",
+    "declarationDir": "build/resources/main/dev/types/",
+    "sourceMap": false,
+    "declarationMap": false
+  },
+  "files": [
+    "src/main/resources/assets/admin/common/js/entry.ts"
+  ]
+}

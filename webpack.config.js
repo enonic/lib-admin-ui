@@ -1,4 +1,3 @@
-// const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
 const MiniCssExtractPluginCleanup = require('./util/MiniCssExtractPluginCleanup');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -13,17 +12,13 @@ const isProd = process.env.NODE_ENV === 'production';
 module.exports = {
     context: path.join(__dirname, '/src/main/resources/assets/admin/common'),
     entry: {
-        'js/entry': './js/entry.ts',
         'js/libs': './js/libs.ts',
         'styles/main': './styles/main.less',
         'styles/main.lite': './styles/main.lite.less',
     },
     output: {
         path: path.join(__dirname, '/build/resources/main/assets/admin/common'),
-        filename: './[name].js',
-        libraryTarget: 'umd',
-        library: 'CommonUI',
-        umdNamedDefine: true
+        filename: './[name].js'
     },
     resolve: {
         extensions: ['.ts', '.js', '.less', '.css']
@@ -68,7 +63,6 @@ module.exports = {
         ]
     },
     plugins: [
-        // new ErrorLoggerPlugin(),
         // new ProvidePlugin({
         //     $: 'jquery',
         //     jQuery: 'jquery'
