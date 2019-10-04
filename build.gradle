@@ -53,7 +53,7 @@ task copyPackage( type: Copy ) {
     from( './' ) {
         include 'package.json'
     }
-    into "$buildDir/resources/main/dev/"
+    into "$buildDir/resources/main/dev/lib-admin-ui"
     includeEmptyDirs = false
 }
 

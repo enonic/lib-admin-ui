@@ -2,12 +2,13 @@
   "extends": "./tsconfig",
   "compilerOptions": {
     "moduleResolution": "node",
-    "outDir": "build/resources/main/dev/",
-    "declarationDir": "build/resources/main/dev/types/",
+    "outDir": "build/resources/main/dev/lib-admin-ui/",
+    "declarationDir": "build/resources/main/dev/lib-admin-ui/",
+    "declaration": true,
     "sourceMap": true,
     "declarationMap": true
   },
-  "files": [
-    "src/main/resources/assets/admin/common/js/entry.ts"
+  "include": [
+    "src/main/resources/assets/admin/common/js/**/*.ts"
   ]
 }
