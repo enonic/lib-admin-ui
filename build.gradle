@@ -50,8 +50,11 @@ task typescriptLib( type: NodeTask, dependsOn: lint ) {
 }
 
 task copyPackage( type: Copy ) {
-    include 'package.json'
+    from( './' ) {
+        include 'package.json'
+    }
     into "$buildDir/resources/main/dev/"
+    includeEmptyDirs = false
 }
 
 task typescript {
@@ -59,16 +62,6 @@ task typescript {
     dependsOn 'typescriptLib'
     dependsOn 'copyPackage'
 }
-
-//task copyAll( type: Copy, dependsOn: webpack )  {
-//    description = 'Copy Typescript definitions to /dev/d.ts folder.'
-//    println "$buildDir/resource/main/assets/admin/common/js"
-//    from( "$buildDir/resources/main/assets/admin/common/js" ) {
-//        include '**/*.d.ts'
-//    }
-//    into "$buildDir/resources/main/dev/d.ts"
-//    includeEmptyDirs = false
-//}
 
 jar {
     exclude 'assets/spec/**'
