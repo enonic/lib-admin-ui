@@ -43,7 +43,7 @@ module.exports = {
                 use: 'file-loader?name=fonts/[name].[ext]'
             },
             {
-                test: /^((?!icomoon).)*\.(svg|png|jpg|gif)$/,
+                test: /^((?!icomoon|opensans).)*\.(svg|png|jpg|gif)$/,
                 use: 'file-loader?name=images/[name].[ext]'
             }
         ]

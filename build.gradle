@@ -39,6 +39,8 @@ task typescriptPkg( type: NpmTask, dependsOn: lint ) {
     def buildEnv = isProd() ? 'prod' : 'dev'
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     args = [ 'run', "build:$buildEnv" ]
+    inputs.dir 'src/main/resources/assets/admin/common'
+    outputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
 }
 
 task typescriptLib( type: NodeTask, dependsOn: lint ) {
