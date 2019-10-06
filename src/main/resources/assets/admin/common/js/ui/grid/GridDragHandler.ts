@@ -1,8 +1,10 @@
+import * as $ from 'jquery';
 import {Element} from '../../dom/Element';
 import {TreeGrid} from '../treegrid/TreeGrid';
 import {TreeNode} from '../treegrid/TreeNode';
 import {ElementHelper} from '../../dom/ElementHelper';
 import {DataView} from './DataView';
+import {Event} from '../../event/Event';
 
 export class GridDragHandler<MODEL> {
 

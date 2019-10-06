@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import {FormInputEl} from '../dom/FormInputEl';
 import {ElementRegistry} from '../dom/ElementRegistry';
 import {InputEl} from '../dom/InputEl';

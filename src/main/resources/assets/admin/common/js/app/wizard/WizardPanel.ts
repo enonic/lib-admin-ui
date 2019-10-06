@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import * as Q from 'q';
 import {Toolbar} from '../../ui/toolbar/Toolbar';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';

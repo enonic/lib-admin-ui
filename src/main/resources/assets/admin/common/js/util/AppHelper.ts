@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import {Element} from '../dom/Element';
 import {Body} from '../dom/Body';
 import {WindowDOM} from '../dom/WindowDOM';

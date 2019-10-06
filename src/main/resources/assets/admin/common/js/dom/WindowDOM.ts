@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import {Element} from './Element';
 
 export class WindowDOM {

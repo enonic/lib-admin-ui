@@ -1,4 +1,5 @@
 import * as Q from 'q';
+import * as $ from 'jquery';
 import {DivEl} from '../../dom/DivEl';
 import {Action} from '../Action';
 import {Element} from '../../dom/Element';

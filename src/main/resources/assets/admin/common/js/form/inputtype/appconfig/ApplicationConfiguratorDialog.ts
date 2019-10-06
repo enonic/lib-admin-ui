@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import * as Q from 'q';
 import {FormView} from '../../FormView';
 import {InputView} from '../../InputView';

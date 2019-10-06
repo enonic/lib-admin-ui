@@ -44,8 +44,8 @@ task typescriptPkg( type: NpmTask, dependsOn: lint ) {
 task typescriptLib( type: NodeTask, dependsOn: lint ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build library, that should be included to HTML.'
-    inputs.dir 'src/main'
-    outputs.dir "${buildDir}/resources/main"
+    inputs.dir 'src/main/resources/assets/admin/common'
+    outputs.dir "${buildDir}/resources/main/assets/admin/common"
     script = file( './node_modules/webpack/bin/webpack' )
 }
 

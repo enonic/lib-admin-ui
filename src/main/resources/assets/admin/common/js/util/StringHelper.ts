@@ -1,3 +1,5 @@
+import * as $ from 'jquery';
+
 export class StringHelper {
 
     static EMPTY_STRING: string = '';

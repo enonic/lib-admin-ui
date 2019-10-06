@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import * as Q from 'q';
 import {PropertySet} from '../../data/PropertySet';
 import {PropertyArray} from '../../data/PropertyArray';
