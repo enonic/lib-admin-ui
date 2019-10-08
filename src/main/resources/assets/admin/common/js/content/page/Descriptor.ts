@@ -13,12 +13,15 @@ module api.content.page {
 
         private config: api.form.Form;
 
+        private icon: string;
+
         constructor(builder: DescriptorBuilder) {
             this.name = builder.name;
             this.key = builder.key;
             this.displayName = builder.displayName;
             this.description = builder.description;
             this.config = builder.config;
+            this.icon = builder.icon;
         }
 
         static fromJson(json: DescriptorJson): Descriptor {
@@ -47,6 +50,10 @@ module api.content.page {
 
         getIconCls(): string {
             return '';
+        }
+
+        getIcon(): string {
+            return this.icon;
         }
 
         clone(): Descriptor {
@@ -80,6 +87,8 @@ module api.content.page {
 
         config: api.form.Form;
 
+        icon: string;
+
         constructor(source?: Descriptor) {
             if (source) {
                 this.key = source.getKey();
@@ -87,6 +96,7 @@ module api.content.page {
                 this.displayName = source.getDisplayName();
                 this.description = source.getDescription();
                 this.config = source.getConfig();
+                this.icon = source.getIcon();
             }
         }
 
@@ -97,6 +107,7 @@ module api.content.page {
                 .setDisplayName(json.displayName)
                 .setDescription(json.description)
                 .setConfig(json.config != null ? api.form.Form.fromJson(json.config) : null)
+                .setIcon(json.icon)
                 .setKey(DescriptorKey.fromString(json.key));
         }
 
@@ -122,6 +133,11 @@ module api.content.page {
 
         public setConfig(value: api.form.Form): DescriptorBuilder {
             this.config = value;
+            return this;
+        }
+
+        public setIcon(value: string): DescriptorBuilder {
+            this.icon = value;
             return this;
         }
 

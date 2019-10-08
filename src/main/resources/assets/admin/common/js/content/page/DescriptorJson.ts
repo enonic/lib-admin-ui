@@ -13,5 +13,7 @@ module api.content.page {
         controller: string;
 
         config: api.form.json.FormJson;
+
+        icon: string;
     }
 }
