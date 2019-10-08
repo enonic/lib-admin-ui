@@ -95,7 +95,7 @@ window.CodeMirror = (function() {
     var d = {};
 
       var input = d.input =
-          elt("textarea", null, null, "position: absolute; padding: 0; width: 1px; height: 1em; outline: none; fonts-size: 4px;");
+          elt("textarea", null, null, "position: absolute; padding: 0; width: 1px; height: 1em; outline: none; font-size: 4px;");
     if (webkit) input.style.width = "1000px";
     else input.setAttribute("wrap", "off");
     // if border: 0; -- iOS fails to open keyboard (issue #1287)
@@ -514,7 +514,7 @@ window.CodeMirror = (function() {
     var different = from != display.showingFrom || to != display.showingTo ||
       display.lastSizeC != display.wrapper.clientHeight;
     // This is just a bogus formula that detects when the editor is
-      // resized or the fonts size changes.
+      // resized or the font size changes.
     if (different) {
       display.lastSizeC = display.wrapper.clientHeight;
       startWorker(cm, 400);

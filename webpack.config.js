@@ -12,9 +12,9 @@ const isProd = process.env.NODE_ENV === 'production';
 module.exports = {
     context: path.join(__dirname, '/src/main/resources/assets/admin/common'),
     entry: {
-        'js/libs': './js/libs.ts',
-        'styles/main': './styles/main.less',
-        'styles/main.lite': './styles/main.lite.less',
+        'js/lib': './js/lib.ts',
+        'styles/lib': './styles/main.less',
+        'styles/lib.lite': './styles/main.lite.less',
     },
     output: {
         path: path.join(__dirname, '/build/resources/main/assets/admin/common'),
@@ -63,10 +63,11 @@ module.exports = {
         ]
     },
     plugins: [
-        // new ProvidePlugin({
-        //     $: 'jquery',
-        //     jQuery: 'jquery'
-        // }),
+        new ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
+        }),
         new MiniCssExtractPlugin({
             filename: '[name].css',
             chunkFilename: './styles/[id].css'

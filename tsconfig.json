@@ -16,7 +16,7 @@
     "strictNullChecks": false
   },
   "include": [
-    "src/main/resources/assets/admin/common/js/libs.ts"
+    "src/main/resources/assets/admin/common/js/lib.ts"
   ],
   "exclude": [
     ".vscode",

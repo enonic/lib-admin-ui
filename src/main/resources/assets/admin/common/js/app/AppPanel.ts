@@ -80,6 +80,6 @@ export class AppPanel<M extends Equitable>
     }
 
     protected resolveActions(panel: Panel): Action[] {
-        return panel.getActions();
+        return panel ? panel.getActions() : [];
     }
 }

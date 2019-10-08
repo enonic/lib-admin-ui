@@ -1,8 +1,4 @@
 declare namespace Slick {
-    export class RowSelectionModel<T>
-        extends Slick.SelectionModel<T, any> {
-        constructor(options: any);
-    }
 
     export class RowMoveManager<T extends Slick.SlickData> {
 
