@@ -96,12 +96,12 @@ export class TabMenu
         return this.returnFocusFromMenu();
     }
 
-    isKeyNext(event: KeyboardEvent) {
+    isKeyNext(event: KeyboardEvent): boolean {
         return KeyHelper.isArrowRightKey(event);
     }
 
-    isKeyPrevious(event: KeyboardEvent) {
-        KeyHelper.isArrowLeftKey(event);
+    isKeyPrevious(event: KeyboardEvent): boolean {
+        return KeyHelper.isArrowLeftKey(event);
     }
 
     setEnabled(enabled: boolean): TabMenu {

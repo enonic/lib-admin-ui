@@ -46,7 +46,7 @@ export class NotifyManager {
     }
 
     private static getFromParentIFrame(): NotifyManager {
-        let context = window;
+        let context: Window = window;
         while (context !== window.parent) {
             context = window.parent;
         }

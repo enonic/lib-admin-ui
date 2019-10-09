@@ -733,7 +733,7 @@ export class Element {
         } else {
             this.mouseEnterByHandler[<any> handler] = (e: MouseEvent) => {
                 // execute handler only if mouse came from outside
-                if (!this.getEl().contains(<HTMLElement> (e.relatedTarget || e.fromElement))) {
+                if (!this.getEl().contains(<HTMLElement> (e.relatedTarget || e['fromElement']))) {
                     handler(e);
                 }
             };
@@ -755,7 +755,7 @@ export class Element {
         } else {
             this.mouseLeaveByHandler[<any> handler] = (e: MouseEvent) => {
                 // execute handler only if mouse moves outside
-                if (!this.getEl().contains(<HTMLElement> (e.relatedTarget || e.toElement))) {
+                if (!this.getEl().contains(<HTMLElement> (e.relatedTarget || e['toElement']))) {
                     handler(e);
                 }
             };

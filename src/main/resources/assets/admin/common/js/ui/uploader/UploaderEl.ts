@@ -855,7 +855,7 @@ export class UploaderEl<MODEL extends Equitable>
     }
 
     private disableInputFocus() {
-        const focusableElements: NodeListOf<HTMLInputElement> =
+        const focusableElements: HTMLCollectionOf<HTMLInputElement> =
             this.getDefaultDropzoneContainer().getHTMLElement().getElementsByTagName('input');
         for (let i = 0; i < focusableElements.length; i++) {
             const el = <HTMLInputElement>focusableElements.item(i);
