@@ -13,7 +13,7 @@ repositories {
 
 
 group = 'com.enonic.lib'
-version = '2.1.1-B1'
+version = '2.1.1-B2'
 
 jar {
     baseName = 'lib-admin-ui'
