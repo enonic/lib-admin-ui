@@ -21,6 +21,7 @@ module api.ui.dialog {
         closeIconCallback?: () => void;
         skipTabbable?: boolean;
         class?: string;
+        keepOpenOnClickOutside?: boolean;
     }
 
     export class ModalDialog
@@ -181,6 +182,10 @@ module api.ui.dialog {
         }
 
         private initClickOutsideDialogHandlers() {
+            if (this.config.keepOpenOnClickOutside) {
+                return;
+            }
+
             const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
                 const noConfirmationDialog = !this.confirmationDialog || !this.confirmationDialog.isVisible();
                 if (this.isActive() && noConfirmationDialog) {
