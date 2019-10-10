@@ -80,11 +80,6 @@ module api.ui.time {
             this.startPicker = this.createPicker(builder, 0);
             this.endLabel = builder.endLabel;
             this.endPicker = this.createPicker(builder, 1);
-            this.startPicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
-                if (event.isUserInput() && event.getDate() && api.util.StringHelper.isBlank(this.endPicker.getTextInput().getValue())) {
-                    this.endPicker.giveFocus();
-                }
-            });
         }
 
         doRender(): Q.Promise<boolean> {
