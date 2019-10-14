@@ -112,7 +112,6 @@ module api.ui.time {
                 .setStartingDayOfWeek(builder.startingDayOfWeek)
                 .setCloseOnSelect(builder.closeOnSelect)
                 .setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent)
-                .setCloseOnSelect(true)
                 .setTimezone(builder.timezone);
 
             switch (index) {
