@@ -6,9 +6,9 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[{*.js,*.ts,*.less,*.json,*.yml}]
+[{*.js,*.ts,*.json,*.yml}]
 indent_size = 4
 indent_style = space
 
-[{package.json}]
+[{*.less,package.json}]
 indent_size = 2

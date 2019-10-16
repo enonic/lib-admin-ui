@@ -1,4 +1,5 @@
 import * as $ from 'jquery';
+import 'jquery-ui/ui/tabbable';
 import * as Q from 'q';
 import {StyleHelper} from '../StyleHelper';
 import {StringHelper} from '../util/StringHelper';

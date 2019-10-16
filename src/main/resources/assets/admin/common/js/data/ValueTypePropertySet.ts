@@ -2,6 +2,7 @@ import {ObjectHelper} from '../ObjectHelper';
 import {ValueType} from './ValueType';
 import {PropertySet} from './PropertySet';
 import {Value} from './Value';
+import {Typable} from './Typable';
 
 export class ValueTypePropertySet
     extends ValueType {
@@ -10,7 +11,7 @@ export class ValueTypePropertySet
         super('PropertySet');
     }
 
-    isValid(value: any): boolean {
+    isValid(value: Typable): boolean {
         if (!(typeof value === 'object')) {
             return false;
         }
@@ -18,7 +19,7 @@ export class ValueTypePropertySet
         return this.isPropertySet(value);
     }
 
-    isPropertySet(value: Value) {
+    isPropertySet(value: Typable) {
         return this === value.getType();
     }
 

@@ -12,9 +12,10 @@ import {Reference} from '../util/Reference';
 import {Link} from '../util/Link';
 import {PropertySet} from './PropertySet';
 import {ValueType} from './ValueType';
+import {Typable} from './Typable';
 
 export class Value
-    implements Equitable, Cloneable {
+    implements Equitable, Cloneable, Typable {
 
     private type: ValueType;
 

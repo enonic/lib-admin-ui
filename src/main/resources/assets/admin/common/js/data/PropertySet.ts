@@ -22,6 +22,8 @@ import {Value} from './Value';
 import {PropertyPath} from './PropertyPath';
 import {PropertyArrayJson} from './PropertyArrayJson';
 import {ValueType} from './ValueType';
+import {ValueTypePropertySet} from './ValueTypePropertySet';
+import {Typable} from './Typable';
 
 /**
  * A PropertySet manages a set of properties. The properties are grouped in arrays by name ([[Property.name]]).
@@ -59,7 +61,7 @@ import {ValueType} from './ValueType';
  * @see [[Property]]
  */
 export class PropertySet
-    implements Equitable {
+    implements Equitable, Typable {
 
     public static debug: boolean = false;
 
@@ -130,6 +132,10 @@ export class PropertySet
 
     getTree(): PropertyTree {
         return this.tree;
+    }
+
+    getType(): ValueTypePropertySet {
+        return ValueTypes.DATA;
     }
 
     /**
