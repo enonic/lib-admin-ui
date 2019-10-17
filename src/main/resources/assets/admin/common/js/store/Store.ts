@@ -13,11 +13,11 @@ export class Store {
     }
 
     private static getGlobal(): GlobalLibAdmin {
-        let libAdmin = WindowDOM.get()['libAdmin'];
+        let libAdmin = WindowDOM.get().asWindow()['libAdmin'];
 
         if (libAdmin == null) {
             libAdmin = Store.createGlobal();
-            WindowDOM.get()['libAdmin'] = libAdmin;
+            WindowDOM.get().asWindow()['libAdmin'] = libAdmin;
             return libAdmin;
         }
 
