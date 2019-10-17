@@ -1,3 +1,5 @@
+import {Store} from './store/Store';
+
 export class StyleHelper {
 
     static COMMON_PREFIX: string = 'xp-admin-common-';
@@ -6,24 +8,19 @@ export class StyleHelper {
 
     static ICON_PREFIX: string = 'icon-';
 
-    static currentPrefix: string = '';
-
     static setCurrentPrefix(prefix: string) {
-        StyleHelper.currentPrefix = prefix;
+        Store.instance().set('prefix', prefix);
     }
 
-    static getCurrentPrefix(): string {
-        return StyleHelper.currentPrefix;
-    }
-
-    static getCls(cls: string, prefix: string = StyleHelper.currentPrefix): string {
-        if (!prefix) {
+    static getCls(cls: string, prefix?: string): string {
+        const currentPrefix = prefix != null ? prefix : Store.instance().get('prefix');
+        if (!currentPrefix) {
             return cls;
         }
-        let clsArr = cls.trim().split(' ');
+        const clsArr = cls.trim().split(' ');
         clsArr.forEach((clsEl: string, index: number, arr: string[]) => {
-            if (!StyleHelper.isPrefixed(clsEl, prefix)) {
-                arr[index] = prefix + clsEl;
+            if (!StyleHelper.isPrefixed(clsEl, currentPrefix)) {
+                arr[index] = currentPrefix + clsEl;
             }
         });
         return clsArr.join(' ');

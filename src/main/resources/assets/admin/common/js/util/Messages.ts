@@ -1,28 +1,41 @@
+import {Store} from '../store/Store';
+
 export class Messages {
 
-    private static storage: Map<string, string> = new Map<string, string>();
+    // private static storage: Map<string, string> = new Map<string, string>();
+
+    private static getMessages(): Map<string, string> {
+        let messages: Map<string, string> = Store.instance().get('messages');
+
+        if (messages == null) {
+            messages = new Map();
+            Store.instance().set('messages', messages);
+        }
+
+        return messages;
+    }
 
     static setMessages(messages: Object) {
         if (messages) {
-            Messages.storage.clear();
+            Messages.getMessages().clear();
             for (let key in messages) {
                 if (messages.hasOwnProperty(key)) {
-                    Messages.storage.set(key, messages[key]);
+                    Messages.getMessages().set(key, messages[key]);
                 }
             }
         }
     }
 
-    static empty() {
-        return Messages.storage == null || Messages.storage.size === 0;
+    static isEmpty() {
+        return Messages.getMessages().size === 0;
     }
 
     static getMessage(key: string) {
-        return Messages.storage.get(key);
+        return Messages.getMessages().get(key);
     }
 
     static hasMessage(key: string) {
-        return !Messages.empty() && Messages.storage.has(key);
+        return Messages.getMessages().has(key);
     }
 }
 

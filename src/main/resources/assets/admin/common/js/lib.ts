@@ -4,8 +4,6 @@
 // import './jquery.simulate.js';
 // import './codemirror/codemirror.js';
 // import './codemirror/addon/loadmode.js';
-// import './signals.js';
-// import './hasher.js';
 // import './crossroads.js';
 import '../lib/slickgrid/lib/jquery.event.drag-2.3.js';
 import '../lib/slickgrid/lib/jquery.event.drop-2.3.js';
@@ -16,9 +14,8 @@ import '../lib/slickgrid/slick.remotemodel.js';
 import '../lib/slickgrid/slick.rowselectionmodel.js';
 import '../lib/slickgrid/slick.checkboxselectcolumn.js';
 import '../lib/slickgrid/slick.rowmovemanager.js';
-// jQuery.noConflict(true);
-// import './mousetrap.js';
-// import './mousetrap-global-bind.min.js';
+
+import {StyleHelper} from './StyleHelper';
 import './form/inputtype/checkbox/Checkbox';
 import './form/inputtype/combobox/ComboBox';
 import './form/inputtype/time/Date';
@@ -33,3 +30,6 @@ import './form/inputtype/principal/PrincipalSelector';
 import './form/inputtype/radiobutton/RadioButton';
 import './form/inputtype/text/TextArea';
 import './form/inputtype/text/TextLine';
+
+StyleHelper.setCurrentPrefix(StyleHelper.ADMIN_PREFIX);
+

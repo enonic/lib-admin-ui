@@ -6,7 +6,7 @@ import {Messages} from './Messages';
 
 export function i18nInit(url: string): Q.Promise<void> {
 
-    if (!Messages.empty()) {
+    if (!Messages.isEmpty()) {
         return Q(null);
     }
 
