@@ -16,6 +16,7 @@ import '../lib/slickgrid/slick.checkboxselectcolumn.js';
 import '../lib/slickgrid/slick.rowmovemanager.js';
 
 import {StyleHelper} from './StyleHelper';
+import './form/inputtype/support/NoInputTypeFoundView';
 import './form/inputtype/checkbox/Checkbox';
 import './form/inputtype/combobox/ComboBox';
 import './form/inputtype/time/Date';
@@ -25,7 +26,6 @@ import './form/inputtype/time/Time';
 import './form/inputtype/number/Double';
 import './form/inputtype/number/Long';
 import './form/inputtype/geo/GeoPoint';
-import './form/inputtype/support/NoInputTypeFoundView';
 import './form/inputtype/principal/PrincipalSelector';
 import './form/inputtype/radiobutton/RadioButton';
 import './form/inputtype/text/TextArea';

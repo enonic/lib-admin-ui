@@ -139,6 +139,7 @@ export class FormItemLayer {
 
                 formItemView = new FormItemSetView(<FormItemSetViewConfig>{
                     context: this.context,
+                    layerFactory: this.formItemLayerFactory,
                     formItemSet: formItemSet,
                     parent: this.parent,
                     parentDataSet: propertySet,

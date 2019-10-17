@@ -6,10 +6,13 @@ import {FormSetView} from '../FormSetView';
 import {FormItemViewConfig} from '../../FormItemView';
 import {FormSetOccurrences} from '../FormSetOccurrences';
 import {FormItemSetOccurrences, FormItemSetOccurrencesConfig} from './FormItemSetOccurrences';
+import {FormItemLayerFactory} from '../../FormItemLayerFactory';
 
 export interface FormItemSetViewConfig {
 
     context: FormContext;
+
+    layerFactory: FormItemLayerFactory;
 
     formItemSet: FormItemSet;
 
@@ -25,6 +28,8 @@ export class FormItemSetView
 
     private occurrencesLazyRender: boolean;
 
+    protected layerFactory: FormItemLayerFactory;
+
     constructor(config: FormItemSetViewConfig) {
         super(<FormItemViewConfig> {
             className: 'form-item-set-view',
@@ -32,6 +37,7 @@ export class FormItemSetView
             formItem: config.formItemSet,
             parent: config.parent
         });
+        this.layerFactory = config.layerFactory;
         this.parentDataSet = config.parentDataSet;
         this.formSet = config.formItemSet;
         this.classPrefix = 'form-item-set';
@@ -48,6 +54,7 @@ export class FormItemSetView
     protected initOccurrences(): FormSetOccurrences<FormItemSetOccurrenceView> {
         return this.formItemOccurrences = new FormItemSetOccurrences(<FormItemSetOccurrencesConfig>{
             context: this.getContext(),
+            layerFactory: this.layerFactory,
             occurrenceViewContainer: this.occurrenceViewsContainer,
             formItemSet: <FormItemSet> this.formSet,
             parent: this.getParent(),

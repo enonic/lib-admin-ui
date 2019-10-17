@@ -23,11 +23,9 @@ export interface FormItemSetOccurrenceViewConfig {
 
     formItemSet: FormItemSet;
 
-    parent: FormItemSetOccurrenceView;
+    parent: FormSetOccurrenceView;
 
     dataSet: PropertySet;
-
-    lazyRender?: boolean;
 }
 
 export class FormItemSetOccurrenceView
@@ -41,9 +39,7 @@ export class FormItemSetOccurrenceView
         this.formItemOccurrence = config.formSetOccurrence;
         this.formItemSet = config.formItemSet;
         this.propertySet = config.dataSet;
-
         this.formItemLayer = config.layer;
-        this.formItemLayer.setLazyRender(config.lazyRender);
     }
 
     public layout(validate: boolean = true): Q.Promise<void> {

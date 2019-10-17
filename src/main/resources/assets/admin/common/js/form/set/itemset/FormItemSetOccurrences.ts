@@ -2,15 +2,18 @@ import {PropertyArray} from '../../../data/PropertyArray';
 import {Element} from '../../../dom/Element';
 import {FormContext} from '../../FormContext';
 import {FormItemSet} from './FormItemSet';
-import {FormItemSetOccurrenceView, FormItemSetOccurrenceViewConfig} from './FormItemSetOccurrenceView';
+import {FormItemSetOccurrenceView} from './FormItemSetOccurrenceView';
 import {FormSetOccurrences} from '../FormSetOccurrences';
 import {FormItemOccurrencesConfig} from '../../FormItemOccurrences';
 import {FormSetOccurrence} from '../FormSetOccurrence';
 import {RemoveButtonClickedEvent} from '../../RemoveButtonClickedEvent';
+import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
 
 export interface FormItemSetOccurrencesConfig {
 
     context: FormContext;
+
+    layerFactory: FormItemLayerFactory;
 
     occurrenceViewContainer: Element;
 
@@ -31,6 +34,8 @@ export class FormItemSetOccurrences
 
     private lazyRender: boolean;
 
+    protected layerFactory: FormItemLayerFactory;
+
     constructor(config: FormItemSetOccurrencesConfig) {
         super(<FormItemOccurrencesConfig>{
             formItem: config.formItemSet,
@@ -49,14 +54,15 @@ export class FormItemSetOccurrences
     createNewOccurrenceView(occurrence: FormSetOccurrence<FormItemSetOccurrenceView>): FormItemSetOccurrenceView {
 
         const dataSet = this.getSetFromArray(occurrence);
+        const layerConfig: CreatedFormItemLayerConfig = {context: this.context, lazyRender: this.lazyRender};
 
-        const newOccurrenceView = new FormItemSetOccurrenceView(<FormItemSetOccurrenceViewConfig>{
+        const newOccurrenceView = new FormItemSetOccurrenceView({
             context: this.context,
+            layer: this.layerFactory.createLayer(layerConfig),
             formSetOccurrence: occurrence,
             formItemSet: <FormItemSet> this.formSet,
             parent: this.parent,
-            dataSet: dataSet,
-            lazyRender: this.lazyRender
+            dataSet: dataSet
         });
 
         newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<FormItemSetOccurrenceView>) => {
