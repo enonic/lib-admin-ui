@@ -45,6 +45,7 @@ export class FormItemSetOccurrences
         });
 
         this.context = config.context;
+        this.layerFactory = config.layerFactory;
         this.formSet = config.formItemSet;
         this.parent = config.parent;
         this.occurrencesCollapsed = false;

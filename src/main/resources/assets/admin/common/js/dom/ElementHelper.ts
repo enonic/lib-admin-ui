@@ -799,6 +799,9 @@ export class ElementHelper {
         }
 
         for (let parent = this.el;;(parent = parent.parentElement)) {
+            if (parent == null) {
+                break;
+            }
             style = getComputedStyle(parent);
             if (excludeStaticParent && style.position === 'static') {
                 continue;
