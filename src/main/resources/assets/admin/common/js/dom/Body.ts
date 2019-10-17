@@ -1,6 +1,7 @@
 import {Element, ElementFromHelperBuilder} from './Element';
 import {ResponsiveManager} from '../ui/responsive/ResponsiveManager';
 import {ElementHelper} from './ElementHelper';
+import {BrowserHelper} from '../BrowserHelper';
 
 export class Body
     extends Element {
@@ -15,7 +16,7 @@ export class Body
         }
         let html = Element.fromHtmlElement(body.parentElement);
 
-        if (html.getEl().getChild(0) instanceof HTMLHeadElement) {
+        if (BrowserHelper.isIE() && html.getEl().getChild(0) instanceof HTMLHeadElement) {
             html.appendChild(Element.fromHtmlElement(<HTMLElement>html.getEl().getChild(0)));
         }
 
