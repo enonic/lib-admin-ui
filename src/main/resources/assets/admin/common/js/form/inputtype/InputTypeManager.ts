@@ -1,25 +1,36 @@
 import {Class} from '../../Class';
 import {InputTypeViewContext} from './InputTypeViewContext';
 import {InputTypeView} from './InputTypeView';
+import {Store} from '../../store/Store';
 
 /**
  *      Class to manage input types and their visual representation
  */
 export class InputTypeManager {
 
-    private static inputTypes: { [name: string]: Class; } = {};
+    private static getInputTypes(): Map<string, Class> {
+        let inputTypes: Map<string, Class> = Store.instance().get('inputTypes');
 
-    static isRegistered(inputTypeName: string): boolean {
-        let name = InputTypeManager.normalize(inputTypeName);
-        return InputTypeManager.inputTypes[name] != null;
+        if (inputTypes == null) {
+            inputTypes = new Map();
+            Store.instance().set('inputTypes', inputTypes);
+        }
+
+        return inputTypes;
     }
 
-    static register(inputTypeClass: Class) {
-        let name = InputTypeManager.normalize(inputTypeClass.getName());
+    static isRegistered(inputTypeName: string): boolean {
+        const name = InputTypeManager.normalize(inputTypeName);
+
+        return InputTypeManager.getInputTypes().has(name);
+    }
+
+    static register(inputTypeClass: Class, silent?: boolean) {
+        const name = InputTypeManager.normalize(inputTypeClass.getName());
 
         if (!InputTypeManager.isRegistered(name)) {
-            InputTypeManager.inputTypes[name] = inputTypeClass;
-        } else {
+            InputTypeManager.getInputTypes().set(name, inputTypeClass);
+        } else if (!silent) {
             throw new Error('Input type [' + name + '] is already registered, unregister it first.');
         }
     }
@@ -28,7 +39,7 @@ export class InputTypeManager {
         let name = InputTypeManager.normalize(inputTypeName);
 
         if (InputTypeManager.isRegistered(name)) {
-            InputTypeManager.inputTypes[name] = undefined;
+            InputTypeManager.getInputTypes().delete(name);
             console.log('Unregistered input type [' + name + ']');
         } else {
             throw new Error('Input type [' + name + '] is not registered.');
@@ -39,7 +50,7 @@ export class InputTypeManager {
         let name = InputTypeManager.normalize(inputTypeName);
 
         if (InputTypeManager.isRegistered(name)) {
-            let inputTypeClass = InputTypeManager.inputTypes[name];
+            const inputTypeClass = InputTypeManager.getInputTypes().get(name);
             return inputTypeClass.newInstance(context);
         } else {
             throw new Error('Input type [' + name + '] need to be registered first.');

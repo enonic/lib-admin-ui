@@ -145,4 +145,4 @@ export class RadioButton
     }
 }
 
-InputTypeManager.register(new Class('RadioButton', RadioButton));
+InputTypeManager.register(new Class('RadioButton', RadioButton), true);

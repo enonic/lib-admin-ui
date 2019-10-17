@@ -127,4 +127,4 @@ export class TextLine
 
 }
 
-InputTypeManager.register(new Class(TextLine.getName().getName(), TextLine));
+InputTypeManager.register(new Class(TextLine.getName().getName(), TextLine), true);

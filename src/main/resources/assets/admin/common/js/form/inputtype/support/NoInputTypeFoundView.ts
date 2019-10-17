@@ -71,4 +71,4 @@ export class NoInputTypeFoundView
     }
 }
 
-InputTypeManager.register(new Class('NoInputTypeFound', NoInputTypeFoundView));
+InputTypeManager.register(new Class('NoInputTypeFound', NoInputTypeFoundView), true);

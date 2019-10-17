@@ -62,4 +62,4 @@ export class GeoPoint
     }
 }
 
-InputTypeManager.register(new Class('GeoPoint', GeoPoint));
+InputTypeManager.register(new Class('GeoPoint', GeoPoint), true);

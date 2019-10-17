@@ -74,4 +74,4 @@ export class Date
     }
 }
 
-InputTypeManager.register(new Class('Date', Date));
+InputTypeManager.register(new Class('Date', Date), true);

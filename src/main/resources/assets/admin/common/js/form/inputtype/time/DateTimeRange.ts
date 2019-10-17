@@ -266,4 +266,4 @@ export class DateTimeRange
     }
 }
 
-InputTypeManager.register(new Class('DateTimeRange', DateTimeRange));
+InputTypeManager.register(new Class('DateTimeRange', DateTimeRange), true);

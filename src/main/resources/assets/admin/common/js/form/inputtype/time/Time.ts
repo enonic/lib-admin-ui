@@ -94,4 +94,4 @@ export class Time
 
 }
 
-InputTypeManager.register(new Class('Time', Time));
+InputTypeManager.register(new Class('Time', Time), true);

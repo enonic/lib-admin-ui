@@ -111,4 +111,4 @@ export class Checkbox
     }
 }
 
-InputTypeManager.register(new Class('Checkbox', Checkbox));
+InputTypeManager.register(new Class('Checkbox', Checkbox), true);

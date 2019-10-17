@@ -74,4 +74,4 @@ export class TextArea
     }
 }
 
-InputTypeManager.register(new Class(TextArea.getName().getName(), TextArea));
+InputTypeManager.register(new Class(TextArea.getName().getName(), TextArea), true);

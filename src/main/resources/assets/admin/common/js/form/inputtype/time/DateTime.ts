@@ -137,4 +137,4 @@ export class DateTime
     }
 }
 
-InputTypeManager.register(new Class('DateTime', DateTime));
+InputTypeManager.register(new Class('DateTime', DateTime), true);
