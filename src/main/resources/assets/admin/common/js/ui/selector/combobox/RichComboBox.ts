@@ -326,12 +326,17 @@ export class RichComboBox<OPTION_DISPLAY_VALUE>
     }
 
     protected reload(inputValue: string): Q.Promise<any> {
-        if (!StringHelper.isBlank(inputValue)) {
-            return this.loader.search(inputValue).catch(DefaultErrorHandler.handle);
-        } else {
+        let loadPromise;
+        if (!this.loader.isLoaded()) {
             this.loader.setSearchString(inputValue);
-            return this.loader.load().catch(DefaultErrorHandler.handle);
+            loadPromise = this.loader.load();
+        } else {
+            loadPromise = Q(null);
         }
+
+        return loadPromise.then(() => {
+            return this.loader.search(inputValue);
+        }).catch(DefaultErrorHandler.handle);
     }
 
     protected notifyLoaded(items: OPTION_DISPLAY_VALUE[], postLoaded?: boolean) {

@@ -13,4 +13,6 @@ export interface DescriptorJson {
     controller: string;
 
     config: FormJson;
+
+    icon: string;
 }

@@ -1072,8 +1072,8 @@ export class PropertySet
                 toRemove.push(property);
             }
         });
-        this.removeProperties(toRemove);
-        this.removeEmptyArrays(propertySet);
+        propertySet.removeProperties(toRemove);
+        propertySet.removeEmptyArrays(propertySet);
     }
 
     private doRemoveEmptyArrays(propertySet: PropertySet) {
@@ -1087,7 +1087,7 @@ export class PropertySet
         this.removeEmptyArrays(propertySet);
     }
 
-    private removeEmptyArrays(propertySet: PropertySet) {
+    removeEmptyArrays(propertySet: PropertySet) {
         ObjectHelper.objectPropertyIterator(propertySet.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
             if (propertyArray.isEmpty()) {
                 delete propertySet.propertyArrayByName[name];

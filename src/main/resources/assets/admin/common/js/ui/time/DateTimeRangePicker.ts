@@ -87,11 +87,6 @@ export class DateTimeRangePicker
         this.startPicker = this.createPicker(builder, 0);
         this.endLabel = builder.endLabel;
         this.endPicker = this.createPicker(builder, 1);
-        this.startPicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
-            if (event.isUserInput() && event.getDate() && StringHelper.isBlank(this.endPicker.getTextInput().getValue())) {
-                this.endPicker.giveFocus();
-            }
-        });
     }
 
     doRender(): Q.Promise<boolean> {
@@ -166,7 +161,6 @@ export class DateTimeRangePicker
             .setStartingDayOfWeek(builder.startingDayOfWeek)
             .setCloseOnSelect(builder.closeOnSelect)
             .setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent)
-            .setCloseOnSelect(true)
             .setTimezone(builder.timezone);
 
         switch (index) {

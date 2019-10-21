@@ -13,6 +13,7 @@ export interface ConfirmationConfig {
 export interface ModalDialogWithConfirmationConfig
     extends ModalDialogConfig {
     confirmation: ConfirmationConfig;
+    keepOpenOnClickOutside?: boolean;
 }
 
 export class ModalDialogWithConfirmation
@@ -62,25 +63,27 @@ export class ModalDialogWithConfirmation
     }
 
     private initConfirmationDialogListeners() {
-        const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
-            const noConfirmationDialog = !this.confirmationDialog || !this.confirmationDialog.isVisible();
-            if (this.isActive() && noConfirmationDialog) {
-                for (let element = event.target; element; element = (<any>element).parentNode) {
-                    if (element === this.getHTMLElement() || this.isIgnoredElementClicked(<any>element)) {
-                        return;
+        if (!this.getConfig().keepOpenOnClickOutside) {
+            const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
+                const noConfirmationDialog = !this.confirmationDialog || !this.confirmationDialog.isVisible();
+                if (this.isActive() && noConfirmationDialog) {
+                    for (let element = event.target; element; element = (<any>element).parentNode) {
+                        if (element === this.getHTMLElement() || this.isIgnoredElementClicked(<any>element)) {
+                            return;
+                        }
                     }
+                    this.confirmBeforeClose();
                 }
-                this.confirmBeforeClose();
-            }
-        };
+            };
 
-        this.onRemoved(() => {
-            Body.get().unMouseDown(mouseClickListener);
-        });
+            this.onRemoved(() => {
+                Body.get().unMouseDown(mouseClickListener);
+            });
 
-        this.onAdded(() => {
-            Body.get().onMouseDown(mouseClickListener);
-        });
+            this.onAdded(() => {
+                Body.get().onMouseDown(mouseClickListener);
+            });
+        }
     }
 
     confirmBeforeClose() {

@@ -20,12 +20,15 @@ export class Descriptor
 
     private config: Form;
 
+    private icon: string;
+
     constructor(builder: DescriptorBuilder) {
         this.name = builder.name;
         this.key = builder.key;
         this.displayName = builder.displayName;
         this.description = builder.description;
         this.config = builder.config;
+        this.icon = builder.icon;
     }
 
     static fromJson(json: DescriptorJson): Descriptor {
@@ -54,6 +57,10 @@ export class Descriptor
 
     getIconCls(): string {
         return '';
+    }
+
+    getIcon(): string {
+        return this.icon;
     }
 
     clone(): Descriptor {
@@ -87,6 +94,8 @@ export class DescriptorBuilder {
 
     config: Form;
 
+    icon: string;
+
     constructor(source?: Descriptor) {
         if (source) {
             this.key = source.getKey();
@@ -94,6 +103,7 @@ export class DescriptorBuilder {
             this.displayName = source.getDisplayName();
             this.description = source.getDescription();
             this.config = source.getConfig();
+            this.icon = source.getIcon();
         }
     }
 
@@ -104,6 +114,7 @@ export class DescriptorBuilder {
             .setDisplayName(json.displayName)
             .setDescription(json.description)
             .setConfig(json.config != null ? Form.fromJson(json.config) : null)
+            .setIcon(json.icon)
             .setKey(DescriptorKey.fromString(json.key));
     }
 
@@ -129,6 +140,11 @@ export class DescriptorBuilder {
 
     public setConfig(value: Form): DescriptorBuilder {
         this.config = value;
+        return this;
+    }
+
+    public setIcon(value: string): DescriptorBuilder {
+        this.icon = value;
         return this;
     }
 
