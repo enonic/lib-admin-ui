@@ -51,6 +51,7 @@
   &.grey-header .modal-dialog-header {
       background-color: @admin-bg-light-gray;
       padding: 20px 20px 10px 30px;
+      width: calc(100% - 1px);
   }
 
   .modal-dialog-body {
@@ -58,6 +59,8 @@
     overflow: auto;
     flex: 1;
     max-height: 50vh;
+    width: calc(100% - 1px);
+    box-sizing: border-box;
 
     &.non-scrollable {
       overflow: visible;
