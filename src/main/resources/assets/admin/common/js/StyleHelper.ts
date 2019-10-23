@@ -8,12 +8,17 @@ export class StyleHelper {
 
     static ICON_PREFIX: string = 'icon-';
 
+    static getCurrentPrefix(): string {
+        const prefix = Store.instance().get('prefix');
+        return prefix != null ? prefix : '';
+    }
+
     static setCurrentPrefix(prefix: string) {
         Store.instance().set('prefix', prefix);
     }
 
     static getCls(cls: string, prefix?: string): string {
-        const currentPrefix = prefix != null ? prefix : Store.instance().get('prefix');
+        const currentPrefix = prefix != null ? prefix : StyleHelper.getCurrentPrefix();
         if (!currentPrefix) {
             return cls;
         }

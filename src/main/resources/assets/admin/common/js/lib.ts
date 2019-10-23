@@ -1,10 +1,3 @@
-// import './fineuploader/fine-uploader.min.js';
-// import './jquery-3.4.1.min.js';
-// import './jquery-ui.min.js';
-// import './jquery.simulate.js';
-// import './codemirror/codemirror.js';
-// import './codemirror/addon/loadmode.js';
-// import './crossroads.js';
 import '../lib/slickgrid/lib/jquery.event.drag-2.3.js';
 import '../lib/slickgrid/lib/jquery.event.drop-2.3.js';
 import '../lib/slickgrid/slick.core.js';

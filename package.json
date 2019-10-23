@@ -11,7 +11,6 @@
     "fix": "tslint -p tsconfig.json -c tslint.json --fix"
   },
   "dependencies": {
-    "@types/core-js": "^2.5.2",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.4.1",
     "jquery-ui": "^1.12.1",
@@ -20,6 +19,7 @@
     "slickgrid": "^2.4.14"
   },
   "devDependencies": {
+    "@types/core-js": "^2.5.2",
     "@types/jquery": "^3.3.31",
     "@types/jqueryui": "^1.12.7",
     "@types/mousetrap": "^1.6.3",

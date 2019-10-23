@@ -6,13 +6,13 @@ import {i18n} from '../../util/Messages';
 
 export interface ConfirmationConfig {
     question?: string;
-    yesCallback: () => void;
+    yesCallback?: () => void;
     noCallback?: () => void;
 }
 
 export interface ModalDialogWithConfirmationConfig
     extends ModalDialogConfig {
-    confirmation: ConfirmationConfig;
+    confirmation?: ConfirmationConfig;
     keepOpenOnClickOutside?: boolean;
 }
 
@@ -21,24 +21,21 @@ export class ModalDialogWithConfirmation
 
     protected confirmationDialog: ConfirmationDialog;
 
-    private listOfClickIgnoredElements: Element[] = [];
+    private listOfClickIgnoredElements: Element[];
 
     constructor(config: ModalDialogWithConfirmationConfig) {
         super(config);
-
-        this.initElements();
-        this.postInitElements();
-        this.initListeners();
     }
 
     protected initElements() {
         super.initElements();
+        this.listOfClickIgnoredElements = [];
         this.initConfirmationDialog();
     }
 
     private initConfirmationDialog() {
         const {confirmation} = this.getConfig();
-        const {yesCallback, noCallback, question = i18n('dialog.confirm.applyChanges')} = confirmation;
+        const {yesCallback, noCallback, question = i18n('dialog.confirm.applyChanges')} = confirmation || {};
 
         this.confirmationDialog = new ConfirmationDialog()
             .setQuestion(question)

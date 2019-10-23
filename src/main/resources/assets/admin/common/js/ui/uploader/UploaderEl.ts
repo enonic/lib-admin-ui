@@ -1,4 +1,5 @@
-import qq from 'fine-uploader/lib/s3';
+import * as qq from 'fine-uploader/lib/core';
+import {DragAndDrop} from 'fine-uploader/dnd/dnd';
 import {UploadItem} from './UploadItem';
 import {Button} from '../button/Button';
 import {Element} from '../../dom/Element';
@@ -58,8 +59,8 @@ export class UploaderEl<MODEL extends Equitable>
     public static debug: boolean = false;
     private static FORBIDDEN_CHARS: RegExp = /[/*?|:]/g;
     protected config: UploaderElConfig;
-    protected uploader: any;       // qq.FineUploaderBasic
-    protected dragAndDropper: any; // qq.DragAndDrop
+    protected uploader: qq.FineUploaderBasic;
+    protected dragAndDropper: DragAndDrop;
     protected value: string;
     protected dropzone: AEl;
     private uploadedItems: UploadItem<MODEL>[] = [];
@@ -549,7 +550,7 @@ export class UploaderEl<MODEL extends Equitable>
         });
 
         if (this.config.allowDrop) {
-            this.dragAndDropper = new qq.DragAndDrop({
+            this.dragAndDropper = new DragAndDrop({
                 dropZoneElements: this.getDropzoneElements(),
                 classes: {
                     dropActive: 'dz-dragover'
