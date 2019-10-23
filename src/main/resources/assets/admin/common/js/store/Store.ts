@@ -1,8 +1,8 @@
-import {WindowDOM} from '../dom/WindowDOM';
-
 export interface GlobalLibAdmin {
     store?: Store;
 }
+
+export const GLOBAL: string = 'libAdmin';
 
 export class Store {
 
@@ -13,11 +13,11 @@ export class Store {
     }
 
     private static getGlobal(): GlobalLibAdmin {
-        let libAdmin = WindowDOM.get().asWindow()['libAdmin'];
+        let libAdmin = window[GLOBAL];
 
         if (libAdmin == null) {
             libAdmin = Store.createGlobal();
-            WindowDOM.get().asWindow()['libAdmin'] = libAdmin;
+            window[GLOBAL] = libAdmin;
             return libAdmin;
         }
 

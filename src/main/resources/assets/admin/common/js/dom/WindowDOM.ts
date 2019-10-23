@@ -1,16 +1,21 @@
 import * as $ from 'jquery';
 import {Element} from './Element';
+import {GLOBAL, GlobalLibAdmin, Store} from '../store/Store';
 
 export class WindowDOM {
 
     private static instance: WindowDOM = new WindowDOM();
+
+    private static KEY: string = 'windowDOM';
+
     private el: any; // Window clashes with Window
+
     private onBeforeUnloadListeners: { (event: UIEvent): void; }[] = [];
 
     private onUnloadListeners: { (event: UIEvent): void; }[] = [];
 
-    constructor() {
-        this.el = window;
+    constructor(element: Window = window) {
+        this.el = element;
 
         const handle = function (event: UIEvent, listeners: { (event: UIEvent): void; }[]) {
             listeners.forEach(l => l(event));
@@ -18,6 +23,8 @@ export class WindowDOM {
 
         this.el.onbeforeunload = event => handle(event, this.onBeforeUnloadListeners);
         this.el.onunload = event => handle(event, this.onUnloadListeners);
+
+        Store.instance().set(WindowDOM.KEY, this);
     }
 
     static get(): WindowDOM {
@@ -53,11 +60,16 @@ export class WindowDOM {
         if (parent === this.el) {
             return null;
         }
-        return parent.WindowDOM.get();
+        const libAdmin: GlobalLibAdmin = parent[GLOBAL];
+        let dom;
+        if (libAdmin.store) {
+            dom = libAdmin.store.get(WindowDOM.KEY);
+        }
+        return dom || new WindowDOM(parent);
     }
 
     isInIFrame(): boolean {
-        return window.self !== window.top;
+        return this.el.self !== this.el.top;
     }
 
     getFrameElement(): HTMLElement {
