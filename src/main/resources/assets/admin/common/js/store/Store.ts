@@ -12,12 +12,12 @@ export class Store {
         this.map = new Map();
     }
 
-    private static getGlobal(): GlobalLibAdmin {
-        let libAdmin = window[GLOBAL];
+    private static getGlobal(windowObject: Window = window): GlobalLibAdmin {
+        let libAdmin = windowObject[GLOBAL];
 
         if (libAdmin == null) {
             libAdmin = Store.createGlobal();
-            window[GLOBAL] = libAdmin;
+            windowObject[GLOBAL] = libAdmin;
             return libAdmin;
         }
 
@@ -28,14 +28,25 @@ export class Store {
         return {};
     }
 
-    static instance(): Store {
-        const libAdmin: GlobalLibAdmin = Store.getGlobal();
+    private static instanceInWindow(windowObject?: Window): Store {
+        const libAdmin: GlobalLibAdmin = Store.getGlobal(windowObject);
 
         if (libAdmin.store == null) {
             libAdmin.store = new Store();
         }
 
         return libAdmin.store;
+    }
+
+    static instance(): Store {
+        return Store.instanceInWindow();
+    }
+
+    static parentInstance(): Store {
+        if (window !== window.parent) {
+            return Store.instanceInWindow(window.parent);
+        }
+        return Store.instance();
     }
 
     set(key: string, value: any): Store {

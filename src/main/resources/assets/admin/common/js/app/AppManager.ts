@@ -1,29 +1,27 @@
+import {Store} from '../store/Store';
+
+const APP_MANAGER_KEY: string = 'appManager';
+
 export class AppManager {
-    private static INSTANCE: AppManager = null;
 
-    private connectionLostListeners: { (): void }[] = [];
+    private connectionLostListeners: { (): void }[];
 
-    private connectionRestoredListeners: { (): void }[] = [];
+    private connectionRestoredListeners: { (): void }[];
 
     constructor() {
-        AppManager.INSTANCE = this;
-
+        this.connectionLostListeners = [];
+        this.connectionRestoredListeners = [];
     }
 
-    static instance(): AppManager {
-        if (AppManager.INSTANCE) {
-            return AppManager.INSTANCE;
-        } else if (window !== window.parent) {
-            // look for instance in parent frame
-            let apiAppModule = (<any> window.parent).api.app;
-            if (apiAppModule && apiAppModule.AppManager) {
-                let parentAppManager = <AppManager> apiAppModule.AppManager.INSTANCE;
-                if (parentAppManager) {
-                    AppManager.INSTANCE = parentAppManager;
-                }
-            }
+    private static instance(): AppManager {
+        let instance: AppManager = Store.parentInstance().get(APP_MANAGER_KEY);
+
+        if (instance == null) {
+            instance = new AppManager();
+            Store.parentInstance().set(APP_MANAGER_KEY, instance);
         }
-        return AppManager.INSTANCE;
+
+        return instance;
     }
 
     onConnectionLost(listener: () => void) {

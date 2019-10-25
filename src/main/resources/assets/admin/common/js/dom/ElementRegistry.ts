@@ -8,37 +8,34 @@ export type ElementRegistryCounter = Map<string, number>;
 
 export type ElementRegistryElements = Map<string, Element>;
 
-export interface CommonElementRegistry {
-    counters: ElementRegistryCounter;
-    elements: ElementRegistryElements;
-}
-
 export class ElementRegistry {
 
-    private static getElementRegistry(): CommonElementRegistry {
-        let registry: CommonElementRegistry = Store.instance().get(ELEMENT_REGISTRY_KEY);
+    private counters: ElementRegistryCounter;
 
-        if (registry == null) {
-            registry = ElementRegistry.createRegistry();
-            Store.instance().set(ELEMENT_REGISTRY_KEY, registry);
-        }
+    private elements: ElementRegistryElements;
 
-        return registry;
+    private constructor() {
+        this.counters = new Map<string, number>();
+        this.elements = new Map<string, Element>();
     }
 
-    private static createRegistry(): CommonElementRegistry {
-        return {
-            counters: new Map<string, number>(),
-            elements: new Map<string, Element>()
-        };
+    static instance(): ElementRegistry {
+        let instance: ElementRegistry = Store.instance().get(ELEMENT_REGISTRY_KEY);
+
+        if (instance == null) {
+            instance = new ElementRegistry();
+            Store.instance().set(ELEMENT_REGISTRY_KEY, instance);
+        }
+
+        return instance;
     }
 
     private static getCounters(): ElementRegistryCounter {
-        return ElementRegistry.getElementRegistry().counters;
+        return ElementRegistry.instance().counters;
     }
 
     private static getElements(): ElementRegistryElements {
-        return ElementRegistry.getElementRegistry().elements;
+        return ElementRegistry.instance().elements;
     }
 
     public static registerElement(el: Element): string {
