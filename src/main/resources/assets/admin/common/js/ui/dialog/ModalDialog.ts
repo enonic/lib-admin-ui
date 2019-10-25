@@ -537,7 +537,7 @@ export abstract class ModalDialog
             return;
         }
         const maxBodyHeight = this.body.getEl().getMaxHeight();
-        const showScrollbar = bodyHeight >= maxBodyHeight;
+        const showScrollbar = Math.floor(bodyHeight) >= Math.floor(maxBodyHeight);
 
         this.body.toggleClass('non-scrollable', !showScrollbar);
     }
