@@ -2,7 +2,7 @@ import {Element} from './Element';
 import {ClassHelper} from '../ClassHelper';
 import {Store} from '../store/Store';
 
-const ELEMENT_REGISTRY_KEY: string = 'elementRegistry';
+const ELEMENT_REGISTRY_KEY: string = 'ElementRegistry';
 
 export type ElementRegistryCounter = Map<string, number>;
 
@@ -19,7 +19,7 @@ export class ElementRegistry {
         this.elements = new Map<string, Element>();
     }
 
-    static instance(): ElementRegistry {
+    private static get(): ElementRegistry {
         let instance: ElementRegistry = Store.instance().get(ELEMENT_REGISTRY_KEY);
 
         if (instance == null) {
@@ -31,11 +31,11 @@ export class ElementRegistry {
     }
 
     private static getCounters(): ElementRegistryCounter {
-        return ElementRegistry.instance().counters;
+        return ElementRegistry.get().counters;
     }
 
     private static getElements(): ElementRegistryElements {
-        return ElementRegistry.instance().elements;
+        return ElementRegistry.get().elements;
     }
 
     public static registerElement(el: Element): string {

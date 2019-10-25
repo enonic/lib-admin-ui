@@ -2,11 +2,12 @@ import {Cache} from '../cache/Cache';
 import {Application, ApplicationBuilder} from './Application';
 import {ApplicationKey} from './ApplicationKey';
 import {ApplicationEvent, ApplicationEventType} from './ApplicationEvent';
+import {Store} from '../store/Store';
+
+export const APPLICATION_CACHE_KEY: string = 'ApplicationCache';
 
 export class ApplicationCache
     extends Cache<Application, ApplicationKey> {
-
-    private static instance: ApplicationCache;
 
     constructor() {
         super();
@@ -20,10 +21,14 @@ export class ApplicationCache
     }
 
     static get(): ApplicationCache {
-        if (!ApplicationCache.instance) {
-            ApplicationCache.instance = new ApplicationCache();
+        let instance: ApplicationCache = Store.instance().get(APPLICATION_CACHE_KEY);
+
+        if (instance == null) {
+            instance = new ApplicationCache();
+            Store.instance().set(APPLICATION_CACHE_KEY, instance);
         }
-        return ApplicationCache.instance;
+
+        return instance;
     }
 
     copy(object: Application): Application {

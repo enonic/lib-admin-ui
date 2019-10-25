@@ -1,5 +1,8 @@
 import {ManagedActionState} from './ManagedActionState';
 import {ManagedActionExecutor} from './ManagedActionExecutor';
+import {Store} from '../store/Store';
+
+export const MANAGED_ACTION_MANAGER_KEY: string = 'ManagedActionManager';
 
 export type StateChangedListener = (state: ManagedActionState, executor: ManagedActionExecutor) => void;
 
@@ -11,24 +14,19 @@ export class ManagedActionManager {
 
     private managedActionStateChangedListeners: StateChangedListener[] = [];
 
-    constructor() {
+    private constructor() {
         ManagedActionManager.INSTANCE = this;
     }
 
     static instance(): ManagedActionManager {
-        if (ManagedActionManager.INSTANCE) {
-            return ManagedActionManager.INSTANCE;
-        } else if (window !== window.parent) {
-            // look for instance in parent frame
-            let apiAppModule = (<any> window.parent).api.managedaction;
-            if (apiAppModule && apiAppModule.ManagedActionManager) {
-                let parentManagedActionManager = <ManagedActionManager> apiAppModule.ManagedActionManager.INSTANCE;
-                if (parentManagedActionManager) {
-                    ManagedActionManager.INSTANCE = parentManagedActionManager;
-                }
-            }
+        let instance: ManagedActionManager = Store.parentInstance().get(MANAGED_ACTION_MANAGER_KEY);
+
+        if (instance == null) {
+            instance = new ManagedActionManager();
+            Store.parentInstance().set(MANAGED_ACTION_MANAGER_KEY, instance);
         }
-        return new ManagedActionManager();
+
+        return instance;
     }
 
     addPerformer(executor: ManagedActionExecutor) {

@@ -1,6 +1,6 @@
 import {Store} from '../store/Store';
 
-const APP_MANAGER_KEY: string = 'appManager';
+const APP_MANAGER_KEY: string = 'AppManager';
 
 export class AppManager {
 
@@ -13,7 +13,7 @@ export class AppManager {
         this.connectionRestoredListeners = [];
     }
 
-    private static instance(): AppManager {
+    static get(): AppManager {
         let instance: AppManager = Store.parentInstance().get(APP_MANAGER_KEY);
 
         if (instance == null) {

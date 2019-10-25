@@ -8,34 +8,53 @@ import {PrincipalServerEvent} from '../security/event/PrincipalServerEvent';
 import {IssueServerEvent} from '../issue/event/IssueServerEvent';
 import {RepositoryEvent} from '../content/event/RepositoryEvent';
 import {TaskEvent, TaskEventJson} from '../task/TaskEvent';
+import {Store} from '../store/Store';
+
+export const SERVER_EVENTS_CONNECTION_KEY: string = 'ServerEventsConnection';
 
 export class ServerEventsConnection {
-    public static debug: boolean = false;
-    private static INSTANCE: ServerEventsConnection;
+
     private static KEEP_ALIVE_TIME: number = 30 * 1000;
+
     private ws: WebSocket;
+
     private reconnectInterval: number;
+
     private serverEventReceivedListeners: { (event: Event): void }[] = [];
+
     private unknownServerEventReceivedListeners: { (eventJson: EventJson): void }[] = [];
+
     private connectionLostListeners: { (): void }[] = [];
+
     private connectionRestoredListeners: { (): void }[] = [];
+
     private connected: boolean = false;
+
     private disconnectTimeoutHandle: number;
+
     private keepConnected: boolean = false;
+
+
     private downTime: number;
+
     private keepAliveIntervalId: number;
 
-    constructor(reconnectIntervalSeconds: number = 5) {
+    public debug: boolean = false;
+
+    private constructor(reconnectIntervalSeconds: number = 5) {
         this.ws = null;
         this.reconnectInterval = reconnectIntervalSeconds * 1000;
     }
 
-    public static getInstance(): ServerEventsConnection {
-        if (!ServerEventsConnection.INSTANCE) {
-            ServerEventsConnection.INSTANCE = new ServerEventsConnection();
+    static get(): ServerEventsConnection {
+        let instance: ServerEventsConnection = Store.parentInstance().get(SERVER_EVENTS_CONNECTION_KEY);
+
+        if (instance == null) {
+            instance = new ServerEventsConnection();
+            Store.parentInstance().set(SERVER_EVENTS_CONNECTION_KEY, instance);
         }
 
-        return ServerEventsConnection.INSTANCE;
+        return instance;
     }
 
     public connect() {
@@ -108,7 +127,7 @@ export class ServerEventsConnection {
 
         this.ws.addEventListener('close', () => {
             clearInterval(this.keepAliveIntervalId);
-            if (ServerEventsConnection.debug) {
+            if (this.debug) {
                 let m = 'ServerEventsConnection: connection closed to ' + wsUrl;
                 if (this.downTime > 0) {
                     m += '\nUptime: ' + (new Date().getTime() - this.downTime);
@@ -136,21 +155,21 @@ export class ServerEventsConnection {
         });
 
         this.ws.addEventListener('error', (ev: ErrorEvent) => {
-            if (ServerEventsConnection.debug) {
+            if (this.debug) {
                 console.error('ServerEventsConnection: Unable to connect to server web socket on ' + wsUrl, ev);
             }
         });
 
         this.ws.addEventListener('message', (remoteEvent: any) => {
             let jsonEvent = <NodeEventJson> JSON.parse(remoteEvent.data);
-            if (ServerEventsConnection.debug) {
+            if (this.debug) {
                 console.debug('ServerEventsConnection: Server event [' + jsonEvent.type + ']', jsonEvent);
             }
             this.handleServerEvent(jsonEvent);
         });
 
         this.ws.addEventListener('open', () => {
-            if (ServerEventsConnection.debug) {
+            if (this.debug) {
                 let m = 'ServerEventsConnection: connection opened to ' + wsUrl;
                 if (this.downTime > 0) {
                     m += '\nDowntime: ' + (new Date().getTime() - this.downTime);
@@ -162,7 +181,7 @@ export class ServerEventsConnection {
             this.keepAliveIntervalId = setInterval(() => {
                 if (this.connected) {
                     this.ws.send('KeepAlive');
-                    if (ServerEventsConnection.debug) {
+                    if (this.debug) {
                         console.log('ServerEventsConnection: Sending Keep Alive message');
                     }
                 }

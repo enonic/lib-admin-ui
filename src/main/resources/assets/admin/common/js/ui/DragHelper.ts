@@ -1,27 +1,34 @@
 import {DivEl} from '../dom/DivEl';
 import {PEl} from '../dom/PEl';
+import {Store} from '../store/Store';
+
+export const DRAG_HELPER_KEY: string = 'BragHelper';
 
 export class DragHelper
     extends DivEl {
 
     public static CURSOR_AT: { left: number, top: number } = {left: -10, top: -15};
-    public static debug: boolean = false;
-    private static instance: DragHelper;
 
-    constructor() {
+    public debug: boolean = false;
+
+    private constructor() {
         super('drag-helper');
         this.setId('drag-helper');
     }
 
-    public static get(): DragHelper {
-        if (!DragHelper.instance) {
-            DragHelper.instance = new DragHelper();
+    static get(): DragHelper {
+        let instance: DragHelper = Store.parentInstance().get(DRAG_HELPER_KEY);
+
+        if (instance == null) {
+            instance = new DragHelper();
+            Store.parentInstance().set(DRAG_HELPER_KEY, instance);
         }
-        return DragHelper.instance;
+
+        return instance;
     }
 
     public setDropAllowed(allowed: boolean): DragHelper {
-        if (DragHelper.debug) {
+        if (this.debug) {
             console.log('DragHelper.setDropAllowed: ' + allowed.toString());
         }
         this.toggleClass('drop-allowed', allowed);

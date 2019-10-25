@@ -2,7 +2,7 @@ import * as $ from 'jquery';
 import {Element} from './Element';
 import {GLOBAL, GlobalLibAdmin, Store} from '../store/Store';
 
-const WINDOW_KEY: string = 'windowDOM';
+export const WINDOW_KEY: string = 'WindowDOM';
 
 export class WindowDOM {
 

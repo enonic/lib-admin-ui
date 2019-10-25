@@ -2,11 +2,12 @@ import {Element, ElementFromHelperBuilder} from './Element';
 import {ResponsiveManager} from '../ui/responsive/ResponsiveManager';
 import {ElementHelper} from './ElementHelper';
 import {BrowserHelper} from '../BrowserHelper';
+import {Store} from '../store/Store';
+
+export const BODY_KEY: string = 'Body';
 
 export class Body
     extends Element {
-
-    private static instance: Body;
 
     private childrenLoaded: boolean;
 
@@ -43,11 +44,15 @@ export class Body
     }
 
     static get(): Body {
-        if (!Body.instance && document.body) {
-            Body.instance = new Body();
-            ResponsiveManager.onAvailableSizeChanged(Body.instance);
+        let instance: Body = Store.parentInstance().get(BODY_KEY);
+
+        if (instance == null && document.body) {
+            instance = new Body();
+            Store.parentInstance().set(BODY_KEY, instance);
+            ResponsiveManager.onAvailableSizeChanged(instance);
         }
-        return Body.instance;
+
+        return instance;
     }
 
     isChildrenLoaded(): boolean {

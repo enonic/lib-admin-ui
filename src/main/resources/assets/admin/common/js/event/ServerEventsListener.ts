@@ -11,7 +11,7 @@ export class ServerEventsListener {
 
     constructor(applications: Application[]) {
         this.applications = applications;
-        this.serverEventsConnection = ServerEventsConnection.getInstance();
+        this.serverEventsConnection = ServerEventsConnection.get();
         this.serverEventsConnection.onServerEvent((event: Event) => this.onServerEvent(event));
         this.serverEventsConnection.onUnknownServerEvent((eventJson: EventJson) => this.onUnknownServerEvent(eventJson));
     }

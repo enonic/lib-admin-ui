@@ -10,6 +10,9 @@ import {FormOptionSetOption} from './set/optionset/FormOptionSetOption';
 import {FormItem} from './FormItem';
 import {Input} from './Input';
 import {FieldSet} from './set/fieldset/FieldSet';
+import {Store} from '../store/Store';
+
+export const FORM_ITEM_FACTORY_KEY: string = 'FormItemFactory';
 
 export interface FormItemFactory {
     createFormItem(formItemTypeWrapperJson: FormItemTypeWrapperJson): FormItem;
@@ -18,17 +21,18 @@ export interface FormItemFactory {
 export class FormItemFactoryImpl
     implements FormItemFactory {
 
-    private static INSTANCE: FormItemFactoryImpl;
-
     private constructor() {
     }
 
-    public static get(): FormItemFactoryImpl {
-        if (!FormItemFactoryImpl.INSTANCE) {
-            FormItemFactoryImpl.INSTANCE = new FormItemFactoryImpl();
+    static get(): FormItemFactoryImpl {
+        let instance: FormItemFactoryImpl = Store.parentInstance().get(FORM_ITEM_FACTORY_KEY);
+
+        if (instance == null) {
+            instance = new FormItemFactoryImpl();
+            Store.parentInstance().set(FORM_ITEM_FACTORY_KEY, instance);
         }
 
-        return FormItemFactoryImpl.INSTANCE;
+        return instance;
     }
 
     createFormItem(formItemTypeWrapperJson: FormItemTypeWrapperJson): FormItem {

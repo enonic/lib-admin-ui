@@ -4,10 +4,11 @@ import {NotificationMessage} from './NotificationMessage';
 import {NotificationContainer} from './NotificationContainer';
 import {Message} from './Message';
 import {NotifyOpts} from './NotifyOpts';
+import {Store} from '../store/Store';
+
+export const NOTIFY_MANAGER_KEY: string = 'NotifyManager';
 
 export class NotifyManager {
-
-    private static instance: NotifyManager;
 
     private notificationLimit: number = 3;
 
@@ -32,26 +33,14 @@ export class NotifyManager {
     }
 
     static get(): NotifyManager {
+        let instance: NotifyManager = Store.parentInstance().get(NOTIFY_MANAGER_KEY);
 
-        if (window !== window.parent) {
-
-            return this.getFromParentIFrame();
+        if (instance == null) {
+            instance = new NotifyManager();
+            Store.parentInstance().set(NOTIFY_MANAGER_KEY, instance);
         }
 
-        if (!NotifyManager.instance) {
-            NotifyManager.instance = new NotifyManager();
-        }
-
-        return NotifyManager.instance;
-    }
-
-    private static getFromParentIFrame(): NotifyManager {
-        let context: Window = window;
-        while (context !== window.parent) {
-            context = window.parent;
-        }
-
-        return context['api']['notify']['NotifyManager'].get();
+        return instance;
     }
 
     showFeedback(message: string, autoHide: boolean = true): string {

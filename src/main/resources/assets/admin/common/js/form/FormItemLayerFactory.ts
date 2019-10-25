@@ -1,5 +1,6 @@
 import {FormContext} from './FormContext';
 import {FormItemLayer} from './FormItemLayer';
+import {Store} from '../store/Store';
 
 export interface CreatedFormItemLayerConfig {
     context: FormContext;
@@ -10,6 +11,8 @@ export interface FormItemLayerFactory {
     createLayer(config: CreatedFormItemLayerConfig): FormItemLayer;
 }
 
+export const FORM_ITEM_LAYER_FACTORY_KEY: string = 'FormItemLayerFactory';
+
 export class FormItemLayerFactoryImpl implements FormItemLayerFactory {
 
     private static INSTANCE: FormItemLayerFactoryImpl;
@@ -17,10 +20,14 @@ export class FormItemLayerFactoryImpl implements FormItemLayerFactory {
     protected constructor() {}
 
     static get(): FormItemLayerFactoryImpl {
-        if (FormItemLayerFactoryImpl.INSTANCE == null) {
-            FormItemLayerFactoryImpl.INSTANCE = new FormItemLayerFactoryImpl();
+        let instance: FormItemLayerFactoryImpl = Store.parentInstance().get(FORM_ITEM_LAYER_FACTORY_KEY);
+
+        if (instance == null) {
+            instance = new FormItemLayerFactoryImpl();
+            Store.parentInstance().set(FORM_ITEM_LAYER_FACTORY_KEY, instance);
         }
-        return FormItemLayerFactoryImpl.INSTANCE;
+
+        return instance;
     }
 
     createLayer(config: CreatedFormItemLayerConfig): FormItemLayer {

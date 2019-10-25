@@ -3,6 +3,9 @@ import {Element} from '../dom/Element';
 import {StyleHelper} from '../StyleHelper';
 import {Body} from '../dom/Body';
 import {WindowDOM} from '../dom/WindowDOM';
+import {Store} from '../store/Store';
+
+export const TOOLTIPS_KEY: string = 'tooltips';
 
 export class Tooltip {
 
@@ -20,7 +23,6 @@ export class Tooltip {
     static MODE_FOLLOW: string = 'follow';
 
     private static multipleAllowed: boolean = true;
-    private static instances: Tooltip[] = [];
 
     private tooltipEl: DivEl;
     private timeoutTimer: number;
@@ -70,11 +72,22 @@ export class Tooltip {
         this.setTrigger(Tooltip.TRIGGER_HOVER);
         this.setMode(Tooltip.MODE_STATIC);
 
-        Tooltip.instances.push(this);
+        Tooltip.getTooltips().push(this);
+    }
+
+    private static getTooltips(): Tooltip[] {
+        let instance: Tooltip[] = Store.parentInstance().get(TOOLTIPS_KEY);
+
+        if (instance == null) {
+            instance = [];
+            Store.parentInstance().set(TOOLTIPS_KEY, instance);
+        }
+
+        return instance;
     }
 
     static hideOtherInstances(thisToolTip?: Tooltip) {
-        Tooltip.instances.forEach((tooltip: Tooltip) => {
+        Tooltip.getTooltips().forEach((tooltip: Tooltip) => {
             if (tooltip.isVisible() && (!thisToolTip || tooltip !== thisToolTip)) {
                 //console.log('Hiding tooltip because multiple instances are not allowed', tooltip);
                 tooltip.hide();
