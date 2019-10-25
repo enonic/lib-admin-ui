@@ -179,9 +179,16 @@ module api.ui.selector.dropdown {
         }
 
         private doUpdateDropdownTopPositionAndWidth() {
-            let inputEl = this.input.getEl();
-            this.dropdownList.setTopPx(inputEl.getHeightWithBorder() - inputEl.getBorderBottomWidth());
-            this.dropdownList.setWidth(inputEl.getWidthWithBorder());
+            let el;
+            if (this.typeAhead) {
+                el = this.input.getEl();
+            } else {
+                el = this.selectedOptionView.getEl();
+            }
+            const top = el.getHeightWithBorder() - el.getBorderBottomWidth();
+            const width = el.getWidthWithBorder();
+            this.dropdownList.setTopPx(top);
+            this.dropdownList.setWidth(width);
         }
 
         giveFocus(): boolean {
@@ -226,6 +233,13 @@ module api.ui.selector.dropdown {
 
         setOptions(options: Option<OPTION_DISPLAY_VALUE>[]) {
             this.dropdownList.setOptions(options, this.isInputEmpty() ? this.noOptionsText : null);
+            const value = super.getValue();
+            if (value) {
+                const option = this.getOptionByValue(value);
+                if (option) {
+                    this.selectOption(option);
+                }
+            }
         }
 
         private isInputEmpty(): boolean {
@@ -238,6 +252,9 @@ module api.ui.selector.dropdown {
 
         addOption(option: Option<OPTION_DISPLAY_VALUE>) {
             this.dropdownList.addOption(option);
+            if (option.value === super.getValue()) {
+                this.selectOption(option);
+            }
         }
 
         removeOption(option: Option<OPTION_DISPLAY_VALUE>) {
@@ -265,6 +282,7 @@ module api.ui.selector.dropdown {
         }
 
         setValue(value: string, silent?: boolean): Dropdown<OPTION_DISPLAY_VALUE> {
+            super.setValue(value);
             let option = this.getOptionByValue(value);
             if (option != null) {
                 this.selectOption(option, silent);
@@ -283,6 +301,7 @@ module api.ui.selector.dropdown {
         }
 
         selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false) {
+            super.setValue(option.value);
 
             const previousOption: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
 
