@@ -3,17 +3,19 @@ import {InputTypeViewContext} from './InputTypeViewContext';
 import {InputTypeView} from './InputTypeView';
 import {Store} from '../../store/Store';
 
+const INPUT_TYPE_MANAGER_KEY: string = 'inputTypes';
+
 /**
  *      Class to manage input types and their visual representation
  */
 export class InputTypeManager {
 
     private static getInputTypes(): Map<string, Class> {
-        let inputTypes: Map<string, Class> = Store.instance().get('inputTypes');
+        let inputTypes: Map<string, Class> = Store.instance().get(INPUT_TYPE_MANAGER_KEY);
 
         if (inputTypes == null) {
             inputTypes = new Map();
-            Store.instance().set('inputTypes', inputTypes);
+            Store.instance().set(INPUT_TYPE_MANAGER_KEY, inputTypes);
         }
 
         return inputTypes;
