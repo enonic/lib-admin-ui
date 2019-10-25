@@ -2,11 +2,11 @@ import * as $ from 'jquery';
 import {Element} from './Element';
 import {GLOBAL, GlobalLibAdmin, Store} from '../store/Store';
 
+const WINDOW_KEY: string = 'windowDOM';
+
 export class WindowDOM {
 
     private static instance: WindowDOM = new WindowDOM();
-
-    private static KEY: string = 'windowDOM';
 
     private el: any; // Window clashes with Window
 
@@ -24,7 +24,7 @@ export class WindowDOM {
         this.el.onbeforeunload = event => handle(event, this.onBeforeUnloadListeners);
         this.el.onunload = event => handle(event, this.onUnloadListeners);
 
-        Store.instance().set(WindowDOM.KEY, this);
+        Store.instance().set(WINDOW_KEY, this);
     }
 
     static get(): WindowDOM {
@@ -63,7 +63,7 @@ export class WindowDOM {
         const libAdmin: GlobalLibAdmin = parent[GLOBAL];
         let dom;
         if (libAdmin.store) {
-            dom = libAdmin.store.get(WindowDOM.KEY);
+            dom = libAdmin.store.get(WINDOW_KEY);
         }
         return dom || new WindowDOM(parent);
     }

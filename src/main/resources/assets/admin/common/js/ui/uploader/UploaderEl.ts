@@ -1,3 +1,5 @@
+import * as $ from 'jquery';
+import 'jquery-simulate/jquery.simulate.js';
 import * as qq from 'fine-uploader/lib/core';
 import {DragAndDrop} from 'fine-uploader/dnd/dnd';
 import {UploadItem} from './UploadItem';
@@ -376,7 +378,7 @@ export class UploaderEl<MODEL extends Equitable>
     }
 
     showFileSelectionDialog() {
-        Element.fromHtmlElement(this.uploader.getInputButton().getInput()).getEl().simulate('click');
+        $(this.uploader.getInputButton().getInput()).simulate('click');
     }
 
     onUploadStarted(listener: (event: UploadStartedEvent<MODEL>) => void) {
@@ -632,7 +634,7 @@ export class UploaderEl<MODEL extends Equitable>
     private handleKeyEvents() {
         this.onKeyPressed((event: KeyboardEvent) => {
             if (this.defaultDropzoneContainer.isVisible() && event.keyCode === 13) {
-                this.dropzone.getEl().simulate('click');
+                $(this.dropzone.getEl().getHTMLElement()).simulate('click');
             }
         });
 

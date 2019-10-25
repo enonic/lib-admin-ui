@@ -100,11 +100,6 @@ export class ElementHelper {
         return this;
     }
 
-    simulate(value: string): ElementHelper {
-        this.el.dispatchEvent(new Event(value));
-        return this;
-    }
-
     setInnerHtml(value: string, escapeHtml: boolean = true): ElementHelper {
         $(this.el).html(escapeHtml ? StringHelper.escapeHtml(value) : value);
         return this;
