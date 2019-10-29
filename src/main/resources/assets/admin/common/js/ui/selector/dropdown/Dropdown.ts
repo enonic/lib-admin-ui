@@ -282,7 +282,7 @@ module api.ui.selector.dropdown {
         }
 
         setValue(value: string, silent?: boolean): Dropdown<OPTION_DISPLAY_VALUE> {
-            super.setValue(value);
+            super.setValue(value, silent);
             let option = this.getOptionByValue(value);
             if (option != null) {
                 this.selectOption(option, silent);
@@ -301,7 +301,7 @@ module api.ui.selector.dropdown {
         }
 
         selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false) {
-            super.setValue(option.value);
+            super.setValue(option.value, silent);
 
             const previousOption: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
 
@@ -322,14 +322,6 @@ module api.ui.selector.dropdown {
 
         getSelectedOptionView(): SelectedOptionView<OPTION_DISPLAY_VALUE> {
             return this.selectedOptionView;
-        }
-
-        getValue(): string {
-            let selectedOption = this.getSelectedOption();
-            if (!selectedOption) {
-                return null;
-            }
-            return selectedOption.value;
         }
 
         setInputIconUrl(iconUrl: string) {
