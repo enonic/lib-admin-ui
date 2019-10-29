@@ -7,6 +7,7 @@
     "build:prod": "tsc -p tsconfig.prod.json",
     "build:dev": "tsc -p tsconfig.dev.json",
     "build:lib": "webpack --hide-modules",
+    "build:minify": "node util/minify.js",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "fix": "tslint -p tsconfig.json -c tslint.json --fix"
   },
@@ -38,6 +39,7 @@
     "enonic-admin-artifacts": "^1.5.4",
     "error-logger-webpack-plugin": "^1.0.2",
     "file-loader": "^4.2.0",
+    "glob": "^7.1.5",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "mini-css-extract-plugin": "^0.8.0",
@@ -45,6 +47,7 @@
     "postcss-normalize": "^8.0.1",
     "prettier": "^1.18.2",
     "style-loader": "^1.0.0",
+    "terser": "^4.3.9",
     "terser-webpack-plugin": "^2.1.2",
     "ts-loader": "^6.2.0",
     "tslint": "^5.20.0",

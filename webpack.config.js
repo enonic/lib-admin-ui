@@ -1,11 +1,12 @@
-const MiniCssExtractPluginCleanup = require('./util/MiniCssExtractPluginCleanup');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// const CopyWebpackPlugin = require("copy-webpack-plugin");
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const ProvidePlugin = require('webpack/lib/ProvidePlugin');
-
 const path = require('path');
+
+const MiniCssExtractPluginCleanup = require('./util/MiniCssExtractPluginCleanup');
+
+const terserOptions = require('./terser.config');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -51,14 +52,8 @@ module.exports = {
     optimization: {
         minimizer: [
             new TerserPlugin({
-                sourceMap: true,
-                terserOptions: {
-                    compress: {
-                        drop_console: false
-                    },
-                    keep_classnames: true,
-                    keep_fnames: true
-                }
+                sourceMap: !isProd,
+                terserOptions
             })
         ]
     },

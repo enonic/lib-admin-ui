@@ -51,6 +51,15 @@ task typescriptLib( type: NodeTask, dependsOn: lint ) {
     script = file( './node_modules/webpack/bin/webpack' )
 }
 
+task minifyPkg( type: NpmTask, dependsOn: typescriptPkg ) {
+    description = 'Minify transpiled code.'
+    args = [ 'run', "build:minify" ]
+    inputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
+    outputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
+    mustRunAfter typescriptPkg
+    enabled isProd()
+}
+
 task copyPackage( type: Copy ) {
     from( './' ) {
         include 'package.json'
@@ -62,19 +71,23 @@ task copyPackage( type: Copy ) {
 task typescript {
     dependsOn 'typescriptPkg'
     dependsOn 'typescriptLib'
+    dependsOn 'minifyPkg'
     dependsOn 'copyPackage'
 }
 
 jar {
+    exclude 'dev/lib-admin-ui/lib.js'
     exclude 'assets/spec/**'
-    exclude 'assets/**/*.ts'   // let dev/**/admin.d.ts through to be used by other apps
-    exclude 'assets/**/*.less' // let dev/**/*.less through to be used by other apps
+    exclude 'assets/**/*.ts'
+    exclude 'assets/**/*.less'
+    exclude 'assets/**/styles/*.js'
+    exclude 'assets/**/icons/*.txt'
+    exclude 'assets/**/icons/**/icomoon.*'
 
     // COMMON/LIB excludes
     // Exclude complex files, that only present after the first build and must be evaluated dynamically
     def whitelist = [
-        /.*entry\.js$/,
-        /.*libs\.js$/,
+        /.*lib\.js$/,
         /.*\.css$/,
     ] as List
 
