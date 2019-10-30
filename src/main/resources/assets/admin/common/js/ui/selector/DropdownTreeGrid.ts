@@ -134,5 +134,13 @@ module api.ui.selector {
             const item = this.getGridData().getItemById(value);
             return item ? item.getData() : null;
         }
+
+        show() {
+            this.optionsTreeGrid.show();
+        }
+
+        hide() {
+            this.optionsTreeGrid.hide();
+        }
     }
 }
