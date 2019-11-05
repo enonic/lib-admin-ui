@@ -133,7 +133,7 @@ module api.ui.selector {
 
         hideDropdown() {
             this.emptyDropdown.hide();
-            this.dropdownGrid.hide();
+            this.dropdownGrid.hide(true);
         }
 
         setEmptyDropdownText(label: string) {
