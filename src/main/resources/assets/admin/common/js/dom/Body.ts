@@ -44,11 +44,11 @@ export class Body
     }
 
     static get(): Body {
-        let instance: Body = Store.parentInstance().get(BODY_KEY);
+        let instance: Body = Store.instance().get(BODY_KEY);
 
         if (instance == null && document.body) {
             instance = new Body();
-            Store.parentInstance().set(BODY_KEY, instance);
+            Store.instance().set(BODY_KEY, instance);
             ResponsiveManager.onAvailableSizeChanged(instance);
         }
 
