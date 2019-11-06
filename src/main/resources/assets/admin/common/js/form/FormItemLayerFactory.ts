@@ -15,8 +15,6 @@ export const FORM_ITEM_LAYER_FACTORY_KEY: string = 'FormItemLayerFactory';
 
 export class FormItemLayerFactoryImpl implements FormItemLayerFactory {
 
-    private static INSTANCE: FormItemLayerFactoryImpl;
-
     protected constructor() {}
 
     static get(): FormItemLayerFactoryImpl {
@@ -31,7 +29,7 @@ export class FormItemLayerFactoryImpl implements FormItemLayerFactory {
     }
 
     createLayer(config: CreatedFormItemLayerConfig): FormItemLayer {
-        const layer = new FormItemLayer(config.context, FormItemLayerFactoryImpl.INSTANCE);
+        const layer = new FormItemLayer(config.context, FormItemLayerFactoryImpl.get());
         if (config.lazyRender != null) {
             layer.setLazyRender(config.lazyRender);
         }
