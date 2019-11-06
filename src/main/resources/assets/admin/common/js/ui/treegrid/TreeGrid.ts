@@ -1595,7 +1595,7 @@ module api.ui.treegrid {
                     this.updateExpanded();
                     this.expandNodeChildren(node, expandAll);
 
-                    return wemQ(true);
+                    return true;
                 }).catch((reason: any) => {
                     this.handleError(reason);
                     return false;
