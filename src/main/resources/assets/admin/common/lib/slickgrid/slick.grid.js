@@ -4339,7 +4339,7 @@ if (typeof Slick === "undefined") {
             internalScrollColumnIntoView(columnPosLeft[cell], columnPosRight[cell]);
         }
 
-        function setActiveCellInternal(newCell, opt_editMode, preClickModeOn, suppressActiveCellChangedEvent, e) {
+        function setActiveCellInternal(newCell, opt_editMode, preClickModeOn, suppressActiveCellChangedEvent, e, row) {
             if (activeCellNode !== null) {
                 makeActiveCellNormal();
                 $(activeCellNode).removeClass("active");
@@ -4364,9 +4364,7 @@ if (typeof Slick === "undefined") {
                                  : frozenRowsHeight;
                 }
 
-                cell = getCellFromPoint($activeCellOffset.left, Math.ceil($activeCellOffset.top) - rowOffset);
-
-                activeRow = cell.row;
+                activeRow = row || getCellFromPoint($activeCellOffset.left, Math.ceil($activeCellOffset.top) - rowOffset).row;
                 activeCell = activePosX = activeCell = activePosX = getCellFromNode(activeCellNode);
 
                 $activeCellNode.addClass("active");
@@ -4652,9 +4650,10 @@ if (typeof Slick === "undefined") {
                 // subtract number of frozen row
                 var rowNumber = (hasFrozenRows && !options.frozenBottom ? row - options.frozenRow : row);
 
-                var rowAtTop = rowNumber * getGalleryRowHeight();
+                var galleryRowNumber = getGalleryRow(rowNumber);
+                var rowAtTop = galleryRowNumber * getGalleryRowHeight();
                 var nextRowAtTop = (getGalleryRow(rowNumber) + 1) * getGalleryRowHeight();
-                var rowAtBottom = (rowNumber + 1) * getGalleryRowHeight()
+                var rowAtBottom = (galleryRowNumber + 1) * getGalleryRowHeight()
                                   - viewportScrollH
                                   + (viewportHasHScroll ? scrollbarDimensions.height : 0);
 
@@ -4664,7 +4663,7 @@ if (typeof Slick === "undefined") {
                     render();
                 }
                 // or page up?
-                else if (rowNumber * options.rowHeight < scrollTop + offset) {
+                else if (galleryRowNumber * getGalleryRowHeight() < scrollTop + offset) {
                     scrollTo(doPaging ? rowAtBottom : rowAtTop);
                     render();
                 }
@@ -5108,7 +5107,7 @@ if (typeof Slick === "undefined") {
             }
 
             scrollCellIntoView(row, cell, false);
-            setActiveCellInternal(getCellNode(row, cell), opt_editMode, preClickModeOn, suppressActiveCellChangedEvent);
+            setActiveCellInternal(getCellNode(row, cell), opt_editMode, preClickModeOn, suppressActiveCellChangedEvent, null, row);
         }
 
         function canCellBeActive(row, cell) {
