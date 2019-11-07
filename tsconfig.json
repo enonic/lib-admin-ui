@@ -1,15 +1,39 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "sourceMap": true
+    "target": "es5",
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "outDir": "build/resources/main/assets/admin/common/js/",
+    "declaration": false,
+    "sourceMap": false,
+    "declarationMap": false,
+    "allowSyntheticDefaultImports": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": false,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": false,
+    "types": [
+      "core-js",
+      "jquery",
+      "jqueryui",
+      "mousetrap",
+      "q",
+      "slickgrid"
+    ]
   },
-  "files": [
-    "src/main/resources/assets/admin/common/js/_module.ts"
+  "include": [
+      "src/main/resources/assets/admin/common/js/lib.ts",
+      "src/main/resources/assets/admin/common/js/types.d.ts"
   ],
   "exclude": [
-    "build/**/*",
-    "src/main/resources/assets/admin/common/lib/_all.js",
-    "src/main/resources/assets/admin/common/js/_all.js",
-    "src/main/resources/assets/admin/common/js/_all.d.ts"
-  ]
+    ".vscode",
+    "build/**/*"
+  ],
+  "compileOnSave": false,
+  "buildOnSave": false
 }

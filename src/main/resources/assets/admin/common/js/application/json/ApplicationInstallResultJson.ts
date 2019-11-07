@@ -1,11 +1,8 @@
-module api.application.json {
+import {ApplicationJson} from './ApplicationJson';
 
-    import ApplicationJson = api.application.json.ApplicationJson;
+export interface ApplicationInstallResultJson {
 
-    export interface ApplicationInstallResultJson {
+    applicationInstalledJson: ApplicationJson;
 
-        applicationInstalledJson: ApplicationJson;
-
-        failure: string;
-    }
+    failure: string;
 }

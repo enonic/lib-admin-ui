@@ -1,148 +1,155 @@
-module api.form {
+import * as Q from 'q';
+import {PropertySet} from '../../data/PropertySet';
+import {Property} from '../../data/Property';
+import {PropertyArray} from '../../data/PropertyArray';
+import {FormSetOccurrenceView} from './FormSetOccurrenceView';
+import {FormItemOccurrences, FormItemOccurrencesConfig} from '../FormItemOccurrences';
+import {FormContext} from '../FormContext';
+import {FormSet} from './FormSet';
+import {OccurrenceRenderedEvent} from '../OccurrenceRenderedEvent';
+import {Occurrences} from '../Occurrences';
+import {FormItemOccurrence} from '../FormItemOccurrence';
+import {FormSetOccurrence} from './FormSetOccurrence';
 
-    import PropertySet = api.data.PropertySet;
-    import Property = api.data.Property;
-    import PropertyArray = api.data.PropertyArray;
+export class FormSetOccurrences<V extends FormSetOccurrenceView>
+    extends FormItemOccurrences<V> {
 
-    export class FormSetOccurrences<V extends FormSetOccurrenceView> extends FormItemOccurrences<V> {
+    protected context: FormContext;
 
-        protected context: FormContext;
+    protected parent: FormSetOccurrenceView;
 
-        protected parent: FormSetOccurrenceView;
+    protected occurrencesCollapsed: boolean = false;
 
-        protected occurrencesCollapsed: boolean = false;
+    protected formSet: FormSet;
 
-        protected formSet: FormSet;
+    constructor(config: FormItemOccurrencesConfig) {
+        super(config);
 
-        constructor(config: FormItemOccurrencesConfig) {
-            super(config);
+        this.onOccurrenceRendered((event: OccurrenceRenderedEvent) => {
+            const occurrenceView = <FormSetOccurrenceView>event.getOccurrenceView();
+            occurrenceView.getContainer().onShown(() => this.updateOccurrencesCollapsed());
+            occurrenceView.getContainer().onHidden(() => this.updateOccurrencesCollapsed());
+        });
+    }
 
-            this.onOccurrenceRendered((event: OccurrenceRenderedEvent) => {
-                const occurrenceView = <FormSetOccurrenceView>event.getOccurrenceView();
-                occurrenceView.getContainer().onShown(() => this.updateOccurrencesCollapsed());
-                occurrenceView.getContainer().onHidden(() => this.updateOccurrencesCollapsed());
-            });
+    showOccurrences(show: boolean) {
+        let views = this.getOccurrenceViews();
+        this.occurrencesCollapsed = !show;
+        views.forEach((formSetOccurrenceView: FormSetOccurrenceView) => {
+            formSetOccurrenceView.showContainer(show);
+        });
+    }
+
+    getFormSet(): FormSet {
+        return this.formSet;
+    }
+
+    getAllowedOccurrences(): Occurrences {
+        return this.formSet.getOccurrences();
+    }
+
+    createNewOccurrence(formItemOccurrences: FormItemOccurrences<V>,
+                        insertAtIndex: number): FormItemOccurrence<V> {
+        this.occurrencesCollapsed = false;
+        return new FormSetOccurrence(<FormSetOccurrences<V>>formItemOccurrences, insertAtIndex);
+    }
+
+    toggleHelpText(show?: boolean) {
+        this.getOccurrenceViews().forEach((view) => {
+            view.toggleHelpText(show);
+        });
+    }
+
+    isCollapsed(): boolean {
+        return this.occurrencesCollapsed;
+    }
+
+    moveOccurrence(index: number, destinationIndex: number) {
+        super.moveOccurrence(index, destinationIndex);
+    }
+
+    updateOccurrenceView(occurrenceView: FormSetOccurrenceView, propertyArray: PropertyArray,
+                         _unchangedOnly?: boolean): Q.Promise<void> {
+        this.propertyArray = propertyArray;
+
+        return occurrenceView.update(propertyArray);
+    }
+
+    resetOccurrenceView(occurrenceView: FormSetOccurrenceView) {
+        occurrenceView.reset();
+    }
+
+    refreshOccurence(index: number) {
+        this.occurrenceViews[index].refreshViews();
+    }
+
+    update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
+        if (propertyArray.isEmpty()) {
+            return this.updateNoData(propertyArray, unchangedOnly);
+        } else {
+            return super.update(propertyArray, unchangedOnly);
         }
+    }
 
-        showOccurrences(show: boolean) {
-            let views = this.getOccurrenceViews();
-            this.occurrencesCollapsed = !show;
-            views.forEach((formSetOccurrenceView: FormSetOccurrenceView) => {
-                formSetOccurrenceView.showContainer(show);
-            });
+    protected getSetFromArray(occurrence: FormItemOccurrence<V>): PropertySet {
+        let dataSet = this.propertyArray.getSet(occurrence.getIndex());
+        if (!dataSet) {
+            dataSet = this.propertyArray.addSet();
         }
+        return dataSet;
+    }
 
-        private updateOccurrencesCollapsed() {
-            this.occurrencesCollapsed = this.getOccurrenceViews().every((formSetOccurrenceView: FormSetOccurrenceView) => {
-                return !formSetOccurrenceView.isContainerVisible();
-            });
-        }
+    protected constructOccurrencesForNoData(): FormItemOccurrence<V>[] {
+        let occurrences: FormItemOccurrence<V>[] = [];
+        let minimumOccurrences = this.getAllowedOccurrences().getMinimum();
 
-        getFormSet(): FormSet {
-            return this.formSet;
-        }
-
-        getAllowedOccurrences(): Occurrences {
-            return this.formSet.getOccurrences();
-        }
-
-        createNewOccurrence(formItemOccurrences: FormItemOccurrences<V>,
-                            insertAtIndex: number): FormItemOccurrence<V> {
-            this.occurrencesCollapsed = false;
-            return new FormSetOccurrence(<FormSetOccurrences<V>>formItemOccurrences, insertAtIndex);
-        }
-
-        protected getSetFromArray(occurrence: FormItemOccurrence<V>): PropertySet {
-            let dataSet = this.propertyArray.getSet(occurrence.getIndex());
-            if (!dataSet) {
-                dataSet = this.propertyArray.addSet();
+        if (minimumOccurrences > 0) {
+            for (let i = 0; i < minimumOccurrences; i++) {
+                occurrences.push(this.createNewOccurrence(this, i));
             }
-            return dataSet;
+        } else if (this.context.getShowEmptyFormItemSetOccurrences()) {
+            occurrences.push(this.createNewOccurrence(this, 0));
         }
 
-        protected constructOccurrencesForNoData(): FormItemOccurrence<V>[] {
-            let occurrences: FormItemOccurrence<V>[] = [];
-            let minimumOccurrences = this.getAllowedOccurrences().getMinimum();
+        return occurrences;
+    }
 
-            if (minimumOccurrences > 0) {
-                for (let i = 0; i < minimumOccurrences; i++) {
-                    occurrences.push(this.createNewOccurrence(this, i));
-                }
-            } else if (this.context.getShowEmptyFormItemSetOccurrences()) {
-                occurrences.push(this.createNewOccurrence(this, 0));
-            }
+    protected constructOccurrencesForData(): FormItemOccurrence<V>[] {
+        let occurrences: FormItemOccurrence<V>[] = [];
 
-            return occurrences;
-        }
+        this.propertyArray.forEach((_property: Property, index: number) => {
+            occurrences.push(this.createNewOccurrence(this, index));
+        });
 
-        protected constructOccurrencesForData(): FormItemOccurrence<V>[] {
-            let occurrences: FormItemOccurrence<V>[] = [];
-
-            this.propertyArray.forEach((_property: Property, index: number) => {
+        if (occurrences.length < this.getAllowedOccurrences().getMinimum()) {
+            for (let index: number = occurrences.length; index < this.getAllowedOccurrences().getMinimum(); index++) {
                 occurrences.push(this.createNewOccurrence(this, index));
-            });
-
-            if (occurrences.length < this.getAllowedOccurrences().getMinimum()) {
-                for (let index: number = occurrences.length; index < this.getAllowedOccurrences().getMinimum(); index++) {
-                    occurrences.push(this.createNewOccurrence(this, index));
-                }
-            }
-            return occurrences;
-        }
-
-        toggleHelpText(show?: boolean) {
-            this.getOccurrenceViews().forEach((view) => {
-                view.toggleHelpText(show);
-            });
-        }
-
-        isCollapsed(): boolean {
-            return this.occurrencesCollapsed;
-        }
-
-        moveOccurrence(index: number, destinationIndex: number) {
-            super.moveOccurrence(index, destinationIndex);
-        }
-
-        updateOccurrenceView(occurrenceView: FormSetOccurrenceView, propertyArray: PropertyArray,
-                             _unchangedOnly?: boolean): wemQ.Promise<void> {
-            this.propertyArray = propertyArray;
-
-            return occurrenceView.update(propertyArray);
-        }
-
-        resetOccurrenceView(occurrenceView: FormSetOccurrenceView) {
-            occurrenceView.reset();
-        }
-
-        refreshOccurence(index: number) {
-            this.occurrenceViews[index].refreshViews();
-        }
-
-        update(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
-            if (propertyArray.isEmpty()) {
-                return this.updateNoData(propertyArray, unchangedOnly);
-            } else {
-                return super.update(propertyArray, unchangedOnly);
             }
         }
+        return occurrences;
+    }
 
-        private updateNoData(propertyArray: PropertyArray, unchangedOnly?: boolean): wemQ.Promise<void> {
-            const promises: wemQ.Promise<void>[] = [];
-            const occurrencesViewClone: V[] = [].concat(this.occurrenceViews);
-            const occurrencesNoDataSize: number = this.constructOccurrencesForNoData().length;
+    private updateOccurrencesCollapsed() {
+        this.occurrencesCollapsed = this.getOccurrenceViews().every((formSetOccurrenceView: FormSetOccurrenceView) => {
+            return !formSetOccurrenceView.isContainerVisible();
+        });
+    }
 
-            for (let i = 0; i < occurrencesNoDataSize; i++) {
-                promises.push(this.updateOccurrenceView(occurrencesViewClone[i], propertyArray, unchangedOnly));
-            }
+    private updateNoData(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
+        const promises: Q.Promise<void>[] = [];
+        const occurrencesViewClone: V[] = [].concat(this.occurrenceViews);
+        const occurrencesNoDataSize: number = this.constructOccurrencesForNoData().length;
 
-            for (let i = occurrencesNoDataSize; i < occurrencesViewClone.length; i++) {
-                this.removeOccurrenceView(occurrencesViewClone[i]);
-            }
-
-            this.propertyArray = propertyArray;
-
-            return wemQ.all(promises).spread<void>(() => wemQ<void>(null));
+        for (let i = 0; i < occurrencesNoDataSize; i++) {
+            promises.push(this.updateOccurrenceView(occurrencesViewClone[i], propertyArray, unchangedOnly));
         }
+
+        for (let i = occurrencesNoDataSize; i < occurrencesViewClone.length; i++) {
+            this.removeOccurrenceView(occurrencesViewClone[i]);
+        }
+
+        this.propertyArray = propertyArray;
+
+        return Q.all(promises).spread<void>(() => Q<void>(null));
     }
 }

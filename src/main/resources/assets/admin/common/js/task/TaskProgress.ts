@@ -1,71 +1,70 @@
-module api.task {
+import {TaskProgressJson} from './TaskProgressJson';
 
-    export class TaskProgress {
+export class TaskProgress {
 
-        private info: string;
-        private current: number;
-        private total: number;
+    private info: string;
+    private current: number;
+    private total: number;
 
-        constructor(builder: TaskProgressBuilder) {
-            this.info = builder.info;
-            this.current = builder.current;
-            this.total = builder.total;
-        }
-
-        getInfo(): string {
-            return this.info;
-        }
-
-        getCurrent(): number {
-            return this.current;
-        }
-
-        getTotal(): number {
-            return this.total;
-        }
-
-        static create(): TaskProgressBuilder {
-            return new TaskProgressBuilder();
-        }
+    constructor(builder: TaskProgressBuilder) {
+        this.info = builder.info;
+        this.current = builder.current;
+        this.total = builder.total;
     }
 
-    export class TaskProgressBuilder {
+    static create(): TaskProgressBuilder {
+        return new TaskProgressBuilder();
+    }
 
-        info: string;
-        current: number;
-        total: number;
+    getInfo(): string {
+        return this.info;
+    }
 
-        fromSource(source: TaskProgress): TaskProgressBuilder {
-            this.info = source.getInfo();
-            this.current = source.getCurrent();
-            this.total = source.getTotal();
-            return this;
-        }
+    getCurrent(): number {
+        return this.current;
+    }
 
-        fromJson(json: api.task.TaskProgressJson): TaskProgressBuilder {
-            this.info = json.info;
-            this.current = json.current;
-            this.total = json.total;
-            return this;
-        }
+    getTotal(): number {
+        return this.total;
+    }
+}
 
-        setInfo(info: string): TaskProgressBuilder {
-            this.info = info;
-            return this;
-        }
+export class TaskProgressBuilder {
 
-        setCurrent(current: number): TaskProgressBuilder {
-            this.current = current;
-            return this;
-        }
+    info: string;
+    current: number;
+    total: number;
 
-        setTotal(total: number): TaskProgressBuilder {
-            this.total = total;
-            return this;
-        }
+    fromSource(source: TaskProgress): TaskProgressBuilder {
+        this.info = source.getInfo();
+        this.current = source.getCurrent();
+        this.total = source.getTotal();
+        return this;
+    }
 
-        build(): TaskProgress {
-            return new TaskProgress(this);
-        }
+    fromJson(json: TaskProgressJson): TaskProgressBuilder {
+        this.info = json.info;
+        this.current = json.current;
+        this.total = json.total;
+        return this;
+    }
+
+    setInfo(info: string): TaskProgressBuilder {
+        this.info = info;
+        return this;
+    }
+
+    setCurrent(current: number): TaskProgressBuilder {
+        this.current = current;
+        return this;
+    }
+
+    setTotal(total: number): TaskProgressBuilder {
+        this.total = total;
+        return this;
+    }
+
+    build(): TaskProgress {
+        return new TaskProgress(this);
     }
 }

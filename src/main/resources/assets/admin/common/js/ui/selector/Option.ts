@@ -1,19 +1,17 @@
-module api.ui.selector {
+export interface Option<T>
+    extends Slick.SlickData {
 
-    export interface Option<T> extends Slick.SlickData {
+    value: string;
 
-        value:string;
+    displayValue: T;
 
-        displayValue:T;
+    indices?: string[];
 
-        indices?: string[];
+    readOnly?: boolean;
 
-        readOnly?: boolean;
+    empty?: boolean;
 
-        empty? :boolean;
+    selectable?: boolean;
 
-        selectable?: boolean;
-
-        expandable?: boolean;
-    }
+    expandable?: boolean;
 }

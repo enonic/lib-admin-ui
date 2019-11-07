@@ -1,8 +1,7 @@
-module api.rest {
+import * as Q from 'q';
 
-    export interface HttpRequest<TYPE> {
+export interface HttpRequest<TYPE> {
 
-        sendAndParse(): wemQ.Promise<TYPE>;
+    sendAndParse(): Q.Promise<TYPE>;
 
-    }
 }

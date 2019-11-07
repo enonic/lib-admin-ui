@@ -1,40 +1,48 @@
-module api.util {
+import {Store} from '../store/Store';
 
-    import JsonRequest = api.rest.JsonRequest;
-    import JsonResponse = api.rest.JsonResponse;
+export class Messages {
 
-    let messages: Object;
+    // private static storage: Map<string, string> = new Map<string, string>();
 
-    export function i18nInit(url: string): wemQ.Promise<Object> {
+    private static getMessages(): Map<string, string> {
+        let messages: Map<string, string> = Store.instance().get('messages');
 
-        if (!!messages) {
-            return wemQ.resolve(messages);
+        if (messages == null) {
+            messages = new Map();
+            Store.instance().set('messages', messages);
         }
 
-        const request = new JsonRequest<KeysJson>();
-        request.setPath(api.rest.Path.fromString(url));
-
-        return request.send().then((response: JsonResponse<KeysJson>) => {
-            messages = response.getResult();
-
-            return messages;
-        });
+        return messages;
     }
 
-    export function i18n(key: string, ...args: any[]): string {
-        let message = '#' + key + '#';
-
-        if (!!messages && (messages[key] != null)) {
-            message = messages[key];
+    static setMessages(messages: Object) {
+        if (messages) {
+            Messages.getMessages().clear();
+            for (let key in messages) {
+                if (messages.hasOwnProperty(key)) {
+                    Messages.getMessages().set(key, messages[key]);
+                }
+            }
         }
-
-        return message.replace(/{(\d+)}/g, function (_substring: string, ...replaceArgs: any[]) {
-            return args[replaceArgs[0]];
-        }).trim();
     }
 
-    export interface KeysJson {
-        key: string;
+    static isEmpty() {
+        return Messages.getMessages().size === 0;
     }
 
+    static getMessage(key: string) {
+        return Messages.getMessages().get(key);
+    }
+
+    static hasMessage(key: string) {
+        return Messages.getMessages().has(key);
+    }
+}
+
+export function i18n(key: string, ...args: any[]): string {
+    const message = Messages.hasMessage(key) ? Messages.getMessage(key) : `#${key}#`;
+
+    return message.replace(/{(\d+)}/g, function (_substring: string, ...replaceArgs: any[]) {
+        return args[replaceArgs[0]];
+    }).trim();
 }

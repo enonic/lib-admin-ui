@@ -1,125 +1,130 @@
-module api.ui.form {
-    export class Fieldset extends api.dom.FieldsetEl {
+import {FieldsetEl} from '../../dom/FieldsetEl';
+import {LegendEl} from '../../dom/LegendEl';
+import {FormItem} from './FormItem';
+import {ValidityChangedEvent} from '../../ValidityChangedEvent';
+import {ValidationResult} from './ValidationResult';
 
-        private legend: api.dom.LegendEl;
+export class Fieldset
+    extends FieldsetEl {
 
-        private items: api.ui.form.FormItem[] = [];
+    private legend: LegendEl;
 
-        private focusListeners: {(event: FocusEvent):void}[] = [];
+    private items: FormItem[] = [];
 
-        private blurListeners: {(event: FocusEvent):void}[] = [];
+    private focusListeners: { (event: FocusEvent): void }[] = [];
 
-        private validityChangedListeners: {(event: ValidityChangedEvent):void}[] = [];
+    private blurListeners: { (event: FocusEvent): void }[] = [];
 
-        constructor(legend?: string) {
-            super();
-            if (legend) {
-                this.legend = new api.dom.LegendEl(legend);
-                this.appendChild(this.legend);
+    private validityChangedListeners: { (event: ValidityChangedEvent): void }[] = [];
+
+    constructor(legend?: string) {
+        super();
+        if (legend) {
+            this.legend = new LegendEl(legend);
+            this.appendChild(this.legend);
+        }
+    }
+
+    add(formItem: FormItem) {
+        formItem.onFocus((event: FocusEvent) => {
+            this.notifyFocused(event);
+        });
+
+        formItem.onBlur((event: FocusEvent) => {
+            this.notifyBlurred(event);
+        });
+
+        formItem.onValidityChanged((event) => {
+            this.notifyValidityChanged(event.isValid());
+        });
+
+        this.items.push(formItem);
+
+        this.appendChild(formItem);
+    }
+
+    removeItem(formItem: FormItem) {
+        for (let i = 0; i < this.items.length; i++) {
+            if (this.items[i] === formItem) {
+                this.items.splice(i, 1);
+                this.removeChild(formItem);
             }
         }
+    }
 
-        add(formItem: FormItem) {
-            formItem.onFocus((event: FocusEvent) => {
-                this.notifyFocused(event);
-            });
+    validate(validationResult: ValidationResult, markInvalid?: boolean) {
+        this.items.forEach((item: FormItem) => {
+            item.validate(validationResult, markInvalid);
+        });
+    }
 
-            formItem.onBlur((event: FocusEvent) => {
-                this.notifyBlurred(event);
-            });
-
-            formItem.onValidityChanged((event) => {
-                this.notifyValidityChanged(event.isValid());
-            });
-
-            this.items.push(formItem);
-
-            this.appendChild(formItem);
-        }
-
-        removeItem(formItem: FormItem) {
-            for (let i = 0; i < this.items.length; i++) {
-                if (this.items[i] === formItem) {
-                    this.items.splice(i, 1);
-                    this.removeChild(formItem);
-                }
+    setFieldsetData(data: any) {
+        let input;
+        let inputValue;
+        this.items.forEach((item: FormItem) => {
+            input = item.getInput();
+            inputValue = data[input.getName()];
+            if (inputValue) {
+                input.setValue(inputValue);
             }
-        }
+        });
+    }
 
-        validate(validationResult:ValidationResult, markInvalid?: boolean) {
-            this.items.forEach((item: api.ui.form.FormItem) => {
-                item.validate(validationResult, markInvalid);
-            });
-        }
+    getFieldsetData(): any {
+        let input;
+        let data = {};
+        this.items.forEach((item: FormItem) => {
+            input = item.getInput();
+            data[input.getName()] = input.getValue();
+        });
+        return data;
+    }
 
-        setFieldsetData(data: any) {
-            let input;
-            let inputValue;
-            this.items.forEach((item: api.ui.form.FormItem) => {
-                input = item.getInput();
-                inputValue = data[input.getName()];
-                if (inputValue) {
-                    input.setValue(inputValue);
-                }
-            });
-        }
+    onFocus(listener: (event: FocusEvent) => void) {
+        this.focusListeners.push(listener);
+    }
 
-        getFieldsetData(): any {
-            let input;
-            let data = {};
-            this.items.forEach((item: api.ui.form.FormItem) => {
-                input = item.getInput();
-                data[input.getName()] = input.getValue();
-            });
-            return data;
-        }
+    unFocus(listener: (event: FocusEvent) => void) {
+        this.focusListeners = this.focusListeners.filter((curr) => {
+            return curr !== listener;
+        });
+    }
 
-        onFocus(listener: (event: FocusEvent) => void) {
-            this.focusListeners.push(listener);
-        }
+    onBlur(listener: (event: FocusEvent) => void) {
+        this.blurListeners.push(listener);
+    }
 
-        unFocus(listener: (event: FocusEvent) => void) {
-            this.focusListeners = this.focusListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
+    unBlur(listener: (event: FocusEvent) => void) {
+        this.blurListeners = this.blurListeners.filter((curr) => {
+            return curr !== listener;
+        });
+    }
 
-        onBlur(listener: (event: FocusEvent) => void) {
-            this.blurListeners.push(listener);
-        }
+    onValidityChanged(listener: (event: ValidityChangedEvent) => void) {
+        this.validityChangedListeners.push(listener);
+    }
 
-        unBlur(listener: (event: FocusEvent) => void) {
-            this.blurListeners = this.blurListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
+    unValidityChanged(listener: (event: ValidityChangedEvent) => void) {
+        this.validityChangedListeners = this.validityChangedListeners.filter((curr) => {
+            return curr !== listener;
+        });
+    }
 
-        private notifyFocused(event: FocusEvent) {
-            this.focusListeners.forEach((listener) => {
-                listener(event);
-            });
-        }
+    notifyValidityChanged(valid: boolean) {
+        this.validityChangedListeners.forEach((listener: (event: ValidityChangedEvent) => void) => {
+            listener.call(this, new ValidityChangedEvent(valid));
+        });
+    }
 
-        private notifyBlurred(event: FocusEvent) {
-            this.blurListeners.forEach((listener) => {
-                listener(event);
-            });
-        }
+    private notifyFocused(event: FocusEvent) {
+        this.focusListeners.forEach((listener) => {
+            listener(event);
+        });
+    }
 
-        onValidityChanged(listener: (event: ValidityChangedEvent)=>void) {
-            this.validityChangedListeners.push(listener);
-        }
-
-        unValidityChanged(listener: (event: ValidityChangedEvent)=>void) {
-            this.validityChangedListeners = this.validityChangedListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
-
-        notifyValidityChanged(valid: boolean) {
-            this.validityChangedListeners.forEach((listener: (event: ValidityChangedEvent)=>void)=> {
-                listener.call(this, new ValidityChangedEvent(valid));
-            });
-        }
+    private notifyBlurred(event: FocusEvent) {
+        this.blurListeners.forEach((listener) => {
+            listener(event);
+        });
     }
 }

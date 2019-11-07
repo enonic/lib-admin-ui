@@ -1,38 +1,40 @@
-module api.util {
+import {Equitable} from '../Equitable';
+import {ContentId} from '../content/ContentId';
+import {ObjectHelper} from '../ObjectHelper';
 
-    export class Reference implements api.Equitable {
+export class Reference
+    implements Equitable {
 
-        private referenceId: string;
+    private referenceId: string;
 
-        constructor(value: string) {
-            this.referenceId = value;
+    constructor(value: string) {
+        this.referenceId = value;
+    }
+
+    static from(value: ContentId): Reference {
+        return new Reference(value.toString());
+    }
+
+    getNodeId(): string {
+        return this.referenceId;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, Reference)) {
+            return false;
         }
 
-        static from(value: api.content.ContentId): Reference {
-            return new Reference(value.toString());
+        let other = <Reference>o;
+
+        if (!ObjectHelper.stringEquals(this.referenceId, other.referenceId)) {
+            return false;
         }
 
-        getNodeId(): string {
-            return this.referenceId;
-        }
+        return true;
+    }
 
-        equals(o: Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Reference)) {
-                return false;
-            }
-
-            let other = <Reference>o;
-
-            if (!api.ObjectHelper.stringEquals(this.referenceId, other.referenceId)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        toString(): string {
-            return this.referenceId;
-        }
+    toString(): string {
+        return this.referenceId;
     }
 }

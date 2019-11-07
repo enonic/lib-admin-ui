@@ -1,31 +1,32 @@
-module api.form.json {
+import {FormItemJson} from './FormItemJson';
+import {OccurrencesJson} from './OccurrencesJson';
 
-    export interface InputJson extends FormItemJson {
+export interface InputJson
+    extends FormItemJson {
 
-        customText?: string;
+    customText?: string;
 
-        helpText?: string;
+    helpText?: string;
 
-        immutable?: boolean;
+    immutable?: boolean;
 
-        indexed?: boolean;
+    indexed?: boolean;
 
-        label: string;
+    label: string;
 
-        occurrences: OccurrencesJson;
+    occurrences: OccurrencesJson;
 
-        validationRegexp?: string;
+    validationRegexp?: string;
 
-        inputType: string;
+    inputType: string;
 
-        config?: any;
+    config?: any;
 
-        maximizeUIInputWidth?: boolean;
+    maximizeUIInputWidth?: boolean;
 
-        defaultValue?: {
-            type: string;
-            value: any;
-        };
+    defaultValue?: {
+        type: string;
+        value: any;
+    };
 
-    }
 }

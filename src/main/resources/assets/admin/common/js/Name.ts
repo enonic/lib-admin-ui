@@ -1,43 +1,46 @@
-module api {
+import {Equitable} from './Equitable';
+import {StringHelper} from './util/StringHelper';
+import {ObjectHelper} from './ObjectHelper';
+import {assert, assertNotNull} from './util/Assert';
 
-    export class Name implements api.Equitable {
+export class Name
+    implements Equitable {
 
-        public static FORBIDDEN_CHARS: RegExp = /[^a-z0-9\-]+/ig;
+    public static FORBIDDEN_CHARS: RegExp = /[^a-z0-9\-]+/ig;
 
-        public static SIMPLIFIED_FORBIDDEN_CHARS: RegExp = /[\/!?\\]/g;
+    public static SIMPLIFIED_FORBIDDEN_CHARS: RegExp = /[\/!?\\]/g;
 
-        private value: string;
+    private value: string;
 
-        constructor(name: string) {
+    constructor(name: string) {
 
-            api.util.assertNotNull(name, 'Name cannot be null');
+        assertNotNull(name, 'Name cannot be null');
 
-            api.util.assert(!api.util.StringHelper.isEmpty(name), 'Name cannot be empty');
+        assert(!StringHelper.isEmpty(name), 'Name cannot be empty');
 
-            this.value = name;
+        this.value = name;
+    }
+
+    getValue(): string {
+        return this.value;
+    }
+
+    toString(): string {
+        return this.value;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!(ObjectHelper.iFrameSafeInstanceOf(o, Name))) {
+            return false;
         }
 
-        getValue(): string {
-            return this.value;
+        let other = <Name>o;
+
+        if (this.value !== other.value) {
+            return false;
         }
 
-        toString(): string {
-            return this.value;
-        }
-
-        equals(o: api.Equitable): boolean {
-
-            if (!(api.ObjectHelper.iFrameSafeInstanceOf(o, Name))) {
-                return false;
-            }
-
-            let other = <Name>o;
-
-            if (this.value !== other.value) {
-                return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

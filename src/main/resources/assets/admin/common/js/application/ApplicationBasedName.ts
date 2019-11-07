@@ -1,47 +1,49 @@
-module api.application {
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
+import {ClassHelper} from '../ClassHelper';
+import {ApplicationKey} from './ApplicationKey';
 
-    export class ApplicationBasedName implements api.Equitable {
-        static SEPARATOR: string = ':';
+export class ApplicationBasedName
+    implements Equitable {
+    static SEPARATOR: string = ':';
 
-        private refString: string;
+    private refString: string;
 
-        private applicationKey: ApplicationKey;
+    private applicationKey: ApplicationKey;
 
-        private localName: string;
+    private localName: string;
 
-        constructor(applicationKey: ApplicationKey, localName: string) {
-            this.applicationKey = applicationKey;
-            this.localName = localName;
-            this.refString = applicationKey.toString() ? applicationKey.toString() + ApplicationBasedName.SEPARATOR + localName : localName;
+    constructor(applicationKey: ApplicationKey, localName: string) {
+        this.applicationKey = applicationKey;
+        this.localName = localName;
+        this.refString = applicationKey.toString() ? applicationKey.toString() + ApplicationBasedName.SEPARATOR + localName : localName;
+    }
+
+    getLocalName(): string {
+        return this.localName;
+    }
+
+    getApplicationKey(): ApplicationKey {
+        return this.applicationKey;
+    }
+
+    toString(): string {
+        return this.refString;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, ClassHelper.getClass(this))) {
+            return false;
         }
 
-        getLocalName(): string {
-            return this.localName;
+        let other = <ApplicationBasedName>o;
+
+        if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
+            return false;
         }
 
-        getApplicationKey(): ApplicationKey {
-            return this.applicationKey;
-        }
-
-        toString(): string {
-            return this.refString;
-        }
-
-        equals(o: api.Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, api.ClassHelper.getClass(this))) {
-                return false;
-            }
-
-            let other = <ApplicationBasedName>o;
-
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
-                return false;
-            }
-
-            return true;
-        }
-
+        return true;
     }
 
 }

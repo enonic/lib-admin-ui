@@ -1,136 +1,136 @@
-module api.ui {
+import {i18n} from '../util/Messages';
+import {Viewer} from './Viewer';
+import {NamesAndIconView, NamesAndIconViewBuilder} from '../app/NamesAndIconView';
+import {NamesAndIconViewSize} from '../app/NamesAndIconViewSize';
+import {ContentUnnamed} from '../content/ContentUnnamed';
+import {StringHelper} from '../util/StringHelper';
+import {ElementHelper} from '../dom/ElementHelper';
+import {Element} from '../dom/Element';
 
-    import i18n = api.util.i18n;
+/**
+ * A parent class capable of viewing a given object with names and icon.
+ */
+export class NamesAndIconViewer<OBJECT>
+    extends Viewer<OBJECT> {
 
-    /**
-     * A parent class capable of viewing a given object with names and icon.
-     */
-    export class NamesAndIconViewer<OBJECT>
-        extends api.ui.Viewer<OBJECT> {
+    public static debug: boolean = false;
+    protected namesAndIconView: NamesAndIconView;
+    private emptyDisplayName: string = '<' + i18n('field.displayName') + '>';
+    private relativePath: boolean;
+    private size: NamesAndIconViewSize;
 
-        private emptyDisplayName: string = '<' + i18n('field.displayName') + '>';
+    constructor(className?: string, size: NamesAndIconViewSize = NamesAndIconViewSize.small) {
+        super(className);
 
-        protected namesAndIconView: api.app.NamesAndIconView;
+        this.size = size;
+    }
 
-        private relativePath: boolean;
+    getCloneArgs(): any[] {
+        return [this.className, this.size];
+    }
 
-        private size: api.app.NamesAndIconViewSize;
+    setObject(object: OBJECT, relativePath: boolean = false) {
+        this.relativePath = relativePath;
+        return super.setObject(object);
+    }
 
-        public static debug: boolean = false;
+    doLayout(object: OBJECT) {
+        super.doLayout(object);
 
-        constructor(className?: string, size: api.app.NamesAndIconViewSize = api.app.NamesAndIconViewSize.small) {
-            super(className);
-
-            this.size = size;
+        if (NamesAndIconViewer.debug) {
+            console.debug('NamesAndIconViewer.doLayout');
         }
 
-        getCloneArgs(): any[] {
-            return [this.className, this.size];
+        if (!this.namesAndIconView) {
+            this.namesAndIconView = new NamesAndIconViewBuilder().setSize(this.size).build();
+            this.appendChild(this.namesAndIconView);
         }
 
-        setObject(object: OBJECT, relativePath: boolean = false) {
-            this.relativePath = relativePath;
-            return super.setObject(object);
-        }
+        if (object) {
+            const displayName = this.resolveDisplayName(object) || this.normalizeDisplayName(this.resolveUnnamedDisplayName(object));
+            const subName = this.resolveSubName(object, this.relativePath) || ContentUnnamed.prettifyUnnamed();
+            const subTitle = this.resolveSubTitle(object);
+            const hint = this.resolveHint(object);
 
-        doLayout(object: OBJECT) {
-            super.doLayout(object);
-
-            if (NamesAndIconViewer.debug) {
-                console.debug('NamesAndIconViewer.doLayout');
+            if (!StringHelper.isBlank(hint)) {
+                this.getHintTargetEl().setAttribute('title', hint);
             }
 
-            if (!this.namesAndIconView) {
-                this.namesAndIconView = new api.app.NamesAndIconViewBuilder().setSize(this.size).build();
-                this.appendChild(this.namesAndIconView);
-            }
-
-            if (object) {
-                const displayName = this.resolveDisplayName(object) || this.normalizeDisplayName(this.resolveUnnamedDisplayName(object));
-                const subName = this.resolveSubName(object, this.relativePath) || api.content.ContentUnnamed.prettifyUnnamed();
-                const subTitle = this.resolveSubTitle(object);
-                const hint = this.resolveHint(object);
-
-                if (!api.util.StringHelper.isBlank(hint)) {
-                    this.getHintTargetEl().setAttribute('title', hint);
-                }
-
-                let iconUrl;
-                let iconClass;
-                let iconEl = this.resolveIconEl(object);
-                let hideIcon = false;
-                if (iconEl) {
-                    this.namesAndIconView.setIconEl(iconEl);
+            let iconUrl;
+            let iconClass;
+            let iconEl = this.resolveIconEl(object);
+            let hideIcon = false;
+            if (iconEl) {
+                this.namesAndIconView.setIconEl(iconEl);
+            } else {
+                iconUrl = this.resolveIconUrl(object);
+                if (!StringHelper.isBlank(iconUrl)) {
+                    this.namesAndIconView.setIconUrl(iconUrl);
                 } else {
-                    iconUrl = this.resolveIconUrl(object);
-                    if (!api.util.StringHelper.isBlank(iconUrl)) {
-                        this.namesAndIconView.setIconUrl(iconUrl);
+                    iconClass = this.resolveIconClass(object);
+                    if (!StringHelper.isBlank(iconClass)) {
+                        this.namesAndIconView.setIconClass(iconClass);
                     } else {
-                        iconClass = this.resolveIconClass(object);
-                        if (!api.util.StringHelper.isBlank(iconClass)) {
-                            this.namesAndIconView.setIconClass(iconClass);
-                        } else {
-                            hideIcon = true;
-                        }
+                        hideIcon = true;
                     }
                 }
-                this.namesAndIconView.toggleClass('no-icon', hideIcon);
-
-                this.namesAndIconView.setMainName(displayName)
-                    .setSubName(subName, subTitle);
             }
-        }
+            this.namesAndIconView.toggleClass('no-icon', hideIcon);
 
-        private normalizeDisplayName(displayName: string): string {
-            if (api.util.StringHelper.isEmpty(displayName)) {
-                return this.emptyDisplayName;
-            } else {
-                return api.content.ContentUnnamed.prettifyUnnamed(displayName);
-            }
+            this.namesAndIconView.setMainName(displayName)
+                .setSubName(subName, subTitle);
         }
+    }
 
-        protected getHintTargetEl(): api.dom.ElementHelper {
-            return this.getEl();
-        }
+    resolveHint(_object: OBJECT): string {
+        return '';
+    }
 
-        resolveHint(_object: OBJECT): string {
-            return '';
-        }
+    resolveDisplayName(_object: OBJECT): string {
+        return '';
+    }
 
-        resolveDisplayName(_object: OBJECT): string {
-            return '';
-        }
+    resolveUnnamedDisplayName(_object: OBJECT): string {
+        return '';
+    }
 
-        resolveUnnamedDisplayName(_object: OBJECT): string {
-            return '';
-        }
+    resolveSubName(_object: OBJECT, _relativePath: boolean = false): string {
+        return '';
+    }
 
-        resolveSubName(_object: OBJECT, _relativePath: boolean = false): string {
-            return '';
-        }
+    resolveSubTitle(_object: OBJECT): string {
+        return '';
+    }
 
-        resolveSubTitle(_object: OBJECT): string {
-            return '';
-        }
+    resolveIconClass(_object: OBJECT): string {
+        return '';
+    }
 
-        resolveIconClass(_object: OBJECT): string {
-            return '';
-        }
+    resolveIconUrl(_object: OBJECT): string {
+        return '';
+    }
 
-        resolveIconUrl(_object: OBJECT): string {
-            return '';
-        }
+    resolveIconEl(_object: OBJECT): Element {
+        return null;
+    }
 
-        resolveIconEl(_object: OBJECT): api.dom.Element {
-            return null;
-        }
+    getPreferredHeight(): number {
+        return 50;
+    }
 
-        getPreferredHeight(): number {
-            return 50;
-        }
+    getNamesAndIconView(): NamesAndIconView {
+        return this.namesAndIconView;
+    }
 
-        getNamesAndIconView(): api.app.NamesAndIconView {
-            return this.namesAndIconView;
+    protected getHintTargetEl(): ElementHelper {
+        return this.getEl();
+    }
+
+    private normalizeDisplayName(displayName: string): string {
+        if (StringHelper.isEmpty(displayName)) {
+            return this.emptyDisplayName;
+        } else {
+            return ContentUnnamed.prettifyUnnamed(displayName);
         }
     }
 }

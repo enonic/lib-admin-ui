@@ -1,8 +1,8 @@
-module api.security {
+import {UserItemJson} from './UserItemJson';
 
-    export interface PrincipalJson extends UserItemJson {
+export interface PrincipalJson
+    extends UserItemJson {
 
-        modifiedTime?: string;
+    modifiedTime?: string;
 
-    }
 }

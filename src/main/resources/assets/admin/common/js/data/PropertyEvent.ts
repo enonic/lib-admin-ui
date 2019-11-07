@@ -1,30 +1,31 @@
-module api.data {
+import {Property} from './Property';
+import {PropertyEventType} from './PropertyEventType';
+import {PropertyPath} from './PropertyPath';
 
-    export class PropertyEvent {
+export class PropertyEvent {
 
-        private type: PropertyEventType;
+    private type: PropertyEventType;
 
-        private property: Property;
+    private property: Property;
 
-        constructor(type: PropertyEventType, property: Property) {
-            this.type = type;
-            this.property = property;
-        }
+    constructor(type: PropertyEventType, property: Property) {
+        this.type = type;
+        this.property = property;
+    }
 
-        getType(): PropertyEventType {
-            return this.type;
-        }
+    getType(): PropertyEventType {
+        return this.type;
+    }
 
-        getProperty(): Property {
-            return this.property;
-        }
+    getProperty(): Property {
+        return this.property;
+    }
 
-        getPath(): PropertyPath {
-            return this.property.getPath();
-        }
+    getPath(): PropertyPath {
+        return this.property.getPath();
+    }
 
-        toString(): string {
-            return this.getPath().toString();
-        }
+    toString(): string {
+        return this.getPath().toString();
     }
 }

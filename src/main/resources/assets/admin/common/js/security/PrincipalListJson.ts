@@ -1,8 +1,7 @@
-module api.security {
+import {PrincipalJson} from './PrincipalJson';
 
-    export class PrincipalListJson {
+export class PrincipalListJson {
 
-        principals: api.security.PrincipalJson[];
+    principals: PrincipalJson[];
 
-    }
 }

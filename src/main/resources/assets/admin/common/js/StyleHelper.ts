@@ -1,46 +1,45 @@
-module api {
+import {Store} from './store/Store';
 
-    export class StyleHelper {
+export class StyleHelper {
 
-        static COMMON_PREFIX: string = 'xp-admin-common-';
+    static COMMON_PREFIX: string = 'xp-admin-common-';
 
-        static ADMIN_PREFIX: string = 'xp-admin-';
+    static ADMIN_PREFIX: string = 'xp-admin-';
 
-        static ICON_PREFIX: string = 'icon-';
+    static ICON_PREFIX: string = 'icon-';
 
-        static currentPrefix: string = '';
+    static getCurrentPrefix(): string {
+        const prefix = Store.instance().get('prefix');
+        return prefix != null ? prefix : '';
+    }
 
-        static setCurrentPrefix(prefix: string) {
-            api.StyleHelper.currentPrefix = prefix;
+    static setCurrentPrefix(prefix: string) {
+        Store.instance().set('prefix', prefix);
+    }
+
+    static getCls(cls: string, prefix?: string): string {
+        const currentPrefix = prefix != null ? prefix : StyleHelper.getCurrentPrefix();
+        if (!currentPrefix) {
+            return cls;
         }
-
-        static getCurrentPrefix(): string {
-            return api.StyleHelper.currentPrefix;
-        }
-
-        static getCls(cls: string, prefix: string = api.StyleHelper.currentPrefix): string {
-            if (!prefix) {
-                return cls;
+        const clsArr = cls.trim().split(' ');
+        clsArr.forEach((clsEl: string, index: number, arr: string[]) => {
+            if (!StyleHelper.isPrefixed(clsEl, currentPrefix)) {
+                arr[index] = currentPrefix + clsEl;
             }
-            let clsArr = cls.trim().split(' ');
-            clsArr.forEach((clsEl: string, index: number, arr: string[]) => {
-                if (!api.StyleHelper.isPrefixed(clsEl, prefix)) {
-                    arr[index] = prefix + clsEl;
-                }
-            });
-            return clsArr.join(' ');
-        }
+        });
+        return clsArr.join(' ');
+    }
 
-        static getIconCls(iconCls: string): string {
-            return api.StyleHelper.getCls(StyleHelper.ICON_PREFIX + iconCls);
-        }
+    static getIconCls(iconCls: string): string {
+        return StyleHelper.getCls(StyleHelper.ICON_PREFIX + iconCls);
+    }
 
-        static getCommonIconCls(iconCls: string): string {
-            return api.StyleHelper.getCls(StyleHelper.ICON_PREFIX + iconCls, StyleHelper.COMMON_PREFIX);
-        }
+    static getCommonIconCls(iconCls: string): string {
+        return StyleHelper.getCls(StyleHelper.ICON_PREFIX + iconCls, StyleHelper.COMMON_PREFIX);
+    }
 
-        private static isPrefixed(cls: string, prefix: string): boolean {
-            return cls.indexOf(prefix) === 0;
-        }
+    private static isPrefixed(cls: string, prefix: string): boolean {
+        return cls.indexOf(prefix) === 0;
     }
 }

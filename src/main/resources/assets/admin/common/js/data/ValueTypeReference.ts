@@ -1,49 +1,53 @@
-module api.data {
+import {ObjectHelper} from '../ObjectHelper';
+import {Reference} from '../util/Reference';
+import {StringHelper} from '../util/StringHelper';
+import {ValueType} from './ValueType';
+import {Value} from './Value';
 
-    export class ValueTypeReference extends ValueType {
+export class ValueTypeReference
+    extends ValueType {
 
-        constructor() {
-            super('Reference');
+    constructor() {
+        super('Reference');
+    }
+
+    isValid(value: any): boolean {
+
+        if (!(typeof value === 'object')) {
+            return false;
         }
 
-        isValid(value: any): boolean {
-
-            if (!(typeof value === 'object')) {
-                return false;
-            }
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(value, api.util.Reference)) {
-                return false;
-            }
-            return true;
+        if (!ObjectHelper.iFrameSafeInstanceOf(value, Reference)) {
+            return false;
         }
+        return true;
+    }
 
-        isConvertible(value: string): boolean {
-            return !api.util.StringHelper.isBlank(value);
-        }
+    isConvertible(value: string): boolean {
+        return !StringHelper.isBlank(value);
+    }
 
-        newValue(value: string): Value {
-            if (this.isConvertible(value)) {
-                return new Value(new api.util.Reference(value), this);
-            } else {
-                return this.newNullValue();
-            }
+    newValue(value: string): Value {
+        if (this.isConvertible(value)) {
+            return new Value(new Reference(value), this);
+        } else {
+            return this.newNullValue();
         }
+    }
 
-        valueToString(value: Value): string {
-            if (value.isNotNull()) {
-                return value.getReference().toString();
-            } else {
-                return null;
-            }
+    valueToString(value: Value): string {
+        if (value.isNotNull()) {
+            return value.getReference().toString();
+        } else {
+            return null;
         }
+    }
 
-        toJsonValue(value: Value): any {
-            return value.isNull() ? null : value.getReference().toString();
-        }
+    toJsonValue(value: Value): any {
+        return value.isNull() ? null : value.getReference().toString();
+    }
 
-        valueEquals(a: api.util.Reference, b: api.util.Reference): boolean {
-            return api.ObjectHelper.equals(a, b);
-        }
+    valueEquals(a: Reference, b: Reference): boolean {
+        return ObjectHelper.equals(a, b);
     }
 }

@@ -1,69 +1,69 @@
-module api.ui.button {
+import {Button} from './Button';
 
-    export class TogglerButton extends api.ui.button.Button {
+export class TogglerButton
+    extends Button {
 
-        private activeListeners: {(isActive: boolean): void}[] = [];
+    private activeListeners: { (isActive: boolean): void }[] = [];
 
-        constructor(className?: string, title?: string) {
-            super();
-            this.addClass('toggle-button icon-medium');
-            if (className) {
-                this.addClass(className);
-            }
-            this.setActive(false);
-            this.setEnabled(false);
+    constructor(className?: string, title?: string) {
+        super();
+        this.addClass('toggle-button icon-medium');
+        if (className) {
+            this.addClass(className);
+        }
+        this.setActive(false);
+        this.setEnabled(false);
 
-            if (title) {
-                this.setTitle(title);
+        if (title) {
+            this.setTitle(title);
 
-                this.onActiveChanged((isActive: boolean) => {
-                    if (this.isRendered()) {
-                        this.setTitle(isActive ? '' : title, true);
-                    }
-                });
-            }
-
-            this.onClicked((event: MouseEvent) => {
-                event.stopPropagation();
-
-                if (this.isEnabled()) {
-                    this.setActive(!this.isActive());
+            this.onActiveChanged((isActive: boolean) => {
+                if (this.isRendered()) {
+                    this.setTitle(isActive ? '' : title, true);
                 }
             });
         }
 
-        setActive(value: boolean, silent: boolean = false) {
-            this.toggleClass('active', value);
-            if(!silent) {
-                this.notifyActiveChanged(value);
+        this.onClicked((event: MouseEvent) => {
+            event.stopPropagation();
+
+            if (this.isEnabled()) {
+                this.setActive(!this.isActive());
             }
-        }
+        });
+    }
 
-        setVisible(value: boolean): TogglerButton {
-            if (!value) {
-                this.setActive(value);
-            }
-            return <TogglerButton>super.setVisible(value);
+    setActive(value: boolean, silent: boolean = false) {
+        this.toggleClass('active', value);
+        if (!silent) {
+            this.notifyActiveChanged(value);
         }
+    }
 
-        isActive() {
-            return this.hasClass('active');
+    setVisible(value: boolean): TogglerButton {
+        if (!value) {
+            this.setActive(value);
         }
+        return <TogglerButton>super.setVisible(value);
+    }
 
-        onActiveChanged(listener: (isActive: boolean) => void) {
-            this.activeListeners.push(listener);
-        }
+    isActive() {
+        return this.hasClass('active');
+    }
 
-        unActiveChanged(listener: (isActive: boolean) => void) {
-            this.activeListeners = this.activeListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
+    onActiveChanged(listener: (isActive: boolean) => void) {
+        this.activeListeners.push(listener);
+    }
 
-        private notifyActiveChanged(isActive: boolean) {
-            this.activeListeners.forEach((listener) => {
-                listener(isActive);
-            });
-        }
+    unActiveChanged(listener: (isActive: boolean) => void) {
+        this.activeListeners = this.activeListeners.filter((curr) => {
+            return curr !== listener;
+        });
+    }
+
+    private notifyActiveChanged(isActive: boolean) {
+        this.activeListeners.forEach((listener) => {
+            listener(isActive);
+        });
     }
 }

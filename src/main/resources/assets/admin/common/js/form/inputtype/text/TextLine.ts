@@ -1,123 +1,130 @@
-module api.form.inputtype.text {
+import {Property} from '../../../data/Property';
+import {Value} from '../../../data/Value';
+import {ValueType} from '../../../data/ValueType';
+import {ValueTypes} from '../../../data/ValueTypes';
+import {FormInputEl} from '../../../dom/FormInputEl';
+import {Element} from '../../../dom/Element';
+import {StringHelper} from '../../../util/StringHelper';
+import {i18n} from '../../../util/Messages';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {TextInput} from '../../../ui/text/TextInput';
+import {ValueChangedEvent} from '../../../ValueChangedEvent';
+import {InputValidationRecording} from '../InputValidationRecording';
+import {InputTypeName} from '../../InputTypeName';
+import {InputTypeManager} from '../InputTypeManager';
+import {Class} from '../../../Class';
+import {TextInputType} from './TextInputType';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import FormInputEl = api.dom.FormInputEl;
-    import Element = api.dom.Element;
-    import StringHelper = api.util.StringHelper;
-    import i18n = api.util.i18n;
+export class TextLine
+    extends TextInputType {
 
-    export class TextLine extends TextInputType {
+    private regexp: RegExp;
 
-        private regexp: RegExp;
+    constructor(config: InputTypeViewContext) {
+        super(config);
+        this.readConfig(config.inputConfig);
+    }
 
-        constructor(config: api.form.inputtype.InputTypeViewContext) {
-            super(config);
-            this.readConfig(config.inputConfig);
+    static getName(): InputTypeName {
+        return new InputTypeName('TextLine', false);
+    }
+
+    getValueType(): ValueType {
+        return ValueTypes.STRING;
+    }
+
+    newInitialValue(): Value {
+        return super.newInitialValue() || new Value('', ValueTypes.STRING);
+    }
+
+    createInputOccurrenceElement(index: number, property: Property): Element {
+        if (!ValueTypes.STRING.equals(property.getType())) {
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.STRING);
         }
 
-        protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
-            super.readConfig(inputConfig);
+        let inputEl = TextInput.middle(undefined, property.getString());
+        inputEl.setName(this.getInput().getName() + '-' + index);
+        inputEl.setAutocomplete(true);
 
-            const regexpConfig = inputConfig['regexp'] ? inputConfig['regexp'][0] : {};
-            const regexp = regexpConfig ? regexpConfig['value'] : '';
-            this.regexp = !StringHelper.isBlank(regexp) ? new RegExp(regexp) : null;
+        inputEl.onValueChanged((event: ValueChangedEvent) => {
+            const isValid = this.isValid(event.getNewValue(), inputEl);
+            this.newValueHandler(inputEl, event.getNewValue(), isValid);
 
-        }
+            inputEl.updateValidationStatusOnUserInput(isValid);
 
-        getValueType(): ValueType {
-            return ValueTypes.STRING;
-        }
+        });
 
-        newInitialValue(): Value {
-            return super.newInitialValue() || new Value('', ValueTypes.STRING);
-        }
+        this.initOccurenceListeners(inputEl);
 
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
-            if (!ValueTypes.STRING.equals(property.getType())) {
-                property.convertValueType(ValueTypes.STRING);
-            }
+        return inputEl;
+    }
 
-            let inputEl = api.ui.text.TextInput.middle(undefined, property.getString());
-            inputEl.setName(this.getInput().getName() + '-' + index);
-            inputEl.setAutocomplete(true);
+    resetInputOccurrenceElement(occurrence: Element) {
+        let input = <TextInput> occurrence;
 
-            inputEl.onValueChanged((event: api.ValueChangedEvent) => {
-                const isValid = this.isValid(event.getNewValue(), inputEl);
-                this.newValueHandler(inputEl, event.getNewValue(), isValid);
+        input.resetBaseValues();
+    }
 
-                inputEl.updateValidationStatusOnUserInput(isValid);
+    availableSizeChanged() {
+        // must be implemented by children
+    }
 
-            });
+    valueBreaksRequiredContract(value: Value): boolean {
+        return value.isNull() || !value.getType().equals(ValueTypes.STRING) ||
+               StringHelper.isBlank(value.getString());
+    }
 
-            this.initOccurenceListeners(inputEl);
+    hasInputElementValidUserInput(inputElement: FormInputEl, recording?: InputValidationRecording) {
+        let textInput = <TextInput>inputElement;
+        return this.isValid(textInput.getValue(), textInput, true, recording);
+    }
 
-            return inputEl;
-        }
+    protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
+        super.readConfig(inputConfig);
 
-        protected updateFormInputElValue(occurrence: api.dom.FormInputEl, property: Property) {
-            occurrence.setValue(property.getString());
-        }
-
-        resetInputOccurrenceElement(occurrence: api.dom.Element) {
-            let input = <api.ui.text.TextInput> occurrence;
-
-            input.resetBaseValues();
-        }
-
-        availableSizeChanged() {
-            // must be implemented by children
-        }
-
-        valueBreaksRequiredContract(value: Value): boolean {
-            return value.isNull() || !value.getType().equals(ValueTypes.STRING) ||
-                   api.util.StringHelper.isBlank(value.getString());
-        }
-
-        hasInputElementValidUserInput(inputElement: FormInputEl, recording?: api.form.inputtype.InputValidationRecording) {
-            let textInput = <api.ui.text.TextInput>inputElement;
-            return this.isValid(textInput.getValue(), textInput, true, recording);
-        }
-
-        protected isValid(value: string, textInput: api.ui.text.TextInput, silent: boolean = false,
-                          recording?: api.form.inputtype.InputValidationRecording): boolean {
-
-            const parent = textInput.getParentElement();
-
-            if (api.util.StringHelper.isEmpty(value)) {
-                parent.removeClass('valid-regexp invalid-regexp');
-                return true;
-            }
-
-            let regexpValid: boolean = this.checkRegexpValidation(value, parent, silent);
-
-            return regexpValid && super.isValid(value, textInput, silent, recording);
-        }
-
-        private checkRegexpValidation(value: string, parent: Element, silent: boolean): boolean {
-
-            if (!this.regexp) {
-                return true;
-            }
-
-            const regexpValid = this.regexp.test(value);
-
-            if (!silent) {
-                parent.toggleClass('valid-regexp', regexpValid);
-                parent.toggleClass('invalid-regexp', !regexpValid);
-                parent.getEl().setAttribute('data-regex-status', i18n(`field.${regexpValid ? 'valid' : 'invalid'}`));
-            }
-
-            return regexpValid;
-        }
-
-        static getName(): api.form.InputTypeName {
-            return new api.form.InputTypeName('TextLine', false);
-        }
+        const regexpConfig = inputConfig['regexp'] ? inputConfig['regexp'][0] : {};
+        const regexp = regexpConfig ? regexpConfig['value'] : '';
+        this.regexp = !StringHelper.isBlank(regexp) ? new RegExp(regexp) : null;
 
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class(TextLine.getName().getName(), TextLine));
+    protected updateFormInputElValue(occurrence: FormInputEl, property: Property) {
+        occurrence.setValue(property.getString());
+    }
+
+    protected isValid(value: string, textInput: TextInput, silent: boolean = false,
+                      recording?: InputValidationRecording): boolean {
+
+        const parent = textInput.getParentElement();
+
+        if (StringHelper.isEmpty(value)) {
+            parent.removeClass('valid-regexp invalid-regexp');
+            return true;
+        }
+
+        let regexpValid: boolean = this.checkRegexpValidation(value, parent, silent);
+
+        return regexpValid && super.isValid(value, textInput, silent, recording);
+    }
+
+    private checkRegexpValidation(value: string, parent: Element, silent: boolean): boolean {
+
+        if (!this.regexp) {
+            return true;
+        }
+
+        const regexpValid = this.regexp.test(value);
+
+        if (!silent) {
+            parent.toggleClass('valid-regexp', regexpValid);
+            parent.toggleClass('invalid-regexp', !regexpValid);
+            parent.getEl().setAttribute('data-regex-status', i18n(`field.${regexpValid ? 'valid' : 'invalid'}`));
+        }
+
+        return regexpValid;
+    }
+
 }
+
+InputTypeManager.register(new Class(TextLine.getName().getName(), TextLine), true);

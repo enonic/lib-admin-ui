@@ -1,191 +1,193 @@
-module api.ui {
+import {FormInputEl} from '../dom/FormInputEl';
+import {InputEl} from '../dom/InputEl';
+import {LabelEl} from '../dom/LabelEl';
+import {Element, NewElementBuilder} from '../dom/Element';
+import * as $ from 'jquery';
 
-    export class Checkbox extends api.dom.FormInputEl {
-        //TODO: USE HTML CHECKED PROPERTY INSTEAD OF ATTRIBUTE CHECKED! from ljl
+export class Checkbox
+    extends FormInputEl {
+    //TODO: USE HTML CHECKED PROPERTY INSTEAD OF ATTRIBUTE CHECKED! from ljl
 
-        private checkbox: api.dom.InputEl;
+    public static debug: boolean = false;
+    private checkbox: InputEl;
+    private label: LabelEl;
 
-        private label: api.dom.LabelEl;
+    constructor(builder: CheckboxBuilder) {
+        super('div', 'checkbox', undefined, String(builder.checked || false));
 
-        public static debug: boolean = false;
+        this.initCheckbox(builder.inputAlignment);
+        this.initLabel(builder.text);
 
-        constructor(builder: CheckboxBuilder) {
-            super('div', 'checkbox', undefined, String(builder.checked || false));
-
-            this.initCheckbox(builder.inputAlignment);
-            this.initLabel(builder.text);
-
-            this.appendChild(this.checkbox);
-            this.appendChild(this.label);
-        }
-
-        isDisabled(): boolean {
-            return this.checkbox.getEl().isDisabled();
-        }
-
-        private initCheckbox(inputAlignment: InputAlignment) {            // we need an id for the label to interact nicely
-            // we need an id for the label to interact nicely
-            this.checkbox = <api.dom.InputEl> new api.dom.Element(new api.dom.NewElementBuilder().setTagName('input').setGenerateId(true));
-            this.checkbox.getEl().setAttribute('type', 'checkbox');
-            this.addClass(this.getInputAlignmentAsString(inputAlignment));
-
-            wemjq(this.checkbox.getHTMLElement()).on('change', (e) => {
-                if (Checkbox.debug) {
-                    console.debug('Checkbox on change', e);
-                }
-                this.refreshValueChanged();
-                this.refreshDirtyState();
-            });
-
-        }
-
-        private initLabel(text: string) {
-            this.label = new api.dom.LabelEl(text, this.checkbox);
-        }
-
-        private getInputAlignmentAsString(inputAlignment: InputAlignment = InputAlignment.LEFT): string {
-
-            return InputAlignment[inputAlignment].toLowerCase();
-        }
-
-        setChecked(newValue: boolean, silent?: boolean): Checkbox {
-            super.setValue(String(newValue), silent);
-            return this;
-        }
-
-        isChecked(): boolean {
-            return super.getValue() === 'true';
-        }
-
-        toggleChecked() {
-            this.setChecked(!this.isChecked());
-        }
-
-        protected doSetValue(value: string) {
-            if (Checkbox.debug) {
-                console.debug('Checkbox.doSetValue: ', value);
-            }
-            this.checkbox.getHTMLElement()['checked'] = value === 'true';
-        }
-
-        protected doGetValue(): string {
-            return String(this.checkbox.getHTMLElement()['checked']);
-        }
-
-        setValue(value: string): Checkbox {
-            if (Checkbox.debug) {
-                console.warn('Checkbox.setValue sets the value attribute, you may have wanted to use setChecked instead');
-            }
-            this.getEl().setValue(value);
-            return this;
-        }
-
-        getValue(): string {
-            if (Checkbox.debug) {
-                console.warn('Checkbox.getValue gets the value attribute, you may have wanted to use getChecked instead');
-            }
-            return this.getEl().getValue();
-        }
-
-        giveFocus(): boolean {
-            return this.checkbox.giveFocus();
-        }
-
-        giveBlur(): boolean {
-            return this.checkbox.giveBlur();
-        }
-
-        setName(value: string): Checkbox {
-            this.checkbox.setName(value);
-            return this;
-        }
-
-        setPartial(value: boolean) {
-            this.checkbox.toggleClass('partial', value);
-        }
-
-        isPartial(): boolean {
-            return this.checkbox.hasClass('partial');
-        }
-
-        setDisabled(value: boolean, cls?: string): Checkbox {
-            this.checkbox.getEl().setDisabled(value);
-            if (cls) {
-                this.toggleClass(cls, value);
-            }
-            return this;
-        }
-
-        setLabel(text: string): Checkbox {
-            this.label.setValue(text);
-            return this;
-        }
-
-        getLabel(): string {
-            return this.label.getValue();
-        }
-
-        setPlaceholder(value: string): Checkbox {
-            this.checkbox.getEl().setAttribute('placeholder', value);
-            return this;
-        }
-
-        getPlaceholder(): string {
-            return this.checkbox.getEl().getAttribute('placeholder');
-        }
-
-        static create(): CheckboxBuilder {
-            return new CheckboxBuilder();
-        }
-
-        onFocus(listener: (event: FocusEvent) => void) {
-            this.checkbox.onFocus(listener);
-        }
-
-        unFocus(listener: (event: FocusEvent) => void) {
-            this.checkbox.unFocus(listener);
-        }
-
-        onBlur(listener: (event: FocusEvent) => void) {
-            this.checkbox.onBlur(listener);
-        }
-
-        unBlur(listener: (event: FocusEvent) => void) {
-            this.checkbox.unBlur(listener);
-        }
+        this.appendChild(this.checkbox);
+        this.appendChild(this.label);
     }
 
-    export enum InputAlignment {
-        TOP,
-        RIGHT,
-        LEFT,
-        BOTTOM
+    static create(): CheckboxBuilder {
+        return new CheckboxBuilder();
     }
 
-    export class CheckboxBuilder {
-        text: string;
+    isDisabled(): boolean {
+        return this.checkbox.getEl().isDisabled();
+    }
 
-        checked: boolean;
+    setChecked(newValue: boolean, silent?: boolean): Checkbox {
+        super.setValue(String(newValue), silent);
+        return this;
+    }
 
-        inputAlignment: InputAlignment;
+    isChecked(): boolean {
+        return super.getValue() === 'true';
+    }
 
-        setLabelText(value: string): CheckboxBuilder {
-            this.text = value;
-            return this;
+    toggleChecked() {
+        this.setChecked(!this.isChecked());
+    }
+
+    setValue(value: string): Checkbox {
+        if (Checkbox.debug) {
+            console.warn('Checkbox.setValue sets the value attribute, you may have wanted to use setChecked instead');
         }
+        this.getEl().setValue(value);
+        return this;
+    }
 
-        setChecked(value: boolean): CheckboxBuilder {
-            this.checked = value;
-            return this;
+    getValue(): string {
+        if (Checkbox.debug) {
+            console.warn('Checkbox.getValue gets the value attribute, you may have wanted to use getChecked instead');
         }
+        return this.getEl().getValue();
+    }
 
-        setInputAlignment(value: InputAlignment): CheckboxBuilder {
-            this.inputAlignment = value;
-            return this;
-        }
+    giveFocus(): boolean {
+        return this.checkbox.giveFocus();
+    }
 
-        build(): Checkbox {
-            return new Checkbox(this);
+    giveBlur(): boolean {
+        return this.checkbox.giveBlur();
+    }
+
+    setName(value: string): Checkbox {
+        this.checkbox.setName(value);
+        return this;
+    }
+
+    setPartial(value: boolean) {
+        this.checkbox.toggleClass('partial', value);
+    }
+
+    isPartial(): boolean {
+        return this.checkbox.hasClass('partial');
+    }
+
+    setDisabled(value: boolean, cls?: string): Checkbox {
+        this.checkbox.getEl().setDisabled(value);
+        if (cls) {
+            this.toggleClass(cls, value);
         }
+        return this;
+    }
+
+    setLabel(text: string): Checkbox {
+        this.label.setValue(text);
+        return this;
+    }
+
+    getLabel(): string {
+        return this.label.getValue();
+    }
+
+    setPlaceholder(value: string): Checkbox {
+        this.checkbox.getEl().setAttribute('placeholder', value);
+        return this;
+    }
+
+    getPlaceholder(): string {
+        return this.checkbox.getEl().getAttribute('placeholder');
+    }
+
+    onFocus(listener: (event: FocusEvent) => void) {
+        this.checkbox.onFocus(listener);
+    }
+
+    unFocus(listener: (event: FocusEvent) => void) {
+        this.checkbox.unFocus(listener);
+    }
+
+    onBlur(listener: (event: FocusEvent) => void) {
+        this.checkbox.onBlur(listener);
+    }
+
+    unBlur(listener: (event: FocusEvent) => void) {
+        this.checkbox.unBlur(listener);
+    }
+
+    protected doSetValue(value: string) {
+        if (Checkbox.debug) {
+            console.debug('Checkbox.doSetValue: ', value);
+        }
+        this.checkbox.getHTMLElement()['checked'] = value === 'true';
+    }
+
+    protected doGetValue(): string {
+        return String(this.checkbox.getHTMLElement()['checked']);
+    }
+
+    private initCheckbox(inputAlignment: InputAlignment) {            // we need an id for the label to interact nicely
+        // we need an id for the label to interact nicely
+        this.checkbox = <InputEl> new Element(new NewElementBuilder().setTagName('input').setGenerateId(true));
+        this.checkbox.getEl().setAttribute('type', 'checkbox');
+        this.addClass(this.getInputAlignmentAsString(inputAlignment));
+
+        $(this.checkbox.getHTMLElement()).on('change', (e) => {
+            if (Checkbox.debug) {
+                console.debug('Checkbox on change', e);
+            }
+            this.refreshValueChanged();
+            this.refreshDirtyState();
+        });
+
+    }
+
+    private initLabel(text: string) {
+        this.label = new LabelEl(text, this.checkbox);
+    }
+
+    private getInputAlignmentAsString(inputAlignment: InputAlignment = InputAlignment.LEFT): string {
+
+        return InputAlignment[inputAlignment].toLowerCase();
+    }
+}
+
+export enum InputAlignment {
+    TOP,
+    RIGHT,
+    LEFT,
+    BOTTOM
+}
+
+export class CheckboxBuilder {
+    text: string;
+
+    checked: boolean;
+
+    inputAlignment: InputAlignment;
+
+    setLabelText(value: string): CheckboxBuilder {
+        this.text = value;
+        return this;
+    }
+
+    setChecked(value: boolean): CheckboxBuilder {
+        this.checked = value;
+        return this;
+    }
+
+    setInputAlignment(value: InputAlignment): CheckboxBuilder {
+        this.inputAlignment = value;
+        return this;
+    }
+
+    build(): Checkbox {
+        return new Checkbox(this);
     }
 }

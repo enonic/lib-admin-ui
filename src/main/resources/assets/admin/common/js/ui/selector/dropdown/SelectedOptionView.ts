@@ -1,70 +1,72 @@
-module api.ui.selector.dropdown {
+import {DivEl} from '../../../dom/DivEl';
+import {Option} from '../Option';
+import {Viewer} from '../../Viewer';
 
-    export class SelectedOptionView<T> extends api.dom.DivEl {
+export class SelectedOptionView<T>
+    extends DivEl {
 
-        private objectViewer:Viewer<T>;
+    private objectViewer: Viewer<T>;
 
-        private optionValueEl: api.dom.DivEl;
+    private optionValueEl: DivEl;
 
-        private option: api.ui.selector.Option<T>;
+    private option: Option<T>;
 
-        private openDropdownListeners: {(): void;}[] = [];
+    private openDropdownListeners: { (): void; }[] = [];
 
-        constructor(objectViewer: Viewer<T>, skipExpandOnClick: boolean = false) {
-            super('selected-option');
-            this.objectViewer = objectViewer;
-            this.optionValueEl = new api.dom.DivEl('option-value');
-            this.appendChild(this.optionValueEl);
-            this.optionValueEl.appendChild(this.objectViewer);
+    constructor(objectViewer: Viewer<T>, skipExpandOnClick: boolean = false) {
+        super('selected-option');
+        this.objectViewer = objectViewer;
+        this.optionValueEl = new DivEl('option-value');
+        this.appendChild(this.optionValueEl);
+        this.optionValueEl.appendChild(this.objectViewer);
 
-            if (!skipExpandOnClick) {
-                this.onClicked(()=> {
+        if (!skipExpandOnClick) {
+            this.onClicked(() => {
 
-                    if (document['selection'] && document['selection'].empty) {
-                        document['selection'].empty();
-                    } else if (window.getSelection) {
-                        let sel = window.getSelection();
-                        sel.removeAllRanges();
-                    }
-
-                    this.notifyOpenDropdown();
-                });
-            }
-
-            this.onKeyPressed((event:KeyboardEvent) => {
-                if (event.which === 32 || event.which === 13) { // space or enter
-                    this.notifyOpenDropdown();
+                if (document['selection'] && document['selection'].empty) {
+                    document['selection'].empty();
+                } else if (window.getSelection) {
+                    let sel = window.getSelection();
+                    sel.removeAllRanges();
                 }
+
+                this.notifyOpenDropdown();
             });
         }
 
-        setOption(option: api.ui.selector.Option<T>) {
-            this.option = option;
-            this.objectViewer.setObject(option.displayValue);
-        }
+        this.onKeyPressed((event: KeyboardEvent) => {
+            if (event.which === 32 || event.which === 13) { // space or enter
+                this.notifyOpenDropdown();
+            }
+        });
+    }
 
-        getOption(): api.ui.selector.Option<T> {
-            return this.option;
-        }
+    setOption(option: Option<T>) {
+        this.option = option;
+        this.objectViewer.setObject(option.displayValue);
+    }
 
-        private notifyOpenDropdown() {
-            this.openDropdownListeners.forEach((listener) => {
-                listener();
-            });
-        }
+    getOption(): Option<T> {
+        return this.option;
+    }
 
-        resetOption() {
-            this.option = null;
-        }
+    resetOption() {
+        this.option = null;
+    }
 
-        onOpenDropdown(listener: {(): void;}) {
-            this.openDropdownListeners.push(listener);
-        }
+    onOpenDropdown(listener: { (): void; }) {
+        this.openDropdownListeners.push(listener);
+    }
 
-        unOpenDropdown(listener: {(): void;}) {
-            this.openDropdownListeners = this.openDropdownListeners.filter(function (curr: {(): void;}) {
-                return curr !== listener;
-            });
-        }
+    unOpenDropdown(listener: { (): void; }) {
+        this.openDropdownListeners = this.openDropdownListeners.filter(function (curr: { (): void; }) {
+            return curr !== listener;
+        });
+    }
+
+    private notifyOpenDropdown() {
+        this.openDropdownListeners.forEach((listener) => {
+            listener();
+        });
     }
 }

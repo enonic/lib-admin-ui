@@ -1,19 +1,25 @@
-module api.macro.resource {
+import * as Q from 'q';
+import {PropertyTree} from '../../data/PropertyTree';
+import {MacroKey} from '../MacroKey';
+import {Path} from '../../rest/Path';
+import {JsonResponse} from '../../rest/JsonResponse';
+import {PreviewRequest} from './PreviewRequest';
+import {MacroPreviewStringJson} from './MacroPreviewJson';
 
-    export class GetPreviewStringRequest extends PreviewRequest<MacroPreviewStringJson, string> {
+export class GetPreviewStringRequest
+    extends PreviewRequest<MacroPreviewStringJson, string> {
 
-        constructor(data: api.data.PropertyTree, macroKey: api.macro.MacroKey) {
-            super(data, macroKey);
-        }
+    constructor(data: PropertyTree, macroKey: MacroKey) {
+        super(data, macroKey);
+    }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'previewString');
-        }
+    getRequestPath(): Path {
+        return Path.fromParent(super.getResourcePath(), 'previewString');
+    }
 
-        sendAndParse(): wemQ.Promise<string> {
-            return this.send().then((response: api.rest.JsonResponse<MacroPreviewStringJson>) => {
-                return response.getResult().macro;
-            });
-        }
+    sendAndParse(): Q.Promise<string> {
+        return this.send().then((response: JsonResponse<MacroPreviewStringJson>) => {
+            return response.getResult().macro;
+        });
     }
 }

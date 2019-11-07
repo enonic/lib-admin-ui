@@ -1,9 +1,5 @@
-module api.query.aggregation {
+export interface AggregationQueryJson {
 
-    export interface AggregationQueryJson {
-
-        name: string;
-
-    }
+    name: string;
 
 }

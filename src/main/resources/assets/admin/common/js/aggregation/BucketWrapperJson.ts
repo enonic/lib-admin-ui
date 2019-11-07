@@ -1,10 +1,9 @@
-module api.aggregation {
+import {BucketJson} from './BucketJson';
+import {DateRangeBucketJson} from './DateRangeBucketJson';
 
-    export interface BucketWrapperJson {
+export interface BucketWrapperJson {
 
-        BucketJson?:api.aggregation.BucketJson;
-        DateRangeBucket?:api.aggregation.DateRangeBucketJson;
-
-    }
+    BucketJson?: BucketJson;
+    DateRangeBucket?: DateRangeBucketJson;
 
 }

@@ -1,19 +1,19 @@
-module api.query.expr {
+import {Expression} from './Expression';
 
-    export class FieldExpr implements Expression {
+export class FieldExpr
+    implements Expression {
 
-        private name: string;
+    private name: string;
 
-        constructor(name: string) {
-            this.name = name;
-        }
+    constructor(name: string) {
+        this.name = name;
+    }
 
-        getName(): string {
-            return this.name;
-        }
+    getName(): string {
+        return this.name;
+    }
 
-        toString() {
-            return this.name;
-        }
+    toString() {
+        return this.name;
     }
 }

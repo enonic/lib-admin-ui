@@ -1,33 +1,35 @@
-module api.application {
+import * as Q from 'q';
+import {ApplicationInstallResultJson} from './json/ApplicationInstallResultJson';
+import {Path} from '../rest/Path';
+import {JsonResponse} from '../rest/JsonResponse';
+import {ApplicationResourceRequest} from './ApplicationResourceRequest';
+import {ApplicationInstallResult} from './ApplicationInstallResult';
 
-    import ApplicationInstallResultJson = api.application.json.ApplicationInstallResultJson;
+export class InstallUrlApplicationRequest
+    extends ApplicationResourceRequest<ApplicationInstallResultJson, ApplicationInstallResult> {
 
-    export class InstallUrlApplicationRequest
-        extends ApplicationResourceRequest<ApplicationInstallResultJson, ApplicationInstallResult> {
+    private applicationUrl: string;
 
-        private applicationUrl: string;
+    constructor(applicationUrl: string) {
+        super();
+        super.setMethod('POST');
+        this.applicationUrl = applicationUrl;
+        this.setHeavyOperation(true);
+    }
 
-        constructor(applicationUrl: string) {
-            super();
-            super.setMethod('POST');
-            this.applicationUrl = applicationUrl;
-            this.setHeavyOperation(true);
-        }
+    getParams(): Object {
+        return {
+            URL: this.applicationUrl
+        };
+    }
 
-        getParams(): Object {
-            return {
-                URL: this.applicationUrl
-            };
-        }
+    getRequestPath(): Path {
+        return Path.fromParent(super.getResourcePath(), 'installUrl');
+    }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'installUrl');
-        }
-
-        sendAndParse(): wemQ.Promise<ApplicationInstallResult> {
-            return this.send().then((response: api.rest.JsonResponse<ApplicationInstallResultJson>) => {
-                return ApplicationInstallResult.fromJson(response.getResult());
-            });
-        }
+    sendAndParse(): Q.Promise<ApplicationInstallResult> {
+        return this.send().then((response: JsonResponse<ApplicationInstallResultJson>) => {
+            return ApplicationInstallResult.fromJson(response.getResult());
+        });
     }
 }

@@ -1,9 +1,10 @@
-module api.application {
+import {ListSiteApplicationsRequest} from './ListSiteApplicationsRequest';
+import {ApplicationLoader} from './ApplicationLoader';
 
-    export class SiteApplicationLoader extends ApplicationLoader {
+export class SiteApplicationLoader
+    extends ApplicationLoader {
 
-        constructor(filterObject: Object) {
-            super(filterObject, new ListSiteApplicationsRequest());
-        }
+    constructor(filterObject: Object) {
+        super(filterObject, new ListSiteApplicationsRequest());
     }
 }

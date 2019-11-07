@@ -1,30 +1,38 @@
-module api.macro.resource {
+import * as Q from 'q';
+import {ContentPath} from '../../content/ContentPath';
+import {PropertyTree} from '../../data/PropertyTree';
+import {MacroKey} from '../MacroKey';
+import {Path} from '../../rest/Path';
+import {JsonResponse} from '../../rest/JsonResponse';
+import {PreviewRequest} from './PreviewRequest';
+import {MacroPreviewJson} from './MacroPreviewJson';
+import {MacroPreview} from '../MacroPreview';
 
-    export class GetPreviewRequest extends PreviewRequest<MacroPreviewJson, MacroPreview> {
+export class GetPreviewRequest
+    extends PreviewRequest<MacroPreviewJson, MacroPreview> {
 
-        protected path: api.content.ContentPath;
+    protected path: ContentPath;
 
-        constructor(data: api.data.PropertyTree, macroKey: api.macro.MacroKey, path: api.content.ContentPath) {
-            super(data, macroKey);
-            this.path = path;
-        }
+    constructor(data: PropertyTree, macroKey: MacroKey, path: ContentPath) {
+        super(data, macroKey);
+        this.path = path;
+    }
 
-        getParams(): Object {
-            return {
-                form: this.data.toJson(),
-                contentPath: !!this.path ? this.path.toString() : '',
-                macroKey: this.macroKey.getRefString()
-            };
-        }
+    getParams(): Object {
+        return {
+            form: this.data.toJson(),
+            contentPath: !!this.path ? this.path.toString() : '',
+            macroKey: this.macroKey.getRefString()
+        };
+    }
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getResourcePath(), 'preview');
-        }
+    getRequestPath(): Path {
+        return Path.fromParent(super.getResourcePath(), 'preview');
+    }
 
-        sendAndParse(): wemQ.Promise<MacroPreview> {
-            return this.send().then((response: api.rest.JsonResponse<MacroPreviewJson>) => {
-                return MacroPreview.create().fromJson(response.getResult()).build();
-            });
-        }
+    sendAndParse(): Q.Promise<MacroPreview> {
+        return this.send().then((response: JsonResponse<MacroPreviewJson>) => {
+            return MacroPreview.create().fromJson(response.getResult()).build();
+        });
     }
 }

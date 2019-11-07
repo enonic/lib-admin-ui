@@ -1,34 +1,37 @@
-module api.app.view {
+import {Equitable} from '../../Equitable';
+import {Panel} from '../../ui/panel/Panel';
+import {ViewItem} from './ViewItem';
+import {ItemStatisticsHeader} from './ItemStatisticsHeader';
 
-    export class ItemStatisticsPanel<M extends api.Equitable> extends api.ui.panel.Panel {
+export class ItemStatisticsPanel<M extends Equitable>
+    extends Panel {
 
-        private browseItem: ViewItem<M>;
+    private browseItem: ViewItem<M>;
 
-        private header: ItemStatisticsHeader<M>;
+    private header: ItemStatisticsHeader<M>;
 
-        constructor(className?: string) {
-            super('item-statistics-panel' + (className ? ' ' + className : ''));
+    constructor(className?: string) {
+        super('item-statistics-panel' + (className ? ' ' + className : ''));
 
-            this.header = new ItemStatisticsHeader<M>();
-            this.appendChild(this.header);
-        }
+        this.header = new ItemStatisticsHeader<M>();
+        this.appendChild(this.header);
+    }
 
-        getHeader(): ItemStatisticsHeader<M> {
-            return this.header;
-        }
+    getHeader(): ItemStatisticsHeader<M> {
+        return this.header;
+    }
 
-        setItem(item: api.app.view.ViewItem<M>) {
-            this.browseItem = item;
-            this.header.setItem(item);
-        }
+    setItem(item: ViewItem<M>) {
+        this.browseItem = item;
+        this.header.setItem(item);
+    }
 
-        clearItem() {
-            this.browseItem = null;
-            this.header.setItem(null);
-        }
+    clearItem() {
+        this.browseItem = null;
+        this.header.setItem(null);
+    }
 
-        getItem(): ViewItem<M> {
-            return this.browseItem;
-        }
+    getItem(): ViewItem<M> {
+        return this.browseItem;
     }
 }

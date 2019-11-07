@@ -1,31 +1,33 @@
-module api.ui.treegrid {
+import {Event} from '../../event/Event';
+import {ClassHelper} from '../../ClassHelper';
+import {TreeNode} from './TreeNode';
 
-    export class TreeGridItemClickedEvent extends api.event.Event {
+export class TreeGridItemClickedEvent
+    extends Event {
 
-        private node: TreeNode<any>;
+    private node: TreeNode<any>;
 
-        private selection: boolean;
+    private selection: boolean;
 
-        constructor(node: TreeNode<any>, selection: boolean = false) {
-            super();
-            this.selection = selection;
-            this.node = node;
-        }
+    constructor(node: TreeNode<any>, selection: boolean = false) {
+        super();
+        this.selection = selection;
+        this.node = node;
+    }
 
-        public hasSelection() {
-            return this.selection;
-        }
+    static on(handler: (event: TreeGridItemClickedEvent) => void) {
+        Event.bind(ClassHelper.getFullName(this), handler);
+    }
 
-        public getTreeNode(): TreeNode<any> {
-            return this.node;
-        }
+    static un(handler?: (event: TreeGridItemClickedEvent) => void) {
+        Event.unbind(ClassHelper.getFullName(this), handler);
+    }
 
-        static on(handler: (event: TreeGridItemClickedEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
-        }
+    public hasSelection() {
+        return this.selection;
+    }
 
-        static un(handler?: (event: TreeGridItemClickedEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
-        }
+    public getTreeNode(): TreeNode<any> {
+        return this.node;
     }
 }

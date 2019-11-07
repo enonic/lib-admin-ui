@@ -1,330 +1,338 @@
-module api.application {
-    import UploadItem = api.ui.uploader.UploadItem;
+import {UploadItem} from '../ui/uploader/UploadItem';
+import {BaseItem, BaseItemBuilder} from '../item/BaseItem';
+import {Form} from '../form/Form';
+import {ApplicationKey} from './ApplicationKey';
+import {ContentTypeName} from '../schema/content/ContentTypeName';
+import {MixinNames} from '../schema/mixin/MixinNames';
+import {ApplicationJson} from './json/ApplicationJson';
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
 
-    export class Application extends api.item.BaseItem {
+export class Application
+    extends BaseItem {
 
-        static STATE_STARTED: string = 'started';
+    static STATE_STARTED: string = 'started';
 
-        static STATE_STOPPED: string = 'stopped';
+    static STATE_STOPPED: string = 'stopped';
 
-        private applicationKey: ApplicationKey;
+    private applicationKey: ApplicationKey;
 
-        private displayName: string;
+    private displayName: string;
 
-        private description: string;
+    private description: string;
 
-        private vendorName: string;
+    private vendorName: string;
 
-        private vendorUrl: string;
+    private vendorUrl: string;
 
-        private url: string;
+    private url: string;
 
-        private state: string;
+    private state: string;
 
-        private version: string;
+    private version: string;
 
-        private local: boolean;
+    private local: boolean;
 
-        private config: api.form.Form;
+    private config: Form;
 
-        private idProviderConfig: api.form.Form;
+    private idProviderConfig: Form;
 
-        private applicationDependencies: api.application.ApplicationKey[] = [];
+    private applicationDependencies: ApplicationKey[] = [];
 
-        private contentTypeDependencies: api.schema.content.ContentTypeName[] = [];
+    private contentTypeDependencies: ContentTypeName[] = [];
 
-        private metaSteps: api.schema.mixin.MixinNames;
+    private metaSteps: MixinNames;
 
-        private minSystemVersion: string;
+    private minSystemVersion: string;
 
-        private maxSystemVersion: string;
+    private maxSystemVersion: string;
 
-        private iconUrl: string;
+    private iconUrl: string;
 
-        constructor(builder: ApplicationBuilder) {
-            super(builder);
-            this.applicationKey = builder.applicationKey;
-            this.displayName = builder.displayName;
-            this.description = builder.description;
-            this.vendorName = builder.vendorName;
-            this.vendorUrl = builder.vendorUrl;
-            this.url = builder.url;
-            this.state = builder.state;
-            this.version = builder.version;
-            this.local = builder.local;
-            this.config = builder.config;
-            this.idProviderConfig = builder.idProviderConfig;
-            this.applicationDependencies = builder.applicationDependencies;
-            this.contentTypeDependencies = builder.contentTypeDependencies;
-            this.metaSteps = builder.metaSteps;
-            this.minSystemVersion = builder.minSystemVersion;
-            this.maxSystemVersion = builder.maxSystemVersion;
-            this.iconUrl = builder.iconUrl;
-        }
+    constructor(builder: ApplicationBuilder) {
+        super(builder);
+        this.applicationKey = builder.applicationKey;
+        this.displayName = builder.displayName;
+        this.description = builder.description;
+        this.vendorName = builder.vendorName;
+        this.vendorUrl = builder.vendorUrl;
+        this.url = builder.url;
+        this.state = builder.state;
+        this.version = builder.version;
+        this.local = builder.local;
+        this.config = builder.config;
+        this.idProviderConfig = builder.idProviderConfig;
+        this.applicationDependencies = builder.applicationDependencies;
+        this.contentTypeDependencies = builder.contentTypeDependencies;
+        this.metaSteps = builder.metaSteps;
+        this.minSystemVersion = builder.minSystemVersion;
+        this.maxSystemVersion = builder.maxSystemVersion;
+        this.iconUrl = builder.iconUrl;
+    }
 
-        getDisplayName(): string {
-            return this.displayName;
-        }
+    static fromJson(json: ApplicationJson): Application {
+        return new ApplicationBuilder().fromJson(json).build();
+    }
 
-        hasDescription(): boolean {
-            return !!this.description;
-        }
+    static fromJsonArray(jsonArray: ApplicationJson[]): Application[] {
+        let array: Application[] = [];
+        jsonArray.forEach((json: ApplicationJson) => {
+            array.push(Application.fromJson(json));
+        });
+        return array;
+    }
 
-        getDescription(): string {
-            return this.description;
-        }
+    getDisplayName(): string {
+        return this.displayName;
+    }
 
-        getApplicationKey(): ApplicationKey {
-            return this.applicationKey;
-        }
+    hasDescription(): boolean {
+        return !!this.description;
+    }
 
-        getVersion(): string {
-            return this.version;
-        }
+    getDescription(): string {
+        return this.description;
+    }
 
-        isLocal(): boolean {
-            return this.local;
-        }
+    getApplicationKey(): ApplicationKey {
+        return this.applicationKey;
+    }
 
-        getName(): string {
-            return this.applicationKey.getName();
-        }
+    getVersion(): string {
+        return this.version;
+    }
 
-        getVendorName(): string {
-            return this.vendorName;
-        }
+    isLocal(): boolean {
+        return this.local;
+    }
 
-        getVendorUrl(): string {
-            return this.vendorUrl;
-        }
+    getName(): string {
+        return this.applicationKey.getName();
+    }
 
-        getUrl(): string {
-            return this.url;
-        }
+    getVendorName(): string {
+        return this.vendorName;
+    }
 
-        getState(): string {
-            return this.state;
-        }
+    getVendorUrl(): string {
+        return this.vendorUrl;
+    }
 
-        isStarted(): boolean {
-            return this.state === Application.STATE_STARTED;
-        }
+    getUrl(): string {
+        return this.url;
+    }
 
-        hasChildren(): boolean {
+    getState(): string {
+        return this.state;
+    }
+
+    isStarted(): boolean {
+        return this.state === Application.STATE_STARTED;
+    }
+
+    hasChildren(): boolean {
+        return false;
+    }
+
+    getForm(): Form {
+        return this.config;
+    }
+
+    getIdProviderForm(): Form {
+        return this.idProviderConfig;
+    }
+
+    getMinSystemVersion(): string {
+        return this.minSystemVersion;
+    }
+
+    getMaxSystemVersion(): string {
+        return this.maxSystemVersion;
+    }
+
+    getapplicationDependencies(): ApplicationKey[] {
+        return this.applicationDependencies;
+    }
+
+    getContentTypeDependencies(): ContentTypeName[] {
+        return this.contentTypeDependencies;
+    }
+
+    getMetaSteps(): MixinNames {
+        return this.metaSteps;
+    }
+
+    hasIconUrl(): boolean {
+        return !!this.iconUrl;
+    }
+
+    getIconUrl(): string {
+        return this.iconUrl;
+    }
+
+    equals(o: Equitable): boolean {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, Application) || !super.equals(o)) {
             return false;
         }
+        let other = <Application>o;
 
-        getForm(): api.form.Form {
-            return this.config;
+        return this.applicationKey.equals(other.applicationKey) &&
+               this.displayName === other.displayName &&
+               this.description === other.description &&
+               this.vendorName === other.vendorName &&
+               this.vendorUrl === other.vendorUrl &&
+               this.url === other.url &&
+               this.state === other.state &&
+               this.version === other.version &&
+               this.local === other.local &&
+               ObjectHelper.arrayEquals(this.applicationDependencies, other.applicationDependencies) &&
+               ObjectHelper.arrayEquals(this.contentTypeDependencies, other.contentTypeDependencies) &&
+               ObjectHelper.equals(this.metaSteps, other.metaSteps) &&
+               this.minSystemVersion === other.minSystemVersion &&
+               this.maxSystemVersion === other.maxSystemVersion &&
+               this.iconUrl === other.iconUrl;
+    }
+}
+
+export class ApplicationBuilder
+    extends BaseItemBuilder {
+
+    applicationKey: ApplicationKey;
+
+    displayName: string;
+
+    description: string;
+
+    vendorName: string;
+
+    vendorUrl: string;
+
+    url: string;
+
+    state: string;
+
+    version: string;
+
+    local: boolean;
+
+    config: Form;
+
+    idProviderConfig: Form;
+
+    applicationDependencies: ApplicationKey[];
+
+    contentTypeDependencies: ContentTypeName[];
+
+    metaSteps: MixinNames;
+
+    minSystemVersion: string;
+
+    maxSystemVersion: string;
+
+    iconUrl: string;
+
+    constructor(source?: Application) {
+        if (source) {
+            super(source);
+            this.applicationKey = source.getApplicationKey();
+            this.displayName = source.getDisplayName();
+            this.description = source.getDescription();
+            this.vendorName = source.getVendorName();
+            this.vendorUrl = source.getVendorUrl();
+            this.url = source.getUrl();
+            this.state = source.getState();
+            this.version = source.getVersion();
+            this.local = source.isLocal();
+            this.config = source.getForm();
+            this.applicationDependencies = source.getapplicationDependencies();
+            this.contentTypeDependencies = source.getContentTypeDependencies();
+            this.metaSteps = source.getMetaSteps();
+            this.minSystemVersion = source.getMinSystemVersion();
+            this.maxSystemVersion = source.getMaxSystemVersion();
+            this.iconUrl = source.getIconUrl();
+        } else {
+            this.applicationDependencies = [];
+            this.contentTypeDependencies = [];
         }
+    }
 
-        getIdProviderForm(): api.form.Form {
-            return this.idProviderConfig;
-        }
+    fromJson(json: ApplicationJson): ApplicationBuilder {
 
-        getMinSystemVersion(): string {
-            return this.minSystemVersion;
-        }
+        super.fromBaseItemJson(json, 'key');
 
-        getMaxSystemVersion(): string {
-            return this.maxSystemVersion;
-        }
+        this.applicationKey = ApplicationKey.fromString(json.key);
+        this.displayName = json.displayName;
+        this.description = json.description;
+        this.vendorName = json.vendorName;
+        this.vendorUrl = json.vendorUrl;
+        this.url = json.url;
+        this.state = json.state;
+        this.version = json.version;
+        this.local = json.local;
 
-        getapplicationDependencies(): api.application.ApplicationKey[] {
-            return this.applicationDependencies;
-        }
+        this.config = json.config != null ? Form.fromJson(json.config) : null;
+        this.idProviderConfig = json.idProviderConfig != null ? Form.fromJson(json.idProviderConfig) : null;
+        this.minSystemVersion = json.minSystemVersion;
+        this.maxSystemVersion = json.maxSystemVersion;
+        this.iconUrl = json.iconUrl;
 
-        getContentTypeDependencies(): api.schema.content.ContentTypeName[] {
-            return this.contentTypeDependencies;
-        }
-
-        getMetaSteps(): api.schema.mixin.MixinNames {
-            return this.metaSteps;
-        }
-
-        hasIconUrl(): boolean {
-            return !!this.iconUrl;
-        }
-
-        getIconUrl(): string {
-            return this.iconUrl;
-        }
-
-        static fromJson(json: api.application.json.ApplicationJson): Application {
-            return new ApplicationBuilder().fromJson(json).build();
-        }
-
-        static fromJsonArray(jsonArray: api.application.json.ApplicationJson[]): Application[] {
-            let array: Application[] = [];
-            jsonArray.forEach((json: api.application.json.ApplicationJson) => {
-                array.push(Application.fromJson(json));
+        if (json.applicationDependencies != null) {
+            json.applicationDependencies.forEach((dependency: string) => {
+                this.applicationDependencies.push(ApplicationKey.fromString(dependency));
             });
-            return array;
         }
 
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Application) || !super.equals(o)) {
-                return false;
-            }
-            let other = <Application>o;
-
-            return this.applicationKey.equals(other.applicationKey) &&
-                   this.displayName === other.displayName &&
-                   this.description === other.description &&
-                   this.vendorName === other.vendorName &&
-                   this.vendorUrl === other.vendorUrl &&
-                   this.url === other.url &&
-                   this.state === other.state &&
-                   this.version === other.version &&
-                   this.local === other.local &&
-                   api.ObjectHelper.arrayEquals(this.applicationDependencies, other.applicationDependencies) &&
-                   api.ObjectHelper.arrayEquals(this.contentTypeDependencies, other.contentTypeDependencies) &&
-                   api.ObjectHelper.equals(this.metaSteps, other.metaSteps) &&
-                   this.minSystemVersion === other.minSystemVersion &&
-                   this.maxSystemVersion === other.maxSystemVersion &&
-                   this.iconUrl === other.iconUrl;
+        if (json.contentTypeDependencies != null) {
+            json.contentTypeDependencies.forEach((dependency: string) => {
+                this.contentTypeDependencies.push(new ContentTypeName(dependency));
+            });
         }
+
+        if (json.metaSteps != null) {
+            this.metaSteps = MixinNames.create().fromStrings(json.metaSteps).build();
+        }
+
+        return this;
     }
 
-    export class ApplicationBuilder extends api.item.BaseItemBuilder {
+    build(): Application {
+        return new Application(this);
+    }
+}
 
-        applicationKey: ApplicationKey;
+export class ApplicationUploadMock {
 
-        displayName: string;
+    private id: string;
+    private name: string;
+    private uploadItem: UploadItem<Application>;
 
-        description: string;
-
-        vendorName: string;
-
-        vendorUrl: string;
-
-        url: string;
-
-        state: string;
-
-        version: string;
-
-        local: boolean;
-
-        config: api.form.Form;
-
-        idProviderConfig: api.form.Form;
-
-        applicationDependencies: api.application.ApplicationKey[];
-
-        contentTypeDependencies: api.schema.content.ContentTypeName[];
-
-        metaSteps: api.schema.mixin.MixinNames;
-
-        minSystemVersion: string;
-
-        maxSystemVersion: string;
-
-        iconUrl: string;
-
-        constructor(source?: Application) {
-            if (source) {
-                super(source);
-                this.applicationKey = source.getApplicationKey();
-                this.displayName = source.getDisplayName();
-                this.description = source.getDescription();
-                this.vendorName = source.getVendorName();
-                this.vendorUrl = source.getVendorUrl();
-                this.url = source.getUrl();
-                this.state = source.getState();
-                this.version = source.getVersion();
-                this.local = source.isLocal();
-                this.config = source.getForm();
-                this.applicationDependencies = source.getapplicationDependencies();
-                this.contentTypeDependencies = source.getContentTypeDependencies();
-                this.metaSteps = source.getMetaSteps();
-                this.minSystemVersion = source.getMinSystemVersion();
-                this.maxSystemVersion = source.getMaxSystemVersion();
-                this.iconUrl = source.getIconUrl();
-            } else {
-                this.applicationDependencies = [];
-                this.contentTypeDependencies = [];
-            }
-        }
-
-        fromJson(json: api.application.json.ApplicationJson): ApplicationBuilder {
-
-            super.fromBaseItemJson(json, 'key');
-
-            this.applicationKey = ApplicationKey.fromString(json.key);
-            this.displayName = json.displayName;
-            this.description = json.description;
-            this.vendorName = json.vendorName;
-            this.vendorUrl = json.vendorUrl;
-            this.url = json.url;
-            this.state = json.state;
-            this.version = json.version;
-            this.local = json.local;
-
-            this.config = json.config != null ? api.form.Form.fromJson(json.config) : null;
-            this.idProviderConfig = json.idProviderConfig != null ? api.form.Form.fromJson(json.idProviderConfig) : null;
-            this.minSystemVersion = json.minSystemVersion;
-            this.maxSystemVersion = json.maxSystemVersion;
-            this.iconUrl = json.iconUrl;
-
-            if (json.applicationDependencies != null) {
-                json.applicationDependencies.forEach((dependency: string) => {
-                    this.applicationDependencies.push(api.application.ApplicationKey.fromString(dependency));
-                });
-            }
-
-            if (json.contentTypeDependencies != null) {
-                json.contentTypeDependencies.forEach((dependency: string) => {
-                    this.contentTypeDependencies.push(new api.schema.content.ContentTypeName(dependency));
-                });
-            }
-
-            if (json.metaSteps != null) {
-                this.metaSteps = api.schema.mixin.MixinNames.create().fromStrings(json.metaSteps).build();
-            }
-
-            return this;
-        }
-
-        build(): Application {
-            return new Application(this);
-        }
+    constructor(uploadItem: UploadItem<Application>) {
+        this.id = uploadItem.getId();
+        this.name = uploadItem.getName();
+        this.uploadItem = uploadItem;
     }
 
-    export class ApplicationUploadMock {
+    getId(): string {
+        return this.id;
+    }
 
-        private id: string;
-        private name: string;
-        private uploadItem: UploadItem<Application>;
+    getDisplayName(): string {
+        return this.name;
+    }
 
-        constructor(uploadItem: UploadItem<Application>) {
-            this.id = uploadItem.getId();
-            this.name = uploadItem.getName();
-            this.uploadItem = uploadItem;
-        }
+    getName(): string {
+        return this.name;
+    }
 
-        getId(): string {
-            return this.id;
-        }
+    getUploadItem(): UploadItem<Application> {
+        return this.uploadItem;
+    }
 
-        getDisplayName(): string {
-            return this.name;
-        }
+    getApplicationKey(): string {
+        return this.name;
+    }
 
-        getName(): string {
-            return this.name;
-        }
-
-        getUploadItem(): UploadItem<Application> {
-            return this.uploadItem;
-        }
-
-        getApplicationKey(): string {
-            return this.name;
-        }
-
-        isLocal(): boolean {
-            return false;
-        }
+    isLocal(): boolean {
+        return false;
     }
 }

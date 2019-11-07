@@ -1,25 +1,25 @@
-module api.ui {
+import {InputTypeView} from '../form/inputtype/InputTypeView';
+import {Event} from '../event/Event';
+import {ClassHelper} from '../ClassHelper';
 
-    import InputTypeView = api.form.inputtype.InputTypeView;
+export class FocusSwitchEvent
+    extends Event {
+    private inputTypeView: InputTypeView;
 
-    export class FocusSwitchEvent extends api.event.Event {
-        private inputTypeView: InputTypeView;
+    constructor(inputTypeView: InputTypeView) {
+        super();
+        this.inputTypeView = inputTypeView;
+    }
 
-        constructor(inputTypeView: InputTypeView) {
-            super();
-            this.inputTypeView = inputTypeView;
-        }
+    static on(handler: (event: FocusSwitchEvent) => void, contextWindow: Window = window) {
+        Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
+    }
 
-        getInputTypeView(): InputTypeView {
-            return this.inputTypeView;
-        }
+    static un(handler?: (event: FocusSwitchEvent) => void, contextWindow: Window = window) {
+        Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
+    }
 
-        static on(handler: (event: FocusSwitchEvent) => void, contextWindow: Window = window) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
-        }
-
-        static un(handler?: (event: FocusSwitchEvent) => void, contextWindow: Window = window) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
-        }
+    getInputTypeView(): InputTypeView {
+        return this.inputTypeView;
     }
 }

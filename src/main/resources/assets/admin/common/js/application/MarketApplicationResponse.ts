@@ -1,32 +1,32 @@
-module api.application {
+import {MarketApplication} from './MarketApplication';
+import {MarketApplicationMetadata} from './MarketApplicationMetadata';
 
-    export class MarketApplicationResponse {
+export class MarketApplicationResponse {
 
-        private applications: MarketApplication[];
+    private applications: MarketApplication[];
 
-        private metadata: MarketApplicationMetadata;
+    private metadata: MarketApplicationMetadata;
 
-        constructor(contents: MarketApplication[], metadata: MarketApplicationMetadata) {
-            this.applications = contents;
-            this.metadata = metadata;
-        }
+    constructor(contents: MarketApplication[], metadata: MarketApplicationMetadata) {
+        this.applications = contents;
+        this.metadata = metadata;
+    }
 
-        getApplications(): MarketApplication[] {
-            return this.applications;
-        }
+    getApplications(): MarketApplication[] {
+        return this.applications;
+    }
 
-        getMetadata(): MarketApplicationMetadata {
-            return this.metadata;
-        }
+    getMetadata(): MarketApplicationMetadata {
+        return this.metadata;
+    }
 
-        setApplications(contents: MarketApplication[]): MarketApplicationResponse {
-            this.applications = contents;
-            return this;
-        }
+    setApplications(contents: MarketApplication[]): MarketApplicationResponse {
+        this.applications = contents;
+        return this;
+    }
 
-        setMetadata(metadata: MarketApplicationMetadata): MarketApplicationResponse {
-            this.metadata = metadata;
-            return this;
-        }
+    setMetadata(metadata: MarketApplicationMetadata): MarketApplicationResponse {
+        this.metadata = metadata;
+        return this;
     }
 }

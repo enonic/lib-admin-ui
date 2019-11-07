@@ -1,7 +1,3 @@
-module api.app {
-
-    export enum AppLauncherEventType {
-
-        Show
-    }
+export enum AppLauncherEventType {
+    Show
 }

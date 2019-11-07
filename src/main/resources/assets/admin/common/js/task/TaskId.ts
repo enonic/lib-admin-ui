@@ -1,32 +1,34 @@
-module api.task {
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
+import {TaskIdJson} from './TaskIdJson';
 
-    export class TaskId implements api.Equitable {
+export class TaskId
+    implements Equitable {
 
-        private value: string;
+    private value: string;
 
-        constructor(value: string) {
-            this.value = value;
-        }
-
-        public static fromString(str: string): TaskId {
-            return new TaskId(str);
-        }
-
-        public toString(): string {
-            return this.value;
-        }
-
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, TaskId)) {
-                return false;
-            }
-            let other = <TaskId>o;
-            return this.value === other.value;
-        }
-
-        static fromJson(json: TaskIdJson): TaskId {
-            return TaskId.fromString(json.taskId);
-        }
-
+    constructor(value: string) {
+        this.value = value;
     }
+
+    public static fromString(str: string): TaskId {
+        return new TaskId(str);
+    }
+
+    static fromJson(json: TaskIdJson): TaskId {
+        return TaskId.fromString(json.taskId);
+    }
+
+    public toString(): string {
+        return this.value;
+    }
+
+    equals(o: Equitable): boolean {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, TaskId)) {
+            return false;
+        }
+        let other = <TaskId>o;
+        return this.value === other.value;
+    }
+
 }

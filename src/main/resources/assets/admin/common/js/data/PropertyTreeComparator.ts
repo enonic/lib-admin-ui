@@ -1,48 +1,50 @@
-module api.data {
+import {PropertyTree} from './PropertyTree';
+import {PropertySet} from './PropertySet';
+import {Property} from './Property';
+import {ValueTypes} from './ValueTypes';
 
-    export class PropertyTreeComparator {
+export class PropertyTreeComparator {
 
-        public compareTree(treeA: PropertyTree, treeB: PropertyTree) {
-            if (!treeA || !treeB) {
-                return;
+    public compareTree(treeA: PropertyTree, treeB: PropertyTree) {
+        if (!treeA || !treeB) {
+            return;
+        }
+        this.compareSet(treeA.getRoot(), treeB.getRoot());
+    }
+
+    public compareSet(setA: PropertySet, setB: PropertySet) {
+
+        // Check those existing in A, but not in B
+        setA.forEach((propertyA: Property, index: number) => {
+
+            let propertyB = setB.getProperty(propertyA.getName(), index);
+            if (!propertyB) {
+                console.log('Property A[' + propertyA.getPath().toString() + '] does not exist in B[' +
+                            setB.getPropertyPath().toString() + ']');
             }
-            this.compareSet(treeA.getRoot(), treeB.getRoot());
-        }
 
-        public compareSet(setA: PropertySet, setB: PropertySet) {
+            if (!propertyA.equals(propertyB)) {
+                console.log('Property A[' + propertyA.getPath().toString() + '] is not equal B[' + propertyB.getPath().toString() +
+                            ']');
+            }
 
-            // Check those existing in A, but not in B
-            setA.forEach((propertyA: Property, index: number) => {
+            if (ValueTypes.DATA.isPropertySet(propertyA.getValue())) {
+                let childSetA = propertyA.getPropertySet();
+                let childSetB = propertyB.getPropertySet();
+                this.compareSet(childSetA, childSetB);
+            }
 
-                let propertyB = setB.getProperty(propertyA.getName(), index);
-                if (!propertyB) {
-                    console.log('Property A[' + propertyA.getPath().toString() + '] does not exist in B[' +
-                                setB.getPropertyPath().toString() + ']');
-                }
+        });
 
-                if (!propertyA.equals(propertyB)) {
-                    console.log('Property A[' + propertyA.getPath().toString() + '] is not equal B[' + propertyB.getPath().toString() +
-                                ']');
-                }
+        // Check those existing in B, but not in A
+        setB.forEach((propertyB: Property, index: number) => {
 
-                if (propertyA.getValue().isPropertySet()) {
-                    let childSetA = propertyA.getPropertySet();
-                    let childSetB = propertyB.getPropertySet();
-                    this.compareSet(childSetA, childSetB);
-                }
+            let propertyA = setA.getProperty(propertyB.getName(), index);
+            if (!propertyA) {
+                console.log('Property B[' + propertyB.getPath().toString() + '] does not exist in A[' +
+                            setA.getPropertyPath().toString() + ']');
+            }
+        });
 
-            });
-
-            // Check those existing in B, but not in A
-            setB.forEach((propertyB: Property, index: number) => {
-
-                let propertyA = setA.getProperty(propertyB.getName(), index);
-                if (!propertyA) {
-                    console.log('Property B[' + propertyB.getPath().toString() + '] does not exist in A[' +
-                                setA.getPropertyPath().toString() + ']');
-                }
-            });
-
-        }
     }
 }

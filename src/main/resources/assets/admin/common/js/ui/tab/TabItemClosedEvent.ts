@@ -1,9 +1,10 @@
-module api.ui.tab {
+import {TabItemEvent} from './TabItemEvent';
+import {TabItem} from './TabItem';
 
-    export class TabItemClosedEvent extends TabItemEvent {
+export class TabItemClosedEvent
+    extends TabItemEvent {
 
-        constructor(tab: TabItem) {
-            super(tab);
-        }
+    constructor(tab: TabItem) {
+        super(tab);
     }
 }

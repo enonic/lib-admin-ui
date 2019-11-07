@@ -1,26 +1,24 @@
-module api.aggregation {
+import {Bucket} from './Bucket';
 
-    export class AggregationSelection {
+export class AggregationSelection {
 
-        name: string;
-        selectedBuckets: api.aggregation.Bucket[];
+    name: string;
+    selectedBuckets: Bucket[];
 
-        constructor(name: string) {
-            this.name = name;
-        }
+    constructor(name: string) {
+        this.name = name;
+    }
 
-        public setValues(selectedBuckets: api.aggregation.Bucket[]) {
-            this.selectedBuckets = selectedBuckets;
-        }
+    public setValues(selectedBuckets: Bucket[]) {
+        this.selectedBuckets = selectedBuckets;
+    }
 
-        public getName(): string {
-            return this.name;
-        }
+    public getName(): string {
+        return this.name;
+    }
 
-        public getSelectedBuckets(): api.aggregation.Bucket[] {
-            return this.selectedBuckets;
-        }
-
+    public getSelectedBuckets(): Bucket[] {
+        return this.selectedBuckets;
     }
 
 }

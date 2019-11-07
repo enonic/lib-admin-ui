@@ -1,11 +1,11 @@
-module api.dom {
+import {Element, NewElementBuilder} from './Element';
 
-    export class ArticleEl extends Element {
+export class ArticleEl
+    extends Element {
 
-        constructor(className?: string, contentEditable?: boolean) {
-            super(new NewElementBuilder().setTagName('article').setClassName(className));
-            this.setContentEditable(contentEditable);
-        }
-
+    constructor(className?: string, contentEditable?: boolean) {
+        super(new NewElementBuilder().setTagName('article').setClassName(className));
+        this.setContentEditable(contentEditable);
     }
+
 }

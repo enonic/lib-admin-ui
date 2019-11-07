@@ -1,9 +1,7 @@
-module api.schema.mixin {
+import {MixinJson} from './MixinJson';
 
-    export interface MixinListJson {
+export interface MixinListJson {
 
-        mixins: MixinJson[];
-
-    }
+    mixins: MixinJson[];
 
 }

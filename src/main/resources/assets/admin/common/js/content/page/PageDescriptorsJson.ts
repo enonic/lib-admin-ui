@@ -1,7 +1,6 @@
-module api.content.page {
+import {PageDescriptorJson} from './PageDescriptorJson';
 
-    export interface PageDescriptorsJson {
+export interface PageDescriptorsJson {
 
-        descriptors: PageDescriptorJson[];
-    }
+    descriptors: PageDescriptorJson[];
 }

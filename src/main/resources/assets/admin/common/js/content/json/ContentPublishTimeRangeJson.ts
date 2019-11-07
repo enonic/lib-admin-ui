@@ -1,9 +1,6 @@
-module api.content.json {
+export interface ContentPublishTimeRangeJson {
 
-    export interface ContentPublishTimeRangeJson {
-
-        from: string;
-        to: string;
-        first: string;
-    }
+    from: string;
+    to: string;
+    first: string;
 }

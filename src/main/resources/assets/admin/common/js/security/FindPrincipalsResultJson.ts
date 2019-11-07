@@ -1,9 +1,8 @@
-module api.security {
+import {PrincipalJson} from './PrincipalJson';
 
-    export interface FindPrincipalsResultJson {
+export interface FindPrincipalsResultJson {
 
-        principals: api.security.PrincipalJson[];
+    principals: PrincipalJson[];
 
-        totalSize: number;
-    }
+    totalSize: number;
 }

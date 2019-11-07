@@ -1,26 +1,23 @@
-module api {
+export class ValueChangedEvent {
 
-    export class ValueChangedEvent {
+    private oldValue: string;
 
-        private oldValue: string;
+    private newValue: string;
 
-        private newValue: string;
+    constructor(oldValue: string = '', newValue: string = '') {
+        this.oldValue = oldValue;
+        this.newValue = newValue;
+    }
 
-        constructor(oldValue: string = '', newValue: string = '') {
-            this.oldValue = oldValue;
-            this.newValue = newValue;
-        }
+    getOldValue(): string {
+        return this.oldValue;
+    }
 
-        getOldValue(): string {
-            return this.oldValue;
-        }
+    getNewValue(): string {
+        return this.newValue;
+    }
 
-        getNewValue(): string {
-            return this.newValue;
-        }
-
-        valuesAreEqual(): boolean {
-            return this.oldValue === this.newValue;
-        }
+    valuesAreEqual(): boolean {
+        return this.oldValue === this.newValue;
     }
 }

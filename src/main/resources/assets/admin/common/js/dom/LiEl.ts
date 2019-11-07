@@ -1,9 +1,9 @@
-module api.dom {
+import {Element, NewElementBuilder} from './Element';
 
-    export class LiEl extends Element {
+export class LiEl
+    extends Element {
 
-        constructor(className?: string) {
-            super(new NewElementBuilder().setTagName('li').setClassName(className));
-        }
+    constructor(className?: string) {
+        super(new NewElementBuilder().setTagName('li').setClassName(className));
     }
 }

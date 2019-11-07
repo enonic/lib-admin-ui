@@ -1,109 +1,112 @@
-module api.schema {
+import {BaseItem, BaseItemBuilder} from '../item/BaseItem';
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
+import {SchemaJson} from './SchemaJson';
 
-    export class Schema extends api.item.BaseItem {
+export class Schema
+    extends BaseItem {
 
-        private name: string;
+    private name: string;
 
-        private displayName: string;
+    private displayName: string;
 
-        private description: string;
+    private description: string;
 
-        private iconUrl: string;
+    private iconUrl: string;
 
-        constructor(builder: SchemaBuilder) {
-            super(builder);
-            this.name = builder.name;
-            this.displayName = builder.displayName;
-            this.description = builder.description;
-            this.iconUrl = builder.iconUrl;
+    constructor(builder: SchemaBuilder) {
+        super(builder);
+        this.name = builder.name;
+        this.displayName = builder.displayName;
+        this.description = builder.description;
+        this.iconUrl = builder.iconUrl;
+    }
+
+    static fromJson(json: SchemaJson): Schema {
+        return new SchemaBuilder().fromSchemaJson(json).build();
+    }
+
+    getName(): string {
+        return this.name;
+    }
+
+    getDisplayName(): string {
+        return this.displayName;
+    }
+
+    getDescription(): string {
+        return this.description;
+    }
+
+    getIconUrl(): string {
+        return this.iconUrl;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, Schema)) {
+            return false;
         }
 
-        getName(): string {
-            return this.name;
+        if (!super.equals(o)) {
+            return false;
         }
 
-        getDisplayName(): string {
-            return this.displayName;
+        let other = <Schema>o;
+
+        if (!ObjectHelper.stringEquals(this.name, other.name)) {
+            return false;
         }
 
-        getDescription(): string {
-            return this.description;
+        if (!ObjectHelper.stringEquals(this.displayName, other.displayName)) {
+            return false;
         }
 
-        getIconUrl(): string {
-            return this.iconUrl;
+        if (!ObjectHelper.stringEquals(this.iconUrl, other.iconUrl)) {
+            return false;
         }
 
-        equals(o: api.Equitable): boolean {
+        return true;
+    }
+}
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Schema)) {
-                return false;
-            }
+export class SchemaBuilder
+    extends BaseItemBuilder {
 
-            if (!super.equals(o)) {
-                return false;
-            }
+    name: string;
 
-            let other = <Schema>o;
+    displayName: string;
 
-            if (!ObjectHelper.stringEquals(this.name, other.name)) {
-                return false;
-            }
+    description: string;
 
-            if (!ObjectHelper.stringEquals(this.displayName, other.displayName)) {
-                return false;
-            }
+    iconUrl: string;
 
-            if (!ObjectHelper.stringEquals(this.iconUrl, other.iconUrl)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        static fromJson(json: api.schema.SchemaJson): Schema {
-            return new SchemaBuilder().fromSchemaJson(json).build();
+    constructor(source?: Schema) {
+        if (source) {
+            super(source);
+            this.name = source.getName();
+            this.displayName = source.getDisplayName();
+            this.description = source.getDescription();
+            this.iconUrl = source.getIconUrl();
         }
     }
 
-    export class SchemaBuilder extends api.item.BaseItemBuilder {
+    fromSchemaJson(json: SchemaJson): SchemaBuilder {
+        super.fromBaseItemJson(json, 'name');
 
-        name: string;
-
-        displayName: string;
-
-        description: string;
-
-        iconUrl: string;
-
-        constructor(source?: Schema) {
-            if (source) {
-                super(source);
-                this.name = source.getName();
-                this.displayName = source.getDisplayName();
-                this.description = source.getDescription();
-                this.iconUrl = source.getIconUrl();
-            }
-        }
-
-        fromSchemaJson(json: api.schema.SchemaJson): SchemaBuilder {
-            super.fromBaseItemJson(json, 'name');
-
-            this.name = json.name;
-            this.displayName = json.displayName;
-            this.description = json.description;
-            this.iconUrl = json.iconUrl;
-            return this;
-        }
-
-        setName(value: string): SchemaBuilder {
-            this.name = value;
-            return this;
-        }
-
-        build(): Schema {
-            return new Schema(this);
-        }
+        this.name = json.name;
+        this.displayName = json.displayName;
+        this.description = json.description;
+        this.iconUrl = json.iconUrl;
+        return this;
     }
 
+    setName(value: string): SchemaBuilder {
+        this.name = value;
+        return this;
+    }
+
+    build(): Schema {
+        return new Schema(this);
+    }
 }

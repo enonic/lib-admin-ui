@@ -1,7 +1,4 @@
-module api.aggregation {
-
-    export interface BucketJson {
-        docCount:number;
-        key:string;
-    }
+export interface BucketJson {
+    docCount: number;
+    key: string;
 }

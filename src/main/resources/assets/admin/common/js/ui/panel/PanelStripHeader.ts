@@ -1,87 +1,86 @@
-module api.ui.panel {
+import * as Q from 'q';
+import {SpanEl} from '../../dom/SpanEl';
+import {DivEl} from '../../dom/DivEl';
+import {i18n} from '../../util/Messages';
+import {Tooltip} from '../Tooltip';
 
-    import SpanEl = api.dom.SpanEl;
-    import DivEl = api.dom.DivEl;
-    import i18n = api.util.i18n;
+export class PanelStripHeader
+    extends DivEl {
 
-    export class PanelStripHeader
-        extends DivEl {
+    private text: SpanEl;
 
-        private text: SpanEl;
+    private toggler: DivEl;
 
-        private toggler: DivEl;
+    private tooltip: Tooltip;
 
-        private tooltip: Tooltip;
+    private enableChangedListeners: { (value: boolean): void }[] = [];
 
-        private enableChangedListeners: { (value: boolean): void }[] = [];
+    constructor(text: string, isTogglerAllowed: boolean = false) {
+        super();
+        this.addClass('panel-strip-panel-header');
+        this.text = new SpanEl().setHtml(text);
 
-        constructor(text: string, isTogglerAllowed: boolean = false) {
-            super();
-            this.addClass('panel-strip-panel-header');
-            this.text = new SpanEl().setHtml(text);
+        if (isTogglerAllowed) {
+            this.toggler = new DivEl('x-data-toggler');
 
-            if (isTogglerAllowed) {
-                this.toggler = new DivEl('x-data-toggler');
+            this.toggler.onClicked((e) => this.toggleState(e));
+            this.onClicked((e) => this.hasClass('enabled') || this.toggleState(e));
+            this.tooltip = new Tooltip(this.toggler, '', 200).setMode(Tooltip.MODE_GLOBAL_STATIC);
 
-                this.toggler.onClicked((e) => this.toggleState(e));
-                this.onClicked((e) => this.hasClass('enabled') || this.toggleState(e));
-                this.tooltip = new Tooltip(this.toggler, '', 200).setMode(Tooltip.MODE_GLOBAL_STATIC);
-
-                this.setTogglerState(false);
-            }
-
+            this.setTogglerState(false);
         }
 
-        private toggleState(event: MouseEvent) {
-            this.setTogglerState(!this.hasClass('enabled'));
-            event.stopPropagation();
+    }
+
+    doRender(): Q.Promise<boolean> {
+
+        this.appendChild(this.text);
+
+        if (this.toggler) {
+            this.appendChild(this.toggler);
         }
 
-        doRender(): wemQ.Promise<boolean> {
+        return Q(true);
+    }
 
-            this.appendChild(this.text);
+    setTogglerState(enabled: boolean, silent: boolean = false) {
 
-            if (this.toggler) {
-                this.appendChild(this.toggler);
-            }
-
-            return wemQ(true);
+        if (!this.toggler) {
+            return;
+        }
+        let changed: boolean = false;
+        if (this.hasClass('enabled') !== enabled) {
+            changed = true;
         }
 
-        setTogglerState(enabled: boolean, silent: boolean = false) {
+        this.toggleClass('enabled', enabled);
+        this.toggleClass('disabled', !enabled);
 
-            if (!this.toggler) {
-                return;
-            }
-            let changed: boolean = false;
-            if (this.hasClass('enabled') !== enabled) {
-                changed = true;
-            }
+        this.tooltip.setText(i18n(enabled ? 'tooltip.xdata.disable' : 'tooltip.xdata.enable'));
 
-            this.toggleClass('enabled', enabled);
-            this.toggleClass('disabled', !enabled);
-
-            this.tooltip.setText(i18n(enabled ? 'tooltip.xdata.disable' : 'tooltip.xdata.enable'));
-
-            if (changed && !silent) {
-                this.notifyEnableChanged(enabled);
-            }
+        if (changed && !silent) {
+            this.notifyEnableChanged(enabled);
         }
+    }
 
-        onEnableChanged(listener: (value: boolean) => void) {
-            this.enableChangedListeners.push(listener);
-        }
+    onEnableChanged(listener: (value: boolean) => void) {
+        this.enableChangedListeners.push(listener);
+    }
 
-        unEnableChanged(listener: (value: boolean) => void) {
-            this.enableChangedListeners = this.enableChangedListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
+    unEnableChanged(listener: (value: boolean) => void) {
+        this.enableChangedListeners = this.enableChangedListeners.filter((curr) => {
+            return curr !== listener;
+        });
+    }
 
-        private notifyEnableChanged(value: boolean) {
-            this.enableChangedListeners.forEach((listener) => {
-                listener(value);
-            });
-        }
+    private toggleState(event: MouseEvent) {
+        this.setTogglerState(!this.hasClass('enabled'));
+        event.stopPropagation();
+    }
+
+    private notifyEnableChanged(value: boolean) {
+        this.enableChangedListeners.forEach((listener) => {
+            listener(value);
+        });
     }
 }

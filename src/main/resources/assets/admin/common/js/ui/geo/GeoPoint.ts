@@ -1,41 +1,43 @@
-module api.ui.geo {
+import {TextInput} from '../text/TextInput';
+import {StringHelper} from '../../util/StringHelper';
+import {GeoPoint as GeoPointUtil} from '../../util/GeoPoint';
 
-    export class GeoPoint extends api.ui.text.TextInput {
+export class GeoPoint
+    extends TextInput {
 
-        private validUserInput: boolean;
+    private validUserInput: boolean;
 
-        constructor(originalValue?: api.util.GeoPoint) {
-            super('geo-point', undefined, originalValue ? originalValue.toString() : undefined);
+    constructor(originalValue?: GeoPointUtil) {
+        super('geo-point', undefined, originalValue ? originalValue.toString() : undefined);
 
-            this.validUserInput = true;
-            this.getEl().setAttribute('title', 'latitude,longitude');
-            this.setPlaceholder('latitude,longitude');
+        this.validUserInput = true;
+        this.getEl().setAttribute('title', 'latitude,longitude');
+        this.setPlaceholder('latitude,longitude');
 
-            this.onValueChanged(() => {
-                let typedGeoPoint = this.getValue();
-                this.validUserInput = api.util.StringHelper.isEmpty(typedGeoPoint) ||
-                                      api.util.GeoPoint.isValidString(typedGeoPoint);
+        this.onValueChanged(() => {
+            let typedGeoPoint = this.getValue();
+            this.validUserInput = StringHelper.isEmpty(typedGeoPoint) ||
+                                  GeoPointUtil.isValidString(typedGeoPoint);
 
-                this.updateValidationStatusOnUserInput(this.validUserInput);
-            });
-        }
-
-        setGeoPoint(value: api.util.GeoPoint): GeoPoint {
-            this.setValue(value ? value.toString() : '');
-            return this;
-        }
-
-        getGeoPoint(): api.util.GeoPoint {
-            let value = this.getValue();
-            if (api.util.StringHelper.isEmpty(value)) {
-                return null;
-            }
-            return <api.util.GeoPoint> api.util.GeoPoint.fromString(value);
-        }
-
-        isValid(): boolean {
-            return this.validUserInput;
-        }
-
+            this.updateValidationStatusOnUserInput(this.validUserInput);
+        });
     }
+
+    setGeoPoint(value: GeoPointUtil): GeoPoint {
+        this.setValue(value ? value.toString() : '');
+        return this;
+    }
+
+    getGeoPoint(): GeoPoint {
+        let value = this.getValue();
+        if (StringHelper.isEmpty(value)) {
+            return null;
+        }
+        return <GeoPoint> GeoPoint.fromString(value);
+    }
+
+    isValid(): boolean {
+        return this.validUserInput;
+    }
+
 }

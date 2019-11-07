@@ -1,80 +1,79 @@
-module api.content {
+import {WorkflowJson} from './json/WorkflowJson';
+import {WorkflowState} from './WorkflowState';
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
 
-    import WorkflowJson = api.content.json.WorkflowJson;
-    import WorkflowState = api.content.WorkflowState;
+export class Workflow
+    implements Equitable {
 
-    export class Workflow
-        implements api.Equitable {
+    private state: WorkflowState;
 
-        private state: WorkflowState;
+    constructor(builder: WorkflowBuilder) {
+        this.state = builder.state;
+    }
 
-        constructor(builder: WorkflowBuilder) {
-            this.state = builder.state;
+    static create(): WorkflowBuilder {
+        return new WorkflowBuilder();
+    }
+
+    static fromJson(json: WorkflowJson): Workflow {
+        return json ? new WorkflowBuilder().fromJson(json).build() : null;
+    }
+
+    getState(): WorkflowState {
+        return this.state;
+    }
+
+    getStateAsString(): string {
+        return WorkflowState[this.state].toLowerCase();
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, Workflow)) {
+            return false;
         }
 
-        getState(): WorkflowState {
-            return this.state;
-        }
+        const other = <Workflow>o;
 
-        getStateAsString(): string {
-            return WorkflowState[this.state].toLowerCase();
-        }
+        return this.state === other.getState();
+    }
 
-        equals(o: api.Equitable): boolean {
+    toJson(): WorkflowJson {
+        return {
+            state: WorkflowState[this.state],
+            checks: {}
+        };
+    }
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, Workflow)) {
-                return false;
-            }
+    newBuilder(): WorkflowBuilder {
+        return new WorkflowBuilder(this);
+    }
+}
 
-            const other = <Workflow>o;
+export class WorkflowBuilder {
 
-            return this.state === other.getState();
-        }
+    state: WorkflowState;
 
-        toJson(): WorkflowJson {
-            return {
-                state: WorkflowState[this.state],
-                checks: {}
-            };
-        }
-
-        newBuilder(): WorkflowBuilder {
-            return new WorkflowBuilder(this);
-        }
-
-        static create(): WorkflowBuilder {
-            return new WorkflowBuilder();
-        }
-
-        static fromJson(json: WorkflowJson): Workflow {
-            return json ? new WorkflowBuilder().fromJson(json).build() : null;
+    constructor(source?: Workflow) {
+        if (source) {
+            this.state = source.getState();
         }
     }
 
-    export class WorkflowBuilder {
+    fromJson(json: WorkflowJson): WorkflowBuilder {
+        this.state = WorkflowState[json.state];
 
-        state: WorkflowState;
-
-        constructor(source?: Workflow) {
-            if (source) {
-                this.state = source.getState();
-            }
-        }
-
-        fromJson(json: WorkflowJson): WorkflowBuilder {
-            this.state = WorkflowState[json.state];
-
-            return this;
-        }
-
-        setState(state: WorkflowState): WorkflowBuilder {
-            this.state = state;
-            return this;
-        }
-
-        build(): Workflow {
-            return new Workflow(this);
-        }
-
+        return this;
     }
+
+    setState(state: WorkflowState): WorkflowBuilder {
+        this.state = state;
+        return this;
+    }
+
+    build(): Workflow {
+        return new Workflow(this);
+    }
+
 }

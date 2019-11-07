@@ -1,9 +1,10 @@
-module api.form.json {
+import {FieldSetTypeWrapperJson} from './FieldSetTypeWrapperJson';
+import {FormItemJson} from './FormItemJson';
 
-    export interface FieldSetJson extends LayoutJson {
+export interface FieldSetJson
+    extends FormItemJson {
 
-        items: LayoutTypeWrapperJson[];
+    items: FieldSetTypeWrapperJson[];
 
-        label: string;
-    }
+    label: string;
 }

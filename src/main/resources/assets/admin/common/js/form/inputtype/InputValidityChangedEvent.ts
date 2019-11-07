@@ -1,26 +1,25 @@
-module api.form.inputtype {
+import {InputValidationRecording} from './InputValidationRecording';
 
-    export class InputValidityChangedEvent {
+export class InputValidityChangedEvent {
 
-        private inputName: string;
+    private inputName: string;
 
-        private recording: InputValidationRecording;
+    private recording: InputValidationRecording;
 
-        constructor(recording: InputValidationRecording, inputName:string) {
-            this.recording = recording;
-            this.inputName = inputName;
-        }
+    constructor(recording: InputValidationRecording, inputName: string) {
+        this.recording = recording;
+        this.inputName = inputName;
+    }
 
-        getInputName(): string {
-            return this.inputName;
-        }
+    getInputName(): string {
+        return this.inputName;
+    }
 
-        isValid(): boolean {
-            return this.recording.isValid();
-        }
+    isValid(): boolean {
+        return this.recording.isValid();
+    }
 
-        getRecording(): InputValidationRecording {
-            return this.recording;
-        }
+    getRecording(): InputValidationRecording {
+        return this.recording;
     }
 }

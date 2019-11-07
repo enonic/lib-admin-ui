@@ -1,48 +1,49 @@
-module api.query.filter {
+import {Filter} from './Filter';
+import {FilterTypeWrapperJson} from './FilterTypeWrapperJson';
+import {BooleanFilterJson} from './BooleanFilterJson';
 
-    export class BooleanFilter extends Filter {
+export class BooleanFilter
+    extends Filter {
 
-        private must: api.query.filter.Filter[] = [];
-        private mustNot: api.query.filter.Filter[] = [];
-        private should: api.query.filter.Filter[] = [];
+    private must: Filter[] = [];
+    private mustNot: Filter[] = [];
+    private should: Filter[] = [];
 
-        public addMust(must: api.query.filter.Filter): void {
-            this.must.push(must);
-        }
+    public addMust(must: Filter): void {
+        this.must.push(must);
+    }
 
-        public addMustNot(mustNot: api.query.filter.Filter): void {
-            this.mustNot.push(mustNot);
-        }
+    public addMustNot(mustNot: Filter): void {
+        this.mustNot.push(mustNot);
+    }
 
-        public addShould(should: api.query.filter.Filter): void {
-            this.should.push(should);
-        }
+    public addShould(should: Filter): void {
+        this.should.push(should);
+    }
 
-        toJson(): api.query.filter.FilterTypeWrapperJson {
+    toJson(): FilterTypeWrapperJson {
 
-            let json: api.query.filter.BooleanFilterJson = {
-                must: this.toJsonWrapperElements(this.must),
-                mustNot: this.toJsonWrapperElements(this.mustNot),
-                should: this.toJsonWrapperElements(this.should)
-            };
+        let json: BooleanFilterJson = {
+            must: this.toJsonWrapperElements(this.must),
+            mustNot: this.toJsonWrapperElements(this.mustNot),
+            should: this.toJsonWrapperElements(this.should)
+        };
 
-            return <api.query.filter.FilterTypeWrapperJson> {
-                BooleanFilter: json
-            };
-        }
+        return <FilterTypeWrapperJson> {
+            BooleanFilter: json
+        };
+    }
 
-        toJsonWrapperElements(filters: api.query.filter.Filter[]): api.query.filter.FilterTypeWrapperJson[] {
+    toJsonWrapperElements(filters: Filter[]): FilterTypeWrapperJson[] {
 
-            let wrapperJsons: api.query.filter.FilterTypeWrapperJson[] = [];
+        let wrapperJsons: FilterTypeWrapperJson[] = [];
 
-            filters.forEach((filter: api.query.filter.Filter)=> {
-                let filterTypeWrapperJson = filter.toJson();
-                wrapperJsons.push(filterTypeWrapperJson);
-            });
+        filters.forEach((filter: Filter) => {
+            let filterTypeWrapperJson = filter.toJson();
+            wrapperJsons.push(filterTypeWrapperJson);
+        });
 
-            return wrapperJsons;
-        }
-
+        return wrapperJsons;
     }
 
 }

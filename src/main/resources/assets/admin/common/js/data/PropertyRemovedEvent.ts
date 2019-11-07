@@ -1,14 +1,16 @@
-module api.data {
+import {PropertyEvent} from './PropertyEvent';
+import {Property} from './Property';
+import {PropertyEventType} from './PropertyEventType';
 
-    export class PropertyRemovedEvent extends PropertyEvent {
+export class PropertyRemovedEvent
+    extends PropertyEvent {
 
-        constructor(property: Property) {
-            super(PropertyEventType.REMOVED, property);
-        }
+    constructor(property: Property) {
+        super(PropertyEventType.REMOVED, property);
+    }
 
-        toString(): string {
-            let value = this.getProperty().getValue();
-            return '' + this.getPath().toString() + ' = ' + (value.getObject() ? value.getObject().toString() : null);
-        }
+    toString(): string {
+        let value = this.getProperty().getValue();
+        return '' + this.getPath().toString() + ' = ' + (value.getObject() ? value.getObject().toString() : null);
     }
 }

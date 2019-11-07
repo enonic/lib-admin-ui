@@ -1,9 +1,6 @@
-module api.form.json {
+export class OccurrencesJson {
 
-    export class OccurrencesJson {
+    maximum: number;
 
-        maximum:number;
-
-        minimum:number;
-    }
+    minimum: number;
 }

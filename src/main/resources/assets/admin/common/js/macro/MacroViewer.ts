@@ -1,21 +1,22 @@
-module api.macro {
+import {NamesAndIconViewer} from '../ui/NamesAndIconViewer';
+import {MacroDescriptor} from './MacroDescriptor';
 
-    export class MacroViewer extends api.ui.NamesAndIconViewer<MacroDescriptor> {
+export class MacroViewer
+    extends NamesAndIconViewer<MacroDescriptor> {
 
-        constructor() {
-            super();
-        }
+    constructor() {
+        super();
+    }
 
-        resolveDisplayName(object: MacroDescriptor): string {
-            return object.getDisplayName();
-        }
+    resolveDisplayName(object: MacroDescriptor): string {
+        return object.getDisplayName();
+    }
 
-        resolveSubName(object: MacroDescriptor): string {
-            return object.getDescription();
-        }
+    resolveSubName(object: MacroDescriptor): string {
+        return object.getDescription();
+    }
 
-        resolveIconUrl(object: MacroDescriptor): string {
-            return object.getIconUrl();
-        }
+    resolveIconUrl(object: MacroDescriptor): string {
+        return object.getIconUrl();
     }
 }

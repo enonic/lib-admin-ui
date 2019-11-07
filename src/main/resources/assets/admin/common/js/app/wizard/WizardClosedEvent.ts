@@ -1,22 +1,21 @@
-module api.app.wizard {
+import {WizardPanel} from './WizardPanel';
 
-    export class WizardClosedEvent {
+export class WizardClosedEvent {
 
-        private wizard: WizardPanel<any>;
+    private wizard: WizardPanel<any>;
 
-        private checkCanClose: boolean;
+    private checkCanClose: boolean;
 
-        constructor(wizard: WizardPanel<any>, checkCanClose: boolean) {
-            this.wizard = wizard;
-            this.checkCanClose = checkCanClose;
-        }
+    constructor(wizard: WizardPanel<any>, checkCanClose: boolean) {
+        this.wizard = wizard;
+        this.checkCanClose = checkCanClose;
+    }
 
-        getWizard(): WizardPanel<any> {
-            return this.wizard;
-        }
+    getWizard(): WizardPanel<any> {
+        return this.wizard;
+    }
 
-        isCheckCanClose(): boolean {
-            return this.checkCanClose;
-        }
+    isCheckCanClose(): boolean {
+        return this.checkCanClose;
     }
 }

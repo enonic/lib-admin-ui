@@ -1,74 +1,78 @@
-module api.aggregation {
+import {DivEl} from '../dom/DivEl';
+import {AggregationGroupView} from './AggregationGroupView';
+import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
+import {Aggregation} from './Aggregation';
+import {AggregationSelection} from './AggregationSelection';
 
-    export class AggregationContainer extends api.dom.DivEl {
+export class AggregationContainer
+    extends DivEl {
 
-        aggregationGroupViews: api.aggregation.AggregationGroupView[] = [];
+    aggregationGroupViews: AggregationGroupView[] = [];
 
-        private lastSelectedGroupView: api.aggregation.AggregationGroupView;
+    private lastSelectedGroupView: AggregationGroupView;
 
-        constructor() {
-            super();
-        }
+    constructor() {
+        super();
+    }
 
-        addAggregationGroupView(aggregationGroupView: api.aggregation.AggregationGroupView) {
-            this.appendChild(aggregationGroupView);
+    addAggregationGroupView(aggregationGroupView: AggregationGroupView) {
+        this.appendChild(aggregationGroupView);
 
-            aggregationGroupView.onBucketViewSelectionChanged((event: api.aggregation.BucketViewSelectionChangedEvent) => {
+        aggregationGroupView.onBucketViewSelectionChanged((event: BucketViewSelectionChangedEvent) => {
 
-                if (event.getNewValue()) {
-                    this.lastSelectedGroupView = event.getBucketView().getParentAggregationView().getParentGroupView();
-                }
+            if (event.getNewValue()) {
+                this.lastSelectedGroupView = event.getBucketView().getParentAggregationView().getParentGroupView();
+            }
+        });
+
+        this.aggregationGroupViews.push(aggregationGroupView);
+    }
+
+    deselectAll(supressEvent?: boolean) {
+        this.aggregationGroupViews.forEach((aggregationGroupView: AggregationGroupView) => {
+            aggregationGroupView.deselectGroup(supressEvent);
+        });
+
+        this.lastSelectedGroupView = null;
+    }
+
+    hasSelectedBuckets(): boolean {
+        let hasSelected: boolean = false;
+        this.aggregationGroupViews.forEach((aggregationGroupView: AggregationGroupView) => {
+            if (aggregationGroupView.hasSelections()) {
+                hasSelected = true;
+            }
+        });
+        return hasSelected;
+    }
+
+    updateAggregations(aggregations: Aggregation[], doUpdateAll?: boolean) {
+
+        this.aggregationGroupViews.forEach((aggregationGroupView: AggregationGroupView) => {
+
+            let matchingAggregations: Aggregation[] = aggregations.filter((current: Aggregation) => {
+                return aggregationGroupView.handlesAggregation(current);
             });
 
-            this.aggregationGroupViews.push(aggregationGroupView);
-        }
+            if (doUpdateAll || this.isGroupUpdatable(aggregationGroupView)) {
+                aggregationGroupView.update(matchingAggregations);
+            }
+        });
+    }
 
-        deselectAll(supressEvent?: boolean) {
-            this.aggregationGroupViews.forEach((aggregationGroupView: api.aggregation.AggregationGroupView) => {
-                aggregationGroupView.deselectGroup(supressEvent);
-            });
+    getSelectedValuesByAggregationName(): AggregationSelection[] {
+        let aggregationSelections: AggregationSelection[] = [];
 
-            this.lastSelectedGroupView = null;
-        }
+        this.aggregationGroupViews.forEach((aggregationGroupView: AggregationGroupView) => {
+            let selectedValuesByAggregationName = aggregationGroupView.getSelectedValuesByAggregationName();
+            aggregationSelections = aggregationSelections.concat(selectedValuesByAggregationName);
 
-        hasSelectedBuckets(): boolean {
-            let hasSelected: boolean = false;
-            this.aggregationGroupViews.forEach((aggregationGroupView: api.aggregation.AggregationGroupView) => {
-                if (aggregationGroupView.hasSelections()) {
-                    hasSelected = true;
-                }
-            });
-            return hasSelected;
-        }
+        });
 
-        updateAggregations(aggregations: api.aggregation.Aggregation[], doUpdateAll?: boolean) {
+        return aggregationSelections;
+    }
 
-            this.aggregationGroupViews.forEach((aggregationGroupView: api.aggregation.AggregationGroupView) => {
-
-                let matchingAggregations: api.aggregation.Aggregation[] = aggregations.filter((current: api.aggregation.Aggregation) => {
-                    return aggregationGroupView.handlesAggregation(current);
-                });
-
-                if (doUpdateAll || this.isGroupUpdatable(aggregationGroupView)) {
-                    aggregationGroupView.update(matchingAggregations);
-                }
-            });
-        }
-
-        private isGroupUpdatable(aggregationGroupView: api.aggregation.AggregationGroupView) {
-            return aggregationGroupView !== this.lastSelectedGroupView;
-        }
-
-        getSelectedValuesByAggregationName(): api.aggregation.AggregationSelection[] {
-            let aggregationSelections: api.aggregation.AggregationSelection[] = [];
-
-            this.aggregationGroupViews.forEach((aggregationGroupView: api.aggregation.AggregationGroupView) => {
-                let selectedValuesByAggregationName = aggregationGroupView.getSelectedValuesByAggregationName();
-                aggregationSelections = aggregationSelections.concat(selectedValuesByAggregationName);
-
-            });
-
-            return aggregationSelections;
-        }
+    private isGroupUpdatable(aggregationGroupView: AggregationGroupView) {
+        return aggregationGroupView !== this.lastSelectedGroupView;
     }
 }

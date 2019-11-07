@@ -1,17 +1,18 @@
-module api.ui.selector.combobox {
+import {Element} from '../../../dom/Element';
+import {Option} from '../Option';
 
-    export interface SelectedOptionView<T> extends api.dom.Element {
+export interface SelectedOptionView<T>
+    extends Element {
 
-        setOption(option: api.ui.selector.Option<T>);
+    setOption(option: Option<T>);
 
-        getOption(): api.ui.selector.Option<T>;
+    getOption(): Option<T>;
 
-        onRemoveClicked(listener: {(): void;});
+    onRemoveClicked(listener: { (): void; });
 
-        unRemoveClicked(listener: {(): void;});
+    unRemoveClicked(listener: { (): void; });
 
-        setReadonly(readonly: boolean);
+    setReadonly(readonly: boolean);
 
-        setEditable(editable: boolean);
-    }
+    setEditable(editable: boolean);
 }

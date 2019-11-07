@@ -1,20 +1,19 @@
-module api.ui.selector {
+import {Viewer} from '../Viewer';
 
-    export class DefaultOptionDisplayValueViewer extends api.ui.Viewer<any> {
+export class DefaultOptionDisplayValueViewer
+    extends Viewer<any> {
 
-        constructor() {
-            super();
-        }
-
-        setObject(object: any) {
-            this.getEl().setInnerHtml(object.toString());
-
-            return super.setObject(object);
-        }
-
-        getPreferredHeight(): number {
-            return 34;
-        }
+    constructor() {
+        super();
     }
 
+    setObject(object: any) {
+        this.getEl().setInnerHtml(object.toString());
+
+        return super.setObject(object);
+    }
+
+    getPreferredHeight(): number {
+        return 34;
+    }
 }

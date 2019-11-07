@@ -1,38 +1,38 @@
-module api.dom {
-    export class FormItemEl extends Element {
+import {Element, NewElementBuilder} from './Element';
+import {ValidityChangedEvent} from '../ValidityChangedEvent';
 
-        private validityChangedListeners: {(event: ValidityChangedEvent):void}[] = [];
+export class FormItemEl
+    extends Element {
 
-        constructor(tagName: string, className?: string, prefix?: string) {
-            super(new NewElementBuilder().
-                setTagName(tagName).
-                setClassName(className, prefix));
-        }
+    private validityChangedListeners: { (event: ValidityChangedEvent): void }[] = [];
 
-        getName(): string {
-            return this.getEl().getAttribute('name');
-        }
-
-        setName(name: string): FormItemEl {
-            this.getEl().setAttribute('name', name);
-            return this;
-        }
-
-        onValidityChanged(listener: (event: ValidityChangedEvent)=>void) {
-            this.validityChangedListeners.push(listener);
-        }
-
-        unValidityChanged(listener: (event: ValidityChangedEvent)=>void) {
-            this.validityChangedListeners = this.validityChangedListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
-
-        notifyValidityChanged(valid: boolean) {
-            this.validityChangedListeners.forEach((listener: (event: ValidityChangedEvent)=>void)=> {
-                listener.call(this, new ValidityChangedEvent(valid));
-            });
-        }
-
+    constructor(tagName: string, className?: string, prefix?: string) {
+        super(new NewElementBuilder().setTagName(tagName).setClassName(className, prefix));
     }
+
+    getName(): string {
+        return this.getEl().getAttribute('name');
+    }
+
+    setName(name: string): FormItemEl {
+        this.getEl().setAttribute('name', name);
+        return this;
+    }
+
+    onValidityChanged(listener: (event: ValidityChangedEvent) => void) {
+        this.validityChangedListeners.push(listener);
+    }
+
+    unValidityChanged(listener: (event: ValidityChangedEvent) => void) {
+        this.validityChangedListeners = this.validityChangedListeners.filter((curr) => {
+            return curr !== listener;
+        });
+    }
+
+    notifyValidityChanged(valid: boolean) {
+        this.validityChangedListeners.forEach((listener: (event: ValidityChangedEvent) => void) => {
+            listener.call(this, new ValidityChangedEvent(valid));
+        });
+    }
+
 }

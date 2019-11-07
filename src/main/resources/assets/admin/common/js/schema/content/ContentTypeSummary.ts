@@ -1,218 +1,224 @@
-module api.schema.content {
+import {MixinNames} from '../mixin/MixinNames';
+import {Schema, SchemaBuilder} from '../Schema';
+import {Equitable} from '../../Equitable';
+import {ContentTypeName} from './ContentTypeName';
+import {StringHelper} from '../../util/StringHelper';
+import {ObjectHelper} from '../../ObjectHelper';
+import {ContentTypeSummaryJson} from './ContentTypeSummaryJson';
 
-    import MixinNames = api.schema.mixin.MixinNames;
+export class ContentTypeSummary
+    extends Schema
+    implements Equitable {
 
-    export class ContentTypeSummary extends api.schema.Schema implements api.Equitable {
+    private allowChildContent: boolean;
 
-        private allowChildContent: boolean;
+    private abstract: boolean;
 
-        private abstract: boolean;
+    private final: boolean;
 
-        private final: boolean;
+    private superType: ContentTypeName;
 
-        private superType: api.schema.content.ContentTypeName;
+    private displayNameExpression: string;
 
-        private displayNameExpression: string;
+    private displayNameLabel: string;
 
-        private displayNameLabel: string;
+    private modifier: string;
 
-        private modifier: string;
+    private owner: string;
 
-        private owner: string;
+    private metadata: MixinNames;
 
-        private metadata: MixinNames;
-
-        constructor(builder: ContentTypeSummaryBuilder) {
-            super(builder);
-            this.allowChildContent = builder.allowChildContent;
-            this.final = builder.final;
-            this.abstract = builder.abstract;
-            this.superType = builder.superType;
-            this.displayNameExpression = builder.displayNameExpression;
-            this.owner = builder.owner;
-            this.modifier = builder.modifier;
-            this.metadata = builder.metadata;
-            this.displayNameLabel = builder.displayNameLabel;
-        }
-
-        getContentTypeName(): api.schema.content.ContentTypeName {
-            return new api.schema.content.ContentTypeName(this.getName());
-        }
-
-        isSite(): boolean {
-            return this.getContentTypeName().isSite();
-        }
-
-        isPageTemplate(): boolean {
-            return this.getContentTypeName().isPageTemplate();
-        }
-
-        isImage(): boolean {
-            return this.getContentTypeName().isImage();
-        }
-
-        isShortcut(): boolean {
-            return this.getContentTypeName().isShortcut();
-        }
-
-        isUnstructured(): boolean {
-            return this.getContentTypeName().isUnstructured();
-        }
-
-        isFinal(): boolean {
-            return this.final;
-        }
-
-        isAbstract(): boolean {
-            return this.abstract;
-        }
-
-        isAllowChildContent(): boolean {
-            return this.allowChildContent;
-        }
-
-        getSuperType(): api.schema.content.ContentTypeName {
-            return this.superType;
-        }
-
-        hasDisplayNameExpression(): boolean {
-            return !api.util.StringHelper.isBlank(this.displayNameExpression);
-        }
-
-        getDisplayNameExpression(): string {
-            return this.displayNameExpression;
-        }
-
-        getDisplayNameLabel(): string {
-            return this.displayNameLabel;
-        }
-
-        getOwner(): string {
-            return this.owner;
-        }
-
-        getModifier(): string {
-            return this.modifier;
-        }
-
-        getMetadata(): MixinNames {
-            return this.metadata;
-        }
-
-        equals(o: api.Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentTypeSummary)) {
-                return false;
-            }
-
-            if (!super.equals(o)) {
-                return false;
-            }
-
-            let other = <ContentTypeSummary>o;
-
-            if (!ObjectHelper.booleanEquals(this.allowChildContent, other.allowChildContent)) {
-                return false;
-            }
-
-            if (!ObjectHelper.booleanEquals(this.abstract, other.abstract)) {
-                return false;
-            }
-
-            if (!ObjectHelper.equals(this.superType, other.superType)) {
-                return false;
-            }
-
-            if (!ObjectHelper.stringEquals(this.displayNameExpression, other.displayNameExpression)) {
-                return false;
-            }
-
-            if (!ObjectHelper.stringEquals(this.displayNameLabel, other.displayNameLabel)) {
-                return false;
-            }
-
-            if (!ObjectHelper.stringEquals(this.modifier, other.modifier)) {
-                return false;
-            }
-
-            if (!ObjectHelper.stringEquals(this.owner, other.owner)) {
-                return false;
-            }
-
-            if (!ObjectHelper.equals(this.metadata, other.metadata)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        static fromJsonArray(jsonArray: api.schema.content.ContentTypeSummaryJson[]): ContentTypeSummary[] {
-            let array: ContentTypeSummary[] = [];
-
-            jsonArray.forEach((summaryJson: api.schema.content.ContentTypeSummaryJson) => {
-                array.push(ContentTypeSummary.fromJson(summaryJson));
-            });
-            return array;
-        }
-
-        static fromJson(json: api.schema.content.ContentTypeSummaryJson): ContentTypeSummary {
-            return new ContentTypeSummaryBuilder().fromContentTypeSummaryJson(json).build();
-        }
-
+    constructor(builder: ContentTypeSummaryBuilder) {
+        super(builder);
+        this.allowChildContent = builder.allowChildContent;
+        this.final = builder.final;
+        this.abstract = builder.abstract;
+        this.superType = builder.superType;
+        this.displayNameExpression = builder.displayNameExpression;
+        this.owner = builder.owner;
+        this.modifier = builder.modifier;
+        this.metadata = builder.metadata;
+        this.displayNameLabel = builder.displayNameLabel;
     }
 
-    export class ContentTypeSummaryBuilder extends api.schema.SchemaBuilder {
+    static fromJsonArray(jsonArray: ContentTypeSummaryJson[]): ContentTypeSummary[] {
+        let array: ContentTypeSummary[] = [];
 
-        allowChildContent: boolean;
+        jsonArray.forEach((summaryJson: ContentTypeSummaryJson) => {
+            array.push(ContentTypeSummary.fromJson(summaryJson));
+        });
+        return array;
+    }
 
-        abstract: boolean;
+    static fromJson(json: ContentTypeSummaryJson): ContentTypeSummary {
+        return new ContentTypeSummaryBuilder().fromContentTypeSummaryJson(json).build();
+    }
 
-        final: boolean;
+    getContentTypeName(): ContentTypeName {
+        return new ContentTypeName(this.getName());
+    }
 
-        superType: api.schema.content.ContentTypeName;
+    isSite(): boolean {
+        return this.getContentTypeName().isSite();
+    }
 
-        displayNameExpression: string;
+    isPageTemplate(): boolean {
+        return this.getContentTypeName().isPageTemplate();
+    }
 
-        displayNameLabel: string;
+    isImage(): boolean {
+        return this.getContentTypeName().isImage();
+    }
 
-        modifier: string;
+    isShortcut(): boolean {
+        return this.getContentTypeName().isShortcut();
+    }
 
-        owner: string;
+    isUnstructured(): boolean {
+        return this.getContentTypeName().isUnstructured();
+    }
 
-        metadata: MixinNames;
+    isFinal(): boolean {
+        return this.final;
+    }
 
-        constructor(source?: ContentTypeSummary) {
-            if (source) {
-                super(source);
-                this.allowChildContent = source.isAllowChildContent();
-                this.abstract = source.isAbstract();
-                this.final = source.isFinal();
-                this.superType = source.getSuperType();
-                this.displayNameExpression = source.getDisplayNameExpression();
-                this.displayNameLabel = source.getDisplayNameLabel();
-                this.modifier = source.getModifier();
-                this.owner = source.getOwner();
-                this.metadata = source.getMetadata();
-            }
+    isAbstract(): boolean {
+        return this.abstract;
+    }
+
+    isAllowChildContent(): boolean {
+        return this.allowChildContent;
+    }
+
+    getSuperType(): ContentTypeName {
+        return this.superType;
+    }
+
+    hasDisplayNameExpression(): boolean {
+        return !StringHelper.isBlank(this.displayNameExpression);
+    }
+
+    getDisplayNameExpression(): string {
+        return this.displayNameExpression;
+    }
+
+    getDisplayNameLabel(): string {
+        return this.displayNameLabel;
+    }
+
+    getOwner(): string {
+        return this.owner;
+    }
+
+    getModifier(): string {
+        return this.modifier;
+    }
+
+    getMetadata(): MixinNames {
+        return this.metadata;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentTypeSummary)) {
+            return false;
         }
 
-        fromContentTypeSummaryJson(json: api.schema.content.ContentTypeSummaryJson): ContentTypeSummaryBuilder {
-            super.fromSchemaJson(json);
-
-            this.allowChildContent = json.allowChildContent;
-            this.final = json.final;
-            this.abstract = json.abstract;
-            this.superType = json.superType ? new api.schema.content.ContentTypeName(json.superType) : null;
-            this.displayNameExpression = json.displayNameExpression;
-            this.displayNameLabel = json.displayNameLabel;
-            this.owner = json.owner;
-            this.modifier = json.modifier;
-            this.metadata = MixinNames.create().fromStrings(json.metadata).build();
-            return this;
+        if (!super.equals(o)) {
+            return false;
         }
 
-        build(): ContentTypeSummary {
-            return new ContentTypeSummary(this);
+        let other = <ContentTypeSummary>o;
+
+        if (!ObjectHelper.booleanEquals(this.allowChildContent, other.allowChildContent)) {
+            return false;
         }
+
+        if (!ObjectHelper.booleanEquals(this.abstract, other.abstract)) {
+            return false;
+        }
+
+        if (!ObjectHelper.equals(this.superType, other.superType)) {
+            return false;
+        }
+
+        if (!ObjectHelper.stringEquals(this.displayNameExpression, other.displayNameExpression)) {
+            return false;
+        }
+
+        if (!ObjectHelper.stringEquals(this.displayNameLabel, other.displayNameLabel)) {
+            return false;
+        }
+
+        if (!ObjectHelper.stringEquals(this.modifier, other.modifier)) {
+            return false;
+        }
+
+        if (!ObjectHelper.stringEquals(this.owner, other.owner)) {
+            return false;
+        }
+
+        if (!ObjectHelper.equals(this.metadata, other.metadata)) {
+            return false;
+        }
+
+        return true;
+    }
+
+}
+
+export class ContentTypeSummaryBuilder
+    extends SchemaBuilder {
+
+    allowChildContent: boolean;
+
+    abstract: boolean;
+
+    final: boolean;
+
+    superType: ContentTypeName;
+
+    displayNameExpression: string;
+
+    displayNameLabel: string;
+
+    modifier: string;
+
+    owner: string;
+
+    metadata: MixinNames;
+
+    constructor(source?: ContentTypeSummary) {
+        if (source) {
+            super(source);
+            this.allowChildContent = source.isAllowChildContent();
+            this.abstract = source.isAbstract();
+            this.final = source.isFinal();
+            this.superType = source.getSuperType();
+            this.displayNameExpression = source.getDisplayNameExpression();
+            this.displayNameLabel = source.getDisplayNameLabel();
+            this.modifier = source.getModifier();
+            this.owner = source.getOwner();
+            this.metadata = source.getMetadata();
+        }
+    }
+
+    fromContentTypeSummaryJson(json: ContentTypeSummaryJson): ContentTypeSummaryBuilder {
+        super.fromSchemaJson(json);
+
+        this.allowChildContent = json.allowChildContent;
+        this.final = json.final;
+        this.abstract = json.abstract;
+        this.superType = json.superType ? new ContentTypeName(json.superType) : null;
+        this.displayNameExpression = json.displayNameExpression;
+        this.displayNameLabel = json.displayNameLabel;
+        this.owner = json.owner;
+        this.modifier = json.modifier;
+        this.metadata = MixinNames.create().fromStrings(json.metadata).build();
+        return this;
+    }
+
+    build(): ContentTypeSummary {
+        return new ContentTypeSummary(this);
     }
 }

@@ -1,26 +1,28 @@
-module api.ui {
+import {SelectEl} from '../dom/SelectEl';
+import {OptionEl} from '../dom/OptionEl';
 
-    export class Dropdown extends api.dom.SelectEl {
+export class Dropdown
+    extends SelectEl {
 
-        constructor(name: string) {
-            super();
-            this.setName(name);
+    constructor(name: string) {
+        super();
+        this.setName(name);
 
-            this.onChange(() => {
-                this.refreshDirtyState();
-                this.refreshValueChanged();
-            });
-        }
-
-        addOption(value: string, displayName: string) {
-            let option = new DropdownOption(value, displayName);
-            this.appendChild(option);
-        }
+        this.onChange(() => {
+            this.refreshDirtyState();
+            this.refreshValueChanged();
+        });
     }
 
-    export class DropdownOption extends api.dom.OptionEl {
-        constructor(value: string, displayName: string) {
-            super(value, displayName);
-        }
+    addOption(value: string, displayName: string) {
+        let option = new DropdownOption(value, displayName);
+        this.appendChild(option);
+    }
+}
+
+export class DropdownOption
+    extends OptionEl {
+    constructor(value: string, displayName: string) {
+        super(value, displayName);
     }
 }

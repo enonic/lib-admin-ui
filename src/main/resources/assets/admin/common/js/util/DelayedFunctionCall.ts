@@ -1,30 +1,27 @@
-module api.util {
+export class DelayedFunctionCall {
 
-    export class DelayedFunctionCall {
+    private functionToCall: () => void;
 
-        private functionToCall: () => void;
+    private delay: number;
 
-        private delay: number;
+    private timerId: number;
 
-        private timerId: number;
+    private context: any;
 
-        private context: any;
+    constructor(functionToCall: () => void, context: any, delay: number = 500) {
+        this.functionToCall = functionToCall;
+        this.delay = delay;
+        this.context = context;
+    }
 
-        constructor(functionToCall: () => void, context: any, delay: number = 500) {
-            this.functionToCall = functionToCall;
-            this.delay = delay;
-            this.context = context;
+    delayCall() {
+        if (this.timerId) {
+            window.clearTimeout(this.timerId);
         }
+        this.timerId = window.setTimeout(() => {
 
-        delayCall() {
-            if (this.timerId) {
-                window.clearTimeout(this.timerId);
-            }
-            this.timerId = window.setTimeout(() => {
-
-                this.functionToCall.call(this.context);
-                this.timerId = null;
-            }, this.delay);
-        }
+            this.functionToCall.call(this.context);
+            this.timerId = null;
+        }, this.delay);
     }
 }

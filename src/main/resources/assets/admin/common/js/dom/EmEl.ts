@@ -1,9 +1,9 @@
-module api.dom {
+import {Element, NewElementBuilder} from './Element';
 
-    export class EmEl extends Element {
+export class EmEl
+    extends Element {
 
-        constructor(className?: string) {
-            super(new NewElementBuilder().setTagName('em').setClassName(className));
-        }
+    constructor(className?: string) {
+        super(new NewElementBuilder().setTagName('em').setClassName(className));
     }
 }

@@ -1,419 +1,427 @@
-module api.ui.selector {
+import * as Q from 'q';
+import {Viewer} from '../Viewer';
+import {GridColumn, GridColumnBuilder} from '../grid/GridColumn';
+import {Element} from '../../dom/Element';
+import {Grid} from '../grid/Grid';
+import {DataView} from '../grid/DataView';
+import {GridOptions, GridOptionsBuilder} from '../grid/GridOptions';
+import {OptionDataHelper} from './OptionDataHelper';
+import {OptionDataLoader} from './OptionDataLoader';
+import {DropdownGridRowSelectedEvent} from './DropdownGridRowSelectedEvent';
+import {DropdownGridMultipleSelectionEvent} from './DropdownGridMultipleSelectionEvent';
+import {Option} from './Option';
+import {DefaultOptionDisplayValueViewer} from './DefaultOptionDisplayValueViewer';
 
-    import Viewer = api.ui.Viewer;
-    import GridColumn = api.ui.grid.GridColumn;
+export interface DropdownGridConfig<OPTION_DISPLAY_VALUE> {
 
-    export interface DropdownGridConfig<OPTION_DISPLAY_VALUE> {
+    maxHeight?: number;
 
-        maxHeight?: number;
+    width: number;
 
-        width: number;
+    optionDisplayValueViewer?: Viewer<OPTION_DISPLAY_VALUE>;
 
-        optionDisplayValueViewer?: Viewer<OPTION_DISPLAY_VALUE>;
+    filter: (item: Option<OPTION_DISPLAY_VALUE>, args: any) => boolean;
 
-        filter: (item: Option<OPTION_DISPLAY_VALUE>, args: any) => boolean;
+    dataIdProperty?: string;
 
-        dataIdProperty?: string;
+    multipleSelections?: boolean;
 
-        multipleSelections?: boolean;
+    treegridDropdownAllowed?: boolean;
 
-        treegridDropdownAllowed?: boolean;
+    optionDataHelper?: OptionDataHelper<OPTION_DISPLAY_VALUE>;
 
-        optionDataHelper?: OptionDataHelper<OPTION_DISPLAY_VALUE>;
+    optionDataLoader?: OptionDataLoader<OPTION_DISPLAY_VALUE>;
 
-        optionDataLoader?: OptionDataLoader<OPTION_DISPLAY_VALUE>;
+    createColumns?: GridColumn<OPTION_DISPLAY_VALUE>[];
+}
 
-        createColumns?: GridColumn<OPTION_DISPLAY_VALUE>[];
+export class DropdownGrid<OPTION_DISPLAY_VALUE> {
+
+    protected maxHeight: number;
+
+    protected customHeight: number;
+
+    protected width: number;
+
+    protected dataIdProperty: string;
+
+    protected optionDisplayValueViewer: Viewer<OPTION_DISPLAY_VALUE>;
+
+    protected filter: (item: Option<OPTION_DISPLAY_VALUE>, args: any) => boolean;
+
+    protected rowSelectionListeners: { (event: DropdownGridRowSelectedEvent): void }[];
+
+    protected multipleSelectionListeners: { (event: DropdownGridMultipleSelectionEvent): void }[];
+
+    protected rowCountChangedListeners: { (): void }[] = [];
+
+    protected multipleSelections: boolean;
+
+    protected config: DropdownGridConfig<OPTION_DISPLAY_VALUE>;
+
+    constructor(config: DropdownGridConfig<OPTION_DISPLAY_VALUE>) {
+        this.config = config;
+        this.rowSelectionListeners = [];
+        this.multipleSelectionListeners = [];
+        this.optionDisplayValueViewer = config.optionDisplayValueViewer
+                                        ? config.optionDisplayValueViewer.clone()
+                                        : new DefaultOptionDisplayValueViewer();
+        this.filter = config.filter;
+        this.dataIdProperty = config.dataIdProperty || 'value';
+        this.maxHeight = config.maxHeight;
+        this.customHeight = config.maxHeight;
+        this.width = config.width;
+        this.multipleSelections = config.multipleSelections || false;
+
+        this.initGridAndData();
+        this.initCommonGridProps();
+        this.initGridEventListeners();
     }
 
-    export class DropdownGrid<OPTION_DISPLAY_VALUE> {
+    setReadonlyChecker(_checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
+        return;
+    }
 
-        protected maxHeight: number;
+    reload(): Q.Promise<void> {
+        return Q(null);
+    }
 
-        protected customHeight: number;
+    getElement(): Element {
+        throw new Error('Must be implemented by inheritors');
+    }
 
-        protected width: number;
+    getGrid(): Grid<any> {
+        throw new Error('Must be implemented by inheritors');
+    }
 
-        protected dataIdProperty: string;
+    getOptionDataLoader(): OptionDataLoader<OPTION_DISPLAY_VALUE> {
+        return this.config.optionDataLoader;
+    }
 
-        protected optionDisplayValueViewer: Viewer<OPTION_DISPLAY_VALUE>;
+    renderGrid() {
+        this.getGrid().renderGrid();
+    }
 
-        protected filter: (item: Option<OPTION_DISPLAY_VALUE>, args: any) => boolean;
+    isVisible(): boolean {
+        return !this.getGrid().hasClass('hidden') && this.getGrid().isVisible();
+    }
 
-        protected rowSelectionListeners: { (event: DropdownGridRowSelectedEvent): void }[];
+    show() {
+        this.getGrid().removeClass('hidden');
+    }
 
-        protected multipleSelectionListeners: { (event: DropdownGridMultipleSelectionEvent): void }[];
+    hide() {
+        // hiding grid with visibility: hidden instead of display: none to allow scrollTop modification
+        this.getGrid().addClass('hidden');
+    }
 
-        protected rowCountChangedListeners: { (): void }[] = [];
+    getSelectedOptionCount(): number {
+        return this.getGrid().getSelectedRows().length;
+    }
 
-        protected multipleSelections: boolean;
+    setOptions(options: Option<OPTION_DISPLAY_VALUE>[]) {
+        this.getGridData().setItems(options, this.dataIdProperty);
+    }
 
-        protected config: DropdownGridConfig<OPTION_DISPLAY_VALUE>;
+    removeAllOptions() {
+        this.getGridData().setItems([]);
+    }
 
-        constructor(config: DropdownGridConfig<OPTION_DISPLAY_VALUE>) {
-            this.config = config;
-            this.rowSelectionListeners = [];
-            this.multipleSelectionListeners = [];
-            this.optionDisplayValueViewer = config.optionDisplayValueViewer
-                ? config.optionDisplayValueViewer.clone()
-                : new DefaultOptionDisplayValueViewer();
-            this.filter = config.filter;
-            this.dataIdProperty = config.dataIdProperty || 'value';
-            this.maxHeight = config.maxHeight;
-            this.customHeight = config.maxHeight;
-            this.width = config.width;
-            this.multipleSelections = config.multipleSelections || false;
+    addOption(option: Option<OPTION_DISPLAY_VALUE>) {
+        this.getGridData().addItem(option);
+    }
 
-            this.initGridAndData();
-            this.initCommonGridProps();
-            this.initGridEventListeners();
+    removeOption(option: Option<OPTION_DISPLAY_VALUE>) {
+        this.getGridData().deleteItem(option.value);
+    }
+
+    updateOption(option: Option<OPTION_DISPLAY_VALUE>) {
+        this.getGridData().updateItem(option.value, option);
+    }
+
+    hasOptions(): boolean {
+        return this.getGridData().getLength() > 0;
+    }
+
+    getOptionCount(): number {
+        return this.getGridData().getLength();
+    }
+
+    getOptions(): Option<OPTION_DISPLAY_VALUE>[] {
+        return this.getGridData().getItems();
+    }
+
+    getSelectedOptions(): Option<OPTION_DISPLAY_VALUE>[] {
+        return this.getGrid().getSelectedRows().map((row) => {
+            return this.getGridData().getItem(row);
+        });
+    }
+
+    getOptionByValue(value: string): Option<OPTION_DISPLAY_VALUE> {
+        return this.getGridData().getItemById(value);
+    }
+
+    getOptionByRow(rowIndex: number): Option<OPTION_DISPLAY_VALUE> {
+        return this.getGridData().getItem(rowIndex);
+    }
+
+    getRowByValue(value: string): number {
+        return this.getGridData().getRowById(value);
+    }
+
+    setFilterArgs(args: any) {
+        this.getGridData().setFilterArgs(args);
+        this.getGridData().refresh();
+    }
+
+    setTopPx(value: number) {
+        this.getGrid().getEl().setTopPx(value);
+    }
+
+    setWidthPx(value: number) {
+        this.getGrid().getEl().setWidthPx(value);
+    }
+
+    adjustGridHeight() {
+
+        const gridEl = this.getGrid().getEl();
+        const options = this.getGrid().getOptions();
+        let rowsHeight;
+        if (!options.isEnableGalleryMode()) {
+            rowsHeight = this.getOptionCount() * options.getRowHeight();
+        } else {
+            rowsHeight = Math.ceil(this.getOptionCount() / options.getGalleryModeColums()) * options.getRowHeight();
         }
 
-        setReadonlyChecker(_checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
-            return;
+        const borderWidth = gridEl.getBorderTopWidth() + gridEl.getBorderBottomWidth();
+
+        if (rowsHeight < this.customHeight) {
+
+            gridEl.setHeightPx(rowsHeight + borderWidth);
+            this.getGrid().getOptions().setAutoHeight(true);
+
+        } else if (gridEl.getHeight() < this.customHeight || this.customHeight !== this.maxHeight) {
+
+            gridEl.setHeightPx(this.customHeight + borderWidth);
+            this.getGrid().getOptions().setAutoHeight(false);
         }
 
-        protected initGridAndData() {
-            throw new Error('Must be implemented by inheritors');
-        }
+        this.getGrid().resizeCanvas();
+    }
 
-        reload(): wemQ.Promise<void> {
-            return wemQ(null);
-        }
-
-        getElement(): api.dom.Element {
-            throw new Error('Must be implemented by inheritors');
-        }
-
-        getGrid(): api.ui.grid.Grid<any> {
-            throw new Error('Must be implemented by inheritors');
-        }
-
-        getOptionDataLoader(): OptionDataLoader<OPTION_DISPLAY_VALUE> {
-            return this.config.optionDataLoader;
-        }
-
-        protected getGridData(): api.ui.grid.DataView<any> {
-            throw new Error('Must be implemented by inheritors');
-        }
-
-        private initCommonGridProps() {
-            this.getGrid().addClass('options-container');
-            this.getGrid().getEl().setPosition('absolute');
-            this.hide();
-            this.getGrid().setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
-        }
-
-        protected initGridEventListeners() {
-            // Listen to click in grid and issue selection
-            this.getGrid().subscribeOnClick((e, args) => {
-                this.notifyRowSelection(args.row);
-
-                e.preventDefault();
-                return false;
-            });
-
-            this.getGrid().subscribeOnSelectedRowsChanged((_e, args) => {
-                this.notifyMultipleSelection(args.rows);
-            });
-        }
-
-        renderGrid() {
-            this.getGrid().renderGrid();
-        }
-
-        isVisible(): boolean {
-            return !this.getGrid().hasClass('hidden') && this.getGrid().isVisible();
-        }
-
-        show() {
-            this.getGrid().removeClass('hidden');
-        }
-
-        hide() {
-            // hiding grid with visibility: hidden instead of display: none to allow scrollTop modification
-            this.getGrid().addClass('hidden');
-        }
-
-        getSelectedOptionCount(): number {
-            return this.getGrid().getSelectedRows().length;
-        }
-
-        protected createOptions(): api.ui.grid.GridOptions<any> {
-
-            return new api.ui.grid.GridOptionsBuilder()
-                .setWidth(this.width + 'px')
-                .setHeight(this.maxHeight + 'px')
-                .setHideColumnHeaders(true)
-                .setEnableColumnReorder(false)
-                .setFullWidthRows(true)
-                .setForceFitColumns(true)
-                .setRowHeight(this.optionDisplayValueViewer.getPreferredHeight())
-                .setCheckableRows(this.multipleSelections)
-                .setLeftAlignedCheckbox(false)
-                .setMultiSelect(this.multipleSelections)
-                .setDataIdProperty(this.dataIdProperty)
-                .build();
-        }
-
-        protected createColumns(): api.ui.grid.GridColumn<any>[] {
-            let columnFormatter =
-                (_row: number, _cell: number, value: OPTION_DISPLAY_VALUE, _columnDef: any, _dataContext: Option<OPTION_DISPLAY_VALUE>) => {
-                    this.optionDisplayValueViewer.setObject(value);
-                    return this.optionDisplayValueViewer.toString();
-                };
-
-            return [
-                new api.ui.grid.GridColumnBuilder().setId('option').setName('Options').setField('displayValue').setFormatter(
-                    columnFormatter).build()
-            ];
-        }
-
-        setOptions(options: Option<OPTION_DISPLAY_VALUE>[]) {
-            this.getGridData().setItems(options, this.dataIdProperty);
-        }
-
-        removeAllOptions() {
-            this.getGridData().setItems([]);
-        }
-
-        addOption(option: Option<OPTION_DISPLAY_VALUE>) {
-            this.getGridData().addItem(option);
-        }
-
-        removeOption(option: Option<OPTION_DISPLAY_VALUE>) {
-            this.getGridData().deleteItem(option.value);
-        }
-
-        updateOption(option: Option<OPTION_DISPLAY_VALUE>) {
-            this.getGridData().updateItem(option.value, option);
-        }
-
-        hasOptions(): boolean {
-            return this.getGridData().getLength() > 0;
-        }
-
-        getOptionCount(): number {
-            return this.getGridData().getLength();
-        }
-
-        getOptions(): Option<OPTION_DISPLAY_VALUE>[] {
-            return this.getGridData().getItems();
-        }
-
-        getSelectedOptions(): Option<OPTION_DISPLAY_VALUE>[] {
-            return this.getGrid().getSelectedRows().map((row) => {
-                return this.getGridData().getItem(row);
-            });
-        }
-
-        getOptionByValue(value: string): Option<OPTION_DISPLAY_VALUE> {
-            return this.getGridData().getItemById(value);
-        }
-
-        getOptionByRow(rowIndex: number): Option<OPTION_DISPLAY_VALUE> {
-            return this.getGridData().getItem(rowIndex);
-        }
-
-        getRowByValue(value: string): number {
-            return this.getGridData().getRowById(value);
-        }
-
-        setFilterArgs(args: any) {
-            this.getGridData().setFilterArgs(args);
-            this.getGridData().refresh();
-        }
-
-        setTopPx(value: number) {
-            this.getGrid().getEl().setTopPx(value);
-        }
-
-        setWidthPx(value: number) {
-            this.getGrid().getEl().setWidthPx(value);
-        }
-
-        adjustGridHeight() {
-
-            const gridEl = this.getGrid().getEl();
-            const options = this.getGrid().getOptions();
-            let rowsHeight;
-            if (!options.isEnableGalleryMode()) {
-                rowsHeight = this.getOptionCount() * options.getRowHeight();
-            } else {
-                rowsHeight = Math.ceil(this.getOptionCount() / options.getGalleryModeColums()) * options.getRowHeight();
+    addSelections(selectedOptions: Option<OPTION_DISPLAY_VALUE>[]) {
+        selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
+            let row = this.getGridData().getRowById(selectedOption.value);
+            if (row !== undefined && !this.getGrid().isRowSelected(row)) {
+                this.getGrid().addSelectedRow(row);
             }
+        });
+    }
 
-            const borderWidth = gridEl.getBorderTopWidth() + gridEl.getBorderBottomWidth();
+    markSelections(selectedOptions: Option<OPTION_DISPLAY_VALUE>[], ignoreEmpty: boolean = false) {
 
-            if (rowsHeight < this.customHeight) {
-
-                gridEl.setHeightPx(rowsHeight + borderWidth);
-                this.getGrid().getOptions().setAutoHeight(true);
-
-            } else if (gridEl.getHeight() < this.customHeight || this.customHeight !== this.maxHeight) {
-
-                gridEl.setHeightPx(this.customHeight + borderWidth);
-                this.getGrid().getOptions().setAutoHeight(false);
-            }
-
-            this.getGrid().resizeCanvas();
+        let stylesHash: Slick.CellCssStylesHash = {};
+        let rows: number[] = [];
+        selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
+            let row = this.getGridData().getRowById(selectedOption.value);
+            rows.push(row);
+            stylesHash[row] = {option: 'selected'};
+        });
+        this.getGrid().setCellCssStyles('selected', stylesHash);
+        if (!(rows.length === 0 && ignoreEmpty)) {
+            this.getGrid().setSelectedRows(rows);
         }
+    }
 
-        addSelections(selectedOptions: Option<OPTION_DISPLAY_VALUE>[]) {
-            selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
+    markReadOnly(selectedOptions: Option<OPTION_DISPLAY_VALUE>[]) {
+
+        let stylesHash: Slick.CellCssStylesHash = {};
+        selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
+            if (selectedOption.readOnly) {
                 let row = this.getGridData().getRowById(selectedOption.value);
-                if (row !== undefined && !this.getGrid().isRowSelected(row)) {
-                    this.getGrid().addSelectedRow(row);
-                }
-            });
-        }
-
-        markSelections(selectedOptions: Option<OPTION_DISPLAY_VALUE>[], ignoreEmpty: boolean = false) {
-
-            let stylesHash: Slick.CellCssStylesHash = {};
-            let rows: number[] = [];
-            selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-                let row = this.getGridData().getRowById(selectedOption.value);
-                rows.push(row);
-                stylesHash[row] = {option: 'selected'};
-            });
-            this.getGrid().setCellCssStyles('selected', stylesHash);
-            if (!(rows.length === 0 && ignoreEmpty)) {
-                this.getGrid().setSelectedRows(rows);
+                stylesHash[row] = {_checkbox_selector: 'readonly', option: 'readonly'};
             }
+        });
+        this.getGrid().setCellCssStyles('readonly', stylesHash);
+    }
+
+    hasActiveRow(): boolean {
+        return !!this.getGrid().getActiveCell();
+    }
+
+    getActiveRow(): number {
+        const activeCell = this.getGrid().getActiveCell();
+
+        return !activeCell ? -1 : activeCell.row;
+    }
+
+    expandActiveRow() {
+        this.getGrid().navigateDown();
+    }
+
+    collapseActiveRow() {
+        this.getGrid().navigateUp();
+    }
+
+    navigateToRow(row: number) {
+        this.getGrid().setActiveCell(row, 0);
+    }
+
+    navigateToNextRow() {
+        this.getGrid().navigateDown();
+    }
+
+    navigateToPreviousRow() {
+        this.getGrid().navigateUp();
+    }
+
+    resetActiveSelection() {
+        this.getGrid().resetActiveCell();
+    }
+
+    setCustomHeight(height: number) {
+        this.customHeight = Math.min(height, this.maxHeight);
+    }
+
+    resetCustomHeight() {
+        this.customHeight = this.maxHeight;
+    }
+
+    toggleRowSelection(row: number, isMaximumReached: boolean = false) {
+        let rows = this.getGrid().getSelectedRows();
+        let oldRows = rows.join();
+        let index = rows.indexOf(row);
+
+        if (index >= 0) {
+            rows.splice(index, 1);
+        } else if (!isMaximumReached) {
+            rows.push(row);
         }
 
-        markReadOnly(selectedOptions: Option<OPTION_DISPLAY_VALUE>[]) {
-
-            let stylesHash: Slick.CellCssStylesHash = {};
-            selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-                if (selectedOption.readOnly) {
-                    let row = this.getGridData().getRowById(selectedOption.value);
-                    stylesHash[row] = {_checkbox_selector: 'readonly', option: 'readonly'};
-                }
-            });
-            this.getGrid().setCellCssStyles('readonly', stylesHash);
+        // update on changes only
+        if (oldRows !== rows.join()) {
+            this.getGrid().setSelectedRows(rows);
         }
+    }
 
-        hasActiveRow(): boolean {
-            return !!this.getGrid().getActiveCell();
-        }
+    navigateToFirstRow() {
+        this.navigateToRow(0);
+    }
 
-        getActiveRow(): number {
-            const activeCell = this.getGrid().getActiveCell();
+    onRowSelection(listener: (event: DropdownGridRowSelectedEvent) => void) {
+        this.rowSelectionListeners.push(listener);
+    }
 
-            return !activeCell ? -1 : activeCell.row;
-        }
+    unRowSelection(listener: (event: DropdownGridRowSelectedEvent) => void) {
+        this.rowSelectionListeners.filter((currentListener: (event: DropdownGridRowSelectedEvent) => void) => {
+            return listener !== currentListener;
+        });
+    }
 
-        expandActiveRow() {
-            this.getGrid().navigateDown();
-        }
+    onClick(callback: (e: MouseEvent, args: any) => void) {
+        this.getGrid().subscribeOnClick(callback);
+    }
 
-        collapseActiveRow() {
-            this.getGrid().navigateUp();
-        }
+    unClick(callback: (e: MouseEvent, args: any) => void) {
+        this.getGrid().unsubscribeOnClick(callback);
+    }
 
-        navigateToRow(row: number) {
-            this.getGrid().setActiveCell(row, 0);
-        }
+    onMultipleSelection(listener: (event: DropdownGridMultipleSelectionEvent) => void) {
+        this.multipleSelectionListeners.push(listener);
+    }
 
-        navigateToNextRow() {
-            this.getGrid().navigateDown();
-        }
+    unMultipleSelection(listener: (event: DropdownGridMultipleSelectionEvent) => void) {
+        this.multipleSelectionListeners.filter((currentListener: (event: DropdownGridMultipleSelectionEvent) => void) => {
+            return listener !== currentListener;
+        });
+    }
 
-        navigateToPreviousRow() {
-            this.getGrid().navigateUp();
-        }
+    onRowCountChanged(listener: () => void) {
+        this.rowCountChangedListeners.push(listener);
+    }
 
-        resetActiveSelection() {
-            this.getGrid().resetActiveCell();
-        }
+    unRowCountChanged(listener: () => void) {
+        this.rowCountChangedListeners.filter((currentListener: () => void) => {
+            return listener !== currentListener;
+        });
+    }
 
-        setCustomHeight(height: number) {
-            this.customHeight = Math.min(height, this.maxHeight);
-        }
+    notifyRowCountChanged() {
+        this.rowCountChangedListeners.forEach((listener: () => void) => {
+            listener();
+        });
+    }
 
-        resetCustomHeight() {
-            this.customHeight = this.maxHeight;
-        }
+    protected initGridAndData() {
+        throw new Error('Must be implemented by inheritors');
+    }
 
-        toggleRowSelection(row: number, isMaximumReached: boolean = false) {
-            let rows = this.getGrid().getSelectedRows();
-            let oldRows = rows.join();
-            let index = rows.indexOf(row);
+    protected getGridData(): DataView<any> {
+        throw new Error('Must be implemented by inheritors');
+    }
 
-            if (index >= 0) {
-                rows.splice(index, 1);
-            } else if (!isMaximumReached) {
-                rows.push(row);
-            }
+    protected initGridEventListeners() {
+        // Listen to click in grid and issue selection
+        this.getGrid().subscribeOnClick((e, args) => {
+            this.notifyRowSelection(args.row);
 
-            // update on changes only
-            if (oldRows !== rows.join()) {
-                this.getGrid().setSelectedRows(rows);
-            }
-        }
+            e.preventDefault();
+            return false;
+        });
 
-        navigateToFirstRow() {
-            this.navigateToRow(0);
-        }
+        this.getGrid().subscribeOnSelectedRowsChanged((_e, args) => {
+            this.notifyMultipleSelection(args.rows);
+        });
+    }
 
-        onRowSelection(listener: (event: DropdownGridRowSelectedEvent) => void) {
-            this.rowSelectionListeners.push(listener);
-        }
+    protected createOptions(): GridOptions<any> {
 
-        unRowSelection(listener: (event: DropdownGridRowSelectedEvent) => void) {
-            this.rowSelectionListeners.filter((currentListener: (event: DropdownGridRowSelectedEvent) => void) => {
-                return listener !== currentListener;
-            });
-        }
+        return new GridOptionsBuilder()
+            .setWidth(this.width + 'px')
+            .setHeight(this.maxHeight + 'px')
+            .setHideColumnHeaders(true)
+            .setEnableColumnReorder(false)
+            .setFullWidthRows(true)
+            .setForceFitColumns(true)
+            .setRowHeight(this.optionDisplayValueViewer.getPreferredHeight())
+            .setCheckableRows(this.multipleSelections)
+            .setLeftAlignedCheckbox(false)
+            .setMultiSelect(this.multipleSelections)
+            .setDataIdProperty(this.dataIdProperty)
+            .build();
+    }
 
-        onClick(callback: (e: MouseEvent, args: any) => void) {
-            this.getGrid().subscribeOnClick(callback);
-        }
+    protected createColumns(): GridColumn<any>[] {
+        let columnFormatter =
+            (_row: number, _cell: number, value: OPTION_DISPLAY_VALUE, _columnDef: any, _dataContext: Option<OPTION_DISPLAY_VALUE>) => {
+                this.optionDisplayValueViewer.setObject(value);
+                return this.optionDisplayValueViewer.toString();
+            };
 
-        unClick(callback: (e: MouseEvent, args: any) => void) {
-            this.getGrid().unsubscribeOnClick(callback);
-        }
+        return [
+            new GridColumnBuilder().setId('option').setName('Options').setField('displayValue').setFormatter(
+                columnFormatter).build()
+        ];
+    }
 
-        onMultipleSelection(listener: (event: DropdownGridMultipleSelectionEvent) => void) {
-            this.multipleSelectionListeners.push(listener);
-        }
+    protected notifyRowSelection(rowSelected: number) {
+        const event = new DropdownGridRowSelectedEvent(rowSelected);
+        this.rowSelectionListeners.forEach((listener: (event: DropdownGridRowSelectedEvent) => void) => {
+            listener(event);
+        });
+    }
 
-        unMultipleSelection(listener: (event: DropdownGridMultipleSelectionEvent) => void) {
-            this.multipleSelectionListeners.filter((currentListener: (event: DropdownGridMultipleSelectionEvent) => void) => {
-                return listener !== currentListener;
-            });
-        }
+    protected notifyMultipleSelection(rowsSelected: number[]) {
+        const event = new DropdownGridMultipleSelectionEvent(rowsSelected);
+        this.multipleSelectionListeners.forEach((listener: (event: DropdownGridMultipleSelectionEvent) => void) => {
+            listener(event);
+        });
+    }
 
-        protected notifyRowSelection(rowSelected: number) {
-            const event = new DropdownGridRowSelectedEvent(rowSelected);
-            this.rowSelectionListeners.forEach((listener: (event: DropdownGridRowSelectedEvent) => void) => {
-                listener(event);
-            });
-        }
-
-        protected notifyMultipleSelection(rowsSelected: number[]) {
-            const event = new DropdownGridMultipleSelectionEvent(rowsSelected);
-            this.multipleSelectionListeners.forEach((listener: (event: DropdownGridMultipleSelectionEvent) => void) => {
-                listener(event);
-            });
-        }
-
-        onRowCountChanged(listener: () => void) {
-            this.rowCountChangedListeners.push(listener);
-        }
-
-        unRowCountChanged(listener: () => void) {
-            this.rowCountChangedListeners.filter((currentListener: () => void) => {
-                return listener !== currentListener;
-            });
-        }
-
-        notifyRowCountChanged() {
-            this.rowCountChangedListeners.forEach((listener: () => void) => {
-                listener();
-            });
-        }
+    private initCommonGridProps() {
+        this.getGrid().addClass('options-container');
+        this.getGrid().getEl().setPosition('absolute');
+        this.hide();
+        this.getGrid().setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
     }
 }

@@ -1,16 +1,17 @@
-module api.macro.resource {
+import {ResourceRequest} from '../../rest/ResourceRequest';
+import {Path} from '../../rest/Path';
 
-    export class MacroResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class MacroResourceRequest<JSON_TYPE, PARSED_TYPE>
+    extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
-        private resourcePath: api.rest.Path;
+    private resourcePath: Path;
 
-        constructor() {
-            super();
-            this.resourcePath = api.rest.Path.fromParent(super.getRestPath(), 'macro');
-        }
+    constructor() {
+        super();
+        this.resourcePath = Path.fromParent(super.getRestPath(), 'macro');
+    }
 
-        getResourcePath(): api.rest.Path {
-            return this.resourcePath;
-        }
+    getResourcePath(): Path {
+        return this.resourcePath;
     }
 }

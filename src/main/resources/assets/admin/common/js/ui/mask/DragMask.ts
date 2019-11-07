@@ -1,10 +1,11 @@
-module api.ui.mask {
+import {Element} from '../../dom/Element';
+import {Mask} from './Mask';
 
-    export class DragMask extends Mask {
+export class DragMask
+    extends Mask {
 
-        constructor(itemToMask: api.dom.Element) {
-            super(itemToMask);
-            this.addClass('drag-mask');
-        }
+    constructor(itemToMask: Element) {
+        super(itemToMask);
+        this.addClass('drag-mask');
     }
 }

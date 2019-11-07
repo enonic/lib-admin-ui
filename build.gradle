@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.0.1'
     id 'com.enonic.xp.base' version '2.0.0'
-    id 'com.moowork.gulp' version '1.2.0'
+    id 'com.moowork.node' version '1.1.1'
 }
 
 repositories {
@@ -21,79 +21,73 @@ jar {
 
 node {
     download = true
-    version = '8.10.0'
+    version = '10.16.3'
 }
 
 def resourcesDir = file( 'src/main/resources' )
 
 loadConfiguration()
 
-task lint( type: GulpTask, dependsOn: npmInstall ) {
-    environment = [ 'NODE_ENV': nodeEnvironment() ]
-    description = 'Lint the *.ts files.'
-    args = [ 'lint' ]
-    inputs.files fileTree( dir: resourcesDir, exclude: '**/_all.*' )
-    outputs.files fileTree( dir: resourcesDir, include: '**/_all.*' )
+task lint( type: NpmTask, dependsOn: npmInstall ) {
+    args = [ 'run', 'lint' ]
+    inputs.files fileTree( dir: 'modules', include: '**/src/main/**.*' )
+    outputs.dir file('gradle')
     outputs.upToDateWhen { false }
 }
 
-task compile( type: GulpTask, dependsOn: lint ) {
+task typescriptPkg( type: NpmTask, dependsOn: lint ) {
+    def buildEnv = isProd() ? 'prod' : 'dev'
     environment = [ 'NODE_ENV': nodeEnvironment() ]
-    description = 'Build UI resources (css, etc).'
-    args = [ 'all:no-lint' ]
-    inputs.files fileTree( dir: resourcesDir, exclude: '**/_all.*' )
-    outputs.files fileTree( dir: resourcesDir, include: '**/_all.*' )
+    args = [ 'run', "build:$buildEnv" ]
+    inputs.dir 'src/main/resources/assets/admin/common'
+    outputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
 }
 
-task copyCompiled( type: Copy ) {
-    description = 'Copy compiled JS and CSS files'
-    from( "$resourcesDir/assets" ) {
-        include '**/_all.js'
-        include '**/_all.css'
-        include '**/_all.lite.css'
+task typescriptLib( type: NodeTask, dependsOn: lint ) {
+    environment = [ 'NODE_ENV': nodeEnvironment() ]
+    description = 'Build library, that should be included to HTML.'
+    inputs.dir 'src/main/resources/assets/admin/common'
+    outputs.dir "${buildDir}/resources/main/assets/admin/common"
+    script = file( './node_modules/webpack/bin/webpack' )
+}
+
+task minifyPkg( type: NpmTask, dependsOn: typescriptPkg ) {
+    description = 'Minify transpiled code.'
+    args = [ 'run', "build:minify" ]
+    inputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
+    outputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
+    mustRunAfter typescriptPkg
+    enabled isProd()
+}
+
+task copyPackage( type: Copy ) {
+    from( './' ) {
+        include 'package.json'
     }
-    into 'build/resources/main/assets'
+    into "$buildDir/resources/main/dev/lib-admin-ui"
     includeEmptyDirs = false
 }
 
-task copyDTS( type: Copy ) {
-    description = 'Copy Typescript definitions to /dev/d.ts folder.'
-    from( "$resourcesDir/assets/admin/common/js" ) {
-        include '**/*.d.ts'
-        rename '_all.d.ts', 'admin.d.ts'
-    }
-    into 'build/resources/main/dev/d.ts'
-    includeEmptyDirs = false
-}
-
-task copyStyles( type: Copy ) {
-    description = 'Copy styles from libraries to /dev/styles folder.'
-    def srcDir = "$resourcesDir/assets/admin/common/"
-    from( "$srcDir/lib" ) {
-        include '**/*.css'
-        into 'lib'
-    }
-    includeEmptyDirs = false
-    into 'build/resources/main/dev'
-}
-
-task copyAll {
-    dependsOn 'compile'
-    dependsOn 'copyCompiled'
-    dependsOn 'copyDTS'
-    dependsOn 'copyStyles'
-    tasks.findByName('copyCompiled').mustRunAfter 'compile'
+task typescript {
+    dependsOn 'typescriptPkg'
+    dependsOn 'typescriptLib'
+    dependsOn 'minifyPkg'
+    dependsOn 'copyPackage'
 }
 
 jar {
+    exclude 'dev/lib-admin-ui/lib.js'
     exclude 'assets/spec/**'
-    exclude 'assets/**/*.ts'   // let dev/**/admin.d.ts through to be used by other apps
-    exclude 'assets/**/*.less' // let dev/**/*.less through to be used by other apps
+    exclude 'assets/**/*.ts'
+    exclude 'assets/**/*.less'
+    exclude 'assets/**/styles/*.js'
+    exclude 'assets/**/icons/*.txt'
+    exclude 'assets/**/icons/**/icomoon.*'
 
     // COMMON/LIB excludes
     // Exclude complex files, that only present after the first build and must be evaluated dynamically
     def whitelist = [
-        /.*_all\.js$/,
+        /.*lib\.js$/,
         /.*\.css$/,
     ] as List
 
@@ -108,7 +102,7 @@ jar {
     }
 
     includeEmptyDirs = false
-    dependsOn += copyAll
+    dependsOn += typescript
 }
 
 task npmInstallForce( type: NpmTask ) {
@@ -123,7 +117,6 @@ task cleanNode( type: Delete ) {
 task flush( type: Delete, dependsOn: clean ) {
     description = 'Clean the project from built sources and dependencies'
     delete '.xp'
-    delete fileTree("$resourcesDir/assets/admin/common") { include '**/_all.*' }
 }
 
 def loadConfiguration() {

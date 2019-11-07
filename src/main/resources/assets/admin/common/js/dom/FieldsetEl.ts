@@ -1,9 +1,9 @@
-module api.dom {
+import {Element, NewElementBuilder} from './Element';
 
-    export class FieldsetEl extends Element {
+export class FieldsetEl
+    extends Element {
 
-        constructor(className?: string) {
-            super(new NewElementBuilder().setTagName('fieldset').setClassName(className));
-        }
+    constructor(className?: string) {
+        super(new NewElementBuilder().setTagName('fieldset').setClassName(className));
     }
 }

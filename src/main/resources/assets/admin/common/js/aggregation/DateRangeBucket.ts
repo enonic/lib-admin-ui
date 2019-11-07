@@ -1,31 +1,31 @@
-module api.aggregation {
+import {DateRangeBucketJson} from './DateRangeBucketJson';
+import {Bucket} from './Bucket';
 
-    export class DateRangeBucket extends Bucket {
+export class DateRangeBucket
+    extends Bucket {
 
-        private from: Date;
-        private to: Date;
+    private from: Date;
+    private to: Date;
 
-        constructor(key: string, docCount: number) {
-            super(key, docCount);
-        }
+    constructor(key: string, docCount: number) {
+        super(key, docCount);
+    }
 
-        public getFrom(): Date {
-            return this.from;
-        }
+    public static fromDateRangeJson(json: DateRangeBucketJson): DateRangeBucket {
 
-        public getTo(): Date {
-            return this.to;
-        }
+        let dateRangeBucket: DateRangeBucket = new DateRangeBucket(json.key, json.docCount);
+        dateRangeBucket.from = json.from;
+        dateRangeBucket.to = json.to;
 
-        public static fromDateRangeJson(json: api.aggregation.DateRangeBucketJson): DateRangeBucket {
+        return dateRangeBucket;
+    }
 
-            let dateRangeBucket: api.aggregation.DateRangeBucket = new api.aggregation.DateRangeBucket(json.key, json.docCount);
-            dateRangeBucket.from = json.from;
-            dateRangeBucket.to = json.to;
+    public getFrom(): Date {
+        return this.from;
+    }
 
-            return dateRangeBucket;
-        }
-
+    public getTo(): Date {
+        return this.to;
     }
 
 }

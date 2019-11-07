@@ -1,7 +1,4 @@
-module api.content.json {
-
-    export interface WorkflowJson {
-        state: string;
-        checks: any;
-    }
+export interface WorkflowJson {
+    state: string;
+    checks: any;
 }

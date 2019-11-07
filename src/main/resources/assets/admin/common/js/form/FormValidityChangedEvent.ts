@@ -1,22 +1,21 @@
-module api.form {
+import {ValidationRecording} from './ValidationRecording';
 
-    export class FormValidityChangedEvent {
+export class FormValidityChangedEvent {
 
-        private recording: ValidationRecording;
+    private recording: ValidationRecording;
 
-        private atLeastOneInputValueBroken: boolean;
+    private atLeastOneInputValueBroken: boolean;
 
-        constructor(recording?: ValidationRecording, atLeastOneInputValueBroken: boolean = false) {
-            this.recording = recording;
-            this.atLeastOneInputValueBroken = atLeastOneInputValueBroken;
-        }
+    constructor(recording?: ValidationRecording, atLeastOneInputValueBroken: boolean = false) {
+        this.recording = recording;
+        this.atLeastOneInputValueBroken = atLeastOneInputValueBroken;
+    }
 
-        isValid(): boolean {
-            return this.recording.isValid() && !this.atLeastOneInputValueBroken;
-        }
+    isValid(): boolean {
+        return this.recording.isValid() && !this.atLeastOneInputValueBroken;
+    }
 
-        getRecording(): ValidationRecording {
-            return this.recording;
-        }
+    getRecording(): ValidationRecording {
+        return this.recording;
     }
 }

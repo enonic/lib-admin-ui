@@ -1,30 +1,30 @@
-module api.form {
+import {FormItemOccurrence} from './FormItemOccurrence';
+import {FormItemOccurrenceView} from './FormItemOccurrenceView';
 
-    export class OccurrenceRenderedEvent {
+export class OccurrenceRenderedEvent {
 
-        private occurrence: FormItemOccurrence<FormItemOccurrenceView>;
+    private occurrence: FormItemOccurrence<FormItemOccurrenceView>;
 
-        private occurrenceView: FormItemOccurrenceView;
+    private occurrenceView: FormItemOccurrenceView;
 
-        private validateOnRender: boolean;
+    private validateOnRender: boolean;
 
-        constructor(occurrence: FormItemOccurrence<FormItemOccurrenceView>, occurrenceView: FormItemOccurrenceView,
-                    validateViewOnRender: boolean = true) {
-            this.occurrence = occurrence;
-            this.occurrenceView = occurrenceView;
-            this.validateOnRender = validateViewOnRender;
-        }
+    constructor(occurrence: FormItemOccurrence<FormItemOccurrenceView>, occurrenceView: FormItemOccurrenceView,
+                validateViewOnRender: boolean = true) {
+        this.occurrence = occurrence;
+        this.occurrenceView = occurrenceView;
+        this.validateOnRender = validateViewOnRender;
+    }
 
-        getOccurrence(): FormItemOccurrence<FormItemOccurrenceView> {
-            return this.occurrence;
-        }
+    getOccurrence(): FormItemOccurrence<FormItemOccurrenceView> {
+        return this.occurrence;
+    }
 
-        getOccurrenceView(): FormItemOccurrenceView {
-            return this.occurrenceView;
-        }
+    getOccurrenceView(): FormItemOccurrenceView {
+        return this.occurrenceView;
+    }
 
-        validateViewOnRender(): boolean {
-            return this.validateOnRender;
-        }
+    validateViewOnRender(): boolean {
+        return this.validateOnRender;
     }
 }

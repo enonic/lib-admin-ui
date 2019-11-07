@@ -1,15 +1,12 @@
-module api.util.loader.event {
+export class LoaderEvent {
 
-    export class LoaderEvent {
+    private postLoad: boolean;
 
-        private postLoad: boolean;
+    constructor(postLoad?: boolean) {
+        this.postLoad = postLoad;
+    }
 
-        constructor(postLoad?: boolean) {
-            this.postLoad = postLoad;
-        }
-
-        isPostLoad(): boolean {
-            return this.postLoad;
-        }
+    isPostLoad(): boolean {
+        return this.postLoad;
     }
 }

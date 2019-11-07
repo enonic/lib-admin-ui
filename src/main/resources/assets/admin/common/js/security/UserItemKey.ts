@@ -1,38 +1,41 @@
-module api.security {
+import {Equitable} from '../Equitable';
+import {StringHelper} from '../util/StringHelper';
+import {ObjectHelper} from '../ObjectHelper';
+import {assert} from '../util/Assert';
 
-    export class UserItemKey implements api.Equitable {
+export class UserItemKey
+    implements Equitable {
 
-        private id: string;
+    private id: string;
 
-        constructor(id: string) {
-            api.util.assert(!api.util.StringHelper.isBlank(id), 'Id cannot be null or empty');
-            this.id = id;
-        }
-
-        isSystem(): boolean {
-            throw Error('Must be overridden by inheritors');
-        }
-
-        getId(): string {
-            return this.id;
-        }
-
-        toString(): string {
-            return this.id;
-        }
-
-        static fromString(_str: string): UserItemKey {
-            throw Error('Override me');
-        }
-
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, UserItemKey)) {
-                return false;
-            }
-
-            let other = <UserItemKey>o;
-            return this.id === other.id;
-        }
-
+    constructor(id: string) {
+        assert(!StringHelper.isBlank(id), 'Id cannot be null or empty');
+        this.id = id;
     }
+
+    static fromString(_str: string): UserItemKey {
+        throw Error('Override me');
+    }
+
+    isSystem(): boolean {
+        throw Error('Must be overridden by inheritors');
+    }
+
+    getId(): string {
+        return this.id;
+    }
+
+    toString(): string {
+        return this.id;
+    }
+
+    equals(o: Equitable): boolean {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, UserItemKey)) {
+            return false;
+        }
+
+        let other = <UserItemKey>o;
+        return this.id === other.id;
+    }
+
 }

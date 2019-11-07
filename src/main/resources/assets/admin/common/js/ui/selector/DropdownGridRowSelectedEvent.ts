@@ -1,16 +1,13 @@
-module api.ui.selector {
+export class DropdownGridRowSelectedEvent {
 
-    export class DropdownGridRowSelectedEvent {
+    private row: number;
 
-        private row: number;
-
-        constructor(row: number) {
-            this.row = row;
-        }
-
-        getRow(): number {
-            return this.row;
-        }
-
+    constructor(row: number) {
+        this.row = row;
     }
+
+    getRow(): number {
+        return this.row;
+    }
+
 }

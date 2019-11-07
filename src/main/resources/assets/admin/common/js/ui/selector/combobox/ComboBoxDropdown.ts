@@ -1,65 +1,65 @@
-module api.ui.selector.combobox {
+import {Option} from '../Option';
+import {DropdownList} from '../DropdownList';
+import {DropdownGridMultipleSelectionEvent} from '../DropdownGridMultipleSelectionEvent';
 
-    import Option = api.ui.selector.Option;
+export class ComboBoxDropdown<OPTION_DISPLAY_VALUE>
+    extends DropdownList<OPTION_DISPLAY_VALUE> {
 
-    export class ComboBoxDropdown<OPTION_DISPLAY_VALUE> extends DropdownList<OPTION_DISPLAY_VALUE> {
+    setOptions(options: Option<OPTION_DISPLAY_VALUE>[], noOptionsText: string, selectedOptions: Option<OPTION_DISPLAY_VALUE>[] = [],
+               saveSelection?: boolean) {
 
-        setOptions(options: Option<OPTION_DISPLAY_VALUE>[], noOptionsText: string, selectedOptions: Option<OPTION_DISPLAY_VALUE>[] = [],
-                   saveSelection?: boolean) {
-
-            selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-                if (selectedOption.readOnly) {
-                    for (let i = 0; i < options.length; i++) {
-                        if (selectedOption.value === options[i].value) {
-                            options[i].readOnly = true;
-                            break;
-                        }
+        selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
+            if (selectedOption.readOnly) {
+                for (let i = 0; i < options.length; i++) {
+                    if (selectedOption.value === options[i].value) {
+                        options[i].readOnly = true;
+                        break;
                     }
                 }
-            });
-
-            // `from` is used to determine, from which point should selection be updated
-            const from = this.getDropdownGrid().getOptionCount();
-
-            const gridSelection = this.getDropdownGrid().getSelectedOptions();
-
-            this.getDropdownGrid().setOptions(options);
-
-            if (this.isDropdownShown()) {
-                let selected = selectedOptions;
-
-                // Save the current grid selection and restore the selection for the new items,
-                // according to the selected options
-                if (saveSelection) {
-                    const newSelection = selectedOptions.filter((option) => {
-                        return this.getDropdownGrid().getRowByValue(option.value) >= from;
-                    });
-
-                    selected = gridSelection.concat(newSelection);
-                }
-
-                this.showDropdown(selected, noOptionsText);
             }
-        }
+        });
 
-        getSelectedOptionCount(): number {
-            return this.getDropdownGrid().getSelectedOptionCount();
-        }
+        // `from` is used to determine, from which point should selection be updated
+        const from = this.getDropdownGrid().getOptionCount();
 
-        toggleRowSelection(row: number, isMaximumReached: boolean = false) {
-            this.getDropdownGrid().toggleRowSelection(row, isMaximumReached);
-        }
+        const gridSelection = this.getDropdownGrid().getSelectedOptions();
 
-        resetActiveSelection() {
-            this.getDropdownGrid().resetActiveSelection();
-        }
+        this.getDropdownGrid().setOptions(options);
 
-        onMultipleSelection(listener: (event: DropdownGridMultipleSelectionEvent) => void) {
-            this.getDropdownGrid().onMultipleSelection(listener);
-        }
+        if (this.isDropdownShown()) {
+            let selected = selectedOptions;
 
-        unMultipleSelection(listener: (event: DropdownGridMultipleSelectionEvent) => void) {
-            this.getDropdownGrid().unMultipleSelection(listener);
+            // Save the current grid selection and restore the selection for the new items,
+            // according to the selected options
+            if (saveSelection) {
+                const newSelection = selectedOptions.filter((option) => {
+                    return this.getDropdownGrid().getRowByValue(option.value) >= from;
+                });
+
+                selected = gridSelection.concat(newSelection);
+            }
+
+            this.showDropdown(selected, noOptionsText);
         }
+    }
+
+    getSelectedOptionCount(): number {
+        return this.getDropdownGrid().getSelectedOptionCount();
+    }
+
+    toggleRowSelection(row: number, isMaximumReached: boolean = false) {
+        this.getDropdownGrid().toggleRowSelection(row, isMaximumReached);
+    }
+
+    resetActiveSelection() {
+        this.getDropdownGrid().resetActiveSelection();
+    }
+
+    onMultipleSelection(listener: (event: DropdownGridMultipleSelectionEvent) => void) {
+        this.getDropdownGrid().onMultipleSelection(listener);
+    }
+
+    unMultipleSelection(listener: (event: DropdownGridMultipleSelectionEvent) => void) {
+        this.getDropdownGrid().unMultipleSelection(listener);
     }
 }

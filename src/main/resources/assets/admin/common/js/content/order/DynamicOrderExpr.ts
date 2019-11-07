@@ -1,46 +1,55 @@
-module api.content.order {
+import {OrderExpr, OrderExprBuilder} from './OrderExpr';
+import {OrderExprJson} from '../json/OrderExprJson';
+import {OrderExprWrapperJson} from '../json/OrderExprWrapperJson';
 
-    export class DynamicOrderExpr extends OrderExpr {
+export class DynamicOrderExpr
+    extends OrderExpr {
 
-        private function: string;
+    private function: string;
 
-        constructor(builder: DynamicOrderExprBuilder) {
-            super(builder);
-            this.function = builder.function;
-        }
-
-        getFunction(): string {
-            return this.function;
-        }
-
-        toString() {
-            return this.function + ' ' + super.getDirection();
-        }
-
-        toJson(): json.OrderExprJson {
-            return {
-                function: this.function,
-                direction: this.getDirection()
-            };
-        }
+    constructor(builder: DynamicOrderExprBuilder) {
+        super(builder);
+        this.function = builder.function;
     }
 
-    export class DynamicOrderExprBuilder extends OrderExprBuilder {
+    getFunction(): string {
+        return this.function;
+    }
 
-        function: string;
+    toString() {
+        return this.function + ' ' + super.getDirection();
+    }
 
-        constructor(json: json.OrderExprJson) {
-            super(json);
-            this.function = json.function;
-        }
+    toJson(): OrderExprJson {
+        return {
+            function: this.function,
+            direction: this.getDirection()
+        };
+    }
 
-        public setFunction(value: string): DynamicOrderExprBuilder {
-            this.function = value;
-            return this;
-        }
+    toWrappedJson(): OrderExprWrapperJson {
+        return {
+            DynamicOrderExpr: this.toJson()
+        };
+    }
+}
 
-        public build(): DynamicOrderExpr {
-            return new DynamicOrderExpr(this);
-        }
+export class DynamicOrderExprBuilder
+    extends OrderExprBuilder {
+
+    function: string;
+
+    constructor(json: OrderExprJson) {
+        super(json);
+        this.function = json.function;
+    }
+
+    public setFunction(value: string): DynamicOrderExprBuilder {
+        this.function = value;
+        return this;
+    }
+
+    public build(): DynamicOrderExpr {
+        return new DynamicOrderExpr(this);
     }
 }

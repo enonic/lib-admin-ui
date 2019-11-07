@@ -1,16 +1,13 @@
-module api {
+export class ValidityChangedEvent {
 
-    export class ValidityChangedEvent {
+    private valid: boolean;
 
-        private valid: boolean;
-
-        constructor(valid: boolean) {
-            this.valid = valid;
-        }
-
-        isValid(): boolean {
-            return this.valid;
-        }
-
+    constructor(valid: boolean) {
+        this.valid = valid;
     }
+
+    isValid(): boolean {
+        return this.valid;
+    }
+
 }

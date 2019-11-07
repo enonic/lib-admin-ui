@@ -1,20 +1,23 @@
-module api.application {
+import {ResourceRequest} from '../rest/ResourceRequest';
+import {Path} from '../rest/Path';
+import {Application} from './Application';
+import {ApplicationJson} from './json/ApplicationJson';
 
-    export class ApplicationResourceRequest<JSON_TYPE, PARSED_TYPE> extends api.rest.ResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class ApplicationResourceRequest<JSON_TYPE, PARSED_TYPE>
+    extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
-        private resourcePath: api.rest.Path;
+    private resourcePath: Path;
 
-        constructor() {
-            super();
-            this.resourcePath = api.rest.Path.fromParent(super.getRestPath(), 'application');
-        }
+    constructor() {
+        super();
+        this.resourcePath = Path.fromParent(super.getRestPath(), 'application');
+    }
 
-        getResourcePath(): api.rest.Path {
-            return this.resourcePath;
-        }
+    getResourcePath(): Path {
+        return this.resourcePath;
+    }
 
-        fromJsonToApplication(json: api.application.json.ApplicationJson): Application {
-            return Application.fromJson(json);
-        }
+    fromJsonToApplication(json: ApplicationJson): Application {
+        return Application.fromJson(json);
     }
 }

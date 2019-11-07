@@ -1,10 +1,7 @@
-module api.content.json {
+export interface OrderExprJson {
+    direction: string;
 
-    export interface OrderExprJson {
-        direction: string;
+    function?: string;
 
-        function?: string;
-
-        fieldName?: string;
-    }
+    fieldName?: string;
 }

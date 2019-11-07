@@ -1,26 +1,27 @@
-module api.query.expr {
+import {Expression} from './Expression';
+import {OrderDirection} from './OrderDirection';
 
-    export class OrderExpr implements Expression {
+export class OrderExpr
+    implements Expression {
 
-        private direction: OrderDirection;
+    private direction: OrderDirection;
 
-        constructor(direction: OrderDirection) {
-            this.direction = direction;
-        }
+    constructor(direction: OrderDirection) {
+        this.direction = direction;
+    }
 
-        getDirection(): OrderDirection {
-            return this.direction;
-        }
+    getDirection(): OrderDirection {
+        return this.direction;
+    }
 
-        directionAsString(): string {
-            switch (this.direction) {
-            case OrderDirection.ASC:
-                return 'ASC';
-            case OrderDirection.DESC:
-                return 'DESC';
-            default:
-                return '';
-            }
+    directionAsString(): string {
+        switch (this.direction) {
+        case OrderDirection.ASC:
+            return 'ASC';
+        case OrderDirection.DESC:
+            return 'DESC';
+        default:
+            return '';
         }
     }
 }

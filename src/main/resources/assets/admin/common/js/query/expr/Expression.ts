@@ -1,5 +1,2 @@
-module api.query.expr {
-
-    export interface Expression {
-    }
+export interface Expression {
 }

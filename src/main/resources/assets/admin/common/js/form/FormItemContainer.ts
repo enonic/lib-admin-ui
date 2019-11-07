@@ -1,9 +1,7 @@
-module api.form {
+import {FormItem} from './FormItem';
 
-    export interface FormItemContainer {
+export interface FormItemContainer {
 
-        getFormItems(): FormItem[];
-
-    }
+    getFormItems(): FormItem[];
 
 }

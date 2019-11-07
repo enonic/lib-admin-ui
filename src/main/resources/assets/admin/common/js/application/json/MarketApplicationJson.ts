@@ -1,19 +1,16 @@
-module api.application.json {
+export interface MarketApplicationJson {
 
-    export interface MarketApplicationJson {
+    displayName: string;
 
-        displayName: string;
+    name: string;
 
-        name: string;
+    description: string;
 
-        description: string;
+    iconUrl: string;
 
-        iconUrl: string;
+    url: string;
 
-        url: string;
+    latestVersion: string;
 
-        latestVersion: string;
-
-        versions: Object;
-    }
+    versions: Object;
 }

@@ -1,15 +1,16 @@
-module api.form {
+import {DivEl} from '../../../dom/DivEl';
+import {FieldSet} from './FieldSet';
 
-    export class FieldSetLabel extends api.dom.DivEl {
+export class FieldSetLabel
+    extends DivEl {
 
-        private fieldSet:FieldSet;
+    private fieldSet: FieldSet;
 
-        constructor(fieldSet:FieldSet) {
-            super('field-set-label');
+    constructor(fieldSet: FieldSet) {
+        super('field-set-label');
 
-            this.fieldSet = fieldSet;
+        this.fieldSet = fieldSet;
 
-            this.getEl().setInnerHtml(this.fieldSet.getLabel());
-        }
+        this.getEl().setInnerHtml(this.fieldSet.getLabel());
     }
 }

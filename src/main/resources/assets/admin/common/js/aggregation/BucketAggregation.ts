@@ -1,44 +1,69 @@
-module api.aggregation {
+import {Bucket} from './Bucket';
+import {BucketAggregationJson} from './BucketAggregationJson';
+import {BucketWrapperJson} from './BucketWrapperJson';
+import {BucketFactory} from './BucketFactory';
+import {Aggregation} from './Aggregation';
+import {AggregationTypeWrapperJson} from './AggregationTypeWrapperJson';
 
-    export class BucketAggregation extends Aggregation {
+export class BucketAggregation
+    extends Aggregation {
 
-        private buckets: api.aggregation.Bucket[] = [];
+    private buckets: Bucket[] = [];
 
-        constructor(name: string) {
-            super(name);
+    constructor(name: string) {
+        super(name);
+    }
+
+    public static fromJsonArray(aggregationWrapperJsons: AggregationTypeWrapperJson[]): BucketAggregation[] {
+
+        let aggregations: BucketAggregation[] = [];
+
+        aggregationWrapperJsons.forEach((aggregationJson: AggregationTypeWrapperJson) => {
+            aggregations.push(BucketAggregation.createFromJson(aggregationJson));
+        });
+
+        return aggregations;
+    }
+
+    public static createFromJson(json: AggregationTypeWrapperJson): BucketAggregation {
+
+        if (json.BucketAggregation) {
+            return BucketAggregation.fromJson(<BucketAggregationJson>json.BucketAggregation);
+        } else {
+            throw new Error('Aggregation type not recognized: ' + json);
         }
+    }
 
-        public getBucketByName(name: string): api.aggregation.Bucket {
-            for (let i = 0; i < this.buckets.length; i++) {
-                let bucket: api.aggregation.Bucket = this.buckets[i];
-                if (bucket.getKey() === name) {
-                    return bucket;
-                }
+    public static fromJson(json: BucketAggregationJson): BucketAggregation {
+
+        let bucketAggregation: BucketAggregation = new BucketAggregation(json.name);
+
+        json.buckets.forEach((bucketWrapper: BucketWrapperJson) => {
+            bucketAggregation.addBucket(BucketFactory.createFromJson(bucketWrapper));
+        });
+
+        return bucketAggregation;
+    }
+
+    public getBucketByName(name: string): Bucket {
+        for (let i = 0; i < this.buckets.length; i++) {
+            let bucket: Bucket = this.buckets[i];
+            if (bucket.getKey() === name) {
+                return bucket;
             }
-            return null;
         }
+        return null;
+    }
 
-        public getBuckets(): api.aggregation.Bucket[] {
-            return this.buckets;
-        }
+    public getBuckets(): Bucket[] {
+        return this.buckets;
+    }
 
-        public addBucket(bucket: api.aggregation.Bucket) {
-            this.buckets.push(bucket);
-        }
+    public addBucket(bucket: Bucket) {
+        this.buckets.push(bucket);
+    }
 
-        public setBuckets(buckets: api.aggregation.Bucket[]) {
-            return this.buckets = buckets;
-        }
-
-        public static fromJson(json: api.aggregation.BucketAggregationJson): BucketAggregation {
-
-            let bucketAggregation: BucketAggregation = new BucketAggregation(json.name);
-
-            json.buckets.forEach((bucketWrapper: api.aggregation.BucketWrapperJson) => {
-                bucketAggregation.addBucket(api.aggregation.BucketFactory.createFromJson(bucketWrapper));
-            });
-
-            return bucketAggregation;
-        }
+    public setBuckets(buckets: Bucket[]) {
+        return this.buckets = buckets;
     }
 }

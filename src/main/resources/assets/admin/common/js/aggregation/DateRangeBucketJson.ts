@@ -1,8 +1,7 @@
-module api.aggregation {
+import {BucketJson} from './BucketJson';
 
-    export interface DateRangeBucketJson extends api.aggregation.BucketJson {
-        from:Date;
-        to:Date;
-    }
-
+export interface DateRangeBucketJson
+    extends BucketJson {
+    from: Date;
+    to: Date;
 }

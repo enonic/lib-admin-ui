@@ -1,36 +1,37 @@
-module api.query.expr {
+import {Expression} from './Expression';
+import {ValueExpr} from './ValueExpr';
 
-    export class FunctionExpr implements Expression {
+export class FunctionExpr
+    implements Expression {
 
-        private name: string;
-        private args: ValueExpr[] = [];
+    private name: string;
+    private args: ValueExpr[] = [];
 
-        constructor(name: string, args: ValueExpr[]) {
-            this.name = name;
-            this.args = args;
-        }
+    constructor(name: string, args: ValueExpr[]) {
+        this.name = name;
+        this.args = args;
+    }
 
-        getName(): string {
-            return this.name;
-        }
+    getName(): string {
+        return this.name;
+    }
 
-        getargs(): ValueExpr[] {
-            return this.args;
-        }
+    getargs(): ValueExpr[] {
+        return this.args;
+    }
 
-        toString() {
-            let result: string = this.name;
-            result = result.concat('(');
+    toString() {
+        let result: string = this.name;
+        result = result.concat('(');
 
-            let sub = [];
-            this.args.forEach((expr: ValueExpr) => {
-                sub.push(expr.toString());
-            });
-            result = result.concat(sub.join(', '));
+        let sub = [];
+        this.args.forEach((expr: ValueExpr) => {
+            sub.push(expr.toString());
+        });
+        result = result.concat(sub.join(', '));
 
-            result = result.concat(')');
+        result = result.concat(')');
 
-            return result;
-        }
+        return result;
     }
 }
