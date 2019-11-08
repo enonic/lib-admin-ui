@@ -367,21 +367,24 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                (filteredOption.sort().join() !== gridOptions.sort().join());
     }
 
-    selectRowOrApplySelection(index: number, keyCode: number = -1) {
+        private handleEnterPressed() {
+            // fast alternative to isSelectionChanged()
+            if (this.applySelectionsButton && this.applySelectionsButton.isVisible()) {
+                this.applySelection(13);
+            } else {
+                this.handleRowSelected(this.comboBoxDropdown.getActiveRow(), 13);
+                this.input.setValue('', true);
+            }
+        }
 
-        // fast alternative to isSelectionChanged()
-        if (this.applySelectionsButton && this.applySelectionsButton.isVisible()) {
+        private applySelection(keyCode: number = -1) {
             this.selectiondDelta.forEach((value: string) => {
-                let row = this.comboBoxDropdown.getDropdownGrid().getRowByValue(value);
+                const row: number = this.comboBoxDropdown.getDropdownGrid().getRowByValue(value);
                 this.handleRowSelected(row, keyCode);
             });
-            this.input.setValue('');
+            this.input.setValue('', true);
             this.hideDropdown();
-        } else {
-            this.handleRowSelected(index, keyCode);
-            this.input.setValue('');
         }
-    }
 
     selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false, keyCode: number = -1) {
         assertNotNull(option, 'option cannot be null');
@@ -875,9 +878,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             }
         });
 
-        if (this.applySelectionsButton) {
-            this.applySelectionsButton.onClicked(this.selectRowOrApplySelection.bind(this, -1));
-        }
+            if (this.applySelectionsButton) {
+                this.applySelectionsButton.onClicked(this.applySelection.bind(this));
+            }
 
         this.input.onValueChanged((event: ValueChangedEvent) => {
 
@@ -996,38 +999,38 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             return;
         }
 
-        switch (event.which) {
-        case 38: // up
-            if (this.comboBoxDropdown.hasActiveRow()) {
-                if (this.comboBoxDropdown.getActiveRow() === 0) {
-                    this.comboBoxDropdown.resetActiveSelection();
-                    this.input.setReadOnly(false);
-                    this.input.giveFocus();
-                } else {
-                    this.comboBoxDropdown.navigateToPreviousRow();
-                    this.input.setReadOnly(true);
+            switch (event.which) {
+            case 38: // up
+                if (this.comboBoxDropdown.hasActiveRow()) {
+                    if (this.comboBoxDropdown.getActiveRow() === 0) {
+                        this.comboBoxDropdown.resetActiveSelection();
+                        this.input.setReadOnly(false);
+                        this.input.giveFocus();
+                    } else {
+                        this.comboBoxDropdown.navigateToPreviousRow();
+                        this.input.setReadOnly(true);
+                    }
                 }
-            }
-            break;
-        case 37: //left
-            this.comboBoxDropdown.getDropdownGrid().collapseActiveRow();
-            break;
-        case 39: //right
-            this.comboBoxDropdown.getDropdownGrid().expandActiveRow();
-            break;
-        case 40: // down
-            if (this.comboBoxDropdown.hasActiveRow()) {
-                this.comboBoxDropdown.navigateToNextRow();
-            } else {
-                this.comboBoxDropdown.navigateToFirstRow();
-            }
-            this.input.setReadOnly(true);
-            break;
-        case 13: // Enter
-            this.selectRowOrApplySelection(this.comboBoxDropdown.getActiveRow(), 13);
-            break;
-        case 32: // Spacebar
-            if (this.input.isReadOnly() && this.applySelectionsButton) {
+                break;
+            case 37: //left
+                this.comboBoxDropdown.getDropdownGrid().collapseActiveRow();
+                break;
+            case 39: //right
+                this.comboBoxDropdown.getDropdownGrid().expandActiveRow();
+                break;
+            case 40: // down
+                if (this.comboBoxDropdown.hasActiveRow()) {
+                    this.comboBoxDropdown.navigateToNextRow();
+                } else {
+                    this.comboBoxDropdown.navigateToFirstRow();
+                }
+                this.input.setReadOnly(true);
+                break;
+            case 13: // Enter
+                this.handleEnterPressed();
+                break;
+            case 32: // Spacebar
+                if (this.input.isReadOnly() && this.applySelectionsButton) {
 
                 if (!this.isSelectedRowReadOnly()) {
                     this.comboBoxDropdown.toggleRowSelection(this.comboBoxDropdown.getActiveRow(), this.maximumSelectionsReached());

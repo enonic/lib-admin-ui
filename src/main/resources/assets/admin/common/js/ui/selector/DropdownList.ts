@@ -130,7 +130,7 @@ export class DropdownList<OPTION_DISPLAY_VALUE> {
 
     hideDropdown() {
         this.emptyDropdown.hide();
-        this.dropdownGrid.hide();
+        this.dropdownGrid.hide(true);
     }
 
     setEmptyDropdownText(label: string) {

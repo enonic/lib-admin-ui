@@ -108,11 +108,18 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
 
     show() {
         this.getGrid().removeClass('hidden');
+
+        if (!this.getGrid().isVisible()) {
+            this.getGrid().show();
+        }
     }
 
-    hide() {
+    hide(hideGrid?: boolean) {
         // hiding grid with visibility: hidden instead of display: none to allow scrollTop modification
         this.getGrid().addClass('hidden');
+        if (hideGrid) {
+            this.getGrid().hide();
+        }
     }
 
     getSelectedOptionCount(): number {
