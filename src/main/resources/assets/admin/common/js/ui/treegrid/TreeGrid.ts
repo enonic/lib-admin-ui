@@ -76,6 +76,8 @@ export class TreeGrid<DATA>
 
     private keyBindings: KeyBinding[] = [];
 
+    private expandedNodesDataIds: string[] = [];
+
     private onAwithModKeyPress = (event: ExtendedKeyboardEvent) => {
         let selected = this.grid.getSelectedRows();
         if (selected.length === this.gridData.getLength()) {
@@ -726,38 +728,52 @@ export class TreeGrid<DATA>
         node = node || this.root.getCurrentRoot();
 
         if (node) {
-            node.setExpanded(true);
-
-            if (node.hasChildren()) {
-                this.initData(this.root.getCurrentRoot().treeToList());
-                this.updateExpanded();
-                if (expandAll) {
-                    node.getChildren().forEach((child: TreeNode<DATA>) => {
-                        this.expandNode(child, false);
-                    });
-                }
-                deferred.resolve(true);
-            } else {
-                this.mask();
-                this.fetchData(node)
-                    .then((dataList: DATA[]) => {
-                        node.setChildren(this.dataToTreeNodes(dataList, node, expandAll));
-                        this.initData(this.root.getCurrentRoot().treeToList());
-                        this.updateExpanded();
-                        if (expandAll) {
-                            node.getChildren().forEach((child: TreeNode<DATA>) => {
-                                this.expandNode(child, false);
-                            });
-                        }
-                        deferred.resolve(true);
-                    }).catch((reason: any) => {
-                    this.handleError(reason);
-                    deferred.resolve(false);
-                }).done(() => this.notifyLoaded());
-            }
+            return this.doExpandNode(node, expandAll);
         }
 
-        return deferred.promise;
+        return Q(false);
+    }
+
+    private doExpandNode(node: TreeNode<DATA>, expandAll: boolean = false): Q.Promise<boolean> {
+        node.setExpanded(true);
+
+        if (this.expandedNodesDataIds.indexOf(node.getDataId()) < 0) {
+            this.expandedNodesDataIds.push(node.getDataId());
+        }
+
+        return this.fetchExpandedNodeChildren(node)
+            .then(() => {
+                this.initData(this.root.getCurrentRoot().treeToList());
+                this.updateExpanded();
+                this.expandNodeChildren(node, expandAll);
+
+                return true;
+            }).catch((reason: any) => {
+                this.handleError(reason);
+                return false;
+            });
+    }
+
+    private fetchExpandedNodeChildren(node: TreeNode<DATA>, expandAll: boolean = false): Q.Promise<void> {
+        if (node.hasChildren()) {
+            return Q(null);
+        }
+
+        this.mask();
+
+        return this.fetchData(node)
+            .then((dataList: DATA[]) => {
+                node.setChildren(this.dataToTreeNodes(dataList, node, expandAll));
+            })
+            .finally(this.unmask.bind(this));
+    }
+
+    private expandNodeChildren(node: TreeNode<DATA>, expandAll: boolean) {
+        node.getChildren().forEach((child: TreeNode<DATA>) => {
+            if (expandAll || this.expandedNodesDataIds.indexOf(child.getDataId()) > -1) {
+                this.expandNode(child);
+            }
+        });
     }
 
     isAllSelected(): boolean {
@@ -785,8 +801,13 @@ export class TreeGrid<DATA>
     collapseNode(node: TreeNode<DATA>, collapseAll: boolean = false) {
         node.setExpanded(false);
 
+        this.expandedNodesDataIds.splice(this.expandedNodesDataIds.indexOf(node.getDataId()), 1);
+
         if (collapseAll) {
-            node.treeToList(false, false).forEach(n => n.setExpanded(false));
+            node.treeToList(false, false).forEach((n: TreeNode<DATA>) => {
+                n.setExpanded(false);
+                this.expandedNodesDataIds.splice(this.expandedNodesDataIds.indexOf(n.getDataId()), 1);
+            });
         }
 
         // Save the selected collapsed rows in cache
@@ -1527,14 +1548,21 @@ export class TreeGrid<DATA>
     private loadEmptyNode(node: TreeNode<DATA>) {
         if (!this.getDataId(node.getData())) {
             this.fetchChildren(node.getParent()).then((dataList: DATA[]) => {
-                let oldChildren = node.getParent().getChildren();
+                const oldChildren: TreeNode<DATA>[] = node.getParent().getChildren();
                 // Ensure to remove empty node from the end if present
                 if (oldChildren.length > 0 && oldChildren[oldChildren.length - 1].getDataId() === '') {
                     oldChildren.pop();
                 }
-                let fetchedChildren = this.dataToTreeNodes(dataList, node.getParent());
-                let needToCheckFetchedChildren = this.areAllOldChildrenSelected(oldChildren);
-                let newChildren = oldChildren.concat(fetchedChildren.slice(oldChildren.length));
+                const fetchedChildren: TreeNode<DATA>[] = this.dataToTreeNodes(dataList, node.getParent());
+                const needToCheckFetchedChildren: boolean = this.areAllOldChildrenSelected(oldChildren);
+                const childrenToAdd: TreeNode<DATA>[] = fetchedChildren.slice(oldChildren.length);
+                childrenToAdd
+                    .filter((child: TreeNode<DATA>) => this.expandedNodesDataIds.indexOf(child.getDataId()) > -1)
+                    .forEach((child: TreeNode<DATA>) => {
+                        child.setExpanded(true);
+                        this.expandNode(child);
+                    });
+                const newChildren: TreeNode<DATA>[] = oldChildren.concat(childrenToAdd);
                 node.getParent().setChildren(newChildren);
                 this.initData(this.root.getCurrentRoot().treeToList());
                 if (needToCheckFetchedChildren) {
@@ -1849,5 +1877,9 @@ export class TreeGrid<DATA>
         this.contextMenuListeners.forEach((listener) => {
             listener(showContextMenuEvent);
         });
+    }
+
+    resetExpandedNodesDataIds() {
+        this.expandedNodesDataIds = [];
     }
 }

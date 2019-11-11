@@ -158,6 +158,10 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         this.dropdownList.resetActiveSelection();
     }
 
+    resetSelected() {
+        this.dropdownList.markSelections([]);
+    }
+
     giveFocus(): boolean {
         // If input is hidden or disabled, try dropdown handler.
         return this.input.giveFocus() || this.dropdownHandle.giveFocus();
