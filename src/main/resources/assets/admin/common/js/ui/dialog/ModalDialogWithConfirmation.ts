@@ -1,5 +1,4 @@
 import {Element} from '../../dom/Element';
-import {Body} from '../../dom/Body';
 import {ModalDialog, ModalDialogConfig} from './ModalDialog';
 import {ConfirmationDialog} from './ConfirmationDialog';
 import {i18n} from '../../util/Messages';
@@ -13,7 +12,6 @@ export interface ConfirmationConfig {
 export interface ModalDialogWithConfirmationConfig
     extends ModalDialogConfig {
     confirmation?: ConfirmationConfig;
-    keepOpenOnClickOutside?: boolean;
 }
 
 export class ModalDialogWithConfirmation
@@ -53,33 +51,15 @@ export class ModalDialogWithConfirmation
         return <ModalDialogWithConfirmationConfig>this.config;
     }
 
-    protected initListeners() {
-        super.initListeners();
-
-        this.initConfirmationDialogListeners();
-    }
-
-    private initConfirmationDialogListeners() {
-        if (!this.getConfig().keepOpenOnClickOutside) {
-            const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
-                const noConfirmationDialog = !this.confirmationDialog || !this.confirmationDialog.isVisible();
-                if (this.isActive() && noConfirmationDialog) {
-                    for (let element = event.target; element; element = (<any>element).parentNode) {
-                        if (element === this.getHTMLElement() || this.isIgnoredElementClicked(<any>element)) {
-                            return;
-                        }
-                    }
-                    this.confirmBeforeClose();
+    protected outsideClickListener(event: MouseEvent) {
+        const noConfirmationDialog = !this.confirmationDialog || !this.confirmationDialog.isVisible();
+        if (this.isActive() && noConfirmationDialog) {
+            for (let element = event.target; element; element = (<any>element).parentNode) {
+                if (element === this.getHTMLElement() || this.isIgnoredElementClicked(<any>element)) {
+                    return;
                 }
-            };
-
-            this.onRemoved(() => {
-                Body.get().unMouseDown(mouseClickListener);
-            });
-
-            this.onAdded(() => {
-                Body.get().onMouseDown(mouseClickListener);
-            });
+            }
+            this.confirmBeforeClose();
         }
     }
 

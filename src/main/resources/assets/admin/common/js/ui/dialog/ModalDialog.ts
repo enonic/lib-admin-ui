@@ -22,6 +22,7 @@ export interface ModalDialogConfig {
     closeIconCallback?: () => void;
     skipTabbable?: boolean;
     class?: string;
+    keepOpenOnClickOutside?: boolean;
 }
 
 export abstract class ModalDialog
@@ -389,6 +390,23 @@ export abstract class ModalDialog
         });
 
         this.closeIcon.onClicked(this.closeIconCallback);
+
+        if (!this.getConfig().keepOpenOnClickOutside) {
+            const outsideClickListener = this.outsideClickListener.bind(this);
+            this.onRemoved(() => Body.get().unMouseDown(outsideClickListener));
+            this.onAdded(() => Body.get().onMouseDown(outsideClickListener));
+        }
+    }
+
+    protected outsideClickListener(event: MouseEvent) {
+        if (this.isVisible()) {
+            for (let element = event.target; element; element = (<any>element).parentNode) {
+                if (element === this.getHTMLElement()) {
+                    return;
+                }
+            }
+            this.close();
+        }
     }
 
     protected resizeHandler() {
