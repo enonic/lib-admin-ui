@@ -64,7 +64,7 @@ export class BaseInputTypeNotManagingAdd
         let draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item[0]);
         this.draggingIndex = draggedElement.getSiblingIndex();
 
-        ui.placeholder.html('Drop form item set here');
+        ui.placeholder.text('Drop form item set here');
     }
 
     handleDnDStop(_ui: JQueryUI.SortableUIParams): void {

@@ -23,7 +23,8 @@
       "jqueryui",
       "mousetrap",
       "q",
-      "slickgrid"
+        "slickgrid",
+        "validator"
     ]
   },
   "include": [

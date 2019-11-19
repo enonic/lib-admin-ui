@@ -30,7 +30,9 @@ export class ItemDataGroup
     }
 
     addDataArray(header: string, datas: string[]): UlEl {
-        const elements = datas.filter(text => !StringHelper.isBlank(text)).map(text => new SpanEl().setHtml(text, false));
+        const elements = datas
+            .filter(text => !StringHelper.isBlank(text))
+            .map(text => new SpanEl().setHtml(text));
         return this.addDataElements(header, elements);
     }
 
