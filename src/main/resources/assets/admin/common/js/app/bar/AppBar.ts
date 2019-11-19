@@ -38,11 +38,14 @@ module api.app.bar {
             super('home-button');
 
             if (app.getIconUrl()) {
-                let icon = new api.dom.ImgEl(app.getIconUrl(), 'app-icon');
+                const icon = new api.dom.ImgEl(app.getIconUrl(), 'app-icon');
+                if (app.getIconTooltip()) {
+                    icon.getEl().setTitle(app.getIconTooltip());
+                }
                 this.appendChild(icon);
             }
 
-            let span = new api.dom.SpanEl('app-name');
+            const span = new api.dom.SpanEl('app-name');
             span.setHtml(app.getName());
             this.appendChild(span);
 
