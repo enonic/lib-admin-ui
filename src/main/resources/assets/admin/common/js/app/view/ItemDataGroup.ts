@@ -69,7 +69,7 @@ export class ItemDataGroup
         let headerElement = new LiEl();
         headerElement.addClass('list-header');
 
-        headerElement.getEl().setInnerHtml(header, false);
+        headerElement.getEl().setInnerHtml(header);
         dataList.appendChild(headerElement);
     }
 }

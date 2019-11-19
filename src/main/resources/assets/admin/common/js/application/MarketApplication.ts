@@ -2,6 +2,7 @@ import {ApplicationKey} from './ApplicationKey';
 import {MarketApplicationJson} from './json/MarketApplicationJson';
 import {i18n} from '../util/Messages';
 import {ProgressBar} from '../ui/ProgressBar';
+import {SpanEl} from '../dom/SpanEl';
 
 export class MarketApplication {
 
@@ -133,7 +134,7 @@ export class MarketAppStatusFormatter {
             status = i18n('status.installed');
             break;
         case MarketAppStatus.INSTALLING:
-            status = new ProgressBar(progress).toString();
+            status = String(progress || 0);
             break;
         case MarketAppStatus.OLDER_VERSION_INSTALLED:
             status = i18n('action.update');
@@ -141,6 +142,16 @@ export class MarketAppStatusFormatter {
         }
 
         return status;
+    }
+
+    public static createStatusElement(appStatus: MarketAppStatus, progress?: number) {
+        if (appStatus === MarketAppStatus.INSTALLING) {
+            return new ProgressBar(progress);
+        }
+
+        const status = MarketAppStatusFormatter.formatStatus(appStatus, progress);
+
+        return new SpanEl().setHtml(status);
     }
 
     public static getStatusCssClass(appStatus: MarketAppStatus): string {
