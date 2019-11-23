@@ -327,6 +327,10 @@ module api.ui.selector.dropdown {
             this.icon.getEl().setSrc(iconUrl);
         }
 
+        markReadOnly(options: Option<OPTION_DISPLAY_VALUE>[]) {
+            this.dropdownList.getDropdownGrid().markReadOnly(options);
+        }
+
         private setupListeners() {
             api.util.AppHelper.focusInOut(this, () => {
                 if (this.isVisible()) {

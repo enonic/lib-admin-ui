@@ -67,9 +67,9 @@
         cursor: pointer;
       }
 
-      &.selected {
-        font-style: italic;
-        color: #d3d3d3;
+      &:not(.selected).readonly {
+        opacity: 0.5;
+        pointer-events: none;
       }
     }
   }
