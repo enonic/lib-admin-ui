@@ -816,6 +816,8 @@ module api.ui.dialog {
 
         private openDialogs: ModalDialog[];
 
+        private maskedBy: Map<string, ModalDialog[]>;
+
         private dialogOpenListeners: { (dialog: ModalDialog): void; } [];
 
         private static INSTANCE: DialogManagerInner;
@@ -823,6 +825,7 @@ module api.ui.dialog {
         private constructor() {
             this.openDialogs = [];
             this.dialogOpenListeners = [];
+            this.maskedBy = new Map();
         }
 
         public static get(): DialogManagerInner {
@@ -834,18 +837,38 @@ module api.ui.dialog {
         }
 
         opened(dialog: ModalDialog) {
-            if (this.openDialogs.some((openDialog: ModalDialog) => openDialog === dialog)) {
+            if (this.isOpen(dialog)) {
                 return;
             }
+
+            const dialogId: string = dialog.getId();
+            const dialogsToMask: ModalDialog[] = [];
+            this.maskedBy.set(dialogId, dialogsToMask);
+
+            this.openDialogs.filter((openDialog: ModalDialog) => !openDialog.isMasked()).forEach((notMaskedDialog: ModalDialog) => {
+                dialogsToMask.push(notMaskedDialog);
+                notMaskedDialog.mask();
+            });
 
             this.openDialogs.push(dialog);
             this.notifyDialogOpen(dialog);
         }
 
         closed(dialog: ModalDialog) {
+            if (!this.isOpen(dialog)) {
+                return;
+            }
+
             this.openDialogs = this.openDialogs.filter((openDialog) => {
                 return openDialog !== dialog;
             });
+
+            const dialogId: string = dialog.getId();
+            this.maskedBy.get(dialogId).forEach((maskedDialog: ModalDialog) => {
+                maskedDialog.unmask();
+            });
+
+            this.maskedBy.delete(dialogId);
         }
 
         getTotalOpen(): number {
@@ -860,6 +883,10 @@ module api.ui.dialog {
             this.dialogOpenListeners = this.dialogOpenListeners.filter((curr) => {
                 return curr !== listener;
             });
+        }
+
+        private isOpen(dialog: ModalDialog): boolean {
+            return this.openDialogs.some((openDialog: ModalDialog) => openDialog === dialog);
         }
 
         private notifyDialogOpen(dialog: ModalDialog) {
