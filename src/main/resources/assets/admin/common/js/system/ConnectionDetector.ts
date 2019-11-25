@@ -20,8 +20,44 @@ module api.system {
 
         private readonlyStatusChangedListeners: { (readonly: boolean): void }[] = [];
 
+        private static INSTANCE: ConnectionDetector;
+
         constructor(pollIntervalMs: number = 15000) {
             this.pollIntervalMs = pollIntervalMs;
+        }
+
+        static get(): ConnectionDetector {
+            if (!ConnectionDetector.INSTANCE) {
+                ConnectionDetector.INSTANCE = new ConnectionDetector();
+            }
+
+            return ConnectionDetector.INSTANCE;
+        }
+
+        setNotificationMessage(message: string): ConnectionDetector {
+
+            let messageId: string;
+
+            this.onConnectionLost(() => {
+                if (messageId) {
+                    api.notify.NotifyManager.get().hide(messageId);
+                }
+                messageId = api.notify.showError(message, false);
+            });
+
+            this.onConnectionRestored(() => {
+                if (messageId) {
+                    api.notify.NotifyManager.get().hide(messageId);
+                }
+            });
+
+            this.onSessionExpired(() => {
+                if (messageId) {
+                    api.notify.NotifyManager.get().hide(messageId);
+                }
+            });
+
+            return this;
         }
 
         startPolling(immediate: boolean = false) {
@@ -36,8 +72,16 @@ module api.system {
             clearInterval(this.intervalId);
         }
 
-        setAuthenticated(isAuthenticated: boolean) {
+        setConnectionLostCallback(callback: () => void): ConnectionDetector {
+            this.onSessionExpired(callback);
+
+            return this;
+        }
+
+        setAuthenticated(isAuthenticated: boolean): ConnectionDetector {
             this.authenticated = isAuthenticated;
+
+            return this;
         }
 
         onConnectionLost(listener: () => void) {
