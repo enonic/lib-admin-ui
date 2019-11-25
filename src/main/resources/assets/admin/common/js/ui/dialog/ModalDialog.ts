@@ -371,7 +371,7 @@ module api.ui.dialog {
 
             api.ui.KeyBindings.get().unshelveBindings();
             this.state = DialogState.CLOSED;
-            DialogManagerInner.get().closed(this);
+            DialogManagerInner.get().handleClosedDialog(this);
 
             this.notifyClosed();
         }
@@ -546,7 +546,7 @@ module api.ui.dialog {
             api.ui.KeyBindings.get().bindKeys(keyBindings);
 
             this.state = DialogState.OPEN;
-            DialogManagerInner.get().opened(this);
+            DialogManagerInner.get().handleOpenDialog(this);
         }
 
         show() {
@@ -836,7 +836,7 @@ module api.ui.dialog {
             return DialogManagerInner.INSTANCE;
         }
 
-        opened(dialog: ModalDialog) {
+        handleOpenDialog(dialog: ModalDialog) {
             if (this.isOpen(dialog)) {
                 return;
             }
@@ -854,7 +854,7 @@ module api.ui.dialog {
             this.notifyDialogOpen(dialog);
         }
 
-        closed(dialog: ModalDialog) {
+        handleClosedDialog(dialog: ModalDialog) {
             if (!this.isOpen(dialog)) {
                 return;
             }
