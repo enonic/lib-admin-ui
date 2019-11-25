@@ -24,6 +24,10 @@ module api.ui.dialog {
         keepOpenOnClickOutside?: boolean;
     }
 
+    export enum DialogState {
+        OPEN, CLOSED
+    }
+
     export class ModalDialog
         extends DivEl {
 
@@ -34,6 +38,8 @@ module api.ui.dialog {
         private body: api.dom.DivEl;
 
         private footer: api.dom.DivEl;
+
+        private state: DialogState;
 
         private contentPanel: ModalDialogContentPanel;
 
@@ -55,8 +61,6 @@ module api.ui.dialog {
 
         protected confirmationDialog: ConfirmationDialog;
 
-        private static openDialogsCounter: number = 0;
-
         private tabbable: Element[];
 
         private listOfClickIgnoredElements: Element[] = [];
@@ -64,10 +68,6 @@ module api.ui.dialog {
         private onClosedListeners: { (): void; }[] = [];
 
         private resizeListeners: { (): void; }[] = [];
-
-        private closeIconCallback: () => void;
-
-        private clickOutsideCallback: () => void;
 
         protected handleResize: () => void;
 
@@ -92,6 +92,7 @@ module api.ui.dialog {
 
         protected initElements() {
             this.buttonRow = this.config.buttonRow || new ButtonRow();
+            this.dialogContainer = new DivEl('dialog-container');
             this.skipTabbable = this.config.skipTabbable || false;
             this.cancelAction = this.createDefaultCancelAction();
             this.closeIcon = new DivEl('cancel-button-top');
@@ -100,6 +101,7 @@ module api.ui.dialog {
             this.body = new DivEl('modal-dialog-body');
             this.footer = new DivEl('modal-dialog-footer');
             this.loadMask = new api.ui.mask.LoadMask(this.contentPanel);
+            this.state = DialogState.CLOSED;
             this.renderedListenerForLoadMask = () => {
                 this.loadMask.show();
                 this.unRendered(this.renderedListenerForLoadMask);
@@ -166,7 +168,7 @@ module api.ui.dialog {
                 }
             });
 
-            this.closeIconCallback = this.config.closeIconCallback || (() => {
+            const closeIconCallback = this.config.closeIconCallback || (() => {
                 if (this.cancelAction) {
                     this.cancelAction.execute();
                 } else {
@@ -174,11 +176,7 @@ module api.ui.dialog {
                 }
             });
 
-            this.clickOutsideCallback = (() => {
-                this.confirmBeforeClose();
-            });
-
-            this.closeIcon.onClicked(this.closeIconCallback);
+            this.closeIcon.onClicked(closeIconCallback);
         }
 
         private initClickOutsideDialogHandlers() {
@@ -186,15 +184,19 @@ module api.ui.dialog {
                 return;
             }
 
+            const clickOutsideCallback = (() => {
+                this.confirmBeforeClose();
+            });
+
             const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
-                const noConfirmationDialog = !this.confirmationDialog || !this.confirmationDialog.isVisible();
+                const noConfirmationDialog = !this.confirmationDialog || !this.confirmationDialog.isOpen();
                 if (this.isActive() && noConfirmationDialog) {
                     for (let element = event.target; element; element = (<any>element).parentNode) {
                         if (element === this.getHTMLElement() || this.isIgnoredElementClicked(<any>element)) {
                             return;
                         }
                     }
-                    this.clickOutsideCallback();
+                    clickOutsideCallback();
                 }
             };
 
@@ -208,7 +210,7 @@ module api.ui.dialog {
         }
 
         private isActive() {
-            return super.isVisible() && !this.isMasked();
+            return this.isOpen() && !this.isMasked();
         }
 
         isMasked(): boolean {
@@ -239,7 +241,7 @@ module api.ui.dialog {
             });
 
             api.util.AppHelper.focusInOut(this, () => {
-                if (this.hasTabbable() && !this.hasSubDialog()) {
+                if (this.hasTabbable() && !this.hasSubDialog() && !this.isMasked()) {
                     // last focusable - Cancel
                     // first focusable - X
                     if (buttonRowIsFocused) { // last element lost focus
@@ -267,12 +269,12 @@ module api.ui.dialog {
         }
 
         protected hasSubDialog(): boolean {
-            return this.confirmationDialog && this.confirmationDialog.isVisible();
+            return this.confirmationDialog && this.confirmationDialog.isOpen();
         }
 
         private initResizeHandler() {
             this.handleResize = api.util.AppHelper.runOnceAndDebounce(() => {
-                if (this.isVisible()) {
+                if (this.isOpen()) {
                     this.body.removeClass('non-scrollable');
                     this.resizeHandler();
                 }
@@ -355,9 +357,9 @@ module api.ui.dialog {
         }
 
         protected isSingleDialogGroup(): boolean {
-            return ModalDialog.openDialogsCounter === 1 ||
-                   (ModalDialog.openDialogsCounter === 2 && !!this.confirmationDialog &&
-                    !!this.confirmationDialog.isVisible());
+            return DialogManagerInner.get().getTotalOpen() === 1 ||
+                   (DialogManagerInner.get().getTotalOpen() === 2 && !!this.confirmationDialog &&
+                    !!this.confirmationDialog.isOpen());
         }
 
         close() {
@@ -368,10 +370,9 @@ module api.ui.dialog {
             this.hide();
 
             api.ui.KeyBindings.get().unshelveBindings();
+            this.state = DialogState.CLOSED;
+            DialogManagerInner.get().handleClosedDialog(this);
 
-            if (ModalDialog.openDialogsCounter > 0) {
-                ModalDialog.openDialogsCounter--;
-            }
             this.notifyClosed();
         }
 
@@ -544,14 +545,11 @@ module api.ui.dialog {
 
             api.ui.KeyBindings.get().bindKeys(keyBindings);
 
-            ModalDialog.openDialogsCounter++;
+            this.state = DialogState.OPEN;
+            DialogManagerInner.get().handleOpenDialog(this);
         }
 
         show() {
-
-            if (!this.dialogContainer) {
-                this.dialogContainer = new DivEl('dialog-container');
-            }
             if (!this.dialogContainer.hasChild(this)) {
                 this.dialogContainer.appendChild(this);
             }
@@ -656,7 +654,7 @@ module api.ui.dialog {
         }
 
         protected showLoadMask() {
-            if (this.isVisible()) {
+            if (this.isOpen()) {
                 this.loadMask.show();
             } else {
                 if (this.isRendered()) {
@@ -672,6 +670,14 @@ module api.ui.dialog {
             this.loadMask.hide();
             this.unRendered(this.renderedListenerForLoadMask);
             this.unShown(this.shownListenerForLoadMask);
+        }
+
+        isOpen(): boolean {
+            return this.state === DialogState.OPEN;
+        }
+
+        isClosed(): boolean {
+            return this.state === DialogState.CLOSED;
         }
     }
 
@@ -804,6 +810,110 @@ module api.ui.dialog {
                 }
             });
         });
+    }
+
+    class DialogManagerInner {
+
+        private openDialogs: ModalDialog[];
+
+        private maskedBy: Map<string, ModalDialog[]>;
+
+        private dialogOpenListeners: { (dialog: ModalDialog): void; } [];
+
+        private static INSTANCE: DialogManagerInner;
+
+        private constructor() {
+            this.openDialogs = [];
+            this.dialogOpenListeners = [];
+            this.maskedBy = new Map();
+        }
+
+        public static get(): DialogManagerInner {
+            if (!DialogManagerInner.INSTANCE) {
+                DialogManagerInner.INSTANCE = new DialogManagerInner();
+            }
+
+            return DialogManagerInner.INSTANCE;
+        }
+
+        handleOpenDialog(dialog: ModalDialog) {
+            if (this.isOpen(dialog)) {
+                return;
+            }
+
+            const dialogId: string = dialog.getId();
+            const dialogsToMask: ModalDialog[] = [];
+            this.maskedBy.set(dialogId, dialogsToMask);
+
+            this.openDialogs.filter((openDialog: ModalDialog) => !openDialog.isMasked()).forEach((notMaskedDialog: ModalDialog) => {
+                dialogsToMask.push(notMaskedDialog);
+                notMaskedDialog.mask();
+            });
+
+            this.openDialogs.push(dialog);
+            this.notifyDialogOpen(dialog);
+        }
+
+        handleClosedDialog(dialog: ModalDialog) {
+            if (!this.isOpen(dialog)) {
+                return;
+            }
+
+            this.openDialogs = this.openDialogs.filter((openDialog) => {
+                return openDialog !== dialog;
+            });
+
+            const dialogId: string = dialog.getId();
+            this.maskedBy.get(dialogId).forEach((maskedDialog: ModalDialog) => {
+                maskedDialog.unmask();
+            });
+
+            this.maskedBy.delete(dialogId);
+        }
+
+        getTotalOpen(): number {
+            return this.openDialogs.length;
+        }
+
+        onDialogOpen(listener: (dialog: ModalDialog) => void) {
+            this.dialogOpenListeners.push(listener);
+        }
+
+        unDialogOpen(listener: (dialog: ModalDialog) => void) {
+            this.dialogOpenListeners = this.dialogOpenListeners.filter((curr) => {
+                return curr !== listener;
+            });
+        }
+
+        private isOpen(dialog: ModalDialog): boolean {
+            return this.openDialogs.some((openDialog: ModalDialog) => openDialog === dialog);
+        }
+
+        private notifyDialogOpen(dialog: ModalDialog) {
+            this.dialogOpenListeners.forEach((listener) => {
+                listener(dialog);
+            });
+        }
+    }
+
+    export class DialogManager {
+
+        private constructor() {
+            throw new Error('Not supposed to be invoked');
+        }
+
+        public static getTotalOpen(): number {
+            return DialogManagerInner.get().getTotalOpen();
+        }
+
+        public static onDialogOpen(listener: (dialog: ModalDialog) => void) {
+            DialogManagerInner.get().onDialogOpen(listener);
+        }
+
+        public static unDialogOpen(listener: (dialog: ModalDialog) => void) {
+            DialogManagerInner.get().unDialogOpen(listener);
+        }
+
     }
 
 }

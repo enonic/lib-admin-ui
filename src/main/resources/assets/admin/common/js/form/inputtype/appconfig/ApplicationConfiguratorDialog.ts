@@ -75,15 +75,6 @@ module api.form.inputtype.appconfig {
             this.okAction.onExecuted(this.config.confirmation.yesCallback);
         }
 
-        toggleMask(enable: boolean) {
-            if (enable) {
-                this.mask();
-            } else {
-                this.unmask();
-            }
-            this.toggleClass('await-confirmation', enable);
-        }
-
         handleAvailableSizeChanged() {
             const content = this.getContentPanel();
             const contentHeight = content.getEl().getHeightWithoutPadding();
