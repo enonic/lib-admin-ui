@@ -2,7 +2,7 @@ import {DivEl} from '../dom/DivEl';
 import {PEl} from '../dom/PEl';
 import {Store} from '../store/Store';
 
-export const DRAG_HELPER_KEY: string = 'BragHelper';
+export const DRAG_HELPER_KEY: string = 'DragHelper';
 
 export class DragHelper
     extends DivEl {

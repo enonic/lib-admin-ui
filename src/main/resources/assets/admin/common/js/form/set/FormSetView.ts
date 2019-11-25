@@ -337,7 +337,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         this.draggingIndex = draggedElement.getSiblingIndex();
 
         DragHelper.get().setDropAllowed(true);
-        ui.placeholder.html('Drop form item set here');
+        ui.placeholder.text('Drop form item set here');
     }
 
     protected handleDnDUpdate(ui: JQueryUI.SortableUIParams) {

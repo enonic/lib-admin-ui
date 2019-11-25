@@ -9,7 +9,10 @@ export class ActionButton
     extends Button {
 
     private action: Action;
+
     private tooltip: Tooltip;
+
+    private iconClass: string;
 
     constructor(action: Action, showTooltip: boolean = true) {
         super();
@@ -21,9 +24,7 @@ export class ActionButton
         this.setEnabled(this.action.isEnabled());
         this.setVisible(this.action.isVisible());
 
-        if (this.action.getIconClass()) {
-            this.addClass(action.getIconClass());
-        }
+        this.updateIconClass(this.action.getIconClass());
 
         if (this.action.hasShortcut() && showTooltip) {
             let combination = this.action.getShortcut().getCombination();
@@ -53,7 +54,21 @@ export class ActionButton
             this.setEnabled(changedAction.isEnabled());
             this.setVisible(changedAction.isVisible());
             this.setLabel(this.createLabel(changedAction), false);
+            this.updateIconClass(changedAction.getIconClass());
         });
+    }
+
+    private updateIconClass(newIconClass: string) {
+        if (newIconClass === this.iconClass) {
+            return;
+        }
+        if (this.iconClass) {
+            this.removeClass(this.iconClass);
+        }
+        this.iconClass = newIconClass;
+        if (this.iconClass) {
+            this.addClass(this.iconClass);
+        }
     }
 
     getAction(): Action {

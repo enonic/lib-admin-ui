@@ -2,8 +2,6 @@ import {Store} from '../store/Store';
 
 export class Messages {
 
-    // private static storage: Map<string, string> = new Map<string, string>();
-
     private static getMessages(): Map<string, string> {
         let messages: Map<string, string> = Store.instance().get('messages');
 

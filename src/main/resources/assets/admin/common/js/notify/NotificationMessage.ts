@@ -15,7 +15,7 @@ export class NotificationMessage
         const notificationRemove = new SpanEl('notification-remove');
         notificationRemove.setHtml('X');
         this.notificationContent = new DivEl('notification-content');
-        this.notificationContent.getEl().setInnerHtml(message, false);
+        this.notificationContent.setHtml(message);
         notificationInner.appendChild(notificationRemove).appendChild(this.notificationContent);
         this.appendChild(notificationInner);
     }
@@ -25,6 +25,6 @@ export class NotificationMessage
     }
 
     setText(text: string) {
-        this.notificationContent.getEl().setInnerHtml(text, false);
+        this.notificationContent.getEl().setInnerHtml(text);
     }
 }

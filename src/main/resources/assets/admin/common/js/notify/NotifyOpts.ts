@@ -7,7 +7,7 @@ export class NotifyOpts {
     autoHide: boolean;
 
     static buildOpts(message: Message): NotifyOpts {
-        let opts = new NotifyOpts();
+        const opts = new NotifyOpts();
         opts.autoHide = message.getAutoHide();
         if (message.getType() === Type.ERROR) {
             opts.type = 'error';
@@ -19,46 +19,23 @@ export class NotifyOpts {
             opts.type = 'success';
         }
 
-        opts.createHtmlMessage(message);
-        opts.addListeners(message);
+        opts.setMessage(message).addListeners(message);
 
         return opts;
     }
 
-    addListeners(message: Message) {
+    addListeners(message: Message): NotifyOpts {
         this.listeners = [];
         let actions = message.getActions();
 
         for (let i = 0; i < actions.length; i++) {
-            /*opts.listeners.push({
-             fn: actions[i].getHandler(),
-             delegate: 'notify.action_' + i,
-             stopEvent: true
-             });*/
             this.listeners.push(actions[i].getHandler());
         }
+        return this;
     }
 
-    createHtmlMessage(message: Message) {
-        let actions = message.getActions();
-        this.message = '<span>' + message.getText() + '</span>';
-
-        if (actions.length > 0) {
-            let linkHtml = '<span style="float: right; margin-left: 30px;">';
-
-            for (let i = 0; i < actions.length; i++) {
-                if ((i > 0) && (i === (actions.length - 1))) {
-                    linkHtml += ' or ';
-                } else if (i > 0) {
-                    linkHtml += ', ';
-                }
-
-                linkHtml += '<a href="#" class="notify.action_"' + i + '">';
-                linkHtml += actions[i].getName() + '</a>';
-            }
-
-            linkHtml += '</span>';
-            this.message = linkHtml + this.message;
-        }
+    setMessage(msg: Message): NotifyOpts {
+        this.message = msg.getText();
+        return this;
     }
 }

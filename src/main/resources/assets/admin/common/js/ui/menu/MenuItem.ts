@@ -6,6 +6,8 @@ export class MenuItem
 
     private action: Action;
 
+    private iconClass: string;
+
     constructor(action: Action) {
         super('menu-item');
         this.action = action;
@@ -17,15 +19,31 @@ export class MenuItem
         });
         this.setEnabled(action.isEnabled());
 
+        this.updateIconClass(this.action.getIconClass());
+
         action.onPropertyChanged((changedAction: Action) => {
             this.setEnabled(changedAction.isEnabled());
             this.setVisible(changedAction.isVisible());
             this.setLabel(changedAction.getLabel());
+            this.updateIconClass(changedAction.getIconClass());
         });
     }
 
+    private updateIconClass(newIconClass: string) {
+        if (newIconClass === this.iconClass) {
+            return;
+        }
+        if (this.iconClass) {
+            this.removeClass(this.iconClass);
+        }
+        this.iconClass = newIconClass;
+        if (this.iconClass) {
+            this.addClass(this.iconClass);
+        }
+    }
+
     setLabel(label: string) {
-        this.getEl().setInnerHtml(label, false);
+        this.getEl().setInnerHtml(label);
     }
 
     getAction(): Action {

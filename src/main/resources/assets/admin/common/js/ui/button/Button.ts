@@ -13,7 +13,7 @@ export class Button
 
         this.labelEl = new SpanEl();
         if (label) {
-            this.labelEl.getEl().setInnerHtml(label, false);
+            this.labelEl.getEl().setInnerHtml(label);
         }
         this.appendChild(this.labelEl);
     }

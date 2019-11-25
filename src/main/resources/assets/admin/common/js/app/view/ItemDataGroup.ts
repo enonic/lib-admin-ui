@@ -30,7 +30,9 @@ export class ItemDataGroup
     }
 
     addDataArray(header: string, datas: string[]): UlEl {
-        const elements = datas.filter(text => !StringHelper.isBlank(text)).map(text => new SpanEl().setHtml(text, false));
+        const elements = datas
+            .filter(text => !StringHelper.isBlank(text))
+            .map(text => new SpanEl().setHtml(text));
         return this.addDataElements(header, elements);
     }
 
@@ -67,7 +69,7 @@ export class ItemDataGroup
         let headerElement = new LiEl();
         headerElement.addClass('list-header');
 
-        headerElement.getEl().setInnerHtml(header, false);
+        headerElement.getEl().setInnerHtml(header);
         dataList.appendChild(headerElement);
     }
 }
