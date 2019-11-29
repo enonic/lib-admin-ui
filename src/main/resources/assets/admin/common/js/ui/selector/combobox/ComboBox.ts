@@ -879,23 +879,21 @@ module api.ui.selector.combobox {
                 return;
             }
 
-            if (event.which === 9) { // tab
+            if (event.key === 'Tab') {
                 this.hideDropdown();
                 return;
-
-                // shift or ctrl or alt or super
-            } else if (event.which === 16 || event.which === 17 || event.which === 18 || event.which === 91) {
+            } else if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey) {
                 return;
             }
 
             if (!this.isDropdownShown()) {
-                if (event.which === 27) { // esc
+                if (event.key === 'Escape') {
                     return;
                 }
 
                 this.showDropdown();
 
-                if (event.which === 40) { // down
+                if (event.key === 'ArrowDown') { // down
 
                     this.onDropdownShownCallback().then(() => {
 
@@ -912,8 +910,8 @@ module api.ui.selector.combobox {
                 return;
             }
 
-            switch (event.which) {
-            case 38: // up
+            switch (event.key) {
+            case 'ArrowUp': // up
                 if (this.comboBoxDropdown.hasActiveRow()) {
                     if (this.comboBoxDropdown.getActiveRow() === 0) {
                         this.comboBoxDropdown.resetActiveSelection();
@@ -925,13 +923,13 @@ module api.ui.selector.combobox {
                     }
                 }
                 break;
-            case 37: //left
+            case 'ArrowLeft': //left
                 this.comboBoxDropdown.getDropdownGrid().collapseActiveRow();
                 break;
-            case 39: //right
+            case 'ArrowRight': //right
                 this.comboBoxDropdown.getDropdownGrid().expandActiveRow();
                 break;
-            case 40: // down
+            case 'ArrowDown': // down
                 if (this.comboBoxDropdown.hasActiveRow()) {
                     this.comboBoxDropdown.navigateToNextRow();
                 } else {
@@ -939,10 +937,10 @@ module api.ui.selector.combobox {
                 }
                 this.input.setReadOnly(true);
                 break;
-            case 13: // Enter
+            case 'Enter': // Enter
                 this.handleEnterPressed();
                 break;
-            case 32: // Spacebar
+            case ' ': // Spacebar
                 if (this.input.isReadOnly() && this.applySelectionsButton) {
 
                     if (!this.isSelectedRowReadOnly()) {
@@ -953,24 +951,24 @@ module api.ui.selector.combobox {
                     event.preventDefault();
                 }
                 break;
-            case 8:
+            case 'Backspace':
                 if (this.input.isReadOnly()) {
                     event.stopPropagation();
                     event.preventDefault();
                 }
                 break;
-            case 27: // Esc
+            case 'Escape': // Esc
                 this.hideDropdown();
                 event.stopPropagation();
                 event.preventDefault();
                 break;
             }
 
-            if (event.which !== 13) {
+            if (event.key !== 'Enter') {
                 this.input.giveFocus();
             }
 
-            if (event.which === 38 || event.which === 40 || event.which === 13) {
+            if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Enter') {
                 event.stopPropagation();
                 event.preventDefault();
             }
