@@ -6,6 +6,7 @@
     "declarationDir": "build/resources/main/dev/lib-admin-ui/",
     "declaration": true,
     "sourceMap": true,
+    "sourceRoot": "../../../../lib-admin-ui/src/main/resources/assets/admin/common/js/",
     "declarationMap": true
   },
   "include": [
