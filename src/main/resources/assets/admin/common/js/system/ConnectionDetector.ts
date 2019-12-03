@@ -37,25 +37,21 @@ module api.system {
         setNotificationMessage(message: string): ConnectionDetector {
 
             let messageId: string;
-
-            this.onConnectionLost(() => {
+            const hideNotificationMessage = () => {
                 if (messageId) {
                     api.notify.NotifyManager.get().hide(messageId);
+                    messageId = null;
                 }
+            };
+
+            this.onConnectionLost(() => {
+                hideNotificationMessage();
                 messageId = api.notify.showError(message, false);
             });
 
-            this.onConnectionRestored(() => {
-                if (messageId) {
-                    api.notify.NotifyManager.get().hide(messageId);
-                }
-            });
+            this.onConnectionRestored(hideNotificationMessage);
 
-            this.onSessionExpired(() => {
-                if (messageId) {
-                    api.notify.NotifyManager.get().hide(messageId);
-                }
-            });
+            this.onSessionExpired(hideNotificationMessage);
 
             return this;
         }
@@ -72,8 +68,10 @@ module api.system {
             clearInterval(this.intervalId);
         }
 
-        setConnectionLostCallback(callback: () => void): ConnectionDetector {
-            this.onSessionExpired(callback);
+        setSessionExpireRedirectUrl(url: string): ConnectionDetector {
+            this.onSessionExpired(() => {
+                window.location.href = url;
+            });
 
             return this;
         }
