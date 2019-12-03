@@ -3,101 +3,113 @@ module api.ui {
     export class KeyHelper {
 
         static isNumber(event: KeyboardEvent): boolean {
-            return event.keyCode >= 48 && event.keyCode <= 57;
+            return /^[0-9]$/i.test(event.key);
         }
 
-        static isAlpha(event: KeyboardEvent): boolean {
-            return event.keyCode >= 65 && event.keyCode <= 90;
+        static isLetter(event: KeyboardEvent): boolean {
+            return /^[a-z]$/i.test(event.key);
+        }
+
+        static isAlphaNumeric(event: KeyboardEvent): boolean {
+            return /^[a-z0-9]$/i.test(event.key);
         }
 
         static isDash(event: KeyboardEvent): boolean {
-            return event.keyCode === 189;
+            return event.key === '-';
         }
 
         static isDel(event: KeyboardEvent): boolean {
-            return event.keyCode === 46;
+            return event.key === 'Delete' || event.key === 'Del';
         }
 
         static isSpace(event: KeyboardEvent): boolean {
-            return event.keyCode === 32;
+            return event.key === ' ' || event.key === 'Spacebar';
         }
 
         static isBackspace(event: KeyboardEvent): boolean {
-            return event.keyCode === 8;
+            return event.key === 'Backspace';
         }
 
-        static isColon(event: KeyboardEvent): boolean {
-            return event.keyCode === 186;
+        static isSemiColon(event: KeyboardEvent): boolean {
+            return event.key === ';';
         }
 
         static isComma(event: KeyboardEvent): boolean {
-            return event.keyCode === 188;
+            return event.key === ',';
         }
 
         static isDot(event: KeyboardEvent): boolean {
-            return event.keyCode === 190;
+            return event.key === '.';
         }
 
         static isArrowKey(event: KeyboardEvent): boolean {
-            return event.keyCode >= 37 && event.keyCode <= 40;
+            return KeyHelper.isArrowLeftKey(event) || KeyHelper.isArrowUpKey(event) || KeyHelper.isArrowRightKey(event) ||
+                   KeyHelper.isArrowDownKey(event);
         }
 
         static isArrowLeftKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 37;
+            return event.key === 'ArrowLeft' || event.key === 'Left';
         }
 
         static isArrowUpKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 38;
+            return event.key === 'ArrowUp' || event.key === 'Up';
         }
 
         static isArrowRightKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 39;
+            return event.key === 'ArrowRight' || event.key === 'Right';
         }
 
         static isArrowDownKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 40;
+            return event.key === 'ArrowDown' || event.key === 'Down';
         }
 
         static isControlKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 17;
+            return event.key === 'Control';
+        }
+
+        static isControlKeyPressed(event: KeyboardEvent): boolean {
+            return event.ctrlKey;
         }
 
         static isShiftKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 16;
+            return event.key === 'Shift';
+        }
+
+        static isShiftKeyPressed(event: KeyboardEvent): boolean {
+            return event.shiftKey;
         }
 
         static isAltKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 18;
+            return event.key === 'Alt';
+        }
+
+        static isAltKeyPressed(event: KeyboardEvent): boolean {
+            return event.altKey;
         }
 
         static isMetaKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 224 || //FF
-                   event.keyCode === 17 || // Opera
-                   event.keyCode === 91 || event.keyCode === 93; // Safari/Chrome
+            return event.metaKey;
         }
 
         static isTabKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 9;
+            return event.key === 'Tab';
         }
 
         static isModifierKey(event: KeyboardEvent): boolean {
-            return KeyHelper.isControlKey(event) || KeyHelper.isShiftKey(event) || KeyHelper.isAltKey(event) || KeyHelper.isMetaKey(event);
+            return KeyHelper.isControlKeyPressed(event) || KeyHelper.isShiftKeyPressed(event) || KeyHelper.isAltKeyPressed(event) ||
+                   KeyHelper.isMetaKey(event);
         }
 
         static isEscKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 27;
+            return event.key === 'Escape' || event.key === 'Esc';
         }
 
         static isEnterKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 13;
-        }
-
-        static isSpaceKey(event: KeyboardEvent): boolean {
-            return event.keyCode === 32;
+            return event.key === 'Enter';
         }
 
         static isApplyKey(event: KeyboardEvent): boolean {
-            return KeyHelper.isEnterKey(event) || KeyHelper.isSpaceKey(event);
+            return KeyHelper.isEnterKey(event) || KeyHelper.isSpace(event);
         }
     }
 }
