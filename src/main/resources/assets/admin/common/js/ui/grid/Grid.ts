@@ -1,6 +1,7 @@
 module api.ui.grid {
 
     import ResponsiveManager = api.ui.responsive.ResponsiveManager;
+    import EventBus = api.event.EventBus;
 
     export class Grid<T extends Slick.SlickData>
         extends api.dom.DivEl {
@@ -72,7 +73,7 @@ module api.ui.grid {
 
             ResponsiveManager.onAvailableSizeChanged(this, () => {
                 // notify slick grid the resize has occured
-                const slickResize = new Event('resize');
+                const slickResize = EventBus.createEvent('resize');
                 this.getHTMLElement().dispatchEvent(slickResize);
             });
             this.onRemoved(() => ResponsiveManager.unAvailableSizeChanged(this));
