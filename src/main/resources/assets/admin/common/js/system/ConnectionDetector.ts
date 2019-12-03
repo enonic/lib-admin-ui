@@ -80,7 +80,7 @@ export class ConnectionDetector {
 
     setAuthenticated(isAuthenticated: boolean) {
         this.authenticated = isAuthenticated;
-        
+
         return this;
     }
 
