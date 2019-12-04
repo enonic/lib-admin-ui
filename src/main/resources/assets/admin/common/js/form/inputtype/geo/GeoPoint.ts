@@ -12,7 +12,6 @@ import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
-// TODO: GeoPoint is not dependent on the content domain and should therefore be moved to api.form.inputtype.geo
 export class GeoPoint
     extends BaseInputTypeNotManagingAdd {
 

@@ -297,6 +297,72 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         this.icon.getEl().setSrc(iconUrl);
     }
 
+    onOptionSelected(listener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void) {
+        this.optionSelectedListeners.push(listener);
+    }
+
+    unOptionSelected(listener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void) {
+        this.optionSelectedListeners.filter((currentListener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void) => {
+            return listener !== currentListener;
+        });
+    }
+
+    onOptionFilterInputValueChanged(listener: (event: OptionFilterInputValueChangedEvent) => void) {
+        this.optionFilterInputValueChangedListeners.push(listener);
+    }
+
+    unOptionFilterInputValueChanged(listener: (event: OptionFilterInputValueChangedEvent) => void) {
+        this.optionFilterInputValueChangedListeners.filter(
+            (currentListener: (event: OptionFilterInputValueChangedEvent) => void) => {
+                return listener !== currentListener;
+            });
+    }
+
+    onExpanded(listener: (event: DropdownExpandedEvent) => void) {
+        this.expandedListeners.push(listener);
+    }
+
+    private defaultFilter(option: Option<OPTION_DISPLAY_VALUE>, args: any) {
+
+        if (!args.searchString || StringHelper.isEmpty(args.searchString)) {
+            return true;
+        }
+
+        let lowerCasedSearchString = args.searchString.toLowerCase();
+        if (option.value.toLowerCase().indexOf(lowerCasedSearchString) > -1) {
+            return true;
+        }
+
+        let displayVaueAsString = option.displayValue.toString();
+        if (displayVaueAsString.toLowerCase().indexOf(lowerCasedSearchString) > -1) {
+            return true;
+        }
+
+        let indices = option.indices;
+        if (indices && indices.length > 0) {
+            for (let i = 0; i < indices.length; i++) {
+                let index = indices[i];
+                if (index) {
+                    if (index.toLocaleLowerCase().indexOf(lowerCasedSearchString) > -1) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private doUpdateDropdownTopPositionAndWidth() {
+        let inputEl = this.input.getEl();
+        this.dropdownList.setTopPx(inputEl.getHeightWithBorder() - inputEl.getBorderBottomWidth());
+        this.dropdownList.setWidth(inputEl.getWidthWithBorder());
+    }
+
+    private isInputEmpty(): boolean {
+        return this.input.getValue() === '';
+    }
+
     markReadOnly(options: Option<OPTION_DISPLAY_VALUE>[]) {
         this.dropdownList.getDropdownGrid().markReadOnly(options);
     }

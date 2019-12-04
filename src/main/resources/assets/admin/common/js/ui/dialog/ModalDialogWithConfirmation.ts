@@ -1,6 +1,6 @@
 import {Element} from '../../dom/Element';
 import {Body} from '../../dom/Body';
-import {ModalDialog, ModalDialogConfig} from './ModalDialog';
+import {DialogManager, ModalDialog, ModalDialogConfig} from './ModalDialog';
 import {ConfirmationDialog} from './ConfirmationDialog';
 import {i18n} from '../../util/Messages';
 
@@ -111,12 +111,12 @@ export class ModalDialogWithConfirmation
     }
 
     protected hasSubDialog(): boolean {
-        return this.confirmationDialog && this.confirmationDialog.isVisible();
+        return this.confirmationDialog && this.confirmationDialog.isOpen();
     }
 
     protected isSingleDialogGroup(): boolean {
         return super.isSingleDialogGroup() ||
-               (ModalDialog.getOpenDialogsCounter() === 2 && !!this.confirmationDialog && !!this.confirmationDialog.isVisible());
+               (DialogManager.getTotalOpen() === 2 && !!this.confirmationDialog && !!this.confirmationDialog.isOpen());
     }
 
     addClickIgnoredElement(elem: Element) {

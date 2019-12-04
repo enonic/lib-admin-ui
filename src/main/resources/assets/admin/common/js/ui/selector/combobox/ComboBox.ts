@@ -404,7 +404,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         if (this.maximumOccurrencesReached()) {
             this.input.setMaximumReached();
             // Moving focus to the next input upon selecting an option with the Enter key is handled
-            // in api.form.inputtype.combobox.fireFocusSwitchEvent, hence the check for keyCode...
+            // in fireFocusSwitchEvent, hence the check for keyCode...
             if (keyCode !== 13 && this.setNextInputFocusWhenMaxReached && !this.ignoreNextFocus) {
                 FormEl.moveFocusToNextFocusable(this.input, 'input, select');
             }

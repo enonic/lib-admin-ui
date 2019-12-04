@@ -16,7 +16,7 @@ export class Application {
     private openTabs: number;
     private status: ApplicationShowStatus;
     private loaded: boolean;
-    private path: api.rest.Path;
+    private path: Path;
     private loadedListeners: {(): void}[] = [];
     private window: Window;
 

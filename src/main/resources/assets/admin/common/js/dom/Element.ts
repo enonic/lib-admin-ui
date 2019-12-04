@@ -178,7 +178,7 @@ export class Element {
         }
         // Do not generate id unless the distance to Element in the class hierarchy of this is larger than 1
         // This should result in that no id's are generated for new Element or classes extending Element directly
-        // (which should prevent id-generation of direct instances of most api.dom classes)
+        // (which should prevent id-generation of direct instances of most dom classes)
         const distance = ClassHelper.distanceTo(this, Element);
         if (builder.generateId || distance > 1) {
             const id = ElementRegistry.registerElement(this);

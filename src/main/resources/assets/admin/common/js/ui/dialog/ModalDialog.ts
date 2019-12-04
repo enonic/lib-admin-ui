@@ -15,6 +15,7 @@ import {KeyBindings} from '../KeyBindings';
 import {H2El} from '../../dom/H2El';
 import {DialogButton} from './DialogButton';
 import {KeyBinding} from '../KeyBinding';
+import {Store} from '../../store/Store';
 
 export interface ModalDialogConfig {
     title?: string;
@@ -32,8 +33,6 @@ export abstract class ModalDialog
     extends DivEl {
 
     public static debug: boolean = false;
-
-    private static openDialogsCounter: number = 0;
 
     protected header: ModalDialogHeader;
 
@@ -73,8 +72,6 @@ export abstract class ModalDialog
 
     private resizeListeners: { (): void; }[] = [];
 
-    protected handleResize: () => void;
-
     private skipTabbable: boolean;
 
     private resizeObserver: any;
@@ -90,130 +87,81 @@ export abstract class ModalDialog
         this.initListeners();
     }
 
-        protected initElements() {
-            this.buttonRow = this.config.buttonRow || new ButtonRow();
-            this.dialogContainer = new DivEl('dialog-container');
-            this.skipTabbable = this.config.skipTabbable || false;
-            this.cancelAction = this.createDefaultCancelAction();
-            this.closeIcon = new DivEl('cancel-button-top');
-            this.header = this.createHeader(this.config.title || '');
-            this.contentPanel = new ModalDialogContentPanel();
-            this.body = new DivEl('modal-dialog-body');
-            this.footer = new DivEl('modal-dialog-footer');
-            this.loadMask = new LoadMask(this.contentPanel);
-            this.state = DialogState.CLOSED;
-            this.renderedListenerForLoadMask = () => {
-                this.loadMask.show();
-                this.unRendered(this.renderedListenerForLoadMask);
-            };
-            this.shownListenerForLoadMask = () => {
-                this.loadMask.show();
-                this.unShown(this.shownListenerForLoadMask);
-            };
-            this.initConfirmationDialog();
-        }
+    protected initElements() {
+        this.buttonRow = this.config.buttonRow || new ButtonRow();
+        this.dialogContainer = new DivEl('dialog-container');
+        this.skipTabbable = this.config.skipTabbable || false;
+        this.cancelAction = this.createDefaultCancelAction();
+        this.closeIcon = new DivEl('cancel-button-top');
+        this.header = this.createHeader(this.config.title || '');
+        this.contentPanel = new ModalDialogContentPanel();
+        this.body = new DivEl('modal-dialog-body');
+        this.footer = new DivEl('modal-dialog-footer');
+        this.loadMask = new LoadMask(this.contentPanel);
+        this.state = DialogState.CLOSED;
+        this.renderedListenerForLoadMask = () => {
+            this.loadMask.show();
+            this.unRendered(this.renderedListenerForLoadMask);
+        };
+        this.shownListenerForLoadMask = () => {
+            this.loadMask.show();
+            this.unShown(this.shownListenerForLoadMask);
+        };
+    }
 
-        private createDefaultCancelAction() {
-            const cancelAction = new Action(i18n('action.cancel'), 'esc', true);
-            cancelAction.setIconClass('cancel-button-top');
-            cancelAction.setLabel('');
-            cancelAction.onExecuted(() => {
+    private createDefaultCancelAction() {
+        const cancelAction = new Action(i18n('action.cancel'), 'esc', true);
+        cancelAction.setIconClass('cancel-button-top');
+        cancelAction.setLabel('');
+        cancelAction.onExecuted(() => {
+            this.close();
+        });
+        this.buttonRow.addToActions(cancelAction);
+        return cancelAction;
+    }
+
+    protected createHeader(title: string): ModalDialogHeader {
+        return new DefaultModalDialogHeader(title);
+    }
+
+    protected postInitElements() {
+        this.loadMask.setRemoveWhenMaskedRemoved(false);
+    }
+
+    protected initListeners() {
+        this.responsiveItem = new ResponsiveItem(this);
+        this.initFocusInOutEventsHandlers();
+
+        this.initResizeHandler();
+
+        this.onRendered(() => {
+            if (!this.skipTabbable) {
+                this.updateTabbable();
+            }
+
+            if (this.elementToFocusOnShow) {
+                this.elementToFocusOnShow.giveFocus();
+            } else {
+                this.buttonRow.focusDefaultAction();
+            }
+        });
+
+        const closeIconCallback = this.config.closeIconCallback || (() => {
+            if (this.cancelAction) {
+                this.cancelAction.execute();
+            } else {
                 this.close();
-            });
-            this.buttonRow.addToActions(cancelAction);
-            return cancelAction;
-        }
-
-        protected createHeader(title: string): api.ui.dialog.ModalDialogHeader {
-            return new DefaultModalDialogHeader(title);
-        }
-
-        private initConfirmationDialog() {
-            if (this.config.confirmation) {
-                const {yesCallback, noCallback, question = i18n('dialog.confirm.applyChanges')} = this.config.confirmation;
-
-                this.confirmationDialog = new ConfirmationDialog()
-                    .setQuestion(question)
-                    .setYesCallback(yesCallback || (() => {
-                        this.close();
-                    }));
-                if (noCallback) {
-                    this.confirmationDialog.setNoCallback(noCallback);
-                }
-
-                this.confirmationDialog.onClosed(() => this.removeClass('await-confirmation'));
             }
-        }
+        });
 
-        protected postInitElements() {
-            this.loadMask.setRemoveWhenMaskedRemoved(false);
-        }
-
-        protected initListeners() {
-            this.responsiveItem = new ResponsiveItem(this);
-            this.initClickOutsideDialogHandlers();
-            this.initFocusInOutEventsHandlers();
-
-            this.initResizeHandler();
-
-            this.onRendered(() => {
-                if (!this.skipTabbable) {
-                    this.updateTabbable();
-                }
-
-                if (this.elementToFocusOnShow) {
-                    this.elementToFocusOnShow.giveFocus();
-                } else {
-                    this.buttonRow.focusDefaultAction();
-                }
-            });
-
-            const closeIconCallback = this.config.closeIconCallback || (() => {
-                if (this.cancelAction) {
-                    this.cancelAction.execute();
-                } else {
-                    this.close();
-                }
-            });
-
-            this.closeIcon.onClicked(closeIconCallback);
-        }
-
-        private initClickOutsideDialogHandlers() {
-            if (this.config.keepOpenOnClickOutside) {
-                return;
-            }
-
-            const clickOutsideCallback = (() => {
-                this.confirmBeforeClose();
-            });
-
-            const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
-                const noConfirmationDialog = !this.confirmationDialog || !this.confirmationDialog.isOpen();
-                if (this.isActive() && noConfirmationDialog) {
-                    for (let element = event.target; element; element = (<any>element).parentNode) {
-                        if (element === this.getHTMLElement() || this.isIgnoredElementClicked(<any>element)) {
-                            return;
-                        }
-                    }
-                    clickOutsideCallback();
-                }
-            };
-
-            this.onRemoved(() => {
-                api.dom.Body.get().unMouseDown(mouseClickListener);
-            });
-
-            this.onAdded(() => {
-                api.dom.Body.get().onMouseDown(mouseClickListener);
-            });
+        this.closeIcon.onClicked(closeIconCallback);
         }
 
     getConfig(): ModalDialogConfig {
         return this.config;
     }
 
-    private isActive() {
+    protected isActive() {
         return this.isOpen() && !this.isMasked();
     }
 
@@ -221,164 +169,143 @@ export abstract class ModalDialog
         return this.hasClass('masked');
     }
 
-        private isIgnoredElementClicked(element: HTMLElement): boolean {
-            let ignoredElementClicked = false;
-            if (element && element.className && element.className.indexOf) {
-                ignoredElementClicked =
-                    element.className.indexOf('mce-') > -1 || element.className.indexOf('html-area-modal-dialog') > -1 ||
-                    element.className.indexOf('cke_') > -1;
+    private initFocusInOutEventsHandlers() {
+        let buttonRowIsFocused: boolean = false;
+        let buttonRowFocusOutTimeout: number;
+        const focusOutTimeout: number = 10;
+
+        this.onMouseDown(() => {
+            buttonRowIsFocused = false; // making dialog focusOut event give focus to last tabbable elem
+        });
+
+        AppHelper.focusInOut(this, () => {
+            if (this.hasTabbable() && !this.hasSubDialog() && !this.isMasked()) {
+                // last focusable - Cancel
+                // first focusable - X
+                if (buttonRowIsFocused) { // last element lost focus
+                    this.tabbable[0].giveFocus();
+                } else {
+                    this.tabbable[this.tabbable.length - 1].giveFocus();
+                }
             }
-            ignoredElementClicked = ignoredElementClicked || this.listOfClickIgnoredElements.some((elem: Element) => {
-                return elem.getHTMLElement() === element || elem.getEl().contains(element);
-            });
+        }, focusOutTimeout, false);
 
-            return ignoredElementClicked;
-        }
+        this.buttonRow.onFocusIn(() => {
+            buttonRowIsFocused = true;
+            clearTimeout(buttonRowFocusOutTimeout);
+        });
 
-        private initFocusInOutEventsHandlers() {
-            let buttonRowIsFocused: boolean = false;
-            let buttonRowFocusOutTimeout: number;
-            const focusOutTimeout: number = 10;
+        this.buttonRow.onFocusOut(() => {
+            buttonRowFocusOutTimeout = <any>setTimeout(() => {
+                buttonRowIsFocused = false;
+            }, focusOutTimeout + 5); // timeout should be > timeout for modal dialog to trigger after
+        });
+    }
 
-            this.onMouseDown(() => {
-                buttonRowIsFocused = false; // making dialog focusOut event give focus to last tabbable elem
-            });
+    private hasTabbable(): boolean {
+        return !!this.tabbable && this.tabbable.length > 0;
+    }
 
-            api.util.AppHelper.focusInOut(this, () => {
-                if (this.hasTabbable() && !this.hasSubDialog() && !this.isMasked()) {
-                    // last focusable - Cancel
-                    // first focusable - X
-                    if (buttonRowIsFocused) { // last element lost focus
-                        this.tabbable[0].giveFocus();
-                    } else {
-                        this.tabbable[this.tabbable.length - 1].giveFocus();
-                    }
-                }
-            }, focusOutTimeout, false);
+    protected hasSubDialog(): boolean {
+        return false;
+    }
 
-            this.buttonRow.onFocusIn(() => {
-                buttonRowIsFocused = true;
-                clearTimeout(buttonRowFocusOutTimeout);
-            });
+    private initResizeHandler() {
+        this.handleResize = AppHelper.runOnceAndDebounce(() => {
+            if (this.isOpen()) {
+                this.body.removeClass('non-scrollable');
+                this.resizeHandler();
+            }
+        }, 50);
+        ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
+            this.handleResize();
+        });
 
-            this.buttonRow.onFocusOut(() => {
-                buttonRowFocusOutTimeout = setTimeout(() => {
-                    buttonRowIsFocused = false;
-                }, focusOutTimeout + 5); // timeout should be > timeout for modal dialog to trigger after
-            });
-        }
-
-        private hasTabbable(): boolean {
-            return !!this.tabbable && this.tabbable.length > 0;
-        }
-
-        protected hasSubDialog(): boolean {
-            return this.confirmationDialog && this.confirmationDialog.isOpen();
-        }
-
-        private initResizeHandler() {
-            this.handleResize = AppHelper.runOnceAndDebounce(() => {
-                if (this.isOpen()) {
-                    this.body.removeClass('non-scrollable');
-                    this.resizeHandler();
-                }
-            }, 50);
-            ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
+        if (window['ResizeObserver']) {
+            this.resizeObserver = new window['ResizeObserver'](() => {
                 this.handleResize();
             });
+        }
+    }
 
-            if (window['ResizeObserver']) {
-                this.resizeObserver = new window['ResizeObserver'](() => {
-                    this.handleResize();
-                });
+    protected resizeHandler() {
+        this.adjustHeight();
+        this.adjustOverflow();
+        this.responsiveItem.update();
+    }
+
+    private adjustHeight() {
+        const dialogHeight = this.getEl().getHeightWithBorder();
+
+        if (dialogHeight === 0 || dialogHeight % 2 === 0) {
+
+            return;
+        }
+
+        const borderBottom = parseFloat($(this.getHTMLElement()).css('border-bottom'));
+        const dialogHeightWithoutBorder = borderBottom ? dialogHeight - borderBottom : dialogHeight;
+
+        if (dialogHeightWithoutBorder % 2 === 0 && borderBottom) {
+            $(this.getHTMLElement()).css('border-bottom-width', '0px');
+
+            return;
+        }
+        let borderHeight = 1;
+        if (dialogHeightWithoutBorder % 1 !== 0) {
+            borderHeight = Math.ceil(dialogHeightWithoutBorder) - dialogHeightWithoutBorder;
+            if (Math.ceil(dialogHeightWithoutBorder) % 2 === 1) {
+                borderHeight++;
             }
         }
 
-        protected resizeHandler() {
-            this.adjustHeight();
-            this.adjustOverflow();
-            this.responsiveItem.update();
+        $(this.getHTMLElement()).css('border-bottom', `${borderHeight}px solid transparent`);
+    }
+
+    private adjustOverflow() {
+
+        const bodyHeight = this.body.getEl().getHeight();
+        if (bodyHeight === 0) {
+            return;
         }
+        const maxBodyHeight = this.body.getEl().getMaxHeight();
+        const showScrollbar = Math.floor(bodyHeight) >= Math.floor(maxBodyHeight);
 
-        private adjustHeight() {
-            const dialogHeight = this.getEl().getHeightWithBorder();
+        this.body.toggleClass('non-scrollable', !showScrollbar);
+    }
 
-            if (dialogHeight === 0 || dialogHeight % 2 === 0) {
+    protected getBody(): DivEl {
+        return this.body;
+    }
 
-                return;
-            }
+    protected updateTabbable() {
+        this.tabbable = this.getTabbableElements();
+    }
 
-            const borderBottom = parseFloat($(this.getHTMLElement()).css('border-bottom'));
-            const dialogHeightWithoutBorder = borderBottom ? dialogHeight - borderBottom : dialogHeight;
+    isDirty(): boolean {
+        return false;
+    }
 
-            if (dialogHeightWithoutBorder % 2 === 0 && borderBottom) {
-                $(this.getHTMLElement()).css('border-bottom-width', '0px');
+    protected isSingleDialogGroup(): boolean {
+        return DialogManagerInner.get().getTotalOpen() === 1;
+    }
 
-                return;
-            }
-            let borderHeight = 1;
-            if (dialogHeightWithoutBorder % 1 !== 0) {
-                borderHeight = Math.ceil(dialogHeightWithoutBorder) - dialogHeightWithoutBorder;
-                if (Math.ceil(dialogHeightWithoutBorder) % 2 === 1) {
-                    borderHeight++;
-                }
-            }
+    protected isBlurredBackgroundNeeded(): boolean {
+        return true;
+    }
 
-            $(this.getHTMLElement()).css('border-bottom', `${borderHeight}px solid transparent`);
+    close() {
+        if (this.isSingleDialogGroup()) {
+            BodyMask.get().hide();
         }
-
-        private adjustOverflow() {
-
-            const bodyHeight = this.body.getEl().getHeight();
-            if (bodyHeight === 0) {
-                return;
-            }
-            const maxBodyHeight = this.body.getEl().getMaxHeight();
-            const showScrollbar = Math.floor(bodyHeight) >= Math.floor(maxBodyHeight);
-
-            this.body.toggleClass('non-scrollable', !showScrollbar);
-        }
-
-        protected getBody(): DivEl {
-            return this.body;
-        }
-
-        protected updateTabbable() {
-            this.tabbable = this.getTabbableElements();
-        }
-
-        confirmBeforeClose() {
-            if (this.confirmationDialog && this.isDirty()) {
-                this.confirmationDialog.open();
-                this.addClass('await-confirmation');
-            } else {
-                this.close();
-            }
-        }
-
-        isDirty(): boolean {
-            return false;
-        }
-
-        protected isSingleDialogGroup(): boolean {
-            return DialogManagerInner.get().getTotalOpen() === 1 ||
-                   (DialogManagerInner.get().getTotalOpen() === 2 && !!this.confirmationDialog &&
-                    !!this.confirmationDialog.isOpen());
-        }
-
-        close() {
-            if (this.isSingleDialogGroup()) {
-                BodyMask.get().hide();
-            }
 
         this.hide();
 
-            KeyBindings.get().unshelveBindings();
-            this.state = DialogState.CLOSED;
-            DialogManagerInner.get().handleClosedDialog(this);
+        KeyBindings.get().unshelveBindings();
+        this.state = DialogState.CLOSED;
+        DialogManagerInner.get().handleClosedDialog(this);
 
-            this.notifyClosed();
-        }
+        this.notifyClosed();
+    }
 
     hide() {
         if (this.resizeObserver) {
@@ -623,105 +550,6 @@ export abstract class ModalDialog
         return this.state === DialogState.CLOSED;
     }
 
-    private initFocusInOutEventsHandlers() {
-        let buttonRowIsFocused: boolean = false;
-        let buttonRowFocusOutTimeout: number;
-        const focusOutTimeout: number = 10;
-
-        this.onMouseDown(() => {
-            buttonRowIsFocused = false; // making dialog focusOut event give focus to last tabbable elem
-        });
-
-        AppHelper.focusInOut(this, () => {
-            if (this.hasTabbable() && !this.hasSubDialog()) {
-                // last focusable - Cancel
-                // first focusable - X
-                if (buttonRowIsFocused) { // last element lost focus
-                    this.tabbable[0].giveFocus();
-                } else {
-                    this.tabbable[this.tabbable.length - 1].giveFocus();
-                }
-            }
-        }, focusOutTimeout, false);
-
-        this.buttonRow.onFocusIn(() => {
-            buttonRowIsFocused = true;
-            clearTimeout(buttonRowFocusOutTimeout);
-        });
-
-        this.buttonRow.onFocusOut(() => {
-            buttonRowFocusOutTimeout = setTimeout(() => {
-                buttonRowIsFocused = false;
-                buttonRowIsFocused = false;
-            }, focusOutTimeout + 5); // timeout should be > timeout for modal dialog to trigger after
-        });
-    }
-
-    protected hasSubDialog(): boolean {
-        return false;
-    }
-
-    private hasTabbable(): boolean {
-        return !!this.tabbable && this.tabbable.length > 0;
-    }
-
-    private initResizeHandler() {
-        this.handleResize = AppHelper.runOnceAndDebounce(() => {
-            if (this.isVisible()) {
-                this.body.removeClass('non-scrollable');
-                this.resizeHandler();
-            }
-        }, 50);
-        ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
-            this.handleResize();
-        });
-
-        if (window['ResizeObserver']) {
-            this.resizeObserver = new window['ResizeObserver'](() => {
-                this.handleResize();
-            });
-        }
-    }
-
-    private adjustHeight() {
-        const dialogHeight = this.getEl().getHeightWithBorder();
-
-        if (dialogHeight === 0 || dialogHeight % 2 === 0) {
-
-            return;
-        }
-
-        const borderBottom = parseFloat($(this.getHTMLElement()).css('border-bottom'));
-        const dialogHeightWithoutBorder = borderBottom ? dialogHeight - borderBottom : dialogHeight;
-
-        if (dialogHeightWithoutBorder % 2 === 0 && borderBottom) {
-            $(this.getHTMLElement()).css('border-bottom-width', '0px');
-
-            return;
-        }
-        let borderHeight = 1;
-        if (dialogHeightWithoutBorder % 1 !== 0) {
-            borderHeight = Math.ceil(dialogHeightWithoutBorder) - dialogHeightWithoutBorder;
-            if (Math.ceil(dialogHeightWithoutBorder) % 2 === 1) {
-                borderHeight++;
-            }
-        }
-
-        $(this.getHTMLElement()).css('border-bottom', `${borderHeight}px solid transparent`);
-    }
-
-    private adjustOverflow() {
-
-        const bodyHeight = this.body.getEl().getHeight();
-        if (bodyHeight === 0) {
-            return;
-        }
-        const maxBodyHeight = this.body.getEl().getMaxHeight();
-        const showScrollbar = Math.floor(bodyHeight) >= Math.floor(maxBodyHeight);
-
-        this.body.toggleClass('non-scrollable', !showScrollbar);
-    }
-
     private notifyClosed() {
         this.onClosedListeners.forEach((listener) => {
             listener();
@@ -900,6 +728,8 @@ export function applyMixins(derivedCtor: any, baseCtors: any[]) {
     });
 }
 
+const DIALOG_MANAGER_KEY: string = 'DialogManagerInner';
+
 class DialogManagerInner {
 
     private openDialogs: ModalDialog[];
@@ -908,20 +738,21 @@ class DialogManagerInner {
 
     private dialogOpenListeners: { (dialog: ModalDialog): void; } [];
 
-    private static INSTANCE: DialogManagerInner;
-
     private constructor() {
         this.openDialogs = [];
         this.dialogOpenListeners = [];
         this.maskedBy = new Map();
     }
 
-    public static get(): DialogManagerInner {
-        if (!DialogManagerInner.INSTANCE) {
-            DialogManagerInner.INSTANCE = new DialogManagerInner();
+    static get(): DialogManagerInner {
+        let instance: DialogManagerInner = Store.instance().get(DIALOG_MANAGER_KEY);
+
+        if (instance == null) {
+            instance = new DialogManagerInner();
+            Store.instance().set(DIALOG_MANAGER_KEY, instance);
         }
 
-        return DialogManagerInner.INSTANCE;
+        return instance;
     }
 
     handleOpenDialog(dialog: ModalDialog) {
@@ -985,10 +816,6 @@ class DialogManagerInner {
 }
 
 export class DialogManager {
-
-    private constructor() {
-        throw new Error('Not supposed to be invoked');
-    }
 
     public static getTotalOpen(): number {
         return DialogManagerInner.get().getTotalOpen();
