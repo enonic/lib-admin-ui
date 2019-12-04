@@ -1,15 +1,14 @@
 import {Exception, ExceptionType} from '../Exception';
-import {i18n} from '../util/Messages';
 import {StatusCode} from './StatusCode';
+import {i18n} from '../util/Messages';
 
-export class RequestError
-    extends Exception {
+export class RequestError extends Exception {
 
     private statusCode: number;
 
-    constructor(statusCode: number, errorMsg: string) {
-        let notifyMsg: string = (statusCode > 0) ? errorMsg : i18n('notify.no_connection');
-        let type: ExceptionType = (statusCode >= 400 && statusCode < 500) ? ExceptionType.WARNING : ExceptionType.ERROR;
+        constructor(statusCode: number, errorMsg: string) {
+            const notifyMsg: string = (statusCode > 0) ? errorMsg : i18n('notify.no_connection');
+            const type: ExceptionType = (statusCode >= 400 && statusCode < 500) ? ExceptionType.WARNING : ExceptionType.ERROR;
 
         super(notifyMsg, type);
 

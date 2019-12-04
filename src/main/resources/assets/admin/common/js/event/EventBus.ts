@@ -39,8 +39,30 @@ export class EventBus {
         }
     }
 
+    static createEvent(eventName: string, params?: any): CustomEvent {
+        return new CustomEvent(eventName, params);
+    }
+
+    static polyfillCustomEvent(contextWindow: Window) {
+        const customEventFn = (event: string, params: any) => {
+            params = params || { bubbles: false, cancelable: false, detail: undefined };
+            const evt = document.createEvent('CustomEvent');
+            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+            return evt;
+        };
+
+        customEventFn.prototype = window['Event'].prototype;
+
+        contextWindow['CustomEvent'] = customEventFn;
+    }
+
     static fireEvent(apiEventObj: Event, contextWindow: Window = window) {
-        const event = new CustomEvent(apiEventObj.getName(), {
+
+        if (typeof contextWindow['CustomEvent'] !== 'function') {
+            EventBus.polyfillCustomEvent(contextWindow);
+        }
+
+        const event = EventBus.createEvent(apiEventObj.getName(), {
             bubbles: true,
             detail: apiEventObj
         });

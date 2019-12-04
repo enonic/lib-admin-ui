@@ -10,6 +10,7 @@ import {GridOptions, GridOptionsBuilder} from './GridOptions';
 import {GridColumn} from './GridColumn';
 import {GridOnClickData} from './GridOnClickData';
 import {DataView} from './DataView';
+import {EventBus} from '../../event/EventBus';
 
 export class Grid<T extends Slick.SlickData>
     extends DivEl {
@@ -71,7 +72,7 @@ export class Grid<T extends Slick.SlickData>
 
         ResponsiveManager.onAvailableSizeChanged(this, () => {
             // notify slick grid the resize has occured
-            const slickResize = new Event('resize');
+            const slickResize = EventBus.createEvent('resize');
             this.getHTMLElement().dispatchEvent(slickResize);
         });
         this.onRemoved(() => ResponsiveManager.unAvailableSizeChanged(this));

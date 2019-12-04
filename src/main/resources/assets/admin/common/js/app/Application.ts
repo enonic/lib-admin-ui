@@ -12,20 +12,20 @@ export class Application {
     private name: string;
     private shortName: string;
     private iconUrl: string;
-    private fullSizeIcon: boolean;
+    private iconTooltip: string;
     private openTabs: number;
     private status: ApplicationShowStatus;
     private loaded: boolean;
-    private path: Path;
-    private loadedListeners: { (): void }[] = [];
+    private path: api.rest.Path;
+    private loadedListeners: {(): void}[] = [];
     private window: Window;
 
-    constructor(id: string, name: string, shortName: string, icon: string, iconImage: boolean = false) {
+    constructor(id: string, name: string, shortName: string, icon: string, iconTooltip?: string) {
         this.id = id;
         this.name = name;
         this.shortName = shortName;
         this.iconUrl = icon;
-        this.fullSizeIcon = iconImage;
+        this.iconTooltip = iconTooltip;
         this.openTabs = 0;
         this.status = ApplicationShowStatus.NOT_DISPLAYED;
     }
@@ -58,6 +58,10 @@ export class Application {
         return this.iconUrl;
     }
 
+    getIconTooltip(): string {
+        return this.iconTooltip;
+    }
+
     getOpenTabs(): number {
         return this.openTabs;
     }
@@ -68,10 +72,6 @@ export class Application {
 
     setWindow(window: Window) {
         this.window = window;
-    }
-
-    isFullSizeIcon(): boolean {
-        return this.fullSizeIcon;
     }
 
     hide() {
@@ -95,11 +95,6 @@ export class Application {
 
     setDisplayingStatus(status: ApplicationShowStatus) {
         this.status = status;
-    }
-
-    setFullSizeIcon(value: boolean): Application {
-        this.fullSizeIcon = value;
-        return this;
     }
 
     setPath(path: Path): Application {

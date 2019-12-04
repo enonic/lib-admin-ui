@@ -1,5 +1,7 @@
 import {StatusRequest} from './StatusRequest';
 import {StatusResult} from './StatusResult';
+import {showError} from '../notify/MessageBus';
+import {NotifyManager} from '../notify/NotifyManager';
 
 export class ConnectionDetector {
 
@@ -21,8 +23,40 @@ export class ConnectionDetector {
 
     private readonlyStatusChangedListeners: { (readonly: boolean): void }[] = [];
 
+    private static INSTANCE: ConnectionDetector;
+
     constructor(pollIntervalMs: number = 15000) {
         this.pollIntervalMs = pollIntervalMs;
+    }
+
+    static get(): ConnectionDetector {
+        if (!ConnectionDetector.INSTANCE) {
+            ConnectionDetector.INSTANCE = new ConnectionDetector();
+        }
+
+        return ConnectionDetector.INSTANCE;
+    }
+
+    setNotificationMessage(message: string): ConnectionDetector {
+
+        let messageId: string;
+        const hideNotificationMessage = () => {
+            if (messageId) {
+                NotifyManager.get().hide(messageId);
+                messageId = null;
+            }
+        };
+
+        this.onConnectionLost(() => {
+            hideNotificationMessage();
+            messageId = showError(message, false);
+        });
+
+        this.onConnectionRestored(hideNotificationMessage);
+
+        this.onSessionExpired(hideNotificationMessage);
+
+        return this;
     }
 
     startPolling(immediate: boolean = false) {
@@ -37,8 +71,18 @@ export class ConnectionDetector {
         clearInterval(this.intervalId);
     }
 
-    setAuthenticated(isAuthenticated: boolean) {
+    setSessionExpireRedirectUrl(url: string): ConnectionDetector {
+        this.onSessionExpired(() => {
+            window.location.href = url;
+        });
+
+        return this;
+    }
+
+    setAuthenticated(isAuthenticated: boolean): ConnectionDetector {
         this.authenticated = isAuthenticated;
+
+        return this;
     }
 
     onConnectionLost(listener: () => void) {

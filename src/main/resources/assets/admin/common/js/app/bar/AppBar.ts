@@ -50,14 +50,17 @@ export class AppIcon
 
         super('home-button');
 
-        if (app.getIconUrl()) {
-            let icon = new ImgEl(app.getIconUrl(), 'app-icon');
-            this.appendChild(icon);
-        }
+            if (app.getIconUrl()) {
+                const icon = new ImgEl(app.getIconUrl(), 'app-icon');
+                if (app.getIconTooltip()) {
+                    icon.getEl().setTitle(app.getIconTooltip());
+                }
+                this.appendChild(icon);
+            }
 
-        let span = new SpanEl('app-name');
-        span.setHtml(app.getName());
-        this.appendChild(span);
+            const span = new SpanEl('app-name');
+            span.setHtml(app.getName());
+            this.appendChild(span);
 
         if (action) {
             this.setAction(action);

@@ -51,13 +51,30 @@ export class ApplicationConfiguratorDialog
         });
     }
 
-    toggleMask(enable: boolean) {
-        if (enable) {
-            this.mask();
-        } else {
-            this.unmask();
-        }
-        this.toggleClass('await-confirmation', enable);
+    protected initElements() {
+        super.initElements();
+
+        this.formView = this.config.formView;
+        this.okAction = new Action('Apply');
+    }
+
+    protected initListeners() {
+        super.initListeners();
+
+        const availableSizeChangedListener = () => this.handleAvailableSizeChanged();
+        ResponsiveManager.onAvailableSizeChanged(this, availableSizeChangedListener);
+        this.onRemoved(() => {
+            ResponsiveManager.unAvailableSizeChanged(this);
+        });
+
+        this.onRendered(() => {
+            $(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().focus();
+            this.updateTabbable();
+        });
+
+        this.getCancelAction().onExecuted(this.config.cancelCallback);
+
+        this.okAction.onExecuted(this.config.confirmation.yesCallback);
     }
 
     handleAvailableSizeChanged() {
@@ -110,32 +127,6 @@ export class ApplicationConfiguratorDialog
 
     isDirty(): boolean {
         return AppHelper.isDirty(this.formView);
-    }
-
-    protected initElements() {
-        super.initElements();
-
-        this.formView = this.config.formView;
-        this.okAction = new Action('Apply');
-    }
-
-    protected initListeners() {
-        super.initListeners();
-
-        const availableSizeChangedListener = () => this.handleAvailableSizeChanged();
-        ResponsiveManager.onAvailableSizeChanged(this, availableSizeChangedListener);
-        this.onRemoved(() => {
-            ResponsiveManager.unAvailableSizeChanged(this);
-        });
-
-        this.onRendered(() => {
-            $(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().focus();
-            this.updateTabbable();
-        });
-
-        this.getCancelAction().onExecuted(this.config.cancelCallback);
-
-        this.okAction.onExecuted(this.config.confirmation.yesCallback);
     }
 
     protected getHeaderContent(): NamesAndIconView {

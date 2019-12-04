@@ -2542,7 +2542,7 @@ if (typeof Slick === "undefined") {
         }
 
         function getGalleryRowHeight(margin) {
-            if (options.enableGalleryMode && viewportH > 0) {
+            if (options.enableGalleryMode && viewportH > 0 && viewportW > 0) {
                 return Math.min(viewportH, Math.floor(viewportW / options.galleryModeColumns)) - 2 * (margin || 0);
             }
             return options.rowHeight;
@@ -3151,9 +3151,9 @@ if (typeof Slick === "undefined") {
             var oldH = (hasFrozenRows && !options.frozenBottom) ? $canvasBottomL.height() : $canvasTopL.height();
 
             if (hasFrozenRows) {
-                var numberOfRows = getDataLength() - options.frozenRow;
+                numberOfRows = getDataLength() - options.frozenRow;
             } else {
-                var numberOfRows = dataLengthIncludingAddNew + (options.leaveSpaceForNewRows ? numVisibleRows - 1 : 0);
+                numberOfRows = dataLengthIncludingAddNew + (options.leaveSpaceForNewRows ? numVisibleRows - 1 : 0);
             }
 
             var tempViewportH = $viewportScrollContainerY.height();
