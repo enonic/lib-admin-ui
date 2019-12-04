@@ -13,6 +13,7 @@ module api.ui.selector.combobox {
     import i18n = api.util.i18n;
     import KeyEventsHandler = api.event.KeyEventsHandler;
     import BrowserHelper = api.BrowserHelper;
+    import KeyHelper = api.ui.KeyHelper;
 
     export interface ComboBoxConfig<T> {
 
