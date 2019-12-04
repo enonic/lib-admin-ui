@@ -7,13 +7,21 @@ type ExecutionListener = { (action: Action): Q.Promise<any> | void };
 export class Action {
 
     protected forceExecute: boolean = false;
+
     private label: string;
+
     private title: string;
+
     private iconClass: string;
+
     private shortcut: KeyBinding;
+
     private mnemonic: Mnemonic;
+
     private enabled: boolean = true;
+
     private visible: boolean = true;
+
     private executionListeners: ExecutionListener[] = [];
 
     private propertyChangedListeners: Function[] = [];
