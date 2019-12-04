@@ -23,6 +23,7 @@ export interface ModalDialogConfig {
     closeIconCallback?: () => void;
     skipTabbable?: boolean;
     class?: string;
+    keepOpenOnClickOutside?: boolean;
 }
 
 export enum DialogState {
@@ -68,6 +69,8 @@ export abstract class ModalDialog
 
     private tabbable: Element[];
 
+    private listOfClickIgnoredElements: Element[];
+
     private onClosedListeners: { (): void; }[] = [];
 
     private resizeListeners: { (): void; }[] = [];
@@ -107,6 +110,7 @@ export abstract class ModalDialog
             this.loadMask.show();
             this.unShown(this.shownListenerForLoadMask);
         };
+        this.listOfClickIgnoredElements = [];
     }
 
     private createDefaultCancelAction() {
@@ -155,7 +159,54 @@ export abstract class ModalDialog
         });
 
         this.closeIcon.onClicked(closeIconCallback);
+
+        this.initClickOutsideListeners();
+    }
+
+    private initClickOutsideListeners() {
+        if (!this.getConfig().keepOpenOnClickOutside) {
+            const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
+                if (this.canHandleOutsideClick()) {
+                    for (let element = event.target; element; element = (<any>element).parentNode) {
+                        if (element === this.getHTMLElement() || this.isIgnoredElementClicked(<any>element)) {
+                            return;
+                        }
+                    }
+                    this.handleClickOutside();
+                }
+            };
+
+            this.onRemoved(() => {
+                Body.get().unMouseDown(mouseClickListener);
+            });
+
+            this.onAdded(() => {
+                Body.get().onMouseDown(mouseClickListener);
+            });
         }
+    }
+
+    protected isIgnoredElementClicked(element: HTMLElement): boolean {
+        let ignoredElementClicked = false;
+        if (element && element.className && element.className.indexOf) {
+            ignoredElementClicked =
+                element.className.indexOf('mce-') > -1 || element.className.indexOf('html-area-modal-dialog') > -1 ||
+                element.className.indexOf('cke_') > -1;
+        }
+        ignoredElementClicked = ignoredElementClicked || this.listOfClickIgnoredElements.some((elem: Element) => {
+            return elem.getHTMLElement() === element || elem.getEl().contains(element);
+        });
+
+        return ignoredElementClicked;
+    }
+
+    protected canHandleOutsideClick(): boolean {
+        return this.isActive();
+    }
+
+    protected handleClickOutside() {
+        this.close();
+    }
 
     getConfig(): ModalDialogConfig {
         return this.config;
@@ -348,6 +399,17 @@ export abstract class ModalDialog
 
     unCloseButtonClicked(listener: (e: MouseEvent) => void) {
         return this.closeIcon.unClicked(listener);
+    }
+
+    addClickIgnoredElement(elem: Element) {
+        this.listOfClickIgnoredElements.push(elem);
+    }
+
+    removeClickIgnoredElement(elem: Element) {
+        const elementIndex = this.listOfClickIgnoredElements.indexOf(elem);
+        if (elementIndex > -1) {
+            this.listOfClickIgnoredElements.splice(elementIndex, 1);
+        }
     }
 
     mask() {
