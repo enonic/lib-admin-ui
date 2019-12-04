@@ -106,7 +106,7 @@ export class PrincipalSelector
     }
 
     private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
-        const principalTypeConfig = inputConfig['principalTypes'] || [];
+        const principalTypeConfig = inputConfig['principalType'] || [];
         this.principalTypes = [].concat(principalTypeConfig)
             .map((cfg: any) => {
                 let val: string;
