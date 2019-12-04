@@ -13,6 +13,7 @@ module api.ui.selector.combobox {
     import i18n = api.util.i18n;
     import KeyEventsHandler = api.event.KeyEventsHandler;
     import BrowserHelper = api.BrowserHelper;
+    import KeyHelper = api.ui.KeyHelper;
 
     export interface ComboBoxConfig<T> {
 
@@ -879,23 +880,21 @@ module api.ui.selector.combobox {
                 return;
             }
 
-            if (event.which === 9) { // tab
+            if (KeyHelper.isTabKey(event)) { // TAB
                 this.hideDropdown();
                 return;
-
-                // shift or ctrl or alt or super
-            } else if (event.which === 16 || event.which === 17 || event.which === 18 || event.which === 91) {
+            } else if (KeyHelper.isModifierKey(event)) { // CTRL or ALT or SHIFT or MEtA
                 return;
             }
 
             if (!this.isDropdownShown()) {
-                if (event.which === 27) { // esc
+                if (KeyHelper.isEscKey(event)) { // Escape
                     return;
                 }
 
                 this.showDropdown();
 
-                if (event.which === 40) { // down
+                if (KeyHelper.isArrowDownKey(event)) { // Down
 
                     this.onDropdownShownCallback().then(() => {
 
@@ -912,8 +911,7 @@ module api.ui.selector.combobox {
                 return;
             }
 
-            switch (event.which) {
-            case 38: // up
+            if (KeyHelper.isArrowUpKey(event)) { // UP
                 if (this.comboBoxDropdown.hasActiveRow()) {
                     if (this.comboBoxDropdown.getActiveRow() === 0) {
                         this.comboBoxDropdown.resetActiveSelection();
@@ -924,27 +922,21 @@ module api.ui.selector.combobox {
                         this.input.setReadOnly(true);
                     }
                 }
-                break;
-            case 37: //left
+            } else if (KeyHelper.isArrowLeftKey(event)) { // LEFT
                 this.comboBoxDropdown.getDropdownGrid().collapseActiveRow();
-                break;
-            case 39: //right
+            } else if (KeyHelper.isArrowRightKey(event)) { // RIGHT
                 this.comboBoxDropdown.getDropdownGrid().expandActiveRow();
-                break;
-            case 40: // down
+            } else if (KeyHelper.isArrowDownKey(event)) { // DOWN
                 if (this.comboBoxDropdown.hasActiveRow()) {
                     this.comboBoxDropdown.navigateToNextRow();
                 } else {
                     this.comboBoxDropdown.navigateToFirstRow();
                 }
                 this.input.setReadOnly(true);
-                break;
-            case 13: // Enter
+            } else if (KeyHelper.isEnterKey(event)) { // ENTER
                 this.handleEnterPressed();
-                break;
-            case 32: // Spacebar
+            } else if (KeyHelper.isSpace(event)) { // SPACE
                 if (this.input.isReadOnly() && this.applySelectionsButton) {
-
                     if (!this.isSelectedRowReadOnly()) {
                         this.comboBoxDropdown.toggleRowSelection(this.comboBoxDropdown.getActiveRow(), this.maximumSelectionsReached());
                     }
@@ -952,25 +944,22 @@ module api.ui.selector.combobox {
                     event.stopPropagation();
                     event.preventDefault();
                 }
-                break;
-            case 8:
+            } else if (KeyHelper.isBackspace(event)) { // BACKSPACE
                 if (this.input.isReadOnly()) {
                     event.stopPropagation();
                     event.preventDefault();
                 }
-                break;
-            case 27: // Esc
+            } else if (KeyHelper.isEscKey(event)) { // ESCAPE
                 this.hideDropdown();
                 event.stopPropagation();
                 event.preventDefault();
-                break;
             }
 
-            if (event.which !== 13) {
+            if (!KeyHelper.isEnterKey(event)) { // ENTER
                 this.input.giveFocus();
             }
 
-            if (event.which === 38 || event.which === 40 || event.which === 13) {
+            if (KeyHelper.isArrowUpKey(event) || KeyHelper.isArrowDownKey(event) || KeyHelper.isEnterKey(event)) { // UP or DOWN or ENTER
                 event.stopPropagation();
                 event.preventDefault();
             }
