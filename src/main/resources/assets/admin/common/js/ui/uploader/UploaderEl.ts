@@ -16,7 +16,7 @@ import {ProgressBar} from '../ProgressBar';
 import {AppHelper} from '../../util/AppHelper';
 import {RequestError} from '../../rest/RequestError';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
-import {NotifyManager} from '../../notify/NotifyManager';
+import {showError} from '../../notify/MessageBus';
 import {UploadStartedEvent} from './UploadStartedEvent';
 import {UploadProgressEvent} from './UploadProgressEvent';
 import {UploadedEvent} from './UploadedEvent';
@@ -794,7 +794,7 @@ export class UploaderEl<MODEL extends Equitable>
                 DefaultErrorHandler.handle(error);
             } catch (e) {
                 console.warn('Failed to parse the response', xhrOrXdr.response, e);
-                NotifyManager.get().showError(this.getErrorMessage(name));
+                showError(this.getErrorMessage(name));
             }
 
             const uploadItem = this.findUploadItemById(id);
