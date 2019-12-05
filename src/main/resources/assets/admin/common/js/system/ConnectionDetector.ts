@@ -2,6 +2,9 @@ import {StatusRequest} from './StatusRequest';
 import {StatusResult} from './StatusResult';
 import {showError} from '../notify/MessageBus';
 import {NotifyManager} from '../notify/NotifyManager';
+import {Store} from '../store/Store';
+
+export const CONNECTION_DETECTOR_KEY: string = 'ConnectionDetector';
 
 export class ConnectionDetector {
 
@@ -23,18 +26,19 @@ export class ConnectionDetector {
 
     private readonlyStatusChangedListeners: { (readonly: boolean): void }[] = [];
 
-    private static INSTANCE: ConnectionDetector;
-
     constructor(pollIntervalMs: number = 15000) {
         this.pollIntervalMs = pollIntervalMs;
     }
 
     static get(): ConnectionDetector {
-        if (!ConnectionDetector.INSTANCE) {
-            ConnectionDetector.INSTANCE = new ConnectionDetector();
+        let instance: ConnectionDetector = Store.instance().get(CONNECTION_DETECTOR_KEY);
+
+        if (instance == null) {
+            instance = new ConnectionDetector();
+            Store.instance().set(CONNECTION_DETECTOR_KEY, instance);
         }
 
-        return ConnectionDetector.INSTANCE;
+        return instance;
     }
 
     setNotificationMessage(message: string): ConnectionDetector {
@@ -61,7 +65,7 @@ export class ConnectionDetector {
 
     startPolling(immediate: boolean = false) {
         this.stopPolling();
-        this.intervalId = setInterval(this.doPoll.bind(this), this.pollIntervalMs);
+        this.intervalId = <any>setInterval(this.doPoll.bind(this), this.pollIntervalMs);
         if (immediate) {
             this.doPoll();
         }
