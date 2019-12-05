@@ -34,6 +34,7 @@ import {SelectedOption} from './SelectedOption';
 import {BaseSelectedOptionsView} from './BaseSelectedOptionsView';
 import {SelectedOptionEvent} from './SelectedOptionEvent';
 import {DropdownGridRowSelectedEvent} from '../DropdownGridRowSelectedEvent';
+import {KeyHelper} from '../../KeyHelper';
 
 export interface ComboBoxConfig<T> {
 
@@ -966,23 +967,21 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             return;
         }
 
-        if (event.which === 9) { // tab
-            this.hideDropdown();
-            return;
-
-            // shift or ctrl or alt or super
-        } else if (event.which === 16 || event.which === 17 || event.which === 18 || event.which === 91) {
-            return;
-        }
-
-        if (!this.isDropdownShown()) {
-            if (event.which === 27) { // esc
+            if (KeyHelper.isTabKey(event)) { // TAB
+                this.hideDropdown();
+                return;
+            } else if (KeyHelper.isModifierKey(event)) { // CTRL or ALT or SHIFT or MEtA
                 return;
             }
 
+            if (!this.isDropdownShown()) {
+                if (KeyHelper.isEscKey(event)) { // Escape
+                    return;
+                }
+
             this.showDropdown();
 
-            if (event.which === 40) { // down
+                if (KeyHelper.isArrowDownKey(event)) { // Down
 
                 this.onDropdownShownCallback().then(() => {
 
@@ -999,39 +998,32 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             return;
         }
 
-            switch (event.which) {
-            case 38: // up
-                if (this.comboBoxDropdown.hasActiveRow()) {
-                    if (this.comboBoxDropdown.getActiveRow() === 0) {
-                        this.comboBoxDropdown.resetActiveSelection();
-                        this.input.setReadOnly(false);
-                        this.input.giveFocus();
-                    } else {
-                        this.comboBoxDropdown.navigateToPreviousRow();
-                        this.input.setReadOnly(true);
-                    }
-                }
-                break;
-            case 37: //left
-                this.comboBoxDropdown.getDropdownGrid().collapseActiveRow();
-                break;
-            case 39: //right
-                this.comboBoxDropdown.getDropdownGrid().expandActiveRow();
-                break;
-            case 40: // down
-                if (this.comboBoxDropdown.hasActiveRow()) {
-                    this.comboBoxDropdown.navigateToNextRow();
+        if (KeyHelper.isArrowUpKey(event)) { // UP
+            if (this.comboBoxDropdown.hasActiveRow()) {
+                if (this.comboBoxDropdown.getActiveRow() === 0) {
+                    this.comboBoxDropdown.resetActiveSelection();
+                    this.input.setReadOnly(false);
+                    this.input.giveFocus();
                 } else {
-                    this.comboBoxDropdown.navigateToFirstRow();
+                    this.comboBoxDropdown.navigateToPreviousRow();
+                    this.input.setReadOnly(true);
                 }
-                this.input.setReadOnly(true);
-                break;
-            case 13: // Enter
-                this.handleEnterPressed();
-                break;
-            case 32: // Spacebar
-                if (this.input.isReadOnly() && this.applySelectionsButton) {
-
+            }
+        } else if (KeyHelper.isArrowLeftKey(event)) { // LEFT
+            this.comboBoxDropdown.getDropdownGrid().collapseActiveRow();
+        } else if (KeyHelper.isArrowRightKey(event)) { // RIGHT
+            this.comboBoxDropdown.getDropdownGrid().expandActiveRow();
+        } else if (KeyHelper.isArrowDownKey(event)) { // DOWN
+            if (this.comboBoxDropdown.hasActiveRow()) {
+                this.comboBoxDropdown.navigateToNextRow();
+            } else {
+                this.comboBoxDropdown.navigateToFirstRow();
+            }
+            this.input.setReadOnly(true);
+        } else if (KeyHelper.isEnterKey(event)) { // ENTER
+            this.handleEnterPressed();
+        } else if (KeyHelper.isSpace(event)) { // SPACE
+            if (this.input.isReadOnly() && this.applySelectionsButton) {
                 if (!this.isSelectedRowReadOnly()) {
                     this.comboBoxDropdown.toggleRowSelection(this.comboBoxDropdown.getActiveRow(), this.maximumSelectionsReached());
                 }
@@ -1039,25 +1031,22 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                 event.stopPropagation();
                 event.preventDefault();
             }
-            break;
-        case 8:
+        } else if (KeyHelper.isBackspace(event)) { // BACKSPACE
             if (this.input.isReadOnly()) {
                 event.stopPropagation();
                 event.preventDefault();
             }
-            break;
-        case 27: // Esc
+        } else if (KeyHelper.isEscKey(event)) { // ESCAPE
             this.hideDropdown();
             event.stopPropagation();
             event.preventDefault();
-            break;
         }
 
-        if (event.which !== 13) {
+        if (!KeyHelper.isEnterKey(event)) { // ENTER
             this.input.giveFocus();
         }
 
-        if (event.which === 38 || event.which === 40 || event.which === 13) {
+        if (KeyHelper.isArrowUpKey(event) || KeyHelper.isArrowDownKey(event) || KeyHelper.isEnterKey(event)) { // UP or DOWN or ENTER
             event.stopPropagation();
             event.preventDefault();
         }
