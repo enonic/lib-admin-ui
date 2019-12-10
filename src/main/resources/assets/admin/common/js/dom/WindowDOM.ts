@@ -6,29 +6,37 @@ export const WINDOW_KEY: string = 'WindowDOM';
 
 export class WindowDOM {
 
-    private static instance: WindowDOM = new WindowDOM();
-
     private el: any; // Window clashes with Window
 
-    private onBeforeUnloadListeners: { (event: UIEvent): void; }[] = [];
+    private onBeforeUnloadListeners: ((event: UIEvent) => void)[] = [];
 
-    private onUnloadListeners: { (event: UIEvent): void; }[] = [];
+    private onUnloadListeners: ((event: UIEvent) => void)[] = [];
 
     constructor(element: Window = window) {
         this.el = element;
 
-        const handle = function (event: UIEvent, listeners: { (event: UIEvent): void; }[]) {
+        const handle = function (event: UIEvent, listeners: ((event: UIEvent) => void)[]) {
             listeners.forEach(l => l(event));
         };
 
-        this.el.onbeforeunload = event => handle(event, this.onBeforeUnloadListeners);
-        this.el.onunload = event => handle(event, this.onUnloadListeners);
+        this.el.onbeforeunload = (event) => {
+            handle(event, this.onBeforeUnloadListeners);
+        };
+        this.el.onunload = (event) => {
+            handle(event, this.onUnloadListeners);
+        };
 
         Store.instance().set(WINDOW_KEY, this);
     }
 
     static get(): WindowDOM {
-        return WindowDOM.instance;
+        let instance: WindowDOM = Store.instance().get(WINDOW_KEY);
+
+        if (instance == null) {
+            instance = new WindowDOM();
+        }
+
+        return instance;
     }
 
     asWindow(): Window {
