@@ -10,5 +10,5 @@ trim_trailing_whitespace = true
 indent_size = 4
 indent_style = space
 
-[{*.less,package.json,tsconfig*.json}]
+[{*.less,package.json}]
 indent_size = 2

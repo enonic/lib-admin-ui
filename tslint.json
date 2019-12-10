@@ -1,7 +1,8 @@
 {
     "linterOptions": {
         "exclude": [
-            "**/*.d.ts"
+            "**/*.d.ts",
+            "out/*.js"
         ]
     },
     "rules": {
