@@ -47,7 +47,7 @@ export interface UploaderElConfig {
     allowMultiSelection?: boolean;
     showCancel?: boolean;
     showResult?: boolean;
-    maximumOccurrences?: number;
+    getTotalAllowedToUpload?: () => number;
     deferred?: boolean;
     params?: { [key: string]: any };
     value?: string;
@@ -190,11 +190,6 @@ export class UploaderEl<MODEL extends Equitable>
 
     createResultItem(_value: string): Element {
         throw new Error('Should be overridden by inheritors');
-    }
-
-    setMaximumOccurrences(value: number): UploaderEl<MODEL> {
-        this.config.maximumOccurrences = value;
-        return this;
     }
 
     stop(): UploaderEl<MODEL> {
@@ -674,12 +669,6 @@ export class UploaderEl<MODEL extends Equitable>
         if (this.config.showCancel == null) {
             this.config.showCancel = true;
         }
-
-        //TODO: property is not used. it might have sense to use it when filtering upload file candidates.
-        // otherwise - just remove it
-        if (this.config.maximumOccurrences == null) {
-            this.config.maximumOccurrences = 0;
-        }
         if (this.config.hasUploadButton == null) {
             this.config.hasUploadButton = true;
         }
@@ -720,6 +709,10 @@ export class UploaderEl<MODEL extends Equitable>
     }
 
     private submitCallback(id: number, name: string) {
+        if (this.isItemsUploadLimitReached()) {
+            return false;
+        }
+
         this.uploader.setName(id, this.sanitizeName(name));
         this.uploadedItems.push(this.processFile(id, name));
 
@@ -728,6 +721,14 @@ export class UploaderEl<MODEL extends Equitable>
         this.setProgressVisible();
 
         this.debouncedUploadStart();
+    }
+
+    private isItemsUploadLimitReached(): boolean {
+        if (!this.config.getTotalAllowedToUpload) {
+            return false;
+        }
+
+        return this.uploadedItems.length >= this.config.getTotalAllowedToUpload();
     }
 
     private processFile(id: number, name: string): UploadItem<MODEL> {
