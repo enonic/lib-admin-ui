@@ -708,7 +708,7 @@ export class UploaderEl<MODEL extends Equitable>
         return null;
     }
 
-    private submitCallback(id: number, name: string) {
+    private submitCallback(id: number, name: string): boolean {
         if (this.isItemsUploadLimitReached()) {
             return false;
         }
@@ -721,6 +721,8 @@ export class UploaderEl<MODEL extends Equitable>
         this.setProgressVisible();
 
         this.debouncedUploadStart();
+
+        return true;
     }
 
     private isItemsUploadLimitReached(): boolean {
