@@ -373,7 +373,10 @@ export class UploaderEl<MODEL extends Equitable>
     }
 
     showFileSelectionDialog() {
-        $(this.uploader.getInputButton().getInput()).simulate('click');
+        const inputButton = this.uploader._buttons[0];
+        if (inputButton) {
+            $(inputButton.getInput()).simulate('click');
+        }
     }
 
     onUploadStarted(listener: (event: UploadStartedEvent<MODEL>) => void) {
