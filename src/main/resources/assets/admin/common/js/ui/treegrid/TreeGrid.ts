@@ -1093,13 +1093,20 @@ export class TreeGrid<DATA>
             this.grid.resizeCanvas();
         });
 
+        let keysBound: boolean = false;
         this.grid.onShown(() => {
-            this.bindKeys(builder);
+            if (!keysBound) {
+                keysBound = true;
+                this.bindKeys(builder);
+            }
             this.enablePostLoad(builder);
         });
 
         this.grid.onHidden(() => {
-            this.unbindKeys(builder);
+            if (keysBound) {
+                keysBound = false;
+                this.unbindKeys(builder);
+            }
             this.disablePostLoad(builder);
         });
 
