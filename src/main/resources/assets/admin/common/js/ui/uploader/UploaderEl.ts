@@ -84,6 +84,7 @@ export class UploaderEl<MODEL extends Equitable>
     private debouncedUploadStart: () => void;
     private shownInitHandler: (event: ElementShownEvent) => void;
     private renderedInitHandler: (event: ElementRenderedEvent) => void;
+    private disposeDragHandlers: () => void;
 
     constructor(config: UploaderElConfig) {
         super('div', 'uploader-el');
@@ -562,22 +563,39 @@ export class UploaderEl<MODEL extends Equitable>
                 }
             });
 
-            this.getDropzones().forEach((dropzone: Element) => {
+            const disposers: (() => void)[] = this.getDropzones().map((dropzone: Element) => {
                 const dropzoneElem = dropzone.getHTMLElement();
-                dropzone.onDrop((event: DragEvent) => {
+
+                const onDropHandler = (event: DragEvent) => {
                     this.notifyDropzoneDrop(event);
-                });
-                dropzone.onDragEnter((event: DragEvent) => {
+                };
+                const onDragEnterHandler = (event: DragEvent) => {
                     this.notifyDropzoneDragEnter(event);
-                });
-                dropzone.onDragLeave((event: DragEvent) => {
+                };
+                const onDragLeaveHandler = (event: DragEvent) => {
                     const relatedTarget = document.elementFromPoint(event.clientX, event.clientY);
                     if (dropzoneElem.contains(relatedTarget)) {
                         return;
                     }
                     this.notifyDropzoneDragLeave(event);
-                });
+                };
+
+                dropzone.onDrop(onDropHandler);
+                dropzone.onDragEnter(onDragEnterHandler);
+                dropzone.onDragLeave(onDragLeaveHandler);
+
+                return () => {
+                    dropzone.unDrop(onDropHandler);
+                    dropzone.unDragEnter(onDragEnterHandler);
+                    dropzone.unDragLeave(onDragLeaveHandler);
+                };
             });
+
+            this.disposeDragHandlers = () => {
+                disposers.forEach(dispose => {
+                    dispose();
+                });
+            };
         }
 
         // on init
@@ -670,6 +688,10 @@ export class UploaderEl<MODEL extends Equitable>
         if (this.dragAndDropper) {
             this.dragAndDropper.dispose();
             this.dragAndDropper = null;
+        }
+        if (this.disposeDragHandlers) {
+            this.disposeDragHandlers();
+            this.disposeDragHandlers = null;
         }
     }
 
