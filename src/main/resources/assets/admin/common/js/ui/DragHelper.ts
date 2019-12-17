@@ -17,11 +17,11 @@ export class DragHelper
     }
 
     static get(): DragHelper {
-        let instance: DragHelper = Store.parentInstance().get(DRAG_HELPER_KEY);
+        let instance: DragHelper = Store.instance().get(DRAG_HELPER_KEY);
 
         if (instance == null) {
             instance = new DragHelper();
-            Store.parentInstance().set(DRAG_HELPER_KEY, instance);
+            Store.instance().set(DRAG_HELPER_KEY, instance);
         }
 
         return instance;
