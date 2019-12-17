@@ -64,7 +64,7 @@ export class UploaderEl<MODEL extends Equitable>
     protected uploader: qq.FineUploaderBasic;
     protected dragAndDropper: DragAndDrop;
     protected value: string;
-    protected dropzone: AEl;
+    protected dropzone: DropZone;
     private uploadedItems: UploadItem<MODEL>[] = [];
     private extraDropzoneIds: string[] = [];
     private defaultDropzoneContainer: DropzoneContainer;
@@ -270,12 +270,7 @@ export class UploaderEl<MODEL extends Equitable>
 
     setEnabled(enabled: boolean): UploaderEl<MODEL> {
         this.config.disabled = !enabled;
-
-        if (!enabled) {
-            this.dropzone.getEl().setAttribute('disabled', 'true');
-        } else {
-            this.dropzone.getEl().removeAttribute('disabled');
-        }
+        this.dropzone.setEnable(enabled);
 
         if (!enabled && this.uploader) {
             if (UploaderEl.debug) {
@@ -368,7 +363,7 @@ export class UploaderEl<MODEL extends Equitable>
         return this.defaultDropzoneContainer;
     }
 
-    getDropzone(): AEl {
+    getDropzone(): DropZone {
         return this.dropzone;
     }
 
@@ -521,7 +516,7 @@ export class UploaderEl<MODEL extends Equitable>
     protected initUploader() {
         const uploader = new qq.FineUploaderBasic({
             debug: false,
-            button: document.getElementById(this.dropzone.getId()),
+            button: this.dropzone.getHTMLElement(),
             multiple: this.config.allowMultiSelection,
             folders: false,
             autoUpload: false,
@@ -549,6 +544,9 @@ export class UploaderEl<MODEL extends Equitable>
             }
         });
 
+        // Reset the overflow inline style, that was set by FineUploader
+        this.dropzone.getHTMLElement().style.overflow = '';
+
         if (this.config.allowDrop) {
             this.dragAndDropper = new DragAndDrop({
                 dropZoneElements: this.getDropzoneElements(),
@@ -556,20 +554,35 @@ export class UploaderEl<MODEL extends Equitable>
                     dropActive: 'dz-dragover'
                 },
                 callbacks: {
-                    //this submits the dropped files to uploader
                     processingDroppedFilesComplete: (files) => {
                         if (!this.isUploading()) {
                             uploader.addFiles(files);
                         }
-                    },
-                    onDrop: (event: DragEvent) => this.notifyDropzoneDrop(event),
-                    onDragEnter: (event: DragEvent) => this.notifyDropzoneDragEnter(event),
-                    onDragLeave: (event: DragEvent) => this.notifyDropzoneDragLeave(event)
+                    }
                 }
+            });
+
+            this.getDropzones().forEach((dropzone: Element) => {
+                const dropzoneElem = dropzone.getHTMLElement();
+                dropzone.onDrop((event: DragEvent) => {
+                    this.notifyDropzoneDrop(event);
+                });
+                dropzone.onDragEnter((event: DragEvent) => {
+                    this.notifyDropzoneDragEnter(event);
+                });
+                dropzone.onDragLeave((event: DragEvent) => {
+                    const relatedTarget = document.elementFromPoint(event.clientX, event.clientY);
+                    if (dropzoneElem.contains(relatedTarget)) {
+                        return;
+                    }
+                    this.notifyDropzoneDragLeave(event);
+                });
             });
         }
 
-        this.disableInputFocus(); // on init
+        // on init
+        this.disableInputFocus();
+
         return uploader;
     }
 
@@ -632,7 +645,7 @@ export class UploaderEl<MODEL extends Equitable>
     private handleKeyEvents() {
         this.onKeyPressed((event: KeyboardEvent) => {
             if (this.defaultDropzoneContainer.isVisible() && event.keyCode === 13) {
-                $(this.dropzone.getEl().getHTMLElement()).simulate('click');
+                $(this.dropzone.getHTMLElement()).simulate('click');
             }
         });
 
@@ -846,7 +859,7 @@ export class UploaderEl<MODEL extends Equitable>
     }
 
     private getDropzoneElements(): HTMLElement[] {
-        const dropElements = [];
+        const dropElements: HTMLElement[] = [];
         if (this.config.selfIsDropzone) {
             dropElements.push(document.getElementById(this.getId()));
         } else {
@@ -857,6 +870,24 @@ export class UploaderEl<MODEL extends Equitable>
             const elem = document.getElementById(id);
             if (elem) {
                 dropElements.push(elem);
+            }
+        });
+
+        return dropElements;
+    }
+
+    private getDropzones(): Element[] {
+        const dropElements: Element[] = [];
+        if (this.config.selfIsDropzone) {
+            dropElements.push(this);
+        } else {
+            dropElements.push(this.dropzone);
+        }
+
+        this.extraDropzoneIds.forEach(id => {
+            const elements = Element.fromSelector(`#${id}`);
+            if (elements && elements.length > 0) {
+                dropElements.push(...elements);
             }
         });
 
@@ -927,27 +958,40 @@ export class UploaderEl<MODEL extends Equitable>
 export class DropzoneContainer
     extends DivEl {
 
-    private dropzone: AEl;
+    private dropzone: DropZone;
 
     constructor(hasMask: boolean = false) {
         super('dropzone-container');
-        this.initDropzone();
+        this.dropzone = new DropZone();
+        this.appendChild(this.dropzone);
         if (hasMask) {
             this.appendChild(new DivEl('uploader-mask'));
         }
     }
 
-    getDropzone(): AEl {
+    getDropzone(): DropZone {
         return this.dropzone;
     }
+}
 
-    private initDropzone() {
-        this.dropzone = new AEl('dropzone');
-        this.dropzone.setId('uploader-dropzone-' + new Date().getTime());
-        this.dropzone.getEl().setTabIndex(-1);// for mac default settings
-        this.dropzone.getEl().setAttribute('data-drop', i18n('drop.file.normal'));
-        this.dropzone.getEl().setAttribute('data-drop-default', i18n('drop.clickable'));
-        this.getEl().setTabIndex(0);
-        this.appendChild(this.dropzone);
+export class DropZone
+    extends AEl {
+    constructor() {
+        super('dropzone');
+
+        this.setId(`uploader-dropzone-${new Date().getTime()}`);
+        // this.getEl().setAttribute('qq-hide-dropzone', '');
+        this.getEl().setAttribute('data-drop', i18n('drop.file.normal'));
+        this.getEl().setAttribute('data-drop-default', i18n('drop.clickable'));
+        // for mac default settings
+        this.getEl().setTabIndex(-1);
+    }
+
+    setEnable(enabled: boolean = true) {
+        if (enabled) {
+            this.getEl().removeAttribute('disabled');
+        } else {
+            this.getEl().setAttribute('disabled', 'true');
+        }
     }
 }
