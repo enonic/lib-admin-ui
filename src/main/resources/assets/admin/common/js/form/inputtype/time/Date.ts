@@ -1,72 +1,77 @@
-module api.form.inputtype.time {
+import {Property} from '../../../data/Property';
+import {Value} from '../../../data/Value';
+import {ValueType} from '../../../data/ValueType';
+import {ValueTypes} from '../../../data/ValueTypes';
+import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
+import {Element} from '../../../dom/Element';
+import {DatePicker, DatePickerBuilder} from '../../../ui/time/DatePicker';
+import {SelectedDateChangedEvent} from '../../../ui/time/SelectedDateChangedEvent';
+import {LocalDate} from '../../../util/LocalDate';
+import {InputTypeManager} from '../InputTypeManager';
+import {Class} from '../../../Class';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
+/**
+ * Uses [[ValueType]] [[ValueTypeLocalDate]].
+ */
+export class Date
+    extends BaseInputTypeNotManagingAdd {
 
-    /**
-     * Uses [[api.data.ValueType]] [[api.data.ValueTypeLocalDate]].
-     */
-    export class Date
-        extends api.form.inputtype.support.BaseInputTypeNotManagingAdd {
+    getValueType(): ValueType {
+        return ValueTypes.LOCAL_DATE;
+    }
 
-        getValueType(): ValueType {
-            return ValueTypes.LOCAL_DATE;
+    newInitialValue(): Value {
+        return super.newInitialValue() || ValueTypes.LOCAL_DATE.newNullValue();
+    }
+
+    createInputOccurrenceElement(_index: number, property: Property): Element {
+        if (!ValueTypes.LOCAL_DATE.equals(property.getType())) {
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.LOCAL_DATE);
         }
 
-        newInitialValue(): Value {
-            return super.newInitialValue() || ValueTypes.LOCAL_DATE.newNullValue();
+        let datePickerBuilder = new DatePickerBuilder();
+
+        if (!property.hasNullValue()) {
+            let date = property.getLocalDate();
+            datePickerBuilder.setDate(date.toDate());
         }
+        let datePicker = datePickerBuilder.build();
 
-        createInputOccurrenceElement(_index: number, property: Property): api.dom.Element {
-            if (!ValueTypes.LOCAL_DATE.equals(property.getType())) {
-                property.convertValueType(ValueTypes.LOCAL_DATE);
-            }
+        datePicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
+            let value = new Value(event.getDate() != null ? LocalDate.fromDate(event.getDate()) : null,
+                ValueTypes.LOCAL_DATE);
+            this.notifyOccurrenceValueChanged(datePicker, value);
+        });
 
-            let datePickerBuilder = new api.ui.time.DatePickerBuilder();
+        return datePicker;
+    }
 
-            if (!property.hasNullValue()) {
-                let date = property.getLocalDate();
-                datePickerBuilder.setDate(date.toDate());
-            }
-            let datePicker = datePickerBuilder.build();
+    updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly?: boolean) {
+        const datePicker = <DatePicker> occurrence;
 
-            datePicker.onSelectedDateTimeChanged((event: api.ui.time.SelectedDateChangedEvent) => {
-                let value = new Value(event.getDate() != null ? api.util.LocalDate.fromDate(event.getDate()) : null,
-                    ValueTypes.LOCAL_DATE);
-                this.notifyOccurrenceValueChanged(datePicker, value);
-            });
-
-            return datePicker;
-        }
-
-        updateInputOccurrenceElement(occurrence: api.dom.Element, property: api.data.Property, unchangedOnly?: boolean) {
-            const datePicker = <api.ui.time.DatePicker> occurrence;
-
-            if (!unchangedOnly || !datePicker.isDirty()) {
-                let date = property.hasNonNullValue() ? property.getLocalDate().toDate() : null;
-                datePicker.setSelectedDate(date);
-            } else if (datePicker.isDirty()) {
-                datePicker.forceSelectedDateTimeChangedEvent();
-            }
-        }
-
-        resetInputOccurrenceElement(occurrence: api.dom.Element) {
-            let input = <api.ui.time.DatePicker> occurrence;
-
-            input.resetBase();
-        }
-
-        valueBreaksRequiredContract(value: Value): boolean {
-            return value.isNull() || !value.getType().equals(ValueTypes.LOCAL_DATE);
-        }
-
-        hasInputElementValidUserInput(inputElement: api.dom.Element) {
-            let datePicker = <api.ui.time.DatePicker>inputElement;
-            return datePicker.isValid();
+        if (!unchangedOnly || !datePicker.isDirty()) {
+            let date = property.hasNonNullValue() ? property.getLocalDate().toDate() : null;
+            datePicker.setSelectedDate(date);
+        } else if (datePicker.isDirty()) {
+            datePicker.forceSelectedDateTimeChangedEvent();
         }
     }
-    api.form.inputtype.InputTypeManager.register(new api.Class('Date', Date));
 
+    resetInputOccurrenceElement(occurrence: Element) {
+        let input = <DatePicker> occurrence;
+
+        input.resetBase();
+    }
+
+    valueBreaksRequiredContract(value: Value): boolean {
+        return value.isNull() || !value.getType().equals(ValueTypes.LOCAL_DATE);
+    }
+
+    hasInputElementValidUserInput(inputElement: Element) {
+        let datePicker = <DatePicker>inputElement;
+        return datePicker.isValid();
+    }
 }
+
+InputTypeManager.register(new Class('Date', Date), true);

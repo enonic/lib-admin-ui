@@ -1,21 +1,20 @@
-module api.ui.responsive {
+import {ResponsiveItem} from './ResponsiveItem';
 
-    export class ResponsiveListener {
+export class ResponsiveListener {
 
-        private item: ResponsiveItem;
-        private listener: (event?: Event) => void;
+    private item: ResponsiveItem;
+    private listener: (event?: Event) => void;
 
-        constructor(item: ResponsiveItem, listener: (event?: Event) => void) {
-            this.item = item;
-            this.listener = listener;
-        }
+    constructor(item: ResponsiveItem, listener: (event?: Event) => void) {
+        this.item = item;
+        this.listener = listener;
+    }
 
-        getItem(): ResponsiveItem {
-            return this.item;
-        }
+    getItem(): ResponsiveItem {
+        return this.item;
+    }
 
-        getListener(): (event?: Event) => void {
-            return this.listener;
-        }
+    getListener(): (event?: Event) => void {
+        return this.listener;
     }
 }

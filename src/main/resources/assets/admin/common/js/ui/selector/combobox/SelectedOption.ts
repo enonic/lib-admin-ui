@@ -1,32 +1,33 @@
-module api.ui.selector.combobox {
+import {Option} from '../Option';
+import {SelectedOptionView} from './SelectedOptionView';
+import {assertNotNull} from '../../../util/Assert';
 
-    export class SelectedOption<T> {
+export class SelectedOption<T> {
 
-        private optionView:SelectedOptionView<T>;
+    private optionView: SelectedOptionView<T>;
 
-        private index:number;
+    private index: number;
 
-        constructor(optionView:SelectedOptionView<T>, index:number) {
-            api.util.assertNotNull(optionView, 'optionView cannot be null');
+    constructor(optionView: SelectedOptionView<T>, index: number) {
+        assertNotNull(optionView, 'optionView cannot be null');
 
-            this.optionView = optionView;
-            this.index = index;
-        }
+        this.optionView = optionView;
+        this.index = index;
+    }
 
-        getOption():api.ui.selector.Option<T> {
-            return this.optionView.getOption();
-        }
+    getOption(): Option<T> {
+        return this.optionView.getOption();
+    }
 
-        getOptionView():SelectedOptionView<T> {
-            return this.optionView;
-        }
+    getOptionView(): SelectedOptionView<T> {
+        return this.optionView;
+    }
 
-        getIndex():number {
-            return this.index;
-        }
+    getIndex(): number {
+        return this.index;
+    }
 
-        setIndex(value:number) {
-            this.index = value;
-        }
+    setIndex(value: number) {
+        this.index = value;
     }
 }

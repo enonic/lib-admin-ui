@@ -1,134 +1,137 @@
-module api.content {
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
+import {ContentUnnamed} from './ContentUnnamed';
+import {ContentName} from './ContentName';
 
-    export class ContentPath implements api.Equitable {
+export class ContentPath
+    implements Equitable {
 
-        public static ELEMENT_DIVIDER: string = '/';
+    public static ELEMENT_DIVIDER: string = '/';
 
-        public static ROOT: ContentPath = ContentPath.fromString('/');
+    public static ROOT: ContentPath = ContentPath.fromString('/');
 
-        private elements: string[];
+    private elements: string[];
 
-        private refString: string;
+    private refString: string;
 
-        public static fromParent(parent: ContentPath, name: string): ContentPath {
-            const elements: string[] = [].concat(parent.getElements(), name);
-            return new ContentPath(elements);
+    constructor(elements: string[]) {
+        this.elements = elements;
+        if (elements.length === 0) {
+            this.refString = ContentPath.ELEMENT_DIVIDER;
+        } else {
+            this.refString = (ContentPath.ELEMENT_DIVIDER + this.elements.join(ContentPath.ELEMENT_DIVIDER)).replace(/\/\//g, '/');
+        }
+    }
+
+    public static fromParent(parent: ContentPath, name: string): ContentPath {
+        const elements: string[] = [].concat(parent.getElements(), name);
+        return new ContentPath(elements);
+    }
+
+    public static fromString(path: string): ContentPath {
+        let elements: string[] = [];
+
+        if (path.indexOf('/') === 0 && path.length > 1) {
+            path = path.substr(1);
+            elements = path.split(ContentPath.ELEMENT_DIVIDER);
         }
 
-        public static fromString(path: string): ContentPath {
-            let elements: string[] = [];
+        return new ContentPath(elements);
+    }
 
-            if (path.indexOf('/') === 0 && path.length > 1) {
-                path = path.substr(1);
-                elements = path.split(ContentPath.ELEMENT_DIVIDER);
-            }
-
-            return new ContentPath(elements);
-        }
-
-        constructor(elements: string[]) {
-            this.elements = elements;
-            if (elements.length === 0) {
-                this.refString = ContentPath.ELEMENT_DIVIDER;
-            } else {
-                this.refString = (ContentPath.ELEMENT_DIVIDER + this.elements.join(ContentPath.ELEMENT_DIVIDER)).replace(/\/\//g, '/');
+    getPathAtLevel(level: number): ContentPath {
+        let result = '';
+        for (let index = 0; index < this.getElements().length; index++) {
+            result = result + ContentPath.ELEMENT_DIVIDER + this.getElements()[index];
+            if (index === (level - 1)) {
+                return ContentPath.fromString(result);
             }
         }
+        return null;
+    }
 
-        getPathAtLevel(level: number): ContentPath {
-            let result = '';
-            for (let index = 0; index < this.getElements().length; index++) {
-                result = result + ContentPath.ELEMENT_DIVIDER + this.getElements()[index];
-                if (index === (level - 1)) {
-                    return ContentPath.fromString(result);
-                }
-            }
+    getElements(): string[] {
+        return this.elements;
+    }
+
+    getName(): string {
+        return this.elements[this.elements.length - 1];
+    }
+
+    getLevel(): number {
+        return this.elements.length;
+    }
+
+    hasParentContent(): boolean {
+        return this.elements.length > 1;
+    }
+
+    getFirstElement(): string {
+        return (this.elements[0] || '');
+    }
+
+    getParentPath(): ContentPath {
+
+        if (this.elements.length < 1) {
             return null;
         }
-
-        getElements(): string[] {
-            return this.elements;
-        }
-
-        getName(): string {
-            return this.elements[this.elements.length - 1];
-        }
-
-        getLevel(): number {
-            return this.elements.length;
-        }
-
-        hasParentContent(): boolean {
-            return this.elements.length > 1;
-        }
-
-        getFirstElement(): string {
-            return (this.elements[0] || '');
-        }
-
-        getParentPath(): ContentPath {
-
-            if (this.elements.length < 1) {
-                return null;
+        let parentElements: string[] = [];
+        this.elements.forEach((element: string, index: number) => {
+            if (index < this.elements.length - 1) {
+                parentElements.push(element);
             }
-            let parentElements: string[] = [];
-            this.elements.forEach((element: string, index: number)=> {
-                if (index < this.elements.length - 1) {
-                    parentElements.push(element);
-                }
-            });
-            return new ContentPath(parentElements);
+        });
+        return new ContentPath(parentElements);
+    }
+
+    isRoot(): boolean {
+        return this.equals(ContentPath.ROOT);
+    }
+
+    isNotRoot(): boolean {
+        return !this.equals(ContentPath.ROOT);
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentPath)) {
+            return false;
         }
 
-        isRoot(): boolean {
-            return this.equals(ContentPath.ROOT);
+        let other = <ContentPath>o;
+
+        if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
+            return false;
         }
 
-        isNotRoot(): boolean {
-            return !this.equals(ContentPath.ROOT);
-        }
+        return true;
+    }
 
-        equals(o: api.Equitable): boolean {
+    isDescendantOf(path: ContentPath): boolean {
+        return (path.isRoot() || this.refString.indexOf(path.toString() + ContentPath.ELEMENT_DIVIDER) === 0) &&
+               (this.getLevel() > path.getLevel());
+    }
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ContentPath)) {
-                return false;
+    isChildOf(path: ContentPath): boolean {
+        return (path.isRoot() || this.refString.indexOf(path.toString() + ContentPath.ELEMENT_DIVIDER) === 0) &&
+               (this.getLevel() === path.getLevel() + 1);
+    }
+
+    prettifyUnnamedPathElements(): ContentPath {
+
+        let prettyElements: string[] = [];
+        this.elements.forEach((element: string) => {
+            if (element.indexOf(ContentUnnamed.UNNAMED_PREFIX) === 0) {
+                prettyElements.push('<' + ContentUnnamed.getPrettyUnnamed() + '>');
+            } else {
+                prettyElements.push(element);
             }
+        });
 
-            let other = <ContentPath>o;
+        return new ContentPath(prettyElements);
+    }
 
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        isDescendantOf(path: ContentPath): boolean {
-            return (path.isRoot() || this.refString.indexOf(path.toString() + ContentPath.ELEMENT_DIVIDER) === 0) &&
-                   (this.getLevel() > path.getLevel());
-        }
-
-        isChildOf(path: ContentPath): boolean {
-            return (path.isRoot() || this.refString.indexOf(path.toString() + ContentPath.ELEMENT_DIVIDER) === 0) &&
-                   (this.getLevel() === path.getLevel() + 1);
-        }
-
-        prettifyUnnamedPathElements(): ContentPath {
-
-            let prettyElements: string[] = [];
-            this.elements.forEach((element: string) => {
-                if (ContentName.fromString(element).isUnnamed()) {
-                    prettyElements.push('<' + ContentUnnamed.getPrettyUnnamed() + '>');
-                } else {
-                    prettyElements.push(element);
-                }
-            });
-
-            return new ContentPath(prettyElements);
-        }
-
-        toString(): string {
-            return this.refString;
-        }
+    toString(): string {
+        return this.refString;
     }
 }

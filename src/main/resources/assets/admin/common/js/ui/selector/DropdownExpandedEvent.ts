@@ -1,21 +1,20 @@
-module api.ui.selector {
+import {Element} from '../../dom/Element';
 
-    export class DropdownExpandedEvent {
+export class DropdownExpandedEvent {
 
-        private expanded: boolean;
-        private dropDownElement: api.dom.Element;
+    private expanded: boolean;
+    private dropDownElement: Element;
 
-        constructor(dropDownElement: api.dom.Element, expanded: boolean) {
-            this.dropDownElement = dropDownElement;
-            this.expanded = expanded;
-        }
+    constructor(dropDownElement: Element, expanded: boolean) {
+        this.dropDownElement = dropDownElement;
+        this.expanded = expanded;
+    }
 
-        isExpanded(): boolean {
-            return this.expanded;
-        }
+    isExpanded(): boolean {
+        return this.expanded;
+    }
 
-        getDropdownElement(): api.dom.Element {
-            return this.dropDownElement;
-        }
+    getDropdownElement(): Element {
+        return this.dropDownElement;
     }
 }

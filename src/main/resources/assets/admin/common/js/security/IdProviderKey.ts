@@ -1,30 +1,29 @@
-module api.security {
+import {UserItemKey} from './UserItemKey';
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
 
-    import UserItemKey = api.security.UserItemKey;
+export class IdProviderKey
+    extends UserItemKey {
 
-    export class IdProviderKey
-        extends UserItemKey {
+    public static SYSTEM: IdProviderKey = new IdProviderKey('system');
 
-        public static SYSTEM: IdProviderKey = new IdProviderKey('system');
+    constructor(id: string) {
+        super(id);
+    }
 
-        constructor(id: string) {
-            super(id);
+    static fromString(value: string): IdProviderKey {
+        return new IdProviderKey(value);
+    }
+
+    isSystem(): boolean {
+        return this.getId() === IdProviderKey.SYSTEM.getId();
+    }
+
+    equals(o: Equitable): boolean {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, IdProviderKey)) {
+            return false;
         }
 
-        static fromString(value: string): IdProviderKey {
-            return new IdProviderKey(value);
-        }
-
-        isSystem(): boolean {
-            return this.getId() === IdProviderKey.SYSTEM.getId();
-        }
-
-        equals(o: api.Equitable): boolean {
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, IdProviderKey)) {
-                return false;
-            }
-
-            return super.equals(o);
-        }
+        return super.equals(o);
     }
 }

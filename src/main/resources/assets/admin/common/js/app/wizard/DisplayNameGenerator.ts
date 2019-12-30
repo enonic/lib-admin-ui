@@ -1,9 +1,6 @@
-module api.app.wizard {
+export interface DisplayNameGenerator {
 
-    export interface DisplayNameGenerator {
+    hasExpression(): boolean;
 
-        hasExpression(): boolean;
-
-        execute(): string;
-    }
+    execute(): string;
 }

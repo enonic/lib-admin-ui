@@ -1,53 +1,82 @@
-module api.dom {
+import {Element} from './Element';
+import {ClassHelper} from '../ClassHelper';
+import {Store} from '../store/Store';
 
-    export class ElementRegistry {
+const ELEMENT_REGISTRY_KEY: string = 'ElementRegistry';
 
-        private static counters: { [index: string]: number; } = {};
+export type ElementRegistryCounter = Map<string, number>;
 
-        private static elements: { [index: string]: api.dom.Element; } = {};
+export type ElementRegistryElements = Map<string, Element>;
 
-        public static registerElement(el: api.dom.Element): string {
-            let fullName;
-            let id = el.getId();
+export class ElementRegistry {
 
-            if (!id) {
-                id = fullName = api.ClassHelper.getFullName(el);
-            } else {
-                fullName = id;
-            }
-            let count = ElementRegistry.counters[fullName];
-            if (count >= 0) {
-                id += '-' + (++count);
-            }
+    private counters: ElementRegistryCounter;
 
-            ElementRegistry.counters[fullName] = count || 0;
-            ElementRegistry.elements[id] = el;
+    private elements: ElementRegistryElements;
 
-            return id;
+    private constructor() {
+        this.counters = new Map<string, number>();
+        this.elements = new Map<string, Element>();
+    }
+
+    private static get(): ElementRegistry {
+        let instance: ElementRegistry = Store.instance().get(ELEMENT_REGISTRY_KEY);
+
+        if (instance == null) {
+            instance = new ElementRegistry();
+            Store.instance().set(ELEMENT_REGISTRY_KEY, instance);
         }
 
-        public static reRegisterElement(el: api.dom.Element) {
-            const id = el.getId();
-            ElementRegistry.elements[id] = el;
+        return instance;
+    }
+
+    private static getCounters(): ElementRegistryCounter {
+        return ElementRegistry.get().counters;
+    }
+
+    private static getElements(): ElementRegistryElements {
+        return ElementRegistry.get().elements;
+    }
+
+    public static registerElement(el: Element): string {
+        let fullName;
+        let id = el.getId();
+
+        if (!id) {
+            id = fullName = ClassHelper.getFullName(el);
+        } else {
+            fullName = id;
+        }
+        let count = ElementRegistry.getCounters().get(fullName);
+        if (count >= 0) {
+            id += `-${++count}`;
         }
 
-        public static unregisterElement(el: api.dom.Element) {
-            if (el) {
-                delete ElementRegistry.elements[el.getId()];
-                // don't reduce counter because if we deleted 2nd element while having 5,
-                // the counter would had been reduced to 4 resulting in a double 5 elements after another one is created.
-            }
-        }
+        ElementRegistry.getCounters().set(fullName, count || 0);
+        ElementRegistry.getElements().set(id, el);
 
-        public static getElementById(id: string): api.dom.Element {
-            return ElementRegistry.elements[id];
-        }
+        return id;
+    }
 
-        public static getElementCountById(id: string): number {
-            // Get the counter from the id according to the name notation
-            let count = parseInt(id.slice(id.lastIndexOf('-') + 1), 10) || 0;
-            return count;
+    public static reRegisterElement(el: Element) {
+        const id = el.getId();
+        ElementRegistry.getElements().set(id, el);
+    }
+
+    public static unregisterElement(el: Element) {
+        if (el) {
+            ElementRegistry.getElements().delete(el.getId());
+            // don't reduce counter because if we deleted 2nd element while having 5,
+            // the counter would had been reduced to 4 resulting in a double 5 elements after another one is created.
         }
     }
 
+    public static getElementById(id: string): Element {
+        return ElementRegistry.getElements().get(id);
+    }
+
+    public static getElementCountById(id: string): number {
+        // Get the counter from the id according to the name notation
+        return parseInt(id.slice(id.lastIndexOf('-') + 1), 10) || 0;
+    }
 }

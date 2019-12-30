@@ -1,66 +1,64 @@
-module api.ui.grid {
+export class GridOnClickDataBuilder {
 
-    export class GridOnClickDataBuilder {
+    row: number;
 
-        row: number;
+    cell: number;
 
-        cell: number;
+    grid: any;
 
-        grid: any;
+    constructor(source?: GridOnClickData) {
 
-        constructor(source?: GridOnClickData) {
-
-            if (source) {
-                this.row = source.getRow();
-                this.cell = source.getCell();
-                this.grid = source.getGrid();
-            }
-        }
-
-        setRow(row: number): GridOnClickDataBuilder {
-            this.row = row;
-            return this;
-        }
-
-        setCell(cell: number): GridOnClickDataBuilder {
-            this.cell = cell;
-            return this;
-        }
-
-        setGrid(grid: any): GridOnClickDataBuilder {
-            this.grid = grid;
-            return this;
-        }
-
-        build(): GridOnClickData {
-            return new GridOnClickData(this);
+        if (source) {
+            this.row = source.getRow();
+            this.cell = source.getCell();
+            this.grid = source.getGrid();
         }
     }
 
-    export class GridOnClickData implements Slick.OnClickEventData {
+    setRow(row: number): GridOnClickDataBuilder {
+        this.row = row;
+        return this;
+    }
 
-        row: number;
+    setCell(cell: number): GridOnClickDataBuilder {
+        this.cell = cell;
+        return this;
+    }
 
-        cell: number;
+    setGrid(grid: any): GridOnClickDataBuilder {
+        this.grid = grid;
+        return this;
+    }
 
-        grid: any;
+    build(): GridOnClickData {
+        return new GridOnClickData(this);
+    }
+}
 
-        constructor(builder: GridOnClickDataBuilder) {
-            this.row = builder.row;
-            this.cell = builder.cell;
-            this.grid = builder.grid;
-        }
+export class GridOnClickData
+    implements Slick.OnClickEventArgs<any> {
 
-        getRow(): number {
-            return this.row;
-        }
+    row: number;
 
-        getCell(): number {
-            return this.cell;
-        }
+    cell: number;
 
-        getGrid(): any {
-            return this.grid;
-        }
+    grid: any;
+
+    constructor(builder: GridOnClickDataBuilder) {
+        this.row = builder.row;
+        this.cell = builder.cell;
+        this.grid = builder.grid;
+    }
+
+    getRow(): number {
+        return this.row;
+    }
+
+    getCell(): number {
+        return this.cell;
+    }
+
+    getGrid(): any {
+        return this.grid;
     }
 }

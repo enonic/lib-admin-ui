@@ -1,16 +1,12 @@
-module api.item {
+export interface Item {
 
-    export interface Item {
+    getId(): string;
 
-        getId():string;
+    getCreatedTime(): Date;
 
-        getCreatedTime():Date;
+    getModifiedTime(): Date;
 
-        getModifiedTime():Date;
+    isDeletable(): boolean;
 
-        isDeletable():boolean;
-
-        isEditable():boolean;
-    }
-
+    isEditable(): boolean;
 }

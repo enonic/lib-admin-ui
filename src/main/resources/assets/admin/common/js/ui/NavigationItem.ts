@@ -1,8 +1,5 @@
-module api.ui {
+export interface NavigationItem {
 
-    export interface NavigationItem {
+    getIndex(): number;
 
-        getIndex():number;
-
-    }
 }

@@ -1,87 +1,89 @@
-module api.form.inputtype.text {
+import {NumberHelper} from '../../../util/NumberHelper';
+import {DivEl} from '../../../dom/DivEl';
+import {FormInputEl} from '../../../dom/FormInputEl';
+import {Element} from '../../../dom/Element';
+import {ValueTypes} from '../../../data/ValueTypes';
+import {i18n} from '../../../util/Messages';
+import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {Property} from '../../../data/Property';
+import {InputValidationRecording} from '../InputValidationRecording';
+import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 
-    import NumberHelper = api.util.NumberHelper;
-    import DivEl = api.dom.DivEl;
-    import FormInputEl = api.dom.FormInputEl;
-    import Element = api.dom.Element;
-    import ValueTypes = api.data.ValueTypes;
-    import i18n = api.util.i18n;
+export abstract class TextInputType
+    extends BaseInputTypeNotManagingAdd {
 
-    export abstract class TextInputType
-        extends api.form.inputtype.support.BaseInputTypeNotManagingAdd {
+    private maxLength: number;
 
-        private maxLength: number;
+    constructor(config: InputTypeViewContext) {
+        super(config);
+        this.readConfig(config.inputConfig);
 
-        constructor(config: api.form.inputtype.InputTypeViewContext) {
-            super(config);
-            this.readConfig(config.inputConfig);
-
-            if (NumberHelper.isNumber(this.maxLength)) {
-                this.addClass('max-length-limited');
-            }
+        if (NumberHelper.isNumber(this.maxLength)) {
+            this.addClass('max-length-limited');
         }
+    }
 
-        protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
-            const maxLengthConfig = inputConfig['maxLength'] ? inputConfig['maxLength'][0] : {};
-            const maxLength = NumberHelper.toNumber(maxLengthConfig['value']);
-            this.maxLength = maxLength > 0 ? maxLength : null;
-        }
+    protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
+        const maxLengthConfig = inputConfig['maxLength'] ? inputConfig['maxLength'][0] : {};
+        const maxLength = NumberHelper.toNumber(maxLengthConfig['value']);
+        this.maxLength = maxLength > 0 ? maxLength : null;
+    }
 
-        protected updateFormInputElValue(occurrence: api.dom.FormInputEl, property: api.data.Property) {
-            occurrence.setValue(property.getString());
-        }
+    protected updateFormInputElValue(occurrence: FormInputEl, property: Property) {
+        occurrence.setValue(property.getString());
+    }
 
-        protected initOccurenceListeners(inputEl: FormInputEl) {
+    protected initOccurenceListeners(inputEl: FormInputEl) {
 
-            if (NumberHelper.isNumber(this.maxLength)) {
+        if (NumberHelper.isNumber(this.maxLength)) {
 
-                inputEl.onValueChanged(() => {
-                    const lengthCounter = Element.fromHtmlElement(
-                        (<HTMLElement>inputEl.getParentElement().getHTMLElement().querySelector('.length-counter')));
-                    if (lengthCounter) {
-                        this.updateLengthCounterValue(lengthCounter, inputEl.getValue());
-                    }
-                });
-
-                inputEl.onRendered(() => {
-                    const lengthCounter = new DivEl('length-counter');
+            inputEl.onValueChanged(() => {
+                const lengthCounter = Element.fromHtmlElement(
+                    (<HTMLElement>inputEl.getParentElement().getHTMLElement().querySelector('.length-counter')));
+                if (lengthCounter) {
                     this.updateLengthCounterValue(lengthCounter, inputEl.getValue());
-
-                    inputEl.getParentElement().appendChild(lengthCounter);
-                });
-
-            }
-
-            return inputEl;
-        }
-
-        protected newValueHandler(inputEl: FormInputEl, newValue: string, isValid: boolean = true) {
-            const value = isValid ? ValueTypes.STRING.newValue(newValue) : this.newInitialValue();
-            this.notifyOccurrenceValueChanged(inputEl, value);
-        }
-
-        private updateLengthCounterValue(lengthCounter: DivEl, newValue: string) {
-            lengthCounter.setHtml(`${this.maxLength - newValue.length}`);
-        }
-
-        protected isValid(value: string, _textInput: FormInputEl, _silent: boolean = false,
-                          recording?: api.form.inputtype.InputValidationRecording): boolean {
-            const lengthValid = this.isValidMaxLength(value);
-
-            if (!lengthValid) {
-                if (recording) {
-                    recording.setAdditionalValidationRecord(
-                        api.form.AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
-                            i18n('field.value.breaks.maxlength', this.maxLength)).build());
                 }
+            });
 
+            inputEl.onRendered(() => {
+                const lengthCounter = new DivEl('length-counter');
+                this.updateLengthCounterValue(lengthCounter, inputEl.getValue());
+
+                inputEl.getParentElement().appendChild(lengthCounter);
+            });
+
+        }
+
+        return inputEl;
+    }
+
+    protected newValueHandler(inputEl: FormInputEl, newValue: string, isValid: boolean = true) {
+        const value = isValid ? ValueTypes.STRING.newValue(newValue) : this.newInitialValue();
+        this.notifyOccurrenceValueChanged(inputEl, value);
+    }
+
+    protected isValid(value: string, _textInput: FormInputEl, _silent: boolean = false,
+                      recording?: InputValidationRecording): boolean {
+        const lengthValid = this.isValidMaxLength(value);
+
+        if (!lengthValid) {
+            if (recording) {
+                recording.setAdditionalValidationRecord(
+                    AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                        i18n('field.value.breaks.maxlength', this.maxLength)).build());
             }
 
-            return lengthValid;
         }
 
-        private isValidMaxLength(value: string): boolean {
-            return NumberHelper.isNumber(this.maxLength) ? value.length <= this.maxLength : true;
-        }
+        return lengthValid;
+    }
+
+    private updateLengthCounterValue(lengthCounter: DivEl, newValue: string) {
+        lengthCounter.setHtml(`${this.maxLength - newValue.length}`);
+    }
+
+    private isValidMaxLength(value: string): boolean {
+        return NumberHelper.isNumber(this.maxLength) ? value.length <= this.maxLength : true;
     }
 }

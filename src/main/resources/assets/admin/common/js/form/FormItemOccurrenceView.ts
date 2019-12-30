@@ -1,81 +1,84 @@
-module api.form {
+import * as Q from 'q';
+import {PropertyArray} from '../data/PropertyArray';
+import {DivEl} from '../dom/DivEl';
+import {PropertyPath} from '../data/PropertyPath';
+import {InputValidationRecording} from './inputtype/InputValidationRecording';
+import {FormItemOccurrence} from './FormItemOccurrence';
+import {HelpTextContainer} from './HelpTextContainer';
+import {RemoveButtonClickedEvent} from './RemoveButtonClickedEvent';
 
-    import PropertyArray = api.data.PropertyArray;
+export class FormItemOccurrenceView
+    extends DivEl {
 
-    export class FormItemOccurrenceView extends api.dom.DivEl {
+    protected formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>;
+    protected helpText: HelpTextContainer;
+    private removeButtonClickedListeners: { (event: RemoveButtonClickedEvent<FormItemOccurrenceView>): void }[] = [];
 
-        protected formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>;
+    constructor(className: string, formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>) {
+        super(className);
+        this.formItemOccurrence = formItemOccurrence;
+    }
 
-        private removeButtonClickedListeners: {(event: RemoveButtonClickedEvent<FormItemOccurrenceView>): void}[] = [];
-
-        protected helpText: HelpTextContainer;
-
-        constructor(className: string, formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>) {
-            super(className);
-            this.formItemOccurrence = formItemOccurrence;
+    toggleHelpText(show?: boolean) {
+        if (!!this.helpText) {
+            this.helpText.toggleHelpText(show);
         }
+    }
 
-        toggleHelpText(show?: boolean) {
-            if (!!this.helpText) {
-                this.helpText.toggleHelpText(show);
-            }
-        }
+    getDataPath(): PropertyPath {
+        throw new Error('Must be implemented by inheritor');
+    }
 
-        getDataPath(): api.data.PropertyPath {
-            throw new Error('Must be implemented by inheritor');
-        }
+    public layout(_validate: boolean = true): Q.Promise<void> {
+        return Q<void>(null);
+    }
 
-        public layout(_validate: boolean = true): wemQ.Promise<void> {
-            return wemQ<void>(null);
-        }
+    public update(_propertyArray: PropertyArray, _unchangedOnly?: boolean): Q.Promise<void> {
+        return Q<void>(null);
+    }
 
-        public update(_propertyArray: PropertyArray, _unchangedOnly?: boolean): wemQ.Promise<void> {
-            return wemQ<void>(null);
-        }
+    hasValidUserInput(_recording?: InputValidationRecording): boolean {
 
-        hasValidUserInput(_recording?: api.form.inputtype.InputValidationRecording): boolean {
+        throw new Error('Must be implemented by inheritor');
+    }
 
-            throw new Error('Must be implemented by inheritor');
-        }
+    onRemoveButtonClicked(listener: (event: RemoveButtonClickedEvent<FormItemOccurrenceView>) => void) {
+        this.removeButtonClickedListeners.push(listener);
+    }
 
-        onRemoveButtonClicked(listener: (event: RemoveButtonClickedEvent<FormItemOccurrenceView>)=>void) {
-            this.removeButtonClickedListeners.push(listener);
-        }
+    unRemoveButtonClicked(listener: (event: RemoveButtonClickedEvent<FormItemOccurrenceView>) => void) {
+        this.removeButtonClickedListeners.filter((currentListener: (event: RemoveButtonClickedEvent<FormItemOccurrenceView>) => void) => {
+            return currentListener !== listener;
+        });
+    }
 
-        unRemoveButtonClicked(listener: (event: RemoveButtonClickedEvent<FormItemOccurrenceView>)=>void) {
-            this.removeButtonClickedListeners.filter((currentListener: (event: RemoveButtonClickedEvent<FormItemOccurrenceView>)=>void) => {
-                return currentListener !== listener;
-            });
-        }
+    notifyRemoveButtonClicked() {
+        this.removeButtonClickedListeners.forEach((listener: (event: RemoveButtonClickedEvent<FormItemOccurrenceView>) => void) => {
+            listener.call(this, new RemoveButtonClickedEvent(this));
+        });
+    }
 
-        notifyRemoveButtonClicked() {
-            this.removeButtonClickedListeners.forEach((listener: (event: RemoveButtonClickedEvent<FormItemOccurrenceView>)=>void) => {
-                listener.call(this, new RemoveButtonClickedEvent(this));
-            });
-        }
+    getIndex(): number {
+        return this.formItemOccurrence.getIndex();
+    }
 
-        getIndex(): number {
-            return this.formItemOccurrence.getIndex();
-        }
+    refresh() {
+        throw new Error('Must be implemented by inheritor');
+    }
 
-        refresh() {
-            throw new Error('Must be implemented by inheritor');
-        }
+    hasNonDefaultValues(): boolean {
+        return false;
+    }
 
-        hasNonDefaultValues(): boolean {
-            return false;
-        }
+    isEmpty(): boolean {
+        throw false;
+    }
 
-        isEmpty(): boolean {
-            throw false;
-        }
+    clean() {
+        // empty
+    }
 
-        clean() {
-            // empty
-        }
-
-        giveFocus(): boolean {
-            return false;
-        }
+    giveFocus(): boolean {
+        return false;
     }
 }

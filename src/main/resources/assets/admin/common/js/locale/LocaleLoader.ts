@@ -1,46 +1,49 @@
-module api.locale {
+import * as Q from 'q';
+import {BaseLoader} from '../util/loader/BaseLoader';
+import {LocaleListJson} from './json/LocaleListJson';
+import {Locale} from './Locale';
+import {GetLocalesRequest} from './GetLocalesRequest';
 
-    export class LocaleLoader extends api.util.loader.BaseLoader<api.locale.json.LocaleListJson, Locale> {
+export class LocaleLoader
+    extends BaseLoader<LocaleListJson, Locale> {
 
-        private preservedSearchString: string;
-        protected request: GetLocalesRequest;
+    protected request: GetLocalesRequest;
+    private preservedSearchString: string;
 
-        protected createRequest(): GetLocalesRequest {
-            return new GetLocalesRequest();
-        }
+    search(searchString: string): Q.Promise<Locale[]> {
 
-        protected getRequest(): GetLocalesRequest {
-            return this.request;
-        }
+        this.getRequest().setSearchQuery(searchString);
 
-        search(searchString: string): wemQ.Promise<Locale[]> {
+        return this.load();
+    }
 
-            this.getRequest().setSearchQuery(searchString);
+    setSearchString(value: string) {
+        super.setSearchString(value);
+        this.getRequest().setSearchQuery(value);
+    }
 
-            return this.load();
-        }
+    load(): Q.Promise<Locale[]> {
 
-        setSearchString(value: string) {
-            super.setSearchString(value);
-            this.getRequest().setSearchQuery(value);
-        }
+        this.notifyLoadingData();
 
-        load(): wemQ.Promise<Locale[]> {
+        return this.sendRequest()
+            .then((locales: Locale[]) => {
 
-            this.notifyLoadingData();
+                this.notifyLoadedData(locales);
+                if (this.preservedSearchString) {
+                    this.search(this.preservedSearchString);
+                    this.preservedSearchString = null;
+                }
+                return locales;
+            });
+    }
 
-            return this.sendRequest()
-                .then((locales: api.locale.Locale[]) => {
+    protected createRequest(): GetLocalesRequest {
+        return new GetLocalesRequest();
+    }
 
-                    this.notifyLoadedData(locales);
-                    if (this.preservedSearchString) {
-                        this.search(this.preservedSearchString);
-                        this.preservedSearchString = null;
-                    }
-                    return locales;
-                });
-        }
-
+    protected getRequest(): GetLocalesRequest {
+        return this.request;
     }
 
 }

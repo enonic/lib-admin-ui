@@ -1,22 +1,22 @@
-module api.util.loader.event {
+import {LoaderEvent} from './LoaderEvent';
 
-    export class LoaderErrorEvent extends LoaderEvent {
+export class LoaderErrorEvent
+    extends LoaderEvent {
 
-        private statusCode: number;
-        private textStatus: string;
+    private statusCode: number;
+    private textStatus: string;
 
-        constructor(statusCode: number, textStatus: string, postLoad: boolean = false) {
-            super(postLoad);
-            this.statusCode = statusCode;
-            this.textStatus = textStatus;
-        }
+    constructor(statusCode: number, textStatus: string, postLoad: boolean = false) {
+        super(postLoad);
+        this.statusCode = statusCode;
+        this.textStatus = textStatus;
+    }
 
-        getStatusCode(): number {
-            return this.statusCode;
-        }
+    getStatusCode(): number {
+        return this.statusCode;
+    }
 
-        getTextStatus(): string {
-            return this.textStatus;
-        }
+    getTextStatus(): string {
+        return this.textStatus;
     }
 }

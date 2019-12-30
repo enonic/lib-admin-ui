@@ -1,10 +1,10 @@
-module api.ui.selector.dropdown {
+import {OptionFilterInput} from '../OptionFilterInput';
 
-    export class DropdownOptionFilterInput extends api.ui.selector.OptionFilterInput {
+export class DropdownOptionFilterInput
+    extends OptionFilterInput {
 
-        constructor(placeholderText?: string) {
-            super(placeholderText);
-        }
+    constructor(placeholderText?: string) {
+        super(placeholderText);
     }
-
 }
+

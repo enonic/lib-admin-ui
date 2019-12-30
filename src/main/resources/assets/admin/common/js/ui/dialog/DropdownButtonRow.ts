@@ -1,34 +1,34 @@
-module api.ui.dialog {
+import {MenuButton} from '../button/MenuButton';
+import {ButtonRow} from './ModalDialog';
+import {Action} from '../Action';
 
-    import MenuButton = api.ui.button.MenuButton;
+export class DropdownButtonRow
+    extends ButtonRow {
 
-    export class DropdownButtonRow extends ButtonRow {
+    protected actionMenu: MenuButton;
 
-        protected actionMenu: MenuButton;
+    constructor() {
+        super();
+        this.addClass('dropdown-button-row');
+    }
 
-        constructor() {
-            super();
-            this.addClass('dropdown-button-row');
-        }
+    makeActionMenu(mainAction: Action, menuActions: Action[], useDefault: boolean = true): MenuButton {
+        if (!this.actionMenu) {
+            this.actionMenu = new MenuButton(mainAction, menuActions);
 
-        makeActionMenu(mainAction: Action, menuActions: Action[], useDefault: boolean = true): MenuButton {
-            if (!this.actionMenu) {
-                this.actionMenu = new MenuButton(mainAction, menuActions);
-
-                if (useDefault) {
-                    this.setDefaultElement(this.actionMenu);
-                }
-
-                this.actionMenu.addClass('dropdown-dialog-menu');
-                this.actionMenu.getDropdownHandle().addClass('no-animation');
-                this.addElement(this.actionMenu);
+            if (useDefault) {
+                this.setDefaultElement(this.actionMenu);
             }
 
-            return this.actionMenu;
+            this.actionMenu.addClass('dropdown-dialog-menu');
+            this.actionMenu.getDropdownHandle().addClass('no-animation');
+            this.addElement(this.actionMenu);
         }
 
-        getActionMenu(): MenuButton {
-            return this.actionMenu;
-        }
+        return this.actionMenu;
+    }
+
+    getActionMenu(): MenuButton {
+        return this.actionMenu;
     }
 }

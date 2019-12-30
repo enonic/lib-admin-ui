@@ -1,60 +1,58 @@
-module api.managedaction {
+import {ManagedActionState} from './ManagedActionState';
+import {ManagedActionExecutor} from './ManagedActionExecutor';
+import {Store} from '../store/Store';
 
-    export type StateChangedListener = (state: ManagedActionState, executor: ManagedActionExecutor) => void;
+export const MANAGED_ACTION_MANAGER_KEY: string = 'ManagedActionManager';
 
-    export class ManagedActionManager {
+export type StateChangedListener = (state: ManagedActionState, executor: ManagedActionExecutor) => void;
 
-        private static INSTANCE: ManagedActionManager = null;
+export class ManagedActionManager {
 
-        private executors: ManagedActionExecutor[] = [];
+    private static INSTANCE: ManagedActionManager = null;
 
-        private managedActionStateChangedListeners: StateChangedListener[] = [];
+    private executors: ManagedActionExecutor[] = [];
 
-        constructor() {
-            ManagedActionManager.INSTANCE = this;
+    private managedActionStateChangedListeners: StateChangedListener[] = [];
+
+    private constructor() {
+        ManagedActionManager.INSTANCE = this;
+    }
+
+    static instance(): ManagedActionManager {
+        let instance: ManagedActionManager = Store.parentInstance().get(MANAGED_ACTION_MANAGER_KEY);
+
+        if (instance == null) {
+            instance = new ManagedActionManager();
+            Store.parentInstance().set(MANAGED_ACTION_MANAGER_KEY, instance);
         }
 
-        addPerformer(executor: ManagedActionExecutor) {
-            this.executors.push(executor);
-        }
+        return instance;
+    }
 
-        removePerformer(executor: ManagedActionExecutor) {
-            this.executors = this.executors.filter(p => p !== executor);
-        }
+    addPerformer(executor: ManagedActionExecutor) {
+        this.executors.push(executor);
+    }
 
-        isExecuting(): boolean {
-            return this.executors.some(p => p.isExecuting());
-        }
+    removePerformer(executor: ManagedActionExecutor) {
+        this.executors = this.executors.filter(p => p !== executor);
+    }
 
-        onManagedActionStateChanged(listener: StateChangedListener) {
-            const alreadyHasListener = this.managedActionStateChangedListeners.some(l => l === listener);
-            if (!alreadyHasListener) {
-                this.managedActionStateChangedListeners.push(listener);
-            }
-        }
+    isExecuting(): boolean {
+        return this.executors.some(p => p.isExecuting());
+    }
 
-        unManagedActionStateChanged(listener: StateChangedListener) {
-            this.managedActionStateChangedListeners = this.managedActionStateChangedListeners.filter(l => l !== listener);
+    onManagedActionStateChanged(listener: StateChangedListener) {
+        const alreadyHasListener = this.managedActionStateChangedListeners.some(l => l === listener);
+        if (!alreadyHasListener) {
+            this.managedActionStateChangedListeners.push(listener);
         }
+    }
 
-        notifyManagedActionStateChanged(state: ManagedActionState, executor: ManagedActionExecutor) {
-            this.managedActionStateChangedListeners.forEach(handler => handler(state, executor));
-        }
+    unManagedActionStateChanged(listener: StateChangedListener) {
+        this.managedActionStateChangedListeners = this.managedActionStateChangedListeners.filter(l => l !== listener);
+    }
 
-        static instance(): ManagedActionManager {
-            if (api.managedaction.ManagedActionManager.INSTANCE) {
-                return ManagedActionManager.INSTANCE;
-            } else if (window !== window.parent) {
-                // look for instance in parent frame
-                let apiAppModule = (<any> window.parent).api.managedaction;
-                if (apiAppModule && apiAppModule.ManagedActionManager) {
-                    let parentManagedActionManager = <api.managedaction.ManagedActionManager> apiAppModule.ManagedActionManager.INSTANCE;
-                    if (parentManagedActionManager) {
-                        ManagedActionManager.INSTANCE = parentManagedActionManager;
-                    }
-                }
-            }
-            return new ManagedActionManager();
-        }
+    notifyManagedActionStateChanged(state: ManagedActionState, executor: ManagedActionExecutor) {
+        this.managedActionStateChangedListeners.forEach(handler => handler(state, executor));
     }
 }

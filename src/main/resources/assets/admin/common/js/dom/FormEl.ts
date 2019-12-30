@@ -1,94 +1,92 @@
-module api.dom {
+import {Element, NewElementBuilder} from './Element';
 
-    export class FormEl extends Element {
+export class FormEl
+    extends Element {
 
-        constructor(className?: string) {
-            super(new NewElementBuilder().setTagName('form').setClassName(className));
-        }
+    constructor(className?: string) {
+        super(new NewElementBuilder().setTagName('form').setClassName(className));
+    }
 
-        preventSubmit() {
-            this.onSubmit((event: Event) => {
-                event.preventDefault();
-            });
-        }
+    static getNextFocusable(input: Element, focusableSelector?: string, ignoreTabIndex?: boolean): Element {
+        const focusableElements: NodeList = document.querySelectorAll(focusableSelector ? focusableSelector : 'input, button, select');
 
-        onSubmit(listener: (event: Event) => void) {
-            this.getEl().addEventListener('submit', listener);
-        }
+        // find index of current input
+        const index = FormEl.getIndexOfInput(focusableElements, input);
 
-        unSubmit(listener: (event: Event) => void) {
-            this.getEl().removeEventListener('submit', listener);
-        }
-
-        static getNextFocusable(input: Element, focusableSelector?: string, ignoreTabIndex?: boolean): Element {
-            const focusableElements: NodeList = document.querySelectorAll(focusableSelector ? focusableSelector : 'input, button, select');
-
-            // find index of current input
-            const index = FormEl.getIndexOfInput(focusableElements, input);
-
-            if (index < 0) {
-                return;
-            }
-
-            // set focus to the next visible input
-            for (let i = index + 1; i < focusableElements.length; i++) {
-                let nextFocusable = api.dom.Element.fromHtmlElement(<HTMLElement>focusableElements[i]);
-                if (!nextFocusable.isVisible() ||
-                    (!ignoreTabIndex && nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0 )) {
-                    continue;
-                } else {
-                    return nextFocusable;
-                }
-            }
-
+        if (index < 0) {
             return null;
         }
 
-        static moveFocusToNextFocusable(input: Element, focusableSelector?: string) {
-
-            let nextFocusable = FormEl.getNextFocusable(input, focusableSelector);
-
-            if (nextFocusable) {
-                nextFocusable.giveFocus();
+        // set focus to the next visible input
+        for (let i = index + 1; i < focusableElements.length; i++) {
+            let nextFocusable = Element.fromHtmlElement(<HTMLElement>focusableElements[i]);
+            if (nextFocusable.isVisible() &&
+                !(!ignoreTabIndex && nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0)) {
+                return nextFocusable;
             }
         }
 
-        static getPrevFocusable(input: Element, focusableSelector?: string): Element {
-            const focusableElements: NodeList = document.querySelectorAll(focusableSelector ? focusableSelector : 'input, button, select');
+        return null;
+    }
 
-            // find index of current input
-            let index = FormEl.getIndexOfInput(focusableElements, input);
+    static moveFocusToNextFocusable(input: Element, focusableSelector?: string) {
 
-            let nextFocusable: api.dom.Element;
+        let nextFocusable = FormEl.getNextFocusable(input, focusableSelector);
 
-            do {
-                index = index - 1;
-                if (0 <= index) {
-                    nextFocusable = api.dom.Element.fromHtmlElement(<HTMLElement>focusableElements[index]);
-                }
-            } while (nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0);
-
-            return nextFocusable;
+        if (nextFocusable) {
+            nextFocusable.giveFocus();
         }
+    }
 
-        static moveFocusToPrevFocusable(input: Element, focusableSelector?: string) {
-            const prevFocusable = FormEl.getPrevFocusable(input, focusableSelector);
+    static getPrevFocusable(input: Element, focusableSelector?: string): Element {
+        const focusableElements: NodeList = document.querySelectorAll(focusableSelector ? focusableSelector : 'input, button, select');
 
-            if (prevFocusable) {
-                prevFocusable.giveFocus();
+        // find index of current input
+        let index = FormEl.getIndexOfInput(focusableElements, input);
+
+        let nextFocusable: Element;
+
+        do {
+            index = index - 1;
+            if (0 <= index) {
+                nextFocusable = Element.fromHtmlElement(<HTMLElement>focusableElements[index]);
+            }
+        } while (nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0);
+
+        return nextFocusable;
+    }
+
+    static moveFocusToPrevFocusable(input: Element, focusableSelector?: string) {
+        const prevFocusable = FormEl.getPrevFocusable(input, focusableSelector);
+
+        if (prevFocusable) {
+            prevFocusable.giveFocus();
+        }
+    }
+
+    private static getIndexOfInput(elements: NodeList, el: Element) {
+        let index = -1;
+        let inputHTMLElement = el.getHTMLElement();
+        for (let i = 0; i < elements.length; i++) {
+            if (inputHTMLElement === elements[i]) {
+                index = i;
+                break;
             }
         }
+        return index;
+    }
 
-        private static getIndexOfInput(elements: NodeList, el: Element) {
-            let index = -1;
-            let inputHTMLElement = el.getHTMLElement();
-            for (let i = 0; i < elements.length; i++) {
-                if (inputHTMLElement === elements[i]) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
+    preventSubmit() {
+        this.onSubmit((event: Event) => {
+            event.preventDefault();
+        });
+    }
+
+    onSubmit(listener: (event: Event) => void) {
+        this.getEl().addEventListener('submit', listener);
+    }
+
+    unSubmit(listener: (event: Event) => void) {
+        this.getEl().removeEventListener('submit', listener);
     }
 }

@@ -1,27 +1,26 @@
-module api.content.event {
+import {Event} from '../../event/Event';
+import {ClassHelper} from '../../ClassHelper';
+import {ContentSummary} from '../ContentSummary';
 
-    import Event = api.event.Event;
+export class FormEditEvent
+    extends Event {
 
-    export class FormEditEvent
-        extends Event {
+    private model: ContentSummary;
 
-        private model: ContentSummary;
+    constructor(model: ContentSummary) {
+        super();
+        this.model = model;
+    }
 
-        constructor(model: ContentSummary) {
-            super();
-            this.model = model;
-        }
+    static on(handler: (event: FormEditEvent) => void, contextWindow: Window = window) {
+        Event.bind(ClassHelper.getFullName(this), handler, contextWindow);
+    }
 
-        getModels(): ContentSummary {
-            return this.model;
-        }
+    static un(handler?: (event: FormEditEvent) => void, contextWindow: Window = window) {
+        Event.unbind(ClassHelper.getFullName(this), handler, contextWindow);
+    }
 
-        static on(handler: (event: FormEditEvent) => void, contextWindow: Window = window) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler, contextWindow);
-        }
-
-        static un(handler?: (event: FormEditEvent) => void, contextWindow: Window = window) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler, contextWindow);
-        }
+    getModels(): ContentSummary {
+        return this.model;
     }
 }

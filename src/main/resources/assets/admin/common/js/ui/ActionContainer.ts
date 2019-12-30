@@ -1,7 +1,6 @@
-module api.ui {
+import {Action} from './Action';
 
-    export interface ActionContainer {
+export interface ActionContainer {
 
-        getActions():Action[];
-    }
+    getActions(): Action[];
 }

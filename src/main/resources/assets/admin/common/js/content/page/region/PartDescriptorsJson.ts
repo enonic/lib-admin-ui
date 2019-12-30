@@ -1,7 +1,6 @@
-module api.content.page.region {
+import {PartDescriptorJson} from './PartDescriptorJson';
 
-    export interface PartDescriptorsJson {
+export interface PartDescriptorsJson {
 
-        descriptors: PartDescriptorJson[];
-    }
+    descriptors: PartDescriptorJson[];
 }

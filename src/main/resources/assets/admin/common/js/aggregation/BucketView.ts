@@ -1,129 +1,134 @@
-module api.aggregation {
+import {Tooltip} from '../ui/Tooltip';
+import {DivEl} from '../dom/DivEl';
+import {Bucket} from './Bucket';
+import {Checkbox} from '../ui/Checkbox';
+import {AggregationView} from './AggregationView';
+import {ValueChangedEvent} from '../ValueChangedEvent';
+import {StringHelper} from '../util/StringHelper';
+import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
 
-    import Tooltip = api.ui.Tooltip;
+export class BucketView
+    extends DivEl {
 
-    export class BucketView extends api.dom.DivEl {
+    private bucket: Bucket;
 
-        private bucket: api.aggregation.Bucket;
+    private checkbox: Checkbox;
 
-        private checkbox: api.ui.Checkbox;
+    private parentAggregationView: AggregationView;
 
-        private parentAggregationView: api.aggregation.AggregationView;
+    private selectionChangedListeners: Function[] = [];
 
-        private selectionChangedListeners: Function[] = [];
+    private displayName: string;
 
-        private displayName: string;
+    private tooltip: Tooltip;
 
-        private tooltip: Tooltip;
+    constructor(bucket: Bucket, parentAggregationView: AggregationView, select: boolean,
+                displayName?: string) {
 
-        constructor(bucket: api.aggregation.Bucket, parentAggregationView: api.aggregation.AggregationView, select: boolean,
-                    displayName?: string) {
+        super('aggregation-bucket-view');
+        this.bucket = bucket;
+        this.parentAggregationView = parentAggregationView;
+        this.displayName = displayName || bucket.getDisplayName();
 
-            super('aggregation-bucket-view');
-            this.bucket = bucket;
-            this.parentAggregationView = parentAggregationView;
-            this.displayName = displayName || bucket.getDisplayName();
+        this.checkbox = Checkbox.create().setLabelText(this.resolveLabelValue()).setChecked(select).build();
+        this.tooltip = new Tooltip(this.checkbox, bucket.getKey(), 1000);
+        this.tooltip.setActive(false);
 
-            this.checkbox = api.ui.Checkbox.create().setLabelText(this.resolveLabelValue()).setChecked(select).build();
-            this.tooltip = new Tooltip(this.checkbox, bucket.getKey(), 1000);
-            this.tooltip.setActive(false);
+        this.checkbox.onValueChanged((event: ValueChangedEvent) => {
+            this.notifySelectionChanged(eval(event.getOldValue()), eval(event.getNewValue()));
+        });
+        this.appendChild(this.checkbox);
 
-            this.checkbox.onValueChanged((event: api.ValueChangedEvent) => {
-                this.notifySelectionChanged(eval(event.getOldValue()), eval(event.getNewValue()));
-            });
-            this.appendChild(this.checkbox);
+        this.updateUI();
+    }
 
-            this.updateUI();
-        }
+    setTooltipActive(flag: boolean) {
+        this.tooltip.setActive(flag);
+    }
 
-        setTooltipActive(flag: boolean) {
-            this.tooltip.setActive(flag);
-        }
+    setDisplayName(displayName: string) {
+        this.displayName = displayName;
+        this.updateLabel();
+    }
 
-        private resolveLabelValue(): string {
+    getBucket(): Bucket {
+        return this.bucket;
+    }
 
-            if (this.displayName != null) {
-                return this.displayName + ' (' + this.bucket.getDocCount() + ')';
-            }
+    getName(): string {
+        return this.bucket.getKey();
+    }
 
-            return this.resolveKey() + ' (' + this.bucket.getDocCount() + ')';
-        }
+    update(bucket: Bucket) {
+        this.bucket = bucket;
+        this.updateUI();
+    }
 
-        private resolveKey(): string {
-            let key = this.bucket.getKey();
-            if (key.indexOf(':') > 0) {
-                return api.util.StringHelper.capitalize(key.substring(key.indexOf(':') + 1));
-            }
+    isSelected(): boolean {
+        return this.checkbox.isChecked();
+    }
 
-            return key;
-        }
+    deselect(supressEvent?: boolean) {
+        this.checkbox.setChecked(false, supressEvent);
+    }
 
-        setDisplayName(displayName: string) {
-            this.displayName = displayName;
-            this.updateLabel();
-        }
+    select(supressEvent?: boolean) {
+        this.checkbox.setChecked(true, supressEvent);
+    }
 
-        private updateLabel(): void {
-            this.checkbox.setLabel(this.resolveLabelValue());
-        }
+    getParentAggregationView() {
+        return this.parentAggregationView;
+    }
 
-        getBucket(): api.aggregation.Bucket {
-            return this.bucket;
-        }
+    notifySelectionChanged(oldValue: boolean, newValue: boolean) {
 
-        getName(): string {
-            return this.bucket.getKey();
-        }
+        this.selectionChangedListeners.forEach((listener: (event: BucketViewSelectionChangedEvent) => void) => {
+            listener(new BucketViewSelectionChangedEvent(oldValue, newValue, this));
+        });
+    }
 
-        update(bucket: api.aggregation.Bucket) {
-            this.bucket = bucket;
-            this.updateUI();
-        }
-
-        isSelected(): boolean {
-            return this.checkbox.isChecked();
-        }
-
-        deselect(supressEvent?: boolean) {
-            this.checkbox.setChecked(false, supressEvent);
-        }
-
-        select(supressEvent?: boolean) {
-            this.checkbox.setChecked(true, supressEvent);
-        }
-
-        private updateUI() {
-
-            this.updateLabel();
-
-            if (this.bucket.getDocCount() > 0 || this.isSelected()) {
-                this.show();
-            } else {
-                this.hide();
-            }
-        }
-
-        getParentAggregationView() {
-            return this.parentAggregationView;
-        }
-
-        notifySelectionChanged(oldValue: boolean, newValue: boolean) {
-
-            this.selectionChangedListeners.forEach((listener: (event: api.aggregation.BucketViewSelectionChangedEvent) => void) => {
-                listener(new api.aggregation.BucketViewSelectionChangedEvent(oldValue, newValue, this));
-            });
-        }
-
-        unSelectionChanged(listener: (event: api.aggregation.BucketViewSelectionChangedEvent) => void) {
-            this.selectionChangedListeners = this.selectionChangedListeners
-                .filter(function (curr: (event: api.aggregation.BucketViewSelectionChangedEvent) => void) {
+    unSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
+        this.selectionChangedListeners = this.selectionChangedListeners
+            .filter(function (curr: (event: BucketViewSelectionChangedEvent) => void) {
                 return curr !== listener;
             });
-        }
-
-        onSelectionChanged(listener: (event: api.aggregation.BucketViewSelectionChangedEvent) => void) {
-            this.selectionChangedListeners.push(listener);
-        }
-
     }
+
+    onSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
+        this.selectionChangedListeners.push(listener);
+    }
+
+    private resolveLabelValue(): string {
+
+        if (this.displayName != null) {
+            return this.displayName + ' (' + this.bucket.getDocCount() + ')';
+        }
+
+        return this.resolveKey() + ' (' + this.bucket.getDocCount() + ')';
+    }
+
+    private resolveKey(): string {
+        let key = this.bucket.getKey();
+        if (key.indexOf(':') > 0) {
+            return StringHelper.capitalize(key.substring(key.indexOf(':') + 1));
+        }
+
+        return key;
+    }
+
+    private updateLabel(): void {
+        this.checkbox.setLabel(this.resolveLabelValue());
+    }
+
+    private updateUI() {
+
+        this.updateLabel();
+
+        if (this.bucket.getDocCount() > 0 || this.isSelected()) {
+            this.show();
+        } else {
+            this.hide();
+        }
+    }
+
 }

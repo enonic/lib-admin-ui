@@ -1,7 +1,7 @@
 /* BASICS */
 
 .CodeMirror {
-  /* Set height, width, borders, and global font properties here */
+    /* Set height, width, borders, and global fonts properties here */
   font-family: monospace;
   height: 300px;
 }

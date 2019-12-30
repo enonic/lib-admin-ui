@@ -1,16 +1,18 @@
-module api.app.wizard {
+import {TabBarItem, TabBarItemBuilder} from '../../ui/tab/TabBarItem';
+import {BaseWizardStep} from './BaseWizardStep';
+import {WizardStepForm} from './WizardStepForm';
 
-    export class WizardStep extends BaseWizardStep<api.ui.tab.TabBarItem> {
+export class WizardStep
+    extends BaseWizardStep<TabBarItem> {
 
-        constructor(label: string, stepForm: WizardStepForm) {
+    constructor(label: string, stepForm: WizardStepForm) {
 
-            const tabBarItem = new api.ui.tab.TabBarItemBuilder()
-                .setAddLabelTitleAttribute(true)
-                .setLabel(label)
-                .setFocusable(false)
-                .build();
+        const tabBarItem = new TabBarItemBuilder()
+            .setAddLabelTitleAttribute(true)
+            .setLabel(label)
+            .setFocusable(false)
+            .build();
 
-            super(tabBarItem, stepForm);
-        }
+        super(tabBarItem, stepForm);
     }
 }

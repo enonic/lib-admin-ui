@@ -1,61 +1,60 @@
-module api.ui.mask {
+import {DivEl} from '../../dom/DivEl';
+import {SpanEl} from '../../dom/SpanEl';
+import {Element} from '../../dom/Element';
+import {Mask} from './Mask';
 
-    /**
-     * Object to mask an Element with a splash
-     */
-    export class LoadMask extends Mask {
+export class LoadMask
+    extends Mask {
 
-        private splash: api.dom.DivEl;
+    private splash: DivEl;
 
-        private spinner: api.dom.DivEl;
+    private spinner: DivEl;
 
-        private text: api.dom.SpanEl;
+    private text: SpanEl;
 
-        constructor(el: api.dom.Element) {
-            super(el);
-            this.addClass('load-mask');
+    constructor(el: Element) {
+        super(el);
+        this.addClass('load-mask');
 
-            this.splash = new api.dom.DivEl('mask-splash');
-            this.spinner = new api.dom.DivEl('spinner');
-            this.splash.appendChild(this.spinner);
+        this.splash = new DivEl('mask-splash');
+        this.spinner = new DivEl('spinner');
+        this.splash.appendChild(this.spinner);
 
-            this.appendChild(this.splash);
-        }
+        this.appendChild(this.splash);
+    }
 
-        show() {
-            super.show();
-            this.splash.show();
-            this.centerSplash();
-        }
+    show() {
+        super.show();
+        this.splash.show();
+        this.centerSplash();
+    }
 
-        hide() {
-            this.splash.hide();
-            super.hide();
-        }
+    hide() {
+        this.splash.hide();
+        super.hide();
+    }
 
-        setText(text: string) {
-            if (!text) {
-                if (this.text) {
-                    this.text.hide();
-                }
-            } else {
-                if (!this.text) {
-                    this.text = new api.dom.SpanEl('text');
-                    this.splash.appendChild(this.text);
-                }
-                this.text.getEl().setInnerHtml(text);
+    setText(text: string) {
+        if (!text) {
+            if (this.text) {
+                this.text.hide();
             }
-        }
-
-        getText(): string {
-            return this.text.getEl().getInnerHtml();
-        }
-
-        private centerSplash() {
-            let loaderEl = this.splash.getEl();
-            loaderEl.setMarginLeft('-' + loaderEl.getWidthWithBorder() / 2 + 'px');
-            loaderEl.setMarginTop('-' + loaderEl.getHeightWithBorder() / 2 + 'px');
+        } else {
+            if (!this.text) {
+                this.text = new SpanEl('text');
+                this.splash.appendChild(this.text);
+            }
+            this.text.getEl().setInnerHtml(text);
         }
     }
 
+    getText(): string {
+        return this.text.getEl().getInnerHtml();
+    }
+
+    private centerSplash() {
+        let loaderEl = this.splash.getEl();
+        loaderEl.setMarginLeft('-' + loaderEl.getWidthWithBorder() / 2 + 'px');
+        loaderEl.setMarginTop('-' + loaderEl.getHeightWithBorder() / 2 + 'px');
+    }
 }

@@ -1,27 +1,28 @@
-module api.query.aggregation {
+import {AggregationQueryTypeWrapperJson} from './AggregationQueryTypeWrapperJson';
+import {ClassHelper} from '../../ClassHelper';
+import {AggregationQueryJson} from './AggregationQueryJson';
 
-    export class AggregationQuery {
+export class AggregationQuery {
 
-        private name: string;
+    private name: string;
 
-        toJson(): api.query.aggregation.AggregationQueryTypeWrapperJson {
-            throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
-        }
-
-        toAggregationQueryJson(): api.query.aggregation.AggregationQueryJson {
-
-            return {
-                name: this.getName()
-            };
-        }
-
-        constructor(name: string) {
-            this.name = name;
-        }
-
-        public getName(): string {
-            return this.name;
-        }
-
+    constructor(name: string) {
+        this.name = name;
     }
+
+    toJson(): AggregationQueryTypeWrapperJson {
+        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
+    }
+
+    toAggregationQueryJson(): AggregationQueryJson {
+
+        return {
+            name: this.getName()
+        };
+    }
+
+    public getName(): string {
+        return this.name;
+    }
+
 }

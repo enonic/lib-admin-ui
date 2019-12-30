@@ -1,11 +1,9 @@
-module api.query.filter {
+import {FilterTypeWrapperJson} from './FilterTypeWrapperJson';
 
-    export interface BooleanFilterJson {
+export interface BooleanFilterJson {
 
-        must: api.query.filter.FilterTypeWrapperJson[];
-        mustNot: api.query.filter.FilterTypeWrapperJson[];
-        should: api.query.filter.FilterTypeWrapperJson[];
-
-    }
+    must: FilterTypeWrapperJson[];
+    mustNot: FilterTypeWrapperJson[];
+    should: FilterTypeWrapperJson[];
 
 }

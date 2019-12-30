@@ -1,112 +1,114 @@
-module api.item {
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
+import {Item} from './Item';
+import {ItemJson} from './ItemJson';
 
-    export class BaseItem implements Item, api.Equitable {
+export class BaseItem
+    implements Item, Equitable {
 
-        private id: string;
+    private id: string;
 
-        private createdTime: Date;
+    private createdTime: Date;
 
-        private modifiedTime: Date;
+    private modifiedTime: Date;
 
-        private deletable: boolean;
+    private deletable: boolean;
 
-        private editable: boolean;
+    private editable: boolean;
 
-        constructor(builder: BaseItemBuilder) {
-            this.id = builder.id;
-            this.createdTime = builder.createdTime;
-            this.modifiedTime = builder.modifiedTime;
-            this.deletable = builder.deletable;
-            this.editable = builder.editable;
+    constructor(builder: BaseItemBuilder) {
+        this.id = builder.id;
+        this.createdTime = builder.createdTime;
+        this.modifiedTime = builder.modifiedTime;
+        this.deletable = builder.deletable;
+        this.editable = builder.editable;
+    }
+
+    getId(): string {
+        return this.id;
+    }
+
+    getCreatedTime(): Date {
+        return this.createdTime;
+    }
+
+    getModifiedTime(): Date {
+        return this.modifiedTime;
+    }
+
+    isDeletable(): boolean {
+        return this.deletable;
+    }
+
+    isEditable(): boolean {
+        return this.editable;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, BaseItem)) {
+            return false;
         }
 
-        getId(): string {
-            return this.id;
+        let other = <BaseItem>o;
+
+        if (!ObjectHelper.stringEquals(this.id, other.id)) {
+            return false;
         }
 
-        getCreatedTime(): Date {
-            return this.createdTime;
+        if (!ObjectHelper.dateEquals(this.createdTime, other.createdTime)) {
+            return false;
         }
 
-        getModifiedTime(): Date {
-            return this.modifiedTime;
+        if (!ObjectHelper.dateEquals(this.modifiedTime, other.modifiedTime)) {
+            return false;
         }
 
-        isDeletable(): boolean {
-            return this.deletable;
+        if (!ObjectHelper.booleanEquals(this.deletable, other.deletable)) {
+            return false;
         }
 
-        isEditable(): boolean {
-            return this.editable;
+        if (!ObjectHelper.booleanEquals(this.editable, other.editable)) {
+            return false;
         }
 
-        equals(o: api.Equitable): boolean {
+        return true;
+    }
+}
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, BaseItem)) {
-                return false;
-            }
+export class BaseItemBuilder {
 
-            let other = <BaseItem>o;
+    id: string;
 
-            if (!ObjectHelper.stringEquals(this.id, other.id)) {
-                return false;
-            }
+    createdTime: Date;
 
-            if (!ObjectHelper.dateEquals(this.createdTime, other.createdTime)) {
-                return false;
-            }
+    modifiedTime: Date;
 
-            if (!ObjectHelper.dateEquals(this.modifiedTime, other.modifiedTime)) {
-                return false;
-            }
+    deletable: boolean;
 
-            if (!ObjectHelper.booleanEquals(this.deletable, other.deletable)) {
-                return false;
-            }
+    editable: boolean;
 
-            if (!ObjectHelper.booleanEquals(this.editable, other.editable)) {
-                return false;
-            }
-
-            return true;
+    constructor(source?: BaseItem) {
+        if (source) {
+            this.id = source.getId();
+            this.createdTime = source.getCreatedTime();
+            this.modifiedTime = source.getModifiedTime();
+            this.deletable = source.isDeletable();
+            this.editable = source.isEditable();
         }
     }
 
-    export class BaseItemBuilder {
+    fromBaseItemJson(json: ItemJson, idProperty: string = 'id'): BaseItemBuilder {
 
-        id: string;
-
-        createdTime: Date;
-
-        modifiedTime: Date;
-
-        deletable: boolean;
-
-        editable: boolean;
-
-        constructor(source?: BaseItem) {
-            if (source) {
-                this.id = source.getId();
-                this.createdTime = source.getCreatedTime();
-                this.modifiedTime = source.getModifiedTime();
-                this.deletable = source.isDeletable();
-                this.editable = source.isEditable();
-            }
-        }
-
-        fromBaseItemJson(json: ItemJson, idProperty: string = 'id'): BaseItemBuilder {
-
-            this.id = json[idProperty];
-            this.createdTime = json.createdTime ? new Date(json.createdTime) : null;
-            this.modifiedTime = json.modifiedTime ? new Date(json.modifiedTime) : null;
-            this.deletable = json.deletable;
-            this.editable = json.editable;
-            return this;
-        }
-
-        build(): BaseItem {
-            return new BaseItem(this);
-        }
+        this.id = json[idProperty];
+        this.createdTime = json.createdTime ? new Date(json.createdTime) : null;
+        this.modifiedTime = json.modifiedTime ? new Date(json.modifiedTime) : null;
+        this.deletable = json.deletable;
+        this.editable = json.editable;
+        return this;
     }
 
+    build(): BaseItem {
+        return new BaseItem(this);
+    }
 }

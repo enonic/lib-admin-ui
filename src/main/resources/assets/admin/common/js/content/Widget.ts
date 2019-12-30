@@ -1,174 +1,173 @@
-module api.content {
+import {ApplicationKey} from '../application/ApplicationKey';
+import {WidgetDescriptorJson} from './json/WidgetDescriptorJson';
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
 
-    import ApplicationKey = api.application.ApplicationKey;
-    import WidgetDescriptorJson = api.content.json.WidgetDescriptorJson;
+export class Widget {
 
-    export class Widget {
+    private url: string;
+    private iconUrl: string;
+    private displayName: string;
+    private description: string;
+    private interfaces: string[];
+    private widgetDescriptorKey: WidgetDescriptorKey;
+    private config: { [key: string]: string };
 
-        private url: string;
-        private iconUrl: string;
-        private displayName: string;
-        private description: string;
-        private interfaces: string[];
-        private widgetDescriptorKey: WidgetDescriptorKey;
-        private config: { [key: string]: string };
-
-        constructor(builder: WidgetBuilder) {
-            this.url = builder.url;
-            this.iconUrl = builder.iconUrl;
-            this.displayName = builder.displayName;
-            this.description = builder.description;
-            this.interfaces = builder.interfaces;
-            this.widgetDescriptorKey = builder.widgetDescriptorKey;
-            this.config = builder.config;
-        }
-
-        public getUrl(): string {
-            return this.url;
-        }
-
-        public getIconUrl(): string {
-            return this.iconUrl;
-        }
-
-        public getDisplayName(): string {
-            return this.displayName;
-        }
-
-        public getDescription(): string {
-            return this.description;
-        }
-
-        public getInterfaces(): string[] {
-            return this.interfaces;
-        }
-
-        public getWidgetDescriptorKey(): api.content.WidgetDescriptorKey {
-            return this.widgetDescriptorKey;
-        }
-
-        public getConfig(): { [key: string]: string } {
-            return this.config;
-        }
-
-        static create(): WidgetBuilder {
-            return new WidgetBuilder();
-        }
-
-        static fromJson(json: WidgetDescriptorJson): Widget {
-            return new WidgetBuilder().fromJson(json).build();
-        }
-
+    constructor(builder: WidgetBuilder) {
+        this.url = builder.url;
+        this.iconUrl = builder.iconUrl;
+        this.displayName = builder.displayName;
+        this.description = builder.description;
+        this.interfaces = builder.interfaces;
+        this.widgetDescriptorKey = builder.widgetDescriptorKey;
+        this.config = builder.config;
     }
 
-    export class WidgetBuilder {
+    static create(): WidgetBuilder {
+        return new WidgetBuilder();
+    }
 
-        url: string;
+    static fromJson(json: WidgetDescriptorJson): Widget {
+        return new WidgetBuilder().fromJson(json).build();
+    }
 
-        iconUrl: string;
+    public getUrl(): string {
+        return this.url;
+    }
 
-        displayName: string;
+    public getIconUrl(): string {
+        return this.iconUrl;
+    }
 
-        description: string;
+    public getDisplayName(): string {
+        return this.displayName;
+    }
 
-        interfaces: string[];
+    public getDescription(): string {
+        return this.description;
+    }
 
-        widgetDescriptorKey: WidgetDescriptorKey;
+    public getInterfaces(): string[] {
+        return this.interfaces;
+    }
 
-        config: { [key: string]: string };
+    public getWidgetDescriptorKey(): WidgetDescriptorKey {
+        return this.widgetDescriptorKey;
+    }
 
-        constructor(source?: Widget) {
-            if (source) {
-                this.url = source.getUrl();
-                this.iconUrl = source.getIconUrl();
-                this.displayName = source.getDisplayName();
-                this.description = source.getDescription();
-                this.interfaces = source.getInterfaces();
-                this.widgetDescriptorKey = source.getWidgetDescriptorKey();
-                this.config = source.getConfig();
-            } else {
-                this.interfaces = [];
-                this.config = {};
-            }
-        }
+    public getConfig(): { [key: string]: string } {
+        return this.config;
+    }
 
-        private static makeWidgetDescriptorKey(key: string): WidgetDescriptorKey {
-            const applicationKey = key.split(':')[0];
-            const descriptorKeyName = key.split(':')[1];
-            return new WidgetDescriptorKey(ApplicationKey.fromString(applicationKey), descriptorKeyName);
-        }
+}
 
-        fromJson(json: WidgetDescriptorJson): WidgetBuilder {
-            this.url = json.url;
-            this.iconUrl = json.iconUrl;
-            this.displayName = json.displayName;
-            this.description = json.description;
-            this.interfaces = json.interfaces;
-            this.widgetDescriptorKey = WidgetBuilder.makeWidgetDescriptorKey(json.key);
-            this.config = json.config;
+export class WidgetBuilder {
 
-            return this;
-        }
+    url: string;
 
-        build(): Widget {
-            return new Widget(this);
+    iconUrl: string;
+
+    displayName: string;
+
+    description: string;
+
+    interfaces: string[];
+
+    widgetDescriptorKey: WidgetDescriptorKey;
+
+    config: { [key: string]: string };
+
+    constructor(source?: Widget) {
+        if (source) {
+            this.url = source.getUrl();
+            this.iconUrl = source.getIconUrl();
+            this.displayName = source.getDisplayName();
+            this.description = source.getDescription();
+            this.interfaces = source.getInterfaces();
+            this.widgetDescriptorKey = source.getWidgetDescriptorKey();
+            this.config = source.getConfig();
+        } else {
+            this.interfaces = [];
+            this.config = {};
         }
     }
 
-    export class WidgetDescriptorKey
-        implements api.Equitable {
+    private static makeWidgetDescriptorKey(key: string): WidgetDescriptorKey {
+        const applicationKey = key.split(':')[0];
+        const descriptorKeyName = key.split(':')[1];
+        return new WidgetDescriptorKey(ApplicationKey.fromString(applicationKey), descriptorKeyName);
+    }
 
-        private static SEPARATOR: string = ':';
+    fromJson(json: WidgetDescriptorJson): WidgetBuilder {
+        this.url = json.url;
+        this.iconUrl = json.iconUrl;
+        this.displayName = json.displayName;
+        this.description = json.description;
+        this.interfaces = json.interfaces;
+        this.widgetDescriptorKey = WidgetBuilder.makeWidgetDescriptorKey(json.key);
+        this.config = json.config;
 
-        private applicationKey: ApplicationKey;
+        return this;
+    }
 
-        private name: string;
+    build(): Widget {
+        return new Widget(this);
+    }
+}
 
-        private refString: string;
+export class WidgetDescriptorKey
+    implements Equitable {
 
-        public static fromString(str: string): WidgetDescriptorKey {
-            let sepIndex: number = str.indexOf(WidgetDescriptorKey.SEPARATOR);
-            if (sepIndex === -1) {
-                throw new Error(`WidgetDescriptorKey must contain separator '${WidgetDescriptorKey.SEPARATOR}':${str}`);
-            }
+    private static SEPARATOR: string = ':';
 
-            let applicationKey = str.substring(0, sepIndex);
-            let name = str.substring(sepIndex + 1, str.length);
+    private applicationKey: ApplicationKey;
 
-            return new WidgetDescriptorKey(ApplicationKey.fromString(applicationKey), name);
+    private name: string;
+
+    private refString: string;
+
+    constructor(applicationKey: ApplicationKey, name: string) {
+        this.applicationKey = applicationKey;
+        this.name = name;
+        this.refString = applicationKey.toString() + WidgetDescriptorKey.SEPARATOR + name.toString();
+    }
+
+    public static fromString(str: string): WidgetDescriptorKey {
+        let sepIndex: number = str.indexOf(WidgetDescriptorKey.SEPARATOR);
+        if (sepIndex === -1) {
+            throw new Error(`WidgetDescriptorKey must contain separator '${WidgetDescriptorKey.SEPARATOR}':${str}`);
         }
 
-        constructor(applicationKey: ApplicationKey, name: string) {
-            this.applicationKey = applicationKey;
-            this.name = name;
-            this.refString = applicationKey.toString() + WidgetDescriptorKey.SEPARATOR + name.toString();
+        let applicationKey = str.substring(0, sepIndex);
+        let name = str.substring(sepIndex + 1, str.length);
+
+        return new WidgetDescriptorKey(ApplicationKey.fromString(applicationKey), name);
+    }
+
+    getApplicationKey(): ApplicationKey {
+        return this.applicationKey;
+    }
+
+    getName(): string {
+        return this.name;
+    }
+
+    toString(): string {
+        return this.refString;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, WidgetDescriptorKey)) {
+            return false;
         }
 
-        getApplicationKey(): ApplicationKey {
-            return this.applicationKey;
+        let other = <WidgetDescriptorKey>o;
+
+        if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
+            return false;
         }
 
-        getName(): string {
-            return this.name;
-        }
-
-        toString(): string {
-            return this.refString;
-        }
-
-        equals(o: api.Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, WidgetDescriptorKey)) {
-                return false;
-            }
-
-            let other = <WidgetDescriptorKey>o;
-
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
-                return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

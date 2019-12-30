@@ -1,20 +1,20 @@
-module api.app.view {
+import {Equitable} from '../../Equitable';
+import {Toolbar} from '../../ui/toolbar/Toolbar';
 
-    export class ItemPreviewToolbar<M extends api.Equitable>
-        extends api.ui.toolbar.Toolbar {
+export class ItemPreviewToolbar<M extends Equitable>
+    extends Toolbar {
 
-        private item: M;
+    private item: M;
 
-        constructor(className?: string) {
-            super('item-preview-toolbar' + (className ? ' ' + className : ''));
-        }
+    constructor(className?: string) {
+        super('item-preview-toolbar' + (className ? ' ' + className : ''));
+    }
 
-        setItem(item: M) {
-            this.item = item;
-        }
+    setItem(item: M) {
+        this.item = item;
+    }
 
-        getItem(): M {
-            return this.item;
-        }
+    getItem(): M {
+        return this.item;
     }
 }

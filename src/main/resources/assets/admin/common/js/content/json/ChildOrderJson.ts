@@ -1,7 +1,6 @@
-module api.content.json {
+import {OrderExprWrapperJson} from './OrderExprWrapperJson';
 
-    export interface ChildOrderJson {
+export interface ChildOrderJson {
 
-        orderExpressions: OrderExprWrapperJson[];
-    }
+    orderExpressions: OrderExprWrapperJson[];
 }

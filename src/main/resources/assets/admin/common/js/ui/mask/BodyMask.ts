@@ -1,23 +1,24 @@
-module api.ui.mask {
+import {Mask} from './Mask';
+import {Store} from '../../store/Store';
 
-    /**
-     * A statically accessible object for masking the whole body.
-     */
-    export class BodyMask extends Mask {
+export const BODY_MASK_KEY: string = 'BodyMask';
 
-        private static instance: BodyMask;
+export class BodyMask
+    extends Mask {
 
-        static get(): BodyMask {
-            if (!BodyMask.instance) {
-                BodyMask.instance = new BodyMask();
-            }
-            return BodyMask.instance;
+    private constructor() {
+        super();
+        this.addClass('body-mask');
+    }
+
+    static get(): BodyMask {
+        let instance: BodyMask = Store.parentInstance().get(BODY_MASK_KEY);
+
+        if (instance == null) {
+            instance = new BodyMask();
+            Store.parentInstance().set(BODY_MASK_KEY, instance);
         }
 
-        constructor() {
-            super();
-            this.addClass('body-mask');
-        }
-
+        return instance;
     }
 }

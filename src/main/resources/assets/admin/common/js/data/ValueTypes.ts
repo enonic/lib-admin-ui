@@ -1,60 +1,72 @@
-module api.data {
+/*
+ * Types need to be named as in ValueTypes.java
+ */
+import {ValueTypePropertySet} from './ValueTypePropertySet';
+import {ValueTypeString} from './ValueTypeString';
+import {ValueTypeXml} from './ValueTypeXml';
+import {ValueTypeLong} from './ValueTypeLong';
+import {ValueTypeBoolean} from './ValueTypeBoolean';
+import {ValueTypeDouble} from './ValueTypeDouble';
+import {ValueTypeLocalDate} from './ValueTypeLocalDate';
+import {ValueTypeLocalTime} from './ValueTypeLocalTime';
+import {ValueTypeLocalDateTime} from './ValueTypeLocalDateTime';
+import {ValueTypeDateTime} from './ValueTypeDateTime';
+import {ValueTypeGeoPoint} from './ValueTypeGeoPoint';
+import {ValueTypeReference} from './ValueTypeReference';
+import {ValueTypeBinaryReference} from './ValueTypeBinaryReference';
+import {ValueType} from './ValueType';
 
-    /*
-     * Types need to be named as in ValueTypes.java
-     */
-    export class ValueTypes {
+export class ValueTypes {
 
-        static DATA: ValueTypePropertySet = new ValueTypePropertySet();
+    static DATA: ValueTypePropertySet = new ValueTypePropertySet();
 
-        static STRING: ValueTypeString = new ValueTypeString();
+    static STRING: ValueTypeString = new ValueTypeString();
 
-        static XML: ValueTypeXml = new ValueTypeXml();
+    static XML: ValueTypeXml = new ValueTypeXml();
 
-        static LOCAL_DATE: ValueTypeLocalDate = new ValueTypeLocalDate();
+    static LOCAL_DATE: ValueTypeLocalDate = new ValueTypeLocalDate();
 
-        static LOCAL_TIME: ValueTypeLocalTime = new ValueTypeLocalTime();
+    static LOCAL_TIME: ValueTypeLocalTime = new ValueTypeLocalTime();
 
-        static LOCAL_DATE_TIME: ValueTypeLocalDateTime = new ValueTypeLocalDateTime();
+    static LOCAL_DATE_TIME: ValueTypeLocalDateTime = new ValueTypeLocalDateTime();
 
-        static DATE_TIME: ValueTypeDateTime = new ValueTypeDateTime();
+    static DATE_TIME: ValueTypeDateTime = new ValueTypeDateTime();
 
-        static LONG: ValueTypeLong = new ValueTypeLong();
+    static LONG: ValueTypeLong = new ValueTypeLong();
 
-        static BOOLEAN: ValueTypeBoolean = new ValueTypeBoolean();
+    static BOOLEAN: ValueTypeBoolean = new ValueTypeBoolean();
 
-        static DOUBLE: ValueTypeDouble = new ValueTypeDouble();
+    static DOUBLE: ValueTypeDouble = new ValueTypeDouble();
 
-        static GEO_POINT: ValueTypeGeoPoint = new ValueTypeGeoPoint();
+    static GEO_POINT: ValueTypeGeoPoint = new ValueTypeGeoPoint();
 
-        static REFERENCE: ValueTypeReference = new ValueTypeReference();
+    static REFERENCE: ValueTypeReference = new ValueTypeReference();
 
-        static BINARY_REFERENCE: ValueTypeBinaryReference = new ValueTypeBinaryReference();
+    static BINARY_REFERENCE: ValueTypeBinaryReference = new ValueTypeBinaryReference();
 
-        static ALL: ValueType[] = [
-            ValueTypes.DATA,
-            ValueTypes.STRING,
-            ValueTypes.XML,
-            ValueTypes.LOCAL_DATE,
-            ValueTypes.LOCAL_TIME,
-            ValueTypes.LOCAL_DATE_TIME,
-            ValueTypes.DATE_TIME,
-            ValueTypes.LONG,
-            ValueTypes.BOOLEAN,
-            ValueTypes.DOUBLE,
-            ValueTypes.GEO_POINT,
-            ValueTypes.REFERENCE,
-            ValueTypes.BINARY_REFERENCE,
-        ];
+    static ALL: ValueType[] = [
+        ValueTypes.DATA,
+        ValueTypes.STRING,
+        ValueTypes.XML,
+        ValueTypes.LOCAL_DATE,
+        ValueTypes.LOCAL_TIME,
+        ValueTypes.LOCAL_DATE_TIME,
+        ValueTypes.DATE_TIME,
+        ValueTypes.LONG,
+        ValueTypes.BOOLEAN,
+        ValueTypes.DOUBLE,
+        ValueTypes.GEO_POINT,
+        ValueTypes.REFERENCE,
+        ValueTypes.BINARY_REFERENCE,
+    ];
 
-        public static fromName(name: string): ValueType {
-            for (let i = 0; i < ValueTypes.ALL.length; i++) {
-                let type = ValueTypes.ALL[i];
-                if (type.toString() === name) {
-                    return type;
-                }
+    public static fromName(name: string): ValueType {
+        for (let i = 0; i < ValueTypes.ALL.length; i++) {
+            let type = ValueTypes.ALL[i];
+            if (type.toString() === name) {
+                return type;
             }
-            throw('Unknown ValueType: ' + name);
         }
+        throw('Unknown ValueType: ' + name);
     }
 }

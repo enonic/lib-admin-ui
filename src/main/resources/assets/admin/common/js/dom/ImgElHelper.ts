@@ -1,41 +1,41 @@
-module api.dom {
+import {ElementHelper} from './ElementHelper';
 
-    export class ImgHelper extends ElementHelper {
+export class ImgHelper
+    extends ElementHelper {
 
-        private imgEl: HTMLImageElement;
+    private imgEl: HTMLImageElement;
 
-        static create(): ElementHelper {
-            return new ImgHelper(<HTMLImageElement>document.createElement('img'));
-        }
+    constructor(element: HTMLImageElement) {
+        super(<HTMLElement>element);
+        this.imgEl = element;
+    }
 
-        constructor(element: HTMLImageElement) {
-            super(<HTMLElement>element);
-            this.imgEl = element;
-        }
+    static create(): ElementHelper {
+        return new ImgHelper(<HTMLImageElement>document.createElement('img'));
+    }
 
-        getHTMLElement(): HTMLImageElement {
-            return this.imgEl;
-        }
+    getHTMLElement(): HTMLImageElement {
+        return this.imgEl;
+    }
 
-        setSrc(value: string): ImgHelper {
-            this.imgEl.src = value;
-            return this;
-        }
+    setSrc(value: string): ImgHelper {
+        this.imgEl.src = value;
+        return this;
+    }
 
-        getSrc(): string {
-            return this.imgEl.src;
-        }
+    getSrc(): string {
+        return this.imgEl.src;
+    }
 
-        getCurrentSrc(): string {
-            return this.imgEl['currentSrc'];
-        }
+    getCurrentSrc(): string {
+        return this.imgEl['currentSrc'];
+    }
 
-        getNaturalWidth() {
-            return this.imgEl.naturalWidth;
-        }
+    getNaturalWidth() {
+        return this.imgEl.naturalWidth;
+    }
 
-        getNaturalHeight() {
-            return this.imgEl.naturalHeight;
-        }
+    getNaturalHeight() {
+        return this.imgEl.naturalHeight;
     }
 }

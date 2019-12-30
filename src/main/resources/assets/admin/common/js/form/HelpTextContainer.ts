@@ -1,57 +1,57 @@
-module api.form {
+import {DivEl} from '../dom/DivEl';
+import {PEl} from '../dom/PEl';
 
-    export class HelpTextContainer {
+export class HelpTextContainer {
 
-        private helpTextDiv: api.dom.DivEl;
+    private helpTextDiv: DivEl;
 
-        private helpTextToggler: api.dom.DivEl;
+    private helpTextToggler: DivEl;
 
-        private toggleListeners: {(show: boolean): void}[] = [];
+    private toggleListeners: { (show: boolean): void }[] = [];
 
-        constructor(value: string) {
-            this.helpTextToggler = new api.dom.DivEl('help-text-toggler');
-            this.helpTextToggler.setHtml('?');
+    constructor(value: string) {
+        this.helpTextToggler = new DivEl('help-text-toggler');
+        this.helpTextToggler.setHtml('?');
 
-            this.helpTextDiv = new api.dom.DivEl('help-text');
+        this.helpTextDiv = new DivEl('help-text');
 
-            let pEl = new api.dom.PEl();
-            pEl.getEl().setText(value);
+        let pEl = new PEl();
+        pEl.getEl().setText(value);
 
-            this.helpTextDiv.appendChild(pEl);
+        this.helpTextDiv.appendChild(pEl);
 
-            this.helpTextToggler.onClicked((event: MouseEvent) => {
-                this.helpTextDiv.toggleClass('visible');
-                this.helpTextToggler.toggleClass('on');
-                this.notifyHelpTextToggled(this.helpTextDiv.hasClass('visible'));
-                event.stopPropagation();
-            });
-        }
+        this.helpTextToggler.onClicked((event: MouseEvent) => {
+            this.helpTextDiv.toggleClass('visible');
+            this.helpTextToggler.toggleClass('on');
+            this.notifyHelpTextToggled(this.helpTextDiv.hasClass('visible'));
+            event.stopPropagation();
+        });
+    }
 
-        toggleHelpText(show?: boolean) {
-            this.helpTextDiv.toggleClass('visible', show);
-            this.helpTextToggler.toggleClass('on', show);
-        }
+    toggleHelpText(show?: boolean) {
+        this.helpTextDiv.toggleClass('visible', show);
+        this.helpTextToggler.toggleClass('on', show);
+    }
 
-        getToggler(): api.dom.DivEl {
-            return this.helpTextToggler;
-        }
+    getToggler(): DivEl {
+        return this.helpTextToggler;
+    }
 
-        getHelpText(): api.dom.DivEl {
-            return this.helpTextDiv;
-        }
+    getHelpText(): DivEl {
+        return this.helpTextDiv;
+    }
 
-        onHelpTextToggled(listener: (show: boolean) => void) {
-            this.toggleListeners.push(listener);
-        }
+    onHelpTextToggled(listener: (show: boolean) => void) {
+        this.toggleListeners.push(listener);
+    }
 
-        unHelpTextToggled(listener: (show: boolean) => void) {
-            this.toggleListeners = this.toggleListeners.filter((curr) => {
-                return curr !== listener;
-            });
-        }
+    unHelpTextToggled(listener: (show: boolean) => void) {
+        this.toggleListeners = this.toggleListeners.filter((curr) => {
+            return curr !== listener;
+        });
+    }
 
-        private notifyHelpTextToggled(show: boolean) {
-            this.toggleListeners.forEach(listener => listener(show));
-        }
+    private notifyHelpTextToggled(show: boolean) {
+        this.toggleListeners.forEach(listener => listener(show));
     }
 }

@@ -1,43 +1,42 @@
-module api.app.wizard {
+import {Action} from '../../ui/Action';
 
-    export class WizardActions<T> {
+export class WizardActions<T> {
 
-        private actions: api.ui.Action[];
+    private actions: Action[];
 
-        private suspendedActions: api.ui.Action[] = [];
+    private suspendedActions: Action[] = [];
 
-        constructor(...actions: api.ui.Action[]) {
-            this.setActions(...actions);
-        }
+    constructor(...actions: Action[]) {
+        this.setActions(...actions);
+    }
 
-        setActions(...actions: api.ui.Action[]) {
-            this.actions = actions;
-        }
+    setActions(...actions: Action[]) {
+        this.actions = actions;
+    }
 
-        enableActionsForNew() {
-            throw new Error('Must be overridden by inheritors');
-        }
+    enableActionsForNew() {
+        throw new Error('Must be overridden by inheritors');
+    }
 
-        enableActionsForExisting(_existing: T) {
-            throw new Error('Must be overridden by inheritors');
-        }
+    enableActionsForExisting(_existing: T) {
+        throw new Error('Must be overridden by inheritors');
+    }
 
-        getActions(): api.ui.Action[] {
-            return this.actions;
-        }
+    getActions(): Action[] {
+        return this.actions;
+    }
 
-        suspendActions(suspend: boolean = true) {
-            if (suspend) {
-                this.actions.forEach((action) => {
-                    if (action.isEnabled()) {
-                        this.suspendedActions.push(action);
-                        action.setEnabled(false);
-                    }
-                });
-            } else {
-                this.suspendedActions.forEach(action => action.setEnabled(true));
-                this.suspendedActions.length = 0;
-            }
+    suspendActions(suspend: boolean = true) {
+        if (suspend) {
+            this.actions.forEach((action) => {
+                if (action.isEnabled()) {
+                    this.suspendedActions.push(action);
+                    action.setEnabled(false);
+                }
+            });
+        } else {
+            this.suspendedActions.forEach(action => action.setEnabled(true));
+            this.suspendedActions.length = 0;
         }
     }
 }

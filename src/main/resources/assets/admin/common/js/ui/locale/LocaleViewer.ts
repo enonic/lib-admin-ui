@@ -1,28 +1,29 @@
-module api.ui.locale {
+import {Locale} from '../../locale/Locale';
+import {Viewer} from '../Viewer';
+import {NamesView} from '../../app/NamesView';
+import {StringHelper} from '../../util/StringHelper';
 
-    import Locale = api.locale.Locale;
+export class LocaleViewer
+    extends Viewer<Locale> {
 
-    export class LocaleViewer extends api.ui.Viewer<Locale> {
+    private namesView: NamesView;
 
-        private namesView: api.app.NamesView;
+    private displayNamePattern: string = '{0} ({1})';
 
-        private displayNamePattern: string = '{0} ({1})';
+    constructor(className?: string) {
+        super(className);
+        this.namesView = new NamesView();
+        this.appendChild(this.namesView);
+    }
 
-        constructor(className?: string) {
-            super(className);
-            this.namesView = new api.app.NamesView();
-            this.appendChild(this.namesView);
-        }
+    setObject(locale: Locale) {
+        this.namesView.setMainName(
+            StringHelper.format(this.displayNamePattern, locale.getDisplayName(), locale.getProcessedTag()));
 
-        setObject(locale: Locale) {
-            this.namesView.setMainName(
-                api.util.StringHelper.format(this.displayNamePattern, locale.getDisplayName(), locale.getProcessedTag()));
+        return super.setObject(locale);
+    }
 
-            return super.setObject(locale);
-        }
-
-        getPreferredHeight(): number {
-            return 30;
-        }
+    getPreferredHeight(): number {
+        return 30;
     }
 }

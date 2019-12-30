@@ -1,20 +1,22 @@
-module api.form {
+import {DivEl} from '../dom/DivEl';
+import {StyleHelper} from '../StyleHelper';
+import {Input} from './Input';
 
-    export class InputLabel extends api.dom.DivEl {
+export class InputLabel
+    extends DivEl {
 
-        constructor(input:Input) {
-            super('input-label');
+    constructor(input: Input) {
+        super('input-label');
 
-            let wrapper = new api.dom.DivEl('wrapper', api.StyleHelper.COMMON_PREFIX);
-            let label = new api.dom.DivEl('label');
-            label.getEl().setInnerHtml(input.getLabel());
-            wrapper.getEl().appendChild(label.getHTMLElement());
+        let wrapper = new DivEl('wrapper', StyleHelper.COMMON_PREFIX);
+        let label = new DivEl('label');
+        label.getEl().setInnerHtml(input.getLabel());
+        wrapper.getEl().appendChild(label.getHTMLElement());
 
-            if( input.getOccurrences().required() ) {
-                wrapper.addClass('required');
-            }
-
-            this.getEl().appendChild(wrapper.getHTMLElement());
+        if (input.getOccurrences().required()) {
+            wrapper.addClass('required');
         }
+
+        this.getEl().appendChild(wrapper.getHTMLElement());
     }
 }

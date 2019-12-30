@@ -1,15 +1,14 @@
-module api.macro.resource {
+import {FormJson} from '../../form/json/FormJson';
 
-    export interface MacrosJson {
-        macros: MacroJson[];
-    }
+export interface MacrosJson {
+    macros: MacroJson[];
+}
 
-    export interface MacroJson {
-        key: string;
-        name: string;
-        displayName: string;
-        description: string;
-        form: api.form.json.FormJson;
-        iconUrl: string;
-    }
+export interface MacroJson {
+    key: string;
+    name: string;
+    displayName: string;
+    description: string;
+    form: FormJson;
+    iconUrl: string;
 }

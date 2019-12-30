@@ -1,19 +1,18 @@
-module api.content.page {
+import {FormJson} from '../../form/json/FormJson';
 
-    export interface DescriptorJson {
+export interface DescriptorJson {
 
-        key: string;
+    key: string;
 
-        name: string;
+    name: string;
 
-        displayName: string;
+    displayName: string;
 
-        description: string;
+    description: string;
 
-        controller: string;
+    controller: string;
 
-        config: api.form.json.FormJson;
+    config: FormJson;
 
-        icon: string;
-    }
+    icon: string;
 }

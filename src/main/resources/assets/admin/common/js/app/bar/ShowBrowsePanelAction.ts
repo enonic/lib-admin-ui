@@ -1,13 +1,14 @@
-module api.app.bar {
+import {Action} from '../../ui/Action';
+import {ShowBrowsePanelEvent} from '../ShowBrowsePanelEvent';
 
-    export class ShowBrowsePanelAction extends api.ui.Action {
+export class ShowBrowsePanelAction
+    extends Action {
 
-        constructor() {
-            super('Browse');
+    constructor() {
+        super('Browse');
 
-            this.onExecuted(() => {
-                new api.app.ShowBrowsePanelEvent().fire();
-            });
-        }
+        this.onExecuted(() => {
+            new ShowBrowsePanelEvent().fire();
+        });
     }
 }

@@ -1,51 +1,55 @@
-module api.event {
+import {Event} from './Event';
+import {ClassHelper} from '../ClassHelper';
+import {EventJson} from './EventJson';
+import {NodeServerChange} from './NodeServerChange';
 
-    export interface NodeEventJson extends EventJson {
-        data: NodeEventDataJson;
+export interface NodeEventJson
+    extends EventJson {
+    data: NodeEventDataJson;
+}
+
+export interface NodeEventDataJson {
+    nodes: NodeEventNodeJson[];
+}
+
+export interface NodeEventNodeJson {
+    id: string;
+    path: string;
+    newPath: string;
+    branch: string;
+}
+
+export class NodeServerEvent
+    extends Event {
+
+    private change: NodeServerChange<any>;
+
+    constructor(change: NodeServerChange<any>) {
+        super();
+        this.change = change;
     }
 
-    export interface NodeEventDataJson {
-        nodes: NodeEventNodeJson[];
+    static is(_eventJson: NodeEventJson): boolean {
+        throw new Error('must be implemented in inheritors');
     }
 
-    export interface NodeEventNodeJson {
-        id: string;
-        path: string;
-        newPath: string;
-        branch: string;
+    static on(handler: (event: NodeServerEvent) => void) {
+        Event.bind(ClassHelper.getFullName(this), handler);
     }
 
-    export class NodeServerEvent extends Event {
+    static un(handler?: (event: NodeServerEvent) => void) {
+        Event.unbind(ClassHelper.getFullName(this), handler);
+    }
 
-        private change: NodeServerChange<any>;
+    static fromJson(_nodeEventJson: NodeEventJson): NodeServerEvent {
+        throw new Error('must be implemented in inheritors');
+    }
 
-        constructor(change: NodeServerChange<any>) {
-            super();
-            this.change = change;
-        }
+    getNodeChange(): NodeServerChange<any> {
+        return this.change;
+    }
 
-        getNodeChange(): NodeServerChange<any> {
-            return this.change;
-        }
-
-        static is(_eventJson: api.event.NodeEventJson): boolean {
-            throw new Error('must be implemented in inheritors');
-        }
-
-        toString(): string {
-            return 'NodeServerEvent: [' + this.change.toString() + ']';
-        }
-
-        static on(handler: (event: NodeServerEvent) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
-        }
-
-        static un(handler?: (event: NodeServerEvent) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
-        }
-
-        static fromJson(_nodeEventJson: NodeEventJson): NodeServerEvent {
-            throw new Error('must be implemented in inheritors');
-        }
+    toString(): string {
+        return 'NodeServerEvent: [' + this.change.toString() + ']';
     }
 }

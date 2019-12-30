@@ -1,38 +1,37 @@
-module api.dom {
+import {Element, NewElementBuilder} from './Element';
 
-    export enum LinkType {
-        STYLESHEET
+export enum LinkType {
+    STYLESHEET
+}
+
+export class LinkEl extends Element {
+
+    constructor(href: string = '#', type: LinkType = LinkType.STYLESHEET) {
+        super(new NewElementBuilder().setTagName('link'));
+
+        this.setHref(href).setType(type);
     }
 
-    export class LinkEl extends api.dom.Element {
-
-        constructor(href: string = '#', type: LinkType = LinkType.STYLESHEET) {
-            super(new NewElementBuilder().setTagName('link'));
-
-            this.setHref(href).setType(type);
+    private setType(type: LinkType) {
+        switch (type) {
+            case LinkType.STYLESHEET:
+                this.setRel('stylesheet');
+                this.getEl().setAttribute('type', 'text/css');
         }
+    }
 
-        private setType(type: LinkType) {
-            switch (type) {
-                case LinkType.STYLESHEET:
-                    this.setRel('stylesheet');
-                    this.getEl().setAttribute('type', 'text/css');
-            }
-        }
+    private setHref(href: string): LinkEl {
+        this.getEl().setAttribute('href', href);
+        return this;
+    }
 
-        private setHref(href: string): api.dom.LinkEl {
-            this.getEl().setAttribute('href', href);
-            return this;
-        }
+    setRel(rel: string): LinkEl {
+        this.getEl().setAttribute('rel', rel);
+        return this;
+    }
 
-        setRel(rel: string): api.dom.LinkEl {
-            this.getEl().setAttribute('rel', rel);
-            return this;
-        }
-
-        setAsync(): api.dom.LinkEl {
-            this.getEl().setAttribute('async', '');
-            return this;
-        }
+    setAsync(): LinkEl {
+        this.getEl().setAttribute('async', '');
+        return this;
     }
 }

@@ -1,15 +1,14 @@
-module api.form.json {
+import {FormItemTypeWrapperJson} from './FormItemTypeWrapperJson';
 
-    export interface FormOptionSetOptionJson {
+export interface FormOptionSetOptionJson {
 
-        name: string;
+    name: string;
 
-        label: string;
+    label: string;
 
-        defaultOption?: boolean;
+    defaultOption?: boolean;
 
-        helpText?: string;
+    helpText?: string;
 
-        items?: FormItemTypeWrapperJson[];
-    }
+    items?: FormItemTypeWrapperJson[];
 }

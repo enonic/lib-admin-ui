@@ -1,33 +1,32 @@
-module api.issue.event {
+import {NodeServerChangeType} from '../../event/NodeServerChange';
+import {NodeEventJson, NodeServerEvent} from '../../event/NodeServerEvent';
+import {IssueServerChange} from './IssueServerChange';
 
-    import NodeServerChangeType = api.event.NodeServerChangeType;
+export class IssueServerEvent
+    extends NodeServerEvent {
 
-    export class IssueServerEvent
-        extends api.event.NodeServerEvent {
+    constructor(change: IssueServerChange) {
+        super(change);
+    }
 
-        constructor(change: IssueServerChange) {
-            super(change);
-        }
+    /*
+     Comments are stored under the issue at /issues/issue-1/comment-2
+     So we need to filter them out leaving just /issues/issue-N
+      */
+    static is(eventJson: NodeEventJson): boolean {
+        return eventJson.data.nodes.some(node => /^\/issues\/issue-\d+$/.test(node.path));
+    }
 
-        getType(): NodeServerChangeType {
-            return this.getNodeChange() ? this.getNodeChange().getChangeType() : null;
-        }
+    static fromJson(nodeEventJson: NodeEventJson): IssueServerEvent {
+        let change = IssueServerChange.fromJson(nodeEventJson);
+        return new IssueServerEvent(change);
+    }
 
-        getNodeChange(): IssueServerChange {
-            return <IssueServerChange>super.getNodeChange();
-        }
+    getType(): NodeServerChangeType {
+        return this.getNodeChange() ? this.getNodeChange().getChangeType() : null;
+    }
 
-        /*
-         Comments are stored under the issue at /issues/issue-1/comment-2
-         So we need to filter them out leaving just /issues/issue-N
-          */
-        static is(eventJson: api.event.NodeEventJson): boolean {
-            return eventJson.data.nodes.some(node => /^\/issues\/issue-\d+$/.test(node.path));
-        }
-
-        static fromJson(nodeEventJson: api.event.NodeEventJson): IssueServerEvent {
-            let change = IssueServerChange.fromJson(nodeEventJson);
-            return new IssueServerEvent(change);
-        }
+    getNodeChange(): IssueServerChange {
+        return <IssueServerChange>super.getNodeChange();
     }
 }

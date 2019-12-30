@@ -1,8 +1,7 @@
-module api.app.bar {
+import {Action} from '../../ui/Action';
+import {ShowBrowsePanelAction} from './ShowBrowsePanelAction';
 
-    export class AppBarActions {
+export class AppBarActions {
 
-        public static SHOW_BROWSE_PANEL: api.ui.Action = new ShowBrowsePanelAction();
-    }
-
+    public static SHOW_BROWSE_PANEL: Action = new ShowBrowsePanelAction();
 }

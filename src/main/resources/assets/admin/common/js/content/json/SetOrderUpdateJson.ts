@@ -1,10 +1,7 @@
-module api.content.json {
+export interface SetOrderUpdateJson {
 
-    export interface SetOrderUpdateJson {
+    contentId: string;
 
-        contentId: string;
+    silent: boolean;
 
-        silent: boolean;
-
-    }
 }

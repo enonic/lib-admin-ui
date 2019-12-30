@@ -1,16 +1,13 @@
-module api.ui {
+export class ActivatedEvent {
 
-    export class ActivatedEvent {
+    private index: number;
 
-        private index: number;
+    constructor(index: number) {
 
-        constructor(index: number) {
+        this.index = index;
+    }
 
-            this.index = index;
-        }
-
-        getIndex(): number {
-            return this.index;
-        }
+    getIndex(): number {
+        return this.index;
     }
 }

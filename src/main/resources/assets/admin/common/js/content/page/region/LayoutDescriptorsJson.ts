@@ -1,7 +1,6 @@
-module api.content.page.region {
+import {LayoutDescriptorJson} from './LayoutDescriptorJson';
 
-    export interface LayoutDescriptorsJson {
+export interface LayoutDescriptorsJson {
 
-        descriptors: LayoutDescriptorJson[];
-    }
+    descriptors: LayoutDescriptorJson[];
 }

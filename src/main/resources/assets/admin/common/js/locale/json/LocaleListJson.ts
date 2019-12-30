@@ -1,7 +1,5 @@
-module api.locale.json {
+import {LocaleJson} from './LocaleJson';
 
-    export interface LocaleListJson {
-        locales: LocaleJson[];
-    }
-
+export interface LocaleListJson {
+    locales: LocaleJson[];
 }

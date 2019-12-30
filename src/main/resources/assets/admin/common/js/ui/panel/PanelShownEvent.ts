@@ -1,29 +1,28 @@
-module api.ui.panel {
+import {Panel} from './Panel';
 
-    export class PanelShownEvent {
+export class PanelShownEvent {
 
-        private panel: Panel;
+    private panel: Panel;
 
-        private index: number;
+    private index: number;
 
-        private previousPanel: Panel;
+    private previousPanel: Panel;
 
-        constructor(panel: Panel, index: number, previousPanel: Panel) {
-            this.panel = panel;
-            this.index = index;
-            this.previousPanel = previousPanel;
-        }
+    constructor(panel: Panel, index: number, previousPanel: Panel) {
+        this.panel = panel;
+        this.index = index;
+        this.previousPanel = previousPanel;
+    }
 
-        getPanel(): Panel {
-            return this.panel;
-        }
+    getPanel(): Panel {
+        return this.panel;
+    }
 
-        getIndex(): number {
-            return this.index;
-        }
+    getIndex(): number {
+        return this.index;
+    }
 
-        getPreviousPanel(): Panel {
-            return this.previousPanel;
-        }
+    getPreviousPanel(): Panel {
+        return this.previousPanel;
     }
 }

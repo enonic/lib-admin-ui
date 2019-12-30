@@ -1,17 +1,17 @@
-module api.dom {
+import {Element, NewElementBuilder} from './Element';
 
-    export class DdDtEl extends Element {
+export class DdDtEl
+    extends Element {
 
-        constructor(tag: string, className?: string) {
-            let builder = new NewElementBuilder();
-            if (className) {
-                builder.setClassName(className);
-            }
-            if (tag === 'dt' || tag === 'dd') {
-                builder.setTagName(tag);
-            }
-
-            super(builder);
+    constructor(tag: string, className?: string) {
+        let builder = new NewElementBuilder();
+        if (className) {
+            builder.setClassName(className);
         }
+        if (tag === 'dt' || tag === 'dd') {
+            builder.setTagName(tag);
+        }
+
+        super(builder);
     }
 }

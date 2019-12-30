@@ -1,9 +1,10 @@
-module api.dom {
+import {Element} from './Element';
+import {ElementEvent} from './ElementEvent';
 
-    export class ElementRenderedEvent extends ElementEvent {
+export class ElementRenderedEvent
+    extends ElementEvent {
 
-        constructor(element: Element, target?: Element) {
-            super('rendered', element, target);
-        }
+    constructor(element: Element, target?: Element) {
+        super('rendered', element, target);
     }
 }

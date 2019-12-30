@@ -1,68 +1,77 @@
-module api.form.inputtype.text {
+import {Property} from '../../../data/Property';
+import {Value} from '../../../data/Value';
+import {ValueType} from '../../../data/ValueType';
+import {ValueTypes} from '../../../data/ValueTypes';
+import {FormInputEl} from '../../../dom/FormInputEl';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {Element} from '../../../dom/Element';
+import {ValueChangedEvent} from '../../../ValueChangedEvent';
+import {StringHelper} from '../../../util/StringHelper';
+import {TextArea as TextAreaEl} from '../../../ui/text/TextArea';
+import {InputValidationRecording} from '../InputValidationRecording';
+import {InputTypeName} from '../../InputTypeName';
+import {InputTypeManager} from '../InputTypeManager';
+import {Class} from '../../../Class';
+import {TextInputType} from './TextInputType';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
-    import Property = api.data.Property;
-    import Value = api.data.Value;
-    import ValueType = api.data.ValueType;
-    import ValueTypes = api.data.ValueTypes;
-    import FormInputEl = api.dom.FormInputEl;
+export class TextArea
+    extends TextInputType {
 
-    export class TextArea extends TextInputType {
-
-        constructor(config: api.form.inputtype.InputTypeViewContext) {
-            super(config);
-            this.readConfig(config.inputConfig);
-        }
-
-        getValueType(): ValueType {
-            return ValueTypes.STRING;
-        }
-
-        newInitialValue(): Value {
-            return super.newInitialValue() || new Value('', ValueTypes.STRING);
-        }
-
-        createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
-            if (!ValueTypes.STRING.equals(property.getType())) {
-                property.convertValueType(ValueTypes.STRING);
-            }
-
-            const value = property.hasNonNullValue() ? property.getString() : undefined;
-            const inputEl = new api.ui.text.TextArea(this.getInput().getName() + '-' + index, value);
-
-            inputEl.onValueChanged((event: api.ValueChangedEvent) => {
-                const isValid = this.isValid(event.getNewValue(), inputEl);
-                this.newValueHandler(inputEl, event.getNewValue(), isValid);
-            });
-
-            this.initOccurenceListeners(inputEl);
-
-            return inputEl;
-        }
-
-        protected updateFormInputElValue(occurrence: api.dom.FormInputEl, property: Property) {
-            occurrence.setValue(property.getString());
-        }
-
-        resetInputOccurrenceElement(occurrence: api.dom.Element) {
-            let input = <api.ui.text.TextArea> occurrence;
-
-            input.resetBaseValues();
-        }
-
-        valueBreaksRequiredContract(value: Value): boolean {
-            return value.isNull() || !value.getType().equals(ValueTypes.STRING) ||
-                   api.util.StringHelper.isBlank(value.getString());
-        }
-
-        hasInputElementValidUserInput(inputElement: FormInputEl, recording?: api.form.inputtype.InputValidationRecording) {
-            let textInput = inputElement;
-            return this.isValid(textInput.getValue(), textInput, true, recording);
-        }
-
-        static getName(): api.form.InputTypeName {
-            return new api.form.InputTypeName('TextArea', false);
-        }
+    constructor(config: InputTypeViewContext) {
+        super(config);
+        this.readConfig(config.inputConfig);
     }
 
-    api.form.inputtype.InputTypeManager.register(new api.Class(TextArea.getName().getName(), TextArea));
+    static getName(): InputTypeName {
+        return new InputTypeName('TextArea', false);
+    }
+
+    getValueType(): ValueType {
+        return ValueTypes.STRING;
+    }
+
+    newInitialValue(): Value {
+        return super.newInitialValue() || new Value('', ValueTypes.STRING);
+    }
+
+    createInputOccurrenceElement(index: number, property: Property): Element {
+        if (!ValueTypes.STRING.equals(property.getType())) {
+            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.STRING);
+        }
+
+        const value = property.hasNonNullValue() ? property.getString() : undefined;
+        const inputEl = new TextAreaEl(this.getInput().getName() + '-' + index, value);
+
+        inputEl.onValueChanged((event: ValueChangedEvent) => {
+            const isValid = this.isValid(event.getNewValue(), inputEl);
+            this.newValueHandler(inputEl, event.getNewValue(), isValid);
+        });
+
+        this.initOccurenceListeners(inputEl);
+
+        return inputEl;
+    }
+
+    resetInputOccurrenceElement(occurrence: Element) {
+        let input = <TextAreaEl> occurrence;
+
+        input.resetBaseValues();
+    }
+
+    valueBreaksRequiredContract(value: Value): boolean {
+        return value.isNull() || !value.getType().equals(ValueTypes.STRING) ||
+               StringHelper.isBlank(value.getString());
+    }
+
+    hasInputElementValidUserInput(inputElement: FormInputEl, recording?: InputValidationRecording) {
+        let textInput = inputElement;
+        return this.isValid(textInput.getValue(), textInput, true, recording);
+    }
+
+    protected updateFormInputElValue(occurrence: FormInputEl, property: Property) {
+        occurrence.setValue(property.getString());
+    }
 }
+
+InputTypeManager.register(new Class(TextArea.getName().getName(), TextArea), true);

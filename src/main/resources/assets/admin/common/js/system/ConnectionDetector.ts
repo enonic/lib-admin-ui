@@ -1,181 +1,187 @@
-module api.system {
+import {StatusRequest} from './StatusRequest';
+import {StatusResult} from './StatusResult';
+import {showError} from '../notify/MessageBus';
+import {NotifyManager} from '../notify/NotifyManager';
+import {Store} from '../store/Store';
 
-    export class ConnectionDetector {
+export const CONNECTION_DETECTOR_KEY: string = 'ConnectionDetector';
 
-        private intervalId: number = -1;
+export class ConnectionDetector {
 
-        private pollIntervalMs: number;
+    private intervalId: number = -1;
 
-        private connected: boolean = true;
+    private pollIntervalMs: number;
 
-        private authenticated: boolean = false;
+    private connected: boolean = true;
 
-        private readonly: boolean;
+    private authenticated: boolean = false;
 
-        private connectionLostListeners: { (): void }[] = [];
+    private readonly: boolean;
 
-        private connectionRestoredListeners: { (): void }[] = [];
+    private connectionLostListeners: { (): void }[] = [];
 
-        private sessionExpiredListeners: { (): void }[] = [];
+    private connectionRestoredListeners: { (): void }[] = [];
 
-        private readonlyStatusChangedListeners: { (readonly: boolean): void }[] = [];
+    private sessionExpiredListeners: { (): void }[] = [];
 
-        private static INSTANCE: ConnectionDetector;
+    private readonlyStatusChangedListeners: { (readonly: boolean): void }[] = [];
 
-        constructor(pollIntervalMs: number = 15000) {
-            this.pollIntervalMs = pollIntervalMs;
+    constructor(pollIntervalMs: number = 15000) {
+        this.pollIntervalMs = pollIntervalMs;
+    }
+
+    static get(): ConnectionDetector {
+        let instance: ConnectionDetector = Store.instance().get(CONNECTION_DETECTOR_KEY);
+
+        if (instance == null) {
+            instance = new ConnectionDetector();
+            Store.instance().set(CONNECTION_DETECTOR_KEY, instance);
         }
 
-        static get(): ConnectionDetector {
-            if (!ConnectionDetector.INSTANCE) {
-                ConnectionDetector.INSTANCE = new ConnectionDetector();
+        return instance;
+    }
+
+    setNotificationMessage(message: string): ConnectionDetector {
+
+        let messageId: string;
+        const hideNotificationMessage = () => {
+            if (messageId) {
+                NotifyManager.get().hide(messageId);
+                messageId = null;
             }
+        };
 
-            return ConnectionDetector.INSTANCE;
+        this.onConnectionLost(() => {
+            hideNotificationMessage();
+            messageId = showError(message, false);
+        });
+
+        this.onConnectionRestored(hideNotificationMessage);
+
+        this.onSessionExpired(hideNotificationMessage);
+
+        return this;
+    }
+
+    startPolling(immediate: boolean = false) {
+        this.stopPolling();
+        this.intervalId = <any>setInterval(this.doPoll.bind(this), this.pollIntervalMs);
+        if (immediate) {
+            this.doPoll();
         }
+    }
 
-        setNotificationMessage(message: string): ConnectionDetector {
+    stopPolling() {
+        clearInterval(this.intervalId);
+    }
 
-            let messageId: string;
-            const hideNotificationMessage = () => {
-                if (messageId) {
-                    api.notify.NotifyManager.get().hide(messageId);
-                    messageId = null;
-                }
-            };
+    setSessionExpireRedirectUrl(url: string): ConnectionDetector {
+        this.onSessionExpired(() => {
+            window.location.href = url;
+        });
 
-            this.onConnectionLost(() => {
-                hideNotificationMessage();
-                messageId = api.notify.showError(message, false);
+        return this;
+    }
+
+    setAuthenticated(isAuthenticated: boolean): ConnectionDetector {
+        this.authenticated = isAuthenticated;
+
+        return this;
+    }
+
+    onConnectionLost(listener: () => void) {
+        this.connectionLostListeners.push(listener);
+    }
+
+    isConnected(): boolean {
+        return this.connected;
+    }
+
+    isAuthenticated(): boolean {
+        return this.authenticated;
+    }
+
+    onConnectionRestored(listener: () => void) {
+        this.connectionRestoredListeners.push(listener);
+    }
+
+    onSessionExpired(listener: () => void) {
+        this.sessionExpiredListeners.push(listener);
+    }
+
+    onReadonlyStatusChanged(listener: (readonly: boolean) => void) {
+        this.readonlyStatusChangedListeners.push(listener);
+    }
+
+    unConnectionLost(listener: () => void) {
+        this.connectionLostListeners = this.connectionLostListeners.filter((currentListener: () => void) => {
+            return currentListener !== listener;
+        });
+    }
+
+    unConnectionRestored(listener: () => void) {
+        this.connectionRestoredListeners = this.connectionRestoredListeners.filter((currentListener: () => void) => {
+            return currentListener !== listener;
+        });
+    }
+
+    unSessionExpired(listener: () => void) {
+        this.sessionExpiredListeners = this.sessionExpiredListeners.filter((currentListener: () => void) => {
+            return currentListener !== listener;
+        });
+    }
+
+    unReadonlyStatusChanged(listener: (readonly: boolean) => void) {
+        this.readonlyStatusChangedListeners =
+            this.readonlyStatusChangedListeners.filter((currentListener: (readonly: boolean) => void) => {
+                return currentListener !== listener;
             });
+    }
 
-            this.onConnectionRestored(hideNotificationMessage);
-
-            this.onSessionExpired(hideNotificationMessage);
-
-            return this;
-        }
-
-        startPolling(immediate: boolean = false) {
-            this.stopPolling();
-            this.intervalId = setInterval(this.doPoll.bind(this), this.pollIntervalMs);
-            if (immediate) {
-                this.doPoll();
+    private doPoll() {
+        let request = new StatusRequest();
+        request.setTimeout(this.pollIntervalMs);
+        request.sendAndParse().then((status: StatusResult) => {
+            if (!this.connected) {
+                this.notifyConnectionRestored();
+                this.connected = !this.connected;
             }
-        }
+            if (this.authenticated && !status.isAuthenticated()) {
+                this.notifySessionExpired();
+            }
+            this.authenticated = status.isAuthenticated();
 
-        stopPolling() {
-            clearInterval(this.intervalId);
-        }
+            if (this.readonly !== status.isReadonly()) {
+                this.readonly = status.isReadonly();
+                this.notifyReadonlyStatusChanged(this.readonly);
+            }
+        }).catch(() => {
+            if (this.connected) {
+                this.notifyConnectionLost();
+                this.connected = !this.connected;
+            }
+        }).done();
+    }
 
-        setSessionExpireRedirectUrl(url: string): ConnectionDetector {
-            this.onSessionExpired(() => {
-                window.location.href = url;
-            });
+    private notifyConnectionLost() {
+        this.connectionLostListeners.forEach((listener: () => void) => {
+            listener.call(this);
+        });
+    }
 
-            return this;
-        }
+    private notifyConnectionRestored() {
+        this.connectionRestoredListeners.forEach((listener: () => void) => {
+            listener.call(this);
+        });
+    }
 
-        setAuthenticated(isAuthenticated: boolean): ConnectionDetector {
-            this.authenticated = isAuthenticated;
+    private notifySessionExpired() {
+        this.sessionExpiredListeners.forEach((listener: () => void) => {
+            listener.call(this);
+        });
+    }
 
-            return this;
-        }
-
-        onConnectionLost(listener: () => void) {
-            this.connectionLostListeners.push(listener);
-        }
-
-        isConnected(): boolean {
-            return this.connected;
-        }
-
-        isAuthenticated(): boolean {
-            return this.authenticated;
-        }
-
-        onConnectionRestored(listener: () => void) {
-            this.connectionRestoredListeners.push(listener);
-        }
-
-        onSessionExpired(listener: () => void) {
-            this.sessionExpiredListeners.push(listener);
-        }
-
-        onReadonlyStatusChanged(listener: (readonly: boolean) => void) {
-            this.readonlyStatusChangedListeners.push(listener);
-        }
-
-        unConnectionLost(listener: () => void) {
-            this.connectionLostListeners = this.connectionLostListeners.filter((currentListener: () => void) => {
-                return currentListener !== listener;
-            });
-        }
-
-        unConnectionRestored(listener: () => void) {
-            this.connectionRestoredListeners = this.connectionRestoredListeners.filter((currentListener: () => void) => {
-                return currentListener !== listener;
-            });
-        }
-
-        unSessionExpired(listener: () => void) {
-            this.sessionExpiredListeners = this.sessionExpiredListeners.filter((currentListener: () => void) => {
-                return currentListener !== listener;
-            });
-        }
-
-        unReadonlyStatusChanged(listener: (readonly: boolean) => void) {
-            this.readonlyStatusChangedListeners =
-                this.readonlyStatusChangedListeners.filter((currentListener: (readonly: boolean) => void) => {
-                    return currentListener !== listener;
-                });
-        }
-
-        private doPoll() {
-            let request = new StatusRequest();
-            request.setTimeout(this.pollIntervalMs);
-            request.sendAndParse().then((status: StatusResult) => {
-                if (!this.connected) {
-                    this.notifyConnectionRestored();
-                    this.connected = !this.connected;
-                }
-                if (this.authenticated && !status.isAuthenticated()) {
-                    this.notifySessionExpired();
-                }
-                this.authenticated = status.isAuthenticated();
-
-                if (this.readonly !== status.isReadonly()) {
-                    this.readonly = status.isReadonly();
-                    this.notifyReadonlyStatusChanged(this.readonly);
-                }
-            }).catch(() => {
-                if (this.connected) {
-                    this.notifyConnectionLost();
-                    this.connected = !this.connected;
-                }
-            }).done();
-        }
-
-        private notifyConnectionLost() {
-            this.connectionLostListeners.forEach((listener: () => void) => {
-                listener.call(this);
-            });
-        }
-
-        private notifyConnectionRestored() {
-            this.connectionRestoredListeners.forEach((listener: () => void) => {
-                listener.call(this);
-            });
-        }
-
-        private notifySessionExpired() {
-            this.sessionExpiredListeners.forEach((listener: () => void) => {
-                listener.call(this);
-            });
-        }
-
-        private notifyReadonlyStatusChanged(readonly: boolean) {
-            this.readonlyStatusChangedListeners.forEach((listener) => listener(readonly));
-        }
+    private notifyReadonlyStatusChanged(readonly: boolean) {
+        this.readonlyStatusChangedListeners.forEach((listener) => listener(readonly));
     }
 }

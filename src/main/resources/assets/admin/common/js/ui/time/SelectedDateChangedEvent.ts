@@ -1,23 +1,19 @@
-module api.ui.time {
+export class SelectedDateChangedEvent {
 
-    export class SelectedDateChangedEvent {
+    private date: Date;
 
-        private date: Date;
+    private userInput: boolean;
 
-        private userInput: boolean;
-
-        constructor(selectedDate: Date, userInput?: boolean) {
-            this.date = selectedDate;
-            this.userInput = userInput;
-        }
-
-        getDate(): Date {
-            return this.date;
-        }
-
-        isUserInput(): boolean {
-            return this.userInput;
-        }
+    constructor(selectedDate: Date, userInput?: boolean) {
+        this.date = selectedDate;
+        this.userInput = userInput;
     }
 
+    getDate(): Date {
+        return this.date;
+    }
+
+    isUserInput(): boolean {
+        return this.userInput;
+    }
 }

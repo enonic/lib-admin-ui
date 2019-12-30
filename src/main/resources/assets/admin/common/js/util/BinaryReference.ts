@@ -1,34 +1,35 @@
-module api.util {
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
 
-    export class BinaryReference implements api.Equitable {
+export class BinaryReference
+    implements Equitable {
 
-        private value: string;
+    private value: string;
 
-        constructor(value: string) {
-            this.value = value;
+    constructor(value: string) {
+        this.value = value;
+    }
+
+    getValue(): string {
+        return this.value;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, BinaryReference)) {
+            return false;
         }
 
-        getValue(): string {
-            return this.value;
+        let other = <BinaryReference>o;
+
+        if (!ObjectHelper.stringEquals(this.value, other.value)) {
+            return false;
         }
 
-        equals(o: Equitable): boolean {
+        return true;
+    }
 
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, BinaryReference)) {
-                return false;
-            }
-
-            let other = <BinaryReference>o;
-
-            if (!api.ObjectHelper.stringEquals(this.value, other.value)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        toString(): string {
-            return this.value;
-        }
+    toString(): string {
+        return this.value;
     }
 }

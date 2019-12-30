@@ -1,97 +1,97 @@
-module api.macro {
+import {SelectedOption} from '../ui/selector/combobox/SelectedOption';
+import {Option} from '../ui/selector/Option';
+import {RichComboBox, RichComboBoxBuilder} from '../ui/selector/combobox/RichComboBox';
+import {MacrosLoader} from './resource/MacrosLoader';
+import {BaseSelectedOptionsView} from '../ui/selector/combobox/BaseSelectedOptionsView';
+import {RichSelectedOptionView, RichSelectedOptionViewBuilder} from '../ui/selector/combobox/RichSelectedOptionView';
+import {MacroDescriptor} from './MacroDescriptor';
+import {MacroViewer} from './MacroViewer';
 
-    import SelectedOption = api.ui.selector.combobox.SelectedOption;
-    import Option = api.ui.selector.Option;
-    import RichComboBox = api.ui.selector.combobox.RichComboBox;
-    import RichComboBoxBuilder = api.ui.selector.combobox.RichComboBoxBuilder;
-    import MacrosLoader = api.macro.resource.MacrosLoader;
+export class MacroComboBox
+    extends RichComboBox<MacroDescriptor> {
 
-    export class MacroComboBox
-        extends RichComboBox<MacroDescriptor> {
+    constructor(builder: MacroComboBoxBuilder) {
 
-        constructor(builder: MacroComboBoxBuilder) {
+        let richComboBoxBuilder = new RichComboBoxBuilder<MacroDescriptor>().setComboBoxName('macroSelector').setLoader(
+            builder.loader).setSelectedOptionsView(new MacroSelectedOptionsView()).setMaximumOccurrences(
+            builder.maximumOccurrences).setDelayedInputValueChangedHandling(750).setOptionDisplayValueViewer(
+            new MacroViewer()).setValue(builder.value).setMaxHeight(250);
 
-            let richComboBoxBuilder = new RichComboBoxBuilder<MacroDescriptor>().setComboBoxName('macroSelector').setLoader(
-                builder.loader).setSelectedOptionsView(new MacroSelectedOptionsView()).setMaximumOccurrences(
-                builder.maximumOccurrences).setDelayedInputValueChangedHandling(750).setOptionDisplayValueViewer(
-                new MacroViewer()).setValue(builder.value).setMaxHeight(250);
+        super(richComboBoxBuilder);
 
-            super(richComboBoxBuilder);
-
-            this.addClass('content-combo-box');
-        }
-
-        getLoader(): MacrosLoader {
-            return <MacrosLoader> super.getLoader();
-        }
-
-        createOption(val: MacroDescriptor): Option<MacroDescriptor> {
-            return {
-                value: val.getKey().getRefString(),
-                displayValue: val
-            };
-        }
-
-        public static create(): MacroComboBoxBuilder {
-            return new MacroComboBoxBuilder();
-        }
+        this.addClass('content-combo-box');
     }
 
-    export class MacroSelectedOptionsView
-        extends api.ui.selector.combobox.BaseSelectedOptionsView<MacroDescriptor> {
-
-        createSelectedOption(option: api.ui.selector.Option<MacroDescriptor>): SelectedOption<MacroDescriptor> {
-            let optionView = new MacroSelectedOptionView(option);
-            return new SelectedOption<MacroDescriptor>(optionView, this.count());
-        }
+    public static create(): MacroComboBoxBuilder {
+        return new MacroComboBoxBuilder();
     }
 
-    export class MacroSelectedOptionView
-        extends api.ui.selector.combobox.RichSelectedOptionView<MacroDescriptor> {
-
-        constructor(option: api.ui.selector.Option<MacroDescriptor>) {
-            super(new api.ui.selector.combobox.RichSelectedOptionViewBuilder<MacroDescriptor>(option));
-        }
-
-        resolveIconUrl(macroDescriptor: MacroDescriptor): string {
-            return macroDescriptor.getIconUrl();
-        }
-
-        resolveTitle(macroDescriptor: MacroDescriptor): string {
-            return macroDescriptor.getDisplayName();
-        }
-
-        resolveSubTitle(macroDescriptor: MacroDescriptor): string {
-            return macroDescriptor.getDescription();
-        }
+    getLoader(): MacrosLoader {
+        return <MacrosLoader> super.getLoader();
     }
 
-    export class MacroComboBoxBuilder {
-
-        maximumOccurrences: number = 0;
-
-        loader: MacrosLoader;
-
-        value: string;
-
-        setMaximumOccurrences(maximumOccurrences: number): MacroComboBoxBuilder {
-            this.maximumOccurrences = maximumOccurrences;
-            return this;
-        }
-
-        setLoader(loader: MacrosLoader): MacroComboBoxBuilder {
-            this.loader = loader;
-            return this;
-        }
-
-        setValue(value: string): MacroComboBoxBuilder {
-            this.value = value;
-            return this;
-        }
-
-        build(): MacroComboBox {
-            return new MacroComboBox(this);
-        }
-
+    createOption(val: MacroDescriptor): Option<MacroDescriptor> {
+        return {
+            value: val.getKey().getRefString(),
+            displayValue: val
+        };
     }
+}
+
+export class MacroSelectedOptionsView
+    extends BaseSelectedOptionsView<MacroDescriptor> {
+
+    createSelectedOption(option: Option<MacroDescriptor>): SelectedOption<MacroDescriptor> {
+        let optionView = new MacroSelectedOptionView(option);
+        return new SelectedOption<MacroDescriptor>(optionView, this.count());
+    }
+}
+
+export class MacroSelectedOptionView
+    extends RichSelectedOptionView<MacroDescriptor> {
+
+    constructor(option: Option<MacroDescriptor>) {
+        super(new RichSelectedOptionViewBuilder<MacroDescriptor>(option));
+    }
+
+    resolveIconUrl(macroDescriptor: MacroDescriptor): string {
+        return macroDescriptor.getIconUrl();
+    }
+
+    resolveTitle(macroDescriptor: MacroDescriptor): string {
+        return macroDescriptor.getDisplayName();
+    }
+
+    resolveSubTitle(macroDescriptor: MacroDescriptor): string {
+        return macroDescriptor.getDescription();
+    }
+}
+
+export class MacroComboBoxBuilder {
+
+    maximumOccurrences: number = 0;
+
+    loader: MacrosLoader;
+
+    value: string;
+
+    setMaximumOccurrences(maximumOccurrences: number): MacroComboBoxBuilder {
+        this.maximumOccurrences = maximumOccurrences;
+        return this;
+    }
+
+    setLoader(loader: MacrosLoader): MacroComboBoxBuilder {
+        this.loader = loader;
+        return this;
+    }
+
+    setValue(value: string): MacroComboBoxBuilder {
+        this.value = value;
+        return this;
+    }
+
+    build(): MacroComboBox {
+        return new MacroComboBox(this);
+    }
+
 }

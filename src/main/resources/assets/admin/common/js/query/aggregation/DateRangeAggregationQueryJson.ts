@@ -1,10 +1,9 @@
-module api.query.aggregation {
+import {DateRangeJson} from './DateRangeJson';
 
-    export interface DateRangeAggregationQueryJson {
+export interface DateRangeAggregationQueryJson {
 
-        name: string;
-        fieldName: string;
-        ranges:api.query.aggregation.DateRangeJson[];
+    name: string;
+    fieldName: string;
+    ranges: DateRangeJson[];
 
-    }
 }

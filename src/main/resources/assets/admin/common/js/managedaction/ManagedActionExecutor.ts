@@ -1,7 +1,4 @@
-module api.managedaction {
+export interface ManagedActionExecutor {
 
-    export interface ManagedActionExecutor {
-
-        isExecuting(): boolean;
-    }
+    isExecuting(): boolean;
 }

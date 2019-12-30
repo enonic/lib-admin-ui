@@ -1,69 +1,72 @@
-module api.application {
+import * as Q from 'q';
+import {BaseLoader} from '../util/loader/BaseLoader';
+import {Application} from './Application';
+import {ListApplicationsRequest} from './ListApplicationsRequest';
+import {ApplicationListResult} from './ApplicationListResult';
 
-    export class ApplicationLoader
-        extends api.util.loader.BaseLoader<ApplicationListResult, Application> {
+export class ApplicationLoader
+    extends BaseLoader<ApplicationListResult, Application> {
 
-        protected request: ListApplicationsRequest;
+    protected request: ListApplicationsRequest;
 
-        private filterObject: Object;
+    private filterObject: Object;
 
-        constructor(filterObject: Object, request?: ListApplicationsRequest) {
-            super(request);
+    constructor(filterObject: Object, request?: ListApplicationsRequest) {
+        super(request);
 
-            if (filterObject) {
-                this.filterObject = filterObject;
-            }
+        if (filterObject) {
+            this.filterObject = filterObject;
+        }
+    }
+
+    search(searchString: string): Q.Promise<Application[]> {
+        this.getRequest().setSearchQuery(searchString);
+        return this.load();
+    }
+
+    setSearchString(value: string) {
+        super.setSearchString(value);
+        this.getRequest().setSearchQuery(value);
+    }
+
+    load(): Q.Promise<Application[]> {
+        let me = this;
+        me.notifyLoadingData();
+
+        return me.sendRequest()
+            .then((applications: Application[]) => {
+                if (me.filterObject) {
+                    applications = applications.filter(me.filterResults, me);
+                }
+                me.notifyLoadedData(applications);
+
+                return applications;
+            });
+    }
+
+    protected createRequest(): ListApplicationsRequest {
+        return new ListApplicationsRequest();
+    }
+
+    protected getRequest(): ListApplicationsRequest {
+        return this.request;
+    }
+
+    private filterResults(application: Application): boolean {
+        if (!this.filterObject) {
+            return true;
         }
 
-        protected createRequest(): ListApplicationsRequest {
-            return new ListApplicationsRequest();
-        }
-
-        protected getRequest(): ListApplicationsRequest {
-            return this.request;
-        }
-
-        search(searchString: string): wemQ.Promise<Application[]> {
-            this.getRequest().setSearchQuery(searchString);
-            return this.load();
-        }
-
-        setSearchString(value: string) {
-            super.setSearchString(value);
-            this.getRequest().setSearchQuery(value);
-        }
-
-        load(): wemQ.Promise<Application[]> {
-            let me = this;
-            me.notifyLoadingData();
-
-            return me.sendRequest()
-                .then((applications: Application[]) => {
-                    if (me.filterObject) {
-                        applications = applications.filter(me.filterResults, me);
-                    }
-                    me.notifyLoadedData(applications);
-
-                    return applications;
-                });
-        }
-
-        private filterResults(application: Application): boolean {
-            if (!this.filterObject) {
-                return true;
-            }
-
-            let result = true;
-            for (let name in this.filterObject) {
-                if (this.filterObject.hasOwnProperty(name)) {
-                    if (!application.hasOwnProperty(name) || this.filterObject[name] !== application[name]) {
-                        result = false;
-                    }
+        let result = true;
+        for (let name in this.filterObject) {
+            if (this.filterObject.hasOwnProperty(name)) {
+                if (!application.hasOwnProperty(name) || this.filterObject[name] !== application[name]) {
+                    result = false;
                 }
             }
-
-            return result;
         }
 
+        return result;
     }
+
 }

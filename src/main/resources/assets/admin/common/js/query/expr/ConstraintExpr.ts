@@ -1,5 +1,5 @@
-module api.query.expr {
+import {Expression} from './Expression';
 
-    export interface ConstraintExpr extends Expression {
-    }
+export interface ConstraintExpr
+    extends Expression {
 }

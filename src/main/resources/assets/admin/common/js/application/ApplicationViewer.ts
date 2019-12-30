@@ -1,38 +1,38 @@
-module api.application {
-    import ApplicationUploadMock = api.application.ApplicationUploadMock;
+import {ApplicationUploadMock, Application} from './Application';
+import {NamesAndIconViewer} from '../ui/NamesAndIconViewer';
 
-    export class ApplicationViewer extends api.ui.NamesAndIconViewer<Application> {
+export class ApplicationViewer
+    extends NamesAndIconViewer<Application> {
 
-        constructor() {
-            super('application-viewer');
+    constructor() {
+        super('application-viewer');
+    }
+
+    doLayout(object: Application | ApplicationUploadMock) {
+        super.doLayout(<Application>object);
+        if (object && object.isLocal()) {
+            this.getNamesAndIconView().setIconToolTip('Local application');
         }
 
-        doLayout(object: Application | ApplicationUploadMock) {
-            super.doLayout(<Application>object);
-            if (object && object.isLocal()) {
-                this.getNamesAndIconView().setIconToolTip('Local application');
-            }
+        if (object && object instanceof Application && object.getIconUrl()) {
+            this.getNamesAndIconView().setIconUrl(object.getIconUrl());
+        }
+    }
 
-            if (object && object instanceof Application && object.getIconUrl()) {
-                this.getNamesAndIconView().setIconUrl(object.getIconUrl());
-            }
+    resolveDisplayName(object: Application): string {
+        this.toggleClass('local', object.isLocal());
+        return object.getDisplayName();
+    }
+
+    resolveSubName(object: Application | ApplicationUploadMock): string {
+        if (object instanceof Application && object.getDescription()) {
+            return object.getDescription();
         }
 
-        resolveDisplayName(object: Application): string {
-            this.toggleClass('local', object.isLocal());
-            return object.getDisplayName();
-        }
+        return object.getName();
+    }
 
-        resolveSubName(object: Application | ApplicationUploadMock): string {
-            if (object instanceof Application && object.getDescription()) {
-                return object.getDescription();
-            }
-
-            return object.getName();
-        }
-
-        resolveIconClass(): string {
-            return 'icon-puzzle icon-large';
-        }
+    resolveIconClass(): string {
+        return 'icon-puzzle icon-large';
     }
 }

@@ -1,23 +1,24 @@
-module api.app.browse.filter {
+import {Event} from '../../../event/Event';
+import {ClassHelper} from '../../../ClassHelper';
 
-    export class BrowseFilterSearchEvent<DATA> extends api.event.Event {
-        private data: DATA;
+export class BrowseFilterSearchEvent<DATA>
+    extends Event {
+    private data: DATA;
 
-        constructor(data: DATA) {
-            super();
-            this.data = data;
-        }
+    constructor(data: DATA) {
+        super();
+        this.data = data;
+    }
 
-        getData(): DATA {
-            return this.data;
-        }
+    static on(handler: (event: BrowseFilterSearchEvent<any>) => void) {
+        Event.bind(ClassHelper.getFullName(this), handler);
+    }
 
-        static on(handler: (event: BrowseFilterSearchEvent<any>) => void) {
-            api.event.Event.bind(api.ClassHelper.getFullName(this), handler);
-        }
+    static un(handler?: (event: BrowseFilterSearchEvent<any>) => void) {
+        Event.unbind(ClassHelper.getFullName(this), handler);
+    }
 
-        static un(handler?: (event: BrowseFilterSearchEvent<any>) => void) {
-            api.event.Event.unbind(api.ClassHelper.getFullName(this), handler);
-        }
+    getData(): DATA {
+        return this.data;
     }
 }

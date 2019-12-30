@@ -1,29 +1,29 @@
-module api.ui.button {
+import {ButtonEl} from '../../dom/ButtonEl';
 
-    export class DropdownHandle extends api.dom.ButtonEl {
+export class DropdownHandle
+    extends ButtonEl {
 
-        constructor() {
-            super('dropdown-handle');
+    constructor() {
+        super('dropdown-handle');
 
-            this.setEnabled(true);
-            this.removeClass('down');
-        }
+        this.setEnabled(true);
+        this.removeClass('down');
+    }
 
-        setEnabled(value: boolean) {
-            this.toggleClass('disabled', !value);
-            this.getEl().setDisabled(!value);
-        }
+    setEnabled(value: boolean) {
+        this.toggleClass('disabled', !value);
+        this.getEl().setDisabled(!value);
+    }
 
-        isEnabled(): boolean {
-            return !this.getEl().isDisabled();
-        }
+    isEnabled(): boolean {
+        return !this.getEl().isDisabled();
+    }
 
-        down() {
-            this.addClass('down');
-        }
+    down() {
+        this.addClass('down');
+    }
 
-        up() {
-            this.removeClass('down');
-        }
+    up() {
+        this.removeClass('down');
     }
 }

@@ -69,7 +69,7 @@ module FormOptionSetViewSpec {
                 beforeEach(function (done: DoneFn) {
                     addButtonSpy = spyOn(optionSetView, 'makeAddButton').and.callThrough();
                     collapseButtonSpy = spyOn(optionSetView, 'makeCollapseButton').and.callThrough();
-                    spyOn(api.form.FormSetOccurrences.prototype, 'layout').and.returnValue(wemQ<void>(null));
+                    spyOn(api.form.FormSetOccurrences.prototype, 'layout').and.returnValue(Q<void>(null));
 
                     optionSetView.layout().then(function () {
                         done();
@@ -105,7 +105,7 @@ module FormOptionSetViewSpec {
             describe('when layout is called without validation', function () {
 
                 beforeEach(function (done: DoneFn) {
-                    spyOn(api.form.FormSetOccurrences.prototype, 'layout').and.returnValue(wemQ<void>(null));
+                    spyOn(api.form.FormSetOccurrences.prototype, 'layout').and.returnValue(Q<void>(null));
 
                     optionSetView.layout(false).then(function () {
                         done();

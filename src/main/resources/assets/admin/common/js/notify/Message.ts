@@ -1,82 +1,79 @@
-module api.notify {
+export enum Type {
+    INFO,
+    ERROR,
+    WARNING,
+    ACTION,
+    SUCCESS
+}
 
-    export enum Type {
-        INFO,
-        ERROR,
-        WARNING,
-        ACTION,
-        SUCCESS
+export class Action {
+    private name: string;
+    private handler: { (): void };
+
+    constructor(name: string, handler: { (): void }) {
+        this.name = name;
+        this.handler = handler;
     }
 
-    export class Action {
-        private name: string;
-        private handler: {():void};
-
-        constructor(name: string, handler: {():void}) {
-            this.name = name;
-            this.handler = handler;
-        }
-
-        getName(): string {
-            return this.name;
-        }
-
-        getHandler(): {():void} {
-            return this.handler;
-        }
+    getName(): string {
+        return this.name;
     }
 
-    export class Message {
-        private type: Type;
-        private text: string;
-        private actions: Action[];
-        private autoHide: boolean;
+    getHandler(): { (): void } {
+        return this.handler;
+    }
+}
 
-        constructor(type: Type, text: string, autoHide: boolean = true) {
-            this.type = type;
-            this.text = text;
-            this.actions = [];
-            this.autoHide = autoHide;
-        }
+export class Message {
+    private type: Type;
+    private text: string;
+    private actions: Action[];
+    private autoHide: boolean;
 
-        getType(): Type {
-            return this.type;
-        }
+    constructor(type: Type, text: string, autoHide: boolean = true) {
+        this.type = type;
+        this.text = text;
+        this.actions = [];
+        this.autoHide = autoHide;
+    }
 
-        getText(): string {
-            return this.text;
-        }
+    static newSuccess(text: string, autoHide: boolean = true): Message {
+        return new Message(Type.SUCCESS, text, autoHide);
+    }
 
-        getActions(): Action[] {
-            return this.actions;
-        }
+    static newInfo(text: string, autoHide: boolean = true): Message {
+        return new Message(Type.INFO, text, autoHide);
+    }
 
-        getAutoHide(): boolean {
-            return this.autoHide;
-        }
+    static newError(text: string, autoHide: boolean = true): Message {
+        return new Message(Type.ERROR, text, autoHide);
+    }
 
-        addAction(name: string, handler: () => void) {
-            this.actions.push(new Action(name, handler));
-        }
+    static newWarning(text: string, autoHide: boolean = true): Message {
+        return new Message(Type.WARNING, text, autoHide);
+    }
 
-        static newSuccess(text: string, autoHide: boolean = true): Message {
-            return new Message(Type.SUCCESS, text, autoHide);
-        }
+    static newAction(text: string, autoHide: boolean = true): Message {
+        return new Message(Type.ACTION, text, autoHide);
+    }
 
-        static newInfo(text: string, autoHide: boolean = true): Message {
-            return new Message(Type.INFO, text, autoHide);
-        }
+    getType(): Type {
+        return this.type;
+    }
 
-        static newError(text: string, autoHide: boolean = true): Message {
-            return new Message(Type.ERROR, text, autoHide);
-        }
+    getText(): string {
+        return this.text;
+    }
 
-        static newWarning(text: string, autoHide: boolean = true): Message {
-            return new Message(Type.WARNING, text, autoHide);
-        }
+    getActions(): Action[] {
+        return this.actions;
+    }
 
-        static newAction(text: string, autoHide: boolean = true): Message {
-            return new Message(Type.ACTION, text, autoHide);
-        }
+    getAutoHide(): boolean {
+        return this.autoHide;
+    }
+
+    addAction(name: string, handler: () => void) {
+        this.actions.push(new Action(name, handler));
     }
 }

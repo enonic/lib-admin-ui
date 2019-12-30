@@ -1,20 +1,25 @@
-module api.system {
+import * as Q from 'q';
+import {ResourceRequest} from '../rest/ResourceRequest';
+import {Path} from '../rest/Path';
+import {JsonResponse} from '../rest/JsonResponse';
+import {StatusJson} from './StatusJson';
+import {StatusResult} from './StatusResult';
 
-    export class StatusRequest extends api.rest.ResourceRequest<StatusJson, StatusResult> {
+export class StatusRequest
+    extends ResourceRequest<StatusJson, StatusResult> {
 
-        getRequestPath(): api.rest.Path {
-            return api.rest.Path.fromParent(super.getRestPath(), 'status');
-        }
+    getRequestPath(): Path {
+        return Path.fromParent(super.getRestPath(), 'status');
+    }
 
-        getParams(): Object {
-            return {};
-        }
+    getParams(): Object {
+        return {};
+    }
 
-        sendAndParse(): wemQ.Promise<StatusResult> {
+    sendAndParse(): Q.Promise<StatusResult> {
 
-            return this.send().then((response: api.rest.JsonResponse<StatusJson>) => {
-                return new StatusResult(response.getResult());
-            });
-        }
+        return this.send().then((response: JsonResponse<StatusJson>) => {
+            return new StatusResult(response.getResult());
+        });
     }
 }

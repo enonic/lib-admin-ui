@@ -1,41 +1,42 @@
-module api.application.json {
+import {ItemJson} from '../../item/ItemJson';
+import {FormJson} from '../../form/json/FormJson';
 
-    export interface ApplicationJson extends api.item.ItemJson {
+export interface ApplicationJson
+    extends ItemJson {
 
-        key: string;
+    key: string;
 
-        version: string;
+    version: string;
 
-        displayName: string;
+    displayName: string;
 
-        description: string;
+    description: string;
 
-        info: string;
+    info: string;
 
-        url: string;
+    url: string;
 
-        vendorName: string;
+    vendorName: string;
 
-        vendorUrl: string;
+    vendorUrl: string;
 
-        state: string;
+    state: string;
 
-        config: api.form.json.FormJson;
+    config: FormJson;
 
-        idProviderConfig: api.form.json.FormJson;
+    idProviderConfig: FormJson;
 
-        applicationDependencies: string[];
+    applicationDependencies: string[];
 
-        contentTypeDependencies: string[];
+    contentTypeDependencies: string[];
 
-        metaSteps: string[];
+    metaSteps: string[];
 
-        minSystemVersion: string;
+    minSystemVersion: string;
 
-        maxSystemVersion: string;
+    maxSystemVersion: string;
 
-        local: boolean;
+    local: boolean;
 
-        iconUrl: string;
-    }
+    iconUrl: string;
 }

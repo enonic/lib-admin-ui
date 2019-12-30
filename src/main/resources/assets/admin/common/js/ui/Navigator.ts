@@ -1,37 +1,37 @@
-module api.ui {
+import {NavigationItem} from './NavigationItem';
+import {NavigatorEvent} from './NavigatorEvent';
 
-    export interface Navigator {
+export interface Navigator {
 
-        insertNavigationItem(item: NavigationItem, index: number);
+    insertNavigationItem(item: NavigationItem, index: number);
 
-        addNavigationItem(item: NavigationItem);
+    addNavigationItem(item: NavigationItem);
 
-        removeNavigationItem(item: NavigationItem);
+    removeNavigationItem(item: NavigationItem);
 
-        getNavigationItem(index: number):NavigationItem;
+    getNavigationItem(index: number): NavigationItem;
 
-        selectNavigationItem(index: number, silent?: boolean);
+    selectNavigationItem(index: number, silent?: boolean);
 
-        getSelectedNavigationItem():NavigationItem;
+    getSelectedNavigationItem(): NavigationItem;
 
-        getSelectedIndex():number;
+    getSelectedIndex(): number;
 
-        deselectNavigationItem();
+    deselectNavigationItem();
 
-        getSize():number;
+    getSize(): number;
 
-        getNavigationItems():NavigationItem[];
+    getNavigationItems(): NavigationItem[];
 
-        onNavigationItemAdded(listener: (event: NavigatorEvent) => void);
+    onNavigationItemAdded(listener: (event: NavigatorEvent) => void);
 
-        onNavigationItemSelected(listener: (event: NavigatorEvent) => void);
+    onNavigationItemSelected(listener: (event: NavigatorEvent) => void);
 
-        onNavigationItemDeselected(listener: (event: NavigatorEvent) => void);
+    onNavigationItemDeselected(listener: (event: NavigatorEvent) => void);
 
-        unNavigationItemAdded(listener: (event: NavigatorEvent) => void);
+    unNavigationItemAdded(listener: (event: NavigatorEvent) => void);
 
-        unNavigationItemSelected(listener: (event: NavigatorEvent) => void);
+    unNavigationItemSelected(listener: (event: NavigatorEvent) => void);
 
-        unNavigationItemDeselected(listener: (event: NavigatorEvent) => void);
-    }
+    unNavigationItemDeselected(listener: (event: NavigatorEvent) => void);
 }

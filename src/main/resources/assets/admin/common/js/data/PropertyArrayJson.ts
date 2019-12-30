@@ -1,11 +1,10 @@
-module api.data {
+import {PropertyValueJson} from './PropertyValueJson';
 
-    export interface PropertyArrayJson {
+export interface PropertyArrayJson {
 
-        name: string;
+    name: string;
 
-        type: string;
+    type: string;
 
-        values: PropertyValueJson[];
-    }
+    values: PropertyValueJson[];
 }

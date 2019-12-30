@@ -1,8 +1,5 @@
-module api.rest {
+export class StatusCode {
 
-    export class StatusCode {
+    public static NOT_FOUND: number = 404;
 
-        public static NOT_FOUND: number = 404;
-
-    }
 }

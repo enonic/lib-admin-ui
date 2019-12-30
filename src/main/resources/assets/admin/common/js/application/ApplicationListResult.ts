@@ -1,6 +1,6 @@
-module api.application {
-    export class ApplicationListResult {
+import {ApplicationJson} from './json/ApplicationJson';
 
-        applications: api.application.json.ApplicationJson[];
-    }
+export class ApplicationListResult {
+
+    applications: ApplicationJson[];
 }

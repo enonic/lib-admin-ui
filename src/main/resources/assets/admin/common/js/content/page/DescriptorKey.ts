@@ -1,58 +1,61 @@
-module api.content.page {
+import {Equitable} from '../../Equitable';
+import {ApplicationKey} from '../../application/ApplicationKey';
+import {ObjectHelper} from '../../ObjectHelper';
+import {DescriptorName} from './DescriptorName';
 
-    export class DescriptorKey implements api.Equitable {
+export class DescriptorKey
+    implements Equitable {
 
-        private static SEPARATOR: string = ':';
+    private static SEPARATOR: string = ':';
 
-        private applicationKey: api.application.ApplicationKey;
+    private applicationKey: ApplicationKey;
 
-        private name: DescriptorName;
+    private name: DescriptorName;
 
-        private refString: string;
+    private refString: string;
 
-        public static fromString(str: string): DescriptorKey {
-            let sepIndex: number = str.indexOf(DescriptorKey.SEPARATOR);
-            if (sepIndex === -1) {
-                throw new Error(`DescriptorKey must contain separator '${DescriptorKey.SEPARATOR}':${str}`);
-            }
+    constructor(applicationKey: ApplicationKey, name: DescriptorName) {
+        this.applicationKey = applicationKey;
+        this.name = name;
+        this.refString = applicationKey.toString() + DescriptorKey.SEPARATOR + name.toString();
+    }
 
-            let applicationKey = str.substring(0, sepIndex);
-            let name = str.substring(sepIndex + 1, str.length);
-
-            return new DescriptorKey(api.application.ApplicationKey.fromString(applicationKey), new DescriptorName(name));
+    public static fromString(str: string): DescriptorKey {
+        let sepIndex: number = str.indexOf(DescriptorKey.SEPARATOR);
+        if (sepIndex === -1) {
+            throw new Error(`DescriptorKey must contain separator '${DescriptorKey.SEPARATOR}':${str}`);
         }
 
-        constructor(applicationKey: api.application.ApplicationKey, name: DescriptorName) {
-            this.applicationKey = applicationKey;
-            this.name = name;
-            this.refString = applicationKey.toString() + DescriptorKey.SEPARATOR + name.toString();
+        let applicationKey = str.substring(0, sepIndex);
+        let name = str.substring(sepIndex + 1, str.length);
+
+        return new DescriptorKey(ApplicationKey.fromString(applicationKey), new DescriptorName(name));
+    }
+
+    getApplicationKey(): ApplicationKey {
+        return this.applicationKey;
+    }
+
+    getName(): DescriptorName {
+        return this.name;
+    }
+
+    toString(): string {
+        return this.refString;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, DescriptorKey)) {
+            return false;
         }
 
-        getApplicationKey(): api.application.ApplicationKey {
-            return this.applicationKey;
+        let other = <DescriptorKey>o;
+
+        if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
+            return false;
         }
 
-        getName(): DescriptorName {
-            return this.name;
-        }
-
-        toString(): string {
-            return this.refString;
-        }
-
-        equals(o: api.Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, DescriptorKey)) {
-                return false;
-            }
-
-            let other = <DescriptorKey>o;
-
-            if (!api.ObjectHelper.stringEquals(this.refString, other.refString)) {
-                return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

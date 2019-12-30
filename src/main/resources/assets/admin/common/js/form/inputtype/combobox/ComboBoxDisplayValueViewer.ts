@@ -1,20 +1,20 @@
-module api.form.inputtype.combobox {
+import {Viewer} from '../../../ui/Viewer';
 
-    export class ComboBoxDisplayValueViewer extends api.ui.Viewer<string> {
+export class ComboBoxDisplayValueViewer
+    extends Viewer<string> {
 
-        constructor() {
-            super();
-        }
-
-        setObject(value: string) {
-            this.getEl().setInnerHtml(value);
-
-            return super.setObject(value);
-        }
-
-        getPreferredHeight(): number {
-            return 34;
-        }
-
+    constructor() {
+        super();
     }
+
+    setObject(value: string) {
+        this.getEl().setInnerHtml(value);
+
+        return super.setObject(value);
+    }
+
+    getPreferredHeight(): number {
+        return 34;
+    }
+
 }

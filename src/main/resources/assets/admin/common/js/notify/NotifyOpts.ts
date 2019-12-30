@@ -1,65 +1,41 @@
-module api.notify {
+import {Message, Type} from './Message';
 
-    export class NotifyOpts {
-        message: string;
-        type: string;
-        listeners: {():void}[];
-        autoHide: boolean;
+export class NotifyOpts {
+    message: string;
+    type: string;
+    listeners: { (): void }[];
+    autoHide: boolean;
 
-        addListeners(message: Message) {
-            this.listeners = [];
-            let actions = message.getActions();
-
-            for (let i = 0; i < actions.length; i++) {
-                /*opts.listeners.push({
-                 fn: actions[i].getHandler(),
-                 delegate: 'notify.action_' + i,
-                 stopEvent: true
-                 });*/
-                this.listeners.push(actions[i].getHandler());
-            }
+    static buildOpts(message: Message): NotifyOpts {
+        const opts = new NotifyOpts();
+        opts.autoHide = message.getAutoHide();
+        if (message.getType() === Type.ERROR) {
+            opts.type = 'error';
+        } else if (message.getType() === Type.WARNING) {
+            opts.type = 'warning';
+        } else if (message.getType() === Type.ACTION) {
+            opts.type = 'action';
+        } else if (message.getType() === Type.SUCCESS) {
+            opts.type = 'success';
         }
 
-        createHtmlMessage(message: Message) {
-            let actions = message.getActions();
-            this.message = '<span>' + message.getText() + '</span>';
+        opts.setMessage(message).addListeners(message);
 
-            if (actions.length > 0) {
-                let linkHtml = '<span style="float: right; margin-left: 30px;">';
+        return opts;
+    }
 
-                for (let i = 0; i < actions.length; i++) {
-                    if ((i > 0) && (i === (actions.length - 1))) {
-                        linkHtml += ' or ';
-                    } else if (i > 0) {
-                        linkHtml += ', ';
-                    }
+    addListeners(message: Message): NotifyOpts {
+        this.listeners = [];
+        let actions = message.getActions();
 
-                    linkHtml += '<a href="#" class="notify.action_"' + i + '">';
-                    linkHtml += actions[i].getName() + '</a>';
-                }
-
-                linkHtml += '</span>';
-                this.message = linkHtml + this.message;
-            }
+        for (let i = 0; i < actions.length; i++) {
+            this.listeners.push(actions[i].getHandler());
         }
+        return this;
+    }
 
-        static buildOpts(message: Message): NotifyOpts {
-            let opts = new NotifyOpts();
-            opts.autoHide = message.getAutoHide();
-            if (message.getType() === Type.ERROR) {
-                opts.type = 'error';
-            } else if (message.getType() === Type.WARNING) {
-                opts.type = 'warning';
-            } else if (message.getType() === Type.ACTION) {
-                opts.type = 'action';
-            } else if (message.getType() === Type.SUCCESS) {
-                opts.type = 'success';
-            }
-
-            opts.createHtmlMessage(message);
-            opts.addListeners(message);
-
-            return opts;
-        }
+    setMessage(msg: Message): NotifyOpts {
+        this.message = msg.getText();
+        return this;
     }
 }

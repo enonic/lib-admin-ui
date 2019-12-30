@@ -1,70 +1,72 @@
-module api.application {
+import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
+import {Application} from './Application';
 
-    export class ApplicationKey implements api.Equitable {
+export class ApplicationKey
+    implements Equitable {
 
-        static SYSTEM: ApplicationKey = ApplicationKey.fromString('system');
-        static BASE: ApplicationKey = ApplicationKey.fromString('base');
-        static PORTAL: ApplicationKey = ApplicationKey.fromString('portal');
-        static MEDIA: ApplicationKey = ApplicationKey.fromString('media');
+    static SYSTEM: ApplicationKey = ApplicationKey.fromString('system');
+    static BASE: ApplicationKey = ApplicationKey.fromString('base');
+    static PORTAL: ApplicationKey = ApplicationKey.fromString('portal');
+    static MEDIA: ApplicationKey = ApplicationKey.fromString('media');
 
-        static SYSTEM_RESERVED_APPLICATION_KEYS: ApplicationKey[] = [
-            ApplicationKey.SYSTEM,
-            ApplicationKey.BASE,
-            ApplicationKey.PORTAL,
-            ApplicationKey.MEDIA,
-        ];
+    static SYSTEM_RESERVED_APPLICATION_KEYS: ApplicationKey[] = [
+        ApplicationKey.SYSTEM,
+        ApplicationKey.BASE,
+        ApplicationKey.PORTAL,
+        ApplicationKey.MEDIA,
+    ];
 
-        private name: string;
+    private name: string;
 
-        public static fromString(applicationName: string): ApplicationKey {
-            return new ApplicationKey(applicationName);
-        }
+    constructor(applicationName: string) {
+        this.name = applicationName;
+    }
 
-        constructor(applicationName: string) {
-            this.name = applicationName;
-        }
+    public static fromString(applicationName: string): ApplicationKey {
+        return new ApplicationKey(applicationName);
+    }
 
-        getName(): string {
-            return this.name;
-        }
+    static toStringArray(keys: ApplicationKey[]): string[] {
+        return keys.map((key: ApplicationKey) => key.toString());
+    }
 
-        isSystemReserved(): boolean {
-            for (let key in ApplicationKey.SYSTEM_RESERVED_APPLICATION_KEYS) {
-                if (ApplicationKey.SYSTEM_RESERVED_APPLICATION_KEYS[key].equals(this)) {
-                    return true;
-                }
+    static fromApplications(applications: Application[]): ApplicationKey[] {
+        return applications.map<ApplicationKey>((mod: Application) => mod.getApplicationKey());
+    }
+
+    static fromClusterApplications(applications: Application[]): ApplicationKey[] {
+        return applications
+            .filter((mod: Application) => {
+                return !mod.isLocal();
+            })
+            .map<ApplicationKey>((mod: Application) => mod.getApplicationKey());
+    }
+
+    getName(): string {
+        return this.name;
+    }
+
+    isSystemReserved(): boolean {
+        for (let key in ApplicationKey.SYSTEM_RESERVED_APPLICATION_KEYS) {
+            if (ApplicationKey.SYSTEM_RESERVED_APPLICATION_KEYS[key].equals(this)) {
+                return true;
             }
+        }
+        return false;
+    }
+
+    toString(): string {
+        return this.name;
+    }
+
+    equals(o: Equitable): boolean {
+
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, ApplicationKey)) {
             return false;
         }
 
-        toString(): string {
-            return this.name;
-        }
-
-        equals(o: api.Equitable): boolean {
-
-            if (!api.ObjectHelper.iFrameSafeInstanceOf(o, ApplicationKey)) {
-                return false;
-            }
-
-            let other = <ApplicationKey>o;
-            return api.ObjectHelper.stringEquals(this.name, other.name);
-        }
-
-        static toStringArray(keys: ApplicationKey[]): string[] {
-            return keys.map((key: ApplicationKey) => key.toString());
-        }
-
-        static fromApplications(applications: Application[]): ApplicationKey[] {
-            return applications.map<ApplicationKey>((mod: Application) => mod.getApplicationKey());
-        }
-
-        static fromClusterApplications(applications: Application[]): ApplicationKey[] {
-            return applications
-                .filter((mod: Application) => {
-                    return !mod.isLocal();
-                })
-                .map<ApplicationKey>((mod: Application) => mod.getApplicationKey());
-        }
+        let other = <ApplicationKey>o;
+        return ObjectHelper.stringEquals(this.name, other.name);
     }
 }
