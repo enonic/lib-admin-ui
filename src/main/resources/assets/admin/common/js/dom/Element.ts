@@ -848,14 +848,14 @@ export class Element {
 
     onScrolled(listener: (event: WheelEvent) => void) {
         // IE9, Chrome, Safari, Opera
-        this.getEl().addEventListener('mousewheel', listener);
+        this.onMouseWheel(listener);
         // Firefox
         this.getEl().addEventListener('DOMMouseScroll', listener);
     }
 
     unScrolled(listener: (event: WheelEvent) => void) {
         // IE9, Chrome, Safari, Opera
-        this.getEl().removeEventListener('mousewheel', listener);
+        this.unMouseWheel(listener);
         // Firefox
         this.getEl().removeEventListener('DOMMouseScroll', listener);
     }
@@ -912,7 +912,7 @@ export class Element {
         // http://www.javascriptkit.com/javatutors/onmousewheel.shtml
         // FF doesn't recognize mousewheel as of FF3.x
         let eventName = (/Firefox/i.test(navigator.userAgent)) ? 'wheel' : 'mousewheel';
-        this.getEl().addEventListener(eventName, listener);
+        this.getEl().addEventListener(eventName, listener, true);
     }
 
     unMouseWheel(listener: (event: MouseEvent) => void) {
@@ -920,8 +920,8 @@ export class Element {
         this.getEl().removeEventListener(eventName, listener);
     }
 
-    onTouchStart(listener: (event: MouseEvent) => void) {
-        this.getEl().addEventListener('touchstart', listener);
+    onTouchStart(listener: (event: MouseEvent) => void, isPassive: boolean = true) {
+        this.getEl().addEventListener('touchstart', listener, isPassive);
     }
 
     unTouchStart(listener: (event: MouseEvent) => void) {

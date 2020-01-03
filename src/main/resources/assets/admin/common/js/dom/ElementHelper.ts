@@ -231,8 +231,8 @@ export class ElementHelper {
         return this;
     }
 
-    addEventListener(eventName: string, f: (event: Event) => any): ElementHelper {
-        if (eventName === 'touchstart' || eventName === 'mousewheel') {
+    addEventListener(eventName: string, f: (event: Event) => any, isPassive?: boolean): ElementHelper {
+        if (isPassive) {
             return this.addPassiveEventListener(eventName, f);
         }
         this.el.addEventListener(eventName, f);
