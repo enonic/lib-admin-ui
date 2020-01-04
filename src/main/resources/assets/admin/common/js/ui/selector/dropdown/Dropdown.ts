@@ -9,7 +9,6 @@ import {FormInputEl} from '../../../dom/FormInputEl';
 import {ImgEl} from '../../../dom/ImgEl';
 import {DropdownExpandedEvent} from '../DropdownExpandedEvent';
 import {StyleHelper} from '../../../StyleHelper';
-import {StringHelper} from '../../../util/StringHelper';
 import {FormEl} from '../../../dom/FormEl';
 import {AppHelper} from '../../../util/AppHelper';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
@@ -324,7 +323,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
 
     private defaultFilter(option: Option<OPTION_DISPLAY_VALUE>, args: any) {
 
-        if (!args.searchString || StringHelper.isEmpty(args.searchString)) {
+        if (!args.searchString) {
             return true;
         }
 
