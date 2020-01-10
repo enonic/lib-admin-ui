@@ -130,6 +130,10 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
         this.getGridData().setItems(options, this.dataIdProperty);
     }
 
+    sort(comparer: Function, asc?: boolean) {
+        this.getGridData().sort(comparer, asc);
+    }
+
     removeAllOptions() {
         this.getGridData().setItems([]);
     }

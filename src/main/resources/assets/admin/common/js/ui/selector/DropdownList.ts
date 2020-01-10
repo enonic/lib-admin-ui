@@ -42,6 +42,10 @@ export class DropdownList<OPTION_DISPLAY_VALUE> {
         return this.emptyDropdown.isVisible() || this.dropdownGrid.isVisible();
     }
 
+    sort(comparer: Function, asc?: boolean) {
+        this.dropdownGrid.sort(comparer, asc);
+    }
+
     setOptions(options: Option<OPTION_DISPLAY_VALUE>[], noOptionsText: string) {
 
         this.dropdownGrid.setOptions(options);
