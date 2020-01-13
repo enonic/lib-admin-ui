@@ -20,7 +20,7 @@ export class ValueTypePropertySet
     }
 
     isPropertySet(value: Typable) {
-        return this === value.getType();
+        return this.toString() === value.getType().toString();
     }
 
     isConvertible(): boolean {
