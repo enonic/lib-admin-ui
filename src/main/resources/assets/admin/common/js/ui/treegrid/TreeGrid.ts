@@ -52,6 +52,7 @@ export class TreeGrid<DATA>
     private toolbar: TreeGridToolbar;
     private contextMenu: TreeGridContextMenu;
     private expandAll: boolean;
+    private expandFn: (item: DATA) => boolean;
     private active: boolean;
     private loadedListeners: Function[] = [];
     private contextMenuListeners: Function[] = [];
@@ -95,6 +96,7 @@ export class TreeGrid<DATA>
         super(builder.getClasses());
 
         this.expandAll = builder.isExpandAll();
+        this.expandFn = builder.getExpandFn();
         this.quietErrorHandling = builder.getQuietErrorHandling();
 
         // root node with undefined item
@@ -400,7 +402,7 @@ export class TreeGrid<DATA>
 
     dataToTreeNode(data: DATA, parent: TreeNode<DATA>, expandAllowed: boolean = true): TreeNode<DATA> {
         return new TreeNodeBuilder<DATA>().setData(data, this.getDataId(data))
-            .setExpanded(this.expandAll && expandAllowed)
+            .setExpanded(expandAllowed && (this.expandAll || this.expandFn && this.expandFn(data)))
             .setParent(parent).build();
     }
 
@@ -1147,7 +1149,7 @@ export class TreeGrid<DATA>
     }
 
     private unhighlightRowOnMouseClick(e: Event): void {
-        if (!!this.highlightedNode && this.isClickOutsideGridViewport(<HTMLElement> e.target)) {
+        if (!!this.highlightedNode && this.isClickOutsideGridViewport(<HTMLElement>e.target)) {
             this.removeHighlighting();
         }
     }
@@ -1651,7 +1653,7 @@ export class TreeGrid<DATA>
             dataList.forEach((data: DATA) => {
                 let child = this.dataToTreeNode(data, parentNode);
                 let dataId = this.getDataId(data);
-                child.setExpanded(this.expandAll || expandedNodesDataId.indexOf(dataId) > -1);
+                child.setExpanded(this.expandAll || this.expandFn && this.expandFn(data) || expandedNodesDataId.indexOf(dataId) > -1);
                 parentNode.addChild(child);
 
                 if (child.isExpanded() && this.hasChildren(data)) {
@@ -1686,7 +1688,7 @@ export class TreeGrid<DATA>
                     }
                     node.setData(data);
 
-                    const reload = () => (this.expandAll ? this.expandNode(node) : Q.resolve(true));
+                    const reload = () => (this.expandAll || this.expandFn && this.expandFn(data) ? this.expandNode(node) : Q.resolve(true));
 
                     return reload().then(() => {
                         node.setDataId(this.getDataId(data));
