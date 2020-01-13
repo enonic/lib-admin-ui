@@ -34,6 +34,8 @@ export class TreeGridBuilder<NODE> {
 
     private toggleClickEnabled: boolean = true;
 
+    private expandFn: (item: NODE) => boolean;
+
     constructor(grid?: TreeGrid<NODE>) {
         if (grid) {
             this.showToolbar = grid.hasToolbar();
@@ -75,9 +77,9 @@ export class TreeGridBuilder<NODE> {
             .setDataItemColumnValueExtractor(this.nodeExtractor)
             .setEditable(false)
             .setAutoHeight(false).setEnableAsyncPostRender(true).setAutoRenderGridOnDataChanges(true)
-        // It is necessary to turn off the library key handling. It may cause
-        // the conflicts with Mousetrap, which leads to skipping the key events
-        // Do not set to true, if you are not fully aware of the result
+            // It is necessary to turn off the library key handling. It may cause
+            // the conflicts with Mousetrap, which leads to skipping the key events
+            // Do not set to true, if you are not fully aware of the result
             .setEnableCellNavigation(false)
             .setEnableColumnReorder(false)
             .setForceFitColumns(true)
@@ -118,8 +120,17 @@ export class TreeGridBuilder<NODE> {
         return this.expandAll;
     }
 
+    getExpandFn(): (item: NODE) => boolean {
+        return this.expandFn;
+    }
+
     setExpandAll(value: boolean): TreeGridBuilder<NODE> {
         this.expandAll = value;
+        return this;
+    }
+
+    setExpandFn(fn: (item: NODE) => boolean): TreeGridBuilder<NODE> {
+        this.expandFn = fn;
         return this;
     }
 
