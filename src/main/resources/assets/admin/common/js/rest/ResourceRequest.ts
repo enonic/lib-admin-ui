@@ -4,23 +4,28 @@ import {UriHelper} from '../util/UriHelper';
 import {Path} from './Path';
 import {JsonResponse} from './JsonResponse';
 import {JsonRequest} from './JsonRequest';
+import {HttpMethod} from './HttpMethod';
+import {GetRequest} from './GetRequest';
+import {PostRequest} from './PostRequest';
 
 export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE>
     implements HttpRequest<PARSED_TYPE> {
 
-    private restPath: Path;
+    protected restPath: Path;
 
-    private method: string = 'GET';
+    protected method: HttpMethod = HttpMethod.GET;
 
-    private heavyOperation: boolean;
+    protected heavyOperation: boolean;
 
-    private timeoutMillis: number;
+    protected timeoutMillis: number;
+
+    protected isFormRequest: boolean = false;
 
     constructor() {
         this.restPath = Path.fromString(UriHelper.getRestUri(''));
     }
 
-    setMethod(value: string) {
+    setMethod(value: HttpMethod) {
         this.method = value;
     }
 
@@ -33,7 +38,7 @@ export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE>
     }
 
     getParams(): Object {
-        throw new Error('Must be implemented by inheritors');
+        return {};
     }
 
     setTimeout(timeoutMillis: number) {
@@ -44,18 +49,41 @@ export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE>
         this.heavyOperation = value;
     }
 
+    setIsFormRequest(value: boolean) {
+        this.isFormRequest = value;
+    }
+
     validate() {
         // Override to ensure any validation of ResourceRequest before sending.
     }
 
     send(): Q.Promise<JsonResponse<RAW_JSON_TYPE>> {
-
         this.validate();
 
-        let jsonRequest = new JsonRequest<RAW_JSON_TYPE>().setMethod(this.method).setParams(this.getParams()).setPath(
-            this.getRequestPath()).setTimeout(
-            !this.heavyOperation ? this.timeoutMillis : 0);
-        return jsonRequest.send();
+        const deferred: Q.Deferred<JsonResponse<RAW_JSON_TYPE>> = Q.defer<JsonResponse<RAW_JSON_TYPE>>();
+        const request: JsonRequest = this.createJsonRequest()
+            .setParams(this.getParams())
+            .setPath(this.getRequestPath())
+            .setTimeout(!this.heavyOperation ? this.timeoutMillis : 0)
+            .handleReadyStateChanged(deferred);
+
+        request.send();
+
+        return deferred.promise;
+    }
+
+    private createJsonRequest(): JsonRequest {
+        if (HttpMethod.GET === this.method) {
+            return new GetRequest();
+        }
+
+        if (HttpMethod.POST === this.method) {
+            const request: PostRequest = new PostRequest();
+            request.setIsFormRequest(this.isFormRequest);
+            return request;
+        }
+
+        throw new Error(`Request for "${this.method}" HTTP method Not Implemented`);
     }
 
     sendAndParse(): Q.Promise<PARSED_TYPE> {

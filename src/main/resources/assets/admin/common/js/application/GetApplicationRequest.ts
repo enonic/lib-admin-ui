@@ -16,7 +16,6 @@ export class GetApplicationRequest
 
     constructor(applicationKey: ApplicationKey, skipCache: boolean = false) {
         super();
-        super.setMethod('GET');
         this.applicationKey = applicationKey;
         this.skipCache = skipCache;
         this.setHeavyOperation(true);

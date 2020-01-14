@@ -8,11 +8,6 @@ import {LoginResultJson} from './LoginResultJson';
 export class IsAuthenticatedRequest
     extends AuthResourceRequest<LoginResultJson, LoginResult> {
 
-    constructor() {
-        super();
-        super.setMethod('GET');
-    }
-
     getParams(): Object {
         return {};
     }

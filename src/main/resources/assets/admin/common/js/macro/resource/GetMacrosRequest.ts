@@ -5,6 +5,7 @@ import {JsonResponse} from '../../rest/JsonResponse';
 import {MacroResourceRequest} from './MacroResourceRequest';
 import {MacrosJson} from './MacrosJson';
 import {MacroDescriptor} from '../MacroDescriptor';
+import {HttpMethod} from '../../rest/HttpMethod';
 
 export class GetMacrosRequest
     extends MacroResourceRequest<MacrosJson, MacroDescriptor[]> {
@@ -13,7 +14,7 @@ export class GetMacrosRequest
 
     constructor() {
         super();
-        super.setMethod('POST');
+        this.setMethod(HttpMethod.POST);
     }
 
     setApplicationKeys(applicationKeys: ApplicationKey[]) {

@@ -6,6 +6,7 @@ import {JsonResponse} from '../rest/JsonResponse';
 import {MarketApplicationResponse} from './MarketApplicationResponse';
 import {MarketApplication} from './MarketApplication';
 import {MarketApplicationMetadata} from './MarketApplicationMetadata';
+import {HttpMethod} from '../rest/HttpMethod';
 
 export class ListMarketApplicationsRequest
     extends ApplicationResourceRequest<MarketApplicationsListJson, MarketApplicationResponse> {
@@ -17,7 +18,7 @@ export class ListMarketApplicationsRequest
 
     constructor() {
         super();
-        this.setMethod('POST');
+        this.setMethod(HttpMethod.POST);
     }
 
     setIds(ids: string[]): ListMarketApplicationsRequest {

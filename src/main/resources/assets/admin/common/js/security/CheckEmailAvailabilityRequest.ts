@@ -17,7 +17,6 @@ export class CheckEmailAvailabilityRequest
 
     constructor(email: string) {
         super();
-        super.setMethod('GET');
         this.email = email;
     }
 
