@@ -39,7 +39,8 @@ export class ItemStatisticsHeader<M extends Equitable>
             this.prependChild(this.iconEl);
 
             let displayName = item.getDisplayName() || '';
-            this.headerTitleEl.getEl().setInnerHtml(displayName).setAttribute('title', displayName);
+            this.headerTitleEl.setHtml(displayName);
+            this.headerTitleEl.getEl().setAttribute('title', displayName);
 
             this.headerPathEl.removeChildren();
             if (item.getPath()) {
