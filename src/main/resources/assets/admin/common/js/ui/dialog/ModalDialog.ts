@@ -166,6 +166,8 @@ module api.ui.dialog {
                 } else {
                     this.buttonRow.focusDefaultAction();
                 }
+
+                this.handleResize();
             });
 
             const closeIconCallback = this.config.closeIconCallback || (() => {
@@ -520,8 +522,6 @@ module api.ui.dialog {
 
             this.show();
 
-            this.handleResize();
-
             let keyBindings = Action.getKeyBindings(this.buttonRow.getActions());
 
             if (!this.skipTabbable) {
@@ -566,6 +566,8 @@ module api.ui.dialog {
                 } else {
                     this.buttonRow.focusDefaultAction();
                 }
+
+                this.handleResize();
             }
             if (this.resizeObserver) {
                 this.resizeObserver.observe(this.body.getHTMLElement());
