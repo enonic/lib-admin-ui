@@ -325,9 +325,8 @@ export class TreeGrid<DATA>
     }
 
     queryScrollable(): Element {
-        let gridClasses = (' ' + this.grid.getEl().getClass()).replace(/\s/g, '.');
-        let viewport = Element.fromString('.tree-grid ' + gridClasses + ' .slick-viewport', false);
-        return viewport;
+        const gridClasses = (` ${this.grid.getEl().getClass()}`).replace(/\s/g, '.');
+        return Element.fromString(`.tree-grid ${gridClasses} .slick-viewport`, false);
     }
 
     /**
