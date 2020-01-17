@@ -751,6 +751,7 @@ export class UploaderEl<MODEL extends Equitable>
             return false;
         }
 
+        this.beforeSubmit();
         this.uploader.setName(id, this.sanitizeName(name));
         this.uploadedItems.push(this.processFile(id, name));
 
@@ -761,6 +762,10 @@ export class UploaderEl<MODEL extends Equitable>
         this.debouncedUploadStart();
 
         return true;
+    }
+
+    protected beforeSubmit() {
+        //
     }
 
     private isItemsUploadLimitReached(): boolean {
