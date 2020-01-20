@@ -9,7 +9,7 @@ export class ContentServerEvent
     }
 
     static is(eventJson: NodeEventJson): boolean {
-        return eventJson.data.nodes.some(node => node.path.indexOf('/content') === 0);
+        return eventJson.data.nodes.some(node => node.path.indexOf('/content') === 0 && node.path !== '/content');
     }
 
     static fromJson(nodeEventJson: NodeEventJson): ContentServerEvent {
