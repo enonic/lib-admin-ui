@@ -525,7 +525,8 @@ export class UploaderEl<MODEL extends Equitable>
                 endpoint: this.config.url,
                 params: this.config.params || {},
                 inputName: 'file',
-                filenameParam: 'name'
+                filenameParam: 'name',
+                requireSuccessJson: false
             },
             validation: {
                 acceptFiles: this.getFileExtensions(this.config.allowExtensions)
@@ -819,7 +820,12 @@ export class UploaderEl<MODEL extends Equitable>
                 if (uploadItem) {
                     const model: MODEL = this.createModel(JSON.parse(xhrOrXdr.response));
                     uploadItem.setModel(model);
-                    this.notifyFileUploaded(uploadItem);
+                    const hasFailed = response && response.success === false;
+                    if (hasFailed) {
+                        this.notifyUploadFailed(uploadItem);
+                    } else {
+                        this.notifyFileUploaded(uploadItem);
+                    }
                 }
             } catch (e) {
                 console.warn('Failed to parse the response', response, e);
