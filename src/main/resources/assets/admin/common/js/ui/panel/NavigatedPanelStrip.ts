@@ -27,9 +27,11 @@ export class NavigatedPanelStrip
 
         //
         this.getScrollable().onScroll(() => {
-            if (this.listenToScroll) {
-                this.updateScrolledNavigationItem();
+            if (!this.listenToScroll || navigator.getSize() < 2) {
+                return;
             }
+
+            this.updateScrolledNavigationItem();
         });
 
     }

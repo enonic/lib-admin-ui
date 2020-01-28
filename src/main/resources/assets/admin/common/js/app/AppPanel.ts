@@ -37,7 +37,7 @@ export class AppPanel<M extends Equitable>
         };
     }
 
-    protected handleBrowse() {
+    handleBrowse() {
         if (!this.browsePanel) {
             this.addBrowsePanel(this.createBrowsePanel());
         }
@@ -81,5 +81,21 @@ export class AppPanel<M extends Equitable>
 
     protected resolveActions(panel: Panel): Action[] {
         return panel ? panel.getActions() : [];
+    }
+
+    unbindKeys() {
+        if (!this.currentKeyBindings) {
+            return;
+        }
+
+        KeyBindings.get().unbindKeys(this.currentKeyBindings);
+    }
+
+    bindKeys() {
+        if (!this.currentKeyBindings) {
+            return;
+        }
+
+        KeyBindings.get().bindKeys(this.currentKeyBindings);
     }
 }
