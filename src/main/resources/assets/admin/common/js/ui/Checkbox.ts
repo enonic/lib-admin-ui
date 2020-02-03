@@ -137,15 +137,6 @@ export class Checkbox
         this.checkbox = <InputEl> new Element(new NewElementBuilder().setTagName('input').setGenerateId(true));
         this.checkbox.getEl().setAttribute('type', 'checkbox');
         this.addClass(this.getInputAlignmentAsString(inputAlignment));
-
-        $(this.checkbox.getHTMLElement()).on('change', (e) => {
-            if (Checkbox.debug) {
-                console.debug('Checkbox on change', e);
-            }
-            this.refreshValueChanged();
-            this.refreshDirtyState();
-        });
-
     }
 
     private initLabel(text: string) {
