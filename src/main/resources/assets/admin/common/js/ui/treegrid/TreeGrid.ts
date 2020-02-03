@@ -325,9 +325,8 @@ export class TreeGrid<DATA>
     }
 
     queryScrollable(): Element {
-        let gridClasses = (' ' + this.grid.getEl().getClass()).replace(/\s/g, '.');
-        let viewport = Element.fromString('.tree-grid ' + gridClasses + ' .slick-viewport', false);
-        return viewport;
+        const gridClasses = (` ${this.grid.getEl().getClass()}`).replace(/\s/g, '.');
+        return Element.fromString(`.tree-grid ${gridClasses} .slick-viewport`, false);
     }
 
     /**
@@ -402,7 +401,7 @@ export class TreeGrid<DATA>
 
     dataToTreeNode(data: DATA, parent: TreeNode<DATA>, expandAllowed: boolean = true): TreeNode<DATA> {
         return new TreeNodeBuilder<DATA>().setData(data, this.getDataId(data))
-            .setExpanded(expandAllowed && (this.expandAll || this.expandFn && this.expandFn(data)))
+            .setExpanded(expandAllowed && (this.expandAll || (!!this.expandFn && this.expandFn(data))))
             .setParent(parent).build();
     }
 
@@ -1653,7 +1652,7 @@ export class TreeGrid<DATA>
             dataList.forEach((data: DATA) => {
                 let child = this.dataToTreeNode(data, parentNode);
                 let dataId = this.getDataId(data);
-                child.setExpanded(this.expandAll || this.expandFn && this.expandFn(data) || expandedNodesDataId.indexOf(dataId) > -1);
+                child.setExpanded(this.expandAll || (!!this.expandFn && this.expandFn(data)) || expandedNodesDataId.indexOf(dataId) > -1);
                 parentNode.addChild(child);
 
                 if (child.isExpanded() && this.hasChildren(data)) {

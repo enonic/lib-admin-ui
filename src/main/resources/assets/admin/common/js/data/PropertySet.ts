@@ -463,12 +463,18 @@ export class PropertySet
         return jsonArray;
     }
 
-    getStringValues(): { name: string; value: string }[] {
-        const result = [];
+    getValuesAsString(): { name: string; value: string }[] {
+        let result = [];
 
         ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
-
-            if (propertyArray.getType().equals(ValueTypes.STRING)) {
+            if (name === '_selected') { // this is a "hidden" property from an OptionSet which we don't need
+                return;
+            }
+            if (propertyArray.getType().equals(ValueTypes.DATA)) {
+                propertyArray.forEach((property: Property) => {
+                    result = result.concat(property.getValue().getPropertySet().getValuesAsString());
+                });
+            } else {
                 const value = propertyArray.getValue(0) || ValueTypes.STRING.newNullValue();
                 result.push({
                     name: name,

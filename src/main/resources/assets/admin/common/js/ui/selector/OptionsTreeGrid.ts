@@ -94,9 +94,8 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
     }
 
     queryScrollable(): Element {
-        let gridClasses = (' ' + this.getGrid().getEl().getClass()).replace(/\s/g, '.');
-        let viewport = Element.fromString(gridClasses + ' .slick-viewport', false);
-        return viewport;
+        const gridClasses = (` ${this.getGrid().getEl().getClass()}`).replace(/\s/g, '.');
+        return Element.fromString(`${gridClasses} .slick-viewport`, false);
     }
 
     reload(parentNodeData?: Option<OPTION_DISPLAY_VALUE>): Q.Promise<void> {

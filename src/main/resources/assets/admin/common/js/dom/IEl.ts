@@ -6,4 +6,10 @@ export class IEl
     constructor(className?: string) {
         super(new NewElementBuilder().setTagName('i').setClassName(className));
     }
+
+    static fromText(text: string): IEl {
+        const i = new IEl();
+        i.setHtml(text);
+        return i;
+    }
 }

@@ -25,11 +25,20 @@ export class NamesView
         this.appendChild(this.subNameEl);
     }
 
-    setMainName(value: string, escapeHtml: boolean = true): NamesView {
-        this.mainNameEl.setHtml(value, escapeHtml);
+    setMainName(value: string): NamesView {
+        this.mainNameEl.setHtml(value);
         if (this.addTitleAttribute) {
             this.mainNameEl.getEl().setAttribute('title', value);
         }
+        return this;
+    }
+
+    setMainNameElements(elements: Element[]): NamesView {
+        this.mainNameEl.removeChildren();
+        elements.forEach((element: Element) => {
+            this.mainNameEl.appendChild(element);
+        });
+
         return this;
     }
 
@@ -42,6 +51,7 @@ export class NamesView
     }
 
     setSubNameElements(elements: Element[]): NamesView {
+        this.subNameEl.removeChildren();
         elements.forEach((element: Element) => {
             this.subNameEl.appendChild(element);
         });

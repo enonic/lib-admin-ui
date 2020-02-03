@@ -82,6 +82,23 @@ export class ElementFromHelperBuilder
         this.loadExistingChildren = value;
         return this;
     }
+
+    static fromHtmlElement(element: HTMLElement, loadExistingChildren: boolean = false, parent?: Element): ElementFromHelperBuilder {
+        const builder = new ElementFromHelperBuilder()
+            .setHelper(new ElementHelper(element))
+            .setLoadExistingChildren(loadExistingChildren)
+            .setParentElement(parent);
+        return <ElementFromHelperBuilder>builder;
+    }
+
+    static fromString(s: string, loadExistingChildren: boolean = true): ElementFromHelperBuilder {
+        let htmlEl = $(s).get(0);
+        let parentEl;
+        if (htmlEl && htmlEl.parentElement) {
+            parentEl = Element.fromHtmlElement(htmlEl.parentElement);
+        }
+        return this.fromHtmlElement(htmlEl, loadExistingChildren, parentEl);
+    }
 }
 
 export class NewElementBuilder
@@ -202,8 +219,12 @@ export class Element {
     }
 
     static fromHtmlElement(element: HTMLElement, loadExistingChildren: boolean = false, parent?: Element): Element {
-        return new Element(new ElementFromHelperBuilder().setHelper(new ElementHelper(element)).setLoadExistingChildren(
-            loadExistingChildren).setParentElement(parent));
+        return new Element(
+            new ElementFromHelperBuilder()
+                .setHelper(new ElementHelper(element))
+                .setLoadExistingChildren(loadExistingChildren)
+                .setParentElement(parent)
+        );
     }
 
     static fromString(s: string, loadExistingChildren: boolean = true): Element {
