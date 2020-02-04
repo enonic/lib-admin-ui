@@ -438,8 +438,8 @@ export abstract class ModalDialog
         return this.cancelButton;
     }
 
-    setTitle(value: string, escapeHtml: boolean = true) {
-        this.header.setTitle(value, escapeHtml);
+    setTitle(value: string) {
+        this.header.setTitle(value);
     }
 
     appendChildToContentPanel(child: Element) {
@@ -682,8 +682,8 @@ export class DefaultModalDialogHeader
         this.appendChild(this.titleEl);
     }
 
-    setTitle(value: string, escapeHtml: boolean = true) {
-        this.titleEl.setHtml(value, escapeHtml);
+    setTitle(value: string) {
+        this.titleEl.setHtml(value);
     }
 
     getTitle(): string {

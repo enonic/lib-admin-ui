@@ -28,7 +28,7 @@ export class Button
     }
 
     setLabel(label: string, escapeHtml: boolean = true): Button {
-        this.labelEl.getEl().setInnerHtml(label, escapeHtml);
+        this.labelEl.setHtml(label, escapeHtml);
         return this;
     }
 

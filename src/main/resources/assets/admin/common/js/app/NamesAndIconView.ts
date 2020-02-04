@@ -82,7 +82,7 @@ export class NamesAndIconView
     }
 
     setMainName(value: string): NamesAndIconView {
-        this.namesView.setMainName(value, false);
+        this.namesView.setMainName(value);
         return this;
     }
 

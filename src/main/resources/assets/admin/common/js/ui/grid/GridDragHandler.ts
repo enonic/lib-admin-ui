@@ -63,9 +63,9 @@ export class GridDragHandler<MODEL> {
         const proxyEl: ElementHelper = Element.fromString('.slick-reorder-proxy').getEl();
         const top: string = proxyEl.getTop();
         this.draggableItem.getEl().setTop(top).setPosition('absolute');
-        const gridClasses: string = (' ' + this.contentGrid.getGrid().getEl().getClass()).replace(/\s/g, '.');
+        const gridClasses: string = (` ${this.contentGrid.getGrid().getEl().getClass()}`).replace(/\s/g, '.');
 
-        $('.tree-grid ' + gridClasses + ' .slick-viewport').get(0).appendChild(this.draggableItem.getHTMLElement());
+        $(`.tree-grid ${gridClasses} .slick-viewport`).get(0).appendChild(this.draggableItem.getHTMLElement());
     }
 
     protected handleDragEnd(_event: Event, _data: DragEventData) {
@@ -79,7 +79,7 @@ export class GridDragHandler<MODEL> {
             this.handleDragStart();
         }
         const gridClasses: string = (' ' + this.contentGrid.getGrid().getEl().getClass()).replace(/\s/g, '.');
-        const children: Element[] = Element.fromSelector('.tree-grid ' + gridClasses + ' .grid-canvas .slick-row', false);
+        const children: Element[] = Element.fromSelector(`.tree-grid ${gridClasses} .grid-canvas .slick-row`, false);
 
         if (children && !children[0].getPreviousElement()) {
             children.shift();
@@ -161,7 +161,7 @@ export class GridDragHandler<MODEL> {
             this.handleDragStart();
         }
         const top: number = Element.fromString('.slick-reorder-proxy').getEl().getTopPx();
-        this.draggableItem.getEl().setTopPx(top /*- this.rowHeight*//* / 2*/).setZindex(2);
+        this.draggableItem.getEl().setTopPx(top).setZindex(2);
     }
 
     private notifyPositionChanged() {

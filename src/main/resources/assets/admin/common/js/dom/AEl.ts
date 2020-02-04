@@ -9,7 +9,7 @@ export class AEl
         this.setUrl('#');
     }
 
-    public setUrl(value: string, target?: string): AEl {
+    setUrl(value: string, target?: string): AEl {
         this.getEl().setAttribute('href', value);
         if (target) {
             this.getEl().setAttribute('target', target);
@@ -17,24 +17,30 @@ export class AEl
         return this;
     }
 
-    public setTitle(value: string): AEl {
+    setTitle(value: string): AEl {
         this.getEl().setTitle(value);
         return this;
     }
 
-    public getTitle(): string {
+    getTitle(): string {
         return this.getEl().getTitle();
     }
 
-    public getHref(): string {
+    getHref(): string {
         return this.getEl().getAttribute('href');
     }
 
-    public getTarget(): string {
+    getTarget(): string {
         return this.getEl().getAttribute('target');
     }
 
-    public getText(): string {
+    getText(): string {
         return this.getEl().getText();
+    }
+
+    static fromText(text: string): AEl {
+        const a = new AEl();
+        a.setHtml(text);
+        return a;
     }
 }
