@@ -28,15 +28,6 @@ module api.ui {
             this.checkbox = <api.dom.InputEl> new api.dom.Element(new api.dom.NewElementBuilder().setTagName('input').setGenerateId(true));
             this.checkbox.getEl().setAttribute('type', 'checkbox');
             this.addClass(this.getInputAlignmentAsString(inputAlignment));
-
-            wemjq(this.checkbox.getHTMLElement()).on('change', (e) => {
-                if (Checkbox.debug) {
-                    console.debug('Checkbox on change', e);
-                }
-                this.refreshValueChanged();
-                this.refreshDirtyState();
-            });
-
         }
 
         private initLabel(text: string) {

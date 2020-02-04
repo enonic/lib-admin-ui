@@ -23,7 +23,7 @@ module api.data {
 
         newValue(value: string): Value {
             if (!this.isConvertible(value)) {
-                return new Value(null, this);
+                return this.newBoolean(false);
             }
             return new Value(this.convertFromString(value), this);
         }
