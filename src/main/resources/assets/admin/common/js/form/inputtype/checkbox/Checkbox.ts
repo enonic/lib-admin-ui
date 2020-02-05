@@ -65,16 +65,12 @@ module api.form.inputtype.checkbox {
             if (Checkbox.debug) {
                 console.debug('Checkbox.updateProperty' + (unchangedOnly ? ' (unchanged only)' : ''), property);
             }
-            if ((!unchangedOnly || !this.checkbox.isDirty()) && property.hasNonNullValue()) {
-                this.checkbox.setChecked(property.getBoolean());
+            if (!unchangedOnly || !this.checkbox.isDirty()) {
+                this.checkbox.setChecked(property.hasNonNullValue() ? property.getBoolean() : false);
             } else if (this.checkbox.isDirty()) {
-                this.resetPropertyValue();
+                this.checkbox.resetBaseValues();
             }
             return wemQ<void>(null);
-        }
-
-        resetPropertyValue() {
-            this.getProperty().setValue(ValueTypes.BOOLEAN.newValue(this.checkbox.getValue()));
         }
 
         reset() {

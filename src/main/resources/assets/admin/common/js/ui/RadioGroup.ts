@@ -77,11 +77,6 @@ module api.ui {
 
             this.label = new api.dom.LabelEl(label, this.radio);
             this.appendChild(this.label);
-
-            wemjq(this.radio.getHTMLElement()).on('change', () => {
-                this.refreshDirtyState();
-                this.refreshValueChanged();
-            });
         }
 
         setValue(value: string): RadioButton {
