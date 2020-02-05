@@ -82,11 +82,6 @@ export class RadioButton
 
         this.label = new LabelEl(label, this.radio);
         this.appendChild(this.label);
-
-        $(this.radio.getHTMLElement()).on('change', () => {
-            this.refreshDirtyState();
-            this.refreshValueChanged();
-        });
     }
 
     setValue(value: string): RadioButton {
