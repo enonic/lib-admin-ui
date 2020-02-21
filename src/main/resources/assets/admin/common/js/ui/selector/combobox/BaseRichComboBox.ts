@@ -564,7 +564,9 @@ export class BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
         return this;
     }
 
-    setRequestMissingOptions(requestMissingOptions: (missingOptionIds: string[]) => Q.Promise<Object>): BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
+    setRequestMissingOptions(
+        requestMissingOptions: (missingOptionIds: string[]) => Q.Promise<Object>
+    ): BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
         this.requestMissingOptions = requestMissingOptions;
         return this;
     }
