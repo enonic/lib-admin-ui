@@ -6,18 +6,14 @@ import {BaseSelectedOptionsView} from '../ui/selector/combobox/BaseSelectedOptio
 import {RichSelectedOptionView, RichSelectedOptionViewBuilder} from '../ui/selector/combobox/RichSelectedOptionView';
 import {MacroDescriptor} from './MacroDescriptor';
 import {MacroViewer} from './MacroViewer';
+import {Viewer} from '../ui/Viewer';
+import {SelectedOptionsView} from '../ui/selector/combobox/SelectedOptionsView';
 
 export class MacroComboBox
     extends RichComboBox<MacroDescriptor> {
 
-    constructor(builder: MacroComboBoxBuilder) {
-
-        let richComboBoxBuilder = new RichComboBoxBuilder<MacroDescriptor>().setComboBoxName('macroSelector').setLoader(
-            builder.loader).setSelectedOptionsView(new MacroSelectedOptionsView()).setMaximumOccurrences(
-            builder.maximumOccurrences).setDelayedInputValueChangedHandling(750).setOptionDisplayValueViewer(
-            new MacroViewer()).setValue(builder.value).setMaxHeight(250);
-
-        super(richComboBoxBuilder);
+    constructor(builder: MacroComboBoxBuilder = new MacroComboBoxBuilder()) {
+        super(builder);
 
         this.addClass('content-combo-box');
     }
@@ -67,28 +63,22 @@ export class MacroSelectedOptionView
     }
 }
 
-export class MacroComboBoxBuilder {
+export class MacroComboBoxBuilder
+    extends RichComboBoxBuilder<MacroDescriptor> {
 
-    maximumOccurrences: number = 0;
+    comboBoxName: string = 'macroSelector';
 
     loader: MacrosLoader;
 
     value: string;
 
-    setMaximumOccurrences(maximumOccurrences: number): MacroComboBoxBuilder {
-        this.maximumOccurrences = maximumOccurrences;
-        return this;
-    }
+    maxHeight: number = 250;
 
-    setLoader(loader: MacrosLoader): MacroComboBoxBuilder {
-        this.loader = loader;
-        return this;
-    }
+    optionDisplayValueViewer: Viewer<MacroDescriptor> = new MacroViewer();
 
-    setValue(value: string): MacroComboBoxBuilder {
-        this.value = value;
-        return this;
-    }
+    delayedInputValueChangedHandling: number = 750;
+
+    selectedOptionsView: SelectedOptionsView<MacroDescriptor> = new MacroSelectedOptionsView();
 
     build(): MacroComboBox {
         return new MacroComboBox(this);

@@ -136,14 +136,16 @@ export class PrincipalSelector
     }
 
     private createComboBox(input: Input): PrincipalComboBox {
-
-        let value = this.getValueFromPropertyArray(this.getPropertyArray());
-        let principalLoader = new PrincipalLoader()
+        const value: string = this.getValueFromPropertyArray(this.getPropertyArray());
+        const principalLoader: PrincipalLoader = new PrincipalLoader()
             .setAllowedTypes(this.principalTypes)
             .skipPrincipals(this.skipPrincipals);
 
-        let comboBox = PrincipalComboBox.create().setLoader(principalLoader).setMaxOccurences(
-            input.getOccurrences().getMaximum()).setValue(value).build();
+        const comboBox: PrincipalComboBox = <PrincipalComboBox>PrincipalComboBox.create()
+            .setLoader(principalLoader)
+            .setMaximumOccurrences(input.getOccurrences().getMaximum())
+            .setValue(value)
+            .build();
 
         comboBox.onOptionDeselected((event: SelectedOptionEvent<Principal>) => {
             this.getPropertyArray().remove(event.getSelectedOption().getIndex());

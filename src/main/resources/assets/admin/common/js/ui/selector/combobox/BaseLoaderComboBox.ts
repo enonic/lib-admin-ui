@@ -1,0 +1,87 @@
+import * as Q from 'q';
+import {BaseLoader} from '../../../util/loader/BaseLoader';
+import {StringHelper} from '../../../util/StringHelper';
+import {ComboBox, ComboBoxConfig} from './ComboBox';
+
+export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
+    extends ComboBox<OPTION_DISPLAY_VALUE> {
+
+    public static debug: boolean = false;
+    private loader: BaseLoader<any, LOADER_DATA_TYPE>;
+    private tempValue: string;
+
+    constructor(name: string, config: ComboBoxConfig<OPTION_DISPLAY_VALUE>,
+                loader: BaseLoader<any, LOADER_DATA_TYPE>) {
+        super(name, config);
+
+        this.addClass('loader-combobox');
+        this.loader = loader;
+    }
+
+    public setLoader(loader: BaseLoader<any, LOADER_DATA_TYPE>) {
+        this.loader = loader;
+    }
+
+    protected doSetValue(value: string) {
+
+        if (!this.loader.isLoaded()) {
+            if (BaseLoaderComboBox.debug) {
+                console.debug(this.toString() + '.doSetValue: loader is not loaded, saving temp value = ' + value);
+            }
+            this.tempValue = value;
+        }
+        this.doWhenLoaded(() => {
+            if (this.tempValue) {
+                if (BaseLoaderComboBox.debug) {
+                    console.debug(this.toString() + '.doSetValue: clearing temp value = ' + this.tempValue);
+                }
+                delete this.tempValue;
+            }
+            this.setIgnoreNextFocus(true);
+            super.doSetValue(value);
+        }, value);
+    }
+
+    protected doGetValue(): string {
+        if (!this.loader.isLoaded() && this.tempValue != null) {
+            if (BaseLoaderComboBox.debug) {
+                console.debug('RichComboBox: loader is not loaded, returning temp value = ' + this.tempValue);
+            }
+            return this.tempValue;
+        } else {
+            return super.doGetValue();
+        }
+    }
+
+    private doWhenLoaded(callback: Function, value: string) {
+        if (this.loader.isLoaded() || this.loader.isPreLoaded()) {
+            let optionsMissing = !StringHelper.isEmpty(value) && this.splitValues(value).some((val) => {
+                return !this.getOptionByValue(val);
+            });
+            if (optionsMissing) { // option needs loading
+                this.loader.preLoad(value).then(() => {
+                    callback();
+                });
+            } else { // empty option
+                callback();
+            }
+        } else {
+            if (BaseLoaderComboBox.debug) {
+                console.debug(this.toString() + '.doWhenLoaded: waiting to be loaded');
+            }
+            let singleLoadListener = ((data) => {
+                if (BaseLoaderComboBox.debug) {
+                    console.debug(this.toString() + '.doWhenLoaded: on loaded');
+                }
+                callback(data);
+                this.loader.unLoadedData(singleLoadListener);
+
+                return Q(null);
+            });
+            this.loader.onLoadedData(singleLoadListener);
+            if (!StringHelper.isEmpty(value) && this.loader.isNotStarted()) {
+                this.loader.preLoad(value);
+            }
+        }
+    }
+}
