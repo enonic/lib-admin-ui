@@ -6,69 +6,40 @@ import {BaseSelectedOptionsView} from '../selector/combobox/BaseSelectedOptionsV
 import {PrincipalKey} from '../../security/PrincipalKey';
 import {SelectedOptionView} from '../selector/combobox/SelectedOptionView';
 import {RichComboBox, RichComboBoxBuilder} from '../selector/combobox/RichComboBox';
-import {IsAuthenticatedRequest} from '../../security/auth/IsAuthenticatedRequest';
-import {PrincipalViewer, PrincipalViewerCompact} from './PrincipalViewer';
+import {PrincipalViewer} from './PrincipalViewer';
+import {Viewer} from '../Viewer';
+import {SelectedOptionsView} from '../selector/combobox/SelectedOptionsView';
 
 export class PrincipalComboBox
     extends RichComboBox<Principal> {
-    constructor(builder: PrincipalComboBoxBuilder) {
-        let richComboBoxBuilder = new RichComboBoxBuilder<Principal>().setMaximumOccurrences(
-            builder.maxOccurrences).setComboBoxName('principalSelector').setIdentifierMethod('getKey').setLoader(
-            builder.loader).setValue(builder.value).setDisplayMissingSelectedOptions(builder.displayMissing).setSelectedOptionsView(
-            builder.compactView
-            ? <any>new PrincipalSelectedOptionsViewCompact()
-            : new PrincipalSelectedOptionsView()).setOptionDisplayValueViewer(
-            new PrincipalViewer()).setDelayedInputValueChangedHandling(500);
-
-        super(richComboBoxBuilder);
+    constructor(builder: PrincipalComboBoxBuilder = new PrincipalComboBoxBuilder()) {
+        super(builder);
         this.addClass('principal-combobox');
     }
 
     static create(): PrincipalComboBoxBuilder {
         return new PrincipalComboBoxBuilder();
     }
-
-    getLoader() {
-        return super.getLoader();
-    }
 }
 
-export class PrincipalComboBoxBuilder {
+export class PrincipalComboBoxBuilder
+    extends RichComboBoxBuilder<Principal> {
 
     loader: PrincipalLoader = new PrincipalLoader();
 
-    maxOccurrences: number = 0;
+    maximumOccurrences: number = 0;
 
     value: string;
 
-    displayMissing: boolean = false;
+    identifierMethod: string = 'getKey';
 
-    compactView: boolean = false;
+    comboBoxName: string = 'principalSelector';
 
-    setLoader(value: PrincipalLoader): PrincipalComboBoxBuilder {
-        this.loader = value;
-        return this;
-    }
+    delayedInputValueChangedHandling: number = 500;
 
-    setMaxOccurences(value: number): PrincipalComboBoxBuilder {
-        this.maxOccurrences = value;
-        return this;
-    }
+    optionDisplayValueViewer: Viewer<Principal> = new PrincipalViewer();
 
-    setValue(value: string): PrincipalComboBoxBuilder {
-        this.value = value;
-        return this;
-    }
-
-    setDisplayMissing(value: boolean): PrincipalComboBoxBuilder {
-        this.displayMissing = value;
-        return this;
-    }
-
-    setCompactView(value: boolean): PrincipalComboBoxBuilder {
-        this.compactView = value;
-        return this;
-    }
+    selectedOptionsView: SelectedOptionsView<Principal> = new PrincipalSelectedOptionsView();
 
     build(): PrincipalComboBox {
         return new PrincipalComboBox(this);
@@ -137,63 +108,4 @@ export class RemovedPrincipalSelectedOptionView
     resolveSubName(): string {
         return 'This user is deleted';
     }
-}
-
-export class PrincipalSelectedOptionViewCompact
-    extends PrincipalViewerCompact
-    implements SelectedOptionView<Principal> {
-
-    private option: Option<Principal>;
-
-    constructor(option: Option<Principal>) {
-        super();
-        this.setOption(option);
-        this.addClass('principal-selected-option-view-compact');
-    }
-
-    setReadonly(_readonly: boolean) {
-        // must be implemented by children
-    }
-
-    setOption(option: Option<Principal>) {
-        this.option = option;
-        this.setObject(option.displayValue);
-    }
-
-    getOption(): Option<Principal> {
-        return this.option;
-    }
-
-    onRemoveClicked(_listener: (event: MouseEvent) => void) {
-        // to make lint happy
-    }
-
-    unRemoveClicked(_listener: (event: MouseEvent) => void) {
-        // to make lint happy
-    }
-
-}
-
-export class PrincipalSelectedOptionsViewCompact
-    extends BaseSelectedOptionsView<Principal> {
-
-    private currentUser: Principal;
-
-    constructor() {
-        super('principal-selected-options-view-compact');
-        this.loadCurrentUser();
-    }
-
-    createSelectedOption(option: Option<Principal>): SelectedOption<Principal> {
-        let optionView = new PrincipalSelectedOptionViewCompact(option);
-        optionView.setCurrentUser(this.currentUser);
-        return new SelectedOption<Principal>(<any>optionView, this.count());
-    }
-
-    private loadCurrentUser() {
-        return new IsAuthenticatedRequest().sendAndParse().then((loginResult) => {
-            this.currentUser = loginResult.getUser();
-        });
-    }
-
 }
