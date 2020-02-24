@@ -19,10 +19,14 @@ export interface FormOptionSetViewConfig {
     parent: FormOptionSetOccurrenceView;
 
     parentDataSet: PropertySet;
+
+    occurrencesLazyRender?: boolean;
 }
 
 export class FormOptionSetView
     extends FormSetView<FormOptionSetOccurrenceView> {
+
+    private occurrencesLazyRender: boolean;
 
     protected layerFactory: FormItemLayerFactory;
 
@@ -38,6 +42,7 @@ export class FormOptionSetView
         this.formSet = config.formOptionSet;
         this.classPrefix = 'form-option-set';
         this.helpText = this.formSet.getHelpText();
+        this.occurrencesLazyRender = config.occurrencesLazyRender;
 
         this.addClass(this.formSet.getPath().getElements().length % 2 ? 'even' : 'odd');
         if (this.formSet.getOccurrences().getMaximum() === 1) {
@@ -52,7 +57,8 @@ export class FormOptionSetView
             occurrenceViewContainer: this.occurrenceViewsContainer,
             formOptionSet: <FormOptionSet> this.formSet,
             parent: this.getParent(),
-            propertyArray: this.getPropertyArray(this.parentDataSet)
+            propertyArray: this.getPropertyArray(this.parentDataSet),
+            lazyRender: this.occurrencesLazyRender
         });
     }
 }

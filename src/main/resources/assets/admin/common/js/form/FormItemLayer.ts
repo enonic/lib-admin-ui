@@ -185,7 +185,8 @@ export class FormItemLayer {
                     context: this.context,
                     formOptionSet: formOptionSet,
                     parent: this.parent,
-                    parentDataSet: propertySet
+                    parentDataSet: propertySet,
+                    occurrencesLazyRender: this.lazyRender
                 });
             }
 

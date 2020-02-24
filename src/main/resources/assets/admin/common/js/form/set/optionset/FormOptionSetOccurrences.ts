@@ -7,7 +7,6 @@ import {FormSetOccurrences} from '../FormSetOccurrences';
 import {FormItemOccurrencesConfig} from '../../FormItemOccurrences';
 import {FormSetOccurrence} from '../FormSetOccurrence';
 import {RemoveButtonClickedEvent} from '../../RemoveButtonClickedEvent';
-import {FormItemLayer} from '../../FormItemLayer';
 import {FormItemLayerFactory} from '../../FormItemLayerFactory';
 
 export interface FormOptionSetOccurrencesConfig {
@@ -23,10 +22,14 @@ export interface FormOptionSetOccurrencesConfig {
     parent: FormOptionSetOccurrenceView;
 
     propertyArray: PropertyArray;
+
+    lazyRender?: boolean;
 }
 
 export class FormOptionSetOccurrences
     extends FormSetOccurrences<FormOptionSetOccurrenceView> {
+
+    private lazyRender: boolean;
 
     protected layerFactory: FormItemLayerFactory;
 
@@ -42,6 +45,7 @@ export class FormOptionSetOccurrences
         this.context = config.context;
         this.formSet = config.formOptionSet;
         this.parent = config.parent;
+        this.lazyRender = config.lazyRender;
         this.occurrencesCollapsed = false;
     }
 
@@ -51,7 +55,7 @@ export class FormOptionSetOccurrences
 
         let newOccurrenceView = new FormOptionSetOccurrenceView(<FormOptionSetOccurrenceViewConfig>{
             context: this.context,
-            layer: this.layerFactory.createLayer({context: this.context}),
+            layer: this.layerFactory.createLayer({context: this.context, lazyRender: this.lazyRender}),
             formSetOccurrence: occurrence,
             formOptionSet: <FormOptionSet> this.formSet,
             parent: this.parent,
