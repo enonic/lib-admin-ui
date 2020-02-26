@@ -10,31 +10,43 @@ export class TreeGridToolbar
     extends DivEl {
 
     private selectionPanelToggler: SelectionPanelToggler;
+    private selectionController: SelectionController;
     private centerWrapper: DivEl;
     private leftWrapper: DivEl;
     private rightWrapper: DivEl;
+    private refreshButton: Button;
 
     constructor(treeGrid: TreeGrid<any>) {
         super('tree-grid-toolbar toolbar');
 
-        const selectionController: SelectionController = new SelectionController(treeGrid);
+        this.selectionController = new SelectionController(treeGrid);
 
         this.selectionPanelToggler = new SelectionPanelToggler(treeGrid);
 
-        const refreshButton: Button = new Button();
-        refreshButton
+        this.refreshButton = new Button();
+        this.refreshButton
             .addClass(StyleHelper.getCommonIconCls('loop'))
             .onClicked(() => treeGrid.reload());
 
         this.leftWrapper = new DivEl('left-wrapper');
-        this.leftWrapper.appendChildren<Element>(selectionController, this.selectionPanelToggler);
+        this.leftWrapper.appendChildren<Element>(this.selectionController, this.selectionPanelToggler);
 
         this.centerWrapper = new DivEl('center-wrapper');
 
         this.rightWrapper = new DivEl('right-wrapper');
-        this.rightWrapper.appendChild(refreshButton);
+        this.rightWrapper.appendChild(this.refreshButton);
 
         this.appendChildren(this.leftWrapper, this.centerWrapper, this.rightWrapper);
+    }
+
+    disable() {
+        this.refreshButton.setEnabled(false);
+        this.selectionController.setDisabled(true);
+    }
+
+    enable() {
+        this.refreshButton.setEnabled(true);
+        this.selectionController.setDisabled(false);
     }
 
     getSelectionPanelToggler(): SelectionPanelToggler {

@@ -34,18 +34,63 @@ export class BrowsePanel<M extends Equitable>
     private filterPanelForcedShown: boolean = false;
     private filterPanelForcedHidden: boolean = false;
     private filterPanelIsHiddenByDefault: boolean = true;
+    private mainContentSplitPanel: SplitPanel;
 
-    private toggleFilterPanelAction: Action;
+    protected toggleFilterPanelAction: Action;
 
-    private toggleFilterPanelButton: ActionButton;
+    protected toggleFilterPanelButton: ActionButton;
 
     constructor() {
         super();
 
+        this.initElements();
+        this.initListeners();
+    }
+
+    protected initElements() {
         this.treeGrid = this.createTreeGrid();
         this.filterPanel = this.createFilterPanel();
         this.browseToolbar = this.createToolbar();
+        if (!this.browseItemPanel) {
+            this.browseItemPanel = this.createBrowseItemPanel();
+        }
 
+        this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.treeGrid, this.browseItemPanel)
+            .setAlignment(SplitPanelAlignment.VERTICAL)
+            .setFirstPanelSize(38, SplitPanelUnit.PERCENT)
+            .build();
+        this.mainContentSplitPanel = this.createMainContentSplitPanel(this.gridAndItemsSplitPanel);
+
+
+        if (this.filterPanel) {
+            this.gridAndToolbarPanel = new Panel();
+            this.filterAndGridSplitPanel = this.setupFilterPanel();
+        }
+    }
+
+    private initListeners() {
+        this.initTreeGridListeners();
+
+        ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
+            this.checkFilterPanelToBeShownFullScreen(item);
+
+            if (this.isRendered()) {
+                if (!this.filterPanelIsHiddenByDefault) { //not relevant if filter panel is hidden by default
+                    this.toggleFilterPanelDependingOnScreenSize(item);
+                }
+                this.togglePreviewPanelDependingOnScreenSize(item);
+            }
+        });
+
+
+        this.onShown(() => {
+            if (this.treeGrid.isFiltered()) {
+                this.filterPanel.refresh();
+            }
+        });
+    }
+
+    private initTreeGridListeners() {
         const selectionChangedHandler = (currentSelection: TreeNode<Object>[],
                                          fullSelection: TreeNode<Object>[],
                                          highlighted: boolean) => {
@@ -98,58 +143,30 @@ export class BrowsePanel<M extends Equitable>
                 });
             }, 200);
 
-        let highlightingChangedHandler = (highlightedNode: TreeNode<Object>, force: boolean, callback: Function) => {
+        const highlightingChangedHandler = (highlightedNode: TreeNode<Object>, force: boolean, callback: Function) => {
             highlightingChangedDebouncedHandler([highlightedNode, callback], force);
         };
 
         this.treeGrid.onHighlightingChanged(highlightingChangedHandler);
 
-        ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
-            this.checkFilterPanelToBeShownFullScreen(item);
-
-            if (this.isRendered()) {
-                if (!this.filterPanelIsHiddenByDefault) { //not relevant if filter panel is hidden by default
-                    this.toggleFilterPanelDependingOnScreenSize(item);
-                }
-                this.togglePreviewPanelDependingOnScreenSize(item);
-            }
-        });
-
         this.treeGrid.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
             this.treeGrid.toggleClass('selection-mode', isActive);
             this.toggleSelectionMode(isActive);
         });
-
-        this.onShown(() => {
-            if (this.treeGrid.isFiltered()) {
-                this.filterPanel.refresh();
-            }
-        });
-
     }
+
 
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered) => {
-            if (!this.browseItemPanel) {
-                this.browseItemPanel = this.createBrowseItemPanel();
-            }
-            this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.treeGrid, this.browseItemPanel)
-                .setAlignment(SplitPanelAlignment.VERTICAL)
-                .setFirstPanelSize(38, SplitPanelUnit.PERCENT)
-                .build();
-            const mainContentSplitPanel = this.createMainContentSplitPanel(this.gridAndItemsSplitPanel);
 
             this.browseToolbar.addClass('browse-toolbar');
             this.gridAndItemsSplitPanel.addClass('content-grid-and-browse-split-panel');
 
             if (this.filterPanel) {
-                this.gridAndToolbarPanel = new Panel();
-
                 this.gridAndToolbarPanel.onAdded(() => {
                     this.gridAndItemsSplitPanel.setDoOffset(true);
                 });
 
-                this.filterAndGridSplitPanel = this.setupFilterPanel();
                 if (this.filterPanelIsHiddenByDefault) {
                     this.hideFilterPanel();
                 }
@@ -163,7 +180,7 @@ export class BrowsePanel<M extends Equitable>
                 });
                 this.browseToolbar.onRendered(() => {
                     setTimeout(() => {
-                        this.gridAndToolbarPanel.appendChild(mainContentSplitPanel);
+                        this.gridAndToolbarPanel.appendChild(this.mainContentSplitPanel);
                     });
                 });
             } else {
@@ -171,7 +188,7 @@ export class BrowsePanel<M extends Equitable>
                 // Hack: Same hack.
                 this.browseToolbar.onRendered(() => {
                     setTimeout(() => {
-                        this.appendChild(mainContentSplitPanel);
+                        this.appendChild(this.mainContentSplitPanel);
                     });
                 });
             }
