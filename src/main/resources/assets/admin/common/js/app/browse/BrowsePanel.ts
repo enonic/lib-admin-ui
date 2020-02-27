@@ -68,7 +68,7 @@ export class BrowsePanel<M extends Equitable>
         }
     }
 
-    private initListeners() {
+    protected initListeners() {
         this.initTreeGridListeners();
 
         ResponsiveManager.onAvailableSizeChanged(this, (item: ResponsiveItem) => {
