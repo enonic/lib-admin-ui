@@ -19,11 +19,6 @@ export class FindPrincipalsRequest
     private from: number;
     private size: number;
 
-    constructor() {
-        super();
-        super.setMethod('GET');
-    }
-
     getParams(): Object {
         return {
             types: this.enumToStrings(this.allowedTypes).join(','),

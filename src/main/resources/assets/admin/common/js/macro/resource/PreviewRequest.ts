@@ -1,6 +1,7 @@
 import {PropertyTree} from '../../data/PropertyTree';
 import {MacroKey} from '../MacroKey';
 import {MacroResourceRequest} from './MacroResourceRequest';
+import {HttpMethod} from '../../rest/HttpMethod';
 
 export class PreviewRequest<JSON_TYPE, PARSED_TYPE>
     extends MacroResourceRequest<JSON_TYPE, PARSED_TYPE> {
@@ -11,7 +12,7 @@ export class PreviewRequest<JSON_TYPE, PARSED_TYPE>
 
     constructor(data: PropertyTree, macroKey: MacroKey) {
         super();
-        super.setMethod('POST');
+        this.setMethod(HttpMethod.POST);
         this.data = data;
         this.macroKey = macroKey;
     }

@@ -1,7 +1,7 @@
 import {ResourceRequest} from '../rest/ResourceRequest';
 import {Path} from '../rest/Path';
 
-export class TaskResourceRequest<JSON_TYPE, PARSED_TYPE>
+export abstract class TaskResourceRequest<JSON_TYPE, PARSED_TYPE>
     extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
 
     private resourcePath: Path;

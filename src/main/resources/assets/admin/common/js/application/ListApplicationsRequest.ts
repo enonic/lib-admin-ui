@@ -13,7 +13,6 @@ export class ListApplicationsRequest
 
     constructor(apiName: string = 'list') {
         super();
-        super.setMethod('GET');
 
         this.apiName = apiName;
     }

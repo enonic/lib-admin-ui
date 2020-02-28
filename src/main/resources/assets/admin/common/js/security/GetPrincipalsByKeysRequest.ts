@@ -5,6 +5,7 @@ import {SecurityResourceRequest} from './SecurityResourceRequest';
 import {PrincipalJson} from './PrincipalJson';
 import {Principal} from './Principal';
 import {PrincipalKey} from './PrincipalKey';
+import {HttpMethod} from '../rest/HttpMethod';
 
 export class GetPrincipalsByKeysRequest
     extends SecurityResourceRequest<PrincipalJson[], Principal[]> {
@@ -15,7 +16,7 @@ export class GetPrincipalsByKeysRequest
 
     constructor(principalKeys: PrincipalKey[]) {
         super();
-        super.setMethod('POST');
+        this.setMethod(HttpMethod.POST);
         this.principalKeys = principalKeys;
         this.includeMemberships = false;
     }

@@ -6,18 +6,17 @@ import {RichComboBox, RichComboBoxBuilder} from '../selector/combobox/RichComboB
 import {SelectedOptionView} from '../selector/combobox/SelectedOptionView';
 import {BaseSelectedOptionsView} from '../selector/combobox/BaseSelectedOptionsView';
 import {LocaleViewer} from './LocaleViewer';
+import {Viewer} from '../Viewer';
+import {SelectedOptionsView} from '../selector/combobox/SelectedOptionsView';
 
 export class LocaleComboBox
     extends RichComboBox<Locale> {
-    constructor(maxOccurrences?: number, value?: string) {
-        let localeSelectedOptionsView = new LocaleSelectedOptionsView();
-        localeSelectedOptionsView.onOptionDeselected(() => {
-            this.clearSelection();
-        });
-        let builder = new RichComboBoxBuilder<Locale>().setMaximumOccurrences(maxOccurrences || 0).setComboBoxName(
-            'localeSelector').setIdentifierMethod('getId').setLoader(new LocaleLoader()).setValue(value).setSelectedOptionsView(
-            localeSelectedOptionsView).setOptionDisplayValueViewer(new LocaleViewer()).setDelayedInputValueChangedHandling(500);
+    constructor(builder: LocaleComboBoxBuilder = new LocaleComboBoxBuilder()) {
         super(builder);
+    }
+
+    static create(): LocaleComboBoxBuilder {
+        return new LocaleComboBoxBuilder();
     }
 
     clearSelection(forceClear: boolean = false) {
@@ -59,6 +58,27 @@ class LocaleSelectedOptionsView
     createSelectedOption(option: Option<Locale>): SelectedOption<Locale> {
         let optionView = new LocaleSelectedOptionView(option);
         return new SelectedOption<Locale>(optionView, this.count());
+    }
+
+}
+
+export class LocaleComboBoxBuilder
+    extends RichComboBoxBuilder<Locale> {
+
+    comboBoxName: string = 'localeSelector';
+
+    loader: LocaleLoader = new LocaleLoader();
+
+    value: string;
+
+    optionDisplayValueViewer: Viewer<Locale> = new LocaleViewer();
+
+    delayedInputValueChangedHandling: number = 500;
+
+    selectedOptionsView: SelectedOptionsView<Locale> = new LocaleSelectedOptionsView();
+
+    build(): LocaleComboBox {
+        return new LocaleComboBox(this);
     }
 
 }

@@ -8,11 +8,6 @@ import {Application} from './Application';
 export class ListIdProviderApplicationsRequest
     extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
 
-    constructor() {
-        super();
-        super.setMethod('GET');
-    }
-
     getParams(): Object {
         return {};
     }

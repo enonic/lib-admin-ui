@@ -4,6 +4,7 @@ import {Path} from '../rest/Path';
 import {JsonResponse} from '../rest/JsonResponse';
 import {ApplicationResourceRequest} from './ApplicationResourceRequest';
 import {ApplicationInstallResult} from './ApplicationInstallResult';
+import {HttpMethod} from '../rest/HttpMethod';
 
 export class InstallUrlApplicationRequest
     extends ApplicationResourceRequest<ApplicationInstallResultJson, ApplicationInstallResult> {
@@ -12,7 +13,7 @@ export class InstallUrlApplicationRequest
 
     constructor(applicationUrl: string) {
         super();
-        super.setMethod('POST');
+        this.setMethod(HttpMethod.POST);
         this.applicationUrl = applicationUrl;
         this.setHeavyOperation(true);
     }
