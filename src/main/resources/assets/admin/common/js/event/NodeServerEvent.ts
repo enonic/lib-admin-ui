@@ -17,14 +17,15 @@ export interface NodeEventNodeJson {
     path: string;
     newPath: string;
     branch: string;
+    repo: string;
 }
 
 export class NodeServerEvent
     extends Event {
 
-    private change: NodeServerChange<any>;
+    private change: NodeServerChange;
 
-    constructor(change: NodeServerChange<any>) {
+    constructor(change: NodeServerChange) {
         super();
         this.change = change;
     }
@@ -45,7 +46,7 @@ export class NodeServerEvent
         throw new Error('must be implemented in inheritors');
     }
 
-    getNodeChange(): NodeServerChange<any> {
+    getNodeChange(): NodeServerChange {
         return this.change;
     }
 
