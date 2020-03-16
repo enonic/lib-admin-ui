@@ -2,6 +2,7 @@ import {ServerEventsConnection} from './ServerEventsConnection';
 import {Application} from '../app/Application';
 import {Event} from './Event';
 import {EventJson} from './EventJson';
+import {ServerEventsTranslator} from './ServerEventsTranslator';
 
 export class ServerEventsListener {
 
@@ -26,6 +27,10 @@ export class ServerEventsListener {
 
     stop() {
         this.serverEventsConnection.disconnect();
+    }
+
+    setServerEventsTranslator(serverEventsTranslator: ServerEventsTranslator) {
+        this.serverEventsConnection.setServerEventsTranslator(serverEventsTranslator);
     }
 
     onConnectionLost(listener: () => void) {

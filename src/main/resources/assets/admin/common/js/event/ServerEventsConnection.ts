@@ -2,13 +2,8 @@ import {EventJson} from './EventJson';
 import {Event} from './Event';
 import {UriHelper} from '../util/UriHelper';
 import {NodeEventJson} from './NodeServerEvent';
-import {ApplicationEvent, ApplicationEventJson} from '../application/ApplicationEvent';
-import {ContentServerEvent} from '../content/event/ContentServerEvent';
-import {PrincipalServerEvent} from '../security/event/PrincipalServerEvent';
-import {IssueServerEvent} from '../issue/event/IssueServerEvent';
-import {RepositoryEvent} from '../content/event/RepositoryEvent';
-import {TaskEvent, TaskEventJson} from '../task/TaskEvent';
 import {Store} from '../store/Store';
+import {ServerEventsTranslator} from './ServerEventsTranslator';
 
 export const SERVER_EVENTS_CONNECTION_KEY: string = 'ServerEventsConnection';
 
@@ -34,16 +29,18 @@ export class ServerEventsConnection {
 
     private keepConnected: boolean = false;
 
-
     private downTime: number;
 
     private keepAliveIntervalId: number;
+
+    private serverEventsTranslator: ServerEventsTranslator;
 
     public debug: boolean = false;
 
     private constructor(reconnectIntervalSeconds: number = 5) {
         this.ws = null;
         this.reconnectInterval = reconnectIntervalSeconds * 1000;
+        this.serverEventsTranslator = new ServerEventsTranslator();
     }
 
     static get(): ServerEventsConnection {
@@ -55,6 +52,10 @@ export class ServerEventsConnection {
         }
 
         return instance;
+    }
+
+    setServerEventsTranslator(serverEventsTranslator: ServerEventsTranslator) {
+        this.serverEventsTranslator = serverEventsTranslator;
     }
 
     public connect() {
@@ -194,47 +195,13 @@ export class ServerEventsConnection {
     }
 
     private handleServerEvent(eventJson: NodeEventJson): void {
-        const clientEvent: Event = this.translateServerEvent(eventJson);
+        const clientEvent: Event = this.serverEventsTranslator.translateServerEvent(eventJson);
 
         if (clientEvent) {
             this.notifyServerEvent(clientEvent);
         } else {
             this.notifyUnknownEvent(eventJson);
         }
-    }
-
-    private translateServerEvent(eventJson: EventJson): Event {
-        const eventType = eventJson.type;
-
-        if (eventType === 'application') {
-            return ApplicationEvent.fromJson(<ApplicationEventJson>eventJson);
-        }
-        if (eventType.indexOf('node.') === 0) {
-            let event;
-            if (ContentServerEvent.is(<NodeEventJson>eventJson)) {
-                event = ContentServerEvent.fromJson(<NodeEventJson>eventJson);
-            }
-
-            if (PrincipalServerEvent.is(<NodeEventJson>eventJson)) {
-                event = PrincipalServerEvent.fromJson(<NodeEventJson>eventJson);
-            }
-
-            if (IssueServerEvent.is(<NodeEventJson>eventJson)) {
-                event = IssueServerEvent.fromJson(<NodeEventJson>eventJson);
-            }
-
-            if (event && event.getNodeChange()) {
-                return event;
-            }
-        }
-        if (eventType.indexOf('repository.') === 0) {
-            return RepositoryEvent.fromJson(eventJson);
-        }
-        if (eventType.indexOf('task.') === 0) {
-            return TaskEvent.fromJson(<TaskEventJson>eventJson);
-        }
-
-        return null;
     }
 
     private getWebSocketUriPrefix(): string {

@@ -1,4 +1,5 @@
-import {NodeEventJson} from './NodeServerEvent';
+import {NodeEventJson, NodeEventNodeJson} from './NodeServerEvent';
+import {NodeServerChangeItem} from './NodeServerChangeItem';
 
 export enum NodeServerChangeType {
     UNKNOWN,
@@ -14,45 +15,25 @@ export enum NodeServerChangeType {
     UPDATE_PERMISSIONS
 }
 
-export class NodeServerChangeItem<PATH_TYPE> {
+export abstract class NodeServerChange {
 
-    path: PATH_TYPE;
+    private changeItems: NodeServerChangeItem[];
 
-    branch: string;
+    private newNodePaths: string[];
 
-    constructor(path: PATH_TYPE, branch: string) {
-        this.path = path;
-        this.branch = branch;
+    private type: NodeServerChangeType;
+
+    constructor(builder: NodeServerChangeBuilder) {
+        this.type = builder.type;
+        this.changeItems = builder.changeItems;
+        this.newNodePaths = builder.newNodePaths;
     }
 
-    getPath(): PATH_TYPE {
-        return this.path;
-    }
-
-    getBranch(): string {
-        return this.branch;
-    }
-}
-
-export class NodeServerChange<PATH_TYPE> {
-
-    protected changeItems: NodeServerChangeItem<PATH_TYPE>[];
-
-    protected newNodePaths: PATH_TYPE[];
-
-    protected type: NodeServerChangeType;
-
-    constructor(type: NodeServerChangeType, changeItems: NodeServerChangeItem<PATH_TYPE>[], newNodePaths: PATH_TYPE[]) {
-        this.type = type;
-        this.changeItems = changeItems;
-        this.newNodePaths = newNodePaths;
-    }
-
-    static fromJson(_nodeEventJson: NodeEventJson): NodeServerChange<any> {
+    static fromJson(_nodeEventJson: NodeEventJson): NodeServerChange {
         throw new Error('Must be implemented by inheritors');
     }
 
-    protected static getNodeServerChangeType(value: string): NodeServerChangeType {
+    static getNodeServerChangeType(value: string): NodeServerChangeType {
         switch (value) {
         case 'node.pushed':
             return NodeServerChangeType.PUBLISH;
@@ -79,15 +60,62 @@ export class NodeServerChange<PATH_TYPE> {
         }
     }
 
-    getChangeItems(): NodeServerChangeItem<PATH_TYPE>[] {
+    getChangeItems(): NodeServerChangeItem[] {
         return this.changeItems;
     }
 
-    getNewPaths(): PATH_TYPE[] {
+    getNewPaths(): string[] {
         return this.newNodePaths;
     }
 
     getChangeType(): NodeServerChangeType {
         return this.type;
     }
+
+    toString(): string {
+        return NodeServerChangeType[this.getChangeType()] + ': <' +
+               this.getChangeItems().map((item) => item.getPath()).join(', ') + !!this.getNewPaths()
+               ? this.getNewPaths().join(', ')
+               : '' +
+                 '>';
+    }
+}
+
+export abstract class NodeServerChangeBuilder {
+
+    changeItems: NodeServerChangeItem[];
+
+    newNodePaths: string[];
+
+    type: NodeServerChangeType;
+
+    fromJson(json: NodeEventJson): NodeServerChangeBuilder {
+        this.type = NodeServerChange.getNodeServerChangeType(json.type);
+        this.changeItems = json.data.nodes
+            .filter((node) => node.path.indexOf(this.getPathPrefix()) === 0)
+            .map((node: NodeEventNodeJson) => this.nodeJsonToChangeItem(node));
+
+        return this;
+    }
+
+    setChangeItems(value: NodeServerChangeItem[]): NodeServerChangeBuilder {
+        this.changeItems = value;
+        return this;
+    }
+
+    setNewNodePaths(value: string[]): NodeServerChangeBuilder {
+        this.newNodePaths = value;
+        return this;
+    }
+
+    setType(value: NodeServerChangeType): NodeServerChangeBuilder {
+        this.type = value;
+        return this;
+    }
+
+    abstract getPathPrefix(): string;
+
+    abstract nodeJsonToChangeItem(node: NodeEventNodeJson): NodeServerChangeItem;
+
+    abstract build(): NodeServerChange;
 }
