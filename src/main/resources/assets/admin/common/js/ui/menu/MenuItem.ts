@@ -12,6 +12,9 @@ export class MenuItem
         super('menu-item');
         this.action = action;
         this.setLabel(this.action.getLabel());
+        if (this.action.getTitle()) {
+            this.setTitle(this.action.getTitle());
+        }
         this.onClicked(() => {
             if (action.isEnabled()) {
                 this.action.execute();
@@ -44,6 +47,10 @@ export class MenuItem
 
     setLabel(label: string) {
         this.getEl().setInnerHtml(label);
+    }
+
+    setTitle(title: string) {
+        this.getEl().setTitle(title);
     }
 
     getAction(): Action {
