@@ -13,7 +13,7 @@ export class PrincipalLoader
 
     protected request: FindPrincipalListRequest;
 
-    private skipPrincipalKeys: { [key: string]: PrincipalKey; };
+    protected skipPrincipalKeys: { [key: string]: PrincipalKey; };
 
     constructor() {
         super();
@@ -43,18 +43,21 @@ export class PrincipalLoader
         this.getRequest().setSearchQuery(value);
     }
 
-    skipPrincipals(principalKeys: PrincipalKey[]): PrincipalLoader {
+    resetSkippedPrincipals(): PrincipalLoader {
         this.skipPrincipalKeys = {};
-        principalKeys.forEach((principalKey: PrincipalKey) => {
-            this.skipPrincipalKeys[principalKey.toString()] = principalKey;
-        });
-        this.getRequest().setResultFilter((principal) => !this.skipPrincipalKeys[principal.getKey().toString()]);
+
+        return this;
+    }
+
+    skipPrincipals(principalKeys: PrincipalKey[]): PrincipalLoader {
+        principalKeys.forEach(this.skipPrincipal.bind(this));
+
         return this;
     }
 
     skipPrincipal(principalKey: PrincipalKey): PrincipalLoader {
         this.skipPrincipalKeys[principalKey.toString()] = principalKey;
-        this.getRequest().setResultFilter((principal) => !this.skipPrincipalKeys[principal.getKey().toString()]);
+
         return this;
     }
 
@@ -67,7 +70,16 @@ export class PrincipalLoader
     }
 
     protected createRequest(): FindPrincipalListRequest {
-        return new FindPrincipalListRequest().setSize(10);
+        const request = new FindPrincipalListRequest().setSize(10);
+        request.setResultFilter(this.isAllowedPrincipal.bind(this));
+
+        return request;
+    }
+
+    protected isAllowedPrincipal(principal: Principal): boolean {
+        const principalKey: PrincipalKey = principal.getKey();
+
+        return !this.skipPrincipalKeys[principalKey.toString()];
     }
 
     protected getRequest(): FindPrincipalListRequest {
