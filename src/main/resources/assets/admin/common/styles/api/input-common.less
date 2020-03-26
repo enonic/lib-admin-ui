@@ -10,6 +10,7 @@
     margin-bottom: @form-field-spacing;
   }
 
+  position: relative;
   border-bottom-width: 0;
 
   select, input, textarea {
@@ -17,11 +18,12 @@
   }
 
   .error {
-    display: none;
-    float: right;
-    color: @admin-input-red;
-    font-size: 12px;
-    margin-left: 10px;
+    font-size: 14px;
+    color: @input-red-text;
+
+    &:empty {
+      display: none;
+    }
   }
 
   &.label-over-input {
