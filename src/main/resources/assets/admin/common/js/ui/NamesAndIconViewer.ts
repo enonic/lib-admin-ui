@@ -16,8 +16,8 @@ export class NamesAndIconViewer<OBJECT>
     public static debug: boolean = false;
     protected namesAndIconView: NamesAndIconView;
     private emptyDisplayName: string = '<' + i18n('field.displayName') + '>';
-    private relativePath: boolean;
     private size: NamesAndIconViewSize;
+    protected isRelativePath: boolean = false;
 
     constructor(className?: string, size: NamesAndIconViewSize = NamesAndIconViewSize.small) {
         super(className);
@@ -29,9 +29,12 @@ export class NamesAndIconViewer<OBJECT>
         return [this.className, this.size];
     }
 
-    setObject(object: OBJECT, relativePath: boolean = false) {
-        this.relativePath = relativePath;
+    setObject(object: OBJECT) {
         return super.setObject(object);
+    }
+
+    setIsRelativePath(value: boolean) {
+        this.isRelativePath = value;
     }
 
     doLayout(object: OBJECT) {
@@ -48,7 +51,7 @@ export class NamesAndIconViewer<OBJECT>
 
         if (object) {
             const displayName = this.resolveDisplayName(object) || this.normalizeDisplayName(this.resolveUnnamedDisplayName(object));
-            const subName = this.resolveSubName(object, this.relativePath) || ContentUnnamed.prettifyUnnamed();
+            const subName = this.resolveSubName(object) || ContentUnnamed.prettifyUnnamed();
             const subTitle = this.resolveSubTitle(object);
             const hint = this.resolveHint(object);
 
@@ -94,7 +97,7 @@ export class NamesAndIconViewer<OBJECT>
         return '';
     }
 
-    resolveSubName(_object: OBJECT, _relativePath: boolean = false): string {
+    resolveSubName(_object: OBJECT): string {
         return '';
     }
 

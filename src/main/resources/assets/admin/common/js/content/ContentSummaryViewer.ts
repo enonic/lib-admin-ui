@@ -25,9 +25,9 @@ export class ContentSummaryViewer
         return object.getType() ? object.getType().getLocalName() : '';
     }
 
-    resolveSubName(object: ContentSummary, relativePath: boolean = false): string {
+    resolveSubName(object: ContentSummary): string {
         let contentName = object.getName();
-        if (relativePath) {
+        if (this.isRelativePath) {
             return !contentName.isUnnamed() ? object.getName().toString() :
                    ContentUnnamed.prettifyUnnamed();
         } else {
