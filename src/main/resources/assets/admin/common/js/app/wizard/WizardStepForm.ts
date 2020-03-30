@@ -19,13 +19,13 @@ export class WizardStepForm
     /*
      *   public to be used by inheritors
      */
-    public validate(_silent?: boolean): ValidationRecording {
+    public validate(): ValidationRecording {
         return new ValidationRecording();
     }
 
     public isValid(): boolean {
         if (!this.previousValidation) {
-            this.previousValidation = this.validate(true);
+            this.previousValidation = this.validate();
         }
         return this.previousValidation.isValid();
     }

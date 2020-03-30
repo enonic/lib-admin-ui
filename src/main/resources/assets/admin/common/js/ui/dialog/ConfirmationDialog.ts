@@ -27,8 +27,6 @@ export class ConfirmationDialog
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered) => {
             this.appendChildToContentPanel(this.questionEl);
-            this.addAction(this.yesAction, true);
-            this.addAction(this.noAction);
 
             return rendered;
         });
@@ -67,8 +65,17 @@ export class ConfirmationDialog
         super.initElements();
 
         this.questionEl = new H6El('question');
-        this.noAction = new Action(i18n('action.no'), 'esc');
-        this.yesAction = new Action(i18n('action.yes'));
+
+        const noActionText: string = i18n('action.no');
+        this.noAction = new Action(noActionText, noActionText.slice(0, 1).toLowerCase());
+        this.noAction.setMnemonic(noActionText.slice(0, 1).toLowerCase());
+
+        const yesActionText: string = i18n('action.yes');
+        this.yesAction = new Action(yesActionText, yesActionText.slice(0, 1).toLowerCase());
+        this.yesAction.setMnemonic(yesActionText.slice(0, 1).toLowerCase());
+
+        this.addAction(this.yesAction, true);
+        this.addAction(this.noAction);
     }
 
     protected initListeners() {
