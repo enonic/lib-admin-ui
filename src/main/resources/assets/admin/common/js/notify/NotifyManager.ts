@@ -181,7 +181,9 @@ export class NotifyManager {
                 height: 'hide'
             }, this.slideDuration, 'linear',
             () => {
-                this.el.getWrapper().removeChild(el);
+                if (this.el.getWrapper().hasChild(el)) {
+                    this.el.getWrapper().removeChild(el);
+                }
             });
 
         delete this.registry[el.getEl().getId()];
