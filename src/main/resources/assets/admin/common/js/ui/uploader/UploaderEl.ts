@@ -521,6 +521,7 @@ export class UploaderEl<MODEL extends Equitable>
             multiple: this.config.allowMultiSelection,
             folders: false,
             autoUpload: false,
+            maxConnections: 1,
             request: {
                 endpoint: this.config.url,
                 params: this.config.params || {},
