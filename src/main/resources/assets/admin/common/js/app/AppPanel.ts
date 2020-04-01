@@ -5,7 +5,6 @@ import {KeyBinding} from '../ui/KeyBinding';
 import {PanelShownEvent} from '../ui/panel/PanelShownEvent';
 import {KeyBindings} from '../ui/KeyBindings';
 import {Action} from '../ui/Action';
-import {AppLauncherEventType} from './AppLauncherEventType';
 import {ShowBrowsePanelEvent} from './ShowBrowsePanelEvent';
 import {Panel} from '../ui/panel/Panel';
 
@@ -26,15 +25,6 @@ export class AppPanel<M extends Equitable>
 
     protected handleGlobalEvents() {
         ShowBrowsePanelEvent.on(() => this.handleBrowse());
-
-        window.onmessage = (e: MessageEvent) => {
-            if (e.data.appLauncherEvent) {
-                let eventType: AppLauncherEventType = AppLauncherEventType[<string>e.data.appLauncherEvent];
-                if (eventType === AppLauncherEventType.Show) {
-                    this.activateCurrentKeyBindings();
-                }
-            }
-        };
     }
 
     handleBrowse() {
