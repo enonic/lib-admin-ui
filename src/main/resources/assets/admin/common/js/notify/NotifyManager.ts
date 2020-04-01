@@ -183,6 +183,8 @@ export class NotifyManager {
             () => {
                 if (this.el.getWrapper().hasChild(el)) {
                     this.el.getWrapper().removeChild(el);
+                } else {
+                    this.queue = this.queue.filter(q => q !== el);
                 }
             });
 
