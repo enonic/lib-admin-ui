@@ -269,9 +269,6 @@ export class Grid<T extends Slick.SlickData>
         let index = rows.indexOf(row);
         if (index < 0) {
             rows.push(row);
-            rows.sort((a, b) => {
-                return a - b;
-            });
         } else {
             rows.splice(index, 1);
         }

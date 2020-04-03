@@ -17,6 +17,8 @@ import {DefaultErrorHandler} from '../../DefaultErrorHandler';
 import {AppHelper} from '../../util/AppHelper';
 import {ToggleFilterPanelAction} from './action/ToggleFilterPanelAction';
 import {BrowseItemPanel} from './BrowseItemPanel';
+import {BrowseItemsChanges} from './BrowseItemsChanges';
+import {SelectionChange} from '../../ui/treegrid/SelectionChange';
 
 export class BrowsePanel<M extends Equitable>
     extends Panel {
@@ -91,24 +93,25 @@ export class BrowsePanel<M extends Equitable>
     }
 
     private initTreeGridListeners() {
-        const selectionChangedHandler = (currentSelection: TreeNode<Object>[],
-                                         fullSelection: TreeNode<Object>[],
-                                         highlighted: boolean) => {
+        const selectionChangedHandler = (change: SelectionChange<Object>) => {
+            const fullSelection: TreeNode<any>[] = this.treeGrid.getRoot().getFullSelection();
+            const currentSelection: TreeNode<any>[] = this.treeGrid.getRoot().getCurrentSelection();
+
             if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
                 this.updateSelectionModeShownItems(currentSelection, fullSelection);
             }
 
-            let browseItems: BrowseItem<M>[] = this.treeNodesToBrowseItems(fullSelection);
-            let changes = this.getBrowseItemPanel().setItems(browseItems);
+            const browseItems: BrowseItem<M>[] = this.treeNodesToBrowseItems(fullSelection);
+            const changes: BrowseItemsChanges<M> = this.getBrowseItemPanel().setItems(browseItems);
 
-            if (highlighted && ((fullSelection.length === 0 && changes.getRemoved().length === 1) ||
+            if (this.treeGrid.hasHighlightedNode() && ((fullSelection.length === 0 && changes.getRemoved().length === 1) ||
                                 (fullSelection.length === 1 && changes.getAdded().length === 1))) {
                 return;
             }
 
             this.getBrowseActions().updateActionsEnabledState(this.getBrowseItemPanel().getItems(), changes)
                 .then(() => {
-                    if (this.getBrowseItemPanel().getItems().length > 0 || !highlighted) {
+                    if (this.getBrowseItemPanel().getItems().length > 0 || !this.treeGrid.hasHighlightedNode()) {
                         this.getBrowseItemPanel().updatePreviewPanel();
                     }
                 }).catch(DefaultErrorHandler.handle);

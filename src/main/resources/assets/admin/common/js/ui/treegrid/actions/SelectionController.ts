@@ -37,12 +37,8 @@ export class SelectionController
             }
 
             if (this.isChecked() || this.isPartial()) {
-                const isEntireSelectionStashed = this.isEntireSelectionStashed();
                 this.treeGrid.getRoot().clearStashedSelection();
                 this.treeGrid.getGrid().clearSelection();
-                if (isEntireSelectionStashed) {
-                    this.treeGrid.triggerSelectionChangedListeners();
-                }
             } else {
                 this.treeGrid.selectAll();
             }

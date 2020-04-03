@@ -4,6 +4,7 @@ import {TogglerButton} from '../../button/TogglerButton';
 import {Tooltip} from '../../Tooltip';
 import {TreeGrid} from '../TreeGrid';
 import {TreeNode} from '../TreeNode';
+import {SelectionChange} from '../SelectionChange';
 
 export class SelectionPanelToggler
     extends TogglerButton {
@@ -22,19 +23,21 @@ export class SelectionPanelToggler
 
         this.tooltip = new Tooltip(this, '', 1000);
 
-        treeGrid.onSelectionChanged((_currentSelection: TreeNode<any>[], fullSelection: TreeNode<any>[]) => {
-
-            let oldLabel = this.getLabel();
-            let newLabel = fullSelection.length ? fullSelection.length.toString() : '';
+        treeGrid.onSelectionChanged((change: SelectionChange<any>) => {
+            const oldLabel: string = this.getLabel();
+            const fullSelection: TreeNode<any>[] = treeGrid.getRoot().getFullSelection();
+            const newLabel: string = fullSelection.length ? fullSelection.length.toString() : '';
 
             if (oldLabel === newLabel) {
                 return;
             }
+
             this.tooltip.setText(this.isActive() ? i18n('field.selection.hide') : i18n('field.selection.show'));
 
             this.removeClass('any-selected');
             this.removeClass(`size-${oldLabel.length}`);
             this.setLabel(newLabel);
+
             if (newLabel !== '') {
                 this.addClass(`size-${newLabel.length}`);
                 this.addClass('updated');
