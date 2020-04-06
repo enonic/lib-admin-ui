@@ -25,8 +25,12 @@ export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE>
         this.restPath = Path.fromString(UriHelper.getRestUri(''));
     }
 
-    setMethod(value: HttpMethod) {
-        this.method = value;
+    setMethod(value: string | HttpMethod) {
+        if (typeof value === 'string') {
+            this.method = HttpMethod[value.toUpperCase()];
+            return;
+        }
+        this.method = value as HttpMethod;
     }
 
     getRestPath(): Path {
