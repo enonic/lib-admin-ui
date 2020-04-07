@@ -2,12 +2,11 @@ import * as Q from 'q';
 import {ApplicationEvent, ApplicationEventType} from '../../application/ApplicationEvent';
 import {ApplicationKey} from '../../application/ApplicationKey';
 import {BaseLoader} from '../../util/loader/BaseLoader';
-import {MacrosJson} from './MacrosJson';
 import {MacroDescriptor} from '../MacroDescriptor';
 import {GetMacrosRequest} from './GetMacrosRequest';
 
 export class MacrosLoader
-    extends BaseLoader<MacrosJson, MacroDescriptor> {
+    extends BaseLoader<MacroDescriptor> {
 
     protected request: GetMacrosRequest;
     private hasRelevantData: boolean;

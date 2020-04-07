@@ -1,6 +1,4 @@
-import * as Q from 'q';
 import {SecurityResourceRequest} from './SecurityResourceRequest';
-import {Path} from '../rest/Path';
 import {JsonResponse} from '../rest/JsonResponse';
 import {FindPrincipalsResultJson} from './FindPrincipalsResultJson';
 import {FindPrincipalsResult} from './FindPrincipalsResult';
@@ -10,7 +8,7 @@ import {PrincipalJson} from './PrincipalJson';
 import {Principal} from './Principal';
 
 export class FindPrincipalsRequest
-    extends SecurityResourceRequest<FindPrincipalsResultJson, FindPrincipalsResult> {
+    extends SecurityResourceRequest<FindPrincipalsResult> {
 
     private allowedTypes: PrincipalType[];
     private searchQuery: string;
@@ -18,6 +16,12 @@ export class FindPrincipalsRequest
     private filterPredicate: (principal: Principal) => boolean;
     private from: number;
     private size: number;
+
+    constructor() {
+        super();
+
+        this.addRequestPathElements('principals');
+    }
 
     getParams(): Object {
         return {
@@ -27,22 +31,6 @@ export class FindPrincipalsRequest
             from: this.from || null,
             size: this.size || null
         };
-    }
-
-    getRequestPath(): Path {
-        return Path.fromParent(super.getResourcePath(), 'principals');
-    }
-
-    sendAndParse(): Q.Promise<FindPrincipalsResult> {
-        return this.send().then((response: JsonResponse<FindPrincipalsResultJson>) => {
-            let principals: Principal[] = response.getResult().principals.map((principalJson: PrincipalJson) => {
-                return Principal.fromJson(principalJson);
-            });
-            if (this.filterPredicate) {
-                principals = principals.filter(this.filterPredicate);
-            }
-            return new FindPrincipalsResult(principals, response.getResult().principals.length, response.getResult().totalSize);
-        });
     }
 
     setIdProviderKey(key: IdProviderKey): FindPrincipalsRequest {
@@ -87,4 +75,17 @@ export class FindPrincipalsRequest
             return PrincipalType[type].toUpperCase();
         });
     }
+
+    protected parseResponse(response: JsonResponse<FindPrincipalsResultJson>): FindPrincipalsResult {
+        let principals: Principal[] = response.getResult().principals.map((principalJson: PrincipalJson) => {
+            return Principal.fromJson(principalJson);
+        });
+
+        if (this.filterPredicate) {
+            principals = principals.filter(this.filterPredicate);
+        }
+
+        return new FindPrincipalsResult(principals, response.getResult().principals.length, response.getResult().totalSize);
+    }
+
 }

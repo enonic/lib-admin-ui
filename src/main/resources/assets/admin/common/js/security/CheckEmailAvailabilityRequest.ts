@@ -1,5 +1,3 @@
-import * as Q from 'q';
-import {Path} from '../rest/Path';
 import {JsonResponse} from '../rest/JsonResponse';
 import {SecurityResourceRequest} from './SecurityResourceRequest';
 import {IdProviderKey} from './IdProviderKey';
@@ -9,7 +7,7 @@ export interface CheckEmailAvailabilityResponse {
 }
 
 export class CheckEmailAvailabilityRequest
-    extends SecurityResourceRequest<CheckEmailAvailabilityResponse, boolean> {
+    extends SecurityResourceRequest<boolean> {
 
     private idProviderKey: IdProviderKey;
 
@@ -18,6 +16,7 @@ export class CheckEmailAvailabilityRequest
     constructor(email: string) {
         super();
         this.email = email;
+        this.addRequestPathElements('principals', 'emailAvailable');
     }
 
     setIdProviderKey(key: IdProviderKey): CheckEmailAvailabilityRequest {
@@ -32,15 +31,8 @@ export class CheckEmailAvailabilityRequest
         };
     }
 
-    getRequestPath(): Path {
-        return Path.fromParent(super.getResourcePath(), 'principals', 'emailAvailable');
-    }
-
-    sendAndParse(): Q.Promise<boolean> {
-
-        return this.send().then((response: JsonResponse<CheckEmailAvailabilityResponse>) => {
-            return response.getResult().available;
-        });
+    protected parseResponse(response: JsonResponse<CheckEmailAvailabilityResponse>): boolean {
+        return response.getResult().available;
     }
 
 }

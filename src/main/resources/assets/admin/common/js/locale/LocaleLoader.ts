@@ -1,11 +1,10 @@
 import * as Q from 'q';
 import {BaseLoader} from '../util/loader/BaseLoader';
-import {LocaleListJson} from './json/LocaleListJson';
 import {Locale} from './Locale';
 import {GetLocalesRequest} from './GetLocalesRequest';
 
 export class LocaleLoader
-    extends BaseLoader<LocaleListJson, Locale> {
+    extends BaseLoader<Locale> {
 
     protected request: GetLocalesRequest;
     private preservedSearchString: string;

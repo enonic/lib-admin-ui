@@ -28,7 +28,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
     extends CompositeFormInputEl {
 
     public static debug: boolean = false;
-    private loader: BaseLoader<any, LOADER_DATA_TYPE>;
+    private loader: BaseLoader<LOADER_DATA_TYPE>;
     private selectedOptionsView: SelectedOptionsView<OPTION_DATA_TYPE>;
     private comboBox: BaseLoaderComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>;
     private errorContainer: DivEl;
@@ -197,7 +197,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         this.comboBox.setKeyEventsHandler(handler);
     }
 
-    getLoader(): BaseLoader<any, LOADER_DATA_TYPE> {
+    getLoader(): BaseLoader<LOADER_DATA_TYPE> {
         return this.loader;
     }
 
@@ -408,7 +408,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         });
 
         if (ObjectHelper.iFrameSafeInstanceOf(this.loader, PostLoader)) {
-            this.handleLastRange((<PostLoader<any, LOADER_DATA_TYPE>>this.loader).postLoad.bind(this.loader));
+            this.handleLastRange((<PostLoader<LOADER_DATA_TYPE>>this.loader).postLoad.bind(this.loader));
         }
     }
 
@@ -433,7 +433,7 @@ export class BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
 
     comboBoxName: string;
 
-    loader: BaseLoader<any, LOADER_DATA_TYPE>;
+    loader: BaseLoader<LOADER_DATA_TYPE>;
 
     selectedOptionsView: SelectedOptionsView<OPTION_DATA_TYPE>;
 
@@ -479,7 +479,7 @@ export class BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
         return this;
     }
 
-    setLoader(loader: BaseLoader<any, LOADER_DATA_TYPE>): BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
+    setLoader(loader: BaseLoader<LOADER_DATA_TYPE>): BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
         this.loader = loader;
         return this;
     }

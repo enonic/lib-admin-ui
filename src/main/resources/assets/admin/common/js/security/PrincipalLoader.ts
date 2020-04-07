@@ -1,6 +1,5 @@
 import * as Q from 'q';
 import {PostLoader} from '../util/loader/PostLoader';
-import {PrincipalListJson} from './PrincipalListJson';
 import {FindPrincipalListRequest} from './FindPrincipalListRequest';
 import {PrincipalType} from './PrincipalType';
 import {IdProviderKey} from './IdProviderKey';
@@ -9,7 +8,7 @@ import {PrincipalKey} from './PrincipalKey';
 import {GetPrincipalsByKeysRequest} from './GetPrincipalsByKeysRequest';
 
 export class PrincipalLoader
-    extends PostLoader<PrincipalListJson, Principal> {
+    extends PostLoader<Principal> {
 
     protected request: FindPrincipalListRequest;
 

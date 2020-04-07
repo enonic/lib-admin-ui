@@ -1,6 +1,5 @@
 import * as Q from 'q';
 import {ApplicationJson} from './json/ApplicationJson';
-import {Path} from '../rest/Path';
 import {JsonResponse} from '../rest/JsonResponse';
 import {ApplicationResourceRequest} from './ApplicationResourceRequest';
 import {ApplicationKey} from './ApplicationKey';
@@ -8,7 +7,7 @@ import {Application} from './Application';
 import {ApplicationCache} from './ApplicationCache';
 
 export class GetApplicationRequest
-    extends ApplicationResourceRequest<ApplicationJson, Application> {
+    extends ApplicationResourceRequest<Application> {
 
     private applicationKey: ApplicationKey;
 
@@ -27,22 +26,21 @@ export class GetApplicationRequest
         };
     }
 
-    getRequestPath(): Path {
-        return Path.fromParent(super.getResourcePath());
-    }
-
     sendAndParse(): Q.Promise<Application> {
+        const cache: ApplicationCache = ApplicationCache.get();
+        const appObj: Application = this.skipCache ? null : cache.getByKey(this.applicationKey);
 
-        let cache = ApplicationCache.get();
-        let appObj = this.skipCache ? null : cache.getByKey(this.applicationKey);
         if (appObj) {
             return Q(appObj);
-        } else {
-            return this.send().then((response: JsonResponse<ApplicationJson>) => {
-                appObj = this.fromJsonToApplication(response.getResult());
-                cache.put(appObj);
-                return appObj;
-            });
         }
+
+        return super.sendAndParse();
+
+    }
+
+    protected parseResponse(response: JsonResponse<ApplicationJson>): Application {
+        const app: Application = this.fromJsonToApplication(response.getResult());
+        ApplicationCache.get().put(app);
+        return app;
     }
 }
