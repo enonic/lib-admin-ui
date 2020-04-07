@@ -9,7 +9,7 @@ export class GetTaskInfoRequest
 
     constructor(taskId: TaskId) {
         super();
-        this.addRequestPathElements(taskId.toString())
+        this.addRequestPathElements(taskId.toString());
     }
 
     getParams(): Object {
