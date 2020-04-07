@@ -10,6 +10,7 @@ export class Response {
         return !this.data;
     }
 
+    // tslint:disable-next-line
     hasResult(): boolean {
         return this.data != null;
     }
