@@ -19,7 +19,7 @@ export class JsonResponse<RAW_JSON_TYPE>
     }
 
     hasResult(): boolean {
-        return this.json !== null;
+        return !(this.json === null || this.json === undefined);
     }
 
     getResult(): RAW_JSON_TYPE {

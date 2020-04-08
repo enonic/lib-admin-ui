@@ -11,7 +11,7 @@ export class Response {
     }
 
     hasResult(): boolean {
-        return this.data !== null;
+        return !(this.data === null || this.data === undefined);
     }
 
     getResult(): any {
