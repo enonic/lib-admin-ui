@@ -1,6 +1,6 @@
 export class Response {
 
-    private data: any;
+    readonly data: any;
 
     constructor(data: any) {
         this.data = data;
@@ -10,9 +10,8 @@ export class Response {
         return !this.data;
     }
 
-    // tslint:disable-next-line
     hasResult(): boolean {
-        return this.data != null;
+        return this.data !== null;
     }
 
     getResult(): any {

@@ -3,7 +3,7 @@ import {Response} from './Response';
 export class JsonResponse<RAW_JSON_TYPE>
     extends Response {
 
-    private json: any;
+    readonly json: any;
 
     constructor(data: any) {
         super(data);
@@ -19,7 +19,7 @@ export class JsonResponse<RAW_JSON_TYPE>
     }
 
     hasResult(): boolean {
-        return this.json != null;
+        return this.json !== null;
     }
 
     getResult(): RAW_JSON_TYPE {
