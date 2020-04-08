@@ -23,7 +23,7 @@ export interface KeysJson {
 }
 
 class GetMessagesRequest
-    extends ResourceRequest<KeysJson, void> {
+    extends ResourceRequest<void> {
 
     private url: string;
 

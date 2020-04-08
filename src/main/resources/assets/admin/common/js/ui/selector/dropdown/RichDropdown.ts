@@ -7,7 +7,7 @@ import {Option} from '../Option';
 export class RichDropdown<OPTION_DISPLAY_VALUE>
     extends Dropdown<OPTION_DISPLAY_VALUE> {
 
-    protected loader: BaseLoader<any, OPTION_DISPLAY_VALUE>;
+    protected loader: BaseLoader<OPTION_DISPLAY_VALUE>;
 
     constructor(dropdownConfig: DropdownConfig<OPTION_DISPLAY_VALUE>, name: string = '') {
         super(name, dropdownConfig);
@@ -26,11 +26,11 @@ export class RichDropdown<OPTION_DISPLAY_VALUE>
         this.load();
     }
 
-    protected createLoader(): BaseLoader<any, OPTION_DISPLAY_VALUE> {
+    protected createLoader(): BaseLoader<OPTION_DISPLAY_VALUE> {
         throw new Error('Must be implemented by inheritors');
     }
 
-    protected getLoader(): BaseLoader<any, OPTION_DISPLAY_VALUE> {
+    protected getLoader(): BaseLoader<OPTION_DISPLAY_VALUE> {
         return this.loader;
     }
 

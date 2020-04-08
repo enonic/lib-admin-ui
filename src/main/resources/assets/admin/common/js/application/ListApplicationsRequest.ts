@@ -1,20 +1,17 @@
-import * as Q from 'q';
-import {Path} from '../rest/Path';
 import {JsonResponse} from '../rest/JsonResponse';
 import {ApplicationResourceRequest} from './ApplicationResourceRequest';
 import {ApplicationListResult} from './ApplicationListResult';
 import {Application} from './Application';
 
 export class ListApplicationsRequest
-    extends ApplicationResourceRequest<ApplicationListResult, Application[]> {
+    extends ApplicationResourceRequest<Application[]> {
 
     private searchQuery: string;
-    private apiName: string;
 
     constructor(apiName: string = 'list') {
         super();
 
-        this.apiName = apiName;
+        this.addRequestPathElements(apiName);
     }
 
     getParams(): Object {
@@ -28,14 +25,7 @@ export class ListApplicationsRequest
         return this;
     }
 
-    getRequestPath(): Path {
-        return Path.fromParent(super.getResourcePath(), this.apiName);
-    }
-
-    sendAndParse(): Q.Promise<Application[]> {
-
-        return this.send().then((response: JsonResponse<ApplicationListResult>) => {
-            return Application.fromJsonArray(response.getResult().applications);
-        });
+    protected parseResponse(response: JsonResponse<ApplicationListResult>): Application[] {
+        return Application.fromJsonArray(response.getResult().applications);
     }
 }

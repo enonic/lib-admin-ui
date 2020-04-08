@@ -3,11 +3,11 @@ import {Response} from './Response';
 export class JsonResponse<RAW_JSON_TYPE>
     extends Response {
 
-    private json: any;
+    readonly json: any;
 
-    constructor(json: any) {
-        super();
-        this.json = JSON.parse(json);
+    constructor(data: any) {
+        super(data);
+        this.json = JSON.parse(data);
     }
 
     isBlank(): boolean {
@@ -19,10 +19,7 @@ export class JsonResponse<RAW_JSON_TYPE>
     }
 
     hasResult(): boolean {
-        if (this.json == null || this.json == null) {
-            return false;
-        }
-        return true;
+        return !(this.json === null || this.json === undefined);
     }
 
     getResult(): RAW_JSON_TYPE {

@@ -3,12 +3,13 @@ import {HttpRequest} from './HttpRequest';
 import {UriHelper} from '../util/UriHelper';
 import {Path} from './Path';
 import {JsonResponse} from './JsonResponse';
-import {JsonRequest} from './JsonRequest';
+import {Request} from './Request';
 import {HttpMethod} from './HttpMethod';
 import {GetRequest} from './GetRequest';
 import {PostRequest} from './PostRequest';
+import {Response} from './Response';
 
-export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE>
+export abstract class ResourceRequest<PARSED_TYPE>
     implements HttpRequest<PARSED_TYPE> {
 
     protected restPath: Path;
@@ -21,8 +22,16 @@ export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE>
 
     protected isFormRequest: boolean = false;
 
+    protected isJsonResponse: boolean = true;
+
+    private pathElements: string[] = [];
+
     constructor() {
         this.restPath = Path.fromString(UriHelper.getRestUri(''));
+    }
+
+    protected addRequestPathElements(...items: string[]) {
+        this.pathElements.push(...items);
     }
 
     setMethod(value: string | HttpMethod) {
@@ -38,7 +47,7 @@ export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE>
     }
 
     getRequestPath(): Path {
-        throw new Error('Must be implemented by inheritors');
+        return Path.fromParent(this.getRestPath(), ...this.pathElements);
     }
 
     getParams(): Object {
@@ -57,15 +66,20 @@ export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE>
         this.isFormRequest = value;
     }
 
+    setIsJsonResponse(value: boolean) {
+        this.isJsonResponse = value;
+    }
+
     validate() {
         // Override to ensure any validation of ResourceRequest before sending.
     }
 
-    send(): Q.Promise<JsonResponse<RAW_JSON_TYPE>> {
+    send(): Q.Promise<Response> {
         this.validate();
 
-        const deferred: Q.Deferred<JsonResponse<RAW_JSON_TYPE>> = Q.defer<JsonResponse<RAW_JSON_TYPE>>();
-        const request: JsonRequest = this.createJsonRequest()
+        const deferred: Q.Deferred<any> = Q.defer<any>();
+
+        const request: Request = this.createRequest()
             .setParams(this.getParams())
             .setPath(this.getRequestPath())
             .setTimeout(!this.heavyOperation ? this.timeoutMillis : 0)
@@ -73,10 +87,12 @@ export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE>
 
         request.send();
 
-        return deferred.promise;
+        return deferred.promise.then((rawResponse: any) => {
+            return this.isJsonResponse ? new JsonResponse(rawResponse) : new Response(rawResponse);
+        });
     }
 
-    private createJsonRequest(): JsonRequest {
+    private createRequest(): Request {
         if (HttpMethod.GET === this.method) {
             return new GetRequest();
         }
@@ -91,6 +107,12 @@ export class ResourceRequest<RAW_JSON_TYPE, PARSED_TYPE>
     }
 
     sendAndParse(): Q.Promise<PARSED_TYPE> {
-        throw new Error('sendAndParse method was not implemented');
+        return this.send().then((response: Response) => {
+            return this.parseResponse(response);
+        });
+    }
+
+    protected parseResponse(response: Response): PARSED_TYPE {
+        return response.getResult();
     }
 }

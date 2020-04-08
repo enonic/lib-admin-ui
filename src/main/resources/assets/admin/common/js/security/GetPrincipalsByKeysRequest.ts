@@ -1,5 +1,3 @@
-import * as Q from 'q';
-import {Path} from '../rest/Path';
 import {JsonResponse} from '../rest/JsonResponse';
 import {SecurityResourceRequest} from './SecurityResourceRequest';
 import {PrincipalJson} from './PrincipalJson';
@@ -8,7 +6,7 @@ import {PrincipalKey} from './PrincipalKey';
 import {HttpMethod} from '../rest/HttpMethod';
 
 export class GetPrincipalsByKeysRequest
-    extends SecurityResourceRequest<PrincipalJson[], Principal[]> {
+    extends SecurityResourceRequest<Principal[]> {
 
     private principalKeys: PrincipalKey[];
 
@@ -19,6 +17,7 @@ export class GetPrincipalsByKeysRequest
         this.setMethod(HttpMethod.POST);
         this.principalKeys = principalKeys;
         this.includeMemberships = false;
+        this.addRequestPathElements('principals', 'resolveByKeys');
     }
 
     setIncludeMemberships(includeMemberships: boolean): GetPrincipalsByKeysRequest {
@@ -33,15 +32,7 @@ export class GetPrincipalsByKeysRequest
         };
     }
 
-    getRequestPath(): Path {
-        return Path.fromParent(super.getResourcePath(), 'principals/resolveByKeys');
+    protected parseResponse(response: JsonResponse<PrincipalJson[]>): Principal[] {
+        return response.getResult().map(principal => Principal.fromJson(principal));
     }
-
-    sendAndParse(): Q.Promise<Principal[]> {
-
-        return this.send().then((response: JsonResponse<PrincipalJson[]>) => {
-            return response.getResult().map(principal => Principal.fromJson(principal));
-        });
-    }
-
 }

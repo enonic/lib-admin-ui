@@ -1,7 +1,5 @@
-import * as Q from 'q';
 import {ApplicationResourceRequest} from './ApplicationResourceRequest';
 import {MarketApplicationsListJson} from './json/MarketApplicationsListJson';
-import {Path} from '../rest/Path';
 import {JsonResponse} from '../rest/JsonResponse';
 import {MarketApplicationResponse} from './MarketApplicationResponse';
 import {MarketApplication} from './MarketApplication';
@@ -9,7 +7,7 @@ import {MarketApplicationMetadata} from './MarketApplicationMetadata';
 import {HttpMethod} from '../rest/HttpMethod';
 
 export class ListMarketApplicationsRequest
-    extends ApplicationResourceRequest<MarketApplicationsListJson, MarketApplicationResponse> {
+    extends ApplicationResourceRequest<MarketApplicationResponse> {
 
     private version: string;
     private start: number = 0;
@@ -19,6 +17,7 @@ export class ListMarketApplicationsRequest
     constructor() {
         super();
         this.setMethod(HttpMethod.POST);
+        this.addRequestPathElements('getMarketApplications');
     }
 
     setIds(ids: string[]): ListMarketApplicationsRequest {
@@ -50,16 +49,10 @@ export class ListMarketApplicationsRequest
         };
     }
 
-    getRequestPath(): Path {
-        return Path.fromParent(super.getResourcePath(), 'getMarketApplications');
-    }
-
-    sendAndParse(): Q.Promise<MarketApplicationResponse> {
-        return this.send().then((response: JsonResponse<MarketApplicationsListJson>) => {
-            let applications = MarketApplication.fromJsonArray(response.getResult().hits);
-            let hits = applications.length;
-            let totalHits = response.getResult().total;
-            return new MarketApplicationResponse(applications, new MarketApplicationMetadata(hits, totalHits));
-        });
+    protected parseResponse(response: JsonResponse<MarketApplicationsListJson>): MarketApplicationResponse {
+        const applications: MarketApplication[] = MarketApplication.fromJsonArray(response.getResult().hits);
+        const hits: number = applications.length;
+        const totalHits: number = response.getResult().total;
+        return new MarketApplicationResponse(applications, new MarketApplicationMetadata(hits, totalHits));
     }
 }

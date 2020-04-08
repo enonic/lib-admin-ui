@@ -7,18 +7,18 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
     extends ComboBox<OPTION_DISPLAY_VALUE> {
 
     public static debug: boolean = false;
-    private loader: BaseLoader<any, LOADER_DATA_TYPE>;
+    private loader: BaseLoader<LOADER_DATA_TYPE>;
     private tempValue: string;
 
     constructor(name: string, config: ComboBoxConfig<OPTION_DISPLAY_VALUE>,
-                loader: BaseLoader<any, LOADER_DATA_TYPE>) {
+                loader: BaseLoader<LOADER_DATA_TYPE>) {
         super(name, config);
 
         this.addClass('loader-combobox');
         this.loader = loader;
     }
 
-    public setLoader(loader: BaseLoader<any, LOADER_DATA_TYPE>) {
+    public setLoader(loader: BaseLoader<LOADER_DATA_TYPE>) {
         this.loader = loader;
     }
 

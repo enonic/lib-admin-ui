@@ -30,7 +30,7 @@ export class PrincipalContainerComboboxBuilder<T extends PrincipalContainer>
 
     identifierMethod: string = 'getPrincipalKey';
 
-    loader: BaseLoader<any, Principal> = new PrincipalLoader();
+    loader: BaseLoader<Principal> = new PrincipalLoader();
 
     hideComboBoxWhenMaxReached: boolean = false;
 

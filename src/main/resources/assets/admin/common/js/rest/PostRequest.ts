@@ -1,9 +1,9 @@
-import {JsonRequest} from './JsonRequest';
+import {Request} from './Request';
 import {UriHelper} from '../util/UriHelper';
 import {HttpMethod} from './HttpMethod';
 
 export class PostRequest
-    extends JsonRequest {
+    extends Request {
 
     private isFormRequest: boolean = false;
 
