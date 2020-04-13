@@ -12,10 +12,6 @@ export class GetTaskInfoRequest
         this.addRequestPathElements(taskId.toString());
     }
 
-    getParams(): Object {
-        return {};
-    }
-
     protected parseResponse(response: JsonResponse<TaskInfoJson>): TaskInfo {
         return TaskInfo.fromJson(response.getResult());
     }

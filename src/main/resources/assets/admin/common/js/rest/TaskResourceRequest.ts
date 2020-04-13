@@ -9,7 +9,7 @@ import {TaskState} from '../task/TaskState';
 import {GetTaskInfoRequest} from '../task/GetTaskInfoRequest';
 import {DefaultErrorHandler} from '../DefaultErrorHandler';
 
-export class TaskWaitResourceRequest<PARSED_TYPE> extends ResourceRequest<PARSED_TYPE> {
+export class TaskResourceRequest<PARSED_TYPE> extends ResourceRequest<PARSED_TYPE> {
 
     private taskHandler: (event: TaskEvent) => void;
 
@@ -18,11 +18,11 @@ export class TaskWaitResourceRequest<PARSED_TYPE> extends ResourceRequest<PARSED
     sendAndParse(): Q.Promise<PARSED_TYPE> {
         return this.send().then((response: JsonResponse<TaskIdJson>) => {
             const taskId: TaskId = TaskId.fromJson(response.getResult());
-            return this.waitForTaskToFinish(taskId);
+            return this.getTaskInfoPromise(taskId);
         });
     }
 
-    private waitForTaskToFinish(taskId: TaskId): Q.Promise<PARSED_TYPE> {
+    private getTaskInfoPromise(taskId: TaskId): Q.Promise<PARSED_TYPE> {
         this.taskDeferred = Q.defer<PARSED_TYPE>();
 
         let taskEventsComing: boolean = false; // no events coming might mean that task is finished before we've got here
@@ -33,6 +33,8 @@ export class TaskWaitResourceRequest<PARSED_TYPE> extends ResourceRequest<PARSED
             }
 
             if (event.getEventType() === TaskEventType.REMOVED) {
+                TaskEvent.un(this.taskHandler);
+                this.taskDeferred.resolve(this.handleTaskFinished(event.getTaskInfo()));
                 return;
             }
 
