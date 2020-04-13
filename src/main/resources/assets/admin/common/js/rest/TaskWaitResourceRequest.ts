@@ -6,8 +6,8 @@ import {TaskId} from '../task/TaskId';
 import {TaskEvent, TaskEventType} from '../task/TaskEvent';
 import {TaskInfo} from '../task/TaskInfo';
 import {TaskState} from '../task/TaskState';
-import {GetTaskInfoRequest} from "../task/GetTaskInfoRequest";
-import {DefaultErrorHandler} from "../DefaultErrorHandler";
+import {GetTaskInfoRequest} from '../task/GetTaskInfoRequest';
+import {DefaultErrorHandler} from '../DefaultErrorHandler';
 
 export class TaskWaitResourceRequest<PARSED_TYPE> extends ResourceRequest<PARSED_TYPE> {
 
