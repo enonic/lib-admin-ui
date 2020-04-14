@@ -34,7 +34,7 @@ export class Mask
             // Masked element might have been resized on window resize
             ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
                 if (this.isVisible()) {
-                    this.positionOver(this.masked);
+                    this.positionOverMaskedEl();
                 }
             });
         }
@@ -48,22 +48,38 @@ export class Mask
     show() {
         super.show();
         if (this.masked) {
-            this.positionOver(this.masked);
+            this.positionOverMaskedEl();
         }
     }
 
-    private positionOver(masked: Element) {
-        const maskedEl = masked.getEl();
+    private getWrapperEl(): JQuery<HTMLElement> {
+        let wrapperEl: JQuery<HTMLElement> = $(this.getEl().getHTMLElement()).closest('.mask-wrapper');
+        if (wrapperEl.length || !this.masked) {
+            return wrapperEl;
+        }
+
+        wrapperEl = $(this.masked.getHTMLElement());
+
+        while (wrapperEl.length && $(wrapperEl).innerHeight() === 0) {
+            wrapperEl = $(wrapperEl).parent();
+        }
+
+        return wrapperEl;
+    }
+
+    private positionOverMaskedEl() {
+        const maskedEl = this.masked.getEl();
         const maskEl = this.getEl();
         let maskedOffset: { top: number; left: number };
-        const wrapperEl = $(maskEl.getHTMLElement()).closest('.mask-wrapper');
+        const wrapperEl = this.getWrapperEl();
         let isMaskedPositioned = maskedEl.getPosition() !== 'static';
+        let isOutsideMaskedElement = true;
         let maskedDimensions: { width: string; height: string } = {
-            width: maskedEl.getWidthWithBorder() + 'px',
+            width: wrapperEl.innerWidth() + 'px',
             height: (wrapperEl.length ? wrapperEl.innerHeight() : maskedEl.getHeightWithBorder()) + 'px'
         };
 
-        if (masked.contains(this) && isMaskedPositioned) {
+        if (this.masked.contains(this) && isMaskedPositioned) {
             // mask is inside masked element & it is positioned
             maskedOffset = {
                 top: 0,
@@ -82,25 +98,28 @@ export class Mask
             let maskParent = maskEl.getOffsetParent();
 
             maskedOffset = maskedEl.getOffsetToParent();
+            isOutsideMaskedElement = (maskedParent !== maskParent);
 
-            if (maskedParent !== maskParent) {
+            if (isOutsideMaskedElement) {
                 // they have different offset parents so calc the difference
                 let maskedParentOffset = new ElementHelper(maskedParent).getOffset();
                 let maskParentOffset = new ElementHelper(maskParent).getOffset();
 
                 maskedOffset.left = maskedOffset.left + (maskedParentOffset.left - maskParentOffset.left);
                 maskedOffset.top = maskedOffset.top + (maskedParentOffset.top - maskParentOffset.top);
-            }
 
-            if (!isMaskedPositioned) {
-                // account for margins if masked is positioned statically
-                maskedOffset.top += maskedEl.getMarginTop();
-                maskedOffset.left += maskedEl.getMarginLeft();
+                if (!isMaskedPositioned) {
+                    // account for margins if masked is positioned statically
+                    maskedOffset.top += maskedEl.getMarginTop();
+                    maskedOffset.left += maskedEl.getMarginLeft();
+                }
             }
         }
 
-        this.getEl().setTopPx(wrapperEl.length ? wrapperEl.position().top : Math.max(maskedOffset.top, 0)).setLeftPx(
-            wrapperEl.length ? wrapperEl.position().left : maskedOffset.left).setWidth(maskedDimensions.width).setHeight(
-            maskedDimensions.height);
+        this.getEl()
+            .setTopPx(isOutsideMaskedElement ? Math.max(maskedOffset.top, 0) : wrapperEl.position().top)
+            .setLeftPx(isOutsideMaskedElement ? maskedOffset.left : wrapperEl.position().left)
+            .setWidth(maskedDimensions.width)
+            .setHeight(maskedDimensions.height);
     }
 }
