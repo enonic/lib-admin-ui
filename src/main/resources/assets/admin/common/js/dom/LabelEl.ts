@@ -7,8 +7,12 @@ export class LabelEl
         super(new NewElementBuilder().setTagName('label').setClassName(className));
         this.setValue(value);
         if (forElement) {
-            this.getEl().setAttribute('for', forElement.getId());
+            this.setForElement(forElement);
         }
+    }
+
+    setForElement(forElement: Element) {
+        this.getEl().setAttribute('for', forElement.getId());
     }
 
     setValue(value: string) {

@@ -15,7 +15,7 @@ import {ContentSummary} from '../../../content/ContentSummary';
 import {FormEditEvent} from '../../../content/event/FormEditEvent';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {FormInputEl} from '../../../dom/FormInputEl';
-import {RadioButton} from '../../../ui/RadioGroup';
+import {RadioButton} from '../../../ui/RadioButton';
 import {ValueTypeString} from '../../../data/ValueTypeString';
 import {BrowserHelper} from '../../../BrowserHelper';
 import {Element} from '../../../dom/Element';
@@ -353,7 +353,12 @@ export class FormOptionSetOptionView
     private makeSelectionRadioButton(): RadioButton {
         const selectedProperty = this.getSelectedOptionsArray().get(0);
         const checked = !!selectedProperty && selectedProperty.getString() === this.getName();
-        const button = new RadioButton(this.formOptionSetOption.getLabel(), '', this.getParent().getEl().getId(), checked);
+        const button = new RadioButton({
+            label: this.formOptionSetOption.getLabel(),
+            value: '',
+            name: this.getParent().getEl().getId(),
+            checked,
+        });
 
         button.onChange(() => {
             let selectedProp = this.getSelectedOptionsArray().get(0);
