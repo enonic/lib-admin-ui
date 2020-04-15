@@ -83,13 +83,17 @@ export class RadioButton
         return this.radio.getName();
     }
 
-    public isChecked(): boolean {
+    isChecked(): boolean {
         return super.getValue() === 'true';
     }
 
-    public setChecked(checked: boolean, silent?: boolean): RadioButton {
+    setChecked(checked: boolean, silent?: boolean): RadioButton {
         super.setValue(String(checked), silent);
         return this;
+    }
+
+    setDisabled(disabled: boolean) {
+        this.radio.getEl().setDisabled(disabled);
     }
 
     giveFocus(): boolean {

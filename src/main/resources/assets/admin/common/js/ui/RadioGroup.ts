@@ -28,11 +28,12 @@ export class RadioGroup
         return this;
     }
 
-    public addOption(value: string, label: RadioButtonLabel) {
+    public addOption(value: string, label: RadioButtonLabel): RadioButton {
         const checked = value === this.getOriginalValue();
         const radio = this.createRadioButton({label, value, checked, name: this.groupName});
         this.options.push(radio);
         this.appendChild(radio);
+        return radio;
     }
 
     protected createRadioButton(config: RadioButtonConfig): RadioButton {
