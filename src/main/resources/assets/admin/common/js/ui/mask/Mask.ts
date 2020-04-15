@@ -38,88 +38,83 @@ export class Mask
                 }
             });
         }
-        Body.get().appendChild(this);
     }
 
     setRemoveWhenMaskedRemoved(value: boolean) {
         this.removeWhenMaskedRemoved = value;
     }
 
+    hide() {
+        super.hide();
+
+        if (Body.get().contains(this)) {
+            this.remove();
+        }
+    }
+
     show() {
+        Body.get().appendChild(this);
+
         super.show();
+
         if (this.masked) {
-            this.positionOverMaskedEl();
+            if (this.masked.isRendered()) {
+                this.positionOverMaskedEl();
+            } else {
+                this.masked.onRendered(() => this.positionOverMaskedEl());
+            }
         }
     }
 
     private getWrapperEl(): JQuery<HTMLElement> {
         let wrapperEl: JQuery<HTMLElement> = $(this.getEl().getHTMLElement()).closest('.mask-wrapper');
-        if (wrapperEl.length || !this.masked) {
+        if (wrapperEl.length) {
             return wrapperEl;
         }
 
-        wrapperEl = $(this.masked.getHTMLElement());
+        if (!this.masked) {
+            return $(this.getEl().getOffsetParent());
+        }
+
+        const maskedEl = $(this.masked.getHTMLElement());
+        wrapperEl = maskedEl;
 
         while (wrapperEl.length && $(wrapperEl).innerHeight() === 0) {
             wrapperEl = $(wrapperEl).parent();
         }
 
-        return wrapperEl;
+        if (wrapperEl.length) {
+            return wrapperEl;
+        }
+
+        return maskedEl;
+    }
+
+    private maskAndWrapperHaveEqualOffset(wrapperEl: JQuery<HTMLElement>): boolean {
+        const offsetParentOfMask = this.getEl().getOffsetParent();
+        const offsetParentOfMaskWrapper = wrapperEl.offsetParent()[0];
+
+        return offsetParentOfMask === offsetParentOfMaskWrapper;
     }
 
     private positionOverMaskedEl() {
-        const maskedEl = this.masked.getEl();
-        const maskEl = this.getEl();
-        let maskedOffset: { top: number; left: number };
-        const wrapperEl = this.getWrapperEl();
-        let isMaskedPositioned = maskedEl.getPosition() !== 'static';
-        let isOutsideMaskedElement = true;
-        let maskedDimensions: { width: string; height: string } = {
-            width: wrapperEl.innerWidth() + 'px',
-            height: (wrapperEl.length ? wrapperEl.innerHeight() : maskedEl.getHeightWithBorder()) + 'px'
+        const maskedEl = this.getWrapperEl();
+
+        const maskDimensions: { width: string; height: string } = {
+            width: maskedEl.width() + 'px',
+            height: maskedEl.height() + 'px'
         };
 
-        if (this.masked.contains(this) && isMaskedPositioned) {
-            // mask is inside masked element & it is positioned
-            maskedOffset = {
-                top: 0,
-                left: 0
-            };
+        let maskOffset: { top: number; left: number } = maskedEl.position();
 
-            if (maskedEl.getPosition() === 'absolute') {
-                maskedDimensions = {
-                    width: '100%',
-                    height: '100%'
-                };
-            }
-        } else {
-            // mask is outside masked element
-            let maskedParent = wrapperEl.length ? wrapperEl[0] : maskedEl.getOffsetParent();
-            let maskParent = maskEl.getOffsetParent();
-
-            maskedOffset = maskedEl.getOffsetToParent();
-            isOutsideMaskedElement = (maskedParent !== maskParent);
-
-            if (isOutsideMaskedElement) {
-                // they have different offset parents so calc the difference
-                let maskedParentOffset = new ElementHelper(maskedParent).getOffset();
-                let maskParentOffset = new ElementHelper(maskParent).getOffset();
-
-                maskedOffset.left = maskedOffset.left + (maskedParentOffset.left - maskParentOffset.left);
-                maskedOffset.top = maskedOffset.top + (maskedParentOffset.top - maskParentOffset.top);
-
-                if (!isMaskedPositioned) {
-                    // account for margins if masked is positioned statically
-                    maskedOffset.top += maskedEl.getMarginTop();
-                    maskedOffset.left += maskedEl.getMarginLeft();
-                }
-            }
+        if (!this.maskAndWrapperHaveEqualOffset(maskedEl)) {
+            maskOffset = maskedEl.offset();
         }
 
         this.getEl()
-            .setTopPx(isOutsideMaskedElement ? Math.max(maskedOffset.top, 0) : wrapperEl.position().top)
-            .setLeftPx(isOutsideMaskedElement ? maskedOffset.left : wrapperEl.position().left)
-            .setWidth(maskedDimensions.width)
-            .setHeight(maskedDimensions.height);
+            .setTopPx(maskOffset.top)
+            .setLeftPx(maskOffset.left)
+            .setWidth(maskDimensions.width)
+            .setHeight(maskDimensions.height);
     }
 }
