@@ -1,25 +1,18 @@
-import * as Q from 'q';
 import {PropertyTree} from '../../data/PropertyTree';
 import {MacroKey} from '../MacroKey';
-import {Path} from '../../rest/Path';
 import {JsonResponse} from '../../rest/JsonResponse';
 import {PreviewRequest} from './PreviewRequest';
 import {MacroPreviewStringJson} from './MacroPreviewJson';
 
 export class GetPreviewStringRequest
-    extends PreviewRequest<MacroPreviewStringJson, string> {
+    extends PreviewRequest<string> {
 
     constructor(data: PropertyTree, macroKey: MacroKey) {
         super(data, macroKey);
+        this.addRequestPathElements('previewString');
     }
 
-    getRequestPath(): Path {
-        return Path.fromParent(super.getResourcePath(), 'previewString');
-    }
-
-    sendAndParse(): Q.Promise<string> {
-        return this.send().then((response: JsonResponse<MacroPreviewStringJson>) => {
-            return response.getResult().macro;
-        });
+    protected parseResponse(response: JsonResponse<MacroPreviewStringJson>): string {
+        return response.getResult().macro;
     }
 }

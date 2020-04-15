@@ -13,7 +13,7 @@ enum LoaderStatus {
     PRE_LOADED
 }
 
-export class BaseLoader<JSON, OBJECT> {
+export class BaseLoader<OBJECT> {
 
     protected request: HttpRequest<OBJECT[]>;
 
@@ -72,7 +72,7 @@ export class BaseLoader<JSON, OBJECT> {
         return this.status === LoaderStatus.PRE_LOADED;
     }
 
-    setComparator(comparator: Comparator<OBJECT>): BaseLoader<JSON, OBJECT> {
+    setComparator(comparator: Comparator<OBJECT>): BaseLoader<OBJECT> {
         this.comparator = comparator;
         return this;
     }

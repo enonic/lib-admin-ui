@@ -3,8 +3,8 @@ import {MacroKey} from '../MacroKey';
 import {MacroResourceRequest} from './MacroResourceRequest';
 import {HttpMethod} from '../../rest/HttpMethod';
 
-export class PreviewRequest<JSON_TYPE, PARSED_TYPE>
-    extends MacroResourceRequest<JSON_TYPE, PARSED_TYPE> {
+export class PreviewRequest<PARSED_TYPE>
+    extends MacroResourceRequest<PARSED_TYPE> {
 
     protected data: PropertyTree;
 

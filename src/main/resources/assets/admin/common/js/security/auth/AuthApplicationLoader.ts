@@ -1,11 +1,10 @@
 import * as Q from 'q';
 import {BaseLoader} from '../../util/loader/BaseLoader';
-import {ApplicationListResult} from '../../application/ApplicationListResult';
 import {Application} from '../../application/Application';
 import {ListIdProviderApplicationsRequest} from '../../application/ListIdProviderApplicationsRequest';
 
 export class AuthApplicationLoader
-    extends BaseLoader<ApplicationListResult, Application> {
+    extends BaseLoader<Application> {
 
     constructor() {
         super(new ListIdProviderApplicationsRequest());

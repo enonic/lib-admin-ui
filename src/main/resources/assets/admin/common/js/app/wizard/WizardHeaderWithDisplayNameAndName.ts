@@ -123,7 +123,8 @@ export class WizardHeaderWithDisplayNameAndName
         this.displayNameEl.resetBaseValues();
     }
 
-    initNames(displayName: string, name: string, forceDisplayNameProgrammaticallySet: boolean, ignoreDirtyFlag: boolean = true) {
+    // tslint:disable-next-line:max-line-length
+    initNames(displayName: string, name: string, forceDisplayNameProgrammaticallySet: boolean, ignoreDirtyFlag: boolean = true, silent: boolean = false) {
 
         if (!ignoreDirtyFlag) {
             if (this.displayNameEl.isDirty()) {
@@ -134,9 +135,9 @@ export class WizardHeaderWithDisplayNameAndName
 
         this.autoGenerateName = this.checkAutoGenerateName(name, displayName);
 
-        this.displayNameEl.setValue(displayName);
+        this.displayNameEl.setValue(displayName, silent);
         if (name != null) {
-            this.nameEl.setValue(name);
+            this.nameEl.setValue(name, silent);
         } else {
             this.nameEl.setValue(this.generateName(displayName));
         }

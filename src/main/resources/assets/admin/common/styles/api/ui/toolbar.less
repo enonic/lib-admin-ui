@@ -1,4 +1,4 @@
-@toolbar-height: 41px;
+@toolbar-height: 40px;
 
 .toolbar-button() {
   .menu-action-button();
@@ -50,7 +50,7 @@
   }
 
   .progress-bar {
-    height: 40px;
+    height: @toolbar-height;
     min-width: 167px; // Width of the Publish menu button
     background-color: @form-button-bg-disabled;
 
@@ -63,7 +63,7 @@
       top: 0;
       left: 0;
       right: 0;
-      line-height: 40px;
+      line-height: @toolbar-height;
       color: @admin-white;
       font-size: 14px;
       font-family: @admin-font-family;
@@ -71,7 +71,7 @@
     }
 
     .progress-label {
-      line-height: 40px;
+      line-height: @toolbar-height;
     }
 
     .progress-indicator {

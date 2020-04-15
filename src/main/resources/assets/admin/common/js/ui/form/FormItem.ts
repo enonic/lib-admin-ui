@@ -1,12 +1,12 @@
 import {DivEl} from '../../dom/DivEl';
 import {LabelEl} from '../../dom/LabelEl';
 import {FormItemEl} from '../../dom/FormItemEl';
-import {SpanEl} from '../../dom/SpanEl';
 import {StringHelper} from '../../util/StringHelper';
 import {FormInputEl} from '../../dom/FormInputEl';
 import {Validators} from './Validators';
 import {ValidationError, ValidationResult} from './ValidationResult';
 import {ValidityChangedEvent} from '../../ValidityChangedEvent';
+import {ValidationRecordingViewer} from '../../form/ValidationRecordingViewer';
 
 export class FormItem
     extends DivEl {
@@ -15,8 +15,8 @@ export class FormItem
 
     private label: LabelEl;
     private input: FormItemEl;
-    private error: SpanEl;
     private validator: (input: FormItemEl) => string;
+    private validationMessage: string;
 
     private focusListeners: { (event: FocusEvent): void }[] = [];
 
@@ -24,8 +24,6 @@ export class FormItem
 
     constructor(builder: FormItemBuilder) {
         super('input-view');
-        this.error = new SpanEl('error');
-        this.appendChild(this.error);
 
         this.input = builder.getInput();
         this.input.onFocus((event: FocusEvent) => {
@@ -47,6 +45,12 @@ export class FormItem
 
         if (builder.getValidator()) {
             this.validator = builder.getValidator();
+
+            const validationRecordingViewer = new ValidationRecordingViewer();
+
+            this.appendChild(validationRecordingViewer);
+            this.onValidityChanged(() => validationRecordingViewer.setError(this.getError()));
+
         }
     }
 
@@ -79,31 +83,33 @@ export class FormItem
     }
 
     validate(validationResult: ValidationResult, markInvalid?: boolean) {
-        if (this.validator) {
-            let validationMessage = this.validator(this.input);
+        if (!this.validator) {
+            return;
+        }
 
+        let validationMessage = this.validator(this.input);
+
+        if (validationMessage) {
+            validationResult.addError(new ValidationError(this, validationMessage));
+        }
+        let validityChanged;
+        if (markInvalid) {
             if (validationMessage) {
-                validationResult.addError(new ValidationError(this, validationMessage));
+                this.addClass(FormItem.INVALID_CLASS);
+                validityChanged = (validationMessage !== this.getError());
+            } else {
+                this.removeClass(FormItem.INVALID_CLASS);
+                validityChanged = !StringHelper.isBlank(this.getError());
             }
-            if (markInvalid) {
-                let validityChanged = false;
-                if (validationMessage) {
-                    this.addClass(FormItem.INVALID_CLASS);
-                    validityChanged = (validationMessage !== this.getError());
-                } else {
-                    this.removeClass(FormItem.INVALID_CLASS);
-                    validityChanged = !StringHelper.isBlank(this.getError());
-                }
-                this.error.setHtml(validationMessage || StringHelper.EMPTY_STRING);
-                if (validityChanged) {
-                    this.notifyValidityChanged(StringHelper.isBlank(validationMessage));
-                }
-            }
+        }
+        this.validationMessage = validationMessage;
+        if (validityChanged) {
+            this.notifyValidityChanged(StringHelper.isBlank(this.validationMessage));
         }
     }
 
     getError(): string {
-        return this.error.getHtml();
+        return this.validationMessage;
     }
 
     onValidityChanged(listener: (event: ValidityChangedEvent) => void) {

@@ -1,17 +1,11 @@
 import {ResourceRequest} from '../rest/ResourceRequest';
-import {Path} from '../rest/Path';
 
-export class SecurityResourceRequest<JSON_TYPE, PARSED_TYPE>
-    extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
-
-    private resourcePath: Path;
+export class SecurityResourceRequest<PARSED_TYPE>
+    extends ResourceRequest<PARSED_TYPE> {
 
     constructor() {
         super();
-        this.resourcePath = Path.fromParent(super.getRestPath(), 'security');
+        this.addRequestPathElements('security');
     }
 
-    getResourcePath(): Path {
-        return this.resourcePath;
-    }
 }

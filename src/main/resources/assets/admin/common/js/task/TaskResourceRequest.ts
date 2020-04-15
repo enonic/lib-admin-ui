@@ -1,17 +1,11 @@
 import {ResourceRequest} from '../rest/ResourceRequest';
-import {Path} from '../rest/Path';
 
-export abstract class TaskResourceRequest<JSON_TYPE, PARSED_TYPE>
-    extends ResourceRequest<JSON_TYPE, PARSED_TYPE> {
-
-    private resourcePath: Path;
+export abstract class TaskResourceRequest<PARSED_TYPE>
+    extends ResourceRequest<PARSED_TYPE> {
 
     constructor() {
         super();
-        this.resourcePath = Path.fromParent(super.getRestPath(), 'tasks');
+        this.addRequestPathElements('tasks');
     }
 
-    getResourcePath(): Path {
-        return this.resourcePath;
-    }
 }

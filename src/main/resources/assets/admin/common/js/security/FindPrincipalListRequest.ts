@@ -1,14 +1,13 @@
 import * as Q from 'q';
 import {SecurityResourceRequest} from './SecurityResourceRequest';
 import {FindPrincipalsRequest} from './FindPrincipalsRequest';
-import {PrincipalListJson} from './PrincipalListJson';
 import {FindPrincipalsResult} from './FindPrincipalsResult';
 import {Principal} from './Principal';
 import {IdProviderKey} from './IdProviderKey';
 import {PrincipalType} from './PrincipalType';
 
 export class FindPrincipalListRequest
-    extends SecurityResourceRequest<PrincipalListJson, Principal[]> {
+    extends SecurityResourceRequest<Principal[]> {
 
     private request: FindPrincipalsRequest;
 
@@ -23,17 +22,20 @@ export class FindPrincipalListRequest
 
     sendAndParse(): Q.Promise<Principal[]> {
         return this.request.sendAndParse().then((result: FindPrincipalsResult) => {
-
-            if (this.getFrom() === 0) {
-                this.results = [];
-            }
-            this.setFrom(this.getFrom() + result.getHits());
-            this.loaded = this.getFrom() >= result.getTotalHits();
-
-            this.results = this.results.concat(result.getPrincipals());
-
-            return this.results;
+            return this.doParseResponse(result);
         });
+    }
+
+    private doParseResponse(result: FindPrincipalsResult): Principal[] {
+        if (this.getFrom() === 0) {
+            this.results = [];
+        }
+        this.setFrom(this.getFrom() + result.getHits());
+        this.loaded = this.getFrom() >= result.getTotalHits();
+
+        this.results = this.results.concat(result.getPrincipals());
+
+        return this.results;
     }
 
     isPartiallyLoaded(): boolean {

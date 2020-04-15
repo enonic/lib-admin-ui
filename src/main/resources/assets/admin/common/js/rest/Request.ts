@@ -1,11 +1,10 @@
 import * as Q from 'q';
 import {AccessDeniedException} from '../AccessDeniedException';
 import {Path} from './Path';
-import {JsonResponse} from './JsonResponse';
 import {RequestError} from './RequestError';
 import {HttpMethod} from './HttpMethod';
 
-export abstract class JsonRequest {
+export abstract class Request {
 
     protected path: Path;
 
@@ -21,30 +20,30 @@ export abstract class JsonRequest {
         this.method = method;
     }
 
-    setPath(value: Path): JsonRequest {
+    setPath(value: Path): Request {
         this.path = value;
         return this;
     }
 
-    setParams(params: Object): JsonRequest {
+    setParams(params: Object): Request {
         this.params = params;
         return this;
     }
 
-    setTimeout(timeoutMillis: number): JsonRequest {
+    setTimeout(timeoutMillis: number): Request {
         this.timeoutMillis = timeoutMillis;
         return this;
     }
 
-    handleReadyStateChanged(deferred: Q.Deferred<JsonResponse<any>>): JsonRequest {
+    handleReadyStateChanged(deferred: Q.Deferred<any>): Request {
         this.request.onreadystatechange = () => {
             if (this.request.readyState === 4) {
                 let errorJson = null;
 
                 if (this.request.status === 204) {
-                    deferred.resolve(new JsonResponse(null));
+                    deferred.resolve(null);
                 } else if (this.request.status >= 200 && this.request.status < 300) {
-                    deferred.resolve(new JsonResponse(this.request.response));
+                    deferred.resolve(this.request.response);
                 } else if (this.request.status === 403) {
                     deferred.reject(new AccessDeniedException('Access denied'));
                 } else {

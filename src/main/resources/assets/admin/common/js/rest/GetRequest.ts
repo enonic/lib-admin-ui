@@ -1,10 +1,10 @@
-import {JsonRequest} from './JsonRequest';
+import {Request} from './Request';
 import {BrowserHelper} from '../BrowserHelper';
 import {HttpMethod} from './HttpMethod';
 import {UriHelper} from '../util/UriHelper';
 
 export class GetRequest
-    extends JsonRequest {
+    extends Request {
 
     constructor() {
         super(HttpMethod.GET);

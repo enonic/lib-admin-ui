@@ -1,6 +1,4 @@
-import * as Q from 'q';
 import {ApplicationKey} from '../../application/ApplicationKey';
-import {Path} from '../../rest/Path';
 import {JsonResponse} from '../../rest/JsonResponse';
 import {MacroResourceRequest} from './MacroResourceRequest';
 import {MacrosJson} from './MacrosJson';
@@ -8,13 +6,14 @@ import {MacroDescriptor} from '../MacroDescriptor';
 import {HttpMethod} from '../../rest/HttpMethod';
 
 export class GetMacrosRequest
-    extends MacroResourceRequest<MacrosJson, MacroDescriptor[]> {
+    extends MacroResourceRequest<MacroDescriptor[]> {
 
     private applicationKeys: ApplicationKey[];
 
     constructor() {
         super();
         this.setMethod(HttpMethod.POST);
+        this.addRequestPathElements('getByApps');
     }
 
     setApplicationKeys(applicationKeys: ApplicationKey[]) {
@@ -27,21 +26,17 @@ export class GetMacrosRequest
         };
     }
 
-    getRequestPath(): Path {
-        return Path.fromParent(super.getResourcePath(), 'getByApps');
-    }
+    private toMacroDescriptors(macrosJson: MacrosJson): MacroDescriptor[] {
+        const result: MacroDescriptor[] = [];
 
-    sendAndParse(): Q.Promise<MacroDescriptor[]> {
-        return this.send().then((response: JsonResponse<MacrosJson>) => {
-            return this.toMacroDescriptors(response.getResult());
-        });
-    }
-
-    toMacroDescriptors(macrosJson: MacrosJson): MacroDescriptor[] {
-        let result: MacroDescriptor[] = [];
         for (let i = 0; i < macrosJson.macros.length; i++) {
             result.push(MacroDescriptor.fromJson(macrosJson.macros[i]));
         }
+
         return result;
+    }
+
+    protected parseResponse(response: JsonResponse<MacrosJson>): MacroDescriptor[] {
+        return this.toMacroDescriptors(response.getResult());
     }
 }

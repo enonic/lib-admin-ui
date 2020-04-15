@@ -4,7 +4,7 @@ import {PostLoader} from '../../util/loader/PostLoader';
 import {Option} from './Option';
 
 export abstract class OptionDataLoader<DATA>
-    extends PostLoader<JSON, DATA> {
+    extends PostLoader<DATA> {
 
     abstract fetch(node: TreeNode<Option<DATA>>): Q.Promise<DATA>;
 
