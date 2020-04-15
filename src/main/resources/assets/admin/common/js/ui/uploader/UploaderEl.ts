@@ -55,6 +55,12 @@ export interface UploaderElConfig {
     hideDefaultDropZone?: boolean;
 }
 
+export interface UploaderItems {
+    existingItems: Element[];
+
+    newItems: Element[];
+}
+
 export class UploaderEl<MODEL extends Equitable>
     extends FormInputEl {
 
@@ -131,11 +137,11 @@ export class UploaderEl<MODEL extends Equitable>
         return this.config.name;
     }
 
-    doGetValue(): string {
+    protected doGetValue(): string {
         return this.value;
     }
 
-    doSetValue(value: string): UploaderEl<MODEL> {
+    protected doSetValue(value: string): UploaderEl<MODEL> {
         if (UploaderEl.debug) {
             console.log('Setting uploader value', value, this);
         }
@@ -152,6 +158,15 @@ export class UploaderEl<MODEL extends Equitable>
             return this;
         }
 
+        const uploaderItems: UploaderItems = this.getItems(value);
+
+        this.removeAllChildrenExceptGiven(uploaderItems.existingItems);
+        this.appendNewItems(uploaderItems.newItems);
+
+        return this;
+    }
+
+    protected getItems(value: string): UploaderItems {
         const newItemsToAppend: Element[] = [];
         const existingItems: Element[] = [];
 
@@ -167,13 +182,10 @@ export class UploaderEl<MODEL extends Equitable>
             }
         });
 
-        this.removeAllChildrenExceptGiven(existingItems);
-        this.appendNewItems(newItemsToAppend);
-
-        return this;
+        return {existingItems: existingItems, newItems: newItemsToAppend};
     }
 
-    parseValues(jsonString: string): string[] {
+    protected parseValues(jsonString: string): string[] {
         try {
             const o = JSON.parse(jsonString);
 
