@@ -18,7 +18,6 @@ import {AppHelper} from '../../util/AppHelper';
 import {ToggleFilterPanelAction} from './action/ToggleFilterPanelAction';
 import {BrowseItemPanel} from './BrowseItemPanel';
 import {BrowseItemsChanges} from './BrowseItemsChanges';
-import {SelectionChange} from '../../ui/treegrid/SelectionChange';
 
 export class BrowsePanel<M extends Equitable>
     extends Panel {
@@ -93,19 +92,19 @@ export class BrowsePanel<M extends Equitable>
     }
 
     private initTreeGridListeners() {
-        const selectionChangedHandler = (change: SelectionChange<Object>) => {
-            const fullSelection: TreeNode<any>[] = this.treeGrid.getRoot().getFullSelection();
-            const currentSelection: TreeNode<any>[] = this.treeGrid.getRoot().getCurrentSelection();
+        const selectionChangedHandler = () => {
+            const totalFullSelected: number = this.treeGrid.getTotalFullSelected();
+            const totalCurrentSelected: number = this.treeGrid.getTotalCurrentSelected();
 
             if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
-                this.updateSelectionModeShownItems(currentSelection, fullSelection);
+                this.updateSelectionModeShownItems(totalCurrentSelected, totalFullSelected);
             }
 
-            const browseItems: BrowseItem<M>[] = this.treeNodesToBrowseItems(fullSelection);
+            const browseItems: BrowseItem<M>[] = this.treeNodesToBrowseItems(this.treeGrid.getFullSelection());
             const changes: BrowseItemsChanges<M> = this.getBrowseItemPanel().setItems(browseItems);
 
-            if (this.treeGrid.hasHighlightedNode() && ((fullSelection.length === 0 && changes.getRemoved().length === 1) ||
-                                (fullSelection.length === 1 && changes.getAdded().length === 1))) {
+            if (this.treeGrid.hasHighlightedNode() && ((totalFullSelected === 0 && changes.getRemoved().length === 1) ||
+                (totalFullSelected === 1 && changes.getAdded().length === 1))) {
                 return;
             }
 
@@ -393,12 +392,12 @@ export class BrowsePanel<M extends Equitable>
         }
     }
 
-    private updateSelectionModeShownItems(currentSelection: TreeNode<Object>[], fullSelection: TreeNode<Object>[]) {
-        if (currentSelection.length === fullSelection.length) { // to filter unwanted selection change events
-            let amountOfNodesShown: number = this.treeGrid.getRoot().getCurrentRoot().treeToList().length;
-            if (currentSelection.length === 0 || amountOfNodesShown === 0) { // all items deselected
+    private updateSelectionModeShownItems(totalCurrentSelected: number, totalFullSelected: number) {
+        if (totalCurrentSelected === totalFullSelected) { // to filter unwanted selection change events
+            const amountOfNodesShown: number = this.treeGrid.getCurrentTotal();
+            if (totalCurrentSelected === 0 || amountOfNodesShown === 0) { // all items deselected
                 this.treeGrid.getToolbar().getSelectionPanelToggler().setActive(false);
-            } else if (amountOfNodesShown > fullSelection.length) { // some item/items deselected
+            } else if (amountOfNodesShown > totalFullSelected) { // some item/items deselected
                 this.treeGrid.filter(this.treeGrid.getSelectedDataList());
             }
         }

@@ -11,6 +11,7 @@ import {GridColumn} from './GridColumn';
 import {GridOnClickData} from './GridOnClickData';
 import {DataView} from './DataView';
 import {EventBus} from '../../event/EventBus';
+import {GridSelectionHelper} from './GridSelectionHelper';
 
 export class Grid<T extends Slick.SlickData>
     extends DivEl {
@@ -312,9 +313,7 @@ export class Grid<T extends Slick.SlickData>
 
     moveSelectedUp() {
         if (this.slickGrid.getDataLength() > 0) {
-            let selected: number[] = this.getSelectedRows().sort((a, b) => {
-                return a - b;
-            });
+            let selected: number[] = this.getSelectedRows();
             let row = selected.length >= 1
                       ? selected[0] - 1
                       : -1;
@@ -339,9 +338,7 @@ export class Grid<T extends Slick.SlickData>
 
     moveSelectedDown() {
         if (this.slickGrid.getDataLength() > 0) {
-            let selected: number[] = this.getSelectedRows().sort((a, b) => {
-                return a - b;
-            });
+            let selected: number[] = this.getSelectedRows();
             let row = selected.length >= 1
                       ? Math.min(selected[selected.length - 1] + 1, this.slickGrid.getDataLength() - 1)
                       : 0;
@@ -354,57 +351,26 @@ export class Grid<T extends Slick.SlickData>
         return -1;
     }
 
-    addSelectedUp(startIndex?: number) {
-        let row = -1;
-        if (this.slickGrid.getDataLength() > 0) {
-            let selected: number[] = this.getSelectedRows().sort((a, b) => {
-                return a - b;
-            });
-
-            if (selected.length > 0) {
-                let firstSelected = selected[0];
-                if (selected.length > 1 && !isNaN(startIndex) && firstSelected === startIndex) {
-                    row = startIndex;
-                    selected.pop();
-                } else if (firstSelected - 1 >= 0) {
-                    row = selected[0] - 1;
-                    selected.push(row);
-                    selected = selected.sort((a, b) => {
-                        return a - b;
-                    });
-                }
-
-                this.setSelectedRows(selected, true);
-            }
+    addSelectedUp() {
+        if (this.slickGrid.getDataLength() === 0) {
+            return;
         }
-        return row;
+
+        const selected: number[] = this.getSelectedRows();
+
+        this.setSelectedRows(new GridSelectionHelper(selected).addSelectedUp().getSelected(), true);
     }
 
-    addSelectedDown(startIndex?: number): number {
-        let row = -1;
-        if (this.slickGrid.getDataLength() > 0) {
-            let selected: number[] = this.getSelectedRows().sort((a, b) => {
-                return a - b;
-            });
+    addSelectedDown() {
+        const totalItems: number = this.slickGrid.getDataLength();
 
-            if (selected.length > 0) {
-                let lastSelected = selected[selected.length - 1];
-                if (selected.length > 1 && !isNaN(startIndex) && lastSelected === startIndex) {
-                    row = startIndex;
-                    selected.shift();
-                } else if (lastSelected + 1 < this.slickGrid.getDataLength()) {
-                    row = lastSelected + 1;
-                    selected.push(row);
-                }
-
-                this.setSelectedRows(selected, true);
-            } else {
-                row = 0;
-                this.moveSelectedDown();
-            }
+        if (totalItems === 0) {
+            return;
         }
 
-        return row;
+        const selected: number[] = this.getSelectedRows();
+
+        this.setSelectedRows(new GridSelectionHelper(selected).addSelectedDown(totalItems).getSelected(), true);
     }
 
     // Operate with cells
