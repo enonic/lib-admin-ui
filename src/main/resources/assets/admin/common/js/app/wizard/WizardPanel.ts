@@ -61,7 +61,6 @@ export class WizardPanel<EQUITABLE extends Equitable>
     private stepNavigator: WizardStepNavigator;
     private steps: WizardStep[];
     private stepsPanel: WizardStepsPanel;
-;
     private dataLoaded: boolean = false;
     private closedListeners: { (event: WizardClosedEvent): void }[] = [];
     private dataLoadedListeners: { (item: EQUITABLE): void }[] = [];
@@ -448,7 +447,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
                 this.setPersistedItem(persistedItem);
                 this.formState.setIsNew(false);
                 this.updateToolbarActions();
-                return this.postUpdatePersistedItem(persistedItem)
+                return this.postUpdatePersistedItem(persistedItem);
             }).finally(() => {
                 this.saving = false;
             });
@@ -461,9 +460,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
                     this.formState.setIsNew(false);
                     this.updateToolbarActions();
                 }
-                return this.postPersistNewItem(persistedItem).finally(() => {
-                    this.saving = false;
-                });
+                return this.postPersistNewItem(persistedItem);
             }).finally(() => {
                 this.saving = false;
             });
