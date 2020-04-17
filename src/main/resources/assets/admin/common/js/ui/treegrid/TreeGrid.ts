@@ -1284,27 +1284,26 @@ export class TreeGrid<DATA>
 
         if (!this.grid.isRowSelected(data.row) && (this.grid.getSelectedRows().length >= 1 || thereIsHighlightedNode)) {
             if (isMultiSelect) {
-                let firstSelectedRow;
-                let highlightFrom;
-                let highlightTo;
-
-                if (thereIsHighlightedNode) {
-                    const highlightedRow = this.getRowIndexByNode(this.highlightedNode);
-                    highlightFrom = highlightedRow < data.row ? highlightedRow : data.row;
-                    highlightTo = data.row > highlightedRow ? data.row : highlightedRow;
-                } else {
-                    firstSelectedRow = this.grid.getSelectedRows()[0];
-                    highlightFrom = firstSelectedRow < data.row ? firstSelectedRow : data.row;
-                    highlightTo = data.row > firstSelectedRow ? data.row : firstSelectedRow;
-                }
+                const highlightFrom: number =
+                    thereIsHighlightedNode ? this.getRowIndexByNode(this.highlightedNode) : this.grid.getSelectedRows()[0];
+                const highlightTo: number = data.row;
 
                 this.removeHighlighting();
 
-                for (let i = highlightFrom; i <= highlightTo; i++) {
-                    if (!this.grid.isRowSelected(i)) {
-                        this.grid.toggleRow(i);
+                if (highlightFrom > highlightTo) {
+                    for (let i = highlightFrom; i >= highlightTo; i--) {
+                        if (!this.grid.isRowSelected(i)) {
+                            this.grid.toggleRow(i);
+                        }
+                    }
+                } else {
+                    for (let i = highlightFrom; i <= highlightTo; i++) {
+                        if (!this.grid.isRowSelected(i)) {
+                            this.grid.toggleRow(i);
+                        }
                     }
                 }
+
                 event.stopPropagation();
                 event.preventDefault();
                 return;
