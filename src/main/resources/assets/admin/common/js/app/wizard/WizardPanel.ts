@@ -61,7 +61,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
     private stepNavigator: WizardStepNavigator;
     private steps: WizardStep[];
     private stepsPanel: WizardStepsPanel;
-    private isChanged: boolean = true;
+;
     private dataLoaded: boolean = false;
     private closedListeners: { (event: WizardClosedEvent): void }[] = [];
     private dataLoadedListeners: { (item: EQUITABLE): void }[] = [];
@@ -433,7 +433,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
      * Override this method in specific wizard to do proper check.
      */
     hasUnsavedChanges(): boolean {
-        return this.isChanged;
+        return false;
     }
 
     isSaving(): boolean {
@@ -446,28 +446,26 @@ export class WizardPanel<EQUITABLE extends Equitable>
         if (this.isItemPersisted()) {
             return this.updatePersistedItem().then((persistedItem: EQUITABLE) => {
                 this.setPersistedItem(persistedItem);
-                this.isChanged = false;
                 this.formState.setIsNew(false);
                 this.updateToolbarActions();
-                return this.postUpdatePersistedItem(persistedItem).then(item => {
-                    this.saving = false;
-                    return item;
-                });
+                return this.postUpdatePersistedItem(persistedItem)
+            }).finally(() => {
+                this.saving = false;
             });
 
         } else {
             return this.persistNewItem().then((persistedItem: EQUITABLE) => {
                 this.setPersistedItem(persistedItem);
-                this.isChanged = false;
                 // persist new happens before render to init dummy entity and is still considered as new
                 if (this.isRendered()) {
                     this.formState.setIsNew(false);
                     this.updateToolbarActions();
                 }
-                return this.postPersistNewItem(persistedItem).then(item => {
+                return this.postPersistNewItem(persistedItem).finally(() => {
                     this.saving = false;
-                    return item;
                 });
+            }).finally(() => {
+                this.saving = false;
             });
         }
     }
