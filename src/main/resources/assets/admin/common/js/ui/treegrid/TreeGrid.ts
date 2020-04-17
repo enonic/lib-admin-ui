@@ -1758,7 +1758,7 @@ export class TreeGrid<DATA>
                 this.sortNodeChildren(parentNode);
             } else {
                 if (!stashedParentNode) {
-                    this.updateSelectedNode(parentNode);
+                    this.refreshNode(parentNode);
                 }
             }
         }
