@@ -552,8 +552,9 @@ export class TreeGrid<DATA>
         const expandedNodesDataId = rememberExpanded ? this.grid.getDataView().getItems()
             .filter(item => item.isExpanded()).map(item => item.getDataId()) : [];
 
-        const selection = this.root.getCurrentSelection();
-        const highlightedNode = this.highlightedNode;
+        const selection: TreeNode<DATA>[] = this.root.getCurrentSelection();
+        this.root.setCurrentSelection([]);
+        const highlightedNode: TreeNode<DATA> = this.highlightedNode;
 
         this.root.resetCurrentRoot(parentNodeData);
         this.initData([]);
@@ -565,12 +566,12 @@ export class TreeGrid<DATA>
         return this.reloadNode(null, expandedNodesDataId)
             .then(() => {
                 this.root.setCurrentSelection(selection);
-                const root = this.root.getCurrentRoot();
+                const root: TreeNode<DATA> = this.root.getCurrentRoot();
                 this.initData(root.treeToList());
                 this.updateExpanded();
                 if (highlightedNode) {
-                    const dataId = highlightedNode.getDataId();
-                    const updatedHighlightedNode = root.findNode(dataId);
+                    const dataId: string = highlightedNode.getDataId();
+                    const updatedHighlightedNode: TreeNode<DATA> = root.findNode(dataId);
                     if (updatedHighlightedNode) {
                         this.highlightRowByNode(updatedHighlightedNode);
                     } else {
