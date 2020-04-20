@@ -79,6 +79,10 @@ export class TreeGrid<DATA>
 
     private expandedNodesDataIds: string[] = [];
 
+    private hotkeysEnabled: boolean = true;
+
+    private keysBound: boolean = false;
+
     private onAwithModKeyPress = (event: ExtendedKeyboardEvent) => {
         let selected = this.grid.getSelectedRows();
         if (selected.length === this.gridData.getLength()) {
@@ -98,6 +102,7 @@ export class TreeGrid<DATA>
         this.expandAll = builder.isExpandAll();
         this.expandFn = builder.getExpandFn();
         this.quietErrorHandling = builder.getQuietErrorHandling();
+        this.hotkeysEnabled = builder.isHotkeysEnabled();
 
         // root node with undefined item
         this.root = new TreeRoot<DATA>();
@@ -147,7 +152,7 @@ export class TreeGrid<DATA>
         this.idPropertyName = builder.getIdPropertyName();
 
         this.initEventListeners(builder);
-        this.initKeyBindings(builder);
+        this.initKeyBindings();
     }
 
     public hasHighlightedNode(): boolean {
@@ -1059,31 +1064,27 @@ export class TreeGrid<DATA>
         }
     }
 
-    private initKeyBindings(builder: TreeGridBuilder<DATA>) {
-        this.grid.resizeCanvas();
-        if (builder.isHotkeysEnabled()) {
-
-            if (!this.gridOptions.isMultipleSelectionDisabled()) {
-                this.keyBindings = [
-                    new KeyBinding('shift+up', (event: ExtendedKeyboardEvent) => {
-                        this.onSelectRange(event, this.grid.addSelectedUp.bind(this.grid));
-                    }),
-                    new KeyBinding('shift+down', (event: ExtendedKeyboardEvent) => {
-                        this.onSelectRange(event, this.grid.addSelectedDown.bind(this.grid));
-                    })
-                ];
-            }
-
-            this.keyBindings = this.keyBindings.concat([
-                new KeyBinding('up', this.onUpKeyPress.bind(this)),
-                new KeyBinding('down', this.onDownKeyPress.bind(this)),
-                new KeyBinding('left', this.onLeftKeyPress.bind(this)),
-                new KeyBinding('right', this.onRightKeyPress.bind(this)),
-                new KeyBinding('mod+a', this.onAwithModKeyPress.bind(this)),
-                new KeyBinding('space', this.onSpaceKeyPress.bind(this)),
-                new KeyBinding('enter', this.onEnterKeyPress.bind(this))
-            ]);
+    private initKeyBindings() {
+        if (!this.gridOptions.isMultipleSelectionDisabled()) {
+            this.keyBindings = [
+                new KeyBinding('shift+up', (event: ExtendedKeyboardEvent) => {
+                    this.onSelectRange(event, this.grid.addSelectedUp.bind(this.grid));
+                }),
+                new KeyBinding('shift+down', (event: ExtendedKeyboardEvent) => {
+                    this.onSelectRange(event, this.grid.addSelectedDown.bind(this.grid));
+                })
+            ];
         }
+
+        this.keyBindings = this.keyBindings.concat([
+            new KeyBinding('up', this.onUpKeyPress.bind(this)),
+            new KeyBinding('down', this.onDownKeyPress.bind(this)),
+            new KeyBinding('left', this.onLeftKeyPress.bind(this)),
+            new KeyBinding('right', this.onRightKeyPress.bind(this)),
+            new KeyBinding('mod+a', this.onAwithModKeyPress.bind(this)),
+            new KeyBinding('space', this.onSpaceKeyPress.bind(this)),
+            new KeyBinding('enter', this.onEnterKeyPress.bind(this))
+        ]);
     }
 
     private onSelectRange(event: ExtendedKeyboardEvent, navigateFn: Function) {
@@ -1122,26 +1123,16 @@ export class TreeGrid<DATA>
 
         this.grid.onShown(() => {
             this.scrollable = this.queryScrollable();
+            this.bindKeys();
+            this.enablePostLoad(builder);
         });
 
         this.onRendered(() => {
             this.grid.resizeCanvas();
         });
 
-        let keysBound: boolean = false;
-        this.grid.onShown(() => {
-            if (!keysBound) {
-                keysBound = true;
-                this.bindKeys(builder);
-            }
-            this.enablePostLoad(builder);
-        });
-
         this.grid.onHidden(() => {
-            if (keysBound) {
-                keysBound = false;
-                this.unbindKeys(builder);
-            }
+            this.unbindKeys();
             this.disablePostLoad(builder);
         });
 
@@ -1200,21 +1191,36 @@ export class TreeGrid<DATA>
         }
     }
 
-    private bindKeys(_builder: TreeGridBuilder<DATA>) {
-        if (this.keyBindings.length > 0) {
-            KeyBindings.get().shelveBindings(this.keyBindings);
-            KeyBindings.get().bindKeys(this.keyBindings);
-        }
+    enableKeys() {
+        this.hotkeysEnabled = true;
+        this.bindKeys();
     }
 
-    private unbindKeys(builder: TreeGridBuilder<DATA>) {
-        if (this.keyBindings.length > 0 &&
-            this.keyBindings.every((keyBinding) => KeyBindings.get().isActive(keyBinding))) {
-            if (builder.isHotkeysEnabled()) {
-                KeyBindings.get().unbindKeys(this.keyBindings);
-                KeyBindings.get().unshelveBindings(this.keyBindings);
-            }
+    private bindKeys() {
+        if (!this.hotkeysEnabled || this.keysBound) {
+            return;
         }
+
+        this.keysBound = true;
+
+        KeyBindings.get().shelveBindings(this.keyBindings);
+        KeyBindings.get().bindKeys(this.keyBindings);
+    }
+
+    disableKeys() {
+        this.unbindKeys();
+        this.hotkeysEnabled = false;
+    }
+
+    private unbindKeys() {
+        if (!this.hotkeysEnabled || !this.keysBound) {
+            return;
+        }
+
+        this.keysBound = false;
+
+        KeyBindings.get().unbindKeys(this.keyBindings);
+        KeyBindings.get().unshelveBindings(this.keyBindings);
     }
 
     private bindClickEvents(toggleClickEnabled: boolean) {
