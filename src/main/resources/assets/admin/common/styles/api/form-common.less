@@ -17,14 +17,21 @@
 
   &.display-validation-errors {
 
-    .input-view {
+    .input-view.invalid {
+
+      .input-view-error();
+
+      .help-text p {
+        color: @admin-black;
+      }
+    }
+
+
+    .form-item-set-view, .form-option-set-view {
 
       &.invalid {
-        .input-view-error();
 
-        .help-text p {
-          color: @admin-black;
-        }
+        .input-view-error();
       }
     }
 
