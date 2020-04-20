@@ -37,12 +37,8 @@ export class SelectionController
             }
 
             if (this.isChecked() || this.isPartial()) {
-                const isEntireSelectionStashed = this.isEntireSelectionStashed();
                 this.treeGrid.getRoot().clearStashedSelection();
                 this.treeGrid.getGrid().clearSelection();
-                if (isEntireSelectionStashed) {
-                    this.treeGrid.triggerSelectionChangedListeners();
-                }
             } else {
                 this.treeGrid.selectAll();
             }
@@ -54,9 +50,7 @@ export class SelectionController
     }
 
     protected isEntireSelectionStashed(): boolean {
-        const root = this.treeGrid.getRoot();
-        return root.getCurrentSelection().length === 0 &&
-               root.getStashedSelection().length !== 0;
+        return this.treeGrid.getTotalCurrentSelected() === 0 && this.treeGrid.getTotalStashedSelected() !== 0;
     }
 
     protected updateState() {
@@ -83,8 +77,7 @@ export class SelectionController
     }
 
     private isAnySelected(): boolean {
-        const root = this.treeGrid.getRoot();
-        return root.getCurrentSelection().length !== 0 || root.getStashedSelection().length !== 0;
+        return this.treeGrid.getTotalCurrentSelected() !== 0 || this.treeGrid.getTotalStashedSelected() !== 0;
     }
 
     private isAllSelected(): boolean {

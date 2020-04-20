@@ -1,12 +1,5 @@
 import {TreeNode, TreeNodeBuilder} from './TreeNode';
 
-export enum SelectionChangeType {
-    ADDED,
-    REMOVED,
-    MIXED,
-    NONE
-}
-
 export class TreeRoot<DATA> {
 
     private defaultRoot: TreeNode<DATA>;
@@ -14,8 +7,6 @@ export class TreeRoot<DATA> {
     private filteredRoot: TreeNode<DATA>;
 
     private filtered: boolean;
-
-    private selectionChangeType: SelectionChangeType;
 
     private currentSelection: TreeNode<DATA>[];
 
@@ -31,8 +22,6 @@ export class TreeRoot<DATA> {
         this.currentSelection = [];
 
         this.stashedSelection = [];
-
-        this.selectionChangeType = SelectionChangeType.NONE;
     }
 
     getDefaultRoot(): TreeNode<DATA> {
@@ -87,45 +76,14 @@ export class TreeRoot<DATA> {
         this.filtered = filtered;
     }
 
-    getSelectionChangeType(): SelectionChangeType {
-        return this.selectionChangeType;
-    }
-
     getCurrentSelection(): TreeNode<DATA>[] {
         return this.currentSelection;
     }
 
-    calcSelectionChangeType(selection: TreeNode<DATA>[]): SelectionChangeType {
-        const currentIds = this.currentSelection.map((el) => el.getDataId());
-        const selectedIds = selection.map((el) => el.getDataId());
-
-        const contains = (ids: string[], id: string) => ids.indexOf(id) > -1;
-        const addedSelection = selectedIds.some(id => !contains(currentIds, id));
-        const removedSelection = currentIds.some(id => !contains(selectedIds, id));
-
-        if (addedSelection) {
-            if (removedSelection) {
-                return SelectionChangeType.MIXED;
-            }
-            return SelectionChangeType.ADDED;
-        } else if (removedSelection) {
-            return SelectionChangeType.REMOVED;
-        }
-        return SelectionChangeType.NONE;
-    }
-
-    isSelectionChanged(): boolean {
-        return this.selectionChangeType != null && this.selectionChangeType !== SelectionChangeType.NONE;
-    }
-
     setCurrentSelection(selection: TreeNode<DATA>[]) {
-        this.selectionChangeType = this.calcSelectionChangeType(selection);
-
         this.currentSelection = selection;
 
-        if (this.isSelectionChanged()) {
-            this.cleanStashedSelection();
-        }
+        this.cleanStashedSelection();
     }
 
     getStashedSelection(): TreeNode<DATA>[] {
@@ -158,7 +116,6 @@ export class TreeRoot<DATA> {
     }
 
     clearStashedSelection() {
-        this.selectionChangeType = this.stashedSelection.length > 0 ? SelectionChangeType.REMOVED : SelectionChangeType.NONE;
         this.stashedSelection = [];
     }
 
@@ -172,29 +129,15 @@ export class TreeRoot<DATA> {
         this.stashedSelection = this.stashedSelection.filter((el) => {
             return dataIds.indexOf(el.getDataId()) < 0;
         });
-
-        const selectionHasChanged = currentSelectionSize !== this.currentSelection.length ||
-                                    stashedSelectionSize !== this.stashedSelection.length;
-        this.selectionChangeType = selectionHasChanged ? SelectionChangeType.REMOVED : SelectionChangeType.NONE;
-    }
-
-    updateSelection(dataId: string, data: DATA) {
-        this.currentSelection.forEach((el) => {
-            if (el.getDataId() === dataId) { el.setData(data); }
-        });
-        this.stashedSelection.forEach((el) => {
-            if (el.getDataId() === dataId) { el.setData(data); }
-        });
     }
 
     private cleanStashedSelection() {
-        let currentIds = this.currentSelection.map(el => el.getDataId());
-        let stashedIds = this.stashedSelection.map(el => el.getDataId());
+        const currentIds: string[] = this.currentSelection.map(el => el.getDataId());
+        const stashedIds: string[] = this.stashedSelection.map(el => el.getDataId());
 
         this.stashedSelection = this.stashedSelection.filter((value, index) => {
             // remove duplicated nodes and those, that are already in `currentSelection`
-            return (currentIds.indexOf(value.getDataId()) < 0) &&
-                   (stashedIds.indexOf(value.getDataId()) === index);
+            return (currentIds.indexOf(value.getDataId()) < 0) && (stashedIds.indexOf(value.getDataId()) === index);
         });
     }
 }

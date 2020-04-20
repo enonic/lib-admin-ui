@@ -3,7 +3,6 @@ import {i18n} from '../../../util/Messages';
 import {TogglerButton} from '../../button/TogglerButton';
 import {Tooltip} from '../../Tooltip';
 import {TreeGrid} from '../TreeGrid';
-import {TreeNode} from '../TreeNode';
 
 export class SelectionPanelToggler
     extends TogglerButton {
@@ -22,26 +21,27 @@ export class SelectionPanelToggler
 
         this.tooltip = new Tooltip(this, '', 1000);
 
-        treeGrid.onSelectionChanged((_currentSelection: TreeNode<any>[], fullSelection: TreeNode<any>[]) => {
-
-            let oldLabel = this.getLabel();
-            let newLabel = fullSelection.length ? fullSelection.length.toString() : '';
+        treeGrid.onSelectionChanged(() => {
+            const oldLabel: string = this.getLabel();
+            const totalFullSelected: number = treeGrid.getTotalFullSelected();
+            const newLabel: string = totalFullSelected ? totalFullSelected.toString() : '';
 
             if (oldLabel === newLabel) {
                 return;
             }
+
             this.tooltip.setText(this.isActive() ? i18n('field.selection.hide') : i18n('field.selection.show'));
 
             this.removeClass('any-selected');
             this.removeClass(`size-${oldLabel.length}`);
             this.setLabel(newLabel);
+
             if (newLabel !== '') {
                 this.addClass(`size-${newLabel.length}`);
                 this.addClass('updated');
-                const itemCount = fullSelection.length;
-                if (itemCount >= 1) {
+                if (totalFullSelected >= 1) {
                     this.addClass('any-selected');
-                    const description = i18n(`field.item.${itemCount === 1 ? 'single' : 'multiple'}`);
+                    const description = i18n(`field.item.${totalFullSelected === 1 ? 'single' : 'multiple'}`);
                     this.counterDescription.getEl().setAttribute('data-label', description);
                 }
                 setTimeout(() => {

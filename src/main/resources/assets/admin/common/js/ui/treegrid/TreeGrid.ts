@@ -18,7 +18,7 @@ import {SpanEl} from '../../dom/SpanEl';
 import {StringHelper} from '../../util/StringHelper';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
 import {TreeNode, TreeNodeBuilder} from './TreeNode';
-import {SelectionChangeType, TreeRoot} from './TreeRoot';
+import {TreeRoot} from './TreeRoot';
 import {TreeGridBuilder} from './TreeGridBuilder';
 import {DataChangedEvent, DataChangedType} from './DataChangedEvent';
 import {TreeGridToolbar} from './TreeGridToolbar';
@@ -154,6 +154,10 @@ export class TreeGrid<DATA>
         return this.highlightedNode != null;
     }
 
+    public getHighlightedNode(): TreeNode<DATA> {
+        return this.highlightedNode;
+    }
+
     public getFirstSelectedOrHighlightedNode(): TreeNode<DATA> {
         return this.highlightedNode ? this.highlightedNode : this.getRoot().getFullSelection()[0];
     }
@@ -276,6 +280,34 @@ export class TreeGrid<DATA>
 
     getRoot(): TreeRoot<DATA> {
         return this.root;
+    }
+
+    getTotalFullSelected(): number {
+        return this.root.getFullSelection().length;
+    }
+
+    getTotalCurrentSelected(): number {
+        return this.root.getCurrentSelection().length;
+    }
+
+    getTotalStashedSelected(): number {
+        return this.root.getStashedSelection().length;
+    }
+
+    getCurrentTotal(): number {
+        return this.root.getCurrentRoot().treeToList().length;
+    }
+
+    getFullSelection(uniqueOnly: boolean = true): TreeNode<DATA>[] {
+        return this.root.getFullSelection(uniqueOnly);
+    }
+
+    getCurrentSelection(): TreeNode<DATA>[] {
+        return this.root.getCurrentSelection();
+    }
+
+    getStashedSelection(): TreeNode<DATA>[] {
+        return this.root.getStashedSelection();
     }
 
     isActive(): boolean {
@@ -520,8 +552,9 @@ export class TreeGrid<DATA>
         const expandedNodesDataId = rememberExpanded ? this.grid.getDataView().getItems()
             .filter(item => item.isExpanded()).map(item => item.getDataId()) : [];
 
-        const selection = this.root.getCurrentSelection();
-        const highlightedNode = this.highlightedNode;
+        const selection: TreeNode<DATA>[] = this.root.getCurrentSelection();
+        this.root.setCurrentSelection([]);
+        const highlightedNode: TreeNode<DATA> = this.highlightedNode;
 
         this.root.resetCurrentRoot(parentNodeData);
         this.initData([]);
@@ -533,12 +566,12 @@ export class TreeGrid<DATA>
         return this.reloadNode(null, expandedNodesDataId)
             .then(() => {
                 this.root.setCurrentSelection(selection);
-                const root = this.root.getCurrentRoot();
+                const root: TreeNode<DATA> = this.root.getCurrentRoot();
                 this.initData(root.treeToList());
                 this.updateExpanded();
                 if (highlightedNode) {
-                    const dataId = highlightedNode.getDataId();
-                    const updatedHighlightedNode = root.findNode(dataId);
+                    const dataId: string = highlightedNode.getDataId();
+                    const updatedHighlightedNode: TreeNode<DATA> = root.findNode(dataId);
                     if (updatedHighlightedNode) {
                         this.highlightRowByNode(updatedHighlightedNode);
                     } else {
@@ -815,7 +848,6 @@ export class TreeGrid<DATA>
         this.root.stashSelection();
 
         this.gridData.refresh();
-        this.triggerSelectionChangedListeners();
         this.invalidate();
         this.setActive(true);
     }
@@ -850,18 +882,18 @@ export class TreeGrid<DATA>
         return this.gridData.getItem(rowIndex);
     }
 
-    triggerSelectionChangedListeners() {
+    private triggerSelectionChangedListeners() {
         this.selectionChangeListeners.forEach((listener: Function) => {
-            listener(this.root.getCurrentSelection(), this.root.getFullSelection(), !!this.highlightedNode);
+            listener();
         });
     }
 
-    onSelectionChanged(listener: (currentSelection: TreeNode<DATA>[], fullSelection: TreeNode<DATA>[], highlighted: boolean) => void) {
+    onSelectionChanged(listener: () => void) {
         this.selectionChangeListeners.push(listener);
         return this;
     }
 
-    unSelectionChanged(listener: (currentSelection: TreeNode<DATA>[], fullSelection: TreeNode<DATA>[], highlighted: boolean) => void) {
+    unSelectionChanged(listener: () => void) {
         this.selectionChangeListeners = this.selectionChangeListeners.filter((curr) => {
             return curr !== listener;
         });
@@ -1066,7 +1098,9 @@ export class TreeGrid<DATA>
             } else if (this.grid.getSelectedRows().length === 1) {
                 row = this.grid.getSelectedRows()[0];
             }
-            this.scrollToRow(navigateFn(row));
+
+            navigateFn(row);
+            this.scrollToRow(this.grid.getSelectedRows().pop());
         }
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -1250,27 +1284,26 @@ export class TreeGrid<DATA>
 
         if (!this.grid.isRowSelected(data.row) && (this.grid.getSelectedRows().length >= 1 || thereIsHighlightedNode)) {
             if (isMultiSelect) {
-                let firstSelectedRow;
-                let highlightFrom;
-                let highlightTo;
-
-                if (thereIsHighlightedNode) {
-                    const highlightedRow = this.getRowIndexByNode(this.highlightedNode);
-                    highlightFrom = highlightedRow < data.row ? highlightedRow : data.row;
-                    highlightTo = data.row > highlightedRow ? data.row : highlightedRow;
-                } else {
-                    firstSelectedRow = this.grid.getSelectedRows()[0];
-                    highlightFrom = firstSelectedRow < data.row ? firstSelectedRow : data.row;
-                    highlightTo = data.row > firstSelectedRow ? data.row : firstSelectedRow;
-                }
+                const highlightFrom: number =
+                    thereIsHighlightedNode ? this.getRowIndexByNode(this.highlightedNode) : this.grid.getSelectedRows()[0];
+                const highlightTo: number = data.row;
 
                 this.removeHighlighting();
 
-                for (let i = highlightFrom; i <= highlightTo; i++) {
-                    if (!this.grid.isRowSelected(i)) {
-                        this.grid.toggleRow(i);
+                if (highlightFrom > highlightTo) {
+                    for (let i = highlightFrom; i >= highlightTo; i--) {
+                        if (!this.grid.isRowSelected(i)) {
+                            this.grid.toggleRow(i);
+                        }
+                    }
+                } else {
+                    for (let i = highlightFrom; i <= highlightTo; i++) {
+                        if (!this.grid.isRowSelected(i)) {
+                            this.grid.toggleRow(i);
+                        }
                     }
                 }
+
                 event.stopPropagation();
                 event.preventDefault();
                 return;
@@ -1575,8 +1608,6 @@ export class TreeGrid<DATA>
                 this.initData(this.root.getCurrentRoot().treeToList());
                 if (needToCheckFetchedChildren) {
                     this.select(fetchedChildren);
-                } else {
-                    this.triggerSelectionChangedListeners();
                 }
             }).catch((reason: any) => {
                 this.handleError(reason);
@@ -1818,19 +1849,27 @@ export class TreeGrid<DATA>
 
     private notifySelectionChanged(rows: number[]): void {
         const newSelection: TreeNode<DATA>[] = [];
+
         if (rows) {
             rows.forEach((rowIndex) => {
                 newSelection.push(this.gridData.getItem(rowIndex));
             });
         }
 
-        const selectionWasRemoved = this.root.getSelectionChangeType() === SelectionChangeType.REMOVED;
-
+        const selectionChanged: boolean = this.isSelectionChanged(newSelection);
         this.root.setCurrentSelection(newSelection);
 
-        if (this.root.isSelectionChanged() || selectionWasRemoved) {
+        if (selectionChanged) {
             this.triggerSelectionChangedListeners();
         }
+    }
+
+    private isSelectionChanged(newSelection: TreeNode<DATA>[]): boolean {
+        const contains = (nodes: TreeNode<DATA>[], node: TreeNode<DATA>) => nodes.some((n) => n.getDataId() === node.getDataId());
+        const addedSelection: TreeNode<DATA>[] = newSelection.filter(selected => !contains(this.root.getCurrentSelection(), selected));
+        const removedSelection: TreeNode<DATA>[] = this.root.getCurrentSelection().filter(id => !contains(newSelection, id));
+
+        return addedSelection.length > 0 || removedSelection.length > 0;
     }
 
     private showContextMenuAt(x: number, y: number) {
@@ -1871,7 +1910,6 @@ export class TreeGrid<DATA>
     private clearAllSelection(unhighlight: boolean = true) {
         this.unselectAllRows(unhighlight);
         this.root.clearStashedSelection();
-        this.triggerSelectionChangedListeners();
     }
 
     private notifyHighlightingChanged(force: boolean = false, callback?: Function): void {
