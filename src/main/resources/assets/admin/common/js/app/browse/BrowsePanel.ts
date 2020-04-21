@@ -84,11 +84,13 @@ export class BrowsePanel<M extends Equitable>
         });
 
 
-        this.onShown(() => {
-            if (this.treeGrid.isFiltered()) {
-                this.filterPanel.refresh();
-            }
-        });
+        if (this.filterPanel) {
+            this.onShown(() => {
+                if (this.treeGrid.isFiltered()) {
+                    this.filterPanel.refresh();
+                }
+            });
+        }
     }
 
     private initTreeGridListeners() {
