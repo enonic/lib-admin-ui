@@ -1,10 +1,4 @@
-import * as semver from 'semver';
-
 export class Validator {
-
-    static validVersion(version: string): boolean {
-        return semver.valid(version) != null;
-    }
 
     static validUrl(url: string): boolean {
         if (url == null) {
