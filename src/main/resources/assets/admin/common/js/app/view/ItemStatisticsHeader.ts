@@ -57,7 +57,7 @@ export class ItemStatisticsHeader<M extends Equitable>
         }
 
         let size = this.browseItem.getIconSize() || 64;
-        let icon: HTMLImageElement = ImageLoader.get(value + '?size=size', size, size);
+        let icon: HTMLImageElement = ImageLoader.get(value, size, size);
 
         this.iconEl = <ImgEl> new Element(new NewElementBuilder().setTagName('img').setHelper(
             new ImgHelper(icon)));
@@ -75,7 +75,7 @@ export class ItemStatisticsHeader<M extends Equitable>
 
         if (item.getIconUrl()) {
             let size = item.getIconSize() || 64;
-            let icon: HTMLImageElement = ImageLoader.get(item.getIconUrl() + '?size=size', size, size);
+            let icon: HTMLImageElement = ImageLoader.get(item.getIconUrl(), size, size);
 
             iconEl = <ImgEl> new Element(new NewElementBuilder().setTagName('img').setHelper(new ImgHelper(icon)));
         } else {
