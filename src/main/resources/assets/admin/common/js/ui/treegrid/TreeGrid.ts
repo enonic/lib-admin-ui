@@ -526,8 +526,6 @@ export class TreeGrid<DATA>
             }
         }
 
-        this.root.removeSelections(dataIds);
-
         if (oldSelected.length !== newSelected.length) {
             this.grid.setSelectedRows(newSelectedRows);
         }
@@ -1137,7 +1135,7 @@ export class TreeGrid<DATA>
         });
 
         this.grid.subscribeOnSelectedRowsChanged((_event, rows) => {
-            this.notifySelectionChanged(rows.rows);
+            this.handleSelectionChanged(rows.rows);
         });
 
         this.onLoaded(() => this.unmask());
@@ -1773,8 +1771,6 @@ export class TreeGrid<DATA>
                 this.notifyDataChanged(new DataChangedEvent<DATA>([node], DataChangedType.DELETED));
             }
         });
-
-        this.root.removeSelections([dataId]);
     }
 
     private doInsertNodeToParentWithChildren(parentNode: TreeNode<DATA>,
@@ -1853,7 +1849,7 @@ export class TreeGrid<DATA>
         });
     }
 
-    private notifySelectionChanged(rows: number[]): void {
+    private handleSelectionChanged(rows: number[]): void {
         const newSelection: TreeNode<DATA>[] = [];
 
         if (rows) {
