@@ -6,6 +6,7 @@ import {Element} from '../../dom/Element';
 import {ClassHelper} from '../../ClassHelper';
 import {Panel} from './Panel';
 import {assert} from '../../util/Assert';
+import {Body} from '../../dom/Body';
 
 export enum SplitPanelAlignment {
     HORIZONTAL,
@@ -563,8 +564,7 @@ export class SplitPanel
     }
 
     private onRenderedDragHandler() {
-
-        let initialPos = 0;
+        let initialPos: number = 0;
         this.ghostDragger = new DivEl('ghost-dragger');
         this.dragListener = (e: MouseEvent) => {
             if (this.isHorizontal()) {
@@ -580,29 +580,30 @@ export class SplitPanel
             }
         };
 
+        const mouseUpHandler = () => {
+            this.stopDrag();
+            super.removeChild(this.ghostDragger);
+            Body.get().unMouseUp(mouseUpHandler);
+        };
+
         this.splitter.onMouseDown((e: MouseEvent) => {
             e.preventDefault();
-            if (this.isHorizontal()) {
-                initialPos = e.clientY;
-            } else {
-                initialPos = e.clientX;
-            }
+
+            initialPos = this.isHorizontal() ? e.clientY : e.clientX;
+
             this.ghostDragger.insertBeforeEl(this.splitter);
+
+            Body.get().onMouseUp(mouseUpHandler);
+
             this.startDrag();
         });
 
-        this.onMouseUp(() => {
-            if (this.ghostDragger.getHTMLElement().parentNode) {
-                this.stopDrag();
-                super.removeChild(this.ghostDragger);
-            }
-        });
     }
 
     private startDrag() {
         this.mask.show();
         this.addClass('dragging');
-        this.onMouseMove(this.dragListener);
+        Body.get().onMouseMove(this.dragListener);
 
         if (this.isHorizontal()) {
             this.ghostDragger.getEl().setTopPx(this.splitter.getEl().getOffsetTopRelativeToParent()).setLeft(null);
@@ -614,7 +615,7 @@ export class SplitPanel
     private stopDrag() {
         this.mask.hide();
         this.removeClass('dragging');
-        this.unMouseMove(this.dragListener);
+        Body.get().unMouseMove(this.dragListener);
 
         let splitPanelEl = this.getEl();
         let dragOffset = this.isHorizontal() ? this.splitterPosition - splitPanelEl.getOffsetTop() : this.splitterPosition -
