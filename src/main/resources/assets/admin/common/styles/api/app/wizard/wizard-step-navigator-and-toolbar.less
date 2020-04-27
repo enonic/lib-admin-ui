@@ -1,5 +1,5 @@
 .wizard-step-navigator-and-toolbar {
-  height: 40px;
+  height: @toolbar-height;
   background-color: @admin-bg-light-gray;
   position: relative;
 
@@ -164,7 +164,7 @@
     position: fixed;
     // to be above image input type mask and the input type itself
     z-index: @z-index-scroll-stick;
-    top: 39px;
+    top: @app-header-height - 1;
     border-top: 1px solid @admin-medium-gray-border;
 
     box-shadow: -3px 3px 6px 0 @admin-toolbar-shadow;
