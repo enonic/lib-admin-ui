@@ -15,6 +15,10 @@ export class PrincipalKey
 
     private static SU_PRINCIPAL: PrincipalKey = PrincipalKey.ofUser(IdProviderKey.SYSTEM, 'su');
 
+    private static SYSTEM_ROLE_PREFIX: string = 'system.';
+
+    private static PROJECT_ROLE_PREFIX: string = 'cms.project.';
+
     private idProvider: IdProviderKey;
 
     private type: PrincipalType;
@@ -125,8 +129,20 @@ export class PrincipalKey
         return true;
     }
 
-    isSystem() {
+    isSystem(): boolean {
+        return this.isSystemUser() || this.isSystemRole() || this.isProjectRole();
+    }
+
+    private isSystemUser(): boolean {
         return this.equals(PrincipalKey.ofAnonymous()) || this.equals(PrincipalKey.ofSU());
+    }
+
+    private isSystemRole(): boolean {
+        return this.isRole() && this.getId().startsWith(PrincipalKey.SYSTEM_ROLE_PREFIX);
+    }
+
+    private isProjectRole(): boolean {
+        return this.isRole() && this.getId().startsWith(PrincipalKey.PROJECT_ROLE_PREFIX);
     }
 
     getIdProvider(): IdProviderKey {
