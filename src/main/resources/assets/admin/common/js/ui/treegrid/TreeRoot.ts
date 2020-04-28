@@ -119,18 +119,6 @@ export class TreeRoot<DATA> {
         this.stashedSelection = [];
     }
 
-    removeSelections(dataIds: string[]) {
-        const currentSelectionSize = this.currentSelection.length;
-        const stashedSelectionSize = this.stashedSelection.length;
-
-        this.currentSelection = this.currentSelection.filter((el) => {
-            return dataIds.indexOf(el.getDataId()) < 0;
-        });
-        this.stashedSelection = this.stashedSelection.filter((el) => {
-            return dataIds.indexOf(el.getDataId()) < 0;
-        });
-    }
-
     private cleanStashedSelection() {
         const currentIds: string[] = this.currentSelection.map(el => el.getDataId());
         const stashedIds: string[] = this.stashedSelection.map(el => el.getDataId());
