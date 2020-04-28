@@ -104,9 +104,9 @@ export class WizardStepNavigatorAndToolbar
     }
 
     private calculateStepsWidth(): number {
-        const steps = this.stepNavigator.getChildren();
+        const steps = this.stepNavigator.getChildren().filter(step => step.isVisible());
 
-        const stepMargin = (step) => step.isVisible() ? step.getEl().getWidthWithMargin() : 0;
+        const stepMargin = (step) => step.getEl().getWidthWithMargin();
         return steps.reduce((totalStepWidth, step) => totalStepWidth + stepMargin(step), 0);
     }
 
@@ -114,12 +114,16 @@ export class WizardStepNavigatorAndToolbar
         const width = this.stepNavigator.getEl().getWidthWithoutPadding();
         const stepsWidth = this.calculateStepsWidth();
 
-        return width > stepsWidth;
+        return Math.ceil(width) >= Math.ceil(stepsWidth);
     }
 
     private isStepNavigatorFit(): boolean {
         // StepNavigator is minimized and not visible, or not rendered yet
         // Check with saved width
+
+        if (!this.stepNavigator.getChildren()) {
+            return true;
+        }
 
         if (this.foldButton.isRendered()) {
             if (this.stepNavigator.isVisible()) {
@@ -142,7 +146,7 @@ export class WizardStepNavigatorAndToolbar
         // Add to pixels delta to made the check work as it should, when scale is not 100%
         const fittingWidth = Math.min(calculated, WizardStepNavigatorAndToolbar.maxFittingWidth) + 2;
 
-        return width > fittingWidth;
+        return Math.ceil(width) >= Math.ceil(fittingWidth);
     }
 
     private isFolded(): boolean {
