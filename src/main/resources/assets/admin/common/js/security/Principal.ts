@@ -74,8 +74,8 @@ export class Principal
         return this.modifiedTime;
     }
 
-    isSystemUser(): boolean {
-        return this.getKey().isSystem() && this.isUser();
+    isSystem(): boolean {
+        return this.getKey().isSystem();
     }
 
     equals(o: Equitable): boolean {
@@ -83,7 +83,7 @@ export class Principal
             return false;
         }
 
-        let other = <Principal> o;
+        let other = <Principal>o;
 
         if (!super.equals(o)) {
             return false;
