@@ -221,8 +221,7 @@ export class ServerEventsConnection {
                 }
                 if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED) {
                     this.connectionState = CONNECTION_STATE.ESTABLISHED;
-                }
-                else if (this.connectionState === CONNECTION_STATE.LOST) {
+                } else if (this.connectionState === CONNECTION_STATE.LOST) {
                     this.connectionState = CONNECTION_STATE.RESTORED;
                 }
             }
