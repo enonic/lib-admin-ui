@@ -94,10 +94,24 @@ export class WizardPanel<EQUITABLE extends Equitable>
         // have to be in constructor because onValidityChanged uses it
         this.validityManager = new WizardValidityManager();
 
+        this.initEventsListeners();
+    }
+
+    private initEventsListeners() {
         this.onRendered((event: ElementRenderedEvent) => {
             if (WizardPanel.debug) {
                 console.debug('WizardPanel: rendered', event);
             }
+
+            ResponsiveManager.onAvailableSizeChanged(this.stepNavigatorAndToolbarContainer, (item: ResponsiveItem) => {
+                // update offset if step navigator is resized
+                if (this.isVisible()) {
+                    this.updateStickyToolbar();
+                    this.stepsPanel.setScrollOffset(item.getElement().getEl().getHeight());
+
+                    this.stepNavigatorAndToolbarContainer.checkAndMinimize();
+                }
+            });
         });
 
         this.onShown((event: ElementShownEvent) => {
@@ -124,6 +138,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
             }
         });
     }
+
 
     /*
      Wait for loadData to finish in order to render
@@ -729,15 +744,6 @@ export class WizardPanel<EQUITABLE extends Equitable>
             this.stepsPanel.setScrollOffset(event.getElement().getEl().getHeight());
         });
 
-        ResponsiveManager.onAvailableSizeChanged(this.stepNavigatorAndToolbarContainer, (item: ResponsiveItem) => {
-            // update offset if step navigator is resized
-            if (this.isVisible()) {
-                this.updateStickyToolbar();
-                this.stepsPanel.setScrollOffset(item.getElement().getEl().getHeight());
-
-                this.stepNavigatorAndToolbarContainer.checkAndMinimize();
-            }
-        });
         this.formPanel.appendChildren(headerAndNavigatorContainer, this.stepsPanel);
 
         let leftPanel: Panel;
