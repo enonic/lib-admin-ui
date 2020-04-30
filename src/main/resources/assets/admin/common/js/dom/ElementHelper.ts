@@ -235,7 +235,7 @@ export class ElementHelper {
         if (isPassive) {
             return this.addPassiveEventListener(eventName, f);
         }
-        this.el.addEventListener(eventName, f);
+        this.el.addEventListener(eventName, f, {passive: false});
         return this;
     }
 
