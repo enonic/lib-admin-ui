@@ -7,6 +7,13 @@ import {ServerEventsTranslator} from './ServerEventsTranslator';
 
 export const SERVER_EVENTS_CONNECTION_KEY: string = 'ServerEventsConnection';
 
+enum CONNECTION_STATE {
+    NOT_ESTABLISHED,
+    ESTABLISHED,
+    LOST,
+    RESTORED
+}
+
 export class ServerEventsConnection {
 
     private static KEEP_ALIVE_TIME: number = 30 * 1000;
@@ -94,7 +101,9 @@ export class ServerEventsConnection {
 
     unUnknownServerEvent(listener: (eventJson: EventJson) => void) {
         this.unknownServerEventReceivedListeners =
-            this.unknownServerEventReceivedListeners.filter((currentListener: (eventJson: EventJson) => void) => currentListener !== listener);
+            this.unknownServerEventReceivedListeners.filter(
+                (currentListener: (eventJson: EventJson) => void) => currentListener !== listener
+            );
     }
 
     onDisconnected(listener: () => void) {
@@ -273,4 +282,9 @@ export class ServerEventsConnection {
         });
     }
 
+    private notifyConnectionError() {
+        this.connectionErrorListeners.forEach((listener: (event: any) => void) => {
+            listener.call(this);
+        });
+    }
 }
