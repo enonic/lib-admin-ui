@@ -13,27 +13,29 @@ export class ServerEventsConnection {
 
     private ws: WebSocket;
 
-    private reconnectInterval: number;
+    readonly reconnectInterval: number;
+
+    private reconnectIntervalId: number;
+
+    private keepAliveIntervalId: number;
 
     private serverEventReceivedListeners: { (event: Event): void }[] = [];
 
     private unknownServerEventReceivedListeners: { (eventJson: EventJson): void }[] = [];
 
-    private connectionLostListeners: { (): void }[] = [];
+    private disconnectedListeners: { (): void }[] = [];
 
-    private connectionRestoredListeners: { (): void }[] = [];
+    private connectedListeners: { (): void }[] = [];
 
-    private connected: boolean = false;
-
-    private disconnectTimeoutHandle: number;
+    private connectionErrorListeners: { (): void }[] = [];
 
     private keepConnected: boolean = false;
 
-    private downTime: number;
-
-    private keepAliveIntervalId: number;
+    private stateChangeTime: number;
 
     private serverEventsTranslator: ServerEventsTranslator;
+
+    private connectionState: CONNECTION_STATE = CONNECTION_STATE.NOT_ESTABLISHED;
 
     public debug: boolean = false;
 
@@ -75,10 +77,6 @@ export class ServerEventsConnection {
         }
     }
 
-    public isConnected(): boolean {
-        return this.ws.readyState === WebSocket.OPEN;
-    }
-
     onServerEvent(listener: (event: Event) => void) {
         this.serverEventReceivedListeners.push(listener);
     }
@@ -96,31 +94,34 @@ export class ServerEventsConnection {
 
     unUnknownServerEvent(listener: (eventJson: EventJson) => void) {
         this.unknownServerEventReceivedListeners =
-            this.unknownServerEventReceivedListeners.filter((currentListener: (eventJson: EventJson) => void) => {
-                return currentListener !== listener;
-            });
+            this.unknownServerEventReceivedListeners.filter((currentListener: (eventJson: EventJson) => void) => currentListener !== listener);
     }
 
-    onConnectionLost(listener: () => void) {
-        this.connectionLostListeners.push(listener);
+    onDisconnected(listener: () => void) {
+        this.disconnectedListeners.push(listener);
     }
 
-    unConnectionLost(listener: () => void) {
-        this.connectionLostListeners =
-            this.connectionLostListeners.filter((currentListener: () => void) => {
-                return currentListener !== listener;
-            });
+    unDisconnected(listener: () => void) {
+        this.disconnectedListeners =
+            this.disconnectedListeners.filter((currentListener: () => void) => currentListener !== listener);
     }
 
-    onConnectionRestored(listener: () => void) {
-        this.connectionRestoredListeners.push(listener);
+    onConnected(listener: () => void) {
+        this.connectedListeners.push(listener);
     }
 
-    unConnectionRestored(listener: () => void) {
-        this.connectionRestoredListeners =
-            this.connectionRestoredListeners.filter((currentListener: () => void) => {
-                return currentListener !== listener;
-            });
+    unConnected(listener: () => void) {
+        this.connectedListeners =
+            this.connectedListeners.filter((currentListener: () => void) => currentListener !== listener);
+    }
+
+    onConnectionError(listener: () => void) {
+        this.connectionErrorListeners.push(listener);
+    }
+
+    unConnectionError(listener: () => void) {
+        this.connectionErrorListeners =
+            this.connectionErrorListeners.filter((currentListener: () => void) => currentListener !== listener);
     }
 
     private doConnect(wsUrl: string) {
@@ -130,18 +131,31 @@ export class ServerEventsConnection {
             clearInterval(this.keepAliveIntervalId);
             if (this.debug) {
                 let m = 'ServerEventsConnection: connection closed to ' + wsUrl;
-                if (this.downTime > 0) {
-                    m += '\nUptime: ' + (new Date().getTime() - this.downTime);
+                if (this.isConnected() && this.stateChangeTime > 0) {
+                    m += '\nUptime: ' + (new Date().getTime() - this.stateChangeTime);
                 }
                 console.warn(m);
-                this.downTime = new Date().getTime();
             }
-            this.disconnectTimeoutHandle = setTimeout(() => {
-                if (this.connected) {
+
+            if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED) {
+                if (this.debug) {
+                    console.warn('Error establishing WS connection');
+                }
+            }
+
+            this.reconnectIntervalId = setTimeout(() => {
+                if (this.isConnected()) {
                     if (this.keepConnected) {
-                        this.notifyConnectionLost();
+                        this.notifyDisconnected();
                     }
-                    this.connected = !this.connected;
+                    if (this.connectionState === CONNECTION_STATE.ESTABLISHED ||
+                        this.connectionState === CONNECTION_STATE.RESTORED) {
+                            this.connectionState = CONNECTION_STATE.LOST;
+                        this.stateChangeTime = new Date().getTime();
+                    }
+                }
+                if (this.debug) {
+                    console.log('Checking reconnect status. Connection state: ', CONNECTION_STATE[this.connectionState].toString());
                 }
             }, this.reconnectInterval + 1000);
 
@@ -149,6 +163,9 @@ export class ServerEventsConnection {
             if (this.keepConnected) {
                 setTimeout(() => {
                     if (this.keepConnected) {
+                        if (this.debug) {
+                            console.log('Trying to reconnect...');
+                        }
                         this.doConnect(wsUrl);
                     }
                 }, this.reconnectInterval);
@@ -159,6 +176,7 @@ export class ServerEventsConnection {
             if (this.debug) {
                 console.error('ServerEventsConnection: Unable to connect to server web socket on ' + wsUrl, ev);
             }
+            this.notifyConnectionError();
         });
 
         this.ws.addEventListener('message', (remoteEvent: any) => {
@@ -172,24 +190,35 @@ export class ServerEventsConnection {
         this.ws.addEventListener('open', () => {
             if (this.debug) {
                 let m = 'ServerEventsConnection: connection opened to ' + wsUrl;
-                if (this.downTime > 0) {
-                    m += '\nDowntime: ' + (new Date().getTime() - this.downTime);
+                if (this.stateChangeTime > 0) {
+                    m += '\nDowntime: ' + (new Date().getTime() - this.stateChangeTime);
+                    this.stateChangeTime = 0;
                 }
                 console.log(m);
-                this.downTime = new Date().getTime();
             }
-            clearTimeout(this.disconnectTimeoutHandle);
+            clearTimeout(this.reconnectIntervalId);
             this.keepAliveIntervalId = setInterval(() => {
-                if (this.connected) {
+                if (this.isConnected()) {
                     this.ws.send('KeepAlive');
                     if (this.debug) {
                         console.log('ServerEventsConnection: Sending Keep Alive message');
                     }
                 }
             }, ServerEventsConnection.KEEP_ALIVE_TIME);
-            if (!this.connected) {
-                this.notifyConnectionRestored();
-                this.connected = !this.connected;
+            if (!this.isConnected()) {
+                if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED || this.connectionState === CONNECTION_STATE.LOST) {
+                    this.notifyConnected();
+                    this.stateChangeTime = new Date().getTime();
+                }
+                if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED) {
+                    this.connectionState = CONNECTION_STATE.ESTABLISHED;
+                }
+                else if (this.connectionState === CONNECTION_STATE.LOST) {
+                    this.connectionState = CONNECTION_STATE.RESTORED;
+                }
+            }
+            if (this.debug) {
+                console.log('Connection state: ', CONNECTION_STATE[this.connectionState].toString());
             }
         });
     }
@@ -216,6 +245,10 @@ export class ServerEventsConnection {
         return newUri;
     }
 
+    private isConnected(): boolean {
+        return this.connectionState === CONNECTION_STATE.ESTABLISHED || this.connectionState === CONNECTION_STATE.RESTORED;
+    }
+
     private notifyServerEvent(serverEvent: Event) {
         this.serverEventReceivedListeners.forEach((listener: (event: Event) => void) => {
             listener.call(this, serverEvent);
@@ -228,14 +261,14 @@ export class ServerEventsConnection {
         });
     }
 
-    private notifyConnectionLost() {
-        this.connectionLostListeners.forEach((listener: (event: any) => void) => {
+    private notifyDisconnected() {
+        this.disconnectedListeners.forEach((listener: (event: any) => void) => {
             listener.call(this);
         });
     }
 
-    private notifyConnectionRestored() {
-        this.connectionRestoredListeners.forEach((listener: (event: any) => void) => {
+    private notifyConnected() {
+        this.connectedListeners.forEach((listener: (event: any) => void) => {
             listener.call(this);
         });
     }
