@@ -20,6 +20,8 @@ export class ServerEventsConnection {
 
     private ws: WebSocket;
 
+    private wsUrl: string;
+
     readonly reconnectInterval: number;
 
     private reconnectIntervalId: number;
@@ -72,13 +74,16 @@ export class ServerEventsConnection {
             console.warn('ServerEventsConnection: WebSockets not supported. Server events disabled.');
             return;
         }
-        let wsUrl = UriHelper.joinPath(this.getWebSocketUriPrefix(), UriHelper.getAdminUriPrefix(), 'event');
+
+        this.wsUrl = UriHelper.joinPath(this.getWebSocketUriPrefix(), UriHelper.getAdminUriPrefix(), 'event');
         this.keepConnected = true;
-        this.doConnect(wsUrl);
+
+        this.doConnect();
     }
 
     public disconnect() {
         this.keepConnected = false;
+
         if (this.ws) {
             this.ws.close();
         }
@@ -133,98 +138,118 @@ export class ServerEventsConnection {
             this.connectionErrorListeners.filter((currentListener: () => void) => currentListener !== listener);
     }
 
-    private doConnect(wsUrl: string) {
-        this.ws = new WebSocket(wsUrl, 'text');
+    private doConnect() {
+        this.ws = new WebSocket(this.wsUrl, 'text');
 
-        this.ws.addEventListener('close', () => {
-            clearInterval(this.keepAliveIntervalId);
-            if (this.debug) {
-                let m = 'ServerEventsConnection: connection closed to ' + wsUrl;
-                if (this.isConnected() && this.stateChangeTime > 0) {
-                    m += '\nUptime: ' + (new Date().getTime() - this.stateChangeTime);
-                }
-                console.warn(m);
+        this.ws.addEventListener('close', this.handleWSClose.bind(this));
+        this.ws.addEventListener('error', this.handleWSError.bind(this));
+        this.ws.addEventListener('message', this.handleWSMessage.bind(this));
+        this.ws.addEventListener('open', this.handleWSOpen.bind(this));
+    }
+
+    private handleWSClose() {
+        clearInterval(this.keepAliveIntervalId);
+
+        if (this.debug) {
+            let m: string = 'ServerEventsConnection: connection closed to ' + this.wsUrl;
+
+            if (this.isConnected() && this.stateChangeTime > 0) {
+                m += '\nUptime: ' + (new Date().getTime() - this.stateChangeTime);
             }
+
+            console.warn(m);
+        }
+
+        if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED) {
+            if (this.debug) {
+                console.warn('Error establishing WS connection');
+            }
+        }
+
+        this.reconnectIntervalId = setTimeout(() => {
+            if (this.isConnected()) {
+                if (this.keepConnected) {
+                    this.notifyDisconnected();
+                }
+
+                this.connectionState = CONNECTION_STATE.LOST;
+                this.stateChangeTime = new Date().getTime();
+            }
+
+            if (this.debug) {
+                console.log('Checking reconnect status. Connection state: ', CONNECTION_STATE[this.connectionState].toString());
+            }
+        }, this.reconnectInterval + 1000);
+
+        // attempt to reconnect
+        if (this.keepConnected) {
+            setTimeout(() => {
+                if (this.keepConnected) {
+                    if (this.debug) {
+                        console.log('Trying to reconnect...');
+                    }
+                    this.doConnect();
+                }
+            }, this.reconnectInterval);
+        }
+    }
+
+    private handleWSError(ev: ErrorEvent) {
+        if (this.debug) {
+            console.error('ServerEventsConnection: Unable to connect to server web socket on ' + this.wsUrl, ev);
+        }
+
+        this.notifyConnectionError();
+    }
+
+    private handleWSMessage(remoteEvent: any) {
+        const jsonEvent: NodeEventJson = <NodeEventJson>JSON.parse(remoteEvent.data);
+
+        if (this.debug) {
+            console.debug('ServerEventsConnection: Server event [' + jsonEvent.type + ']', jsonEvent);
+        }
+
+        this.handleServerEvent(jsonEvent);
+    }
+
+    private handleWSOpen() {
+        if (this.debug) {
+            let m: string = 'ServerEventsConnection: connection opened to ' + this.wsUrl;
+
+            if (this.stateChangeTime > 0) {
+                m += '\nDowntime: ' + (new Date().getTime() - this.stateChangeTime);
+                this.stateChangeTime = 0;
+            }
+
+            console.log(m);
+        }
+
+        clearTimeout(this.reconnectIntervalId);
+
+        this.keepAliveIntervalId = setInterval(() => {
+            if (this.isConnected()) {
+                this.ws.send('KeepAlive');
+
+                if (this.debug) {
+                    console.log('ServerEventsConnection: Sending Keep Alive message');
+                }
+            }
+        }, ServerEventsConnection.KEEP_ALIVE_TIME);
+
+        if (!this.isConnected()) {
+            this.notifyConnected();
+            this.stateChangeTime = new Date().getTime();
 
             if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED) {
-                if (this.debug) {
-                    console.warn('Error establishing WS connection');
-                }
+                this.connectionState = CONNECTION_STATE.ESTABLISHED;
+            } else if (this.connectionState === CONNECTION_STATE.LOST) {
+                this.connectionState = CONNECTION_STATE.RESTORED;
             }
+        }
 
-            this.reconnectIntervalId = setTimeout(() => {
-                if (this.isConnected()) {
-                    if (this.keepConnected) {
-                        this.notifyDisconnected();
-                    }
-
-                    this.connectionState = CONNECTION_STATE.LOST;
-                    this.stateChangeTime = new Date().getTime();
-                }
-                if (this.debug) {
-                    console.log('Checking reconnect status. Connection state: ', CONNECTION_STATE[this.connectionState].toString());
-                }
-            }, this.reconnectInterval + 1000);
-
-            // attempt to reconnect
-            if (this.keepConnected) {
-                setTimeout(() => {
-                    if (this.keepConnected) {
-                        if (this.debug) {
-                            console.log('Trying to reconnect...');
-                        }
-                        this.doConnect(wsUrl);
-                    }
-                }, this.reconnectInterval);
-            }
-        });
-
-        this.ws.addEventListener('error', (ev: ErrorEvent) => {
-            if (this.debug) {
-                console.error('ServerEventsConnection: Unable to connect to server web socket on ' + wsUrl, ev);
-            }
-            this.notifyConnectionError();
-        });
-
-        this.ws.addEventListener('message', (remoteEvent: any) => {
-            let jsonEvent = <NodeEventJson> JSON.parse(remoteEvent.data);
-            if (this.debug) {
-                console.debug('ServerEventsConnection: Server event [' + jsonEvent.type + ']', jsonEvent);
-            }
-            this.handleServerEvent(jsonEvent);
-        });
-
-        this.ws.addEventListener('open', () => {
-            if (this.debug) {
-                let m = 'ServerEventsConnection: connection opened to ' + wsUrl;
-                if (this.stateChangeTime > 0) {
-                    m += '\nDowntime: ' + (new Date().getTime() - this.stateChangeTime);
-                    this.stateChangeTime = 0;
-                }
-                console.log(m);
-            }
-            clearTimeout(this.reconnectIntervalId);
-            this.keepAliveIntervalId = setInterval(() => {
-                if (this.isConnected()) {
-                    this.ws.send('KeepAlive');
-                    if (this.debug) {
-                        console.log('ServerEventsConnection: Sending Keep Alive message');
-                    }
-                }
-            }, ServerEventsConnection.KEEP_ALIVE_TIME);
-            if (!this.isConnected()) {
-                this.notifyConnected();
-                this.stateChangeTime = new Date().getTime();
-                if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED) {
-                    this.connectionState = CONNECTION_STATE.ESTABLISHED;
-                } else if (this.connectionState === CONNECTION_STATE.LOST) {
-                    this.connectionState = CONNECTION_STATE.RESTORED;
-                }
-            }
-            if (this.debug) {
-                console.log('Connection state: ', CONNECTION_STATE[this.connectionState].toString());
-            }
-        });
+        if (this.debug) {
+            console.log('Connection state: ', CONNECTION_STATE[this.connectionState].toString());
+        }
     }
 
     private handleServerEvent(eventJson: NodeEventJson): void {
@@ -238,15 +263,10 @@ export class ServerEventsConnection {
     }
 
     private getWebSocketUriPrefix(): string {
-        let loc = window.location;
-        let newUri;
-        if (loc.protocol === 'https:') {
-            newUri = 'wss:';
-        } else {
-            newUri = 'ws:';
-        }
-        newUri += '//' + loc.host;
-        return newUri;
+        const loc: Location = window.location;
+        const prefix: string = loc.protocol === 'https:' ? 'wss:' : 'ws:';
+
+        return `${prefix}//${loc.host}`;
     }
 
     private isConnected(): boolean {
