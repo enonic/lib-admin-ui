@@ -49,9 +49,9 @@
   }
 
   &.grey-header .modal-dialog-header {
-      background-color: @admin-bg-light-gray;
-      padding: 20px 20px 10px 30px;
-      width: calc(100% - 1px);
+    background-color: @admin-bg-light-gray;
+    padding: 20px 20px 10px 30px;
+    width: 100%;
   }
 
   .modal-dialog-body {
@@ -59,7 +59,7 @@
     overflow: auto;
     flex: 1;
     max-height: 50vh;
-    width: calc(100% - 1px);
+    width: 100%;
     box-sizing: border-box;
 
     &.non-scrollable {
@@ -357,7 +357,8 @@ body {
 
       .cancel-button-inline();
 
-      .modal-dialog-header, .modal-dialog-body, .modal-dialog-footer {
+      .modal-dialog-header,
+      .modal-dialog-body {
         padding-left: 20px;
         padding-right: 20px;
       }
@@ -371,28 +372,27 @@ body {
           left: 0;
         }
       }
+
+      .modal-dialog-body {
+        max-height: none;
+      }
+
       .modal-dialog-footer {
-        padding-bottom: 15px;
+        padding: 20px;
       }
     }
   }
 
   &._0-240 .@{_COMMON_PREFIX}modal-dialog, &._240-360 .@{_COMMON_PREFIX}modal-dialog {
-    margin: 0;
-    width: 96%;
-    box-sizing: content-box;
+    .all-space();
   }
 
   &._360-540 .@{_COMMON_PREFIX}modal-dialog {
-    margin: 0;
-    width: 94%;
-    box-sizing: content-box;
+    .all-space();
   }
 
   &._540-720 .@{_COMMON_PREFIX}modal-dialog {
-    margin-left: 10px;
-    margin-right: 10px;
-    width: 80.185%;
+    .all-space();
   }
 
   @media screen and (max-height: 540px) {
@@ -401,4 +401,11 @@ body {
     }
   }
 
+}
+
+.all-space(@except: 0px) {
+  width: calc(100% - @except);
+  height: calc(100% - @except);
+  margin: 0;
+  max-width: none;
 }
