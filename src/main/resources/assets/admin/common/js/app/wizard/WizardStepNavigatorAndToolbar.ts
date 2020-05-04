@@ -41,10 +41,12 @@ export class WizardStepNavigatorAndToolbar
             if (this.stepToolbar) {
                 this.appendChild(this.stepToolbar);
             }
+
             this.appendChild(this.foldButton);
             this.appendChild(this.stepNavigator);
 
             this.checkAndMinimize();
+
             return rendered;
         });
     }
@@ -60,6 +62,10 @@ export class WizardStepNavigatorAndToolbar
     }
 
     checkAndMinimize() {
+        if (!this.isRendered()) {
+            return;
+        }
+
         const isMinimized: boolean = this.isFolded();
         const isUpdateNeeded: boolean = this.isStepNavigatorFit() === isMinimized;
 
@@ -114,7 +120,7 @@ export class WizardStepNavigatorAndToolbar
         const width = this.stepNavigator.getEl().getWidthWithoutPadding();
         const stepsWidth = this.calculateStepsWidth();
 
-        return Math.ceil(width) >= Math.ceil(stepsWidth);
+        return Math.ceil(width) - Math.ceil(stepsWidth) >= -1; // Issue in Chrome with steps bigger than parent by 1px
     }
 
     private isStepNavigatorFit(): boolean {

@@ -229,6 +229,8 @@ export class SplitPanel
 
     private secondPanelShouldSlideRight: boolean;
 
+    private triggerResizeDebounced: Function;
+
     constructor(builder: SplitPanelBuilder) {
         super('split-panel');
         this.firstPanel = builder.getFirstPanel();
@@ -243,6 +245,18 @@ export class SplitPanel
         this.secondPanelIsHidden = false;
         this.firstPanelIsFullScreen = false;
         this.splitterIsHidden = false;
+        this.triggerResizeDebounced = AppHelper.debounce(() => {
+            if (this.isRendered()) {
+                ResponsiveManager.fireResizeEvent();
+            } else {
+                const renderedHandler = () => {
+                    ResponsiveManager.fireResizeEvent();
+                    this.unRendered(renderedHandler);
+                };
+
+                this.onRendered(renderedHandler);
+            }
+        }, this.animationDelay);
 
         this.savePanelSizes();
 
@@ -269,7 +283,7 @@ export class SplitPanel
         this.onRendered(() => this.onRenderedDragHandler());
 
         if (this.alignmentTreshold) {
-            let debounced = AppHelper.debounce(() => {
+            const debounced = AppHelper.debounce(() => {
                 if (this.requiresAlignment() && this.isVisible()) {
                     this.updateAlignment();
                 }
@@ -379,14 +393,14 @@ export class SplitPanel
             this.secondPanel.getEl().setHeight(this.getPanelSizeString(2)).setWidth(null);
             this.splitter.getEl().setHeightPx(this.getSplitterThickness()).setWidth(null).setLeft(null);
             if (this.isVisible()) {
-                this.runWithAnimationDelayIfPresent(ResponsiveManager.fireResizeEvent);
+                this.triggerResizeDebounced();
             }
         } else {
             this.firstPanel.getEl().setWidth(this.getPanelSizeString(1)).setHeight(null);
             this.secondPanel.getEl().setWidth(this.getPanelSizeString(2)).setHeight(null);
             this.splitter.getEl().setWidthPx(this.getSplitterThickness()).setHeight(null);
             if (this.isVisible()) {
-                this.runWithAnimationDelayIfPresent(ResponsiveManager.fireResizeEvent);
+                this.triggerResizeDebounced();
             }
             if (this.firstPanelUnit === SplitPanelUnit.PERCENT && this.secondPanelUnit === SplitPanelUnit.PERCENT) {
                 let positionInPercentage = (this.firstPanelSize !== -1) ? this.firstPanelSize : 100 - this.secondPanelSize;
@@ -394,16 +408,6 @@ export class SplitPanel
             } else {
                 this.splitter.getEl().setLeft(this.getPanelSizeString(1));
             }
-        }
-    }
-
-    runWithAnimationDelayIfPresent(callee: () => void) {
-        if (this.animationDelay) {
-            setTimeout(() => {
-                callee();
-            }, this.animationDelay);
-        } else {
-            callee();
         }
     }
 
