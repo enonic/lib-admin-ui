@@ -269,7 +269,7 @@ export class ServerEventsConnection {
         return `${prefix}//${loc.host}`;
     }
 
-    private isConnected(): boolean {
+    isConnected(): boolean {
         return this.connectionState === CONNECTION_STATE.ESTABLISHED || this.connectionState === CONNECTION_STATE.RESTORED;
     }
 
