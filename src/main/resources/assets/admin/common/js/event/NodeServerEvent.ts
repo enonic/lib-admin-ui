@@ -23,7 +23,7 @@ export interface NodeEventNodeJson {
 export class NodeServerEvent
     extends Event {
 
-    private change: NodeServerChange;
+    readonly change: NodeServerChange;
 
     constructor(change: NodeServerChange) {
         super();

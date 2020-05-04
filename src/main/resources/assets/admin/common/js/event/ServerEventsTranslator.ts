@@ -13,11 +13,11 @@ export class ServerEventsTranslator {
             return ApplicationEvent.fromJson(<ApplicationEventJson>eventJson);
         }
 
-        if (eventType.indexOf('repository.') === 0) {
+        if (eventType.startsWith('repository.')) {
             return RepositoryEvent.fromJson(eventJson);
         }
 
-        if (eventType.indexOf('task.') === 0) {
+        if (eventType.startsWith('task.')) {
             return TaskEvent.fromJson(<TaskEventJson>eventJson);
         }
 

@@ -34,19 +34,27 @@ export class ServerEventsListener {
     }
 
     onConnectionLost(listener: () => void) {
-        this.serverEventsConnection.onConnectionLost(listener);
+        this.serverEventsConnection.onDisconnected(listener);
     }
 
     unConnectionLost(listener: () => void) {
-        this.serverEventsConnection.unConnectionLost(listener);
+        this.serverEventsConnection.unDisconnected(listener);
     }
 
     onConnectionRestored(listener: () => void) {
-        this.serverEventsConnection.onConnectionRestored(listener);
+        this.serverEventsConnection.onConnected(listener);
     }
 
     unConnectionRestored(listener: () => void) {
-        this.serverEventsConnection.unConnectionRestored(listener);
+        this.serverEventsConnection.unConnected(listener);
+    }
+
+    onConnectionError(listener: () => void) {
+        this.serverEventsConnection.onConnectionError(listener);
+    }
+
+    unConnectionError(listener: () => void) {
+        this.serverEventsConnection.unConnectionError(listener);
     }
 
     protected onServerEvent(event: Event) {

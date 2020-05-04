@@ -7,33 +7,44 @@ import {ServerEventsTranslator} from './ServerEventsTranslator';
 
 export const SERVER_EVENTS_CONNECTION_KEY: string = 'ServerEventsConnection';
 
+enum CONNECTION_STATE {
+    NOT_ESTABLISHED,
+    ESTABLISHED,
+    LOST,
+    RESTORED
+}
+
 export class ServerEventsConnection {
 
     private static KEEP_ALIVE_TIME: number = 30 * 1000;
 
     private ws: WebSocket;
 
-    private reconnectInterval: number;
+    private wsUrl: string;
+
+    readonly reconnectInterval: number;
+
+    private reconnectIntervalId: number;
+
+    private keepAliveIntervalId: number;
 
     private serverEventReceivedListeners: { (event: Event): void }[] = [];
 
     private unknownServerEventReceivedListeners: { (eventJson: EventJson): void }[] = [];
 
-    private connectionLostListeners: { (): void }[] = [];
+    private disconnectedListeners: { (): void }[] = [];
 
-    private connectionRestoredListeners: { (): void }[] = [];
+    private connectedListeners: { (): void }[] = [];
 
-    private connected: boolean = false;
-
-    private disconnectTimeoutHandle: number;
+    private connectionErrorListeners: { (): void }[] = [];
 
     private keepConnected: boolean = false;
 
-    private downTime: number;
-
-    private keepAliveIntervalId: number;
+    private stateChangeTime: number;
 
     private serverEventsTranslator: ServerEventsTranslator;
+
+    private connectionState: CONNECTION_STATE = CONNECTION_STATE.NOT_ESTABLISHED;
 
     public debug: boolean = false;
 
@@ -63,20 +74,19 @@ export class ServerEventsConnection {
             console.warn('ServerEventsConnection: WebSockets not supported. Server events disabled.');
             return;
         }
-        let wsUrl = UriHelper.joinPath(this.getWebSocketUriPrefix(), UriHelper.getAdminUriPrefix(), 'event');
+
+        this.wsUrl = UriHelper.joinPath(this.getWebSocketUriPrefix(), UriHelper.getAdminUriPrefix(), 'event');
         this.keepConnected = true;
-        this.doConnect(wsUrl);
+
+        this.doConnect();
     }
 
     public disconnect() {
         this.keepConnected = false;
+
         if (this.ws) {
             this.ws.close();
         }
-    }
-
-    public isConnected(): boolean {
-        return this.ws.readyState === WebSocket.OPEN;
     }
 
     onServerEvent(listener: (event: Event) => void) {
@@ -96,102 +106,150 @@ export class ServerEventsConnection {
 
     unUnknownServerEvent(listener: (eventJson: EventJson) => void) {
         this.unknownServerEventReceivedListeners =
-            this.unknownServerEventReceivedListeners.filter((currentListener: (eventJson: EventJson) => void) => {
-                return currentListener !== listener;
-            });
+            this.unknownServerEventReceivedListeners.filter(
+                (currentListener: (eventJson: EventJson) => void) => currentListener !== listener
+            );
     }
 
-    onConnectionLost(listener: () => void) {
-        this.connectionLostListeners.push(listener);
+    onDisconnected(listener: () => void) {
+        this.disconnectedListeners.push(listener);
     }
 
-    unConnectionLost(listener: () => void) {
-        this.connectionLostListeners =
-            this.connectionLostListeners.filter((currentListener: () => void) => {
-                return currentListener !== listener;
-            });
+    unDisconnected(listener: () => void) {
+        this.disconnectedListeners =
+            this.disconnectedListeners.filter((currentListener: () => void) => currentListener !== listener);
     }
 
-    onConnectionRestored(listener: () => void) {
-        this.connectionRestoredListeners.push(listener);
+    onConnected(listener: () => void) {
+        this.connectedListeners.push(listener);
     }
 
-    unConnectionRestored(listener: () => void) {
-        this.connectionRestoredListeners =
-            this.connectionRestoredListeners.filter((currentListener: () => void) => {
-                return currentListener !== listener;
-            });
+    unConnected(listener: () => void) {
+        this.connectedListeners =
+            this.connectedListeners.filter((currentListener: () => void) => currentListener !== listener);
     }
 
-    private doConnect(wsUrl: string) {
-        this.ws = new WebSocket(wsUrl, 'text');
+    onConnectionError(listener: () => void) {
+        this.connectionErrorListeners.push(listener);
+    }
 
-        this.ws.addEventListener('close', () => {
-            clearInterval(this.keepAliveIntervalId);
+    unConnectionError(listener: () => void) {
+        this.connectionErrorListeners =
+            this.connectionErrorListeners.filter((currentListener: () => void) => currentListener !== listener);
+    }
+
+    private doConnect() {
+        this.ws = new WebSocket(this.wsUrl, 'text');
+
+        this.ws.addEventListener('close', this.handleWSClose.bind(this));
+        this.ws.addEventListener('error', this.handleWSError.bind(this));
+        this.ws.addEventListener('message', this.handleWSMessage.bind(this));
+        this.ws.addEventListener('open', this.handleWSOpen.bind(this));
+    }
+
+    private handleWSClose() {
+        clearInterval(this.keepAliveIntervalId);
+
+        if (this.debug) {
+            let m: string = 'ServerEventsConnection: connection closed to ' + this.wsUrl;
+
+            if (this.isConnected() && this.stateChangeTime > 0) {
+                m += '\nUptime: ' + (new Date().getTime() - this.stateChangeTime);
+            }
+
+            console.warn(m);
+        }
+
+        if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED) {
             if (this.debug) {
-                let m = 'ServerEventsConnection: connection closed to ' + wsUrl;
-                if (this.downTime > 0) {
-                    m += '\nUptime: ' + (new Date().getTime() - this.downTime);
+                console.warn('Error establishing WS connection');
+            }
+        }
+
+        this.reconnectIntervalId = setTimeout(() => {
+            if (this.isConnected()) {
+                if (this.keepConnected) {
+                    this.notifyDisconnected();
                 }
-                console.warn(m);
-                this.downTime = new Date().getTime();
-            }
-            this.disconnectTimeoutHandle = setTimeout(() => {
-                if (this.connected) {
-                    if (this.keepConnected) {
-                        this.notifyConnectionLost();
-                    }
-                    this.connected = !this.connected;
-                }
-            }, this.reconnectInterval + 1000);
 
-            // attempt to reconnect
-            if (this.keepConnected) {
-                setTimeout(() => {
-                    if (this.keepConnected) {
-                        this.doConnect(wsUrl);
-                    }
-                }, this.reconnectInterval);
+                this.connectionState = CONNECTION_STATE.LOST;
+                this.stateChangeTime = new Date().getTime();
             }
-        });
 
-        this.ws.addEventListener('error', (ev: ErrorEvent) => {
             if (this.debug) {
-                console.error('ServerEventsConnection: Unable to connect to server web socket on ' + wsUrl, ev);
+                console.log('Checking reconnect status. Connection state: ', CONNECTION_STATE[this.connectionState].toString());
             }
-        });
+        }, this.reconnectInterval + 1000);
 
-        this.ws.addEventListener('message', (remoteEvent: any) => {
-            let jsonEvent = <NodeEventJson> JSON.parse(remoteEvent.data);
-            if (this.debug) {
-                console.debug('ServerEventsConnection: Server event [' + jsonEvent.type + ']', jsonEvent);
-            }
-            this.handleServerEvent(jsonEvent);
-        });
-
-        this.ws.addEventListener('open', () => {
-            if (this.debug) {
-                let m = 'ServerEventsConnection: connection opened to ' + wsUrl;
-                if (this.downTime > 0) {
-                    m += '\nDowntime: ' + (new Date().getTime() - this.downTime);
-                }
-                console.log(m);
-                this.downTime = new Date().getTime();
-            }
-            clearTimeout(this.disconnectTimeoutHandle);
-            this.keepAliveIntervalId = setInterval(() => {
-                if (this.connected) {
-                    this.ws.send('KeepAlive');
+        // attempt to reconnect
+        if (this.keepConnected) {
+            setTimeout(() => {
+                if (this.keepConnected) {
                     if (this.debug) {
-                        console.log('ServerEventsConnection: Sending Keep Alive message');
+                        console.log('Trying to reconnect...');
                     }
+                    this.doConnect();
                 }
-            }, ServerEventsConnection.KEEP_ALIVE_TIME);
-            if (!this.connected) {
-                this.notifyConnectionRestored();
-                this.connected = !this.connected;
+            }, this.reconnectInterval);
+        }
+    }
+
+    private handleWSError(ev: ErrorEvent) {
+        if (this.debug) {
+            console.error('ServerEventsConnection: Unable to connect to server web socket on ' + this.wsUrl, ev);
+        }
+
+        this.notifyConnectionError();
+    }
+
+    private handleWSMessage(remoteEvent: any) {
+        const jsonEvent: NodeEventJson = <NodeEventJson>JSON.parse(remoteEvent.data);
+
+        if (this.debug) {
+            console.debug('ServerEventsConnection: Server event [' + jsonEvent.type + ']', jsonEvent);
+        }
+
+        this.handleServerEvent(jsonEvent);
+    }
+
+    private handleWSOpen() {
+        if (this.debug) {
+            let m: string = 'ServerEventsConnection: connection opened to ' + this.wsUrl;
+
+            if (this.stateChangeTime > 0) {
+                m += '\nDowntime: ' + (new Date().getTime() - this.stateChangeTime);
+                this.stateChangeTime = 0;
             }
-        });
+
+            console.log(m);
+        }
+
+        clearTimeout(this.reconnectIntervalId);
+
+        this.keepAliveIntervalId = setInterval(() => {
+            if (this.isConnected()) {
+                this.ws.send('KeepAlive');
+
+                if (this.debug) {
+                    console.log('ServerEventsConnection: Sending Keep Alive message');
+                }
+            }
+        }, ServerEventsConnection.KEEP_ALIVE_TIME);
+
+        if (!this.isConnected()) {
+            this.notifyConnected();
+            this.stateChangeTime = new Date().getTime();
+
+            if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED) {
+                this.connectionState = CONNECTION_STATE.ESTABLISHED;
+            } else if (this.connectionState === CONNECTION_STATE.LOST) {
+                this.connectionState = CONNECTION_STATE.RESTORED;
+            }
+        }
+
+        if (this.debug) {
+            console.log('Connection state: ', CONNECTION_STATE[this.connectionState].toString());
+        }
     }
 
     private handleServerEvent(eventJson: NodeEventJson): void {
@@ -205,15 +263,14 @@ export class ServerEventsConnection {
     }
 
     private getWebSocketUriPrefix(): string {
-        let loc = window.location;
-        let newUri;
-        if (loc.protocol === 'https:') {
-            newUri = 'wss:';
-        } else {
-            newUri = 'ws:';
-        }
-        newUri += '//' + loc.host;
-        return newUri;
+        const loc: Location = window.location;
+        const prefix: string = loc.protocol === 'https:' ? 'wss:' : 'ws:';
+
+        return `${prefix}//${loc.host}`;
+    }
+
+    private isConnected(): boolean {
+        return this.connectionState === CONNECTION_STATE.ESTABLISHED || this.connectionState === CONNECTION_STATE.RESTORED;
     }
 
     private notifyServerEvent(serverEvent: Event) {
@@ -228,16 +285,21 @@ export class ServerEventsConnection {
         });
     }
 
-    private notifyConnectionLost() {
-        this.connectionLostListeners.forEach((listener: (event: any) => void) => {
+    private notifyDisconnected() {
+        this.disconnectedListeners.forEach((listener: (event: any) => void) => {
             listener.call(this);
         });
     }
 
-    private notifyConnectionRestored() {
-        this.connectionRestoredListeners.forEach((listener: (event: any) => void) => {
+    private notifyConnected() {
+        this.connectedListeners.forEach((listener: (event: any) => void) => {
             listener.call(this);
         });
     }
 
+    private notifyConnectionError() {
+        this.connectionErrorListeners.forEach((listener: (event: any) => void) => {
+            listener.call(this);
+        });
+    }
 }
