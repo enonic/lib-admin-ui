@@ -157,11 +157,9 @@ export class ServerEventsConnection {
                     if (this.keepConnected) {
                         this.notifyDisconnected();
                     }
-                    if (this.connectionState === CONNECTION_STATE.ESTABLISHED ||
-                        this.connectionState === CONNECTION_STATE.RESTORED) {
-                            this.connectionState = CONNECTION_STATE.LOST;
-                        this.stateChangeTime = new Date().getTime();
-                    }
+
+                    this.connectionState = CONNECTION_STATE.LOST;
+                    this.stateChangeTime = new Date().getTime();
                 }
                 if (this.debug) {
                     console.log('Checking reconnect status. Connection state: ', CONNECTION_STATE[this.connectionState].toString());
@@ -215,10 +213,8 @@ export class ServerEventsConnection {
                 }
             }, ServerEventsConnection.KEEP_ALIVE_TIME);
             if (!this.isConnected()) {
-                if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED || this.connectionState === CONNECTION_STATE.LOST) {
-                    this.notifyConnected();
-                    this.stateChangeTime = new Date().getTime();
-                }
+                this.notifyConnected();
+                this.stateChangeTime = new Date().getTime();
                 if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED) {
                     this.connectionState = CONNECTION_STATE.ESTABLISHED;
                 } else if (this.connectionState === CONNECTION_STATE.LOST) {
