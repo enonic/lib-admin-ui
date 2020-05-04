@@ -383,15 +383,15 @@ body {
   }
 
   &._0-240 .@{_COMMON_PREFIX}modal-dialog, &._240-360 .@{_COMMON_PREFIX}modal-dialog {
-    .all-space(10px);
+    .all-space();
   }
 
   &._360-540 .@{_COMMON_PREFIX}modal-dialog {
-    .all-space(15px);
+    .all-space();
   }
 
   &._540-720 .@{_COMMON_PREFIX}modal-dialog {
-    .all-space(20px);
+    .all-space();
   }
 
   @media screen and (max-height: 540px) {
@@ -406,4 +406,5 @@ body {
   width: calc(100% - @except);
   height: calc(100% - @except);
   margin: 0;
+  max-width: none;
 }
