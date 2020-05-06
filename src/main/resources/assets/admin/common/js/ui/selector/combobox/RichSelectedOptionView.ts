@@ -81,6 +81,9 @@ export class RichSelectedOptionView<T>
     }
 
     private setValues(values: T) {
+        if (!this.namesAndIconView) {
+            return;
+        }
         this.namesAndIconView.setMainName(this.resolveTitle(values))
             .setSubName(this.resolveSubTitle(values));
 
