@@ -13,10 +13,10 @@ repositories {
 
 
 group = 'com.enonic.lib'
-version = '3.0.0-SNAPSHOT'
+version = '3.1.0-SNAPSHOT'
 
 jar {
-    baseName = 'lib-admin-ui'
+    archiveFileName = 'lib-admin-ui'
 }
 
 node {
@@ -39,7 +39,7 @@ task typescriptPkg( type: NpmTask, dependsOn: lint ) {
     def buildEnv = isProd() ? 'prod' : 'dev'
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     args = [ 'run', "build:$buildEnv" ]
-    inputs.dir 'src/main/resources/assets/admin/common'
+    inputs.dir "${resourcesDir}/assets/admin/common"
     outputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
 }
 
@@ -47,7 +47,7 @@ task typescriptLib( type: NpmTask, dependsOn: lint ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build library, that should be included to HTML.'
     args = [ 'run', 'build:lib' ]
-    inputs.dir 'src/main/resources/assets/admin/common'
+    inputs.dir "${resourcesDir}/assets/admin/common"
     outputs.dir "${buildDir}/resources/main/assets/admin/common"
 }
 
