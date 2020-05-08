@@ -21,35 +21,37 @@ export type ManagedActionsModalDialog = ModalDialog & ManagedActionExecutor;
 
 export interface ProgressBarManagerConfig {
     processingLabel: string;
-    processHandler: () => void;
+    managingElement: ManagedActionsModalDialog;
+    processHandler?: () => void;
     unlockControlsHandler?: () => void;
     createProcessingMessage?: () => Element;
-    managingElement: ManagedActionsModalDialog;
 }
 
 export class ProgressBarManager {
 
     static processingClass: string = 'is-processing';
 
-    private managingElement: ManagedActionsModalDialog;
+    readonly managingElement: ManagedActionsModalDialog;
 
     private progressBar: ProgressBar;
 
     private processingMessageContainer: Element;
 
-    private createProcessingMessage: () => Element;
+    readonly createProcessingMessage: () => Element;
 
-    private processingLabel: string;
+    readonly processingLabel: string;
 
-    private processHandler: () => void;
+    readonly processHandler: () => void;
 
-    private unlockControlsHandler: () => void;
+    readonly unlockControlsHandler: () => void;
 
     private progressCompleteListeners: ((taskState: TaskState) => void)[] = [];
 
     private state: ProgressBarManagerState = ProgressBarManagerState.DISABLED;
 
     private taskHandler: (event: TaskEvent) => void;
+
+    private suppressNotifications: boolean = false;
 
     constructor(config: ProgressBarManagerConfig) {
         this.managingElement = config.managingElement;
@@ -63,6 +65,10 @@ export class ProgressBarManager {
         this.managingElement.onRemoved(() => ManagedActionManager.instance().removePerformer(this.managingElement));
 
         this.managingElement.addClass('progress-manageable');
+    }
+
+    setSuppressNotifications(value: boolean) {
+        this.suppressNotifications = value;
     }
 
     isEnabled(): boolean {
@@ -180,19 +186,25 @@ export class ProgressBarManager {
 
     private handleSucceeded(message: string) {
         this.setProgressValue(100);
-        showSuccess(message);
+        if (!this.suppressNotifications) {
+            showSuccess(message);
+        }
         this.notifyProgressComplete(TaskState.FINISHED);
         this.handleProcessingComplete();
     }
 
     private handleFailed(message: string) {
-        showError(i18n('notify.process.failed', message));
+        if (!this.suppressNotifications) {
+            showError(i18n('notify.process.failed', message));
+        }
         this.notifyProgressComplete(TaskState.FAILED);
         this.handleProcessingComplete();
     }
 
     private handleWarning(message: string) {
-        showWarning(message);
+        if (!this.suppressNotifications) {
+            showWarning(message);
+        }
         this.notifyProgressComplete(TaskState.FAILED);
         this.handleProcessingComplete();
     }
