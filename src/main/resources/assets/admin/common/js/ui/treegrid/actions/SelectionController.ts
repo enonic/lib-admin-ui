@@ -29,7 +29,6 @@ export class SelectionController
         this.treeGrid.onSelectionChanged(() => this.updateState());
         this.treeGrid.onLoaded(() => this.updateState());
         this.onClicked((event) => {
-
             event.preventDefault();
 
             if (this.isDisabled()) {
@@ -37,8 +36,7 @@ export class SelectionController
             }
 
             if (this.isChecked() || this.isPartial()) {
-                this.treeGrid.getRoot().clearStashedSelection();
-                this.treeGrid.getGrid().clearSelection();
+                this.treeGrid.deselectAll();
             } else {
                 this.treeGrid.selectAll();
             }
@@ -47,10 +45,6 @@ export class SelectionController
         this.onRendered(() => {
             this.setChecked(false, true);
         });
-    }
-
-    protected isEntireSelectionStashed(): boolean {
-        return this.treeGrid.getTotalCurrentSelected() === 0 && this.treeGrid.getTotalStashedSelected() !== 0;
     }
 
     protected updateState() {
@@ -77,7 +71,7 @@ export class SelectionController
     }
 
     private isAnySelected(): boolean {
-        return this.treeGrid.getTotalCurrentSelected() !== 0 || this.treeGrid.getTotalStashedSelected() !== 0;
+        return this.treeGrid.getTotalSelected() > 0;
     }
 
     private isAllSelected(): boolean {

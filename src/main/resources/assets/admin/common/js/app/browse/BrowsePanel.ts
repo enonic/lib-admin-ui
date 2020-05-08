@@ -95,14 +95,13 @@ export class BrowsePanel<M extends Equitable>
 
     private initTreeGridListeners() {
         const selectionChangedHandler = () => {
-            const totalFullSelected: number = this.treeGrid.getTotalFullSelected();
-            const totalCurrentSelected: number = this.treeGrid.getTotalCurrentSelected();
+            const totalFullSelected: number = this.treeGrid.getTotalSelected();
 
             if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
-                this.updateSelectionModeShownItems(totalCurrentSelected, totalFullSelected);
+                this.updateSelectionModeShownItems(totalFullSelected);
             }
 
-            const browseItems: BrowseItem<M>[] = this.treeNodesToBrowseItems(this.treeGrid.getFullSelection());
+            const browseItems: BrowseItem<M>[] = this.dataItemsToBrowseItems(this.treeGrid.getFullSelection());
             const changes: BrowseItemsChanges<M> = this.getBrowseItemPanel().setItems(browseItems);
 
             if (this.treeGrid.hasHighlightedNode() && ((totalFullSelected === 0 && changes.getRemoved().length === 1) ||
@@ -216,12 +215,22 @@ export class BrowsePanel<M extends Equitable>
         return this.browseToolbar.getActions();
     }
 
-    treeNodeToBrowseItem(_node: TreeNode<Object>): BrowseItem<M> | null {
+    dataToBrowseItem(data: Object): BrowseItem<M> | null {
         throw new Error('Must be implemented by inheritors');
     }
 
-    treeNodesToBrowseItems(_nodes: TreeNode<Object>[]): BrowseItem<M>[] {
-        throw new Error('Must be implemented by inheritors');
+    dataItemsToBrowseItems(dataItems: Object[]): BrowseItem<M>[] {
+        const browseItems: BrowseItem<M>[] = [];
+
+        // do not proceed duplicated content. still, it can be selected
+        dataItems.forEach((node: TreeNode<M>) => {
+            const item = this.dataToBrowseItem(node);
+            if (item) {
+                browseItems.push(item);
+            }
+        });
+
+        return browseItems;
     }
 
     refreshFilter() {
@@ -333,7 +342,7 @@ export class BrowsePanel<M extends Equitable>
             return Q(null);
         }
 
-        const browseItem: BrowseItem<M> = this.treeNodeToBrowseItem(node);
+        const browseItem: BrowseItem<M> = this.dataToBrowseItem(node.getData());
         const updateActionsPromise = this.getBrowseActions().updateActionsEnabledState([browseItem]);
         const togglePreviewPromise = this.checkIfItemIsRenderable(browseItem).then(() => {
             this.getBrowseItemPanel().togglePreviewForItem(browseItem);
@@ -394,14 +403,14 @@ export class BrowsePanel<M extends Equitable>
         }
     }
 
-    private updateSelectionModeShownItems(totalCurrentSelected: number, totalFullSelected: number) {
-        if (totalCurrentSelected === totalFullSelected) { // to filter unwanted selection change events
-            const amountOfNodesShown: number = this.treeGrid.getCurrentTotal();
-            if (totalCurrentSelected === 0 || amountOfNodesShown === 0) { // all items deselected
-                this.treeGrid.getToolbar().getSelectionPanelToggler().setActive(false);
-            } else if (amountOfNodesShown > totalFullSelected) { // some item/items deselected
-                this.treeGrid.filter(this.treeGrid.getSelectedDataList());
-            }
+    private updateSelectionModeShownItems(totalFullSelected: number) {
+        const totalCurrentSelected: number = this.treeGrid.getTotalCurrentSelected();
+        const amountOfNodesShown: number = this.treeGrid.getCurrentTotal();
+
+        if (totalCurrentSelected === 0 || amountOfNodesShown === 0) { // all items deselected
+            this.treeGrid.getToolbar().getSelectionPanelToggler().setActive(false);
+        } else if (amountOfNodesShown > totalFullSelected) { // some item/items deselected
+            this.treeGrid.filter(this.treeGrid.getSelectedDataList());
         }
     }
 

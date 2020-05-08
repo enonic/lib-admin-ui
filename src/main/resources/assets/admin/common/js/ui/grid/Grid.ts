@@ -312,43 +312,24 @@ export class Grid<T extends Slick.SlickData>
     }
 
     moveSelectedUp() {
-        if (this.slickGrid.getDataLength() > 0) {
-            let selected: number[] = this.getSelectedRows();
-            let row = selected.length >= 1
-                      ? selected[0] - 1
-                      : -1;
+        if (this.getDataLength() > 0) {
+            const row: number = new GridSelectionHelper(this.getSelectedRows()).getRowToSingleSelectUp();
 
-            if (selected.length === 1) {
-                if (row >= 0) {
-                    this.selectRow(row, true);
-                    return row;
-                } else {
-                    this.clearSelection(true);
-                    return 0;
-                }
-            } else if (selected.length > 1) {
-                row = Math.max(row, 0);
+            if (row >= 0) {
                 this.selectRow(row, true);
-                return row;
             }
         }
-
-        return -1;
     }
 
     moveSelectedDown() {
         if (this.slickGrid.getDataLength() > 0) {
-            let selected: number[] = this.getSelectedRows();
-            let row = selected.length >= 1
-                      ? Math.min(selected[selected.length - 1] + 1, this.slickGrid.getDataLength() - 1)
-                      : 0;
+            const row: number = new GridSelectionHelper(this.getSelectedRows()).getRowToSingleSelectDown(this.getDataLength());
 
-            this.selectRow(row, true);
-
-            return row;
+            if (row >= 0) {
+                this.selectRow(row, true);
+            }
         }
 
-        return -1;
     }
 
     addSelectedUp() {
