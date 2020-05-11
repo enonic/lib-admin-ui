@@ -103,11 +103,7 @@ export class ContentSummary {
     }
 
     static fromJsonArray(jsonArray: ContentSummaryJson[]): ContentSummary[] {
-        let array: ContentSummary[] = [];
-        jsonArray.forEach((json: ContentSummaryJson) => {
-            array.push(ContentSummary.fromJson(json));
-        });
-        return array;
+        return jsonArray.map((json: ContentSummaryJson) => ContentSummary.fromJson(json));
     }
 
     getName(): ContentName {

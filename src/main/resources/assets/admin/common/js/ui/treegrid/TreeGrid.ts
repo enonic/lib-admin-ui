@@ -443,11 +443,7 @@ export class TreeGrid<DATA>
     }
 
     dataToTreeNodes(dataArray: DATA[], parent: TreeNode<DATA>, expandAllowed: boolean = true): TreeNode<DATA>[] {
-        const nodes: TreeNode<DATA>[] = [];
-        dataArray.forEach((data) => {
-            nodes.push(this.dataToTreeNode(data, parent, expandAllowed));
-        });
-        return nodes;
+        return dataArray.map((data: DATA) => this.dataToTreeNode(data, parent, expandAllowed));
     }
 
     filter(dataList: DATA[]) {
