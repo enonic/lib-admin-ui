@@ -680,20 +680,22 @@ export class TreeGrid<DATA>
         this.doInsertNodeToParentWithChildren(parentNode, data, root, index);
     }
 
-    getParentNode(nextToSelection: boolean = false, stashedParentNode?: TreeNode<DATA>) {
-        let root = stashedParentNode || this.root.getCurrentRoot();
-        let parentNode: TreeNode<DATA>;
-
-        parentNode = this.getFirstSelectedOrHighlightedNode();
-
-        if (parentNode) {
-            if (nextToSelection) {
-                parentNode = parentNode.getParent() || this.root.getCurrentRoot();
-            }
-        } else {
-            parentNode = root;
+    protected getParentNode(nextToSelection: boolean = false, stashedParentNode?: TreeNode<DATA>) {
+        if (stashedParentNode) {
+            return stashedParentNode;
         }
-        return parentNode;
+
+        const selectedOrHighlightedNode: TreeNode<DATA> = this.getFirstSelectedOrHighlightedNode();
+
+        if (selectedOrHighlightedNode) {
+            if (nextToSelection && selectedOrHighlightedNode.getParent()) {
+                return selectedOrHighlightedNode.getParent();
+            }
+
+            return selectedOrHighlightedNode;
+        }
+
+        return this.root.getCurrentRoot();
     }
 
     insertNode(data: DATA, nextToSelection: boolean = false, index: number = 0,
@@ -1512,8 +1514,8 @@ export class TreeGrid<DATA>
         }
 
         let selectedIndex = this.highlightedNode
-                            ? this.getRowIndexByNode(this.highlightedNode)
-                            : this.grid.getSelectedRows()[selectedCount - 1];
+            ? this.getRowIndexByNode(this.highlightedNode)
+            : this.grid.getSelectedRows()[selectedCount - 1];
 
         if (selectedIndex > 0) {
             this.unselectAllRows();
