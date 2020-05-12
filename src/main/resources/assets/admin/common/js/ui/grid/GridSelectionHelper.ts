@@ -112,4 +112,82 @@ export class GridSelectionHelper {
 
         return nextNonSelectedRowDown;
     }
+
+    getRowToToggleWhenShiftingUp(): number {
+        if (this.selected.length === 0) {
+            return -1;
+        }
+
+        const lastSelectedRow: number = this.selected[this.selected.length - 1];
+        const nextRowUp: number = lastSelectedRow - 1;
+
+        if (nextRowUp < 0) {
+            return -1;
+        }
+
+        if (!this.isSelected(nextRowUp)) {
+            return nextRowUp;
+        }
+
+        const nextRowDown: number = lastSelectedRow + 1;
+
+        if (!this.isSelected(nextRowDown)) {
+            return this.selected.pop();
+        }
+
+        const nextNonSelectedRowUp: number = this.findFirstNotSelectedRowAbove(nextRowUp);
+
+        if (nextNonSelectedRowUp >= 0) {
+            return nextNonSelectedRowUp;
+        }
+
+        return -1;
+    }
+
+    getRowToToggleWhenShiftingDown(totalItems: number): number {
+        if (this.selected.length === 0) {
+            return -1;
+        }
+
+        const lastSelectedRow: number = this.selected[this.selected.length - 1];
+        const nextRowDown: number = lastSelectedRow + 1;
+
+        if (nextRowDown >= totalItems) {
+            return -1;
+        }
+
+        if (!this.isSelected(nextRowDown)) {
+            return nextRowDown;
+        }
+
+        const nextRowUp: number = lastSelectedRow - 1;
+
+        if (!this.isSelected(nextRowUp)) {
+            return this.selected.pop();
+        }
+
+        const nextNonSelectedRowDown: number = this.findFirstNotSelectedRowUnder(nextRowDown, totalItems);
+
+        if (nextNonSelectedRowDown < totalItems) {
+            return nextNonSelectedRowDown;
+        }
+
+        return -1;
+    }
+
+    getRowToSingleSelectUp(): number {
+        if (this.selected.length === 0) {
+            return -1;
+        }
+
+        return this.selected[0] - 1;
+    }
+
+    getRowToSingleSelectDown(totalItems: number): number {
+        const row: number = this.selected.length >= 1
+            ? Math.min(this.selected[this.selected.length - 1] + 1, totalItems - 1)
+            : 0;
+
+        return row;
+    }
 }
