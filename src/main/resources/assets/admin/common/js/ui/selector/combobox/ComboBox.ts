@@ -199,7 +199,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             optionDataLoader: config.optionDataLoader,
             createColumns: config.createColumns
         });
-
+        this.initDropdown();
         this.setupListeners();
     }
 
@@ -271,6 +271,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
         this.input.setReadOnly(false);
         this.removeClass('expanded');
+        if (this.isDropdownRendered()) {
+            this.removeDropdown();
+        }
     }
 
     setOptions(options: Option<OPTION_DISPLAY_VALUE>[], saveSelection?: boolean) {
@@ -919,8 +922,15 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     private renderDropdown() {
+        this.getComboBoxDropdownGrid().getElement().insertAfterEl(this.comboBoxDropdown.getEmptyDropdown());
+    }
+
+    private removeDropdown() {
+        this.removeChild(this.getComboBoxDropdownGrid().getElement());
+    }
+
+    private initDropdown() {
         this.appendChild(this.comboBoxDropdown.getEmptyDropdown());
-        this.appendChild(<Element>this.comboBoxDropdown.getDropdownGrid().getElement());
 
         this.getComboBoxDropdownGrid().onClick(() => {
             this.giveInputFocus();
