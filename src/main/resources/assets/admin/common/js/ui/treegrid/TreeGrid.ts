@@ -938,7 +938,21 @@ export class TreeGrid<DATA>
     invalidate() {
         this.grid.invalidate();
 
+        if (this.isHighlightedNodeSelected() && !this.gridOptions.isMultipleSelectionDisabled()) {
+            return;
+        }
+
         this.highlightCurrentNode();
+    }
+
+    private isHighlightedNodeSelected(): boolean {
+        if (!this.highlightedNode) {
+            return false;
+        }
+
+        const allSelectedNodes: TreeNode<DATA>[] = this.root.getFullSelection(false);
+
+        return allSelectedNodes.some((selectedNode: TreeNode<DATA>) => selectedNode.getId() === this.highlightedNode.getId());
     }
 
     invalidateNodes(nodes: TreeNode<DATA>[]) {
