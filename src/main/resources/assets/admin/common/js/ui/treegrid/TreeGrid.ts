@@ -583,9 +583,14 @@ export class TreeGrid<DATA>
             this.removeHighlighting();
         }
 
-        this.selection.reset();
+        const forceSelectionHandlers: boolean = this.selection.hasSelectedItems() && !this.grid.isAnySelected();
 
+        this.selection.reset();
         this.grid.clearSelection();
+
+        if (forceSelectionHandlers) {
+            this.handleSelectionChanged([]);
+        }
     }
 
     deselectNodes(dataIds: string[]) {
