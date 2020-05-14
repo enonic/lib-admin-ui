@@ -580,7 +580,7 @@ export class TreeGrid<DATA>
 
     deselectAll(unhighlight: boolean = true) {
         if (unhighlight) {
-            this.removeHighlighting(true);
+            this.removeHighlighting();
         }
 
         this.selection.reset();
