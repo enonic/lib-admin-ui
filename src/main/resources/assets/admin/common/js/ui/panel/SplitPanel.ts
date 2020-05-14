@@ -563,6 +563,10 @@ export class SplitPanel
         return this.splitterIsHidden ? 0 : this.splitterThickness;
     }
 
+    setSplitterIsHidden(value: boolean) {
+        this.splitterIsHidden = value;
+    }
+
     toString(): string {
         return ClassHelper.getClassName(this) + '[' + this.getId() + ']';
     }

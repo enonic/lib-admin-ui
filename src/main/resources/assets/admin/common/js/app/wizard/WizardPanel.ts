@@ -281,7 +281,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
         let navigationWidth;
         if (this.minimized) {
-            navigationWidth = this.splitPanel.getEl().getHeight();
+            navigationWidth = this.splitPanel.getEl().getHeight() + this.stepNavigatorAndToolbarContainer.getEl().getPaddingLeft();
         } else {
             navigationWidth = this.stepsPanel.getEl().getWidth() - this.stepNavigatorAndToolbarContainer.getEl().getPaddingLeft();
         }
@@ -305,6 +305,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
         let scroll = this.stepsPanel.getScroll();
         this.minimized = !this.minimized;
+        this.splitPanel.setSplitterIsHidden(this.minimized);
 
         this.stepNavigator.unNavigationItemActivated(this.toggleMinimizeListener);
         this.formPanel.toggleClass('minimized');
