@@ -23,8 +23,8 @@ export class SelectionPanelToggler
 
         treeGrid.onSelectionChanged(() => {
             const oldLabel: string = this.getLabel();
-            const totalFullSelected: number = treeGrid.getTotalFullSelected();
-            const newLabel: string = totalFullSelected ? totalFullSelected.toString() : '';
+            const totalSelected: number = treeGrid.getTotalSelected();
+            const newLabel: string = totalSelected ? totalSelected.toString() : '';
 
             if (oldLabel === newLabel) {
                 return;
@@ -39,9 +39,9 @@ export class SelectionPanelToggler
             if (newLabel !== '') {
                 this.addClass(`size-${newLabel.length}`);
                 this.addClass('updated');
-                if (totalFullSelected >= 1) {
+                if (totalSelected >= 1) {
                     this.addClass('any-selected');
-                    const description = i18n(`field.item.${totalFullSelected === 1 ? 'single' : 'multiple'}`);
+                    const description = i18n(`field.item.${totalSelected === 1 ? 'single' : 'multiple'}`);
                     this.counterDescription.getEl().setAttribute('data-label', description);
                 }
                 setTimeout(() => {

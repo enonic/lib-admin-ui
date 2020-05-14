@@ -69,7 +69,6 @@ export class DropdownTreeGrid<OPTION_DISPLAY_VALUE>
     }
 
     markSelections(selectedOptions: Option<OPTION_DISPLAY_VALUE>[], ignoreEmpty: boolean = false) {
-        this.optionsTreeGrid.getRoot().clearStashedSelection();
         super.markSelections(selectedOptions, ignoreEmpty);
     }
 
