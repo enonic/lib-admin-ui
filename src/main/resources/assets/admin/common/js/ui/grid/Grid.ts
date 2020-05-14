@@ -222,11 +222,17 @@ export class Grid<T extends Slick.SlickData>
     }
 
     getSelectedRowItems(): T[] {
-        let rowItems: T[] = [];
-        let rows = this.getSelectedRows();
+        const rowItems: T[] = [];
+        const rows: number[] = this.getSelectedRows();
+
         rows.forEach((rowIndex: number) => {
-            rowItems.push(this.dataView.getItem(rowIndex));
+            const item: T = this.dataView.getItem(rowIndex);
+
+            if (item) {
+                rowItems.push(item);
+            }
         });
+
         return rowItems;
     }
 

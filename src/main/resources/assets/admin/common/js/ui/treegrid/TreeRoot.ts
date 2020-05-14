@@ -64,15 +64,7 @@ export class TreeRoot<DATA> {
     }
 
     getNodeByDataId(dataId: string): TreeNode<DATA> {
-        if (this.isFiltered()) {
-            const node: TreeNode<DATA> = this.filteredRoot.findNode(dataId);
-
-            if (node) {
-                return node;
-            }
-        }
-
-        return this.defaultRoot.findNode(dataId);
+        return this.defaultRoot.findNode(dataId) || this.filteredRoot.findNode(dataId);
     }
 
     getNodeByDataIdFromCurrent(dataId: string): TreeNode<DATA> {
