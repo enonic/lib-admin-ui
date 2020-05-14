@@ -8,20 +8,11 @@ export class TreeRoot<DATA> {
 
     private filtered: boolean;
 
-    private currentSelection: TreeNode<DATA>[];
-
-    private stashedSelection: TreeNode<DATA>[];
-
     constructor() {
-
         this.defaultRoot = new TreeNodeBuilder<DATA>().setExpanded(true).build();
         this.filteredRoot = new TreeNodeBuilder<DATA>().setExpanded(true).build();
 
         this.filtered = false;
-
-        this.currentSelection = [];
-
-        this.stashedSelection = [];
     }
 
     getDefaultRoot(): TreeNode<DATA> {
@@ -67,65 +58,24 @@ export class TreeRoot<DATA> {
         if (filtered) {
             // reset the filter on switch to filter
             this.filteredRoot = new TreeNodeBuilder<DATA>().setExpanded(true).build();
-            this.stashSelection();
-        } else if (this.filtered && !filtered) {
-            // stash selection on switch from filter to default
-            this.stashSelection();
         }
 
         this.filtered = filtered;
     }
 
-    getCurrentSelection(): TreeNode<DATA>[] {
-        return this.currentSelection;
-    }
+    getNodeByDataId(dataId: string): TreeNode<DATA> {
+        if (this.isFiltered()) {
+            const node: TreeNode<DATA> = this.filteredRoot.findNode(dataId);
 
-    setCurrentSelection(selection: TreeNode<DATA>[]) {
-        this.currentSelection = selection;
-
-        this.cleanStashedSelection();
-    }
-
-    getStashedSelection(): TreeNode<DATA>[] {
-        return this.stashedSelection;
-    }
-
-    stashSelection() {
-        this.stashedSelection = this.stashedSelection.concat(this.currentSelection);
-        this.currentSelection = [];
-
-        this.cleanStashedSelection();
-    }
-
-    getFullSelection(uniqueOnly: boolean = true): TreeNode<DATA>[] {
-        let fullSelection = this.currentSelection.concat(this.stashedSelection);
-        if (uniqueOnly) {
-            let fullIds = fullSelection.map((el) => {
-                return el.getDataId();
-            });
-            fullSelection = fullSelection.filter((value, index) => {
-                return fullIds.indexOf(value.getDataId()) === index;
-            });
+            if (node) {
+                return node;
+            }
         }
 
-        fullSelection = fullSelection.filter((value) => {
-            return !!value.getDataId();
-        });
-
-        return fullSelection;
+        return this.defaultRoot.findNode(dataId);
     }
 
-    clearStashedSelection() {
-        this.stashedSelection = [];
-    }
-
-    private cleanStashedSelection() {
-        const currentIds: string[] = this.currentSelection.map(el => el.getDataId());
-        const stashedIds: string[] = this.stashedSelection.map(el => el.getDataId());
-
-        this.stashedSelection = this.stashedSelection.filter((value, index) => {
-            // remove duplicated nodes and those, that are already in `currentSelection`
-            return (currentIds.indexOf(value.getDataId()) < 0) && (stashedIds.indexOf(value.getDataId()) === index);
-        });
+    getNodeByDataIdFromCurrent(dataId: string): TreeNode<DATA> {
+        return this.getCurrentRoot().findNode(dataId);
     }
 }
