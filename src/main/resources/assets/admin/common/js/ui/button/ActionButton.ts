@@ -79,7 +79,7 @@ export class ActionButton
         return this.tooltip;
     }
 
-    private createLabel(action: Action): string {
+    protected createLabel(action: Action): string {
         let label: string;
         if (action.hasMnemonic()) {
             label = action.getMnemonic().underlineMnemonic(action.getLabel());
