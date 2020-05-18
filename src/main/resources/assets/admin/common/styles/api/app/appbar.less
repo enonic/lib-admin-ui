@@ -4,57 +4,46 @@
   position: absolute;
   right: 0;
 
-  padding: 0 10px 0 15px;
   background: @admin-bg-dark-gray;
   background-size: cover;
   overflow: hidden;
   box-sizing: border-box;
 
   display: flex;
-  flex-flow: row no-wrap;
+  flex-flow: row;
   align-items: stretch;
   align-content: stretch;
+
   .appbar-tab-menu {
     display: flex;
+    width: 100%;
+    padding-right: @app-header-height;
+    margin-left: 35px;
   }
 
   .app-icon-mixin();
-}
 
-._0-240, ._240-360, ._360-540 {
+  .app-icon {
+    padding: 0 10px;
+  }
 
-  &.tabs-present {
-    .home-button {
-      &:before {
-        float: left;
-      }
-
-      span {
-        display: none;
-      }
-    }
-
-    .xp-admin-common-button {
-      padding-right: 17px !important;
-    }
+  &._0-240, &._240-360, &._360-540 {
 
     .appbar-tab-menu {
-      max-width: calc(~'100% - ' 90px);
+      margin-left: 0;
     }
-  }
 
-  .tab-menu {
-    min-width: initial;
-  }
+    &.tabs-present {
 
-}
+      .home-button {
 
-.tabs-present {
-  .appbar-tab-menu {
-    max-width: calc(~'100% - ' 222px);
+        justify-content: center;
+        width: @app-header-height;
 
-    ul.bar {
-      min-width: inherit;
+        .app-name {
+          display: none;
+        }
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 .appbar-tab-menu {
-  flex-flow: row no-wrap;
+  flex-flow: row;
   align-items: stretch;
   align-content: stretch;
 
@@ -16,6 +16,12 @@
     padding-left: 10px;
   }
 
+  &.expanded {
+    .tab-menu-button {
+      border-bottom: none;
+    }
+  }
+
   .tab-menu-button {
     flex: 0 0 36px;
     position: relative; // to position popup menu relative to me
@@ -28,6 +34,7 @@
     font-family: @admin-font-family;
     color: @admin-font-gray3;
     border-left: 1px solid @admin-dark-gray-border;
+    border-bottom: 1px solid @admin-dark-gray-border;
     cursor: pointer;
     overflow: hidden;
 
@@ -42,10 +49,6 @@
       display: block;
       margin: 0 30px;
       .ellipsis();
-    }
-
-    &:hover{
-      background-color: @admin-white;
     }
   }
 
@@ -88,10 +91,6 @@
       }
 
       &.active {
-        background-color: @admin-white;
-      }
-
-      &:hover{
         background-color: @admin-white;
       }
 
@@ -173,7 +172,7 @@
   ul.menu {
     position: fixed;
     top: @app-header-height;
-    right: 64px;
+    right: @app-header-height;
     left: initial;
     width: auto;
     padding: 5px 0;
