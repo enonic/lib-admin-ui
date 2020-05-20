@@ -1,6 +1,5 @@
 .wizard-step-navigator {
   box-sizing: border-box;
-  background-color: @admin-bg-light-gray;
   color: @admin-font-gray1;
   overflow: hidden;
 
@@ -64,5 +63,11 @@
     &:last-of-type {
       margin-right: 10px;
     }
+  }
+}
+
+.minimized {
+  .wizard-step-navigator {
+    background-color: @admin-bg-light-gray;
   }
 }
