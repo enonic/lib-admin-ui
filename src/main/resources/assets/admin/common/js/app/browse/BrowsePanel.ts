@@ -18,6 +18,7 @@ import {AppHelper} from '../../util/AppHelper';
 import {ToggleFilterPanelAction} from './action/ToggleFilterPanelAction';
 import {BrowseItemPanel} from './BrowseItemPanel';
 import {BrowseItemsChanges} from './BrowseItemsChanges';
+import {i18n} from '../../util/Messages';
 
 export class BrowsePanel<M extends Equitable>
     extends Panel {
@@ -373,6 +374,7 @@ export class BrowsePanel<M extends Equitable>
     private addToggleFilterPanelButtonInToolbar() {
         this.toggleFilterPanelAction = new ToggleFilterPanelAction(this);
         this.toggleFilterPanelButton = new ActionButton(this.toggleFilterPanelAction);
+        this.toggleFilterPanelButton.setTitle(i18n('tooltip.filterPanel.show'));
         this.browseToolbar.prependChild(this.toggleFilterPanelButton);
         this.toggleFilterPanelAction.setVisible(false);
     }
