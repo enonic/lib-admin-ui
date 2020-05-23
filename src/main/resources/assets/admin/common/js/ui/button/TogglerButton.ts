@@ -16,16 +16,9 @@ export class TogglerButton
 
         if (title) {
             this.setTitle(title);
-
-            this.onActiveChanged((isActive: boolean) => {
-                if (this.isRendered()) {
-                    this.setTitle(isActive ? '' : title, true);
-                }
-            });
         }
 
         this.onClicked((event: MouseEvent) => {
-            event.stopPropagation();
 
             if (this.isEnabled()) {
                 this.setActive(!this.isActive());

@@ -5,7 +5,7 @@ import {StyleHelper} from '../../StyleHelper';
 export class CycleButton
     extends Button {
 
-    private actionList: Action[];
+    private readonly actionList: Action[];
 
     private active: number;
 
@@ -17,14 +17,21 @@ export class CycleButton
         if (this.actionList.length > 0) {
             this.active = -1;
             this.updateActive();
-            this.setTitle(this.actionList[this.active].getTitle(), false);
+            this.setTitle(this.actionList[this.active].getTitle());
 
             this.onClicked(() => {
-                this.removeAndHdeTitle();
                 this.doAction();
                 this.setAndShowTitle();
             });
         }
+    }
+
+    setEnabled(value: boolean): CycleButton {
+        super.setEnabled(value);
+
+        this.setTitle(value ? this.actionList[this.active].getTitle() : '', false);
+
+        return this;
     }
 
     executePrevAction() {
@@ -61,21 +68,19 @@ export class CycleButton
     }
 
     private setAndShowTitle() {
-        let title = this.actionList[this.active].getTitle();
-        if (title) {
-            this.setTitle(title);
-        }
+        const title = this.actionList[this.active].getTitle();
+        this.setTitle(title || '', false);
     }
 
     private updateActive() {
-        let prevName = this.actionList[this.active] ? this.actionList[this.active].getLabel().toLowerCase() : '';
+        const prevName = this.actionList[this.active] ? this.actionList[this.active].getLabel().toLowerCase() : '';
 
         this.active++;
 
         if (this.active >= this.actionList.length) {
             this.active = 0;
         }
-        let name = this.actionList[this.active] ? this.actionList[this.active].getLabel().toLowerCase() : '';
+        const name = this.actionList[this.active] ? this.actionList[this.active].getLabel().toLowerCase() : '';
 
         if (prevName) {
             this.removeClass(prevName);
