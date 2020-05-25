@@ -17,11 +17,6 @@ export class AEl
         return this;
     }
 
-    setTitle(value: string): AEl {
-        this.getEl().setTitle(value);
-        return this;
-    }
-
     getTitle(): string {
         return this.getEl().getTitle();
     }

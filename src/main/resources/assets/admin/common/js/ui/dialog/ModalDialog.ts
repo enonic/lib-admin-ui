@@ -438,8 +438,8 @@ export abstract class ModalDialog
         return this.cancelButton;
     }
 
-    setTitle(value: string) {
-        this.header.setTitle(value);
+    setHeading(value: string) {
+        this.header.setHeading(value);
     }
 
     appendChildToContentPanel(child: Element) {
@@ -662,9 +662,9 @@ export abstract class ModalDialog
 export interface ModalDialogHeader
     extends Element {
 
-    setTitle(value: string, escapeHtml?: boolean);
+    setHeading(value: string, escapeHtml?: boolean);
 
-    getTitle(): string;
+    getHeading(): string;
 
 }
 
@@ -672,21 +672,21 @@ export class DefaultModalDialogHeader
     extends DivEl
     implements ModalDialogHeader {
 
-    private titleEl: H2El;
+    private readonly titleEl: H2El;
 
     constructor(title: string) {
         super('modal-dialog-header');
 
         this.titleEl = new H2El('title');
-        this.titleEl.setHtml(title);
+        this.setHeading(title);
         this.appendChild(this.titleEl);
     }
 
-    setTitle(value: string) {
+    setHeading(value: string) {
         this.titleEl.setHtml(value);
     }
 
-    getTitle(): string {
+    getHeading(): string {
         return this.titleEl.getHtml();
     }
 }

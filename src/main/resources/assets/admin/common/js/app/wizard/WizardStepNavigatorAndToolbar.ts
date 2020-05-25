@@ -54,8 +54,7 @@ export class WizardStepNavigatorAndToolbar
     setupHelpTextToggleButton(): DivEl {
         this.helpTextToggleButton = new DivEl('help-text-button');
 
-        this.addClass('has-help-text-button');
-        this.appendChild(this.helpTextToggleButton);
+        this.appendChild(this.helpTextToggleButton).addClass('has-help-text-button');
         this.checkAndMinimize();
 
         return this.helpTextToggleButton;

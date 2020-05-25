@@ -14,7 +14,7 @@ export class TabMenuButton
     }
 
     setLabelTitle(value: string) {
-        this.labelEl.getEl().setTitle(value);
+        this.labelEl.setTitle(value);
     }
 
     setLabel(value: string, addTitle: boolean = true) {

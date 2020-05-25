@@ -45,7 +45,7 @@ export class FormItemSetOccurrenceView
     public layout(validate: boolean = true): Q.Promise<void> {
         return super.layout(validate).then(() => {
             if (this.formItemOccurrence.isMultiple()) {
-                this.formSetOccurrencesContainer.onDescendantAdded(() => this.setTitle());
+                this.formSetOccurrencesContainer.onDescendantAdded(() => this.setLabel());
             }
         });
     }
@@ -89,7 +89,7 @@ export class FormItemSetOccurrenceView
             });
 
             if (this.formItemOccurrence.isMultiple()) {
-                formItemView.onBlur(() => this.setTitle());
+                formItemView.onBlur(() => this.setLabel());
             }
         });
     }
@@ -102,7 +102,7 @@ export class FormItemSetOccurrenceView
         return this.formItemSet.getFormItems();
     }
 
-    private setTitle() {
+    private setLabel() {
         const firstNonEmptyInput = $(this.formSetOccurrencesContainer.getHTMLElement())
             .find('.input-wrapper input, .input-wrapper textarea').toArray()
             .find(input => {
@@ -114,9 +114,9 @@ export class FormItemSetOccurrenceView
         if (firstNonEmptyInput) {
             const isInput = firstNonEmptyInput.nodeName === 'INPUT';
             if (isInput) {
-                this.label.setTitle((<HTMLInputElement>firstNonEmptyInput).value);
+                this.label.setText((<HTMLInputElement>firstNonEmptyInput).value);
             } else {
-                this.label.setTitle(StringHelper.htmlToString(firstNonEmptyInput['value']));
+                this.label.setText(StringHelper.htmlToString(firstNonEmptyInput['value']));
             }
             this.formSetOccurrencesContainer.unDescendantAdded();
         }

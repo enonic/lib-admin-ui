@@ -37,7 +37,7 @@ export class BrowseFilterPanel<T>
         this.addClass('filter-panel');
 
         this.hideFilterPanelButton = new SpanEl('hide-filter-panel-button icon-search');
-        this.hideFilterPanelButton.getEl().setTitle(i18n('tooltip.filterPanel.hide'));
+        this.hideFilterPanelButton.setTitle(i18n('tooltip.filterPanel.hide'));
         this.hideFilterPanelButton.onClicked(() => this.notifyHidePanelButtonPressed());
 
         let showResultsButtonWrapper = new DivEl('show-filter-results');

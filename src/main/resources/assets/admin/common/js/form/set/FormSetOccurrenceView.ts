@@ -66,7 +66,7 @@ export class FormSetOccurrenceView
         this.appendChild(this.removeButton);
         this.removeButton.onClicked((event: MouseEvent) => {
             if (this.isDirty() || this.hasNonDefaultValues()) {
-                this.deleteOccurrenceConfirmationDialog.setTitle(i18n('dialog.confirm.occurrences.title', this.label.getTitle()));
+                this.deleteOccurrenceConfirmationDialog.setHeading(i18n('dialog.confirm.occurrences.title', this.label.getText()));
                 this.deleteOccurrenceConfirmationDialog.open();
             } else {
                 this.notifyRemoveButtonClicked();
