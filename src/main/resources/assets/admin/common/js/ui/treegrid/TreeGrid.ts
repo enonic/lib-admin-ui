@@ -715,6 +715,16 @@ export class TreeGrid<DATA>
         return this.fetchAndUpdateNodes([nodeToUpdate], oldDataId ? this.getDataId(data) : undefined);
     }
 
+    updateNodeByDataId(dataId: string): Q.Promise<void> {
+        const nodesToUpdate: TreeNode<DATA>[] = this.root.getNodesByDataId(dataId);
+
+        if (nodesToUpdate.length > 0) {
+            return this.fetchAndUpdateNodes(nodesToUpdate);
+        }
+
+        return Q(null);
+    }
+
     updateNodes(data: DATA, oldDataId?: string): Q.Promise<void> {
 
         let dataId = oldDataId || this.getDataId(data);
@@ -1841,7 +1851,9 @@ export class TreeGrid<DATA>
                             let rowIndex = this.getRowIndexByNode(node);
                             let selected = this.grid.isRowSelected(rowIndex);
                             let highlighted = this.isNodeHighlighted(node);
-                            this.gridData.updateItem(node.getId(), node);
+                            if (this.gridData.getItemById(node.getId())) {
+                                this.gridData.updateItem(node.getId(), node);
+                            }
                             if (selected) {
                                 this.grid.addSelectedRow(rowIndex);
                             } else if (highlighted) {
