@@ -70,4 +70,24 @@ export class TreeRoot<DATA> {
     getNodeByDataIdFromCurrent(dataId: string): TreeNode<DATA> {
         return this.getCurrentRoot().findNode(dataId);
     }
+
+    getNodesByDataId(dataId: string): TreeNode<DATA>[] {
+        const nodesToUpdate: TreeNode<DATA>[] = [];
+
+        if (this.isFiltered()) {
+            const nodeInFilteredRoot: TreeNode<DATA> = this.getFilteredRoot().findNode(dataId);
+
+            if (nodeInFilteredRoot) {
+                nodesToUpdate.push(nodeInFilteredRoot);
+            }
+        }
+
+        const nodeInDefaultRoot: TreeNode<DATA> = this.getDefaultRoot().findNode(dataId);
+
+        if (nodeInDefaultRoot) {
+            nodesToUpdate.push(nodeInDefaultRoot);
+        }
+
+        return nodesToUpdate;
+    }
 }
