@@ -25,6 +25,10 @@ export class Body
 
         html.appendChild(this);
 
+        if (BrowserHelper.isIE()) {
+            this.addClass('IE');
+        }
+
         let visibilityHandler = () => {
             this.init().then(() => {
                 this.childrenLoaded = loadExistingChildren;
