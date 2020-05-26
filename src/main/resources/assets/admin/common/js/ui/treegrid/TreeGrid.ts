@@ -589,7 +589,7 @@ export class TreeGrid<DATA>
         this.grid.clearSelection();
 
         if (forceSelectionHandlers) {
-            this.handleSelectionChanged([]);
+            this.handleSelectionChanged();
         }
     }
 
@@ -609,7 +609,13 @@ export class TreeGrid<DATA>
             this.selection.remove(nodeDataId);
         });
 
+        const isGridSelectionChanged: boolean = this.grid.getSelectedRows().length !== newSelectedRows.length;
+
         this.grid.setSelectedRows(newSelectedRows);
+
+        if (this.selection.isSelectionChanged() && !isGridSelectionChanged) {
+            this.handleSelectionChanged();
+        }
     }
 
     getSelectedNodes(): TreeNode<DATA>[] {
@@ -1243,7 +1249,7 @@ export class TreeGrid<DATA>
         });
 
         this.grid.subscribeOnSelectedRowsChanged((_event, rows) => {
-            this.handleSelectionChanged(rows.rows);
+            this.handleSelectionChanged();
         });
 
         this.onLoaded(() => this.unmask());
@@ -1957,15 +1963,7 @@ export class TreeGrid<DATA>
         });
     }
 
-    private handleSelectionChanged(rows: number[]): void {
-        const newSelection: TreeNode<DATA>[] = [];
-
-        if (rows) {
-            rows.forEach((rowIndex) => {
-                newSelection.push(this.gridData.getItem(rowIndex));
-            });
-        }
-
+    private handleSelectionChanged(): void {
         if (this.selection.isSelectionChanged()) {
             this.triggerSelectionChangedListeners();
             this.selection.resetSelectionChanged();
