@@ -73,10 +73,8 @@
 
     .label {
       display: inline-block;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
       max-width: 100%;
+      .ellipsis();
     }
     .required, .wrapper.required, &.required {
       &:after {
