@@ -81,13 +81,17 @@ export class FoldButton
     }
 
     private onButtonClicked(e: MouseEvent) {
-        let onBodyClicked = () => {
-            this.collapse();
-            Body.get().unClicked(onBodyClicked);
-        };
-
         this.toggle();
+
         if (this.hasClass(FoldButton.expandedCls)) {
+            const onBodyClicked = (e: PointerEvent) => {
+                if (e.target === (this.hostElement || this).getHTMLElement()) {
+                    return;
+                }
+                this.collapse();
+                Body.get().unClicked(onBodyClicked);
+            };
+
             Body.get().onClicked(onBodyClicked);
         }
 
