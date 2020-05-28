@@ -84,8 +84,8 @@ export class FoldButton
         this.toggle();
 
         if (this.hasClass(FoldButton.expandedCls)) {
-            const onBodyClicked = (e: PointerEvent) => {
-                if (e.target === (this.hostElement || this).getHTMLElement()) {
+            const onBodyClicked = (ev: PointerEvent) => {
+                if (ev.target === (this.hostElement || this).getHTMLElement()) {
                     return;
                 }
                 this.collapse();
