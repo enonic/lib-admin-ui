@@ -4,6 +4,7 @@ import {SpanEl} from '../../dom/SpanEl';
 import {Element} from '../../dom/Element';
 import {StyleHelper} from '../../StyleHelper';
 import {Body} from '../../dom/Body';
+import {BrowserHelper} from '../../BrowserHelper';
 
 export class FoldButton
     extends DivEl {
@@ -95,12 +96,17 @@ export class FoldButton
             Body.get().onClicked(onBodyClicked);
         }
 
-        e.stopPropagation();
+        if (!BrowserHelper.isIE()) {
+            e.stopPropagation();
+        }
     }
 
     private onMenuClicked(e: MouseEvent) {
         this.collapse();
-        e.stopPropagation();
+
+        if (!BrowserHelper.isIE()) {
+            e.stopPropagation();
+        }
     }
 
 }
