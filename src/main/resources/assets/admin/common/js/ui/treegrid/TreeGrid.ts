@@ -287,6 +287,10 @@ export class TreeGrid<DATA>
         return false;
     }
 
+    protected isSelectableNode(_node: TreeNode<DATA>): boolean {
+        return true;
+    }
+
     getEmptyNodesCount(): number {
 
         let viewportRange = this.grid.getViewport();
@@ -568,7 +572,7 @@ export class TreeGrid<DATA>
         this.gridData.getItems().forEach((node: TreeNode<DATA>, i: number) => {
             const dataId: string = node.getDataId();
 
-            if (!StringHelper.isEmpty(dataId)) {
+            if (node.isSelectable() && !StringHelper.isEmpty(dataId)) {
                 rows.push(i);
 
                 this.selection.add(node.getDataId());
@@ -1154,8 +1158,15 @@ export class TreeGrid<DATA>
 
     protected handleItemMetadata(row: number) {
         const node = this.gridData.getItem(row);
+
         if (this.isEmptyNode(node)) {
             return {cssClasses: 'empty-node'};
+        }
+
+        if (!this.isSelectableNode(node)) {
+            node.setSelectable(false);
+
+            return <any>{cssClasses: 'non-selectable', selectable: false};
         }
 
         return null;
@@ -2031,7 +2042,12 @@ export class TreeGrid<DATA>
     }
 
     private toggleRow(row: number) {
-        const nodeDataId: string = this.gridData.getItem(row).getDataId();
+        const node: TreeNode<DATA> = this.gridData.getItem(row);
+        if (!node || !node.isSelectable()) {
+            return;
+        }
+
+        const nodeDataId: string = node.getDataId();
 
         if (this.grid.isRowSelected(row)) {
             this.selection.remove(nodeDataId);
@@ -2047,7 +2063,12 @@ export class TreeGrid<DATA>
     }
 
     private selectRow(row: number, debounce?: boolean) {
-        const nodeDataId: string = this.gridData.getItem(row).getDataId();
+        const nodeToSelect: TreeNode<DATA> = this.gridData.getItem(row);
+        if (!nodeToSelect) {
+            return;
+        }
+
+        const nodeDataId: string = nodeToSelect.getDataId();
         this.selection.reset();
         this.selection.add(nodeDataId);
 
