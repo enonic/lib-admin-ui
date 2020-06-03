@@ -191,6 +191,16 @@
         width: 45px;
         margin-right: 5px;
       }
+
+      &.non-selectable {
+        .slick-cell-checkboxsel {
+          pointer-events: none;
+
+          label {
+            opacity: 0.5;
+          }
+        }
+      }
     }
   }
 
