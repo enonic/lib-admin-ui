@@ -135,6 +135,9 @@ export class FormView
         if (FormView.debug) {
             console.debug('FormView.update' + (unchangedOnly ? ' (unchanged only)' : ''), this, propertySet);
         }
+
+        this.data = propertySet;
+
         return this.formItemLayer.update(propertySet, unchangedOnly);
     }
 
