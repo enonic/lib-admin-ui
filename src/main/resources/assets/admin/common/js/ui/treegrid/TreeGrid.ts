@@ -573,7 +573,8 @@ export class TreeGrid<DATA>
         this.removeHighlighting(true);
         const rows: number[] = [];
 
-        this.gridData.getItems().forEach((node: TreeNode<DATA>, i: number) => {
+        for (let i = 0; i < this.gridData.getLength(); i++) {
+            const node: TreeNode<DATA> = this.gridData.getItem(i);
             const dataId: string = node.getDataId();
 
             if (node.isSelectable() && !StringHelper.isEmpty(dataId)) {
@@ -581,7 +582,8 @@ export class TreeGrid<DATA>
 
                 this.selection.add(node.getDataId());
             }
-        });
+        }
+        ;
 
         this.grid.setSelectedRows(rows);
     }
