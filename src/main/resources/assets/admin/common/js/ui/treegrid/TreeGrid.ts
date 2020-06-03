@@ -351,6 +351,10 @@ export class TreeGrid<DATA>
         return this.root.getCurrentRoot().treeToList().length;
     }
 
+    getFullTotal(): number {
+        return this.root.getCurrentRoot().treeToList(false, false).length;
+    }
+
     getFullSelection(): DATA[] {
         return this.getFullSelectionNodes().map((node: TreeNode<DATA>) => node.getData());
     }
