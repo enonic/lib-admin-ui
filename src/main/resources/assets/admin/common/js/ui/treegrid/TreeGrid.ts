@@ -583,7 +583,6 @@ export class TreeGrid<DATA>
                 this.selection.add(node.getDataId());
             }
         }
-        ;
 
         this.grid.setSelectedRows(rows);
     }
