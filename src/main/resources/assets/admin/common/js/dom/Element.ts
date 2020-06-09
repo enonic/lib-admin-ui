@@ -360,6 +360,15 @@ export class Element {
         return this.el.isVisible();
     }
 
+    setTitle(title: string): Element {
+        if (title.trim()) {
+            this.el.setTitle(title.trim());
+        } else {
+            this.el.removeAttribute('title');
+        }
+        return this;
+    }
+
     setClass(className: string): Element {
         assert(!StringHelper.isEmpty(className), 'Class name cannot be empty');
         this.el.setClass(className);

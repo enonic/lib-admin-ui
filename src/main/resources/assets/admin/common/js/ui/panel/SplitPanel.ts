@@ -294,9 +294,11 @@ export class SplitPanel
         this.onAdded(() => {
             // wait 1ms to ensure browser calculated element dimensions and styles
             setTimeout(() => {
+                /*
                 let splitPanelSize = this.isHorizontal() ? this.getEl().getHeight() : this.getEl().getWidth();
                 assert(this.firstPanelMinSize + this.secondPanelMinSize <= splitPanelSize,
                     'warning: total sum of first and second panel minimum sizes exceed total split panel size');
+                 */
                 this.updateAlignment();
             }, 1);
         });
@@ -561,6 +563,10 @@ export class SplitPanel
 
     getSplitterThickness(): number {
         return this.splitterIsHidden ? 0 : this.splitterThickness;
+    }
+
+    setSplitterIsHidden(value: boolean) {
+        this.splitterIsHidden = value;
     }
 
     toString(): string {

@@ -29,6 +29,7 @@ import {WizardValidityManager} from './WizardValidityManager';
 import {MinimizeWizardPanelEvent} from './MinimizeWizardPanelEvent';
 import {WizardStepForm} from './WizardStepForm';
 import {ValidityChangedEvent} from '../../ValidityChangedEvent';
+import {i18n} from '../../util/Messages';
 
 /*
  Only data should be passed to constructor
@@ -281,7 +282,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
         let navigationWidth;
         if (this.minimized) {
-            navigationWidth = this.splitPanel.getEl().getHeight();
+            navigationWidth = this.splitPanel.getEl().getHeight() + this.stepNavigatorAndToolbarContainer.getEl().getPaddingLeft();
         } else {
             navigationWidth = this.stepsPanel.getEl().getWidth() - this.stepNavigatorAndToolbarContainer.getEl().getPaddingLeft();
         }
@@ -305,6 +306,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
         let scroll = this.stepsPanel.getScroll();
         this.minimized = !this.minimized;
+        this.splitPanel.setSplitterIsHidden(this.minimized);
 
         this.stepNavigator.unNavigationItemActivated(this.toggleMinimizeListener);
         this.formPanel.toggleClass('minimized');
@@ -696,7 +698,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
                 this.mainToolbar.removeClass('rendering');
             }
 
-            if (firstShow) {
+            if (firstShow && this.isEditAllowed()) {
                 firstShow = false;
                 this.giveInitialFocus();
             }
@@ -811,6 +813,10 @@ export class WizardPanel<EQUITABLE extends Equitable>
         return Q(rendered);
     }
 
+    protected isEditAllowed(): boolean {
+        return true;
+    }
+
     protected createWizardAndDetailsSplitPanel(_leftPanel: Panel): SplitPanel {
         // underscore prevents ts unused param check
         return null;
@@ -840,6 +846,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
     private toggleHelpTextShown() {
         this.helpTextShown = !this.helpTextShown;
         this.helpTextToggleButton.toggleClass('on', this.helpTextShown);
+        this.helpTextToggleButton.setTitle(this.helpTextShown ? i18n('tooltip.helptexts.hide') : i18n('tooltip.helptexts.show'));
 
         this.steps.forEach((step: WizardStep) => {
             step.toggleHelpText(this.helpTextShown);
@@ -848,6 +855,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
     private setupHelpTextToggleButton() {
         this.helpTextToggleButton = this.stepNavigatorAndToolbarContainer.setupHelpTextToggleButton();
+        this.helpTextToggleButton.setTitle(i18n('tooltip.helptexts.show'));
 
         this.helpTextToggleButton.onClicked(() => {
             this.toggleHelpTextShown();

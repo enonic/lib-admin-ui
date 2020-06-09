@@ -14,9 +14,9 @@ export class AppBar
 
     protected application: Application;
 
-    private appIcon: AppIcon;
+    private readonly appIcon: AppIcon;
 
-    private showAppLauncherAction: ShowAppLauncherAction;
+    private readonly showAppLauncherAction: ShowAppLauncherAction;
 
     constructor(application: Application) {
         super('appbar');
@@ -34,6 +34,14 @@ export class AppBar
 
     }
 
+    setAppName(name: string) {
+        return this.appIcon.setAppName(name);
+    }
+
+    getAppIcon(): AppIcon {
+        return this.appIcon;
+    }
+
     getActions(): Action[] {
         return [this.showAppLauncherAction];
     }
@@ -45,6 +53,8 @@ export class AppBar
 
 export class AppIcon
     extends DivEl {
+
+    private readonly appNameSpan: SpanEl;
 
     constructor(app: Application, action?: Action) {
 
@@ -58,13 +68,17 @@ export class AppIcon
                 this.appendChild(icon);
             }
 
-            const span = new SpanEl('app-name');
-            span.setHtml(app.getName());
-            this.appendChild(span);
+            this.appNameSpan = new SpanEl('app-name');
+            this.appNameSpan.setHtml(app.getName());
+            this.appendChild(this.appNameSpan);
 
         if (action) {
             this.setAction(action);
         }
+    }
+
+    setAppName(name: string) {
+        this.appNameSpan.setHtml(name);
     }
 
     setAction(action: Action) {

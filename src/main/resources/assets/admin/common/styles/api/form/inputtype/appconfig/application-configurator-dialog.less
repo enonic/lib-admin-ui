@@ -1,9 +1,5 @@
 .application-configurator {
 
-  .@{_COMMON_PREFIX}combobox.readonly {
-    display: none;
-  }
-
   .multiple-occurrence {
     .selected-option {
       .drag-control, .site-form .remove {
@@ -70,12 +66,6 @@
         }
       }
 
-      &.readonly {
-        a.edit, a.remove {
-          display: none;
-        }
-      }
-
       .header {
         display: flex;
         align-items: center;
@@ -103,6 +93,17 @@
       margin-bottom: 0;
     }
   }
+
+  .rich-combobox.readonly {
+    .selected-options .selected-option {
+      pointer-events: none;
+
+      a.edit, a.remove {
+        display: none;
+      }
+    }
+  }
+
 }
 
 .highlight-option(@color) {

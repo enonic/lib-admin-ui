@@ -287,6 +287,10 @@ export class TreeGrid<DATA>
         return false;
     }
 
+    protected isSelectableNode(_node: TreeNode<DATA>): boolean {
+        return true;
+    }
+
     getEmptyNodesCount(): number {
 
         let viewportRange = this.grid.getViewport();
@@ -345,6 +349,10 @@ export class TreeGrid<DATA>
 
     getCurrentTotal(): number {
         return this.root.getCurrentRoot().treeToList().length;
+    }
+
+    getFullTotal(): number {
+        return this.root.getCurrentRoot().treeToList(false, false).length;
     }
 
     getFullSelection(): DATA[] {
@@ -507,11 +515,7 @@ export class TreeGrid<DATA>
     }
 
     dataToTreeNodes(dataArray: DATA[], parent: TreeNode<DATA>, expandAllowed: boolean = true): TreeNode<DATA>[] {
-        const nodes: TreeNode<DATA>[] = [];
-        dataArray.forEach((data) => {
-            nodes.push(this.dataToTreeNode(data, parent, expandAllowed));
-        });
-        return nodes;
+        return dataArray.map((data: DATA) => this.dataToTreeNode(data, parent, expandAllowed));
     }
 
     filter(dataList: DATA[]) {
@@ -569,15 +573,16 @@ export class TreeGrid<DATA>
         this.removeHighlighting(true);
         const rows: number[] = [];
 
-        this.gridData.getItems().forEach((node: TreeNode<DATA>, i: number) => {
+        for (let i = 0; i < this.gridData.getLength(); i++) {
+            const node: TreeNode<DATA> = this.gridData.getItem(i);
             const dataId: string = node.getDataId();
 
-            if (!StringHelper.isEmpty(dataId)) {
+            if (node.isSelectable() && !StringHelper.isEmpty(dataId)) {
                 rows.push(i);
 
                 this.selection.add(node.getDataId());
             }
-        });
+        }
 
         this.grid.setSelectedRows(rows);
     }
@@ -587,9 +592,14 @@ export class TreeGrid<DATA>
             this.removeHighlighting();
         }
 
-        this.selection.reset();
+        const forceSelectionHandlers: boolean = this.selection.hasSelectedItems() && !this.grid.isAnySelected();
 
+        this.selection.reset();
         this.grid.clearSelection();
+
+        if (forceSelectionHandlers) {
+            this.handleSelectionChanged();
+        }
     }
 
     deselectNodes(dataIds: string[]) {
@@ -608,7 +618,13 @@ export class TreeGrid<DATA>
             this.selection.remove(nodeDataId);
         });
 
+        const isGridSelectionChanged: boolean = this.grid.getSelectedRows().length !== newSelectedRows.length;
+
         this.grid.setSelectedRows(newSelectedRows);
+
+        if (this.selection.isSelectionChanged() && !isGridSelectionChanged) {
+            this.handleSelectionChanged();
+        }
     }
 
     getSelectedNodes(): TreeNode<DATA>[] {
@@ -714,6 +730,16 @@ export class TreeGrid<DATA>
         return this.fetchAndUpdateNodes([nodeToUpdate], oldDataId ? this.getDataId(data) : undefined);
     }
 
+    updateNodeByDataId(dataId: string): Q.Promise<void> {
+        const nodesToUpdate: TreeNode<DATA>[] = this.root.getNodesByDataId(dataId);
+
+        if (nodesToUpdate.length > 0) {
+            return this.fetchAndUpdateNodes(nodesToUpdate);
+        }
+
+        return Q(null);
+    }
+
     updateNodes(data: DATA, oldDataId?: string): Q.Promise<void> {
 
         let dataId = oldDataId || this.getDataId(data);
@@ -755,20 +781,22 @@ export class TreeGrid<DATA>
         this.doInsertNodeToParentWithChildren(parentNode, data, root, index);
     }
 
-    getParentNode(nextToSelection: boolean = false, stashedParentNode?: TreeNode<DATA>) {
-        let root = stashedParentNode || this.root.getCurrentRoot();
-        let parentNode: TreeNode<DATA>;
-
-        parentNode = this.getFirstSelectedOrHighlightedNode();
-
-        if (parentNode) {
-            if (nextToSelection) {
-                parentNode = parentNode.getParent() || this.root.getCurrentRoot();
-            }
-        } else {
-            parentNode = root;
+    protected getParentNode(nextToSelection: boolean = false, stashedParentNode?: TreeNode<DATA>) {
+        if (stashedParentNode) {
+            return stashedParentNode;
         }
-        return parentNode;
+
+        const selectedOrHighlightedNode: TreeNode<DATA> = this.getFirstSelectedOrHighlightedNode();
+
+        if (selectedOrHighlightedNode) {
+            if (nextToSelection && selectedOrHighlightedNode.getParent()) {
+                return selectedOrHighlightedNode.getParent();
+            }
+
+            return selectedOrHighlightedNode;
+        }
+
+        return this.root.getCurrentRoot();
     }
 
     insertNode(data: DATA, nextToSelection: boolean = false, index: number = 0,
@@ -1135,8 +1163,15 @@ export class TreeGrid<DATA>
 
     protected handleItemMetadata(row: number) {
         const node = this.gridData.getItem(row);
+
         if (this.isEmptyNode(node)) {
             return {cssClasses: 'empty-node'};
+        }
+
+        if (!this.isSelectableNode(node)) {
+            node.setSelectable(false);
+
+            return <any>{cssClasses: 'non-selectable', selectable: false};
         }
 
         return null;
@@ -1240,7 +1275,7 @@ export class TreeGrid<DATA>
         });
 
         this.grid.subscribeOnSelectedRowsChanged((_event, rows) => {
-            this.handleSelectionChanged(rows.rows);
+            this.handleSelectionChanged();
         });
 
         this.onLoaded(() => this.unmask());
@@ -1838,7 +1873,9 @@ export class TreeGrid<DATA>
                             let rowIndex = this.getRowIndexByNode(node);
                             let selected = this.grid.isRowSelected(rowIndex);
                             let highlighted = this.isNodeHighlighted(node);
-                            this.gridData.updateItem(node.getId(), node);
+                            if (this.gridData.getItemById(node.getId())) {
+                                this.gridData.updateItem(node.getId(), node);
+                            }
                             if (selected) {
                                 this.grid.addSelectedRow(rowIndex);
                             } else if (highlighted) {
@@ -1954,15 +1991,7 @@ export class TreeGrid<DATA>
         });
     }
 
-    private handleSelectionChanged(rows: number[]): void {
-        const newSelection: TreeNode<DATA>[] = [];
-
-        if (rows) {
-            rows.forEach((rowIndex) => {
-                newSelection.push(this.gridData.getItem(rowIndex));
-            });
-        }
-
+    private handleSelectionChanged(): void {
         if (this.selection.isSelectionChanged()) {
             this.triggerSelectionChangedListeners();
             this.selection.resetSelectionChanged();
@@ -2018,7 +2047,12 @@ export class TreeGrid<DATA>
     }
 
     private toggleRow(row: number) {
-        const nodeDataId: string = this.gridData.getItem(row).getDataId();
+        const node: TreeNode<DATA> = this.gridData.getItem(row);
+        if (!node || !node.isSelectable()) {
+            return;
+        }
+
+        const nodeDataId: string = node.getDataId();
 
         if (this.grid.isRowSelected(row)) {
             this.selection.remove(nodeDataId);
@@ -2034,7 +2068,12 @@ export class TreeGrid<DATA>
     }
 
     private selectRow(row: number, debounce?: boolean) {
-        const nodeDataId: string = this.gridData.getItem(row).getDataId();
+        const nodeToSelect: TreeNode<DATA> = this.gridData.getItem(row);
+        if (!nodeToSelect) {
+            return;
+        }
+
+        const nodeDataId: string = nodeToSelect.getDataId();
         this.selection.reset();
         this.selection.add(nodeDataId);
 

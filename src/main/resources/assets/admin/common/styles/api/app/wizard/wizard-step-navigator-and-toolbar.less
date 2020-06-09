@@ -78,7 +78,6 @@
     height: 100%;
     padding: 0;
     border: none;
-    background-color: @admin-bg-light-gray;
     vertical-align: middle;
     align-items: center;
     justify-content: center;
@@ -163,7 +162,6 @@
     // to be above image input type mask and the input type itself
     z-index: @z-index-scroll-stick;
     top: @app-header-height - 1;
-    border-top: 1px solid @admin-medium-gray-border;
 
     box-shadow: -3px 3px 6px 0 @admin-toolbar-shadow;
   }
@@ -220,9 +218,5 @@
 body.mobile-statistics-panel {
   .help-text-button {
     z-index: 1; // make sure help icons doesn't overlay details panel
-  }
-
-  .sidebar-toggler {
-    display: none;
   }
 }

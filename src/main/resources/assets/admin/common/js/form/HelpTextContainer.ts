@@ -1,5 +1,6 @@
 import {DivEl} from '../dom/DivEl';
 import {PEl} from '../dom/PEl';
+import {i18n} from '../util/Messages';
 
 export class HelpTextContainer {
 
@@ -11,7 +12,7 @@ export class HelpTextContainer {
 
     constructor(value: string) {
         this.helpTextToggler = new DivEl('help-text-toggler');
-        this.helpTextToggler.setHtml('?');
+        this.helpTextToggler.setHtml('?').setTitle(i18n('tooltip.helptext.show'));
 
         this.helpTextDiv = new DivEl('help-text');
 
@@ -21,9 +22,9 @@ export class HelpTextContainer {
         this.helpTextDiv.appendChild(pEl);
 
         this.helpTextToggler.onClicked((event: MouseEvent) => {
-            this.helpTextDiv.toggleClass('visible');
-            this.helpTextToggler.toggleClass('on');
-            this.notifyHelpTextToggled(this.helpTextDiv.hasClass('visible'));
+            const isActive = this.helpTextDiv.hasClass('visible');
+            this.toggleHelpText(!isActive);
+            this.notifyHelpTextToggled(!isActive);
             event.stopPropagation();
         });
     }
@@ -31,6 +32,7 @@ export class HelpTextContainer {
     toggleHelpText(show?: boolean) {
         this.helpTextDiv.toggleClass('visible', show);
         this.helpTextToggler.toggleClass('on', show);
+        this.helpTextToggler.setTitle(show ? i18n('tooltip.helptext.hide') : i18n('tooltip.helptext.show'));
     }
 
     getToggler(): DivEl {

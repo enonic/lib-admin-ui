@@ -154,4 +154,13 @@ export class StringHelper {
         return h;
     }
 
+    static cleanVersion(version: string): string {
+        const versionArr = version.split('.');
+        while (versionArr.length < 3) {
+            versionArr.push('0');
+        }
+
+        return versionArr.slice(0, 3).join('.');
+    }
+
 }

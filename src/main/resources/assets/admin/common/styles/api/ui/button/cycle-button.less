@@ -5,7 +5,13 @@
 
   .notSelectable();
 
-  &:not(.live):before {
-    color: @admin-button-blue1 !important;
+  &:not(.live) {
+    &::before {
+      color: @admin-button-blue1 !important;
+    }
+
+    &:hover::before {
+      color: @admin-button-blue2 !important;
+    }
   }
 }

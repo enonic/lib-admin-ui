@@ -9,6 +9,7 @@ export class TreeNode<DATA>
     private dataId: string;
     private data: DATA;
     private expanded: boolean;
+    private selectable: boolean;
     private selected: boolean;
     private pinned: boolean;
     private maxChildren: number;
@@ -27,6 +28,7 @@ export class TreeNode<DATA>
         this.setChildren(builder.getChildren());
         this.maxChildren = builder.getMaxChildren();
         this.expanded = builder.isExpanded();
+        this.selectable = builder.isSelectable();
         this.selected = builder.isSelected();
         this.pinned = builder.isPinned();
         if (this.pinned) {
@@ -54,8 +56,16 @@ export class TreeNode<DATA>
         this.expanded = expanded;
     }
 
+    isSelectable(): boolean {
+        return this.selectable;
+    }
+
     isSelected(): boolean {
         return this.selected;
+    }
+
+    setSelectable(selectable: boolean = true) {
+        this.selectable = selectable;
     }
 
     setSelected(selected: boolean = true) {
@@ -353,6 +363,8 @@ export class TreeNodeBuilder<NODE> {
 
     private expanded: boolean;
 
+    private selectable: boolean;
+
     private selected: boolean;
 
     private pinned: boolean;
@@ -369,9 +381,11 @@ export class TreeNodeBuilder<NODE> {
             this.parent = node.getParent();
             this.children = node.getChildren() || [];
             this.maxChildren = node.getMaxChildren();
+            this.selectable = node.isSelectable();
         } else {
             this.children = [];
             this.maxChildren = 0;
+            this.selectable = true;
         }
         this.pinned = false;
         this.expanded = false;
@@ -387,8 +401,17 @@ export class TreeNodeBuilder<NODE> {
         return this;
     }
 
+    isSelectable(): boolean {
+        return this.selectable;
+    }
+
     isSelected(): boolean {
         return this.selected;
+    }
+
+    setSelectable(selectable: boolean = true): TreeNodeBuilder<NODE> {
+        this.selectable = selectable;
+        return this;
     }
 
     setSelected(selected: boolean = true): TreeNodeBuilder<NODE> {

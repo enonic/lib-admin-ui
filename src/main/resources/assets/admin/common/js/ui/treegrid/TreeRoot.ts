@@ -64,18 +64,30 @@ export class TreeRoot<DATA> {
     }
 
     getNodeByDataId(dataId: string): TreeNode<DATA> {
-        if (this.isFiltered()) {
-            const node: TreeNode<DATA> = this.filteredRoot.findNode(dataId);
-
-            if (node) {
-                return node;
-            }
-        }
-
-        return this.defaultRoot.findNode(dataId);
+        return this.defaultRoot.findNode(dataId) || this.filteredRoot.findNode(dataId);
     }
 
     getNodeByDataIdFromCurrent(dataId: string): TreeNode<DATA> {
         return this.getCurrentRoot().findNode(dataId);
+    }
+
+    getNodesByDataId(dataId: string): TreeNode<DATA>[] {
+        const nodesToUpdate: TreeNode<DATA>[] = [];
+
+        if (this.isFiltered()) {
+            const nodeInFilteredRoot: TreeNode<DATA> = this.getFilteredRoot().findNode(dataId);
+
+            if (nodeInFilteredRoot) {
+                nodesToUpdate.push(nodeInFilteredRoot);
+            }
+        }
+
+        const nodeInDefaultRoot: TreeNode<DATA> = this.getDefaultRoot().findNode(dataId);
+
+        if (nodeInDefaultRoot) {
+            nodesToUpdate.push(nodeInDefaultRoot);
+        }
+
+        return nodesToUpdate;
     }
 }

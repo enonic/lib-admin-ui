@@ -26,25 +26,30 @@ export class SelectionController
     }
 
     protected initListeners() {
-        this.treeGrid.onSelectionChanged(() => this.updateState());
-        this.treeGrid.onLoaded(() => this.updateState());
-        this.onClicked((event) => {
-            event.preventDefault();
+        const updateStateFunc: () => void = this.updateState.bind(this);
+        this.treeGrid.onSelectionChanged(updateStateFunc);
+        this.treeGrid.onLoaded(updateStateFunc);
+        this.treeGrid.onDataChanged(updateStateFunc);
 
-            if (this.isDisabled()) {
-                return;
-            }
-
-            if (this.isChecked() || this.isPartial()) {
-                this.treeGrid.deselectAll();
-            } else {
-                this.treeGrid.selectAll();
-            }
-        });
+        this.onClicked(this.handleClick.bind(this));
 
         this.onRendered(() => {
             this.setChecked(false, true);
         });
+    }
+
+    private handleClick(event: MouseEvent) {
+        event.preventDefault();
+
+        if (this.isDisabled()) {
+            return;
+        }
+
+        if (this.isChecked() || this.isPartial()) {
+            this.treeGrid.deselectAll();
+        } else {
+            this.treeGrid.selectAll();
+        }
     }
 
     protected updateState() {
@@ -66,7 +71,7 @@ export class SelectionController
         }
         this.setPartial(isAnySelected && !isAllSelected);
 
-        const tooltipText = this.isChecked() ? i18n('field.selection.clear') : i18n('field.selection.selectAll');
+        const tooltipText: string = this.isChecked() ? i18n('field.selection.clear') : i18n('field.selection.selectAll');
         this.tooltip.setText(tooltipText);
     }
 

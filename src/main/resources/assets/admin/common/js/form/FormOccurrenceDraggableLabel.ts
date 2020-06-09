@@ -34,11 +34,11 @@ export class FormOccurrenceDraggableLabel
         this.getEl().appendChildren(nodes);
     }
 
-    setTitle(label: string) {
+    setText(label: string) {
         this.title.nodeValue = label.trim();
     }
 
-    getTitle(): string {
+    getText(): string {
         return this.title.nodeValue;
     }
 }

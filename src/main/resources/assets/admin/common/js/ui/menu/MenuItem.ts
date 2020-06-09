@@ -49,10 +49,6 @@ export class MenuItem
         this.getEl().setInnerHtml(label);
     }
 
-    setTitle(title: string) {
-        this.getEl().setTitle(title);
-    }
-
     getAction(): Action {
         return this.action;
     }

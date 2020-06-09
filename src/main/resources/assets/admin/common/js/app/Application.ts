@@ -20,7 +20,7 @@ export class Application {
     private loadedListeners: {(): void}[] = [];
     private window: Window;
 
-    constructor(id: string, name: string, shortName: string, icon: string, iconTooltip?: string) {
+    constructor(id: string, name: string, shortName: string, icon?: string, iconTooltip?: string) {
         this.id = id;
         this.name = name;
         this.shortName = shortName;

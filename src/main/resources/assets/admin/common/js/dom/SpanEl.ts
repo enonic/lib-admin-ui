@@ -7,8 +7,8 @@ export class SpanEl
         super(new NewElementBuilder().setTagName('span').setClassName(className, prefix));
     }
 
-    static fromText(text: string): SpanEl {
-        const span = new SpanEl();
+    static fromText(text: string, className?: string): SpanEl {
+        const span = new SpanEl(className);
         span.setHtml(text);
         return span;
     }
