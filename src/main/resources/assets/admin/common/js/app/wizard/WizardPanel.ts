@@ -698,9 +698,9 @@ export class WizardPanel<EQUITABLE extends Equitable>
                 this.mainToolbar.removeClass('rendering');
             }
 
-            if (firstShow && this.isEditAllowed()) {
+            if (firstShow ) {
                 firstShow = false;
-                this.giveInitialFocus();
+                this.checkIfEditIsAllowed().then((editIsAllowed: boolean) => editIsAllowed && this.giveInitialFocus());
             }
 
             if (!!this.lastFocusedElement) {
@@ -813,8 +813,8 @@ export class WizardPanel<EQUITABLE extends Equitable>
         return Q(rendered);
     }
 
-    protected isEditAllowed(): boolean {
-        return true;
+    protected checkIfEditIsAllowed(): Q.Promise<boolean> {
+        return Q.resolve(true);
     }
 
     protected createWizardAndDetailsSplitPanel(_leftPanel: Panel): SplitPanel {
