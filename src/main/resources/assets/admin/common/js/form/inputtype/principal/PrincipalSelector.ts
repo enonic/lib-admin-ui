@@ -156,7 +156,7 @@ export class PrincipalSelector
             this.fireFocusSwitchEvent(event);
 
             const selectedOption = event.getSelectedOption();
-            let key = selectedOption.getOption().displayValue.getKey();
+            let key = selectedOption.getOption().getDisplayValue().getKey();
             if (!key) {
                 return;
             }
@@ -174,7 +174,7 @@ export class PrincipalSelector
     }
 
     private saveToSet(principalOption: Option<Principal>, index: number) {
-        this.getPropertyArray().set(index, ValueTypes.REFERENCE.newValue(principalOption.value));
+        this.getPropertyArray().set(index, ValueTypes.REFERENCE.newValue(principalOption.getValue()));
     }
 
 }

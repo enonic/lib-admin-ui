@@ -169,7 +169,7 @@ export class DropdownList<OPTION_DISPLAY_VALUE> {
 
     navigateToRow(selectedOption?: Option<OPTION_DISPLAY_VALUE>) {
         if (selectedOption) {
-            let row = this.dropdownGrid.getRowByValue(selectedOption.value);
+            let row = this.dropdownGrid.getRowByValue(selectedOption.getValue());
             if (row !== undefined) {
                 this.dropdownGrid.navigateToRow(row);
             }

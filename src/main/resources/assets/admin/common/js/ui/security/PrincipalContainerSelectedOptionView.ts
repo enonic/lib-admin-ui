@@ -20,7 +20,7 @@ export class PrincipalContainerSelectedOptionView<T extends PrincipalContainer>
 
     setOption(option: Option<T>) {
         this.option = option;
-        this.view.setItem(option.displayValue);
+        this.view.setItem(option.getDisplayValue());
     }
 
     getOption(): Option<T> {

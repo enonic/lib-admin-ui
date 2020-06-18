@@ -337,9 +337,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     handleRowSelected(index: number, keyCode: number = -1) {
         let option = this.getOptionByRow(index);
         if (option) {
-            if (option.selectable === false) {
+            if (option.isSelectable() === false) {
                 this.comboBoxDropdown.markSelections(this.getSelectedOptions());
-            } else if (!option.readOnly) {
+            } else if (!option.isReadOnly()) {
                 if (!this.isOptionSelected(option)) {
                     this.selectOption(option, false, keyCode);
                 } else {
@@ -353,18 +353,18 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
     isSelectionChanged(): boolean {
         let optionsMap = this.getDisplayedOptions().map((x) => {
-            return x.value;
+            return x.getValue();
         }).join();
         let selectedOptions: Option<OPTION_DISPLAY_VALUE>[] = this.getSelectedOptions();
         let filteredOption = [];
         let gridOptions = [];
         for (let k in selectedOptions) {
-            if (optionsMap.search(selectedOptions[k].value) >= 0) {
-                filteredOption.push(selectedOptions[k].value);
+            if (optionsMap.search(selectedOptions[k].getValue()) >= 0) {
+                filteredOption.push(selectedOptions[k].getValue());
             }
         }
         this.comboBoxDropdown.getDropdownGrid().getGrid().getSelectedRows().forEach((row: number) => {
-            gridOptions.push(this.comboBoxDropdown.getDropdownGrid().getOptionByRow(row).value);
+            gridOptions.push(this.comboBoxDropdown.getDropdownGrid().getOptionByRow(row).getValue());
         });
 
         return (filteredOption.length !== gridOptions.length) ||
@@ -453,7 +453,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     clearSelection(ignoreEmpty: boolean = false, giveInputFocus: boolean = true, forceClear: boolean = false) {
-        let optionsMap = this.getDisplayedOptions().map((x) => x.value).join();
+        let optionsMap = this.getDisplayedOptions().map((x) => x.getValue()).join();
 
         let selectedOptions: Option<OPTION_DISPLAY_VALUE>[] = this.getSelectedOptions();
         selectedOptions.forEach((option: Option<OPTION_DISPLAY_VALUE>) => {
@@ -461,8 +461,8 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                 this.selectedOptionsView.removeOption(option, true);
             } else {
                 // removing selection only from filtered options
-                let filteredOption = optionsMap.search(option.value) >= 0 ? option : undefined;
-                if (filteredOption && !filteredOption.readOnly) {
+                let filteredOption = optionsMap.search(option.getValue()) >= 0 ? option : undefined;
+                if (filteredOption && !filteredOption.isReadOnly()) {
                     this.selectedOptionsView.removeOption(option, true);
                 }
             }
@@ -531,9 +531,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         if (this.selectedOptionsView && this.selectedOptionsView.getMaximumOccurrences() !== 0) {
 
             let totalSelected: number = this.comboBoxDropdown.getSelectedOptionCount();
-            let optionsMap = this.getDisplayedOptions().map((x) => x.value).join();
+            let optionsMap = this.getDisplayedOptions().map((x) => x.getValue()).join();
             totalSelected += this.getSelectedOptions().filter(
-                (option: Option<OPTION_DISPLAY_VALUE>) => (optionsMap.search(option.value) < 0)).length;
+                (option: Option<OPTION_DISPLAY_VALUE>) => (optionsMap.search(option.getValue()) < 0)).length;
 
             return this.selectedOptionsView.getMaximumOccurrences() <= totalSelected;
         } else {
@@ -649,7 +649,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
     protected doGetValue(): string {
         if (this.selectedOptionsView) {
-            return this.getSelectedOptions().map((item: Option<OPTION_DISPLAY_VALUE>) => item.value).join(ComboBox.VALUE_SEPARATOR);
+            return this.getSelectedOptions().map((item: Option<OPTION_DISPLAY_VALUE>) => item.getValue()).join(ComboBox.VALUE_SEPARATOR);
         } else {
             throw new Error('Not supported yet');
         }
@@ -1063,7 +1063,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     private isSelectedRowReadOnly(): boolean {
-        return this.getOptionByRow(this.comboBoxDropdown.getActiveRow()).readOnly;
+        return this.getOptionByRow(this.comboBoxDropdown.getActiveRow()).isReadOnly();
     }
 
     private handleSelectedOptionRemoved() {
@@ -1110,13 +1110,13 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     private updateSelectionDelta() {
 
         let selectedValues = this.getSelectedOptions().map((x) => {
-            return x.value;
+            return x.getValue();
         });
 
         let gridOptions = [];
 
         this.comboBoxDropdown.getDropdownGrid().getGrid().getSelectedRows().forEach((row: number) => {
-            gridOptions.push(this.comboBoxDropdown.getDropdownGrid().getOptionByRow(row).value);
+            gridOptions.push(this.comboBoxDropdown.getDropdownGrid().getOptionByRow(row).getValue());
         });
 
         this.selectiondDelta = gridOptions

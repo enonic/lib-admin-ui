@@ -91,7 +91,7 @@ export class DropdownTreeGrid<OPTION_DISPLAY_VALUE>
     }
 
     protected initGridAndData() {
-        this.dataIdProperty = 'dataId';
+        this.dataIdProperty = 'id';
 
         this.optionsTreeGrid = new OptionsTreeGrid<OPTION_DISPLAY_VALUE>(this.createColumns(),
             this.createOptions(),
@@ -122,7 +122,7 @@ export class DropdownTreeGrid<OPTION_DISPLAY_VALUE>
 
     protected createColumns(): GridColumn<any>[] {
         let columnFormatter = ({}, {}, value: OPTION_DISPLAY_VALUE, {}, node: TreeNode<Option<OPTION_DISPLAY_VALUE>>) => {
-            if (value && node.getData().displayValue) {
+            if (value && node.getData().getDisplayValue()) {
                 this.optionDisplayValueViewer.setObject(value);
                 return this.optionDisplayValueViewer.toString();
             }
@@ -140,5 +140,9 @@ export class DropdownTreeGrid<OPTION_DISPLAY_VALUE>
 
     protected getGridData(): DataView<TreeNode<Option<OPTION_DISPLAY_VALUE>>> {
         return this.optionsTreeGrid.getGrid().getDataView();
+    }
+
+    getOptions(): Option<OPTION_DISPLAY_VALUE>[] {
+        return this.getGridData().getItems().map((node: TreeNode<Option<OPTION_DISPLAY_VALUE>>) => node.getData());
     }
 }

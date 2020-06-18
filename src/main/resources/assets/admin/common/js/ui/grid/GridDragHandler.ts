@@ -5,8 +5,9 @@ import {TreeNode} from '../treegrid/TreeNode';
 import {ElementHelper} from '../../dom/ElementHelper';
 import {DataView} from './DataView';
 import {Event} from '../../event/Event';
+import {IDentifiable} from '../../IDentifiable';
 
-export class GridDragHandler<MODEL> {
+export class GridDragHandler<MODEL extends IDentifiable> {
 
     protected contentGrid: TreeGrid<MODEL>;
 
@@ -48,9 +49,7 @@ export class GridDragHandler<MODEL> {
         draggableClass = (' ' + draggableClass).replace(/\s/g, '.');
         let row: Element = Element.fromString(draggableClass).getParentElement();
 
-        const nodes: TreeNode<MODEL>[] = this.contentGrid.getRoot().getCurrentRoot().treeToList();
-        const draggedNode: TreeNode<MODEL> = nodes[row.getSiblingIndex()];
-        this.contentGrid.collapseNode(draggedNode);
+        this.contentGrid.collapseNodeByRow(row.getSiblingIndex());
 
         row = Element.fromString(draggableClass).getParentElement();
 
@@ -125,7 +124,7 @@ export class GridDragHandler<MODEL> {
         // draggable count in new data
         const selectedRow: number = this.makeMovementInNodes(draggableRow, insertTarget);
 
-        if (selectedRow <= this.contentGrid.getRoot().getCurrentRoot().treeToList().length - 1) {
+        if (selectedRow <= this.contentGrid.getCurrentTotal() - 1) {
             this.contentGrid.getGrid().setSelectedRows([selectedRow]);
         }
         this.handleMovements(rowDataId, moveBeforeRowDataId);
@@ -134,18 +133,7 @@ export class GridDragHandler<MODEL> {
     }
 
     protected makeMovementInNodes(draggableRow: number, insertBefore: number): number {
-        const root: TreeNode<MODEL> = this.contentGrid.getRoot().getCurrentRoot();
-        const rootChildren: TreeNode<MODEL>[] = root.treeToList();
-
-        const item: TreeNode<MODEL> = rootChildren.slice(draggableRow, draggableRow + 1)[0];
-        rootChildren.splice(rootChildren.indexOf(item), 1);
-        rootChildren.splice(insertBefore, 0, item);
-
-        this.contentGrid.initData(rootChildren);
-        root.setChildren(rootChildren);
-
-        return rootChildren.indexOf(item);
-
+        return this.contentGrid.moveNode(draggableRow, insertBefore);
     }
 
     protected handleMovements(_rowDataId: any, _moveBeforeRowDataId: any) {

@@ -1,4 +1,5 @@
 import {TreeNode} from './TreeNode';
+import {IDentifiable} from '../../IDentifiable';
 
 export enum DataChangedType {
     ADDED,
@@ -6,7 +7,7 @@ export enum DataChangedType {
     DELETED
 }
 
-export class DataChangedEvent<DATA> {
+export class DataChangedEvent<DATA extends IDentifiable> {
 
     private treeNodes: TreeNode<DATA>[];
 

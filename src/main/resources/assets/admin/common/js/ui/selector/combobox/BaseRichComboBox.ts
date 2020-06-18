@@ -73,19 +73,19 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
 
     getSelectedDisplayValues(): OPTION_DATA_TYPE[] {
         return this.comboBox.getSelectedOptions().map((option: Option<OPTION_DATA_TYPE>) => {
-            return option.displayValue;
+            return option.getDisplayValue();
         });
     }
 
     getSelectedValues(): string[] {
         return this.comboBox.getSelectedOptions().map((option: Option<OPTION_DATA_TYPE>) => {
-            return option.value;
+            return option.getValue();
         });
     }
 
     getDisplayValues(): OPTION_DATA_TYPE[] {
         return this.comboBox.getOptions().map((option: Option<OPTION_DATA_TYPE>) => {
-            return option.displayValue;
+            return option.getDisplayValue();
         });
     }
 
@@ -314,11 +314,11 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
     }
 
     protected createOption(value: Object, readOnly?: boolean): Option<OPTION_DATA_TYPE> {
-        return {
-            value: this.getDisplayValueId(value),
-            displayValue: <OPTION_DATA_TYPE>value,
-            readOnly: readOnly
-        };
+        return Option.create<OPTION_DATA_TYPE>()
+            .setValue(this.getDisplayValueId(value))
+            .setDisplayValue(<OPTION_DATA_TYPE>value)
+            .setReadOnly(readOnly)
+            .build();
     }
 
     protected loadedItemToDisplayValue(value: LOADER_DATA_TYPE): OPTION_DATA_TYPE {
@@ -417,7 +417,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         return this.createOptions(event.getData().map(this.loadedItemToDisplayValue.bind(this))).then(
             (options: Option<OPTION_DATA_TYPE>[]) => {
                 this.comboBox.setOptions(options, event.isPostLoad());
-                this.notifyLoaded(options.map((option) => option.displayValue), event.isPostLoad());
+                this.notifyLoaded(options.map((option) => option.getDisplayValue()), event.isPostLoad());
                 return;
             });
     }
