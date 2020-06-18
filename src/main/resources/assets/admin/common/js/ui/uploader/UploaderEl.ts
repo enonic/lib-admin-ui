@@ -16,7 +16,7 @@ import {ProgressBar} from '../ProgressBar';
 import {AppHelper} from '../../util/AppHelper';
 import {RequestError} from '../../rest/RequestError';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
-import {showError} from '../../notify/MessageBus';
+import {showError, showWarning} from '../../notify/MessageBus';
 import {UploadStartedEvent} from './UploadStartedEvent';
 import {UploadProgressEvent} from './UploadProgressEvent';
 import {UploadedEvent} from './UploadedEvent';
@@ -33,6 +33,7 @@ export interface FineUploaderFile {
     uuid: string;
     status: string;
     percent: number;
+    type: string;
 }
 
 export interface UploaderElConfig {
@@ -766,8 +767,17 @@ export class UploaderEl<MODEL extends Equitable>
         }
 
         this.beforeSubmit();
+        const uploadItem = this.processFile(id, name);
+
+        if (this.config.allowMimeTypes != null && this.config.allowMimeTypes.length > 0) {
+            if (this.config.allowMimeTypes.filter(allowedMimeType => allowedMimeType === uploadItem.getFileType()).length === 0) {
+                showWarning(i18n('notify.upload.wrongMimeType'));
+                return false;
+            }
+        }
+
+        this.uploadedItems.push(uploadItem);
         this.uploader.setName(id, this.sanitizeName(name));
-        this.uploadedItems.push(this.processFile(id, name));
 
         this.startUpload();
 
