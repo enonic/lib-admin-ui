@@ -846,6 +846,18 @@ export class Element {
         });
     }
 
+    whenRendered(callback: () => void) {
+        if (this.isRendered()) {
+            callback();
+        } else {
+            const listener = () => {
+                callback();
+                this.unRendered(listener);
+            };
+            this.onRendered(listener);
+        }
+    }
+
     onRendered(listener: (event: ElementRenderedEvent) => void) {
         this.renderedListeners.push(listener);
     }

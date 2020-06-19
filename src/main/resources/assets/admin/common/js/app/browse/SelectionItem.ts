@@ -70,13 +70,7 @@ export class SelectionItem<M extends Equitable>
     }
 
     hideRemoveButton() {
-        if (this.isRendered()) {
-            this.removeEl.hide();
-        } else {
-            this.onRendered(() => {
-                this.removeEl.hide();
-            });
-        }
+        this.whenRendered(() => this.removeEl.hide());
     }
 
     getRemoveButton(): Element {
