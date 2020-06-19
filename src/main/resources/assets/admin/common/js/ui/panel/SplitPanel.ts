@@ -246,16 +246,7 @@ export class SplitPanel
         this.firstPanelIsFullScreen = false;
         this.splitterIsHidden = false;
         this.triggerResizeDebounced = AppHelper.debounce(() => {
-            if (this.isRendered()) {
-                ResponsiveManager.fireResizeEvent();
-            } else {
-                const renderedHandler = () => {
-                    ResponsiveManager.fireResizeEvent();
-                    this.unRendered(renderedHandler);
-                };
-
-                this.onRendered(renderedHandler);
-            }
+            this.whenRendered(() => ResponsiveManager.fireResizeEvent());
         }, this.animationDelay);
 
         this.savePanelSizes();
