@@ -770,7 +770,7 @@ export class UploaderEl<MODEL extends Equitable>
         const uploadItem = this.processFile(id, name);
 
         if (this.config.allowMimeTypes != null && this.config.allowMimeTypes.length > 0) {
-            if (this.config.allowMimeTypes.filter(allowedMimeType => allowedMimeType === uploadItem.getFileType()).length === 0) {
+            if (!this.config.allowMimeTypes.find(allowedMimeType => allowedMimeType === uploadItem.getFileType())) {
                 showWarning(i18n('notify.upload.wrongMimeType'));
                 return false;
             }
