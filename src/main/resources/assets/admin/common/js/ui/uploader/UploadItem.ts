@@ -59,6 +59,10 @@ export class UploadItem<MODEL extends Equitable>
         return this.file.name;
     }
 
+    getFileType() {
+        return this.file.type;
+    }
+
     getProgress(): number {
         return this.file.percent;
     }
