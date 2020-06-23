@@ -221,21 +221,6 @@ export class Grid<T extends Slick.SlickData>
         return this.slickGrid.getSelectedRows().slice();
     }
 
-    getSelectedRowItems(): T[] {
-        const rowItems: T[] = [];
-        const rows: number[] = this.getSelectedRows();
-
-        rows.forEach((rowIndex: number) => {
-            const item: T = this.dataView.getItem(rowIndex);
-
-            if (item) {
-                rowItems.push(item);
-            }
-        });
-
-        return rowItems;
-    }
-
     setSelectedRows(rows: number[], debounce?: boolean) {
         this.debounceSelectionChange = debounce;
         this.slickGrid.setSelectedRows(rows);

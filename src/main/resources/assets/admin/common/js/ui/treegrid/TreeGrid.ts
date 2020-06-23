@@ -217,7 +217,7 @@ export class TreeGrid<DATA extends IDentifiable>
             return null;
         }
 
-        return this.root.getNodeByDataId(this.selection.getFirstItem());
+        return this.root.getNodeByDataIdFromCurrent(this.selection.getFirstItem());
     }
 
     public setContextMenu(contextMenu: TreeGridContextMenu) {
@@ -321,7 +321,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return this.contextMenu;
     }
 
-    protected getRoot(): TreeRoot<DATA> {
+    getRoot(): TreeRoot<DATA> {
         return this.root;
     }
 
@@ -581,10 +581,6 @@ export class TreeGrid<DATA extends IDentifiable>
         }
     }
 
-    getSelectedNodes(): TreeNode<DATA>[] {
-        return this.grid.getSelectedRowItems();
-    }
-
     getSelectedDataList(): DATA[] {
         const selectedItems: DATA[] = this.getFullSelection();
 
@@ -631,18 +627,6 @@ export class TreeGrid<DATA extends IDentifiable>
         this.setActive(true);
 
         this.notifyLoaded();
-    }
-
-    updateNode(data: DATA, oldDataId?: string): Q.Promise<void> {
-
-        let dataId = oldDataId || data.getId();
-        let nodeToUpdate = this.root.getCurrentRoot().findNode(dataId);
-
-        if (!nodeToUpdate) {
-            throw new Error('TreeNode to update not found: ' + dataId);
-        }
-
-        return this.fetchAndUpdateNodes([nodeToUpdate], oldDataId ? data.getId() : undefined);
     }
 
     updateNodesByData(dataItems: DATA[]) {
@@ -1647,42 +1631,6 @@ export class TreeGrid<DATA extends IDentifiable>
 
     private fetchData(parentNode?: TreeNode<DATA>): Q.Promise<DATA[]> {
         return parentNode && parentNode.hasParent() ? this.fetchChildren(parentNode) : this.fetchRoot();
-    }
-
-    private fetchAndUpdateNodes(nodesToUpdate: TreeNode<DATA>[], dataId?: string): Q.Promise<void> {
-        return this.fetch(nodesToUpdate[0], dataId)
-            .then((data: DATA) => {
-                const updates = nodesToUpdate.map(node => {
-                    node.setData(data);
-
-                    const reload = () => (this.isToBeExpanded(node) ? this.expandNode(node) : Q.resolve(true));
-
-                    return reload().then(() => {
-                        node.clearViewers();
-
-                        if (node.isVisible()) {
-                            let rowIndex = this.getRowIndexByNode(node);
-                            let selected = this.grid.isRowSelected(rowIndex);
-                            let highlighted = this.isNodeHighlighted(node);
-                            if (this.gridData.getItemById(node.getId())) {
-                                this.gridData.updateItem(node.getId(), node);
-                            }
-                            if (selected) {
-                                this.grid.addSelectedRow(rowIndex);
-                            } else if (highlighted) {
-                                this.removeHighlighting(true);
-                                this.highlightRowByNode(node);
-                            }
-                        }
-                    });
-                });
-
-                return Q.all(updates).then(() => {
-                    this.notifyDataChanged(new DataChangedEvent<DATA>(nodesToUpdate, DataChangedType.UPDATED));
-
-                    return Q(null);
-                });
-            }).catch(reason => this.handleError(reason));
     }
 
     private resetCurrentSelection(nodes: TreeNode<DATA>[]) {

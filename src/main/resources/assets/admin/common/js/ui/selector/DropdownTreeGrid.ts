@@ -63,9 +63,7 @@ export class DropdownTreeGrid<OPTION_DISPLAY_VALUE>
     }
 
     getSelectedOptions(): Option<OPTION_DISPLAY_VALUE>[] {
-        return this.optionsTreeGrid.getSelectedNodes().map(selectedNode => {
-            return this.getOptionByValue(selectedNode.getDataId());
-        });
+        return this.optionsTreeGrid.getCurrentSelection();
     }
 
     markSelections(selectedOptions: Option<OPTION_DISPLAY_VALUE>[], ignoreEmpty: boolean = false) {
