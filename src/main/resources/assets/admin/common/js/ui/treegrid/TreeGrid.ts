@@ -1805,4 +1805,10 @@ export class TreeGrid<DATA extends IDentifiable>
     protected isToBeExpanded(node: TreeNode<DATA>): boolean {
         return this.expandedNodesDataIds.indexOf(node.getDataId()) > -1;
     }
+
+    getDataFromDomEvent(e: DOMEvent): DATA {
+        const cell: Slick.Cell = this.grid.getCellFromEvent(e);
+
+        return this.getDataByRow(cell.row);
+    }
 }

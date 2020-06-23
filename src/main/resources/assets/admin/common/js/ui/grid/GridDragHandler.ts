@@ -6,10 +6,13 @@ import {ElementHelper} from '../../dom/ElementHelper';
 import {DataView} from './DataView';
 import {Event} from '../../event/Event';
 import {IDentifiable} from '../../IDentifiable';
+import {AppHelper} from '../../util/AppHelper';
 
 export class GridDragHandler<MODEL extends IDentifiable> {
 
     protected contentGrid: TreeGrid<MODEL>;
+
+    protected activeItem: MODEL;
 
     private positionChangedListeners: { (): void }[] = [];
 
@@ -24,6 +27,11 @@ export class GridDragHandler<MODEL extends IDentifiable> {
         this.contentGrid.getGrid().subscribeOnDragEnd(this.handleDragEnd.bind(this));
         this.contentGrid.getGrid().subscribeBeforeMoveRows(this.handleBeforeMoveRows.bind(this));
         this.contentGrid.getGrid().subscribeMoveRows(this.handleMoveRows.bind(this));
+
+        const mouseOver = AppHelper.debounce((e: any) => {
+            this.handleMouseOver(e);
+        }, 100);
+        this.contentGrid.getGrid().subscribeOnMouseEnter(mouseOver);
     }
 
     getDraggableItem(): Element {
@@ -38,6 +46,10 @@ export class GridDragHandler<MODEL extends IDentifiable> {
         this.positionChangedListeners = this.positionChangedListeners.filter((currentListener: () => void) => {
             return currentListener !== listener;
         });
+    }
+
+    protected handleMouseOver(e: any) {
+       this.activeItem = this.contentGrid.getDataFromDomEvent(e);
     }
 
     protected handleDragInit(event: DragEvent) {
