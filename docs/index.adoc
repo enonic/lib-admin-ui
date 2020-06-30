@@ -52,16 +52,16 @@ export function get() {
   <meta http-equiv="X-UA-Compatible" content="IE=Edge"/><2>
   <meta name="viewport" content="width=device-width, user-scalable=no"><3>
   <meta name="theme-color" content="#ffffff"><4>
-  <link rel="stylesheet" type="text/css" data-th-href="${assetsUri} + '/admin/common/styles/_all.css'"><5>
-  <script type="text/javascript" data-th-src="${assetsUri} + '/admin/common/lib/_all.js'"></script><6>
-  <script type="text/javascript" data-th-src="${assetsUri} + '/admin/common/js/_all.js'"></script><7>
+  <link rel="stylesheet" type="text/css" data-th-href="${assetsUri} + '/admin/common/styles/lib.css'"><5>
+  <script defer type="text/javascript" data-th-src="${assetsUri} + '/admin/common/js/lib.js'"></script><6>
 </head>
 <body>
   <script type="text/javascript" data-th-inline="javascript">
   /*<![CDATA[*/
       var CONFIG = {
-          adminUrl: [[${adminUrl}]],<8>
-          assetsUri: [[${assetsUri}]]<9>
+          adminUrl: [[${adminUrl}]],<7>
+          assetsUri: [[${assetsUri}]],<8>
+          services: {}, // Workaround for i18nUrl BUG
       };
   /*]]>*/
   </script>
@@ -76,7 +76,6 @@ export function get() {
 <6> TODO Requried? If so why?
 <7> TODO Requried? If so why?
 <8> TODO Requried? If so why?
-<9> TODO Requried? If so why?
 
 == Making your own UI components
 
