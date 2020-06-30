@@ -1,0 +1,83 @@
+= Admin UI Library Documentation
+:toc: right
+
+
+== Usage
+
+In order to include admin ui assets in your application add the following to your build file:
+
+.build.gradle
+[source,groovy]
+----
+dependencies {
+    include 'com.enonic.lib:lib-admin-ui:3.0.0'
+}
+----
+
+In order to use the admin ui components on a webpage the browser needs to load some assets:
+
+.controller.es
+[source,javascript]
+----
+import {
+  assetUrl,
+  url
+} from '/lib/xp/portal';
+import {render} from '/lib/thymeleaf';
+
+const VIEW = resolve('controller.html.th');
+
+export function get() {
+  return {
+    body: render(VIEW, {
+      adminUrl: url({
+        path: '/admin'
+      }),
+      assetsUri: assetUrl({
+          path: ''
+      })
+    }),
+    contentType: 'text/html;charset=utf-8'
+  }; // return
+} // function get
+----
+
+.controller.html.th
+[source,html]
+----
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"><1>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge"/><2>
+  <meta name="viewport" content="width=device-width, user-scalable=no"><3>
+  <meta name="theme-color" content="#ffffff"><4>
+  <link rel="stylesheet" type="text/css" data-th-href="${assetsUri} + '/admin/common/styles/_all.css'"><5>
+  <script type="text/javascript" data-th-src="${assetsUri} + '/admin/common/lib/_all.js'"></script><6>
+  <script type="text/javascript" data-th-src="${assetsUri} + '/admin/common/js/_all.js'"></script><7>
+</head>
+<body>
+  <script type="text/javascript" data-th-inline="javascript">
+  /*<![CDATA[*/
+      var CONFIG = {
+          adminUrl: [[${adminUrl}]],<8>
+          assetsUri: [[${assetsUri}]]<9>
+      };
+  /*]]>*/
+  </script>
+</body>
+</html>
+----
+<1> TODO Requried? If so why?
+<2> TODO Requried? If so why?
+<3> TODO Requried? If so why?
+<4> TODO Requried? If so why?
+<5> Styling
+<6> TODO Requried? If so why?
+<7> TODO Requried? If so why?
+<8> TODO Requried? If so why?
+<9> TODO Requried? If so why?
+
+== Making your own UI components
+
+If you want to make your own UI components have a look at https://github.com/enonic/enonic-npm-modules/tree/master/packages/enonic-admin-artifacts[enonic-admin-artifacts].
