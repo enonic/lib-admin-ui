@@ -1,0 +1,25 @@
+= AppBar
+
+
+[source,html]
+----
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="{{assetsUrl}}/admin/common/styles/lib.css">
+  <script defer src="{{assetsUrl}}/admin/common/js/lib.js" type="text/javascript"></script>
+</head>
+<body>
+  <div class="appbar">
+    <div class="home-button app-icon system-info-button">
+      <img class="app-icon" src="{{assetsUrl}}/icons/application.svg"/>
+      <span class="app-name">My application name</span>
+    </div>
+  </div>
+  <script>
+    var CONFIG = {
+      services: {} // Workaround for i18nUrl BUG
+    };
+  </script>
+</body>
+----

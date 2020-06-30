@@ -1,0 +1,9 @@
+
+{
+  "versions": [
+    {
+      "label": "stable",
+      "checkout": "master"
+    }
+  ]
+}

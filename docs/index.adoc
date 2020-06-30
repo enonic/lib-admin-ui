@@ -1,4 +1,5 @@
 = Admin UI Library Documentation
+include::variables.adoc[]
 :toc: right
 
 
