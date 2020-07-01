@@ -82,7 +82,6 @@ export class GridDragHandler<MODEL extends IDentifiable> {
     protected handleDragEnd(_event: Event, _data: DragEventData) {
         this.draggableItem.remove();
         this.draggableItem = null;
-        this.contentGrid.refresh();
     }
 
     protected handleBeforeMoveRows(_event: Event, data: DragEventData): boolean {

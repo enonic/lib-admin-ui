@@ -160,11 +160,11 @@ export class TreeGrid<DATA extends IDentifiable>
         this.initKeyBindings();
     }
 
-    public hasHighlightedNode(): boolean {
+    hasHighlightedNode(): boolean {
         return this.highlightedDataId != null && !!this.root.getNodeByDataIdFromCurrent(this.highlightedDataId);
     }
 
-    public getHighlightedItem(): DATA {
+    getHighlightedItem(): DATA {
         return this.root.getNodeByDataId(this.highlightedDataId).getData();
     }
 
@@ -172,7 +172,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return this.root.getNodeByDataIdFromCurrent(this.highlightedDataId);
     }
 
-    public getFirstSelectedOrHighlightedItem(): DATA {
+    getFirstSelectedOrHighlightedItem(): DATA {
         const node: TreeNode<DATA> = this.getFirstSelectedOrHighlightedNode();
 
         if (node) {
@@ -194,15 +194,15 @@ export class TreeGrid<DATA extends IDentifiable>
         return null;
     }
 
-    public hasSelectedOrHighlightedNode(): boolean {
+    hasSelectedOrHighlightedNode(): boolean {
         return this.hasHighlightedNode() || this.selection.hasSelectedItems();
     }
 
-    public hasSelectedItems(): boolean {
+    hasSelectedItems(): boolean {
         return this.selection.hasSelectedItems();
     }
 
-    public getFirstSelectedItem(): DATA {
+    getFirstSelectedItem(): DATA {
         const node: TreeNode<DATA> = this.getFirstSelectedNode();
 
         if (node) {
@@ -220,7 +220,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return this.root.getNodeByDataIdFromCurrent(this.selection.getFirstItem());
     }
 
-    public setContextMenu(contextMenu: TreeGridContextMenu) {
+    setContextMenu(contextMenu: TreeGridContextMenu) {
         this.contextMenu = contextMenu;
         this.grid.subscribeOnContextMenu((event) => {
             event.preventDefault();
@@ -256,7 +256,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return this;
     }
 
-    public getRowByNode(node: TreeNode<DATA>): JQuery {
+    private getRowByNode(node: TreeNode<DATA>): JQuery {
         let rowIndex = this.getRowIndexByNode(node);
         let cell = this.grid.getCellNode(rowIndex, 0);
 
@@ -289,7 +289,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return this.isVisible() && this.isActive();
     }
 
-    isEmptyNode(_node: TreeNode<DATA>): boolean {
+    protected isEmptyNode(_node: TreeNode<DATA>): boolean {
         return false;
     }
 
@@ -321,7 +321,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return this.contextMenu;
     }
 
-    getRoot(): TreeRoot<DATA> {
+    protected getRoot(): TreeRoot<DATA> {
         return this.root;
     }
 
@@ -419,7 +419,7 @@ export class TreeGrid<DATA extends IDentifiable>
         }
     }
 
-    queryScrollable(): Element {
+    protected queryScrollable(): Element {
         const gridClasses = (` ${this.grid.getEl().getClass()}`).replace(/\s/g, '.');
         return Element.fromString(`.tree-grid ${gridClasses} .slick-viewport`, false);
     }
@@ -428,7 +428,7 @@ export class TreeGrid<DATA extends IDentifiable>
      * Used to determine if a data have child nodes.
      * Must be overridden for the grids with a tree structure.
      */
-    hasChildren(_data: DATA): boolean {
+    protected hasChildren(_data: DATA): boolean {
         return false;
     }
 
@@ -442,7 +442,7 @@ export class TreeGrid<DATA extends IDentifiable>
      * retrieving a a full data, or for the purpose of the
      * infinite scroll.
      */
-    fetch(_node: TreeNode<DATA>, _dataId?: string): Q.Promise<DATA> {
+    protected fetch(_node: TreeNode<DATA>, _dataId?: string): Q.Promise<DATA> {
         let deferred = Q.defer<DATA>();
         // Empty logic
         deferred.resolve(null);
@@ -453,7 +453,7 @@ export class TreeGrid<DATA extends IDentifiable>
      * Used as a default children fetcher.
      * Must be overridden to use predefined root nodes.
      */
-    fetchChildren(_parentNode?: TreeNode<DATA>): Q.Promise<DATA[]> {
+    protected fetchChildren(_parentNode?: TreeNode<DATA>): Q.Promise<DATA[]> {
         let deferred = Q.defer<DATA[]>();
         // Empty logic
         deferred.resolve([]);
@@ -465,11 +465,11 @@ export class TreeGrid<DATA extends IDentifiable>
      * Can be overridden to use predefined root nodes.
      * By default, return empty fetchChildren request.
      */
-    fetchRoot(): Q.Promise<DATA[]> {
+    protected fetchRoot(): Q.Promise<DATA[]> {
         return this.fetchChildren();
     }
 
-    dataToTreeNode(data: DATA, parent: TreeNode<DATA>): TreeNode<DATA> {
+    protected dataToTreeNode(data: DATA, parent: TreeNode<DATA>): TreeNode<DATA> {
         return new TreeNodeBuilder<DATA>()
             .setData(data)
             .setExpandable(this.hasChildren(data))
@@ -477,7 +477,7 @@ export class TreeGrid<DATA extends IDentifiable>
             .build();
     }
 
-    dataToTreeNodes(dataArray: DATA[], parent: TreeNode<DATA>): TreeNode<DATA>[] {
+    protected dataToTreeNodes(dataArray: DATA[], parent: TreeNode<DATA>): TreeNode<DATA>[] {
         return dataArray.map((data: DATA) => this.dataToTreeNode(data, parent));
     }
 
@@ -591,7 +591,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return selectedItems;
     }
 
-    setSelectionOnClick(type: SelectionOnClickType): void {
+    protected setSelectionOnClick(type: SelectionOnClickType): void {
         this.selectionOnClick = type;
     }
 
@@ -610,23 +610,6 @@ export class TreeGrid<DATA extends IDentifiable>
             this.setActive(true);
             this.notifyLoaded();
         });
-    }
-
-    // Soft reset, that saves node status
-    refresh(): void {
-        let root = this.root.getCurrentRoot();
-
-        this.setActive(false);
-
-        this.grid.invalidate();
-
-        root.setExpanded(true);
-        this.initData(root.treeToList());
-        this.invalidate();
-
-        this.setActive(true);
-
-        this.notifyLoaded();
     }
 
     updateNodesByData(dataItems: DATA[]) {
@@ -686,7 +669,7 @@ export class TreeGrid<DATA extends IDentifiable>
         }
     }
 
-    initData(nodes: TreeNode<DATA>[]) {
+    protected initData(nodes: TreeNode<DATA>[]) {
         this.gridData.setItems(nodes, this.idPropertyName);
         this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
         this.resetCurrentSelection(nodes);
@@ -702,7 +685,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return Q(false);
     }
 
-    expandNode(node?: TreeNode<DATA>): Q.Promise<boolean> {
+    protected expandNode(node?: TreeNode<DATA>): Q.Promise<boolean> {
         let deferred = Q.defer<boolean>();
 
         node = node || this.root.getCurrentRoot();
@@ -795,7 +778,7 @@ export class TreeGrid<DATA extends IDentifiable>
         }
     }
 
-    collapseNode(node: TreeNode<DATA>, collapseAll: boolean = false) {
+    protected collapseNode(node: TreeNode<DATA>, collapseAll: boolean = false) {
         node.setExpanded(false);
 
         this.expandedNodesDataIds.splice(this.expandedNodesDataIds.indexOf(node.getDataId()), 1);
@@ -812,7 +795,7 @@ export class TreeGrid<DATA extends IDentifiable>
         this.setActive(true);
     }
 
-    toggleNode(node: TreeNode<DATA>) {
+    protected toggleNode(node: TreeNode<DATA>) {
         if (node.isExpanded()) {
             this.collapseNode(node);
         } else {
@@ -838,7 +821,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return this;
     }
 
-    getItem(rowIndex: number): TreeNode<DATA> {
+    protected getItem(rowIndex: number): TreeNode<DATA> {
         return this.gridData.getItem(rowIndex);
     }
 
@@ -872,7 +855,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return this;
     }
 
-    notifyDataChanged(event: DataChangedEvent<DATA>) {
+    protected notifyDataChanged(event: DataChangedEvent<DATA>) {
         this.dataChangeListeners.forEach((listener) => {
             listener(event);
         });
@@ -908,7 +891,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return this.highlightedDataId && this.selection.contains(this.highlightedDataId);
     }
 
-    invalidateNodes(nodes: TreeNode<DATA>[]) {
+    protected invalidateNodes(nodes: TreeNode<DATA>[]) {
         if (!nodes.length) {
             return;
         }
@@ -918,11 +901,11 @@ export class TreeGrid<DATA extends IDentifiable>
         this.highlightCurrentNode();
     }
 
-    sortNodeChildren(_node: TreeNode<DATA>): void {
+    protected sortNodeChildren(_node: TreeNode<DATA>): void {
         // must be implemented by children
     }
 
-    isNodeHighlighted(node: TreeNode<DATA>) {
+    protected isNodeHighlighted(node: TreeNode<DATA>) {
         // grid could've been refreshed resulting in new nodeIds, so compare dataIds
         return node !== null && this.highlightedDataId !== null && node.getDataId() === this.highlightedDataId;
     }
