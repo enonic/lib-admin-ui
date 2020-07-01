@@ -32,7 +32,7 @@
     "@types/jquery": "^3.3.34",
     "@types/jqueryui": "^1.12.10",
     "@types/mousetrap": "^1.6.3",
-    "@types/q": "^1.5.2",
+    "@types/q": "^1.5.4",
     "@types/semver": "^6.2.1",
     "@types/slickgrid": "^2.1.29",
     "@types/validator": "^12.0.1",
