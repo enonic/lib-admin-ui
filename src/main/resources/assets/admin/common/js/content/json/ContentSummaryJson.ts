@@ -42,4 +42,6 @@ export interface ContentSummaryJson
     contentState: string;
 
     workflow: WorkflowJson;
+
+    inherited: boolean;
 }

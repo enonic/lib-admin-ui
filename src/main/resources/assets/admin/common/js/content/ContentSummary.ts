@@ -68,6 +68,8 @@ export class ContentSummary {
 
     private workflow: Workflow;
 
+    private inherited: boolean;
+
     constructor(builder: ContentSummaryBuilder) {
         this.name = builder.name;
         this.displayName = builder.displayName;
@@ -96,6 +98,7 @@ export class ContentSummary {
         this.language = builder.language;
         this.contentState = builder.contentState;
         this.workflow = builder.workflow;
+        this.inherited = builder.inherited;
     }
 
     static fromJson(json: ContentSummaryJson): ContentSummary {
@@ -238,6 +241,10 @@ export class ContentSummary {
         return !!this.workflow && this.workflow.getState() === WorkflowState.IN_PROGRESS;
     }
 
+    isInherited(): boolean {
+        return this.inherited;
+    }
+
     equals(o: Equitable): boolean {
 
         if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentSummary)) {
@@ -256,6 +263,9 @@ export class ContentSummary {
             return false;
         }
         if (!ObjectHelper.stringEquals(this.displayName, other.getDisplayName())) {
+            return false;
+        }
+        if (!ObjectHelper.booleanEquals(this.inherited, other.isInherited())) {
             return false;
         }
         if (!ObjectHelper.equals(this.path, other.getPath())) {
@@ -379,6 +389,8 @@ export class ContentSummaryBuilder {
 
     workflow: Workflow;
 
+    inherited: boolean;
+
     constructor(source?: ContentSummary) {
         if (source) {
             this.id = source.getId();
@@ -407,6 +419,7 @@ export class ContentSummaryBuilder {
             this.language = source.getLanguage();
             this.contentState = source.getContentState();
             this.workflow = source.getWorkflow();
+            this.inherited = source.isInherited();
         }
     }
 
@@ -441,6 +454,7 @@ export class ContentSummaryBuilder {
 
         this.contentState = ContentState.fromString(json.contentState);
         this.workflow = Workflow.fromJson(json.workflow);
+        this.inherited = json.inherited;
 
         return this;
     }
@@ -531,6 +545,11 @@ export class ContentSummaryBuilder {
 
     setWorkflow(value: Workflow): ContentSummaryBuilder {
         this.workflow = value;
+        return this;
+    }
+
+    setInherited(value: boolean): ContentSummaryBuilder {
+        this.inherited = value;
         return this;
     }
 
