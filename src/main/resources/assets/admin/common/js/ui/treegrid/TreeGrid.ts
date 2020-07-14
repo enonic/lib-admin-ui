@@ -1284,8 +1284,9 @@ export class TreeGrid<DATA extends IDentifiable>
         if (!node || node.isVisible()) {
             return;
         }
+
         let parent: TreeNode<DATA> = node.getParent();
-        while (!node.isVisible()) {
+        while (parent && !node.isVisible()) {
             this.expandNode(parent);
             parent = parent.getParent();
         }

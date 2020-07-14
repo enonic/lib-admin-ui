@@ -61,7 +61,7 @@ export class GridDragHandler<MODEL extends IDentifiable> {
         draggableClass = (' ' + draggableClass).replace(/\s/g, '.');
         let row: Element = Element.fromString(draggableClass).getParentElement();
 
-        this.contentGrid.collapseNodeByRow(row.getSiblingIndex());
+        this.contentGrid.collapseNodeByRow(this.getRowIndex(row.getEl()));
 
         row = Element.fromString(draggableClass).getParentElement();
 
@@ -79,9 +79,33 @@ export class GridDragHandler<MODEL extends IDentifiable> {
         $(`.tree-grid ${gridClasses} .slick-viewport`).get(0).appendChild(this.draggableItem.getHTMLElement());
     }
 
+    protected getRowIndex(row: ElementHelper): number {
+        const parent: ElementHelper = row.getParent();
+
+        const sortedByTop: number[] = (<HTMLElement[]>parent.getChildren())
+            .filter((el: HTMLElement) => el.classList.contains('slick-row'))
+            .map((el: HTMLElement) => +el.style.top.replace('px', ''))
+            .sort((a: number, b: number) => a - b);
+
+        let pos: number = -1;
+        const rowTop: number = +row.getHTMLElement().style.top.replace('px','');
+
+        sortedByTop.some((item: number, index: number) => {
+            if (item === rowTop) {
+                pos = index;
+                return true;
+            }
+
+            return false;
+        });
+
+        return pos;
+    }
+
     protected handleDragEnd(_event: Event, _data: DragEventData) {
         this.draggableItem.remove();
         this.draggableItem = null;
+        this.contentGrid.invalidate();
     }
 
     protected handleBeforeMoveRows(_event: Event, data: DragEventData): boolean {
