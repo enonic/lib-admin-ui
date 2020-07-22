@@ -13,6 +13,7 @@ import {ContentName} from './ContentName';
 import {ContentPath} from './ContentPath';
 import {assert} from '../util/Assert';
 import {ContentUnnamed} from './ContentUnnamed';
+import {ContentInheritType} from './ContentInheritType';
 
 export class ContentSummary {
 
@@ -68,7 +69,7 @@ export class ContentSummary {
 
     private workflow: Workflow;
 
-    private inherited: boolean;
+    private inherit: ContentInheritType[];
 
     constructor(builder: ContentSummaryBuilder) {
         this.name = builder.name;
@@ -98,7 +99,7 @@ export class ContentSummary {
         this.language = builder.language;
         this.contentState = builder.contentState;
         this.workflow = builder.workflow;
-        this.inherited = builder.inherited;
+        this.inherit = builder.inherit;
     }
 
     static fromJson(json: ContentSummaryJson): ContentSummary {
@@ -241,8 +242,12 @@ export class ContentSummary {
         return !!this.workflow && this.workflow.getState() === WorkflowState.IN_PROGRESS;
     }
 
+    getInherit(): ContentInheritType[] {
+        return this.inherit;
+    }
+
     isInherited(): boolean {
-        return this.inherited;
+        return this.inherit && this.inherit.length > 0;
     }
 
     equals(o: Equitable): boolean {
@@ -265,7 +270,7 @@ export class ContentSummary {
         if (!ObjectHelper.stringEquals(this.displayName, other.getDisplayName())) {
             return false;
         }
-        if (!ObjectHelper.booleanEquals(this.inherited, other.isInherited())) {
+        if (!ObjectHelper.anyEquals(this.inherit, other.getInherit())) {
             return false;
         }
         if (!ObjectHelper.equals(this.path, other.getPath())) {
@@ -389,7 +394,7 @@ export class ContentSummaryBuilder {
 
     workflow: Workflow;
 
-    inherited: boolean;
+    inherit: ContentInheritType[];
 
     constructor(source?: ContentSummary) {
         if (source) {
@@ -419,7 +424,7 @@ export class ContentSummaryBuilder {
             this.language = source.getLanguage();
             this.contentState = source.getContentState();
             this.workflow = source.getWorkflow();
-            this.inherited = source.isInherited();
+            this.inherit = source.getInherit();
         }
     }
 
@@ -454,7 +459,7 @@ export class ContentSummaryBuilder {
 
         this.contentState = ContentState.fromString(json.contentState);
         this.workflow = Workflow.fromJson(json.workflow);
-        this.inherited = json.inherited;
+        this.inherit = json.inherit && json.inherit.length > 0 ? json.inherit.map(type => ContentInheritType[type]) : [];
 
         return this;
     }
@@ -548,8 +553,8 @@ export class ContentSummaryBuilder {
         return this;
     }
 
-    setInherited(value: boolean): ContentSummaryBuilder {
-        this.inherited = value;
+    setInherit(value: ContentInheritType[]): ContentSummaryBuilder {
+        this.inherit = value;
         return this;
     }
 
