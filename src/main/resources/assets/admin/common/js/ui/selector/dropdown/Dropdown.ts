@@ -437,7 +437,9 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
             }
         });
 
-        this.dropdownHandle.onClicked(() => {
+        this.dropdownHandle.onClicked((event) => {
+            event.stopPropagation();
+            event.preventDefault();
 
             if (this.isDropdownShown()) {
                 this.hideDropdown();
