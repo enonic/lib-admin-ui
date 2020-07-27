@@ -43,5 +43,5 @@ export interface ContentSummaryJson
 
     workflow: WorkflowJson;
 
-    inherited: boolean;
+    inherit: string[];
 }
