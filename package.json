@@ -25,12 +25,12 @@
     "mousetrap": "^1.6.5",
     "q": "^1.5.1",
     "slickgrid": "^2.4.19",
-    "validator": "^12.2.0"
+    "validator": "^13.1.1"
   },
   "devDependencies": {
     "@types/core-js": "^2.5.3",
     "@types/jquery": "^3.3.34",
-    "@types/jqueryui": "^1.12.10",
+    "@types/jqueryui": "^1.12.13",
     "@types/mousetrap": "^1.6.3",
     "@types/q": "^1.5.4",
     "@types/semver": "^6.2.1",
@@ -56,13 +56,13 @@
     "postcss-sort-media-queries": "^1.4.23",
     "prettier": "^2.0.5",
     "style-loader": "^1.2.1",
-    "terser": "^4.6.7",
+    "terser": "^4.8.0",
     "terser-webpack-plugin": "^3.0.7",
     "ts-loader": "^7.0.5",
     "tslint": "^6.1.2",
     "typescript": "^3.8.3",
     "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   },
   "browserslist": [
     "extends browserslist-config-enonic"
