@@ -3,6 +3,7 @@ import {AccessDeniedException} from '../AccessDeniedException';
 import {Path} from './Path';
 import {RequestError} from './RequestError';
 import {HttpMethod} from './HttpMethod';
+import {Response} from './Response';
 
 export abstract class Request {
 
@@ -61,9 +62,14 @@ export abstract class Request {
         return this;
     }
 
-    send() {
+    send(): Q.Promise<Response> {
+        const deferred: Q.Deferred<any> = Q.defer<any>();
+
         this.prepareRequest();
+        this.handleReadyStateChanged(deferred);
         this.request.send(this.createRequestData());
+
+        return deferred.promise;
     }
 
     protected createRequestData(): any {

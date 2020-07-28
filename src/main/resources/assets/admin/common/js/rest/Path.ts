@@ -24,12 +24,9 @@ export class Path {
         this.refString = (this.absolute ? this.elementDivider : '') + this.elements.join(this.elementDivider);
     }
 
-    public static fromString(s: string, elementDivider?: string) {
-        if (elementDivider == null) {
-            elementDivider = Path.DEFAULT_ELEMENT_DIVIDER;
-        }
-        let absolute: boolean = s.charAt(0) === elementDivider;
-        let elements: string[] = s.split(elementDivider);
+    public static fromString(s: string, elementDivider: string = Path.DEFAULT_ELEMENT_DIVIDER) {
+        const absolute: boolean = s.startsWith(elementDivider);
+        const elements: string[] = s.split(elementDivider);
         return new Path(Path.removeEmptyElements(elements), elementDivider, absolute);
     }
 
@@ -44,13 +41,7 @@ export class Path {
     }
 
     private static removeEmptyElements(elements: string[]): string[] {
-        let filteredElements: string[] = [];
-        elements.forEach((element: string) => {
-            if (element.length > 0) {
-                filteredElements.push(element);
-            }
-        });
-        return filteredElements;
+        return elements.filter((element: string) => element.length > 0);
     }
 
     getElements(): string[] {
