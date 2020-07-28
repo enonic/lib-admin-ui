@@ -174,8 +174,8 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         this.comboBox.getInput().getEl().setValue('');
     }
 
-    clearSelection(forceClear: boolean = false, giveInputFocus: boolean = true, ignoreEmpty: boolean = false) {
-        this.comboBox.clearSelection(ignoreEmpty, giveInputFocus, forceClear);
+    clearSelection(forceClear: boolean = false, giveInputFocus: boolean = true, ignoreEmpty: boolean = false, silent: boolean = true) {
+        this.comboBox.clearSelection(ignoreEmpty, giveInputFocus, forceClear, silent);
     }
 
     removeAllOptions() {
