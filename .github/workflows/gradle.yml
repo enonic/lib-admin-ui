@@ -3,61 +3,77 @@ name: Gradle Build
 on: [push]
 
 jobs:
-  build:
+    build:
 
-    runs-on: ubuntu-latest
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v1
+        steps:
+            - uses: actions/checkout@v2.3.1
 
-      - uses: actions/setup-java@v1
-        with:
-          java-version: 11
+            - uses: actions/setup-java@v1
+              with:
+                  java-version: 11
 
-      - uses: actions/cache@v1
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+            - uses: actions/cache@v2
+              with:
+                  path: ~/.gradle/caches
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+            - run: ./gradlew build
 
-      - run: ./gradlew build
+            - uses: codecov/codecov-action@v1.0.10
 
-      - name: Read version property
-        id: read_version
-        uses: christian-draeger/read-properties@1.0.1
-        with:
-            path: './gradle.properties'
-            property: 'version'
+            ### PUBLISHING STEPS ###
 
-      - name: Publish to snapshot repository
-        if: "contains(steps.read_version.outputs.value, '-SNAPSHOT') && (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/3.'))"
-        run: ./gradlew publish -PrepoKey=snapshot -PrepoUser=${{ secrets.ARTIFACTORY_USERNAME }} -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
+            - name: Read version property
+              id: read_version
+              uses: christian-draeger/read-properties@1.0.1
+              with:
+                  path: './gradle.properties'
+                  property: 'version'
 
-          #- name: Publish to release repository
-          #  if: "!contains(steps.read_version.outputs.value, '-SNAPSHOT') && contains(github.ref, 'refs/heads/3.')"
-          #  run: ./gradlew publish -PrepoKey=public -PrepoUser=${{ secrets.ARTIFACTORY_USERNAME }} -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
-          #- name: Create Release
-          #  "!contains(steps.read_version.outputs.value, '-SNAPSHOT') && contains(github.ref, 'refs/heads/3.')"
-          #  id: create_release
-          #  uses: actions/create-release@v1
-          #  env:
-          #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          #  with:
-          #    tag_name: v${{ steps.read_version.outputs.value }}
-          #    release_name: Enonic Admin UI Lib ${{ steps.read_version.outputs.value }}
-          #    draft: true
-  dispatch:
-      needs: build
-      strategy:
-          matrix:
-              repo: ["enonic/app-admin-home", "enonic/app-applications", "enonic/app-users" ]
-      runs-on: ubuntu-latest
-      if: "(github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/3.'))"
-      steps:
-          - name: Repository Dispatch
-            uses: peter-evans/repository-dispatch@v1
-            with:
-                token: ${{ secrets.REPO_ACCESS_TOKEN }}
-                repository: ${{ matrix.repo }}
-                event-type: lib-admin-ui
+            - name: Get publishing variables
+              id: get_publish_vars
+              run: |
+                  PUBLISH=${{ github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/3.') }}
+
+                  echo ::set-output name=publish::$PUBLISH
+
+                  if ${{ contains(steps.read_version.outputs.value, '-SNAPSHOT') }};
+                  then
+                    echo "::set-output name=release::false"
+                    echo "::set-output name=repo::snapshot"
+                  else
+                    echo "::set-output name=release::true"
+                    echo "::set-output name=repo::public"
+                  fi
+
+            - name: Publish
+              if: steps.get_publish_vars.outputs.publish == 'true'
+              run: ./gradlew publish -PrepoKey=${{ steps.get_publish_vars.outputs.repo }} -PrepoUser=${{ secrets.ARTIFACTORY_USERNAME }} -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
+
+            - name: Create Release
+              if: steps.get_publish_vars.outputs.release == 'true'
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: v${{ steps.read_version.outputs.value }}
+                  release_name: Enonic Admin UI Lib ${{ steps.read_version.outputs.value }}
+
+    dispatch:
+        needs: build
+        strategy:
+            matrix:
+                repo: ["enonic/app-admin-home", "enonic/app-applications", "enonic/app-users" ]
+        runs-on: ubuntu-latest
+        if: "(github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/3.'))"
+        steps:
+            - name: Repository Dispatch
+              uses: peter-evans/repository-dispatch@v1
+              with:
+                  token: ${{ secrets.REPO_ACCESS_TOKEN }}
+                  repository: ${{ matrix.repo }}
+                  event-type: lib-admin-ui
