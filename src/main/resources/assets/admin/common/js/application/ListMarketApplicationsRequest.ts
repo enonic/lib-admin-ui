@@ -10,7 +10,7 @@ import {UriHelper} from '../util/UriHelper';
 export class ListMarketApplicationsRequest
     extends PostRequest {
 
-    private static MARKET_URI: string = 'https://market.enonic.com/applications';
+    private static DEFAULT_MARKET_URL: string = 'https://market.enonic.com/applications';
 
     private version: string;
     private start: number = 0;
@@ -38,7 +38,10 @@ export class ListMarketApplicationsRequest
     }
 
     protected createRequestURI(): string {
-        return UriHelper.appendUrlParams(ListMarketApplicationsRequest.MARKET_URI, this.params);
+        console.log((window['CONFIG'] && window['CONFIG']['marketUrl']));
+        const marketUrl = (window['CONFIG'] && window['CONFIG']['marketUrl']) || ListMarketApplicationsRequest.DEFAULT_MARKET_URL;
+
+        return UriHelper.appendUrlParams(marketUrl, this.params);
     }
 
     protected createRequestData(): any {
