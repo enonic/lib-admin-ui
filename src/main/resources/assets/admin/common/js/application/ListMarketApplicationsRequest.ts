@@ -38,7 +38,6 @@ export class ListMarketApplicationsRequest
     }
 
     protected createRequestURI(): string {
-        console.log((window['CONFIG'] && window['CONFIG']['marketUrl']));
         const marketUrl = (window['CONFIG'] && window['CONFIG']['marketUrl']) || ListMarketApplicationsRequest.DEFAULT_MARKET_URL;
 
         return UriHelper.appendUrlParams(marketUrl, this.params);
@@ -64,11 +63,11 @@ export class ListMarketApplicationsRequest
 
         return this.send().then((rawResponse: any) => {
             const response = new JsonResponse<MarketApplicationsListJson>(rawResponse);
-            return this.parseResponse(response);
+            return ListMarketApplicationsRequest.parseResponse(response);
         });
     }
 
-    private parseResponse(response: JsonResponse<MarketApplicationsListJson>): MarketApplicationResponse {
+    private static parseResponse(response: JsonResponse<MarketApplicationsListJson>): MarketApplicationResponse {
         const applications: MarketApplication[] = MarketApplication.fromJsonArray(response.getResult().hits);
         const hits: number = applications.length;
         const totalHits: number = response.getResult().total;
