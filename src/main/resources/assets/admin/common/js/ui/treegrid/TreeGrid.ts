@@ -1900,6 +1900,7 @@ export class TreeGrid<DATA>
         AppHelper.whileTruthy(() => root.findNode(dataId), (node: TreeNode<DATA>) => {
             if (node.hasChildren()) {
                 node.getChildren().forEach((child: TreeNode<DATA>) => {
+                    this.selection.remove(child.getDataId());
                     this.deleteNode(child.getData());
                 });
             }
