@@ -36,7 +36,9 @@ export abstract class Request {
         return this;
     }
 
-    handleReadyStateChanged(deferred: Q.Deferred<any>): Request {
+    private sendRequest(): Q.Promise<Response> {
+        const deferred: Q.Deferred<Response> = Q.defer<Response>();
+
         this.request.onreadystatechange = () => {
             if (this.request.readyState === 4) {
                 let errorJson = null;
@@ -59,17 +61,15 @@ export abstract class Request {
             }
         };
 
-        return this;
-    }
-
-    send(): Q.Promise<Response> {
-        const deferred: Q.Deferred<any> = Q.defer<any>();
-
-        this.prepareRequest();
-        this.handleReadyStateChanged(deferred);
         this.request.send(this.createRequestData());
 
         return deferred.promise;
+    }
+
+    send(): Q.Promise<Response> {
+
+        this.prepareRequest();
+        return this.sendRequest();
     }
 
     protected createRequestData(): any {
