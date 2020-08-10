@@ -77,17 +77,12 @@ export abstract class ResourceRequest<PARSED_TYPE>
     send(): Q.Promise<Response> {
         this.validate();
 
-        const deferred: Q.Deferred<any> = Q.defer<any>();
-
         const request: Request = this.createRequest()
             .setParams(this.getParams())
             .setPath(this.getRequestPath())
-            .setTimeout(!this.heavyOperation ? this.timeoutMillis : 0)
-            .handleReadyStateChanged(deferred);
+            .setTimeout(!this.heavyOperation ? this.timeoutMillis : 0);
 
-        request.send();
-
-        return deferred.promise.then((rawResponse: any) => {
+        return request.send().then((rawResponse: any) => {
             return this.isJsonResponse ? new JsonResponse(rawResponse) : new Response(rawResponse);
         });
     }

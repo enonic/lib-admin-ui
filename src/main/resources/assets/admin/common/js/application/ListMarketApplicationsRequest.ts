@@ -1,24 +1,21 @@
-import {ApplicationResourceRequest} from './ApplicationResourceRequest';
 import {MarketApplicationsListJson} from './json/MarketApplicationsListJson';
 import {JsonResponse} from '../rest/JsonResponse';
 import {MarketApplicationResponse} from './MarketApplicationResponse';
 import {MarketApplication} from './MarketApplication';
 import {MarketApplicationMetadata} from './MarketApplicationMetadata';
-import {HttpMethod} from '../rest/HttpMethod';
+import {PostRequest} from '../rest/PostRequest';
+import * as Q from 'q';
+import {UriHelper} from '../util/UriHelper';
 
 export class ListMarketApplicationsRequest
-    extends ApplicationResourceRequest<MarketApplicationResponse> {
+    extends PostRequest {
+
+    private static DEFAULT_MARKET_URL: string = 'https://market.enonic.com/applications';
 
     private version: string;
     private start: number = 0;
     private count: number = 10;
     private ids: string[] = [];
-
-    constructor() {
-        super();
-        this.setMethod(HttpMethod.POST);
-        this.addRequestPathElements('getMarketApplications');
-    }
 
     setIds(ids: string[]): ListMarketApplicationsRequest {
         this.ids = ids;
@@ -40,16 +37,37 @@ export class ListMarketApplicationsRequest
         return this;
     }
 
-    getParams(): Object {
-        return {
-            ids: this.ids,
-            version: this.version,
-            start: this.start,
-            count: this.count,
-        };
+    protected createRequestURI(): string {
+        const marketUrl = (window['CONFIG'] && window['CONFIG']['marketUrl']) || ListMarketApplicationsRequest.DEFAULT_MARKET_URL;
+
+        return UriHelper.appendUrlParams(marketUrl, this.params);
     }
 
-    protected parseResponse(response: JsonResponse<MarketApplicationsListJson>): MarketApplicationResponse {
+    protected createRequestData(): any {
+
+        if (this.ids && this.ids.length > 0) {
+            this.params = {
+                ids: this.ids
+            };
+        }
+
+        return super.createRequestData();
+    }
+
+    sendAndParse(): Q.Promise<MarketApplicationResponse> {
+        this.params = {
+            xpVersion: this.version,
+            start: this.start,
+            count: this.count
+        };
+
+        return this.send().then((rawResponse: any) => {
+            const response = new JsonResponse<MarketApplicationsListJson>(rawResponse);
+            return ListMarketApplicationsRequest.parseResponse(response);
+        });
+    }
+
+    private static parseResponse(response: JsonResponse<MarketApplicationsListJson>): MarketApplicationResponse {
         const applications: MarketApplication[] = MarketApplication.fromJsonArray(response.getResult().hits);
         const hits: number = applications.length;
         const totalHits: number = response.getResult().total;

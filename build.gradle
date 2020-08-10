@@ -13,7 +13,6 @@ repositories {
 
 
 group = 'com.enonic.lib'
-version = '3.1.0-SNAPSHOT'
 
 jar {
     archiveFileName = 'lib-admin-ui'
