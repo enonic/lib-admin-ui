@@ -24,6 +24,7 @@ import {ValidationRecordingPath} from '../ValidationRecordingPath';
 import {OccurrenceRenderedEvent} from '../OccurrenceRenderedEvent';
 import {OccurrenceAddedEvent} from '../OccurrenceAddedEvent';
 import {OccurrenceRemovedEvent} from '../OccurrenceRemovedEvent';
+import {FormEditEvent} from '../../content/event/FormEditEvent';
 
 export abstract class FormSetView<V extends FormSetOccurrenceView>
     extends FormItemView {
@@ -384,6 +385,12 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             this.validate(false, event.validateViewOnRender() ? null : occurrenceView);
 
             if (ObjectHelper.iFrameSafeInstanceOf(occurrenceView, FormSetOccurrenceView)) {
+                (<FormSetOccurrenceView>occurrenceView).getFormItemViews().forEach((formItemView: FormItemView) => {
+                    formItemView.onEditContentRequest((content: ContentSummary) => {
+                        new FormEditEvent(content).fire();
+                    });
+                });
+
                 this.onFormSetOccurrenceContainerVisibilityToggle((<FormSetOccurrenceView>occurrenceView).getContainer());
             }
         });
