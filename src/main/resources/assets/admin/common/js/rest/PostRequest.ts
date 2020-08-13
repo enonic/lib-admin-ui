@@ -15,7 +15,7 @@ export class PostRequest
         this.isFormRequest = value;
     }
 
-    protected prepareRequest() {
+    protected prepareRequest(): void {
         super.prepareRequest();
         this.request.setRequestHeader('Accept', 'application/json');
         if (!this.isFormRequest) {
@@ -35,7 +35,7 @@ export class PostRequest
         return JSON.stringify(this.params);
     }
 
-    private createFormData(): FormData {
+    protected createFormData(): FormData {
         const formData: FormData = new FormData();
 
         for (const key of Object.keys(this.params)) {

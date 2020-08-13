@@ -36,7 +36,7 @@ export abstract class Request {
         return this;
     }
 
-    private sendRequest(): Q.Promise<Response> {
+    protected bindRequestEventsHandlers(): Q.Deferred<Response> {
         const deferred: Q.Deferred<Response> = Q.defer<Response>();
 
         this.request.onreadystatechange = () => {
@@ -61,6 +61,12 @@ export abstract class Request {
             }
         };
 
+        return deferred;
+    }
+
+    private sendRequest(): Q.Promise<Response> {
+        const deferred = this.bindRequestEventsHandlers();
+
         this.request.send(this.createRequestData());
 
         return deferred.promise;
@@ -76,7 +82,7 @@ export abstract class Request {
         return null;
     }
 
-    protected prepareRequest() {
+    protected prepareRequest(): void {
         this.request.open(this.method, this.createRequestURI(), true);
         this.request.timeout = this.timeoutMillis;
     }
