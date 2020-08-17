@@ -461,6 +461,8 @@ export class GridOptions<T extends Slick.SlickData>
 
     galleryModeColumns: number;
 
+    enableAsyncPostRenderCleanup: boolean = true;
+
     constructor(builder: GridOptionsBuilder<T>) {
         this.asyncEditorLoading = builder.asyncEditorLoading;
         this.asyncEditorLoadDelay = builder.asyncEditorLoadDelay;
