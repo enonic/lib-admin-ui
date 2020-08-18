@@ -52,8 +52,8 @@ export class NamesAndIconView
 
     constructor(builder: NamesAndIconViewBuilder) {
         super('names-and-icon-view');
-        let sizeClassName: string = NamesAndIconViewSize[builder.size];
-        if (builder.size) {
+        const sizeClassName: string = NamesAndIconViewSize[builder.size];
+        if (sizeClassName) {
             this.addClass(sizeClassName);
         }
 
