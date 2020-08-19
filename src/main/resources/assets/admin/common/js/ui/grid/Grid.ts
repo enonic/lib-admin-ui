@@ -522,6 +522,7 @@ export class Grid<T extends Slick.SlickData>
     private autoRenderGridOnDataChanges(dataView: DataView<T>) {
         dataView.onRowCountChanged(() => {
             this.updateRowCount();
+            this.resizeCanvas();
             this.renderGrid();
         });
 

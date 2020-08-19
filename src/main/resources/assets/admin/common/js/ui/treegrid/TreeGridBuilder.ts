@@ -76,7 +76,8 @@ export class TreeGridBuilder<NODE> {
         return new GridOptionsBuilder<TreeNode<NODE>>()
             .setDataItemColumnValueExtractor(this.nodeExtractor)
             .setEditable(false)
-            .setAutoHeight(false).setEnableAsyncPostRender(true).setAutoRenderGridOnDataChanges(true)
+            .setEnableAsyncPostRender(true)
+            .setAutoRenderGridOnDataChanges(true)
             // It is necessary to turn off the library key handling. It may cause
             // the conflicts with Mousetrap, which leads to skipping the key events
             // Do not set to true, if you are not fully aware of the result
@@ -178,15 +179,6 @@ export class TreeGridBuilder<NODE> {
 
     isAutoLoad(): boolean {
         return this.autoLoad;
-    }
-
-    setAutoHeight(autoHeight: boolean): TreeGridBuilder<NODE> {
-        this.options.setAutoHeight(autoHeight);
-        return this;
-    }
-
-    isAutoHeight(): boolean {
-        return this.options.isAutoHeight();
     }
 
     setCheckableRows(checkable: boolean): TreeGridBuilder<NODE> {

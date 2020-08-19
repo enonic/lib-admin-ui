@@ -605,7 +605,7 @@ if (typeof Slick === "undefined") {
             if (oldW !== viewportW) {
                 invalidateAllRows();
                 if (activeRow) {
-                    scrollTo(getGalleryRow(activeRow) * getGalleryRowHeight());
+                    scrollTo(getRow(activeRow) * getRowHeight());
                 }
             }
         }
@@ -2002,7 +2002,7 @@ if (typeof Slick === "undefined") {
 
         function createCssRules() {
             $style = $("<style type='text/css' rel='stylesheet' />").on("load", resizeCanvas);
-            var rowHeight = (getGalleryRowHeight() - cellHeightDiff);
+            var rowHeight = (getRowHeight() - cellHeightDiff);
             var rules = [
                 "." + uid + " .slick-group-header-column { left: 1000px; }",
                 "." + uid + " .slick-header-column { left: 1000px; }",
@@ -2011,7 +2011,7 @@ if (typeof Slick === "undefined") {
                 "." + uid + " .slick-headerrow-columns { height:" + options.headerRowHeight + "px; }",
                 "." + uid + " .slick-footerrow-columns { height:" + options.footerRowHeight + "px; }",
                 "." + uid + " .slick-cell { height:" + rowHeight + "px; }",
-                "." + uid + " .slick-row { height:" + getGalleryRowHeight() + "px; }"
+                "." + uid + " .slick-row { height:" + getRowHeight() + "px; }"
             ];
 
             for (var i = 0; i < columns.length; i++) {
@@ -2537,11 +2537,11 @@ if (typeof Slick === "undefined") {
         //////////////////////////////////////////////////////////////////////////////////////////////
         // Rendering / Scrolling
 
-        function getGalleryRow(row, ceil) {
+        function getRow(row, ceil) {
             return options.enableGalleryMode ? Math[!ceil ? 'floor' : 'ceil'](row / options.galleryModeColumns) : row;
         }
 
-        function getGalleryRowHeight(margin) {
+        function getRowHeight(margin) {
             if (options.enableGalleryMode && viewportH > 0 && viewportW > 0) {
                 return Math.min(viewportH, Math.floor(viewportW / options.galleryModeColumns)) - 2 * (margin || 0);
             }
@@ -2549,16 +2549,16 @@ if (typeof Slick === "undefined") {
         }
 
         function getRowTop(row) {
-            return getGalleryRow(row) * getGalleryRowHeight() - offset;
+            return getRow(row) * getRowHeight() - offset;
         }
 
-        function getGalleryRowLeft(row) {
+        function getRowLeft(row) {
             return row % options.galleryModeColumns * 100 / options.galleryModeColumns; // in percents
         }
 
         function getRowFromPosition(y, round) {
             return Math[!round ? 'floor' : 'round']((y + offset) * (options.enableGalleryMode ? options.galleryModeColumns : 1) /
-                                                    getGalleryRowHeight());
+                                                    getRowHeight());
         }
 
         function scrollTo(y) {
@@ -2683,8 +2683,8 @@ if (typeof Slick === "undefined") {
 
             var rowStyle = "top:" + (getRowTop(row) - frozenRowOffset) + "px;";
             if (options.enableGalleryMode) {
-                rowStyle += "left: " + getGalleryRowLeft(row) + "%;";
-                rowStyle += "height: " + getGalleryRowHeight(10) + "px;";
+                rowStyle += "left: " + getRowLeft(row) + "%;";
+                rowStyle += "height: " + getRowHeight(10) + "px;";
             }
 
             var rowHtml = "<div class='ui-widget-content " + rowCss + "' style='" + rowStyle + "'>";
@@ -2989,7 +2989,7 @@ if (typeof Slick === "undefined") {
 
         function getViewportHeight() {
             if (options.autoHeight) {
-                viewportH = getGalleryRow(getDataLengthIncludingAddNew(), true) * getGalleryRowHeight()
+                viewportH = getRow(getDataLengthIncludingAddNew(), true) * getRowHeight()
                             + ((options.frozenColumn == -1) ? $headers.outerHeight() : 0);
             } else {
                 topPanelH = (options.showTopPanel) ? options.topPanelHeight + getVBoxDelta($topPanelScroller) : 0;
@@ -3009,7 +3009,7 @@ if (typeof Slick === "undefined") {
                             - preHeaderH;
             }
 
-            numVisibleRows = Math.ceil(viewportH / getGalleryRowHeight());
+            numVisibleRows = Math.ceil(viewportH / getRowHeight());
             return viewportH;
         }
 
@@ -3161,7 +3161,7 @@ if (typeof Slick === "undefined") {
             // with autoHeight, we do not need to accommodate the vertical scroll bar
             viewportHasVScroll =
                 options.alwaysShowVerticalScroll || !options.autoHeight &&
-                (getGalleryRow(numberOfRows, true) * getGalleryRowHeight() > tempViewportH);
+                (getRow(numberOfRows, true) * getRowHeight() > tempViewportH);
 
             makeActiveCellNormal();
 
@@ -3181,7 +3181,7 @@ if (typeof Slick === "undefined") {
                 resetActiveCell();
             }
 
-            th = Math.max(getGalleryRowHeight() * getGalleryRow(numberOfRows, true), tempViewportH - scrollbarDimensions.height);
+            th = getRowHeight() * getRow(numberOfRows, true);
             if (th < maxSupportedCssHeight) {
                 // just one page
                 h = ph = th;
@@ -3548,7 +3548,7 @@ if (typeof Slick === "undefined") {
             for (var row in rowsCache) {
                 rowsCache[row].rowNode.style.top = getRowTop(row) + "px";
                 if (options.enableGalleryMode) {
-                    rowsCache[row].rowNode.style.left = getGalleryRowLeft(row) + "%";
+                    rowsCache[row].rowNode.style.left = getRowLeft(row) + "%";
                 }
             }
         }
@@ -4296,7 +4296,7 @@ if (typeof Slick === "undefined") {
             var frozenRowOffset = getFrozenRowOffset(row);
 
             var y1 = getRowTop(row) - frozenRowOffset;
-            var y2 = y1 + getGalleryRowHeight() - 1;
+            var y2 = y1 + getRowHeight() - 1;
             var x1 = 0;
             for (var i = 0; i < cell; i++) {
                 x1 += columns[i].width;
@@ -4672,10 +4672,10 @@ if (typeof Slick === "undefined") {
                 // subtract number of frozen row
                 var rowNumber = (hasFrozenRows && !options.frozenBottom ? row - options.frozenRow : row);
 
-                var galleryRowNumber = getGalleryRow(rowNumber);
-                var rowAtTop = galleryRowNumber * getGalleryRowHeight();
-                var nextRowAtTop = (getGalleryRow(rowNumber) + 1) * getGalleryRowHeight();
-                var rowAtBottom = (galleryRowNumber + 1) * getGalleryRowHeight()
+                var galleryRowNumber = getRow(rowNumber);
+                var rowAtTop = galleryRowNumber * getRowHeight();
+                var nextRowAtTop = (getRow(rowNumber) + 1) * getRowHeight();
+                var rowAtBottom = (galleryRowNumber + 1) * getRowHeight()
                                   - viewportScrollH
                                   + (viewportHasHScroll ? scrollbarDimensions.height : 0);
 
@@ -4685,7 +4685,7 @@ if (typeof Slick === "undefined") {
                     render();
                 }
                 // or page up?
-                else if (galleryRowNumber * getGalleryRowHeight() < scrollTop + offset) {
+                else if (galleryRowNumber * getRowHeight() < scrollTop + offset) {
                     scrollTo(doPaging ? rowAtBottom : rowAtTop);
                     render();
                 }
@@ -4693,7 +4693,7 @@ if (typeof Slick === "undefined") {
         }
 
         function scrollRowToTop(row) {
-            scrollTo(getGalleryRow(row) * getGalleryRowHeight());
+            scrollTo(getRow(row) * getRowHeight());
             render();
         }
 
@@ -4702,7 +4702,7 @@ if (typeof Slick === "undefined") {
             /// First fully visible row crosses the line with
             /// y == bottomOfTopmostFullyVisibleRow
             var bottomOfTopmostFullyVisibleRow = scrollTop + options.rowHeight - 1;
-            scrollTo((getRowFromPosition(bottomOfTopmostFullyVisibleRow) + deltaRows) * getGalleryRowHeight());
+            scrollTo((getRowFromPosition(bottomOfTopmostFullyVisibleRow) + deltaRows) * getRowHeight());
             render();
 
             if (options.enableCellNavigation && activeRow != null) {

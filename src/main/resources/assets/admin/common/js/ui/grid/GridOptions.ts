@@ -8,8 +8,6 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
 
     autoEdit: boolean;
 
-    autoHeight: boolean;
-
     cellFlashingCssClass: string;
 
     cellHighlightCssClass: string;
@@ -96,7 +94,6 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
             this.asyncEditorLoadDelay = source.getAsyncEditorLoadDelay();
             this.asyncPostRenderDelay = source.getAsyncPostRenderDelay();
             this.autoEdit = source.isAutoEdit();
-            this.autoHeight = source.isAutoHeight();
             this.cellFlashingCssClass = source.getCellFlashingCssClass();
             this.cellHighlightCssClass = source.getCellHighlightCssClass();
             this.dataItemColumnValueExtractor = source.getDataItemColumnValueExtractor();
@@ -157,11 +154,6 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
 
     setAutoEdit(autoEdit: boolean): GridOptionsBuilder<T> {
         this.autoEdit = autoEdit;
-        return this;
-    }
-
-    setAutoHeight(autoHeight: boolean): GridOptionsBuilder<T> {
-        this.autoHeight = autoHeight;
         return this;
     }
 
@@ -376,7 +368,7 @@ export class GridOptions<T extends Slick.SlickData>
 
     autoEdit: boolean;
 
-    autoHeight: boolean;
+    autoHeight: boolean = false;
 
     cellFlashingCssClass: string;
 
@@ -399,6 +391,8 @@ export class GridOptions<T extends Slick.SlickData>
     enableAddRow: boolean;
 
     enableAsyncPostRender: boolean;
+
+    enableAsyncPostRenderCleanup: boolean = true;
 
     enableCellRangeSelection: any;
 
@@ -461,14 +455,11 @@ export class GridOptions<T extends Slick.SlickData>
 
     galleryModeColumns: number;
 
-    enableAsyncPostRenderCleanup: boolean = true;
-
     constructor(builder: GridOptionsBuilder<T>) {
         this.asyncEditorLoading = builder.asyncEditorLoading;
         this.asyncEditorLoadDelay = builder.asyncEditorLoadDelay;
         this.asyncPostRenderDelay = builder.asyncPostRenderDelay;
         this.autoEdit = builder.autoEdit;
-        this.autoHeight = builder.autoHeight;
         this.cellFlashingCssClass = builder.cellFlashingCssClass;
         this.cellHighlightCssClass = builder.cellHighlightCssClass;
         this.dataItemColumnValueExtractor = builder.dataItemColumnValueExtractor;
@@ -525,10 +516,6 @@ export class GridOptions<T extends Slick.SlickData>
 
     isAutoEdit(): boolean {
         return this.autoEdit;
-    }
-
-    isAutoHeight(): boolean {
-        return this.autoHeight;
     }
 
     getCellFlashingCssClass(): string {
@@ -712,11 +699,6 @@ export class GridOptions<T extends Slick.SlickData>
 
     setAutoEdit(autoEdit: boolean): GridOptions<T> {
         this.autoEdit = autoEdit;
-        return this;
-    }
-
-    setAutoHeight(autoHeight: boolean): GridOptions<T> {
-        this.autoHeight = autoHeight;
         return this;
     }
 
