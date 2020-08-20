@@ -41,14 +41,13 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         super();
 
         this.comboBox = this.createCombobox(builder);
-        this.loader = builder.loader;
         this.loadedListeners = [];
         this.loadingListeners = [];
         this.identifierMethod = builder.identifierMethod;
         this.selectedOptionsView = builder.selectedOptionsView;
         this.errorContainer = new DivEl('error-container');
 
-        this.setupLoader();
+        this.setupLoader(builder.loader);
         this.setWrappedInput(this.comboBox);
         this.setAdditionalElements(this.errorContainer, this.selectedOptionsView);
 
@@ -349,10 +348,10 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         });
     }
 
-    private createCombobox(builder: BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE>): BaseLoaderComboBox<OPTION_DATA_TYPE,
+    protected createCombobox(builder: BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE>): BaseLoaderComboBox<OPTION_DATA_TYPE,
         LOADER_DATA_TYPE> {
         const comboBox = new BaseLoaderComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>(builder.comboBoxName, this.createComboboxConfig(
-            builder), builder.loader);
+            builder));
 
         comboBox.onClicked(() => comboBox.giveFocus());
 
@@ -387,7 +386,9 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         });
     }
 
-    private setupLoader() {
+    private setupLoader(loader: BaseLoader<LOADER_DATA_TYPE>) {
+        this.loader = loader;
+        this.comboBox.setLoader(loader);
 
         this.comboBox.onOptionFilterInputValueChanged((event: OptionFilterInputValueChangedEvent) => {
             return this.reload(event.getNewValue());
