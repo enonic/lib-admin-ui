@@ -31,6 +31,7 @@ export class DateTimeRange
         noStart: string
         endBeforeStart: string
         endInPast: string
+        startEqualsEnd: string
     };
 
     private labels: {
@@ -111,33 +112,30 @@ export class DateTimeRange
 
     protected additionalValidate(recording: InputValidationRecording) {
         recording.setAdditionalValidationRecord(undefined);
-
-        if (recording.isValid()) {
-            if (this.to) {
-                if (!this.from) {
-                    recording.setBreaksMinimumOccurrences(true);
-                    recording.setAdditionalValidationRecord(
-                        AdditionalValidationRecord.create()
-                            .setOverwriteDefault(true)
-                            .setMessage(this.errors.noStart)
-                            .build());
-                } else if (this.to.toDate() < new Date()) {
-                    recording.setBreaksMinimumOccurrences(true);
-                    recording.setAdditionalValidationRecord(
-                        AdditionalValidationRecord.create()
-                            .setOverwriteDefault(true)
-                            .setMessage(this.errors.endInPast)
-                            .build());
-                } else if (this.to.toDate() < this.from.toDate()) {
-                    recording.setBreaksMinimumOccurrences(true);
-                    recording.setAdditionalValidationRecord(
-                        AdditionalValidationRecord.create()
-                            .setOverwriteDefault(true)
-                            .setMessage(this.errors.endBeforeStart)
-                            .build());
-                }
-            }
+        if (!recording.isValid() || !this.to) {
+            return;
         }
+        let errorMessage: string;
+        if (!this.from) {
+            errorMessage = this.errors.noStart;
+        } else if (this.to.toDate() < new Date()) {
+            errorMessage = this.errors.endInPast;
+        } else if (this.to.toDate() < this.from.toDate()) {
+            errorMessage = this.errors.endBeforeStart;
+        } else if (this.to.equals(this.from)) {
+            errorMessage = this.errors.startEqualsEnd;
+        }
+
+        if (!errorMessage) {
+            return;
+        }
+
+        recording.setBreaksMinimumOccurrences(true);
+        recording.setAdditionalValidationRecord(
+            AdditionalValidationRecord.create()
+                .setOverwriteDefault(true)
+                .setMessage(errorMessage)
+                .build());
     }
 
     private readConfig(inputConfig: { [element: string]: any; }): void {
@@ -145,18 +143,20 @@ export class DateTimeRange
             this.useTimezone = true;
         }
 
-        this.errors = {
-            noStart: this.readConfigValue(inputConfig, 'errorNoStart') ||
-                     i18n('field.dateTimeRange.errors.noStart'),
-            endInPast: this.readConfigValue(inputConfig, 'errorEndInPast') ||
-                       i18n('field.dateTimeRange.errors.endInPast'),
-            endBeforeStart: this.readConfigValue(inputConfig, 'errorEndBeforeStart') ||
-                            i18n('field.dateTimeRange.errors.endBeforeStart')
+        this.labels = {
+            start: this.readConfigValue(inputConfig, 'labelStart') || i18n('field.dateTimeRange.label.dateFrom'),
+            end: this.readConfigValue(inputConfig, 'labelEnd') || i18n('field.dateTimeRange.label.dateTo')
         };
 
-        this.labels = {
-            start: this.readConfigValue(inputConfig, 'labelStart'),
-            end: this.readConfigValue(inputConfig, 'labelEnd')
+        this.errors = {
+            noStart: this.readConfigValue(inputConfig, 'errorNoStart') ||
+                     i18n('field.dateTimeRange.errors.noStart', this.labels.start, this.labels.end),
+            endInPast: this.readConfigValue(inputConfig, 'errorEndInPast') ||
+                       i18n('field.dateTimeRange.errors.endInPast', this.labels.end),
+            endBeforeStart: this.readConfigValue(inputConfig, 'errorEndBeforeStart') ||
+                            i18n('field.dateTimeRange.errors.endBeforeStart', this.labels.start, this.labels.end),
+            startEqualsEnd: this.readConfigValue(inputConfig, 'errorStartEqualsEnd') ||
+                            i18n('field.dateTimeRange.errors.startEqualsEnd', this.labels.start, this.labels.end)
         };
     }
 
