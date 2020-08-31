@@ -47,6 +47,8 @@ export class NamesAndIconViewer<OBJECT>
         if (!this.namesAndIconView) {
             this.namesAndIconView = new NamesAndIconViewBuilder().setSize(this.size).build();
             this.appendChild(this.namesAndIconView);
+        } else {
+            this.namesAndIconView.setIconClass('');
         }
 
         if (object) {
