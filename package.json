@@ -54,7 +54,7 @@
     "postcss-loader": "^3.0.0",
     "postcss-normalize": "^9.0.0",
     "postcss-sort-media-queries": "^1.7.26",
-    "prettier": "^2.0.5",
+    "prettier": "^2.1.1",
     "style-loader": "^1.2.1",
     "terser": "^5.2.1",
     "terser-webpack-plugin": "^4.1.0",
