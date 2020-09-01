@@ -250,6 +250,18 @@ export class ContentSummary {
         return this.inherit && this.inherit.length > 0;
     }
 
+    isDataInherited(): boolean {
+        return this.isInheritedByType(ContentInheritType.DATA);
+    }
+
+    isSortInherited(): boolean {
+        return this.isInheritedByType(ContentInheritType.SORT);
+    }
+
+    private isInheritedByType(type: ContentInheritType): boolean {
+        return this.isInherited() && this.inherit.some((inheritType: ContentInheritType) => inheritType === type);
+    }
+
     equals(o: Equitable): boolean {
 
         if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentSummary)) {
