@@ -251,7 +251,7 @@ export class ContentSummary {
     }
 
     isDataInherited(): boolean {
-        return this.isInheritedByType(ContentInheritType.DATA);
+        return this.isInheritedByType(ContentInheritType.CONTENT);
     }
 
     isSortInherited(): boolean {

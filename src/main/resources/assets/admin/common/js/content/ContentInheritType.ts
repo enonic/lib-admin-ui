@@ -1,3 +1,3 @@
 export enum ContentInheritType {
-    DATA, PARENT, NAME, SORT
+    CONTENT, PARENT, NAME, SORT
 }
