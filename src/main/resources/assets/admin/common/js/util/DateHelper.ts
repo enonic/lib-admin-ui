@@ -43,6 +43,15 @@ export class DateHelper {
     }
 
     /**
+     * Formats date and time parts of passed date object. Returns string like 2010-01-01 12:34
+     * @param date
+     * @returns {string}
+     */
+    public static formatDateTime(date: Date, includeSeconds: boolean = true): string {
+        return `${DateHelper.formatDate(date)} ${DateHelper.getFormattedTimeFromDate(date, includeSeconds)}`;
+    }
+
+    /**
      * Formats time part of passed date object. Returns string like 10:55:00
      * @param date
      * @param includeSeconds

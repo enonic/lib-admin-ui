@@ -81,8 +81,8 @@ export class NamesAndIconView
         return new NamesAndIconViewBuilder();
     }
 
-    setMainName(value: string): NamesAndIconView {
-        this.namesView.setMainName(value);
+    setMainName(value: string, escapeHtml: boolean = true): NamesAndIconView {
+        this.namesView.setMainName(value, escapeHtml);
         return this;
     }
 
