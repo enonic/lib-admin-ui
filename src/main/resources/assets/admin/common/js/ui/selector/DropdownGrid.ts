@@ -207,14 +207,9 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
         const borderWidth = gridEl.getBorderTopWidth() + gridEl.getBorderBottomWidth();
 
         if (rowsHeight < this.customHeight) {
-
             gridEl.setHeightPx(rowsHeight + borderWidth);
-            this.getGrid().getOptions().setAutoHeight(true);
-
         } else if (gridEl.getHeight() < this.customHeight || this.customHeight !== this.maxHeight) {
-
             gridEl.setHeightPx(this.customHeight + borderWidth);
-            this.getGrid().getOptions().setAutoHeight(false);
         }
 
         this.getGrid().resizeCanvas();
