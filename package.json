@@ -25,7 +25,7 @@
     "mousetrap": "^1.6.5",
     "q": "^1.5.1",
     "slickgrid": "^2.4.28",
-    "validator": "^13.1.1"
+    "validator": "^13.1.17"
   },
   "devDependencies": {
     "@types/core-js": "^2.5.4",
