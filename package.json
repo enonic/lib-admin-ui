@@ -43,7 +43,7 @@
     "copy-webpack-plugin": "^6.1.1",
     "css-loader": "^4.3.0",
     "cssnano": "^4.1.10",
-    "del": "^5.1.0",
+    "del": "^6.0.0",
     "enonic-admin-artifacts": "^1.5.10",
     "error-logger-webpack-plugin": "^1.1.0",
     "file-loader": "^6.1.0",
