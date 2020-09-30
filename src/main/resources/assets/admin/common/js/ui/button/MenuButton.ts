@@ -17,6 +17,8 @@ export class MenuButton
 
     private menu: Menu;
 
+    private toggleMenuOnAction: boolean = false;
+
     constructor(mainAction: Action, menuActions: Action[] = []) {
         super('menu-button');
 
@@ -61,6 +63,20 @@ export class MenuButton
 
     removeMenuSeparator() {
         this.menu.removeSeparator();
+    }
+
+    toggleMenu(expanded?: boolean) {
+        if (expanded || !this.menu.hasClass('expanded')) {
+            this.expandMenu();
+        } else {
+            this.collapseMenu();
+        }
+    }
+
+    expandMenu(): void {
+        this.menu.toggleClass('expanded');
+        this.dropdownHandle.toggleClass('down');
+        this.dropdownHandle.giveFocus();
     }
 
     collapseMenu(): void {
@@ -109,6 +125,10 @@ export class MenuButton
         this.actionButton.setEnabled(enable);
     }
 
+    setToggleMenuOnAction(collapse: boolean) {
+        this.toggleMenuOnAction = collapse;
+    }
+
     private initDropdownHandle() {
         this.dropdownHandle = new DropdownHandle();
     }
@@ -149,8 +169,7 @@ export class MenuButton
     private initListeners() {
         this.dropdownHandle.onClicked(() => {
             if (this.dropdownHandle.isEnabled()) {
-                this.menu.toggleClass('expanded');
-                this.dropdownHandle.toggleClass('down');
+                this.expandMenu();
             }
         });
 
@@ -160,9 +179,13 @@ export class MenuButton
             }
         });
 
-        this.actionButton.onClicked(() => this.collapseMenu());
-
-        this.dropdownHandle.onClicked(() => this.dropdownHandle.giveFocus());
+        this.actionButton.onClicked(() => {
+            if (this.toggleMenuOnAction) {
+                this.toggleMenu();
+            } else {
+                this.collapseMenu();
+            }
+        });
 
         this.menu.onClicked(() => this.dropdownHandle.giveFocus());
 
