@@ -65,8 +65,8 @@ export class MenuButton
         this.menu.removeSeparator();
     }
 
-    toggleMenu(expanded?: boolean) {
-        if (expanded || !this.menu.hasClass('expanded')) {
+    toggleMenu(expand?: boolean) {
+        if (expand || expand === undefined && !this.menu.hasClass('expanded')) {
             this.expandMenu();
         } else {
             this.collapseMenu();
@@ -74,8 +74,8 @@ export class MenuButton
     }
 
     expandMenu(): void {
-        this.menu.toggleClass('expanded');
-        this.dropdownHandle.toggleClass('down');
+        this.menu.addClass('expanded');
+        this.dropdownHandle.addClass('down');
         this.dropdownHandle.giveFocus();
     }
 
