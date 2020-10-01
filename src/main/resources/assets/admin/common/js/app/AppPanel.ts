@@ -7,6 +7,7 @@ import {KeyBindings} from '../ui/KeyBindings';
 import {Action} from '../ui/Action';
 import {ShowBrowsePanelEvent} from './ShowBrowsePanelEvent';
 import {Panel} from '../ui/panel/Panel';
+import {ResponsiveManager} from '../ui/responsive/ResponsiveManager';
 
 export class AppPanel<M extends Equitable>
     extends DeckPanel {
@@ -33,6 +34,8 @@ export class AppPanel<M extends Equitable>
         }
 
         this.showPanel(this.browsePanel);
+
+        ResponsiveManager.fireResizeEvent();
     }
 
     protected addBrowsePanel(browsePanel: BrowsePanel<M>) {
