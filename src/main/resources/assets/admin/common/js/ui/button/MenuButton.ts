@@ -125,8 +125,8 @@ export class MenuButton
         this.actionButton.setEnabled(enable);
     }
 
-    setToggleMenuOnAction(collapse: boolean) {
-        this.toggleMenuOnAction = collapse;
+    setToggleMenuOnAction(value: boolean) {
+        this.toggleMenuOnAction = value;
     }
 
     private initDropdownHandle() {
