@@ -35,7 +35,7 @@ export class AppPanel<M extends Equitable>
 
         this.showPanel(this.browsePanel);
 
-      ResponsiveManager.fireResizeEvent();
+        ResponsiveManager.fireResizeEvent();
     }
 
     protected addBrowsePanel(browsePanel: BrowsePanel<M>) {
