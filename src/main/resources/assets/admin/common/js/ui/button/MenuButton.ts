@@ -169,7 +169,7 @@ export class MenuButton
     private initListeners() {
         this.dropdownHandle.onClicked(() => {
             if (this.dropdownHandle.isEnabled()) {
-                this.expandMenu();
+                this.toggleMenu();
             }
         });
 
