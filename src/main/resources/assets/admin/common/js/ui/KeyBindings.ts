@@ -15,7 +15,7 @@ export class KeyBindings {
 
     private shelves: Map<string, KeyBinding>[];
 
-    private helpKeyPressedListeners: { (event: ExtendedKeyboardEvent): void }[];
+    private helpKeyPressedListeners: { (event: Mousetrap.ExtendedKeyboardEvent): void }[];
 
     private constructor() {
         if (this.debug) {
@@ -184,13 +184,13 @@ export class KeyBindings {
         });
     }
 
-    onHelpKeyPressed(listener: (event: ExtendedKeyboardEvent) => void) {
+    onHelpKeyPressed(listener: (event: Mousetrap.ExtendedKeyboardEvent) => void) {
         this.helpKeyPressedListeners.push(listener);
     }
 
     unHelpKeyPressed(listener: () => void) {
         this.helpKeyPressedListeners =
-            this.helpKeyPressedListeners.filter((currentListener: (event: ExtendedKeyboardEvent) => void) => {
+            this.helpKeyPressedListeners.filter((currentListener: (event: Mousetrap.ExtendedKeyboardEvent) => void) => {
                 return listener !== currentListener;
             });
     }
@@ -202,17 +202,17 @@ export class KeyBindings {
     }
 
     private initializeHelpKey() {
-        this.bindKey(new KeyBinding('f2', (e: ExtendedKeyboardEvent) => {
+        this.bindKey(new KeyBinding('f2', (e: Mousetrap.ExtendedKeyboardEvent) => {
             this.notifyHelpKeyPressed(e);
         }).setGlobal(true).setAction(KeyBindingAction.KEYDOWN));
 
-        this.bindKey(new KeyBinding('f2', (e: ExtendedKeyboardEvent) => {
+        this.bindKey(new KeyBinding('f2', (e: Mousetrap.ExtendedKeyboardEvent) => {
             this.notifyHelpKeyPressed(e);
         }).setGlobal(true).setAction(KeyBindingAction.KEYUP));
     }
 
-    private notifyHelpKeyPressed(e: ExtendedKeyboardEvent) {
-        this.helpKeyPressedListeners.forEach((listener: (event: ExtendedKeyboardEvent) => void) => {
+    private notifyHelpKeyPressed(e: Mousetrap.ExtendedKeyboardEvent) {
+        this.helpKeyPressedListeners.forEach((listener: (event: Mousetrap.ExtendedKeyboardEvent) => void) => {
             listener.call(this, e);
         });
     }
