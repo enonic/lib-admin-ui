@@ -40,7 +40,7 @@ export class Action {
         this.label = label;
 
         if (shortcut) {
-            this.shortcut = new KeyBinding(shortcut).setGlobal(global).setCallback((e: ExtendedKeyboardEvent) => {
+            this.shortcut = new KeyBinding(shortcut).setGlobal(global).setCallback((e: Mousetrap.ExtendedKeyboardEvent) => {
 
                 // preventing Browser shortcuts to kick in
                 if (e.preventDefault) {

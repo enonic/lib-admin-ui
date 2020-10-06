@@ -8,13 +8,13 @@ export class KeyBinding {
 
     private combination: string;
 
-    private callback: (e: ExtendedKeyboardEvent, combo: string) => boolean;
+    private callback: (e: Mousetrap.ExtendedKeyboardEvent, combo: string) => boolean;
 
     private action: KeyBindingAction;
 
     private global: boolean;
 
-    constructor(combination: string, callback?: (e: ExtendedKeyboardEvent, combo: string) => any, action?: KeyBindingAction,
+    constructor(combination: string, callback?: (e: Mousetrap.ExtendedKeyboardEvent, combo: string) => any, action?: KeyBindingAction,
                 global?: boolean) {
 
         this.combination = combination;
@@ -27,7 +27,7 @@ export class KeyBinding {
         return new KeyBinding(combination);
     }
 
-    static createMultiple(callback: (e: ExtendedKeyboardEvent, combo: string) => any, ...combinations: string[]) {
+    static createMultiple(callback: (e: Mousetrap.ExtendedKeyboardEvent, combo: string) => any, ...combinations: string[]) {
         let bindings: KeyBinding[] = [];
 
         combinations.forEach((combination: string) => {
@@ -37,7 +37,7 @@ export class KeyBinding {
         return bindings;
     }
 
-    setCallback(func: (e: ExtendedKeyboardEvent, combo: string) => boolean): KeyBinding {
+    setCallback(func: (e: Mousetrap.ExtendedKeyboardEvent, combo: string) => boolean): KeyBinding {
         this.callback = func;
         return this;
     }
@@ -56,7 +56,7 @@ export class KeyBinding {
         return this.combination;
     }
 
-    getCallback(): (e: ExtendedKeyboardEvent, combo: string) => boolean {
+    getCallback(): (e: Mousetrap.ExtendedKeyboardEvent, combo: string) => boolean {
         return this.callback;
     }
 
