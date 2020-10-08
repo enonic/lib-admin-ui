@@ -12,6 +12,8 @@ export class ActionMenu
 
     private labelEl: DivEl;
 
+    private expandedListeners: ((expanded: boolean) => void)[] = [];
+
     constructor(label: string, ...actions: Action[]) {
         super('action-menu');
         this.labelEl = new DivEl('drop-down-button ' +
@@ -31,29 +33,52 @@ export class ActionMenu
         this.labelEl.onClicked(() => {
             this.toggleClass('down');
             this.labelEl.toggleClass('down');
+            const isExpanded = this.hasClass('down');
+            this.notifyExpanded(isExpanded);
         });
 
         Body.get().onClicked((event: MouseEvent) => this.foldMenuOnOutsideClick(event));
     }
 
-    setLabel(label: string) {
+    setLabel(label: string): void {
         this.labelEl.getEl().setInnerHtml(label);
     }
 
-    addAction(action: Action) {
-        let actionMenuItem = new ActionMenuItem(action);
-        this.actionListEl.appendChild(actionMenuItem);
+    addAction(action: Action, hideInactive: boolean = true): ActionMenuItem {
+        const actionMenuItem = new ActionMenuItem(action, hideInactive);
         actionMenuItem.onClicked(() => {
             this.removeClass('down');
             this.labelEl.removeClass('down');
+            this.notifyExpanded(false);
+        });
+
+        this.actionListEl.appendChild(actionMenuItem);
+
+        return actionMenuItem;
+    }
+
+    onExpanded(listener: (expanded: boolean) => void): void {
+        this.expandedListeners.push(listener);
+    }
+
+    unExpanded(listener: (expanded: boolean) => void): void {
+        this.expandedListeners.filter((currentListener: (expanded: boolean) => void) => {
+            return listener !== currentListener;
+        });
+    }
+
+    private notifyExpanded(expanded: boolean): void {
+        this.expandedListeners.forEach((listener: (expanded: boolean) => void) => {
+            listener(expanded);
         });
     }
 
     private foldMenuOnOutsideClick(evt: Event): void {
-        if (!this.getEl().contains(<HTMLElement> evt.target)) {
+        if (!this.getEl().contains(<HTMLElement>evt.target)) {
             // click outside menu
             this.removeClass('down');
             this.labelEl.removeClass('down');
+            this.notifyExpanded(false);
         }
     }
 }
