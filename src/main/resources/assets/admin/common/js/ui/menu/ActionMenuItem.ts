@@ -6,22 +6,27 @@ export class ActionMenuItem
 
     private action: Action;
 
-    constructor(action: Action) {
+    constructor(action: Action, hideInactive: boolean = true) {
 
         super('action');
         this.action = action;
 
         this.getEl().setInnerHtml(this.action.getLabel());
 
-        this.action.onPropertyChanged(() => {
-            this.updateVisibilityState();
+        this.action.onPropertyChanged((a: Action) => {
+            if (hideInactive) {
+                this.updateVisibilityState();
+            }
+            this.getEl().setInnerHtml(a.getLabel());
         });
 
         this.onClicked(() => {
             this.action.execute();
         });
 
-        this.updateVisibilityState();
+        if (hideInactive) {
+            this.updateVisibilityState();
+        }
     }
 
     private updateVisibilityState() {
