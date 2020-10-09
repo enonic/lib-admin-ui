@@ -77,6 +77,7 @@ export class FormSetOccurrenceView
         });
 
         this.label = new FormOccurrenceDraggableLabel(this.getFormSet().getLabel(), this.getFormSet().getOccurrences());
+        this.label.setTitle(i18n('tooltip.header.collapse'));
         this.appendChild(this.label);
 
         this.label.onClicked(() => this.showContainer(!this.isContainerVisible()));
@@ -190,6 +191,7 @@ export class FormSetOccurrenceView
     showContainer(show: boolean) {
         this.formSetOccurrencesContainer.setVisible(show);
         this.toggleClass('collapsed', !show);
+        this.label.setTitle(i18n(show ? 'tooltip.header.collapse' : 'tooltip.header.expand'));
     }
 
     isContainerVisible(): boolean {

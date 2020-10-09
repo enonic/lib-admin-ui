@@ -17,12 +17,7 @@
   .form-item-set-occurrence-view {
     .form-occurrence-draggable-label {
       padding-right: 20px;
-      cursor: zoom-out;
       .ellipsis();
-    }
-
-    &.collapsed .form-occurrence-draggable-label {
-      cursor: zoom-in;
     }
   }
 }
@@ -153,9 +148,16 @@
       margin-bottom: 10px;
       background-color: white;
 
+      &.collapsed {
+        .form-occurrence-draggable-label {
+          cursor: zoom-in;
+        }
+      }
+
       .form-occurrence-draggable-label {
         font-size: 14px;
         color: #777777;
+        cursor: zoom-out;
 
         .required {
           &:after {
