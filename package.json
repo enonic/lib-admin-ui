@@ -1,6 +1,6 @@
 {
   "name": "lib-admin-ui",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Admin UI Library",
   "license": "GPL-3.0",
   "repository": {
@@ -44,7 +44,7 @@
     "css-loader": "^4.3.0",
     "cssnano": "^4.1.10",
     "del": "^6.0.0",
-    "enonic-admin-artifacts": "^1.5.10",
+    "enonic-admin-artifacts": "^1.7.8",
     "error-logger-webpack-plugin": "^1.1.0",
     "file-loader": "^6.1.0",
     "glob": "^7.1.6",
