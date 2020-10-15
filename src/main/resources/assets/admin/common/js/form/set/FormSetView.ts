@@ -91,7 +91,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             this.bottomButtonRow.appendChild(this.addButton = this.makeAddButton());
             this.bottomButtonRow.appendChild(this.collapseButton = this.makeCollapseButton());
 
-            this.toggleOccurrencesVisibility(false);
+            this.toggleOccurrencesVisibility(this.getContext().getFormState().isNew());
             this.refreshButtonsState();
 
             if (validate) {

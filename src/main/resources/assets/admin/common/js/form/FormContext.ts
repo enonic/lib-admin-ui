@@ -1,13 +1,17 @@
 import {PropertyPath} from '../data/PropertyPath';
 import {InputTypeViewContext} from './inputtype/InputTypeViewContext';
 import {Input} from './Input';
+import {FormState} from '../app/wizard/WizardPanel';
 
 export class FormContext {
 
     private showEmptyFormItemSetOccurrences: boolean;
 
+    private formState: FormState;
+
     constructor(builder: FormContextBuilder) {
         this.showEmptyFormItemSetOccurrences = builder.showEmptyFormItemSetOccurrences;
+        this.formState = builder.formState;
     }
 
     static create(): FormContextBuilder {
@@ -32,14 +36,25 @@ export class FormContext {
             parentDataPath: parentPropertyPath
         };
     }
+
+    getFormState(): FormState {
+        return this.formState;
+    }
 }
 
 export class FormContextBuilder {
 
     showEmptyFormItemSetOccurrences: boolean;
 
+    formState: FormState;
+
     public setShowEmptyFormItemSetOccurrences(value: boolean): FormContextBuilder {
         this.showEmptyFormItemSetOccurrences = value;
+        return this;
+    }
+
+    public setFormState(value: FormState): FormContextBuilder {
+        this.formState = value;
         return this;
     }
 
