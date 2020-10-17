@@ -50,6 +50,6 @@ class GetMessagesRequest
         }
         return {
             bundles: this.bundles
-        }
+        };
     }
 }
