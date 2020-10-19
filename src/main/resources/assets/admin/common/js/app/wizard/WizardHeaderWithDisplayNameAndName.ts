@@ -277,4 +277,7 @@ export class WizardHeaderWithDisplayNameAndName
         }
     }
 
+    setName(value: string) {
+        this.nameEl.setValue(value);
+    }
 }
