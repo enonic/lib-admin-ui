@@ -1,225 +1,216 @@
 @occurrence-label-margin-left: 10px;
-
-.form-item-set-view {
-  > .occurrence-views-container > .form-item-set-occurrence-view {
-    padding: 10px;
-  }
-
-  .form-item-set-occurrence-view {
-    .form-occurrence-draggable-label {
-      padding-right: 20px;
-      .ellipsis();
-    }
-  }
-}
-
-.form-option-set-view .form-item-set-view {
-  > .occurrence-views-container > .form-item-set-occurrence-view {
-    padding-bottom: 20px;
-  }
-}
-
-.form-item-set-view, .form-option-set-view {
-
-  &.multiple-occurrence {
-    > .occurrence-views-container {
-      .clearfix();
-
-      > .form-item-set-occurrence-view, .form-option-set-occurrence-view {
-        margin-bottom: 10px;
-
-        > .form-occurrence-draggable-label >.drag-control {
-          display: block;
-        }
-      }
-
-      &:not(:empty) + .bottom-button-row {
-        padding-top: 0;
-        padding-bottom: 5px;
-      }
-    }
-  }
-
-  .form-item-set-drop-target-placeholder, .form-option-set-drop-target-placeholder {
-    border: 2px dashed #000;
-    padding: 14px;
-    color: #000;
-    font-size: 14px;
-    text-align: center;
-    margin: 10px;
-  }
-
-  .input-view {
-    .input-label {
-      max-width: 90px;
-      margin-right: 10px;
-    }
-
-    .input-type-view,
-    .bottom-button-row,
-    .validation-viewer {
-      margin-left: @form-label-width;
-    }
-
-    &.label-over-input {
-      .input-label {
-        max-width: 100%;
-      }
-      .input-type-view,
-      .bottom-button-row,
-      .validation-viewer {
-        margin-left: 0;
-      }
-    }
-  }
-
-  & > .bottom-button-row {
-    box-sizing: border-box;
-    padding: 5px 0 0;
-    clear: left;
-    .clearfix();
-
-    button {
-      margin-top: 5px;
-    }
-
-    .add-button {
-      float: left;
-    }
-
-    .collapse-button {
-      float: right;
-      text-decoration: underline;
-      line-height: 28px;
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
-  }
-
-  & > .validation-viewer {
-    background-color: @admin-bg-light-gray;
-    padding: 0 10px 10px 10px;
-    margin-left: 0 !important;
-  }
-
-  &.max-1-occurrence {
-    margin-bottom: 0;
-
-    .occurrence-views-container {
-      > .form-option-set-occurrence-view {
-        margin-bottom: 0;
-        padding: 0;
-      }
-
-      &:empty + .bottom-button-row {
-        display: block;
-        padding-left: 0;
-        padding-bottom: 0;
-      }
-    }
-
-    > .bottom-button-row {
-      display: none;
-    }
-
-  }
-
-  .occurrence-views-container {
-
-    &:empty {
-      display: none;
-    }
-
-    .form-option-set-occurrence-view {
+.form-view {
+  .form-item-set-view {
+    > .occurrence-views-container > .form-item-set-occurrence-view {
       padding: 10px;
     }
 
-    .form-item-set-occurrence-view, .form-option-set-occurrence-view {
-      clear: left;
-      margin: 0;
-      border: 2px solid @admin-font-gray;
+    .form-item-set-occurrence-view {
+      .form-occurrence-draggable-label {
+        padding-right: 20px;
+        width: calc(100% - 20px);
+        .ellipsis();
+      }
+    }
+  }
 
-      &.collapsed {
-        .form-occurrence-draggable-label {
-          cursor: zoom-in;
+  .form-item-set-view, .form-option-set-view {
+
+    &.multiple-occurrence {
+      > .occurrence-views-container {
+        .clearfix();
+
+        > .form-item-set-occurrence-view, .form-option-set-occurrence-view {
+          &:not(:last-child) {
+            margin-bottom: 20px;
+          }
+
+          > .form-occurrence-draggable-label {
+            &:not(.custom-label) {
+              line-height: 20px;
+            }
+
+            > .drag-control {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+
+    .form-item-set-drop-target-placeholder, .form-option-set-drop-target-placeholder {
+      border: 2px dashed #000;
+      padding: 14px;
+      color: #000;
+      font-size: 14px;
+      text-align: center;
+      margin: 10px;
+    }
+
+    .input-view {
+
+      &.invalid {
+        padding: 10px;
+
+        .validation-viewer ul > li {
+          margin-top: 10px;
         }
       }
 
-      & > .remove-button {
-        &:extend(.icon);
-        .icon-close();
-        .focusable();
-
-        margin-top: 3px;
-        margin-right: -4px;
-        border: 1px solid transparent;
-        line-height: 12px;
-        float: right;
-        text-decoration: none;
-        cursor: pointer;
+      .input-label {
+        max-width: 90px;
+        margin-right: 10px;
       }
 
-      .form-occurrence-draggable-label {
-        display: inline-block;
-        width: calc(100% - 20px);
-        padding-right: 0;
-        font-size: 14px;
-        color: @admin-font-gray2;
-        cursor: zoom-out;
+      .input-type-view,
+      .bottom-button-row,
+      .validation-viewer {
+        margin-left: @form-label-width;
+      }
 
-        .required {
-          padding-left: 5px;
-          &:after {
-            content: '*';
-            color: @input-red-text;
+      &.label-over-input {
+        .input-label {
+          max-width: 100%;
+        }
+
+        .input-type-view,
+        .bottom-button-row,
+        .validation-viewer {
+          margin-left: 0;
+        }
+      }
+    }
+
+    & > .bottom-button-row {
+      box-sizing: border-box;
+      padding: 5px 0 0;
+      clear: left;
+      .clearfix();
+
+      button {
+        margin-top: 5px;
+      }
+
+      .add-button {
+        float: left;
+      }
+
+      .collapse-button {
+        float: right;
+        text-decoration: underline;
+        line-height: 28px;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+
+    & > .validation-viewer {
+      background-color: @admin-bg-light-gray;
+      padding: 0 10px 10px 10px;
+      margin-left: 0 !important;
+    }
+
+    &.max-1-occurrence {
+      .occurrence-views-container {
+        > .form-option-set-occurrence-view {
+          margin-bottom: 0;
+        }
+
+        &:empty + .bottom-button-row {
+          display: block;
+          padding-left: 0;
+          padding-bottom: 0;
+        }
+      }
+
+      > .bottom-button-row {
+        display: none;
+      }
+
+    }
+
+    .occurrence-views-container {
+
+      &:empty {
+        display: none;
+      }
+
+      .form-option-set-occurrence-view {
+        padding: 10px;
+      }
+
+      .form-item-set-occurrence-view, .form-option-set-occurrence-view {
+        clear: left;
+        margin: 0;
+        border: 2px solid @admin-font-gray;
+
+        &.collapsed {
+          .form-occurrence-draggable-label {
+            cursor: zoom-in;
           }
         }
 
-        .drag-control {
-          display: none;
-          height: 20px;
-          width: 10px;
-          background-position-x: center;
+        & > .remove-button {
+          &:extend(.icon);
+          .icon-close();
+          .focusable();
+
+          margin-top: 3px;
+          margin-right: -4px;
+          border: 1px solid transparent;
+          line-height: 12px;
+          float: right;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .form-occurrence-draggable-label {
+          display: inline-block;
           padding-right: 0;
-          margin-right: 8px;
-        }
+          font-size: 14px;
+          color: @admin-font-gray2;
+          cursor: zoom-out;
 
-        p.note {
-          display: none;
-        }
+          .required {
+            padding-left: 5px;
 
-        &.custom-label {
+            &:after {
+              content: '*';
+              color: @input-red-text;
+            }
+          }
+
           .drag-control {
-            height: 30px;
+            display: none;
+            height: 20px;
+            width: 10px;
+            background-position-x: center;
+            padding-right: 0;
+            margin-right: 8px;
           }
 
           p.note {
-            display: block;
-            font-size: 10px;
+            display: none;
           }
 
-          + .remove-button {
-            margin-top: 10px;
+          &.custom-label {
+            .drag-control {
+              height: 30px;
+            }
+
+            p.note {
+              display: block;
+              font-size: 10px;
+            }
+
+            + .remove-button {
+              margin-top: 10px;
+            }
           }
         }
       }
-
-      .form-option-set-occurrences-container {
-        padding-bottom: 10px;
-      }
-
-      .form-item-set-occurrences-container, .form-option-set-occurrences-container {
-        margin-top: 10px;
-      }
-    }
-    .form-option-set-occurrence-view {
-      padding-bottom: 0;
     }
   }
-}
-
-.form-option-set-view .form-option-set-view.invalid {
-    outline: none;
 }
