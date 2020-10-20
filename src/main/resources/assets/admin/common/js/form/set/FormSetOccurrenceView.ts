@@ -76,7 +76,8 @@ export class FormSetOccurrenceView
             return false;
         });
 
-        this.label = new FormOccurrenceDraggableLabel(this.getFormSet().getLabel(), this.getFormSet().getOccurrences(), this.getFormSet().getLabel());
+        const labelText = this.getFormSet().getLabel();
+        this.label = new FormOccurrenceDraggableLabel(labelText, this.getFormSet().getOccurrences(), labelText);
         this.label.setTitle(i18n('tooltip.header.collapse'));
         this.appendChildren(<Element>this.label, this.removeButton);
 
