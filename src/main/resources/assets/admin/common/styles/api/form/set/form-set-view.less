@@ -5,15 +5,6 @@
     padding: 10px;
   }
 
-  &.max-1-occurrence {
-    .form-item-set-occurrence-view {
-
-      > .form-item-set-occurrences-container {
-        padding: 0 10px;
-      }
-    }
-  }
-
   .form-item-set-occurrence-view {
     .form-occurrence-draggable-label {
       padding-right: 20px;
@@ -30,11 +21,17 @@
 
 .form-item-set-view, .form-option-set-view {
 
-  &:not(.max-1-occurrence) {
+  &.multiple-occurrence {
     > .occurrence-views-container {
-      background-color: @admin-bg-light-gray;
-      padding: 10px 10px 0 10px;
       .clearfix();
+
+      > .form-item-set-occurrence-view, .form-option-set-occurrence-view {
+        margin-bottom: 10px;
+
+        > .form-occurrence-draggable-label >.drag-control {
+          display: block;
+        }
+      }
 
       &:not(:empty) + .bottom-button-row {
         padding-top: 0;
@@ -78,13 +75,12 @@
 
   & > .bottom-button-row {
     box-sizing: border-box;
-    background-color: @admin-bg-light-gray;
-    padding: 10px;
+    padding: 5px 0 0;
     clear: left;
     .clearfix();
 
     button {
-      margin-left: 0;
+      margin-top: 5px;
     }
 
     .add-button {
@@ -95,7 +91,6 @@
       float: right;
       text-decoration: underline;
       line-height: 28px;
-      margin-right: 10px;
 
       &:hover {
         cursor: pointer;
@@ -122,7 +117,6 @@
         display: block;
         padding-left: 0;
         padding-bottom: 0;
-        background-color: @admin-white;
       }
     }
 
@@ -145,33 +139,11 @@
     .form-item-set-occurrence-view, .form-option-set-occurrence-view {
       clear: left;
       margin: 0;
-      margin-bottom: 10px;
-      background-color: white;
+      border: 2px solid @admin-font-gray;
 
       &.collapsed {
         .form-occurrence-draggable-label {
           cursor: zoom-in;
-        }
-      }
-
-      .form-occurrence-draggable-label {
-        font-size: 14px;
-        color: #777777;
-        cursor: zoom-out;
-
-        .required {
-          &:after {
-            content: '*';
-            color: @input-red-text;
-          }
-        }
-
-        .drag-control {
-          height: 20px;
-          width: 10px;
-          background-position-x: center;
-          padding-right: 0;
-          margin-right: 8px;
         }
       }
 
@@ -180,12 +152,58 @@
         .icon-close();
         .focusable();
 
-        margin: 5px 0 0 0;
+        margin-top: 3px;
+        margin-right: -4px;
         border: 1px solid transparent;
         line-height: 12px;
         float: right;
         text-decoration: none;
         cursor: pointer;
+      }
+
+      .form-occurrence-draggable-label {
+        display: inline-block;
+        width: calc(100% - 20px);
+        padding-right: 0;
+        font-size: 14px;
+        color: @admin-font-gray2;
+        cursor: zoom-out;
+
+        .required {
+          padding-left: 5px;
+          &:after {
+            content: '*';
+            color: @input-red-text;
+          }
+        }
+
+        .drag-control {
+          display: none;
+          height: 20px;
+          width: 10px;
+          background-position-x: center;
+          padding-right: 0;
+          margin-right: 8px;
+        }
+
+        p.note {
+          display: none;
+        }
+
+        &.custom-label {
+          .drag-control {
+            height: 30px;
+          }
+
+          p.note {
+            display: block;
+            font-size: 10px;
+          }
+
+          + .remove-button {
+            margin-top: 10px;
+          }
+        }
       }
 
       .form-option-set-occurrences-container {

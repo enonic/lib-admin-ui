@@ -119,6 +119,8 @@ export class FormItemSetOccurrenceView
                 this.label.setText(StringHelper.htmlToString(firstNonEmptyInput['value']));
             }
             this.formSetOccurrencesContainer.unDescendantAdded();
+        } else {
+            this.label.setText(this.getFormSet().getLabel());
         }
     }
 }
