@@ -19,6 +19,7 @@ import {ToggleFilterPanelAction} from './action/ToggleFilterPanelAction';
 import {BrowseItemPanel} from './BrowseItemPanel';
 import {BrowseItemsChanges} from './BrowseItemsChanges';
 import {i18n} from '../../util/Messages';
+import {DataChangedEvent, DataChangedType} from '../../ui/treegrid/DataChangedEvent';
 
 export class BrowsePanel<M extends Equitable>
     extends Panel {
@@ -124,16 +125,21 @@ export class BrowsePanel<M extends Equitable>
 
         };
 
-        this.treeGrid.onDataChanged(() => {
-            const noHighlightedNode = !this.treeGrid.hasHighlightedNode();
+        this.treeGrid.onDataChanged((event: DataChangedEvent<Object>) => {
+          const noHighlightedNode = !this.treeGrid.hasHighlightedNode();
 
-            // Highlighted nodes updated in a separate listener
-            if (noHighlightedNode) {
-                this.getBrowseActions().updateActionsEnabledState(this.getBrowseItemPanel().getItems())
-                    .then(() => this.getBrowseItemPanel().updatePreviewPanel())
-                    .catch(DefaultErrorHandler.handle);
+          // Highlighted nodes updated in a separate listener
+          if (noHighlightedNode) {
+            this.getBrowseActions().updateActionsEnabledState(this.getBrowseItemPanel().getItems()).catch(DefaultErrorHandler.handle);
+
+            const selectedNodes: TreeNode<any>[] = this.treeGrid.getSelectedNodes();
+            const selectedNode: TreeNode<any> = selectedNodes.length > 0 ? selectedNodes[0] : null;
+            if (selectedNode && (event.getType() === DataChangedType.UPDATED || event.getType() === DataChangedType.ADDED) &&
+                event.getTreeNodes().some((node: TreeNode<any>) => node.getDataId() === selectedNode.getDataId())) {
+              const browseItem: BrowseItem<M> = this.dataToBrowseItem(selectedNode.getData());
+              this.getBrowseItemPanel().togglePreviewForItem(browseItem);
             }
-
+          }
         });
 
         this.treeGrid.onSelectionChanged(selectionChangedHandler);
