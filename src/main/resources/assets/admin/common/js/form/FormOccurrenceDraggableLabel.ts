@@ -30,7 +30,7 @@ export class FormOccurrenceDraggableLabel
             this.note = note;
             const noteEl = new Element(new NewElementBuilder().setTagName('p').setGenerateId(true));
             noteEl.addClass('note');
-            noteEl.toggleClass('custom-label', this.note !== label)
+            noteEl.toggleClass('custom-label', this.note !== label);
             noteEl.setHtml(note);
             nodes.push(noteEl.getHTMLElement());
         }
@@ -40,7 +40,7 @@ export class FormOccurrenceDraggableLabel
 
     setText(label: string) {
         this.title.nodeValue = label.trim();
-        this.toggleClass('custom-label', this.note !== label)
+        this.toggleClass('custom-label', this.note !== label);
     }
 
     getText(): string {
