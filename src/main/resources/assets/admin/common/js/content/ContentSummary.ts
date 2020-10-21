@@ -258,6 +258,14 @@ export class ContentSummary {
         return this.isInheritedByType(ContentInheritType.SORT);
     }
 
+    isParentInherited(): boolean {
+      return this.isInheritedByType(ContentInheritType.PARENT);
+    }
+
+    isNameInherited(): boolean {
+      return this.isInheritedByType(ContentInheritType.NAME);
+    }
+
     private isInheritedByType(type: ContentInheritType): boolean {
         return this.isInherited() && this.inherit.some((inheritType: ContentInheritType) => inheritType === type);
     }
