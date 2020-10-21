@@ -3,7 +3,7 @@
 .form-view {
   .form-item-set-view {
     > .occurrence-views-container > .form-item-set-occurrence-view {
-      padding: 10px;
+      padding: 13px;
     }
 
     .form-item-set-occurrence-view {
@@ -29,7 +29,7 @@
       .form-item-set-occurrence-view, .form-option-set-occurrence-view {
         clear: left;
         margin: 0;
-        border: 2px solid @admin-font-gray;
+        box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
 
         &.collapsed {
           .form-occurrence-draggable-label {
@@ -128,7 +128,8 @@
 
           > .form-occurrence-draggable-label {
             &:not(.custom-label) {
-              line-height: 20px;
+              line-height: 23px;
+              height: 19px;
             }
 
             > .drag-control {
@@ -149,13 +150,6 @@
     }
 
     .input-view {
-      &.invalid {
-        padding: 10px;
-
-        .validation-viewer ul > li {
-          margin-top: 10px;
-        }
-      }
 
       .input-label {
         max-width: 90px;
@@ -183,7 +177,7 @@
 
     & > .bottom-button-row {
       box-sizing: border-box;
-      padding: 5px 0 0;
+      padding: 10px 0 0;
       clear: left;
       .clearfix();
 
@@ -211,6 +205,15 @@
       padding: 0 10px 10px 10px;
       margin-left: 0 !important;
     }
+  }
 
+  &.panel-may-display-validation-errors {
+    .input-view.invalid {
+      padding: 10px;
+
+      .validation-viewer ul > li {
+        margin-top: 10px;
+      }
+    }
   }
 }
