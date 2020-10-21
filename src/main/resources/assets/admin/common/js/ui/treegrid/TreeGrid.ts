@@ -676,7 +676,7 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     expandNodeByDataId(dataId: string): Q.Promise<boolean> {
-        const node = this.root.getNodeByDataIdFromCurrent(dataId);
+        const node: TreeNode<DATA> = this.root.getNodeByDataIdFromCurrent(dataId);
 
         if (node) {
             return this.expandNode(node);
@@ -686,8 +686,6 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     protected expandNode(node?: TreeNode<DATA>): Q.Promise<boolean> {
-        let deferred = Q.defer<boolean>();
-
         node = node || this.root.getCurrentRoot();
 
         if (node) {
@@ -753,7 +751,7 @@ export class TreeGrid<DATA extends IDentifiable>
             return false;
         }
 
-        let nonEmptyNodes = this.gridData.getItems().filter((data: TreeNode<DATA>) => {
+        const nonEmptyNodes: TreeNode<DATA>[] = this.gridData.getItems().filter((data: TreeNode<DATA>) => {
             return (!!data && data.getDataId() !== '');
         });
 
@@ -771,7 +769,7 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     collapseNodeByDataId(dataId: string, collapseAll: boolean = false) {
-        const node = this.root.getNodeByDataIdFromCurrent(dataId);
+        const node: TreeNode<DATA> = this.root.getNodeByDataIdFromCurrent(dataId);
 
         if (node) {
             this.collapseNode(node, collapseAll);
