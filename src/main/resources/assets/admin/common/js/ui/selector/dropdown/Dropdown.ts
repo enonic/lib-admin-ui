@@ -284,7 +284,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false) {
         const previousOption: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
 
-        if (!!previousOption && previousOption.value === option.value) {
+        if (!!previousOption && previousOption.getValue() === option.getValue()) {
             this.deselectOptions(silent);
         } else {
             this.doSelectOption(option, silent);
