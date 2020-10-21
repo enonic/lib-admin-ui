@@ -13,7 +13,7 @@ export class Mnemonic {
         return this.value;
     }
 
-    toKeyBinding(callback?: (e: ExtendedKeyboardEvent, combo: string) => any): KeyBinding {
+    toKeyBinding(callback?: (e: Mousetrap.ExtendedKeyboardEvent, combo: string) => any): KeyBinding {
         return new KeyBinding('alt+' + this.getValue(), callback);
     }
 

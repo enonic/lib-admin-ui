@@ -3,6 +3,7 @@ import {AccessDeniedException} from '../AccessDeniedException';
 import {Path} from './Path';
 import {RequestError} from './RequestError';
 import {HttpMethod} from './HttpMethod';
+import {Response} from './Response';
 
 export abstract class Request {
 
@@ -35,7 +36,9 @@ export abstract class Request {
         return this;
     }
 
-    handleReadyStateChanged(deferred: Q.Deferred<any>): Request {
+    protected bindRequestEventsHandlers(): Q.Deferred<Response> {
+        const deferred: Q.Deferred<Response> = Q.defer<Response>();
+
         this.request.onreadystatechange = () => {
             if (this.request.readyState === 4) {
                 let errorJson = null;
@@ -58,19 +61,28 @@ export abstract class Request {
             }
         };
 
-        return this;
+        return deferred;
     }
 
-    send() {
-        this.prepareRequest();
+    private sendRequest(): Q.Promise<Response> {
+        const deferred = this.bindRequestEventsHandlers();
+
         this.request.send(this.createRequestData());
+
+        return deferred.promise;
+    }
+
+    send(): Q.Promise<Response> {
+
+        this.prepareRequest();
+        return this.sendRequest();
     }
 
     protected createRequestData(): any {
         return null;
     }
 
-    protected prepareRequest() {
+    protected prepareRequest(): void {
         this.request.open(this.method, this.createRequestURI(), true);
         this.request.timeout = this.timeoutMillis;
     }

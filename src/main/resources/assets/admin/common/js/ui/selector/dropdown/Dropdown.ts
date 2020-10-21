@@ -46,6 +46,8 @@ export interface DropdownConfig<OPTION_DISPLAY_VALUE> {
 export class Dropdown<OPTION_DISPLAY_VALUE>
     extends FormInputEl {
 
+    private static readonlyClass: string = 'readonly';
+
     private icon: ImgEl;
 
     private typeAhead: boolean = true;
@@ -61,6 +63,8 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     private selectedOptionView: SelectedOptionView<OPTION_DISPLAY_VALUE>;
 
     private optionSelectedListeners: { (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>): void }[] = [];
+
+    private optionDeselectedListeners: { (previousOption: Option<OPTION_DISPLAY_VALUE>): void }[] = [];
 
     private optionFilterInputValueChangedListeners: { (event: OptionFilterInputValueChangedEvent): void }[] = [];
 
@@ -171,6 +175,10 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     }
 
     showDropdown() {
+        if (this.hasClass(Dropdown.readonlyClass)) {
+            return;
+        }
+
         if (this.typeAhead) {
             this.input.show();
             this.selectedOptionView.hide();
@@ -199,6 +207,20 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         }
         this.dropdownHandle.up();
         this.dropdownList.hideDropdown();
+    }
+
+    disable() {
+        this.addClass(Dropdown.readonlyClass);
+        this.input.setReadOnly(true);
+        this.input.getEl().setDisabled(true);
+        this.dropdownHandle.setEnabled(false);
+    }
+
+    enable() {
+        this.removeClass(Dropdown.readonlyClass);
+        this.input.setReadOnly(false);
+        this.input.getEl().setDisabled(false);
+        this.dropdownHandle.setEnabled(true);
     }
 
     setOptions(options: Option<OPTION_DISPLAY_VALUE>[]) {
@@ -260,7 +282,16 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     }
 
     selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false) {
+        const previousOption: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
 
+        if (!!previousOption && previousOption.value === option.value) {
+            this.deselectOptions(silent);
+        } else {
+            this.doSelectOption(option, silent);
+        }
+    }
+
+    private doSelectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false) {
         const previousOption: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
 
         this.dropdownList.markSelections([option]);
@@ -269,6 +300,19 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
 
         if (!silent) {
             this.notifyOptionSelected(option, previousOption);
+        }
+
+        this.hideDropdown();
+    }
+
+    deselectOptions(silent: boolean = false) {
+        const previousOption: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
+
+        this.dropdownList.markSelections([]);
+        this.selectedOptionView.resetOption();
+
+        if (!silent) {
+            this.notifyOptionDeselected(previousOption);
         }
 
         this.hideDropdown();
@@ -307,6 +351,22 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     unOptionSelected(listener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void) {
         this.optionSelectedListeners.filter((currentListener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void) => {
             return listener !== currentListener;
+        });
+    }
+
+    onOptionDeselected(listener: (previousOption: Option<OPTION_DISPLAY_VALUE>) => void) {
+        this.optionDeselectedListeners.push(listener);
+    }
+
+    unOptionDeselected(listener: (previousOption: Option<OPTION_DISPLAY_VALUE>) => void) {
+        this.optionDeselectedListeners.filter((currentListener: (previousOption: Option<OPTION_DISPLAY_VALUE>) => void) => {
+            return listener !== currentListener;
+        });
+    }
+
+    private notifyOptionDeselected(previousItem: Option<OPTION_DISPLAY_VALUE>) {
+        this.optionDeselectedListeners.forEach((listener: (previousOption: Option<OPTION_DISPLAY_VALUE>) => void) => {
+            listener(previousItem);
         });
     }
 
@@ -377,7 +437,9 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
             }
         });
 
-        this.dropdownHandle.onClicked(() => {
+        this.dropdownHandle.onClicked((event) => {
+            event.stopPropagation();
+            event.preventDefault();
 
             if (this.isDropdownShown()) {
                 this.hideDropdown();

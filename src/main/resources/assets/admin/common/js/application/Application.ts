@@ -219,9 +219,9 @@ export class ApplicationBuilder
 
     idProviderConfig: Form;
 
-    applicationDependencies: ApplicationKey[];
+    applicationDependencies: ApplicationKey[] = [];
 
-    contentTypeDependencies: ContentTypeName[];
+    contentTypeDependencies: ContentTypeName[] = [];
 
     metaSteps: MixinNames;
 
@@ -232,28 +232,28 @@ export class ApplicationBuilder
     iconUrl: string;
 
     constructor(source?: Application) {
-        if (source) {
-            super(source);
-            this.applicationKey = source.getApplicationKey();
-            this.displayName = source.getDisplayName();
-            this.description = source.getDescription();
-            this.vendorName = source.getVendorName();
-            this.vendorUrl = source.getVendorUrl();
-            this.url = source.getUrl();
-            this.state = source.getState();
-            this.version = source.getVersion();
-            this.local = source.isLocal();
-            this.config = source.getForm();
-            this.applicationDependencies = source.getapplicationDependencies();
-            this.contentTypeDependencies = source.getContentTypeDependencies();
-            this.metaSteps = source.getMetaSteps();
-            this.minSystemVersion = source.getMinSystemVersion();
-            this.maxSystemVersion = source.getMaxSystemVersion();
-            this.iconUrl = source.getIconUrl();
-        } else {
-            this.applicationDependencies = [];
-            this.contentTypeDependencies = [];
+        super(source);
+
+        if (!source) {
+            return;
         }
+
+        this.applicationKey = source.getApplicationKey();
+        this.displayName = source.getDisplayName();
+        this.description = source.getDescription();
+        this.vendorName = source.getVendorName();
+        this.vendorUrl = source.getVendorUrl();
+        this.url = source.getUrl();
+        this.state = source.getState();
+        this.version = source.getVersion();
+        this.local = source.isLocal();
+        this.config = source.getForm();
+        this.applicationDependencies = source.getapplicationDependencies();
+        this.contentTypeDependencies = source.getContentTypeDependencies();
+        this.metaSteps = source.getMetaSteps();
+        this.minSystemVersion = source.getMinSystemVersion();
+        this.maxSystemVersion = source.getMaxSystemVersion();
+        this.iconUrl = source.getIconUrl();
     }
 
     fromJson(json: ApplicationJson): ApplicationBuilder {

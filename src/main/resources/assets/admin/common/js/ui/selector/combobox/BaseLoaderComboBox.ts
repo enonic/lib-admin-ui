@@ -10,12 +10,10 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
     private loader: BaseLoader<LOADER_DATA_TYPE>;
     private tempValue: string;
 
-    constructor(name: string, config: ComboBoxConfig<OPTION_DISPLAY_VALUE>,
-                loader: BaseLoader<LOADER_DATA_TYPE>) {
+    constructor(name: string, config: ComboBoxConfig<OPTION_DISPLAY_VALUE>) {
         super(name, config);
 
         this.addClass('loader-combobox');
-        this.loader = loader;
     }
 
     public setLoader(loader: BaseLoader<LOADER_DATA_TYPE>) {

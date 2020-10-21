@@ -87,7 +87,7 @@ export class TreeGrid<DATA extends IDentifiable>
 
     private keysBound: boolean = false;
 
-    private onAwithModKeyPress = (event: ExtendedKeyboardEvent) => {
+    private onAwithModKeyPress = (event: Mousetrap.ExtendedKeyboardEvent) => {
         let selected = this.grid.getSelectedRows();
         if (selected.length === this.gridData.getLength()) {
             this.deselectAll();
@@ -999,13 +999,13 @@ export class TreeGrid<DATA extends IDentifiable>
     private initKeyBindings() {
         if (!this.gridOptions.isMultipleSelectionDisabled()) {
             this.keyBindings = [
-                new KeyBinding('shift+up', (event: ExtendedKeyboardEvent) => {
+                new KeyBinding('shift+up', (event: Mousetrap.ExtendedKeyboardEvent) => {
                     const rowToToggle: number = new GridSelectionHelper(this.grid.getSelectedRows()).getRowToToggleWhenShiftingUp();
                     this.onSelectRange(rowToToggle);
                     event.preventDefault();
                     event.stopImmediatePropagation();
                 }),
-                new KeyBinding('shift+down', (event: ExtendedKeyboardEvent) => {
+                new KeyBinding('shift+down', (event: Mousetrap.ExtendedKeyboardEvent) => {
                     const rowToToggle: number =
                         new GridSelectionHelper(this.grid.getSelectedRows()).getRowToToggleWhenShiftingDown(this.grid.getDataLength());
                     this.onSelectRange(rowToToggle);

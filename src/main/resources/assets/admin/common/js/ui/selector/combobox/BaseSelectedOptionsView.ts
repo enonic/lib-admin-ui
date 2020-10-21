@@ -42,11 +42,7 @@ export class BaseSelectedOptionsView<T>
     }
 
     setOccurrencesSortable(sortable: boolean) {
-        if (this.isRendered()) {
-            this.setSortable(sortable);
-        } else {
-            this.onRendered(() => this.setSortable(sortable));
-        }
+        this.whenRendered(() => this.setSortable(sortable));
     }
 
     refreshSortable() {

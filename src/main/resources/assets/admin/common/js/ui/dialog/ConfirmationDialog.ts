@@ -32,8 +32,8 @@ export class ConfirmationDialog
         });
     }
 
-    setQuestion(question: string): ConfirmationDialog {
-        this.questionEl.getEl().setInnerHtml(question);
+    setQuestion(question: string, escapeHtml?: boolean): ConfirmationDialog {
+        this.questionEl.getEl().setInnerHtml(question, escapeHtml);
         return this;
     }
 
@@ -74,8 +74,11 @@ export class ConfirmationDialog
         this.yesAction = new Action(yesActionText, yesActionText.slice(0, 1).toLowerCase());
         this.yesAction.setMnemonic(yesActionText.slice(0, 1).toLowerCase());
 
-        this.addAction(this.yesAction, true);
-        this.addAction(this.noAction);
+        const yesButton = this.addAction(this.yesAction, true);
+        yesButton.addClass('yes-button');
+
+        const noButton = this.addAction(this.noAction);
+        noButton.addClass('no-button');
     }
 
     protected initListeners() {
