@@ -1743,7 +1743,7 @@ export class TreeGrid<DATA extends IDentifiable>
         parent.setExpandable(true);
 
         const parentRow: number = this.gridData.getRowById(parent.getId());
-        if (!!parentRow) {
+        if (!!parentRow || parentRow === 0) {
             this.gridData.insertItem(parentRow + index + 1, nodeToInsert);
         }
 
