@@ -669,7 +669,15 @@ export class TreeGrid<DATA extends IDentifiable>
         }
     }
 
-    protected initData(nodes: TreeNode<DATA>[]) {
+    protected getGridData(): DataView<TreeNode<DATA>> {
+        return this.gridData;
+    }
+
+    protected getIdPropertyName(): string {
+        return this.idPropertyName;
+    }
+
+    initData(nodes: TreeNode<DATA>[]) {
         this.gridData.setItems(nodes, this.idPropertyName);
         this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
         this.resetCurrentSelection(nodes);

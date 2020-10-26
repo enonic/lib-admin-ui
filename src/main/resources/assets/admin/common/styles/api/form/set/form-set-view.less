@@ -207,7 +207,13 @@
     }
   }
 
-  &.panel-may-display-validation-errors {
+  &.display-validation-errors {
+    .form-item-set-view, .form-option-set-view {
+      &.invalid {
+        padding: 0;
+      }
+    }
+
     .input-view.invalid {
       padding: 10px;
 
