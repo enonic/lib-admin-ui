@@ -1733,8 +1733,12 @@ export class TreeGrid<DATA extends IDentifiable>
     protected insertNodeToParentNode(nodeToInsert: TreeNode<DATA>, parent: TreeNode<DATA>, index: number) {
         parent.insertChild(nodeToInsert, index);
         parent.setExpandable(true);
+
         const parentRow: number = this.gridData.getRowById(parent.getId());
-        this.gridData.insertItem(parentRow + index + 1, nodeToInsert);
+        if (!!parentRow) {
+            this.gridData.insertItem(parentRow + index + 1, nodeToInsert);
+        }
+
         this.invalidateNodes([parent]);
     }
 
