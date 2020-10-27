@@ -53,6 +53,12 @@ export class TreeGridToolbar
         return this.selectionPanelToggler;
     }
 
+    hideAndDisableSelectionToggler() {
+        this.selectionController.setDisabled(true);
+        this.selectionController.hide();
+        this.selectionPanelToggler.hide();
+    }
+
     protected appendToLeft(element: Element) {
         this.leftWrapper.appendChild(element);
     }

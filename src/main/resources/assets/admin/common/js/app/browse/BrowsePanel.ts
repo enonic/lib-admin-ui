@@ -110,7 +110,7 @@ export class BrowsePanel<M extends Equitable>
                 return;
             }
 
-            this.getBrowseActions().updateActionsEnabledState(this.getBrowseItemPanel().getItems(), changes)
+            this.updateBrowseActions(this.getBrowseItemPanel().getItems(), changes)
                 .then(() => {
                     if (this.getBrowseItemPanel().getItems().length > 0 || !this.treeGrid.hasHighlightedNode()) {
                         this.getBrowseItemPanel().updatePreviewPanel();
@@ -129,7 +129,7 @@ export class BrowsePanel<M extends Equitable>
 
             // Highlighted nodes updated in a separate listener
             if (noHighlightedNode) {
-                this.getBrowseActions().updateActionsEnabledState(this.getBrowseItemPanel().getItems())
+                this.updateBrowseActions(this.getBrowseItemPanel().getItems())
                     .then(() => this.getBrowseItemPanel().updatePreviewPanel())
                     .catch(DefaultErrorHandler.handle);
             }
@@ -337,14 +337,14 @@ export class BrowsePanel<M extends Equitable>
         if (!node) {
             if (this.treeGrid.getSelectedDataList().length === 0) {
                 this.getBrowseItemPanel().togglePreviewForItem();
-                return this.getBrowseActions().updateActionsEnabledState([]);
+                return this.updateBrowseActions([]);
             }
 
             return Q(null);
         }
 
         const browseItem: BrowseItem<M> = this.dataToBrowseItem(node.getData());
-        const updateActionsPromise = this.getBrowseActions().updateActionsEnabledState([browseItem]);
+        const updateActionsPromise = this.updateBrowseActions([browseItem]);
         const togglePreviewPromise = this.checkIfItemIsRenderable(browseItem).then(() => {
             this.getBrowseItemPanel().togglePreviewForItem(browseItem);
         });
@@ -414,6 +414,16 @@ export class BrowsePanel<M extends Equitable>
         } else if (amountOfNodesShown > totalFullSelected) { // some item/items deselected
             this.treeGrid.filter(this.treeGrid.getSelectedDataList());
         }
+    }
+
+    protected updateBrowseActions(browseItems: BrowseItem<M>[], changes?: BrowseItemsChanges<any>): Q.Promise<void> {
+        const actions: TreeGridActions<M> = this.getBrowseActions();
+
+        if (actions) {
+            return actions.updateActionsEnabledState(browseItems, changes);
+        }
+
+        return Q(null);
     }
 
 }
