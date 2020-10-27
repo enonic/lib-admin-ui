@@ -13,7 +13,7 @@ import {ContentSummary} from '../../content/ContentSummary';
 import {Element} from '../../dom/Element';
 import {Occurrences} from '../Occurrences';
 import {FormSetOccurrenceView} from './FormSetOccurrenceView';
-import {FormItemView, FormItemViewConfig} from '../FormItemView';
+import {FormItemView} from '../FormItemView';
 import {RecordingValidityChangedEvent} from '../RecordingValidityChangedEvent';
 import {ValidationRecording} from '../ValidationRecording';
 import {FormSetOccurrences} from './FormSetOccurrences';
@@ -25,6 +25,23 @@ import {OccurrenceRenderedEvent} from '../OccurrenceRenderedEvent';
 import {OccurrenceAddedEvent} from '../OccurrenceAddedEvent';
 import {OccurrenceRemovedEvent} from '../OccurrenceRemovedEvent';
 import {FormEditEvent} from '../../content/event/FormEditEvent';
+import {FormItemLayerFactory} from '../FormItemLayerFactory';
+import {FormContext} from '../FormContext';
+
+export interface FormSetViewConfig {
+
+    layerFactory: FormItemLayerFactory;
+
+    context: FormContext;
+
+    parentDataSet: PropertySet;
+
+    occurrencesLazyRender?: boolean;
+
+    formSet: FormSet;
+
+    parent: FormItemOccurrenceView;
+}
 
 export abstract class FormSetView<V extends FormSetOccurrenceView>
     extends FormItemView {
@@ -51,14 +68,37 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     protected formSet: FormSet;
 
+    protected layerFactory: FormItemLayerFactory;
+
+    protected occurrencesLazyRender: boolean;
+
     /**
      * The index of child Data being dragged.
      */
     protected draggingIndex: number;
 
-    protected constructor(config: FormItemViewConfig) {
-        super(config);
+    protected constructor(config: FormSetViewConfig, classPrefix: string) {
+        super({
+            className: `${classPrefix}-view`,
+            context: config.context,
+            formItem: config.formSet,
+            parent: config.parent
+        });
+
+        this.layerFactory = config.layerFactory;
+        this.parentDataSet = config.parentDataSet;
+        this.formSet = config.formSet;
+        this.classPrefix = classPrefix;
+        this.helpText = this.formSet.getHelpText();
+        this.occurrencesLazyRender = config.occurrencesLazyRender;
+
+        this.addClass(this.formSet.getPath().getElements().length % 2 ? 'even' : 'odd');
+        if (this.formSet.getOccurrences().getMaximum() === 1) {
+            this.addClass('max-1-occurrence');
+        }
     }
+
+    protected abstract initOccurrences(): FormSetOccurrences<V>;
 
     public layout(validate: boolean = true): Q.Promise<void> {
         const deferred = Q.defer<void>();
@@ -313,8 +353,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         }
         return propertyArray;
     }
-
-    protected abstract initOccurrences(): FormSetOccurrences<V>;
 
     protected notifyValidityChanged(event: RecordingValidityChangedEvent) {
         this.validityChangedListeners.forEach((listener: (event: RecordingValidityChangedEvent) => void) => {
