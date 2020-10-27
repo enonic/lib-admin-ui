@@ -60,7 +60,7 @@ export class ComboBox
         this.comboBox = this.createComboBox(input, propertyArray);
 
         this.comboBoxOptions.forEach((option: ComboBoxOption) => {
-            this.comboBox.addOption({value: option.value, displayValue: option.label});
+            this.comboBox.addOption(Option.create<string>().setValue(option.value).setDisplayValue(option.label).build());
         });
 
         this.appendChild(this.comboBox);
@@ -105,7 +105,7 @@ export class ComboBox
             this.ignorePropertyChange = true;
 
             const option = event.getSelectedOption();
-            let value = new Value(option.getOption().value, ValueTypes.STRING);
+            let value = new Value(option.getOption().getValue(), ValueTypes.STRING);
             if (option.getIndex() >= 0) {
                 this.getPropertyArray().set(option.getIndex(), value);
             } else {
@@ -182,7 +182,7 @@ export class ComboBox
     private comboBoxFilter(item: Option<string>, args: any) {
         // Do not change to one-liner `return !(...);`. Bugs expected with UglifyJs + SlickGrid filter compilation.
         const isEmptyInput = args == null || args.searchString == null;
-        return isEmptyInput || item.displayValue.toUpperCase().indexOf(args.searchString.toUpperCase()) !== -1;
+        return isEmptyInput || item.getDisplayValue().toUpperCase().indexOf(args.searchString.toUpperCase()) !== -1;
     }
 
 }

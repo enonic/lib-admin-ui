@@ -72,7 +72,7 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         const data = this.dataToTreeNodes(options, this.getRoot().getCurrentRoot());
 
         this.getRoot().getCurrentRoot().setChildren(data);
-        this.getGrid().getDataView().setItems(data, 'dataId');
+        this.getGrid().getDataView().setItems(data, 'id');
     }
 
     addOption(option: Option<OPTION_DISPLAY_VALUE>) {
@@ -98,9 +98,9 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         return Element.fromString(`${gridClasses} .slick-viewport`, false);
     }
 
-    reload(parentNodeData?: Option<OPTION_DISPLAY_VALUE>): Q.Promise<void> {
+    reload(): Q.Promise<void> {
         this.toggleTreeMode(true);
-        return super.reload(parentNodeData).then(() => {
+        return super.reload().then(() => {
             if (this.defaultOption && !this.isDefaultOptionActive) {
                 this.scrollToDefaultOption(this.getRoot().getCurrentRoot(), 0);
                 this.isDefaultOptionActive = true;
@@ -108,20 +108,16 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         });
     }
 
-    expandNode(node?: TreeNode<Option<OPTION_DISPLAY_VALUE>>, expandAll?: boolean): Q.Promise<boolean> {
-        return super.expandNode(node, expandAll);
-    }
-
     hasChildren(option: Option<OPTION_DISPLAY_VALUE>): boolean {
-        return this.treeDataHelper.hasChildren(option.displayValue);
+        return this.treeDataHelper.hasChildren(option.getDisplayValue());
     }
 
     getDataId(option: Option<OPTION_DISPLAY_VALUE>): string {
-        return this.treeDataHelper.getDataId(option.displayValue);
+        return this.treeDataHelper.getDataId(option.getDisplayValue());
     }
 
     isEmptyNode(node: TreeNode<Option<OPTION_DISPLAY_VALUE>>): boolean {
-        return !(node.getData() && node.getData().displayValue);
+        return !(node.getData() && node.getData().getDisplayValue());
     }
 
     fetch(node: TreeNode<Option<OPTION_DISPLAY_VALUE>>): Q.Promise<Option<OPTION_DISPLAY_VALUE>> {
@@ -134,7 +130,7 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         parentNode = parentNode ? parentNode : this.getRoot().getCurrentRoot();
 
         let from = parentNode.getChildren().length;
-        if (from > 0 && !parentNode.getChildren()[from - 1].getData().displayValue) {
+        if (from > 0 && !parentNode.getChildren()[from - 1].getData().getDisplayValue()) {
             parentNode.getChildren().pop();
             from--;
         }
@@ -159,18 +155,6 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         this.isDefaultOptionActive = false;
     }
 
-    dataToTreeNode(data: Option<OPTION_DISPLAY_VALUE>, parent: TreeNode<Option<OPTION_DISPLAY_VALUE>>,
-                   expandAllowed: boolean = true): TreeNode<Option<OPTION_DISPLAY_VALUE>> {
-
-        const node = super.dataToTreeNode(data, parent, expandAllowed);
-
-        if (StringHelper.isBlank(node.getDataId()) && !node.getData().value) {
-            node.setEmptyDataId();
-        }
-
-        return node;
-    }
-
     protected handleItemMetadata(row: number) {
         let node = this.getItem(row);
         let cssClasses = '';
@@ -180,16 +164,16 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
             cssClasses += ' empty-node';
         }
 
-        if (node.getData().readOnly) {
+        if (node.getData().isReadOnly()) {
             cssClasses += ' readonly';
             title = i18n('field.readOnly');
         }
 
-        if (node.getData().selectable) {
+        if (node.getData().isSelectable()) {
             cssClasses += ' selectable';
         }
 
-        if (node.getData().expandable) {
+        if (node.getData().isExpandable()) {
             cssClasses += ' expandable';
         }
 
@@ -238,7 +222,7 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         const defaultOptionId = this.treeDataHelper.getDataId(this.defaultOption);
         for (let i = startFrom; i < length; i++) {
             const child = parentNode.getChildren()[i];
-            const childOption = child.getData().displayValue;
+            const childOption = child.getData().getDisplayValue();
             if (childOption) {
                 if (this.treeDataHelper.getDataId(childOption) === defaultOptionId) {
                     this.scrollToRow(this.getGrid().getDataView().getRowById(child.getId()), true); // found target data node
@@ -260,7 +244,7 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
 
     private fetchBatchOfChildren(parentNode: TreeNode<Option<OPTION_DISPLAY_VALUE>>) {
         const length = parentNode.getChildren().length;
-        const from = parentNode.getChildren()[length - 1].getData().displayValue ? length : length - 1;
+        const from = parentNode.getChildren()[length - 1].getData().getDisplayValue() ? length : length - 1;
         if (from < parentNode.getMaxChildren()) {
             this.fetchChildren(parentNode).then((children: Option<OPTION_DISPLAY_VALUE>[]) => {
                 let fetchedChildrenNodes = this.dataToTreeNodes(children, parentNode);
@@ -273,9 +257,9 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
     }
 
     private makeEmptyData(): Option<OPTION_DISPLAY_VALUE> {
-        return {
-            value: null,
-            displayValue: null
-        };
+        return Option.create<OPTION_DISPLAY_VALUE>()
+            .setValue(null)
+            .setDisplayValue(null)
+            .build();
     }
 }

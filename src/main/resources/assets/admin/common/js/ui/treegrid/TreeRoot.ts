@@ -1,6 +1,7 @@
 import {TreeNode, TreeNodeBuilder} from './TreeNode';
+import {IDentifiable} from '../../IDentifiable';
 
-export class TreeRoot<DATA> {
+export class TreeRoot<DATA extends IDentifiable> {
 
     private defaultRoot: TreeNode<DATA>;
 
@@ -37,11 +38,11 @@ export class TreeRoot<DATA> {
         }
     }
 
-    resetCurrentRoot(rootData?: DATA) {
+    resetCurrentRoot() {
         if (this.isFiltered()) {
-            this.resetFilteredRoot(rootData);
+            this.resetFilteredRoot();
         } else {
-            this.resetDefaultRoot(rootData);
+            this.resetDefaultRoot();
         }
 
     }
@@ -71,6 +72,10 @@ export class TreeRoot<DATA> {
         return this.getCurrentRoot().findNode(dataId);
     }
 
+    getNodeByDataIdFromDefault(dataId: string): TreeNode<DATA> {
+        return this.getDefaultRoot().findNode(dataId);
+    }
+
     getNodesByDataId(dataId: string): TreeNode<DATA>[] {
         const nodesToUpdate: TreeNode<DATA>[] = [];
 
@@ -89,5 +94,17 @@ export class TreeRoot<DATA> {
         }
 
         return nodesToUpdate;
+    }
+
+    getAllDefaultRootNodes(): TreeNode<DATA>[] {
+        return this.defaultRoot.treeToList(false, false);
+    }
+
+    getAllFilteredRootNodes(): TreeNode<DATA>[] {
+        return this.filteredRoot.treeToList(false, false);
+    }
+
+    getAllNodes(): TreeNode<DATA>[] {
+        return this.getAllDefaultRootNodes().concat(this.getAllFilteredRootNodes());
     }
 }

@@ -31,13 +31,13 @@ export class OptionsFactory<OPTION_DISPLAY_VALUE> {
     }
 
     createOption(data: OPTION_DISPLAY_VALUE, isReadonly: boolean = false): Option<OPTION_DISPLAY_VALUE> {
-        return {
-            value: this.helper.getDataId(data),
-            expandable: this.helper.isExpandable(data),
-            selectable: this.helper.isSelectable(data),
-            displayValue: data,
-            readOnly: isReadonly
-        };
+        return Option.create<OPTION_DISPLAY_VALUE>()
+            .setValue(this.helper.getDataId(data))
+            .setDisplayValue(data)
+            .setExpandable(this.helper.isExpandable(data))
+            .setReadOnly(isReadonly)
+            .setSelectable(this.helper.isSelectable(data))
+            .build();
     }
 
     private isOptionReadonly(data: OPTION_DISPLAY_VALUE, readonlyIds: string[]): boolean {

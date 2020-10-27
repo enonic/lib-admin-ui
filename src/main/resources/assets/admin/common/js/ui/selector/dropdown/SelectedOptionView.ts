@@ -43,7 +43,7 @@ export class SelectedOptionView<T>
 
     setOption(option: Option<T>) {
         this.option = option;
-        this.objectViewer.setObject(option.displayValue);
+        this.objectViewer.setObject(option.getDisplayValue());
     }
 
     getOption(): Option<T> {

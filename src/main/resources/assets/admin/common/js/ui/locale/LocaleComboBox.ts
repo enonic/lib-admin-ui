@@ -39,7 +39,7 @@ class LocaleSelectedOptionView
 
     setOption(option: Option<Locale>) {
         this.option = option;
-        this.setObject(option.displayValue);
+        this.setObject(option.getDisplayValue());
     }
 
     getOption(): Option<Locale> {
