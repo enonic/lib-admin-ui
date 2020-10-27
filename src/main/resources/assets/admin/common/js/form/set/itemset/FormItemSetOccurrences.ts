@@ -11,9 +11,9 @@ import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLa
 
 export interface FormItemSetOccurrencesConfig {
 
-    context: FormContext;
-
     layerFactory: FormItemLayerFactory;
+
+    context: FormContext;
 
     occurrenceViewContainer: Element;
 
