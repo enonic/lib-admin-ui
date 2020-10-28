@@ -27,10 +27,10 @@ export class MacroComboBox
     }
 
     createOption(val: MacroDescriptor): Option<MacroDescriptor> {
-        return {
-            value: val.getKey().getRefString(),
-            displayValue: val
-        };
+        return Option.create<MacroDescriptor>()
+            .setValue(val.getKey().getRefString())
+            .setDisplayValue(val)
+            .build();
     }
 }
 

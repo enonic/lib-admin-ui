@@ -19,13 +19,14 @@ import {ToggleFilterPanelAction} from './action/ToggleFilterPanelAction';
 import {BrowseItemPanel} from './BrowseItemPanel';
 import {BrowseItemsChanges} from './BrowseItemsChanges';
 import {i18n} from '../../util/Messages';
+import {IDentifiable} from '../../IDentifiable';
 
 export class BrowsePanel<M extends Equitable>
     extends Panel {
 
     protected browseToolbar: Toolbar;
 
-    protected treeGrid: TreeGrid<Object>;
+    protected treeGrid: TreeGrid<IDentifiable>;
 
     protected filterPanel: BrowseFilterPanel<Object>;
     protected filterPanelToBeShownFullScreen: boolean = false;
@@ -137,21 +138,7 @@ export class BrowsePanel<M extends Equitable>
         });
 
         this.treeGrid.onSelectionChanged(selectionChangedHandler);
-
-        const highlightingChangedDebouncedHandler = AppHelper.debounceWithInterrupt(
-            (node: TreeNode<Object>, callback?: Function) => {
-                this.onHighlightingChanged(node).then(() => {
-                    if (callback) {
-                        callback();
-                    }
-                });
-            }, 200);
-
-        const highlightingChangedHandler = (highlightedNode: TreeNode<Object>, force: boolean, callback: Function) => {
-            highlightingChangedDebouncedHandler([highlightedNode, callback], force);
-        };
-
-        this.treeGrid.onHighlightingChanged(highlightingChangedHandler);
+        this.treeGrid.onHighlightingChanged(this.handleHighlightingChanged.bind(this));
 
         this.treeGrid.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
             this.treeGrid.toggleClass('selection-mode', isActive);
@@ -204,7 +191,7 @@ export class BrowsePanel<M extends Equitable>
         return this.filterAndGridSplitPanel;
     }
 
-    getTreeGrid(): TreeGrid<Object> {
+    getTreeGrid(): TreeGrid<IDentifiable> {
         return this.treeGrid;
     }
 
@@ -224,7 +211,7 @@ export class BrowsePanel<M extends Equitable>
         const browseItems: BrowseItem<M>[] = [];
 
         // do not proceed duplicated content. still, it can be selected
-        dataItems.forEach((node: TreeNode<M>) => {
+        dataItems.forEach((node: TreeNode<IDentifiable>) => {
             const item = this.dataToBrowseItem(node);
             if (item) {
                 browseItems.push(item);
@@ -278,7 +265,7 @@ export class BrowsePanel<M extends Equitable>
         throw 'Must be implemented by inheritors';
     }
 
-    protected createTreeGrid(): TreeGrid<Object> {
+    protected createTreeGrid(): TreeGrid<IDentifiable> {
         throw 'Must be implemented by inheritors';
     }
 
@@ -333,8 +320,8 @@ export class BrowsePanel<M extends Equitable>
         }
     }
 
-    private onHighlightingChanged(node: TreeNode<Object>): Q.Promise<any> {
-        if (!node) {
+    private handleHighlightingChanged(): Q.Promise<any> {
+        if (!this.treeGrid.hasHighlightedNode()) {
             if (this.treeGrid.getSelectedDataList().length === 0) {
                 this.getBrowseItemPanel().togglePreviewForItem();
                 return this.updateBrowseActions([]);
@@ -343,7 +330,7 @@ export class BrowsePanel<M extends Equitable>
             return Q(null);
         }
 
-        const browseItem: BrowseItem<M> = this.dataToBrowseItem(node.getData());
+        const browseItem: BrowseItem<M> = this.dataToBrowseItem(this.treeGrid.getHighlightedItem());
         const updateActionsPromise = this.updateBrowseActions([browseItem]);
         const togglePreviewPromise = this.checkIfItemIsRenderable(browseItem).then(() => {
             this.getBrowseItemPanel().togglePreviewForItem(browseItem);

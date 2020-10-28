@@ -3,10 +3,9 @@ import {GridOptions, GridOptionsBuilder} from '../grid/GridOptions';
 import {TreeGridContextMenu} from './TreeGridContextMenu';
 import {TreeNode} from './TreeNode';
 import {TreeGrid} from './TreeGrid';
+import {IDentifiable} from '../../IDentifiable';
 
-export class TreeGridBuilder<NODE> {
-
-    private expandAll: boolean = false;
+export class TreeGridBuilder<NODE extends IDentifiable> {
 
     private showToolbar: boolean = true;
 
@@ -33,8 +32,6 @@ export class TreeGridBuilder<NODE> {
     private columnUpdater: () => void;
 
     private toggleClickEnabled: boolean = true;
-
-    private expandFn: (item: NODE) => boolean;
 
     constructor(grid?: TreeGrid<NODE>) {
         if (grid) {
@@ -115,24 +112,6 @@ export class TreeGridBuilder<NODE> {
 
     getClasses(): string {
         return this.classes;
-    }
-
-    isExpandAll(): boolean {
-        return this.expandAll;
-    }
-
-    getExpandFn(): (item: NODE) => boolean {
-        return this.expandFn;
-    }
-
-    setExpandAll(value: boolean): TreeGridBuilder<NODE> {
-        this.expandAll = value;
-        return this;
-    }
-
-    setExpandFn(fn: (item: NODE) => boolean): TreeGridBuilder<NODE> {
-        this.expandFn = fn;
-        return this;
     }
 
     setShowToolbar(showToolbar: boolean): TreeGridBuilder<NODE> {

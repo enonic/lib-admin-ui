@@ -29,7 +29,7 @@ export class BaseSelectedOptionView<T>
 
     setOption(option: Option<T>) {
         if (this.optionValueEl) {
-            this.optionValueEl.getEl().setInnerHtml(option.displayValue.toString());
+            this.optionValueEl.getEl().setInnerHtml(option.getDisplayValue().toString());
         }
         this.option = option;
     }

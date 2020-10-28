@@ -89,7 +89,7 @@ export class BaseSelectedOptionsView<T>
         assertNotNull(optionToUpdate, 'optionToRemove cannot be null');
 
         let selectedOption = this.getByOption(optionToUpdate);
-        assertNotNull(selectedOption, 'Did not find any selected option to update from option: ' + optionToUpdate.value);
+        assertNotNull(selectedOption, 'Did not find any selected option to update from option: ' + optionToUpdate.getValue());
 
         selectedOption.getOptionView().setOption(newOption);
     }
@@ -98,12 +98,12 @@ export class BaseSelectedOptionsView<T>
         assertNotNull(optionToRemove, 'optionToRemove cannot be null');
 
         let selectedOption = this.getByOption(optionToRemove);
-        assertNotNull(selectedOption, 'Did not find any selected option to remove from option: ' + optionToRemove.value);
+        assertNotNull(selectedOption, 'Did not find any selected option to remove from option: ' + optionToRemove.getValue());
 
         selectedOption.getOptionView().remove();
 
         this.list = this.list.filter((option: SelectedOption<T>) => {
-            return option.getOption().value !== selectedOption.getOption().value;
+            return option.getOption().getValue() !== selectedOption.getOption().getValue();
         });
 
         // update item indexes to the right of removed item
@@ -131,12 +131,12 @@ export class BaseSelectedOptionsView<T>
     }
 
     getByOption(option: Option<T>): SelectedOption<T> {
-        return this.getById(option.value);
+        return this.getById(option.getValue());
     }
 
     getById(id: string): SelectedOption<T> {
         return this.list.filter((selectedOption: SelectedOption<T>) => {
-            return selectedOption.getOption().value === id;
+            return selectedOption.getOption().getValue() === id;
         })[0];
     }
 
@@ -160,11 +160,11 @@ export class BaseSelectedOptionsView<T>
     }
 
     makeEmptyOption(id: string): Option<T> {
-        return <Option<T>>{
-            value: id,
-            displayValue: null,
-            empty: true
-        };
+        return Option.create<T>()
+            .setValue(id)
+            .setDisplayValue(null)
+            .setEmpty(true)
+            .build();
     }
 
     onOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; }) {
