@@ -22,6 +22,22 @@ import {FormSet} from './FormSet';
 import {FormItem} from '../FormItem';
 import {HelpTextContainer} from '../HelpTextContainer';
 import {Element} from '../../dom/Element';
+import {FormContext} from '../FormContext';
+import {FormSetOccurrence} from './FormSetOccurrence';
+
+export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
+    context: FormContext;
+
+    layer: FormItemLayer;
+
+    formSetOccurrence: FormSetOccurrence<V>;
+
+    formSet: FormSet;
+
+    parent: FormSetOccurrenceView;
+
+    dataSet: PropertySet;
+}
 
 export class FormSetOccurrenceView
     extends FormItemOccurrenceView {
@@ -43,6 +59,8 @@ export class FormSetOccurrenceView
     protected formSetOccurrencesContainer: DivEl;
 
     protected occurrenceContainerClassName: string;
+
+    protected formSet: FormSet;
 
     private dirtyFormItemViewsMap: object = {};
 

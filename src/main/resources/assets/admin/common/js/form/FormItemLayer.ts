@@ -20,6 +20,7 @@ import {Input} from './Input';
 import {FormOptionSet} from './set/optionset/FormOptionSet';
 import {FormOptionSetOption} from './set/optionset/FormOptionSetOption';
 import {FormItemLayerFactory} from './FormItemLayerFactory';
+import {FormSetOccurrenceView} from './set/FormSetOccurrenceView';
 
 export class FormItemLayer {
 
@@ -141,7 +142,7 @@ export class FormItemLayer {
                     context: this.context,
                     layerFactory: this.formItemLayerFactory,
                     formSet: formItemSet,
-                    parent: this.parent,
+                    parent: <FormSetOccurrenceView>this.parent,
                     parentDataSet: propertySet,
                     occurrencesLazyRender: this.lazyRender
                 });
@@ -184,7 +185,7 @@ export class FormItemLayer {
                     layerFactory: this.formItemLayerFactory,
                     context: this.context,
                     formSet: formOptionSet,
-                    parent: this.parent,
+                    parent: <FormSetOccurrenceView>this.parent,
                     parentDataSet: propertySet,
                     occurrencesLazyRender: this.lazyRender
                 });

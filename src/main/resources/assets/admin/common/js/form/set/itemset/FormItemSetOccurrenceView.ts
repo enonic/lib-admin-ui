@@ -5,16 +5,14 @@ import {StringHelper} from '../../../util/StringHelper';
 import {FormContext} from '../../FormContext';
 import {FormSetOccurrence} from '../FormSetOccurrence';
 import {FormItemSet} from './FormItemSet';
-import {FormSetOccurrenceView} from '../FormSetOccurrenceView';
+import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {FormItemLayer} from '../../FormItemLayer';
 import {ValidationRecording} from '../../ValidationRecording';
 import {FormItemView} from '../../FormItemView';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
-import {FormSet} from '../FormSet';
 import {FormItem} from '../../FormItem';
 
 export interface FormItemSetOccurrenceViewConfig {
-
     context: FormContext;
 
     layer: FormItemLayer;
@@ -31,13 +29,11 @@ export interface FormItemSetOccurrenceViewConfig {
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
 
-    private formItemSet: FormItemSet;
-
-    constructor(config: FormItemSetOccurrenceViewConfig) {
+    constructor(config: FormSetOccurrenceViewConfig<FormItemSetOccurrenceView>) {
         super('form-item-set-occurrence-view', config.formSetOccurrence);
         this.occurrenceContainerClassName = 'form-item-set-occurrences-container';
         this.formItemOccurrence = config.formSetOccurrence;
-        this.formItemSet = config.formItemSet;
+        this.formSet = config.formSet;
         this.propertySet = config.dataSet;
         this.formItemLayer = config.layer;
     }
@@ -94,12 +90,12 @@ export class FormItemSetOccurrenceView
         });
     }
 
-    protected getFormSet(): FormSet {
-        return this.formItemSet;
+    protected getFormSet(): FormItemSet {
+        return <FormItemSet>this.formSet;
     }
 
     protected getFormItems(): FormItem[] {
-        return this.formItemSet.getFormItems();
+        return this.getFormSet().getFormItems();
     }
 
     private setLabel() {

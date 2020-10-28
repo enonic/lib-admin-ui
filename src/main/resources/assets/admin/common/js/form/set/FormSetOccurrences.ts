@@ -2,28 +2,63 @@ import * as Q from 'q';
 import {PropertySet} from '../../data/PropertySet';
 import {Property} from '../../data/Property';
 import {PropertyArray} from '../../data/PropertyArray';
-import {FormSetOccurrenceView} from './FormSetOccurrenceView';
-import {FormItemOccurrences, FormItemOccurrencesConfig} from '../FormItemOccurrences';
+import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from './FormSetOccurrenceView';
+import {FormItemOccurrences} from '../FormItemOccurrences';
 import {FormContext} from '../FormContext';
 import {FormSet} from './FormSet';
 import {OccurrenceRenderedEvent} from '../OccurrenceRenderedEvent';
 import {Occurrences} from '../Occurrences';
 import {FormItemOccurrence} from '../FormItemOccurrence';
 import {FormSetOccurrence} from './FormSetOccurrence';
+import {FormItemLayerFactory} from '../FormItemLayerFactory';
+import {Element} from '../../dom/Element';
+
+export interface FormSetOccurrencesConfig<V extends FormSetOccurrenceView> {
+
+    layerFactory: FormItemLayerFactory;
+
+    context: FormContext;
+
+    occurrenceViewContainer: Element;
+
+    formSet: FormSet;
+
+    parent: V;
+
+    propertyArray: PropertyArray;
+
+    lazyRender?: boolean;
+}
 
 export class FormSetOccurrences<V extends FormSetOccurrenceView>
     extends FormItemOccurrences<V> {
 
-    protected context: FormContext;
+    private context: FormContext;
 
-    protected parent: FormSetOccurrenceView;
+    private parent: FormSetOccurrenceView;
 
-    protected occurrencesCollapsed: boolean = false;
+    private occurrencesCollapsed: boolean = false;
 
-    protected formSet: FormSet;
+    private formSet: FormSet;
 
-    constructor(config: FormItemOccurrencesConfig) {
-        super(config);
+    private lazyRender: boolean;
+
+    private layerFactory: FormItemLayerFactory;
+
+    constructor(config: FormSetOccurrencesConfig<V>) {
+        super({
+            formItem: config.formSet,
+            propertyArray: config.propertyArray,
+            occurrenceViewContainer: config.occurrenceViewContainer,
+            allowedOccurrences: config.formSet.getOccurrences()
+        });
+
+        this.context = config.context;
+        this.layerFactory = config.layerFactory;
+        this.formSet = config.formSet;
+        this.parent = config.parent;
+        this.occurrencesCollapsed = false;
+        this.lazyRender = config.lazyRender;
 
         this.onOccurrenceRendered((event: OccurrenceRenderedEvent) => {
             const occurrenceView = <FormSetOccurrenceView>event.getOccurrenceView();
@@ -32,6 +67,39 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         });
     }
 
+    protected getNewOccurrenceConfig(occurrence: FormSetOccurrence<V>): FormSetOccurrenceViewConfig<V> {
+        const dataSet = this.getSetFromArray(occurrence);
+        const layer = this.layerFactory.createLayer({context: this.context, lazyRender: this.lazyRender});
+
+        return {
+            context: this.context,
+            layer: layer,
+            formSetOccurrence: occurrence,
+            formSet: this.formSet,
+            parent: this.parent,
+            dataSet: dataSet
+        }
+    }
+/*
+    createNewOccurrenceView(occurrence: FormSetOccurrence<V>): V {
+
+        let dataSet = this.getSetFromArray(occurrence);
+
+        let newOccurrenceView = V.constructor(<FormOptionSetOccurrenceViewConfig>{
+            context: this.context,
+            layer: this.layerFactory.createLayer({context: this.context, lazyRender: this.lazyRender}),
+            formSetOccurrence: occurrence,
+            formOptionSet: <FormOptionSet> this.formSet,
+            parent: this.parent,
+            dataSet: dataSet
+        });
+
+        newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<FormSetOccurrenceView>) => {
+            this.removeOccurrenceView(event.getView());
+        });
+        return newOccurrenceView;
+    }
+*/
     showOccurrences(show: boolean) {
         let views = this.getOccurrenceViews();
         this.occurrencesCollapsed = !show;
