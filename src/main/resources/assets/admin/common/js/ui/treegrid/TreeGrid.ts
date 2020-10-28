@@ -1651,6 +1651,10 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     private highlightRowByNode(node: TreeNode<DATA>) {
+        if (!node) {
+            return;
+        }
+
         if (this.selectionOnClick === SelectionOnClickType.SELECT) {
             return;
         }
