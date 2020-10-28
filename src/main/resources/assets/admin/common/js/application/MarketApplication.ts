@@ -3,8 +3,9 @@ import {MarketApplicationJson} from './json/MarketApplicationJson';
 import {i18n} from '../util/Messages';
 import {ProgressBar} from '../ui/ProgressBar';
 import {SpanEl} from '../dom/SpanEl';
+import {IDentifiable} from '../IDentifiable';
 
-export class MarketApplication {
+export class MarketApplication implements IDentifiable {
 
     private appKey: ApplicationKey;
     private displayName: string;
@@ -40,6 +41,10 @@ export class MarketApplication {
             }
         }
         return array;
+    }
+
+    public getId(): string {
+        return !!this.appKey ? this.appKey.toString() : '';
     }
 
     public isEmpty(): boolean {
