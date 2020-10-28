@@ -5,10 +5,14 @@ import {TreeNode} from '../treegrid/TreeNode';
 import {ElementHelper} from '../../dom/ElementHelper';
 import {DataView} from './DataView';
 import {Event} from '../../event/Event';
+import {IDentifiable} from '../../IDentifiable';
+import {AppHelper} from '../../util/AppHelper';
 
-export class GridDragHandler<MODEL> {
+export class GridDragHandler<MODEL extends IDentifiable> {
 
     protected contentGrid: TreeGrid<MODEL>;
+
+    protected activeItem: MODEL;
 
     private positionChangedListeners: { (): void }[] = [];
 
@@ -23,6 +27,11 @@ export class GridDragHandler<MODEL> {
         this.contentGrid.getGrid().subscribeOnDragEnd(this.handleDragEnd.bind(this));
         this.contentGrid.getGrid().subscribeBeforeMoveRows(this.handleBeforeMoveRows.bind(this));
         this.contentGrid.getGrid().subscribeMoveRows(this.handleMoveRows.bind(this));
+
+        const mouseOver = AppHelper.debounce((e: any) => {
+            this.handleMouseOver(e);
+        }, 100);
+        this.contentGrid.getGrid().subscribeOnMouseEnter(mouseOver);
     }
 
     getDraggableItem(): Element {
@@ -39,6 +48,10 @@ export class GridDragHandler<MODEL> {
         });
     }
 
+    protected handleMouseOver(e: any) {
+       this.activeItem = this.contentGrid.getDataFromDomEvent(e);
+    }
+
     protected handleDragInit(event: DragEvent) {
         event.stopImmediatePropagation();
     }
@@ -48,9 +61,7 @@ export class GridDragHandler<MODEL> {
         draggableClass = (' ' + draggableClass).replace(/\s/g, '.');
         let row: Element = Element.fromString(draggableClass).getParentElement();
 
-        const nodes: TreeNode<MODEL>[] = this.contentGrid.getRoot().getCurrentRoot().treeToList();
-        const draggedNode: TreeNode<MODEL> = nodes[row.getSiblingIndex()];
-        this.contentGrid.collapseNode(draggedNode);
+        this.contentGrid.collapseNodeByRow(this.getRowIndex(row.getEl()));
 
         row = Element.fromString(draggableClass).getParentElement();
 
@@ -68,10 +79,33 @@ export class GridDragHandler<MODEL> {
         $(`.tree-grid ${gridClasses} .slick-viewport`).get(0).appendChild(this.draggableItem.getHTMLElement());
     }
 
+    protected getRowIndex(row: ElementHelper): number {
+        const parent: ElementHelper = row.getParent();
+
+        const sortedByTop: number[] = (<HTMLElement[]>parent.getChildren())
+            .filter((el: HTMLElement) => el.classList.contains('slick-row'))
+            .map((el: HTMLElement) => +el.style.top.replace('px', ''))
+            .sort((a: number, b: number) => a - b);
+
+        let pos: number = -1;
+        const rowTop: number = +row.getHTMLElement().style.top.replace('px','');
+
+        sortedByTop.some((item: number, index: number) => {
+            if (item === rowTop) {
+                pos = index;
+                return true;
+            }
+
+            return false;
+        });
+
+        return pos;
+    }
+
     protected handleDragEnd(_event: Event, _data: DragEventData) {
         this.draggableItem.remove();
         this.draggableItem = null;
-        this.contentGrid.refresh();
+        this.contentGrid.invalidate();
     }
 
     protected handleBeforeMoveRows(_event: Event, data: DragEventData): boolean {
@@ -125,7 +159,7 @@ export class GridDragHandler<MODEL> {
         // draggable count in new data
         const selectedRow: number = this.makeMovementInNodes(draggableRow, insertTarget);
 
-        if (selectedRow <= this.contentGrid.getRoot().getCurrentRoot().treeToList().length - 1) {
+        if (selectedRow <= this.contentGrid.getCurrentTotal() - 1) {
             this.contentGrid.getGrid().setSelectedRows([selectedRow]);
         }
         this.handleMovements(rowDataId, moveBeforeRowDataId);
@@ -134,18 +168,7 @@ export class GridDragHandler<MODEL> {
     }
 
     protected makeMovementInNodes(draggableRow: number, insertBefore: number): number {
-        const root: TreeNode<MODEL> = this.contentGrid.getRoot().getCurrentRoot();
-        const rootChildren: TreeNode<MODEL>[] = root.treeToList();
-
-        const item: TreeNode<MODEL> = rootChildren.slice(draggableRow, draggableRow + 1)[0];
-        rootChildren.splice(rootChildren.indexOf(item), 1);
-        rootChildren.splice(insertBefore, 0, item);
-
-        this.contentGrid.initData(rootChildren);
-        root.setChildren(rootChildren);
-
-        return rootChildren.indexOf(item);
-
+        return this.contentGrid.moveNode(draggableRow, insertBefore);
     }
 
     protected handleMovements(_rowDataId: any, _moveBeforeRowDataId: any) {
