@@ -764,8 +764,8 @@ export class ElementHelper {
     }
 
     getChildren(): Node[] {
-
-        return this.el.children || //children property not supported for IE SVGelement, Document and DocumentFragment
+        //children property not supported for IE SVGelement, Document and DocumentFragment
+        return !!this.el.children ? [].slice.call(this.el.children) :
                Array.prototype.slice.call(this.el.childNodes).filter((childNode: Node) => {
                    return (childNode.nodeType === Node.ELEMENT_NODE);
                });

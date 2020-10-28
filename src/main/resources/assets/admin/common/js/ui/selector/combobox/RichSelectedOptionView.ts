@@ -21,7 +21,7 @@ export class RichSelectedOptionView<T>
     constructor(builder: RichSelectedOptionViewBuilder<T>) {
         super(builder.option);
 
-        this.optionDisplayValue = builder.option.displayValue;
+        this.optionDisplayValue = builder.option.getDisplayValue();
         this.size = builder.size;
 
         this.draggable = builder.draggable;
@@ -48,8 +48,8 @@ export class RichSelectedOptionView<T>
     setOption(option: Option<T>): any {
         super.setOption(option);
 
-        this.setValues(option.displayValue);
-        this.optionDisplayValue = option.displayValue;
+        this.setValues(option.getDisplayValue());
+        this.optionDisplayValue = option.getDisplayValue();
     }
 
     doRender(): Q.Promise<boolean> {

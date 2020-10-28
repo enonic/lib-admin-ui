@@ -284,7 +284,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false) {
         const previousOption: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
 
-        if (!!previousOption && previousOption.value === option.value) {
+        if (!!previousOption && previousOption.getValue() === option.getValue()) {
             this.deselectOptions(silent);
         } else {
             this.doSelectOption(option, silent);
@@ -331,7 +331,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         if (!selectedOption) {
             return null;
         }
-        return selectedOption.value;
+        return selectedOption.getValue();
     }
 
     setInputIconUrl(iconUrl: string) {
@@ -392,16 +392,16 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         }
 
         let lowerCasedSearchString = args.searchString.toLowerCase();
-        if (option.value.toLowerCase().indexOf(lowerCasedSearchString) > -1) {
+        if (option.getValue().toLowerCase().indexOf(lowerCasedSearchString) > -1) {
             return true;
         }
 
-        let displayVaueAsString = option.displayValue.toString();
+        let displayVaueAsString = option.getDisplayValue().toString();
         if (displayVaueAsString.toLowerCase().indexOf(lowerCasedSearchString) > -1) {
             return true;
         }
 
-        let indices = option.indices;
+        let indices = option.getIndices();
         if (indices && indices.length > 0) {
             for (let i = 0; i < indices.length; i++) {
                 let index = indices[i];

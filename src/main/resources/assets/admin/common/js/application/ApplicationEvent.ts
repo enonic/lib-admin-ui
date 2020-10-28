@@ -55,7 +55,8 @@ export class ApplicationEvent
     }
 
     static fromJson(applicationEventJson: ApplicationEventJson): ApplicationEvent {
-        const applicationKey = ApplicationKey.fromString(applicationEventJson.data.applicationKey);
+        const applicationKey = !!applicationEventJson.data.applicationKey ? ApplicationKey.fromString(
+            applicationEventJson.data.applicationKey) : null;
         const eventType = ApplicationEventType[applicationEventJson.data.eventType];
         const systemApplication = applicationEventJson.data.systemApplication;
         const applicationUrl = applicationEventJson.data.applicationUrl;

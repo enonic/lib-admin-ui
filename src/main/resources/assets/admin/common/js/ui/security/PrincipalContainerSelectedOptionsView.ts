@@ -18,7 +18,7 @@ export class PrincipalContainerSelectedOptionsView<T extends PrincipalContainer>
             // update our selected options list with new values
             const selectedOption = this.getById(item.getPrincipalKey().toString());
             if (selectedOption) {
-                selectedOption.getOption().displayValue = item;
+                selectedOption.getOption().setDisplayValue(item);
             }
             this.notifyItemValueChanged(item);
         });
@@ -27,7 +27,7 @@ export class PrincipalContainerSelectedOptionsView<T extends PrincipalContainer>
     }
 
     protected createSelectedEntryView(option: Option<T>): PrincipalContainerSelectedEntryView<T> {
-        return new PrincipalContainerSelectedEntryView(option.displayValue, option.readOnly);
+        return new PrincipalContainerSelectedEntryView(option.getDisplayValue(), option.isReadOnly());
     }
 
     onItemValueChanged(listener: (item: T) => void) {

@@ -143,11 +143,11 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
     }
 
     removeOption(option: Option<OPTION_DISPLAY_VALUE>) {
-        this.getGridData().deleteItem(option.value);
+        this.getGridData().deleteItem(option.getValue());
     }
 
     updateOption(option: Option<OPTION_DISPLAY_VALUE>) {
-        this.getGridData().updateItem(option.value, option);
+        this.getGridData().updateItem(option.getValue(), option);
     }
 
     hasOptions(): boolean {
@@ -217,7 +217,7 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
 
     addSelections(selectedOptions: Option<OPTION_DISPLAY_VALUE>[]) {
         selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-            let row = this.getGridData().getRowById(selectedOption.value);
+            let row = this.getGridData().getRowById(selectedOption.getValue());
             if (row !== undefined && !this.getGrid().isRowSelected(row)) {
                 this.getGrid().addSelectedRow(row);
             }
@@ -229,7 +229,7 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
         let stylesHash: Slick.CellCssStylesHash = {};
         let rows: number[] = [];
         selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-            let row = this.getGridData().getRowById(selectedOption.value);
+            let row = this.getGridData().getRowById(selectedOption.getValue());
             rows.push(row);
             stylesHash[row] = {option: 'selected'};
         });
@@ -243,8 +243,8 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
 
         let stylesHash: Slick.CellCssStylesHash = {};
         selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-            if (selectedOption.readOnly) {
-                let row = this.getGridData().getRowById(selectedOption.value);
+            if (selectedOption.isReadOnly()) {
+                let row = this.getGridData().getRowById(selectedOption.getValue());
                 stylesHash[row] = {_checkbox_selector: 'readonly', option: 'readonly'};
             }
         });

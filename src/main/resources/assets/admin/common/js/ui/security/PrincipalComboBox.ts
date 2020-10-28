@@ -60,7 +60,7 @@ export class PrincipalSelectedOptionView
 
     setOption(option: Option<Principal>) {
         this.option = option;
-        this.setObject(option.displayValue);
+        this.setObject(option.getDisplayValue());
     }
 
     getOption(): Option<Principal> {
@@ -77,7 +77,7 @@ export class PrincipalSelectedOptionsView
     }
 
     createSelectedOption(option: Option<Principal>): SelectedOption<Principal> {
-        let optionView = !option.empty ? new PrincipalSelectedOptionView(option) : new RemovedPrincipalSelectedOptionView(option);
+        let optionView = !option.isEmpty() ? new PrincipalSelectedOptionView(option) : new RemovedPrincipalSelectedOptionView(option);
         if (this.readonly) {
             optionView.setReadonly(true);
         }
@@ -88,11 +88,11 @@ export class PrincipalSelectedOptionsView
 
         let key = PrincipalKey.fromString(id);
 
-        return <Option<Principal>>{
-            value: id,
-            displayValue: <Principal>Principal.create().setKey(key).setDisplayName(key.getId()).build(),
-            empty: true
-        };
+        return Option.create<Principal>()
+                .setValue(id)
+                .setDisplayValue(<Principal>Principal.create().setKey(key).setDisplayName(key.getId()).build())
+                .setEmpty(true)
+                .build();
     }
 
 }
