@@ -27,7 +27,7 @@ export class FormItemView
 
     private formItem: FormItem;
 
-    private parent: FormItemOccurrenceView;
+    protected parent: FormItemOccurrenceView;
 
     private editContentRequestListeners: { (content: ContentSummary): void }[] = [];
 

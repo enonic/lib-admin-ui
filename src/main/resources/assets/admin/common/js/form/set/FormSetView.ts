@@ -16,7 +16,7 @@ import {FormSetOccurrenceView} from './FormSetOccurrenceView';
 import {FormItemView} from '../FormItemView';
 import {RecordingValidityChangedEvent} from '../RecordingValidityChangedEvent';
 import {ValidationRecording} from '../ValidationRecording';
-import {FormSetOccurrences} from './FormSetOccurrences';
+import {FormSetOccurrences, FormSetOccurrencesConfig} from './FormSetOccurrences';
 import {FormSet} from './FormSet';
 import {FormItemOccurrenceView} from '../FormItemOccurrenceView';
 import {assert} from '../../util/Assert';
@@ -40,7 +40,7 @@ export interface FormSetViewConfig {
 
     formSet: FormSet;
 
-    parent: FormItemOccurrenceView;
+    parent: FormSetOccurrenceView;
 }
 
 export abstract class FormSetView<V extends FormSetOccurrenceView>
@@ -98,7 +98,25 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         }
     }
 
-    protected abstract initOccurrences(): FormSetOccurrences<V>;
+    getParent(): V {
+        return <V>this.parent;
+    }
+
+    protected createOccurrences(config: FormSetOccurrencesConfig<V>): FormSetOccurrences<V> {
+        return new FormSetOccurrences<V>(config);
+    }
+
+    protected initOccurrences(): FormSetOccurrences<V> {
+        return this.formItemOccurrences = this.createOccurrences({
+            context: this.getContext(),
+            layerFactory: this.layerFactory,
+            occurrenceViewContainer: this.occurrenceViewsContainer,
+            formSet: this.formSet,
+            parent: this.getParent(),
+            propertyArray: this.getPropertyArray(this.parentDataSet),
+            lazyRender: this.occurrencesLazyRender
+        });
+    }
 
     public layout(validate: boolean = true): Q.Promise<void> {
         const deferred = Q.defer<void>();
