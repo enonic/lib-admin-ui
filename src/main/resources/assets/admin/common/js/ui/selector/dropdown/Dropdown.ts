@@ -284,6 +284,14 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false) {
         const previousOption: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
 
+        if (!previousOption || previousOption.value !== option.value) {
+            this.doSelectOption(option, silent);
+        }
+    }
+
+    private doSelectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false) {
+        const previousOption: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
+
         this.dropdownList.markSelections([option]);
 
         this.selectedOptionView.setOption(option);
