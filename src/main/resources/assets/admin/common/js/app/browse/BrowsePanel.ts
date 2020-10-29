@@ -126,18 +126,18 @@ export class BrowsePanel<M extends Equitable>
 
         };
 
-        this.treeGrid.onDataChanged((event: DataChangedEvent<Object>) => {
+        this.treeGrid.onDataChanged((event: DataChangedEvent<IDentifiable>) => {
           const noHighlightedNode = !this.treeGrid.hasHighlightedNode();
 
           // Highlighted nodes updated in a separate listener
           if (noHighlightedNode) {
             this.updateBrowseActions(this.getBrowseItemPanel().getItems()).catch(DefaultErrorHandler.handle);
 
-            const selectedNodes: TreeNode<any>[] = this.treeGrid.getSelectedNodes();
-            const selectedNode: TreeNode<any> = selectedNodes.length > 0 ? selectedNodes[0] : null;
-            if (selectedNode && (event.getType() === DataChangedType.UPDATED || event.getType() === DataChangedType.ADDED) &&
-                event.getTreeNodes().some((node: TreeNode<any>) => node.getDataId() === selectedNode.getDataId())) {
-              const browseItem: BrowseItem<M> = this.dataToBrowseItem(selectedNode.getData());
+            const selectedItems: IDentifiable[] = this.treeGrid.getSelectedDataList();
+            const selectedItem: IDentifiable = selectedItems.length > 0 ? selectedItems[0] : null;
+            if (selectedItem && (event.getType() === DataChangedType.UPDATED || event.getType() === DataChangedType.ADDED) &&
+                event.getTreeNodes().some((node: TreeNode<any>) => node.getDataId() === selectedItem.getId())) {
+              const browseItem: BrowseItem<M> = this.dataToBrowseItem(selectedItem);
               this.getBrowseItemPanel().togglePreviewForItem(browseItem);
             }
           }

@@ -165,7 +165,8 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     getHighlightedItem(): DATA {
-        return this.root.getNodeByDataId(this.highlightedDataId).getData();
+        const highlightedNode: TreeNode<DATA> = this.getHighlightedNode();
+        return !!highlightedNode ? highlightedNode.getData() : null;
     }
 
     protected getHighlightedNode(): TreeNode<DATA> {
@@ -679,8 +680,8 @@ export class TreeGrid<DATA extends IDentifiable>
 
     initData(nodes: TreeNode<DATA>[]) {
         this.gridData.setItems(nodes, this.idPropertyName);
-        this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
         this.resetCurrentSelection(nodes);
+        this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
     }
 
     expandNodeByDataId(dataId: string): Q.Promise<boolean> {
@@ -940,7 +941,12 @@ export class TreeGrid<DATA extends IDentifiable>
             return;
         }
 
-        this.highlightRowByNode(this.getHighlightedNode());
+        const highlightedNode: TreeNode<DATA> = this.getHighlightedNode();
+        if (!highlightedNode) {
+            return;
+        }
+
+        this.highlightRowByNode(highlightedNode);
         this.notifyHighlightingChanged();
     }
 
@@ -1744,10 +1750,25 @@ export class TreeGrid<DATA extends IDentifiable>
 
         const parentRow: number = this.gridData.getRowById(parent.getId());
         if (!!parentRow || parentRow === 0) {
-            this.gridData.insertItem(parentRow + index + 1, nodeToInsert);
+            this.gridData.insertItem(this.getInsertIndexRelativeToParent(parent, index), nodeToInsert);
         }
 
         this.invalidateNodes([parent]);
+    }
+
+    private getInsertIndexRelativeToParent(parent: TreeNode<DATA>, index: number): number {
+        const parentRow: number = this.gridData.getRowById(parent.getId());
+        let insertIndexRelativeToGrid: number = parentRow + 1;
+
+        let i: number = 0;
+        while (i !== index) {
+            if (this.gridData.getItem(insertIndexRelativeToGrid).getParent() === parent) {
+                i++;
+            }
+            insertIndexRelativeToGrid++;
+        }
+
+        return insertIndexRelativeToGrid;
     }
 
     moveNode(from: number, to: number): number {
