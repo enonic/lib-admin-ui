@@ -23,7 +23,7 @@ export class FormOptionSetOccurrenceView
     private selectionValidationMessage: DivEl;
 
     constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView> ) {
-        super('form-option-set', config);
+        super('form-option-set-', config);
 
         this.ensureSelectionArrayExists(this.propertySet);
     }
