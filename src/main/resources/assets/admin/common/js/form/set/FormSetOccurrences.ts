@@ -12,6 +12,7 @@ import {FormItemOccurrence} from '../FormItemOccurrence';
 import {FormSetOccurrence} from './FormSetOccurrence';
 import {FormItemLayerFactory} from '../FormItemLayerFactory';
 import {Element} from '../../dom/Element';
+import {RemoveButtonClickedEvent} from '../RemoveButtonClickedEvent';
 
 export interface FormSetOccurrencesConfig<V extends FormSetOccurrenceView> {
 
@@ -33,15 +34,15 @@ export interface FormSetOccurrencesConfig<V extends FormSetOccurrenceView> {
 export class FormSetOccurrences<V extends FormSetOccurrenceView>
     extends FormItemOccurrences<V> {
 
-    private context: FormContext;
+    private readonly context: FormContext;
 
-    private parent: FormSetOccurrenceView;
+    private readonly parent: FormSetOccurrenceView;
 
     private occurrencesCollapsed: boolean = false;
 
-    private formSet: FormSet;
+    private readonly formSet: FormSet;
 
-    private lazyRender: boolean;
+    private readonly lazyRender: boolean;
 
     private layerFactory: FormItemLayerFactory;
 
@@ -80,26 +81,20 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
             dataSet: dataSet
         }
     }
-/*
+
     createNewOccurrenceView(occurrence: FormSetOccurrence<V>): V {
+        const newOccurrenceView = this.createOccurrenceView(this.getNewOccurrenceConfig(occurrence));
 
-        let dataSet = this.getSetFromArray(occurrence);
-
-        let newOccurrenceView = V.constructor(<FormOptionSetOccurrenceViewConfig>{
-            context: this.context,
-            layer: this.layerFactory.createLayer({context: this.context, lazyRender: this.lazyRender}),
-            formSetOccurrence: occurrence,
-            formOptionSet: <FormOptionSet> this.formSet,
-            parent: this.parent,
-            dataSet: dataSet
-        });
-
-        newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<FormSetOccurrenceView>) => {
+        newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<V>) => {
             this.removeOccurrenceView(event.getView());
         });
         return newOccurrenceView;
     }
-*/
+
+    protected createOccurrenceView(_config: FormSetOccurrenceViewConfig<V>): V {
+        throw new Error('Must be implemented by inheritor');
+    }
+
     showOccurrences(show: boolean) {
         let views = this.getOccurrenceViews();
         this.occurrencesCollapsed = !show;
