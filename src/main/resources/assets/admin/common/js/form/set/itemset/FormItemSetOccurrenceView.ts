@@ -1,30 +1,12 @@
 import * as $ from 'jquery';
 import * as Q from 'q';
-import {PropertySet} from '../../../data/PropertySet';
 import {StringHelper} from '../../../util/StringHelper';
-import {FormContext} from '../../FormContext';
-import {FormSetOccurrence} from '../FormSetOccurrence';
 import {FormItemSet} from './FormItemSet';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
-import {FormItemLayer} from '../../FormItemLayer';
 import {ValidationRecording} from '../../ValidationRecording';
 import {FormItemView} from '../../FormItemView';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
 import {FormItem} from '../../FormItem';
-
-export interface FormItemSetOccurrenceViewConfig {
-    context: FormContext;
-
-    layer: FormItemLayer;
-
-    formSetOccurrence: FormSetOccurrence<FormItemSetOccurrenceView>;
-
-    formItemSet: FormItemSet;
-
-    parent: FormSetOccurrenceView;
-
-    dataSet: PropertySet;
-}
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
