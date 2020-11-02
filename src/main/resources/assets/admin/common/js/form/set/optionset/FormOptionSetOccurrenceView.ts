@@ -23,14 +23,9 @@ export class FormOptionSetOccurrenceView
     private selectionValidationMessage: DivEl;
 
     constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView> ) {
-        super('form-option-set-occurrence-view', config.formSetOccurrence);
-        this.occurrenceContainerClassName = 'form-option-set-occurrences-container';
-        this.formItemOccurrence = config.formSetOccurrence;
-        this.formSet = config.formSet;
-        this.propertySet = config.dataSet;
-        this.ensureSelectionArrayExists(this.propertySet);
+        super('form-option-set', config);
 
-        this.formItemLayer = config.layer;
+        this.ensureSelectionArrayExists(this.propertySet);
     }
 
     clean() {
