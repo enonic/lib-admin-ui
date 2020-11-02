@@ -12,7 +12,7 @@ export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
 
     constructor(config: FormSetOccurrenceViewConfig<FormItemSetOccurrenceView>) {
-        super('form-item-set', config);
+        super('form-item-set-', config);
     }
 
     public layout(validate: boolean = true): Q.Promise<void> {
