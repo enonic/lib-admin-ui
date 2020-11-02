@@ -79,7 +79,7 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
             formSet: this.formSet,
             parent: this.parent,
             dataSet: dataSet
-        }
+        };
     }
 
     createNewOccurrenceView(occurrence: FormSetOccurrence<V>): V {
