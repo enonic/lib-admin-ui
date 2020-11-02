@@ -1748,24 +1748,24 @@ export class TreeGrid<DATA extends IDentifiable>
 
         const parentRow: number = parent.hasParent() ? this.gridData.getRowById(parent.getId()) : -1;
         if (!!parentRow || parentRow === 0) {
-            this.gridData.insertItem(this.getInsertIndexRelativeToParent(parent, parentRow, index), nodeToInsert);
+            this.gridData.insertItem(this.getIndexRelativeToParent(parent, parentRow, index), nodeToInsert);
         }
 
         this.invalidateNodes([parent]);
     }
 
-    private getInsertIndexRelativeToParent(parent: TreeNode<DATA>, parentRow: number, index: number): number {
-        let insertIndexRelativeToGrid: number = parentRow + 1;
+    private getIndexRelativeToParent(parent: TreeNode<DATA>, parentRow: number, index: number): number {
+        let indexRelativeToGrid: number = parentRow + 1;
         let i: number = 0;
 
         while (i !== index) {
-            if (this.gridData.getItem(insertIndexRelativeToGrid).getParent() === parent) {
+            if (this.gridData.getItem(indexRelativeToGrid).getParent() === parent) {
                 i++;
             }
-            insertIndexRelativeToGrid++;
+            indexRelativeToGrid++;
         }
 
-        return insertIndexRelativeToGrid;
+        return indexRelativeToGrid;
     }
 
     moveNode(from: number, to: number): number {
