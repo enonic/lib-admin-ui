@@ -6,7 +6,8 @@ import {Occurrences} from './Occurrences';
 export class FormOccurrenceDraggableLabel
     extends DivEl {
 
-    private title: Text;
+    private readonly title: Text;
+    private readonly note: string;
 
     constructor(label: string, occurrences: Occurrences, note?: string) {
         super('form-occurrence-draggable-label');
@@ -19,23 +20,27 @@ export class FormOccurrenceDraggableLabel
         this.title = document.createTextNode(label);
         nodes.push(this.title);
 
+        if (occurrences.required()) {
+            nodes.push(document.createTextNode(' '));
+            const requiredMarker = new SpanEl('required');
+            nodes.push(requiredMarker.getHTMLElement());
+        }
+
         if (!!note) {
-            let noteEl = new Element(new NewElementBuilder().setTagName('sup').setGenerateId(true));
+            this.note = note;
+            const noteEl = new Element(new NewElementBuilder().setTagName('p').setGenerateId(true));
             noteEl.addClass('note');
+            noteEl.toggleClass('custom-label', this.note !== label);
             noteEl.setHtml(note);
             nodes.push(noteEl.getHTMLElement());
         }
 
-        if (occurrences.required()) {
-            nodes.push(document.createTextNode(' '));
-            let requiredMarker = new SpanEl('required');
-            nodes.push(requiredMarker.getHTMLElement());
-        }
         this.getEl().appendChildren(nodes);
     }
 
     setText(label: string) {
         this.title.nodeValue = label.trim();
+        this.toggleClass('custom-label', this.note !== label);
     }
 
     getText(): string {

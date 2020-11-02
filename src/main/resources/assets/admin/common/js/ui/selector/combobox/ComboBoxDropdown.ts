@@ -9,10 +9,10 @@ export class ComboBoxDropdown<OPTION_DISPLAY_VALUE>
                saveSelection?: boolean) {
 
         selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-            if (selectedOption.readOnly) {
+            if (selectedOption.isReadOnly()) {
                 for (let i = 0; i < options.length; i++) {
-                    if (selectedOption.value === options[i].value) {
-                        options[i].readOnly = true;
+                    if (selectedOption.getValue() === options[i].getValue()) {
+                        options[i].setReadOnly(true);
                         break;
                     }
                 }
@@ -33,7 +33,7 @@ export class ComboBoxDropdown<OPTION_DISPLAY_VALUE>
             // according to the selected options
             if (saveSelection) {
                 const newSelection = selectedOptions.filter((option) => {
-                    return this.getDropdownGrid().getRowByValue(option.value) >= from;
+                    return this.getDropdownGrid().getRowByValue(option.getValue()) >= from;
                 });
 
                 selected = gridSelection.concat(newSelection);

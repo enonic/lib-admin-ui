@@ -23,19 +23,19 @@
   &.display-validation-errors {
     .form-option-set-occurrence-view {
 
-      &.collapsed {
-        padding-bottom: 10px;
-      }
-
       .selection-message {
         display: block;
         color: @input-red-text;
         font-size: 14px;
-        padding: 10px 10px 0 10px;
+        padding: 10px 10px 0 0;
 
         &.empty {
           display: none;
         }
+      }
+
+      &.collapsed {
+        padding-bottom: 10px;
       }
 
       .form-option-set-option-view.invalid {
@@ -48,16 +48,23 @@
   }
 
   .occurrence-views-container .form-option-set-occurrence-view {
+    &:not(.collapsed) {
+      padding-bottom: 0;
+    }
 
-    .form-occurrence-draggable-label {
+    > .form-occurrence-draggable-label {
       margin-left: 0;
+      width: 100%;
     }
 
     & > .remove-button {
       margin: 2px 0 0 10px;
     }
 
-    .form-option-set-option-view {
+    .form-option-set-occurrences-container {
+      padding: 10px 0;
+
+      .form-option-set-option-view {
 
       .form-option-set-view.max-1-occurrence .drag-control {
         display: none;
@@ -109,10 +116,6 @@
 
           > .help-text {
             padding: 3px 0 0 25px;
-          }
-
-          &.expanded > .option-items-container {
-            padding: 10px 5px;
           }
         }
 
@@ -196,7 +199,7 @@
         padding-bottom: 10px;
 
         > .option-items-container {
-          padding: 10px 6px;
+          padding: 5px 10px;
         }
       }
 
@@ -212,10 +215,6 @@
 
           &.invalid .input-label .label {
             color: @admin-dark-gray;
-          }
-
-          &:not(.invalid) {
-            padding: 0 10px;
           }
         }
       }
@@ -294,6 +293,7 @@
       &.expanded > .option-items-container {
         display: block;
       }
+    }
     }
   }
 }

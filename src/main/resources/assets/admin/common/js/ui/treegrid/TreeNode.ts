@@ -1,17 +1,16 @@
 import {Viewer} from '../Viewer';
 import {ArrayHelper} from '../../util/ArrayHelper';
+import {IDentifiable} from '../../IDentifiable';
 
-export class TreeNode<DATA>
+export class TreeNode<DATA extends IDentifiable>
     implements Slick.SlickData {
 
-    private static EMPTY_DATA_ID_PREFFIX: string = '_empty_';
     private id: string;
-    private dataId: string;
     private data: DATA;
+    private expandable: boolean;
     private expanded: boolean;
     private selectable: boolean;
     private selected: boolean;
-    private pinned: boolean;
     private maxChildren: number;
     private parent: TreeNode<DATA>;
     private children: TreeNode<DATA>[];
@@ -22,18 +21,14 @@ export class TreeNode<DATA>
 
     constructor(builder: TreeNodeBuilder<DATA>) {
         this.id = Math.random().toString(36).substring(2);
-        this.dataId = builder.getDataId();
         this.data = builder.getData();
         this.parent = builder.getParent();
         this.setChildren(builder.getChildren());
         this.maxChildren = builder.getMaxChildren();
+        this.expandable = builder.isExpandable();
         this.expanded = builder.isExpanded();
         this.selectable = builder.isSelectable();
         this.selected = builder.isSelected();
-        this.pinned = builder.isPinned();
-        if (this.pinned) {
-            this.pinToRoot();
-        }
     }
 
     getId(): string {
@@ -45,7 +40,15 @@ export class TreeNode<DATA>
     }
 
     getDataId(): string {
-        return this.dataId;
+        return this.hasData() ? this.getData().getId() : null;
+    }
+
+    isExpandable(): boolean {
+        return this.expandable;
+    }
+
+    setExpandable(value: boolean) {
+        this.expandable = value;
     }
 
     isExpanded(): boolean {
@@ -72,10 +75,6 @@ export class TreeNode<DATA>
         this.selected = selected;
     }
 
-    isPinned(): boolean {
-        return this.pinned;
-    }
-
     getMaxChildren(): number {
         return this.maxChildren;
     }
@@ -90,10 +89,6 @@ export class TreeNode<DATA>
 
     setData(data: DATA) {
         this.data = data;
-    }
-
-    setDataId(dataId: string) {
-        this.dataId = dataId;
     }
 
     setViewer(name: string, viewer: Viewer<any>) {
@@ -114,9 +109,6 @@ export class TreeNode<DATA>
 
     setParent(parent: TreeNode<DATA>) {
         this.parent = parent;
-        if (this.pinned) {
-            this.pinToRoot();
-        }
     }
 
     hasParent(): boolean {
@@ -232,14 +224,6 @@ export class TreeNode<DATA>
         }
     }
 
-    setEmptyDataId() {
-        this.dataId = TreeNode.EMPTY_DATA_ID_PREFFIX + this.id;
-    }
-
-    isEmptyDataId(): boolean {
-        return this.dataId === '' || this.dataId === TreeNode.EMPTY_DATA_ID_PREFFIX + this.id;
-    }
-
     /*
      Element is visible, if all parents are expanded
      */
@@ -322,30 +306,6 @@ export class TreeNode<DATA>
         return lvl;
     }
 
-    pinToRoot() {
-        // Not already in the root
-        if (this.calcLevel() > 1 && this.data && this.parent) {
-            let duplicated = false;
-            let relatives = this.getRoot().getChildren();
-            // check if duplicate is already in root
-            for (let i = 0; i < relatives.length; i++) {
-                if (relatives[i].getData() && relatives[i].getDataId() === this.getDataId()) {
-                    duplicated = true;
-                    break;
-                }
-            }
-
-            if (!duplicated) {
-                if (this.pinned) {
-                    this.parent.removeChild(this);
-                    this.getRoot().addChild(this);
-                } else {
-                    new TreeNodeBuilder<DATA>(this).setPinned(true).build();
-                }
-            }
-        }
-    }
-
     // TS fix: common fields with Slick.SlickData
     public test(): any { /* empty */
     }
@@ -355,11 +315,9 @@ export class TreeNode<DATA>
     }
 }
 
-export class TreeNodeBuilder<NODE> {
+export class TreeNodeBuilder<DATA extends IDentifiable> {
 
-    private dataId: string;
-
-    private data: NODE;
+    private data: DATA;
 
     private expanded: boolean;
 
@@ -367,27 +325,28 @@ export class TreeNodeBuilder<NODE> {
 
     private selected: boolean;
 
-    private pinned: boolean;
-
     private maxChildren: number;
 
-    private parent: TreeNode<NODE>;
+    private parent: TreeNode<DATA>;
 
-    private children: TreeNode<NODE>[];
+    private children: TreeNode<DATA>[];
 
-    constructor(node?: TreeNode<NODE>) {
+    private expandable: boolean;
+
+    constructor(node?: TreeNode<DATA>) {
         if (node) {
             this.data = node.getData();
             this.parent = node.getParent();
             this.children = node.getChildren() || [];
             this.maxChildren = node.getMaxChildren();
             this.selectable = node.isSelectable();
+            this.expandable = node.isExpandable();
         } else {
             this.children = [];
             this.maxChildren = 0;
             this.selectable = true;
+            this.expandable = false;
         }
-        this.pinned = false;
         this.expanded = false;
         this.selected = false;
     }
@@ -396,7 +355,7 @@ export class TreeNodeBuilder<NODE> {
         return this.expanded;
     }
 
-    setExpanded(expanded: boolean = true): TreeNodeBuilder<NODE> {
+    setExpanded(expanded: boolean = true): TreeNodeBuilder<DATA> {
         this.expanded = expanded;
         return this;
     }
@@ -409,22 +368,13 @@ export class TreeNodeBuilder<NODE> {
         return this.selected;
     }
 
-    setSelectable(selectable: boolean = true): TreeNodeBuilder<NODE> {
+    setSelectable(selectable: boolean = true): TreeNodeBuilder<DATA> {
         this.selectable = selectable;
         return this;
     }
 
-    setSelected(selected: boolean = true): TreeNodeBuilder<NODE> {
+    setSelected(selected: boolean = true): TreeNodeBuilder<DATA> {
         this.selected = selected;
-        return this;
-    }
-
-    isPinned(): boolean {
-        return this.pinned;
-    }
-
-    setPinned(pinned: boolean = true): TreeNodeBuilder<NODE> {
-        this.pinned = pinned;
         return this;
     }
 
@@ -436,39 +386,43 @@ export class TreeNodeBuilder<NODE> {
         this.maxChildren = maxChildren;
     }
 
-    getData(): NODE {
+    getData(): DATA {
         return this.data;
     }
 
-    getDataId(): string {
-        return this.dataId;
-    }
-
-    setData(data: NODE, dataId: string): TreeNodeBuilder<NODE> {
+    setData(data: DATA): TreeNodeBuilder<DATA> {
         this.data = data;
-        this.dataId = dataId;
         return this;
     }
 
-    getParent(): TreeNode<NODE> {
+    getParent(): TreeNode<DATA> {
         return this.parent;
     }
 
-    setParent(parent: TreeNode<NODE>): TreeNodeBuilder<NODE> {
+    setParent(parent: TreeNode<DATA>): TreeNodeBuilder<DATA> {
         this.parent = parent;
         return this;
     }
 
-    getChildren(): TreeNode<NODE>[] {
+    getChildren(): TreeNode<DATA>[] {
         return this.children;
     }
 
-    setChildren(children: TreeNode<NODE>[]): TreeNodeBuilder<NODE> {
+    setChildren(children: TreeNode<DATA>[]): TreeNodeBuilder<DATA> {
         this.children = children;
         return this;
     }
 
-    build(): TreeNode<NODE> {
-        return new TreeNode<NODE>(this);
+    setExpandable(value: boolean): TreeNodeBuilder<DATA> {
+        this.expandable = value;
+        return this;
+    }
+
+    isExpandable(): boolean {
+        return this.expandable;
+    }
+
+    build(): TreeNode<DATA> {
+        return new TreeNode<DATA>(this);
     }
 }

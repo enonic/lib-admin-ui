@@ -83,7 +83,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         this.appendChild(this.occurrenceViewsContainer);
 
         this.initOccurrences().layout(validate).then(() => {
-
             this.subscribeFormSetOccurrencesOnEvents();
 
             this.bottomButtonRow = new DivEl('bottom-button-row');
@@ -92,6 +91,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             this.bottomButtonRow.appendChild(this.addButton = this.makeAddButton());
             this.bottomButtonRow.appendChild(this.collapseButton = this.makeCollapseButton());
 
+            this.toggleOccurrencesVisibility(this.getContext().getFormState().isNew());
             this.refreshButtonsState();
 
             if (validate) {
@@ -449,8 +449,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         const collapseButton = new AEl('collapse-button');
         collapseButton.onClicked((event: MouseEvent) => {
             const isCollapsed = (<FormSetOccurrences<V>> this.formItemOccurrences).isCollapsed();
-            (<FormSetOccurrences<V>> this.formItemOccurrences).showOccurrences(isCollapsed);
-            this.setCollapseButtonCaption();
+            this.toggleOccurrencesVisibility(isCollapsed);
 
             event.stopPropagation();
             event.preventDefault();
@@ -460,16 +459,35 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         return collapseButton;
     }
 
+    toggleOccurrencesVisibility(value: boolean) {
+        (<FormSetOccurrences<V>> this.formItemOccurrences).showOccurrences(value);
+        this.setCollapseButtonCaption();
+    }
+
     private makeAddButton(): Button {
-        const addButton = new Button(i18n('button.add', this.formSet.getLabel()));
+        const addButton: Button = new Button(i18n('button.add', this.formSet.getLabel()));
         addButton.addClass('small');
         addButton.onClicked(() => {
-            this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences());
-            if ((<FormSetOccurrences<V>> this.formItemOccurrences).isCollapsed()) {
-                this.collapseButton.getHTMLElement().click();
-            }
+             this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences()).then((item: V) => {
+                 this.expandOccurrenceView(item);
+             });
         });
         return addButton;
+    }
+
+    expandRecursively() {
+        this.toggleOccurrencesVisibility(true);
+        this.formItemOccurrences.getOccurrenceViews().forEach((item: V) => {
+            this.expandOccurrenceView(item);
+        });
+    }
+
+    private expandOccurrenceView(item: V) {
+        item.getFormItemViews().forEach((formItemView: FormItemView) => {
+            if (ObjectHelper.iFrameSafeInstanceOf(formItemView, FormSetView)) {
+                (<FormSetView<any>>formItemView).expandRecursively();
+            }
+        });
     }
 
     private refreshButtonsState() {

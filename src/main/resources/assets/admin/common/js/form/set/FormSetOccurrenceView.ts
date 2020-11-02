@@ -21,6 +21,7 @@ import {ValidationRecordingPath} from '../ValidationRecordingPath';
 import {FormSet} from './FormSet';
 import {FormItem} from '../FormItem';
 import {HelpTextContainer} from '../HelpTextContainer';
+import {Element} from '../../dom/Element';
 
 export class FormSetOccurrenceView
     extends FormItemOccurrenceView {
@@ -63,7 +64,6 @@ export class FormSetOccurrenceView
         this.removeChildren();
 
         this.removeButton = new AEl('remove-button');
-        this.appendChild(this.removeButton);
         this.removeButton.onClicked((event: MouseEvent) => {
             if (this.isDirty() || this.hasNonDefaultValues()) {
                 this.deleteOccurrenceConfirmationDialog.setHeading(i18n('dialog.confirm.occurrences.title', this.label.getText()));
@@ -76,8 +76,10 @@ export class FormSetOccurrenceView
             return false;
         });
 
-        this.label = new FormOccurrenceDraggableLabel(this.getFormSet().getLabel(), this.getFormSet().getOccurrences());
-        this.appendChild(this.label);
+        const labelText = this.getFormSet().getLabel();
+        this.label = new FormOccurrenceDraggableLabel(labelText, this.getFormSet().getOccurrences(), labelText);
+        this.label.setTitle(i18n('tooltip.header.collapse'));
+        this.appendChildren(<Element>this.label, this.removeButton);
 
         this.label.onClicked(() => this.showContainer(!this.isContainerVisible()));
 
@@ -190,6 +192,7 @@ export class FormSetOccurrenceView
     showContainer(show: boolean) {
         this.formSetOccurrencesContainer.setVisible(show);
         this.toggleClass('collapsed', !show);
+        this.label.setTitle(i18n(show ? 'tooltip.header.collapse' : 'tooltip.header.expand'));
     }
 
     isContainerVisible(): boolean {
