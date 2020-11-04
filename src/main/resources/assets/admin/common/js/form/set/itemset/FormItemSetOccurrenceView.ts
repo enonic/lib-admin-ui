@@ -1,45 +1,18 @@
 import * as $ from 'jquery';
 import * as Q from 'q';
-import {PropertySet} from '../../../data/PropertySet';
 import {StringHelper} from '../../../util/StringHelper';
-import {FormContext} from '../../FormContext';
-import {FormSetOccurrence} from '../FormSetOccurrence';
 import {FormItemSet} from './FormItemSet';
-import {FormSetOccurrenceView} from '../FormSetOccurrenceView';
-import {FormItemLayer} from '../../FormItemLayer';
+import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {ValidationRecording} from '../../ValidationRecording';
 import {FormItemView} from '../../FormItemView';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
-import {FormSet} from '../FormSet';
 import {FormItem} from '../../FormItem';
-
-export interface FormItemSetOccurrenceViewConfig {
-
-    context: FormContext;
-
-    layer: FormItemLayer;
-
-    formSetOccurrence: FormSetOccurrence<FormItemSetOccurrenceView>;
-
-    formItemSet: FormItemSet;
-
-    parent: FormSetOccurrenceView;
-
-    dataSet: PropertySet;
-}
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
 
-    private formItemSet: FormItemSet;
-
-    constructor(config: FormItemSetOccurrenceViewConfig) {
-        super('form-item-set-occurrence-view', config.formSetOccurrence);
-        this.occurrenceContainerClassName = 'form-item-set-occurrences-container';
-        this.formItemOccurrence = config.formSetOccurrence;
-        this.formItemSet = config.formItemSet;
-        this.propertySet = config.dataSet;
-        this.formItemLayer = config.layer;
+    constructor(config: FormSetOccurrenceViewConfig<FormItemSetOccurrenceView>) {
+        super('form-item-set-', config);
     }
 
     public layout(validate: boolean = true): Q.Promise<void> {
@@ -94,12 +67,12 @@ export class FormItemSetOccurrenceView
         });
     }
 
-    protected getFormSet(): FormSet {
-        return this.formItemSet;
+    protected getFormSet(): FormItemSet {
+        return <FormItemSet>this.formSet;
     }
 
     protected getFormItems(): FormItem[] {
-        return this.formItemSet.getFormItems();
+        return this.getFormSet().getFormItems();
     }
 
     private setLabel() {

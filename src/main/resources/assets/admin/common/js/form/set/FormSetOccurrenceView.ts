@@ -16,12 +16,27 @@ import {RecordingValidityChangedEvent} from '../RecordingValidityChangedEvent';
 import {FormOccurrenceDraggableLabel} from '../FormOccurrenceDraggableLabel';
 import {ValidationRecording} from '../ValidationRecording';
 import {FormItemLayer} from '../FormItemLayer';
-import {FormItemOccurrence} from '../FormItemOccurrence';
 import {ValidationRecordingPath} from '../ValidationRecordingPath';
 import {FormSet} from './FormSet';
 import {FormItem} from '../FormItem';
 import {HelpTextContainer} from '../HelpTextContainer';
 import {Element} from '../../dom/Element';
+import {FormContext} from '../FormContext';
+import {FormSetOccurrence} from './FormSetOccurrence';
+
+export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
+    context: FormContext;
+
+    layer: FormItemLayer;
+
+    formSetOccurrence: FormSetOccurrence<V>;
+
+    formSet: FormSet;
+
+    parent: FormSetOccurrenceView;
+
+    dataSet: PropertySet;
+}
 
 export class FormSetOccurrenceView
     extends FormItemOccurrenceView {
@@ -44,14 +59,22 @@ export class FormSetOccurrenceView
 
     protected occurrenceContainerClassName: string;
 
+    protected formSet: FormSet;
+
     private dirtyFormItemViewsMap: object = {};
 
     private deleteOccurrenceConfirmationDialog: ConfirmationDialog;
 
     private formDataChangedListener: (event: PropertyValueChangedEvent) => void;
 
-    constructor(className: string, formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>) {
-        super(className, formItemOccurrence);
+    constructor(classPrefix: string, config: FormSetOccurrenceViewConfig<FormSetOccurrenceView>) {
+        super(`${classPrefix}occurrence-view`, config.formSetOccurrence);
+
+        this.occurrenceContainerClassName = `${classPrefix}occurrences-container`;
+        this.formItemOccurrence = config.formSetOccurrence;
+        this.formSet = config.formSet;
+        this.propertySet = config.dataSet;
+        this.formItemLayer = config.layer;
 
         this.initConfirmationDialog();
         this.initFormDataChangeListener();

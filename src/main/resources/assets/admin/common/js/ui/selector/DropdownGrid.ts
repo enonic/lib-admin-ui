@@ -217,7 +217,7 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
 
     addSelections(selectedOptions: Option<OPTION_DISPLAY_VALUE>[]) {
         selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-            let row = this.getGridData().getRowById(selectedOption.getValue());
+            let row = this.getRowByValue(selectedOption.getValue());
             if (row !== undefined && !this.getGrid().isRowSelected(row)) {
                 this.getGrid().addSelectedRow(row);
             }
@@ -225,11 +225,10 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
     }
 
     markSelections(selectedOptions: Option<OPTION_DISPLAY_VALUE>[], ignoreEmpty: boolean = false) {
-
         let stylesHash: Slick.CellCssStylesHash = {};
         let rows: number[] = [];
         selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-            let row = this.getGridData().getRowById(selectedOption.getValue());
+            let row = this.getRowByValue(selectedOption.getValue());
             rows.push(row);
             stylesHash[row] = {option: 'selected'};
         });
@@ -244,7 +243,7 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
         let stylesHash: Slick.CellCssStylesHash = {};
         selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
             if (selectedOption.isReadOnly()) {
-                let row = this.getGridData().getRowById(selectedOption.getValue());
+                let row = this.getRowByValue(selectedOption.getValue());
                 stylesHash[row] = {_checkbox_selector: 'readonly', option: 'readonly'};
             }
         });

@@ -4,7 +4,7 @@ import {PropertyArray} from '../data/PropertyArray';
 import {FocusSwitchEvent} from '../ui/FocusSwitchEvent';
 import {Element} from '../dom/Element';
 import {ObjectHelper} from '../ObjectHelper';
-import {FormOptionSetView, FormOptionSetViewConfig} from './set/optionset/FormOptionSetView';
+import {FormOptionSetView} from './set/optionset/FormOptionSetView';
 import {FormOptionSetOptionView, FormOptionSetOptionViewConfig} from './set/optionset/FormOptionSetOptionView';
 import {DefaultErrorHandler} from '../DefaultErrorHandler';
 import {FormContext} from './FormContext';
@@ -13,13 +13,14 @@ import {FormItemView} from './FormItemView';
 import {FormItemOccurrenceView} from './FormItemOccurrenceView';
 import {InputView, InputViewConfig} from './InputView';
 import {FormItemSet} from './set/itemset/FormItemSet';
-import {FormItemSetView, FormItemSetViewConfig} from './set/itemset/FormItemSetView';
+import {FormItemSetView} from './set/itemset/FormItemSetView';
 import {FieldSet} from './set/fieldset/FieldSet';
 import {FieldSetView, FieldSetViewConfig} from './set/fieldset/FieldSetView';
 import {Input} from './Input';
 import {FormOptionSet} from './set/optionset/FormOptionSet';
 import {FormOptionSetOption} from './set/optionset/FormOptionSetOption';
 import {FormItemLayerFactory} from './FormItemLayerFactory';
+import {FormSetOccurrenceView} from './set/FormSetOccurrenceView';
 
 export class FormItemLayer {
 
@@ -137,11 +138,11 @@ export class FormItemLayer {
 
                 this.setShowEmptyFormItemSetOccurrences(propertySet, formItemSet.getName());
 
-                formItemView = new FormItemSetView(<FormItemSetViewConfig>{
+                formItemView = new FormItemSetView({
                     context: this.context,
                     layerFactory: this.formItemLayerFactory,
-                    formItemSet: formItemSet,
-                    parent: this.parent,
+                    formSet: formItemSet,
+                    parent: <FormSetOccurrenceView>this.parent,
                     parentDataSet: propertySet,
                     occurrencesLazyRender: this.lazyRender
                 });
@@ -180,11 +181,11 @@ export class FormItemLayer {
 
                 this.setShowEmptyFormItemSetOccurrences(propertySet, formOptionSet.getName());
 
-                formItemView = new FormOptionSetView(<FormOptionSetViewConfig>{
+                formItemView = new FormOptionSetView({
                     layerFactory: this.formItemLayerFactory,
                     context: this.context,
-                    formOptionSet: formOptionSet,
-                    parent: this.parent,
+                    formSet: formOptionSet,
+                    parent: <FormSetOccurrenceView>this.parent,
                     parentDataSet: propertySet,
                     occurrencesLazyRender: this.lazyRender
                 });

@@ -6,52 +6,26 @@ import {i18n} from '../../../util/Messages';
 import {DivEl} from '../../../dom/DivEl';
 import {ObjectHelper} from '../../../ObjectHelper';
 import {ValueTypeString} from '../../../data/ValueTypeString';
-import {FormContext} from '../../FormContext';
-import {FormSetOccurrence} from '../FormSetOccurrence';
 import {FormOptionSet} from './FormOptionSet';
-import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
-import {FormSetOccurrenceView} from '../FormSetOccurrenceView';
-import {FormItemLayer} from '../../FormItemLayer';
+import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {FormItemView} from '../../FormItemView';
 import {FormOptionSetOptionView} from './FormOptionSetOptionView';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
 import {ValidationRecordingPath} from '../../ValidationRecordingPath';
 import {ValidationRecording} from '../../ValidationRecording';
-import {FormSet} from '../FormSet';
 import {FormItem} from '../../FormItem';
 import {Occurrences} from '../../Occurrences';
 import {FormOptionSetOption} from './FormOptionSetOption';
 
-export interface FormOptionSetOccurrenceViewConfig {
-    context: FormContext;
-
-    layer: FormItemLayer;
-
-    formSetOccurrence: FormSetOccurrence<FormOptionSetOccurrenceView>;
-
-    formOptionSet: FormOptionSet;
-
-    parent: FormItemOccurrenceView;
-
-    dataSet: PropertySet;
-}
-
 export class FormOptionSetOccurrenceView
     extends FormSetOccurrenceView {
 
-    private formOptionSet: FormOptionSet;
-
     private selectionValidationMessage: DivEl;
 
-    constructor(config: FormOptionSetOccurrenceViewConfig) {
-        super('form-option-set-occurrence-view', config.formSetOccurrence);
-        this.occurrenceContainerClassName = 'form-option-set-occurrences-container';
-        this.formItemOccurrence = config.formSetOccurrence;
-        this.formOptionSet = config.formOptionSet;
-        this.propertySet = config.dataSet;
-        this.ensureSelectionArrayExists(this.propertySet);
+    constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView> ) {
+        super('form-option-set-', config);
 
-        this.formItemLayer = config.layer;
+        this.ensureSelectionArrayExists(this.propertySet);
     }
 
     clean() {
@@ -98,7 +72,7 @@ export class FormOptionSetOccurrenceView
 
                 if (multiselectionState.isValid()) {
                     // for radio - we clean all validation, as even selected item should not be validated
-                    if (this.formOptionSet.isRadioSelection()) {
+                    if (this.getFormSet().isRadioSelection()) {
                         this.currentValidationState.removeByPath(
                             new ValidationRecordingPath(this.getDataPath(), null), true, true);
 
@@ -139,19 +113,19 @@ export class FormOptionSetOccurrenceView
         this.renderSelectionValidationMessage(multiselectionState);
     }
 
-    protected getFormSet(): FormSet {
-        return this.formOptionSet;
+    protected getFormSet(): FormOptionSet {
+        return <FormOptionSet>this.formSet;
     }
 
     protected getFormItems(): FormItem[] {
-        return this.formOptionSet.getFormItems();
+        return this.getFormSet().getFormItems();
     }
 
     private renderSelectionValidationMessage(selectionValidationRecording: ValidationRecording) {
         if (selectionValidationRecording.isValid()) {
             this.selectionValidationMessage.addClass('empty');
         } else {
-            let selection: Occurrences = this.formOptionSet.getMultiselection();
+            let selection: Occurrences = this.getFormSet().getMultiselection();
             let message;
             if (!selectionValidationRecording.isMinimumOccurrencesValid()) {
                 if (selection.getMinimum() === 1) {
@@ -176,8 +150,8 @@ export class FormOptionSetOccurrenceView
     }
 
     private addDefaultSelectionToSelectionArray(selectionPropertyArray: PropertyArray) {
-        this.formOptionSet.getOptions().forEach((option: FormOptionSetOption) => {
-            if (option.isDefaultOption() && selectionPropertyArray.getSize() < this.formOptionSet.getMultiselection().getMaximum()) {
+        this.getFormSet().getOptions().forEach((option: FormOptionSetOption) => {
+            if (option.isDefaultOption() && selectionPropertyArray.getSize() < this.getFormSet().getMultiselection().getMaximum()) {
                 selectionPropertyArray.add(new Value(option.getName(), new ValueTypeString()));
             }
         });
@@ -188,22 +162,22 @@ export class FormOptionSetOccurrenceView
         let validationRecordingPath = this.resolveValidationRecordingPath();
         let selectionPropertyArray = this.propertySet.getPropertyArray('_selected');
 
-        if (selectionPropertyArray.getSize() < this.formOptionSet.getMultiselection().getMinimum()) {
+        if (selectionPropertyArray.getSize() < this.getFormSet().getMultiselection().getMinimum()) {
             multiselectionRecording.breaksMinimumOccurrences(validationRecordingPath);
         }
 
-        if (this.formOptionSet.getMultiselection().maximumBreached(selectionPropertyArray.getSize())) {
+        if (this.getFormSet().getMultiselection().maximumBreached(selectionPropertyArray.getSize())) {
             multiselectionRecording.breaksMaximumOccurrences(validationRecordingPath);
         }
 
         if (this.currentValidationState) {
-            if (selectionPropertyArray.getSize() < this.formOptionSet.getMultiselection().getMinimum()) {
+            if (selectionPropertyArray.getSize() < this.getFormSet().getMultiselection().getMinimum()) {
                 this.currentValidationState.breaksMinimumOccurrences(validationRecordingPath);
             } else {
                 this.currentValidationState.removeUnreachedMinimumOccurrencesByPath(validationRecordingPath, false);
             }
 
-            if (this.formOptionSet.getMultiselection().maximumBreached(selectionPropertyArray.getSize())) {
+            if (this.getFormSet().getMultiselection().maximumBreached(selectionPropertyArray.getSize())) {
                 this.currentValidationState.breaksMaximumOccurrences(validationRecordingPath);
             } else {
                 this.currentValidationState.removeBreachedMaximumOccurrencesByPath(validationRecordingPath, false);

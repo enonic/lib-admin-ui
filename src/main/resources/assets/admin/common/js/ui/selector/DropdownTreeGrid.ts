@@ -84,7 +84,7 @@ export class DropdownTreeGrid<OPTION_DISPLAY_VALUE>
     }
 
     getOptionByValue(value: string): Option<OPTION_DISPLAY_VALUE> {
-        const item = this.getGridData().getItemById(value);
+        const item: TreeNode<Option<OPTION_DISPLAY_VALUE>> = this.getItemByDataId(value);
         return item ? item.getData() : null;
     }
 
@@ -142,5 +142,15 @@ export class DropdownTreeGrid<OPTION_DISPLAY_VALUE>
 
     getOptions(): Option<OPTION_DISPLAY_VALUE>[] {
         return this.getGridData().getItems().map((node: TreeNode<Option<OPTION_DISPLAY_VALUE>>) => node.getData());
+    }
+
+    getRowByValue(value: string): number {
+        const node: TreeNode<Option<OPTION_DISPLAY_VALUE>> = this.getItemByDataId(value);
+
+        return !!node ? this.getGridData().getRowById(node.getId()) : undefined;
+    }
+
+    private getItemByDataId(value: string): TreeNode<Option<OPTION_DISPLAY_VALUE>> {
+        return this.getGridData().getItems().find((item: TreeNode<Option<OPTION_DISPLAY_VALUE>>) => item.getDataId() === value);
     }
 }
