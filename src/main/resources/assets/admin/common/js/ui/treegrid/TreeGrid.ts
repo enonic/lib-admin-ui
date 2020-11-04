@@ -165,7 +165,8 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     getHighlightedItem(): DATA {
-        return this.root.getNodeByDataId(this.highlightedDataId).getData();
+        const highlightedNode: TreeNode<DATA> = !!this.highlightedDataId ? this.root.getNodeByDataId(this.highlightedDataId) : null;
+        return !!highlightedNode ? highlightedNode.getData() : null;
     }
 
     protected getHighlightedNode(): TreeNode<DATA> {
@@ -230,11 +231,9 @@ export class TreeGrid<DATA extends IDentifiable>
             let cell = this.grid.getCellFromEvent(event);
 
             if (!this.grid.isRowSelected(cell.row)) {
-                if (!this.highlightedDataId
-                    || this.getRowIndexByNode(this.root.getNodeByDataIdFromCurrent(this.highlightedDataId)) !== cell.row) {
+                const highlightedNode: TreeNode<DATA> = !!this.highlightedDataId ? this.getHighlightedNode() : null;
+                if (!highlightedNode || this.getRowIndexByNode(highlightedNode) !== cell.row) {
                     this.highlightRowByNode(this.gridData.getItem(cell.row));
-                    this.showContextMenuAt(event.pageX, event.pageY);
-                    return;
                 }
             }
             this.showContextMenuAt(event.pageX, event.pageY);
@@ -485,6 +484,7 @@ export class TreeGrid<DATA extends IDentifiable>
         this.setActive(false);
         this.root.setFiltered(true);
         this.root.getCurrentRoot().setChildren(this.dataToTreeNodes(dataList, this.root.getCurrentRoot()));
+        this.grid.removeCellCssStyles('highlight');
         this.initData(this.root.getCurrentRoot().treeToList());
         this.invalidate();
         this.setActive(true);
@@ -495,6 +495,7 @@ export class TreeGrid<DATA extends IDentifiable>
 
         if (this.root.isFiltered()) {
             this.root.setFiltered(false);
+            this.grid.removeCellCssStyles('highlight');
             this.initData(this.root.getCurrentRoot().treeToList());
             this.invalidate();
             this.setActive(true);
@@ -585,7 +586,8 @@ export class TreeGrid<DATA extends IDentifiable>
         const selectedItems: DATA[] = this.getFullSelection();
 
         if (!!this.highlightedDataId && selectedItems.length <= 1) {
-            return [this.getHighlightedItem()];
+            const data: DATA = this.getHighlightedItem();
+            return !!data ? [data] : [];
         }
 
         return selectedItems;
@@ -679,8 +681,8 @@ export class TreeGrid<DATA extends IDentifiable>
 
     initData(nodes: TreeNode<DATA>[]) {
         this.gridData.setItems(nodes, this.idPropertyName);
-        this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
         this.resetCurrentSelection(nodes);
+        this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
     }
 
     expandNodeByDataId(dataId: string): Q.Promise<boolean> {
