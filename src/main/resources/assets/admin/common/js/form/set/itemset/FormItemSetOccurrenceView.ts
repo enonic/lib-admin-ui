@@ -23,7 +23,9 @@ export class FormItemSetOccurrenceView
         });
     }
 
-    protected extraValidation(_validationRecording: ValidationRecording) { }
+    protected extraValidation(_validationRecording: ValidationRecording) {
+        // No extra validation for item-sets
+    }
 
     protected subscribeOnItemEvents() {
         this.formItemViews.forEach((formItemView: FormItemView) => {
