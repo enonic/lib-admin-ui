@@ -176,7 +176,7 @@ export class FormSetOccurrenceView
             }
         }
         this.currentValidationState = allRecordings;
-        this.toggleClass('invalid', !this.currentValidationState.isValid());
+        this.toggleClass('invalid', !this.isValid());
         return allRecordings;
     }
 
