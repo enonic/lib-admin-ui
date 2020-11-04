@@ -33,6 +33,8 @@ export enum DialogState {
 export abstract class ModalDialog
     extends DivEl {
 
+    private static THRESHOLD: number = 50; // Max allowed space above and below the dialog, accumulated (in pixels)
+
     public static debug: boolean = false;
 
     protected header: ModalDialogHeader;
@@ -264,7 +266,6 @@ export abstract class ModalDialog
     private initResizeHandler() {
         this.handleResize = AppHelper.runOnceAndDebounce(() => {
             if (this.isOpen()) {
-                this.body.removeClass('non-scrollable');
                 this.resizeHandler();
             }
         }, 50);
@@ -281,47 +282,26 @@ export abstract class ModalDialog
 
     protected resizeHandler() {
         this.adjustHeight();
-        this.adjustOverflow();
         this.responsiveItem.update();
+    }
+
+    private getDialogHeight(): number {
+        const headerHeight = this.header.getEl().getHeight();
+        const bodyHeight = this.body.getEl().getHeight();
+        const footerHeight = this.footer.getEl().getHeight();
+
+        return headerHeight + bodyHeight + footerHeight + ModalDialog.THRESHOLD;
     }
 
     private adjustHeight() {
         const dialogHeight = this.getEl().getHeightWithBorder();
-
-        if (dialogHeight === 0 || dialogHeight % 2 === 0) {
-
+        const containerHeight = Body.get().getEl().getHeight() || BodyMask.get().getEl().getHeight();
+        if (containerHeight === 0 || dialogHeight === 0) {
             return;
         }
 
-        const borderBottom = parseFloat($(this.getHTMLElement()).css('border-bottom'));
-        const dialogHeightWithoutBorder = borderBottom ? dialogHeight - borderBottom : dialogHeight;
-
-        if (dialogHeightWithoutBorder % 2 === 0 && borderBottom) {
-            $(this.getHTMLElement()).css('border-bottom-width', '0px');
-
-            return;
-        }
-        let borderHeight = 1;
-        if (dialogHeightWithoutBorder % 1 !== 0) {
-            borderHeight = Math.ceil(dialogHeightWithoutBorder) - dialogHeightWithoutBorder;
-            if (Math.ceil(dialogHeightWithoutBorder) % 2 === 1) {
-                borderHeight++;
-            }
-        }
-
-        $(this.getHTMLElement()).css('border-bottom', `${borderHeight}px solid transparent`);
-    }
-
-    private adjustOverflow() {
-
-        const bodyHeight = this.body.getEl().getHeight();
-        if (bodyHeight === 0) {
-            return;
-        }
-        const maxBodyHeight = this.body.getEl().getMaxHeight();
-        const showScrollbar = Math.floor(bodyHeight) >= Math.floor(maxBodyHeight);
-
-        this.body.toggleClass('non-scrollable', !showScrollbar);
+        const calculatedDialogHeight = this.getDialogHeight();
+        this.toggleClass('sticky', calculatedDialogHeight >= containerHeight);
     }
 
     protected getBody(): DivEl {
