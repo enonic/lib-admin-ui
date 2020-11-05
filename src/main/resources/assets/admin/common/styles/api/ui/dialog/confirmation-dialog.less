@@ -1,0 +1,22 @@
+.confirmation-dialog-container {
+  z-index: @z-index-modal-dialog + 2;
+
+  .confirmation-dialog {
+    width: 700px;
+    padding-top: 0;
+
+    .question {
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    .modal-dialog-body {
+      padding-top: 10px;
+      padding-bottom: 5px;
+    }
+  }
+}
+
+.confirmation-dialog-mask {
+  z-index: @z-index-modal-dialog + 1;
+}

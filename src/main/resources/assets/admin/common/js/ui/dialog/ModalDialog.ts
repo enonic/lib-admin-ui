@@ -295,7 +295,7 @@ export abstract class ModalDialog
 
     private adjustHeight() {
         const dialogHeight = this.getEl().getHeightWithBorder();
-        const containerHeight = Body.get().getEl().getHeight() || BodyMask.get().getEl().getHeight();
+        const containerHeight = BodyMask.get().getEl().getHeight() || Body.get().getEl().getHeight();
         if (containerHeight === 0 || dialogHeight === 0) {
             return;
         }
