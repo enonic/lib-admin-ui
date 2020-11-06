@@ -23,21 +23,8 @@ export class FormItemSetOccurrenceView
         });
     }
 
-    validate(silent: boolean = true): ValidationRecording {
-
-        let allRecordings = new ValidationRecording();
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            let currRecording = formItemView.validate(silent);
-            allRecordings.flatten(currRecording);
-        });
-
-        if (!silent) {
-            if (allRecordings.validityChanged(this.currentValidationState)) {
-                this.notifyValidityChanged(new RecordingValidityChangedEvent(allRecordings, this.resolveValidationRecordingPath()));
-            }
-        }
-        this.currentValidationState = allRecordings;
-        return allRecordings;
+    protected extraValidation(_validationRecording: ValidationRecording) {
+        // No extra validation for item-sets
     }
 
     protected subscribeOnItemEvents() {

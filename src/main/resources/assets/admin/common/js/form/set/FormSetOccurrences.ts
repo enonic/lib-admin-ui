@@ -96,10 +96,20 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
     }
 
     showOccurrences(show: boolean) {
-        let views = this.getOccurrenceViews();
+        const views = this.getOccurrenceViews();
         this.occurrencesCollapsed = !show;
         views.forEach((formSetOccurrenceView: FormSetOccurrenceView) => {
             formSetOccurrenceView.showContainer(show);
+        });
+    }
+
+    collapseOccurrences() {
+        const views = this.getOccurrenceViews();
+        this.occurrencesCollapsed = true;
+        views.forEach((formSetOccurrenceView: FormSetOccurrenceView) => {
+            if (formSetOccurrenceView.isValid()) { // don't auto-expand valid occurrence
+                formSetOccurrenceView.showContainer(false);
+            }
         });
     }
 
