@@ -153,6 +153,7 @@ export class FormSetOccurrenceView
             }
         }
         this.currentValidationState = allRecordings;
+        this.toggleClass('invalid', !this.isValid());
         return allRecordings;
     }
 
@@ -214,6 +215,14 @@ export class FormSetOccurrenceView
     public reset() {
         this.dirtyFormItemViewsMap = {};
         return this.formItemLayer.reset();
+    }
+
+    isValid(): boolean {
+        if (!this.currentValidationState) {
+            return true;
+        }
+
+        return this.currentValidationState.isValid();
     }
 
     getValidationRecording(): ValidationRecording {
