@@ -1,3 +1,7 @@
+@min-dialog-width: 230px;
+@max-dialog-width: 740px;
+@max-dialog-height: 100vh;
+
 .dialog-container {
   position: fixed;
   top: 0px;
@@ -11,46 +15,68 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
 
-  .@{_COMMON_PREFIX}modal-dialog {
-    .reset(true);
+.@{_COMMON_PREFIX}modal-dialog {
+  .reset(true);
 
-    display: none;
-    position: absolute;
-    backface-visibility: hidden;
-    width: 85.185%;
-    min-width: 230px;
-    max-width: 740px;
-    background-color: white;
-    background-clip: padding-box;
-    box-sizing: content-box;
-    max-height: 100vh;
+  display: none;
+  position: absolute;
+  backface-visibility: hidden;
+  width: 85.185%;
+  min-width: @min-dialog-width;
+  max-width: @max-dialog-width;
+  background-color: transparent;
+  background-clip: padding-box;
+  box-sizing: content-box;
+  max-height: @max-dialog-height;
 
-    &.masked {
-      opacity: 0;
-    }
+  &.masked {
+    opacity: 0;
+  }
 
-    &.sticky {
-      position: fixed;
-      top: 0;
-      bottom: 0;
+  &.sticky {
+    background-color: @admin-white;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+
+    .modal-dialog-wrapper {
+      justify-content: space-between;
 
       .cancel-button-inline();
 
-      .modal-dialog-wrapper {
-        justify-content: space-between;
-
-        .modal-dialog-header {
-          padding-top: 10px;
-        }
+      .modal-dialog-header {
+        padding-top: 10px;
+        padding-right: 40px;
       }
     }
+  }
+
+  &:not(.sticky) {
+    .modal-dialog-wrapper {
+      // The purpose of padding/margin below is to make the X icon look as if
+      // it's outside of the dialog while technically being inside.
+      padding: 40px 40px 0 0;
+      margin: -40px -40px 0 0;
+
+      .modal-dialog-header, .modal-dialog-body, .modal-dialog-footer {
+        background-color: @admin-white;
+      }
+    }
+  }
+
+  .modal-dialog-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
 
     .cancel-button-top {
       position: absolute;
-      top: -40px;
-      right: -40px;
-      z-index: -1;
+      top: 0;
+      right: 0;
+      z-index: @z-index-modal-dialog;
       width: 36px;
       height: 36px;
       line-height: 36px;
@@ -90,215 +116,205 @@
       }
     }
 
-    .modal-dialog-wrapper {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      position: relative;
-      background-color: white;
+    .modal-dialog-header {
+      padding: 30px 30px 10px 30px;
+      box-sizing: border-box;
 
-      .modal-dialog-header {
-        .clearfix();
-        padding: 30px 30px 10px 30px;
-        box-sizing: border-box;
-
-        h2 {
-          line-height: 36px;
-          .ellipsis();
-        }
-
-        .path {
-          display: block;
-          font-size: 16px;
-          margin-top: 5px;
-
-          &:before {
-            margin-right: 5px;
-            content: attr(data-desc);
-            color: @admin-font-gray1;
-          }
-        }
+      h2 {
+        line-height: 36px;
+        .ellipsis();
       }
 
-      .modal-dialog-body {
-        height: auto;
-        padding: 15px 30px 0 30px;
-        overflow: auto;
-        width: 100%;
-        box-sizing: border-box;
+      .path {
+        display: block;
+        font-size: 16px;
+        margin-top: 5px;
 
-        .dialog-content {
-          width: calc(100% - 1px);
-          .clearfix();
-          padding: 1px 0;
-
-          .form-view {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-          }
-          /*
-          > p {
-            margin-bottom: 20px;
-          }*/
-        }
-      }
-
-      .modal-dialog-footer {
-        padding: 20px 30px;
-
-        .dialog-buttons {
-          .clearfix();
-          position: relative;
-
-          @media screen and (max-height: 360px) {
-            margin-top: 5px;
-          }
-
-          .button-container {
-            float: right;
-          }
-
-          .@{_COMMON_PREFIX}button {
-            .dialog-button();
-          }
+        &:before {
+          margin-right: 5px;
+          content: attr(data-desc);
+          color: @admin-font-gray1;
         }
       }
     }
 
-    &.grey-header .modal-dialog-header {
+    .modal-dialog-body {
+      position: relative;
+      height: auto;
+      padding: 0 30px;
+      overflow: auto;
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 50px; // To give room for spinner inside an empty dialog
+
+      .dialog-content {
+        position: relative;
+        width: calc(100% - 1px);
+        padding: 2px 0;
+
+        .form-view {
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+        }
+      }
+    }
+
+    .modal-dialog-footer {
+      padding: 20px 30px;
+
+      .dialog-buttons {
+        position: relative;
+
+        @media screen and (max-height: 360px) {
+          margin-top: 5px;
+        }
+
+        .button-container {
+          float: right;
+
+          .cancel-button-bottom {
+            .button-background();
+            margin-left: 11px;
+          }
+        }
+
+        .@{_COMMON_PREFIX}button {
+          .dialog-button();
+        }
+      }
+    }
+  }
+
+  &.grey-header .modal-dialog-wrapper {
+    .modal-dialog-header {
       background-color: @admin-bg-light-gray;
       padding: 20px 20px 10px 30px;
-      width: 100%;
     }
 
-    @keyframes close-icon-animation-before {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(-45deg);
-      }
+    .modal-dialog-body {
+      padding-top: 15px;
+    }
+  }
+
+  @keyframes close-icon-animation-before {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-45deg);
+    }
+  }
+
+  @keyframes close-icon-animation-after {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-135deg);
+    }
+  }
+
+  .back-button {
+
+    .icon-arrow-left();
+    .icon-xlarge();
+
+    float: left;
+    text-decoration: none;
+    cursor: pointer;
+    height: 32px;
+    line-height: 34px;
+    width: 32px;
+
+    &:before {
+      color: @admin-font-gray2;
+      position: absolute;
+      left: 14px;
     }
 
-    @keyframes close-icon-animation-after {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(-135deg);
-      }
-    }
-
-    .@{_COMMON_PREFIX}button.cancel-button-bottom {
-      .button-background();
-      margin-left: 11px;
-    }
-/*
-    .input-view .edit {
-      display: none;
-    }
-*/
-    .back-button {
-
-      .icon-arrow-left();
-      .icon-xlarge();
-
-      float: left;
-      text-decoration: none;
-      cursor: pointer;
-      height: 32px;
-      line-height: 34px;
-      width: 32px;
-
+    &:hover {
       &:before {
-        color: @admin-font-gray2;
-        position: absolute;
-        left: 14px;
+        color: @admin-bg-dark-gray;
       }
+    }
+  }
 
-      &:hover {
-        &:before {
-          color: @admin-bg-dark-gray;
-        }
+  &.locked {
+    .dialog-buttons {
+      button:not(.force-enabled) {
+        pointer-events: none;
+        opacity: 0.5;
       }
     }
 
-    &.locked {
+    &:not(.no-action) {
       .dialog-buttons {
-        button:not(.force-enabled) {
-          pointer-events: none;
-          opacity: 0.5;
-        }
-      }
+        button:not(.force-enabled):not(.no-animation) {
+          .icon-spinner();
 
-      &:not(.no-action) {
-        .dialog-buttons {
-          button:not(.force-enabled):not(.no-animation) {
-            .icon-spinner();
-
-            &:before {
-              .animation(rotate360, .5s, .0s, linear);
-              color: white;
-              display: inline-block;
-            }
-
-            span {
-              padding-left: 5px;
-            }
+          &:before {
+            .animation(rotate360, .5s, .0s, linear);
+            color: white;
+            display: inline-block;
           }
-        }
-      }
-    }
 
-    .progress-bar {
-      margin-bottom: 20px;
-      height: 25px;
-
-      .progress-indicator {
-        background-color: @admin-green;
-      }
-    }
-
-    .progress-message {
-      font-size: 14px;
-    }
-
-    &.is-processing {
-
-      .progress-bar,
-      .progress-message {
-        display: block;
-      }
-
-      .dependants {
-        display: none !important;
-      }
-
-      .button-container {
-        float: none;
-        text-align: center;
-
-        *:not(.cancel-button-bottom) {
-          display: none !important;
-        }
-
-        .cancel-button-bottom {
           span {
-            display: none;
-          }
-
-          &:after {
-            content: attr(data-button-text);
-            color: @admin-white;
-            width: 100px;
-            line-height: 24px;
-            font-size: 16px;
+            padding-left: 5px;
           }
         }
       }
     }
   }
+
+  .progress-bar {
+    margin-bottom: 20px;
+    height: 25px;
+
+    .progress-indicator {
+      background-color: @admin-green;
+    }
+  }
+
+  .progress-message {
+    font-size: 14px;
+  }
+
+  &.is-processing {
+
+    .progress-bar,
+    .progress-message {
+      display: block;
+    }
+
+    .dependants {
+      display: none !important;
+    }
+
+    .button-container {
+      float: none;
+      text-align: center;
+
+      *:not(.cancel-button-bottom) {
+        display: none !important;
+      }
+
+      .cancel-button-bottom {
+        span {
+          display: none;
+        }
+
+        &:after {
+          content: attr(data-button-text);
+          color: @admin-white;
+          width: 100px;
+          line-height: 24px;
+          font-size: 16px;
+        }
+      }
+    }
+  }
 }
+
 
 .await-confirmation .cancel-button-top {
   display: none;
@@ -339,13 +355,7 @@ body {
       }
     }
   }
-/*
-  @media screen and (max-height: 540px) {
-    .@{_COMMON_PREFIX}modal-dialog {
-      max-height: 480px;
-    }
-  }
-*/
+
   &.IE {
     @media screen and (min-width: 720px) {
       .@{_COMMON_PREFIX}modal-dialog {
@@ -363,7 +373,7 @@ body {
     width: 26px;
     height: 26px;
     line-height: 26px;
-    background-color: @admin-white;
+    //background-color: @admin-white;
     z-index: 1;
 
     &:before, &:after {
