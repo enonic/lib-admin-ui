@@ -331,6 +331,7 @@ export abstract class ModalDialog
         }
 
         this.hide();
+        this.removeClass('sticky');
 
         KeyBindings.get().unshelveBindings();
         this.state = DialogState.CLOSED;
@@ -547,7 +548,7 @@ export abstract class ModalDialog
         this.resizeListeners = this.resizeListeners.filter((curr) => {
             return curr !== listener;
         });
-        if (this.resizeListeners.length == 0 && this.resizeObserver) {
+        if (this.resizeListeners.length === 0 && this.resizeObserver) {
             this.resizeObserver.disconnect();
         }
     }

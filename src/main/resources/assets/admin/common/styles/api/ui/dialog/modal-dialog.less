@@ -41,10 +41,10 @@
     top: 0;
     bottom: 0;
 
+    .cancel-button-inline();
+
     .modal-dialog-wrapper {
       justify-content: space-between;
-
-      .cancel-button-inline();
 
       .modal-dialog-header {
         padding-top: 10px;
@@ -366,40 +366,42 @@ body {
 }
 
 .cancel-button-inline() {
-  .cancel-button-top {
+  .modal-dialog-wrapper {
+    .cancel-button-top {
+      top: 0;
+      right: 0;
+      width: 26px;
+      height: 26px;
+      line-height: 26px;
+      z-index: 1;
 
-    top: 0;
-    right: 0;
-    width: 26px;
-    height: 26px;
-    line-height: 26px;
-    //background-color: @admin-white;
-    z-index: 1;
-
-    &:before, &:after {
-      background-color: @admin-font-gray2;
-      margin: 0;
-      top: 16px;
-      left: 0;
-      height: 3px;
-      width: 15px;
-    }
-
-    &:hover {
-      background-color: @admin-white;
       &:before, &:after {
-        background-color: @admin-black;
+        background-color: @admin-font-gray2;
+        margin: 0;
+        top: 16px;
+        left: 0;
+        height: 3px;
+        width: 15px;
+      }
+
+      &:hover {
+        background-color: @admin-white;
+
+        &:before, &:after {
+          background-color: @admin-black;
+        }
       }
     }
   }
 
   &.grey-header {
-
-    .cancel-button-top {
-      background-color: @admin-bg-light-gray;
-
-      &:hover {
+    .modal-dialog-wrapper {
+      .cancel-button-top {
         background-color: @admin-bg-light-gray;
+
+        &:hover {
+          background-color: @admin-bg-light-gray;
+        }
       }
     }
   }
