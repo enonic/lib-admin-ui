@@ -134,9 +134,9 @@ export class MenuButton
             .setTopPx(Math.ceil(hostOffset.top + hostHeight));
 
         if (this.rightAligned) {
-            this.menu.getEl().setLeftPx(Math.ceil(hostOffset.left + leftBorderWidth + hostWidth - menuWidth))
+            this.menu.getEl().setLeftPx(Math.ceil(hostOffset.left + leftBorderWidth + hostWidth - menuWidth));
         } else {
-            this.menu.getEl().setLeftPx(Math.ceil(hostOffset.left + leftBorderWidth))
+            this.menu.getEl().setLeftPx(Math.ceil(hostOffset.left + leftBorderWidth));
         }
     }
 
