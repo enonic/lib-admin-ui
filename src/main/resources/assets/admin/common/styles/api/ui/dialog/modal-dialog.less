@@ -316,7 +316,6 @@
   }
 }
 
-
 .await-confirmation .cancel-button-top {
   display: none;
 }
@@ -327,7 +326,6 @@ body {
   &._360-540,
   &._540-720 {
     .@{_COMMON_PREFIX}modal-dialog {
-
       width: 100%;
       height: 100%;
       margin: 0;
@@ -383,8 +381,8 @@ body {
       line-height: 26px;
       z-index: 1;
 
-      &:before,
-      &:after {
+      &::before,
+      &::after {
         background-color: @admin-font-gray2;
         margin: 0;
         top: 16px;
@@ -396,8 +394,8 @@ body {
       &:hover {
         background-color: @admin-white;
 
-        &:before,
-        &:after {
+        &::before,
+        &::after {
           background-color: @admin-black;
         }
       }
