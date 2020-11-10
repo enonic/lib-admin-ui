@@ -1,13 +1,15 @@
+@min-dialog-width: 230px;
+@max-dialog-width: 740px;
+@max-dialog-height: 100vh;
+
 .dialog-container {
   position: fixed;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-
   z-index: @z-index-modal-dialog;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,7 +58,9 @@
       padding: 40px 40px 0 0;
       margin: -40px -40px 0 0;
 
-      .modal-dialog-header, .modal-dialog-body, .modal-dialog-footer {
+      .modal-dialog-header,
+      .modal-dialog-body,
+      .modal-dialog-footer {
         background-color: @admin-white;
       }
     }
@@ -81,7 +85,8 @@
       box-sizing: border-box;
       display: inline-block;
 
-      &:before, &:after {
+      &::before,
+      &::after {
         @width: 20px;
         @height: 3px;
         transform: rotate(0deg);
@@ -97,16 +102,17 @@
         transition: all 0.25s ease-out;
       }
 
-      &:before {
+      &::before {
         animation: close-icon-animation-before 500ms forwards;
       }
 
-      &:after {
+      &::after {
         animation: close-icon-animation-after 500ms forwards;
       }
 
       &:hover {
-        &:before, &:after {
+        &::before,
+        &::after {
           background-color: @admin-medium-gray-border;
         }
       }
@@ -126,7 +132,7 @@
         font-size: 16px;
         margin-top: 5px;
 
-        &:before {
+        &::before {
           margin-right: 5px;
           content: attr(data-desc);
           color: @admin-font-gray1;
@@ -316,7 +322,10 @@
 }
 
 body {
-  &._0-240, &._240-360, &._360-540, &._540-720 {
+  &._0-240,
+  &._240-360,
+  &._360-540,
+  &._540-720 {
     .@{_COMMON_PREFIX}modal-dialog {
 
       width: 100%;
@@ -374,7 +383,8 @@ body {
       line-height: 26px;
       z-index: 1;
 
-      &:before, &:after {
+      &:before,
+      &:after {
         background-color: @admin-font-gray2;
         margin: 0;
         top: 16px;
@@ -386,7 +396,8 @@ body {
       &:hover {
         background-color: @admin-white;
 
-        &:before, &:after {
+        &:before,
+        &:after {
           background-color: @admin-black;
         }
       }
@@ -405,7 +416,3 @@ body {
     }
   }
 }
-
-@min-dialog-width: 230px;
-@max-dialog-width: 740px;
-@max-dialog-height: 100vh;
