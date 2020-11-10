@@ -1805,6 +1805,10 @@ export class TreeGrid<DATA extends IDentifiable>
         return this.root.getCurrentRoot().treeToList(false, expanded).map((node: TreeNode<DATA>) => node.getData());
     }
 
+    getDefaultData(expanded: boolean = true): DATA[] {
+        return this.root.getDefaultRoot().treeToList(false, expanded).map((node: TreeNode<DATA>) => node.getData());
+    }
+
     getDataLevel(data: DATA): number {
         const node: TreeNode<DATA> = this.root.getNodeByDataIdFromCurrent(data.getId());
         return !!node ? node.calcLevel() : -1;
