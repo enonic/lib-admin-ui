@@ -282,6 +282,10 @@ export abstract class ModalDialog
         this.createResizeObserver();
     }
 
+    protected enableOverflow(value: boolean) {
+        this.toggleClass('overflow-enabled', value);
+    }
+
     protected resizeHandler() {
         this.adjustHeight();
         this.responsiveItem.update();
