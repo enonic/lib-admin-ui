@@ -858,6 +858,18 @@ export class Element {
         }
     }
 
+    whenShown(callback: () => void) {
+        if (this.isVisible()) {
+            callback();
+        } else {
+            const listener = () => {
+                callback();
+                this.unShown(listener);
+            };
+            this.onShown(listener);
+        }
+    }
+
     onRendered(listener: (event: ElementRenderedEvent) => void) {
         this.renderedListeners.push(listener);
     }

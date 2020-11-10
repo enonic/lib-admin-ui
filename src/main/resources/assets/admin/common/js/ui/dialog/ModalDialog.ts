@@ -284,6 +284,7 @@ export abstract class ModalDialog
 
     protected resizeHandler() {
         this.adjustHeight();
+        this.responsiveItem.update();
     }
 
     private getDialogHeight(): number {
@@ -502,7 +503,6 @@ export abstract class ModalDialog
             this.dialogContainer.appendChild(this);
         }
         Body.get().appendChild(this.dialogContainer);
-        this.responsiveItem.update();
 
         this.blurBackground();
 

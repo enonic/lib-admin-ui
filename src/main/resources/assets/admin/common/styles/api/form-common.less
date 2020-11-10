@@ -3,7 +3,7 @@
   position: relative;
   overflow: visible;
 
-  padding: 10px !important;
+  padding: 10px;
 
   .validation-viewer {
     display: none;
@@ -134,8 +134,18 @@
   }
 }
 
-.context-window, ._0-240, ._240-360, ._360-540, ._540-720 {
+.@{_COMMON_PREFIX}modal-dialog,
+.context-window,
+._0-240,
+._240-360,
+._360-540,
+._540-720 {
   .form-fieldset-vertical();
+}
+
+.@{_COMMON_PREFIX}modal-dialog .form-view {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .form-fieldset-vertical() {
@@ -162,7 +172,7 @@
 .form-panel {
   &._0-240, &._240-360, &._360-540 {
     .form-view {
-      padding: 10px 15px !important;
+      padding: 10px 15px;
     }
   }
 }
