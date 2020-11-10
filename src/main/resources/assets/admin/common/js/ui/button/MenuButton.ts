@@ -5,6 +5,8 @@ import {Action} from '../Action';
 import {AppHelper} from '../../util/AppHelper';
 import {DropdownHandle} from './DropdownHandle';
 import {ActionButton} from './ActionButton';
+import {ResponsiveManager} from '../responsive/ResponsiveManager';
+import {Body} from '../../dom/Body';
 
 export class MenuButton
     extends DivEl {
@@ -19,6 +21,10 @@ export class MenuButton
 
     private toggleMenuOnAction: boolean = false;
 
+    protected autoWidth: boolean = false;
+
+    protected rightAligned: boolean = false;
+
     constructor(mainAction: Action, menuActions: Action[] = []) {
         super('menu-button');
 
@@ -31,7 +37,7 @@ export class MenuButton
 
         this.initListeners();
 
-        let children = [this.dropdownHandle, this.actionButton, this.menu];
+        let children = [this.actionButton, this.dropdownHandle, this.menu];
         this.appendChildren(...children);
     }
 
@@ -75,6 +81,7 @@ export class MenuButton
 
     expandMenu(): void {
         this.menu.addClass('expanded');
+        this.setMenuPosition();
         this.dropdownHandle.addClass('down');
         this.dropdownHandle.giveFocus();
     }
@@ -113,6 +120,23 @@ export class MenuButton
             action.unPropertyChanged(this.actionPropertyListener);
             this.removeClass('minimized');
             this.updateActionEnabled();
+        }
+    }
+
+    setMenuPosition() {
+        const hostOffset = this.getEl().getOffset();
+        const hostWidth = this.getEl().getWidth();
+        const hostHeight = this.getEl().getHeightWithBorder();
+        const leftBorderWidth = this.getEl().getBorderLeftWidth();
+        const menuWidth = this.menu.getEl().getWidth();
+        this.menu.getEl()
+            .setWidth(this.autoWidth ? 'auto' : `${hostWidth}px`)
+            .setTopPx(Math.ceil(hostOffset.top + hostHeight));
+
+        if (this.rightAligned) {
+            this.menu.getEl().setLeftPx(Math.ceil(hostOffset.left + leftBorderWidth + hostWidth - menuWidth))
+        } else {
+            this.menu.getEl().setLeftPx(Math.ceil(hostOffset.left + leftBorderWidth))
         }
     }
 
@@ -190,5 +214,11 @@ export class MenuButton
         this.menu.onClicked(() => this.dropdownHandle.giveFocus());
 
         AppHelper.focusInOut(this, () => this.collapseMenu());
+
+        ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
+            if (this.menu.hasClass('expanded')) {
+                this.setMenuPosition();
+            }
+        });
     }
 }
