@@ -1,6 +1,32 @@
 @occurrence-label-margin-left: 10px;
 
 .form-view {
+  &.display-validation-errors {
+    .form-item-set-occurrence-view,
+    .form-option-set-occurrence-view {
+      &.invalid.collapsed {
+        border: 3px solid @admin-red;
+        box-shadow: none;
+      }
+    }
+
+    .form-item-set-occurrence-view.invalid.collapsed {
+      padding: 10px;
+    }
+
+    .form-option-set-occurrence-view.invalid.collapsed {
+      padding: 7px;
+    }
+
+    .input-view.invalid {
+      padding: 10px;
+
+      .validation-viewer ul > li {
+        margin-top: 10px;
+      }
+    }
+  }
+
   .form-item-set-view {
     > .occurrence-views-container > .form-item-set-occurrence-view {
       padding: 13px;
@@ -42,7 +68,7 @@
           .icon-close();
           .focusable();
 
-          margin-top: 3px;
+          margin-top: 1px;
           margin-right: -4px;
           border: 1px solid transparent;
           line-height: 12px;
@@ -123,6 +149,8 @@
           }
 
           > .form-occurrence-draggable-label {
+            width: calc(100% - 26px);
+
             &:not(.custom-label) {
               line-height: 21px;
               height: 20px;
@@ -200,16 +228,6 @@
       background-color: @admin-bg-light-gray;
       padding: 0 10px 10px 10px;
       margin-left: 0 !important;
-    }
-  }
-
-  &.display-validation-errors {
-    .input-view.invalid {
-      padding: 10px;
-
-      .validation-viewer ul > li {
-        margin-top: 10px;
-      }
     }
   }
 }

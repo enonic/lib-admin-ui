@@ -149,17 +149,31 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             this.bottomButtonRow.appendChild(this.addButton = this.makeAddButton());
             this.bottomButtonRow.appendChild(this.collapseButton = this.makeCollapseButton());
 
-            this.toggleOccurrencesVisibility(this.getContext().getFormState().isNew());
             this.refreshButtonsState();
 
             if (validate) {
                 this.validate(true);
             }
 
+            if (this.shouldCollapseOccurrences()) {
+                this.formItemOccurrences.collapseOccurrences();
+            }
+
             deferred.resolve(null);
         });
 
         return deferred.promise;
+    }
+
+    private shouldCollapseOccurrences(): boolean {
+        if (this.getContext().getFormState().isNew()) {
+            return false;
+        }
+        if (this.formItemOccurrences.getOccurrences().length === 1) {
+            return false;
+        }
+
+        return true;
     }
 
     validate(silent: boolean = true, viewToSkipValidation: FormItemOccurrenceView = null): ValidationRecording {
@@ -516,7 +530,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     toggleOccurrencesVisibility(value: boolean) {
-        (<FormSetOccurrences<V>> this.formItemOccurrences).showOccurrences(value);
+        this.formItemOccurrences.showOccurrences(value);
         this.setCollapseButtonCaption();
     }
 
@@ -524,7 +538,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         const addButton: Button = new Button(i18n('button.add', this.formSet.getLabel()));
         addButton.addClass('small');
         addButton.onClicked(() => {
-             this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences()).then((item: V) => {
+             this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), false).then((item: V) => {
                  this.expandOccurrenceView(item);
              });
         });
