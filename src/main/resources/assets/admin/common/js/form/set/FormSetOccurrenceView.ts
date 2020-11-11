@@ -38,7 +38,7 @@ export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     dataSet: PropertySet;
 }
 
-export class FormSetOccurrenceView
+export abstract class FormSetOccurrenceView
     extends FormItemOccurrenceView {
 
     protected formItemViews: FormItemView[] = [];
@@ -80,6 +80,8 @@ export class FormSetOccurrenceView
         this.initFormDataChangeListener();
     }
 
+    protected abstract getLabelText(): string;
+
     public layout(validate: boolean = true): Q.Promise<void> {
 
         const deferred = Q.defer<void>();
@@ -100,7 +102,7 @@ export class FormSetOccurrenceView
         });
 
         const labelText = this.getFormSet().getLabel();
-        this.label = new FormOccurrenceDraggableLabel(labelText, this.getFormSet().getOccurrences(), labelText);
+        this.label = new FormOccurrenceDraggableLabel(this.getLabelText(), this.getFormSet().getOccurrences(), labelText);
         this.label.setTitle(i18n('tooltip.header.collapse'));
         this.appendChildren(<Element>this.label, this.removeButton);
 
@@ -322,6 +324,10 @@ export class FormSetOccurrenceView
         this.formItemViews.forEach((formItemView) => {
             formItemView.unBlur(listener);
         });
+    }
+
+    protected updateLabel() {
+        this.label.setText(this.getLabelText());
     }
 
     protected initValidationMessageBlock() {
