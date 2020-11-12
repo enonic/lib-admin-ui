@@ -479,19 +479,9 @@ export class ContentSummaryBuilder {
 
         this.contentState = ContentState.fromString(json.contentState);
         this.workflow = Workflow.fromJson(json.workflow);
-        this.inherit = json.inherit && json.inherit.length > 0 ? this.getInheritTypesFromJson(json.inherit) : [];
+        this.inherit = json.inherit && json.inherit.length > 0 ? json.inherit.map(type => ContentInheritType[type])  : [];
 
         return this;
-    }
-
-    private getInheritTypesFromJson(inheritTypeJson: string[]): ContentInheritType[] {
-        const inheritTypes = [];
-        for (const inheritType in ContentInheritType) {
-            if (inheritTypeJson.indexOf(inheritType) > -1) {
-                inheritTypes.push(ContentInheritType[inheritType]);
-            }
-        }
-        return inheritTypes;
     }
 
     private static createName(name: string) {
