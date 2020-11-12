@@ -1,4 +1,5 @@
 import {Element, NewElementBuilder} from './Element';
+import {HttpMethod} from '../rest/HttpMethod';
 
 export class FormEl
     extends Element {
@@ -29,7 +30,7 @@ export class FormEl
         return null;
     }
 
-    static moveFocusToNextFocusable(input: Element, focusableSelector?: string) {
+    static moveFocusToNextFocusable(input: Element, focusableSelector?: string): void {
 
         let nextFocusable = FormEl.getNextFocusable(input, focusableSelector);
 
@@ -56,7 +57,7 @@ export class FormEl
         return nextFocusable;
     }
 
-    static moveFocusToPrevFocusable(input: Element, focusableSelector?: string) {
+    static moveFocusToPrevFocusable(input: Element, focusableSelector?: string): void {
         const prevFocusable = FormEl.getPrevFocusable(input, focusableSelector);
 
         if (prevFocusable) {
@@ -64,7 +65,7 @@ export class FormEl
         }
     }
 
-    private static getIndexOfInput(elements: NodeList, el: Element) {
+    private static getIndexOfInput(elements: NodeList, el: Element): number {
         let index = -1;
         let inputHTMLElement = el.getHTMLElement();
         for (let i = 0; i < elements.length; i++) {
@@ -76,17 +77,37 @@ export class FormEl
         return index;
     }
 
-    preventSubmit() {
+    preventSubmit(): void {
         this.onSubmit((event: Event) => {
             event.preventDefault();
         });
     }
 
-    onSubmit(listener: (event: Event) => void) {
+    onSubmit(listener: (event: Event) => void): void {
         this.getEl().addEventListener('submit', listener);
     }
 
-    unSubmit(listener: (event: Event) => void) {
+    unSubmit(listener: (event: Event) => void): void {
         this.getEl().removeEventListener('submit', listener);
+    }
+
+    setName(name: string): FormEl {
+        this.getEl().setAttribute('name', name);
+        return this;
+    }
+
+    setAction(url: string): FormEl {
+        this.getEl().setAttribute('action', url);
+        return this;
+    }
+
+    setTarget(target: string): FormEl {
+        this.getEl().setAttribute('target', target);
+        return this;
+    }
+
+    setMethod(method: HttpMethod): FormEl {
+        this.getEl().setAttribute('method', method);
+        return this;
     }
 }
