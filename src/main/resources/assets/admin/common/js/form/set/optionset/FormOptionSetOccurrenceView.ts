@@ -18,6 +18,7 @@ import {Occurrences} from '../../Occurrences';
 import {FormOptionSetOption} from './FormOptionSetOption';
 import {Property} from '../../../data/Property';
 import * as Q from 'q';
+import {ElementEvent} from '../../../dom/ElementEvent';
 
 export class FormOptionSetOccurrenceView
     extends FormSetOccurrenceView {
@@ -33,7 +34,11 @@ export class FormOptionSetOccurrenceView
     public layout(validate: boolean = true): Q.Promise<void> {
         return super.layout(validate).then(() => {
             if (this.formItemOccurrence.isMultiple()) {
-                this.formSetOccurrencesContainer.onDescendantAdded(() => this.updateLabel());
+                this.formSetOccurrencesContainer.onDescendantAdded((event: ElementEvent) => {
+                    if (this.getEl().contains(event.getElement().getHTMLElement())) {
+                        this.updateLabel();
+                    }
+                });
             }
         });
     }
@@ -135,30 +140,25 @@ export class FormOptionSetOccurrenceView
 
     protected getLabelText(): string {
         const selectionArray = this.propertySet.getPropertyArray('_selected');
-        const selectedLabels: string[] = [];
+        let selectedLabels: string[] = [];
 
         if (selectionArray && !selectionArray.isEmpty()) {
-            const nameLabelMap: { [key: string]: string } = {};
-            this.getFormItems().forEach((formItem: FormItem) => {
-                if (formItem instanceof FormOptionSetOption) {
-                    nameLabelMap[formItem.getName()] = formItem.getLabel();
-                }
-            });
+            const nameLabelMap = new Map<string, any>(
+                this.getFormItems()
+                    .filter((formItem: FormItem) => formItem instanceof FormOptionSetOption)
+                    .map((formItem: FormOptionSetOption, index: number) => {
+                        return [formItem.getName(), {label: formItem.getLabel(), index: index}] as [string, any];
+                    })
+            );
 
-
-            selectionArray.forEach((selectedProp: Property) => {
-                const label = nameLabelMap[selectedProp.getString()];
-                if (label) {
-                    selectedLabels.push(label);
-                }
-            });
+            selectedLabels = selectionArray.getProperties()
+                .sort((one: Property, two: Property) => {
+                    return nameLabelMap.get(one.getString()).index - nameLabelMap.get(two.getString()).index;
+                })
+                .map((selectedProp: Property) => nameLabelMap.get(selectedProp.getString()).label);
         }
 
-        if (selectedLabels.length === 0) {
-            return this.getFormSet().getLabel();
-        } else {
-            return selectedLabels.join(', ');
-        }
+        return selectedLabels.length ? selectedLabels.join(', ') : this.getFormSet().getLabel();
     }
 
     private renderSelectionValidationMessage(selectionValidationRecording: ValidationRecording) {

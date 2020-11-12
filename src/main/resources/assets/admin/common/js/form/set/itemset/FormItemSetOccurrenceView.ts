@@ -8,6 +8,7 @@ import {FormItem} from '../../FormItem';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Property} from '../../../data/Property';
 import {ValueTypes} from '../../../data/ValueTypes';
+import {ElementEvent} from '../../../dom/ElementEvent';
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
@@ -19,7 +20,11 @@ export class FormItemSetOccurrenceView
     public layout(validate: boolean = true): Q.Promise<void> {
         return super.layout(validate).then(() => {
             if (this.formItemOccurrence.isMultiple()) {
-                this.formSetOccurrencesContainer.onDescendantAdded(() => this.updateLabel());
+                this.formSetOccurrencesContainer.onDescendantAdded((event: ElementEvent) => {
+                    if (this.getEl().contains(event.getElement().getHTMLElement())) {
+                        this.updateLabel();
+                    }
+                });
             }
         });
     }
@@ -74,11 +79,7 @@ export class FormItemSetOccurrenceView
             });
         }
 
-        if (selectedValues.length === 0) {
-            return this.getFormSet().getLabel();
-        } else {
-            return selectedValues[0];
-        }
+        return selectedValues[0] || this.getFormSet().getLabel();
     }
 
     private recursiveFetchLabels(propArray: PropertyArray, labels: string[], firstOnly?: boolean): void {
