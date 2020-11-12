@@ -426,7 +426,9 @@ export class TabMenu
             }
         });
         tab.onLabelChanged((event: TabItemLabelChangedEvent) => {
-            this.setButtonLabel(event.getNewValue());
+            if (tab.getIndex() === this.getSelectedIndex()) {
+                this.setButtonLabel(event.getNewValue());
+            }
         });
 
         this.notifyTabAddedListeners(tab);
