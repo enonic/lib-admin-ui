@@ -479,7 +479,7 @@ export class ContentSummaryBuilder {
 
         this.contentState = ContentState.fromString(json.contentState);
         this.workflow = Workflow.fromJson(json.workflow);
-        this.inherit = json.inherit && json.inherit.length > 0 ? json.inherit.map(type => ContentInheritType[type])  : [];
+        this.inherit = json.inherit && json.inherit.length > 0 ? json.inherit.map((type: string) => ContentInheritType[type])  : [];
 
         return this;
     }
