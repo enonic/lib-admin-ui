@@ -488,7 +488,7 @@ export class ContentSummaryBuilder {
         const inheritTypes = [];
         for (const inheritType in ContentInheritType) {
             if (inheritTypeJson.indexOf(inheritType) > -1) {
-                inheritTypes.push(inheritType);
+                inheritTypes.push(ContentInheritType[inheritType]);
             }
         }
         return inheritTypes;
