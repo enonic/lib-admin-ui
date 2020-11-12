@@ -13,6 +13,7 @@ export class LocaleComboBox
     extends RichComboBox<Locale> {
     constructor(builder: LocaleComboBoxBuilder = new LocaleComboBoxBuilder()) {
         super(builder);
+        this.addClass('locale-combobox');
     }
 
     static create(): LocaleComboBoxBuilder {
