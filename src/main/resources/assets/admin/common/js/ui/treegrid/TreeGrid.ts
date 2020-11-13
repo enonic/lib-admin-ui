@@ -1749,29 +1749,24 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     protected insertNodeToParentNode(nodeToInsert: TreeNode<DATA>, parent: TreeNode<DATA>, index: number) {
+        this.gridData.insertItem(this.getIndexRelativeToParent(parent, index), nodeToInsert);
         parent.insertChild(nodeToInsert, index);
         parent.setExpandable(true);
-
-        const parentRow: number = parent.hasParent() ? this.gridData.getRowById(parent.getId()) : -1;
-        if (!!parentRow || parentRow === 0) {
-            this.gridData.insertItem(this.getIndexRelativeToParent(parent, parentRow, index), nodeToInsert);
-        }
-
         this.invalidateNodes([parent]);
     }
 
-    private getIndexRelativeToParent(parent: TreeNode<DATA>, parentRow: number, index: number): number {
-        let indexRelativeToGrid: number = parentRow + 1;
-        let i: number = 0;
+    private getIndexRelativeToParent(parent: TreeNode<DATA>, index: number): number {
+        let nodeToInsertBefore: TreeNode<DATA> = parent.getChildren()[index];
 
-        while (i !== index) {
-            if (this.gridData.getItem(indexRelativeToGrid).getParent() === parent) {
-                i++;
-            }
-            indexRelativeToGrid++;
+        if (nodeToInsertBefore) {
+            return this.gridData.getRowById(nodeToInsertBefore.getId());
         }
 
-        return indexRelativeToGrid;
+        if (!parent.hasParent()) {
+            return this.gridData.getLength();
+        }
+
+        return this.getIndexRelativeToParent(parent.getParent(), parent.getParent().getChildren().indexOf(parent) + 1);
     }
 
     moveNode(from: number, to: number): number {
