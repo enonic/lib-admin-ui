@@ -625,10 +625,14 @@ export class TreeGrid<DATA extends IDentifiable>
         const treeNodes: TreeNode<DATA>[] = this.root.getNodesByDataId(dataId);
 
         treeNodes.forEach((updatedNode: TreeNode<DATA>) => {
-            updatedNode.setData(updatedData);
-            this.invalidateNodes([updatedNode]);
-            this.notifyDataChanged(new DataChangedEvent<DATA>([updatedNode], DataChangedType.UPDATED));
+            this.doUpdateNodeByData(updatedNode, updatedData);
         });
+    }
+
+    protected doUpdateNodeByData(nodeToUpdate: TreeNode<DATA>, data: DATA) {
+        nodeToUpdate.setData(data);
+        this.invalidateNodes([nodeToUpdate]);
+        this.notifyDataChanged(new DataChangedEvent<DATA>([nodeToUpdate], DataChangedType.UPDATED));
     }
 
     deleteNodeByDataId(dataId: string) {
@@ -1803,6 +1807,10 @@ export class TreeGrid<DATA extends IDentifiable>
 
     getCurrentData(expanded: boolean = true): DATA[] {
         return this.root.getCurrentRoot().treeToList(false, expanded).map((node: TreeNode<DATA>) => node.getData());
+    }
+
+    getDefaultData(expanded: boolean = true): DATA[] {
+        return this.root.getDefaultRoot().treeToList(false, expanded).map((node: TreeNode<DATA>) => node.getData());
     }
 
     getDataLevel(data: DATA): number {

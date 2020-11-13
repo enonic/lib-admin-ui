@@ -452,18 +452,18 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         }
     }
 
-    clearSelection(ignoreEmpty: boolean = false, giveInputFocus: boolean = true, forceClear: boolean = false) {
+    clearSelection(ignoreEmpty: boolean = false, giveInputFocus: boolean = true, forceClear: boolean = false, silent: boolean = true) {
         let optionsMap = this.getDisplayedOptions().map((x) => x.getValue()).join();
 
         let selectedOptions: Option<OPTION_DISPLAY_VALUE>[] = this.getSelectedOptions();
         selectedOptions.forEach((option: Option<OPTION_DISPLAY_VALUE>) => {
             if (forceClear) {
-                this.selectedOptionsView.removeOption(option, true);
+                this.selectedOptionsView.removeOption(option, silent);
             } else {
                 // removing selection only from filtered options
                 let filteredOption = optionsMap.search(option.getValue()) >= 0 ? option : undefined;
                 if (filteredOption && !filteredOption.isReadOnly()) {
-                    this.selectedOptionsView.removeOption(option, true);
+                    this.selectedOptionsView.removeOption(option, silent);
                 }
             }
         });

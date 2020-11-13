@@ -13,6 +13,7 @@ import {ContentName} from './ContentName';
 import {ContentPath} from './ContentPath';
 import {assert} from '../util/Assert';
 import {ContentUnnamed} from './ContentUnnamed';
+import {ContentInheritType} from './ContentInheritType';
 
 export class ContentSummary {
 
@@ -68,6 +69,8 @@ export class ContentSummary {
 
     private workflow: Workflow;
 
+    private inherit: ContentInheritType[];
+
     constructor(builder: ContentSummaryBuilder) {
         this.name = builder.name;
         this.displayName = builder.displayName;
@@ -96,6 +99,7 @@ export class ContentSummary {
         this.language = builder.language;
         this.contentState = builder.contentState;
         this.workflow = builder.workflow;
+        this.inherit = builder.inherit;
     }
 
     static fromJson(json: ContentSummaryJson): ContentSummary {
@@ -238,6 +242,34 @@ export class ContentSummary {
         return !!this.workflow && this.workflow.getState() === WorkflowState.IN_PROGRESS;
     }
 
+    getInherit(): ContentInheritType[] {
+        return this.inherit;
+    }
+
+    isInherited(): boolean {
+        return this.inherit && this.inherit.length > 0;
+    }
+
+    isDataInherited(): boolean {
+        return this.isInheritedByType(ContentInheritType.CONTENT);
+    }
+
+    isSortInherited(): boolean {
+        return this.isInheritedByType(ContentInheritType.SORT);
+    }
+
+    isParentInherited(): boolean {
+      return this.isInheritedByType(ContentInheritType.PARENT);
+    }
+
+    isNameInherited(): boolean {
+      return this.isInheritedByType(ContentInheritType.NAME);
+    }
+
+    private isInheritedByType(type: ContentInheritType): boolean {
+        return this.isInherited() && this.inherit.some((inheritType: ContentInheritType) => inheritType === type);
+    }
+
     equals(o: Equitable): boolean {
 
         if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentSummary)) {
@@ -256,6 +288,9 @@ export class ContentSummary {
             return false;
         }
         if (!ObjectHelper.stringEquals(this.displayName, other.getDisplayName())) {
+            return false;
+        }
+        if (!ObjectHelper.anyEquals(this.inherit, other.getInherit())) {
             return false;
         }
         if (!ObjectHelper.equals(this.path, other.getPath())) {
@@ -379,6 +414,8 @@ export class ContentSummaryBuilder {
 
     workflow: Workflow;
 
+    inherit: ContentInheritType[];
+
     constructor(source?: ContentSummary) {
         if (source) {
             this.id = source.getId();
@@ -407,6 +444,7 @@ export class ContentSummaryBuilder {
             this.language = source.getLanguage();
             this.contentState = source.getContentState();
             this.workflow = source.getWorkflow();
+            this.inherit = source.getInherit();
         }
     }
 
@@ -441,6 +479,7 @@ export class ContentSummaryBuilder {
 
         this.contentState = ContentState.fromString(json.contentState);
         this.workflow = Workflow.fromJson(json.workflow);
+        this.inherit = json.inherit && json.inherit.length > 0 ? json.inherit.map((type: string) => ContentInheritType[type])  : [];
 
         return this;
     }
@@ -531,6 +570,11 @@ export class ContentSummaryBuilder {
 
     setWorkflow(value: Workflow): ContentSummaryBuilder {
         this.workflow = value;
+        return this;
+    }
+
+    setInherit(value: ContentInheritType[]): ContentSummaryBuilder {
+        this.inherit = value;
         return this;
     }
 
