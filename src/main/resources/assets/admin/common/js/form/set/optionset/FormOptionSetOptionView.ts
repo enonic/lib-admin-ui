@@ -360,6 +360,7 @@ export class FormOptionSetOptionView
             checked,
         });
 
+        button.setTitle(this.formOptionSetOption.getLabel());
         button.onChange(() => {
             let selectedProp = this.getSelectedOptionsArray().get(0);
             if (!selectedProp) {
@@ -419,6 +420,7 @@ export class FormOptionSetOptionView
             .setChecked(checked)
             .build();
 
+        button.setTitle(this.formOptionSetOption.getLabel());
         this.checkbox = button;
 
         button.onChange(() => {
