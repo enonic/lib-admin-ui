@@ -89,18 +89,6 @@
           padding: 3px 0 0 31px;
         }
 
-        &:not(.selected) {
-          > .form-input:hover label {
-            color: @admin-black !important;
-            cursor: pointer;
-          }
-
-          &.expandable.expanded {
-            margin-bottom: 6px;
-          }
-
-        }
-
         &.selected {
           border: 6px solid @admin-option-set-header-bg;
           border-bottom: none;
@@ -167,8 +155,19 @@
           }
         }
 
-        &:not(.selected) .option-items-container * {
-          pointer-events: none;
+        &:not(.selected) {
+          .option-items-container * {
+            pointer-events: none;
+          }
+
+          > .form-input:hover label {
+            color: @admin-black !important;
+            cursor: pointer;
+          }
+
+          &.expandable.expanded {
+            margin-bottom: 6px;
+          }
         }
 
         &:not(:last-child):not(.selected) {
