@@ -73,6 +73,11 @@
           margin-bottom: 5px;
         }
 
+        > .form-input:hover label {
+          color: @admin-black !important;
+          cursor: pointer;
+        }
+
         .input-view {
           .input-label .label {
             color: @admin-dark-gray;
@@ -155,19 +160,8 @@
           }
         }
 
-        &:not(.selected) {
-          .option-items-container * {
-            pointer-events: none;
-          }
-
-          > .form-input:hover label {
-            color: @admin-black !important;
-            cursor: pointer;
-          }
-
-          &.expandable.expanded {
-            margin-bottom: 6px;
-          }
+        &:not(.selected) .option-items-container * {
+          pointer-events: none;
         }
 
         &:not(:last-child):not(.selected) {
