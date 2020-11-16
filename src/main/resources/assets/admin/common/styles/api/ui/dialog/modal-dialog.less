@@ -161,27 +161,28 @@
 
     .modal-dialog-footer {
       padding: 20px 30px;
+    }
+  }
+  .dialog-buttons {
+    position: relative;
 
-      .dialog-buttons {
-        position: relative;
+    @media screen and (max-height: 360px) {
+      margin-top: 5px;
+    }
 
-        @media screen and (max-height: 360px) {
-          margin-top: 5px;
-        }
+    .button-container {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
 
-        .button-container {
-          float: right;
-
-          .cancel-button-bottom {
-            .button-background();
-            margin-left: 11px;
-          }
-        }
-
-        .@{_COMMON_PREFIX}button {
-          .dialog-button();
-        }
+      .cancel-button-bottom {
+        .button-background();
+        margin-left: 11px;
       }
+    }
+
+    .@{_COMMON_PREFIX}button {
+      .dialog-button();
     }
   }
 

@@ -1,19 +1,15 @@
 .dropdown-button-row {
 
   .dropdown-dialog-menu {
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
     height: initial;
+
     .@{_COMMON_PREFIX}dropdown-handle {
-      width: 36px;
-      height: 36px;
+      margin-right: 1px !important;
       &:disabled {
         display: none;
-        & ~ .action-button {
-          margin-left: 0 !important;
-        }
       }
-    }
-    .action-button {
-      margin-left: 37px !important;
     }
   }
 }
