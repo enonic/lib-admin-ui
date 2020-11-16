@@ -47,6 +47,8 @@
   }
 
   .occurrence-views-container .form-option-set-occurrence-view {
+    padding: 10px;
+
     &:not(.collapsed) {
       padding-bottom: 0;
     }
@@ -54,6 +56,7 @@
     > .form-occurrence-draggable-label {
       margin-left: 0;
       width: 100%;
+      font-size: 12px;
     }
 
     & > .remove-button {
@@ -94,77 +97,7 @@
           padding: 3px 0 0 31px;
         }
 
-        &.selected {
-          border: 6px solid @admin-option-set-header-bg;
-          border-bottom: none;
-          border-top: none;
-          box-sizing: border-box;
-
-          .checkbox input[type="checkbox"]:focus + label:before {
-            box-shadow: none;
-          }
-
-          &.expandable {
-            border-bottom: 6px solid @admin-option-set-header-bg;
-
-            > .help-text {
-              padding: 3px 0 0 25px;
-            }
-          }
-
-          &:not(.expandable) {
-
-            .help-text.visible + .option-items-container {
-              border-bottom: 1px solid @admin-bg-light-gray;
-              margin-left: -6px;
-              margin-right: -6px;
-            }
-
-            > .option-items-container {
-              border-bottom: 1px solid @admin-option-set-header-bg;
-            }
-
-            .help-text {
-              background: #fff;
-              margin-left: -6px;
-              margin-right: -6px;
-              padding-left: 31px;
-              padding-right: 31px;
-            }
-          }
-
-          > .option-items-container {
-            opacity: 1;
-          }
-
-          > .form-input {
-            background-color: @admin-option-set-header-bg;
-
-            > label {
-              padding-left: 25px;
-              color: @admin-white;
-              &:before {
-                left: 4px;
-              }
-            }
-
-            &:hover > label {
-              color: @admin-white !important;
-            }
-
-            > input[type="checkbox"] + label {
-              &:before {
-                background: url("../../../../../images/box-checked-optionset.gif") -1px no-repeat;
-              }
-            }
-          }
-        }
-
-        &:not(.selected) .option-items-container * {
-          pointer-events: none;
-        }
-
-        &:not(:last-child):not(.selected) {
+        &:not(:last-child) {
           border-bottom: 1px solid @admin-bg-light-gray;
 
           &.expandable {
@@ -173,10 +106,9 @@
         }
 
         &.expandable.expanded {
-          padding-bottom: 10px;
-
           > .option-items-container {
-            padding: 5px 10px;
+            padding: 5px 10px 0 10px;
+            display: block;
           }
         }
 
@@ -184,6 +116,10 @@
           display: none;
           opacity: 0.5;
           padding: 0 6px;
+
+          * {
+            pointer-events: none;
+          }
 
           > .input-view {
             .selected-options {
@@ -234,7 +170,6 @@
             font-size: 14px;
             line-height: 14px;
             color: @admin-dark-gray;
-            flex: 1;
             .ellipsis();
 
             &:before {
@@ -250,12 +185,72 @@
           }
         }
 
-        .form-occurrence-draggable-label {
-          font-size: 12px;
-        }
+        &.selected {
+          border: 6px solid @admin-option-set-header-bg;
+          border-bottom: none;
+          border-top: none;
+          box-sizing: border-box;
 
-        &.expanded > .option-items-container {
-          display: block;
+          .checkbox input[type="checkbox"]:focus + label:before {
+            box-shadow: none;
+          }
+
+          &.expandable {
+            margin-bottom: 10px;
+            border-bottom: 6px solid @admin-option-set-header-bg;
+
+            > .help-text {
+              padding: 3px 0 0 25px;
+            }
+          }
+
+          &:not(.expandable) {
+
+            .help-text.visible + .option-items-container {
+              border-bottom: 1px solid @admin-bg-light-gray;
+              margin-left: -6px;
+              margin-right: -6px;
+            }
+
+            > .option-items-container {
+              border-bottom: 1px solid @admin-option-set-header-bg;
+            }
+
+            .help-text {
+              background: #fff;
+              margin-left: -6px;
+              margin-right: -6px;
+              padding-left: 31px;
+              padding-right: 31px;
+            }
+          }
+
+          > .option-items-container {
+            opacity: 1;
+            pointer-events: all;
+          }
+
+          > .form-input {
+            background-color: @admin-option-set-header-bg;
+
+            > label {
+              padding-left: 25px;
+              color: @admin-white;
+              &:before {
+                left: 4px;
+              }
+            }
+
+            &:hover > label {
+              color: @admin-white !important;
+            }
+
+            > input[type="checkbox"] + label {
+              &:before {
+                background: url("../../../../../images/box-checked-optionset.gif") -1px no-repeat;
+              }
+            }
+          }
         }
       }
     }
