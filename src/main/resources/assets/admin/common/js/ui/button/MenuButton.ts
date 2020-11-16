@@ -128,13 +128,15 @@ export class MenuButton
         const hostWidth = this.getEl().getWidth();
         const hostHeight = this.getEl().getHeightWithBorder();
         const leftBorderWidth = this.getEl().getBorderLeftWidth();
-        const menuWidth = this.menu.getEl().getWidth();
+        let menuWidth = this.menu.getEl().getWidth();
         this.menu.getEl()
-            .setWidth(this.autoWidth ? 'auto' : `${hostWidth}px`)
+            .setWidth(this.autoWidth ? 'auto' : `${Math.ceil(hostWidth)}px`)
             .setTopPx(Math.ceil(hostOffset.top + hostHeight));
 
         if (this.rightAligned) {
-            this.menu.getEl().setLeftPx(Math.ceil(hostOffset.left + leftBorderWidth + hostWidth - menuWidth));
+            this.menu.getEl().setMinWidth(`${Math.ceil(hostWidth)}px`);
+            menuWidth = Math.max(menuWidth, hostWidth);
+            this.menu.getEl().setLeftPx(Math.ceil(hostOffset.left + hostWidth - menuWidth));
         } else {
             this.menu.getEl().setLeftPx(Math.ceil(hostOffset.left + leftBorderWidth));
         }
