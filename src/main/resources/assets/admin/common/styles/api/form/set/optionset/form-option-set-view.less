@@ -81,11 +81,6 @@
           }
         }
 
-        > .form-input:hover label {
-          color: @admin-black !important;
-          cursor: pointer;
-        }
-
         .input-view {
           .input-label .label {
             color: @admin-dark-gray;
@@ -147,7 +142,7 @@
             &:checked {
               opacity: 0;
 
-              + label:before {
+              + label::before {
                 content: "";
                 display: block;
                 position: absolute;
@@ -169,9 +164,13 @@
             color: @admin-dark-gray;
             .ellipsis();
 
-            &:before {
+            &::before {
               margin-top: 0;
               left: 10px;
+            }
+
+            &:hover {
+              cursor: pointer;
             }
           }
 
@@ -233,17 +232,24 @@
             > label {
               padding-left: 25px;
               color: @admin-white;
-              &:before {
+
+              &::before {
                 left: 4px;
+              }
+
+              &:hover {
+                color: @admin-white;
               }
             }
 
-            &:hover > label {
-              color: @admin-white !important;
+            &.radio-button {
+              > label {
+                cursor: auto;
+              }
             }
 
             > input[type="checkbox"] + label {
-              &:before {
+              &::before {
                 background: url("../../../../../images/box-checked-optionset.gif") -1px no-repeat;
               }
             }
