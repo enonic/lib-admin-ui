@@ -129,7 +129,25 @@
           align-items: center;
           height: 34px;
 
-          input[type="radio"] {
+          > label {
+            position: relative;
+            padding-left: 31px;
+            font-size: 14px;
+            line-height: 14px;
+            color: @admin-dark-gray;
+            .ellipsis();
+
+            &::before {
+              margin-top: 0;
+              left: 10px;
+            }
+
+            &:hover {
+              cursor: pointer;
+            }
+          }
+
+          &.radio-button > input{
             position: absolute;
             margin-left: 10px;
             -webkit-appearance: none;
@@ -153,24 +171,6 @@
                 box-shadow: inset 0 0 0 2px white;
                 background-color: @admin-option-set-input-checked;
               }
-            }
-          }
-
-          > label {
-            position: relative;
-            padding-left: 31px;
-            font-size: 14px;
-            line-height: 14px;
-            color: @admin-dark-gray;
-            .ellipsis();
-
-            &::before {
-              margin-top: 0;
-              left: 10px;
-            }
-
-            &:hover {
-              cursor: pointer;
             }
           }
 
