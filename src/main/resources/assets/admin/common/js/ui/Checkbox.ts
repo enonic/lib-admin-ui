@@ -16,7 +16,7 @@ export class Checkbox
         super('div', 'checkbox', undefined, String(builder.checked || false));
 
         this.initCheckbox(builder.inputAlignment);
-        this.initLabel(builder.text);
+        this.initLabel(builder.text, builder.tooltip);
 
         this.appendChild(this.checkbox);
         this.appendChild(this.label);
@@ -139,8 +139,11 @@ export class Checkbox
         this.addClass(this.getInputAlignmentAsString(inputAlignment));
     }
 
-    private initLabel(text: string) {
+    private initLabel(text: string, tooltip?: string) {
         this.label = new LabelEl(text, this.checkbox);
+        if (tooltip) {
+            this.label.setTitle(tooltip);
+        }
     }
 
     private getInputAlignmentAsString(inputAlignment: InputAlignment = InputAlignment.LEFT): string {
@@ -163,8 +166,15 @@ export class CheckboxBuilder {
 
     inputAlignment: InputAlignment;
 
+    tooltip: string;
+
     setLabelText(value: string): CheckboxBuilder {
         this.text = value;
+        return this;
+    }
+
+    setTooltip(value: string): CheckboxBuilder {
+        this.tooltip = value;
         return this;
     }
 

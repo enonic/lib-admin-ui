@@ -11,6 +11,7 @@ export class RadioButtonConfig {
     value: string;
     name: string;
     checked?: boolean;
+    tooltip?: string;
 }
 
 export class RadioButton
@@ -45,14 +46,20 @@ export class RadioButton
 
     protected createLabel(config: RadioButtonConfig, radio: InputEl): LabelEl {
         const {label} = config;
+        let labelEl: LabelEl;
 
         if (ObjectHelper.iFrameSafeInstanceOf(label, LabelEl)) {
-            const labelEl = label as LabelEl;
+            labelEl = label as LabelEl;
             labelEl.setForElement(radio);
             return labelEl;
         }
 
-        return new LabelEl(label as string, radio);
+        labelEl = new LabelEl(label as string, radio);
+        if (config.tooltip) {
+            labelEl.setTitle(config.tooltip);
+        }
+
+        return labelEl;
     }
 
     setValue(value: string): RadioButton {
