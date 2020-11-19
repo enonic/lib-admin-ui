@@ -183,7 +183,7 @@ export class WizardHeaderWithDisplayNameAndName
 
     toggleNameInput(enable: boolean) {
         if (enable) {
-            this.nameEl.getEl().removeAttribute('disabled')
+            this.nameEl.getEl().removeAttribute('disabled');
         } else {
             this.nameEl.getEl().setAttribute('disabled', 'disabled');
         }
@@ -194,7 +194,7 @@ export class WizardHeaderWithDisplayNameAndName
         if (enable) {
             this.displayNameEl.getEl().removeAttribute('disabled');
         } else {
-            this.displayNameEl.getEl().setAttribute('disabled', 'disabled')
+            this.displayNameEl.getEl().setAttribute('disabled', 'disabled');
         }
     }
 
