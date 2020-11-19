@@ -41,12 +41,12 @@ export class TreeGridToolbar
 
     disable() {
         this.refreshButton.setEnabled(false);
-        this.selectionController.setDisabled(true);
+        this.selectionController.setEnabled(false);
     }
 
     enable() {
         this.refreshButton.setEnabled(true);
-        this.selectionController.setDisabled(false);
+        this.selectionController.setEnabled(true);
     }
 
     getSelectionPanelToggler(): SelectionPanelToggler {
@@ -54,7 +54,7 @@ export class TreeGridToolbar
     }
 
     hideAndDisableSelectionToggler() {
-        this.selectionController.setDisabled(true);
+        this.selectionController.setEnabled(false);
         this.selectionController.hide();
         this.selectionPanelToggler.hide();
     }

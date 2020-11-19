@@ -141,4 +141,8 @@ export class FormItemView
     hasHelpText(): boolean {
         return false;
     }
+
+    setEnabled(enable: boolean) {
+
+    }
 }

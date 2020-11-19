@@ -78,6 +78,10 @@ export class PrincipalSelector
         this.comboBox.resetBaseValues();
     }
 
+    setEnabled(enable: boolean) {
+        this.comboBox.setEnabled(enable);
+    }
+
     giveFocus(): boolean {
         if (this.comboBox.maximumOccurrencesReached()) {
             return false;

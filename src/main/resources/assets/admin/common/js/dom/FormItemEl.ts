@@ -35,4 +35,8 @@ export class FormItemEl
         });
     }
 
+    setEnabled(enable: boolean) {
+        this.toggleClass('disabled', !enable);
+    }
+
 }

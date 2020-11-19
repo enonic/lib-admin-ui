@@ -79,12 +79,9 @@ export class Checkbox
         return this.checkbox.hasClass('partial');
     }
 
-    setDisabled(value: boolean, cls?: string): Checkbox {
-        this.checkbox.getEl().setDisabled(value);
-        if (cls) {
-            this.toggleClass(cls, value);
-        }
-        return this;
+    setEnabled(enable: boolean) {
+        super.setEnabled(enable);
+        this.checkbox.getEl().setDisabled(!enable);
     }
 
     setLabel(text: string): Checkbox {

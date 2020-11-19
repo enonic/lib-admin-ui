@@ -75,7 +75,7 @@ export class UploaderEl<MODEL extends Equitable>
     private uploadedItems: UploadItem<MODEL>[] = [];
     private extraDropzoneIds: string[] = [];
     private defaultDropzoneContainer: DropzoneContainer;
-    private uploadButton: DivEl;
+    private uploadButton: Button;
     private progress: ProgressBar;
     private cancelBtn: Button;
     private resultContainer: DivEl;
@@ -330,6 +330,10 @@ export class UploaderEl<MODEL extends Equitable>
                 }
             }
         }
+
+        if (this.uploadButton) {
+            this.uploadButton.setEnabled(enabled);
+        }
         return this;
     }
 
@@ -361,7 +365,7 @@ export class UploaderEl<MODEL extends Equitable>
         }
     }
 
-    getUploadButton(): DivEl {
+    getUploadButton(): Button {
         return this.uploadButton;
     }
 
@@ -639,7 +643,8 @@ export class UploaderEl<MODEL extends Equitable>
         if (!this.config.hasUploadButton) {
             return;
         }
-        this.uploadButton = new DivEl('upload-button');
+        this.uploadButton = new Button();
+        this.uploadButton.addClass('upload-button');
         this.uploadButton.setId('upload-button-' + new Date().getTime());
         this.uploadButton.onClicked(() => this.showFileSelectionDialog());
         this.uploadButton.onKeyPressed((event: KeyboardEvent) => {

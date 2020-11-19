@@ -88,6 +88,10 @@ export class ComboBox
         this.comboBox.resetBaseValues();
     }
 
+    setEnabled(enable: boolean) {
+        this.comboBox.setEnabled(enable);
+    }
+
     createComboBox(input: Input, propertyArray: PropertyArray): ComboBoxEl<string> {
         let comboBox = new ComboBoxEl<string>(name, {
             filter: this.comboBoxFilter,

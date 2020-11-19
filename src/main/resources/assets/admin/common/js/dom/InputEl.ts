@@ -105,4 +105,10 @@ export class InputEl
         this.refreshDirtyState();
         this.refreshValueChanged();
     }
+
+    setEnabled(enable: boolean) {
+        super.setEnabled(enable);
+        this.getEl().setDisabled(!enable);
+        this.getEl().setAttribute('disabled', '');
+    }
 }

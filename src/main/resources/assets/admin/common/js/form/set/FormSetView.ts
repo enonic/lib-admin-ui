@@ -308,6 +308,11 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         this.formItemOccurrences.reset();
     }
 
+    setEnabled(enable: boolean) {
+        this.formItemOccurrences.setEnabled(enable);
+        this.addButton.setEnabled(enable);
+    }
+
     onFocus(listener: (event: FocusEvent) => void) {
         this.formItemOccurrences.onFocus(listener);
     }

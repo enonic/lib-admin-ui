@@ -68,6 +68,10 @@ export class Picker<T extends Element>
         return this.input.giveFocus();
     }
 
+    setEnabled(enable: boolean) {
+        this.input.setEnabled(enable);
+    }
+
     forceSelectedDateTimeChangedEvent() {
         this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate));
     }
