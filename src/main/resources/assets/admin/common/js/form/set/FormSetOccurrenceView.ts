@@ -242,6 +242,12 @@ export abstract class FormSetOccurrenceView
         return this.formItemLayer.reset();
     }
 
+    setEnabled(enable: boolean) {
+        this.formItemViews.forEach(itemView => {
+            itemView.setEnabled(enable);
+        });
+    }
+
     isValid(): boolean {
         if (!this.currentValidationState) {
             return true;

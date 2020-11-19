@@ -99,8 +99,10 @@ export class RadioButton
         return this;
     }
 
-    setDisabled(disabled: boolean) {
-        this.radio.getEl().setDisabled(disabled);
+    setEnabled(enable: boolean) {
+        super.setEnabled(enable);
+
+        this.radio.setEnabled(enable);
     }
 
     giveFocus(): boolean {

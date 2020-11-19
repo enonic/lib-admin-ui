@@ -16,7 +16,7 @@ import {InputValidationRecording} from '../InputValidationRecording';
 import {ContentSummary} from '../../../content/ContentSummary';
 import {assertNotNull} from '../../../util/Assert';
 
-export class BaseInputTypeSingleOccurrence
+export abstract class BaseInputTypeSingleOccurrence
     extends DivEl
     implements InputTypeView {
 
@@ -79,6 +79,10 @@ export class BaseInputTypeSingleOccurrence
 
     refresh() {
         //to be implemented on demand in inheritors
+    }
+
+    setEnabled(enable: boolean) {
+    //
     }
 
     updateProperty(_property: Property, _unchangedOnly?: boolean): Q.Promise<void> {

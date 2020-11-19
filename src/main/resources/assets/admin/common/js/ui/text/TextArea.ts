@@ -55,4 +55,9 @@ export class TextArea
             this.getEl().setHeightPx(this.clone.getEl().getHeightWithBorder());
         }
     }
+
+    setEnabled(enable: boolean) {
+        super.setEnabled(enable);
+        this.getEl().setDisabled(!enable);
+    }
 }

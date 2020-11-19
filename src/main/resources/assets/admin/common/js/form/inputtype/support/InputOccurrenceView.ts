@@ -75,6 +75,10 @@ export class InputOccurrenceView
         this.inputTypeView.resetInputOccurrenceElement(this.inputElement);
     }
 
+    setEnabled(enable: boolean) {
+        this.inputTypeView.setEnabledInputOccurrenceElement(this.inputElement, enable);
+    }
+
     refresh() {
 
         if (this.inputOccurrence.oneAndOnly()) {

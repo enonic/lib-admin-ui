@@ -81,4 +81,8 @@ export class FormItemOccurrenceView
     giveFocus(): boolean {
         return false;
     }
+
+    setEnabled(enable: boolean) {
+    //
+    }
 }
