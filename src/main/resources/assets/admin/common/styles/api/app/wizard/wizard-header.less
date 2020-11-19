@@ -1,5 +1,6 @@
 .wizard-header {
   margin: 15px 40px;
+  max-width: 660px;
 
   .@{_COMMON_PREFIX}text-input {
     border: 1px solid transparent;
@@ -10,12 +11,12 @@
 
     &.@{_CLS_PREFIX}large {
       min-width: 245px;
-      font-size: 32px;
+      font-size: 1.65rem;
     }
     &.@{_CLS_PREFIX}middle {
       min-width: 100px;
       margin-top: 2px;
-      font-size: 16px;
+      font-size: 1rem;
     }
 
     &[name="displayName"], &[name="name"] {
@@ -33,7 +34,7 @@
     height: 28px;
     line-height: 28px;
     margin: 0 0 0 4px;
-    font-size: 16px;
+    font-size: 1rem;
     color: @admin-font-gray2;
     .ellipsis();
   }
@@ -47,7 +48,19 @@
 ._0-240, ._240-360, ._360-540 {
   .thumbnail-uploader-el + .wizard-header,
   .@{_COMMON_PREFIX}form-icon + .wizard-header {
-    margin-left: 86px;
+    margin-left: 56px;
     margin-right: 40px;
+    max-width: 100%;
+  }
+
+  .thumbnail-uploader-el {
+    width: 32px;
+    height: 32px;
+    margin: 5px 10px;
+
+    .dropzone-container .dropzone {
+      height: 100%;
+      min-height: auto;
+    }
   }
 }

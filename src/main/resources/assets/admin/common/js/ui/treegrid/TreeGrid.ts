@@ -165,7 +165,8 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     getHighlightedItem(): DATA {
-        return this.root.getNodeByDataId(this.highlightedDataId).getData();
+        const highlightedNode: TreeNode<DATA> = !!this.highlightedDataId ? this.root.getNodeByDataId(this.highlightedDataId) : null;
+        return !!highlightedNode ? highlightedNode.getData() : null;
     }
 
     protected getHighlightedNode(): TreeNode<DATA> {
@@ -230,11 +231,9 @@ export class TreeGrid<DATA extends IDentifiable>
             let cell = this.grid.getCellFromEvent(event);
 
             if (!this.grid.isRowSelected(cell.row)) {
-                if (!this.highlightedDataId
-                    || this.getRowIndexByNode(this.root.getNodeByDataIdFromCurrent(this.highlightedDataId)) !== cell.row) {
+                const highlightedNode: TreeNode<DATA> = !!this.highlightedDataId ? this.getHighlightedNode() : null;
+                if (!highlightedNode || this.getRowIndexByNode(highlightedNode) !== cell.row) {
                     this.highlightRowByNode(this.gridData.getItem(cell.row));
-                    this.showContextMenuAt(event.pageX, event.pageY);
-                    return;
                 }
             }
             this.showContextMenuAt(event.pageX, event.pageY);
@@ -485,6 +484,7 @@ export class TreeGrid<DATA extends IDentifiable>
         this.setActive(false);
         this.root.setFiltered(true);
         this.root.getCurrentRoot().setChildren(this.dataToTreeNodes(dataList, this.root.getCurrentRoot()));
+        this.grid.removeCellCssStyles('highlight');
         this.initData(this.root.getCurrentRoot().treeToList());
         this.invalidate();
         this.setActive(true);
@@ -495,6 +495,7 @@ export class TreeGrid<DATA extends IDentifiable>
 
         if (this.root.isFiltered()) {
             this.root.setFiltered(false);
+            this.grid.removeCellCssStyles('highlight');
             this.initData(this.root.getCurrentRoot().treeToList());
             this.invalidate();
             this.setActive(true);
@@ -585,7 +586,8 @@ export class TreeGrid<DATA extends IDentifiable>
         const selectedItems: DATA[] = this.getFullSelection();
 
         if (!!this.highlightedDataId && selectedItems.length <= 1) {
-            return [this.getHighlightedItem()];
+            const data: DATA = this.getHighlightedItem();
+            return !!data ? [data] : [];
         }
 
         return selectedItems;
@@ -623,10 +625,14 @@ export class TreeGrid<DATA extends IDentifiable>
         const treeNodes: TreeNode<DATA>[] = this.root.getNodesByDataId(dataId);
 
         treeNodes.forEach((updatedNode: TreeNode<DATA>) => {
-            updatedNode.setData(updatedData);
-            this.invalidateNodes([updatedNode]);
-            this.notifyDataChanged(new DataChangedEvent<DATA>([updatedNode], DataChangedType.UPDATED));
+            this.doUpdateNodeByData(updatedNode, updatedData);
         });
+    }
+
+    protected doUpdateNodeByData(nodeToUpdate: TreeNode<DATA>, data: DATA) {
+        nodeToUpdate.setData(data);
+        this.invalidateNodes([nodeToUpdate]);
+        this.notifyDataChanged(new DataChangedEvent<DATA>([nodeToUpdate], DataChangedType.UPDATED));
     }
 
     deleteNodeByDataId(dataId: string) {
@@ -679,8 +685,8 @@ export class TreeGrid<DATA extends IDentifiable>
 
     initData(nodes: TreeNode<DATA>[]) {
         this.gridData.setItems(nodes, this.idPropertyName);
-        this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
         this.resetCurrentSelection(nodes);
+        this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
     }
 
     expandNodeByDataId(dataId: string): Q.Promise<boolean> {
@@ -1743,29 +1749,24 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     protected insertNodeToParentNode(nodeToInsert: TreeNode<DATA>, parent: TreeNode<DATA>, index: number) {
+        this.gridData.insertItem(this.getIndexRelativeToParent(parent, index), nodeToInsert);
         parent.insertChild(nodeToInsert, index);
         parent.setExpandable(true);
-
-        const parentRow: number = parent.hasParent() ? this.gridData.getRowById(parent.getId()) : -1;
-        if (!!parentRow || parentRow === 0) {
-            this.gridData.insertItem(this.getIndexRelativeToParent(parent, parentRow, index), nodeToInsert);
-        }
-
         this.invalidateNodes([parent]);
     }
 
-    private getIndexRelativeToParent(parent: TreeNode<DATA>, parentRow: number, index: number): number {
-        let indexRelativeToGrid: number = parentRow + 1;
-        let i: number = 0;
+    private getIndexRelativeToParent(parent: TreeNode<DATA>, index: number): number {
+        let nodeToInsertBefore: TreeNode<DATA> = parent.getChildren()[index];
 
-        while (i !== index) {
-            if (this.gridData.getItem(indexRelativeToGrid).getParent() === parent) {
-                i++;
-            }
-            indexRelativeToGrid++;
+        if (nodeToInsertBefore) {
+            return this.gridData.getRowById(nodeToInsertBefore.getId());
         }
 
-        return indexRelativeToGrid;
+        if (!parent.hasParent()) {
+            return this.gridData.getLength();
+        }
+
+        return this.getIndexRelativeToParent(parent.getParent(), parent.getParent().getChildren().indexOf(parent) + 1);
     }
 
     moveNode(from: number, to: number): number {
@@ -1801,6 +1802,10 @@ export class TreeGrid<DATA extends IDentifiable>
 
     getCurrentData(expanded: boolean = true): DATA[] {
         return this.root.getCurrentRoot().treeToList(false, expanded).map((node: TreeNode<DATA>) => node.getData());
+    }
+
+    getDefaultData(expanded: boolean = true): DATA[] {
+        return this.root.getDefaultRoot().treeToList(false, expanded).map((node: TreeNode<DATA>) => node.getData());
     }
 
     getDataLevel(data: DATA): number {

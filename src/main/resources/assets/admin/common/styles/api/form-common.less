@@ -17,21 +17,15 @@
 
   &.display-validation-errors {
 
-    .input-view.invalid {
-
-      .input-view-error();
-
-      .help-text p {
-        color: @admin-black;
-      }
-    }
-
-
     .form-item-set-view, .form-option-set-view {
 
-      &.invalid {
+      .input-view.invalid {
 
         .input-view-error(10px);
+
+        .help-text p {
+          color: @admin-black;
+        }
       }
     }
 
@@ -85,6 +79,8 @@
     position: relative;
     z-index: 1;
     width: 17px;
+    height: 17px;
+    line-height: 17px;
     text-align: center;
     font-size: 12px;
     color: white;

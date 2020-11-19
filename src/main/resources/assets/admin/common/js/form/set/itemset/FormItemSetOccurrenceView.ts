@@ -1,12 +1,14 @@
-import * as $ from 'jquery';
 import * as Q from 'q';
-import {StringHelper} from '../../../util/StringHelper';
 import {FormItemSet} from './FormItemSet';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {ValidationRecording} from '../../ValidationRecording';
 import {FormItemView} from '../../FormItemView';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
 import {FormItem} from '../../FormItem';
+import {PropertyArray} from '../../../data/PropertyArray';
+import {Property} from '../../../data/Property';
+import {ValueTypes} from '../../../data/ValueTypes';
+import {ElementEvent} from '../../../dom/ElementEvent';
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
@@ -18,26 +20,17 @@ export class FormItemSetOccurrenceView
     public layout(validate: boolean = true): Q.Promise<void> {
         return super.layout(validate).then(() => {
             if (this.formItemOccurrence.isMultiple()) {
-                this.formSetOccurrencesContainer.onDescendantAdded(() => this.setLabel());
+                this.formSetOccurrencesContainer.onDescendantAdded((event: ElementEvent) => {
+                    if (this.getEl().contains(event.getElement().getHTMLElement())) {
+                        this.updateLabel();
+                    }
+                });
             }
         });
     }
 
-    validate(silent: boolean = true): ValidationRecording {
-
-        let allRecordings = new ValidationRecording();
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            let currRecording = formItemView.validate(silent);
-            allRecordings.flatten(currRecording);
-        });
-
-        if (!silent) {
-            if (allRecordings.validityChanged(this.currentValidationState)) {
-                this.notifyValidityChanged(new RecordingValidityChangedEvent(allRecordings, this.resolveValidationRecordingPath()));
-            }
-        }
-        this.currentValidationState = allRecordings;
-        return allRecordings;
+    protected extraValidation(_validationRecording: ValidationRecording) {
+        // No extra validation for item-sets
     }
 
     protected subscribeOnItemEvents() {
@@ -62,7 +55,7 @@ export class FormItemSetOccurrenceView
             });
 
             if (this.formItemOccurrence.isMultiple()) {
-                formItemView.onBlur(() => this.setLabel());
+                formItemView.onBlur(() => this.updateLabel());
             }
         });
     }
@@ -75,25 +68,30 @@ export class FormItemSetOccurrenceView
         return this.getFormSet().getFormItems();
     }
 
-    private setLabel() {
-        const firstNonEmptyInput = $(this.formSetOccurrencesContainer.getHTMLElement())
-            .find('.input-wrapper input, .input-wrapper textarea').toArray()
-            .find(input => {
-                const isInput = input.nodeName === 'INPUT';
-                const value = isInput ? (<HTMLInputElement>input).value : StringHelper.htmlToString(input['value']);
-                return value.trim().length > 0;
-            });
+    protected getLabelText(): string {
+        const propArrays = this.propertySet.getPropertyArrays();
+        const selectedValues = [];
 
-        if (firstNonEmptyInput) {
-            const isInput = firstNonEmptyInput.nodeName === 'INPUT';
-            if (isInput) {
-                this.label.setText((<HTMLInputElement>firstNonEmptyInput).value);
-            } else {
-                this.label.setText(StringHelper.htmlToString(firstNonEmptyInput['value']));
-            }
-            this.formSetOccurrencesContainer.unDescendantAdded();
-        } else {
-            this.label.setText(this.getFormSet().getLabel());
+        if (propArrays && propArrays.length > 0) {
+            propArrays.some((propArray: PropertyArray) => {
+                this.recursiveFetchLabels(propArray, selectedValues, true);
+                return selectedValues.length > 0;
+            });
         }
+
+        return selectedValues[0] || this.getFormSet().getLabel();
+    }
+
+    private recursiveFetchLabels(propArray: PropertyArray, labels: string[], firstOnly?: boolean): void {
+        propArray.forEach((prop: Property) => {
+            if (ValueTypes.STRING.equals(prop.getType()) && prop.getValue().isNotNull()) {
+                labels.push(prop.getString());
+                if (firstOnly) {
+                    return;
+                }
+            } else if (ValueTypes.DATA.equals(prop.getType())) {
+                prop.getPropertySet().getPropertyArrays().forEach(arr => this.recursiveFetchLabels(arr, labels, firstOnly));
+            }
+        });
     }
 }

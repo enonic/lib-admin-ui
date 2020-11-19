@@ -16,16 +16,31 @@ import {ValidationRecording} from '../../ValidationRecording';
 import {FormItem} from '../../FormItem';
 import {Occurrences} from '../../Occurrences';
 import {FormOptionSetOption} from './FormOptionSetOption';
+import {Property} from '../../../data/Property';
+import * as Q from 'q';
+import {ElementEvent} from '../../../dom/ElementEvent';
 
 export class FormOptionSetOccurrenceView
     extends FormSetOccurrenceView {
 
     private selectionValidationMessage: DivEl;
 
-    constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView> ) {
+    constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView>) {
         super('form-option-set-', config);
 
         this.ensureSelectionArrayExists(this.propertySet);
+    }
+
+    public layout(validate: boolean = true): Q.Promise<void> {
+        return super.layout(validate).then(() => {
+            if (this.formItemOccurrence.isMultiple()) {
+                this.formSetOccurrencesContainer.onDescendantAdded((event: ElementEvent) => {
+                    if (this.getEl().contains(event.getElement().getHTMLElement())) {
+                        this.updateLabel();
+                    }
+                });
+            }
+        });
     }
 
     clean() {
@@ -62,7 +77,9 @@ export class FormOptionSetOccurrenceView
                 }
             });
 
-            (<FormOptionSetOptionView> formItemView).onSelectionChanged(() => {
+            (<FormOptionSetOptionView>formItemView).onSelectionChanged(() => {
+                this.updateLabel();
+
                 if (!this.currentValidationState) {
                     return; // currentValidationState is initialized on validate() call which may not be triggered in some cases
                 }
@@ -119,6 +136,29 @@ export class FormOptionSetOccurrenceView
 
     protected getFormItems(): FormItem[] {
         return this.getFormSet().getFormItems();
+    }
+
+    protected getLabelText(): string {
+        const selectionArray = this.propertySet.getPropertyArray('_selected');
+        let selectedLabels: string[] = [];
+
+        if (selectionArray && !selectionArray.isEmpty()) {
+            const nameLabelMap = new Map<string, any>(
+                this.getFormItems()
+                    .filter((formItem: FormItem) => formItem instanceof FormOptionSetOption)
+                    .map((formItem: FormOptionSetOption, index: number) => {
+                        return [formItem.getName(), {label: formItem.getLabel(), index: index}] as [string, any];
+                    })
+            );
+
+            selectedLabels = selectionArray.getProperties()
+                .sort((one: Property, two: Property) => {
+                    return nameLabelMap.get(one.getString()).index - nameLabelMap.get(two.getString()).index;
+                })
+                .map((selectedProp: Property) => nameLabelMap.get(selectedProp.getString()).label);
+        }
+
+        return selectedLabels.length ? selectedLabels.join(', ') : this.getFormSet().getLabel();
     }
 
     private renderSelectionValidationMessage(selectionValidationRecording: ValidationRecording) {

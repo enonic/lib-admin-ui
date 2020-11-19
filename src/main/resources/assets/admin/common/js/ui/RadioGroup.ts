@@ -64,6 +64,10 @@ export class RadioGroup
         return undefined;
     }
 
+    setDisabled(disabled: boolean) {
+        this.options.forEach((option: RadioButton) => option.setDisabled(disabled));
+    }
+
     giveFocus(): boolean {
         return this.options.length < 1 ? false : this.options[0].giveFocus();
     }

@@ -41,13 +41,13 @@ export class WizardHeaderWithDisplayNameAndName
 
     private forbiddenChars: RegExp = /[\/\\]+/ig;
 
-    private displayNameEl: TextInput;
+    protected displayNameEl: TextInput;
 
     private displayNameProgrammaticallySet: boolean;
 
-    private pathEl: SpanEl;
+    protected pathEl: SpanEl;
 
-    private nameEl: TextInput;
+    protected nameEl: TextInput;
 
     private autoGenerateName: boolean = false;
 
@@ -183,6 +183,11 @@ export class WizardHeaderWithDisplayNameAndName
 
     disableNameInput() {
         this.nameEl.getEl().setAttribute('disabled', 'disabled');
+        this.toggleNameGeneration(false);
+    }
+
+    disableDisplayNameInput() {
+        this.displayNameEl.getEl().setAttribute('disabled', 'disabled');
         this.toggleNameGeneration(false);
     }
 
