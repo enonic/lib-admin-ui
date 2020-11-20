@@ -23,7 +23,7 @@ export class MenuButton
 
     protected autoWidth: boolean = false;
 
-    protected rightAligned: boolean = false;
+    protected rightAlign: boolean = false;
 
     constructor(mainAction: Action, menuActions: Action[] = []) {
         super('menu-button');
@@ -124,22 +124,7 @@ export class MenuButton
     }
 
     setMenuPosition() {
-        const hostOffset = this.getEl().getOffset();
-        const hostWidth = this.getEl().getWidth();
-        const hostHeight = this.getEl().getHeightWithBorder();
-        const leftBorderWidth = this.getEl().getBorderLeftWidth();
-        let menuWidth = this.menu.getEl().getWidth();
-        this.menu.getEl()
-            .setWidth(this.autoWidth ? 'auto' : `${Math.ceil(hostWidth)}px`)
-            .setTopPx(Math.ceil(hostOffset.top + hostHeight));
-
-        if (this.rightAligned) {
-            this.menu.getEl().setMinWidth(`${Math.ceil(hostWidth)}px`);
-            menuWidth = Math.max(menuWidth, hostWidth);
-            this.menu.getEl().setLeftPx(Math.ceil(hostOffset.left + hostWidth - menuWidth));
-        } else {
-            this.menu.getEl().setLeftPx(Math.ceil(hostOffset.left + leftBorderWidth));
-        }
+        this.menu.alignToParent({rightAlign: this.rightAlign, autoWidth: this.autoWidth});
     }
 
     isMinimized() {
