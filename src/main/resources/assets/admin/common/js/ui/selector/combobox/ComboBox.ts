@@ -715,7 +715,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         const win = WindowDOM.get();
 
         const inputEl = this.input.getEl();
-        const parent = restrainToBody(this.getScrollableParent(inputEl));
+        const parent = restrainToBody(this.getScrollableParent(this.input).getEl());
 
         let dropdown = this.comboBoxDropdown.getDropdownGrid().getGrid().getEl();
 
@@ -773,20 +773,6 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
         dropdown.setTopPx(-dropdown.getHeightWithBorder()).addClass('reverted');
         placeholder.setTopPx(-placeholder.getHeightWithBorder());
-    }
-
-    private getScrollableParent(el: ElementHelper): ElementHelper {
-        let parent = el.getParent();
-
-        if (!parent) {
-            return el;
-        }
-
-        if (parent.isScrollable()) {
-            return parent;
-        }
-
-        return this.getScrollableParent(parent);
     }
 
     private selectExistingOptions(optionIds: string[]) {

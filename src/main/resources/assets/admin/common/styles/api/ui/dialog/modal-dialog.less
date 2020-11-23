@@ -119,6 +119,7 @@
     .modal-dialog-header {
       padding: 20px 30px;
       box-sizing: border-box;
+      z-index: @z-index-modal-dialog;
 
       h2 {
         line-height: 36px;
@@ -389,7 +390,7 @@ body {
       width: 26px;
       height: 26px;
       line-height: 26px;
-      z-index: 1;
+      z-index: @z-index-modal-dialog + 1;
 
       &::before,
       &::after {
@@ -420,9 +421,6 @@ body {
         &:hover {
           background-color: @admin-bg-light-gray;
         }
-      }
-      .modal-dialog-body {
-        padding-top: 0;
       }
     }
   }

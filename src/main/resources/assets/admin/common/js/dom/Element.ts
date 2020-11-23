@@ -758,35 +758,6 @@ export class Element {
         });
     }
 
-    alignToParent(config?: {rightAlign: boolean, autoWidth: boolean}) {
-        this.alignToParentPosition(config?.rightAlign);
-        this.alignWithParentWidth(config?.autoWidth);
-    }
-
-    private alignToParentPosition(rightAlign: boolean = false) {
-        this.getEl().setPosition('fixed');
-        const hostEl = this.getParentElement().getEl();
-        const hostDimensions = hostEl.getDimensions();
-
-        this.getEl().setTopPx(Math.ceil(hostDimensions.top + hostDimensions.height));
-
-        if (rightAlign) {
-            const elementWidth = Math.max(this.getEl().getWidth(), hostDimensions.width);
-            this.getEl().setLeftPx(Math.ceil(hostDimensions.left + hostDimensions.width - elementWidth));
-        } else {
-            this.getEl().setLeftPx(Math.ceil(hostDimensions.left));
-        }
-    }
-
-    private alignWithParentWidth(autoWidth: boolean = false) {
-        const parentWidth = this.getParentElement().getEl().getWidthWithBorder();
-        if (autoWidth) {
-            this.getEl().setMinWidth(`${parentWidth}px`).setWidth('auto');
-        } else {
-            this.getEl().setWidth(`${parentWidth}px`);
-        }
-    }
-
     onMouseEnter(handler: (e: MouseEvent) => any) {
         if (typeof this.getHTMLElement().onmouseenter !== 'undefined') {
             this.getEl().addEventListener('mouseenter', handler);
@@ -1330,6 +1301,20 @@ export class Element {
         this.lazyRenderListeners = this.lazyRenderListeners.filter((curr) => {
             return curr !== listener;
         });
+    }
+
+    getScrollableParent(el?: Element): Element {
+        const parent = (el || this).getParentElement();
+
+        if (!parent) {
+            return this;
+        }
+
+        if (parent.getEl().isScrollable()) {
+            return parent;
+        }
+
+        return this.getScrollableParent(parent);
     }
 
     private lazyRender(childEl: Element): Element {
