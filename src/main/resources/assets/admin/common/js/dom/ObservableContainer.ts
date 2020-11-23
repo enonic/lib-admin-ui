@@ -52,14 +52,14 @@ export class ObservableContainer
             if (scrollableParent) {
                 scrollableParent.onScroll(handler);
             }
-        }
+        };
 
         this.onAdded(() => onAddedHandler());
 
         this.onRemoved(() => {
             this.unAdded(onAddedHandler);
             this.observer.disconnect();
-            scrollableParent.unScroll(handler)
+            scrollableParent.unScroll(handler);
             ResponsiveManager.unAvailableSizeChangedByItem(responsiveItem);
         });
     }
