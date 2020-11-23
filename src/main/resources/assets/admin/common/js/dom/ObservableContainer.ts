@@ -54,10 +54,9 @@ export class ObservableContainer
             }
         };
 
-        this.onAdded(() => onAddedHandler());
+        this.onAdded(onAddedHandler);
 
         this.onRemoved(() => {
-            this.unAdded(onAddedHandler);
             this.observer.disconnect();
             scrollableParent.unScroll(handler);
             ResponsiveManager.unAvailableSizeChangedByItem(responsiveItem);
@@ -110,21 +109,31 @@ export class ObservableContainer
         const hostEl = this.getParentElement().getEl();
         const viewHeight = Body.get().getEl().getHeightWithBorder();
         const hostDimensions = hostEl.getBoundingClientRect();
-        const heightEl = this.getEl().getHeightWithBorder();
+        const maxHeight = this.observant.getEl().getHeight();
 
         const spaceToBottom = viewHeight - hostDimensions.bottom;
         const spaceToTop = hostDimensions.top;
 
-        if (heightEl > spaceToBottom) {
-            if (heightEl <= spaceToTop) {
-                this.getEl().setTopPx(hostDimensions.top - heightEl);
-            } else {
-                this.getEl().setHeightPx(spaceToBottom - 5);
-            }
-            return;
+        const noFitBottom = (maxHeight > spaceToBottom);
+        const noFitTop = (maxHeight > spaceToTop);
+        let heightEl;
+        let placeAtBottom;
+
+        if (noFitBottom && noFitTop) {
+            heightEl = Math.max(spaceToBottom, spaceToTop) - 5;
+            this.getEl().setHeightPx(heightEl);
+            placeAtBottom = spaceToBottom > spaceToTop;
+        } else {
+            this.getEl().setHeight('');
+            heightEl = maxHeight;
+            placeAtBottom = !noFitBottom || noFitTop;
         }
 
-        this.getEl().setTopPx(hostDimensions.top + hostDimensions.height);
+        if (placeAtBottom) {
+            this.getEl().setTopPx(hostDimensions.top + hostDimensions.height);
+        } else {
+            this.getEl().setTopPx(hostDimensions.top - heightEl);
+        }
     }
 
     private alignWithParentWidth() {

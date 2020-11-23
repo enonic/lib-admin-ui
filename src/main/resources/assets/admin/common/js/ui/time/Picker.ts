@@ -9,6 +9,7 @@ import {FormEl} from '../../dom/FormEl';
 import {StyleHelper} from '../../StyleHelper';
 import {Body} from '../../dom/Body';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
+import {ObservableContainer} from '../../dom/ObservableContainer';
 
 export class Picker<T extends Element>
     extends DivEl {
@@ -172,7 +173,7 @@ export class Picker<T extends Element>
 
     protected showPopup() {
         this.createPopup();
-        this.resolvePosition();
+        //this.resolvePosition();
         this.popup.show();
     }
 
@@ -193,35 +194,20 @@ export class Picker<T extends Element>
         this.popup.appendChild(this.popupOkButton);
     }
 
-    private createPopup() {
+    private createPopup(): ObservableContainer {
         if (this.popup) {
-            return;
+            return null;
         }
 
         this.initPopup(this.builder);
+
         this.setupPopupListeners(this.builder);
         this.initCloseButton();
 
         this.popup.insertAfterEl(this.input);
-    }
 
-    private resolvePosition() {
-        this.popup.removeClass('reverted');
-        this.popup.getEl().setHeight('auto');
-
-        const rect = this.getEl().getBoundingClientRect();
-        const height = this.popup.getEl().getHeightWithBorder();
-        const viewHeight = Body.get().getEl().getHeightWithBorder();
-
-        const spaceToBottom = viewHeight - rect.bottom;
-        const spaceToTop = rect.top;
-
-        if (height > spaceToBottom) {
-            if (height <= spaceToTop) {
-                this.popup.addClass('reverted');
-            } else {
-                this.popup.getEl().setHeightPx(spaceToBottom - 5);
-            }
-        }
+        return new ObservableContainer({
+            element: this.popup
+        });
     }
 }

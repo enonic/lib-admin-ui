@@ -1,4 +1,9 @@
 .observable-container {
   position: fixed;
-  z-index: @z-index-mask;
+  overflow: hidden;
+  z-index: @z-index-modal-dialog + 1;
+
+  > * {
+    position: relative !important;
+  }
 }
