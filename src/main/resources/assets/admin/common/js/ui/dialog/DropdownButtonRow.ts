@@ -31,4 +31,8 @@ export class DropdownButtonRow
     getActionMenu(): MenuButton {
         return this.actionMenu;
     }
+
+    getMenuActions(): Action[] {
+        return this.actionMenu.getMenuActions();
+    }
 }
