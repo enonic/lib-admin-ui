@@ -263,6 +263,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     hideDropdown() {
+        if (!this.isDropdownShown()) {
+            return;
+        }
         this.dropdownHandle.up();
         this.comboBoxDropdown.hideDropdown();
         if (this.applySelectionsButton) {
@@ -279,8 +282,6 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     setOptions(options: Option<OPTION_DISPLAY_VALUE>[], saveSelection?: boolean) {
         this.comboBoxDropdown.setOptions(options, this.isInputEmpty() ? this.noOptionsText : null, this.getSelectedOptions(),
             saveSelection);
-
-        this.doUpdateDropdownTopPositionAndWidth();
     }
 
     isInputEmpty(): boolean {
@@ -715,7 +716,10 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         const win = WindowDOM.get();
 
         const inputEl = this.input.getEl();
-        const parent = restrainToBody(this.getScrollableParent(this.input).getEl());
+        let parent = restrainToBody(this.getScrollableParent(this.input).getEl());
+        if (parent === this.getEl()) {
+            parent = Body.get().getEl();
+        }
 
         let dropdown = this.comboBoxDropdown.getDropdownGrid().getGrid().getEl();
 
@@ -748,12 +752,12 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         } else if (sizeAboveInput > dropdownHeight) {
             position = PositionType.ABOVE;
             height = dropdownHeight;
-        } else if (sizeBelowInput > sizeAboveInput) {
-            position = PositionType.FLEXIBLE_BELOW;
-            height = sizeBelowInput;
-        } else { //sizeBelowInput < sizeAboveInput
+        } else if (sizeBelowInput < sizeAboveInput) {
             position = PositionType.FLEXIBLE_ABOVE;
             height = sizeAboveInput;
+        } else { // (sizeBelowInput > sizeAboveInput)
+            position = PositionType.FLEXIBLE_BELOW;
+            height = sizeBelowInput;
         }
 
         return {position, height};
