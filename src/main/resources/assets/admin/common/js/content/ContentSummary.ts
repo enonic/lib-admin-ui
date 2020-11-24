@@ -71,6 +71,8 @@ export class ContentSummary {
 
     private inherit: ContentInheritType[];
 
+    private originProject: string;
+
     constructor(builder: ContentSummaryBuilder) {
         this.name = builder.name;
         this.displayName = builder.displayName;
@@ -100,6 +102,7 @@ export class ContentSummary {
         this.contentState = builder.contentState;
         this.workflow = builder.workflow;
         this.inherit = builder.inherit;
+        this.originProject = builder.originProject;
     }
 
     static fromJson(json: ContentSummaryJson): ContentSummary {
@@ -266,6 +269,10 @@ export class ContentSummary {
       return this.isInheritedByType(ContentInheritType.NAME);
     }
 
+    getOriginProject(): string {
+        return this.originProject;
+    }
+
     private isInheritedByType(type: ContentInheritType): boolean {
         return this.isInherited() && this.inherit.some((inheritType: ContentInheritType) => inheritType === type);
     }
@@ -416,6 +423,8 @@ export class ContentSummaryBuilder {
 
     inherit: ContentInheritType[];
 
+    originProject: string;
+
     constructor(source?: ContentSummary) {
         if (source) {
             this.id = source.getId();
@@ -445,6 +454,7 @@ export class ContentSummaryBuilder {
             this.contentState = source.getContentState();
             this.workflow = source.getWorkflow();
             this.inherit = source.getInherit();
+            this.originProject = source.getOriginProject();
         }
     }
 
@@ -480,6 +490,7 @@ export class ContentSummaryBuilder {
         this.contentState = ContentState.fromString(json.contentState);
         this.workflow = Workflow.fromJson(json.workflow);
         this.inherit = json.inherit && json.inherit.length > 0 ? json.inherit.map((type: string) => ContentInheritType[type])  : [];
+        this.originProject = json.originProject;
 
         return this;
     }
@@ -575,6 +586,11 @@ export class ContentSummaryBuilder {
 
     setInherit(value: ContentInheritType[]): ContentSummaryBuilder {
         this.inherit = value;
+        return this;
+    }
+
+    setOriginProject(value: string): ContentSummaryBuilder {
+        this.originProject = value;
         return this;
     }
 
