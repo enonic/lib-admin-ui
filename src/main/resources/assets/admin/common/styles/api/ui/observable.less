@@ -1,9 +1,12 @@
 .observable-container {
   position: fixed;
-  overflow: hidden;
   z-index: @z-index-modal-dialog + 1;
 
   > * {
     position: relative !important;
+  }
+
+  &.hide-overflow {
+    overflow-y: scroll;
   }
 }

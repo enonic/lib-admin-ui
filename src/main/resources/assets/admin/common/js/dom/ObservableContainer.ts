@@ -70,7 +70,7 @@ export class ObservableContainer
 
         this.visible = false;
         this.observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 this.visible = (entry.intersectionRatio > 0);
                 if (this.visible) {
                     callback();
@@ -105,35 +105,37 @@ export class ObservableContainer
         }
     }
 
-    private alignHorizontally() {
+    private getOffsets() {
         const hostEl = this.getParentElement().getEl();
         const viewHeight = Body.get().getEl().getHeightWithBorder();
         const hostDimensions = hostEl.getBoundingClientRect();
         const maxHeight = this.observant.getEl().getHeight();
+        const offsetTop = hostDimensions.top;
+        const offsetBottom = viewHeight - hostDimensions.bottom;
 
-        const spaceToBottom = viewHeight - hostDimensions.bottom;
-        const spaceToTop = hostDimensions.top;
+        return {
+            top: hostDimensions.top,
+            bottom: offsetBottom,
+            spaceTop: maxHeight <= offsetTop,
+            spaceBottom: maxHeight <= offsetBottom
+        };
+    }
 
-        const noFitBottom = (maxHeight > spaceToBottom);
-        const noFitTop = (maxHeight > spaceToTop);
-        let heightEl;
-        let placeAtBottom;
+    private alignHorizontally() {
+        const offsets = this.getOffsets();
+        const noSpaceTopOrBottom = (!offsets.spaceTop && !offsets.spaceBottom);
+        const hostEl = this.getParentElement().getEl();
+        const hostDimensions = hostEl.getBoundingClientRect();
 
-        if (noFitBottom && noFitTop) {
-            heightEl = Math.max(spaceToBottom, spaceToTop) - 5;
-            this.getEl().setHeightPx(heightEl);
-            placeAtBottom = spaceToBottom > spaceToTop;
-        } else {
-            this.getEl().setHeight('');
-            heightEl = maxHeight;
-            placeAtBottom = !noFitBottom || noFitTop;
-        }
+        const heightEl = noSpaceTopOrBottom ? Math.max(offsets.top, offsets.bottom) - 5 : this.observant.getEl().getHeight();
+        const heightAsString = noSpaceTopOrBottom ? `${heightEl}px` : '';
+        const placeAtBottom = noSpaceTopOrBottom ? offsets.bottom > offsets.top : offsets.spaceBottom || !offsets.spaceTop;
+        const topPosition = placeAtBottom ? hostDimensions.top + hostDimensions.height : hostDimensions.top - heightEl;
 
-        if (placeAtBottom) {
-            this.getEl().setTopPx(hostDimensions.top + hostDimensions.height);
-        } else {
-            this.getEl().setTopPx(hostDimensions.top - heightEl);
-        }
+        this.getEl()
+            .toggleClass('hide-overflow', noSpaceTopOrBottom)
+            .setHeight(heightAsString)
+            .setTopPx(topPosition);
     }
 
     private alignWithParentWidth() {
