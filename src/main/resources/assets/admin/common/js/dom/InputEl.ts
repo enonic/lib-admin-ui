@@ -109,6 +109,11 @@ export class InputEl
     setEnabled(enable: boolean) {
         super.setEnabled(enable);
         this.getEl().setDisabled(!enable);
-        this.getEl().setAttribute('disabled', '');
+
+        if (enable) {
+            this.getEl().removeAttribute('disabled');
+        } else {
+            this.getEl().setAttribute('disabled', 'disabled');
+        }
     }
 }

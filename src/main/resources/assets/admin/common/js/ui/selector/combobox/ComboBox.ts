@@ -561,7 +561,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
     setEnabled(enabled: boolean) {
         this.dropdownHandle.setEnabled(enabled);
-        this.input.getEl().setDisabled(!enabled);
+        this.input.setEnabled(enabled);
     }
 
     onOptionSelected(listener: (event: SelectedOptionEvent<OPTION_DISPLAY_VALUE>) => void) {
