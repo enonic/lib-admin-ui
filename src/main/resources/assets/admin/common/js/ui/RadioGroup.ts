@@ -67,7 +67,7 @@ export class RadioGroup
     setEnabled(enable: boolean) {
         super.setEnabled(enable);
 
-        this.options.forEach((option: RadioButton) => option.setEnabled(!enable));
+        this.options.forEach((option: RadioButton) => option.setEnabled(enable));
     }
 
     giveFocus(): boolean {
