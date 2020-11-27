@@ -182,7 +182,7 @@ export class MenuButton
         });
     }
 
-    private getMenuActions() {
+    public getMenuActions() {
         return this.menu.getMenuItems().map(item => item.getAction());
     }
 

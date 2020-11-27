@@ -17,10 +17,10 @@
 
   &.display-validation-errors {
 
-    .form-item-set-view, .form-option-set-view {
-
-      .input-view.invalid {
-
+    > .input-view,
+    .form-item-set-view .input-view,
+    .form-option-set-view .input-view {
+      &.invalid {
         .input-view-error(10px);
 
         .help-text p {
