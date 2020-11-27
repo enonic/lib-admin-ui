@@ -11,7 +11,6 @@ repositories {
     xp.enonicRepo()
 }
 
-
 group = 'com.enonic.lib'
 
 jar {
@@ -38,23 +37,24 @@ task typescriptPkg( type: NpmTask, dependsOn: lint ) {
     def buildEnv = isProd() ? 'prod' : 'dev'
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     args = [ 'run', "build:$buildEnv" ]
-    inputs.dir "${resourcesDir}/assets/admin/common"
-    outputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
+    inputs.dir "$resourcesDir/assets/admin/common"
+    outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
+    outputs.upToDateWhen { false }
 }
 
 task typescriptLib( type: NpmTask, dependsOn: lint ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build library, that should be included to HTML.'
     args = [ 'run', 'build:lib' ]
-    inputs.dir "${resourcesDir}/assets/admin/common"
-    outputs.dir "${buildDir}/resources/main/assets/admin/common"
+    inputs.dir "$resourcesDir/assets/admin/common"
+    outputs.dir "$buildDir/resources/main/assets/admin/common"
 }
 
 task minifyPkg( type: NpmTask, dependsOn: typescriptPkg ) {
     description = 'Minify transpiled code.'
     args = [ 'run', "build:minify" ]
-    inputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
-    outputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
+    inputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
+    outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
     mustRunAfter typescriptPkg
     enabled isProd()
 }
