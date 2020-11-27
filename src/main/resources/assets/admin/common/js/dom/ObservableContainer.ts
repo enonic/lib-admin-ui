@@ -14,8 +14,6 @@ export interface ObservableConfig {
 export class ObservableContainer
     extends DivEl {
 
-    private static visibilityClass: string = 'visible';
-
     private readonly observant: Element;
     private readonly rightAligned: boolean;
     private readonly autoWidth: boolean;
@@ -121,20 +119,47 @@ export class ObservableContainer
         };
     }
 
-    private alignHorizontally() {
+    private isEnoughOffsetSpace(): boolean {
         const offsets = this.getOffsets();
-        const noSpaceTopOrBottom = (!offsets.spaceTop && !offsets.spaceBottom);
+        return offsets.spaceTop || offsets.spaceBottom;
+    }
+
+    private getMaxAllowedHeight(): number {
+        const offsets = this.getOffsets();
+        const height = this.isEnoughOffsetSpace() ? this.observant.getEl().getHeight() : Math.max(offsets.top, offsets.bottom) - 5;
+
+        return height;
+    }
+
+    private getMaxObservantHeightAsString(): string {
+        if (this.isEnoughOffsetSpace()) {
+            return '';
+        }
+
+        const offsets = this.getOffsets();
+        const maxHeight = Math.max(offsets.top, offsets.bottom) - 5;
+
+        return `${maxHeight}px`;
+    }
+
+    private calculateObservantTopPosition(): number {
+        const offsets = this.getOffsets();
+        const maxHeight = this.getMaxAllowedHeight();
         const hostEl = this.getParentElement().getEl();
         const hostDimensions = hostEl.getBoundingClientRect();
+        const placeAtBottom = this.isEnoughOffsetSpace() ? offsets.spaceBottom || !offsets.spaceTop : offsets.bottom > offsets.top;
+        const topPosition = placeAtBottom ? hostDimensions.top + hostDimensions.height : hostDimensions.top - maxHeight;
 
-        const heightEl = noSpaceTopOrBottom ? Math.max(offsets.top, offsets.bottom) - 5 : this.observant.getEl().getHeight();
-        const heightAsString = noSpaceTopOrBottom ? `${heightEl}px` : '';
-        const placeAtBottom = noSpaceTopOrBottom ? offsets.bottom > offsets.top : offsets.spaceBottom || !offsets.spaceTop;
-        const topPosition = placeAtBottom ? hostDimensions.top + hostDimensions.height : hostDimensions.top - heightEl;
+        return topPosition;
+    }
+
+    private alignHorizontally() {
+        const maxHeight = this.getMaxObservantHeightAsString();
+        const topPosition = this.calculateObservantTopPosition();
 
         this.getEl()
-            .toggleClass('hide-overflow', noSpaceTopOrBottom)
-            .setHeight(heightAsString)
+            .toggleClass('hide-overflow', maxHeight !== '')
+            .setHeight(maxHeight)
             .setTopPx(topPosition);
     }
 
