@@ -24,7 +24,7 @@ export interface ModalDialogConfig {
     skipTabbable?: boolean;
     class?: string;
     keepOpenOnClickOutside?: boolean;
-    overflowAllowed?: boolean
+    allowOverflow?: boolean;
 }
 
 export enum DialogState {
@@ -88,8 +88,8 @@ export abstract class ModalDialog
         super('modal-dialog', StyleHelper.COMMON_PREFIX);
         this.config = config;
 
-        if (config.overflowAllowed) {
-            this.enableOverflow(config.overflowAllowed);
+        if (config.allowOverflow) {
+            this.enableOverflow(config.allowOverflow);
         }
 
         this.initElements();

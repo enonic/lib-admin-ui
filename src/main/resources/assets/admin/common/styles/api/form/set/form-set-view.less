@@ -164,38 +164,12 @@
     }
 
     .form-item-set-drop-target-placeholder, .form-option-set-drop-target-placeholder {
-      border: 2px dashed #000;
+      border: 2px dashed @admin-black;
       padding: 14px;
-      color: #000;
+      color: @admin-black;
       font-size: 14px;
       text-align: center;
       margin: 10px;
-    }
-
-    .input-view {
-
-      .input-label {
-        max-width: 90px;
-        margin-right: 10px;
-      }
-
-      .input-type-view,
-      .bottom-button-row,
-      .validation-viewer {
-        margin-left: @form-label-width;
-      }
-
-      &.label-over-input {
-        .input-label {
-          max-width: 100%;
-        }
-
-        .input-type-view,
-        .bottom-button-row,
-        .validation-viewer {
-          margin-left: 0;
-        }
-      }
     }
 
     & > .bottom-button-row {

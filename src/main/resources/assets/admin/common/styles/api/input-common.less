@@ -14,42 +14,31 @@
     .input-glow();
   }
 
-  &.no-label {
-
-    > .input-label {
-      display: none;
-    }
-
-    > select, > input, > textarea {
-      .input-error();
-    }
-  }
-
   &:not(.no-label) {
-    .input-label {
+    > .input-label {
       display: inline-block !important;
     }
   }
 
   &.label-inline {
-    .input-label {
+    > .input-label {
       float: left;
       max-width: @form-label-width - 10px;
     }
 
-    .input-type-view,
-    .help-text,
-    .bottom-button-row,
-    .validation-viewer {
+    > .input-type-view,
+    > .help-text,
+    > .bottom-button-row,
+    > .validation-viewer {
       margin-left: @form-label-width;
     }
 
-    .help-text-toggler {
+    > .help-text-toggler {
       margin-left: 5px;
     }
   }
 
-  .input-label {
+  > .input-label {
     .ellipsis();
     .label {
       display: inline-block;
@@ -63,6 +52,16 @@
         content: '\00a0*';
         color: @input-red-text;
       }
+    }
+  }
+
+  &.no-label {
+    > .input-label {
+      display: none;
+    }
+
+    > select, > input, > textarea {
+      .input-error();
     }
   }
 
