@@ -89,8 +89,8 @@ export class InputView
             this.appendChild(this.helpText.getToggler());
         }
 
-        if (this.input.isMaximizeUIInputWidth()) {
-            this.addClass('label-over-input');
+        if (this.input.isMaximizeUIInputWidth() !== true) {
+            this.addClass('label-inline');
         }
 
         this.inputTypeView = this.createInputTypeView();
