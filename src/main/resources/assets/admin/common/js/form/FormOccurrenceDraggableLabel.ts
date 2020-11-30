@@ -28,11 +28,10 @@ export class FormOccurrenceDraggableLabel
 
         if (!!note) {
             this.note = note;
-            const noteEl = new Element(new NewElementBuilder().setTagName('p').setGenerateId(true));
-            noteEl.addClass('note');
-            noteEl.toggleClass('custom-label', this.note !== label);
+            const noteEl = new Element(new NewElementBuilder().setTagName('p').setGenerateId(true).setClassName('note'));
             noteEl.setHtml(note);
             nodes.push(noteEl.getHTMLElement());
+            this.toggleClass('custom-label', this.note !== label);
         }
 
         this.getEl().appendChildren(nodes);

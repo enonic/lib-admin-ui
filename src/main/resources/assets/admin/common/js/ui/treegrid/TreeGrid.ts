@@ -947,7 +947,6 @@ export class TreeGrid<DATA extends IDentifiable>
         }
 
         this.highlightRowByNode(this.getHighlightedNode());
-        this.notifyHighlightingChanged();
     }
 
     protected handleError(reason: any, message?: String) {

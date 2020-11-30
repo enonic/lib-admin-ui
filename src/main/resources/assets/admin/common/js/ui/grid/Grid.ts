@@ -1,6 +1,5 @@
-/// <reference path="../../../../../../../../../node_modules/@types/slickgrid/slick.checkboxselectcolumn.d.ts" />
-/// <reference path="../../../../../../../../../node_modules/@types/slickgrid/slick.rowselectionmodel.d.ts" />
-/// <reference path="../../types/slickgrid-plugins.d.ts" />
+/// <reference types="slickgrid/slick.checkboxselectcolumn" />
+/// <reference types="slickgrid/slick.rowselectionmodel" />
 import * as Q from 'q';
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
 import {DivEl} from '../../dom/DivEl';

@@ -94,6 +94,7 @@ export class ComboBox
     }
 
     createComboBox(input: Input, propertyArray: PropertyArray): ComboBoxEl<string> {
+        const name = input.getName();
         let comboBox = new ComboBoxEl<string>(name, {
             filter: this.comboBoxFilter,
             selectedOptionsView: this.selectedOptionsView,

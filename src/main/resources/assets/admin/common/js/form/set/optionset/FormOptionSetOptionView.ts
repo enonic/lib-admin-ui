@@ -354,11 +354,13 @@ export class FormOptionSetOptionView
     private makeSelectionRadioButton(): RadioButton {
         const selectedProperty = this.getSelectedOptionsArray().get(0);
         const checked = !!selectedProperty && selectedProperty.getString() === this.getName();
+        const labelText = this.formOptionSetOption.getLabel();
         const button = new RadioButton({
-            label: this.formOptionSetOption.getLabel(),
+            label: labelText,
             value: '',
             name: this.getParent().getEl().getId(),
             checked,
+            tooltip: labelText
         });
 
         this.radio = button;
@@ -417,8 +419,10 @@ export class FormOptionSetOptionView
 
     private makeSelectionCheckbox(): Checkbox {
         const checked: boolean = this.isSelected();
+        const labelText = this.formOptionSetOption.getLabel();
         const button: Checkbox = Checkbox.create()
-            .setLabelText(this.formOptionSetOption.getLabel())
+            .setLabelText(labelText)
+            .setTooltip(labelText)
             .setChecked(checked)
             .build();
 
