@@ -203,21 +203,12 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         this.setupListeners();
     }
 
-    setReadOnly(readOnly: boolean) {
-        super.setReadOnly(readOnly);
-
-        this.input.setReadOnly(readOnly);
-        this.selectedOptionsView.setReadonly(readOnly);
-
-        this.toggleClass('readonly', readOnly);
-    }
-
     giveFocus(): boolean {
         return this.input.giveFocus();
     }
 
     giveInputFocus() {
-        this.input.setReadOnly(false);
+        this.input.setEnabled(true);
         this.input.giveFocus();
 
         if (BrowserHelper.isIE()) { // issue with getting focus in IE
@@ -253,7 +244,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
         this.comboBoxDropdown.renderDropdownGrid();
 
-        this.input.setReadOnly(true);
+        this.input.setEnabled(false);
 
         this.addClass('expanded');
     }
@@ -269,7 +260,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             this.applySelectionsButton.hide();
         }
 
-        this.input.setReadOnly(false);
+        this.input.setEnabled(true);
         this.removeClass('expanded');
         if (this.isDropdownRendered()) {
             this.removeDropdown();
@@ -560,6 +551,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     setEnabled(enabled: boolean) {
+        super.setEnabled(enabled);
         this.dropdownHandle.setEnabled(enabled);
         this.input.setEnabled(enabled);
     }
@@ -908,7 +900,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                 }).catch((reason: any) => {
                     DefaultErrorHandler.handle(reason);
                 }).done();
-                this.input.setReadOnly(false);
+                this.input.setEnabled(true);
             }
         });
 
@@ -968,7 +960,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                 this.showDropdown();
             }
 
-            this.input.setReadOnly(false);
+            this.input.setEnabled(true);
         }
     }
 
@@ -996,14 +988,14 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                 this.onDropdownShownCallback().then(() => {
 
                     this.comboBoxDropdown.navigateToRowIfNotActive();
-                    this.input.setReadOnly(true);
+                    this.input.setEnabled(false);
 
                 }).catch((reason: any) => {
                     DefaultErrorHandler.handle(reason);
                 }).done();
 
             } else {
-                this.input.setReadOnly(false);
+                this.input.setEnabled(true);
             }
             return;
         }
@@ -1012,11 +1004,11 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             if (this.comboBoxDropdown.hasActiveRow()) {
                 if (this.comboBoxDropdown.getActiveRow() === 0) {
                     this.comboBoxDropdown.resetActiveSelection();
-                    this.input.setReadOnly(false);
+                    this.input.setEnabled(true);
                     this.input.giveFocus();
                 } else {
                     this.comboBoxDropdown.navigateToPreviousRow();
-                    this.input.setReadOnly(true);
+                    this.input.setEnabled(false);
                 }
             }
         } else if (KeyHelper.isArrowLeftKey(event)) { // LEFT
@@ -1029,11 +1021,11 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             } else {
                 this.comboBoxDropdown.navigateToFirstRow();
             }
-            this.input.setReadOnly(true);
+            this.input.setEnabled(false);
         } else if (KeyHelper.isEnterKey(event)) { // ENTER
             this.handleEnterPressed();
         } else if (KeyHelper.isSpace(event)) { // SPACE
-            if (this.input.isReadOnly() && this.applySelectionsButton) {
+            if (!this.input.isEnabled() && this.applySelectionsButton) {
                 if (!this.isSelectedRowReadOnly()) {
                     this.comboBoxDropdown.toggleRowSelection(this.comboBoxDropdown.getActiveRow(), this.maximumSelectionsReached());
                 }
@@ -1042,7 +1034,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                 event.preventDefault();
             }
         } else if (KeyHelper.isBackspace(event)) { // BACKSPACE
-            if (this.input.isReadOnly()) {
+            if (!this.input.isEnabled()) {
                 event.stopPropagation();
                 event.preventDefault();
             }

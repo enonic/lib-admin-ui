@@ -79,6 +79,7 @@ export class PrincipalSelector
     }
 
     setEnabled(enable: boolean) {
+        super.setEnabled(enable);
         this.comboBox.setEnabled(enable);
     }
 

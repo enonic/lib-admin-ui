@@ -283,6 +283,7 @@ export class UploaderEl<MODEL extends Equitable>
     }
 
     setEnabled(enabled: boolean): UploaderEl<MODEL> {
+        super.setEnabled(enabled);
         this.config.disabled = !enabled;
         this.dropzone.setEnable(enabled);
 

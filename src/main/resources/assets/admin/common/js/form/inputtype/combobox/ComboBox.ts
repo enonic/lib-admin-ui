@@ -89,6 +89,7 @@ export class ComboBox
     }
 
     setEnabled(enable: boolean) {
+        super.setEnabled(enable);
         this.comboBox.setEnabled(enable);
     }
 
