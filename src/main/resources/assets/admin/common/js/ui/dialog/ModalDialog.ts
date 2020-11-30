@@ -312,7 +312,11 @@ export abstract class ModalDialog
         }
 
         const calculatedDialogHeight = this.getDialogHeight();
-        this.toggleClass('sticky', calculatedDialogHeight >= containerHeight);
+        this.toggleStickyMode(calculatedDialogHeight >= containerHeight);
+    }
+
+    protected toggleStickyMode(value: boolean) {
+        this.toggleClass('sticky', value);
     }
 
     protected getBody(): DivEl {
