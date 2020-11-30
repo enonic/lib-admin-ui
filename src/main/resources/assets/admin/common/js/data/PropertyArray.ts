@@ -257,7 +257,7 @@ export class PropertyArray
         let propertyToRemove = this.get(index);
         if (!propertyToRemove) {
             throw new Error('Property not found: ' +
-                            PropertyPath.fromParent(this.getParentPropertyPath(), new PropertyPathElement(name, index)));
+                            PropertyPath.fromParent(this.getParentPropertyPath(), new PropertyPathElement(this.name, index)));
         }
 
         this.array.splice(index, 1);
