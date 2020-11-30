@@ -4,6 +4,8 @@ import {ValidityChangedEvent} from '../ValidityChangedEvent';
 export class FormItemEl
     extends Element {
 
+    private enabled: boolean = true;
+
     private validityChangedListeners: { (event: ValidityChangedEvent): void }[] = [];
 
     constructor(tagName: string, className?: string, prefix?: string) {
@@ -36,7 +38,12 @@ export class FormItemEl
     }
 
     setEnabled(enable: boolean) {
+        this.enabled = enable;
         this.toggleClass('disabled', !enable);
+    }
+
+    isEnabled(): boolean {
+        return this.enabled;
     }
 
 }

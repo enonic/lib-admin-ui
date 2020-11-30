@@ -208,6 +208,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         super.setEnabled(enable);
 
         this.getComboBox().setEnabled(enable);
+        this.getSelectedOptionView().setReadonly(!enable);
         this.getSelectedOptionView().getSelectedOptions().forEach(
             (o: SelectedOption<OPTION_DATA_TYPE>) => o.getOptionView().setEditable(enable));
     }

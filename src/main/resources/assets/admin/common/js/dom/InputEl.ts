@@ -91,16 +91,6 @@ export class InputEl
         return this.getEl().hasAttribute('required');
     }
 
-    setReadOnly(readOnly: boolean) {
-        super.setReadOnly(readOnly);
-
-        if (readOnly) {
-            this.getEl().setAttribute('readonly', 'readonly');
-        } else {
-            this.getEl().removeAttribute('readonly');
-        }
-    }
-
     protected handleInput() {
         this.refreshDirtyState();
         this.refreshValueChanged();
