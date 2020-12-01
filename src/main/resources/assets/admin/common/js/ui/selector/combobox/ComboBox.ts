@@ -208,7 +208,6 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     giveInputFocus() {
-        this.input.setEnabled(true);
         this.input.giveFocus();
 
         if (BrowserHelper.isIE()) { // issue with getting focus in IE
@@ -244,8 +243,6 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
         this.comboBoxDropdown.renderDropdownGrid();
 
-        this.input.setEnabled(false);
-
         this.addClass('expanded');
     }
 
@@ -260,7 +257,6 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             this.applySelectionsButton.hide();
         }
 
-        this.input.setEnabled(true);
         this.removeClass('expanded');
         if (this.isDropdownRendered()) {
             this.removeDropdown();
@@ -900,7 +896,6 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                 }).catch((reason: any) => {
                     DefaultErrorHandler.handle(reason);
                 }).done();
-                this.input.setEnabled(true);
             }
         });
 
@@ -959,8 +954,6 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             if (!this.skipAutoDropShowOnValueChange) {
                 this.showDropdown();
             }
-
-            this.input.setEnabled(true);
         }
     }
 
@@ -969,33 +962,28 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             return;
         }
 
-            if (KeyHelper.isTabKey(event)) { // TAB
-                this.hideDropdown();
-                return;
-            } else if (KeyHelper.isModifierKey(event)) { // CTRL or ALT or SHIFT or MEtA
+        if (KeyHelper.isTabKey(event)) { // TAB
+            this.hideDropdown();
+            return;
+        } else if (KeyHelper.isModifierKey(event)) { // CTRL or ALT or SHIFT or MEtA
+            return;
+        }
+
+        if (!this.isDropdownShown()) {
+            if (KeyHelper.isEscKey(event)) { // Escape
                 return;
             }
 
-            if (!this.isDropdownShown()) {
-                if (KeyHelper.isEscKey(event)) { // Escape
-                    return;
-                }
-
             this.showDropdown();
 
-                if (KeyHelper.isArrowDownKey(event)) { // Down
+            if (KeyHelper.isArrowDownKey(event)) { // Down
 
                 this.onDropdownShownCallback().then(() => {
-
                     this.comboBoxDropdown.navigateToRowIfNotActive();
-                    this.input.setEnabled(false);
-
                 }).catch((reason: any) => {
                     DefaultErrorHandler.handle(reason);
                 }).done();
 
-            } else {
-                this.input.setEnabled(true);
             }
             return;
         }
@@ -1004,11 +992,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             if (this.comboBoxDropdown.hasActiveRow()) {
                 if (this.comboBoxDropdown.getActiveRow() === 0) {
                     this.comboBoxDropdown.resetActiveSelection();
-                    this.input.setEnabled(true);
                     this.input.giveFocus();
                 } else {
                     this.comboBoxDropdown.navigateToPreviousRow();
-                    this.input.setEnabled(false);
                 }
             }
         } else if (KeyHelper.isArrowLeftKey(event)) { // LEFT
@@ -1021,11 +1007,10 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             } else {
                 this.comboBoxDropdown.navigateToFirstRow();
             }
-            this.input.setEnabled(false);
         } else if (KeyHelper.isEnterKey(event)) { // ENTER
             this.handleEnterPressed();
         } else if (KeyHelper.isSpace(event)) { // SPACE
-            if (!this.input.isEnabled() && this.applySelectionsButton) {
+            if (this.applySelectionsButton && this.comboBoxDropdown.hasActiveRow()) {
                 if (!this.isSelectedRowReadOnly()) {
                     this.comboBoxDropdown.toggleRowSelection(this.comboBoxDropdown.getActiveRow(), this.maximumSelectionsReached());
                 }
