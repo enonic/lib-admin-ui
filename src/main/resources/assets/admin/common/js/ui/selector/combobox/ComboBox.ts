@@ -243,6 +243,8 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
         this.comboBoxDropdown.renderDropdownGrid();
 
+        this.comboBoxDropdown.resetActiveSelection();
+
         this.addClass('expanded');
     }
 
@@ -266,6 +268,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     setOptions(options: Option<OPTION_DISPLAY_VALUE>[], saveSelection?: boolean) {
         this.comboBoxDropdown.setOptions(options, this.isInputEmpty() ? this.noOptionsText : null, this.getSelectedOptions(),
             saveSelection);
+        this.comboBoxDropdown.resetActiveSelection();
 
         this.doUpdateDropdownTopPositionAndWidth();
     }
