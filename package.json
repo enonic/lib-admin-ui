@@ -37,7 +37,7 @@
     "@types/q": "^1.5.4",
     "@types/semver": "^7.3.4",
     "@types/validator": "^13.1.0",
-    "autoprefixer": "^9.8.6",
+    "autoprefixer": "^10.0.4",
     "browserslist": "^4.14.7",
     "browserslist-config-enonic": "^1.0.5",
     "circular-dependency-plugin": "^5.2.2",
