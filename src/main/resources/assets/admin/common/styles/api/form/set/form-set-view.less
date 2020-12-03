@@ -28,6 +28,7 @@
   }
 
   .form-item-set-view {
+
     > .occurrence-views-container > .form-item-set-occurrence-view {
       padding: 13px;
 
@@ -42,6 +43,16 @@
   }
 
   .form-item-set-view, .form-option-set-view {
+    > .form-set-header {
+      margin-bottom: 20px;
+
+      h5 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
     > .occurrence-views-container {
 
       &:empty {
