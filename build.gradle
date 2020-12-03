@@ -6,17 +6,16 @@ plugins {
     id "com.github.node-gradle.node" version '2.2.3'
 }
 
+apply from: "$rootDir/gradle/env.gradle"
+apply from: "$rootDir/gradle/node.gradle"
+
 repositories {
     jcenter()
     xp.enonicRepo()
 }
 
-
 group = 'com.enonic.lib'
-
-jar {
-    archiveFileName = 'lib-admin-ui'
-}
+archivesBaseName = 'lib-admin-ui'
 
 node {
     download = true
@@ -38,33 +37,33 @@ task typescriptPkg( type: NpmTask, dependsOn: lint ) {
     def buildEnv = isProd() ? 'prod' : 'dev'
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     args = [ 'run', "build:$buildEnv" ]
-    inputs.dir "${resourcesDir}/assets/admin/common"
-    outputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
+    inputs.dir "$resourcesDir/assets/admin/common"
+    outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
 }
 
 task typescriptLib( type: NpmTask, dependsOn: lint ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build library, that should be included to HTML.'
     args = [ 'run', 'build:lib' ]
-    inputs.dir "${resourcesDir}/assets/admin/common"
-    outputs.dir "${buildDir}/resources/main/assets/admin/common"
+    inputs.dir "$resourcesDir/assets/admin/common"
+    outputs.dir "$buildDir/resources/main/assets/admin/common"
 }
 
 task minifyPkg( type: NpmTask, dependsOn: typescriptPkg ) {
     description = 'Minify transpiled code.'
     args = [ 'run', "build:minify" ]
-    inputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
-    outputs.dir "${buildDir}/resources/main/dev/lib-admin-ui"
+    inputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
+    outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
     mustRunAfter typescriptPkg
     enabled isProd()
 }
 
 task copyFlags( type: Copy ) {
     description = 'Copy flags'
-    from( "node_modules/flag-icon-css/flags" ) {
+    from( 'node_modules/flag-icon-css/flags' ) {
         include '**/*.svg'
     }
-    into 'build/resources/main/assets/admin/common/flags'
+    into "$buildDir/resources/main/assets/admin/common/flags"
     includeEmptyDirs = false
 }
 
@@ -114,15 +113,6 @@ jar {
     dependsOn += typescript
 }
 
-task npmInstallForce( type: NpmTask ) {
-    description = 'Update all project node dependencies'
-    args = [ 'install', '--force' ]
-}
-
-task cleanNode( type: Delete ) {
-    delete += 'node_modules'
-}
-
 task flush( type: Delete, dependsOn: clean ) {
     description = 'Clean the project from built sources and dependencies'
     delete '.xp'
@@ -130,26 +120,12 @@ task flush( type: Delete, dependsOn: clean ) {
 
 def loadConfiguration() {
     def envList = [ 'dev', 'prod' ]
-    def environment = hasProperty( 'env' ) ? env : 'prod'
+    def environment = hasEnvironment() ? env : 'prod'
 
     if ( !envList.contains( environment ) ) {
         def message = "Target environment '$environment' is not allowed. Please use one of the following: ${envList.join(", ")}"
         throw new ResourceException( message )
     }
 
-    def isDev = environment != 'prod'
-    project.ext.isDev = isDev
-
-    def envName = nodeEnvironment()
-    println "Environment is set to $envName"
-}
-
-def nodeEnvironment() {
-    def environments = [ prod : 'production', dev: 'development' ]
-    def nodeEnv = environments[hasProperty( 'env' ) ? env : 'prod']
-    return nodeEnv != null ? nodeEnv : 'production'
-}
-
-def isProd() {
-    return hasProperty( 'env' ) ? (env == 'prod') : true
+    println "Environment is set to $nodeEnvironment()"
 }
