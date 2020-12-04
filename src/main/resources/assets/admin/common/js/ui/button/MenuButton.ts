@@ -5,7 +5,6 @@ import {Action} from '../Action';
 import {AppHelper} from '../../util/AppHelper';
 import {DropdownHandle} from './DropdownHandle';
 import {ActionButton} from './ActionButton';
-import {ObservableContainer} from '../../dom/ObservableContainer';
 
 export class MenuButton
     extends DivEl {
@@ -20,10 +19,6 @@ export class MenuButton
 
     private toggleMenuOnAction: boolean = false;
 
-    protected autoWidth: boolean;
-
-    protected rightAligned: boolean;
-
     constructor(mainAction: Action, menuActions: Action[] = []) {
         super('menu-button');
 
@@ -32,7 +27,6 @@ export class MenuButton
         this.menu = new Menu(menuActions);
         this.menu.hide();
 
-        this.initObservable();
         this.initDropdownHandle();
         this.initActionButton(mainAction);
         this.initActions(menuActions);
@@ -41,21 +35,6 @@ export class MenuButton
 
         let children = [this.actionButton, this.dropdownHandle, this.menu];
         this.appendChildren(...children);
-    }
-
-    private initObservable(): ObservableContainer {
-        this.configureObservable();
-
-        return new ObservableContainer({
-            element: this.menu,
-            autoWidth: this.autoWidth,
-            rightAligned: this.rightAligned
-        });
-    }
-
-    protected configureObservable() {
-        this.autoWidth = false;
-        this.rightAligned = false;
     }
 
     getActionButton(): ActionButton {
@@ -97,14 +76,12 @@ export class MenuButton
     }
 
     expandMenu(): void {
-        //this.menu.addClass('expanded');
         this.menu.show();
         this.dropdownHandle.addClass('down');
         this.dropdownHandle.giveFocus();
     }
 
     collapseMenu(): void {
-        //this.menu.removeClass('expanded');
         this.menu.hide();
         this.dropdownHandle.removeClass('down');
     }

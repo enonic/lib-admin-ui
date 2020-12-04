@@ -48,6 +48,10 @@
         padding-top: 10px;
         padding-right: 40px;
       }
+
+      .modal-dialog-body {
+        overflow: auto;
+      }
     }
   }
 
@@ -142,7 +146,7 @@
       position: relative;
       height: auto;
       padding: 0 30px;
-      overflow: auto;
+      overflow: visible;
       width: 100%;
       box-sizing: border-box;
       min-height: 50px; // To give room for spinner inside an empty dialog
@@ -159,6 +163,10 @@
           .dropdown-tree-grid {
             position: static !important;
           }
+        }
+
+        .panel {
+          overflow: visible;
         }
       }
     }
@@ -202,12 +210,6 @@
 
     .modal-dialog-body {
       padding-top: 15px;
-    }
-  }
-
-  &.overflow-enabled .modal-dialog-wrapper {
-    .modal-dialog-body {
-      overflow: visible;
     }
   }
 

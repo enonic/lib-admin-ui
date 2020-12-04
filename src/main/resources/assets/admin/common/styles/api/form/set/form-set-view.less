@@ -2,9 +2,9 @@
 
 .form-view {
   &.display-validation-errors {
-    .form-item-set-occurrence-view,
-    .form-option-set-occurrence-view {
-      &.invalid.collapsed {
+    .form-item-set-view,
+    .form-option-set-view {
+      &.invalid > .occurrence-views-container{
         border: 3px solid @admin-red;
         box-shadow: none;
       }
@@ -16,14 +16,6 @@
 
     .form-option-set-occurrence-view.invalid.collapsed {
       padding: 7px;
-    }
-
-    .input-view.invalid {
-      padding: 10px;
-
-      .validation-viewer ul > li {
-        margin-top: 10px;
-      }
     }
   }
 
