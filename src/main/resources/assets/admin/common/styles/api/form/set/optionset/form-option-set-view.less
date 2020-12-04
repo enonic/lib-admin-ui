@@ -68,18 +68,14 @@
       padding: 10px 0;
 
       .form-option-set-option-view {
+        border: 1px solid transparent;
+
+        &:not(:first-child) {
+          margin-top: -1px;
+        }
 
         .form-option-set-view.max-1-occurrence .drag-control {
           display: none;
-        }
-
-        &:not(:last-child) {
-          margin-bottom: 5px;
-          border-bottom: 1px solid @admin-bg-light-gray;
-
-          &.expandable {
-            margin-bottom: 10px;
-          }
         }
 
         .input-view {
@@ -95,7 +91,7 @@
         }
 
         > .help-text {
-          padding: 3px 0 0 31px;
+          padding: 0 0 3px 31px;
         }
 
         &.expandable.expanded {
@@ -183,9 +179,7 @@
         }
 
         &.selected {
-          border: 6px solid @admin-option-set-header-bg;
-          border-bottom: none;
-          border-top: none;
+          border: 1px solid @admin-medium-gray-border;
           box-sizing: border-box;
 
           .checkbox input[type="checkbox"]:focus + label:before {
@@ -193,32 +187,8 @@
           }
 
           &.expandable {
-            margin-bottom: 10px;
-            border-bottom: 6px solid @admin-option-set-header-bg;
-
             > .help-text {
-              padding: 3px 0 0 25px;
-            }
-          }
-
-          &:not(.expandable) {
-
-            .help-text.visible + .option-items-container {
-              border-bottom: 1px solid @admin-bg-light-gray;
-              margin-left: -6px;
-              margin-right: -6px;
-            }
-
-            > .option-items-container {
-              border-bottom: 1px solid @admin-option-set-header-bg;
-            }
-
-            .help-text {
-              background: #fff;
-              margin-left: -6px;
-              margin-right: -6px;
-              padding-left: 31px;
-              padding-right: 31px;
+              padding-left: 25px;
             }
           }
 
@@ -231,18 +201,13 @@
           }
 
           > .form-input {
-            background-color: @admin-option-set-header-bg;
+            padding: 0 6px;
 
             > label {
               padding-left: 25px;
-              color: @admin-white;
 
               &::before {
                 left: 4px;
-              }
-
-              &:hover {
-                color: @admin-white;
               }
             }
 
