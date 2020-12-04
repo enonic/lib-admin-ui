@@ -15,11 +15,17 @@
   }
 
   &.label-inline {
+    > label,
     > .input-label {
       float: left;
       max-width: @form-label-width - 10px;
+
+      .label {
+        float: left;
+      }
     }
 
+    > .input-wrapper,
     > .input-type-view,
     > .help-text,
     > .bottom-button-row,
@@ -33,10 +39,11 @@
   }
 
   > .input-label {
-    .ellipsis();
-    .label {
-      display: inline-block;
+    display: inline-block;
+
+    > .label {
       max-width: 100%;
+      .ellipsis();
     }
 
     .required, .wrapper.required, &.required {
