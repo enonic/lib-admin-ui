@@ -206,6 +206,7 @@
   &.grey-header .modal-dialog-wrapper {
     .modal-dialog-header {
       background-color: @admin-bg-light-gray;
+      padding-bottom: 15px;
     }
 
     .modal-dialog-body {
@@ -348,10 +349,15 @@ body {
 
       .cancel-button-inline();
 
+      &.fullscreen {
+        top: 0;
+        bottom: 0;
+      }
+
       .modal-dialog-wrapper {
         .modal-dialog-header {
           font-size: 5vw;
-          padding: 15px 20px;
+          padding: 15px 30px 15px 20px;
 
           .back-button:before {
             left: 0;
@@ -370,10 +376,6 @@ body {
       }
 
       &.grey-header {
-        .modal-dialog-header {
-          padding: 20px;
-        }
-
         .modal-dialog-body {
           padding: 20px;
           max-height: none;
