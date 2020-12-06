@@ -14,30 +14,6 @@
     .input-glow();
   }
 
-  &.label-inline {
-    > label,
-    > .input-label {
-      float: left;
-      max-width: @form-label-width - 10px;
-
-      .label {
-        float: left;
-      }
-    }
-
-    > .input-wrapper,
-    > .input-type-view,
-    > .help-text,
-    > .bottom-button-row,
-    > .validation-viewer {
-      margin-left: @form-label-width;
-    }
-
-    > .help-text-toggler {
-      margin-left: 5px;
-    }
-  }
-
   > .input-label {
     display: inline-block;
 
@@ -63,6 +39,30 @@
 
     > select, > input, > textarea {
       .input-error();
+    }
+  }
+
+  &.label-inline {
+    > label,
+    > .input-label {
+      float: left;
+      max-width: @form-label-width - 10px;
+
+      .label {
+        float: left;
+      }
+    }
+
+    > .input-wrapper,
+    > .input-type-view,
+    > .help-text,
+    > .bottom-button-row,
+    > .validation-viewer {
+      margin-left: @form-label-width;
+    }
+
+    > .help-text-toggler {
+      margin-left: 5px;
     }
   }
 
