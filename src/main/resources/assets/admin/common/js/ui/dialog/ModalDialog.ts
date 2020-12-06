@@ -24,6 +24,8 @@ export interface ModalDialogConfig {
     skipTabbable?: boolean;
     class?: string;
     keepOpenOnClickOutside?: boolean;
+    defaultFullscreen?: boolean;
+    allowFullscreen?: boolean;
 }
 
 export enum DialogState {
@@ -138,9 +140,15 @@ export abstract class ModalDialog
         this.responsiveItem = new ResponsiveItem(this);
         this.initFocusInOutEventsHandlers();
 
-        this.initResizeHandler();
+        if (this.config.allowFullscreen !== false) {
+            this.initResizeHandler();
+        }
 
         this.onRendered(() => {
+            if (this.config.defaultFullscreen) {
+                this.toggleFullscreen(true);
+            }
+
             if (!this.skipTabbable) {
                 this.updateTabbable();
             }
@@ -303,11 +311,13 @@ export abstract class ModalDialog
         }
 
         const calculatedDialogHeight = this.getDialogHeight();
-        this.toggleStickyMode(calculatedDialogHeight >= containerHeight);
+        if (!this.config.defaultFullscreen) {
+            this.toggleFullscreen(calculatedDialogHeight >= containerHeight);
+        }
     }
 
-    protected toggleStickyMode(value: boolean) {
-        this.toggleClass('sticky', value);
+    protected toggleFullscreen(value: boolean) {
+        this.toggleClass('fullscreen', value);
     }
 
     protected getBody(): DivEl {

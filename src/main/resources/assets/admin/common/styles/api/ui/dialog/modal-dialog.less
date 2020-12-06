@@ -33,11 +33,11 @@
     opacity: 0;
   }
 
-  &.sticky {
+  &.fullscreen {
     background-color: @admin-white;
     position: fixed;
-    top: 0;
-    bottom: 0;
+    top: 20px;
+    bottom: 20px;
 
     .cancel-button-inline();
 
@@ -55,7 +55,7 @@
     }
   }
 
-  &:not(.sticky) {
+  &:not(.fullscreen) {
     .modal-dialog-wrapper {
       padding: 40px 40px 0 0;
       margin: -40px -40px 0 0;
@@ -397,19 +397,14 @@ body {
     .cancel-button-top {
       top: 0;
       right: 0;
-      width: 26px;
-      height: 26px;
-      line-height: 26px;
+      width: 32px;
+      height: 32px;
       z-index: @z-index-modal-dialog + 1;
 
       &::before,
       &::after {
         background-color: @admin-font-gray2;
-        margin: 0;
-        top: 16px;
-        left: 0;
-        height: 3px;
-        width: 15px;
+        width: 18px;
       }
 
       &:hover {
