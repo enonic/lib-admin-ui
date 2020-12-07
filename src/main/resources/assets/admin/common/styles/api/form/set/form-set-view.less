@@ -86,6 +86,7 @@
           display: inline-block;
           padding-right: 0;
           cursor: zoom-out;
+          .ellipsis();
 
           .required {
             padding-left: 5px;
@@ -107,6 +108,7 @@
 
           p.note {
             display: none;
+            .ellipsis();
           }
 
           &.custom-label {
@@ -220,8 +222,12 @@
       .clearfix();
 
       button {
+        max-width: 300px;
+
         span {
+          display: block;
           line-height: 28px;
+          .ellipsis();
         }
       }
 
