@@ -111,6 +111,7 @@
 
           &.custom-label {
             line-height: 18px;
+
             .drag-control {
               height: 30px;
             }
@@ -147,6 +148,7 @@
         }
       }
 
+      > .top-button-row,
       > .bottom-button-row {
         display: none;
       }
@@ -213,6 +215,29 @@
       }
     }
 
+    > .top-button-row,
+    > .bottom-button-row {
+
+      .collapse-button {
+        float: right;
+        text-decoration: underline;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+
+    > .top-button-row {
+      margin: 10px 0;
+
+      &:after {
+        display: block;
+        content: '';
+        clear: both;
+      }
+    }
+
     & > .bottom-button-row {
       box-sizing: border-box;
       padding: 10px 0;
@@ -230,13 +255,7 @@
       }
 
       .collapse-button {
-        float: right;
-        text-decoration: underline;
         line-height: 28px;
-
-        &:hover {
-          cursor: pointer;
-        }
       }
     }
 
