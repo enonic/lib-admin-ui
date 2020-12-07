@@ -57,7 +57,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     protected addButton: Button;
 
-    protected collapseButton: AEl;
+    protected collapseButtons: AEl[] = [];
 
     protected validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
 
@@ -144,7 +144,10 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             stop: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStop(ui)
         });
 
-        this.appendChildren(this.header, this.occurrenceViewsContainer);
+        const topCollapseButton = this.makeCollapseButton();
+        const topButtonRow = new DivEl('top-button-row');
+        topButtonRow.appendChild(topCollapseButton);
+        this.appendChildren(this.header, topButtonRow, this.occurrenceViewsContainer);
 
         this.initOccurrences().layout(validate).then(() => {
             this.subscribeFormSetOccurrencesOnEvents();
@@ -154,8 +157,9 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             this.bottomButtonRow = new DivEl('bottom-button-row');
             this.appendChild(this.bottomButtonRow);
 
-            this.bottomButtonRow.appendChild(this.addButton = this.makeAddButton());
-            this.bottomButtonRow.appendChild(this.collapseButton = this.makeCollapseButton());
+            this.addButton = this.makeAddButton();
+            const bottomCollapseButton = this.makeCollapseButton();
+            this.bottomButtonRow.appendChildren<Element>(this.addButton, bottomCollapseButton);
 
             this.refreshButtonsState();
 
@@ -520,7 +524,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
                         (isCollapsed ? i18n('button.expandall') : i18n('button.collapseall')) :
                         (isCollapsed ? i18n('button.expand') : i18n('button.collapse'));
 
-        this.collapseButton.setHtml(caption);
+        this.collapseButtons.forEach(b => b.setHtml(caption));
     }
 
     private makeCollapseButton(): AEl {
@@ -533,7 +537,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             event.preventDefault();
             return false;
         });
-
+        this.collapseButtons.push(collapseButton);
         return collapseButton;
     }
 
@@ -571,7 +575,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     private refreshButtonsState() {
         const occurrenceCount = this.formItemOccurrences.getOccurrences().length;
         this.setCollapseButtonCaption();
-        this.collapseButton.setVisible(occurrenceCount > 0);
+        this.collapseButtons.forEach(b => b.setVisible(occurrenceCount > 0));
         this.addButton.setVisible(!this.formItemOccurrences.maximumOccurrencesReached());
         this.toggleClass('multiple-occurrence', occurrenceCount > 1);
     }

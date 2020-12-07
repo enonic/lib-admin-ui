@@ -113,6 +113,7 @@
 
           &.custom-label {
             line-height: 18px;
+
             .drag-control {
               height: 30px;
             }
@@ -132,6 +133,48 @@
           > .form-occurrence-draggable-label {
             cursor: zoom-in;
           }
+        }
+      }
+    }
+
+    > .top-button-row {
+      display: none;
+      margin: 5px 0 10px 0;
+    }
+
+    > .bottom-button-row {
+      box-sizing: border-box;
+      padding: 10px 0;
+
+      button {
+        max-width: 300px;
+
+        span {
+          display: block;
+          line-height: 28px;
+          .ellipsis();
+        }
+      }
+
+      .add-button {
+        float: left;
+      }
+
+      .collapse-button {
+        line-height: 28px;
+      }
+    }
+
+    > .top-button-row,
+    > .bottom-button-row {
+      .clearfix();
+
+      .collapse-button {
+        float: right;
+        text-decoration: underline;
+
+        &:hover {
+          cursor: pointer;
         }
       }
     }
@@ -178,6 +221,14 @@
           }
         }
       }
+
+      > .form-set-header {
+        margin-bottom: 0;
+      }
+
+      > .top-button-row {
+        display: block;
+      }
     }
 
     .form-item-set-drop-target-placeholder, .form-option-set-drop-target-placeholder {
@@ -215,36 +266,6 @@
       }
     }
 
-    & > .bottom-button-row {
-      box-sizing: border-box;
-      padding: 10px 0;
-      clear: left;
-      .clearfix();
-
-      button {
-        max-width: 300px;
-
-        span {
-          display: block;
-          line-height: 28px;
-          .ellipsis();
-        }
-      }
-
-      .add-button {
-        float: left;
-      }
-
-      .collapse-button {
-        float: right;
-        text-decoration: underline;
-        line-height: 28px;
-
-        &:hover {
-          cursor: pointer;
-        }
-      }
-    }
 
     & > .validation-viewer {
       background-color: @admin-bg-light-gray;
