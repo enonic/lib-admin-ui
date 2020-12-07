@@ -137,6 +137,54 @@
       }
     }
 
+    > .top-button-row,
+    > .bottom-button-row {
+      .collapse-button {
+        float: right;
+        text-decoration: underline;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+
+    > .top-button-row {
+      display: none;
+      margin: 5px 0 10px 0;
+
+      &:after {
+        display: block;
+        content: '';
+        clear: both;
+      }
+    }
+
+    > .bottom-button-row {
+      box-sizing: border-box;
+      padding: 10px 0;
+      clear: left;
+      .clearfix();
+
+      button {
+        max-width: 300px;
+
+        span {
+          display: block;
+          line-height: 28px;
+          .ellipsis();
+        }
+      }
+
+      .add-button {
+        float: left;
+      }
+
+      .collapse-button {
+        line-height: 28px;
+      }
+    }
+
     &.max-1-occurrence {
       > .occurrence-views-container {
         > .form-option-set-occurrence-view {
@@ -224,53 +272,6 @@
       }
     }
 
-    > .top-button-row,
-    > .bottom-button-row {
-      .collapse-button {
-        float: right;
-        text-decoration: underline;
-
-        &:hover {
-          cursor: pointer;
-        }
-      }
-    }
-
-    > .top-button-row {
-      display: none;
-      margin: 5px 0 10px 0;
-
-      &:after {
-        display: block;
-        content: '';
-        clear: both;
-      }
-    }
-
-    & > .bottom-button-row {
-      box-sizing: border-box;
-      padding: 10px 0;
-      clear: left;
-      .clearfix();
-
-      button {
-        max-width: 300px;
-
-        span {
-          display: block;
-          line-height: 28px;
-          .ellipsis();
-        }
-      }
-
-      .add-button {
-        float: left;
-      }
-
-      .collapse-button {
-        line-height: 28px;
-      }
-    }
 
     & > .validation-viewer {
       background-color: @admin-bg-light-gray;
