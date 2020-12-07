@@ -15,13 +15,16 @@ export class Messages {
 
     static setMessages(messages: Object) {
         if (messages) {
-            Messages.getMessages().clear();
             for (let key in messages) {
                 if (messages.hasOwnProperty(key)) {
                     Messages.getMessages().set(key, messages[key]);
                 }
             }
         }
+    }
+
+    static clear() {
+        Messages.getMessages().clear();
     }
 
     static isEmpty() {

@@ -6,10 +6,15 @@ import {ResourceRequest} from '../rest/ResourceRequest';
 import {HttpMethod} from '../rest/HttpMethod';
 
 export function i18nInit(url: string, bundles?: string[]): Q.Promise<void> {
-    if (!Messages.isEmpty()) {
-        return Q(null);
-    }
+    Messages.clear();
+    return doI18n(url, bundles);
+}
 
+export function i18nAdd(url: string, bundles?: string[]): Q.Promise<void> {
+    return doI18n(url, bundles);
+}
+
+function doI18n(url: string, bundles?: string[]) {
     const request: GetMessagesRequest = new GetMessagesRequest(url, bundles);
     if (!!bundles && bundles.length) {
         request.setMethod(HttpMethod.POST);
