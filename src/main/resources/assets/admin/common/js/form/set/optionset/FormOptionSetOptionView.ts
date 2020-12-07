@@ -358,8 +358,7 @@ export class FormOptionSetOptionView
             label: labelText,
             value: '',
             name: this.getParent().getEl().getId(),
-            checked,
-            tooltip: labelText
+            checked
         });
 
         button.onChange(() => {

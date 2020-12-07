@@ -86,9 +86,7 @@
           display: inline-block;
           padding-right: 0;
           cursor: zoom-out;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+          .ellipsis();
 
           .required {
             padding-left: 5px;
@@ -110,9 +108,7 @@
 
           p.note {
             display: none;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            .ellipsis();
           }
 
           &.custom-label {
@@ -226,13 +222,13 @@
       .clearfix();
 
       button {
-        span {
-          line-height: 28px;
-        }
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
         max-width: 300px;
+
+        span {
+          display: block;
+          line-height: 28px;
+          .ellipsis();
+        }
       }
 
       .add-button {
