@@ -28,6 +28,7 @@
   }
 
   .form-item-set-view {
+
     > .occurrence-views-container > .form-item-set-occurrence-view {
       padding: 13px;
 
@@ -41,7 +42,21 @@
     }
   }
 
-  .form-item-set-view, .form-option-set-view {
+  .form-item-set-view,
+  .form-option-set-view {
+    > .form-set-header {
+      margin-bottom: 20px;
+
+      h5 {
+        .ellipsis();
+        font-size: 25px;
+      }
+
+      .help-text {
+        padding-top: 10px;
+      }
+    }
+
     > .occurrence-views-container {
 
       &:empty {
@@ -211,7 +226,9 @@
       .clearfix();
 
       button {
-        margin-top: 5px;
+        span {
+          line-height: 28px;
+        }
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
