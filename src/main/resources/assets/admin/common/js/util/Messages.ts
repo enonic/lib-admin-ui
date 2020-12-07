@@ -13,9 +13,12 @@ export class Messages {
         return messages;
     }
 
-    static setMessages(messages: Object) {
+    static setMessages(messages: Object, clear: boolean) {
         if (messages) {
-            Messages.getMessages().clear();
+            if (clear) {
+                Messages.getMessages().clear();
+            }
+
             for (let key in messages) {
                 if (messages.hasOwnProperty(key)) {
                     Messages.getMessages().set(key, messages[key]);
