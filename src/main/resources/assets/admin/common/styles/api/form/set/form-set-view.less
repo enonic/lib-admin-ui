@@ -137,34 +137,14 @@
       }
     }
 
-    > .top-button-row,
-    > .bottom-button-row {
-      .collapse-button {
-        float: right;
-        text-decoration: underline;
-
-        &:hover {
-          cursor: pointer;
-        }
-      }
-    }
-
     > .top-button-row {
       display: none;
       margin: 5px 0 10px 0;
-
-      &:after {
-        display: block;
-        content: '';
-        clear: both;
-      }
     }
 
     > .bottom-button-row {
       box-sizing: border-box;
       padding: 10px 0;
-      clear: left;
-      .clearfix();
 
       button {
         max-width: 300px;
@@ -182,6 +162,20 @@
 
       .collapse-button {
         line-height: 28px;
+      }
+    }
+
+    > .top-button-row,
+    > .bottom-button-row {
+      .clearfix();
+
+      .collapse-button {
+        float: right;
+        text-decoration: underline;
+
+        &:hover {
+          cursor: pointer;
+        }
       }
     }
 
