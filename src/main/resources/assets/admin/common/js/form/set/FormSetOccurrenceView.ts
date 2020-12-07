@@ -19,7 +19,6 @@ import {FormItemLayer} from '../FormItemLayer';
 import {ValidationRecordingPath} from '../ValidationRecordingPath';
 import {FormSet} from './FormSet';
 import {FormItem} from '../FormItem';
-import {HelpTextContainer} from '../HelpTextContainer';
 import {Element} from '../../dom/Element';
 import {FormContext} from '../FormContext';
 import {FormSetOccurrence} from './FormSetOccurrence';
@@ -107,19 +106,6 @@ export abstract class FormSetOccurrenceView
         this.appendChildren(<Element>this.label, this.removeButton);
 
         this.label.onClicked(() => this.showContainer(!this.isContainerVisible()));
-
-        if (this.getFormSet().getHelpText()) {
-            this.helpText = new HelpTextContainer(this.getFormSet().getHelpText());
-
-            this.helpText.onHelpTextToggled((show) => {
-                this.formItemLayer.toggleHelpText(show);
-            });
-
-            this.label.appendChild(this.helpText.getToggler());
-            this.appendChild(this.helpText.getHelpText());
-
-            this.toggleHelpText(this.getFormSet().isHelpTextOn());
-        }
 
         this.initValidationMessageBlock();
 
