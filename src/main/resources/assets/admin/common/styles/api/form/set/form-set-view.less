@@ -150,7 +150,6 @@
         }
       }
 
-      > .top-button-row,
       > .bottom-button-row {
         display: none;
       }
@@ -179,6 +178,14 @@
             }
           }
         }
+      }
+
+      > .form-set-header {
+        margin-bottom: 0;
+      }
+
+      > .top-button-row {
+        display: block;
       }
     }
 
@@ -219,7 +226,6 @@
 
     > .top-button-row,
     > .bottom-button-row {
-
       .collapse-button {
         float: right;
         text-decoration: underline;
@@ -231,7 +237,8 @@
     }
 
     > .top-button-row {
-      margin: 10px 0;
+      display: none;
+      margin: 5px 0 10px 0;
 
       &:after {
         display: block;
