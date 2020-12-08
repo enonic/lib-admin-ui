@@ -36,7 +36,7 @@
         font-size: 16px;
         color: @admin-font-gray3;
         padding-right: 20px;
-        width: calc(100% - 20px);
+        width: auto;
         .ellipsis();
       }
     }
@@ -69,21 +69,16 @@
         margin: 0;
         box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
 
-        > .remove-button {
-          &:extend(.icon);
-          .icon-close();
-          .focusable();
-
+        > .more-button {
           margin-right: -4px;
-          border: 1px solid transparent;
-          line-height: 20px;
           float: right;
-          text-decoration: none;
-          cursor: pointer;
+
+          &[disabled] {
+            display: none;
+          }
         }
 
         > .form-occurrence-draggable-label {
-          display: inline-block;
           padding-right: 0;
           cursor: zoom-out;
           .ellipsis();
@@ -208,7 +203,6 @@
           }
 
           > .form-occurrence-draggable-label {
-            width: calc(100% - 26px);
 
             &:not(.custom-label) {
               line-height: 22px;
