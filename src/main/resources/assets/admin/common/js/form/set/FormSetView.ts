@@ -487,6 +487,11 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
                     this.handleFormSetOccurrenceViewValidityChanged(addedEvent);
                 });
             }
+            const addedView = event.getOccurrenceView();
+            if (this.isRendered() && addedView instanceof FormSetOccurrenceView) {
+                // it was added manually, so expand it
+                this.expandOccurrenceView(addedView);
+            }
         });
         this.formItemOccurrences.onOccurrenceRemoved((event: OccurrenceRemovedEvent) => {
 
@@ -549,11 +554,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     private makeAddButton(): Button {
         const addButton: Button = new Button(i18n('button.add', this.formSet.getLabel()));
         addButton.addClass('small');
-        addButton.onClicked(() => {
-            this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), false).then((item: V) => {
-                this.expandOccurrenceView(item);
-            });
-        });
+        addButton.onClicked(() => this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), false));
         return addButton;
     }
 
@@ -564,7 +565,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         });
     }
 
-    private expandOccurrenceView(item: V) {
+    private expandOccurrenceView(item: FormSetOccurrenceView) {
         item.getFormItemViews().forEach((formItemView: FormItemView) => {
             if (ObjectHelper.iFrameSafeInstanceOf(formItemView, FormSetView)) {
                 (<FormSetView<any>>formItemView).expandRecursively();

@@ -5,7 +5,6 @@ import {PropertyValueChangedEvent} from '../../data/PropertyValueChangedEvent';
 import {ConfirmationDialog} from '../../ui/dialog/ConfirmationDialog';
 import {i18n} from '../../util/Messages';
 import {Value} from '../../data/Value';
-import {AEl} from '../../dom/AEl';
 import {DivEl} from '../../dom/DivEl';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
 import {PropertyPath} from '../../data/PropertyPath';
@@ -22,6 +21,8 @@ import {FormItem} from '../FormItem';
 import {Element} from '../../dom/Element';
 import {FormContext} from '../FormContext';
 import {FormSetOccurrence} from './FormSetOccurrence';
+import {Action} from '../../ui/Action';
+import {MoreButton} from '../../ui/button/MoreButton';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
@@ -44,7 +45,7 @@ export abstract class FormSetOccurrenceView
 
     protected validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
 
-    protected removeButton: AEl;
+    protected moreButton: MoreButton;
 
     protected label: FormOccurrenceDraggableLabel;
 
@@ -87,23 +88,12 @@ export abstract class FormSetOccurrenceView
 
         this.removeChildren();
 
-        this.removeButton = new AEl('remove-button');
-        this.removeButton.onClicked((event: MouseEvent) => {
-            if (this.isDirty() || this.hasNonDefaultValues()) {
-                this.deleteOccurrenceConfirmationDialog.setHeading(i18n('dialog.confirm.occurrences.title', this.label.getText()));
-                this.deleteOccurrenceConfirmationDialog.open();
-            } else {
-                this.notifyRemoveButtonClicked();
-            }
-            event.stopPropagation();
-            event.preventDefault();
-            return false;
-        });
+        this.moreButton = this.createMoreButton();
 
         const labelText = this.getFormSet().getLabel();
         this.label = new FormOccurrenceDraggableLabel(this.getLabelText(), this.getFormSet().getOccurrences(), labelText);
         this.label.setTitle(i18n('tooltip.header.collapse'));
-        this.appendChildren(<Element>this.label, this.removeButton);
+        this.appendChildren<Element>(this.moreButton, this.label);
 
         this.label.onClicked(() => this.showContainer(!this.isContainerVisible()));
 
@@ -212,7 +202,19 @@ export abstract class FormSetOccurrenceView
     }
 
     refresh() {
-        this.removeButton.setVisible(this.formItemOccurrence.isRemoveButtonRequired());
+        this.moreButton.getMenuActions().forEach(action => {
+            switch (action.getLabel()) {
+            case i18n('action.reset'):
+                break;
+            case i18n('action.addAbove'):
+            case i18n('action.addBelow'):
+                action.setEnabled(!this.formItemOccurrence.maximumOccurrencesReached());
+                break;
+            case i18n('action.delete'):
+                action.setEnabled(this.formItemOccurrence.isRemoveButtonRequired());
+                break;
+            }
+        });
 
         this.refreshViews();
     }
@@ -386,5 +388,24 @@ export abstract class FormSetOccurrenceView
 
     private isDirty(): boolean {
         return Object.keys(this.dirtyFormItemViewsMap).length > 0;
+    }
+
+    private createMoreButton(): MoreButton {
+        const addAboveAction = new Action(i18n('action.addAbove')).onExecuted(_action => {
+            void this.formItemOccurrence.addOccurrenceAbove();
+        });
+        const addBelowAction = new Action(i18n('action.addBelow')).onExecuted(_action => {
+            void this.formItemOccurrence.addOccurrenceBelow();
+        });
+        const removeAction = new Action(i18n('action.delete')).onExecuted(_action => {
+            if (this.isDirty() || this.hasNonDefaultValues()) {
+                this.deleteOccurrenceConfirmationDialog.setHeading(i18n('dialog.confirm.occurrences.title', this.label.getText()));
+                this.deleteOccurrenceConfirmationDialog.open();
+            } else {
+                this.notifyRemoveButtonClicked();
+            }
+        });
+
+        return new MoreButton([addAboveAction, addBelowAction, removeAction]);
     }
 }
