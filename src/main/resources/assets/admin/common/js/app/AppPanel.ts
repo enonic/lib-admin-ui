@@ -85,10 +85,6 @@ export class AppPanel<M extends Equitable>
     }
 
     bindKeys() {
-        if (!this.currentKeyBindings) {
-            return;
-        }
-
-        KeyBindings.get().bindKeys(this.currentKeyBindings);
+        this.activateCurrentKeyBindings();
     }
 }
