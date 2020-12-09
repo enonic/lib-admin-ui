@@ -20,8 +20,8 @@
 
     .menu-item {
       .ellipsis();
-      display: block !important;
 
+      display: block !important;
       color: @admin-font-gray2;
 
       i {
@@ -39,6 +39,17 @@
     }
   }
 
+  &.expanded {
+    .icon {
+      transform: rotate(-90deg);
+      z-index: @z-index-context-menu + 1;
+    }
+
+    .menu {
+      display: block;
+    }
+  }
+
   &.menu-right {
     .menu {
       padding-left: 30px;
@@ -51,17 +62,6 @@
       .icon {
         transform: rotate(90deg);
       }
-    }
-  }
-
-  &.expanded {
-    .icon {
-      transform: rotate(-90deg);
-      z-index: @z-index-context-menu + 1;
-    }
-
-    .menu {
-      display: block;
     }
   }
 }
