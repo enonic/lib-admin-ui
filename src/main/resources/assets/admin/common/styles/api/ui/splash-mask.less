@@ -1,0 +1,34 @@
+.@{_COMMON_PREFIX}splash-mask {
+  .reset(true);
+  position: absolute;
+  display: none;
+  opacity: 1;
+  background-color: transparent;
+
+  .mask-splash {
+    z-index: @z-index-mask+1;
+    position: absolute;
+    padding: 10px;
+    left: 50%;
+    top: 50%;
+    display: block;
+
+    .mask-actions {
+      button {
+        margin: 0 10px;
+      }
+    }
+  }
+
+  .mask-shader {
+    background-color: @admin-black;
+    z-index: @z-index-mask;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+}
+
