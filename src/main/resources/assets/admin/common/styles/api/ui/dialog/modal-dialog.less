@@ -51,6 +51,11 @@
 
       .modal-dialog-body {
         overflow: auto;
+        height: 100%;
+
+        .dialog-content {
+          height: 100%;
+        }
       }
     }
   }
@@ -155,6 +160,7 @@
         position: relative;
         width: calc(100% - 1px);
         padding: 2px 0;
+        box-sizing: border-box;
 
         .form-view {
           padding-left: 0;

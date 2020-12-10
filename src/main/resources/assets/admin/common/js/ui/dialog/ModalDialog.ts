@@ -516,6 +516,7 @@ export abstract class ModalDialog
         if (!this.dialogContainer.hasChild(this)) {
             this.dialogContainer.appendChild(this);
         }
+        this.toggleFullscreen(false);
         Body.get().appendChild(this.dialogContainer);
 
         this.blurBackground();
