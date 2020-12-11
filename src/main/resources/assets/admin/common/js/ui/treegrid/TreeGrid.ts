@@ -1752,6 +1752,7 @@ export class TreeGrid<DATA extends IDentifiable>
         parent.insertChild(nodeToInsert, index);
         parent.setExpandable(true);
         this.invalidateNodes([parent]);
+        this.notifyDataChanged(new DataChangedEvent<DATA>([nodeToInsert], DataChangedType.ADDED));
     }
 
     private getIndexRelativeToParent(parent: TreeNode<DATA>, index: number): number {
