@@ -51,10 +51,17 @@
 
       .modal-dialog-body {
         overflow: auto;
-        height: 100%;
+      }
+    }
 
-        .dialog-content {
+    &.always-fullscreen {
+      .modal-dialog-wrapper {
+        .modal-dialog-body {
           height: 100%;
+
+          .dialog-content {
+            height: 100%;
+          }
         }
       }
     }
@@ -364,6 +371,10 @@ body {
         .modal-dialog-header {
           font-size: 5vw;
           padding: 15px 30px 15px 20px;
+
+          .path {
+            .ellipsis();
+          }
 
           .back-button:before {
             left: 0;

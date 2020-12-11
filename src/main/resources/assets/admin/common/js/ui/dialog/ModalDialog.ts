@@ -1,5 +1,4 @@
 import * as Q from 'q';
-import * as $ from 'jquery';
 import {DivEl} from '../../dom/DivEl';
 import {Action} from '../Action';
 import {Element} from '../../dom/Element';
@@ -24,7 +23,7 @@ export interface ModalDialogConfig {
     skipTabbable?: boolean;
     class?: string;
     keepOpenOnClickOutside?: boolean;
-    defaultFullscreen?: boolean;
+    alwaysFullscreen?: boolean;
     allowFullscreen?: boolean;
 }
 
@@ -140,12 +139,13 @@ export abstract class ModalDialog
         this.responsiveItem = new ResponsiveItem(this);
         this.initFocusInOutEventsHandlers();
 
-        if (this.config.allowFullscreen !== false) {
+        if (this.config.allowFullscreen !== false && this.config.alwaysFullscreen !== true) {
             this.initResizeHandler();
         }
 
         this.onRendered(() => {
-            if (this.config.defaultFullscreen) {
+            if (this.config.alwaysFullscreen) {
+                this.addClass('always-fullscreen');
                 this.toggleFullscreen(true);
             }
 
@@ -311,12 +311,17 @@ export abstract class ModalDialog
         }
 
         const calculatedDialogHeight = this.getDialogHeight();
-        if (!this.config.defaultFullscreen) {
-            this.toggleFullscreen(calculatedDialogHeight >= containerHeight);
-        }
+        this.toggleFullscreen(calculatedDialogHeight >= containerHeight);
     }
 
     protected toggleFullscreen(value: boolean) {
+        if (value && this.config.allowFullscreen === false) {
+            return;
+        }
+        if (!value && this.config.alwaysFullscreen === true) {
+            return;
+        }
+
         this.toggleClass('fullscreen', value);
     }
 
@@ -363,6 +368,7 @@ export abstract class ModalDialog
         }
         super.hide(true);
 
+        this.toggleFullscreen(false);
         if (this.dialogContainer.getParentElement()) {
             Body.get().removeChild(this.dialogContainer);
         }
@@ -516,7 +522,6 @@ export abstract class ModalDialog
         if (!this.dialogContainer.hasChild(this)) {
             this.dialogContainer.appendChild(this);
         }
-        this.toggleFullscreen(false);
         Body.get().appendChild(this.dialogContainer);
 
         this.blurBackground();
