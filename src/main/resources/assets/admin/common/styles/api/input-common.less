@@ -16,16 +16,18 @@
 
   > .input-label {
     display: inline-block;
+    max-width: calc(100% - 30px);
 
-    > .label {
-      max-width: 100%;
+    .label {
+      display: inline-block;
       .ellipsis();
     }
 
     .required, .wrapper.required, &.required {
+      display: flex;
+      line-height: 20px;
+
       &:after {
-        float: left;
-        position: absolute;
         content: '\00a0*';
         color: @input-red-text;
       }
