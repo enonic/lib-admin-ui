@@ -686,7 +686,6 @@ export class TreeGrid<DATA extends IDentifiable>
     initData(nodes: TreeNode<DATA>[]) {
         this.gridData.setItems(nodes, this.idPropertyName);
         this.resetCurrentSelection(nodes);
-        this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
     }
 
     expandNodeByDataId(dataId: string): Q.Promise<boolean> {
