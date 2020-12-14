@@ -5,7 +5,6 @@ import {Element} from '../../dom/Element';
 import {StyleHelper} from '../../StyleHelper';
 import {ElementHiddenEvent} from '../../dom/ElementHiddenEvent';
 import {Body} from '../../dom/Body';
-import {ElementHelper} from '../../dom/ElementHelper';
 
 export class Mask
     extends DivEl {
@@ -97,12 +96,12 @@ export class Mask
         return offsetParentOfMask === offsetParentOfMaskWrapper;
     }
 
-    private positionOverMaskedEl() {
+    protected positionOverMaskedEl() {
         const maskedEl = this.getWrapperEl();
 
         const maskDimensions: { width: string; height: string } = {
-            width: maskedEl.width() + 'px',
-            height: maskedEl.height() + 'px'
+            width: maskedEl.outerWidth() + 'px',
+            height: maskedEl.outerHeight() + 'px'
         };
 
         let maskOffset: { top: number; left: number } = maskedEl.position();

@@ -254,6 +254,10 @@ export class FormOptionSetOptionView
         return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
     }
 
+    getFormItemViews(): FormItemView[] {
+        return this.formItemViews;
+    }
+
     onValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
         this.formItemViews.forEach((formItemView: FormItemView) => {
             formItemView.onValidityChanged(listener);

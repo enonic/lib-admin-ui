@@ -46,6 +46,8 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
 
     private layerFactory: FormItemLayerFactory;
 
+    private expandRequestedListeners: { (view: FormSetOccurrenceView): void }[] = [];
+
     constructor(config: FormSetOccurrencesConfig<V>) {
         super({
             formItem: config.formSet,
@@ -85,9 +87,9 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
     createNewOccurrenceView(occurrence: FormSetOccurrence<V>): V {
         const newOccurrenceView = this.createOccurrenceView(this.getNewOccurrenceConfig(occurrence));
 
-        newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<V>) => {
-            this.removeOccurrenceView(event.getView());
-        });
+        newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<V>) => this.removeOccurrenceView(event.getView()));
+        newOccurrenceView.onExpandRequested(view => this.notifyExpandRequested(view));
+
         return newOccurrenceView;
     }
 
@@ -162,6 +164,20 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         } else {
             return super.update(propertyArray, unchangedOnly);
         }
+    }
+
+    onExpandRequested(listener: (view: FormSetOccurrenceView) => void): void {
+        this.expandRequestedListeners.push(listener);
+    }
+
+    unExpandRequested(listener: (view: FormSetOccurrenceView) => void): void {
+        this.expandRequestedListeners.filter((currentListener: (view: FormSetOccurrenceView) => void) => {
+            return currentListener !== listener;
+        });
+    }
+
+    notifyExpandRequested(view: FormSetOccurrenceView) {
+        this.expandRequestedListeners.forEach((listener: (view: FormSetOccurrenceView) => void) => listener(view));
     }
 
     protected getSetFromArray(occurrence: FormItemOccurrence<V>): PropertySet {

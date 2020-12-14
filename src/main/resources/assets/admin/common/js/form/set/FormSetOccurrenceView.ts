@@ -2,7 +2,6 @@ import * as Q from 'q';
 import {PropertySet} from '../../data/PropertySet';
 import {PropertyArray} from '../../data/PropertyArray';
 import {PropertyValueChangedEvent} from '../../data/PropertyValueChangedEvent';
-import {ConfirmationDialog} from '../../ui/dialog/ConfirmationDialog';
 import {i18n} from '../../util/Messages';
 import {Value} from '../../data/Value';
 import {DivEl} from '../../dom/DivEl';
@@ -23,6 +22,7 @@ import {FormContext} from '../FormContext';
 import {FormSetOccurrence} from './FormSetOccurrence';
 import {Action} from '../../ui/Action';
 import {MoreButton} from '../../ui/button/MoreButton';
+import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
@@ -63,9 +63,13 @@ export abstract class FormSetOccurrenceView
 
     private dirtyFormItemViewsMap: object = {};
 
-    private deleteOccurrenceConfirmationDialog: ConfirmationDialog;
+    private deleteConfirmationMask: ConfirmationMask;
+
+    private confirmDeleteAction: Action;
 
     private formDataChangedListener: (event: PropertyValueChangedEvent) => void;
+
+    private expandRequestedListeners: { (view: FormSetOccurrenceView): void }[] = [];
 
     constructor(classPrefix: string, config: FormSetOccurrenceViewConfig<FormSetOccurrenceView>) {
         super(`${classPrefix}occurrence-view`, config.formSetOccurrence);
@@ -76,7 +80,7 @@ export abstract class FormSetOccurrenceView
         this.propertySet = config.dataSet;
         this.formItemLayer = config.layer;
 
-        this.initConfirmationDialog();
+        this.initConfirmationMask();
         this.initFormDataChangeListener();
     }
 
@@ -314,6 +318,20 @@ export abstract class FormSetOccurrenceView
         });
     }
 
+    onExpandRequested(listener: (view: FormSetOccurrenceView) => void): void {
+        this.expandRequestedListeners.push(listener);
+    }
+
+    unExpandRequested(listener: (view: FormSetOccurrenceView) => void): void {
+        this.expandRequestedListeners.filter((currentListener: (view: FormSetOccurrenceView) => void) => {
+            return currentListener !== listener;
+        });
+    }
+
+    notifyExpandRequested(view?: FormSetOccurrenceView) {
+        this.expandRequestedListeners.forEach((listener: (view: FormSetOccurrenceView) => void) => listener(view || this));
+    }
+
     protected updateLabel() {
         this.label.setText(this.getLabelText());
     }
@@ -352,12 +370,26 @@ export abstract class FormSetOccurrenceView
         });
     }
 
-    private initConfirmationDialog() {
-        this.deleteOccurrenceConfirmationDialog = new ConfirmationDialog()
-            .setQuestion(i18n('dialog.confirm.occurrences.delete'))
-            .setYesCallback(() => {
+    private initConfirmationMask() {
+        this.confirmDeleteAction = new Action(i18n('action.delete'))
+            .setClass('red large delete-button')
+            .onExecuted(_action => {
                 this.notifyRemoveButtonClicked();
+                this.deleteConfirmationMask.hide();
             });
+        const noAction = new Action(i18n('action.cancel'))
+            .setClass('black large')
+            .onExecuted(_action => {
+                this.deleteConfirmationMask.hide();
+            });
+
+        this.deleteConfirmationMask = ConfirmationMask.create()
+            .setElement(this)
+            .setHideOnScroll(true)
+            .setHideOnOutsideClick(true)
+            .addAction(this.confirmDeleteAction)
+            .addAction(noAction)
+            .build();
     }
 
     private initFormDataChangeListener() {
@@ -392,15 +424,26 @@ export abstract class FormSetOccurrenceView
 
     private createMoreButton(): MoreButton {
         const addAboveAction = new Action(i18n('action.addAbove')).onExecuted(_action => {
-            void this.formItemOccurrence.addOccurrenceAbove();
+            void this.formItemOccurrence.addOccurrenceAbove().then(view => {
+                const setView = <FormSetOccurrenceView>view;
+                this.notifyExpandRequested(setView);
+            });
         });
         const addBelowAction = new Action(i18n('action.addBelow')).onExecuted(_action => {
-            void this.formItemOccurrence.addOccurrenceBelow();
+            void this.formItemOccurrence.addOccurrenceBelow().then(view => {
+                const setView = <FormSetOccurrenceView>view;
+                this.notifyExpandRequested(setView);
+            });
         });
         const removeAction = new Action(i18n('action.delete')).onExecuted(_action => {
             if (this.isDirty() || this.hasNonDefaultValues()) {
-                this.deleteOccurrenceConfirmationDialog.setHeading(i18n('dialog.confirm.occurrences.title', this.label.getText()));
-                this.deleteOccurrenceConfirmationDialog.open();
+                this.showContainer(true);
+                this.notifyExpandRequested();
+                const label = this.formSet.getLabel();
+                if (label) {
+                    this.confirmDeleteAction.setLabel(i18n('dialog.confirm.occurrences.delete', label));
+                }
+                this.deleteConfirmationMask.show();
             } else {
                 this.notifyRemoveButtonClicked();
             }

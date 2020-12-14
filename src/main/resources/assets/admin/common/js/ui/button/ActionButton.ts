@@ -20,6 +20,9 @@ export class ActionButton
         this.action = action;
         this.setLabel(this.createLabel(action), false);
         this.addClass('action-button');
+        if (action.getClass()) {
+            this.addClass(action.getClass());
+        }
 
         this.setEnabled(this.action.isEnabled());
         this.setVisible(this.action.isVisible());
