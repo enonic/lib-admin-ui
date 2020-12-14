@@ -371,8 +371,8 @@ export abstract class FormSetOccurrenceView
     }
 
     private initConfirmationMask() {
-        this.confirmDeleteAction = new Action('yes')
-            .setClass('red large')
+        this.confirmDeleteAction = new Action(i18n('action.delete'))
+            .setClass('red large delete-button')
             .onExecuted(_action => {
                 this.notifyRemoveButtonClicked();
                 this.deleteConfirmationMask.hide();
@@ -439,7 +439,10 @@ export abstract class FormSetOccurrenceView
             if (this.isDirty() || this.hasNonDefaultValues()) {
                 this.showContainer(true);
                 this.notifyExpandRequested();
-                this.confirmDeleteAction.setLabel(i18n('dialog.confirm.occurrences.delete', this.label.getText()));
+                const label = this.formSet.getLabel();
+                if (label) {
+                    this.confirmDeleteAction.setLabel(i18n('dialog.confirm.occurrences.delete', label));
+                }
                 this.deleteConfirmationMask.show();
             } else {
                 this.notifyRemoveButtonClicked();

@@ -537,9 +537,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         collapseButton.onClicked((event: MouseEvent) => {
             const isCollapsed = (<FormSetOccurrences<V>>this.formItemOccurrences).isCollapsed();
             this.toggleOccurrencesVisibility(isCollapsed);
-
-            event.stopPropagation();
-            event.preventDefault();
             return false;
         });
         this.collapseButtons.push(collapseButton);

@@ -1,7 +1,6 @@
 import {DivEl} from '../../dom/DivEl';
 import {Element} from '../../dom/Element';
 import {Mask} from './Mask';
-import {StyleHelper} from '../../StyleHelper';
 import {Body} from '../../dom/Body';
 
 export class SplashMask
@@ -19,7 +18,7 @@ export class SplashMask
 
     constructor(elementToMask?: Element) {
         super(elementToMask);
-        this.addClass(StyleHelper.COMMON_PREFIX + 'splash-mask');
+        this.addClass('splash-mask');
 
         this.shader = new DivEl('mask-shader');
         this.splash = new DivEl('mask-splash');

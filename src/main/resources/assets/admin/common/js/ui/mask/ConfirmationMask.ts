@@ -11,6 +11,7 @@ export class ConfirmationMask
 
     constructor(builder: ConfirmationMaskBuilder) {
         super(builder.getElement());
+        this.addClass('confirmation-mask');
 
         assertState(builder.getActions()?.length > 0, 'There must be at least one action');
 
