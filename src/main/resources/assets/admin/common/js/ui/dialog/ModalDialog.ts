@@ -351,7 +351,6 @@ export abstract class ModalDialog
         }
 
         this.hide();
-        this.removeClass('sticky');
 
         KeyBindings.get().unshelveBindings();
         this.state = DialogState.CLOSED;
