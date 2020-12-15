@@ -1317,6 +1317,21 @@ export class Element {
         return this.getScrollableParent(parent);
     }
 
+    resolveDropdownPosition() {
+        const container = this.getParentElement().getEl().getBoundingClientRect();
+        const height = this.getEl().getHeightWithBorder();
+        const parentHeight = this.getParentElement().getEl().getHeightWithBorder();
+
+        const spaceToBottom = window.innerHeight - container.top - parentHeight;
+        const spaceToTop = container.top;
+
+        if (height > spaceToBottom && height <= spaceToTop) {
+            this.getEl().setTop('auto').setBottomPx(parentHeight);
+        } else {
+            this.getEl().setBottom('auto').setTopPx(parentHeight);
+        }
+    }
+
     private lazyRender(childEl: Element): Element {
         const scrollableParent = this.getEl().scrollParent();
         const scrollableParentEl = Element.fromHtmlElement(scrollableParent);

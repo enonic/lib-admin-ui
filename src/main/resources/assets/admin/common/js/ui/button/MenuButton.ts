@@ -68,7 +68,7 @@ export class MenuButton
     }
 
     toggleMenu(expand?: boolean) {
-        if (expand || expand === undefined && /*!this.menu.hasClass('expanded')*/!this.menu.isVisible()) {
+        if (expand || expand === undefined && !this.menu.isVisible()) {
             this.expandMenu();
         } else {
             this.collapseMenu();
@@ -76,6 +76,7 @@ export class MenuButton
     }
 
     expandMenu(): void {
+        this.menu.resolveDropdownPosition();
         this.menu.show();
         this.dropdownHandle.addClass('down');
         this.dropdownHandle.giveFocus();
