@@ -26,7 +26,7 @@ export class CycleButton
         }
     }
 
-    setEnabled(value: boolean): CycleButton {
+    setEnabled(value: boolean) {
         super.setEnabled(value);
 
         this.setTitle(value ? this.actionList[this.active].getTitle() : '', false);

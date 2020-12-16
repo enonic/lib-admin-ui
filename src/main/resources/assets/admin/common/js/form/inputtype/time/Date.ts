@@ -64,6 +64,12 @@ export class Date
         input.resetBase();
     }
 
+    setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
+        const input: DatePicker = <DatePicker> occurrence;
+
+        input.setEnabled(enable);
+    }
+
     valueBreaksRequiredContract(value: Value): boolean {
         return value.isNull() || !value.getType().equals(ValueTypes.LOCAL_DATE);
     }

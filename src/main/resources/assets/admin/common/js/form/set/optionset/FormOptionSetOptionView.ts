@@ -51,7 +51,8 @@ export class FormOptionSetOptionView
     private formItemViews: FormItemView[] = [];
     private formItemLayer: FormItemLayer;
     private selectionChangedListeners: { (): void }[] = [];
-    private checkbox: Checkbox;
+    private checkbox?: Checkbox;
+    private radio?: RadioButton;
     private requiresClean: boolean;
     private isOptionSetExpandedByDefault: boolean;
     private notificationDialog: NotificationDialog;
@@ -362,6 +363,8 @@ export class FormOptionSetOptionView
             tooltip: labelText
         });
 
+        this.radio = button;
+
         button.onChange(() => {
             let selectedProp = this.getSelectedOptionsArray().get(0);
             if (!selectedProp) {
@@ -459,7 +462,7 @@ export class FormOptionSetOptionView
         let checkBoxShouldBeDisabled = (checked != null ? !checked : !this.checkbox.isChecked()) && this.isSelectionLimitReached();
 
         if (this.checkbox.isDisabled() !== checkBoxShouldBeDisabled) {
-            this.checkbox.setDisabled(checkBoxShouldBeDisabled, 'disabled');
+            this.checkbox.setEnabled(!checkBoxShouldBeDisabled);
         }
     }
 
@@ -611,5 +614,16 @@ export class FormOptionSetOptionView
 
     private notifySelectionChanged() {
         this.selectionChangedListeners.forEach((listener: () => void) => listener());
+    }
+
+    setEnabled(enable: boolean) {
+        if (this.isRadioSelection()) {
+            this.radio.setEnabled(enable);
+        } else {
+            this.checkbox.setEnabled(enable);
+        }
+
+        this.formItemLayer.setEnabled(enable);
+
     }
 }

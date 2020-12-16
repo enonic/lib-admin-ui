@@ -132,6 +132,11 @@ export class TextInput
         }
     }
 
+    setEnabled(enable: boolean) {
+        super.setEnabled(enable);
+        this.getEl().setDisabled(!enable);
+    }
+
     protected doSetValue(value: string) {
         let newValue = this.removeForbiddenChars(value);
         super.doSetValue(newValue);

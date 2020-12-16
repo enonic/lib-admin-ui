@@ -10,11 +10,6 @@ export class DropdownHandle
         this.removeClass('down');
     }
 
-    setEnabled(value: boolean) {
-        this.toggleClass('disabled', !value);
-        this.getEl().setDisabled(!value);
-    }
-
     isEnabled(): boolean {
         return !this.getEl().isDisabled();
     }

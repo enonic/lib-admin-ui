@@ -23,6 +23,8 @@ export interface InputTypeView {
 
     refresh();
 
+    setEnabled(enable: boolean);
+
     newInitialValue(): Value;
 
     /*

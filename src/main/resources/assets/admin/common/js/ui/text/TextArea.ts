@@ -39,20 +39,15 @@ export class TextArea
         this.getEl().setAttribute('cols', columns.toString());
     }
 
-    setReadOnly(readOnly: boolean) {
-        super.setReadOnly(readOnly);
-
-        if (readOnly) {
-            this.getEl().setAttribute('readonly', 'readonly');
-        } else {
-            this.getEl().removeAttribute('readonly');
-        }
-    }
-
     private updateSize() {
         if (this.isRendered()) {
             this.clone.getEl().setInnerHtml(this.getValue() + ' ');
             this.getEl().setHeightPx(this.clone.getEl().getHeightWithBorder());
         }
+    }
+
+    setEnabled(enable: boolean) {
+        super.setEnabled(enable);
+        this.getEl().setDisabled(!enable);
     }
 }

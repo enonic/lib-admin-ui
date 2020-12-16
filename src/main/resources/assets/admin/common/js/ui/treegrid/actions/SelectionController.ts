@@ -59,7 +59,7 @@ export class SelectionController
 
         const shouldBeDisabled = isGridEmpty && !isAnySelected;
         if (this.isDisabled() !== shouldBeDisabled) {
-            this.setDisabled(shouldBeDisabled);
+            this.setEnabled(!shouldBeDisabled);
         }
 
         if (isAllSelected) {

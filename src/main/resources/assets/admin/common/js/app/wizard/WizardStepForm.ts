@@ -98,4 +98,8 @@ export class WizardStepForm
         return false; // TO BE OVERRIDEN BY INHERITORS
     }
 
+    setEnabled(enable: boolean) {
+    //
+    }
+
 }

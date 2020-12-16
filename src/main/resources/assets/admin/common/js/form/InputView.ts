@@ -48,13 +48,13 @@ export class InputView
     private parentPropertySet: PropertySet;
     private propertyArray: PropertyArray;
     private inputTypeView: InputTypeView;
-    private bottomButtonRow: DivEl;
-    private addButton: Button;
+    private bottomButtonRow?: DivEl;
+    private addButton?: Button;
     private validationViewer: ValidationRecordingViewer;
     private previousValidityRecording: ValidationRecording;
     private userInputValid: boolean;
     private validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
-    private helpText: HelpTextContainer;
+    private helpText?: HelpTextContainer;
 
     constructor(config: InputViewConfig) {
         super(<FormItemViewConfig>{
@@ -172,6 +172,14 @@ export class InputView
         return !this.propertyArray.some((property: Property) => {
             return !StringHelper.isEmpty(property.getValue().getString());
         });
+    }
+
+    setEnabled(enable: boolean) {
+        this.inputTypeView.setEnabled(enable);
+
+        if (this.addButton) {
+            this.addButton.setEnabled(enable);
+        }
     }
 
     public getInputTypeView(): InputTypeView {

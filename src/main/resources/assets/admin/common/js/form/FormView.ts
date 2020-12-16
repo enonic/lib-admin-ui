@@ -323,4 +323,8 @@ export class FormView
             listener();
         });
     }
+
+    setEnabled(enable: boolean) {
+        this.formItemLayer.setEnabled(enable);
+    }
 }

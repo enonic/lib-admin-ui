@@ -151,6 +151,11 @@ export class DateTimeRangePicker
         return this.startPicker.isValid() && this.endPicker.isValid();
     }
 
+    setEnabled(enable: boolean) {
+        this.startPicker.setEnabled(enable);
+        this.endPicker.setEnabled(enable);
+    }
+
     public reset() {
         this.startPicker.resetBase();
         this.endPicker.resetBase();

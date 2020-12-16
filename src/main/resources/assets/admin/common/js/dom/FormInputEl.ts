@@ -13,7 +13,6 @@ export class FormInputEl
     private originalValue: string;
     private oldValue: string = '';
     private dirty: boolean = false;
-    private readOnly: boolean;
 
     constructor(tagName: string, className?: string, prefix?: string, originalValue?: string) {
         super(tagName, className, prefix);
@@ -47,14 +46,6 @@ export class FormInputEl
         if (FormInputEl.debug) {
             console.groupEnd();
         }
-    }
-
-    setReadOnly(readOnly: boolean) {
-        this.readOnly = readOnly;
-    }
-
-    isReadOnly(): boolean {
-        return this.readOnly;
     }
 
     getValue(): string {

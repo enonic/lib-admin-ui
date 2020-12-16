@@ -43,11 +43,6 @@ export class CompositeFormInputEl
         return this;
     }
 
-    setReadOnly(readOnly: boolean) {
-        this.wrappedInput.setReadOnly(readOnly);
-        this.toggleClass('readonly', readOnly);
-    }
-
     getValue(): string {
         return this.wrappedInput.getValue();
     }
@@ -113,5 +108,10 @@ export class CompositeFormInputEl
     addAdditionalElement(element: Element) {
         this.appendChild(element);
         this.additionalElements.push(element);
+    }
+
+    setEnabled(enable: boolean) {
+        super.setEnabled(enable);
+        this.wrappedInput.setEnabled(enable);
     }
 }
