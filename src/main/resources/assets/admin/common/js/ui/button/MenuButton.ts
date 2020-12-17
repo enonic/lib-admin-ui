@@ -15,7 +15,7 @@ export class MenuButton
 
     private actionButton: ActionButton;
 
-    private menu: Menu;
+    private readonly menu: Menu;
 
     private toggleMenuOnAction: boolean = false;
 
@@ -25,13 +25,15 @@ export class MenuButton
         this.actionPropertyListener = this.updateActionEnabled.bind(this);
 
         this.menu = new Menu(menuActions);
+        this.menu.hide();
+
         this.initDropdownHandle();
         this.initActionButton(mainAction);
         this.initActions(menuActions);
 
         this.initListeners();
 
-        let children = [this.dropdownHandle, this.actionButton, this.menu];
+        let children = [this.actionButton, this.dropdownHandle, this.menu];
         this.appendChildren(...children);
     }
 
@@ -66,7 +68,7 @@ export class MenuButton
     }
 
     toggleMenu(expand?: boolean) {
-        if (expand || expand === undefined && !this.menu.hasClass('expanded')) {
+        if (expand || expand === undefined && !this.menu.isVisible()) {
             this.expandMenu();
         } else {
             this.collapseMenu();
@@ -74,13 +76,14 @@ export class MenuButton
     }
 
     expandMenu(): void {
-        this.menu.addClass('expanded');
+        this.menu.resolveDropdownPosition();
+        this.menu.show();
         this.dropdownHandle.addClass('down');
         this.dropdownHandle.giveFocus();
     }
 
     collapseMenu(): void {
-        this.menu.removeClass('expanded');
+        this.menu.hide();
         this.dropdownHandle.removeClass('down');
     }
 

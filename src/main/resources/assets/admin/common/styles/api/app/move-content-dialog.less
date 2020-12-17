@@ -1,45 +1,46 @@
 .move-content-dialog {
-  width: 650px;
-
-  .modal-dialog-body {
-    overflow: visible;
-  }
-
-  .content-path {
-    font-family: @admin-font-family;
-    color: lightgray;
-    margin-top: 5px;
-    .ellipsis();
-  }
-
-  .content-selector {
-    margin-top: 10px;
-
-    .edit {
-      display: none;
-    }
-  }
-
-  &.is-processing {
-    .dialog-header {
-      margin-bottom: 0;
-    }
-    .content-selector,
-    .desc-message,
-    .dialog-content > .content-path {
-      display: none;
+  .modal-dialog-wrapper {
+    .modal-dialog-body {
+      overflow: visible;
     }
 
-    .progress-bar {
-      margin-top: 20px;
-      margin-bottom: 0;
+    .content-path {
+      font-family: @admin-font-family;
+      color: lightgray;
+      margin-top: 5px;
+      .ellipsis();
     }
-  }
 
-  &.locked {
-    .selected-option .remove {
-      pointer-events: none;
-      opacity: 0.5;
+    .content-selector {
+      margin-top: 10px;
+
+      .edit {
+        display: none;
+      }
+    }
+
+    &.is-processing {
+      .dialog-header {
+        margin-bottom: 0;
+      }
+
+      .content-selector,
+      .desc-message,
+      .dialog-content > .content-path {
+        display: none;
+      }
+
+      .progress-bar {
+        margin-top: 20px;
+        margin-bottom: 0;
+      }
+    }
+
+    &.locked {
+      .selected-option .remove {
+        pointer-events: none;
+        opacity: 0.5;
+      }
     }
   }
 }

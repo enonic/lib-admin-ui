@@ -858,6 +858,18 @@ export class Element {
         }
     }
 
+    whenShown(callback: () => void) {
+        if (this.isVisible()) {
+            callback();
+        } else {
+            const listener = () => {
+                callback();
+                this.unShown(listener);
+            };
+            this.onShown(listener);
+        }
+    }
+
     onRendered(listener: (event: ElementRenderedEvent) => void) {
         this.renderedListeners.push(listener);
     }
@@ -1289,6 +1301,35 @@ export class Element {
         this.lazyRenderListeners = this.lazyRenderListeners.filter((curr) => {
             return curr !== listener;
         });
+    }
+
+    getScrollableParent(el?: Element): Element {
+        const parent = (el || this).getParentElement();
+
+        if (!parent) {
+            return this;
+        }
+
+        if (parent.getEl().isScrollable()) {
+            return parent;
+        }
+
+        return this.getScrollableParent(parent);
+    }
+
+    resolveDropdownPosition() {
+        const container = this.getParentElement().getEl().getBoundingClientRect();
+        const height = this.getEl().getHeightWithBorder();
+        const parentHeight = this.getParentElement().getEl().getHeightWithBorder();
+
+        const spaceToBottom = window.innerHeight - container.top - parentHeight;
+        const spaceToTop = container.top;
+
+        if (height > spaceToBottom && height <= spaceToTop) {
+            this.getEl().setTop('auto').setBottomPx(parentHeight);
+        } else {
+            this.getEl().setBottom('auto').setTopPx(parentHeight);
+        }
     }
 
     private lazyRender(childEl: Element): Element {

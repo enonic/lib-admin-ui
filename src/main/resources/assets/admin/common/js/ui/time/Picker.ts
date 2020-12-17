@@ -7,7 +7,6 @@ import {KeyHelper} from '../KeyHelper';
 import {AppHelper} from '../../util/AppHelper';
 import {FormEl} from '../../dom/FormEl';
 import {StyleHelper} from '../../StyleHelper';
-import {Body} from '../../dom/Body';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 
 export class Picker<T extends Element>
@@ -176,7 +175,7 @@ export class Picker<T extends Element>
 
     protected showPopup() {
         this.createPopup();
-        this.resolvePosition();
+        this.popup.resolveDropdownPosition();
         this.popup.show();
     }
 
@@ -207,25 +206,5 @@ export class Picker<T extends Element>
         this.initCloseButton();
 
         this.popup.insertAfterEl(this.input);
-    }
-
-    private resolvePosition() {
-        this.popup.removeClass('reverted');
-        this.popup.getEl().setHeight('auto');
-
-        const rect = this.getEl().getBoundingClientRect();
-        const height = this.popup.getEl().getHeightWithBorder();
-        const viewHeight = Body.get().getEl().getHeightWithBorder();
-
-        const spaceToBottom = viewHeight - rect.bottom;
-        const spaceToTop = rect.top;
-
-        if (height > spaceToBottom) {
-            if (height <= spaceToTop) {
-                this.popup.addClass('reverted');
-            } else {
-                this.popup.getEl().setHeightPx(spaceToBottom - 5);
-            }
-        }
     }
 }

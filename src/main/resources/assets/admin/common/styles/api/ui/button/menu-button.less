@@ -1,5 +1,5 @@
 .menu-button {
-  display: inline-block;
+  display: flex;
   position: relative;
   height: 40px;
 
@@ -33,17 +33,14 @@
     width: 100%;
     z-index: @z-index-mask;
     box-sizing: border-box;
-
-    &.expanded {
-      display: block !important;
-    }
   }
 
   .menu-item {
     .ellipsis();
-    display: block !important;
 
+    display: block;
     color: @admin-font-gray2;
+
     i {
       font-style: normal;
     }
@@ -59,21 +56,12 @@
   }
 
   .@{_COMMON_PREFIX}dropdown-handle {
-    left: 0;
-    width: 42px;
-    border-radius: 0;
-
-    &:after {
-      margin-left: -6px;
-    }
+    position: relative;
   }
 
   .action-button {
     position: relative;
-    height: 100%;
-    border: none;
     min-width: 126px;
-    margin-left: 41px;
     text-align: center;
   }
 

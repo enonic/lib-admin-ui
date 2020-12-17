@@ -70,14 +70,6 @@ export class ResponsiveManager {
     }
 
     private static updateItemOnShown(el: Element, responsiveItem: ResponsiveItem) {
-        if (el.isVisible()) {
-            responsiveItem.update();
-        } else {
-            let renderedHandler = () => {
-                responsiveItem.update();
-                el.unShown(renderedHandler); // update needs
-            };
-            el.onShown(renderedHandler);
-        }
+        el.whenShown(() => responsiveItem.update());
     }
 }

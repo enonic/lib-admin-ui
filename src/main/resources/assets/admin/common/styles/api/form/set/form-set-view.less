@@ -2,9 +2,9 @@
 
 .form-view {
   &.display-validation-errors {
-    .form-item-set-occurrence-view,
-    .form-option-set-occurrence-view {
-      &.invalid.collapsed {
+    .form-item-set-view,
+    .form-option-set-view {
+      &.invalid > .occurrence-views-container {
         border: 3px solid @admin-red;
         box-shadow: none;
       }
@@ -17,14 +17,6 @@
     .form-option-set-occurrence-view.invalid.collapsed {
       padding: 7px;
     }
-
-    .input-view.invalid {
-      padding: 10px;
-
-      .validation-viewer ul > li {
-        margin-top: 10px;
-      }
-    }
   }
 
   .form-item-set-view {
@@ -35,7 +27,7 @@
         font-size: 16px;
         color: @admin-font-gray3;
         padding-right: 20px;
-        width: calc(100% - 20px);
+        width: calc(100% - 30px);
         .ellipsis();
       }
     }
@@ -59,9 +51,8 @@
           .icon-close();
           .focusable();
 
-          margin-right: -4px;
           border: 1px solid transparent;
-          line-height: 20px;
+          line-height: 15px;
           float: right;
           text-decoration: none;
           cursor: pointer;
@@ -164,38 +155,12 @@
     }
 
     .form-item-set-drop-target-placeholder, .form-option-set-drop-target-placeholder {
-      border: 2px dashed #000;
+      border: 2px dashed @admin-black;
       padding: 14px;
-      color: #000;
+      color: @admin-black;
       font-size: 14px;
       text-align: center;
       margin: 10px;
-    }
-
-    .input-view {
-
-      .input-label {
-        max-width: 90px;
-        margin-right: 10px;
-      }
-
-      .input-type-view,
-      .bottom-button-row,
-      .validation-viewer {
-        margin-left: @form-label-width;
-      }
-
-      &.label-over-input {
-        .input-label {
-          max-width: 100%;
-        }
-
-        .input-type-view,
-        .bottom-button-row,
-        .validation-viewer {
-          margin-left: 0;
-        }
-      }
     }
 
     & > .bottom-button-row {
