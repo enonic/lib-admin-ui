@@ -47,4 +47,12 @@ export class Button
         }
         return this;
     }
+
+    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
+
+    setEnabled(value: boolean) {
+        console.warn(`Button.setEnabled() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        super.setEnabled(value);
+        return this;
+    }
 }

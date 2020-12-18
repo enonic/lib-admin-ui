@@ -295,4 +295,16 @@ export class WizardHeaderWithDisplayNameAndName
         this.toggleNameInput(enable);
         this.toggleDisplayNameInput(enable);
     }
+
+    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
+
+    disableNameInput() {
+        console.warn(`WizardHeaderWithDisplayNameAndName.disableNameInput() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        this.toggleNameInput(false);
+    }
+
+    disableDisplayNameInput() {
+        console.warn(`WizardHeaderWithDisplayNameAndName.disableDisplayNameInput() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        this.toggleDisplayNameInput(false);
+    }
 }

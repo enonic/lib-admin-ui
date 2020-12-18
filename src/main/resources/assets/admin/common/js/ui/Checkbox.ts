@@ -2,7 +2,6 @@ import {FormInputEl} from '../dom/FormInputEl';
 import {InputEl} from '../dom/InputEl';
 import {LabelEl} from '../dom/LabelEl';
 import {Element, NewElementBuilder} from '../dom/Element';
-import * as $ from 'jquery';
 
 export class Checkbox
     extends FormInputEl {
@@ -146,6 +145,14 @@ export class Checkbox
     private getInputAlignmentAsString(inputAlignment: InputAlignment = InputAlignment.LEFT): string {
 
         return InputAlignment[inputAlignment].toLowerCase();
+    }
+
+    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
+
+    setDisabled(value: boolean) {
+        console.warn(`Checkbox.setDisabled() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        this.setEnabled(!value);
+        return this;
     }
 }
 
