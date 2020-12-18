@@ -14,7 +14,7 @@
     flex: 0 0 auto;
 
     &.selection-toggler {
-      position: relative;
+      flex-direction: row;
       padding: 0;
 
       &::before {
@@ -80,9 +80,9 @@
         display: none;
       }
       &.any-selected .description {
-        display: inline-block;
+        display: flex;
+        align-items: center;
         padding-left: 6px;
-        height: 100%;
 
         &::after {
           content: attr(data-label);
@@ -121,7 +121,6 @@
     line-height: 40px;
     padding: 0 5px 0 16px;
     align-self: center;
-
 
     label {
       display: inline-block;
