@@ -304,7 +304,8 @@ export class WizardHeaderWithDisplayNameAndName
     }
 
     disableDisplayNameInput() {
-        console.warn(`WizardHeaderWithDisplayNameAndName.disableDisplayNameInput() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        console.warn('WizardHeaderWithDisplayNameAndName.disableDisplayNameInput() ' +
+                     'is deprecated and will be removed in lib-admin-ui 4.0.0');
         this.toggleDisplayNameInput(false);
     }
 }

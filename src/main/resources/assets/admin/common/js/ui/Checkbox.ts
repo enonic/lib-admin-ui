@@ -150,7 +150,7 @@ export class Checkbox
     /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
 
     setDisabled(value: boolean) {
-        console.warn(`Checkbox.setDisabled() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        console.warn('Checkbox.setDisabled() is deprecated and will be removed in lib-admin-ui 4.0.0');
         this.setEnabled(!value);
         return this;
     }

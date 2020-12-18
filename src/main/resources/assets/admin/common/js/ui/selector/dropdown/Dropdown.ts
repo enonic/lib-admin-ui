@@ -531,12 +531,12 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
 
     disable() {
-        console.warn(`Dropdown.disable() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        console.warn('Dropdown.disable() is deprecated and will be removed in lib-admin-ui 4.0.0');
         this.setEnabled(false);
     }
 
     enable() {
-        console.warn(`Dropdown.enable() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        console.warn('Dropdown.enable() is deprecated and will be removed in lib-admin-ui 4.0.0');
         this.setEnabled(true);
     }
 }

@@ -77,7 +77,7 @@ export class RadioGroup
     /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
 
     setDisabled(disabled: boolean) {
-        console.warn(`RadioGroup.setDisabled() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        console.warn('RadioGroup.setDisabled() is deprecated and will be removed in lib-admin-ui 4.0.0');
         this.setEnabled(!disabled);
     }
 }
