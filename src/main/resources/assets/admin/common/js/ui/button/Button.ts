@@ -47,4 +47,11 @@ export class Button
         }
         return this;
     }
+
+    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
+
+    setEnabled(value: boolean) {
+        super.setEnabled(value);
+        return this;
+    }
 }

@@ -151,6 +151,12 @@
           color: @admin-font-gray1;
         }
       }
+
+      .title {
+        &:empty {
+          display: none;
+        }
+      }
     }
 
     .modal-dialog-body {
@@ -171,8 +177,16 @@
           padding-left: 0;
           padding-right: 0;
 
+          .input-view:last-child {
+            margin-bottom: 0;
+          }
+
           .dropdown-tree-grid {
             position: static !important;
+          }
+
+          &:empty {
+            display: none;
           }
         }
 
