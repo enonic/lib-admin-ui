@@ -1,119 +1,21 @@
-.application-configurator {
+.application-configurator-dialog {
 
-  .multiple-occurrence {
-    .selected-option {
-      .drag-control, .site-form .remove {
-        display: none;
-      }
+  .modal-dialog-header {
 
-      .site-form {
-        padding-right: 0;
-      }
-    }
-  }
+    .names-and-icon-view {
+      display: flex;
+      justify-items: unset;
 
-  .selected-options {
-
-    .selected-option {
-      padding: 10px !important;
-      margin-bottom: 10px; // each child should have this for smooth sorting
-
-      &:not(.placeholder) {
-        height: auto !important;
-        background-color: @admin-bg-light-gray;
-
-        &:hover {
-          background-color: @admin-bg-light-gray;
-        }
-
-        &.invalid, &.uninstalled {
-          .highlight-option(@admin-input-red);
-        }
-
-        &.uninstalled {
-          a.edit {
-            display: none;
-          }
-        }
-
-        &.empty {
-          .highlight-option(@admin-input-red);
-
-          .@{_COMMON_PREFIX}wrapper:before {
-            content: "!";
-            display: block;
-            position: absolute;
-            background: @admin-red;
-            color: @admin-white;
-          }
-
-          a.edit {
-            display: none;
-          }
-        }
-
-        &.stopped {
-          .highlight-option(orange);
-          a.edit {
-            display: none;
-          }
-        }
-      }
-
-      &.collapsed {
-        .header {
-          margin: 0;
-        }
-      }
-
-      .header {
+      .@{_COMMON_PREFIX}names-view {
         display: flex;
-        align-items: center;
-        position: relative;
-        line-height: 48px;
-        overflow: hidden;
+        flex-direction: column;
+        justify-content: center;
+        margin: 0;
 
-        .clearfix();
-
-        .names-and-icon-view {
-          float: left;
-          cursor: move;
-          flex: 0 1 100%;
-
-          .@{_COMMON_PREFIX}names-view {
-            > * {
-              cursor: move;
-            }
-          }
+        p {
+          white-space: pre-wrap;
         }
       }
     }
-
-    .selected-option:last-child {
-      margin-bottom: 0;
-    }
   }
-
-  .rich-combobox.readonly {
-    .selected-options .selected-option {
-      pointer-events: none;
-
-      a.edit, a.remove {
-        display: none;
-      }
-    }
-  }
-
-}
-
-.highlight-option(@color) {
-  background-color: @color;
-
-  .@{_COMMON_PREFIX}names-view .@{_COMMON_PREFIX}sub-name {
-    color: @admin-dark-gray;
-  }
-}
-
-.wizard-panel .wizard-steps-panel .wizard-step-form .application-configurator .form-view {
-  margin: 10px 0 0 0;
 }
