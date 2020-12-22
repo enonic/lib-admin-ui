@@ -84,6 +84,15 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         };
     }
 
+    protected addOccurrence(occurrence: FormItemOccurrence<V>, validate: boolean = true): Q.Promise<V> {
+        if (occurrence.getIndex() < this.countOccurrences()) {
+            // we're adding to the middle of array, add set and then move it to necessary index
+            this.propertyArray.addSet();
+            this.propertyArray.move(this.propertyArray.getSize() - 1, occurrence.getIndex());
+        }
+        return super.addOccurrence(occurrence, validate);
+    }
+
     createNewOccurrenceView(occurrence: FormSetOccurrence<V>): V {
         const newOccurrenceView = this.createOccurrenceView(this.getNewOccurrenceConfig(occurrence));
 

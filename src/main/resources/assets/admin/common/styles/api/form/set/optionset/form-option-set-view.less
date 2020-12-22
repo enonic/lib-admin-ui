@@ -20,6 +20,7 @@
       }
     }
   }
+
   &.display-validation-errors {
     .form-option-set-occurrence-view {
       &.invalid > .selection-message {
@@ -55,6 +56,32 @@
     > .form-occurrence-draggable-label {
       font-size: 14px;
       color: @admin-font-gray2;
+    }
+
+    > .single-selection-header {
+      display: flex;
+      align-items: center;
+
+      .drag-control {
+        order: unset;
+        -webkit-box-ordinal-group: unset;
+        float: none;
+        position: static;
+      }
+
+      .@{_COMMON_PREFIX}dropdown {
+        flex: 1;
+        max-width: initial;
+
+        input {
+          height: 47px; // match the option to prevent height bounce
+        }
+      }
+
+      .more-button {
+        min-width: 40px;
+        margin-left: 10px;
+      }
     }
 
     & > .remove-button {
@@ -146,33 +173,6 @@
             }
           }
 
-          &.radio-button > input {
-            position: absolute;
-            margin-left: 10px;
-            -webkit-appearance: none;
-            width: 15px;
-            height: 15px;
-            border: 1px solid darkgray;
-            border-radius: 50%;
-            background-color: @admin-white;
-
-            &:checked {
-              opacity: 0;
-
-              + label::before {
-                content: "";
-                display: block;
-                position: absolute;
-                height: 14px;
-                width: 14px;
-                background: white;
-                border-radius: 8px;
-                box-shadow: inset 0 0 0 2px white;
-                background-color: @admin-option-set-input-checked;
-              }
-            }
-          }
-
           &.checkbox {
             &.disabled {
               pointer-events: none;
@@ -224,6 +224,27 @@
                 background: url("../../../../../images/box-checked-optionset.gif") -1px no-repeat;
               }
             }
+          }
+        }
+      }
+    }
+
+    &.single-selection {
+      .form-option-set-occurrences-container {
+        &.empty {
+          padding-top: 0;
+          height: 0; // it is 6px for some reason, although all children are 0px tall
+        }
+
+        .form-option-set-option-view {
+          margin: 0;
+
+          > .option-items-container {
+            padding: 0;
+          }
+
+          &.selected {
+            border: 0 none;
           }
         }
       }

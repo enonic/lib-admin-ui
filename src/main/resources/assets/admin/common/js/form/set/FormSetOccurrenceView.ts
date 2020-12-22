@@ -17,12 +17,14 @@ import {FormItemLayer} from '../FormItemLayer';
 import {ValidationRecordingPath} from '../ValidationRecordingPath';
 import {FormSet} from './FormSet';
 import {FormItem} from '../FormItem';
-import {Element} from '../../dom/Element';
 import {FormContext} from '../FormContext';
 import {FormSetOccurrence} from './FormSetOccurrence';
 import {Action} from '../../ui/Action';
 import {MoreButton} from '../../ui/button/MoreButton';
 import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
+import {ElementEvent} from '../../dom/ElementEvent';
+import {Dropdown} from '../../ui/selector/dropdown/Dropdown';
+import {Element} from '../../dom/Element';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
@@ -86,9 +88,15 @@ export abstract class FormSetOccurrenceView
 
     protected abstract getLabelText(): string;
 
-    public layout(validate: boolean = true): Q.Promise<void> {
+    isSingleSelection(): boolean {
+        return false;
+    }
 
-        const deferred = Q.defer<void>();
+    createSingleSelectionCombo(): Dropdown<any> {
+        return null;
+    }
+
+    public layout(validate: boolean = true): Q.Promise<void> {
 
         this.removeChildren();
 
@@ -97,36 +105,47 @@ export abstract class FormSetOccurrenceView
         const labelText = this.getFormSet().getLabel();
         this.label = new FormOccurrenceDraggableLabel(this.getLabelText(), this.getFormSet().getOccurrences(), labelText);
         this.label.setTitle(i18n('tooltip.header.collapse'));
-        this.appendChildren<Element>(this.moreButton, this.label);
+        if (!this.isSingleSelection()) {
+            this.appendChildren<Element>(this.moreButton, this.label);
+        } else {
+            const headerDiv = new DivEl('single-selection-header');
+            headerDiv.appendChildren<Element>(new DivEl('drag-control'), this.createSingleSelectionCombo(), this.moreButton);
+            this.appendChild(headerDiv);
+        }
 
         this.label.onClicked(() => this.showContainer(!this.isContainerVisible()));
-
         this.initValidationMessageBlock();
 
         this.formSetOccurrencesContainer = new DivEl(this.occurrenceContainerClassName);
         this.appendChild(this.formSetOccurrencesContainer);
 
-        const layoutPromise: Q.Promise<FormItemView[]> = this.formItemLayer.setFormItems(this.getFormItems()).setParentElement(
-            this.formSetOccurrencesContainer).setParent(this).layout(this.propertySet, validate);
+        return this.formItemLayer
+            .setFormItems(this.getFormItems())
+            .setParentElement(this.formSetOccurrencesContainer)
+            .setParent(this)
+            .layout(this.propertySet, validate)
+            .then((formItemViews: FormItemView[]) => {
 
-        layoutPromise.then((formItemViews: FormItemView[]) => {
+                this.formItemViews = formItemViews;
+                if (validate) {
+                    this.validate(true);
+                }
+                this.propertySet.onPropertyValueChanged(this.formDataChangedListener);
 
-            this.formItemViews = formItemViews;
-            if (validate) {
-                this.validate(true);
-            }
+                this.subscribeOnItemEvents();
+                this.refresh();
 
-            this.propertySet.onPropertyValueChanged(this.formDataChangedListener);
-
-            this.subscribeOnItemEvents();
-
-            this.refresh();
-            deferred.resolve(null);
-        }).catch((reason: any) => {
-            DefaultErrorHandler.handle(reason);
-        }).done();
-
-        return deferred.promise;
+            })
+            .catch(DefaultErrorHandler.handle)
+            .then(() => {
+                if (this.formItemOccurrence.isMultiple()) {
+                    this.formSetOccurrencesContainer.onDescendantAdded((event: ElementEvent) => {
+                        if (this.getEl().contains(event.getElement().getHTMLElement())) {
+                            this.updateLabel();
+                        }
+                    });
+                }
+            });
     }
 
     hasNonDefaultValues(): boolean {
@@ -368,6 +387,10 @@ export abstract class FormSetOccurrenceView
         this.validityChangedListeners.forEach((listener: (event: RecordingValidityChangedEvent) => void) => {
             listener(event);
         });
+    }
+
+    protected getSelectedOptionsArray(): PropertyArray {
+        return this.propertySet.getPropertyArray('_selected');
     }
 
     private initConfirmationMask() {
