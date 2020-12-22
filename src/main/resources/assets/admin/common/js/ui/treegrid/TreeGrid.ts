@@ -1825,6 +1825,6 @@ export class TreeGrid<DATA extends IDentifiable>
     getDataFromDomEvent(e: DOMEvent): DATA {
         const cell: Slick.Cell = this.grid.getCellFromEvent(e);
 
-        return this.getDataByRow(cell.row);
+        return !!cell ? this.getDataByRow(cell.row) : null;
     }
 }
