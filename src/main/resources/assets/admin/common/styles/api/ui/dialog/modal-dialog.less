@@ -210,18 +210,14 @@
   .dialog-buttons {
     position: relative;
 
-    @media screen and (max-height: 360px) {
-      margin-top: 5px;
+    .@{_COMMON_PREFIX}button {
+      .dialog-button();
     }
 
     .button-container {
       display: flex;
       flex-wrap: nowrap;
       justify-content: flex-end;
-
-      .@{_COMMON_PREFIX}button {
-        .dialog-button();
-      }
 
       > .cancel-button-bottom {
         .button-background();
