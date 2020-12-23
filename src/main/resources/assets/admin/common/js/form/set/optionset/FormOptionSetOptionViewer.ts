@@ -1,5 +1,6 @@
 import {FormOptionSetOption} from './FormOptionSetOption';
 import {NamesAndIconViewer} from '../../../ui/NamesAndIconViewer';
+import {i18n} from '../../../util/Messages';
 
 export class FormOptionSetOptionViewer
     extends NamesAndIconViewer<FormOptionSetOption> {
@@ -13,7 +14,7 @@ export class FormOptionSetOptionViewer
     }
 
     resolveSubName(_object: FormOptionSetOption): string {
-        return _object.getHelpText();
+        return _object.getHelpText() || i18n('text.noDescription');
     }
 }
 

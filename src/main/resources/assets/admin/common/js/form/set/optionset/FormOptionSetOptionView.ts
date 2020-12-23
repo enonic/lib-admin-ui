@@ -532,13 +532,7 @@ export class FormOptionSetOptionView
     }
 
     setEnabled(enable: boolean) {
-        if (this.isRadioSelection()) {
-            this.radio.setEnabled(enable);
-        } else {
-            this.checkbox.setEnabled(enable);
-        }
-
+        this.checkbox.setEnabled(enable);
         this.formItemLayer.setEnabled(enable);
-
     }
 }

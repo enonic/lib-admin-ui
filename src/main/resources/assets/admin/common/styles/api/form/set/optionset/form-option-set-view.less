@@ -27,7 +27,8 @@
         display: block;
         color: @input-red-text;
         font-size: 14px;
-        padding: 10px 10px 0 0;
+        padding: 0;
+        padding-left: 13px;
 
         &.empty {
           display: none;
@@ -47,7 +48,6 @@
   }
 
   .occurrence-views-container > .form-option-set-occurrence-view {
-    padding: 10px;
 
     &:not(.collapsed) {
       padding-bottom: 0;
@@ -61,6 +61,7 @@
     > .single-selection-header {
       display: flex;
       align-items: center;
+      padding: 10px 0 5px 13px;
 
       .drag-control {
         order: unset;
@@ -76,11 +77,6 @@
         input {
           height: 47px; // match the option to prevent height bounce
         }
-      }
-
-      .more-button {
-        min-width: 40px;
-        margin-left: 10px;
       }
     }
 
@@ -129,7 +125,6 @@
 
         &.expandable.expanded {
           > .option-items-container {
-            padding: 5px 10px 0 10px;
             display: block;
           }
         }
