@@ -54,9 +54,15 @@ export class TextArea
     }
 
     resetInputOccurrenceElement(occurrence: Element) {
-        let input = <TextAreaEl> occurrence;
+        const input: TextAreaEl = <TextAreaEl> occurrence;
 
         input.resetBaseValues();
+    }
+
+    setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
+        const input: TextAreaEl = <TextAreaEl> occurrence;
+
+        input.setEnabled(enable);
     }
 
     valueBreaksRequiredContract(value: Value): boolean {

@@ -69,6 +69,10 @@ export class RadioButton
         return this.selector.giveFocus();
     }
 
+    setEnabled(enable: boolean) {
+        this.selector.setEnabled(enable);
+    }
+
     validate(silent: boolean = true): InputValidationRecording {
         let recording = new InputValidationRecording();
         let propertyValue = this.getProperty().getValue();

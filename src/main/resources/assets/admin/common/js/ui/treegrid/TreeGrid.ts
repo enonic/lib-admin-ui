@@ -686,7 +686,6 @@ export class TreeGrid<DATA extends IDentifiable>
     initData(nodes: TreeNode<DATA>[]) {
         this.gridData.setItems(nodes, this.idPropertyName);
         this.resetCurrentSelection(nodes);
-        this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
     }
 
     expandNodeByDataId(dataId: string): Q.Promise<boolean> {
@@ -1752,6 +1751,7 @@ export class TreeGrid<DATA extends IDentifiable>
         parent.insertChild(nodeToInsert, index);
         parent.setExpandable(true);
         this.invalidateNodes([parent]);
+        this.notifyDataChanged(new DataChangedEvent<DATA>([nodeToInsert], DataChangedType.ADDED));
     }
 
     private getIndexRelativeToParent(parent: TreeNode<DATA>, index: number): number {
@@ -1825,6 +1825,6 @@ export class TreeGrid<DATA extends IDentifiable>
     getDataFromDomEvent(e: DOMEvent): DATA {
         const cell: Slick.Cell = this.grid.getCellFromEvent(e);
 
-        return this.getDataByRow(cell.row);
+        return !!cell ? this.getDataByRow(cell.row) : null;
     }
 }

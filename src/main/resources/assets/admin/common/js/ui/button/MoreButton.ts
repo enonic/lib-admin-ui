@@ -55,6 +55,12 @@ export class MoreButton
         this.bindActions(actions);
     }
 
+    prependMenuActions(actions: Action[]) {
+        const currentActions = this.menu.getMenuItems().map(i => i.getAction());
+        this.menu.setActions([].concat(actions, currentActions));
+        this.bindActions(actions);
+    }
+
     getMenuActions() {
         return this.menu.getMenuItems().map(item => item.getAction());
     }

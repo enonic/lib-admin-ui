@@ -53,9 +53,15 @@ export class Long
     }
 
     resetInputOccurrenceElement(occurrence: Element) {
-        let input = <TextInput>occurrence;
+        const input: TextInput = <TextInput>occurrence;
 
         input.resetBaseValues();
+    }
+
+    setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
+        const input: TextInput = <TextInput>occurrence;
+
+        input.setEnabled(enable);
     }
 
     valueBreaksRequiredContract(value: Value): boolean {

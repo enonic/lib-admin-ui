@@ -64,11 +64,20 @@ export class RadioGroup
         return undefined;
     }
 
-    setDisabled(disabled: boolean) {
-        this.options.forEach((option: RadioButton) => option.setDisabled(disabled));
+    setEnabled(enable: boolean) {
+        super.setEnabled(enable);
+
+        this.options.forEach((option: RadioButton) => option.setEnabled(enable));
     }
 
     giveFocus(): boolean {
         return this.options.length < 1 ? false : this.options[0].giveFocus();
+    }
+
+    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
+
+    setDisabled(disabled: boolean) {
+        console.warn('RadioGroup.setDisabled() is deprecated and will be removed in lib-admin-ui 4.0.0');
+        this.setEnabled(!disabled);
     }
 }

@@ -69,6 +69,12 @@ export class DateTime
         input.resetBase();
     }
 
+    setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
+        const input: DateTimePicker = <DateTimePicker> occurrence;
+
+        input.setEnabled(enable);
+    }
+
     hasInputElementValidUserInput(inputElement: Element) {
         let dateTimePicker = <DateTimePicker>inputElement;
         return dateTimePicker.isValid();

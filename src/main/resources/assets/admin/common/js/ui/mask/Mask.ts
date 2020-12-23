@@ -9,14 +9,14 @@ import {Body} from '../../dom/Body';
 export class Mask
     extends DivEl {
 
-    private masked: Element;
+    private readonly masked: Element;
 
     private removeWhenMaskedRemoved: boolean;
 
     constructor(itemToMask?: Element) {
         super('mask', StyleHelper.COMMON_PREFIX);
 
-        this.masked = itemToMask;
+        this.masked = itemToMask || Body.get();
         this.removeWhenMaskedRemoved = true;
 
         if (this.masked) {
@@ -57,11 +57,7 @@ export class Mask
         super.show();
 
         if (this.masked) {
-            if (this.masked.isRendered()) {
-                this.positionOverMaskedEl();
-            } else {
-                this.masked.onRendered(() => this.positionOverMaskedEl());
-            }
+            this.masked.whenRendered(() => this.positionOverMaskedEl());
         }
     }
 

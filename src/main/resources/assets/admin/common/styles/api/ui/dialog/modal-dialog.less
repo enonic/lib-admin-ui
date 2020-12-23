@@ -1,3 +1,20 @@
+@min-dialog-width: 230px;
+@max-dialog-width: 740px;
+@max-dialog-height: 100vh;
+
+.dialog-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  z-index: @z-index-modal-dialog;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .@{_COMMON_PREFIX}modal-dialog {
   .reset(true);
 
@@ -5,17 +22,61 @@
   position: absolute;
   backface-visibility: hidden;
   width: 85.185%;
-  min-width: 230px;
-  max-width: 660px;
-  background-color: white;
+  min-width: @min-dialog-width;
+  max-width: @max-dialog-width;
+  background-color: transparent;
   background-clip: padding-box;
-  border: 1px solid @admin-dialog-border;
-  border-bottom: 0;
   box-sizing: content-box;
+  max-height: @max-dialog-height;
 
-  .form-view {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+  &.masked {
+    opacity: 0;
+  }
+
+  &.fullscreen {
+    background-color: @admin-white;
+    position: fixed;
+    top: 20px;
+    bottom: 20px;
+
+    .cancel-button-inline();
+
+    .modal-dialog-wrapper {
+      justify-content: space-between;
+
+      .modal-dialog-header {
+        padding-right: 40px;
+      }
+
+      .modal-dialog-body {
+        overflow: auto;
+      }
+    }
+
+    &.always-fullscreen {
+      .modal-dialog-wrapper {
+        .modal-dialog-body {
+          height: 100%;
+
+          .dialog-content {
+            height: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  &:not(.fullscreen) {
+    .modal-dialog-wrapper {
+      padding: 40px 40px 0 0;
+      margin: -40px -40px 0 0;
+
+      .modal-dialog-header,
+      .modal-dialog-body,
+      .modal-dialog-footer {
+        background-color: @admin-white;
+      }
+    }
   }
 
   .modal-dialog-wrapper {
@@ -23,81 +84,163 @@
     flex-direction: column;
     height: 100%;
     position: relative;
-  }
 
-  .modal-dialog-header {
-    .clearfix();
-    padding: 30px 30px 10px 30px;
-    box-sizing: border-box;
-
-    h2 {
+    .cancel-button-top {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: @z-index-modal-dialog;
+      width: 36px;
+      height: 36px;
       line-height: 36px;
-      .ellipsis();
-    }
+      padding: 0;
+      cursor: pointer;
+      box-sizing: border-box;
+      display: inline-block;
 
-    .path {
-      display: block;
-      font-size: 16px;
-      margin-top: 5px;
+      &::before,
+      &::after {
+        @width: 20px;
+        @height: 3px;
+        transform: rotate(0deg);
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -@width/2;
+        display: block;
+        height: @height;
+        width: @width;
+        background-color: @admin-white;
+        transition: all 0.25s ease-out;
+      }
 
-      &:before {
-        margin-right: 5px;
-        content: attr(data-desc);
-        color: @admin-font-gray1;
+      &::before {
+        animation: close-icon-animation-before 500ms forwards;
+      }
+
+      &::after {
+        animation: close-icon-animation-after 500ms forwards;
+      }
+
+      &:hover {
+        &::before,
+        &::after {
+          background-color: @admin-medium-gray-border;
+        }
       }
     }
-  }
 
-  &.grey-header .modal-dialog-header {
-    background-color: @admin-bg-light-gray;
-    padding: 20px 20px 10px 30px;
-    width: 100%;
-  }
+    .modal-dialog-header {
+      padding: 20px 30px;
+      box-sizing: border-box;
 
-  .modal-dialog-body {
-    padding: 15px 30px 0 30px;
-    overflow: auto;
-    flex: 1 0 auto;
-    max-height: 50vh;
-    width: 100%;
-    box-sizing: border-box;
+      .title {
+        .ellipsis();
 
-    &.non-scrollable {
-      overflow: visible;
+        font-size: 2.3em;
+        line-height: 36px;
+
+        &:empty {
+          display: none;
+        }
+      }
+
+      .path {
+        .ellipsis();
+
+        display: block;
+        font-size: 16px;
+        margin-top: 5px;
+
+        &::before {
+          margin-right: 5px;
+          content: attr(data-desc);
+          color: @admin-font-gray1;
+        }
+      }
     }
-  }
 
+    .modal-dialog-body {
+      position: relative;
+      height: auto;
+      padding: 0 30px;
+      overflow: visible;
+      width: 100%;
+      box-sizing: border-box;
 
+      .dialog-content {
+        position: relative;
+        width: calc(100% - 1px);
+        padding: 2px 0;
+        box-sizing: border-box;
 
-  .modal-dialog-footer {
-    padding: 20px 30px;
-  }
+        .form-view {
+          padding-left: 0;
+          padding-right: 0;
 
-  .dialog-content {
-    width: 100%;
-    .clearfix();
-    padding: 1px 0;
+          .input-view:last-child {
+            margin-bottom: 0;
+          }
 
-    > p {
-      margin-bottom: 20px;
+          .dropdown-tree-grid {
+            position: static !important;
+          }
+
+          &:empty {
+            display: none;
+          }
+        }
+
+        .panel {
+          overflow: visible;
+        }
+      }
+    }
+
+    .modal-dialog-footer {
+      padding: 20px 30px;
+      position: relative;
+      width: 100%;
+      box-sizing: border-box;
+      background-color: @admin-white;
     }
   }
 
   .dialog-buttons {
-    .clearfix();
     position: relative;
 
-    @media screen and (max-height: 360px) {
-      margin-top: 5px;
+    .@{_COMMON_PREFIX}button {
+      .dialog-button();
     }
 
     .button-container {
       display: flex;
+      flex-wrap: nowrap;
       justify-content: flex-end;
+
+      > .cancel-button-bottom {
+        .button-background();
+      }
+
+      > *:not(:first-child) {
+        margin-left: 5px;
+      }
+
+      > *:not(:last-child) {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  &.grey-header .modal-dialog-wrapper {
+    .modal-dialog-header {
+      background-color: @admin-bg-light-gray;
+      padding-bottom: 15px;
     }
 
-    .@{_COMMON_PREFIX}button {
-      .dialog-button();
+    .modal-dialog-body {
+      padding-top: 15px;
     }
   }
 
@@ -119,59 +262,6 @@
     }
   }
 
-  .cancel-button-top {
-    position: absolute;
-    top: -40px;
-    right: -40px;
-    z-index: -1;
-    width: 36px;
-    height: 36px;
-    line-height: 36px;
-    padding: 0;
-    cursor: pointer;
-    box-sizing: border-box;
-    display: inline-block;
-
-    &:before, &:after {
-      @width: 20px;
-      @height: 3px;
-      transform: rotate(0deg);
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin-left: -@width/2;
-      display: block;
-      height: @height;
-      width: @width;
-      background-color: @admin-white;
-      transition: all 0.25s ease-out;
-    }
-
-    &:before {
-      animation: close-icon-animation-before 500ms forwards;
-    }
-
-    &:after {
-      animation: close-icon-animation-after 500ms forwards;
-    }
-
-    &:hover {
-      &:before, &:after {
-        background-color: @admin-medium-gray-border;
-      }
-    }
-  }
-
-  .@{_COMMON_PREFIX}button.cancel-button-bottom {
-      .button-background();
-    margin-left: 11px;
-  }
-
-  .input-view .edit {
-    display: none;
-  }
-
   .back-button {
 
     .icon-arrow-left();
@@ -181,17 +271,17 @@
     text-decoration: none;
     cursor: pointer;
     height: 32px;
-    line-height: 34px;
+    line-height: 38px;
     width: 32px;
 
-    &:before {
+    &::before {
       color: @admin-font-gray2;
       position: absolute;
       left: 14px;
     }
 
     &:hover {
-      &:before {
+      &::before {
         color: @admin-bg-dark-gray;
       }
     }
@@ -209,11 +299,13 @@
       .dialog-buttons {
         button:not(.force-enabled):not(.no-animation) {
           .icon-spinner();
-          &:before {
+
+          &::before {
             .animation(rotate360, .5s, .0s, linear);
             color: white;
             display: inline-block;
           }
+
           span {
             padding-left: 5px;
           }
@@ -236,7 +328,6 @@
   }
 
   &.is-processing {
-
     .progress-bar,
     .progress-message {
       display: block;
@@ -258,7 +349,8 @@
         span {
           display: none;
         }
-        &:after {
+
+        &::after {
           content: attr(data-button-text);
           color: @admin-white;
           width: 100px;
@@ -270,134 +362,55 @@
   }
 }
 
-.dialog-container {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-
-  z-index: @z-index-modal-dialog;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.confirmation-dialog-container {
-  z-index: @z-index-modal-dialog + 2;
-
-  .confirmation-dialog {
-    width: 700px;
-    padding-top: 0;
-
-    .question {
-      font-size: 14px;
-      line-height: 16px;
-    }
-
-    .modal-dialog-body {
-      padding-top: 10px;
-      padding-bottom: 5px;
-    }
-  }
-}
-
-.confirmation-dialog-mask {
-  z-index: @z-index-modal-dialog + 1;
-}
-
 .await-confirmation .cancel-button-top {
   display: none;
 }
 
-.cancel-button-inline() {
-  .cancel-button-top {
-
-    top: 0;
-    right: 0;
-    width: 26px;
-    height: 26px;
-    line-height: 26px;
-    background-color: @admin-white;
-    z-index: 1;
-
-    &:before, &:after {
-      background-color: @admin-font-gray2;
-      margin: 0;
-      top: 16px;
-      left: 0;
-      height: 3px;
-      width: 15px;
-    }
-
-    &:hover {
-      background-color: @admin-white;
-      &:before, &:after {
-        background-color: @admin-black;
-      }
-    }
-  }
-
-  &.grey-header {
-
-    .cancel-button-top {
-      background-color: @admin-bg-light-gray;
-
-      &:hover {
-        background-color: @admin-bg-light-gray;
-      }
-    }
-  }
-}
-
 body {
-  &._0-240, &._240-360, &._360-540, &._540-720 {
+  &._0-240,
+  &._240-360,
+  &._360-540,
+  &._540-720 {
     .@{_COMMON_PREFIX}modal-dialog {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      max-width: none;
 
       .cancel-button-inline();
 
-      .modal-dialog-header,
-      .modal-dialog-body {
-        padding: 0 20px;
+      &.fullscreen {
+        top: 0;
+        bottom: 0;
       }
 
-      .modal-dialog-header {
-        font-size: 5vw;
-        padding-top: 15px;
-        padding-bottom: 10px;
+      .modal-dialog-wrapper {
+        .modal-dialog-header {
+          padding: 15px 30px 15px 20px;
 
-        .back-button:before {
-          left: 0;
+          .back-button:before {
+            left: 0;
+          }
+        }
+
+        .modal-dialog-body {
+          padding: 0 20px;
+          max-height: none;
+          height: 100%;
+        }
+
+        .modal-dialog-footer {
+          padding: 20px;
         }
       }
 
-      .modal-dialog-body {
-        max-height: none;
+      &.grey-header {
+        .modal-dialog-body {
+          padding: 20px;
+          max-height: none;
+          height: 100%;
+        }
       }
-
-      .modal-dialog-footer {
-        padding: 20px;
-      }
-    }
-  }
-
-  &._0-240 .@{_COMMON_PREFIX}modal-dialog, &._240-360 .@{_COMMON_PREFIX}modal-dialog {
-    .all-space();
-  }
-
-  &._360-540 .@{_COMMON_PREFIX}modal-dialog {
-    .all-space();
-  }
-
-  &._540-720 .@{_COMMON_PREFIX}modal-dialog {
-    .all-space();
-  }
-
-  @media screen and (max-height: 540px) {
-    .@{_COMMON_PREFIX}modal-dialog {
-      max-height: 480px;
     }
   }
 
@@ -408,12 +421,43 @@ body {
       }
     }
   }
-
 }
 
-.all-space(@except: 0px) {
-  width: calc(100% - @except);
-  height: calc(100% - @except);
-  margin: 0;
-  max-width: none;
+.cancel-button-inline() {
+  .modal-dialog-wrapper {
+    .cancel-button-top {
+      top: 0;
+      right: 0;
+      width: 32px;
+      height: 32px;
+      z-index: @z-index-modal-dialog + 1;
+
+      &::before,
+      &::after {
+        background-color: @admin-font-gray2;
+        width: 18px;
+      }
+
+      &:hover {
+        background-color: @admin-white;
+
+        &::before,
+        &::after {
+          background-color: @admin-black;
+        }
+      }
+    }
+  }
+
+  &.grey-header {
+    .modal-dialog-wrapper {
+      .cancel-button-top {
+        background-color: @admin-bg-light-gray;
+
+        &:hover {
+          background-color: @admin-bg-light-gray;
+        }
+      }
+    }
+  }
 }

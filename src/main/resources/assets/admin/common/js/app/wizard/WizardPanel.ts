@@ -58,9 +58,10 @@ export class WizardPanel<EQUITABLE extends Equitable>
     protected liveMask: LoadMask;
     protected formState: FormState = new FormState(true);
     protected formPanel: Panel;
+    protected canModify: boolean = false;
     private persistedItem: EQUITABLE;
     private stepNavigator: WizardStepNavigator;
-    private steps: WizardStep[];
+    private steps: WizardStep[] = [];
     private stepsPanel: WizardStepsPanel;
     private dataLoaded: boolean = false;
     private closedListeners: { (event: WizardClosedEvent): void }[] = [];
@@ -158,6 +159,10 @@ export class WizardPanel<EQUITABLE extends Equitable>
                         this.doLayout(this.getPersistedItem())
                             .then(() => {
                                 deferred.resolve(nextRendered);
+
+                                this.checkIfEditIsAllowed().then((canModify: boolean) => {
+                                    this.handleCanModify(canModify);
+                                }).catch(DefaultErrorHandler.handle);
 
                                 if (this.hasHelpText()) {
                                     this.setupHelpTextToggleButton();
@@ -880,6 +885,27 @@ export class WizardPanel<EQUITABLE extends Equitable>
     private notifyClosed(checkCanClose: boolean) {
         this.closedListeners.forEach((listener: (event: WizardClosedEvent) => void) => {
             listener(new WizardClosedEvent(this, checkCanClose));
+        });
+    }
+
+    protected handleCanModify(canModify: boolean) {
+        this.canModify = canModify;
+        this.setEnabled(canModify);
+    }
+
+    setEnabled(enable: boolean) {
+        this.toggleClass('no-modify-permissions', !enable);
+
+        if (this.formIcon) {
+            this.formIcon.getEl().setDisabled(!enable);
+        }
+
+        if (this.wizardHeader) {
+            this.wizardHeader.toggleEnabled(enable);
+        }
+
+        this.steps.forEach((step: WizardStep) => {
+            step.getStepForm().setEnabled(enable);
         });
     }
 }
