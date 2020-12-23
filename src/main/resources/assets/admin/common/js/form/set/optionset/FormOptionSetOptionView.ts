@@ -432,6 +432,10 @@ export class FormOptionSetOptionView
         }
     }
 
+    hasNonDefaultValues(): boolean {
+        return this.formItemViews.some(v => v.hasNonDefaultValues());
+    }
+
     private isChildOfDeselectedParent(): boolean {
         return $(this.getEl().getHTMLElement()).parents('.form-option-set-option-view').not('.selected').length > 0;
     }
@@ -532,7 +536,9 @@ export class FormOptionSetOptionView
     }
 
     setEnabled(enable: boolean) {
-        this.checkbox.setEnabled(enable);
+        if (!this.isSingleSelection()) {
+            this.checkbox.setEnabled(enable);
+        }
         this.formItemLayer.setEnabled(enable);
     }
 }

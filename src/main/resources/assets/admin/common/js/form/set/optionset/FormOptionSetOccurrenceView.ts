@@ -77,6 +77,13 @@ export class FormOptionSetOccurrenceView
         });
     }
 
+    setEnabled(enable: boolean) {
+        if (this.isSingleSelection()) {
+            this.singleSelectionDropdown.setEnabled(enable);
+        }
+        super.setEnabled(enable);
+    }
+
     protected initValidationMessageBlock() {
         this.selectionValidationMessage = new DivEl('selection-message');
         this.appendChild(this.selectionValidationMessage);
