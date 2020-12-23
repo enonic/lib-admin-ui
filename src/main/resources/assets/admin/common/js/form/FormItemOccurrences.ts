@@ -137,6 +137,12 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         });
     }
 
+    setEnabled(enable: boolean) {
+        this.occurrenceViews.forEach((view: V) => {
+            view.setEnabled(enable);
+        });
+    }
+
     createNewOccurrenceView(_occurrence: FormItemOccurrence<V>): V {
         throw new Error('Must be implemented by inheritor');
     }

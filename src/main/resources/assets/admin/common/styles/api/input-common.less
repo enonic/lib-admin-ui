@@ -14,23 +14,27 @@
     .input-glow();
   }
 
-  &.label-over-input {
+  > .input-label {
+    display: inline-block;
+    max-width: calc(100% - 30px);
 
-    > .input-label, label {
-      float: none;
+    .label {
+      display: inline-block;
+      .ellipsis();
     }
 
-    > .input-type-view {
-      margin-left: 0;
-    }
+    .required, .wrapper.required, &.required {
+      display: flex;
+      line-height: 20px;
 
-    > .input-type-view.image-selector {
-      margin-left: 0;
+      &:after {
+        content: '\00a0*';
+        color: @input-red-text;
+      }
     }
   }
 
   &.no-label {
-
     > .input-label {
       display: none;
     }
@@ -40,54 +44,39 @@
     }
   }
 
-  &.no-label, &.label-over-input {
-    > .input-type-view,
-    > .bottom-button-row,
-    > .validation-viewer {
-      margin-left: 0;
-    }
-  }
+  &.label-inline {
+    > label,
+    > .input-label {
+      float: left;
+      max-width: @form-label-width - 10px;
 
-  &:not(.no-label) {
-    .input-label {
-      display: inline-block !important;
-    }
-  }
-
-  label + .form-input,
-  label + .input-wrapper,
-  label + .@{_COMMON_PREFIX}button {
-    margin-left: @form-label-width;
-  }
-
-  &:not(.label-over-input) .input-label, label {
-    max-width: @form-label-width - 10px;
-  }
-
-  .input-label, label {
-    float: left;
-    text-overflow: ellipsis;
-
-    .label {
-      display: inline-block;
-      max-width: 100%;
-      .ellipsis();
-    }
-    .required, .wrapper.required, &.required {
-      &:after {
+      .label {
         float: left;
-        position: absolute;
-        content: '\00a0*';
-        color: @input-red-text;
       }
     }
+
+    > .input-wrapper,
+    > .input-type-view,
+    > .help-text,
+    > .bottom-button-row,
+    > .validation-viewer {
+      margin-left: @form-label-width;
+    }
+
+    > .help-text-toggler {
+      margin-left: 5px;
+    }
   }
 
-  .input-wrapper .form-input {
-    width: 100%;
+  .input-wrapper {
+    position: relative;
+
+    .form-input {
+      width: 100%;
+    }
   }
+
   .input-type-view {
-    margin: 0 0 0 @form-label-width;
 
     .image-uploader-el {
       width: 100%;
@@ -97,10 +86,6 @@
 
       .input-occurrence-view + .input-occurrence-view {
         margin-top: 24px;
-      }
-
-      .input-wrapper {
-        position: relative;
       }
 
       .length-counter {
@@ -117,7 +102,6 @@
   .bottom-button-row {
     clear: left;
     overflow: visible; // for button glow
-    margin: 0 0 0 @form-label-width;
 
     button {
       margin-top: 7px;
@@ -125,29 +109,9 @@
   }
 
   .validation-viewer {
-    margin-left: @form-label-width;
 
     ul > li {
       margin-top: 7px;
-    }
-  }
-
-  .context-window &,
-  ._0-240 &,
-  ._240-360 &,
-  ._360-540 &,
-  ._540-720 & {
-
-    .input-label {
-      float: none;
-      max-width: 100%;
-    }
-
-    .input-type-view,
-    .bottom-button-row,
-    .validation-viewer {
-      width: 100%;
-      margin-left: 0;
     }
   }
 }

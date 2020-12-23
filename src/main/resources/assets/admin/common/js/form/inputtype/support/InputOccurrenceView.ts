@@ -4,13 +4,13 @@ import {PropertyArray} from '../../../data/PropertyArray';
 import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
 import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
 import {Element} from '../../../dom/Element';
-import {AEl} from '../../../dom/AEl';
 import {DivEl} from '../../../dom/DivEl';
 import {Value} from '../../../data/Value';
 import {PropertyPath} from '../../../data/PropertyPath';
 import {InputValidationRecording} from '../InputValidationRecording';
 import {InputOccurrence} from './InputOccurrence';
 import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
+import {ButtonEl} from '../../../dom/ButtonEl';
 
 export class InputOccurrenceView
     extends FormItemOccurrenceView {
@@ -20,7 +20,7 @@ export class InputOccurrenceView
     private property: Property;
     private inputTypeView: BaseInputTypeNotManagingAdd;
     private inputElement: Element;
-    private removeButtonEl: AEl;
+    private removeButtonEl: ButtonEl;
     private dragControl: DivEl;
     private requiredContractBroken: boolean;
     private propertyValueChangedHandler: (event: PropertyValueChangedEvent) => void;
@@ -43,7 +43,8 @@ export class InputOccurrenceView
         this.dragControl = new DivEl('drag-control');
         this.appendChild(this.dragControl);
 
-        this.removeButtonEl = new AEl('remove-button');
+        this.removeButtonEl = new ButtonEl();
+        this.removeButtonEl.addClass('remove-button');
         this.removeButtonEl.onClicked((event: MouseEvent) => {
             this.notifyRemoveButtonClicked();
             event.stopPropagation();
@@ -73,6 +74,11 @@ export class InputOccurrenceView
 
     reset() {
         this.inputTypeView.resetInputOccurrenceElement(this.inputElement);
+    }
+
+    setEnabled(enable: boolean) {
+        this.inputTypeView.setEnabledInputOccurrenceElement(this.inputElement, enable);
+        this.removeButtonEl.setEnabled(enable);
     }
 
     refresh() {

@@ -329,20 +329,12 @@ export class Tooltip {
         if (offsetLeft < 0) {
             offsetLeft = 0;
         }
-        /* else if (offsetLeft + el.offsetWidth > window.innerWidth) {
-         offsetLeft = window.innerWidth - el.offsetWidth;
-         }*/
+
         if (offsetTop < 0) {
             offsetTop = 0;
         }
-        /* else if (offsetTop + el.offsetHeight > window.innerHeight) {
-         offsetTop = window.innerHeight - el.offsetHeight;
-         }*/
 
-        el.setOffset({
-            left: offsetLeft,
-            top: offsetTop
-        });
+        el.setLeftPx(Math.floor(offsetLeft)).setTopPx(Math.floor(offsetTop));
     }
 
     private startHideTimeout(ms?: number) {

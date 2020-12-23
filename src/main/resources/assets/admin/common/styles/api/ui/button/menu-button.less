@@ -1,5 +1,5 @@
 .menu-button {
-  display: inline-block;
+  display: flex;
   position: relative;
   height: 40px;
 
@@ -33,17 +33,14 @@
     width: 100%;
     z-index: @z-index-mask;
     box-sizing: border-box;
-
-    &.expanded {
-      display: block !important;
-    }
   }
 
   .menu-item {
     .ellipsis();
-    display: block !important;
 
+    display: block;
     color: @admin-font-gray2;
+
     i {
       font-style: normal;
     }
@@ -59,34 +56,23 @@
   }
 
   .@{_COMMON_PREFIX}dropdown-handle {
-    left: 0;
-    width: 42px;
-    border-radius: 0;
-
-    &:after {
-      margin-left: -6px;
-    }
+    position: relative;
   }
 
   .action-button {
     position: relative;
-    height: 100%;
-    border: none;
     min-width: 126px;
-    margin-left: 41px;
     text-align: center;
   }
 
   &:not(.transparent) {
     .@{_COMMON_PREFIX}dropdown-handle {
-      background-color: @admin-green;
 
       &:after {
         border-top: 10px solid @admin-white;
       }
 
       &:hover {
-        background-color: lighten(@admin-green, 10%);
         span {
           color: @admin-white;
         }
@@ -97,7 +83,6 @@
     }
 
     .action-button {
-      background-color: @admin-green;
 
       span {
         color: @admin-white;
@@ -108,7 +93,6 @@
       }
 
       &:not([disabled]):hover {
-        background-color: lighten(@admin-green, 10%);
         span {
           color: @admin-white;
         }

@@ -2,9 +2,9 @@
 
 .form-view {
   &.display-validation-errors {
-    .form-item-set-occurrence-view,
-    .form-option-set-occurrence-view {
-      &.invalid.collapsed {
+    .form-item-set-view,
+    .form-option-set-view {
+      &.invalid > .occurrence-views-container {
         border: 3px solid @admin-red;
         box-shadow: none;
       }
@@ -17,18 +17,9 @@
     .form-option-set-occurrence-view.invalid.collapsed {
       padding: 7px;
     }
-
-    .input-view.invalid {
-      padding: 10px;
-
-      .validation-viewer ul > li {
-        margin-top: 10px;
-      }
-    }
   }
 
   .form-item-set-view {
-
     > .occurrence-views-container > .form-item-set-occurrence-view {
       padding: 13px;
 
@@ -36,14 +27,13 @@
         font-size: 16px;
         color: @admin-font-gray3;
         padding-right: 20px;
-        width: auto;
+        width: calc(100% - 30px);
         .ellipsis();
       }
     }
   }
 
-  .form-item-set-view,
-  .form-option-set-view {
+  .form-item-set-view, .form-option-set-view {
     > .form-set-header {
       margin-bottom: 20px;
 
@@ -88,6 +78,7 @@
         }
 
         > .form-occurrence-draggable-label {
+          display: inline-block;
           padding-right: 0;
           cursor: zoom-out;
           .ellipsis();
@@ -235,9 +226,9 @@
     }
 
     .form-item-set-drop-target-placeholder, .form-option-set-drop-target-placeholder {
-      border: 2px dashed #000;
+      border: 2px dashed @admin-black;
       padding: 14px;
-      color: #000;
+      color: @admin-black;
       font-size: 14px;
       text-align: center;
       margin: 10px;

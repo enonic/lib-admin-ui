@@ -2,16 +2,19 @@
   .reset(true);
 
   position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: @admin-black;
   display: none;
   z-index: @z-index-mask;
   opacity: 0.6;
 
   .mask-splash {
-    position: absolute;
-    padding: 10px;
-    left: 50%;
-    top: 50%;
+    position: relative;
+    left: calc(50% - 25px);
+    top: calc(50% - 25px);
     display: none;
 
     .spinner {
@@ -40,13 +43,17 @@
     right: 0;
     left: 0;
     bottom: 0;
-
   }
 
   &.load-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
     background-color: white;
     overflow: hidden;
     z-index: @z-index-mask;
+    width: 100%;
+    height: 100%;
   }
 
   &.drag-mask {

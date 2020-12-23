@@ -14,7 +14,7 @@ import {Element} from '../../../dom/Element';
 import {ClassHelper} from '../../../ClassHelper';
 import {ContentSummary} from '../../../content/ContentSummary';
 
-export class BaseInputTypeManagingAdd
+export abstract class BaseInputTypeManagingAdd
     extends DivEl
     implements InputTypeView {
 
@@ -90,6 +90,10 @@ export class BaseInputTypeManagingAdd
 
     refresh() {
         //to be implemented on demand in inheritors
+    }
+
+    setEnabled(enable: boolean) {
+    //
     }
 
     hasValidUserInput(): boolean {
