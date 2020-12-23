@@ -12,6 +12,8 @@ export class Action {
 
     private title: string;
 
+    private clazz: string;
+
     private iconClass: string;
 
     private shortcut: KeyBinding;
@@ -163,6 +165,15 @@ export class Action {
         } else {
             this.setIconClass(className);
         }
+        return this;
+    }
+
+    getClass(): string {
+        return this.clazz;
+    }
+
+    setClass(value: string): Action {
+        this.clazz = value;
         return this;
     }
 

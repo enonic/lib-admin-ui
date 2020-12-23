@@ -507,7 +507,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     }
 
     private notifyOptionSelected(item: Option<OPTION_DISPLAY_VALUE>, previousItem: Option<OPTION_DISPLAY_VALUE>) {
-        let event = new OptionSelectedEvent<OPTION_DISPLAY_VALUE>(item, previousItem, -1);
+        let event = new OptionSelectedEvent<OPTION_DISPLAY_VALUE>(item, previousItem, this.getOptions().indexOf(item));
         this.optionSelectedListeners.forEach((listener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void) => {
             listener(event);
         });

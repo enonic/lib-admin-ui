@@ -2,11 +2,13 @@
 
 .form-view {
   &.display-validation-errors {
-    .form-item-set-view,
-    .form-option-set-view {
-      &.invalid > .occurrence-views-container {
-        border: 3px solid @admin-red;
-        box-shadow: none;
+    .form-item-view.invalid {
+      .form-item-set-occurrence-view,
+      .form-option-set-occurrence-view {
+        &.invalid {
+          border: 3px solid @admin-red;
+          box-shadow: none;
+        }
       }
     }
 
@@ -19,25 +21,31 @@
     }
   }
 
-  .form-item-set-view {
-    > .occurrence-views-container > .form-item-set-occurrence-view {
-      padding: 13px;
+  .form-item-set-view,
+  .form-option-set-view {
+    > .form-set-header {
+      margin-bottom: 20px;
 
-      > .form-occurrence-draggable-label {
-        font-size: 16px;
-        color: @admin-font-gray3;
-        padding-right: 20px;
-        width: calc(100% - 30px);
+      h5 {
         .ellipsis();
+
+        font-size: 25px;
+        line-height: 32px;
+      }
+
+      .help-text {
+        padding-top: 10px;
       }
     }
-  }
 
-  .form-item-set-view, .form-option-set-view {
     > .occurrence-views-container {
 
       &:empty {
         display: none;
+
+        + .bottom-button-row {
+          padding: 0;
+        }
       }
 
       > .form-item-set-occurrence-view,
@@ -46,22 +54,27 @@
         margin: 0;
         box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
 
-        > .remove-button {
-          &:extend(.icon);
-          .icon-close();
-          .focusable();
-
-          border: 1px solid transparent;
-          line-height: 15px;
+        .more-button {
+          width: 40px;
+          height: 40px;
           float: right;
-          text-decoration: none;
-          cursor: pointer;
+
+          &[disabled] {
+            display: none;
+          }
+
+          &:focus:not(:disabled) {
+            border: none;
+          }
         }
 
         > .form-occurrence-draggable-label {
           display: inline-block;
-          padding-right: 0;
+          font-size: 16px;
+          width: calc(100% - 55px);
+          padding: 10px 0 5px 13px;
           cursor: zoom-out;
+          .ellipsis();
 
           .required {
             padding-left: 5px;
@@ -83,10 +96,12 @@
 
           p.note {
             display: none;
+            .ellipsis();
           }
 
           &.custom-label {
-            line-height: 18px;
+            line-height: 16px;
+
             .drag-control {
               height: 30px;
             }
@@ -102,10 +117,60 @@
           }
         }
 
+        > .form-item-set-occurrences-container,
+        > .form-option-set-occurrences-container {
+          &:not(.empty) {
+            padding: 5px 13px 13px;
+          }
+        }
+
         &.collapsed {
           > .form-occurrence-draggable-label {
             cursor: zoom-in;
           }
+        }
+      }
+    }
+
+    > .top-button-row {
+      display: none;
+      margin: 5px 0 10px 0;
+    }
+
+    > .bottom-button-row {
+      box-sizing: border-box;
+      padding: 10px 0;
+      margin-top: 10px;
+
+      button {
+        max-width: 300px;
+
+        span {
+          display: block;
+          line-height: 28px;
+          .ellipsis();
+        }
+      }
+
+      .add-button {
+        float: left;
+      }
+
+      .collapse-button {
+        line-height: 28px;
+      }
+    }
+
+    > .top-button-row,
+    > .bottom-button-row {
+      .clearfix();
+
+      .collapse-button {
+        float: right;
+        text-decoration: underline;
+
+        &:hover {
+          cursor: pointer;
         }
       }
     }
@@ -139,7 +204,6 @@
           }
 
           > .form-occurrence-draggable-label {
-            width: calc(100% - 26px);
 
             &:not(.custom-label) {
               line-height: 22px;
@@ -152,6 +216,14 @@
           }
         }
       }
+
+      > .form-set-header {
+        margin-bottom: 0;
+      }
+
+      > .top-button-row {
+        display: block;
+      }
     }
 
     .form-item-set-drop-target-placeholder, .form-option-set-drop-target-placeholder {
@@ -161,31 +233,6 @@
       font-size: 14px;
       text-align: center;
       margin: 10px;
-    }
-
-    & > .bottom-button-row {
-      box-sizing: border-box;
-      padding: 10px 0;
-      clear: left;
-      .clearfix();
-
-      button {
-        margin-top: 5px;
-      }
-
-      .add-button {
-        float: left;
-      }
-
-      .collapse-button {
-        float: right;
-        text-decoration: underline;
-        line-height: 28px;
-
-        &:hover {
-          cursor: pointer;
-        }
-      }
     }
 
     & > .validation-viewer {

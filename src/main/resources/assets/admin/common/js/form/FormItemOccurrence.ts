@@ -1,6 +1,7 @@
 import {FormItemOccurrenceView} from './FormItemOccurrenceView';
 import {FormItemOccurrences} from './FormItemOccurrences';
 import {Occurrences} from './Occurrences';
+import * as Q from 'q';
 
 export class FormItemOccurrence<V extends FormItemOccurrenceView> {
 
@@ -30,6 +31,18 @@ export class FormItemOccurrence<V extends FormItemOccurrenceView> {
 
     isRemoveButtonRequiredStrict(): boolean {
         return this.occurrences.countOccurrences() === 1 ? false : this.moreThanRequiredOccurrences();
+    }
+
+    maximumOccurrencesReached(): boolean {
+        return this.occurrences.maximumOccurrencesReached();
+    }
+
+    addOccurrenceAbove(): Q.Promise<V> {
+        return this.occurrences.createAndAddOccurrence(this.index, false);
+    }
+
+    addOccurrenceBelow(): Q.Promise<V> {
+        return this.occurrences.createAndAddOccurrence(this.index + 1, false);
     }
 
     showAddButton(): boolean {
