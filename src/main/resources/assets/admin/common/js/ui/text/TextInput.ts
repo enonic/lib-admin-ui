@@ -5,9 +5,6 @@ import {StringHelper} from '../../util/StringHelper';
 export class TextInput
     extends InputEl {
 
-    static MIDDLE: string = 'middle';
-    static LARGE: string = 'large';
-
     /**
      * Specifies RegExp for characters that will be removed during input.
      */
@@ -22,7 +19,7 @@ export class TextInput
 
     private autoTrim: boolean = false;
 
-    constructor(className?: string, size?: string, originalValue?: string) {
+    constructor(className?: string, size?: TextInputSize, originalValue?: string) {
         super('text-input', 'text', StyleHelper.COMMON_PREFIX, originalValue);
         if (className) {
             this.addClass(className);
@@ -67,11 +64,11 @@ export class TextInput
     }
 
     static large(className?: string, originalValue?: string): TextInput {
-        return new TextInput(className, TextInput.LARGE, originalValue);
+        return new TextInput(className, TextInputSize.LARGE, originalValue);
     }
 
     static middle(className?: string, originalValue?: string): TextInput {
-        return new TextInput(className, TextInput.MIDDLE, originalValue);
+        return new TextInput(className, TextInputSize.MIDDLE, originalValue);
     }
 
     updateValue(): string {
@@ -166,4 +163,8 @@ export class TextInput
         return false;
     }
 
+}
+
+export enum TextInputSize {
+    MIDDLE ='middle', LARGE = 'large'
 }

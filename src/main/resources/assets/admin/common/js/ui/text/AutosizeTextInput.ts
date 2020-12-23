@@ -3,7 +3,7 @@ import {Element} from '../../dom/Element';
 import {DivEl} from '../../dom/DivEl';
 import {WindowDOM} from '../../dom/WindowDOM';
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
-import {TextInput} from './TextInput';
+import {TextInput, TextInputSize} from './TextInput';
 
 export class AutosizeTextInput
     extends TextInput {
@@ -11,7 +11,7 @@ export class AutosizeTextInput
     private attendant: Element;
     private clone: Element;
 
-    constructor(className?: string, size: string = TextInput.MIDDLE, originalValue?: string) {
+    constructor(className?: string, size: TextInputSize = TextInputSize.MIDDLE, originalValue?: string) {
         super(className, size, originalValue);
 
         this.addClass('autosize');
@@ -42,11 +42,11 @@ export class AutosizeTextInput
     }
 
     static large(className?: string, originalValue?: string): AutosizeTextInput {
-        return new AutosizeTextInput(className, TextInput.LARGE, originalValue);
+        return new AutosizeTextInput(className, TextInputSize.LARGE, originalValue);
     }
 
     static middle(className?: string, originalValue?: string): AutosizeTextInput {
-        return new AutosizeTextInput(className, TextInput.MIDDLE, originalValue);
+        return new AutosizeTextInput(className, TextInputSize.MIDDLE, originalValue);
     }
 
     private updateSize() {
