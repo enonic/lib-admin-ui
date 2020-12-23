@@ -2,6 +2,10 @@ import {InputEl} from '../../dom/InputEl';
 import {StyleHelper} from '../../StyleHelper';
 import {StringHelper} from '../../util/StringHelper';
 
+export enum TextInputSize {
+    MIDDLE ='middle', LARGE = 'large'
+}
+
 export class TextInput
     extends InputEl {
 
@@ -163,8 +167,4 @@ export class TextInput
         return false;
     }
 
-}
-
-export enum TextInputSize {
-    MIDDLE ='middle', LARGE = 'large'
 }
