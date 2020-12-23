@@ -136,13 +136,19 @@
       box-sizing: border-box;
 
       .title {
+        .ellipsis();
+
         font-size: 2.3em;
         line-height: 36px;
-        .ellipsis();
+
+        &:empty {
+          display: none;
+        }
       }
 
       .path {
         .ellipsis();
+
         display: block;
         font-size: 16px;
         margin-top: 5px;
@@ -151,12 +157,6 @@
           margin-right: 5px;
           content: attr(data-desc);
           color: @admin-font-gray1;
-        }
-      }
-
-      .title {
-        &:empty {
-          display: none;
         }
       }
     }
