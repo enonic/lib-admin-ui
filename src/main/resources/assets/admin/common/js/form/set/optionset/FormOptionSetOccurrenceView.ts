@@ -90,7 +90,7 @@ export class FormOptionSetOccurrenceView
         super.refresh();
         if (this.isSingleSelection()) {
             const selected = this.singleSelectionDropdown.getSelectedOption();
-            this.toggleContainerMenuAction.setEnabled(selected && selected.getDisplayValue().getFormItems().length > 0);
+            this.toggleContainerMenuAction.setEnabled(!!selected && selected.getDisplayValue().getFormItems().length > 0);
         }
     }
 
