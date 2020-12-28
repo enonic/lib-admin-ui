@@ -38,13 +38,15 @@ export class FormOptionSetOccurrenceView
     }
 
     layout(validate: boolean = true): Q.Promise<void> {
+        this.toggleContainerMenuAction = new Action('')
+            .onExecuted(_action => {
+                this.showContainer(!this.isContainerVisible());
+            })
+            .setEnabled(false);
         return super.layout(validate).then(rendered => {
             if (this.isSingleSelection()) {
                 this.addClass('single-selection');
-
-                this.toggleContainerMenuAction = new Action(this.getToggleContainerMenuItemLabel()).onExecuted(action => {
-                    this.showContainer(!this.isContainerVisible());
-                });
+                this.toggleContainerMenuAction.setLabel(this.getToggleContainerMenuItemLabel(false));
                 this.moreButton.prependMenuActions([this.toggleContainerMenuAction]);
                 let selectedValue = this.getSelectedOptionsArray().get(0)?.getString();
                 if (!selectedValue) {
@@ -65,7 +67,7 @@ export class FormOptionSetOccurrenceView
     showContainer(show: boolean) {
         super.showContainer(show);
         if (this.isSingleSelection()) {
-            this.toggleContainerMenuAction.setLabel(this.getToggleContainerMenuItemLabel());
+            this.toggleContainerMenuAction.setLabel(this.getToggleContainerMenuItemLabel(!show));
         }
     }
 
@@ -78,10 +80,18 @@ export class FormOptionSetOccurrenceView
     }
 
     setEnabled(enable: boolean) {
+        super.setEnabled(enable);
         if (this.isSingleSelection()) {
             this.singleSelectionDropdown.setEnabled(enable);
         }
-        super.setEnabled(enable);
+    }
+
+    refresh() {
+        super.refresh();
+        if (this.isSingleSelection()) {
+            const selected = this.singleSelectionDropdown.getSelectedOption();
+            this.toggleContainerMenuAction.setEnabled(!!selected && selected.getDisplayValue().getFormItems().length > 0);
+        }
     }
 
     protected initValidationMessageBlock() {
@@ -300,6 +310,8 @@ export class FormOptionSetOccurrenceView
                 optionView.enableAndExpand();
             }
 
+            this.refresh();
+
             this.handleSelectionChanged(optionView);
         });
 
@@ -317,7 +329,7 @@ export class FormOptionSetOccurrenceView
         return this.singleSelectionDropdown;
     }
 
-    private getToggleContainerMenuItemLabel() {
-        return !this.isContainerVisible() ? i18n('button.expand') : i18n('button.collapse');
+    private getToggleContainerMenuItemLabel(expand: boolean) {
+        return expand ? i18n('button.expand') : i18n('button.collapse');
     }
 }
