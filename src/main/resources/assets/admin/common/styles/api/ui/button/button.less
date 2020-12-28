@@ -1,13 +1,6 @@
 .menu-action-button() {
   .button(@admin-font-gray2, transparent, @admin-font-gray3, transparent, false);
 
-  span {
-    line-height: 1em;
-    white-space: nowrap;
-  }
-
-  display: inline-block;
-  vertical-align: top;
   height: 100%;
 
   &.pull-right {
@@ -62,6 +55,10 @@
 
   &.blue {
     .button-background(@admin-button-blue2);
+  }
+
+  &.black {
+    .button-background(@admin-black, lighten(@admin-black, 30%));
   }
 
 }

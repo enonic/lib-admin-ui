@@ -137,6 +137,12 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         });
     }
 
+    setEnabled(enable: boolean) {
+        this.occurrenceViews.forEach((view: V) => {
+            view.setEnabled(enable);
+        });
+    }
+
     createNewOccurrenceView(_occurrence: FormItemOccurrence<V>): V {
         throw new Error('Must be implemented by inheritor');
     }
@@ -265,12 +271,15 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
 
         let insertAtIndex = occurrence.getIndex();
         this.occurrences.splice(insertAtIndex, 0, occurrence);
-
-        let occurrenceViewBefore: Element = this.getOccurrenceViewElementBefore(insertAtIndex);
-        if (insertAtIndex === countOccurrences || !occurrenceViewBefore) {
-            this.occurrenceViewContainer.appendChild(occurrenceView);
+        if (insertAtIndex === 0) {
+            this.occurrenceViewContainer.prependChild(occurrenceView);
         } else {
-            occurrenceView.insertAfterEl(occurrenceViewBefore);
+            let occurrenceViewBefore: Element = this.getOccurrenceViewElementBefore(insertAtIndex);
+            if (insertAtIndex === countOccurrences || !occurrenceViewBefore) {
+                this.occurrenceViewContainer.appendChild(occurrenceView);
+            } else {
+                occurrenceView.insertAfterEl(occurrenceViewBefore);
+            }
         }
 
         this.occurrenceViews.splice(insertAtIndex, 0, occurrenceView);

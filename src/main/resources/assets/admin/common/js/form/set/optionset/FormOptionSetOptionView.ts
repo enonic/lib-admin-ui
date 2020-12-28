@@ -6,7 +6,6 @@ import {PropertyArray} from '../../../data/PropertyArray';
 import {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {Occurrences} from '../../Occurrences';
-import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
 import {Checkbox} from '../../../ui/Checkbox';
 import {NotificationDialog} from '../../../ui/dialog/NotificationDialog';
 import {i18n} from '../../../util/Messages';
@@ -14,10 +13,7 @@ import {DivEl} from '../../../dom/DivEl';
 import {ContentSummary} from '../../../content/ContentSummary';
 import {FormEditEvent} from '../../../content/event/FormEditEvent';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
-import {FormInputEl} from '../../../dom/FormInputEl';
-import {RadioButton} from '../../../ui/RadioButton';
 import {ValueTypeString} from '../../../data/ValueTypeString';
-import {BrowserHelper} from '../../../BrowserHelper';
 import {Element} from '../../../dom/Element';
 import {FormEl} from '../../../dom/FormEl';
 import {FormOptionSetOption} from './FormOptionSetOption';
@@ -30,7 +26,8 @@ import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent
 import {ValidationRecording} from '../../ValidationRecording';
 import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
 
-export interface FormOptionSetOptionViewConfig extends CreatedFormItemLayerConfig {
+export interface FormOptionSetOptionViewConfig
+    extends CreatedFormItemLayerConfig {
 
     layerFactory: FormItemLayerFactory;
 
@@ -59,16 +56,8 @@ export class FormOptionSetOptionView
         this.setCheckBoxDisabled();
     });
 
-    private radioDeselectHandler: (event: PropertyValueChangedEvent) => void = ((event: PropertyValueChangedEvent) => {
-        if (event.getPreviousValue().getString() === this.getName()) {
-            this.deselectHandle();
-        }
-    });
-
-    private subscribedOnDeselect: boolean = false;
-
     constructor(config: FormOptionSetOptionViewConfig) {
-        super(<FormItemViewConfig> {
+        super(<FormItemViewConfig>{
             className: 'form-option-set-option-view',
             context: config.context,
             formItem: config.formOptionSetOption,
@@ -106,7 +95,7 @@ export class FormOptionSetOptionView
     public layout(validate: boolean = true): Q.Promise<void> {
         let deferred = Q.defer<void>();
 
-        if (this.formOptionSetOption.getHelpText()) {
+        if (this.formOptionSetOption.getHelpText() && !this.isSingleSelection()) {
             this.helpText = new HelpTextContainer(this.formOptionSetOption.getHelpText());
 
             this.appendChild(this.helpText.getHelpText());
@@ -131,7 +120,9 @@ export class FormOptionSetOptionView
                 this.addClass('expandable');
             }
 
-            this.prependChild(this.makeSelectionButton());
+            if (!this.isSingleSelection()) {
+                this.prependChild(this.makeSelectionCheckbox());
+            }
 
             this.formItemViews = formItemViews;
 
@@ -182,22 +173,8 @@ export class FormOptionSetOptionView
         const propertyArray: PropertyArray = this.getOptionItemsPropertyArray(propertySet);
 
         return this.formItemLayer.update(propertyArray.getSet(0), unchangedOnly).then(() => {
-            if (!this.isRadioSelection()) {
+            if (!this.isSingleSelection()) {
                 this.subscribeCheckboxOnPropertyEvents();
-            } else {
-                const isSelected: boolean = this.isSelected();
-                $(this.getHTMLElement()).find('input:radio').first().prop('checked', isSelected);
-                if (isSelected) {
-                    this.optionItemsContainer.show();
-                }
-
-                const selectedProperty = this.getSelectedOptionsArray().get(0);
-                if (selectedProperty) {
-                    this.subscribeOnRadioDeselect(selectedProperty);
-                    this.subscribedOnDeselect = true;
-                } else {
-                    this.subscribedOnDeselect = false;
-                }
             }
 
             this.updateViewState();
@@ -252,6 +229,10 @@ export class FormOptionSetOptionView
 
     isEmpty(): boolean {
         return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
+    }
+
+    getFormItemViews(): FormItemView[] {
+        return this.formItemViews;
     }
 
     onValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
@@ -342,78 +323,6 @@ export class FormOptionSetOptionView
         return !!this.getThisPropertyFromSelectedOptionsArray();
     }
 
-    private makeSelectionButton(): FormInputEl {
-        if (this.isRadioSelection()) {
-            return this.makeSelectionRadioButton();
-        } else {
-            return this.makeSelectionCheckbox();
-        }
-    }
-
-    private makeSelectionRadioButton(): RadioButton {
-        const selectedProperty = this.getSelectedOptionsArray().get(0);
-        const checked = !!selectedProperty && selectedProperty.getString() === this.getName();
-        const labelText = this.formOptionSetOption.getLabel();
-        const button = new RadioButton({
-            label: labelText,
-            value: '',
-            name: this.getParent().getEl().getId(),
-            checked,
-            tooltip: labelText
-        });
-
-        button.onChange(() => {
-            let selectedProp = this.getSelectedOptionsArray().get(0);
-            if (!selectedProp) {
-                selectedProp = this.getSelectedOptionsArray().set(0, new Value(this.getName(), new ValueTypeString()));
-                this.subscribeOnRadioDeselect(selectedProp);
-                this.subscribedOnDeselect = true;
-            } else {
-                selectedProp.setValue(new Value(this.getName(), new ValueTypeString()));
-                if (!this.subscribedOnDeselect) {
-                    this.subscribeOnRadioDeselect(selectedProp);
-                    this.subscribedOnDeselect = true;
-                }
-            }
-            this.selectHandle(button.getFirstChild());
-            this.notifySelectionChanged();
-
-            if (BrowserHelper.isFirefox() && !this.topEdgeIsVisible(button.getFirstChild())) {
-                $(this.getHTMLElement()).closest('.form-panel').scrollTop(
-                    this.calcDistToTopOfScrollableArea(button.getFirstChild()));
-            }
-        });
-
-        if (selectedProperty) {
-            this.subscribeOnRadioDeselect(selectedProperty);
-            this.subscribedOnDeselect = true;
-        }
-
-        return button;
-    }
-
-    private topEdgeIsVisible(el: Element): boolean {
-        return this.calcDistToTopOfScrollableArea(el) > 0;
-    }
-
-    private calcDistToTopOfScrollableArea(el: Element): number {
-        return el.getEl().getOffsetTop() - this.getToolbarOffsetTop();
-    }
-
-    private getToolbarOffsetTop(delta: number = 0): number {
-        let toolbar = $(this.getHTMLElement()).closest('.form-panel').find('.wizard-step-navigator-and-toolbar');
-        let stickyToolbarHeight = toolbar.outerHeight(true);
-        let offset = toolbar.offset();
-        let stickyToolbarOffset = offset ? offset.top : 0;
-
-        return stickyToolbarOffset + stickyToolbarHeight + delta;
-    }
-
-    private subscribeOnRadioDeselect(property: Property) {
-        property.unPropertyValueChanged(this.radioDeselectHandler);
-        property.onPropertyValueChanged(this.radioDeselectHandler);
-    }
-
     private makeSelectionCheckbox(): Checkbox {
         const checked: boolean = this.isSelected();
         const labelText = this.formOptionSetOption.getLabel();
@@ -459,8 +368,17 @@ export class FormOptionSetOptionView
         let checkBoxShouldBeDisabled = (checked != null ? !checked : !this.checkbox.isChecked()) && this.isSelectionLimitReached();
 
         if (this.checkbox.isDisabled() !== checkBoxShouldBeDisabled) {
-            this.checkbox.setDisabled(checkBoxShouldBeDisabled, 'disabled');
+            this.checkbox.setEnabled(!checkBoxShouldBeDisabled);
         }
+    }
+
+    enableAndExpand() {
+        const input = this.getChildren()[0];
+        this.selectHandle(input);
+    }
+
+    disableAndCollapse() {
+        this.deselectHandle();
     }
 
     private selectHandle(input: Element) {
@@ -497,7 +415,7 @@ export class FormOptionSetOptionView
             return;
         }
 
-        if (this.isRadioSelection()) {
+        if (this.isSingleSelection()) {
             const selectedProperty = this.getSelectedOptionsArray().get(0);
             const checked = !!selectedProperty && selectedProperty.getString() === this.getName();
             if (checked) {
@@ -512,6 +430,10 @@ export class FormOptionSetOptionView
             this.checkbox.setChecked(false, true);
             this.removeClass('selected');
         }
+    }
+
+    hasNonDefaultValues(): boolean {
+        return this.formItemViews.some(v => v.hasNonDefaultValues());
     }
 
     private isChildOfDeselectedParent(): boolean {
@@ -582,7 +504,7 @@ export class FormOptionSetOptionView
                this.getMultiselection().getMaximum() <= this.getSelectedOptionsArray().getSize();
     }
 
-    private isRadioSelection(): boolean {
+    private isSingleSelection(): boolean {
         return this.getMultiselection().getMinimum() === 1 && this.getMultiselection().getMaximum() === 1;
     }
 
@@ -611,5 +533,12 @@ export class FormOptionSetOptionView
 
     private notifySelectionChanged() {
         this.selectionChangedListeners.forEach((listener: () => void) => listener());
+    }
+
+    setEnabled(enable: boolean) {
+        if (!this.isSingleSelection()) {
+            this.checkbox.setEnabled(enable);
+        }
+        this.formItemLayer.setEnabled(enable);
     }
 }

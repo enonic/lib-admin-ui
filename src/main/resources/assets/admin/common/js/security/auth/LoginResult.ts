@@ -39,6 +39,10 @@ export class LoginResult {
         return this.principals.some(principalKey => RoleKeys.isContentExpert(principalKey));
     }
 
+    isAdmin(): boolean {
+        return this.principals.some(principalKey => RoleKeys.isAdmin(principalKey));
+    }
+
     getUser(): Principal {
         return this.user;
     }

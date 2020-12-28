@@ -68,6 +68,10 @@ export class Checkbox
         this.checkbox.resetBaseValues();
     }
 
+    setEnabled(enable: boolean) {
+        this.checkbox.setEnabled(enable);
+    }
+
     giveFocus(): boolean {
         return this.checkbox.giveFocus();
     }

@@ -3,7 +3,7 @@
   position: relative;
   overflow: visible;
 
-  padding: 10px !important;
+  padding: 10px;
 
   .validation-viewer {
     display: none;
@@ -17,7 +17,7 @@
 
   &.display-validation-errors {
 
-    > .input-view,
+    .input-view,
     .form-item-set-view .input-view,
     .form-option-set-view .input-view {
       &.invalid {
@@ -98,7 +98,7 @@
 
   .help-text {
     font-size: 11px;
-    padding-top: 2px;
+    padding-top: 5px;
 
     &:not(.visible) {
       display: none;
@@ -130,35 +130,10 @@
   }
 }
 
-.context-window, ._0-240, ._240-360, ._360-540, ._540-720 {
-  .form-fieldset-vertical();
-}
-
-.form-fieldset-vertical() {
-  .form-view .input-view {
-    label {
-      float: none;
-      max-width: 100%;
-    }
-
-    label + .form-input,
-    label + .input-wrapper,
-    label + .@{_COMMON_PREFIX}button {
-      margin-left: 0;
-    }
-
-    input[type="radio"] + label {
-      margin-left: 5px;
-      vertical-align: middle;
-    }
-
-  }
-}
-
 .form-panel {
   &._0-240, &._240-360, &._360-540 {
     .form-view {
-      padding: 10px 15px !important;
+      padding: 10px 15px;
     }
   }
 }

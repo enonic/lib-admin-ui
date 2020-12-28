@@ -27,6 +27,8 @@ import {OccurrenceRemovedEvent} from '../OccurrenceRemovedEvent';
 import {FormEditEvent} from '../../content/event/FormEditEvent';
 import {FormItemLayerFactory} from '../FormItemLayerFactory';
 import {FormContext} from '../FormContext';
+import {FormSetHeader} from './FormSetHeader';
+import {FormOptionSetOptionView} from './optionset/FormOptionSetOptionView';
 
 export interface FormSetViewConfig {
 
@@ -48,13 +50,15 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     protected parentDataSet: PropertySet;
 
+    protected header: FormSetHeader;
+
     protected occurrenceViewsContainer: DivEl;
 
     protected bottomButtonRow: DivEl;
 
     protected addButton: Button;
 
-    protected collapseButton: AEl;
+    protected collapseButtons: AEl[] = [];
 
     protected validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
 
@@ -107,7 +111,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     protected initOccurrences(): FormSetOccurrences<V> {
-        return this.formItemOccurrences = this.createOccurrences({
+        this.formItemOccurrences = this.createOccurrences({
             context: this.getContext(),
             layerFactory: this.layerFactory,
             occurrenceViewContainer: this.occurrenceViewsContainer,
@@ -116,10 +120,17 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             propertyArray: this.getPropertyArray(this.parentDataSet),
             lazyRender: this.occurrencesLazyRender
         });
+
+        this.formItemOccurrences.onExpandRequested(view => this.expandOccurrenceView(view));
+
+        return this.formItemOccurrences;
     }
 
     public layout(validate: boolean = true): Q.Promise<void> {
         const deferred = Q.defer<void>();
+
+        this.header = new FormSetHeader(this.formSet.getLabel(), this.formSet.getHelpText());
+        this.header.onHelpTextToggled((show) => this.toggleHelpText(show));
 
         this.occurrenceViewsContainer = new DivEl('occurrence-views-container');
 
@@ -138,16 +149,22 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             stop: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStop(ui)
         });
 
-        this.appendChild(this.occurrenceViewsContainer);
+        const topCollapseButton = this.makeCollapseButton();
+        const topButtonRow = new DivEl('top-button-row');
+        topButtonRow.appendChild(topCollapseButton);
+        this.appendChildren(this.header, topButtonRow, this.occurrenceViewsContainer);
 
         this.initOccurrences().layout(validate).then(() => {
             this.subscribeFormSetOccurrencesOnEvents();
 
+            this.toggleHelpText(this.formSet.isHelpTextOn());
+
             this.bottomButtonRow = new DivEl('bottom-button-row');
             this.appendChild(this.bottomButtonRow);
 
-            this.bottomButtonRow.appendChild(this.addButton = this.makeAddButton());
-            this.bottomButtonRow.appendChild(this.collapseButton = this.makeCollapseButton());
+            this.addButton = this.makeAddButton();
+            const bottomCollapseButton = this.makeCollapseButton();
+            this.bottomButtonRow.appendChildren<Element>(this.addButton, bottomCollapseButton);
 
             this.refreshButtonsState();
 
@@ -306,6 +323,11 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     reset() {
         this.formItemOccurrences.reset();
+    }
+
+    setEnabled(enable: boolean) {
+        this.formItemOccurrences.setEnabled(enable);
+        this.addButton.setEnabled(enable);
     }
 
     onFocus(listener: (event: FocusEvent) => void) {
@@ -506,26 +528,23 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     private setCollapseButtonCaption() {
         const occurrenceCount = this.formItemOccurrences.getOccurrenceViews().length;
-        const isCollapsed = (<FormSetOccurrences<V>> this.formItemOccurrences).isCollapsed();
+        const isCollapsed = (<FormSetOccurrences<V>>this.formItemOccurrences).isCollapsed();
 
         const caption = occurrenceCount > 1 ?
                         (isCollapsed ? i18n('button.expandall') : i18n('button.collapseall')) :
                         (isCollapsed ? i18n('button.expand') : i18n('button.collapse'));
 
-        this.collapseButton.setHtml(caption);
+        this.collapseButtons.forEach(b => b.setHtml(caption));
     }
 
     private makeCollapseButton(): AEl {
         const collapseButton = new AEl('collapse-button');
         collapseButton.onClicked((event: MouseEvent) => {
-            const isCollapsed = (<FormSetOccurrences<V>> this.formItemOccurrences).isCollapsed();
+            const isCollapsed = (<FormSetOccurrences<V>>this.formItemOccurrences).isCollapsed();
             this.toggleOccurrencesVisibility(isCollapsed);
-
-            event.stopPropagation();
-            event.preventDefault();
             return false;
         });
-
+        this.collapseButtons.push(collapseButton);
         return collapseButton;
     }
 
@@ -538,32 +557,34 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         const addButton: Button = new Button(i18n('button.add', this.formSet.getLabel()));
         addButton.addClass('small');
         addButton.onClicked(() => {
-             this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), false).then((item: V) => {
-                 this.expandOccurrenceView(item);
-             });
+            this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), false).then((item: V) => {
+                this.expandOccurrenceView(item);
+            });
         });
         return addButton;
     }
 
     expandRecursively() {
         this.toggleOccurrencesVisibility(true);
-        this.formItemOccurrences.getOccurrenceViews().forEach((item: V) => {
-            this.expandOccurrenceView(item);
-        });
+        this.formItemOccurrences.getOccurrenceViews().forEach((item: V) => this.expandOccurrenceView(item));
     }
 
-    private expandOccurrenceView(item: V) {
-        item.getFormItemViews().forEach((formItemView: FormItemView) => {
-            if (ObjectHelper.iFrameSafeInstanceOf(formItemView, FormSetView)) {
+    private expandOccurrenceView(item: FormSetOccurrenceView) {
+        item.showContainer(true);
+        const processFormItemView = (formItemView: FormItemView) => {
+            if (formItemView instanceof FormSetView) {
                 (<FormSetView<any>>formItemView).expandRecursively();
+            } else if (formItemView instanceof FormOptionSetOptionView) {
+                (<FormOptionSetOptionView>formItemView).getFormItemViews().forEach(processFormItemView);
             }
-        });
+        };
+        item.getFormItemViews().forEach(processFormItemView);
     }
 
     private refreshButtonsState() {
         const occurrenceCount = this.formItemOccurrences.getOccurrences().length;
         this.setCollapseButtonCaption();
-        this.collapseButton.setVisible(occurrenceCount > 0);
+        this.collapseButtons.forEach(b => b.setVisible(occurrenceCount > 0));
         this.addButton.setVisible(!this.formItemOccurrences.maximumOccurrencesReached());
         this.toggleClass('multiple-occurrence', occurrenceCount > 1);
     }

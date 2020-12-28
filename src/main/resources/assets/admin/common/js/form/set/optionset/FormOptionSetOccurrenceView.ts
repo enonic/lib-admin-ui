@@ -17,13 +17,19 @@ import {FormItem} from '../../FormItem';
 import {Occurrences} from '../../Occurrences';
 import {FormOptionSetOption} from './FormOptionSetOption';
 import {Property} from '../../../data/Property';
-import * as Q from 'q';
-import {ElementEvent} from '../../../dom/ElementEvent';
+import {FormOptionSetOptionViewer} from './FormOptionSetOptionViewer';
+import {Dropdown} from '../../../ui/selector/dropdown/Dropdown';
+import {OptionBuilder} from '../../../ui/selector/Option';
+import {Action} from '../../../ui/Action';
 
 export class FormOptionSetOccurrenceView
     extends FormSetOccurrenceView {
 
     private selectionValidationMessage: DivEl;
+
+    private singleSelectionDropdown: Dropdown<FormOptionSetOption>;
+
+    private toggleContainerMenuAction: Action;
 
     constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView>) {
         super('form-option-set-', config);
@@ -31,16 +37,38 @@ export class FormOptionSetOccurrenceView
         this.ensureSelectionArrayExists(this.propertySet);
     }
 
-    public layout(validate: boolean = true): Q.Promise<void> {
-        return super.layout(validate).then(() => {
-            if (this.formItemOccurrence.isMultiple()) {
-                this.formSetOccurrencesContainer.onDescendantAdded((event: ElementEvent) => {
-                    if (this.getEl().contains(event.getElement().getHTMLElement())) {
-                        this.updateLabel();
-                    }
-                });
+    layout(validate: boolean = true): Q.Promise<void> {
+        this.toggleContainerMenuAction = new Action('')
+            .onExecuted(_action => {
+                this.showContainer(!this.isContainerVisible());
+            })
+            .setEnabled(false);
+        return super.layout(validate).then(rendered => {
+            if (this.isSingleSelection()) {
+                this.addClass('single-selection');
+                this.toggleContainerMenuAction.setLabel(this.getToggleContainerMenuItemLabel(false));
+                this.moreButton.prependMenuActions([this.toggleContainerMenuAction]);
+                let selectedValue = this.getSelectedOptionsArray().get(0)?.getString();
+                if (!selectedValue) {
+                    selectedValue = (<FormOptionSet>this.formSet).getOptions().find(op => op.isDefaultOption())?.getName();
+                }
+
+                if (selectedValue) {
+                    // doing this after parent layout to make sure all formItemViews are ready
+                    this.singleSelectionDropdown.setValue(selectedValue);
+                } else {
+                    this.formSetOccurrencesContainer.addClass('empty');
+                }
             }
+            return rendered;
         });
+    }
+
+    showContainer(show: boolean) {
+        super.showContainer(show);
+        if (this.isSingleSelection()) {
+            this.toggleContainerMenuAction.setLabel(this.getToggleContainerMenuItemLabel(!show));
+        }
     }
 
     clean() {
@@ -49,6 +77,21 @@ export class FormOptionSetOccurrenceView
                 (<FormOptionSetOptionView>view).clean();
             }
         });
+    }
+
+    setEnabled(enable: boolean) {
+        super.setEnabled(enable);
+        if (this.isSingleSelection()) {
+            this.singleSelectionDropdown.setEnabled(enable);
+        }
+    }
+
+    refresh() {
+        super.refresh();
+        if (this.isSingleSelection()) {
+            const selected = this.singleSelectionDropdown.getSelectedOption();
+            this.toggleContainerMenuAction.setEnabled(!!selected && selected.getDisplayValue().getFormItems().length > 0);
+        }
     }
 
     protected initValidationMessageBlock() {
@@ -75,40 +118,6 @@ export class FormOptionSetOccurrenceView
                     this.notifyValidityChanged(new RecordingValidityChangedEvent(this.currentValidationState,
                         this.resolveValidationRecordingPath()).setIncludeChildren(true));
                 }
-            });
-
-            (<FormOptionSetOptionView>formItemView).onSelectionChanged(() => {
-                this.updateLabel();
-
-                if (!this.currentValidationState) {
-                    return; // currentValidationState is initialized on validate() call which may not be triggered in some cases
-                }
-
-                let previousValidationValid = this.currentValidationState.isValid();
-                let multiselectionState = this.validateMultiselection();
-
-                if (multiselectionState.isValid()) {
-                    // for radio - we clean all validation, as even selected item should not be validated
-                    if (this.getFormSet().isRadioSelection()) {
-                        this.currentValidationState.removeByPath(
-                            new ValidationRecordingPath(this.getDataPath(), null), true, true);
-
-                    } else {
-                        this.currentValidationState.removeByPath(
-                            new ValidationRecordingPath(this.getDataPath(), formItemView.getFormItem().getName()), true, true);
-                    }
-                } else {
-                    this.currentValidationState.flatten(this.currentValidationState);
-                }
-
-                this.renderSelectionValidationMessage(multiselectionState);
-
-                if (this.currentValidationState.isValid() !== previousValidationValid) {
-                    this.notifyValidityChanged(new RecordingValidityChangedEvent(this.currentValidationState,
-                        this.resolveValidationRecordingPath()).setIncludeChildren(true));
-                }
-
-                this.validate(false);
             });
         });
     }
@@ -225,5 +234,102 @@ export class FormOptionSetOccurrenceView
         }
 
         return multiselectionRecording;
+    }
+
+    private handleSelectionChanged(optionView: FormOptionSetOptionView) {
+        this.updateLabel();
+
+        if (this.isSingleSelection()) {
+            this.formSetOccurrencesContainer.toggleClass('empty', optionView.getFormItemViews().length === 0);
+        }
+
+        if (!this.currentValidationState) {
+            return; // currentValidationState is initialized on validate() call which may not be triggered in some cases
+        }
+
+        let previousValidationValid = this.currentValidationState.isValid();
+        let multiselectionState = this.validateMultiselection();
+
+        if (multiselectionState.isValid()) {
+            // for radio - we clean all validation, as even selected item should not be validated
+            if (this.getFormSet().isRadioSelection()) {
+                this.currentValidationState.removeByPath(
+                    new ValidationRecordingPath(this.getDataPath(), null), true, true);
+
+            } else {
+                this.currentValidationState.removeByPath(
+                    new ValidationRecordingPath(this.getDataPath(), optionView.getFormItem().getName()), true, true);
+            }
+        } else {
+            this.currentValidationState.flatten(this.currentValidationState);
+        }
+
+        this.renderSelectionValidationMessage(multiselectionState);
+
+        if (this.currentValidationState.isValid() !== previousValidationValid) {
+            this.notifyValidityChanged(new RecordingValidityChangedEvent(this.currentValidationState,
+                this.resolveValidationRecordingPath()).setIncludeChildren(true));
+        }
+
+        this.validate(false);
+    }
+
+    isSingleSelection(): boolean {
+        const multi = this.getFormSet().getMultiselection();
+        return multi.getMinimum() === 1 && multi.getMaximum() === 1;
+    }
+
+    createSingleSelectionCombo(): Dropdown<FormOptionSetOption> {
+        // return new OptionSetOptionsComboBox(<FormOptionSet>this.formSet);
+
+        this.singleSelectionDropdown = new Dropdown(this.formSet.getName(), {
+            optionDisplayValueViewer: new FormOptionSetOptionViewer(),
+        });
+
+        this.singleSelectionDropdown.setOptions((<FormOptionSet>this.formSet).getOptions()
+            .map(fop => new OptionBuilder<FormOptionSetOption>()
+                .setValue(fop.getName())
+                .setDisplayValue(fop)
+                .build()));
+
+        let selectedProp = this.getSelectedOptionsArray().get(0);
+
+        this.singleSelectionDropdown.onOptionSelected((event) => {
+            const option = event.getOption();
+            const optionIdx = event.getIndex();
+            this.getFormItemViews().forEach((view, idx) => view.setVisible(idx === optionIdx));
+
+            if (!selectedProp) {
+                selectedProp = this.getSelectedOptionsArray().set(0, new Value(option.getValue(), new ValueTypeString()));
+            } else {
+                selectedProp.setValue(new Value(option.getValue(), new ValueTypeString()));
+            }
+
+            const optionView = <FormOptionSetOptionView>this.getFormItemViews()[event.getIndex()];
+            if (optionView) {
+                optionView.enableAndExpand();
+            }
+
+            this.refresh();
+
+            this.handleSelectionChanged(optionView);
+        });
+
+        this.singleSelectionDropdown.onOptionDeselected(option => {
+            const idx = this.singleSelectionDropdown.getOptions().indexOf(option);
+
+            const optionView = <FormOptionSetOptionView>this.getFormItemViews()[idx];
+            if (optionView) {
+                optionView.disableAndCollapse();
+            }
+
+            this.handleSelectionChanged(optionView);
+        });
+
+        return this.singleSelectionDropdown;
+    }
+
+    private getToggleContainerMenuItemLabel(expand: boolean) {
+        return expand ? i18n('button.expand') : i18n('button.collapse');
     }
 }
