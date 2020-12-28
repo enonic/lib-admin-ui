@@ -27,8 +27,7 @@
         display: block;
         color: @input-red-text;
         font-size: 14px;
-        padding: 0;
-        padding-left: 13px;
+        padding: 0 0 10px 13px;
 
         &.empty {
           display: none;
@@ -61,7 +60,7 @@
     > .single-selection-header {
       display: flex;
       align-items: center;
-      padding: 10px 0 5px 13px;
+      padding: 13px;
 
       .drag-control {
         order: unset;
@@ -77,6 +76,9 @@
         input {
           height: 47px; // match the option to prevent height bounce
         }
+      }
+      .more-button {
+        margin-right: -13px;
       }
     }
 
@@ -231,8 +233,7 @@
     &.single-selection {
       .form-option-set-occurrences-container {
         &.empty {
-          padding-top: 0;
-          height: 0; // it is 6px for some reason, although all children are 0px tall
+          display: none;
         }
 
         .form-option-set-option-view {
