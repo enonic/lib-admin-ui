@@ -18,7 +18,7 @@
     "fix": "tslint -p tsconfig.json -c tslint.json --fix"
   },
   "dependencies": {
-    "@types/mousetrap": "^1.6.4",
+    "@types/mousetrap": "^1.6.5",
     "@types/slickgrid": "^2.1.30",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.5.1",
