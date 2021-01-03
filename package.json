@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@types/core-js": "^2.5.4",
-    "@types/jquery": "^3.5.4",
+    "@types/jquery": "^3.5.5",
     "@types/jqueryui": "^1.12.14",
     "@types/q": "^1.5.4",
     "@types/semver": "^7.3.4",
