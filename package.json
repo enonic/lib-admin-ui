@@ -27,7 +27,7 @@
     "mousetrap": "^1.6.5",
     "q": "^1.5.1",
     "slickgrid": "^2.4.32",
-    "validator": "^13.1.17",
+    "validator": "^13.5.2",
     "flag-icon-css": "^3.5.0"
   },
   "devDependencies": {
