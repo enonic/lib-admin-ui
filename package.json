@@ -11,8 +11,8 @@
   "scripts": {
     "build:prod": "tsc -p tsconfig.prod.json",
     "build:dev": "tsc -p tsconfig.dev.json",
-    "build:lib": "webpack --hide-modules --colors",
-    "profile": "webpack --colors --progress --profile",
+    "build:lib": "webpack --color",
+    "profile": "webpack --color --progress --profile",
     "build:minify": "node util/minify.js",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "fix": "tslint -p tsconfig.json -c tslint.json --fix"
