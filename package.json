@@ -36,7 +36,7 @@
     "@types/jqueryui": "^1.12.14",
     "@types/q": "^1.5.4",
     "@types/semver": "^7.3.4",
-    "@types/validator": "^13.1.0",
+    "@types/validator": "^13.1.2",
     "autoprefixer": "^10.1.0",
     "browserslist": "^4.16.0",
     "browserslist-config-enonic": "^1.0.5",
