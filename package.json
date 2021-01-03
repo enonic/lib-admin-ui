@@ -55,7 +55,7 @@
     "postcss": "^8.0.0",
     "postcss-loader": "^4.0.3",
     "postcss-normalize": "^9.0.0",
-    "postcss-sort-media-queries": "^1.31.21",
+    "postcss-sort-media-queries": "^2.2.12",
     "prettier": "^2.2.1",
     "style-loader": "^2.0.0",
     "terser": "^5.3.4",
