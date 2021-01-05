@@ -5,7 +5,6 @@ import {NavigatorEvent} from '../ui/NavigatorEvent';
 import {i18n} from '../util/Messages';
 import {AppPanel} from './AppPanel';
 import {ShowBrowsePanelEvent} from './ShowBrowsePanelEvent';
-import {Equitable} from '../Equitable';
 import {AppBarTabMenu} from './bar/AppBarTabMenu';
 import {AppBar} from './bar/AppBar';
 import {TabbedAppBar} from './bar/TabbedAppBar';
@@ -18,10 +17,10 @@ import {BrowsePanel} from './browse/BrowsePanel';
 import {AppBarTabId} from './bar/AppBarTabId';
 import {Action} from '../ui/Action';
 
-export class NavigatedAppPanel<M extends Equitable>
-    extends AppPanel<M> {
+export class NavigatedAppPanel
+    extends AppPanel {
 
-    private appBarTabMenu: AppBarTabMenu;
+    private readonly appBarTabMenu: AppBarTabMenu;
 
     private appBar: AppBar;
 
@@ -71,10 +70,10 @@ export class NavigatedAppPanel<M extends Equitable>
         return this.appBarTabMenu;
     }
 
-    addViewPanel(tabMenuItem: AppBarTabMenuItem, viewPanel: ItemViewPanel<M>) {
+    addViewPanel(tabMenuItem: AppBarTabMenuItem, viewPanel: ItemViewPanel) {
         this.addNavigablePanel(tabMenuItem, viewPanel, true);
 
-        viewPanel.onClosed((event: ItemViewClosedEvent<M>) => {
+        viewPanel.onClosed((event: ItemViewClosedEvent) => {
             this.removeNavigablePanel(event.getView(), false);
         });
     }
@@ -95,7 +94,7 @@ export class NavigatedAppPanel<M extends Equitable>
         return true;
     }
 
-    protected addBrowsePanel(browsePanel: BrowsePanel<M>) {
+    protected addBrowsePanel(browsePanel: BrowsePanel) {
         if (!this.browsePanel) {
             this.browsePanel = browsePanel;
 

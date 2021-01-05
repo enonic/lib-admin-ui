@@ -59,6 +59,7 @@ export class TreeGrid<DATA extends IDentifiable>
     private selectionChangeListeners: Function[] = [];
     private highlightingChangeListeners: Function[] = [];
     private highlightingChangedDebouncedHandler: Function;
+    private selectionChangedDebouncedHandler: Function;
     private dataChangeListeners: { (event: DataChangedEvent<DATA>): void }[] = [];
     private activeChangedListeners: { (active: boolean): void }[] = [];
     private loadBufferSize: number;
@@ -155,6 +156,10 @@ export class TreeGrid<DATA extends IDentifiable>
             this.highlightingChangeListeners.forEach((listener: Function) => listener());
         }, 200);
 
+        this.selectionChangedDebouncedHandler = AppHelper.debounce(() => {
+            this.selectionChangeListeners.forEach((listener: Function) => listener());
+        }, 200);
+
         this.initEventListeners(builder);
         this.initKeyBindings();
     }
@@ -189,6 +194,28 @@ export class TreeGrid<DATA extends IDentifiable>
 
         if (this.selection.hasSelectedItems()) {
             return this.root.getNodeByDataId(this.selection.getFirstItem());
+        }
+
+        return null;
+    }
+
+    getLastSelectedOrHighlightedItem(): DATA {
+        const node: TreeNode<DATA> = this.getLastSelectedOrHighlightedNode();
+
+        if (node) {
+            return node.getData();
+        }
+
+        return null;
+    }
+
+    protected getLastSelectedOrHighlightedNode(): TreeNode<DATA> {
+        if (this.selection.hasSelectedItems()) {
+            return this.root.getNodeByDataId(this.selection.getLastItem());
+        }
+
+        if (this.highlightedDataId) {
+            return this.root.getNodeByDataId(this.highlightedDataId);
         }
 
         return null;
@@ -637,7 +664,7 @@ export class TreeGrid<DATA extends IDentifiable>
     protected doUpdateNodeByData(nodeToUpdate: TreeNode<DATA>, data: DATA) {
         nodeToUpdate.setData(data);
         this.invalidateNodes([nodeToUpdate]);
-        this.notifyDataChanged(new DataChangedEvent<DATA>([nodeToUpdate], DataChangedType.UPDATED));
+        this.notifyDataChanged(new DataChangedEvent<DATA>(this.extractDataFromNodes([nodeToUpdate]), DataChangedType.UPDATED));
     }
 
     deleteNodeByDataId(dataId: string) {
@@ -676,7 +703,7 @@ export class TreeGrid<DATA extends IDentifiable>
                 parent.setExpandable(false);
             }
             this.invalidateNodes([parent]);
-            this.notifyDataChanged(new DataChangedEvent<DATA>([node], DataChangedType.DELETED));
+            this.notifyDataChanged(new DataChangedEvent<DATA>(this.extractDataFromNodes([node]), DataChangedType.DELETED));
         }
     }
 
@@ -844,9 +871,7 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     private triggerSelectionChangedListeners() {
-        this.selectionChangeListeners.forEach((listener: Function) => {
-            listener();
-        });
+        this.selectionChangedDebouncedHandler();
     }
 
     onSelectionChanged(listener: () => void) {
@@ -1766,7 +1791,7 @@ export class TreeGrid<DATA extends IDentifiable>
         parent.insertChild(nodeToInsert, index);
         parent.setExpandable(true);
         this.invalidateNodes([parent]);
-        this.notifyDataChanged(new DataChangedEvent<DATA>([nodeToInsert], DataChangedType.ADDED));
+        this.notifyDataChanged(new DataChangedEvent<DATA>(this.extractDataFromNodes([nodeToInsert]), DataChangedType.ADDED));
     }
 
     private getIndexRelativeToParent(parent: TreeNode<DATA>, index: number): number {
@@ -1841,5 +1866,9 @@ export class TreeGrid<DATA extends IDentifiable>
         const cell: Slick.Cell = this.grid.getCellFromEvent(e);
 
         return !!cell ? this.getDataByRow(cell.row) : null;
+    }
+
+    private extractDataFromNodes(nodes: TreeNode<DATA>[]): DATA[] {
+        return nodes.map((node: TreeNode<DATA>) => node.getData());
     }
 }
