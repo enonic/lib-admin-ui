@@ -486,8 +486,16 @@ export class TreeGrid<DATA extends IDentifiable>
         this.root.getCurrentRoot().setChildren(this.dataToTreeNodes(dataList, this.root.getCurrentRoot()));
         this.grid.removeCellCssStyles('highlight');
         this.initData(this.root.getCurrentRoot().treeToList());
-        this.invalidate();
-        this.setActive(true);
+        return this.doExpandNode(this.root.getCurrentRoot()).then(() => {
+            if (this.hasHighlightedNode()) {
+                this.highlightCurrentNode();
+            }
+            this.invalidate();
+        }).catch((reason: any) => {
+            this.handleError(reason);
+        }).finally(() => {
+            this.setActive(true);
+        });
     }
 
     resetFilter() {
