@@ -199,6 +199,35 @@ export class FormOptionSetOptionView
         });
     }
 
+    public setSelected(selected: boolean) {
+        const array = this.getSelectedOptionsArray();
+        const value = new Value(this.getName(), new ValueTypeString());
+
+        if (this.isSingleSelection()) {
+            const selectedProp = array.get(0);
+            if (selected) {
+                if (!selectedProp) {
+                    array.set(0, value);
+                } else {
+                    selectedProp.setValue(value);
+                }
+            } else {
+                if (!!selectedProp) {
+                    array.remove(selectedProp.getIndex());
+                }
+            }
+        } else {
+            if (selected) {
+                array.add(value);
+            } else {
+                const property: Property = this.getThisPropertyFromSelectedOptionsArray();
+                if (!!property) {
+                    array.remove(property.getIndex());
+                }
+            }
+        }
+    }
+
     hasValidUserInput(): boolean {
         let result = true;
         this.formItemViews.forEach((formItemView: FormItemView) => {
@@ -340,14 +369,11 @@ export class FormOptionSetOptionView
 
         button.onChange(() => {
             if (button.isChecked()) {
-                this.getSelectedOptionsArray().add(new Value(this.getName(), new ValueTypeString()));
+                this.setSelected(true);
                 this.selectHandle(button.getFirstChild());
                 this.notifySelectionChanged();
             } else {
-                const property: Property = this.getThisPropertyFromSelectedOptionsArray();
-                if (!!property) {
-                    this.getSelectedOptionsArray().remove(property.getIndex());
-                }
+                this.setSelected(false);
                 this.deselectHandle();
                 this.notifySelectionChanged();
             }

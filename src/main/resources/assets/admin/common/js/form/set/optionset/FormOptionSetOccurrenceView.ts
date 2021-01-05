@@ -292,21 +292,14 @@ export class FormOptionSetOccurrenceView
                 .setDisplayValue(fop)
                 .build()));
 
-        let selectedProp = this.getSelectedOptionsArray().get(0);
-
         this.singleSelectionDropdown.onOptionSelected((event) => {
-            const option = event.getOption();
+
             const optionIdx = event.getIndex();
             this.getFormItemViews().forEach((view, idx) => view.setVisible(idx === optionIdx));
 
-            if (!selectedProp) {
-                selectedProp = this.getSelectedOptionsArray().set(0, new Value(option.getValue(), new ValueTypeString()));
-            } else {
-                selectedProp.setValue(new Value(option.getValue(), new ValueTypeString()));
-            }
-
             const optionView = <FormOptionSetOptionView>this.getFormItemViews()[event.getIndex()];
             if (optionView) {
+                optionView.setSelected(true);
                 optionView.enableAndExpand();
             }
 
