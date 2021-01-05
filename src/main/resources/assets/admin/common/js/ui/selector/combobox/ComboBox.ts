@@ -330,7 +330,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     handleRowSelected(index: number, keyCode: number = -1) {
         let option = this.getOptionByRow(index);
         if (option) {
-            if (option.isSelectable() === false) {
+            if (!option.isSelectable()) {
                 this.comboBoxDropdown.markSelections(this.getSelectedOptions());
             } else if (!option.isReadOnly()) {
                 if (!this.isOptionSelected(option)) {

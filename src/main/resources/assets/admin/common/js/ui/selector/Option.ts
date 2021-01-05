@@ -7,24 +7,24 @@ export class Option<T>
 
     private displayValue: T;
 
-    private indices?: string[];
+    private readonly indices: string[];
 
-    private readOnly?: boolean;
+    private readOnly: boolean;
 
-    private empty?: boolean;
+    private readonly empty: boolean;
 
-    private selectable?: boolean;
+    private readonly selectable: boolean;
 
-    private expandable?: boolean;
+    private readonly expandable: boolean;
 
     constructor(builder: OptionBuilder<T>) {
         this.value = builder.value;
         this.displayValue = builder.displayValue;
-        this.indices = builder.indices;
-        this.readOnly = builder.readOnly;
-        this.empty = builder.empty;
-        this.selectable = builder.selectable;
-        this.expandable = builder.expandable;
+        this.indices = builder.indices || [];
+        this.readOnly = !!builder.readOnly;
+        this.empty = !!builder.empty;
+        this.selectable = !!builder.selectable;
+        this.expandable = !!builder.expandable;
     }
 
     setValue(value: string) {
@@ -82,15 +82,15 @@ export class OptionBuilder<T> {
 
     displayValue: T;
 
-    indices?: string[];
+    indices: string[] = [];
 
-    readOnly?: boolean;
+    readOnly: boolean = false;
 
-    empty?: boolean;
+    empty: boolean = false;
 
-    selectable?: boolean;
+    selectable: boolean = true;
 
-    expandable?: boolean;
+    expandable: boolean = true;
 
     setValue(value: string): OptionBuilder<T> {
         this.value = value;
