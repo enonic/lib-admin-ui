@@ -1,12 +1,11 @@
-import {Equitable} from '../../Equitable';
 import {Panel} from '../../ui/panel/Panel';
 import {Closeable} from '../../ui/Closeable';
 import {Toolbar} from '../../ui/toolbar/Toolbar';
 import {Action} from '../../ui/Action';
-import {ViewItem} from './ViewItem';
 import {ItemViewClosedEvent} from './ItemViewClosedEvent';
+import {ViewItem} from './ViewItem';
 
-export class ItemViewPanel<M extends Equitable>
+export class ItemViewPanel
     extends Panel
     implements Closeable {
 
@@ -14,9 +13,9 @@ export class ItemViewPanel<M extends Equitable>
 
     private panel: Panel;
 
-    private browseItem: ViewItem<M>;
+    private browseItem: ViewItem;
 
-    private closedListeners: { (event: ItemViewClosedEvent<M>): void }[] = [];
+    private closedListeners: { (event: ItemViewClosedEvent): void }[] = [];
 
     constructor() {
         super('item-view-panel');
@@ -40,11 +39,11 @@ export class ItemViewPanel<M extends Equitable>
         return [];
     }
 
-    setItem(item: ViewItem<M>) {
+    setItem(item: ViewItem) {
         this.browseItem = item;
     }
 
-    getItem(): ViewItem<M> {
+    getItem(): ViewItem {
         return this.browseItem;
     }
 
@@ -58,18 +57,18 @@ export class ItemViewPanel<M extends Equitable>
         return true;
     }
 
-    onClosed(listener: (event: ItemViewClosedEvent<M>) => void) {
+    onClosed(listener: (event: ItemViewClosedEvent) => void) {
         this.closedListeners.push(listener);
     }
 
-    unClosed(listener: (event: ItemViewClosedEvent<M>) => void) {
-        this.closedListeners = this.closedListeners.filter((currentListener: (event: ItemViewClosedEvent<M>) => void) => {
+    unClosed(listener: (event: ItemViewClosedEvent) => void) {
+        this.closedListeners = this.closedListeners.filter((currentListener: (event: ItemViewClosedEvent) => void) => {
             return currentListener !== listener;
         });
     }
 
     private notifyClosed() {
-        this.closedListeners.forEach((listener: (event: ItemViewClosedEvent<M>) => void) => {
+        this.closedListeners.forEach((listener: (event: ItemViewClosedEvent) => void) => {
             listener.call(this, new ItemViewClosedEvent(this));
         });
     }

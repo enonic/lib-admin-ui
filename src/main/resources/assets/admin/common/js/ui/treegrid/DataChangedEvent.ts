@@ -1,4 +1,3 @@
-import {TreeNode} from './TreeNode';
 import {IDentifiable} from '../../IDentifiable';
 
 export enum DataChangedType {
@@ -9,17 +8,17 @@ export enum DataChangedType {
 
 export class DataChangedEvent<DATA extends IDentifiable> {
 
-    private treeNodes: TreeNode<DATA>[];
+    private readonly items: DATA[];
 
-    private type: DataChangedType;
+    private readonly type: DataChangedType;
 
-    constructor(treeNode: TreeNode<DATA>[], action: DataChangedType) {
-        this.treeNodes = treeNode;
+    constructor(dataItems: DATA[], action: DataChangedType) {
+        this.items = dataItems;
         this.type = action;
     }
 
-    public getTreeNodes(): TreeNode<DATA>[] {
-        return this.treeNodes;
+    public getItems(): DATA[] {
+        return this.items;
     }
 
     public getType(): DataChangedType {

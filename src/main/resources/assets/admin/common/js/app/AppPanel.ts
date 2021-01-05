@@ -1,4 +1,3 @@
-import {Equitable} from '../Equitable';
 import {DeckPanel} from '../ui/panel/DeckPanel';
 import {BrowsePanel} from './browse/BrowsePanel';
 import {KeyBinding} from '../ui/KeyBinding';
@@ -9,10 +8,10 @@ import {ShowBrowsePanelEvent} from './ShowBrowsePanelEvent';
 import {Panel} from '../ui/panel/Panel';
 import {ResponsiveManager} from '../ui/responsive/ResponsiveManager';
 
-export class AppPanel<M extends Equitable>
+export class AppPanel
     extends DeckPanel {
 
-    protected browsePanel: BrowsePanel<M>;
+    protected browsePanel: BrowsePanel;
 
     protected currentKeyBindings: KeyBinding[];
 
@@ -38,7 +37,7 @@ export class AppPanel<M extends Equitable>
         ResponsiveManager.fireResizeEvent();
     }
 
-    protected addBrowsePanel(browsePanel: BrowsePanel<M>) {
+    protected addBrowsePanel(browsePanel: BrowsePanel) {
         // limit to 1 browse panel
         if (!this.browsePanel) {
             this.browsePanel = browsePanel;
@@ -55,7 +54,7 @@ export class AppPanel<M extends Equitable>
         }
     }
 
-    protected createBrowsePanel(): BrowsePanel<M> {
+    protected createBrowsePanel(): BrowsePanel {
         throw new Error('Must be implemented by inheritors');
     }
 

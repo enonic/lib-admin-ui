@@ -43,6 +43,10 @@ export class TreeGridSelection {
         return this.selectedItems[0];
     }
 
+    getLastItem(): string {
+        return this.selectedItems[this.selectedItems.length - 1];
+    }
+
     hasSelectedItems(): boolean {
         return this.selectedItems.length > 0;
     }

@@ -1,4 +1,3 @@
-import {Equitable} from '../../Equitable';
 import {DivEl} from '../../dom/DivEl';
 import {Element, NewElementBuilder} from '../../dom/Element';
 import {H1El} from '../../dom/H1El';
@@ -9,16 +8,16 @@ import {ImgHelper} from '../../dom/ImgElHelper';
 import {SpanEl} from '../../dom/SpanEl';
 import {ViewItem} from './ViewItem';
 
-export class ItemStatisticsHeader<M extends Equitable>
+export class ItemStatisticsHeader
     extends DivEl {
 
-    private browseItem: ViewItem<M>;
+    private browseItem: ViewItem;
 
     private iconEl: Element;
 
-    private headerTitleEl: H1El;
+    private readonly headerTitleEl: H1El;
 
-    private headerPathEl: H4El;
+    private readonly headerPathEl: H4El;
 
     constructor() {
         super('header');
@@ -28,8 +27,7 @@ export class ItemStatisticsHeader<M extends Equitable>
         this.appendChild(this.headerPathEl);
     }
 
-    setItem(item: ViewItem<M>) {
-
+    setItem(item: ViewItem) {
         if (this.iconEl) {
             this.iconEl.remove();
         }
@@ -43,11 +41,8 @@ export class ItemStatisticsHeader<M extends Equitable>
             this.headerTitleEl.getEl().setAttribute('title', displayName);
 
             this.headerPathEl.removeChildren();
-            if (item.getPath()) {
-                this.appendToHeaderPath(item.getPath(), 'parent-path');
-                this.appendToHeaderPath(item.getPathName(), 'path-name');
-            }
         }
+
         this.browseItem = item;
     }
 
@@ -56,7 +51,7 @@ export class ItemStatisticsHeader<M extends Equitable>
             this.iconEl.remove();
         }
 
-        let size = this.browseItem.getIconSize() || 64;
+        let size = this.getIconSize(this.browseItem);
         let icon: HTMLImageElement = ImageLoader.get(value, size, size);
 
         this.iconEl = <ImgEl> new Element(new NewElementBuilder().setTagName('img').setHelper(
@@ -70,11 +65,11 @@ export class ItemStatisticsHeader<M extends Equitable>
         this.appendToHeaderPath(value, className);
     }
 
-    private createIconEl(item: ViewItem<M>) {
+    private createIconEl(item: ViewItem) {
         let iconEl: Element;
 
         if (item.getIconUrl()) {
-            let size = item.getIconSize() || 64;
+            let size = this.getIconSize(item);
             let icon: HTMLImageElement = ImageLoader.get(item.getIconUrl(), size, size);
 
             iconEl = <ImgEl> new Element(new NewElementBuilder().setTagName('img').setHelper(new ImgHelper(icon)));
@@ -87,9 +82,13 @@ export class ItemStatisticsHeader<M extends Equitable>
         return iconEl;
     }
 
-    private appendToHeaderPath(value: string, className: string) {
-        let pathName = new SpanEl(className);
+    protected appendToHeaderPath(value: string, className: string) {
+        const pathName: SpanEl = new SpanEl(className);
         pathName.getEl().setInnerHtml(value);
         this.headerPathEl.appendChild(pathName);
+    }
+
+    protected getIconSize(item: ViewItem): number {
+        return 64;
     }
 }

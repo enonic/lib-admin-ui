@@ -2,37 +2,34 @@ import * as Q from 'q';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 import {ResponsiveRanges} from '../../ui/responsive/ResponsiveRanges';
 import {ResponsiveItem} from '../../ui/responsive/ResponsiveItem';
-import {TreeNode} from '../../ui/treegrid/TreeNode';
 import {ActionButton} from '../../ui/button/ActionButton';
-import {BrowseItem} from './BrowseItem';
 import {TreeGridActions} from '../../ui/treegrid/actions/TreeGridActions';
 import {SplitPanel, SplitPanelAlignment, SplitPanelBuilder, SplitPanelUnit} from '../../ui/panel/SplitPanel';
-import {Equitable} from '../../Equitable';
 import {Panel} from '../../ui/panel/Panel';
 import {Toolbar} from '../../ui/toolbar/Toolbar';
 import {TreeGrid} from '../../ui/treegrid/TreeGrid';
 import {BrowseFilterPanel} from './filter/BrowseFilterPanel';
 import {Action} from '../../ui/Action';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
-import {AppHelper} from '../../util/AppHelper';
 import {ToggleFilterPanelAction} from './action/ToggleFilterPanelAction';
 import {BrowseItemPanel} from './BrowseItemPanel';
-import {BrowseItemsChanges} from './BrowseItemsChanges';
 import {i18n} from '../../util/Messages';
 import {IDentifiable} from '../../IDentifiable';
 import {DataChangedEvent, DataChangedType} from '../../ui/treegrid/DataChangedEvent';
+import {ViewItem} from '../view/ViewItem';
+import {AppHelper} from '../../util/AppHelper';
 
-export class BrowsePanel<M extends Equitable>
+export class BrowsePanel
     extends Panel {
 
     protected browseToolbar: Toolbar;
 
-    protected treeGrid: TreeGrid<IDentifiable>;
+    protected treeGrid: TreeGrid<ViewItem>;
 
     protected filterPanel: BrowseFilterPanel<Object>;
     protected filterPanelToBeShownFullScreen: boolean = false;
     private gridAndToolbarPanel: Panel;
-    private browseItemPanel: BrowseItemPanel<M>;
+    private browseItemPanel: BrowseItemPanel;
     private gridAndItemsSplitPanel: SplitPanel;
     private filterAndGridSplitPanel: SplitPanel;
     private filterPanelForcedShown: boolean = false;
@@ -43,6 +40,8 @@ export class BrowsePanel<M extends Equitable>
     protected toggleFilterPanelAction: Action;
 
     protected toggleFilterPanelButton: ActionButton;
+
+    private debouncedActionsAndPreviewUpdate: () => void;
 
     constructor() {
         super();
@@ -55,6 +54,7 @@ export class BrowsePanel<M extends Equitable>
         this.treeGrid = this.createTreeGrid();
         this.filterPanel = this.createFilterPanel();
         this.browseToolbar = this.createToolbar();
+
         if (!this.browseItemPanel) {
             this.browseItemPanel = this.createBrowseItemPanel();
         }
@@ -70,6 +70,8 @@ export class BrowsePanel<M extends Equitable>
             this.gridAndToolbarPanel = new Panel();
             this.filterAndGridSplitPanel = this.setupFilterPanel();
         }
+
+        this.debouncedActionsAndPreviewUpdate = AppHelper.debounce(this.updateActionsAndPreview.bind(this), 100);
     }
 
     protected initListeners() {
@@ -97,53 +99,8 @@ export class BrowsePanel<M extends Equitable>
     }
 
     private initTreeGridListeners() {
-        const selectionChangedHandler = () => {
-            const totalFullSelected: number = this.treeGrid.getTotalSelected();
-
-            if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
-                this.updateSelectionModeShownItems(totalFullSelected);
-            }
-
-            const browseItems: BrowseItem<M>[] = this.dataItemsToBrowseItems(this.treeGrid.getFullSelection());
-            const changes: BrowseItemsChanges<M> = this.getBrowseItemPanel().setItems(browseItems);
-
-            if (this.treeGrid.hasHighlightedNode() && ((totalFullSelected === 0 && changes.getRemoved().length === 1) ||
-                (totalFullSelected === 1 && changes.getAdded().length === 1))) {
-                return;
-            }
-
-            this.updateBrowseActions(this.getBrowseItemPanel().getItems(), changes)
-                .then(() => {
-                    if (this.getBrowseItemPanel().getItems().length > 0 || !this.treeGrid.hasHighlightedNode()) {
-                        this.getBrowseItemPanel().updatePreviewPanel();
-                    }
-                }).catch(DefaultErrorHandler.handle);
-
-            if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive() && changes.getRemoved().length > 0) {
-                // Redo the search filter panel once items are removed from selection
-                this.updateFilterPanelOnSelectionChange();
-            }
-
-        };
-
-        this.treeGrid.onDataChanged((event: DataChangedEvent<IDentifiable>) => {
-          const noHighlightedNode = !this.treeGrid.hasHighlightedNode();
-
-          // Highlighted nodes updated in a separate listener
-          if (noHighlightedNode) {
-            this.updateBrowseActions(this.getBrowseItemPanel().getItems()).catch(DefaultErrorHandler.handle);
-
-            const selectedItems: IDentifiable[] = this.treeGrid.getSelectedDataList();
-            const selectedItem: IDentifiable = selectedItems.length > 0 ? selectedItems[0] : null;
-            if (selectedItem && (event.getType() === DataChangedType.UPDATED || event.getType() === DataChangedType.ADDED) &&
-                event.getTreeNodes().some((node: TreeNode<any>) => node.getDataId() === selectedItem.getId())) {
-              const browseItem: BrowseItem<M> = this.dataToBrowseItem(selectedItem);
-              this.getBrowseItemPanel().togglePreviewForItem(browseItem);
-            }
-          }
-        });
-
-        this.treeGrid.onSelectionChanged(selectionChangedHandler);
+        this.treeGrid.onDataChanged(this.handleDataChanged.bind(this));
+        this.treeGrid.onSelectionChanged(this.handleSelectionChanged.bind(this));
         this.treeGrid.onHighlightingChanged(this.handleHighlightingChanged.bind(this));
 
         this.treeGrid.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
@@ -152,6 +109,32 @@ export class BrowsePanel<M extends Equitable>
         });
     }
 
+    private handleSelectionChanged() {
+        const totalFullSelected: number = this.treeGrid.getTotalSelected();
+
+        if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
+            this.updateSelectionModeShownItems(totalFullSelected);
+        }
+
+        this.debouncedActionsAndPreviewUpdate();
+
+        if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
+            this.updateFilterPanelOnSelectionChange();
+        }
+    }
+
+    private handleDataChanged(event: DataChangedEvent<ViewItem>) {
+        if (event.getType() === DataChangedType.UPDATED && this.browseItemPanel.hasStatisticsItem()) {
+            const previewItemId: string = this.browseItemPanel.getStatisticsItem().getId();
+            const updatedPreviewData: ViewItem = event.getItems().find((item: IDentifiable) => item.getId() === previewItemId);
+
+            if (updatedPreviewData) {
+                this.getBrowseItemPanel().togglePreviewForItem(updatedPreviewData);
+            }
+        }
+
+        this.updateBrowseActions();
+    }
 
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered) => {
@@ -197,34 +180,16 @@ export class BrowsePanel<M extends Equitable>
         return this.filterAndGridSplitPanel;
     }
 
-    getTreeGrid(): TreeGrid<IDentifiable> {
+    getTreeGrid(): TreeGrid<ViewItem> {
         return this.treeGrid;
     }
 
-    getBrowseItemPanel(): BrowseItemPanel<M> {
+    getBrowseItemPanel(): BrowseItemPanel {
         return this.browseItemPanel;
     }
 
     getActions(): Action[] {
         return this.browseToolbar.getActions();
-    }
-
-    dataToBrowseItem(data: Object): BrowseItem<M> | null {
-        throw new Error('Must be implemented by inheritors');
-    }
-
-    dataItemsToBrowseItems(dataItems: Object[]): BrowseItem<M>[] {
-        const browseItems: BrowseItem<M>[] = [];
-
-        // do not proceed duplicated content. still, it can be selected
-        dataItems.forEach((node: TreeNode<IDentifiable>) => {
-            const item = this.dataToBrowseItem(node);
-            if (item) {
-                browseItems.push(item);
-            }
-        });
-
-        return browseItems;
     }
 
     refreshFilter() {
@@ -261,29 +226,23 @@ export class BrowsePanel<M extends Equitable>
         this.treeGrid.resetFilter();
     }
 
-    protected checkIfItemIsRenderable(_browseItem: BrowseItem<M>): Q.Promise<boolean> {
-        let deferred = Q.defer<boolean>();
-        deferred.resolve(true);
-        return deferred.promise;
-    }
-
     protected createToolbar(): Toolbar {
         throw 'Must be implemented by inheritors';
     }
 
-    protected createTreeGrid(): TreeGrid<IDentifiable> {
+    protected createTreeGrid(): TreeGrid<ViewItem> {
         throw 'Must be implemented by inheritors';
     }
 
-    protected createBrowseItemPanel(): BrowseItemPanel<M> {
+    protected createBrowseItemPanel(): BrowseItemPanel {
         throw 'Must be implemented by inheritors';
     }
 
-    protected getBrowseActions(): TreeGridActions<M> {
+    protected getBrowseActions(): TreeGridActions<ViewItem> {
         return this.treeGrid.getContextMenu().getActions();
     }
 
-    protected createFilterPanel(): BrowseFilterPanel<M> {
+    protected createFilterPanel(): BrowseFilterPanel<ViewItem> {
         return null;
     }
 
@@ -326,23 +285,8 @@ export class BrowsePanel<M extends Equitable>
         }
     }
 
-    private handleHighlightingChanged(): Q.Promise<any> {
-        if (!this.treeGrid.hasHighlightedNode()) {
-            if (this.treeGrid.getSelectedDataList().length === 0) {
-                this.getBrowseItemPanel().togglePreviewForItem();
-                return this.updateBrowseActions([]);
-            }
-
-            return Q(null);
-        }
-
-        const browseItem: BrowseItem<M> = this.dataToBrowseItem(this.treeGrid.getHighlightedItem());
-        const updateActionsPromise = this.updateBrowseActions([browseItem]);
-        const togglePreviewPromise = this.checkIfItemIsRenderable(browseItem).then(() => {
-            this.getBrowseItemPanel().togglePreviewForItem(browseItem);
-        });
-
-        return Q.all([updateActionsPromise, togglePreviewPromise]);
+    private handleHighlightingChanged() {
+        this.debouncedActionsAndPreviewUpdate();
     }
 
     private filterPanelIsHidden(): boolean {
@@ -409,14 +353,23 @@ export class BrowsePanel<M extends Equitable>
         }
     }
 
-    protected updateBrowseActions(browseItems: BrowseItem<M>[], changes?: BrowseItemsChanges<any>): Q.Promise<void> {
-        const actions: TreeGridActions<M> = this.getBrowseActions();
+    protected updateActionsAndPreview() {
+        this.updateBrowseActions();
+        this.updatePreviewItem();
+    }
+
+    protected updateBrowseActions(): Q.Promise<void> {
+        const actions: TreeGridActions<IDentifiable> = this.getBrowseActions();
 
         if (actions) {
-            return actions.updateActionsEnabledState(browseItems, changes);
+            return actions.updateActionsEnabledState(this.treeGrid.getSelectedDataList()).catch(DefaultErrorHandler.handle);
         }
 
         return Q(null);
+    }
+
+    protected updatePreviewItem() {
+        this.getBrowseItemPanel().togglePreviewForItem(this.treeGrid.getLastSelectedOrHighlightedItem());
     }
 
 }
