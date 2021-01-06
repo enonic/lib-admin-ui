@@ -7,11 +7,11 @@ export class FormSetHeader
     private helpTextContainer: HelpTextContainer;
     private title: H5El;
 
-    constructor(text?: string, helpText?: string) {
+    constructor(text?: string, helpText?: string, forceHelpToggle?: boolean) {
         super('form-set-header');
         this.title = new H5El();
         this.title.setHtml(text || '');
-        if (helpText) {
+        if (helpText || forceHelpToggle) {
             this.helpTextContainer = new HelpTextContainer(helpText);
         }
     }
