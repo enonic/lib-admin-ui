@@ -244,7 +244,7 @@ export abstract class ModalDialog
                 // last focusable - Cancel
                 // first focusable - X
                 if (buttonRowIsFocused) { // last element lost focus
-                    this.tabbable[0].giveFocus();
+                    this.focusFirstTabbable();
                 } else {
                     this.tabbable[this.tabbable.length - 1].giveFocus();
                 }
@@ -269,6 +269,12 @@ export abstract class ModalDialog
 
     protected hasSubDialog(): boolean {
         return false;
+    }
+
+    protected focusFirstTabbable() {
+        this.tabbable.some((el: Element) => {
+            return el.giveFocus();
+        });
     }
 
     private createResizeObserver() {
