@@ -129,9 +129,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     public layout(validate: boolean = true): Q.Promise<void> {
         const deferred = Q.defer<void>();
 
-        this.header = new FormSetHeader(this.formSet.getLabel(), this.formSet.getHelpText());
-        this.header.onHelpTextToggled((show) => this.toggleHelpText(show));
-
         this.occurrenceViewsContainer = new DivEl('occurrence-views-container');
 
         $(this.occurrenceViewsContainer.getHTMLElement()).sortable({
@@ -152,9 +149,14 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         const topCollapseButton = this.makeCollapseButton();
         const topButtonRow = new DivEl('top-button-row');
         topButtonRow.appendChild(topCollapseButton);
-        this.appendChildren(this.header, topButtonRow, this.occurrenceViewsContainer);
+        this.appendChildren(topButtonRow, this.occurrenceViewsContainer);
 
         this.initOccurrences().layout(validate).then(() => {
+            // formItemOccurrences should be ready to check for nested help text by hasHelpText
+            this.header = new FormSetHeader(this.formSet.getLabel(), this.formSet.getHelpText(), this.hasHelpText());
+            this.header.onHelpTextToggled((show) => this.toggleHelpText(show));
+            this.prependChild(this.header);
+
             this.subscribeFormSetOccurrencesOnEvents();
 
             this.toggleHelpText(this.formSet.isHelpTextOn());
@@ -299,7 +301,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     hasHelpText(): boolean {
-        return !!this.helpText;
+        return !!this.helpText || this.formItemOccurrences.hasHelpText();
     }
 
     giveFocus(): boolean {

@@ -51,6 +51,10 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         this.blurListener = (event: FocusEvent) => this.notifyBlurred(event);
     }
 
+    hasHelpText(): boolean {
+        return this.getOccurrenceViews().some((view) => view.hasHelpText());
+    }
+
     getAllowedOccurrences(): Occurrences {
         throw new Error('Must be implemented by inheritor');
     }
