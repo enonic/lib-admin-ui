@@ -51,7 +51,7 @@
     left: 0;
     background-color: white;
     overflow: hidden;
-    z-index: @z-index-mask;
+    z-index: @z-index-load-mask;
     width: 100%;
     height: 100%;
   }
@@ -90,7 +90,7 @@
     background-color: transparent;
 
     .mask-splash {
-      z-index: @z-index-mask+1;
+      z-index: @z-index-load-mask;
       position: absolute;
       padding: 10px;
       left: 50%;
