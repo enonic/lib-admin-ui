@@ -5,15 +5,27 @@ import {Menu} from './Menu';
 export class ContextMenu
     extends Menu {
 
+    private readonly onBodyClicked: (e: MouseEvent) => void;
+
     constructor(actions?: Action[], appendToBody: boolean = true) {
         super(actions);
 
         this.addClass('context-menu');
 
+        this.onBodyClicked = (e) => this.hideMenuOnOutsideClick(e);
         if (appendToBody) {
             Body.get().appendChild(this);
-            Body.get().onClicked((event: MouseEvent) => this.hideMenuOnOutsideClick(event));
         }
+    }
+
+    show() {
+        super.show();
+        Body.get().onClicked(this.onBodyClicked);
+    }
+
+    hide() {
+        super.hide();
+        Body.get().unClicked(this.onBodyClicked);
     }
 
     showAt(x: number, y: number) {

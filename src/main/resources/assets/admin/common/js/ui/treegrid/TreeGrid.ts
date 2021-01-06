@@ -87,6 +87,8 @@ export class TreeGrid<DATA extends IDentifiable>
 
     private keysBound: boolean = false;
 
+    private onBodyClicked: (event: MouseEvent) => void;
+
     private onAwithModKeyPress = (event: Mousetrap.ExtendedKeyboardEvent) => {
         let selected = this.grid.getSelectedRows();
         if (selected.length === this.gridData.getLength()) {
@@ -281,6 +283,7 @@ export class TreeGrid<DATA extends IDentifiable>
         if (!skipEvent) {
             this.notifyHighlightingChanged();
         }
+        Body.get().unClicked(this.onBodyClicked);
     }
 
     public isInRenderingView(): boolean {
@@ -1126,11 +1129,11 @@ export class TreeGrid<DATA extends IDentifiable>
             }
         });
 
-        Body.get().onClicked((event: MouseEvent) => this.unhighlightRowOnMouseClick(event));
+        this.onBodyClicked = (event: MouseEvent) => this.unhighlightRowOnMouseClick(event);
     }
 
     private unhighlightRowOnMouseClick(e: Event): void {
-        if (!!this.highlightedDataId && this.isClickOutsideGridViewport(<HTMLElement>e.target)) {
+        if (!!this.highlightedDataId && !e.defaultPrevented && this.isClickOutsideGridViewport(<HTMLElement>e.target)) {
             this.removeHighlighting();
         }
     }
@@ -1682,6 +1685,8 @@ export class TreeGrid<DATA extends IDentifiable>
             this.highlightedDataId = node.getDataId();
             this.notifyHighlightingChanged();
         }
+
+        Body.get().onClicked(this.onBodyClicked);
 
         let row = this.getRowByNode(node);
         if (row) {
