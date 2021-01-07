@@ -7,23 +7,24 @@ export class FormSetHeader
     private helpTextContainer: HelpTextContainer;
     private title: H5El;
 
-    constructor(text?: string, helpText?: string) {
+    constructor(text?: string, helpText?: string, forceHelpToggle?: boolean) {
         super('form-set-header');
         this.title = new H5El();
         this.title.setHtml(text || '');
-        if (helpText) {
+        if (helpText || forceHelpToggle) {
             this.helpTextContainer = new HelpTextContainer(helpText);
         }
     }
 
     doRender(): Q.Promise<boolean> {
         return super.doRender().then(rendered => {
-            if (this.helpTextContainer) {
-                this.appendChild(this.helpTextContainer.getToggler());
-            }
             this.appendChild(this.title);
             if (this.helpTextContainer) {
-                this.appendChild(this.helpTextContainer.getHelpText());
+                this.prependChild(this.helpTextContainer.getToggler());
+                const helpTextDiv = this.helpTextContainer.getHelpText();
+                if (helpTextDiv) {
+                    this.appendChild(helpTextDiv);
+                }
             }
             return rendered;
         });

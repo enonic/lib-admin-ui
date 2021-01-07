@@ -227,6 +227,10 @@ export class FormOptionSetOptionView
         return recording;
     }
 
+    hasHelpText(): boolean {
+        return !!this.helpText;
+    }
+
     isEmpty(): boolean {
         return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
     }

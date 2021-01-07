@@ -13,7 +13,6 @@ import {AppHelper} from '../../util/AppHelper';
 import {ResponsiveItem} from '../responsive/ResponsiveItem';
 import {Panel} from '../panel/Panel';
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
-import {Body} from '../../dom/Body';
 import {SpanEl} from '../../dom/SpanEl';
 import {StringHelper} from '../../util/StringHelper';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
@@ -938,12 +937,6 @@ export class TreeGrid<DATA extends IDentifiable>
         this.highlightCurrentNode();
     }
 
-    protected isClickOutsideGridViewport(clickedEl: HTMLElement) {
-        const element = Element.fromHtmlElement(clickedEl);
-
-        return (element.hasClass('grid-canvas tree-grid-toolbar browse-toolbar appbar'));
-    }
-
     protected editItem(_node: TreeNode<DATA>) {
         return;
     }
@@ -1125,14 +1118,6 @@ export class TreeGrid<DATA extends IDentifiable>
                 updateColumnsHandler(item.isRangeSizeChanged());
             }
         });
-
-        Body.get().onClicked((event: MouseEvent) => this.unhighlightRowOnMouseClick(event));
-    }
-
-    private unhighlightRowOnMouseClick(e: Event): void {
-        if (!!this.highlightedDataId && this.isClickOutsideGridViewport(<HTMLElement>e.target)) {
-            this.removeHighlighting();
-        }
     }
 
     private enablePostLoad(builder: TreeGridBuilder<DATA>) {

@@ -86,6 +86,10 @@ export abstract class FormSetOccurrenceView
         this.initFormDataChangeListener();
     }
 
+    hasHelpText(): boolean {
+        return super.hasHelpText() || this.getFormItemViews().some((view) => view.hasHelpText());
+    }
+
     protected abstract getLabelText(): string;
 
     isSingleSelection(): boolean {
