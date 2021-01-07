@@ -18,12 +18,13 @@ export class FormSetHeader
 
     doRender(): Q.Promise<boolean> {
         return super.doRender().then(rendered => {
-            if (this.helpTextContainer) {
-                this.appendChild(this.helpTextContainer.getToggler());
-            }
             this.appendChild(this.title);
             if (this.helpTextContainer) {
-                this.appendChild(this.helpTextContainer.getHelpText());
+                this.prependChild(this.helpTextContainer.getToggler());
+                const helpTextDiv = this.helpTextContainer.getHelpText();
+                if (helpTextDiv) {
+                    this.appendChild(helpTextDiv);
+                }
             }
             return rendered;
         });

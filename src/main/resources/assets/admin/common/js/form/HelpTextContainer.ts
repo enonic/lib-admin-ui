@@ -1,12 +1,13 @@
 import {DivEl} from '../dom/DivEl';
 import {PEl} from '../dom/PEl';
 import {i18n} from '../util/Messages';
+import {StringHelper} from '../util/StringHelper';
 
 export class HelpTextContainer {
 
-    private helpTextDiv: DivEl;
+    private readonly helpTextDiv: DivEl;
 
-    private helpTextToggler: DivEl;
+    private readonly helpTextToggler: DivEl;
 
     private toggleListeners: { (show: boolean): void }[] = [];
 
@@ -14,23 +15,28 @@ export class HelpTextContainer {
         this.helpTextToggler = new DivEl('help-text-toggler');
         this.helpTextToggler.setHtml('?').setTitle(i18n('tooltip.helptext.show'));
 
-        this.helpTextDiv = new DivEl('help-text');
+        if (!StringHelper.isBlank(value)) {
+            this.helpTextDiv = new DivEl('help-text');
 
-        let pEl = new PEl();
-        pEl.getEl().setText(value);
+            let pEl = new PEl();
+            pEl.getEl().setText(value);
 
-        this.helpTextDiv.appendChild(pEl);
+            this.helpTextDiv.appendChild(pEl);
+        }
 
+        let isActive = false;
         this.helpTextToggler.onClicked((event: MouseEvent) => {
-            const isActive = this.helpTextDiv.hasClass('visible');
-            this.toggleHelpText(!isActive);
-            this.notifyHelpTextToggled(!isActive);
+            isActive = !isActive;
+            this.toggleHelpText(isActive);
+            this.notifyHelpTextToggled(isActive);
             event.stopPropagation();
         });
     }
 
     toggleHelpText(show?: boolean) {
-        this.helpTextDiv.toggleClass('visible', show);
+        if (this.helpTextDiv) {
+            this.helpTextDiv.toggleClass('visible', show);
+        }
         this.helpTextToggler.toggleClass('on', show);
         this.helpTextToggler.setTitle(show ? i18n('tooltip.helptext.hide') : i18n('tooltip.helptext.show'));
     }
