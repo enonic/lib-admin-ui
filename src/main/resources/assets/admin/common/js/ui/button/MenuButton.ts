@@ -25,7 +25,6 @@ export class MenuButton
         super('menu-button');
 
         this.onBodyClicked = (e) => this.hideMenuOnOutsideClick(e);
-        Body.get().onClicked(this.onBodyClicked);
         this.actionPropertyListener = this.updateActionEnabled.bind(this);
 
         this.menu = new Menu(menuActions);
@@ -84,13 +83,13 @@ export class MenuButton
         this.menu.show();
         this.dropdownHandle.addClass('down');
         this.dropdownHandle.giveFocus();
-        //Body.get().onClicked(this.onBodyClicked);
+        Body.get().onClicked(this.onBodyClicked);
     }
 
     collapseMenu(): void {
         this.menu.hide();
         this.dropdownHandle.removeClass('down');
-        //Body.get().unClicked(this.onBodyClicked);
+        Body.get().unClicked(this.onBodyClicked);
     }
 
     setDropdownHandleEnabled(enabled: boolean = true) {
