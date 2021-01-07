@@ -25,6 +25,7 @@ export class MenuButton
         super('menu-button');
 
         this.onBodyClicked = (e) => this.hideMenuOnOutsideClick(e);
+        // Body.get().onClicked(this.onBodyClicked);
         this.actionPropertyListener = this.updateActionEnabled.bind(this);
 
         this.menu = new Menu(menuActions);
