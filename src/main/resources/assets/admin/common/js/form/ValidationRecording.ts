@@ -140,7 +140,7 @@ export class ValidationRecording {
     }
 
     validityChanged(previous: ValidationRecording): boolean {
-        return previous == null || !previous.equals(this);
+        return !!previous && !previous.equals(this);
     }
 
     containsPathInBreaksMin(path: ValidationRecordingPath) {
