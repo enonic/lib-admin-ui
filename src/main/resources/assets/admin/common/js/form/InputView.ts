@@ -89,7 +89,7 @@ export class InputView
             this.appendChild(this.helpText.getToggler());
         }
 
-        if (this.input.isMaximizeUIInputWidth() !== true) {
+        if (this.input.isMaximizeUIInputWidth() === false) {
             this.addClass('label-inline');
         }
 
