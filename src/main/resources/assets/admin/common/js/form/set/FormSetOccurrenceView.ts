@@ -92,6 +92,10 @@ export abstract class FormSetOccurrenceView
         return false;
     }
 
+    isExpandable(): boolean {
+        return this.formItemViews.length > 0;
+    }
+
     createSingleSelectionCombo(): Dropdown<any> {
         return null;
     }
@@ -353,7 +357,7 @@ export abstract class FormSetOccurrenceView
         });
     }
 
-    notifyExpandRequested(view?: FormSetOccurrenceView) {
+    protected notifyExpandRequested(view?: FormSetOccurrenceView) {
         this.expandRequestedListeners.forEach((listener: (view: FormSetOccurrenceView) => void) => listener(view || this));
     }
 

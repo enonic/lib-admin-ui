@@ -279,6 +279,21 @@ export class FormOptionSetOccurrenceView
         return multi.getMinimum() === 1 && multi.getMaximum() === 1;
     }
 
+    isExpandable(): boolean {
+        if (!this.isSingleSelection()) {
+            return super.isExpandable();
+        } else {
+            const option = this.singleSelectionDropdown?.getSelectedOption();
+            if (!option) {
+                return false;
+            } else {
+                const idx = this.singleSelectionDropdown.getOptions().indexOf(option);
+                const view = <FormOptionSetOptionView>this.formItemViews[idx];
+                return view?.isExpandable();
+            }
+        }
+    }
+
     createSingleSelectionCombo(): Dropdown<FormOptionSetOption> {
         // return new OptionSetOptionsComboBox(<FormOptionSet>this.formSet);
 
@@ -313,6 +328,8 @@ export class FormOptionSetOccurrenceView
             this.refresh();
 
             this.handleSelectionChanged(optionView);
+
+            this.notifyOccurrenceChanged();
         });
 
         this.singleSelectionDropdown.onOptionDeselected(option => {

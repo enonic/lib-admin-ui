@@ -231,6 +231,10 @@ export class FormOptionSetOptionView
         return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
     }
 
+    isExpandable(): boolean {
+        return this.formItemViews.length > 0;
+    }
+
     getFormItemViews(): FormItemView[] {
         return this.formItemViews;
     }

@@ -13,10 +13,15 @@ export class FormItemOccurrenceView
     protected formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>;
     protected helpText: HelpTextContainer;
     private removeButtonClickedListeners: { (event: RemoveButtonClickedEvent<FormItemOccurrenceView>): void }[] = [];
+    private occurrenceChangedListeners: { (view: FormItemOccurrenceView): void }[] = [];
 
     constructor(className: string, formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>) {
         super(className);
         this.formItemOccurrence = formItemOccurrence;
+    }
+
+    isExpandable(): boolean {
+        return false;
     }
 
     toggleHelpText(show?: boolean) {
@@ -58,6 +63,20 @@ export class FormItemOccurrenceView
         });
     }
 
+    onOccurrenceChanged(listener: (view: FormItemOccurrenceView) => void): void {
+        this.occurrenceChangedListeners.push(listener);
+    }
+
+    unOccurrenceChanged(listener: (view: FormItemOccurrenceView) => void): void {
+        this.occurrenceChangedListeners.filter((currentListener: (view: FormItemOccurrenceView) => void) => {
+            return currentListener !== listener;
+        });
+    }
+
+    protected notifyOccurrenceChanged(view?: FormItemOccurrenceView) {
+        this.occurrenceChangedListeners.forEach((listener: (view: FormItemOccurrenceView) => void) => listener(view || this));
+    }
+
     getIndex(): number {
         return this.formItemOccurrence.getIndex();
     }
@@ -83,6 +102,6 @@ export class FormItemOccurrenceView
     }
 
     setEnabled(enable: boolean) {
-    //
+        //
     }
 }

@@ -121,8 +121,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             lazyRender: this.occurrencesLazyRender
         });
 
-        this.formItemOccurrences.onExpandRequested(view => this.expandOccurrenceView(view));
-
         return this.formItemOccurrences;
     }
 
@@ -244,6 +242,10 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     isEmpty(): boolean {
         return this.formItemOccurrences.isEmpty();
+    }
+
+    isExpandable(): boolean {
+        return this.formItemOccurrences.isExpandable();
     }
 
     broadcastFormSizeChanged() {
@@ -471,6 +473,10 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     private subscribeFormSetOccurrencesOnEvents() {
 
+        this.formItemOccurrences.onExpandRequested(view => this.expandOccurrenceView(view));
+
+        this.formItemOccurrences.onOccurrenceChanged(view => this.refreshButtonsState());
+
         this.formItemOccurrences.onOccurrenceRendered((event: OccurrenceRenderedEvent) => {
             const occurrenceView = event.getOccurrenceView();
 
@@ -522,19 +528,21 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     private onFormSetOccurrenceContainerVisibilityToggle(container: DivEl) {
-        container.onShown(() => this.setCollapseButtonCaption());
-        container.onHidden(() => this.setCollapseButtonCaption());
+        container.onShown(() => this.updateCollapseButtons());
+        container.onHidden(() => this.updateCollapseButtons());
     }
 
-    private setCollapseButtonCaption() {
-        const occurrenceCount = this.formItemOccurrences.getOccurrenceViews().length;
+    private updateCollapseButtons() {
+        const views = this.formItemOccurrences.getOccurrenceViews();
+        const occurrenceCount = views.length;
+        const anyExpandable = occurrenceCount > 0 && views.some(view => view.isExpandable());
         const isCollapsed = (<FormSetOccurrences<V>>this.formItemOccurrences).isCollapsed();
 
         const caption = occurrenceCount > 1 ?
                         (isCollapsed ? i18n('button.expandall') : i18n('button.collapseall')) :
                         (isCollapsed ? i18n('button.expand') : i18n('button.collapse'));
 
-        this.collapseButtons.forEach(b => b.setHtml(caption));
+        this.collapseButtons.forEach(b => b.setHtml(caption).setVisible(anyExpandable));
     }
 
     private makeCollapseButton(): AEl {
@@ -550,7 +558,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     toggleOccurrencesVisibility(value: boolean) {
         this.formItemOccurrences.showOccurrences(value);
-        this.setCollapseButtonCaption();
+        this.updateCollapseButtons();
     }
 
     private makeAddButton(): Button {
@@ -583,8 +591,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     private refreshButtonsState() {
         const occurrenceCount = this.formItemOccurrences.getOccurrences().length;
-        this.setCollapseButtonCaption();
-        this.collapseButtons.forEach(b => b.setVisible(occurrenceCount > 0));
+        this.updateCollapseButtons();
         this.addButton.setVisible(!this.formItemOccurrences.maximumOccurrencesReached());
         this.toggleClass('multiple-occurrence', occurrenceCount > 1);
     }
