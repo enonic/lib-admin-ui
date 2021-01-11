@@ -31,6 +31,8 @@ export class FormOptionSetOccurrenceView
 
     private toggleContainerMenuAction: Action;
 
+    private originalSingleSelectionDropdownValue: string;
+
     constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView>) {
         super('form-option-set-', config);
 
@@ -52,6 +54,7 @@ export class FormOptionSetOccurrenceView
                 if (!selectedValue) {
                     selectedValue = (<FormOptionSet>this.formSet).getOptions().find(op => op.isDefaultOption())?.getName();
                 }
+                this.originalSingleSelectionDropdownValue = selectedValue;
 
                 if (selectedValue) {
                     // doing this after parent layout to make sure all formItemViews are ready
@@ -77,6 +80,12 @@ export class FormOptionSetOccurrenceView
                 (<FormOptionSetOptionView>view).clean();
             }
         });
+    }
+
+    reset(): void {
+        super.reset();
+        this.originalSingleSelectionDropdownValue = this.singleSelectionDropdown.getValue();
+        this.updateValidationVisibility();
     }
 
     setEnabled(enable: boolean) {
@@ -280,7 +289,6 @@ export class FormOptionSetOccurrenceView
     }
 
     createSingleSelectionCombo(): Dropdown<FormOptionSetOption> {
-        // return new OptionSetOptionsComboBox(<FormOptionSet>this.formSet);
 
         this.singleSelectionDropdown = new Dropdown(this.formSet.getName(), {
             optionDisplayValueViewer: new FormOptionSetOptionViewer(),
@@ -303,6 +311,8 @@ export class FormOptionSetOccurrenceView
                 optionView.enableAndExpand();
             }
 
+            this.updateValidationVisibility();
+
             this.refresh();
 
             this.handleSelectionChanged(optionView);
@@ -320,6 +330,14 @@ export class FormOptionSetOccurrenceView
         });
 
         return this.singleSelectionDropdown;
+    }
+
+    private updateValidationVisibility(): void {
+        if (this.isSingleSelection()) {
+            // hide validation for option form that is not equal to original
+            const shouldHide = this.singleSelectionDropdown.getValue() !== this.originalSingleSelectionDropdownValue;
+            this.toggleClass('hide-validation-errors', shouldHide);
+        }
     }
 
     private getToggleContainerMenuItemLabel(expand: boolean) {
