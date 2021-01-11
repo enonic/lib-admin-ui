@@ -57,7 +57,8 @@ export class FormOptionSetOccurrenceView
                     // doing this after parent layout to make sure all formItemViews are ready
                     this.singleSelectionDropdown.setValue(selectedValue);
                 } else {
-                    this.formSetOccurrencesContainer.addClass('empty');
+                    // showing/hiding instead of css to trigger FormSetOccurrences onShow/onHide listeners
+                    this.formSetOccurrencesContainer.hide();
                 }
             }
             return rendered;
@@ -240,7 +241,7 @@ export class FormOptionSetOccurrenceView
         this.updateLabel();
 
         if (this.isSingleSelection()) {
-            this.formSetOccurrencesContainer.toggleClass('empty', optionView.getFormItemViews().length === 0);
+            this.formSetOccurrencesContainer.setVisible(optionView.getFormItemViews().length !== 0);
         }
 
         if (!this.currentValidationState) {
