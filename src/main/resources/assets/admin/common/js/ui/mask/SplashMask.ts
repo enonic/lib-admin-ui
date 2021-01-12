@@ -24,11 +24,16 @@ export class SplashMask
         this.splash = new DivEl('mask-splash');
         this.appendChildren(this.shader, this.splash);
 
+        this.initListeners();
+    }
+
+    protected initListeners() {
         const wheelListener = _event => {
             if (this.isVisible()) {
                 this.hide();
             }
         };
+
         const clickListener = _event => {
             if (!this.getEl().contains(_event.target)) {
                 this.hide();
@@ -43,6 +48,7 @@ export class SplashMask
                 Body.get().onClicked(clickListener);
             }
         });
+
         this.onHidden(_event => {
             if (this.hideOnScroll) {
                 Body.get().unMouseWheel(wheelListener);
