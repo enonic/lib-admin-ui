@@ -238,7 +238,7 @@ export class Element {
 
     static fromSelector(s: string, loadExistingChildren: boolean = true): Element[] {
         return $(s).map((_index, elem) => {
-            let htmlEl = <HTMLElement> elem;
+            let htmlEl = <HTMLElement>elem;
             let parentEl;
             if (htmlEl && htmlEl.parentElement) {
                 parentEl = Element.fromHtmlElement(htmlEl.parentElement);
@@ -474,13 +474,17 @@ export class Element {
             return false;
         }
         this.el.focus();
-        let gotFocus: boolean = document.activeElement === this.el.getHTMLElement();
+        let gotFocus: boolean = this.hasFocus();
         if (!gotFocus && Element.debug) {
             console.log('Element.giveFocus(): Failed to give focus to Element: class = ' + ClassHelper.getClassName(this) +
                         ', id = ' +
                         this.getId());
         }
         return gotFocus;
+    }
+
+    hasFocus(): boolean {
+        return document.activeElement === this.el.getHTMLElement();
     }
 
     /*
@@ -673,9 +677,9 @@ export class Element {
         if (this.parentElement) {
             let indexFromElement = this.parentElement.children.indexOf(this);
             assertState(indexFromElement === indexFromDOM, 'index of Element in parentElement.children' +
-                                                                    ' [' + indexFromElement + '] does not correspond with' +
-                                                                    ' the actual index [' + indexFromDOM +
-                                                                    '] of the HTMLElement in DOM');
+                                                           ' [' + indexFromElement + '] does not correspond with' +
+                                                           ' the actual index [' + indexFromDOM +
+                                                           '] of the HTMLElement in DOM');
         }
         return indexFromDOM;
     }
@@ -762,13 +766,13 @@ export class Element {
         if (typeof this.getHTMLElement().onmouseenter !== 'undefined') {
             this.getEl().addEventListener('mouseenter', handler);
         } else {
-            this.mouseEnterByHandler[<any> handler] = (e: MouseEvent) => {
+            this.mouseEnterByHandler[<any>handler] = (e: MouseEvent) => {
                 // execute handler only if mouse came from outside
-                if (!this.getEl().contains(<HTMLElement> (e.relatedTarget || e['fromElement']))) {
+                if (!this.getEl().contains(<HTMLElement>(e.relatedTarget || e['fromElement']))) {
                     handler(e);
                 }
             };
-            this.getEl().addEventListener('mouseover', this.mouseEnterByHandler[<any> handler]);
+            this.getEl().addEventListener('mouseover', this.mouseEnterByHandler[<any>handler]);
         }
     }
 
@@ -776,7 +780,7 @@ export class Element {
         if (typeof this.getHTMLElement().onmouseenter !== 'undefined') {
             this.getEl().removeEventListener('mouseenter', handler);
         } else {
-            this.getEl().removeEventListener('mouseover', this.mouseEnterByHandler[<any> handler]);
+            this.getEl().removeEventListener('mouseover', this.mouseEnterByHandler[<any>handler]);
         }
     }
 
@@ -784,13 +788,13 @@ export class Element {
         if (typeof this.getHTMLElement().onmouseleave !== 'undefined') {
             this.getEl().addEventListener('mouseleave', handler);
         } else {
-            this.mouseLeaveByHandler[<any> handler] = (e: MouseEvent) => {
+            this.mouseLeaveByHandler[<any>handler] = (e: MouseEvent) => {
                 // execute handler only if mouse moves outside
-                if (!this.getEl().contains(<HTMLElement> (e.relatedTarget || e['toElement']))) {
+                if (!this.getEl().contains(<HTMLElement>(e.relatedTarget || e['toElement']))) {
                     handler(e);
                 }
             };
-            this.getEl().addEventListener('mouseout', this.mouseLeaveByHandler[<any> handler]);
+            this.getEl().addEventListener('mouseout', this.mouseLeaveByHandler[<any>handler]);
         }
     }
 
@@ -798,7 +802,7 @@ export class Element {
         if (typeof this.getHTMLElement().onmouseleave !== 'undefined') {
             this.getEl().removeEventListener('mouseleave', handler);
         } else {
-            this.getEl().removeEventListener('mouseout', this.mouseLeaveByHandler[<any> handler]);
+            this.getEl().removeEventListener('mouseout', this.mouseLeaveByHandler[<any>handler]);
         }
     }
 

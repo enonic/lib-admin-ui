@@ -425,7 +425,6 @@ export abstract class FormSetOccurrenceView
         const bindings = KeyBindings.get();
         const maskBindings = [
             new KeyBinding('esc', () => noAction.execute()).setGlobal(true),
-            new KeyBinding('enter', () => this.confirmDeleteAction.execute()).setGlobal(true)
         ];
         let shelvedBindings;
 
