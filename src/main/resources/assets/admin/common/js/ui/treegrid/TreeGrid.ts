@@ -483,12 +483,8 @@ export class TreeGrid<DATA extends IDentifiable>
         this.setActive(false);
         this.root.setFiltered(true);
         this.root.getCurrentRoot().setChildren(this.dataToTreeNodes(dataList, this.root.getCurrentRoot()));
-        this.grid.removeCellCssStyles('highlight');
         this.initData(this.root.getCurrentRoot().treeToList());
         return this.doExpandNode(this.root.getCurrentRoot()).then(() => {
-            if (this.hasHighlightedNode()) {
-                this.highlightCurrentNode();
-            }
             this.invalidate();
         }).catch((reason: any) => {
             this.handleError(reason);
@@ -502,7 +498,6 @@ export class TreeGrid<DATA extends IDentifiable>
 
         if (this.root.isFiltered()) {
             this.root.setFiltered(false);
-            this.grid.removeCellCssStyles('highlight');
             this.initData(this.root.getCurrentRoot().treeToList());
             this.invalidate();
             this.setActive(true);
@@ -608,17 +603,14 @@ export class TreeGrid<DATA extends IDentifiable>
         this.root.resetCurrentRoot();
         this.gridData.setItems([], this.idPropertyName);
 
-        return this.doExpandNode(this.root.getCurrentRoot()).then(() => {
-            if (this.hasHighlightedNode()) {
-                this.highlightCurrentNode();
-            }
-        }).catch((reason: any) => {
-            this.initData([]);
-            this.handleError(reason);
-        }).then(() => {
-            this.setActive(true);
-            this.notifyLoaded();
-        });
+        return this.doExpandNode(this.root.getCurrentRoot())
+            .catch((reason: any) => {
+                this.initData([]);
+                this.handleError(reason);
+            }).then(() => {
+                this.setActive(true);
+                this.notifyLoaded();
+            });
     }
 
     updateNodesByData(dataItems: DATA[]) {
@@ -691,6 +683,7 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     initData(nodes: TreeNode<DATA>[]) {
+        this.grid.removeCellCssStyles('highlight');
         this.gridData.setItems(nodes, this.idPropertyName);
         this.resetCurrentSelection(nodes);
     }
@@ -808,6 +801,7 @@ export class TreeGrid<DATA extends IDentifiable>
             });
         }
 
+        this.grid.removeCellCssStyles('highlight');
         this.gridData.refresh();
         this.invalidate();
         this.setActive(true);
@@ -942,7 +936,7 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     protected highlightCurrentNode() {
-        if (!this.highlightedDataId) {
+        if (!this.highlightedDataId || this.isHighlightedNodeSelected()) {
             return;
         }
 
