@@ -10,7 +10,7 @@ import {Body} from '../../dom/Body';
 export class ConfirmationMask
     extends SplashMask {
 
-    private actionsEl: DivEl;
+    private readonly actionsEl: DivEl;
 
     private tabListener: (event: KeyboardEvent) => boolean;
 
@@ -34,6 +34,10 @@ export class ConfirmationMask
         this.setContents(...elements);
         this.setHideOnScroll(builder.getHideOnScroll());
         this.setHideOnOutsideClick(builder.getHideOnOutsideClick());
+    }
+
+    protected initListeners() {
+        super.initListeners();
 
         this.tabListener = (event: KeyboardEvent) => {
             const firstChild = this.actionsEl.getFirstChild();
