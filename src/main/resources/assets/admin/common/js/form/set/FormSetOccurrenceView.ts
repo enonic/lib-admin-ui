@@ -25,6 +25,8 @@ import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
 import {ElementEvent} from '../../dom/ElementEvent';
 import {Dropdown} from '../../ui/selector/dropdown/Dropdown';
 import {Element} from '../../dom/Element';
+import {KeyBindings} from '../../ui/KeyBindings';
+import {KeyBinding} from '../../ui/KeyBinding';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
@@ -423,6 +425,24 @@ export abstract class FormSetOccurrenceView
             .addAction(this.confirmDeleteAction)
             .addAction(noAction)
             .build();
+
+        const bindings = KeyBindings.get();
+        const maskBindings = [
+            new KeyBinding('esc', () => noAction.execute()).setGlobal(true),
+        ];
+        let shelvedBindings;
+
+        this.deleteConfirmationMask.onShown(() => {
+            shelvedBindings = bindings.getActiveBindings();
+            bindings.shelveBindings(shelvedBindings);
+            bindings.bindKeys(maskBindings);
+        });
+
+        this.deleteConfirmationMask.onHidden(() => {
+            bindings.unbindKeys(maskBindings);
+            bindings.unshelveBindings(shelvedBindings);
+            shelvedBindings = null;
+        });
     }
 
     private initFormDataChangeListener() {
