@@ -85,7 +85,9 @@ export class FormOptionSetOccurrenceView
 
     reset(): void {
         super.reset();
-        this.originalSingleSelectionDropdownValue = this.singleSelectionDropdown.getValue();
+        if (this.isSingleSelection()) {
+            this.originalSingleSelectionDropdownValue = this.singleSelectionDropdown.getValue();
+        }
         this.updateValidationVisibility();
     }
 

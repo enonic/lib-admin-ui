@@ -142,6 +142,10 @@ export abstract class FormSetOccurrenceView
                 }
                 this.propertySet.onPropertyValueChanged(this.formDataChangedListener);
 
+                if (!this.isExpandable()) {
+                    this.showContainer(false);
+                }
+
                 this.subscribeOnItemEvents();
                 this.refresh();
 
@@ -225,13 +229,19 @@ export abstract class FormSetOccurrenceView
     }
 
     showContainer(show: boolean) {
+        if (!this.isExpandable()) {
+            return;
+        }
         this.formSetOccurrencesContainer.setVisible(show);
         this.toggleClass('collapsed', !show);
         this.label.setTitle(i18n(show ? 'tooltip.header.collapse' : 'tooltip.header.expand'));
     }
 
     isContainerVisible(): boolean {
-        return this.formSetOccurrencesContainer.isVisible();
+        // container may be on, but will be not visible
+        // if the whole occurrence is hidden (i.e. single select unselected option)
+        // so check the style directly
+        return this.formSetOccurrencesContainer?.getEl().getHTMLElement().style.display !== 'none';
     }
 
     refresh() {

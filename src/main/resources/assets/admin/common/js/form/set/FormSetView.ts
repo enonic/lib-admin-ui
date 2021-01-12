@@ -173,7 +173,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             }
 
             if (this.shouldCollapseOccurrences()) {
-                this.formItemOccurrences.collapseOccurrences();
+                this.toggleOccurrencesVisibility(false, true);
             }
 
             deferred.resolve(null);
@@ -530,8 +530,16 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     private onFormSetOccurrenceContainerVisibilityToggle(container: DivEl) {
-        container.onShown(() => this.updateCollapseButtons());
-        container.onHidden(() => this.updateCollapseButtons());
+        container.onShown((event) => {
+            if (container === event.getTarget()) {
+                this.updateCollapseButtons();
+            }
+        });
+        container.onHidden((event) => {
+            if (container === event.getTarget()) {
+                this.updateCollapseButtons();
+            }
+        });
     }
 
     private updateCollapseButtons() {
@@ -558,8 +566,8 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         return collapseButton;
     }
 
-    toggleOccurrencesVisibility(value: boolean) {
-        this.formItemOccurrences.showOccurrences(value);
+    toggleOccurrencesVisibility(value: boolean, skipInvalid?: boolean) {
+        this.formItemOccurrences.showOccurrences(value, skipInvalid);
         this.updateCollapseButtons();
     }
 

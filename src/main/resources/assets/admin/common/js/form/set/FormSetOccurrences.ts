@@ -6,7 +6,6 @@ import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from './FormSetOccur
 import {FormItemOccurrences} from '../FormItemOccurrences';
 import {FormContext} from '../FormContext';
 import {FormSet} from './FormSet';
-import {OccurrenceRenderedEvent} from '../OccurrenceRenderedEvent';
 import {Occurrences} from '../Occurrences';
 import {FormItemOccurrence} from '../FormItemOccurrence';
 import {FormSetOccurrence} from './FormSetOccurrence';
@@ -38,8 +37,6 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
 
     private readonly parent: FormSetOccurrenceView;
 
-    private occurrencesCollapsed: boolean = false;
-
     private readonly formSet: FormSet;
 
     private readonly lazyRender: boolean;
@@ -60,14 +57,7 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         this.layerFactory = config.layerFactory;
         this.formSet = config.formSet;
         this.parent = config.parent;
-        this.occurrencesCollapsed = false;
         this.lazyRender = config.lazyRender;
-
-        this.onOccurrenceRendered((event: OccurrenceRenderedEvent) => {
-            const occurrenceView = <FormSetOccurrenceView>event.getOccurrenceView();
-            occurrenceView.getContainer().onShown(() => this.updateOccurrencesCollapsed());
-            occurrenceView.getContainer().onHidden(() => this.updateOccurrencesCollapsed());
-        });
     }
 
     protected getNewOccurrenceConfig(occurrence: FormSetOccurrence<V>): FormSetOccurrenceViewConfig<V> {
@@ -106,20 +96,11 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         throw new Error('Must be implemented by inheritor');
     }
 
-    showOccurrences(show: boolean) {
+    showOccurrences(show: boolean, skipInvalid?: boolean) {
         const views = this.getOccurrenceViews();
-        this.occurrencesCollapsed = !show;
         views.forEach((formSetOccurrenceView: FormSetOccurrenceView) => {
-            formSetOccurrenceView.showContainer(show);
-        });
-    }
-
-    collapseOccurrences() {
-        const views = this.getOccurrenceViews();
-        this.occurrencesCollapsed = true;
-        views.forEach((formSetOccurrenceView: FormSetOccurrenceView) => {
-            if (formSetOccurrenceView.isValid()) { // don't auto-expand valid occurrence
-                formSetOccurrenceView.showContainer(false);
+            if (!skipInvalid || formSetOccurrenceView.isValid()) {
+                formSetOccurrenceView.showContainer(show);
             }
         });
     }
@@ -134,7 +115,6 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
 
     createNewOccurrence(formItemOccurrences: FormItemOccurrences<V>,
                         insertAtIndex: number): FormItemOccurrence<V> {
-        this.occurrencesCollapsed = false;
         return new FormSetOccurrence(<FormSetOccurrences<V>>formItemOccurrences, insertAtIndex);
     }
 
@@ -145,7 +125,9 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
     }
 
     isCollapsed(): boolean {
-        return this.occurrencesCollapsed;
+        return this.getOccurrenceViews().every((formSetOccurrenceView: FormSetOccurrenceView) => {
+            return !formSetOccurrenceView.isContainerVisible();
+        });
     }
 
     moveOccurrence(index: number, destinationIndex: number) {
@@ -225,12 +207,6 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
             }
         }
         return occurrences;
-    }
-
-    private updateOccurrencesCollapsed() {
-        this.occurrencesCollapsed = this.getOccurrenceViews().every((formSetOccurrenceView: FormSetOccurrenceView) => {
-            return !formSetOccurrenceView.isContainerVisible();
-        });
     }
 
     private updateNoData(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
