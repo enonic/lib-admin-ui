@@ -8,4 +8,10 @@ export class ButtonEl
         super('button', className, StyleHelper.COMMON_PREFIX);
     }
 
+    setEnabled(value: boolean) {
+        super.setEnabled(value);
+        this.getEl().setDisabled(!value);
+        return this;
+    }
+
 }

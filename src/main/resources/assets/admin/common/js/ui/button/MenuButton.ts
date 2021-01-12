@@ -2,36 +2,42 @@ import {Menu} from '../menu/Menu';
 import {MenuItem} from '../menu/MenuItem';
 import {DivEl} from '../../dom/DivEl';
 import {Action} from '../Action';
-import {AppHelper} from '../../util/AppHelper';
 import {DropdownHandle} from './DropdownHandle';
 import {ActionButton} from './ActionButton';
+import {Body} from '../../dom/Body';
 
 export class MenuButton
     extends DivEl {
 
-    private actionPropertyListener: () => void;
+    private readonly actionPropertyListener: () => void;
 
     private dropdownHandle: DropdownHandle;
 
     private actionButton: ActionButton;
 
-    private menu: Menu;
+    private readonly menu: Menu;
 
     private toggleMenuOnAction: boolean = false;
+
+    private onBodyClicked: (e: MouseEvent) => void;
 
     constructor(mainAction: Action, menuActions: Action[] = []) {
         super('menu-button');
 
+        this.onBodyClicked = (e) => this.hideMenuOnOutsideClick(e);
+        // Body.get().onClicked(this.onBodyClicked);
         this.actionPropertyListener = this.updateActionEnabled.bind(this);
 
         this.menu = new Menu(menuActions);
+        this.menu.hide();
+
         this.initDropdownHandle();
         this.initActionButton(mainAction);
         this.initActions(menuActions);
 
         this.initListeners();
 
-        let children = [this.dropdownHandle, this.actionButton, this.menu];
+        let children = [this.actionButton, this.dropdownHandle, this.menu];
         this.appendChildren(...children);
     }
 
@@ -66,7 +72,7 @@ export class MenuButton
     }
 
     toggleMenu(expand?: boolean) {
-        if (expand || expand === undefined && !this.menu.hasClass('expanded')) {
+        if (expand || expand === undefined && !this.menu.isVisible()) {
             this.expandMenu();
         } else {
             this.collapseMenu();
@@ -74,14 +80,17 @@ export class MenuButton
     }
 
     expandMenu(): void {
-        this.menu.addClass('expanded');
+        this.menu.resolveDropdownPosition();
+        this.menu.show();
         this.dropdownHandle.addClass('down');
         this.dropdownHandle.giveFocus();
+        Body.get().onClicked(this.onBodyClicked);
     }
 
     collapseMenu(): void {
-        this.menu.removeClass('expanded');
+        this.menu.hide();
         this.dropdownHandle.removeClass('down');
+        Body.get().unClicked(this.onBodyClicked);
     }
 
     setDropdownHandleEnabled(enabled: boolean = true) {
@@ -129,6 +138,19 @@ export class MenuButton
         this.toggleMenuOnAction = value;
     }
 
+    private hideMenuOnOutsideClick(e: Event): void {
+        if (!this.dropdownHandle.hasClass('down')) {
+            return;
+        }
+        if (!this.getEl().contains(<HTMLElement> e.target)) {
+            // click outside menu
+            this.collapseMenu();
+
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }
+
     private initDropdownHandle() {
         this.dropdownHandle = new DropdownHandle();
     }
@@ -167,9 +189,13 @@ export class MenuButton
     }
 
     private initListeners() {
-        this.dropdownHandle.onClicked(() => {
+        this.onBodyClicked = (e) => this.hideMenuOnOutsideClick(e);
+
+        this.dropdownHandle.onClicked((e: MouseEvent) => {
             if (this.dropdownHandle.isEnabled()) {
                 this.toggleMenu();
+                e.stopPropagation();
+                e.preventDefault();
             }
         });
 
@@ -179,7 +205,7 @@ export class MenuButton
             }
         });
 
-        this.actionButton.onClicked(() => {
+        this.actionButton.onClicked((e) => {
             if (this.toggleMenuOnAction) {
                 this.toggleMenu();
             } else {
@@ -188,7 +214,5 @@ export class MenuButton
         });
 
         this.menu.onClicked(() => this.dropdownHandle.giveFocus());
-
-        AppHelper.focusInOut(this, () => this.collapseMenu());
     }
 }

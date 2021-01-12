@@ -28,6 +28,10 @@ export class WizardHeader
         });
     }
 
+    toggleEnabled(enable: boolean) {
+    //
+    }
+
     isValid(): boolean {
         return true;
     }

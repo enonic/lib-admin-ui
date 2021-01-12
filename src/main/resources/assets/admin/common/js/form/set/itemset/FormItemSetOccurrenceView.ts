@@ -1,4 +1,3 @@
-import * as Q from 'q';
 import {FormItemSet} from './FormItemSet';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {ValidationRecording} from '../../ValidationRecording';
@@ -8,25 +7,12 @@ import {FormItem} from '../../FormItem';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Property} from '../../../data/Property';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {ElementEvent} from '../../../dom/ElementEvent';
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
 
     constructor(config: FormSetOccurrenceViewConfig<FormItemSetOccurrenceView>) {
         super('form-item-set-', config);
-    }
-
-    public layout(validate: boolean = true): Q.Promise<void> {
-        return super.layout(validate).then(() => {
-            if (this.formItemOccurrence.isMultiple()) {
-                this.formSetOccurrencesContainer.onDescendantAdded((event: ElementEvent) => {
-                    if (this.getEl().contains(event.getElement().getHTMLElement())) {
-                        this.updateLabel();
-                    }
-                });
-            }
-        });
     }
 
     protected extraValidation(_validationRecording: ValidationRecording) {

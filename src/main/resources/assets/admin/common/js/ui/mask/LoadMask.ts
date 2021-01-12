@@ -26,7 +26,6 @@ export class LoadMask
     show() {
         super.show();
         this.splash.show();
-        this.centerSplash();
     }
 
     hide() {
@@ -50,11 +49,5 @@ export class LoadMask
 
     getText(): string {
         return this.text.getEl().getInnerHtml();
-    }
-
-    private centerSplash() {
-        let loaderEl = this.splash.getEl();
-        loaderEl.setMarginLeft('-' + loaderEl.getWidthWithBorder() / 2 + 'px');
-        loaderEl.setMarginTop('-' + loaderEl.getHeightWithBorder() / 2 + 'px');
     }
 }

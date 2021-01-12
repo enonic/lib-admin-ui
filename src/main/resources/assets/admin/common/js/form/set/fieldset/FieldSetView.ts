@@ -77,6 +77,10 @@ export class FieldSetView
         this.formItemLayer.reset();
     }
 
+    setEnabled(enable: boolean) {
+        this.formItemLayer.setEnabled(enable);
+    }
+
     onEditContentRequest(listener: (content: ContentSummary) => void) {
         super.onEditContentRequest(listener);
         this.formItemViews.forEach((formItemView: FormItemView) => {

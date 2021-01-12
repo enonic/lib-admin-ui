@@ -1,5 +1,4 @@
 import * as Q from 'q';
-import * as $ from 'jquery';
 import {DivEl} from '../../dom/DivEl';
 import {Action} from '../Action';
 import {Element} from '../../dom/Element';
@@ -24,6 +23,8 @@ export interface ModalDialogConfig {
     skipTabbable?: boolean;
     class?: string;
     keepOpenOnClickOutside?: boolean;
+    alwaysFullscreen?: boolean;
+    allowFullscreen?: boolean;
 }
 
 export enum DialogState {
@@ -32,6 +33,8 @@ export enum DialogState {
 
 export abstract class ModalDialog
     extends DivEl {
+
+    private static THRESHOLD: number = 80; // Max allowed space above and below the dialog, accumulated (in pixels)
 
     public static debug: boolean = false;
 
@@ -100,7 +103,7 @@ export abstract class ModalDialog
         this.contentPanel = new ModalDialogContentPanel();
         this.body = new DivEl('modal-dialog-body');
         this.footer = new DivEl('modal-dialog-footer');
-        this.loadMask = new LoadMask(this.contentPanel);
+        this.loadMask = new LoadMask(this.body);
         this.state = DialogState.CLOSED;
         this.renderedListenerForLoadMask = () => {
             this.loadMask.show();
@@ -129,16 +132,23 @@ export abstract class ModalDialog
     }
 
     protected postInitElements() {
-        this.loadMask.setRemoveWhenMaskedRemoved(false);
+        // Nothing here
     }
 
     protected initListeners() {
         this.responsiveItem = new ResponsiveItem(this);
         this.initFocusInOutEventsHandlers();
 
-        this.initResizeHandler();
+        if (this.config.allowFullscreen !== false && this.config.alwaysFullscreen !== true) {
+            this.initResizeHandler();
+        }
 
         this.onRendered(() => {
+            if (this.config.alwaysFullscreen) {
+                this.addClass('always-fullscreen');
+                this.toggleFullscreen(true);
+            }
+
             if (!this.skipTabbable) {
                 this.updateTabbable();
             }
@@ -234,7 +244,7 @@ export abstract class ModalDialog
                 // last focusable - Cancel
                 // first focusable - X
                 if (buttonRowIsFocused) { // last element lost focus
-                    this.tabbable[0].giveFocus();
+                    this.focusFirstTabbable();
                 } else {
                     this.tabbable[this.tabbable.length - 1].giveFocus();
                 }
@@ -261,67 +271,64 @@ export abstract class ModalDialog
         return false;
     }
 
-    private initResizeHandler() {
-        this.handleResize = AppHelper.runOnceAndDebounce(() => {
-            if (this.isOpen()) {
-                this.body.removeClass('non-scrollable');
-                this.resizeHandler();
-            }
-        }, 50);
-        ResponsiveManager.onAvailableSizeChanged(Body.get(), () => {
-            this.handleResize();
+    protected focusFirstTabbable() {
+        this.tabbable.some((el: Element) => {
+            return el.giveFocus();
         });
+    }
 
+    private createResizeObserver() {
         if (window['ResizeObserver']) {
             this.resizeObserver = new window['ResizeObserver'](() => {
-                this.handleResize();
+                this.executeResizeHandlers();
             });
         }
     }
 
+    private initResizeHandler() {
+        this.handleResize = AppHelper.debounce(() => {
+            if (this.isOpen()) {
+                this.resizeHandler();
+            }
+        }, 200);
+        ResponsiveManager.onAvailableSizeChanged(Body.get(), this.handleResize);
+
+        this.createResizeObserver();
+    }
+
     protected resizeHandler() {
         this.adjustHeight();
-        this.adjustOverflow();
         this.responsiveItem.update();
+    }
+
+    private getDialogHeight(): number {
+        const headerHeight = this.header.getEl().getHeight();
+        const bodyHeight = this.body.getEl().getHeight();
+        const footerHeight = this.footer.getEl().getHeight();
+
+        return headerHeight + bodyHeight + footerHeight + ModalDialog.THRESHOLD;
     }
 
     private adjustHeight() {
         const dialogHeight = this.getEl().getHeightWithBorder();
-
-        if (dialogHeight === 0 || dialogHeight % 2 === 0) {
-
+        const containerHeight = BodyMask.get().getEl().getHeight() || Body.get().getEl().getHeight();
+        if (containerHeight === 0 || dialogHeight === 0) {
             return;
         }
 
-        const borderBottom = parseFloat($(this.getHTMLElement()).css('border-bottom'));
-        const dialogHeightWithoutBorder = borderBottom ? dialogHeight - borderBottom : dialogHeight;
-
-        if (dialogHeightWithoutBorder % 2 === 0 && borderBottom) {
-            $(this.getHTMLElement()).css('border-bottom-width', '0px');
-
-            return;
-        }
-        let borderHeight = 1;
-        if (dialogHeightWithoutBorder % 1 !== 0) {
-            borderHeight = Math.ceil(dialogHeightWithoutBorder) - dialogHeightWithoutBorder;
-            if (Math.ceil(dialogHeightWithoutBorder) % 2 === 1) {
-                borderHeight++;
-            }
-        }
-
-        $(this.getHTMLElement()).css('border-bottom', `${borderHeight}px solid transparent`);
+        const calculatedDialogHeight = this.getDialogHeight();
+        this.toggleFullscreen(calculatedDialogHeight >= containerHeight);
     }
 
-    private adjustOverflow() {
-
-        const bodyHeight = this.body.getEl().getHeight();
-        if (bodyHeight === 0) {
+    protected toggleFullscreen(value: boolean) {
+        if (value && this.config.allowFullscreen === false) {
             return;
         }
-        const maxBodyHeight = this.body.getEl().getMaxHeight();
-        const showScrollbar = Math.floor(bodyHeight) >= Math.floor(maxBodyHeight);
+        if (!value && this.config.alwaysFullscreen === true) {
+            return;
+        }
 
-        this.body.toggleClass('non-scrollable', !showScrollbar);
+        this.toggleClass('fullscreen', value);
     }
 
     protected getBody(): DivEl {
@@ -359,9 +366,6 @@ export abstract class ModalDialog
     }
 
     hide() {
-        if (this.resizeObserver) {
-            this.resizeObserver.unobserve(this.body.getHTMLElement());
-        }
         this.unResize(this.handleResize);
 
         if (this.isSingleDialogGroup()) {
@@ -369,6 +373,7 @@ export abstract class ModalDialog
         }
         super.hide(true);
 
+        this.toggleFullscreen(false);
         if (this.dialogContainer.getParentElement()) {
             Body.get().removeChild(this.dialogContainer);
         }
@@ -379,12 +384,11 @@ export abstract class ModalDialog
             if (this.config.class) {
                 this.addClass(this.config.class);
             }
-            this.appendChild(this.closeIcon);
             this.body.appendChild(this.contentPanel);
             this.footer.appendChild(this.buttonRow);
 
             const wrapper = new DivEl('modal-dialog-wrapper');
-            wrapper.appendChildren<Element>(this.header, this.body, this.footer);
+            wrapper.appendChildren<Element>(this.closeIcon, this.header, this.body, this.footer);
             this.appendChild(wrapper);
 
             this.appendChildToContentPanel(this.loadMask);
@@ -492,8 +496,6 @@ export abstract class ModalDialog
 
         this.show();
 
-        this.handleResize();
-
         let keyBindings = Action.getKeyBindings(this.buttonRow.getActions());
 
         if (!this.skipTabbable) {
@@ -526,7 +528,6 @@ export abstract class ModalDialog
             this.dialogContainer.appendChild(this);
         }
         Body.get().appendChild(this.dialogContainer);
-        this.responsiveItem.update();
 
         this.blurBackground();
 
@@ -539,12 +540,11 @@ export abstract class ModalDialog
                 this.buttonRow.focusDefaultAction();
             }
         }
+
         if (this.resizeObserver) {
             this.resizeObserver.observe(this.body.getHTMLElement());
         }
         this.onResize(this.handleResize);
-
-        $(this.body.getHTMLElement()).css('height', '');
     }
 
     getButtonRow(): ButtonRow {
@@ -565,17 +565,28 @@ export abstract class ModalDialog
         });
     }
 
-    onResize(listener: () => void) {
+    private onResize(listener: () => void) {
         this.resizeListeners.push(listener);
     }
 
-    unResize(listener: () => void) {
+    private unResize(listener: () => void) {
         this.resizeListeners = this.resizeListeners.filter((curr) => {
             return curr !== listener;
         });
+        if (this.resizeListeners.length === 0 && this.resizeObserver) {
+            this.resizeObserver.disconnect();
+        }
     }
 
     public notifyResize() {
+        if (this.resizeObserver) {
+            // Resize observer will call executeResizeHandlers() directly
+            return;
+        }
+        this.executeResizeHandlers();
+    }
+
+    private executeResizeHandlers() {
         this.resizeListeners.forEach((listener) => {
             listener();
         });
@@ -586,7 +597,7 @@ export abstract class ModalDialog
     }
 
     protected showLoadMask() {
-        if (this.isOpen()) {
+        if (this.isVisible()) {
             this.loadMask.show();
         } else {
             if (this.isRendered()) {
@@ -596,7 +607,7 @@ export abstract class ModalDialog
             }
         }
 
-}
+    }
 
     protected hideLoadMask() {
         this.loadMask.hide();

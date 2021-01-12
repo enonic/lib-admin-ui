@@ -5,19 +5,18 @@ import {Element} from '../../dom/Element';
 import {StyleHelper} from '../../StyleHelper';
 import {ElementHiddenEvent} from '../../dom/ElementHiddenEvent';
 import {Body} from '../../dom/Body';
-import {ElementHelper} from '../../dom/ElementHelper';
 
 export class Mask
     extends DivEl {
 
-    private masked: Element;
+    private readonly masked: Element;
 
     private removeWhenMaskedRemoved: boolean;
 
     constructor(itemToMask?: Element) {
         super('mask', StyleHelper.COMMON_PREFIX);
 
-        this.masked = itemToMask;
+        this.masked = itemToMask || Body.get();
         this.removeWhenMaskedRemoved = true;
 
         if (this.masked) {
@@ -58,11 +57,7 @@ export class Mask
         super.show();
 
         if (this.masked) {
-            if (this.masked.isRendered()) {
-                this.positionOverMaskedEl();
-            } else {
-                this.masked.onRendered(() => this.positionOverMaskedEl());
-            }
+            this.masked.whenRendered(() => this.positionOverMaskedEl());
         }
     }
 
@@ -97,12 +92,12 @@ export class Mask
         return offsetParentOfMask === offsetParentOfMaskWrapper;
     }
 
-    private positionOverMaskedEl() {
+    protected positionOverMaskedEl() {
         const maskedEl = this.getWrapperEl();
 
         const maskDimensions: { width: string; height: string } = {
-            width: maskedEl.width() + 'px',
-            height: maskedEl.height() + 'px'
+            width: maskedEl.outerWidth() + 'px',
+            height: maskedEl.outerHeight() + 'px'
         };
 
         let maskOffset: { top: number; left: number } = maskedEl.position();

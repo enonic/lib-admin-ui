@@ -2,16 +2,19 @@
   .reset(true);
 
   position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: @admin-black;
   display: none;
   z-index: @z-index-mask;
   opacity: 0.6;
 
   .mask-splash {
-    position: absolute;
-    padding: 10px;
-    left: 50%;
-    top: 50%;
+    position: relative;
+    left: calc(50% - 25px);
+    top: calc(50% - 25px);
     display: none;
 
     .spinner {
@@ -40,13 +43,17 @@
     right: 0;
     left: 0;
     bottom: 0;
-
   }
 
   &.load-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
     background-color: white;
     overflow: hidden;
-    z-index: @z-index-mask;
+    z-index: @z-index-load-mask;
+    width: 100%;
+    height: 100%;
   }
 
   &.drag-mask {
@@ -71,6 +78,49 @@
         line-height: 24px;
       }
 
+    }
+  }
+
+  &.splash-mask {
+    .reset(true);
+
+    position: absolute;
+    display: none;
+    opacity: 1;
+    background-color: transparent;
+
+    .mask-splash {
+      z-index: @z-index-load-mask;
+      position: absolute;
+      padding: 10px;
+      left: 50%;
+      top: 50%;
+      display: block;
+
+      .mask-actions {
+        button {
+          margin: 0 10px;
+        }
+      }
+    }
+
+    .mask-shader {
+      background-color: @admin-black;
+      z-index: @z-index-mask;
+      opacity: 0.6;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+  }
+
+  &.confirmation-mask {
+    button {
+      .ellipsis();
+
+      max-width: 240px;
     }
   }
 }

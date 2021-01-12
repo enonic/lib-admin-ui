@@ -48,13 +48,13 @@ export class InputView
     private parentPropertySet: PropertySet;
     private propertyArray: PropertyArray;
     private inputTypeView: InputTypeView;
-    private bottomButtonRow: DivEl;
-    private addButton: Button;
+    private bottomButtonRow?: DivEl;
+    private addButton?: Button;
     private validationViewer: ValidationRecordingViewer;
     private previousValidityRecording: ValidationRecording;
     private userInputValid: boolean;
     private validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
-    private helpText: HelpTextContainer;
+    private helpText?: HelpTextContainer;
 
     constructor(config: InputViewConfig) {
         super(<FormItemViewConfig>{
@@ -89,8 +89,8 @@ export class InputView
             this.appendChild(this.helpText.getToggler());
         }
 
-        if (this.input.isMaximizeUIInputWidth()) {
-            this.addClass('label-over-input');
+        if (this.input.isMaximizeUIInputWidth() !== true) {
+            this.addClass('label-inline');
         }
 
         this.inputTypeView = this.createInputTypeView();
@@ -174,6 +174,14 @@ export class InputView
         });
     }
 
+    setEnabled(enable: boolean) {
+        this.inputTypeView.setEnabled(enable);
+
+        if (this.addButton) {
+            this.addButton.setEnabled(enable);
+        }
+    }
+
     public getInputTypeView(): InputTypeView {
         return this.inputTypeView;
     }
@@ -200,7 +208,7 @@ export class InputView
     }
 
     userInputValidityChanged(currentState: boolean): boolean {
-        return this.userInputValid == null || this.userInputValid == null || !(this.userInputValid === currentState);
+        return this.userInputValid != null && this.userInputValid !== currentState;
     }
 
     giveFocus(): boolean {

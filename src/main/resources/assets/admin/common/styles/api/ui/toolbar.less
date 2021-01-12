@@ -1,10 +1,12 @@
 .toolbar-button() {
   .menu-action-button();
 
-  display: inline-block;
-  vertical-align: top;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   height: 100%;
-  line-height: @toolbar-height;
+  line-height: normal;
   padding: 0 14px;
 
   &.pull-right {
@@ -13,6 +15,7 @@
 }
 
 .toolbar {
+  display: flex;
   background-color: @admin-white;
   height: @toolbar-height;
   line-height: @toolbar-height;

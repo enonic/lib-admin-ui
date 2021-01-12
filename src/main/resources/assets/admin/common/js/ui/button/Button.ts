@@ -18,11 +18,6 @@ export class Button
         this.appendChild(this.labelEl);
     }
 
-    setEnabled(value: boolean): Button {
-        this.getEl().setDisabled(!value);
-        return this;
-    }
-
     isEnabled() {
         return !this.getEl().isDisabled();
     }
@@ -50,6 +45,13 @@ export class Button
                 this.getEl().removeAttribute('title');
             }
         }
+        return this;
+    }
+
+    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
+
+    setEnabled(value: boolean) {
+        super.setEnabled(value);
         return this;
     }
 }

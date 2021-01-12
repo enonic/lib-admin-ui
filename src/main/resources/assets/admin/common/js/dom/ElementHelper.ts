@@ -319,6 +319,11 @@ export class ElementHelper {
         return this;
     }
 
+    setMinWidth(value: string): ElementHelper {
+        this.el.style.minWidth = value;
+        return this;
+    }
+
     setMaxWidthPx(value: number): ElementHelper {
         this.setMaxWidth(value + 'px');
         return this;

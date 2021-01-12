@@ -62,6 +62,7 @@ export class BaseSelectedOptionView<T>
     }
 
     setReadonly(readonly: boolean) {
+        this.toggleClass('readonly', readonly);
         this.editable = readonly ? false : this.editable;
         this.removable = readonly ? false : this.removable;
     }

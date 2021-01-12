@@ -25,7 +25,7 @@ import {InputOccurrenceView} from './InputOccurrenceView';
 import {InputOccurrences} from './InputOccurrences';
 import {assertNotNull} from '../../../util/Assert';
 
-export class BaseInputTypeNotManagingAdd
+export abstract class BaseInputTypeNotManagingAdd
     extends DivEl
     implements InputTypeView {
 
@@ -190,13 +190,15 @@ export class BaseInputTypeNotManagingAdd
         //to be implemented on demand in inheritors
     }
 
+    setEnabled(enable: boolean) {
+        this.inputOccurrences.setEnabled(enable);
+    }
+
     hasValidUserInput(recording?: InputValidationRecording): boolean {
         return this.inputOccurrences.hasValidUserInput(recording);
     }
 
-    hasInputElementValidUserInput(_inputElement: Element, _recording?: InputValidationRecording): boolean {
-        throw new Error('Must be implemented by inheritor');
-    }
+    abstract hasInputElementValidUserInput(_inputElement: Element, _recording?: InputValidationRecording): boolean;
 
     onFocus(listener: (event: FocusEvent) => void) {
         this.inputOccurrences.onFocus(listener);
@@ -247,13 +249,9 @@ export class BaseInputTypeNotManagingAdd
         return this.input;
     }
 
-    valueBreaksRequiredContract(_value: Value): boolean {
-        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
-    }
+    abstract valueBreaksRequiredContract(_value: Value): boolean;
 
-    createInputOccurrenceElement(_index: number, _property: Property): Element {
-        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
-    }
+    abstract createInputOccurrenceElement(_index: number, _property: Property);
 
     updateInputOccurrenceElement(_occurrence: Element, _property: Property, _unchangedOnly?: boolean) {
         const formInputEl = ObjectHelper.iFrameSafeInstanceOf(_occurrence, FormInputEl) ? <FormInputEl> _occurrence :
@@ -272,13 +270,11 @@ export class BaseInputTypeNotManagingAdd
         }
     }
 
-    resetInputOccurrenceElement(_occurrence: Element) {
-        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
-    }
+    abstract resetInputOccurrenceElement(_occurrence: Element);
 
-    getValueType(): ValueType {
-        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
-    }
+    abstract setEnabledInputOccurrenceElement(_occurrence: Element, enable: boolean);
+
+    abstract getValueType(): ValueType;
 
     newInitialValue(): Value {
         return this.input ? this.input.getDefaultValue() : null;

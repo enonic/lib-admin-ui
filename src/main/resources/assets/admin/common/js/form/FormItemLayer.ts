@@ -109,6 +109,12 @@ export class FormItemLayer {
         });
     }
 
+    setEnabled(enable: boolean) {
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.setEnabled(enable);
+        });
+    }
+
     setLazyRender(value: boolean) {
         this.lazyRender = value;
     }

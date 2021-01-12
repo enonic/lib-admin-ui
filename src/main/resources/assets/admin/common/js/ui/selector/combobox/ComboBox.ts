@@ -203,21 +203,11 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         this.setupListeners();
     }
 
-    setReadOnly(readOnly: boolean) {
-        super.setReadOnly(readOnly);
-
-        this.input.setReadOnly(readOnly);
-        this.selectedOptionsView.setReadonly(readOnly);
-
-        this.toggleClass('readonly', readOnly);
-    }
-
     giveFocus(): boolean {
         return this.input.giveFocus();
     }
 
     giveInputFocus() {
-        this.input.setReadOnly(false);
         this.input.giveFocus();
 
         if (BrowserHelper.isIE()) { // issue with getting focus in IE
@@ -253,7 +243,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
         this.comboBoxDropdown.renderDropdownGrid();
 
-        this.input.setReadOnly(true);
+        this.comboBoxDropdown.resetActiveSelection();
 
         this.addClass('expanded');
     }
@@ -263,13 +253,15 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     hideDropdown() {
+        if (!this.isDropdownShown()) {
+            return;
+        }
         this.dropdownHandle.up();
         this.comboBoxDropdown.hideDropdown();
         if (this.applySelectionsButton) {
             this.applySelectionsButton.hide();
         }
 
-        this.input.setReadOnly(false);
         this.removeClass('expanded');
         if (this.isDropdownRendered()) {
             this.removeDropdown();
@@ -279,6 +271,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     setOptions(options: Option<OPTION_DISPLAY_VALUE>[], saveSelection?: boolean) {
         this.comboBoxDropdown.setOptions(options, this.isInputEmpty() ? this.noOptionsText : null, this.getSelectedOptions(),
             saveSelection);
+        this.comboBoxDropdown.resetActiveSelection();
 
         this.doUpdateDropdownTopPositionAndWidth();
     }
@@ -560,8 +553,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     setEnabled(enabled: boolean) {
+        super.setEnabled(enabled);
         this.dropdownHandle.setEnabled(enabled);
-        this.input.getEl().setDisabled(!enabled);
+        this.input.setEnabled(enabled);
     }
 
     onOptionSelected(listener: (event: SelectedOptionEvent<OPTION_DISPLAY_VALUE>) => void) {
@@ -715,7 +709,10 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         const win = WindowDOM.get();
 
         const inputEl = this.input.getEl();
-        const parent = restrainToBody(this.getScrollableParent(inputEl));
+        let parent = restrainToBody(this.getScrollableParent(this.input).getEl());
+        if (parent === this.getEl()) {
+            parent = Body.get().getEl();
+        }
 
         let dropdown = this.comboBoxDropdown.getDropdownGrid().getGrid().getEl();
 
@@ -748,12 +745,12 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         } else if (sizeAboveInput > dropdownHeight) {
             position = PositionType.ABOVE;
             height = dropdownHeight;
-        } else if (sizeBelowInput > sizeAboveInput) {
-            position = PositionType.FLEXIBLE_BELOW;
-            height = sizeBelowInput;
-        } else { //sizeBelowInput < sizeAboveInput
+        } else if (sizeBelowInput < sizeAboveInput) {
             position = PositionType.FLEXIBLE_ABOVE;
             height = sizeAboveInput;
+        } else { // (sizeBelowInput > sizeAboveInput)
+            position = PositionType.FLEXIBLE_BELOW;
+            height = sizeBelowInput;
         }
 
         return {position, height};
@@ -773,20 +770,6 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
         dropdown.setTopPx(-dropdown.getHeightWithBorder()).addClass('reverted');
         placeholder.setTopPx(-placeholder.getHeightWithBorder());
-    }
-
-    private getScrollableParent(el: ElementHelper): ElementHelper {
-        let parent = el.getParent();
-
-        if (!parent) {
-            return el;
-        }
-
-        if (parent.isScrollable()) {
-            return parent;
-        }
-
-        return this.getScrollableParent(parent);
     }
 
     private selectExistingOptions(optionIds: string[]) {
@@ -908,7 +891,6 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                 }).catch((reason: any) => {
                     DefaultErrorHandler.handle(reason);
                 }).done();
-                this.input.setReadOnly(false);
             }
         });
 
@@ -967,8 +949,6 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             if (!this.skipAutoDropShowOnValueChange) {
                 this.showDropdown();
             }
-
-            this.input.setReadOnly(false);
         }
     }
 
@@ -977,33 +957,28 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             return;
         }
 
-            if (KeyHelper.isTabKey(event)) { // TAB
-                this.hideDropdown();
-                return;
-            } else if (KeyHelper.isModifierKey(event)) { // CTRL or ALT or SHIFT or MEtA
+        if (KeyHelper.isTabKey(event)) { // TAB
+            this.hideDropdown();
+            return;
+        } else if (KeyHelper.isModifierKey(event)) { // CTRL or ALT or SHIFT or MEtA
+            return;
+        }
+
+        if (!this.isDropdownShown()) {
+            if (KeyHelper.isEscKey(event)) { // Escape
                 return;
             }
 
-            if (!this.isDropdownShown()) {
-                if (KeyHelper.isEscKey(event)) { // Escape
-                    return;
-                }
-
             this.showDropdown();
 
-                if (KeyHelper.isArrowDownKey(event)) { // Down
+            if (KeyHelper.isArrowDownKey(event)) { // Down
 
                 this.onDropdownShownCallback().then(() => {
-
                     this.comboBoxDropdown.navigateToRowIfNotActive();
-                    this.input.setReadOnly(true);
-
                 }).catch((reason: any) => {
                     DefaultErrorHandler.handle(reason);
                 }).done();
 
-            } else {
-                this.input.setReadOnly(false);
             }
             return;
         }
@@ -1012,11 +987,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             if (this.comboBoxDropdown.hasActiveRow()) {
                 if (this.comboBoxDropdown.getActiveRow() === 0) {
                     this.comboBoxDropdown.resetActiveSelection();
-                    this.input.setReadOnly(false);
                     this.input.giveFocus();
                 } else {
                     this.comboBoxDropdown.navigateToPreviousRow();
-                    this.input.setReadOnly(true);
                 }
             }
         } else if (KeyHelper.isArrowLeftKey(event)) { // LEFT
@@ -1029,11 +1002,10 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             } else {
                 this.comboBoxDropdown.navigateToFirstRow();
             }
-            this.input.setReadOnly(true);
         } else if (KeyHelper.isEnterKey(event)) { // ENTER
             this.handleEnterPressed();
         } else if (KeyHelper.isSpace(event)) { // SPACE
-            if (this.input.isReadOnly() && this.applySelectionsButton) {
+            if (this.applySelectionsButton && this.comboBoxDropdown.hasActiveRow()) {
                 if (!this.isSelectedRowReadOnly()) {
                     this.comboBoxDropdown.toggleRowSelection(this.comboBoxDropdown.getActiveRow(), this.maximumSelectionsReached());
                 }
@@ -1042,7 +1014,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                 event.preventDefault();
             }
         } else if (KeyHelper.isBackspace(event)) { // BACKSPACE
-            if (this.input.isReadOnly()) {
+            if (!this.input.isEnabled()) {
                 event.stopPropagation();
                 event.preventDefault();
             }

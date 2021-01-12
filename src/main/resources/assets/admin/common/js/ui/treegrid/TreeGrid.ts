@@ -13,7 +13,6 @@ import {AppHelper} from '../../util/AppHelper';
 import {ResponsiveItem} from '../responsive/ResponsiveItem';
 import {Panel} from '../panel/Panel';
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
-import {Body} from '../../dom/Body';
 import {SpanEl} from '../../dom/SpanEl';
 import {StringHelper} from '../../util/StringHelper';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
@@ -486,8 +485,16 @@ export class TreeGrid<DATA extends IDentifiable>
         this.root.getCurrentRoot().setChildren(this.dataToTreeNodes(dataList, this.root.getCurrentRoot()));
         this.grid.removeCellCssStyles('highlight');
         this.initData(this.root.getCurrentRoot().treeToList());
-        this.invalidate();
-        this.setActive(true);
+        return this.doExpandNode(this.root.getCurrentRoot()).then(() => {
+            if (this.hasHighlightedNode()) {
+                this.highlightCurrentNode();
+            }
+            this.invalidate();
+        }).catch((reason: any) => {
+            this.handleError(reason);
+        }).finally(() => {
+            this.setActive(true);
+        });
     }
 
     resetFilter() {
@@ -686,7 +693,6 @@ export class TreeGrid<DATA extends IDentifiable>
     initData(nodes: TreeNode<DATA>[]) {
         this.gridData.setItems(nodes, this.idPropertyName);
         this.resetCurrentSelection(nodes);
-        this.notifyDataChanged(new DataChangedEvent<DATA>(nodes, DataChangedType.ADDED));
     }
 
     expandNodeByDataId(dataId: string): Q.Promise<boolean> {
@@ -931,12 +937,6 @@ export class TreeGrid<DATA extends IDentifiable>
         this.highlightCurrentNode();
     }
 
-    protected isClickOutsideGridViewport(clickedEl: HTMLElement) {
-        const element = Element.fromHtmlElement(clickedEl);
-
-        return (element.hasClass('grid-canvas tree-grid-toolbar browse-toolbar appbar'));
-    }
-
     protected editItem(_node: TreeNode<DATA>) {
         return;
     }
@@ -1118,14 +1118,6 @@ export class TreeGrid<DATA extends IDentifiable>
                 updateColumnsHandler(item.isRangeSizeChanged());
             }
         });
-
-        Body.get().onClicked((event: MouseEvent) => this.unhighlightRowOnMouseClick(event));
-    }
-
-    private unhighlightRowOnMouseClick(e: Event): void {
-        if (!!this.highlightedDataId && this.isClickOutsideGridViewport(<HTMLElement>e.target)) {
-            this.removeHighlighting();
-        }
     }
 
     private enablePostLoad(builder: TreeGridBuilder<DATA>) {
@@ -1752,6 +1744,7 @@ export class TreeGrid<DATA extends IDentifiable>
         parent.insertChild(nodeToInsert, index);
         parent.setExpandable(true);
         this.invalidateNodes([parent]);
+        this.notifyDataChanged(new DataChangedEvent<DATA>([nodeToInsert], DataChangedType.ADDED));
     }
 
     private getIndexRelativeToParent(parent: TreeNode<DATA>, index: number): number {
@@ -1825,6 +1818,6 @@ export class TreeGrid<DATA extends IDentifiable>
     getDataFromDomEvent(e: DOMEvent): DATA {
         const cell: Slick.Cell = this.grid.getCellFromEvent(e);
 
-        return this.getDataByRow(cell.row);
+        return !!cell ? this.getDataByRow(cell.row) : null;
     }
 }

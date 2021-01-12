@@ -209,18 +209,12 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         this.dropdownList.hideDropdown();
     }
 
-    disable() {
-        this.addClass(Dropdown.readonlyClass);
-        this.input.setReadOnly(true);
-        this.input.getEl().setDisabled(true);
-        this.dropdownHandle.setEnabled(false);
-    }
-
-    enable() {
-        this.removeClass(Dropdown.readonlyClass);
-        this.input.setReadOnly(false);
-        this.input.getEl().setDisabled(false);
-        this.dropdownHandle.setEnabled(true);
+    setEnabled(enable: boolean) {
+        super.setEnabled(enable);
+        this.toggleClass(Dropdown.readonlyClass, !enable);
+        this.input.setEnabled(enable);
+        this.input.getEl().setDisabled(!enable);
+        this.dropdownHandle.setEnabled(enable);
     }
 
     setOptions(options: Option<OPTION_DISPLAY_VALUE>[]) {
@@ -467,7 +461,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
 
         this.input.onClicked(() => {
             this.giveFocus();
-            this.input.setReadOnly(false);
+            this.input.setEnabled(true);
         });
 
         this.input.onKeyDown((event: KeyboardEvent) => {
@@ -482,7 +476,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
 
             if (!this.isDropdownShown()) {
                 if (event.which === 40) { // down
-                    this.input.setReadOnly(true);
+                    this.input.setEnabled(false);
                     this.showDropdown();
                     this.dropdownList.navigateToRowIfNotActive();
                     event.stopPropagation();
@@ -513,7 +507,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     }
 
     private notifyOptionSelected(item: Option<OPTION_DISPLAY_VALUE>, previousItem: Option<OPTION_DISPLAY_VALUE>) {
-        let event = new OptionSelectedEvent<OPTION_DISPLAY_VALUE>(item, previousItem, -1);
+        let event = new OptionSelectedEvent<OPTION_DISPLAY_VALUE>(item, previousItem, this.getOptions().indexOf(item));
         this.optionSelectedListeners.forEach((listener: (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void) => {
             listener(event);
         });
@@ -532,5 +526,17 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         this.expandedListeners.forEach((listener: (event: DropdownExpandedEvent) => void) => {
             listener(event);
         });
+    }
+
+    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
+
+    disable() {
+        console.warn('Dropdown.disable() is deprecated and will be removed in lib-admin-ui 4.0.0');
+        this.setEnabled(false);
+    }
+
+    enable() {
+        console.warn('Dropdown.enable() is deprecated and will be removed in lib-admin-ui 4.0.0');
+        this.setEnabled(true);
     }
 }

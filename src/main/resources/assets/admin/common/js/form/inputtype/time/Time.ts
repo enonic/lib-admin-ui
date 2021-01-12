@@ -57,9 +57,15 @@ export class Time
     }
 
     resetInputOccurrenceElement(occurrence: Element) {
-        let input = <TimePicker> occurrence;
+        const input: TimePicker = <TimePicker> occurrence;
 
         input.resetBase();
+    }
+
+    setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
+        const input: TimePicker = <TimePicker> occurrence;
+
+        input.setEnabled(enable);
     }
 
     availableSizeChanged() {
