@@ -600,6 +600,12 @@ export class TreeGrid<DATA extends IDentifiable>
         return selectedItems;
     }
 
+    setSelectedItems(dataIds: string[]) {
+        this.selection.set(dataIds);
+        this.removeHighlighting(true);
+        this.resetCurrentSelection(this.gridData.getItems());
+    }
+
     protected setSelectionOnClick(type: SelectionOnClickType): void {
         this.selectionOnClick = type;
     }

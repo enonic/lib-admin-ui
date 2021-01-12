@@ -19,6 +19,13 @@ export class TreeGridSelection {
         this.selectionChanged = totalSelected !== this.selectedItems.length;
     }
 
+    set(ids: string[]) {
+        if (ids.length !== this.selectedItems.length || ids.some((id: string) => this.selectedItems.indexOf(id) < 0)) {
+            this.selectedItems = ids.slice();
+            this.selectionChanged = true;
+        }
+    }
+
     reset() {
         if (this.selectedItems.length > 0) {
             this.selectionChanged = true;
