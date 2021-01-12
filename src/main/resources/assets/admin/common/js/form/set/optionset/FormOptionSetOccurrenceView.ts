@@ -31,6 +31,8 @@ export class FormOptionSetOccurrenceView
 
     private toggleContainerMenuAction: Action;
 
+    private originalSingleSelectionDropdownValue: string;
+
     constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView>) {
         super('form-option-set-', config);
 
@@ -52,6 +54,7 @@ export class FormOptionSetOccurrenceView
                 if (!selectedValue) {
                     selectedValue = (<FormOptionSet>this.formSet).getOptions().find(op => op.isDefaultOption())?.getName();
                 }
+                this.originalSingleSelectionDropdownValue = selectedValue;
 
                 if (selectedValue) {
                     // doing this after parent layout to make sure all formItemViews are ready
@@ -78,6 +81,12 @@ export class FormOptionSetOccurrenceView
                 (<FormOptionSetOptionView>view).clean();
             }
         });
+    }
+
+    reset(): void {
+        super.reset();
+        this.originalSingleSelectionDropdownValue = this.singleSelectionDropdown.getValue();
+        this.updateValidationVisibility();
     }
 
     setEnabled(enable: boolean) {
@@ -296,7 +305,6 @@ export class FormOptionSetOccurrenceView
     }
 
     createSingleSelectionCombo(): Dropdown<FormOptionSetOption> {
-        // return new OptionSetOptionsComboBox(<FormOptionSet>this.formSet);
 
         this.singleSelectionDropdown = new Dropdown(this.formSet.getName(), {
             optionDisplayValueViewer: new FormOptionSetOptionViewer(),
@@ -308,23 +316,18 @@ export class FormOptionSetOccurrenceView
                 .setDisplayValue(fop)
                 .build()));
 
-        let selectedProp = this.getSelectedOptionsArray().get(0);
-
         this.singleSelectionDropdown.onOptionSelected((event) => {
-            const option = event.getOption();
+
             const optionIdx = event.getIndex();
             this.getFormItemViews().forEach((view, idx) => view.setVisible(idx === optionIdx));
 
-            if (!selectedProp) {
-                selectedProp = this.getSelectedOptionsArray().set(0, new Value(option.getValue(), new ValueTypeString()));
-            } else {
-                selectedProp.setValue(new Value(option.getValue(), new ValueTypeString()));
-            }
-
             const optionView = <FormOptionSetOptionView>this.getFormItemViews()[event.getIndex()];
             if (optionView) {
+                optionView.setSelected(true);
                 optionView.enableAndExpand();
             }
+
+            this.updateValidationVisibility();
 
             this.refresh();
 
@@ -345,6 +348,14 @@ export class FormOptionSetOccurrenceView
         });
 
         return this.singleSelectionDropdown;
+    }
+
+    private updateValidationVisibility(): void {
+        if (this.isSingleSelection()) {
+            // hide validation for option form that is not equal to original
+            const shouldHide = this.singleSelectionDropdown.getValue() !== this.originalSingleSelectionDropdownValue;
+            this.toggleClass('hide-validation-errors', shouldHide);
+        }
     }
 
     private getToggleContainerMenuItemLabel(expand: boolean) {

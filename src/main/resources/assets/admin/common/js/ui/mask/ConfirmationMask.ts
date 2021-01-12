@@ -5,9 +5,14 @@ import {assertState} from '../../util/Assert';
 import {PEl} from '../../dom/PEl';
 import {DivEl} from '../../dom/DivEl';
 import {ActionButton} from '../button/ActionButton';
+import {Body} from '../../dom/Body';
 
 export class ConfirmationMask
     extends SplashMask {
+
+    private readonly actionsEl: DivEl;
+
+    private tabListener: (event: KeyboardEvent) => boolean;
 
     constructor(builder: ConfirmationMaskBuilder) {
         super(builder.getElement());
@@ -22,17 +27,54 @@ export class ConfirmationMask
             elements.push(questionEl);
         }
 
-        const actionsEl = new DivEl('mask-actions');
-        builder.getActions().forEach(action => actionsEl.appendChild(new ActionButton(action)));
-        elements.push(actionsEl);
+        this.actionsEl = new DivEl('mask-actions');
+        builder.getActions().forEach(action => this.actionsEl.appendChild(new ActionButton(action)));
+        elements.push(this.actionsEl);
 
         this.setContents(...elements);
         this.setHideOnScroll(builder.getHideOnScroll());
         this.setHideOnOutsideClick(builder.getHideOnOutsideClick());
     }
 
+    protected initListeners() {
+        super.initListeners();
+
+        this.tabListener = (event: KeyboardEvent) => {
+            const firstChild = this.actionsEl.getFirstChild();
+            const lastChild = this.actionsEl.getLastChild();
+            if (event.key === 'Tab') {
+                // loop focus
+                if (lastChild?.hasFocus() && !event.shiftKey) {
+                    firstChild.giveFocus();
+                    event.preventDefault();
+                    return true;
+                } else if (firstChild?.hasFocus() && event.shiftKey) {
+                    lastChild.giveFocus();
+                    event.preventDefault();
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+
     public static create(): ConfirmationMaskBuilder {
         return new ConfirmationMaskBuilder();
+    }
+
+    show() {
+        super.show();
+        this.giveFocus();
+        Body.get().onKeyDown(this.tabListener);
+    }
+
+    hide() {
+        super.hide();
+        Body.get().unKeyDown(this.tabListener);
+    }
+
+    giveFocus(): boolean {
+        return this.actionsEl.getFirstChild()?.giveFocus();
     }
 }
 

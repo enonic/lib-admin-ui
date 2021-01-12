@@ -30,6 +30,10 @@ export class FormItemOccurrenceView
         }
     }
 
+    hasHelpText(): boolean {
+        return !!this.helpText;
+    }
+
     getDataPath(): PropertyPath {
         throw new Error('Must be implemented by inheritor');
     }
