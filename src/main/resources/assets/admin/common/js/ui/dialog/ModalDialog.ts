@@ -64,10 +64,6 @@ export abstract class ModalDialog
 
     private elementToFocusOnShow: Element;
 
-    private renderedListenerForLoadMask: () => void;
-
-    private shownListenerForLoadMask: () => void;
-
     private cancelButton: DialogButton;
 
     private tabbable: Element[];
@@ -105,14 +101,6 @@ export abstract class ModalDialog
         this.footer = new DivEl('modal-dialog-footer');
         this.loadMask = new LoadMask(this.body);
         this.state = DialogState.CLOSED;
-        this.renderedListenerForLoadMask = () => {
-            this.loadMask.show();
-            this.unRendered(this.renderedListenerForLoadMask);
-        };
-        this.shownListenerForLoadMask = () => {
-            this.loadMask.show();
-            this.unShown(this.shownListenerForLoadMask);
-        };
         this.listOfClickIgnoredElements = [];
     }
 
@@ -597,22 +585,11 @@ export abstract class ModalDialog
     }
 
     protected showLoadMask() {
-        if (this.isVisible()) {
-            this.loadMask.show();
-        } else {
-            if (this.isRendered()) {
-                this.onShown(this.shownListenerForLoadMask);
-            } else {
-                this.onRendered(this.renderedListenerForLoadMask);
-            }
-        }
-
+        this.whenRendered(() => this.loadMask.show());
     }
 
     protected hideLoadMask() {
         this.loadMask.hide();
-        this.unRendered(this.renderedListenerForLoadMask);
-        this.unShown(this.shownListenerForLoadMask);
     }
 
     isOpen(): boolean {
