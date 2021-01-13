@@ -491,8 +491,10 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
             } else if (event.which === 40) { // down
                 this.dropdownList.navigateToNextRow();
             } else if (event.which === 13) { // enter
-                this.selectRow(this.dropdownList.getActiveRow(), false);
-                this.input.getEl().setValue('');
+                if (this.dropdownList.hasOptions()) {
+                    this.selectRow(this.dropdownList.getActiveRow(), false);
+                    this.input.getEl().setValue('');
+                }
             } else if (event.which === 27) { // esc
                 this.hideDropdown();
             }
