@@ -19,7 +19,7 @@ import {FormOptionSetOption} from './FormOptionSetOption';
 import {Property} from '../../../data/Property';
 import {FormOptionSetOptionViewer} from './FormOptionSetOptionViewer';
 import {Dropdown} from '../../../ui/selector/dropdown/Dropdown';
-import {OptionBuilder} from '../../../ui/selector/Option';
+import {Option, OptionBuilder} from '../../../ui/selector/Option';
 import {Action} from '../../../ui/Action';
 
 export class FormOptionSetOccurrenceView
@@ -314,7 +314,7 @@ export class FormOptionSetOccurrenceView
 
         this.singleSelectionDropdown.setOptions((<FormOptionSet>this.formSet).getOptions()
             .map(fop => new OptionBuilder<FormOptionSetOption>()
-                .setValue(fop.getName())
+                .setValue(fop.getLabel())
                 .setDisplayValue(fop)
                 .build()));
 
