@@ -67,6 +67,10 @@ export class FormItemView
         //to be implemented on demand in inheritors
     }
 
+    isExpandable(): boolean {
+        return false;
+    }
+
     hasNonDefaultValues(): boolean {
         return false; //to be implemented on demand in inheritors
     }

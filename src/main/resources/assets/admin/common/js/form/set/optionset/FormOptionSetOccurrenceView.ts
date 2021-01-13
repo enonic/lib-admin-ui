@@ -42,7 +42,7 @@ export class FormOptionSetOccurrenceView
     layout(validate: boolean = true): Q.Promise<void> {
         this.toggleContainerMenuAction = new Action('')
             .onExecuted(_action => {
-                this.showContainer(!this.isContainerVisible());
+                this.setContainerVisible(!this.isContainerVisible());
             })
             .setEnabled(false);
         return super.layout(validate).then(rendered => {
@@ -60,17 +60,18 @@ export class FormOptionSetOccurrenceView
                     // doing this after parent layout to make sure all formItemViews are ready
                     this.singleSelectionDropdown.setValue(selectedValue);
                 } else {
-                    this.formSetOccurrencesContainer.addClass('empty');
+                    // showing/hiding instead of css to trigger FormSetOccurrences onShow/onHide listeners
+                    this.formSetOccurrencesContainer.hide();
                 }
             }
             return rendered;
         });
     }
 
-    showContainer(show: boolean) {
-        super.showContainer(show);
+    setContainerVisible(visible: boolean) {
+        super.setContainerVisible(visible);
         if (this.isSingleSelection()) {
-            this.toggleContainerMenuAction.setLabel(this.getToggleContainerMenuItemLabel(!show));
+            this.toggleContainerMenuAction.setLabel(this.getToggleContainerMenuItemLabel(!visible));
         }
     }
 
@@ -84,7 +85,9 @@ export class FormOptionSetOccurrenceView
 
     reset(): void {
         super.reset();
-        this.originalSingleSelectionDropdownValue = this.singleSelectionDropdown.getValue();
+        if (this.isSingleSelection()) {
+            this.originalSingleSelectionDropdownValue = this.singleSelectionDropdown.getValue();
+        }
         this.updateValidationVisibility();
     }
 
@@ -249,7 +252,7 @@ export class FormOptionSetOccurrenceView
         this.updateLabel();
 
         if (this.isSingleSelection()) {
-            this.formSetOccurrencesContainer.toggleClass('empty', optionView.getFormItemViews().length === 0);
+            this.formSetOccurrencesContainer.setVisible(optionView.getFormItemViews().length !== 0);
         }
 
         if (!this.currentValidationState) {
@@ -288,6 +291,21 @@ export class FormOptionSetOccurrenceView
         return multi.getMinimum() === 1 && multi.getMaximum() === 1;
     }
 
+    isExpandable(): boolean {
+        if (!this.isSingleSelection()) {
+            return super.isExpandable();
+        } else {
+            const option = this.singleSelectionDropdown?.getSelectedOption();
+            if (!option) {
+                return false;
+            } else {
+                const idx = this.singleSelectionDropdown.getOptions().indexOf(option);
+                const view = <FormOptionSetOptionView>this.formItemViews[idx];
+                return view?.isExpandable();
+            }
+        }
+    }
+
     createSingleSelectionCombo(): Dropdown<FormOptionSetOption> {
 
         this.singleSelectionDropdown = new Dropdown(this.formSet.getName(), {
@@ -316,6 +334,8 @@ export class FormOptionSetOccurrenceView
             this.refresh();
 
             this.handleSelectionChanged(optionView);
+
+            this.notifyOccurrenceChanged();
         });
 
         this.singleSelectionDropdown.onOptionDeselected(option => {

@@ -36,10 +36,12 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
     private occurrenceAddedListeners: { (event: OccurrenceAddedEvent): void }[] = [];
     private occurrenceRenderedListeners: { (event: OccurrenceRenderedEvent): void }[] = [];
     private occurrenceRemovedListeners: { (event: OccurrenceRemovedEvent): void }[] = [];
+    private occurrenceChangedListeners: { (view: FormItemOccurrenceView): void }[] = [];
     private focusListeners: { (event: FocusEvent): void }[] = [];
     private blurListeners: { (event: FocusEvent): void }[] = [];
     private focusListener: (event: FocusEvent) => void;
     private blurListener: (event: FocusEvent) => void;
+    private occurrenceChangedListener: (view: FormItemOccurrenceView) => void;
 
     constructor(config: FormItemOccurrencesConfig) {
         this.formItem = config.formItem;
@@ -49,6 +51,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
 
         this.focusListener = (event: FocusEvent) => this.notifyFocused(event);
         this.blurListener = (event: FocusEvent) => this.notifyBlurred(event);
+        this.occurrenceChangedListener = ((view) => this.notifyOccurrenceChanged(view));
     }
 
     hasHelpText(): boolean {
@@ -93,6 +96,21 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
             this.occurrenceRemovedListeners.filter((currentListener: (event: OccurrenceRemovedEvent) => void) => {
                 return listener !== currentListener;
             });
+    }
+
+    onOccurrenceChanged(listener: (view: FormItemOccurrenceView) => void) {
+        this.occurrenceChangedListeners.push(listener);
+    }
+
+    unOccurrenceChanged(listener: (view: FormItemOccurrenceView) => void) {
+        this.occurrenceChangedListeners =
+            this.occurrenceChangedListeners.filter((currentListener: (event: FormItemOccurrenceView) => void) => {
+                return listener !== currentListener;
+            });
+    }
+
+    private notifyOccurrenceChanged(view: FormItemOccurrenceView): void {
+        this.occurrenceChangedListeners.forEach((listener) => listener(view));
     }
 
     getFormItem(): FormItem {
@@ -210,6 +228,10 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         return this.occurrenceViews.every((currOccurrenceView: V) => currOccurrenceView.isEmpty());
     }
 
+    isExpandable(): boolean {
+        return this.occurrenceViews.some((view) => view.isExpandable());
+    }
+
     getOccurrenceViewElementBefore(index: number): V {
         if (index < 1) {
             return null;
@@ -272,6 +294,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         let occurrenceView: V = this.createNewOccurrenceView(occurrence);
         occurrenceView.onFocus(this.focusListener);
         occurrenceView.onBlur(this.blurListener);
+        occurrenceView.onOccurrenceChanged(this.occurrenceChangedListener);
 
         let insertAtIndex = occurrence.getIndex();
         this.occurrences.splice(insertAtIndex, 0, occurrence);
@@ -315,6 +338,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
 
         occurrenceViewToRemove.unFocus(this.focusListener);
         occurrenceViewToRemove.unBlur(this.blurListener);
+        occurrenceViewToRemove.unOccurrenceChanged(this.occurrenceChangedListener);
 
         occurrenceViewToRemove.remove();
         this.occurrenceViews = this.occurrenceViews.filter((curr: V) => {
