@@ -588,7 +588,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     private expandOccurrenceView(item: FormSetOccurrenceView) {
-        item.showContainer(true);
+        item.setContainerVisible(true);
         const processFormItemView = (formItemView: FormItemView) => {
             if (formItemView instanceof FormSetView) {
                 (<FormSetView<any>>formItemView).expandRecursively();

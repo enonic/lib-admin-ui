@@ -100,7 +100,7 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         const views = this.getOccurrenceViews();
         views.forEach((formSetOccurrenceView: FormSetOccurrenceView) => {
             if (!skipInvalid || formSetOccurrenceView.isValid()) {
-                formSetOccurrenceView.showContainer(show);
+                formSetOccurrenceView.setContainerVisible(show);
             }
         });
     }

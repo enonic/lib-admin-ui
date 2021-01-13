@@ -123,7 +123,7 @@ export abstract class FormSetOccurrenceView
             this.appendChild(headerDiv);
         }
 
-        this.label.onClicked(() => this.showContainer(!this.isContainerVisible()));
+        this.label.onClicked(() => this.setContainerVisible(!this.isContainerVisible()));
         this.initValidationMessageBlock();
 
         this.formSetOccurrencesContainer = new DivEl(this.occurrenceContainerClassName);
@@ -143,7 +143,7 @@ export abstract class FormSetOccurrenceView
                 this.propertySet.onPropertyValueChanged(this.formDataChangedListener);
 
                 if (!this.isExpandable()) {
-                    this.showContainer(false);
+                    this.setContainerVisible(false);
                 }
 
                 this.subscribeOnItemEvents();
@@ -228,20 +228,20 @@ export abstract class FormSetOccurrenceView
         return this.formSetOccurrencesContainer;
     }
 
-    showContainer(show: boolean) {
+    setContainerVisible(visible: boolean) {
         if (!this.isExpandable()) {
             return;
         }
-        this.formSetOccurrencesContainer.setVisible(show);
-        this.toggleClass('collapsed', !show);
-        this.label.setTitle(i18n(show ? 'tooltip.header.collapse' : 'tooltip.header.expand'));
+        this.formSetOccurrencesContainer.setVisible(visible);
+        this.toggleClass('collapsed', !visible);
+        this.label.setTitle(i18n(visible ? 'tooltip.header.collapse' : 'tooltip.header.expand'));
     }
 
     isContainerVisible(): boolean {
         // container may be on, but will be not visible
         // if the whole occurrence is hidden (i.e. single select unselected option)
         // so check the style directly
-        return this.formSetOccurrencesContainer?.getEl().getHTMLElement().style.display !== 'none';
+        return !this.formSetOccurrencesContainer ? false : this.formSetOccurrencesContainer.getEl().getDisplay() !== 'none';
     }
 
     refresh() {
@@ -504,7 +504,7 @@ export abstract class FormSetOccurrenceView
         });
         const removeAction = new Action(i18n('action.delete')).onExecuted(_action => {
             if (this.isDirty() || this.hasNonDefaultValues()) {
-                this.showContainer(true);
+                this.setContainerVisible(true);
                 this.notifyExpandRequested();
                 const label = this.formSet.getLabel();
                 if (label) {

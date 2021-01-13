@@ -42,7 +42,7 @@ export class FormOptionSetOccurrenceView
     layout(validate: boolean = true): Q.Promise<void> {
         this.toggleContainerMenuAction = new Action('')
             .onExecuted(_action => {
-                this.showContainer(!this.isContainerVisible());
+                this.setContainerVisible(!this.isContainerVisible());
             })
             .setEnabled(false);
         return super.layout(validate).then(rendered => {
@@ -68,10 +68,10 @@ export class FormOptionSetOccurrenceView
         });
     }
 
-    showContainer(show: boolean) {
-        super.showContainer(show);
+    setContainerVisible(visible: boolean) {
+        super.setContainerVisible(visible);
         if (this.isSingleSelection()) {
-            this.toggleContainerMenuAction.setLabel(this.getToggleContainerMenuItemLabel(!show));
+            this.toggleContainerMenuAction.setLabel(this.getToggleContainerMenuItemLabel(!visible));
         }
     }
 
