@@ -24,7 +24,7 @@ jobs:
             ${{ runner.os }}-gradle-
       - run: ./gradlew build
 
-      - uses: codecov/codecov-action@v1.0.13
+      - uses: codecov/codecov-action@v1.2.1
 
       ### PUBLISHING STEPS ###
 
