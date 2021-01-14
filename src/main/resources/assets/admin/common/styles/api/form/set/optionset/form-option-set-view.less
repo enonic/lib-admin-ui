@@ -48,7 +48,8 @@
       padding-bottom: 0;
     }
 
-    > .form-occurrence-draggable-label {
+    .form-occurrence-draggable-label {
+      flex: 1;
       font-size: 14px;
       color: @admin-font-gray2;
     }
@@ -58,10 +59,14 @@
       align-items: center;
       padding: 13px;
 
+      > .form-occurrence-draggable-label {
+        padding: 0;
+        margin: 0;
+      }
+
       .drag-control {
         order: unset;
         -webkit-box-ordinal-group: unset;
-        float: none;
         position: static;
       }
 

@@ -19,7 +19,7 @@ import {FormOptionSetOption} from './FormOptionSetOption';
 import {Property} from '../../../data/Property';
 import {FormOptionSetOptionViewer} from './FormOptionSetOptionViewer';
 import {Dropdown} from '../../../ui/selector/dropdown/Dropdown';
-import {Option, OptionBuilder} from '../../../ui/selector/Option';
+import {OptionBuilder} from '../../../ui/selector/Option';
 import {Action} from '../../../ui/Action';
 
 export class FormOptionSetOccurrenceView
@@ -29,7 +29,7 @@ export class FormOptionSetOccurrenceView
 
     private singleSelectionDropdown: Dropdown<FormOptionSetOption>;
 
-    private toggleContainerMenuAction: Action;
+    private resetAction: Action;
 
     private originalSingleSelectionDropdownValue: string;
 
@@ -40,16 +40,14 @@ export class FormOptionSetOccurrenceView
     }
 
     layout(validate: boolean = true): Q.Promise<void> {
-        this.toggleContainerMenuAction = new Action('')
-            .onExecuted(_action => {
-                this.setContainerVisible(!this.isContainerVisible());
-            })
+        this.resetAction = new Action(i18n('action.reset'))
+            .onExecuted(_action => this.singleSelectionDropdown.deselectOptions())
             .setEnabled(false);
         return super.layout(validate).then(rendered => {
             if (this.isSingleSelection()) {
                 this.addClass('single-selection');
-                this.toggleContainerMenuAction.setLabel(this.getToggleContainerMenuItemLabel(false));
-                this.moreButton.prependMenuActions([this.toggleContainerMenuAction]);
+                this.moreButton.prependMenuActions([this.resetAction]);
+
                 let selectedValue = this.getSelectedOptionsArray().get(0)?.getString();
                 if (!selectedValue) {
                     selectedValue = (<FormOptionSet>this.formSet).getOptions().find(op => op.isDefaultOption())?.getName();
@@ -66,13 +64,6 @@ export class FormOptionSetOccurrenceView
             }
             return rendered;
         });
-    }
-
-    setContainerVisible(visible: boolean) {
-        super.setContainerVisible(visible);
-        if (this.isSingleSelection()) {
-            this.toggleContainerMenuAction.setLabel(this.getToggleContainerMenuItemLabel(!visible));
-        }
     }
 
     clean() {
@@ -102,7 +93,7 @@ export class FormOptionSetOccurrenceView
         super.refresh();
         if (this.isSingleSelection()) {
             const selected = this.singleSelectionDropdown.getSelectedOption();
-            this.toggleContainerMenuAction.setEnabled(!!selected && selected.getDisplayValue().getFormItems().length > 0);
+            this.resetAction.setEnabled(!!selected);
         }
     }
 
@@ -314,12 +305,11 @@ export class FormOptionSetOccurrenceView
 
         this.singleSelectionDropdown.setOptions((<FormOptionSet>this.formSet).getOptions()
             .map(fop => new OptionBuilder<FormOptionSetOption>()
-                .setValue(fop.getLabel())
+                .setValue(fop.getName())    // this is the option ID !
                 .setDisplayValue(fop)
                 .build()));
 
         this.singleSelectionDropdown.onOptionSelected((event) => {
-
             const optionIdx = event.getIndex();
             this.getFormItemViews().forEach((view, idx) => view.setVisible(idx === optionIdx));
 
@@ -343,6 +333,7 @@ export class FormOptionSetOccurrenceView
 
             const optionView = <FormOptionSetOptionView>this.getFormItemViews()[idx];
             if (optionView) {
+                optionView.setSelected(false);
                 optionView.disableAndCollapse();
             }
 
@@ -358,9 +349,5 @@ export class FormOptionSetOccurrenceView
             const shouldHide = this.singleSelectionDropdown.getValue() !== this.originalSingleSelectionDropdownValue;
             this.toggleClass('hide-validation-errors', shouldHide);
         }
-    }
-
-    private getToggleContainerMenuItemLabel(expand: boolean) {
-        return expand ? i18n('button.expand') : i18n('button.collapse');
     }
 }
