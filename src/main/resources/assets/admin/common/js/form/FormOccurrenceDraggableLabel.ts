@@ -8,6 +8,7 @@ export class FormOccurrenceDraggableLabel
 
     private readonly title: Text;
     private readonly note: string;
+    private titleText: string;
 
     constructor(label: string, occurrences: Occurrences, note?: string) {
         super('form-occurrence-draggable-label');
@@ -40,6 +41,20 @@ export class FormOccurrenceDraggableLabel
     setText(label: string) {
         this.title.nodeValue = label.trim();
         this.toggleClass('custom-label', this.note !== label);
+    }
+
+    setExpandable(expandable: boolean) {
+        this.toggleClass('expandable', expandable);
+        if (expandable) {
+            super.setTitle(this.titleText);
+        } else {
+            super.setTitle('');
+        }
+    }
+
+    setTitle(title: string): Element {
+        this.titleText = title;
+        return super.setTitle(title);
     }
 
     getText(): string {
