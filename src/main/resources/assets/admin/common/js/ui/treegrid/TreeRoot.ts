@@ -76,6 +76,10 @@ export class TreeRoot<DATA extends IDentifiable> {
         return this.getDefaultRoot().findNode(dataId);
     }
 
+    getNodeByDataIdFromFiltered(dataId: string): TreeNode<DATA> {
+        return this.getFilteredRoot().findNode(dataId);
+    }
+
     getNodesByDataId(dataId: string): TreeNode<DATA>[] {
         const nodesToUpdate: TreeNode<DATA>[] = [];
 

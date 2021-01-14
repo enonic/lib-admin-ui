@@ -1725,8 +1725,30 @@ export class TreeGrid<DATA extends IDentifiable>
         this.grid.selectRow(row, debounce);
     }
 
-    hasNodeWithDataId(dataId: string): boolean {
+    hasItemWithDataId(dataId: string): boolean {
         return !!this.root.getNodeByDataId(dataId);
+    }
+
+    hasItemWithDataIdInDefault(dataId: string): boolean {
+        return !!this.root.getNodeByDataIdFromDefault(dataId);
+    }
+
+    getItemWithDataId(dataId: string): DATA {
+        const node: TreeNode<DATA> = this.root.getNodeByDataId(dataId);
+
+        return !!node ? node.getData() : null;
+    }
+
+    getItemWithDataIdFromDefault(dataId: string): DATA {
+        const node: TreeNode<DATA> = this.root.getNodeByDataIdFromDefault(dataId);
+
+        return !!node ? node.getData() : null;
+    }
+
+    getItemWithDataIdFromFiltered(dataId: string): DATA {
+        const node: TreeNode<DATA> = this.root.getNodeByDataIdFromFiltered(dataId);
+
+        return !!node ? node.getData() : null;
     }
 
     protected insertDataToParentNode(data: DATA, parent: TreeNode<DATA>, index: number) {
