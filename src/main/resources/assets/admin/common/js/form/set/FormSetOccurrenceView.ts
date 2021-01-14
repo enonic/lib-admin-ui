@@ -114,12 +114,28 @@ export abstract class FormSetOccurrenceView
 
         const labelText = this.getFormSet().getLabel();
         this.label = new FormOccurrenceDraggableLabel(this.getLabelText(), this.getFormSet().getOccurrences(), labelText);
-        this.label.setTitle(i18n('tooltip.header.collapse'));
+        if (!this.isExpandable()) {
+            this.label.setTitle(i18n('tooltip.header.collapse'));
+        }
+        this.label.setExpandable(this.isExpandable());
         if (!this.isSingleSelection()) {
             this.appendChildren<Element>(this.moreButton, this.label);
         } else {
+            this.label.hide();
             const headerDiv = new DivEl('single-selection-header');
-            headerDiv.appendChildren<Element>(new DivEl('drag-control'), this.createSingleSelectionCombo(), this.moreButton);
+            const dragControl = new DivEl('drag-control');
+            const dropdown = this.createSingleSelectionCombo();
+            dropdown.onOptionSelected((_event) => {
+                dropdown.hide();
+                dragControl.hide();
+                this.label.show();
+            });
+            dropdown.onOptionDeselected((_event) => {
+                dropdown.show();
+                dragControl.show();
+                this.label.hide();
+            });
+            headerDiv.appendChildren<Element>(dragControl, dropdown, this.label, this.moreButton);
             this.appendChild(headerDiv);
         }
 
@@ -258,6 +274,8 @@ export abstract class FormSetOccurrenceView
                 break;
             }
         });
+
+        this.label.setExpandable(this.isExpandable());
 
         this.refreshViews();
     }
