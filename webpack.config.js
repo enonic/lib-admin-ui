@@ -45,8 +45,16 @@ module.exports = {
                 use: 'file-loader?name=fonts/[name].[ext]'
             },
             {
-                test: /^((?!icomoon|opensans).)*\.(svg|png|jpg|gif)$/,
+                test: /^((?!icomoon|opensans|flag-icon-css).)*\.(svg|png|jpg|gif)$/,
                 use: 'file-loader?name=images/[name].[ext]'
+            },
+            {
+                test: /^.*flag-icon-css.*(flags).*(1x1|4x3).*\.svg$/,
+                loader: 'file-loader',
+                options: {
+                    regExp: /^.*flag-icon-css.*(flags).*(1x1|4x3).*\.svg$/,
+                    name: 'images/[1]/[2]/[name].[ext]',
+                }
             }
         ]
     },
@@ -77,5 +85,11 @@ module.exports = {
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map',
-    performance: { hints: false }
+    performance: {
+        hints: false,
+    },
+    stats: {
+        assets: false,
+        modules: false,
+    }
 };
