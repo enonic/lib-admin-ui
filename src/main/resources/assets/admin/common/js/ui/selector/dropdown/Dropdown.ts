@@ -492,8 +492,13 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
                 this.dropdownList.navigateToNextRow();
             } else if (event.which === 13) { // enter
                 if (this.dropdownList.hasOptions()) {
+                    const selectionBefore: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
                     this.selectRow(this.dropdownList.getActiveRow(), false);
-                    this.input.getEl().setValue('');
+                    const selectionAfter: Option<OPTION_DISPLAY_VALUE>  = this.getSelectedOption();
+                    this.clearInput();
+                    if (selectionBefore === selectionAfter) {
+                        this.hideDropdown();
+                    }
                 }
             } else if (event.which === 27) { // esc
                 this.hideDropdown();
