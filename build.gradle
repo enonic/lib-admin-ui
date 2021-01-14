@@ -58,15 +58,6 @@ task minifyPkg( type: NpmTask, dependsOn: typescriptPkg ) {
     enabled isProd()
 }
 
-task copyFlags( type: Copy ) {
-    description = 'Copy flags'
-    from( 'node_modules/flag-icon-css/flags' ) {
-        include '**/*.svg'
-    }
-    into "$buildDir/resources/main/assets/admin/common/flags"
-    includeEmptyDirs = false
-}
-
 task copyPackage( type: Copy ) {
     from( './' ) {
         include 'package.json'
@@ -80,7 +71,6 @@ task typescript {
     dependsOn 'typescriptLib'
     dependsOn 'minifyPkg'
     dependsOn 'copyPackage'
-    dependsOn 'copyFlags'
 }
 
 jar {

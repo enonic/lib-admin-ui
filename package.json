@@ -18,17 +18,17 @@
     "fix": "tslint -p tsconfig.json -c tslint.json --fix"
   },
   "dependencies": {
-    "@types/mousetrap": "^1.6.5",
-    "@types/slickgrid": "^2.1.30",
-    "fine-uploader": "^5.16.2",
-    "jquery": "^3.5.1",
-    "jquery-simulate": "^1.0.2",
-    "jquery-ui": "^1.12.1",
-    "mousetrap": "^1.6.5",
-    "q": "^1.5.1",
-    "slickgrid": "^2.4.32",
-    "validator": "^13.5.2",
-    "flag-icon-css": "^3.5.0"
+      "@types/mousetrap": "^1.6.5",
+      "@types/slickgrid": "^2.1.30",
+      "fine-uploader": "^5.16.2",
+      "flag-icon-css": "^3.5.0",
+      "jquery": "^3.5.1",
+      "jquery-simulate": "^1.0.2",
+      "jquery-ui": "^1.12.1",
+      "mousetrap": "^1.6.5",
+      "q": "^1.5.1",
+      "slickgrid": "^2.4.32",
+      "validator": "^13.5.2"
   },
   "peerDependencies": {
     "postcss": "^8.2.2"
