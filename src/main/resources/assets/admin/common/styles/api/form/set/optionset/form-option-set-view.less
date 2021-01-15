@@ -59,20 +59,6 @@
       align-items: center;
       padding: 13px;
 
-      &.selected {
-        > .drag-control {
-          display: none;
-        }
-
-        > .@{_COMMON_PREFIX}dropdown {
-          display: none;
-        }
-
-        > .form-occurrence-draggable-label {
-          display: block;
-        }
-      }
-
       > .form-occurrence-draggable-label {
         padding: 0;
         margin: 0;
@@ -96,6 +82,20 @@
 
       .more-button {
         margin-right: -13px;
+      }
+
+      &.selected {
+        > .drag-control {
+          display: none;
+        }
+
+        > .@{_COMMON_PREFIX}dropdown {
+          display: none;
+        }
+
+        > .form-occurrence-draggable-label {
+          display: block;
+        }
       }
     }
 
