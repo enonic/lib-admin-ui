@@ -19,7 +19,7 @@ import {FormOptionSetOption} from './FormOptionSetOption';
 import {Property} from '../../../data/Property';
 import {FormOptionSetOptionViewer} from './FormOptionSetOptionViewer';
 import {Dropdown} from '../../../ui/selector/dropdown/Dropdown';
-import {OptionBuilder} from '../../../ui/selector/Option';
+import {Option, OptionBuilder} from '../../../ui/selector/Option';
 import {Action} from '../../../ui/Action';
 
 export class FormOptionSetOccurrenceView
@@ -300,8 +300,12 @@ export class FormOptionSetOccurrenceView
 
     createSingleSelectionCombo(): Dropdown<FormOptionSetOption> {
 
-        this.singleSelectionDropdown = new Dropdown(this.formSet.getName(), {
+        this.singleSelectionDropdown = new Dropdown<FormOptionSetOption>(this.formSet.getName(), {
             optionDisplayValueViewer: new FormOptionSetOptionViewer(),
+            filter: (item: Option<FormOptionSetOption>, args: any) => {
+                const searchString = args?.searchString;
+                return !searchString || item.getDisplayValue().getLabel()?.toLowerCase().indexOf(searchString.toLowerCase()) >= 0;
+            }
         });
 
         this.singleSelectionDropdown.setOptions((<FormOptionSet>this.formSet).getOptions()
