@@ -90,6 +90,10 @@
           padding: 10px 0 0 13px;
           .ellipsis();
 
+          &:not(.custom-label) {
+            margin-bottom: 5px;
+          }
+
           &.expandable {
             cursor: zoom-out;
           }
@@ -121,7 +125,7 @@
             line-height: 16px;
 
             .drag-control {
-              height: 30px;
+              height: 27px;
             }
 
             p.note {
@@ -129,8 +133,8 @@
               font-size: 10px;
             }
 
-            + .remove-button {
-              line-height: 34px;
+            + .more-button {
+              margin-top: 3px;
             }
           }
         }

@@ -243,7 +243,8 @@ export class FormOptionSetOccurrenceView
         this.updateLabel();
 
         if (this.isSingleSelection()) {
-            this.formSetOccurrencesContainer.setVisible(optionView.getFormItemViews().length !== 0);
+            const selected = this.singleSelectionDropdown.getSelectedOption();
+            this.formSetOccurrencesContainer.setVisible(!!selected && optionView.getFormItemViews().length !== 0);
         }
 
         if (!this.currentValidationState) {
@@ -336,7 +337,6 @@ export class FormOptionSetOccurrenceView
                 optionView.setSelected(false);
                 optionView.disableAndCollapse();
             }
-
             this.handleSelectionChanged(optionView);
         });
 
