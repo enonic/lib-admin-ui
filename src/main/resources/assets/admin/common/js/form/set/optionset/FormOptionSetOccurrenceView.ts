@@ -122,6 +122,9 @@ export class FormOptionSetOccurrenceView
                         this.resolveValidationRecordingPath()).setIncludeChildren(true));
                 }
             });
+
+            (<FormOptionSetOptionView>formItemView).onSelectionChanged(
+                () => this.handleSelectionChanged(<FormOptionSetOptionView>formItemView));
         });
     }
 
