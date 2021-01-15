@@ -59,18 +59,33 @@
       align-items: center;
       padding: 13px;
 
+      &.selected {
+        > .drag-control {
+          display: none;
+        }
+
+        > .@{_COMMON_PREFIX}dropdown {
+          display: none;
+        }
+
+        > .form-occurrence-draggable-label {
+          display: block;
+        }
+      }
+
       > .form-occurrence-draggable-label {
         padding: 0;
         margin: 0;
+        display: none;
       }
 
-      .drag-control {
+      > .drag-control {
         order: unset;
         -webkit-box-ordinal-group: unset;
         position: static;
       }
 
-      .@{_COMMON_PREFIX}dropdown {
+      > .@{_COMMON_PREFIX}dropdown {
         flex: 1;
         max-width: initial;
 
