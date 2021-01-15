@@ -282,6 +282,7 @@ export abstract class FormSetOccurrenceView
 
     public reset() {
         this.dirtyFormItemViewsMap = {};
+        this.updateLabel();
         return this.formItemLayer.reset();
     }
 
