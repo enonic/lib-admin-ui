@@ -121,21 +121,15 @@ export abstract class FormSetOccurrenceView
         if (!this.isSingleSelection()) {
             this.appendChildren<Element>(this.moreButton, this.label);
         } else {
-            this.label.hide();
             const headerDiv = new DivEl('single-selection-header');
-            const dragControl = new DivEl('drag-control');
             const dropdown = this.createSingleSelectionCombo();
             dropdown.onOptionSelected((_event) => {
-                dropdown.hide();
-                dragControl.hide();
-                this.label.show();
+                headerDiv.addClass('selected');
             });
             dropdown.onOptionDeselected((_event) => {
-                dropdown.show();
-                dragControl.show();
-                this.label.hide();
+                headerDiv.removeClass('selected');
             });
-            headerDiv.appendChildren<Element>(dragControl, dropdown, this.label, this.moreButton);
+            headerDiv.appendChildren<Element>(new DivEl('drag-control'), dropdown, this.label, this.moreButton);
             this.appendChild(headerDiv);
         }
 
