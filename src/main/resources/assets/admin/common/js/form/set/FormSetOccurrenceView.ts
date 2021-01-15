@@ -119,7 +119,7 @@ export abstract class FormSetOccurrenceView
         }
         this.label.setExpandable(this.isExpandable());
         if (!this.isSingleSelection()) {
-            this.appendChildren<Element>(this.moreButton, this.label);
+            this.appendChildren<Element>(this.label, this.moreButton);
         } else {
             const headerDiv = new DivEl('single-selection-header');
             const dropdown = this.createSingleSelectionCombo();
