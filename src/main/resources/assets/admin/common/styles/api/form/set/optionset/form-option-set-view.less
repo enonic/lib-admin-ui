@@ -57,11 +57,13 @@
     > .single-selection-header {
       display: flex;
       align-items: center;
-      padding: 13px;
+
+      &:not(.selected) {
+        padding: 13px;
+      }
 
       > .form-occurrence-draggable-label {
-        padding: 0;
-        margin: 0;
+        margin-bottom: 5px;
         display: none;
       }
 
@@ -80,10 +82,6 @@
         }
       }
 
-      .more-button {
-        margin-right: -13px;
-      }
-
       &.selected {
         > .drag-control {
           display: none;
@@ -94,13 +92,13 @@
         }
 
         > .form-occurrence-draggable-label {
+          display: inline-block;
+        }
+
+        + .form-option-set-occurrences-container {
           display: block;
         }
       }
-    }
-
-    & > .remove-button {
-      margin: 2px 0 0 10px;
     }
 
     input[type="radio"]:disabled + label {
