@@ -321,11 +321,8 @@ export class FormOptionSetOccurrenceView
             }
 
             this.updateValidationVisibility();
-
             this.refresh();
-
             this.handleSelectionChanged(optionView);
-
             this.notifyOccurrenceChanged();
         });
 
@@ -337,6 +334,7 @@ export class FormOptionSetOccurrenceView
                 optionView.setSelected(false);
                 optionView.disableAndCollapse();
             }
+            this.refresh();
             this.handleSelectionChanged(optionView);
         });
 
