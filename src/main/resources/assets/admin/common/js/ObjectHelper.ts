@@ -216,6 +216,24 @@ export class ObjectHelper {
         return a.toISOString() === b.toISOString();
     }
 
+    static dateEqualsUpToMinutes(a: Date, b: Date) {
+
+        if (!a && !b) {
+            return true;
+        } else if (!a && b) {
+            return false;
+        } else if (a && !b) {
+            return false;
+        }
+
+        const clonedA = new Date(a.getTime());
+        a.setSeconds(0, 0);
+        const clonedB = new Date(b.getTime());
+        b.setSeconds(0, 0);
+
+        return clonedA.toISOString() === clonedB.toISOString();
+    }
+
     static anyEquals(a: any, b: any) {
 
         if (!a && !b) {
