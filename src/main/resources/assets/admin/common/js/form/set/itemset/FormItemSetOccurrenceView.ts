@@ -5,8 +5,6 @@ import {FormItemView} from '../../FormItemView';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
 import {FormItem} from '../../FormItem';
 import {PropertyArray} from '../../../data/PropertyArray';
-import {Property} from '../../../data/Property';
-import {ValueTypes} from '../../../data/ValueTypes';
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
@@ -39,19 +37,7 @@ export class FormItemSetOccurrenceView
                         this.resolveValidationRecordingPath()).setIncludeChildren(true));
                 }
             });
-
-            if (this.formItemOccurrence.isMultiple()) {
-                formItemView.onBlur(() => this.updateLabel());
-            }
         });
-    }
-
-    protected getFormSet(): FormItemSet {
-        return <FormItemSet>this.formSet;
-    }
-
-    protected getFormItems(): FormItem[] {
-        return this.getFormSet().getFormItems();
     }
 
     protected getLabelText(): string {
@@ -60,6 +46,9 @@ export class FormItemSetOccurrenceView
 
         if (propArrays && propArrays.length > 0) {
             propArrays.some((propArray: PropertyArray) => {
+                if ('_selected' === propArray.getName()) {
+                    return false;   // skip technical _selected array
+                }
                 this.recursiveFetchLabels(propArray, selectedValues, true);
                 return selectedValues.length > 0;
             });
@@ -68,16 +57,11 @@ export class FormItemSetOccurrenceView
         return selectedValues[0] || this.getFormSet().getLabel();
     }
 
-    private recursiveFetchLabels(propArray: PropertyArray, labels: string[], firstOnly?: boolean): void {
-        propArray.forEach((prop: Property) => {
-            if (ValueTypes.STRING.equals(prop.getType()) && prop.getValue().isNotNull()) {
-                labels.push(prop.getString());
-                if (firstOnly) {
-                    return;
-                }
-            } else if (ValueTypes.DATA.equals(prop.getType())) {
-                prop.getPropertySet().getPropertyArrays().forEach(arr => this.recursiveFetchLabels(arr, labels, firstOnly));
-            }
-        });
+    protected getFormSet(): FormItemSet {
+        return <FormItemSet>this.formSet;
+    }
+
+    protected getFormItems(): FormItem[] {
+        return this.getFormSet().getFormItems();
     }
 }
