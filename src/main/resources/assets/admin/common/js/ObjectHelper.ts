@@ -220,9 +220,11 @@ export class ObjectHelper {
 
         if (!a && !b) {
             return true;
-        } else if (!a && b) {
+        }
+        if (!a && b) {
             return false;
-        } else if (a && !b) {
+        }
+        if (a && !b) {
             return false;
         }
 
