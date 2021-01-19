@@ -59,6 +59,10 @@ export class FormOptionSetOption
         return this.formItems;
     }
 
+    toString(): string {
+        return this.label;
+    }
+
     getLabel(): string {
         return this.label;
     }

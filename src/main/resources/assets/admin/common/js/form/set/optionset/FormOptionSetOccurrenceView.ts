@@ -312,11 +312,7 @@ export class FormOptionSetOccurrenceView
     createSingleSelectionCombo(): Dropdown<FormOptionSetOption> {
 
         this.singleSelectionDropdown = new Dropdown<FormOptionSetOption>(this.formSet.getName(), {
-            optionDisplayValueViewer: new FormOptionSetOptionViewer(),
-            filter: (item: Option<FormOptionSetOption>, args: any) => {
-                const searchString = args?.searchString;
-                return !searchString || item.getDisplayValue().getLabel()?.toLowerCase().indexOf(searchString.toLowerCase()) >= 0;
-            }
+            optionDisplayValueViewer: new FormOptionSetOptionViewer()
         });
 
         this.singleSelectionDropdown.setOptions((<FormOptionSet>this.formSet).getOptions()
