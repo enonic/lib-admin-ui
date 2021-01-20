@@ -59,6 +59,7 @@ export class TreeGrid<DATA extends IDentifiable>
     private selectionChangeListeners: Function[] = [];
     private highlightingChangeListeners: Function[] = [];
     private highlightingChangedDebouncedHandler: Function;
+    private selectionChangedDebouncedHandler: Function;
     private dataChangeListeners: { (event: DataChangedEvent<DATA>): void }[] = [];
     private activeChangedListeners: { (active: boolean): void }[] = [];
     private loadBufferSize: number;
@@ -153,6 +154,10 @@ export class TreeGrid<DATA extends IDentifiable>
         this.idPropertyName = builder.getIdPropertyName();
         this.highlightingChangedDebouncedHandler = AppHelper.debounce(() => {
             this.highlightingChangeListeners.forEach((listener: Function) => listener());
+        }, 200);
+
+        this.selectionChangedDebouncedHandler = AppHelper.debounce(() => {
+            this.selectionChangeListeners.forEach((listener: Function) => listener());
         }, 200);
 
         this.initEventListeners(builder);
@@ -844,9 +849,7 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     private triggerSelectionChangedListeners() {
-        this.selectionChangeListeners.forEach((listener: Function) => {
-            listener();
-        });
+        this.selectionChangedDebouncedHandler();
     }
 
     onSelectionChanged(listener: () => void) {
