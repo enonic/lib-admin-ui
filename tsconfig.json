@@ -24,7 +24,8 @@
             "mousetrap",
             "q",
             "slickgrid",
-            "validator"
+            "validator",
+            "dompurify"
         ]
     },
     "include": [
