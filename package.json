@@ -18,8 +18,10 @@
     "fix": "tslint -p tsconfig.json -c tslint.json --fix"
   },
   "dependencies": {
+    "@types/dompurify": "^2.2.1",
     "@types/mousetrap": "^1.6.5",
     "@types/slickgrid": "^2.1.30",
+    "dompurify": "^2.2.6",
     "fine-uploader": "^5.16.2",
     "flag-icon-css": "^3.5.0",
     "jquery": "^3.5.1",
