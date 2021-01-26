@@ -14,34 +14,31 @@ export class PathMatchExpression
     extends FulltextSearchExpression {
 
     static createWithPath(searchString: string, queryFields: QueryFields, path: string): Expression {
+        const fulltextExpr = FulltextSearchExpression.create(searchString, queryFields);
+        const pathExpr = this.createPathMatchExpression(searchString);
+        const nameOrPathExpr: LogicalExpr = new LogicalExpr(fulltextExpr, LogicalOperator.OR, pathExpr);
+        const args: ValueExpr[] = [];
 
-        let fulltextExpr = FulltextSearchExpression.create(searchString, queryFields);
-
-        let pathExpr = this.createPathMatchExpression(searchString);
-
-        let nameOrPathExpr: LogicalExpr = new LogicalExpr(fulltextExpr, LogicalOperator.OR, pathExpr);
-
-        let args = [];
         args.push(ValueExpr.stringValue('_path'));
         args.push(ValueExpr.stringValue('/content' + path));
 
-        let matchedExpr: FunctionExpr = new FunctionExpr('pathMatch', args);
-        let matchedDynamicExpr: DynamicConstraintExpr = new DynamicConstraintExpr(matchedExpr);
+        const matchedExpr: FunctionExpr = new FunctionExpr('pathMatch', args);
+        const matchedDynamicExpr: DynamicConstraintExpr = new DynamicConstraintExpr(matchedExpr);
+        const booleanExpr: LogicalExpr = new LogicalExpr(nameOrPathExpr, LogicalOperator.AND, matchedDynamicExpr);
 
-        let booleanExpr: LogicalExpr = new LogicalExpr(nameOrPathExpr, LogicalOperator.AND, matchedDynamicExpr);
         return booleanExpr;
     }
 
     private static createPathMatchExpression(searchString: string): Expression {
+        const escapedSearchString: string = FulltextSearchExpression.escapeString(searchString);
 
-        let pathExpr = CompareExpr.like(new FieldExpr('_path'),
-            ValueExpr.string(this.createSearchString(searchString)));
+        const pathExpr: CompareExpr = CompareExpr.like(new FieldExpr('_path'),
+            ValueExpr.string(this.createSearchString(escapedSearchString)));
 
         return pathExpr;
     }
 
     private static createSearchString(searchString: string): string {
-
         if (!!searchString && searchString.indexOf('/') === 0) {
             searchString = searchString.slice(1);
         }

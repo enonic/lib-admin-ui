@@ -10,23 +10,28 @@ import {QueryFields} from './QueryFields';
 export class FulltextSearchExpression {
 
     static create(searchString: string, queryFields: QueryFields): Expression {
-
         if (searchString == null) {
             return null;
         }
-        let args: ValueExpr[] = [];
+
+        const args: ValueExpr[] = [];
+        const escapedSearchString: string = FulltextSearchExpression.escapeString(searchString);
 
         args.push(ValueExpr.stringValue(queryFields.toString()));
-        args.push(ValueExpr.stringValue(searchString));
+        args.push(ValueExpr.stringValue(escapedSearchString));
         args.push(ValueExpr.stringValue('AND'));
 
-        let fulltextExp: FunctionExpr = new FunctionExpr('fulltext', args);
-        let fulltextDynamicExpr: DynamicConstraintExpr = new DynamicConstraintExpr(fulltextExp);
+        const fulltextExp: FunctionExpr = new FunctionExpr('fulltext', args);
+        const fulltextDynamicExpr: DynamicConstraintExpr = new DynamicConstraintExpr(fulltextExp);
 
-        let nGramExpr: FunctionExpr = new FunctionExpr('ngram', args);
-        let nGramDynamicExpr: DynamicConstraintExpr = new DynamicConstraintExpr(nGramExpr);
+        const nGramExpr: FunctionExpr = new FunctionExpr('ngram', args);
+        const nGramDynamicExpr: DynamicConstraintExpr = new DynamicConstraintExpr(nGramExpr);
 
         return new LogicalExpr(fulltextDynamicExpr, LogicalOperator.OR, nGramDynamicExpr);
+    }
+
+    static escapeString(value: string): string {
+        return value.replace(/((\&\&)|(\|\|)|[+-=><!(){}\[\]^"~*?:\\/])/g, `\\$1`);
     }
 }
 
