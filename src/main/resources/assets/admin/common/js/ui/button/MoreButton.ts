@@ -1,5 +1,4 @@
 import {Menu} from '../menu/Menu';
-import {MenuItem} from '../menu/MenuItem';
 import {Action} from '../Action';
 import {Button} from './Button';
 import {IEl} from '../../dom/IEl';
@@ -15,6 +14,8 @@ export class MoreButton
     private actionPropertyListener: () => void;
 
     private outsideClickListener: (event: MouseEvent) => void;
+
+    private actionExecutedListener: (action: Action) => void;
 
     private menu: Menu;
 
@@ -32,6 +33,8 @@ export class MoreButton
         this.actionPropertyListener = this.updateActionEnabled.bind(this);
 
         this.outsideClickListener = this.listenOutsideClick.bind(this);
+
+        this.actionExecutedListener = (_action: Action) => this.collapseMenu();
 
         this.menu = new Menu();
         this.menu.setHideOnItemClick(false);
@@ -109,7 +112,10 @@ export class MoreButton
 
         this.updateActionEnabled();
 
-        actions.forEach((action) => action.onPropertyChanged(this.actionPropertyListener));
+        actions.forEach((action) => {
+            action.onPropertyChanged(this.actionPropertyListener);
+            action.onExecuted(this.actionExecutedListener);
+        });
     }
 
     private releaseActions(actions: Action[]) {
@@ -117,7 +123,10 @@ export class MoreButton
 
         this.updateActionEnabled();
 
-        actions.forEach(action => action.unPropertyChanged(this.actionPropertyListener));
+        actions.forEach(action => {
+            action.unPropertyChanged(this.actionPropertyListener);
+            action.unExecuted(this.actionExecutedListener);
+        });
     }
 
     private updateActionEnabled() {
@@ -135,12 +144,6 @@ export class MoreButton
         this.icon.onClicked((_event: MouseEvent) => {
             const flag = !this.isMenuExpanded();
             this.toggleMenu(flag);
-        });
-
-        this.menu.onItemClicked((item: MenuItem) => {
-            if (item.isEnabled()) {
-                this.collapseMenu();
-            }
         });
     }
 }

@@ -22,11 +22,14 @@ import {FormSetOccurrence} from './FormSetOccurrence';
 import {Action} from '../../ui/Action';
 import {MoreButton} from '../../ui/button/MoreButton';
 import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
-import {ElementEvent} from '../../dom/ElementEvent';
 import {Dropdown} from '../../ui/selector/dropdown/Dropdown';
 import {Element} from '../../dom/Element';
 import {KeyBindings} from '../../ui/KeyBindings';
 import {KeyBinding} from '../../ui/KeyBinding';
+import {Property} from '../../data/Property';
+import {ValueTypes} from '../../data/ValueTypes';
+import {PropertyAddedEvent} from '../../data/PropertyAddedEvent';
+import {PropertyRemovedEvent} from '../../data/PropertyRemovedEvent';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
@@ -73,6 +76,8 @@ export abstract class FormSetOccurrenceView
 
     private formDataChangedListener: (event: PropertyValueChangedEvent) => void;
 
+    private formDataAddedOrRemovedListener: (_event: (PropertyAddedEvent | PropertyRemovedEvent)) => void;
+
     private expandRequestedListeners: { (view: FormSetOccurrenceView): void }[] = [];
 
     constructor(classPrefix: string, config: FormSetOccurrenceViewConfig<FormSetOccurrenceView>) {
@@ -88,11 +93,11 @@ export abstract class FormSetOccurrenceView
         this.initFormDataChangeListener();
     }
 
+    protected abstract getLabelText(): string;
+
     hasHelpText(): boolean {
         return super.hasHelpText() || this.getFormItemViews().some((view) => view.hasHelpText());
     }
-
-    protected abstract getLabelText(): string;
 
     isSingleSelection(): boolean {
         return false;
@@ -150,7 +155,7 @@ export abstract class FormSetOccurrenceView
                 if (validate) {
                     this.validate(true);
                 }
-                this.propertySet.onPropertyValueChanged(this.formDataChangedListener);
+                this.bindPropertySet(this.propertySet);
 
                 if (!this.isExpandable()) {
                     this.setContainerVisible(false);
@@ -160,16 +165,7 @@ export abstract class FormSetOccurrenceView
                 this.refresh();
 
             })
-            .catch(DefaultErrorHandler.handle)
-            .then(() => {
-                if (this.formItemOccurrence.isMultiple()) {
-                    this.formSetOccurrencesContainer.onDescendantAdded((event: ElementEvent) => {
-                        if (this.getEl().contains(event.getElement().getHTMLElement())) {
-                            this.updateLabel();
-                        }
-                    });
-                }
-            });
+            .catch(DefaultErrorHandler.handle);
     }
 
     hasNonDefaultValues(): boolean {
@@ -217,9 +213,9 @@ export abstract class FormSetOccurrenceView
         }
         this.ensureSelectionArrayExists(set);
         this.dirtyFormItemViewsMap = {};
-        this.propertySet.unPropertyValueChanged(this.formDataChangedListener);
+        this.releasePropertySet(this.propertySet);
         this.propertySet = set;
-        this.propertySet.onPropertyValueChanged(this.formDataChangedListener);
+        this.bindPropertySet(this.propertySet);
         return this.formItemLayer.update(this.propertySet, unchangedOnly);
     }
 
@@ -431,6 +427,23 @@ export abstract class FormSetOccurrenceView
         return this.propertySet.getPropertyArray('_selected');
     }
 
+    protected recursiveFetchLabels(propArray: PropertyArray, labels: string[], firstOnly?: boolean): void {
+        propArray.some((prop: Property) => {
+            if (ValueTypes.STRING.equals(prop.getType()) && prop.getValue().isNotNull() && prop.getString().length > 0) {
+                labels.push(prop.getString());
+                if (firstOnly) {
+                    return true;
+                }
+            } else if (ValueTypes.DATA.equals(prop.getType())) {
+                return prop.getPropertySet().getPropertyArrays().some(arr => {
+                    this.recursiveFetchLabels(arr, labels, firstOnly);
+                    return firstOnly && labels.length > 0;
+                });
+            }
+            return firstOnly && labels.length > 0;
+        });
+    }
+
     private initConfirmationMask() {
         this.confirmDeleteAction = new Action(i18n('action.delete'))
             .setClass('red large delete-button')
@@ -488,13 +501,28 @@ export abstract class FormSetOccurrenceView
                     currentValue: newValue
                 };
             }
+            this.updateLabel();
         };
+
+        this.formDataAddedOrRemovedListener = (_event: PropertyAddedEvent | PropertyRemovedEvent) => this.updateLabel();
 
         this.onRemoved(() => {
             if (this.propertySet) {
-                this.propertySet.unPropertyValueChanged(this.formDataChangedListener);
+                this.releasePropertySet(this.propertySet);
             }
         });
+    }
+
+    private releasePropertySet(set: PropertySet) {
+        set.unPropertyValueChanged(this.formDataChangedListener);
+        set.unPropertyAdded(this.formDataAddedOrRemovedListener);
+        set.unPropertyRemoved(this.formDataAddedOrRemovedListener);
+    }
+
+    private bindPropertySet(set: PropertySet) {
+        set.onPropertyValueChanged(this.formDataChangedListener);
+        set.onPropertyAdded(this.formDataAddedOrRemovedListener);
+        set.onPropertyRemoved(this.formDataAddedOrRemovedListener);
     }
 
     private isDirty(): boolean {
