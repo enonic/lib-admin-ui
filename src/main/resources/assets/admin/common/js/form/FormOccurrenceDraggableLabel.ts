@@ -33,6 +33,7 @@ export class FormOccurrenceDraggableLabel
 
     setText(label: string) {
         this.title.textContent = label.trim();
+        this.toggleClass('custom-label', this.subTitleText !== label);
     }
 
     setExpandable(expandable: boolean) {
