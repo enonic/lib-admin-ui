@@ -231,6 +231,11 @@ export class Element {
     static fromString(s: string, loadExistingChildren: boolean = true): Element {
         const sanitizedHtml: string = DOMPurify.sanitize(s);
         const htmlEl = $(sanitizedHtml).get(0);
+
+        if (!htmlEl) {
+            return null;
+        }
+
         let parentEl: Element;
 
         if (htmlEl && htmlEl.parentElement) {
