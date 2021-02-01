@@ -430,9 +430,14 @@ export abstract class FormSetOccurrenceView
     protected recursiveFetchLabels(propArray: PropertyArray, labels: string[], firstOnly?: boolean): void {
         propArray.some((prop: Property) => {
             if (ValueTypes.STRING.equals(prop.getType()) && prop.getValue().isNotNull() && prop.getString().length > 0) {
-                labels.push(prop.getString());
-                if (firstOnly) {
-                    return true;
+                const label: string = this.filterLabel(prop.getString());
+
+                if (label.length > 0) {
+                    labels.push(label);
+
+                    if (firstOnly) {
+                        return true;
+                    }
                 }
             } else if (ValueTypes.DATA.equals(prop.getType())) {
                 return prop.getPropertySet().getPropertyArrays().some(arr => {
@@ -442,6 +447,14 @@ export abstract class FormSetOccurrenceView
             }
             return firstOnly && labels.length > 0;
         });
+    }
+
+    private filterLabel(label: string): string {
+        return label
+            .replace(/<\/?[^>]+(>|$)/g, '') // removing tags
+            .replace(/&nbsp;/g, '') // removing spaces
+            .replace(/\s{2,}/g, ' ') // removing spaces
+            .trim();
     }
 
     private initConfirmationMask() {
