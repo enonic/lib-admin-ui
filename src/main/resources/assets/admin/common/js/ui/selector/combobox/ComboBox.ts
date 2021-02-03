@@ -895,6 +895,11 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         });
 
         this.onKeyDown(this.handleKeyDown.bind(this));
+        this.getHTMLElement().onpaste = () => {
+            if (!this.isDropdownShown()) {
+                this.showDropdown();
+            }
+        };
 
         if (this.selectedOptionsView) {
             this.selectedOptionsView.onOptionDeselected(() => this.handleSelectedOptionRemoved());
