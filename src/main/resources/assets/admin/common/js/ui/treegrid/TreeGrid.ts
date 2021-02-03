@@ -511,6 +511,11 @@ export class TreeGrid<DATA extends IDentifiable>
         this.root.setFiltered(true);
         this.root.getCurrentRoot().setChildren(this.dataToTreeNodes(dataList, this.root.getCurrentRoot()));
         this.initData(this.root.getCurrentRoot().treeToList());
+
+        if (this.toolbar && this.toolbar.getSelectionPanelToggler().isActive()) {
+            return Q(null);
+        }
+
         return this.doExpandNode(this.root.getCurrentRoot()).then(() => {
             this.invalidate();
         }).catch((reason: any) => {
