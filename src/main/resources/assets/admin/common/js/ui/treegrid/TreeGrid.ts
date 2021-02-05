@@ -633,6 +633,10 @@ export class TreeGrid<DATA extends IDentifiable>
         this.resetCurrentSelection(this.gridData.getItems());
     }
 
+    getSelectedItems(): string[] {
+        return this.selection.getItems();
+    }
+
     protected setSelectionOnClick(type: SelectionOnClickType): void {
         this.selectionOnClick = type;
     }

@@ -20,7 +20,7 @@ export class BrowseFilterPanel<T>
     extends Panel {
 
     protected filterPanelRefreshNeeded: boolean = false;
-    protected selectionSection: ConstraintSection<T>;
+    protected selectionSection: ConstraintSection;
     private searchStartedListeners: { (): void }[] = [];
     private hideFilterPanelButtonClickedListeners: { (): void }[] = [];
     private showResultsButtonClickedListeners: { (): void }[] = [];
@@ -99,11 +99,11 @@ export class BrowseFilterPanel<T>
         });
     }
 
-    setConstraintItems(constraintSection: ConstraintSection<T>, items: T[]) {
-        if (ObjectHelper.anyArrayEquals(items, constraintSection.getItems())) {
+    setConstraintItems(constraintSection: ConstraintSection, itemsIds: string[]) {
+        if (ObjectHelper.anyArrayEquals(itemsIds, constraintSection.getItemsIds())) {
             return;
         }
-        constraintSection.setItems(items);
+        constraintSection.setItems(itemsIds);
         if (constraintSection.isActive()) {
             this.resetControls();
             this.search();
@@ -112,8 +112,8 @@ export class BrowseFilterPanel<T>
         }
     }
 
-    setSelectedItems(items: T[]) {
-        this.setConstraintItems(this.selectionSection, items);
+    setSelectedItems(itemsIds: string[]) {
+        this.setConstraintItems(this.selectionSection, itemsIds);
     }
 
     hasConstraint() {
@@ -259,12 +259,12 @@ export class BrowseFilterPanel<T>
         this.appendChild(this.selectionSection);
     }
 
-    protected getSelectionItems(): T[] {
-        return this.selectionSection.getItems();
+    protected getSelectionItems(): string[] {
+        return this.selectionSection.getItemsIds();
     }
 
-    protected createConstraintSection(): ConstraintSection<T> {
-        return new ConstraintSection<T>(i18n(
+    protected createConstraintSection(): ConstraintSection {
+        return new ConstraintSection(i18n(
             'panel.filter.selecteditems'), () => this.onCloseFilterInConstrainedMode());
     }
 
@@ -309,11 +309,11 @@ export class BrowseFilterPanel<T>
     }
 }
 
-export class ConstraintSection<T>
+export class ConstraintSection
     extends DivEl {
 
-    protected items: T[];
-    private label: LabelEl;
+    protected itemsIds: string[];
+    private readonly label: LabelEl;
 
     constructor(label: string, closeCallback?: () => void) {
         super('constraint-section');
@@ -329,21 +329,20 @@ export class ConstraintSection<T>
     }
 
     public reset() {
-        this.items = null;
+        this.itemsIds = null;
         this.checkVisibilityState();
     }
 
-    public getItems(): T[] {
-        return this.items;
+    public getItemsIds(): string[] {
+        return this.itemsIds;
     }
 
     public isActive(): boolean {
-        return !!this.items;
+        return !!this.itemsIds;
     }
 
-    public setItems(items: T[]) {
-
-        this.items = items;
+    public setItems(items: string[]) {
+        this.itemsIds = items;
         this.checkVisibilityState();
     }
 
