@@ -69,10 +69,11 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         if (this.isTreeModeEnabled()) {
             this.removeAllOptions();
         }
-        const data = this.dataToTreeNodes(options, this.getRoot().getCurrentRoot());
 
-        this.getRoot().getCurrentRoot().setChildren(data);
-        this.getGrid().getDataView().setItems(data, 'id');
+        const dataItems: TreeNode<Option<OPTION_DISPLAY_VALUE>>[] = this.dataToTreeNodes(options, this.getRoot().getCurrentRoot());
+
+        this.getRoot().getCurrentRoot().setChildren(dataItems);
+        this.getGrid().getDataView().setItems(dataItems, 'id');
     }
 
     addOption(option: Option<OPTION_DISPLAY_VALUE>) {
@@ -83,10 +84,15 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
     }
 
     updateOption(option: Option<OPTION_DISPLAY_VALUE>) {
-        const data = this.dataToTreeNode(option, this.getRoot().getCurrentRoot());
+        const itemToUpdate: TreeNode<Option<OPTION_DISPLAY_VALUE>> = this.getGrid().getDataView().getItems().find(
+            (item: TreeNode<Option<OPTION_DISPLAY_VALUE>>) => {
+                return item.getDataId() === option.getValue();
+            });
 
-        this.getRoot().getCurrentRoot().updateChild(data);
-        this.getGrid().getDataView().updateItem(this.getDataId(option), data);
+        if (itemToUpdate) {
+            itemToUpdate.setData(option);
+            this.getGrid().invalidateRows([this.getGrid().getDataView().getRowById(itemToUpdate.getId())]);
+        }
     }
 
     setReadonlyChecker(checker: (optionToCheck: OPTION_DISPLAY_VALUE) => boolean) {
