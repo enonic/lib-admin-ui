@@ -14,7 +14,6 @@
     .input-glow();
   }
 
-
   > .input-label {
     display: inline-block;
     max-width: calc(100% - 30px);
@@ -30,7 +29,7 @@
         .ellipsis();
       }
 
-      &.required:after{
+      &.required::after {
         content: '\00a0*';
         color: @input-red-text;
       }
