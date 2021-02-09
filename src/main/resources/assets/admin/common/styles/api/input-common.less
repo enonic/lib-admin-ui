@@ -18,19 +18,32 @@
     display: inline-block;
     max-width: calc(100% - 30px);
 
-    .label {
-      display: inline-block;
-      .ellipsis();
-    }
-
-    .required, .wrapper.required, &.required {
+    .@{_COMMON_PREFIX}wrapper {
       display: flex;
+      white-space: nowrap;
       line-height: 20px;
 
-      &:after {
+      .label {
+        display: inline-block;
+        max-width: 100%;
+        .ellipsis();
+      }
+
+      &.required::after {
         content: '\00a0*';
         color: @input-red-text;
       }
+    }
+  }
+
+  > label {
+    display: inline-block;
+    max-width: calc(100% - 30px);
+    .ellipsis();
+
+    &.required::after {
+      content: '\00a0*';
+      color: @input-red-text;
     }
   }
 
