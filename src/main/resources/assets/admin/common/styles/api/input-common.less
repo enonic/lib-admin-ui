@@ -14,7 +14,8 @@
     .input-glow();
   }
 
-  > .input-label {
+  > .input-label,
+    label {
     display: inline-block;
     max-width: calc(100% - 30px);
 
@@ -23,7 +24,9 @@
       .ellipsis();
     }
 
-    .required, .wrapper.required, &.required {
+    .required,
+    .wrapper.required,
+    &.required {
       display: flex;
       line-height: 20px;
 
