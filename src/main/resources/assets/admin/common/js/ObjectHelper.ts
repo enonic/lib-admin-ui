@@ -2,9 +2,6 @@ import {NumberHelper} from './util/NumberHelper';
 import {Equitable} from './Equitable';
 import {ClassHelper} from './ClassHelper';
 
-/**
- * Helps with doing a IFRAME-safe instanceof and doing equals on different types of objects.
- */
 export class ObjectHelper {
 
     /**
@@ -52,8 +49,7 @@ export class ObjectHelper {
         return true;
     }
 
-    static equals(a: Equitable, b: Equitable) {
-
+    static baseEquals(a: any, b: any): boolean {
         if (!a && !b) {
             return true;
         } else if (!a && b) {
@@ -62,40 +58,26 @@ export class ObjectHelper {
             return false;
         }
 
+        return undefined;
+    }
+
+    static equals(a: Equitable, b: Equitable): boolean {
+        const result = ObjectHelper.baseEquals(a, b);
+        if (typeof result === 'boolean') {
+            return result;
+        }
+
         return a.equals(b);
     }
 
-    static arrayEquals(arrayA: Equitable[], arrayB: Equitable[]) {
-
-        if (!arrayA && !arrayB) {
-            return true;
-        } else if (!arrayA && arrayB) {
-            return false;
-        } else if (arrayA && !arrayB) {
-            return false;
-        }
-
-        if (arrayA.length !== arrayB.length) {
-            return false;
-        }
-
-        for (let i = 0; i < arrayA.length; i++) {
-            if (!ObjectHelper.equals(arrayA[i], arrayB[i])) {
-                return false;
-            }
-        }
-
-        return true;
+    static arrayEquals(arrayA: Equitable[], arrayB: Equitable[]): boolean {
+        return ObjectHelper.arrayEquals(arrayA, arrayB);
     }
 
     static anyArrayEquals(arrayA: any[], arrayB: any[]) {
-
-        if (!arrayA && !arrayB) {
-            return true;
-        } else if (!arrayA && arrayB) {
-            return false;
-        } else if (arrayA && !arrayB) {
-            return false;
+        const result = ObjectHelper.baseEquals(arrayA, arrayB);
+        if (typeof result === 'boolean') {
+            return result;
         }
 
         if (arrayA.length !== arrayB.length) {
@@ -112,13 +94,9 @@ export class ObjectHelper {
     }
 
     static objectMapEquals(mapA: { [s: string]: Equitable; }, mapB: { [s: string]: Equitable; }) {
-
-        if (!mapA && !mapB) {
-            return true;
-        } else if (!mapA && mapB) {
-            return false;
-        } else if (mapA && !mapB) {
-            return false;
+        const result = ObjectHelper.baseEquals(mapA, mapB);
+        if (typeof result === 'boolean') {
+            return result;
         }
 
         // Gather keys for both maps
@@ -148,26 +126,18 @@ export class ObjectHelper {
     }
 
     static stringEquals(a: string, b: string) {
-
-        if (!a && !b) {
-            return true;
-        } else if (!a && b) {
-            return false;
-        } else if (a && !b) {
-            return false;
+        const result = ObjectHelper.baseEquals(a, b);
+        if (typeof result === 'boolean') {
+            return result;
         }
 
         return a.toString() === b.toString();
     }
 
     static stringArrayEquals(arrayA: string[], arrayB: string[]) {
-
-        if (!arrayA && !arrayB) {
-            return true;
-        } else if (!arrayA && arrayB) {
-            return false;
-        } else if (arrayA && !arrayB) {
-            return false;
+        const result = ObjectHelper.baseEquals(arrayA, arrayB);
+        if (typeof result === 'boolean') {
+            return result;
         }
 
         if (arrayA.length !== arrayB.length) {
@@ -184,13 +154,9 @@ export class ObjectHelper {
     }
 
     static booleanEquals(a: boolean, b: boolean) {
-
-        if (!a && !b) {
-            return true;
-        } else if (!a && b) {
-            return false;
-        } else if (a && !b) {
-            return false;
+        const result = ObjectHelper.baseEquals(a, b);
+        if (typeof result === 'boolean') {
+            return result;
         }
 
         return a === b;
@@ -204,28 +170,18 @@ export class ObjectHelper {
     }
 
     static dateEquals(a: Date, b: Date) {
-
-        if (!a && !b) {
-            return true;
-        } else if (!a && b) {
-            return false;
-        } else if (a && !b) {
-            return false;
+        const result = ObjectHelper.baseEquals(a, b);
+        if (typeof result === 'boolean') {
+            return result;
         }
 
         return a.toISOString() === b.toISOString();
     }
 
     static dateEqualsUpToMinutes(a: Date, b: Date) {
-
-        if (!a && !b) {
-            return true;
-        }
-        if (!a && b) {
-            return false;
-        }
-        if (a && !b) {
-            return false;
+        const result = ObjectHelper.baseEquals(a, b);
+        if (typeof result === 'boolean') {
+            return result;
         }
 
         const clonedA = new Date(a.getTime());
@@ -237,34 +193,24 @@ export class ObjectHelper {
     }
 
     static anyEquals(a: any, b: any) {
-
-        if (!a && !b) {
-            return true;
-        } else if (!a && b) {
-            return false;
-        } else if (a && !b) {
-            return false;
+        const result = ObjectHelper.baseEquals(a, b);
+        if (typeof result === 'boolean') {
+            return result;
         }
 
-        let aString = JSON.stringify(a);
-        let bString = JSON.stringify(b);
-        return aString === bString;
+        return JSON.stringify(a) === JSON.stringify(b);
     }
 
     static objectEquals(a: Object, b: Object) {
+        const result = ObjectHelper.baseEquals(a, b);
+        if (typeof result === 'boolean') {
+            return result;
+        }
 
-        if (!a && !b) {
-            return true;
-        }
-        if (!a && b) {
-            return false;
-        }
-        if (a && !b) {
-            return false;
-        }
         if (a === b) {
             return true;
         }
+
         if (ClassHelper.getClassName(a) !== ClassHelper.getClassName(b)) {
             return false;
         }
