@@ -74,7 +74,16 @@ export class ObjectHelper {
     }
 
     static arrayEquals(arrayA: Equitable[], arrayB: Equitable[]): boolean {
-        return ObjectHelper.anyArrayEquals(arrayA, arrayB);
+        if (ObjectHelper.bothDefined(arrayA, arrayB)) {
+
+            if (arrayA.length !== arrayB.length) {
+                return false;
+            }
+
+            return arrayA.every((val: any, index: number) => ObjectHelper.equals(val, arrayB[index]));
+        }
+
+        return ObjectHelper.equallyDefined(arrayA, arrayB);
     }
 
     static anyArrayEquals(arrayA: any[], arrayB: any[]): boolean {
@@ -84,32 +93,28 @@ export class ObjectHelper {
                 return false;
             }
 
-            for (let i = 0; i < arrayA.length; i++) {
-                if (!ObjectHelper.objectEquals(arrayA[i], arrayB[i])) {
-                    return false;
-                }
-            }
+            return arrayA.every((val: any, index: number) => ObjectHelper.objectEquals(val, arrayB[index]));
         }
 
         return ObjectHelper.equallyDefined(arrayA, arrayB);
+    }
+
+    private static getObjectProperties(obj: { [s: string]: Equitable; }): string[] {
+        const keys: string[] = [];
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                keys.push(key);
+            }
+        }
+        return keys;
     }
 
     static objectMapEquals(mapA: { [s: string]: Equitable; }, mapB: { [s: string]: Equitable; }): boolean {
         if (ObjectHelper.bothDefined(mapA, mapB)) {
 
             // Gather keys for both maps
-            const keysA: string[] = [];
-            for (const keyA in mapA) {
-                if (mapA.hasOwnProperty(keyA)) {
-                    keysA.push(keyA);
-                }
-            }
-            const keysB: string[] = [];
-            for (const keyB in mapB) {
-                if (mapB.hasOwnProperty(keyB)) {
-                    keysB.push(keyB);
-                }
-            }
+            const keysA = ObjectHelper.getObjectProperties(mapA);
+            const keysB = ObjectHelper.getObjectProperties(mapB);
 
             if (!ObjectHelper.stringArrayEquals(keysA.sort(), keysB.sort())) {
                 return false;
@@ -131,21 +136,7 @@ export class ObjectHelper {
     }
 
     static stringArrayEquals(arrayA: string[], arrayB: string[]): boolean {
-        if (ObjectHelper.bothDefined(arrayA, arrayB)) {
-            if (arrayA.length !== arrayB.length) {
-                return false;
-            }
-
-            for (let i = 0; i < arrayA.length; i++) {
-                if (!ObjectHelper.stringEquals(arrayA[i], arrayB[i])) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        return ObjectHelper.equallyDefined(arrayA, arrayB);
+        return ObjectHelper.anyArrayEquals(arrayA, arrayB);
     }
 
     static booleanEquals(a: boolean, b: boolean): boolean {
@@ -160,7 +151,7 @@ export class ObjectHelper {
             return NumberHelper.isNumber(a) && NumberHelper.isNumber(b) && a === b;
         }
 
-        return NumberHelper.isNumber(a) && NumberHelper.isNumber(b) && a === b;
+        return ObjectHelper.equallyDefined(a, b);
     }
 
     static dateEquals(a: Date, b: Date): boolean {
