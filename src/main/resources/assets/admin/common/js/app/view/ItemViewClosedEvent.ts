@@ -1,15 +1,14 @@
-import {Equitable} from '../../Equitable';
 import {ItemViewPanel} from './ItemViewPanel';
 
-export class ItemViewClosedEvent<M extends Equitable> {
+export class ItemViewClosedEvent {
 
-    private view: ItemViewPanel<M>;
+    private readonly view: ItemViewPanel;
 
-    constructor(view: ItemViewPanel<M>) {
+    constructor(view: ItemViewPanel) {
         this.view = view;
     }
 
-    getView(): ItemViewPanel<M> {
+    getView(): ItemViewPanel {
         return this.view;
     }
 }

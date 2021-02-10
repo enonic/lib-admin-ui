@@ -1,13 +1,11 @@
 import * as Q from 'q';
 import {Action} from '../../Action';
-import {BrowseItem} from '../../../app/browse/BrowseItem';
-import {BrowseItemsChanges} from '../../../app/browse/BrowseItemsChanges';
-import {Equitable} from '../../../Equitable';
+import {IDentifiable} from '../../../IDentifiable';
 
-export interface TreeGridActions<M extends Equitable> {
+export interface TreeGridActions<M extends IDentifiable> {
 
     getAllActions(): Action[];
 
-    updateActionsEnabledState(browseItems: BrowseItem<M>[], changes?: BrowseItemsChanges<any>): Q.Promise<void>;
+    updateActionsEnabledState(browseItems: M[]): Q.Promise<void>;
 
 }

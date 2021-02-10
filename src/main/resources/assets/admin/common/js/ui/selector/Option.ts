@@ -1,4 +1,6 @@
 import {IDentifiable} from '../../IDentifiable';
+import {Equitable} from '../../Equitable';
+import {ObjectHelper} from '../../ObjectHelper';
 
 export class Option<T>
     implements Slick.SlickData, IDentifiable {
@@ -25,6 +27,16 @@ export class Option<T>
         this.empty = !!builder.empty;
         this.selectable = !!builder.selectable;
         this.expandable = !!builder.expandable;
+    }
+
+    equals(o: Equitable): boolean {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, Option)) {
+            return false;
+        }
+
+        const other: Option<T> = <Option<T>>o;
+
+        return this.value === other.value;
     }
 
     setValue(value: string) {

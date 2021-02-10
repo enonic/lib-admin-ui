@@ -7,9 +7,11 @@ import {MixinNames} from '../schema/mixin/MixinNames';
 import {ApplicationJson} from './json/ApplicationJson';
 import {Equitable} from '../Equitable';
 import {ObjectHelper} from '../ObjectHelper';
+import {ViewItem} from '../app/view/ViewItem';
 
 export class Application
-    extends BaseItem {
+    extends BaseItem
+    implements ViewItem {
 
     static STATE_STARTED: string = 'started';
 
@@ -68,6 +70,10 @@ export class Application
         this.minSystemVersion = builder.minSystemVersion;
         this.maxSystemVersion = builder.maxSystemVersion;
         this.iconUrl = builder.iconUrl;
+    }
+
+    getIconClass(): string {
+        throw new Error('Method not implemented.');
     }
 
     static fromJson(json: ApplicationJson): Application {

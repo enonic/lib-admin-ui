@@ -39,7 +39,7 @@ export class FormOccurrenceDraggableLabel
     }
 
     setText(label: string) {
-        this.title.nodeValue = label.trim();
+        this.title.textContent = label.trim();
         this.toggleClass('custom-label', this.note !== label);
     }
 

@@ -1,109 +1,12 @@
 import {Equitable} from '../../Equitable';
-import {ObjectHelper} from '../../ObjectHelper';
+import {IDentifiable} from '../../IDentifiable';
 
-export class ViewItem<M extends Equitable>
-    implements Equitable {
+export interface ViewItem
+    extends Equitable, IDentifiable {
 
-    private model: M;
+    getDisplayName(): string;
 
-    private displayName: string;
+    getIconClass(): string;
 
-    private iconClass: string;
-
-    private path: string;
-
-    private pathName: string;
-
-    private iconUrl: string;
-
-    private iconSize: number;
-
-    private renderable: boolean;
-
-    constructor(model: M) {
-        this.model = model;
-    }
-
-    setDisplayName(value: string): ViewItem<M> {
-        this.displayName = value;
-        return this;
-    }
-
-    setPath(value: string): ViewItem<M> {
-        this.path = value;
-        return this;
-    }
-
-    setPathName(value: string): ViewItem<M> {
-        this.pathName = value;
-        return this;
-    }
-
-    setIconUrl(value: string): ViewItem<M> {
-        this.iconUrl = value;
-        return this;
-    }
-
-    setIconClass(iconClass: string): ViewItem<M> {
-        this.iconClass = iconClass;
-        return this;
-    }
-
-    setIconSize(value: number): ViewItem<M> {
-        this.iconSize = value;
-        return this;
-    }
-
-    setRenderable(value: boolean): ViewItem<M> {
-        this.renderable = value;
-        return this;
-    }
-
-    getModel(): M {
-        return this.model;
-    }
-
-    getDisplayName(): string {
-        return this.displayName;
-    }
-
-    getPath(): string {
-        return this.path;
-    }
-
-    getPathName(): string {
-        return this.pathName;
-    }
-
-    getIconUrl(): string {
-        return this.iconUrl;
-    }
-
-    getIconClass(): string {
-        return this.iconClass;
-    }
-
-    getIconSize(): number {
-        return this.iconSize;
-    }
-
-    isRenderable(): boolean {
-        return this.renderable;
-    }
-
-    equals(o: Equitable): boolean {
-        if (!ObjectHelper.iFrameSafeInstanceOf(o, ViewItem)) {
-            return false;
-        }
-        let other = <ViewItem<M>> o;
-        return this.model.equals(other.getModel()) &&
-               this.displayName === other.getDisplayName() &&
-               this.path === other.getPath() &&
-               this.pathName === other.getPathName() &&
-               this.iconUrl === other.getIconUrl() &&
-               this.iconClass === other.getIconClass() &&
-               this.renderable === other.isRenderable() &&
-               this.iconSize === other.getIconSize();
-
-    }
+    getIconUrl(): string;
 }

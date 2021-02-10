@@ -15,6 +15,7 @@ import {ElementHiddenEvent} from './ElementHiddenEvent';
 import {ElementRegistry} from './ElementRegistry';
 import {assert, assertNotNull, assertState} from '../util/Assert';
 import {ElementEvent} from './ElementEvent';
+import * as DOMPurify from 'dompurify';
 
 export class ElementBuilder {
 
@@ -228,11 +229,19 @@ export class Element {
     }
 
     static fromString(s: string, loadExistingChildren: boolean = true): Element {
-        let htmlEl = $(s).get(0);
-        let parentEl;
+        const sanitizedHtml: string = DOMPurify.sanitize(s);
+        const htmlEl = $(sanitizedHtml).get(0);
+
+        if (!htmlEl) {
+            return null;
+        }
+
+        let parentEl: Element;
+
         if (htmlEl && htmlEl.parentElement) {
             parentEl = Element.fromHtmlElement(htmlEl.parentElement);
         }
+
         return this.fromHtmlElement(htmlEl, loadExistingChildren, parentEl);
     }
 

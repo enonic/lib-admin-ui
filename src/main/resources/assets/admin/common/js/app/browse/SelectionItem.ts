@@ -3,19 +3,19 @@ import {Equitable} from '../../Equitable';
 import {DivEl} from '../../dom/DivEl';
 import {Viewer} from '../../ui/Viewer';
 import {Element} from '../../dom/Element';
-import {BrowseItem} from './BrowseItem';
+import {ViewItem} from '../view/ViewItem';
 
 export class SelectionItem<M extends Equitable>
     extends DivEl {
 
-    protected item: BrowseItem<M>;
+    protected item: ViewItem;
     protected removeEl: DivEl;
     private viewer: Viewer<M>;
     private removeListeners: { (event: MouseEvent): void }[] = [];
 
     private removeTooltip: string;
 
-    constructor(viewer: Viewer<M>, item: BrowseItem<M>) {
+    constructor(viewer: Viewer<M>, item: ViewItem) {
         super('browse-selection-item');
         this.viewer = viewer;
         this.item = item;
@@ -54,14 +54,7 @@ export class SelectionItem<M extends Equitable>
         });
     }
 
-    setBrowseItem(item: BrowseItem<M>) {
-        this.item = item;
-        this.viewer.remove();
-        this.viewer.setObject(item.getModel());
-        this.appendChild(this.viewer);
-    }
-
-    getBrowseItem(): BrowseItem<M> {
+    getBrowseItem(): ViewItem {
         return this.item;
     }
 

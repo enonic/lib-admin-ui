@@ -4,7 +4,7 @@ import {BrowsePanel} from '../BrowsePanel';
 export class ToggleFilterPanelAction
     extends Action {
 
-    constructor(browsePanel: BrowsePanel<any>) {
+    constructor(browsePanel: BrowsePanel) {
         super('');
         this.setIconClass('icon-search');
         this.setEnabled(true);

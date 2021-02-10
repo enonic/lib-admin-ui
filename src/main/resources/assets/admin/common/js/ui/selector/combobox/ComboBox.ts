@@ -285,13 +285,16 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     updateOption(option: Option<OPTION_DISPLAY_VALUE>, newOption: Option<OPTION_DISPLAY_VALUE>) {
-        let selectedOptions = this.getSelectedOptions();
+        const selectedOptions: Option<OPTION_DISPLAY_VALUE>[] = this.getSelectedOptions();
+
         if (selectedOptions.indexOf(option) >= 0) {
             this.selectedOptionsView.updateOption(option, newOption);
             this.comboBoxDropdown.markSelections(selectedOptions);
         }
 
-        this.comboBoxDropdown.updateOption(newOption);
+        if (this.comboBoxDropdown.getOptionByValue(option.getValue())) {
+            this.comboBoxDropdown.updateOption(newOption);
+        }
     }
 
     setIgnoreNextFocus(value: boolean): ComboBox<OPTION_DISPLAY_VALUE> {
@@ -895,6 +898,11 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         });
 
         this.onKeyDown(this.handleKeyDown.bind(this));
+        this.getHTMLElement().onpaste = () => {
+            if (!this.isDropdownShown()) {
+                this.showDropdown();
+            }
+        };
 
         if (this.selectedOptionsView) {
             this.selectedOptionsView.onOptionDeselected(() => this.handleSelectedOptionRemoved());
