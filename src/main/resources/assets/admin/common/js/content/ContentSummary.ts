@@ -339,13 +339,13 @@ export class ContentSummary {
         if (!ObjectHelper.dateEquals(this.modifiedTime, other.getModifiedTime())) {
             return false;
         }
-        if (!ObjectHelper.dateEquals(this.publishFromTime, other.getPublishFromTime())) {
+        if (!ObjectHelper.dateEqualsUpToMinutes(this.publishFromTime, other.getPublishFromTime())) {
             return false;
         }
-        if (!ObjectHelper.dateEquals(this.publishToTime, other.getPublishToTime())) {
+        if (!ObjectHelper.dateEqualsUpToMinutes(this.publishToTime, other.getPublishToTime())) {
             return false;
         }
-        if (!ObjectHelper.dateEquals(this.publishFirstTime, other.getPublishFirstTime())) {
+        if (!ObjectHelper.dateEqualsUpToMinutes(this.publishFirstTime, other.getPublishFirstTime())) {
             return false;
         }
         if (!ObjectHelper.booleanEquals(this.deletable, other.isDeletable())) {

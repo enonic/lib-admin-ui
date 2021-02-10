@@ -2,9 +2,6 @@ import {NumberHelper} from './util/NumberHelper';
 import {Equitable} from './Equitable';
 import {ClassHelper} from './ClassHelper';
 
-/**
- * Helps with doing a IFRAME-safe instanceof and doing equals on different types of objects.
- */
 export class ObjectHelper {
 
     /**
@@ -52,215 +49,159 @@ export class ObjectHelper {
         return true;
     }
 
-    static equals(a: Equitable, b: Equitable) {
-
-        if (!a && !b) {
-            return true;
-        } else if (!a && b) {
-            return false;
-        } else if (a && !b) {
-            return false;
-        }
-
-        return a.equals(b);
+    static isDefined(val: any): boolean {
+        return val !== undefined && val !== null;
     }
 
-    static arrayEquals(arrayA: Equitable[], arrayB: Equitable[]) {
+    static bothDefined(val1: any, val2: any): boolean {
+        return ObjectHelper.isDefined(val1) && ObjectHelper.isDefined(val2);
+    }
 
-        if (!arrayA && !arrayB) {
+    static noneDefined(val1: any, val2: any): boolean {
+        return !ObjectHelper.isDefined(val1) && !ObjectHelper.isDefined(val2);
+    }
+
+    static equallyDefined(a: any, b: any): boolean {
+        if (ObjectHelper.noneDefined(a, b) || ObjectHelper.bothDefined(a, b)) {
             return true;
-        } else if (!arrayA && arrayB) {
-            return false;
-        } else if (arrayA && !arrayB) {
-            return false;
         }
 
-        if (arrayA.length !== arrayB.length) {
-            return false;
-        }
+        return false;
+    }
 
-        for (let i = 0; i < arrayA.length; i++) {
-            if (!ObjectHelper.equals(arrayA[i], arrayB[i])) {
+    static equals(a: Equitable, b: Equitable): boolean {
+        return ObjectHelper.bothDefined(a, b) ? a.equals(b) : ObjectHelper.equallyDefined(a, b);
+    }
+
+    static arrayEquals(arrayA: Equitable[], arrayB: Equitable[]): boolean {
+        if (ObjectHelper.bothDefined(arrayA, arrayB)) {
+
+            if (arrayA.length !== arrayB.length) {
                 return false;
             }
+
+            return arrayA.every((val: any, index: number) => ObjectHelper.equals(val, arrayB[index]));
         }
 
-        return true;
+        return ObjectHelper.equallyDefined(arrayA, arrayB);
     }
 
-    static anyArrayEquals(arrayA: any[], arrayB: any[]) {
+    static anyArrayEquals(arrayA: any[], arrayB: any[]): boolean {
+        if (ObjectHelper.bothDefined(arrayA, arrayB)) {
 
-        if (!arrayA && !arrayB) {
-            return true;
-        } else if (!arrayA && arrayB) {
-            return false;
-        } else if (arrayA && !arrayB) {
-            return false;
-        }
-
-        if (arrayA.length !== arrayB.length) {
-            return false;
-        }
-
-        for (let i = 0; i < arrayA.length; i++) {
-            if (!ObjectHelper.objectEquals(arrayA[i], arrayB[i])) {
+            if (arrayA.length !== arrayB.length) {
                 return false;
             }
+
+            return arrayA.every((val: any, index: number) => ObjectHelper.objectEquals(val, arrayB[index]));
         }
 
-        return true;
+        return ObjectHelper.equallyDefined(arrayA, arrayB);
     }
 
-    static objectMapEquals(mapA: { [s: string]: Equitable; }, mapB: { [s: string]: Equitable; }) {
-
-        if (!mapA && !mapB) {
-            return true;
-        } else if (!mapA && mapB) {
-            return false;
-        } else if (mapA && !mapB) {
-            return false;
-        }
-
-        // Gather keys for both maps
-        const keysA: string[] = [];
-        for (const keyA  in mapA) {
-            if (mapA.hasOwnProperty(keyA)) {
-                keysA.push(keyA);
+    private static getObjectProperties(obj: { [s: string]: Equitable; }): string[] {
+        const keys: string[] = [];
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                keys.push(key);
             }
         }
-        const keysB: string[] = [];
-        for (const keyB  in mapB) {
-            if (mapB.hasOwnProperty(keyB)) {
-                keysB.push(keyB);
-            }
-        }
-
-        if (!ObjectHelper.stringArrayEquals(keysA.sort(), keysB.sort())) {
-            return false;
-        }
-
-        return keysA.every((curKeyA: string) => {
-            const valueA: Equitable = mapA[curKeyA];
-            const valueB: Equitable = mapB[curKeyA];
-
-            return ObjectHelper.equals(valueA, valueB);
-        });
+        return keys;
     }
 
-    static stringEquals(a: string, b: string) {
+    static objectMapEquals(mapA: { [s: string]: Equitable; }, mapB: { [s: string]: Equitable; }): boolean {
+        if (ObjectHelper.bothDefined(mapA, mapB)) {
 
-        if (!a && !b) {
-            return true;
-        } else if (!a && b) {
-            return false;
-        } else if (a && !b) {
-            return false;
-        }
+            // Gather keys for both maps
+            const keysA = ObjectHelper.getObjectProperties(mapA);
+            const keysB = ObjectHelper.getObjectProperties(mapB);
 
-        return a.toString() === b.toString();
-    }
-
-    static stringArrayEquals(arrayA: string[], arrayB: string[]) {
-
-        if (!arrayA && !arrayB) {
-            return true;
-        } else if (!arrayA && arrayB) {
-            return false;
-        } else if (arrayA && !arrayB) {
-            return false;
-        }
-
-        if (arrayA.length !== arrayB.length) {
-            return false;
-        }
-
-        for (let i = 0; i < arrayA.length; i++) {
-            if (!ObjectHelper.stringEquals(arrayA[i], arrayB[i])) {
+            if (!ObjectHelper.stringArrayEquals(keysA.sort(), keysB.sort())) {
                 return false;
             }
+
+            return keysA.every((curKeyA: string) => {
+                const valueA: Equitable = mapA[curKeyA];
+                const valueB: Equitable = mapB[curKeyA];
+
+                return ObjectHelper.equals(valueA, valueB);
+            });
         }
 
-        return true;
+        return ObjectHelper.equallyDefined(mapA, mapB);
     }
 
-    static booleanEquals(a: boolean, b: boolean) {
+    static stringEquals(a: string, b: string): boolean {
+        return ObjectHelper.bothDefined(a, b) ? a.toString() === b.toString() : ObjectHelper.equallyDefined(a, b);
+    }
 
-        if (!a && !b) {
-            return true;
-        } else if (!a && b) {
-            return false;
-        } else if (a && !b) {
-            return false;
-        }
+    static stringArrayEquals(arrayA: string[], arrayB: string[]): boolean {
+        return ObjectHelper.anyArrayEquals(arrayA, arrayB);
+    }
 
-        return a === b;
+    static booleanEquals(a: boolean, b: boolean): boolean {
+        return ObjectHelper.bothDefined(a, b) ? a === b : ObjectHelper.equallyDefined(a, b);
     }
 
     /*
      * Keep in mind that !0 is true as well as !null
      */
-    static numberEquals(a: number, b: number) {
-        return NumberHelper.isNumber(a) && NumberHelper.isNumber(b) && a === b;
+    static numberEquals(a: number, b: number): boolean {
+        if (ObjectHelper.bothDefined(a, b)) {
+            return NumberHelper.isNumber(a) && NumberHelper.isNumber(b) && a === b;
+        }
+
+        return ObjectHelper.equallyDefined(a, b);
     }
 
-    static dateEquals(a: Date, b: Date) {
-
-        if (!a && !b) {
-            return true;
-        } else if (!a && b) {
-            return false;
-        } else if (a && !b) {
-            return false;
-        }
-
-        return a.toISOString() === b.toISOString();
+    static dateEquals(a: Date, b: Date): boolean {
+        return ObjectHelper.bothDefined(a, b) ? a.toISOString() === b.toISOString() : ObjectHelper.equallyDefined(a, b);
     }
 
-    static anyEquals(a: any, b: any) {
+    static dateEqualsUpToMinutes(a: Date, b: Date): boolean {
+        if (ObjectHelper.bothDefined(a, b)) {
 
-        if (!a && !b) {
-            return true;
-        } else if (!a && b) {
-            return false;
-        } else if (a && !b) {
-            return false;
+            const clonedA = new Date(a.getTime());
+            a.setSeconds(0, 0);
+            const clonedB = new Date(b.getTime());
+            b.setSeconds(0, 0);
+
+
+            return ObjectHelper.dateEquals(clonedA, clonedB);
         }
 
-        let aString = JSON.stringify(a);
-        let bString = JSON.stringify(b);
-        return aString === bString;
+        return ObjectHelper.equallyDefined(a, b);
     }
 
-    static objectEquals(a: Object, b: Object) {
+    static anyEquals(a: any, b: any): boolean {
+        return ObjectHelper.bothDefined(a, b) ? JSON.stringify(a) === JSON.stringify(b) : ObjectHelper.equallyDefined(a, b);
+    }
 
-        if (!a && !b) {
-            return true;
-        }
-        if (!a && b) {
-            return false;
-        }
-        if (a && !b) {
-            return false;
-        }
-        if (a === b) {
-            return true;
-        }
-        if (ClassHelper.getClassName(a) !== ClassHelper.getClassName(b)) {
-            return false;
+    static objectEquals(a: Object, b: Object): boolean {
+        if (ObjectHelper.bothDefined(a, b)) {
+
+            if (a === b) {
+                return true;
+            }
+
+            if (ClassHelper.getClassName(a) !== ClassHelper.getClassName(b)) {
+                return false;
+            }
+
+            /*
+             To avoid exception, when converting circular structure to JSON in Chrome the replacer
+             function must be used to replace references to the same object with `undefined`.
+             */
+            let aString = JSON.stringify(a, (key, value) => {
+                return (!!key && a === value) ? undefined : value;
+            });
+            let bString = JSON.stringify(b, (key, value) => {
+                return (!!key && b === value) ? undefined : value;
+            });
+            return aString === bString;
         }
 
-        /*
-         To avoid exception, when converting circular structure to JSON in Chrome the replacer
-         function must be used to replace references to the same object with `undefined`.
-         */
-        let aString = JSON.stringify(a, (key, value) => {
-            return (!!key && a === value) ? undefined : value;
-        });
-        let bString = JSON.stringify(b, (key, value) => {
-            return (!!key && b === value) ? undefined : value;
-        });
-        return aString === bString;
-
+        return ObjectHelper.equallyDefined(a, b);
     }
 
     static objectPropertyIterator(object: any, callback: { (name: string, property: any, index?: number): void; }) {
@@ -274,7 +215,7 @@ export class ObjectHelper {
         }
     }
 
-    static propertyExists(object: Object, key: string) {
+    static propertyExists(object: Object, key: string): boolean {
         return !!object && object.hasOwnProperty(key) && !!object[key];
     }
 }
