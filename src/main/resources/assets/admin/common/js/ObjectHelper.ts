@@ -52,9 +52,7 @@ export class ObjectHelper {
     static baseEquals(a: any, b: any): boolean {
         if (!a && !b) {
             return true;
-        } else if (!a && b) {
-            return false;
-        } else if (a && !b) {
+        } else if (!a || !b) {
             return false;
         }
 
