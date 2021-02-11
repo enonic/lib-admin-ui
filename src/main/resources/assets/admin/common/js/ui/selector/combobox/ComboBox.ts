@@ -646,6 +646,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
     protected doGetValue(): string {
         if (this.selectedOptionsView) {
+            if (!this.getSelectedOptions().length) {
+                return null;
+            }
             return this.getSelectedOptions().map((item: Option<OPTION_DISPLAY_VALUE>) => item.getValue()).join(ComboBox.VALUE_SEPARATOR);
         } else {
             throw new Error('Not supported yet');

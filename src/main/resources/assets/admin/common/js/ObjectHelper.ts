@@ -162,10 +162,9 @@ export class ObjectHelper {
         if (ObjectHelper.bothDefined(a, b)) {
 
             const clonedA = new Date(a.getTime());
-            a.setSeconds(0, 0);
+            clonedA.setSeconds(0, 0);
             const clonedB = new Date(b.getTime());
-            b.setSeconds(0, 0);
-
+            clonedB.setSeconds(0, 0);
 
             return ObjectHelper.dateEquals(clonedA, clonedB);
         }
