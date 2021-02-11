@@ -78,7 +78,7 @@ export abstract class UserItemBuilder {
 
     fromJson(json: UserItemJson): UserItemBuilder {
         this.displayName = json.displayName;
-        this.description = json.description;
+        this.description = json.description || '';
         return this;
     }
 
