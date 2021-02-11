@@ -513,6 +513,7 @@ export class TreeGrid<DATA extends IDentifiable>
         this.initData(this.root.getCurrentRoot().treeToList());
 
         if (this.toolbar?.getSelectionPanelToggler().isActive()) {
+            this.setActive(true);
             return Q(null);
         }
 
