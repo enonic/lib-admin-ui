@@ -12,11 +12,15 @@
   }
 
   .wizard-step-navigator {
+    display: flex;
 
-    .tab-bar-item.step-icon {
+    .tab-bar-item {
+      white-space: nowrap;
 
-      .label {
-        display: none;
+      &.step-icon {
+        .label {
+          display: none;
+        }
       }
     }
   }
@@ -28,28 +32,32 @@
       display: inline-flex;
     }
 
-    .wizard-step-navigator .tab-bar-item {
+    .wizard-step-navigator {
+      display: block;
 
-      .label {
-        font-size: 14px;
-      }
-
-      .tab-item-index {
-        padding-left: 0;
-      }
-
-      &.step-icon {
-
-        &:not(.active) {
-          color: inherit;
-        }
+      .tab-bar-item {
 
         .label {
-          display: inline-block;
+          font-size: 14px;
         }
 
-        &:before {
-          display: none;
+        .tab-item-index {
+          padding-left: 0;
+        }
+
+        &.step-icon {
+
+          &:not(.active) {
+            color: inherit;
+          }
+
+          .label {
+            display: inline-block;
+          }
+
+          &:before {
+            display: none;
+          }
         }
       }
     }
