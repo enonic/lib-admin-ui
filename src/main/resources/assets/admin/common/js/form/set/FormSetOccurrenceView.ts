@@ -95,6 +95,8 @@ export abstract class FormSetOccurrenceView
 
     protected abstract getLabelText(): string;
 
+    protected abstract getLabelSubTitle(): string;
+
     hasHelpText(): boolean {
         return super.hasHelpText() || this.getFormItemViews().some((view) => view.hasHelpText());
     }
@@ -117,8 +119,7 @@ export abstract class FormSetOccurrenceView
 
         this.moreButton = this.createMoreButton();
 
-        const labelText = this.getFormSet().getLabel();
-        this.label = new FormOccurrenceDraggableLabel(this.getLabelText(), this.getFormSet().getOccurrences(), labelText);
+        this.label = new FormOccurrenceDraggableLabel(this.getLabelText(), this.getFormSet().getOccurrences(), this.getLabelSubTitle());
         if (!this.isExpandable()) {
             this.label.setTitle(i18n('tooltip.header.collapse'));
         }
@@ -387,6 +388,7 @@ export abstract class FormSetOccurrenceView
 
     protected updateLabel() {
         this.label.setText(this.getLabelText());
+        this.label.setSubTitle(this.getLabelSubTitle());
     }
 
     protected initValidationMessageBlock() {

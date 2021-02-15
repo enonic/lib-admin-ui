@@ -19,7 +19,7 @@ import {FormOptionSetOption} from './FormOptionSetOption';
 import {Property} from '../../../data/Property';
 import {FormOptionSetOptionViewer} from './FormOptionSetOptionViewer';
 import {Dropdown} from '../../../ui/selector/dropdown/Dropdown';
-import {Option, OptionBuilder} from '../../../ui/selector/Option';
+import {OptionBuilder} from '../../../ui/selector/Option';
 import {Action} from '../../../ui/Action';
 
 export class FormOptionSetOccurrenceView
@@ -153,7 +153,7 @@ export class FormOptionSetOccurrenceView
         return this.getFormSet().getFormItems();
     }
 
-    protected getLabelText(): string {
+    protected getLabelSubTitle(): string {
         const selectionArray = this.getSelectedOptionsArray();
         let selectedLabels: string[] = [];
 
@@ -163,24 +163,28 @@ export class FormOptionSetOccurrenceView
             if (selectedOptionArray && !selectedOptionArray.isEmpty()) {
                 this.recursiveFetchLabels(selectedOptionArray, selectedLabels, true);
             }
-
-            if (selectedLabels.length === 0) {
-                // then make up labels from selected option(s) themselves
-                const nameLabelMap = new Map<string, any>(
-                    this.getFormItems()
-                        .filter((formItem: FormItem) => formItem instanceof FormOptionSetOption)
-                        .map((formItem: FormOptionSetOption, index: number) => {
-                            return [formItem.getName(), {label: formItem.getLabel(), index: index}] as [string, any];
-                        })
-                );
-
-                selectedLabels = selectionArray.getProperties()
-                    .sort((one: Property, two: Property) => {
-                        return nameLabelMap.get(one.getString()).index - nameLabelMap.get(two.getString()).index;
-                    })
-                    .map((selectedProp: Property) => nameLabelMap.get(selectedProp.getString()).label);
-            }
         }
+
+        return selectedLabels.length ? selectedLabels.join(', ') : '';
+    }
+
+    protected getLabelText(): string {
+        const selectionArray = this.getSelectedOptionsArray();
+
+        // make up labels from selected option(s) themselves
+        const nameLabelMap = new Map<string, any>(
+            this.getFormItems()
+                .filter((formItem: FormItem) => formItem instanceof FormOptionSetOption)
+                .map((formItem: FormOptionSetOption, index: number) => {
+                    return [formItem.getName(), {label: formItem.getLabel(), index: index}] as [string, any];
+                })
+        );
+
+        let selectedLabels = selectionArray.getProperties()
+            .sort((one: Property, two: Property) => {
+                return nameLabelMap.get(one.getString()).index - nameLabelMap.get(two.getString()).index;
+            })
+            .map((selectedProp: Property) => nameLabelMap.get(selectedProp.getString()).label);
 
         return selectedLabels.length ? selectedLabels.join(', ') : this.getFormSet().getLabel();
     }
