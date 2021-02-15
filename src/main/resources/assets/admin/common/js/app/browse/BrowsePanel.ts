@@ -124,16 +124,7 @@ export class BrowsePanel
     }
 
     private handleDataChanged(event: DataChangedEvent<ViewItem>) {
-        if (event.getType() === DataChangedType.UPDATED && this.browseItemPanel.hasStatisticsItem()) {
-            const previewItemId: string = this.browseItemPanel.getStatisticsItem().getId();
-            const updatedPreviewData: ViewItem = event.getItems().find((item: IDentifiable) => item.getId() === previewItemId);
-
-            if (updatedPreviewData) {
-                this.getBrowseItemPanel().togglePreviewForItem(updatedPreviewData);
-            }
-        }
-
-        this.updateBrowseActions();
+        this.updateActionsAndPreview();
     }
 
     doRender(): Q.Promise<boolean> {
