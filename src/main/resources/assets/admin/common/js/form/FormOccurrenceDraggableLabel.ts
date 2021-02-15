@@ -1,16 +1,19 @@
 import {DivEl} from '../dom/DivEl';
-import {Element, NewElementBuilder} from '../dom/Element';
+import {Element} from '../dom/Element';
 import {SpanEl} from '../dom/SpanEl';
 import {Occurrences} from './Occurrences';
+import {StringHelper} from '../util/StringHelper';
+import {PEl} from '../dom/PEl';
 
 export class FormOccurrenceDraggableLabel
     extends DivEl {
 
     private readonly title: Text;
-    private readonly note: string;
+    private readonly subTitle: PEl;
     private titleText: string;
+    private subTitleText: string;
 
-    constructor(label: string, occurrences: Occurrences, note?: string) {
+    constructor(label: string, occurrences: Occurrences, subTitle?: string) {
         super('form-occurrence-draggable-label');
 
         let nodes: Node[] = [];
@@ -22,25 +25,21 @@ export class FormOccurrenceDraggableLabel
         nodes.push(this.title);
 
         if (occurrences.required()) {
-            nodes.push(document.createTextNode(' '));
             const requiredMarker = new SpanEl('required');
             nodes.push(requiredMarker.getHTMLElement());
         }
 
-        if (!!note) {
-            this.note = note;
-            const noteEl = new Element(new NewElementBuilder().setTagName('p').setGenerateId(true).setClassName('note'));
-            noteEl.setHtml(note);
-            nodes.push(noteEl.getHTMLElement());
-            this.toggleClass('custom-label', this.note !== label);
-        }
+        this.subTitleText = subTitle;
+        this.subTitle = new PEl('note');
+        this.subTitle.setHtml(subTitle);
+        nodes.push(this.subTitle.getHTMLElement());
+        this.refreshCustomClass();
 
         this.getEl().appendChildren(nodes);
     }
 
     setText(label: string) {
         this.title.textContent = label.trim();
-        this.toggleClass('custom-label', this.note !== label);
     }
 
     setExpandable(expandable: boolean) {
@@ -57,7 +56,17 @@ export class FormOccurrenceDraggableLabel
         return super.setTitle(title);
     }
 
+    setSubTitle(subTitle: string) {
+        this.subTitleText = subTitle;
+        this.subTitle.setHtml(subTitle);
+        this.refreshCustomClass();
+    }
+
     getText(): string {
         return this.title.nodeValue;
+    }
+
+    private refreshCustomClass() {
+        this.toggleClass('custom-label', !StringHelper.isBlank(this.subTitleText));
     }
 }

@@ -40,7 +40,7 @@ export class FormItemSetOccurrenceView
         });
     }
 
-    protected getLabelText(): string {
+    protected getLabelSubTitle(): string {
         const propArrays = this.propertySet.getPropertyArrays();
         const selectedValues = [];
 
@@ -54,7 +54,11 @@ export class FormItemSetOccurrenceView
             });
         }
 
-        return selectedValues[0] || this.getFormSet().getLabel();
+        return selectedValues[0] || '';
+    }
+
+    protected getLabelText(): string {
+        return this.getFormSet().getLabel();
     }
 
     protected getFormSet(): FormItemSet {
