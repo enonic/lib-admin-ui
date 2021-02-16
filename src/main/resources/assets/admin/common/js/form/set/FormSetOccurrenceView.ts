@@ -30,6 +30,9 @@ import {Property} from '../../data/Property';
 import {ValueTypes} from '../../data/ValueTypes';
 import {PropertyAddedEvent} from '../../data/PropertyAddedEvent';
 import {PropertyRemovedEvent} from '../../data/PropertyRemovedEvent';
+import {FormOptionSet} from './optionset/FormOptionSet';
+import {FormItemSet} from './itemset/FormItemSet';
+import {FormOptionSetOption} from './optionset/FormOptionSetOption';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
@@ -432,18 +435,77 @@ export abstract class FormSetOccurrenceView
     protected recursiveFetchLabels(propArray: PropertyArray, labels: string[], firstOnly?: boolean): void {
         propArray.some((prop: Property) => {
             if (ValueTypes.STRING.equals(prop.getType()) && prop.getValue().isNotNull() && prop.getString().length > 0) {
-                labels.push(prop.getString());
-                if (firstOnly) {
-                    return true;
+                const label: string = this.filterLabel(prop.getString());
+
+                if (label.length > 0) {
+                    labels.push(label);
                 }
             } else if (ValueTypes.DATA.equals(prop.getType())) {
-                return prop.getPropertySet().getPropertyArrays().some(arr => {
-                    this.recursiveFetchLabels(arr, labels, firstOnly);
-                    return firstOnly && labels.length > 0;
-                });
+                const propertySet = prop.getPropertySet();
+                const formItem = this.getFormItemByName(prop.getName());
+                if (formItem instanceof FormOptionSet) {
+                    const selectionArray = propertySet.getPropertyArray('_selected');
+
+                    if (selectionArray && !selectionArray.isEmpty()) {
+                        const nameLabelMap = new Map<string, any>(
+                            formItem.getFormItems()
+                                .filter((fi: FormItem) => fi instanceof FormOptionSetOption)
+                                .map((fo: FormOptionSetOption, index: number) => {
+                                    return [fo.getName(), {label: fo.getLabel(), index: index}] as [string, any];
+                                })
+                        );
+
+                        const selectedLabels = selectionArray.getProperties()
+                            .sort((one: Property, two: Property) => {
+                                return nameLabelMap.get(one.getString()).index - nameLabelMap.get(two.getString()).index;
+                            })
+                            .map((selectedProp: Property) => nameLabelMap.get(selectedProp.getString()).label);
+
+                        labels.push(...selectedLabels);
+
+                        if (labels.length === 0) {
+                            // should not happen, but in case no labels were found go inside selected options forms
+                            selectionArray.some((selectedProp) => {
+                                const selectedOptionArray = propertySet.getPropertyArray(selectedProp.getString());
+                                if (selectedOptionArray && !selectedOptionArray.isEmpty()) {
+                                    this.recursiveFetchLabels(selectedOptionArray, labels, firstOnly);
+                                }
+                                return firstOnly && labels.length > 0;
+                            });
+                        }
+                    }
+                } else if (formItem instanceof FormItemSet) {
+                    const propArrays = propertySet.getPropertyArrays();
+                    if (propArrays && propArrays.length > 0) {
+                        propArrays.some((pArray: PropertyArray) => {
+                            if ('_selected' === pArray.getName()) {
+                                return false;   // skip technical _selected array
+                            }
+                            this.recursiveFetchLabels(pArray, labels, firstOnly);
+                            return firstOnly && labels.length > 0;
+                        });
+                    }
+                } else {
+                    return propertySet.getPropertyArrays().some(arr => {
+                        this.recursiveFetchLabels(arr, labels, firstOnly);
+                        return firstOnly && labels.length > 0;
+                    });
+                }
             }
             return firstOnly && labels.length > 0;
         });
+    }
+
+    private getFormItemByName(name: string): FormItem {
+        return this.getFormItems().find((item) => item.getName() === name);
+    }
+
+    private filterLabel(label: string): string {
+        return label
+            .replace(/<\/?[^>]+(>|$)/g, '') // removing tags
+            .replace(/&nbsp;/g, '') // removing spaces
+            .replace(/\s{2,}/g, ' ') // removing spaces
+            .trim();
     }
 
     private initConfirmationMask() {
