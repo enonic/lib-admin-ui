@@ -54,7 +54,7 @@ export class FormItemSetOccurrenceView
             });
         }
 
-        return selectedValues[0] || '';
+        return selectedValues.length ? selectedValues.join(', ') : '';
     }
 
     protected getLabelText(): string {
