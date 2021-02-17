@@ -5,14 +5,29 @@
     .ellipsis();
   }
 
-  .@{_COMMON_PREFIX}text-input:disabled {
-    color: @admin-font-gray2;
+  .bottom {
+    display: flex;
+    align-items: center;
 
-    &:hover {
-      cursor: pointer;
-      border: 1px solid transparent;
+    .@{_COMMON_PREFIX}text-input {
+      margin-top: 0px;
+      flex-shrink: 0;
+
+      &:disabled {
+        color: @admin-font-gray2;
+
+        &:hover {
+          cursor: pointer;
+          border: 1px solid transparent;
+        }
+      }
+    }
+
+    .separator {
+      font-size: 1rem;
     }
   }
+
 }
 
 ._0-240, ._240-360 {
