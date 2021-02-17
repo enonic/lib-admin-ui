@@ -1,18 +1,24 @@
 import {H5El} from '../../dom/H5El';
 import {HelpTextContainer} from '../HelpTextContainer';
 import {DivEl} from '../../dom/DivEl';
+import {SpanEl} from '../../dom/SpanEl';
+import {FormSet} from './FormSet';
 
 export class FormSetHeader
     extends DivEl {
     private helpTextContainer: HelpTextContainer;
     private title: H5El;
 
-    constructor(text?: string, helpText?: string, forceHelpToggle?: boolean) {
+    constructor(formSet: FormSet, forceHelpToggle?: boolean) {
         super('form-set-header');
         this.title = new H5El();
-        this.title.setHtml(text || '');
-        if (helpText || forceHelpToggle) {
-            this.helpTextContainer = new HelpTextContainer(helpText);
+        this.title.setHtml(formSet.getLabel() || '');
+        if (formSet.getOccurrences().required()) {
+            const requiredMarker = new SpanEl('required');
+            this.title.appendChild(requiredMarker);
+        }
+        if (formSet.getHelpText() || forceHelpToggle) {
+            this.helpTextContainer = new HelpTextContainer(formSet.getHelpText());
         }
     }
 
