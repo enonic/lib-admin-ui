@@ -1,7 +1,5 @@
 import {DivEl} from '../dom/DivEl';
 import {Element} from '../dom/Element';
-import {SpanEl} from '../dom/SpanEl';
-import {Occurrences} from './Occurrences';
 import {StringHelper} from '../util/StringHelper';
 import {PEl} from '../dom/PEl';
 
@@ -13,7 +11,7 @@ export class FormOccurrenceDraggableLabel
     private titleText: string;
     private subTitleText: string;
 
-    constructor(label: string, occurrences: Occurrences, subTitle?: string) {
+    constructor(label: string, subTitle?: string) {
         super('form-occurrence-draggable-label');
 
         let nodes: Node[] = [];
@@ -23,11 +21,6 @@ export class FormOccurrenceDraggableLabel
 
         this.title = document.createTextNode(label);
         nodes.push(this.title);
-
-        if (occurrences.required()) {
-            const requiredMarker = new SpanEl('required');
-            nodes.push(requiredMarker.getHTMLElement());
-        }
 
         this.subTitleText = subTitle;
         this.subTitle = new PEl('note');

@@ -119,7 +119,7 @@ export abstract class FormSetOccurrenceView
 
         this.moreButton = this.createMoreButton();
 
-        this.label = new FormOccurrenceDraggableLabel(this.getLabelText(), this.getFormSet().getOccurrences(), this.getLabelSubTitle());
+        this.label = new FormOccurrenceDraggableLabel(this.getLabelText(), this.getLabelSubTitle());
         if (!this.isExpandable()) {
             this.label.setTitle(i18n('tooltip.header.collapse'));
         }

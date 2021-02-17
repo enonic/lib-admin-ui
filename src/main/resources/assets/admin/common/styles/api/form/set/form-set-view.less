@@ -42,6 +42,15 @@
 
         font-size: 25px;
         line-height: 32px;
+
+        .required {
+          padding-left: 5px;
+
+          &:after {
+            content: '*';
+            color: @input-red-text;
+          }
+        }
       }
 
       .help-text-toggler {
@@ -96,15 +105,6 @@
 
           &.expandable {
             cursor: zoom-out;
-          }
-
-          .required {
-            padding-left: 5px;
-
-            &:after {
-              content: '*';
-              color: @input-red-text;
-            }
           }
 
           .drag-control {
