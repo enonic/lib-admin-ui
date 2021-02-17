@@ -183,7 +183,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     private shouldCollapseOccurrences(): boolean {
-        if (this.getContext().getFormState().isNew()) {
+        if (!this.getContext().getFormState() || this.getContext().getFormState().isNew()) {
             return false;
         }
         if (this.formItemOccurrences.getOccurrences().length === 1) {
