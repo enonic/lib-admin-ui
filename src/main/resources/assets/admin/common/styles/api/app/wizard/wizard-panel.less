@@ -12,25 +12,6 @@
     opacity: .8;
   }
 
-  &--live {
-    .split-panel .minimize-edit {
-      display: block;
-    }
-
-
-    .wizard-step-navigator-and-toolbar.pre-scroll-stick {
-
-      &.has-help-text-button {
-
-        .help-text-button {
-          padding-right: 38px;
-        }
-      }
-
-    }
-
-  }
-
   .toolbar {
     border-bottom: 1px solid @admin-medium-gray-border;
 
@@ -43,7 +24,10 @@
     }
   }
 
-  .@{_COMMON_PREFIX}form-icon {
+  .@{_CLS_PREFIX}form-icon {
+    width: 64px;
+    height: 64px;
+    margin: 5px 20px;
     float: left;
 
     img {
@@ -54,26 +38,42 @@
   }
 
   .form-panel {
-    -webkit-overflow-scrolling: touch !important;
-    overflow-y: auto !important;
+    &._0-240,
+    &._240-360,
+    &._360-540 {
+      .@{_CLS_PREFIX}form-icon {
+        width: 32px;
+        height: 32px;
+        margin: 5px 15px;
+
+        &:before {
+          font-size: 32px;
+        }
+      }
+
+      .wizard-header {
+        margin: 15px 0;
+        padding-left: 65px;
+      }
+    }
+
     &.rendering {
       opacity: 0;
     }
-  }
 
-  .wizard-steps-panel {
-    margin: 0;
-    padding: 0 0 0 110px;
-    overflow: visible; // for the dropdowns to be visible outside the form
+    .wizard-steps-panel {
+      margin: 0;
+      overflow: visible; // for the dropdowns to be visible outside the form
 
-    .wizard-step-form {
+      .wizard-step-form {
 
-      .form, .form-view {
-        margin: 0;
-      }
+        .form, .form-view {
+          margin: 0;
+        }
 
-      .form-view {
-        padding-bottom: 0 !important;
+        .form-view {
+          padding-bottom: 0 !important;
+        }
       }
     }
   }

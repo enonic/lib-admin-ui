@@ -727,7 +727,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
         let headerAndNavigatorContainer = new DivEl('header-and-navigator-container');
 
-        this.formIcon = this.createFormIcon();
+        this.formIcon = this.createFormIcon().addClassEx('form-icon');
         if (this.formIcon) {
             headerAndNavigatorContainer.appendChild(this.formIcon);
         }
