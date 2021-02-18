@@ -395,8 +395,8 @@ export class Element {
         return this;
     }
 
-    addClassEx(className: string): Element {
-        let cls = StyleHelper.getCls(className);
+    addClassEx(className: string, prefix?: string): Element {
+        let cls = StyleHelper.getCls(className, prefix);
         return this.addClass(cls);
     }
 
