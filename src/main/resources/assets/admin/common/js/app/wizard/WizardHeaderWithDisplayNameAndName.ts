@@ -59,8 +59,8 @@ export class WizardHeaderWithDisplayNameAndName
     protected initElements() {
         this.displayNameProgrammaticallySet = !!this.options?.displayNameGenerator;
 
-        this.topRow = new DivEl('top');
-        this.bottomRow = new DivEl('bottom');
+        this.topRow = new DivEl('wizard-header-top-row');
+        this.bottomRow = new DivEl('wizard-header-bottom-row');
         this.displayNameEl = AutosizeTextInput.large();
 
         this.pathEl = new SpanEl('path');
