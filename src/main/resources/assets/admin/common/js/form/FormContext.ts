@@ -40,6 +40,10 @@ export class FormContext {
     getFormState(): FormState {
         return this.formState;
     }
+
+    setFormState(formState: FormState) {
+        this.formState = formState;
+    }
 }
 
 export class FormContextBuilder {
