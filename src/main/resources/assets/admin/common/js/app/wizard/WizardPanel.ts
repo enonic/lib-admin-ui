@@ -30,6 +30,7 @@ import {MinimizeWizardPanelEvent} from './MinimizeWizardPanelEvent';
 import {WizardStepForm} from './WizardStepForm';
 import {ValidityChangedEvent} from '../../ValidityChangedEvent';
 import {i18n} from '../../util/Messages';
+import {StyleHelper} from '../../StyleHelper';
 
 /*
  Only data should be passed to constructor
@@ -689,6 +690,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
         this.formPanel.onScroll(() => this.updateStickyToolbar());
 
         this.formPanel.onAdded(() => this.onFormPanelAdded());
+        ResponsiveManager.onAvailableSizeChanged(this.formPanel);
 
         let firstShow;
         this.formPanel.onRendered(() => {
@@ -727,7 +729,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
         let headerAndNavigatorContainer = new DivEl('header-and-navigator-container');
 
-        this.formIcon = this.createFormIcon().addClassEx('form-icon');
+        this.formIcon = this.createFormIcon().addClassEx('form-icon', StyleHelper.COMMON_PREFIX);
         if (this.formIcon) {
             headerAndNavigatorContainer.appendChild(this.formIcon);
         }
