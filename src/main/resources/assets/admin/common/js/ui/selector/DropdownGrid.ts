@@ -403,10 +403,12 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
                 return this.optionDisplayValueViewer.toString();
             };
 
-        return [
+        const columns = [
             new GridColumnBuilder().setId('option').setName('Options').setField('displayValue').setFormatter(
                 columnFormatter).build()
         ];
+
+        return this.config.createColumns ? columns.concat(this.config.createColumns) : columns;
     }
 
     protected notifyRowSelection(rowSelected: number) {
