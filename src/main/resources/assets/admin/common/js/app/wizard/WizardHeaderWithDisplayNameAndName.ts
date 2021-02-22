@@ -63,7 +63,7 @@ export class WizardHeaderWithDisplayNameAndName
 
         this.topRow = new DivEl('wizard-header-top-row');
         this.bottomRow = new DivEl('wizard-header-bottom-row');
-        this.displayNameEl = new TextInput('', TextInputSize.LARGE)
+        this.displayNameEl = new TextInput('', TextInputSize.LARGE);
 
         this.pathEl = new SpanEl('path');
         this.pathEl.hide();
