@@ -219,7 +219,7 @@ export class FormOptionSetOccurrenceView
 
     private addDefaultSelectionToSelectionArray(selectionPropertyArray: PropertyArray) {
         this.getFormSet().getOptions().forEach((option: FormOptionSetOption) => {
-            if (option.isDefaultOption() && selectionPropertyArray.getSize() < this.getFormSet().getMultiselection().getMaximum()) {
+            if (option.isDefaultOption() && !this.getFormSet().getMultiselection().maximumReached(selectionPropertyArray.getSize())) {
                 selectionPropertyArray.add(new Value(option.getName(), new ValueTypeString()));
             }
         });
