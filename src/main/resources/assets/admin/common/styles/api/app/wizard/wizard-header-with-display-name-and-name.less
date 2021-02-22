@@ -1,8 +1,14 @@
 .wizard-header-with-display-name-and-name {
   .name-wrapper, .@{_COMMON_PREFIX}text-input {
-    max-width: 100%;
-    box-sizing: content-box;
     .ellipsis();
+  }
+
+  .wizard-header-top-row {
+    display: flex;
+
+    input {
+      flex-grow: 1;
+    }
   }
 
   .wizard-header-bottom-row {
@@ -45,10 +51,10 @@
 ._0-240, ._240-360, ._360-540 {
   .wizard-header-with-display-name-and-name {
     .path {
-      display: none !important;
+      display: none;
     }
 
-    .separator {
+    .path:not(.empty) + .separator {
       &::before {
         content: '...';
       }

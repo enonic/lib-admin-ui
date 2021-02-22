@@ -727,16 +727,17 @@ export class WizardPanel<EQUITABLE extends Equitable>
             this.mainToolbar.addClass('rendering');
         }
 
-        let headerAndNavigatorContainer = new DivEl('header-and-navigator-container');
+        const headerAndNavigatorContainer: DivEl = new DivEl('header-and-navigator-container');
+        const headerContainer: DivEl = new DivEl('header-container');
 
         this.formIcon = this.createFormIcon().addClassEx('form-icon', StyleHelper.COMMON_PREFIX);
         if (this.formIcon) {
-            headerAndNavigatorContainer.appendChild(this.formIcon);
+            headerContainer.appendChild(this.formIcon);
         }
 
         this.wizardHeader = this.createWizardHeader();
         if (this.wizardHeader) {
-            headerAndNavigatorContainer.appendChild(this.wizardHeader);
+            headerContainer.appendChild(this.wizardHeader);
             this.notifyWizardHeaderCreated();
             this.validityManager.setHeader(this.wizardHeader);
         }
@@ -745,6 +746,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
         this.stepNavigator = new WizardStepNavigator();
         this.stepNavigatorAndToolbarContainer = new WizardStepNavigatorAndToolbar(this.stepNavigator, this.stepToolbar);
 
+        headerAndNavigatorContainer.appendChild(headerContainer);
         headerAndNavigatorContainer.appendChild(this.stepNavigatorAndToolbarContainer);
 
         this.stepsPanel = new WizardStepsPanel(this.stepNavigator, this.formPanel);

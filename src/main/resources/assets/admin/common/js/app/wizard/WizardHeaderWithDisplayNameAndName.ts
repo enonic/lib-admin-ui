@@ -11,6 +11,8 @@ import {DisplayNameGenerator} from './DisplayNameGenerator';
 import {WizardHeader} from './WizardHeader';
 import {Name} from '../../Name';
 import {DivEl} from '../../dom/DivEl';
+import {ElementHelper} from '../../dom/ElementHelper';
+import {Element} from '../../dom/Element';
 
 export interface WizardHeaderWithDisplayNameAndNameOptions {
 
@@ -61,12 +63,12 @@ export class WizardHeaderWithDisplayNameAndName
 
         this.topRow = new DivEl('wizard-header-top-row');
         this.bottomRow = new DivEl('wizard-header-bottom-row');
-        this.displayNameEl = AutosizeTextInput.large();
+        this.displayNameEl = new TextInput('', TextInputSize.LARGE)
 
         this.pathEl = new SpanEl('path');
         this.pathEl.hide();
 
-        this.nameEl = new TextInput('', TextInputSize.MIDDLE).setForbiddenCharsRe(this.forbiddenChars);
+        this.nameEl = new WizardHeaderNameInput().setForbiddenCharsRe(this.forbiddenChars);
     }
 
     protected postInitElements() {
@@ -108,7 +110,7 @@ export class WizardHeaderWithDisplayNameAndName
             this.autoGenerateName = this.checkAutoGenerateName(currentName, displayName);
 
             this.updateNameGeneratedStatus();
-            this.nameEl.getEl().setAttribute('size', '' + (event.getNewValue().length + 1));
+            // this.nameEl.getEl().setAttribute('size', '' + (event.getNewValue().length + 1));
         });
     }
 
@@ -303,5 +305,29 @@ export class WizardHeaderWithDisplayNameAndName
 
             return rendered;
         });
+    }
+}
+
+class WizardHeaderNameInput extends AutosizeTextInput {
+
+    protected doUpdateSize() {
+        const inputEl: ElementHelper = this.getEl();
+        const cloneEl: ElementHelper = this.clone.getEl();
+        const parent: Element = this.getParentElement();
+
+        let spaceLeftForInput: number = parent.getEl().getWidthWithMargin();
+
+        parent.getChildren().filter((c: Element) => c.isVisible() && !c.hasClass('autosize-attendant')).forEach((child: Element) => {
+            if (child.hasClass('path') && !child.hasClass('empty')) {
+                spaceLeftForInput -=  20; // min size of a static path element
+            } else if (child !== this) {
+                spaceLeftForInput -= child.getEl().getWidthWithMargin();
+            }
+        });
+
+        const currentInputWidth: number = cloneEl.getWidthWithBorder();
+        const min: number = Math.min(spaceLeftForInput, currentInputWidth);
+
+        inputEl.getHTMLElement().style.flexBasis = `${min}px`;
     }
 }
