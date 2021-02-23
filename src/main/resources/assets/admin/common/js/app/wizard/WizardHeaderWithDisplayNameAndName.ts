@@ -173,7 +173,7 @@ export class WizardHeaderWithDisplayNameAndName
             this.pathEl.getEl().setText('');
         }
 
-        this.pathEl.toggleClass('empty', StringHelper.isEmpty(value));
+        this.pathEl.toggleClass('empty', StringHelper.isEmpty(this.pathEl.getEl().getText()));
     }
 
     setSimplifiedNameGeneration(value: boolean) {
