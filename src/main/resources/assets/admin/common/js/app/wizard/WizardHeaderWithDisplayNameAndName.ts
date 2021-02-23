@@ -164,16 +164,16 @@ export class WizardHeaderWithDisplayNameAndName
     }
 
     setPath(value: string) {
-        this.pathEl.getEl().setText(value.replace(/\/$/, ''));
-        this.pathEl.setTitle(value);
-
         if (value) {
+            this.pathEl.getEl().setText(value.replace(/\/$/, ''));
+            this.pathEl.setTitle(value);
             this.pathEl.show();
         } else {
             this.pathEl.hide();
+            this.pathEl.getEl().setText('');
         }
 
-        this.pathEl.toggleClass('empty', StringHelper.isEmpty(this.pathEl.getEl().getText()));
+        this.pathEl.toggleClass('empty', StringHelper.isEmpty(value));
     }
 
     setSimplifiedNameGeneration(value: boolean) {
