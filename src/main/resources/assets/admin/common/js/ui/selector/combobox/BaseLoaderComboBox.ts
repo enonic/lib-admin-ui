@@ -27,6 +27,10 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
                 console.debug(this.toString() + '.doSetValue: loader is not loaded, saving temp value = ' + value);
             }
             this.tempValue = value;
+            if (!this.loader.isLoading()) {
+                // it's not loading unless you have expanded the dropdown
+                this.loader.load();
+            }
         }
         this.doWhenLoaded(() => {
             if (this.tempValue) {
