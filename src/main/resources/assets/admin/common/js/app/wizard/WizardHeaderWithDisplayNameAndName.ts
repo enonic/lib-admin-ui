@@ -110,7 +110,6 @@ export class WizardHeaderWithDisplayNameAndName
             this.autoGenerateName = this.checkAutoGenerateName(currentName, displayName);
 
             this.updateNameGeneratedStatus();
-            // this.nameEl.getEl().setAttribute('size', '' + (event.getNewValue().length + 1));
         });
     }
 
