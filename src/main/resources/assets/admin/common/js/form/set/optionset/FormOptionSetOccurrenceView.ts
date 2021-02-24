@@ -33,8 +33,18 @@ export class FormOptionSetOccurrenceView
 
     private originalSingleSelectionDropdownValue: string;
 
+    private formOptionsByNameMap: Map<string, { label: string, index: number }>;
+
     constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView>) {
         super('form-option-set-', config);
+
+        this.formOptionsByNameMap = new Map<string, any>(
+            this.getFormItems()
+                .filter((formItem: FormItem) => formItem instanceof FormOptionSetOption)
+                .map((formItem: FormOptionSetOption, index: number) => {
+                    return [formItem.getName(), {label: formItem.getLabel(), index: index}] as [string, any];
+                })
+        );
 
         this.ensureSelectionArrayExists(this.propertySet);
     }
@@ -153,38 +163,33 @@ export class FormOptionSetOccurrenceView
         return this.getFormSet().getFormItems();
     }
 
-    protected getLabelSubTitle(): string {
+    protected getSortedSelectedOptionsArrayProperties(): Property[] {
         const selectionArray = this.getSelectedOptionsArray();
+
+        return selectionArray?.getProperties()
+            .sort((one: Property, two: Property) => {
+                return this.formOptionsByNameMap.get(one.getString()).index - this.formOptionsByNameMap.get(two.getString()).index;
+            });
+    }
+
+    protected getLabelSubTitle(): string {
         let selectedLabels: string[] = [];
 
-        if (selectionArray && !selectionArray.isEmpty()) {
-            // first look for labels in the option form
-            const selectedOptionArray = this.propertySet.getPropertyArray(selectionArray.get(0).getString());
-            if (selectedOptionArray && !selectedOptionArray.isEmpty()) {
-                this.recursiveFetchLabels(selectedOptionArray, selectedLabels, true);
-            }
-        }
+        this.getSortedSelectedOptionsArrayProperties()
+            .some(selectedProp => {
+                const selectedOptionArray = this.propertySet.getPropertyArray(selectedProp.getString());
+                if (selectedOptionArray && !selectedOptionArray.isEmpty()) {
+                    this.recursiveFetchLabels(selectedOptionArray, selectedLabels, true);
+                }
+                return selectedLabels.length > 0;
+            });
 
         return selectedLabels.length ? selectedLabels.join(', ') : '';
     }
 
     protected getLabelText(): string {
-        const selectionArray = this.getSelectedOptionsArray();
-
-        // make up labels from selected option(s) themselves
-        const nameLabelMap = new Map<string, any>(
-            this.getFormItems()
-                .filter((formItem: FormItem) => formItem instanceof FormOptionSetOption)
-                .map((formItem: FormOptionSetOption, index: number) => {
-                    return [formItem.getName(), {label: formItem.getLabel(), index: index}] as [string, any];
-                })
-        );
-
-        let selectedLabels = selectionArray.getProperties()
-            .sort((one: Property, two: Property) => {
-                return nameLabelMap.get(one.getString()).index - nameLabelMap.get(two.getString()).index;
-            })
-            .map((selectedProp: Property) => nameLabelMap.get(selectedProp.getString()).label);
+        let selectedLabels = this.getSortedSelectedOptionsArrayProperties()
+            .map((selectedProp: Property) => this.formOptionsByNameMap.get(selectedProp.getString()).label);
 
         return selectedLabels.length ? selectedLabels.join(', ') : this.getFormSet().getLabel();
     }
