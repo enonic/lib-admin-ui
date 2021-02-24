@@ -13,6 +13,7 @@ import {Name} from '../../Name';
 import {DivEl} from '../../dom/DivEl';
 import {ElementHelper} from '../../dom/ElementHelper';
 import {Element} from '../../dom/Element';
+import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 
 export interface WizardHeaderWithDisplayNameAndNameOptions {
 
@@ -78,6 +79,8 @@ export class WizardHeaderWithDisplayNameAndName
     }
 
     protected initListeners() {
+        ResponsiveManager.onAvailableSizeChanged(this);
+
         const debounceNotify = (query: string) => AppHelper.debounce((event: ValueChangedEvent) => {
             this.notifyPropertyChanged(query, event.getOldValue(), event.getNewValue());
         }, 100);

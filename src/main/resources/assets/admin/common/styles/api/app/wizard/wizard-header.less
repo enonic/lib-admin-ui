@@ -36,9 +36,8 @@
     .ellipsis();
 
     &:not(.empty) {
-      flex-basis: 20px;
+      min-width: 20px;
       flex-shrink: 1;
-      flex-grow: 1;
     }
   }
 }
@@ -56,6 +55,10 @@
         font-size: 0.85rem;
       }
     }
+
+    .path {
+      font-size: 0.85rem;
+    }
   }
 }
 
@@ -70,6 +73,10 @@
       &.@{_CLS_PREFIX}middle {
         font-size: 0.85rem;
       }
+    }
+
+    .path {
+      font-size: 0.85rem;
     }
   }
 }

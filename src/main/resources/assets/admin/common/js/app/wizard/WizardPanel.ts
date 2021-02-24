@@ -325,7 +325,6 @@ export class WizardPanel<EQUITABLE extends Equitable>
             this.scrollPosition = scroll;
             this.splitPanel.savePanelSizesAndDistribute(40, 0, SplitPanelUnit.PIXEL);
             this.splitPanel.hideSplitter();
-            this.minimizeEditButton.getEl().setLeftPx(this.stepsPanel.getEl().getWidth());
 
             this.stepNavigator.onNavigationItemActivated(this.toggleMinimizeListener);
         } else {
@@ -680,10 +679,6 @@ export class WizardPanel<EQUITABLE extends Equitable>
             console.debug('WizardPanel.doRenderOnDataLoaded');
         }
 
-        let updateMinimizeButtonPosition = () => {
-            this.minimizeEditButton.getEl().setLeftPx(this.stepsPanel.getEl().getWidth());
-        };
-
         this.updateToolbarActions();
 
         this.formPanel = new Panel('form-panel rendering');
@@ -712,10 +707,6 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
             if (!!this.lastFocusedElement) {
                 this.lastFocusedElement.focus();
-            }
-
-            if (this.minimizeEditButton) {
-                updateMinimizeButtonPosition();
             }
 
             // check validity on rendered
@@ -766,11 +757,11 @@ export class WizardPanel<EQUITABLE extends Equitable>
                 this.toggleMinimize(event.getIndex());
             };
             this.minimizeEditButton = new DivEl('minimize-edit');
-            ResponsiveManager.onAvailableSizeChanged(this.formPanel, updateMinimizeButtonPosition);
+            ResponsiveManager.onAvailableSizeChanged(this.formPanel);
 
             this.minimizeEditButton.onClicked(this.toggleMinimize.bind(this, -1));
 
-            this.formPanel.prependChild(this.minimizeEditButton);
+            this.stepNavigatorAndToolbarContainer.appendChild(this.minimizeEditButton);
 
             this.livePanel.onAdded(() => {
                 if (WizardPanel.debug) {
