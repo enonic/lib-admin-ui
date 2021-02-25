@@ -1,43 +1,30 @@
 import {i18n} from '../../util/Messages';
 import {AppHelper} from '../../util/AppHelper';
 import {QueryField} from '../../query/QueryField';
-import {TextInput} from '../../ui/text/TextInput';
+import {TextInput, TextInputSize} from '../../ui/text/TextInput';
 import {SpanEl} from '../../dom/SpanEl';
 import {AutosizeTextInput} from '../../ui/text/AutosizeTextInput';
 import {ValueChangedEvent} from '../../ValueChangedEvent';
 import {StringHelper} from '../../util/StringHelper';
-import {WindowDOM} from '../../dom/WindowDOM';
 import {NamePrettyfier} from '../../NamePrettyfier';
 import {DisplayNameGenerator} from './DisplayNameGenerator';
 import {WizardHeader} from './WizardHeader';
 import {Name} from '../../Name';
+import {DivEl} from '../../dom/DivEl';
+import {ElementHelper} from '../../dom/ElementHelper';
+import {Element} from '../../dom/Element';
+import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 
-export class WizardHeaderWithDisplayNameAndNameBuilder {
+export interface WizardHeaderWithDisplayNameAndNameOptions {
 
-    displayNameGenerator: DisplayNameGenerator;
+    displayNameGenerator?: DisplayNameGenerator;
 
-    displayNameLabel: string;
-
-    setDisplayNameGenerator(value: DisplayNameGenerator): WizardHeaderWithDisplayNameAndNameBuilder {
-        this.displayNameGenerator = value;
-        return this;
-    }
-
-    setDisplayNameLabel(value: string): WizardHeaderWithDisplayNameAndNameBuilder {
-        this.displayNameLabel = value;
-        return this;
-    }
-
-    build(): WizardHeaderWithDisplayNameAndName {
-        return new WizardHeaderWithDisplayNameAndName(this);
-    }
+    displayNameLabel?: string;
 
 }
 
 export class WizardHeaderWithDisplayNameAndName
     extends WizardHeader {
-
-    private displayNameGenerator: DisplayNameGenerator;
 
     private forbiddenChars: RegExp = /[\/\\]+/ig;
 
@@ -45,9 +32,15 @@ export class WizardHeaderWithDisplayNameAndName
 
     private displayNameProgrammaticallySet: boolean;
 
+    protected options?: WizardHeaderWithDisplayNameAndNameOptions;
+
     protected pathEl: SpanEl;
 
     protected nameEl: TextInput;
+
+    protected topRow: DivEl;
+
+    protected bottomRow: DivEl;
 
     private autoGenerateName: boolean = false;
 
@@ -57,41 +50,49 @@ export class WizardHeaderWithDisplayNameAndName
 
     private simplifiedNameGeneration: boolean = false;
 
-    constructor(builder: WizardHeaderWithDisplayNameAndNameBuilder) {
+    constructor(options?: WizardHeaderWithDisplayNameAndNameOptions) {
         super();
-        this.addClass('wizard-header-with-display-name-and-name');
-        this.displayNameGenerator = builder.displayNameGenerator;
-        this.displayNameProgrammaticallySet = this.displayNameGenerator != null;
+
+        this.options = options;
+        this.initElements();
+        this.postInitElements();
+        this.initListeners();
+    }
+
+    protected initElements() {
+        this.displayNameProgrammaticallySet = !!this.options?.displayNameGenerator;
+
+        this.topRow = new DivEl('wizard-header-top-row');
+        this.bottomRow = new DivEl('wizard-header-bottom-row');
+        this.displayNameEl = new TextInput('', TextInputSize.LARGE);
+
+        this.pathEl = new SpanEl('path');
+        this.pathEl.hide();
+
+        this.nameEl = new WizardHeaderNameInput().setForbiddenCharsRe(this.forbiddenChars);
+    }
+
+    protected postInitElements() {
+        const displayNamePlaceholder: string = !!this.options?.displayNameLabel ? this.options.displayNameLabel : i18n('field.displayName');
+        this.displayNameEl.setPlaceholder(`<${displayNamePlaceholder}>`).setName(QueryField.DISPLAY_NAME);
+        this.nameEl.setPlaceholder(`<${i18n('field.path')}>`).setName('name');
+    }
+
+    protected initListeners() {
+        ResponsiveManager.onAvailableSizeChanged(this);
 
         const debounceNotify = (query: string) => AppHelper.debounce((event: ValueChangedEvent) => {
             this.notifyPropertyChanged(query, event.getOldValue(), event.getNewValue());
         }, 100);
 
-        this.displayNameEl = AutosizeTextInput.large();
-        this.displayNameEl.setPlaceholder(
-            '<' + (builder.displayNameLabel ? builder.displayNameLabel : i18n('field.displayName')) + '>').setName(
-            QueryField.DISPLAY_NAME);
         this.displayNameEl.onValueChanged(debounceNotify(QueryField.DISPLAY_NAME));
-        this.appendChild(this.displayNameEl);
-
-        this.pathEl = new SpanEl('path');
-        this.pathEl.hide();
-        this.appendChild(this.pathEl);
-
-        this.nameEl = AutosizeTextInput.middle().setForbiddenCharsRe(this.forbiddenChars);
-        this.nameEl.setPlaceholder('<' + i18n('field.path') + '>').setName('name');
         this.nameEl.onValueChanged(debounceNotify(`<${i18n('field.path')}>`));
-
-        this.appendChild(this.nameEl);
-
         this.displayNameEl.onValueChanged((event: ValueChangedEvent) => {
-
             this.displayNameEl.removeClass('generated');
+            const currentDisplayName: string = event.getNewValue() || '';
 
-            let currentDisplayName = event.getNewValue() || '';
-
-            if (this.displayNameGenerator && this.displayNameGenerator.hasExpression()) {
-                let generatedDisplayName = this.displayNameGenerator.execute() || '';
+            if (this.options?.displayNameGenerator?.hasExpression()) {
+                const generatedDisplayName: string = this.options.displayNameGenerator.execute() || '';
 
                 this.displayNameProgrammaticallySet =
                     generatedDisplayName.toLowerCase() === currentDisplayName.toLowerCase() ||
@@ -106,17 +107,13 @@ export class WizardHeaderWithDisplayNameAndName
         });
 
         this.nameEl.onValueChanged((event: ValueChangedEvent) => {
-            let currentName = event.getNewValue() || '';
-            let displayName = this.getDisplayName() || '';
+            const currentName: string = event.getNewValue() || '';
+            const displayName: string = this.getDisplayName() || '';
 
             this.autoGenerateName = this.checkAutoGenerateName(currentName, displayName);
 
             this.updateNameGeneratedStatus();
         });
-
-        this.onShown(() => this.updatePathAndNameWidth());
-        WindowDOM.get().onResized(() => this.updatePathAndNameWidth(), this);
-
     }
 
     resetBaseValues() {
@@ -142,9 +139,9 @@ export class WizardHeaderWithDisplayNameAndName
             this.nameEl.setValue(this.generateName(displayName));
         }
 
-        if (this.displayNameGenerator && this.displayNameGenerator.hasExpression()) {
+        if (this.options?.displayNameGenerator?.hasExpression()) {
             if (!forceDisplayNameProgrammaticallySet) {
-                let generatedDisplayName = this.displayNameGenerator.execute();
+                const generatedDisplayName: string = this.options.displayNameGenerator.execute();
                 this.displayNameProgrammaticallySet = generatedDisplayName === displayName;
             } else {
                 this.displayNameProgrammaticallySet = true;
@@ -169,12 +166,16 @@ export class WizardHeaderWithDisplayNameAndName
     }
 
     setPath(value: string) {
-        this.pathEl.getEl().setText(value);
         if (value) {
+            this.pathEl.getEl().setText(value.replace(/\/$/, ''));
+            this.pathEl.setTitle(value);
             this.pathEl.show();
         } else {
             this.pathEl.hide();
+            this.pathEl.getEl().setText('');
         }
+
+        this.pathEl.toggleClass('empty', StringHelper.isEmpty(this.pathEl.getEl().getText()));
     }
 
     setSimplifiedNameGeneration(value: boolean) {
@@ -267,24 +268,6 @@ export class WizardHeaderWithDisplayNameAndName
         }
     }
 
-    private updatePathAndNameWidth() {
-        let pathEl = this.pathEl.getEl();
-        let nameEl = this.nameEl.getEl();
-        let headerWidth = this.getEl().getWidth();
-        let pathWidth = pathEl.getWidthWithMargin();
-        let nameWidth = nameEl.getWidthWithMargin();
-        let nameMinWidth = nameEl.getMinWidth();
-
-        if (pathWidth + nameWidth > headerWidth) {
-            if (nameWidth > nameMinWidth) {
-                nameEl.setWidthPx(Math.max(nameMinWidth, headerWidth - pathWidth));
-            }
-            if (pathWidth + nameMinWidth > headerWidth) {
-                pathEl.setWidthPx(headerWidth - nameMinWidth - pathEl.getMarginLeft() - pathEl.getMarginRight());
-            }
-        }
-    }
-
     setName(value: string) {
         this.nameEl.setValue(value);
     }
@@ -307,5 +290,46 @@ export class WizardHeaderWithDisplayNameAndName
         console.warn('WizardHeaderWithDisplayNameAndName.disableDisplayNameInput() ' +
                      'is deprecated and will be removed in lib-admin-ui 4.0.0');
         this.toggleDisplayNameInput(false);
+    }
+
+    doRender(): Q.Promise<boolean> {
+        return super.doRender().then((rendered: boolean) => {
+            this.addClass('wizard-header-with-display-name-and-name');
+
+            const separator: SpanEl = new SpanEl('separator');
+            separator.setHtml('/');
+
+            this.topRow.appendChild(this.displayNameEl);
+            this.bottomRow.appendChildren(this.pathEl, separator, this.nameEl);
+
+            this.appendChild(this.topRow);
+            this.appendChild(this.bottomRow);
+
+            return rendered;
+        });
+    }
+}
+
+class WizardHeaderNameInput extends AutosizeTextInput {
+
+    protected doUpdateSize() {
+        const inputEl: ElementHelper = this.getEl();
+        const cloneEl: ElementHelper = this.clone.getEl();
+        const parent: Element = this.getParentElement();
+
+        let spaceLeftForInput: number = parent.getEl().getWidthWithMargin();
+
+        parent.getChildren().filter((c: Element) => c.isVisible() && !c.hasClass('autosize-attendant')).forEach((child: Element) => {
+            if (child.hasClass('path') && !child.hasClass('empty')) {
+                spaceLeftForInput -=  20; // min size of a static path element
+            } else if (child !== this) {
+                spaceLeftForInput -= child.getEl().getWidthWithMargin();
+            }
+        });
+
+        const currentInputWidth: number = cloneEl.getWidthWithBorder();
+        const min: number = Math.min(spaceLeftForInput, currentInputWidth);
+
+        inputEl.getHTMLElement().style.flexBasis = `${min}px`;
     }
 }

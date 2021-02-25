@@ -1,5 +1,6 @@
 .wizard-header {
-  max-width: 660px;
+  flex-grow: 1;
+  overflow: hidden;
 
   .@{_COMMON_PREFIX}text-input {
     border: 1px solid transparent;
@@ -28,13 +29,36 @@
   }
 
   .path {
-    float: left;
     height: 28px;
     line-height: 28px;
-    margin: 0 0 0 4px;
     font-size: 1rem;
     color: @admin-font-gray2;
     .ellipsis();
+
+    &:not(.empty) {
+      min-width: 20px;
+      flex-shrink: 1;
+    }
+  }
+}
+
+&._0-240,
+&._240-360,
+&._360-540 {
+  > .header-and-navigator-container .wizard-header {
+
+    .@{_COMMON_PREFIX}text-input {
+      &.@{_CLS_PREFIX}large {
+        font-size: 1.25rem;
+      }
+      &.@{_CLS_PREFIX}middle {
+        font-size: 0.85rem;
+      }
+    }
+
+    .path {
+      font-size: 0.85rem;
+    }
   }
 }
 
@@ -49,6 +73,10 @@
       &.@{_CLS_PREFIX}middle {
         font-size: 0.85rem;
       }
+    }
+
+    .path {
+      font-size: 0.85rem;
     }
   }
 }

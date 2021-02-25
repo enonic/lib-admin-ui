@@ -325,7 +325,6 @@ export class WizardPanel<EQUITABLE extends Equitable>
             this.scrollPosition = scroll;
             this.splitPanel.savePanelSizesAndDistribute(40, 0, SplitPanelUnit.PIXEL);
             this.splitPanel.hideSplitter();
-            this.minimizeEditButton.getEl().setLeftPx(this.stepsPanel.getEl().getWidth());
 
             this.stepNavigator.onNavigationItemActivated(this.toggleMinimizeListener);
         } else {
@@ -680,10 +679,6 @@ export class WizardPanel<EQUITABLE extends Equitable>
             console.debug('WizardPanel.doRenderOnDataLoaded');
         }
 
-        let updateMinimizeButtonPosition = () => {
-            this.minimizeEditButton.getEl().setLeftPx(this.stepsPanel.getEl().getWidth());
-        };
-
         this.updateToolbarActions();
 
         this.formPanel = new Panel('form-panel rendering');
@@ -714,10 +709,6 @@ export class WizardPanel<EQUITABLE extends Equitable>
                 this.lastFocusedElement.focus();
             }
 
-            if (this.minimizeEditButton) {
-                updateMinimizeButtonPosition();
-            }
-
             // check validity on rendered
             this.notifyValidityChanged(this.isValid());
         });
@@ -727,16 +718,17 @@ export class WizardPanel<EQUITABLE extends Equitable>
             this.mainToolbar.addClass('rendering');
         }
 
-        let headerAndNavigatorContainer = new DivEl('header-and-navigator-container');
+        const headerAndNavigatorContainer: DivEl = new DivEl('header-and-navigator-container');
+        const headerContainer: DivEl = new DivEl('header-container');
 
         this.formIcon = this.createFormIcon().addClassEx('form-icon', StyleHelper.COMMON_PREFIX);
         if (this.formIcon) {
-            headerAndNavigatorContainer.appendChild(this.formIcon);
+            headerContainer.appendChild(this.formIcon);
         }
 
         this.wizardHeader = this.createWizardHeader();
         if (this.wizardHeader) {
-            headerAndNavigatorContainer.appendChild(this.wizardHeader);
+            headerContainer.appendChild(this.wizardHeader);
             this.notifyWizardHeaderCreated();
             this.validityManager.setHeader(this.wizardHeader);
         }
@@ -745,6 +737,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
         this.stepNavigator = new WizardStepNavigator();
         this.stepNavigatorAndToolbarContainer = new WizardStepNavigatorAndToolbar(this.stepNavigator, this.stepToolbar);
 
+        headerAndNavigatorContainer.appendChild(headerContainer);
         headerAndNavigatorContainer.appendChild(this.stepNavigatorAndToolbarContainer);
 
         this.stepsPanel = new WizardStepsPanel(this.stepNavigator, this.formPanel);
@@ -764,11 +757,11 @@ export class WizardPanel<EQUITABLE extends Equitable>
                 this.toggleMinimize(event.getIndex());
             };
             this.minimizeEditButton = new DivEl('minimize-edit');
-            ResponsiveManager.onAvailableSizeChanged(this.formPanel, updateMinimizeButtonPosition);
+            ResponsiveManager.onAvailableSizeChanged(this.formPanel);
 
             this.minimizeEditButton.onClicked(this.toggleMinimize.bind(this, -1));
 
-            this.formPanel.prependChild(this.minimizeEditButton);
+            this.stepNavigatorAndToolbarContainer.appendChild(this.minimizeEditButton);
 
             this.livePanel.onAdded(() => {
                 if (WizardPanel.debug) {

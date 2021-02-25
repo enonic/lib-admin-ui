@@ -4,12 +4,13 @@ import {DivEl} from '../../dom/DivEl';
 import {WindowDOM} from '../../dom/WindowDOM';
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
 import {TextInput, TextInputSize} from './TextInput';
+import {ElementHelper} from '../../dom/ElementHelper';
 
 export class AutosizeTextInput
     extends TextInput {
 
-    private attendant: Element;
-    private clone: Element;
+    protected attendant: Element;
+    protected clone: Element;
 
     constructor(className?: string, size: TextInputSize = TextInputSize.MIDDLE, originalValue?: string) {
         super(className, size, originalValue);
@@ -54,19 +55,29 @@ export class AutosizeTextInput
             return;
         }
 
-        let inputEl = this.getEl();
-        let cloneEl = this.clone.getEl();
+        const inputEl: ElementHelper = this.getEl();
+        const cloneEl: ElementHelper = this.clone.getEl();
 
         cloneEl.setFontSize(inputEl.getFontSize()).setPaddingLeft(inputEl.getPaddingLeft() + 'px').setPaddingRight(
             inputEl.getPaddingRight() + 'px');
 
         this.attendant.insertAfterEl(this);
 
-        let cloneHtml = this.getValue();
+        let cloneHtml: string = this.getValue();
         if (StringHelper.isEmpty(cloneHtml)) {
             cloneHtml = this.getPlaceholder();
         }
         cloneEl.setInnerHtml(cloneHtml);
+
+        this.doUpdateSize();
+
+        this.attendant.remove();
+    }
+
+    protected doUpdateSize() {
+        const inputEl: ElementHelper = this.getEl();
+        const cloneEl: ElementHelper = this.clone.getEl();
+
         // Set input width to text length from the clone <div>
         // or to maximum possible width corresponding to attendant width.
         if (cloneEl.getWidthWithBorder() > this.attendant.getEl().getWidth()) {
@@ -74,8 +85,6 @@ export class AutosizeTextInput
         } else {
             inputEl.setWidthPx(cloneEl.getWidthWithBorder());
         }
-
-        this.attendant.remove();
     }
 
 }

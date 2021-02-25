@@ -43,7 +43,6 @@
     width: 64px;
     height: 64px;
     margin: 20px 30px 10px 30px;
-    float: left;
     .icon-xlarge;
 
     img {
@@ -53,9 +52,18 @@
 
   }
 
-  .wizard-header {
-    float: left;
-    margin: 20px 0 0;
+  .header-container {
+    display: flex;
+    max-width: @form-width;
+
+    .@{_COMMON_PREFIX}form-icon {
+      flex-shrink: 0;
+    }
+
+    .wizard-header {
+      margin: 20px 0 0;
+    }
+
   }
 
   .form-panel {
