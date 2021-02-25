@@ -80,7 +80,9 @@ export abstract class TextInputType
     }
 
     private updateLengthCounterValue(lengthCounter: DivEl, newValue: string) {
-        lengthCounter.setHtml(`${this.maxLength - newValue.length}`);
+        const charsAllowed: number = this.maxLength - newValue.length;
+        lengthCounter.toggleClass('chars-left', charsAllowed > -1);
+        lengthCounter.setHtml(i18n('field.value.chars.left', charsAllowed));
     }
 
     private isValidMaxLength(value: string): boolean {

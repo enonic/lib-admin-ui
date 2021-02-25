@@ -2,6 +2,7 @@ import {FormInputEl} from '../../dom/FormInputEl';
 import {Element} from '../../dom/Element';
 import {DivEl} from '../../dom/DivEl';
 import {WindowDOM} from '../../dom/WindowDOM';
+import {StringHelper} from '../../util/StringHelper';
 
 export class TextArea
     extends FormInputEl {
@@ -44,6 +45,11 @@ export class TextArea
             this.clone.getEl().setInnerHtml(this.getValue() + ' ');
             this.getEl().setHeightPx(this.clone.getEl().getHeightWithBorder());
         }
+    }
+
+    updateValidationStatusOnUserInput(isValid: boolean) {
+        this.toggleClass('valid', isValid && !StringHelper.isEmpty(this.getValue()));
+        this.toggleClass('invalid', !isValid);
     }
 
     setEnabled(enable: boolean) {

@@ -1,4 +1,6 @@
 .text-area {
+  @available-color: #008424;
+
   .input-border();
   .input-font(12px);
   padding: 5px;
@@ -7,6 +9,19 @@
   min-height: 52px;
   max-height: 400px;
   box-sizing: border-box;
+
+  &.form-input {
+    &.invalid {
+      .input-border(@admin-input-red);
+      .input-glow(@admin-input-red);
+
+    }
+
+    &.valid {
+      .input-border(@available-color);
+      .input-glow(@available-color);
+    }
+  }
 }
 
 .text-area + .autosize-attendant {
