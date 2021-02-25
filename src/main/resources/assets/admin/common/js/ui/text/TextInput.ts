@@ -124,13 +124,8 @@ export class TextInput
     }
 
     updateValidationStatusOnUserInput(isValid: boolean) {
-        if (isValid) {
-            this.removeClass('invalid');
-            this.toggleClass('valid', !StringHelper.isEmpty(this.getValue()));
-        } else {
-            this.removeClass('valid');
-            this.addClass('invalid');
-        }
+        this.toggleClass('valid', isValid && !StringHelper.isEmpty(this.getValue()));
+        this.toggleClass('invalid', !isValid);
     }
 
     setEnabled(enable: boolean) {

@@ -46,6 +46,8 @@ export class TextArea
         inputEl.onValueChanged((event: ValueChangedEvent) => {
             const isValid = this.isValid(event.getNewValue(), inputEl);
             this.newValueHandler(inputEl, event.getNewValue(), isValid);
+
+            inputEl.updateValidationStatusOnUserInput(isValid);
         });
 
         this.initOccurenceListeners(inputEl);
