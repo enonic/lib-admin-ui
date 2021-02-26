@@ -51,7 +51,6 @@ export abstract class TextInputType
 
     protected isValid(value: string, _textInput: FormInputEl, _silent: boolean = false,
                       recording?: InputValidationRecording): boolean {
-        debugger;
         const isLengthValid: boolean = this.isValidMaxLength(value);
 
         if (!isLengthValid) {
