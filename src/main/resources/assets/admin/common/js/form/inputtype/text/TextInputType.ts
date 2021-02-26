@@ -8,6 +8,7 @@ import {Property} from '../../../data/Property';
 import {InputValidationRecording} from '../InputValidationRecording';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {TextInputCounterEl} from './TextInputCounterEl';
+import * as Q from 'q';
 
 export abstract class TextInputType
     extends BaseInputTypeNotManagingAdd {
@@ -50,6 +51,7 @@ export abstract class TextInputType
 
     protected isValid(value: string, _textInput: FormInputEl, _silent: boolean = false,
                       recording?: InputValidationRecording): boolean {
+        debugger;
         const isLengthValid: boolean = this.isValidMaxLength(value);
 
         if (!isLengthValid) {
