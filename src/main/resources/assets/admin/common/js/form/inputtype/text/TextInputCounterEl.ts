@@ -1,8 +1,8 @@
 import {DivEl} from '../../../dom/DivEl';
 import {SpanEl} from '../../../dom/SpanEl';
 import {FormInputEl} from '../../../dom/FormInputEl';
-import {Element} from '../../../dom/Element';
 import {i18n} from '../../../util/Messages';
+import * as Q from 'q';
 
 export class TextInputCounterEl extends DivEl {
 
