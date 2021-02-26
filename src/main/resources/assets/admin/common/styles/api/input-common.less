@@ -95,26 +95,39 @@
       width: 100%;
     }
 
-    &.max-length-limited {
-
-      .input-occurrence-view + .input-occurrence-view {
-        margin-top: 24px;
+    &.text-input-type {
+      .separator {
+        display: none;
+        margin-right: 2px;
+        margin-left: 2px;
       }
 
-      .length-counter {
-        order: 4;
-        display: block;
-        position: absolute;
-        right: 0;
-        margin-top: 2px;
-        text-align: right;
-
-        &.chars-left {
-          color: @admin-level-1;
+      &.max-length-limited, &.show-counter {
+        .input-occurrence-view + .input-occurrence-view {
+          margin-top: 24px;
         }
 
-        &:not(.chars-left) {
-          color: @admin-red;
+        .length-counter {
+          order: 4;
+          display: block;
+          position: absolute;
+          right: 0;
+          margin-top: 2px;
+          text-align: right;
+
+          .left-counter.chars-left {
+            color: @admin-level-1;
+          }
+
+          .left-counter:not(.chars-left) {
+            color: @admin-red;
+          }
+        }
+      }
+
+      &.max-length-limited.show-counter {
+        .separator {
+          display: inline;
         }
       }
     }

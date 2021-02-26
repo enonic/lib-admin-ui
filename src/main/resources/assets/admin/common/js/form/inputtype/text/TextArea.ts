@@ -50,7 +50,7 @@ export class TextArea
             inputEl.updateValidationStatusOnUserInput(isValid);
         });
 
-        this.initOccurenceListeners(inputEl);
+        this.initOccurrenceListeners(inputEl);
 
         return inputEl;
     }
