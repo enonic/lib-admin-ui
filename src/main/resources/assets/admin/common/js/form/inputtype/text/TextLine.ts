@@ -55,7 +55,7 @@ export class TextLine
 
         });
 
-        this.initOccurenceListeners(inputEl);
+        this.initOccurrenceListeners(inputEl);
 
         return inputEl;
     }

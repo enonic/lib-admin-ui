@@ -1,7 +1,5 @@
 import {NumberHelper} from '../../../util/NumberHelper';
-import {DivEl} from '../../../dom/DivEl';
 import {FormInputEl} from '../../../dom/FormInputEl';
-import {Element} from '../../../dom/Element';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {i18n} from '../../../util/Messages';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
@@ -9,50 +7,37 @@ import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Property} from '../../../data/Property';
 import {InputValidationRecording} from '../InputValidationRecording';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
+import {TextInputCounterEl} from './TextInputCounterEl';
 
 export abstract class TextInputType
     extends BaseInputTypeNotManagingAdd {
 
     private maxLength: number;
 
-    constructor(config: InputTypeViewContext) {
+    private showTotalCounter: boolean;
+
+    protected constructor(config: InputTypeViewContext) {
         super(config);
         this.readConfig(config.inputConfig);
-
-        if (NumberHelper.isNumber(this.maxLength)) {
-            this.addClass('max-length-limited');
-        }
     }
 
     protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
-        const maxLengthConfig = inputConfig['maxLength'] ? inputConfig['maxLength'][0] : {};
-        const maxLength = NumberHelper.toNumber(maxLengthConfig['value']);
-        this.maxLength = maxLength > 0 ? maxLength : null;
+        const maxLengthConfig: Object = inputConfig['maxLength'] ? inputConfig['maxLength'][0] : {};
+        const maxLength: number = NumberHelper.toNumber(maxLengthConfig['value']);
+        this.maxLength = maxLength > 0 ? maxLength : -1;
+
+        const showCounterConfig: Object = inputConfig['showCounter'] ? inputConfig['showCounter'][0] : {};
+        const value: string = showCounterConfig['value'] || '';
+        this.showTotalCounter = value.toLowerCase() === 'true';
     }
 
     protected updateFormInputElValue(occurrence: FormInputEl, property: Property) {
         occurrence.setValue(property.getString());
     }
 
-    protected initOccurenceListeners(inputEl: FormInputEl) {
-
-        if (NumberHelper.isNumber(this.maxLength)) {
-
-            inputEl.onValueChanged(() => {
-                const lengthCounter = Element.fromHtmlElement(
-                    (<HTMLElement>inputEl.getParentElement().getHTMLElement().querySelector('.length-counter')));
-                if (lengthCounter) {
-                    this.updateLengthCounterValue(lengthCounter, inputEl.getValue());
-                }
-            });
-
-            inputEl.onRendered(() => {
-                const lengthCounter = new DivEl('length-counter');
-                this.updateLengthCounterValue(lengthCounter, inputEl.getValue());
-
-                inputEl.getParentElement().appendChild(lengthCounter);
-            });
-
+    protected initOccurrenceListeners(inputEl: FormInputEl) {
+        if (this.hasMaxLengthSet() || this.showTotalCounter) {
+            const counterEl: TextInputCounterEl = new TextInputCounterEl(inputEl, this.maxLength, this.showTotalCounter);
         }
 
         return inputEl;
@@ -65,27 +50,40 @@ export abstract class TextInputType
 
     protected isValid(value: string, _textInput: FormInputEl, _silent: boolean = false,
                       recording?: InputValidationRecording): boolean {
-        const lengthValid = this.isValidMaxLength(value);
+        const isLengthValid: boolean = this.isValidMaxLength(value);
 
-        if (!lengthValid) {
+        if (!isLengthValid) {
             if (recording) {
                 recording.setAdditionalValidationRecord(
                     AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
                         i18n('field.value.breaks.maxlength', this.maxLength)).build());
             }
-
         }
 
-        return lengthValid;
-    }
-
-    private updateLengthCounterValue(lengthCounter: DivEl, newValue: string) {
-        const charsAllowed: number = this.maxLength - newValue.length;
-        lengthCounter.toggleClass('chars-left', charsAllowed > -1);
-        lengthCounter.setHtml(i18n('field.value.chars.left', charsAllowed));
+        return isLengthValid;
     }
 
     private isValidMaxLength(value: string): boolean {
-        return NumberHelper.isNumber(this.maxLength) ? value.length <= this.maxLength : true;
+        return this.hasMaxLengthSet() ? value.length <= this.maxLength : true;
+    }
+
+    private hasMaxLengthSet() {
+        return this.maxLength > -1;
+    }
+
+    doRender(): Q.Promise<boolean> {
+        return super.doRender().then((rendered) => {
+            this.addClass('text-input-type');
+
+            if (this.hasMaxLengthSet()) {
+                this.addClass('max-length-limited');
+            }
+
+            if (this.showTotalCounter) {
+                this.addClass('show-counter');
+            }
+
+            return rendered;
+        });
     }
 }
