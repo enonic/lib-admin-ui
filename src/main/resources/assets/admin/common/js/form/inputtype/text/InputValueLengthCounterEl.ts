@@ -4,7 +4,7 @@ import {FormInputEl} from '../../../dom/FormInputEl';
 import {i18n} from '../../../util/Messages';
 import * as Q from 'q';
 
-export class TextInputCounterEl extends DivEl {
+export class InputValueLengthCounterEl extends DivEl {
 
     private readonly inputEl: FormInputEl;
 
