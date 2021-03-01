@@ -7,7 +7,7 @@ import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Property} from '../../../data/Property';
 import {InputValidationRecording} from '../InputValidationRecording';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
-import {TextInputCounterEl} from './TextInputCounterEl';
+import {InputValueLengthCounterEl} from './InputValueLengthCounterEl';
 import * as Q from 'q';
 
 export abstract class TextInputType
@@ -38,7 +38,7 @@ export abstract class TextInputType
 
     protected initOccurrenceListeners(inputEl: FormInputEl) {
         if (this.hasMaxLengthSet() || this.showTotalCounter) {
-            const counterEl: TextInputCounterEl = new TextInputCounterEl(inputEl, this.maxLength, this.showTotalCounter);
+            const counterEl: InputValueLengthCounterEl = new InputValueLengthCounterEl(inputEl, this.maxLength, this.showTotalCounter);
         }
 
         return inputEl;
