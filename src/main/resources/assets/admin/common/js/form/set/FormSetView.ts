@@ -572,12 +572,15 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     private makeAddButton(): Button {
-        const addButton: Button = new Button(i18n('button.add', this.formSet.getLabel()));
-        addButton.addClass('small');
-        addButton.onClicked(() => {
-            this.formItemOccurrences.createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), false).then((item: V) => {
-                this.expandOccurrenceView(item);
-            });
+        const addButton: Button = new Button(i18n('action.add'));
+        addButton
+            .setTitle(i18n('button.add', this.formSet.getLabel()))
+            .addClass('small')
+            .onClicked(() => {
+                this.formItemOccurrences
+                    .createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), false)
+                    .then((item: V) => this.expandOccurrenceView(item)
+                );
         });
         return addButton;
     }
