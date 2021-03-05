@@ -1,10 +1,10 @@
-import {ResourceRequest} from '../rest/ResourceRequest';
+import {CmsResourceRequest} from '../rest/CmsResourceRequest';
 import {JsonResponse} from '../rest/JsonResponse';
 import {StatusJson} from './StatusJson';
 import {StatusResult} from './StatusResult';
 
 export class StatusRequest
-    extends ResourceRequest<StatusResult> {
+    extends CmsResourceRequest<StatusResult> {
 
     constructor() {
         super();
