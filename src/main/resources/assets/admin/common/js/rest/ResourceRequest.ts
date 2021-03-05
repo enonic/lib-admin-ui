@@ -27,7 +27,11 @@ export abstract class ResourceRequest<PARSED_TYPE>
     private pathElements: string[] = [];
 
     constructor() {
-        this.restPath = Path.fromString(UriHelper.getRestUri(''));
+        this.restPath = Path.fromString(this.getPostfixUri());
+    }
+
+    protected getPostfixUri() {
+        return UriHelper.getRestUri('');
     }
 
     protected addRequestPathElements(...items: string[]) {
@@ -47,7 +51,7 @@ export abstract class ResourceRequest<PARSED_TYPE>
     }
 
     getRequestPath(): Path {
-        return Path.fromParent(this.getRestPath(), ...this.pathElements);
+        return Path.fromParent(this.restPath, ...this.pathElements);
     }
 
     getParams(): Object {
