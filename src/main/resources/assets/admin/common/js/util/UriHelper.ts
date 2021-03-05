@@ -49,6 +49,16 @@ export class UriHelper {
     }
 
     /**
+     * Creates an URI to a CMS rest service.
+     *
+     * @param path path to append to base rest URI.
+     * @returns {string} the URI to a rest service.
+     */
+    static getCmsRestUri(path: string): string {
+        return UriHelper.getAdminUri(UriHelper.joinPath('cms', 'rest', UriHelper.relativePath(path)));
+    }
+
+    /**
      * Creates an URI to an admin tool.
      *
      * @param path path to append to base rest URI.
