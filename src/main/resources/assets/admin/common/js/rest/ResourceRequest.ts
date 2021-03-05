@@ -46,12 +46,12 @@ export abstract class ResourceRequest<PARSED_TYPE>
         this.method = value as HttpMethod;
     }
 
-    getRestPath(): Path {
+    protected getRestPath(): Path {
         return this.restPath;
     }
 
     getRequestPath(): Path {
-        return Path.fromParent(this.restPath, ...this.pathElements);
+        return Path.fromParent(this.getRestPath(), ...this.pathElements);
     }
 
     getParams(): Object {
