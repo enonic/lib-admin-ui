@@ -159,11 +159,11 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
                         this.doLayout(this.getPersistedItem())
                             .then(() => {
-                                deferred.resolve(nextRendered);
-
                                 this.checkIfEditIsAllowed().then((canModify: boolean) => {
                                     this.handleCanModify(canModify);
-                                }).catch(DefaultErrorHandler.handle);
+                                }).catch(DefaultErrorHandler.handle).finally(() => {
+                                    deferred.resolve(nextRendered);
+                                });
 
                                 if (this.hasHelpText()) {
                                     this.setupHelpTextToggleButton();
