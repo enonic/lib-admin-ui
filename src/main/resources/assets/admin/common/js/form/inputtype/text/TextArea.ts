@@ -31,10 +31,6 @@ export class TextArea
         return ValueTypes.STRING;
     }
 
-    newInitialValue(): Value {
-        return super.newInitialValue() || new Value('', ValueTypes.STRING);
-    }
-
     createInputOccurrenceElement(index: number, property: Property): Element {
         if (!ValueTypes.STRING.equals(property.getType())) {
             ValueTypeConverter.convertPropertyValueType(property, ValueTypes.STRING);
