@@ -9,6 +9,7 @@ import {InputValidationRecording} from '../InputValidationRecording';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {InputValueLengthCounterEl} from './InputValueLengthCounterEl';
 import * as Q from 'q';
+import {Value} from '../../../data/Value';
 
 export abstract class TextInputType
     extends BaseInputTypeNotManagingAdd {
@@ -20,6 +21,10 @@ export abstract class TextInputType
     protected constructor(config: InputTypeViewContext) {
         super(config);
         this.readConfig(config.inputConfig);
+    }
+
+    newInitialValue(): Value {
+        return super.newInitialValue() || ValueTypes.STRING.newNullValue();
     }
 
     protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
@@ -45,7 +50,7 @@ export abstract class TextInputType
     }
 
     protected newValueHandler(inputEl: FormInputEl, newValue: string, isValid: boolean = true) {
-        const value = isValid ? ValueTypes.STRING.newValue(newValue) : this.newInitialValue();
+        const value = isValid ? ValueTypes.STRING.newValue(newValue.trim()) : this.newInitialValue();
         this.notifyOccurrenceValueChanged(inputEl, value);
     }
 
