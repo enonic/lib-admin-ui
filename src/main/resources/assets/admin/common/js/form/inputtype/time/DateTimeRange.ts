@@ -13,16 +13,15 @@ import {Element} from '../../../dom/Element';
 import {SelectedDateChangedEvent} from '../../../ui/time/SelectedDateChangedEvent';
 import {InputValidationRecording} from '../InputValidationRecording';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
-import {InputTypeName} from '../../InputTypeName';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
+import {InputTypeName} from '../../InputTypeName';
 
 declare const Date: DateConstructor;
 
 export class DateTimeRange
     extends BaseInputTypeNotManagingAdd {
 
-    private valueType: ValueType = ValueTypes.DATA;
     private useTimezone: boolean;
     private from: DateTime | LocalDateTime;
     private to: DateTime | LocalDateTime;
@@ -49,15 +48,10 @@ export class DateTimeRange
     }
 
     getValueType(): ValueType {
-        return this.valueType;
-    }
-
-    newInitialValue(): Value {
-        return super.newInitialValue() || this.valueType.newNullValue();
+        return ValueTypes.DATA;
     }
 
     createInputOccurrenceElement(_index: number, property: Property): Element {
-
         [this.from, this.to] = this.getFromTo(property.getPropertySet());
 
         if (this.useTimezone) {
@@ -94,13 +88,43 @@ export class DateTimeRange
         input.setEnabled(enable);
     }
 
-    hasInputElementValidUserInput(inputElement: Element) {
-        let dateTimePicker = <DateTimeRangePicker>inputElement;
-        return dateTimePicker.isValid();
-    }
+    doValidateUserInput(inputEl: DateTimeRangePicker) {
+        super.doValidateUserInput(inputEl);
 
-    availableSizeChanged() {
-        // Nothing
+        if (!inputEl.isValid()) {
+            const record: AdditionalValidationRecord =
+                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                    i18n('field.value.invalid')).build();
+
+            this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
+        } else {
+            if (!this.to) {
+                return;
+            }
+
+            let errorMessage: string;
+
+            if (!this.from) {
+                errorMessage = this.errors.noStart;
+            } else if (this.to.toDate() < new Date()) {
+                errorMessage = this.errors.endInPast;
+            } else if (this.to.toDate() < this.from.toDate()) {
+                errorMessage = this.errors.endBeforeStart;
+            } else if (this.to.equals(this.from)) {
+                errorMessage = this.errors.startEqualsEnd;
+            }
+
+            if (!errorMessage) {
+                return;
+            }
+
+            const record: AdditionalValidationRecord =
+                AdditionalValidationRecord.create()
+                    .setOverwriteDefault(true)
+                    .setMessage(errorMessage)
+                    .build();
+            this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
+        }
     }
 
     valueBreaksRequiredContract(value: Value): boolean {
@@ -108,40 +132,12 @@ export class DateTimeRange
             return true;
         }
 
-        const pSet = value.getPropertySet();
-        const from = pSet.getProperty('from');
-        const to = pSet.getProperty('to');
+        const pSet: PropertySet = value.getPropertySet();
+        const from: Property = pSet.getProperty('from');
+        const to: Property = pSet.getProperty('to');
 
         return from && from.getType() !== ValueTypes.DATE_TIME && from.getType() !== ValueTypes.LOCAL_DATE_TIME
                || to && to.getType() !== ValueTypes.DATE_TIME && to.getType() !== ValueTypes.LOCAL_DATE_TIME;
-    }
-
-    protected additionalValidate(recording: InputValidationRecording) {
-        recording.setAdditionalValidationRecord(undefined);
-        if (!recording.isValid() || !this.to) {
-            return;
-        }
-        let errorMessage: string;
-        if (!this.from) {
-            errorMessage = this.errors.noStart;
-        } else if (this.to.toDate() < new Date()) {
-            errorMessage = this.errors.endInPast;
-        } else if (this.to.toDate() < this.from.toDate()) {
-            errorMessage = this.errors.endBeforeStart;
-        } else if (this.to.equals(this.from)) {
-            errorMessage = this.errors.startEqualsEnd;
-        }
-
-        if (!errorMessage) {
-            return;
-        }
-
-        recording.setBreaksMinimumOccurrences(true);
-        recording.setAdditionalValidationRecord(
-            AdditionalValidationRecord.create()
-                .setOverwriteDefault(true)
-                .setMessage(errorMessage)
-                .build());
     }
 
     private readConfig(inputConfig: { [element: string]: any; }): void {
@@ -171,29 +167,34 @@ export class DateTimeRange
     }
 
     private createInputAsLocalDateTime(property: Property): DateTimeRangePicker {
-        const rangeBuilder = new DateTimeRangePickerBuilder()
+        const rangeBuilder: DateTimeRangePickerBuilder = new DateTimeRangePickerBuilder()
             .setStartLabel(this.labels.start)
             .setEndLabel(this.labels.end);
 
         this.setFromTo(rangeBuilder, property);
 
-        const rangePicker = rangeBuilder.build();
+        const rangePicker: DateTimeRangePicker = rangeBuilder.build();
 
         rangePicker.onStartDateTimeChanged((event: SelectedDateChangedEvent) => {
             this.from = event.getDate() ? LocalDateTime.fromDate(event.getDate()) : null;
-            this.notifyOccurrenceValueChanged(rangePicker, this.createLocalDateTimePropertySetValue());
+            this.handleOccurrenceInputValueChanged(rangePicker);
         });
 
         rangePicker.onEndDateTimeChanged((event: SelectedDateChangedEvent) => {
             this.to = event.getDate() ? LocalDateTime.fromDate(event.getDate()) : null;
-            this.notifyOccurrenceValueChanged(rangePicker, this.createLocalDateTimePropertySetValue());
+            this.handleOccurrenceInputValueChanged(rangePicker);
         });
 
         return rangePicker;
     }
 
+    protected getValue(): Value {
+        return this.createLocalDateTimePropertySetValue();
+    }
+
     private createLocalDateTimePropertySetValue() {
         let pSet: PropertySet;
+
         if (this.from || this.to) {
             pSet = new PropertySet();
             if (this.from) {
@@ -205,18 +206,19 @@ export class DateTimeRange
         } else {
             pSet = null;
         }
+
         return new Value(pSet, ValueTypes.DATA);
     }
 
     private createInputAsDateTime(property: Property): DateTimeRangePicker {
-        const rangeBuilder = new DateTimeRangePickerBuilder()
+        const rangeBuilder: DateTimeRangePickerBuilder = new DateTimeRangePickerBuilder()
             .setStartLabel(this.labels.start)
             .setEndLabel(this.labels.end)
             .setUseLocalTimezoneIfNotPresent(true);
 
         this.setFromTo(rangeBuilder, property);
 
-        const rangePicker = rangeBuilder.build();
+        const rangePicker: DateTimeRangePicker = rangeBuilder.build();
 
         rangePicker.onStartDateTimeChanged((event: SelectedDateChangedEvent) => {
             this.from = event.getDate() ? DateTime.fromDate(event.getDate()) : null;
@@ -232,7 +234,7 @@ export class DateTimeRange
     }
 
     private createDateTimePropertySetValue() {
-        const pSet = new PropertySet();
+        const pSet: PropertySet = new PropertySet();
         pSet.setLocalDateTimeByPath('from', <LocalDateTime>this.from);
         pSet.setLocalDateTimeByPath('to', <LocalDateTime>this.to);
         return new Value(pSet, ValueTypes.DATA);

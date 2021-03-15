@@ -11,6 +11,8 @@ import {FormInputEl} from '../../../dom/FormInputEl';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
+import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
+import {i18n} from '../../../util/Messages';
 
 export class GeoPoint
     extends BaseInputTypeNotManagingAdd {
@@ -19,25 +21,23 @@ export class GeoPoint
         return ValueTypes.GEO_POINT;
     }
 
-    newInitialValue(): Value {
-        return super.newInitialValue() || ValueTypes.GEO_POINT.newNullValue();
-    }
-
     createInputOccurrenceElement(_index: number, property: Property): Element {
-        if (!ValueTypes.GEO_POINT.equals(property.getType())) {
-            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.GEO_POINT);
+        if (!this.getValueType().equals(property.getType())) {
+            ValueTypeConverter.convertPropertyValueType(property, this.getValueType());
         }
 
-        let geoPoint = new GeoPointEl(property.getGeoPoint());
+        const inputEl: GeoPointEl = new GeoPointEl(property.getGeoPoint());
 
-        geoPoint.onValueChanged((event: ValueChangedEvent) => {
-            let value = GeoPointUtil.isValidString(event.getNewValue()) ?
-                        ValueTypes.GEO_POINT.newValue(event.getNewValue()) :
-                        ValueTypes.GEO_POINT.newNullValue();
-            this.notifyOccurrenceValueChanged(geoPoint, value);
+        inputEl.onValueChanged((event: ValueChangedEvent) => {
+            this.handleOccurrenceInputValueChanged(inputEl, event);
         });
 
-        return geoPoint;
+        return inputEl;
+    }
+
+    protected getValue(inputEl: GeoPointEl, event: ValueChangedEvent): Value {
+        const isValid: boolean = this.isUserInputValid(inputEl);
+        return  isValid ? this.getValueType().newValue(event.getNewValue()) : this.getValueType().newNullValue();
     }
 
     resetInputOccurrenceElement(occurrence: Element) {
@@ -52,13 +52,16 @@ export class GeoPoint
         input.setEnabled(enable);
     }
 
-    valueBreaksRequiredContract(value: Value): boolean {
-        return value.isNull() || !value.getType().equals(ValueTypes.GEO_POINT);
-    }
+    doValidateUserInput(inputEl: GeoPointEl) {
+        super.doValidateUserInput(inputEl);
 
-    hasInputElementValidUserInput(inputElement: Element) {
-        let geoPoint = <GeoPointEl>inputElement;
-        return geoPoint.isValid();
+        if (!inputEl.isValid()) {
+            const record: AdditionalValidationRecord =
+                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                    i18n('field.value.invalid')).build();
+
+            this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
+        }
     }
 
     protected updateFormInputElValue(occurrence: FormInputEl, property: Property) {

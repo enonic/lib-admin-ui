@@ -13,8 +13,6 @@ import {Button} from '../ui/button/Button';
 import {ValidationRecordingViewer} from './ValidationRecordingViewer';
 import {ContentSummary} from '../content/ContentSummary';
 import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
-import {ObjectHelper} from '../ObjectHelper';
-import {InputOccurrenceView} from './inputtype/support/InputOccurrenceView';
 import {InputValidityChangedEvent} from './inputtype/InputValidityChangedEvent';
 import {InputTypeName} from './InputTypeName';
 import {InputValidationRecording} from './inputtype/InputValidationRecording';
@@ -115,12 +113,6 @@ export class InputView
                 });
                 inputTypeViewNotManagingAdd.onOccurrenceRemoved((event: OccurrenceRemovedEvent) => {
                     this.refreshButtonsState();
-
-                    if (ObjectHelper.iFrameSafeInstanceOf(event.getOccurrenceView(),
-                        InputOccurrenceView)) {
-                        // force validate, since InputView might have become invalid
-                        this.validate(false);
-                    }
                 });
 
                 this.addButton = new Button(i18n('action.add'));
@@ -139,7 +131,7 @@ export class InputView
                 this.handleInputValidationRecording(event.getRecording(), false);
             });
 
-            this.refreshButtonsState(validate);
+            this.refreshButtonsState();
         });
     }
 
@@ -286,13 +278,10 @@ export class InputView
         return InputTypeManager.createView('NoInputTypeFound', inputTypeViewContext);
     }
 
-    private refreshButtonsState(validate: boolean = true) {
+    private refreshButtonsState() {
         if (!this.inputTypeView.isManagingAdd()) {
             let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
             this.addButton.setVisible(!inputTypeViewNotManagingAdd.maximumOccurrencesReached());
-        }
-        if (validate) {
-            this.validate(false);
         }
     }
 

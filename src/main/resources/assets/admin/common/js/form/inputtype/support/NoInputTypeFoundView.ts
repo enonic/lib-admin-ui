@@ -22,31 +22,30 @@ export class NoInputTypeFoundView
         return ValueTypes.STRING;
     }
 
-    newInitialValue(): Value {
-        return super.newInitialValue() || ValueTypes.STRING.newValue('');
-    }
-
     layout(input: Input, property?: PropertyArray): Q.Promise<void> {
-
-        let divEl = new DivEl();
+        const divEl: DivEl = new DivEl();
         divEl.getEl().setInnerHtml('Warning: no input type found: ' + input.getInputType().toString());
 
         return super.layout(input, property);
     }
 
     createInputOccurrenceElement(_index: number, property: Property): Element {
-
-        let inputEl = TextInput.middle();
+        const inputEl: TextInput = TextInput.middle();
         inputEl.setName(this.getInput().getName());
+
         if (property != null) {
             inputEl.setValue(property.getString());
         }
+
         inputEl.onValueChanged((event: ValueChangedEvent) => {
-            let value = ValueTypes.STRING.newValue(event.getNewValue());
-            this.notifyOccurrenceValueChanged(inputEl, value);
+            this.handleOccurrenceInputValueChanged(inputEl, event);
         });
 
         return inputEl;
+    }
+
+    protected getValue(inputEl: Element, data?: ValueChangedEvent): Value {
+        return this.getValueType().newValue(data.getNewValue());
     }
 
     resetInputOccurrenceElement(occurrence: Element) {
@@ -62,14 +61,7 @@ export class NoInputTypeFoundView
     }
 
     valueBreaksRequiredContract(value: Value): boolean {
-        return value.isNull() || !value.getType().equals(ValueTypes.STRING) ||
-               StringHelper.isBlank(value.getString());
-    }
-
-    hasInputElementValidUserInput(_inputElement: Element) {
-
-        // TODO
-        return true;
+        return super.valueBreaksRequiredContract(value) || StringHelper.isBlank(value.getString());
     }
 
     protected updateFormInputElValue(occurrence: FormInputEl, property: Property) {
