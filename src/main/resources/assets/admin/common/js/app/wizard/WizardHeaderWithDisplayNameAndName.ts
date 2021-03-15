@@ -56,7 +56,6 @@ export class WizardHeaderWithDisplayNameAndName
         this.options = options;
         this.initElements();
         this.postInitElements();
-        this.initListeners();
     }
 
     protected initElements() {
@@ -279,21 +278,10 @@ export class WizardHeaderWithDisplayNameAndName
         this.toggleDisplayNameInput(enable);
     }
 
-    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
-
-    disableNameInput() {
-        console.warn(`WizardHeaderWithDisplayNameAndName.disableNameInput() is deprecated and will be removed in lib-admin-ui 4.0.0`);
-        this.toggleNameInput(false);
-    }
-
-    disableDisplayNameInput() {
-        console.warn('WizardHeaderWithDisplayNameAndName.disableDisplayNameInput() ' +
-                     'is deprecated and will be removed in lib-admin-ui 4.0.0');
-        this.toggleDisplayNameInput(false);
-    }
-
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
+
+            this.initListeners();
             this.addClass('wizard-header-with-display-name-and-name');
 
             const separator: SpanEl = new SpanEl('separator');
@@ -307,6 +295,19 @@ export class WizardHeaderWithDisplayNameAndName
 
             return rendered;
         });
+    }
+
+    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
+
+    disableNameInput() {
+        console.warn(`WizardHeaderWithDisplayNameAndName.disableNameInput() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        this.toggleNameInput(false);
+    }
+
+    disableDisplayNameInput() {
+        console.warn('WizardHeaderWithDisplayNameAndName.disableDisplayNameInput() ' +
+                     'is deprecated and will be removed in lib-admin-ui 4.0.0');
+        this.toggleDisplayNameInput(false);
     }
 }
 

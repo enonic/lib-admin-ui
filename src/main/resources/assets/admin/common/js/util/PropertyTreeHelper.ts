@@ -5,7 +5,7 @@ export class PropertyTreeHelper {
 
     static trimPropertyTree(data: PropertyTree): PropertyTree {
         const copy: PropertyTree = data.copy();
-        copy.getRoot().removeEmptyValues();
+        copy.removeEmptyValues();
 
         return copy;
     }
