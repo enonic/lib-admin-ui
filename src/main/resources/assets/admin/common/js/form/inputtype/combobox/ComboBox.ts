@@ -108,7 +108,7 @@ export class ComboBox
             this.comboBox.setFilterArgs({searchString: event.getNewValue()});
         });
         comboBox.onOptionSelected((event: SelectedOptionEvent<string>) => {
-            this.ignorePropertyChange = true;
+            this.ignorePropertyChange(true);
 
             const option = event.getSelectedOption();
             let value = new Value(option.getOption().getValue(), ValueTypes.STRING);
@@ -118,17 +118,17 @@ export class ComboBox
                 this.getPropertyArray().add(value);
             }
 
-            this.ignorePropertyChange = false;
+            this.ignorePropertyChange(false);
             this.validate(false);
 
             this.fireFocusSwitchEvent(event);
         });
         comboBox.onOptionDeselected((event: SelectedOptionEvent<string>) => {
-            this.ignorePropertyChange = true;
+            this.ignorePropertyChange(true);
 
             this.getPropertyArray().remove(event.getSelectedOption().getIndex());
 
-            this.ignorePropertyChange = false;
+            this.ignorePropertyChange(false);
             this.validate(false);
         });
 

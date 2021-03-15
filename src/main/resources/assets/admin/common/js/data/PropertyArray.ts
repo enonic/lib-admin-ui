@@ -51,6 +51,8 @@ export class PropertyArray
 
     private propertyValueChangedEventHandler: (event: PropertyValueChangedEvent) => void;
 
+    private ignoreChange: boolean = false;
+
     constructor(builder: PropertyArrayBuilder) {
         this.tree = builder.parent.getTree();
         this.parent = builder.parent;
@@ -70,6 +72,14 @@ export class PropertyArray
         this.propertyValueChangedEventHandler = (event) => {
             this.forwardPropertyValueChangedEvent(event);
         };
+    }
+
+    setIgnoreChange(value: boolean) {
+        this.ignoreChange = value;
+    }
+
+    getIgnoreChange(): boolean {
+        return this.ignoreChange;
     }
 
     public static create(): PropertyArrayBuilder {
