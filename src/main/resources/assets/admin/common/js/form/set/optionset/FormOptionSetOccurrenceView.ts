@@ -168,7 +168,7 @@ export class FormOptionSetOccurrenceView
 
         return selectionArray?.getProperties()
             .sort((one: Property, two: Property) => {
-                return this.formOptionsByNameMap.get(one.getString()).index - this.formOptionsByNameMap.get(two.getString()).index;
+                return this.formOptionsByNameMap.get(one.getString())?.index - this.formOptionsByNameMap.get(two.getString())?.index;
             });
     }
 
@@ -189,7 +189,7 @@ export class FormOptionSetOccurrenceView
 
     protected getLabelText(): string {
         let selectedLabels = this.getSortedSelectedOptionsArrayProperties()
-            .map((selectedProp: Property) => this.formOptionsByNameMap.get(selectedProp.getString()).label);
+            .map((selectedProp: Property) => this.formOptionsByNameMap.get(selectedProp.getString())?.label);
 
         return selectedLabels.length ? selectedLabels.join(', ') : this.getFormSet().getLabel();
     }
