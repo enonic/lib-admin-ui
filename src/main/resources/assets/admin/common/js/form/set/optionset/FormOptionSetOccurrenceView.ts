@@ -182,9 +182,9 @@ export class FormOptionSetOccurrenceView
 
         let selectedLabels = selectionArray.getProperties()
             .sort((one: Property, two: Property) => {
-                return nameLabelMap.get(one.getString()).index - nameLabelMap.get(two.getString()).index;
+                return nameLabelMap.get(one.getString())?.index - nameLabelMap.get(two.getString())?.index;
             })
-            .map((selectedProp: Property) => nameLabelMap.get(selectedProp.getString()).label);
+            .map((selectedProp: Property) => nameLabelMap.get(selectedProp.getString())?.label);
 
         return selectedLabels.length ? selectedLabels.join(', ') : this.getFormSet().getLabel();
     }
