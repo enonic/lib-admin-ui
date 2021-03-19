@@ -34,10 +34,6 @@ export class TextLine
     }
 
     private validateRegex(inputEl: FormInputEl) {
-        if (!this.regexp) {
-            return;
-        }
-
         const parent: Element = inputEl.getParentElement();
 
         if (StringHelper.isEmpty(inputEl.getValue())) {
@@ -78,7 +74,10 @@ export class TextLine
 
     doValidateUserInput(inputEl: FormInputEl) {
         super.doValidateUserInput(inputEl);
-        this.validateRegex(inputEl);
+
+        if (this.regexp) {
+            this.validateRegex(inputEl);
+        }
     }
 
     private isRegExpValid(inputEl: FormInputEl): boolean {

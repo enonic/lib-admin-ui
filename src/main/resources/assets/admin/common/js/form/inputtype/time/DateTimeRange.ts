@@ -91,40 +91,37 @@ export class DateTimeRange
     doValidateUserInput(inputEl: DateTimeRangePicker) {
         super.doValidateUserInput(inputEl);
 
-        if (!inputEl.isValid()) {
+        const errorMessage: string = inputEl.isValid() ? this.getErrorMessage() : i18n('field.value.invalid');
+
+        if (errorMessage) {
             const record: AdditionalValidationRecord =
-                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
-                    i18n('field.value.invalid')).build();
-
-            this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
-        } else {
-            if (!this.to) {
-                return;
-            }
-
-            let errorMessage: string;
-
-            if (!this.from) {
-                errorMessage = this.errors.noStart;
-            } else if (this.to.toDate() < new Date()) {
-                errorMessage = this.errors.endInPast;
-            } else if (this.to.toDate() < this.from.toDate()) {
-                errorMessage = this.errors.endBeforeStart;
-            } else if (this.to.equals(this.from)) {
-                errorMessage = this.errors.startEqualsEnd;
-            }
-
-            if (!errorMessage) {
-                return;
-            }
-
-            const record: AdditionalValidationRecord =
-                AdditionalValidationRecord.create()
-                    .setOverwriteDefault(true)
-                    .setMessage(errorMessage)
-                    .build();
+                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(errorMessage).build();
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
         }
+    }
+
+    private getErrorMessage(): string {
+        if (!this.to) {
+            return null;
+        }
+
+        if (!this.from) {
+            return this.errors.noStart;
+        }
+
+        if (this.to.toDate() < new Date()) {
+            return this.errors.endInPast;
+        }
+
+        if (this.to.toDate() < this.from.toDate()) {
+            return  this.errors.endBeforeStart;
+        }
+
+        if (this.to.equals(this.from)) {
+            return this.errors.startEqualsEnd;
+        }
+
+        return null;
     }
 
     valueBreaksRequiredContract(value: Value): boolean {
