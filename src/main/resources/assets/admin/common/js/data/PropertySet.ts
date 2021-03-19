@@ -463,7 +463,7 @@ export class PropertySet
         return jsonArray;
     }
 
-    getValuesAsString(): { name: string; value: string }[] {
+    getValuesAsString(): { name: string; value: string; path: string }[] {
         let result = [];
 
         ObjectHelper.objectPropertyIterator(this.propertyArrayByName, (name: string, propertyArray: PropertyArray) => {
@@ -475,10 +475,12 @@ export class PropertySet
                     result = result.concat(property.getValue().getPropertySet().getValuesAsString());
                 });
             } else {
-                const value = propertyArray.getValue(0) || ValueTypes.STRING.newNullValue();
+                const property = propertyArray.get(0);
+                const value = property.getValue() || ValueTypes.STRING.newNullValue();
                 result.push({
                     name: name,
-                    value: value.isNull() ? '' : value.getString()
+                    value: value.isNull() ? '' : value.getString(),
+                    path: property.getPath().toString().substr(1)
                 });
             }
         });

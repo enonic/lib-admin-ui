@@ -19,7 +19,6 @@ export abstract class BaseInputTypeManagingAdd
     implements InputTypeView {
 
     public static debug: boolean = false;
-    protected ignorePropertyChange: boolean;
     private inputValidityChangedListeners: { (event: InputValidityChangedEvent): void }[] = [];
     private inputValueChangedListeners: { (event: ValueChangedEvent): void }[] = [];
     private input: Input;
@@ -212,9 +211,17 @@ export abstract class BaseInputTypeManagingAdd
         return this.propertyArray;
     }
 
+    protected ignorePropertyChange(value: boolean) {
+        this.propertyArray.setIgnoreChange(value);
+    }
+
+    protected isPropertyChangeIgnored(): boolean {
+        return this.propertyArray.getIgnoreChange();
+    }
+
     private initListeners() {
         this.propertyArrayListener = (...args: any[]) => {
-            if (!this.ignorePropertyChange) {
+            if (!this.isPropertyChangeIgnored()) {
                 if (BaseInputTypeManagingAdd.debug) {
                     console.debug('BaseInputTypeManagingAdd: propertyArrayListener', args);
                 }

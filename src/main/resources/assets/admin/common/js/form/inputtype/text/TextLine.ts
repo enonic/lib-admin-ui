@@ -1,20 +1,14 @@
 import {Property} from '../../../data/Property';
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
-import {ValueTypes} from '../../../data/ValueTypes';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {Element} from '../../../dom/Element';
 import {StringHelper} from '../../../util/StringHelper';
 import {i18n} from '../../../util/Messages';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {TextInput} from '../../../ui/text/TextInput';
-import {ValueChangedEvent} from '../../../ValueChangedEvent';
-import {InputValidationRecording} from '../InputValidationRecording';
 import {InputTypeName} from '../../InputTypeName';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {TextInputType} from './TextInputType';
-import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 
 export class TextLine

@@ -34,6 +34,10 @@ export abstract class TextInputType
         return ValueTypes.STRING;
     }
 
+    newInitialValue(): Value {
+        return super.newInitialValue() || ValueTypes.STRING.newNullValue();
+    }
+
     protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
         const maxLengthConfig: Object = inputConfig['maxLength'] ? inputConfig['maxLength'][0] : {};
         const maxLength: number = NumberHelper.toNumber(maxLengthConfig['value']);
@@ -58,6 +62,11 @@ export abstract class TextInputType
         }
 
         return inputEl;
+    }
+
+    protected newValueHandler(inputEl: FormInputEl, newValue: string, isValid: boolean = true) {
+        const value = isValid ? ValueTypes.STRING.newValue(newValue.trim()) : this.newInitialValue();
+        this.notifyOccurrenceValueChanged(inputEl, value);
     }
 
     createInputOccurrenceElement(index: number, property: Property): Element {

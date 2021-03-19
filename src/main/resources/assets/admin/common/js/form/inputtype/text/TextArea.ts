@@ -1,6 +1,4 @@
 import {Property} from '../../../data/Property';
-import {ValueType} from '../../../data/ValueType';
-import {ValueTypes} from '../../../data/ValueTypes';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Element} from '../../../dom/Element';
