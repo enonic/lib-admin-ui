@@ -306,10 +306,6 @@ export class InputView
             recording.breaksMaximumOccurrences(validationRecordingPath);
         }
 
-        if (inputRecording.hasAdditionalValidationRecord()) {
-            recording.addValidationRecord(validationRecordingPath.toString(), inputRecording.getAdditionalValidationRecord());
-        }
-
         if (recording.validityChanged(this.previousValidityRecording) || this.userInputValidityChanged(hasValidInput)) {
             if (!silent) {
                 this.notifyValidityChanged(new RecordingValidityChangedEvent(recording,
