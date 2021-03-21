@@ -91,16 +91,16 @@ export class DateTimeRange
     doValidateUserInput(inputEl: DateTimeRangePicker) {
         super.doValidateUserInput(inputEl);
 
-        const errorMessage: string = inputEl.isValid() ? this.getErrorMessage() : i18n('field.value.invalid');
+        const error: string = inputEl.isValid() ? this.getRangeError() : i18n('field.value.invalid');
 
-        if (errorMessage) {
+        if (error) {
             const record: AdditionalValidationRecord =
-                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(errorMessage).build();
+                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(error).build();
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
         }
     }
 
-    private getErrorMessage(): string {
+    private getRangeError(): string {
         if (!this.to) {
             return null;
         }
@@ -109,6 +109,10 @@ export class DateTimeRange
             return this.errors.noStart;
         }
 
+        return this.getToError();
+    }
+
+    private getToError(): string {
         if (this.to.toDate() < new Date()) {
             return this.errors.endInPast;
         }
