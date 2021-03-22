@@ -43,6 +43,8 @@ export class PathMatchExpression
             searchString = searchString.slice(1);
         }
 
+        searchString = searchString.trim().replace(/\s+/g,'*');
+
         return '/content/*' + searchString + '*';
     }
 }
