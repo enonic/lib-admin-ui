@@ -357,8 +357,10 @@ export class WizardPanel<EQUITABLE extends Equitable>
     }
 
     giveInitialFocus() {
-        this.getWizardHeader().giveFocus();
-        this.startRememberFocus();
+        this.whenRendered(() => {
+            this.getWizardHeader().giveFocus();
+            this.startRememberFocus();
+        });
     }
 
     startRememberFocus() {
