@@ -26,25 +26,26 @@
           background-color: @admin-bg-light-gray;
         }
 
-        &.invalid, &.uninstalled {
+        &.invalid {
           .highlight-option(@admin-input-red);
         }
 
         &.uninstalled {
-          a.edit {
-            display: none;
-          }
-        }
-
-        &.empty {
           .highlight-option(@admin-input-red);
 
-          .@{_COMMON_PREFIX}wrapper:before {
-            content: "!";
-            display: block;
-            position: absolute;
-            background: @admin-red;
-            color: @admin-white;
+          .@{_COMMON_PREFIX}wrapper {
+            &::before {
+              content: "!";
+              display: block;
+              background-color: @admin-red;
+              color: @admin-white;
+              left: 10px;
+              top: 7px;
+            }
+
+            .font-icon-default {
+              display: none;
+            }
           }
 
           a.edit {
@@ -53,7 +54,7 @@
         }
 
         &.stopped {
-          .highlight-option(orange);
+          opacity: 0.5;
           a.edit {
             display: none;
           }
@@ -107,7 +108,7 @@
 }
 
 .highlight-option(@color) {
-  background-color: @color;
+  background-color: @color !important;
 
   .@{_COMMON_PREFIX}names-view .@{_COMMON_PREFIX}sub-name {
     color: @admin-dark-gray;
