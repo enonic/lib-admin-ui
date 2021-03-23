@@ -211,7 +211,7 @@ export abstract class BaseInputTypeNotManagingAdd
         this.notifyOccurrenceValueChanged(inputEl, value);
         const currentOccurrenceValidationRecord: OccurrenceValidationRecord = this.occurrenceValidationState.get(inputEl.getId());
 
-        if (this.previousValidationRecord.isValid() !== currentOccurrenceValidationRecord.isValid()) {
+        if (!this.previousValidationRecord || this.previousValidationRecord.isValid() !== currentOccurrenceValidationRecord.isValid()) {
             this.updateValidationRecord();
         }
     }
