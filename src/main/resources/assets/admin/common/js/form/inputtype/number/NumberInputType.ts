@@ -100,7 +100,7 @@ export abstract class NumberInputType
         } else if (!this.isValidMax(NumberHelper.toNumber(value))) {
             const record: AdditionalValidationRecord =
                 AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
-                    i18n('field.value.breaks.min', this.min)).build();
+                    i18n('field.value.breaks.max', this.max)).build();
 
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
         }

@@ -1,7 +1,8 @@
 import {ObjectHelper} from '../../ObjectHelper';
 import {AdditionalValidationRecord} from '../AdditionalValidationRecord';
+import {Equitable} from '../../Equitable';
 
-export class InputValidationRecording {
+export class InputValidationRecording implements Equitable {
 
     private breaksMinimumOccurrences: boolean;
 

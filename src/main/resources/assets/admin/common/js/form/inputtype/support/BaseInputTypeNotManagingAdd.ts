@@ -209,11 +209,7 @@ export abstract class BaseInputTypeNotManagingAdd
         const value: Value = this.getValue(inputEl, data);
         this.validateRequiredContract(inputEl, value);
         this.notifyOccurrenceValueChanged(inputEl, value);
-        const currentOccurrenceValidationRecord: OccurrenceValidationRecord = this.occurrenceValidationState.get(inputEl.getId());
-
-        if (!this.previousValidationRecord || this.previousValidationRecord.isValid() !== currentOccurrenceValidationRecord.isValid()) {
-            this.updateValidationRecord();
-        }
+        this.updateValidationRecord();
     }
 
     private updateValidationRecord() {
