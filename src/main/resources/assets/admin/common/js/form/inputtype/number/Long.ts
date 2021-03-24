@@ -24,8 +24,6 @@ export class Long
     }
 
     doValidateUserInput(inputEl: TextInput) {
-        super.doValidateUserInput(inputEl);
-
         if (!NumberHelper.isWholeNumber(+inputEl.getValue())) {
             const record: AdditionalValidationRecord =
                 AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
@@ -33,6 +31,8 @@ export class Long
 
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
         }
+
+        super.doValidateUserInput(inputEl);
     }
 }
 
