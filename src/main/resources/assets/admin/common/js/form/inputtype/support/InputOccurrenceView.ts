@@ -22,7 +22,6 @@ export class InputOccurrenceView
     private inputElement: Element;
     private removeButtonEl: ButtonEl;
     private dragControl: DivEl;
-    private requiredContractBroken: boolean;
     private propertyValueChangedHandler: (event: PropertyValueChangedEvent) => void;
     private occurrenceValueChangedHandler: (occurrence: Element, value: Value) => void;
 
@@ -31,8 +30,6 @@ export class InputOccurrenceView
 
         this.inputTypeView = baseInputTypeView;
         this.inputElement = this.inputTypeView.createInputOccurrenceElement(inputOccurrence.getIndex(), property);
-
-        this.requiredContractBroken = this.inputTypeView.valueBreaksRequiredContract(property != null ? property.getValue() : null);
 
         this.initListeners();
 
@@ -106,7 +103,7 @@ export class InputOccurrenceView
     }
 
     hasValidUserInput(recording?: InputValidationRecording): boolean {
-        return this.inputTypeView.hasInputElementValidUserInput(this.inputElement, recording);
+        return this.inputTypeView.isUserInputValid(this.inputElement);
     }
 
     giveFocus(): boolean {
@@ -138,9 +135,9 @@ export class InputOccurrenceView
                 if (InputOccurrenceView.debug) {
                     console.debug('InputOccurrenceView: onOccurrenceValueChanged ', occurrence, value);
                 }
+
                 ignorePropertyChange = true;
                 this.property.setValue(value);
-                this.inputTypeView.validate(false);
                 ignorePropertyChange = false;
             }
         };
@@ -150,14 +147,7 @@ export class InputOccurrenceView
         });
 
         this.propertyValueChangedHandler = (event: PropertyValueChangedEvent) => {
-
-            const changedProperty = event.getProperty();
-            let newStateOfRequiredContractBroken = this.inputTypeView.valueBreaksRequiredContract(event.getNewValue());
-
-            if (this.requiredContractBroken !== newStateOfRequiredContractBroken) {
-                this.requiredContractBroken = newStateOfRequiredContractBroken;
-                this.inputTypeView.notifyRequiredContractBroken();
-            }
+            const changedProperty: Property = event.getProperty();
 
             if (!ignorePropertyChange) {
                 if (InputOccurrenceView.debug) {

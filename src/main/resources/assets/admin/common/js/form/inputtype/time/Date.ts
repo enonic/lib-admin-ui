@@ -10,6 +10,8 @@ import {LocalDate} from '../../../util/LocalDate';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
+import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
+import {i18n} from '../../../util/Messages';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDate]].
@@ -21,30 +23,41 @@ export class Date
         return ValueTypes.LOCAL_DATE;
     }
 
-    newInitialValue(): Value {
-        return super.newInitialValue() || ValueTypes.LOCAL_DATE.newNullValue();
-    }
-
     createInputOccurrenceElement(_index: number, property: Property): Element {
-        if (!ValueTypes.LOCAL_DATE.equals(property.getType())) {
-            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.LOCAL_DATE);
+        if (!this.getValueType().equals(property.getType())) {
+            ValueTypeConverter.convertPropertyValueType(property, this.getValueType());
         }
 
-        let datePickerBuilder = new DatePickerBuilder();
+        const datePickerBuilder: DatePickerBuilder = new DatePickerBuilder();
 
         if (!property.hasNullValue()) {
-            let date = property.getLocalDate();
+            const date: LocalDate = property.getLocalDate();
             datePickerBuilder.setDate(date.toDate());
         }
-        let datePicker = datePickerBuilder.build();
+
+        const datePicker: DatePicker = datePickerBuilder.build();
 
         datePicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
-            let value = new Value(event.getDate() != null ? LocalDate.fromDate(event.getDate()) : null,
-                ValueTypes.LOCAL_DATE);
-            this.notifyOccurrenceValueChanged(datePicker, value);
+            this.handleOccurrenceInputValueChanged(datePicker, event);
         });
 
         return datePicker;
+    }
+
+    protected getValue(inputEl: Element, event: SelectedDateChangedEvent): Value {
+        return new Value(event.getDate() != null ? LocalDate.fromDate(event.getDate()) : null, this.getValueType());
+    }
+
+    doValidateUserInput(inputEl: DatePicker) {
+        super.doValidateUserInput(inputEl);
+
+        if (!inputEl.isValid()) {
+            const record: AdditionalValidationRecord =
+                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                    i18n('field.value.invalid')).build();
+
+            this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
+        }
     }
 
     updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly?: boolean) {
@@ -68,15 +81,6 @@ export class Date
         const input: DatePicker = <DatePicker> occurrence;
 
         input.setEnabled(enable);
-    }
-
-    valueBreaksRequiredContract(value: Value): boolean {
-        return value.isNull() || !value.getType().equals(ValueTypes.LOCAL_DATE);
-    }
-
-    hasInputElementValidUserInput(inputElement: Element) {
-        let datePicker = <DatePicker>inputElement;
-        return datePicker.isValid();
     }
 }
 

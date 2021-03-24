@@ -67,14 +67,7 @@ export class InputOccurrences
     }
 
     hasValidUserInput(recording?: InputValidationRecording): boolean {
-        let result = true;
-        this.getOccurrenceViews().forEach((formItemOccurrenceView: FormItemOccurrenceView) => {
-
-            if (!formItemOccurrenceView.hasValidUserInput(recording)) {
-                result = false;
-            }
-        });
-        return result;
+        return this.getOccurrenceViews().every((occurrenceView: FormItemOccurrenceView) => occurrenceView.hasValidUserInput(recording));
     }
 
     moveOccurrence(fromIndex: number, toIndex: number) {
