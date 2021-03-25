@@ -42,6 +42,7 @@ export class FormOptionSetOptionView
     extends FormItemView {
 
     protected helpText: HelpTextContainer;
+    protected parent: FormOptionSetOccurrenceView;
     private formOptionSetOption: FormOptionSetOption;
     private parentDataSet: PropertySet;
     private optionItemsContainer: DivEl;
@@ -399,7 +400,8 @@ export class FormOptionSetOptionView
     }
 
     private setCheckBoxDisabled(checked?: boolean) {
-        let checkBoxShouldBeDisabled = (checked != null ? !checked : !this.checkbox.isChecked()) && this.isSelectionLimitReached();
+        const checkBoxShouldBeDisabled: boolean = (checked != null ? !checked : !this.checkbox.isChecked()) &&
+                                                  this.isSelectionLimitReached();
 
         if (this.checkbox.isDisabled() !== checkBoxShouldBeDisabled) {
             this.checkbox.setEnabled(!checkBoxShouldBeDisabled);
@@ -535,7 +537,7 @@ export class FormOptionSetOptionView
 
     private isSelectionLimitReached(): boolean {
         return this.getMultiselection().getMaximum() !== 0 &&
-               this.getMultiselection().getMaximum() <= this.getSelectedOptionsArray().getSize();
+               this.getMultiselection().getMaximum() <= this.parent.getTotalSelectedOptions();
     }
 
     private isSingleSelection(): boolean {

@@ -164,7 +164,7 @@ export class FormOptionSetOccurrenceView
     }
 
     protected getSortedSelectedOptionsArrayProperties(): Property[] {
-        const selectionArray = this.getSelectedOptionsArray();
+        const selectionArray: PropertyArray = this.getSelectedOptionsArray();
 
         return selectionArray?.getProperties()
             .sort((one: Property, two: Property) => {
@@ -188,8 +188,9 @@ export class FormOptionSetOccurrenceView
     }
 
     protected getLabelText(): string {
-        let selectedLabels = this.getSortedSelectedOptionsArrayProperties()
-            .map((selectedProp: Property) => this.formOptionsByNameMap.get(selectedProp.getString())?.label);
+        const selectedLabels: string[] = this.getSortedSelectedOptionsArrayProperties()
+            .map((selectedProp: Property) => this.formOptionsByNameMap.get(selectedProp.getString())?.label)
+            .filter((label: string) => !!label);
 
         return selectedLabels.length ? selectedLabels.join(', ') : this.getFormSet().getLabel();
     }
@@ -231,26 +232,26 @@ export class FormOptionSetOccurrenceView
     }
 
     private validateMultiselection(): ValidationRecording {
-        let multiselectionRecording = new ValidationRecording();
-        let validationRecordingPath = this.resolveValidationRecordingPath();
-        let selectionPropertyArray = this.propertySet.getPropertyArray('_selected');
+        const multiselectionRecording: ValidationRecording = new ValidationRecording();
+        const validationRecordingPath: ValidationRecordingPath = this.resolveValidationRecordingPath();
+        const totalSelected: number = this.getTotalSelectedOptions();
 
-        if (selectionPropertyArray.getSize() < this.getFormSet().getMultiselection().getMinimum()) {
+        if (totalSelected < this.getFormSet().getMultiselection().getMinimum()) {
             multiselectionRecording.breaksMinimumOccurrences(validationRecordingPath);
         }
 
-        if (this.getFormSet().getMultiselection().maximumBreached(selectionPropertyArray.getSize())) {
+        if (this.getFormSet().getMultiselection().maximumBreached(totalSelected)) {
             multiselectionRecording.breaksMaximumOccurrences(validationRecordingPath);
         }
 
         if (this.currentValidationState) {
-            if (selectionPropertyArray.getSize() < this.getFormSet().getMultiselection().getMinimum()) {
+            if (totalSelected < this.getFormSet().getMultiselection().getMinimum()) {
                 this.currentValidationState.breaksMinimumOccurrences(validationRecordingPath);
             } else {
                 this.currentValidationState.removeUnreachedMinimumOccurrencesByPath(validationRecordingPath, false);
             }
 
-            if (this.getFormSet().getMultiselection().maximumBreached(selectionPropertyArray.getSize())) {
+            if (this.getFormSet().getMultiselection().maximumBreached(totalSelected)) {
                 this.currentValidationState.breaksMaximumOccurrences(validationRecordingPath);
             } else {
                 this.currentValidationState.removeBreachedMaximumOccurrencesByPath(validationRecordingPath, false);
@@ -258,6 +259,15 @@ export class FormOptionSetOccurrenceView
         }
 
         return multiselectionRecording;
+    }
+
+    getTotalSelectedOptions() {
+        const existingOptionsNames: string[] = this.getFormSet().getOptions().map((option: FormOptionSetOption) => option.getName());
+
+        return this.propertySet.getPropertyArray('_selected')
+            .map((property: Property) => property.getString())
+            .filter((name: string) => existingOptionsNames.indexOf(name) > -1)
+            .length;
     }
 
     private handleSelectionChanged(optionView: FormOptionSetOptionView) {

@@ -7,7 +7,7 @@ import {FormItemOccurrence} from './FormItemOccurrence';
 import {HelpTextContainer} from './HelpTextContainer';
 import {RemoveButtonClickedEvent} from './RemoveButtonClickedEvent';
 
-export class FormItemOccurrenceView
+export abstract class FormItemOccurrenceView
     extends DivEl {
 
     protected formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>;
