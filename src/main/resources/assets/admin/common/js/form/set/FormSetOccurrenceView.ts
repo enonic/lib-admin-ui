@@ -82,7 +82,7 @@ export abstract class FormSetOccurrenceView
 
     private expandRequestedListeners: { (view: FormSetOccurrenceView): void }[] = [];
 
-    constructor(classPrefix: string, config: FormSetOccurrenceViewConfig<FormSetOccurrenceView>) {
+    protected constructor(classPrefix: string, config: FormSetOccurrenceViewConfig<FormSetOccurrenceView>) {
         super(`${classPrefix}occurrence-view`, config.formSetOccurrence);
 
         this.occurrenceContainerClassName = `${classPrefix}occurrences-container`;
