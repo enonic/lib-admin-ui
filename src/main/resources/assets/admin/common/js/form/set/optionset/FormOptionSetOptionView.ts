@@ -50,7 +50,6 @@ export class FormOptionSetOptionView
     private formItemLayer: FormItemLayer;
     private selectionChangedListeners: { (): void }[] = [];
     private checkbox: Checkbox;
-    private requiresClean: boolean;
     private isOptionSetExpandedByDefault: boolean;
     private notificationDialog: NotificationDialog;
     private checkboxEnabledStatusHandler: () => void = (() => {
@@ -76,8 +75,6 @@ export class FormOptionSetOptionView
         this.formItemLayer = config.layerFactory.createLayer(config);
 
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
-
-        this.requiresClean = false;
     }
 
     toggleHelpText(show?: boolean) {
@@ -150,12 +147,9 @@ export class FormOptionSetOptionView
     }
 
     clean() {
-        if (!this.isSelected() && this.requiresClean) {
-            this.resetAllFormItems();
+        if (!this.isSelected()) {
+            this.parentDataSet.removeProperty(this.getName(), 0);
             this.cleanValidationForThisOption();
-            this.requiresClean = false;
-        } else if (this.isChildOfDeselectedParent()) {
-            this.removeNonDefaultOptionFromSelectionArray();
         }
     }
 
@@ -349,11 +343,13 @@ export class FormOptionSetOptionView
 
     private getThisPropertyFromSelectedOptionsArray(): Property {
         let result: Property = null;
-        this.getSelectedOptionsArray().forEach((property: Property) => {
+
+        this.getSelectedOptionsArray()?.forEach((property: Property) => {
             if (property.getString() === this.getName()) {
                 result = property;
             }
         });
+
         return result;
     }
 
@@ -439,41 +435,14 @@ export class FormOptionSetOptionView
         this.cleanValidationForThisOption();
         this.cleanSelectionMessageForThisOption();
         this.removeClass('selected');
-        this.requiresClean = true;
 
         if (!this.isEmpty()) {
             this.notificationDialog.open();
         }
     }
 
-    private removeNonDefaultOptionFromSelectionArray() {
-        if (this.formOptionSetOption.isDefaultOption()) {
-            return;
-        }
-
-        if (this.isSingleSelection()) {
-            const selectedProperty = this.getSelectedOptionsArray().get(0);
-            const checked = !!selectedProperty && selectedProperty.getString() === this.getName();
-            if (checked) {
-                this.getSelectedOptionsArray().remove(selectedProperty.getIndex());
-                this.removeClass('selected');
-            }
-        } else if (this.checkbox.isChecked()) {
-            const property: Property = this.getThisPropertyFromSelectedOptionsArray();
-            if (!!property) {
-                this.getSelectedOptionsArray().remove(property.getIndex());
-            }
-            this.checkbox.setChecked(false, true);
-            this.removeClass('selected');
-        }
-    }
-
     hasNonDefaultValues(): boolean {
         return this.formItemViews.some(v => v.hasNonDefaultValues());
-    }
-
-    private isChildOfDeselectedParent(): boolean {
-        return $(this.getEl().getHTMLElement()).parents('.form-option-set-option-view').not('.selected').length > 0;
     }
 
     private cleanValidationForThisOption() {
@@ -513,26 +482,6 @@ export class FormOptionSetOptionView
             (_index, elem) => {
                 elem.setAttribute('disabled', 'true');
             });
-    }
-
-    private resetAllFormItems(): void {
-
-        const array = this.getOptionItemsPropertyArray(this.parentDataSet);
-        array.getSet(0).forEach((property) => {
-            this.removeNonDataProperties(property);
-        });
-
-        this.update(this.parentDataSet);
-    }
-
-    private removeNonDataProperties(property: Property) {
-        if (property.getType().equals(ValueTypes.DATA)) {
-            property.getPropertySet().forEach((prop) => {
-                this.removeNonDataProperties(prop);
-            });
-        } else if (property.getName() !== '_selected') {
-            property.getParent().removeProperty(property.getName(), property.getIndex());
-        }
     }
 
     private isSelectionLimitReached(): boolean {

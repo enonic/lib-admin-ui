@@ -77,11 +77,17 @@ export class FormOptionSetOccurrenceView
     }
 
     clean() {
-        this.formItemViews.forEach((view: FormItemView) => {
-            if (ObjectHelper.iFrameSafeInstanceOf(view, FormOptionSetOptionView)) {
-                (<FormOptionSetOptionView>view).clean();
-            }
-        });
+        const selectedOptionsArray: PropertyArray = this.getSelectedOptionsArray();
+
+        if (!selectedOptionsArray || selectedOptionsArray.isEmpty()) {
+            this.propertySet.removeAllProperties();
+        } else {
+            this.formItemViews.forEach((view: FormItemView) => {
+                if (ObjectHelper.iFrameSafeInstanceOf(view, FormOptionSetOptionView)) {
+                    (<FormOptionSetOptionView>view).clean();
+                }
+            });
+        }
     }
 
     reset(): void {
@@ -166,10 +172,10 @@ export class FormOptionSetOccurrenceView
     protected getSortedSelectedOptionsArrayProperties(): Property[] {
         const selectionArray: PropertyArray = this.getSelectedOptionsArray();
 
-        return selectionArray?.getProperties()
+        return !!selectionArray ? selectionArray.getProperties()
             .sort((one: Property, two: Property) => {
                 return this.formOptionsByNameMap.get(one.getString())?.index - this.formOptionsByNameMap.get(two.getString())?.index;
-            });
+            }) : [];
     }
 
     protected getLabelSubTitle(): string {
@@ -261,10 +267,16 @@ export class FormOptionSetOccurrenceView
         return multiselectionRecording;
     }
 
-    getTotalSelectedOptions() {
+    getTotalSelectedOptions(): number {
+        const selectedOptionsArray: PropertyArray = this.getSelectedOptionsArray();
+
+        if (!selectedOptionsArray || selectedOptionsArray.isEmpty()) {
+            return 0;
+        }
+
         const existingOptionsNames: string[] = this.getFormSet().getOptions().map((option: FormOptionSetOption) => option.getName());
 
-        return this.propertySet.getPropertyArray('_selected')
+        return selectedOptionsArray
             .map((property: Property) => property.getString())
             .filter((name: string) => existingOptionsNames.indexOf(name) > -1)
             .length;
