@@ -386,11 +386,12 @@ export class FormOptionSetOptionView
     }
 
     select(silent: boolean = false) {
+        debugger;
         if (this.isSelected()) {
             return;
         }
 
-        this.checkbox.setChecked(true, true);
+        this.checkbox?.setChecked(true, true);
         this.setSelected(true);
         this.selectHandle();
 
