@@ -357,8 +357,8 @@ export class FormOptionSetOccurrenceView
             this.getFormItemViews().forEach((view, idx) => view.setVisible(idx === optionIdx));
 
             const optionView = <FormOptionSetOptionView>this.getFormItemViews()[event.getIndex()];
+
             if (optionView) {
-                optionView.setSelected(true);
                 optionView.enableAndExpand();
             }
 
