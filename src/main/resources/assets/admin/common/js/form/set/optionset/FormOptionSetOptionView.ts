@@ -386,7 +386,6 @@ export class FormOptionSetOptionView
     }
 
     select(silent: boolean = false) {
-        debugger;
         if (this.isSelected()) {
             return;
         }
