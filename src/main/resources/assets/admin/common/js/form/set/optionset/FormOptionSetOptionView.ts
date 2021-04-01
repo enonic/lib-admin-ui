@@ -370,9 +370,8 @@ export class FormOptionSetOptionView
 
         button.onChange(() => {
             if (button.isChecked()) {
-                this.setSelected(true);
-                this.selectHandle(button.getFirstChild());
-                this.notifySelectionChanged();
+                this.select();
+                this.moveFocusToNextElement(button.getFirstChild());
             } else {
                 this.setSelected(false);
                 this.deselectHandle();
@@ -384,6 +383,26 @@ export class FormOptionSetOptionView
         this.subscribeCheckboxOnPropertyEvents();
 
         return button;
+    }
+
+    select(silent: boolean = false) {
+        if (this.isSelected()) {
+            return;
+        }
+
+        this.checkbox.setChecked(true, true);
+        this.setSelected(true);
+        this.selectHandle();
+
+        if (!silent) {
+            this.notifySelectionChanged();
+        }
+    }
+
+    private moveFocusToNextElement(input: Element) {
+        const thisElSelector = `div[id='${this.getEl().getId()}']`;
+        FormEl.moveFocusToNextFocusable(input,
+            thisElSelector + ' input, ' + thisElSelector + ' select, ' + thisElSelector + ' textarea');
     }
 
     private subscribeCheckboxOnPropertyEvents() {
@@ -405,22 +424,18 @@ export class FormOptionSetOptionView
     }
 
     enableAndExpand() {
-        const input = this.getChildren()[0];
-        this.selectHandle(input);
+        this.select();
+        this.moveFocusToNextElement(this.getChildren()[0]);
     }
 
     disableAndCollapse() {
         this.deselectHandle();
     }
 
-    private selectHandle(input: Element) {
-        let thisElSelector = `div[id='${this.getEl().getId()}']`;
+    private selectHandle() {
         this.expand();
         this.enableFormItems();
-
         this.optionItemsContainer.show();
-        FormEl.moveFocusToNextFocusable(input,
-            thisElSelector + ' input, ' + thisElSelector + ' select, ' + thisElSelector + ' textarea');
         this.addClass('selected');
     }
 

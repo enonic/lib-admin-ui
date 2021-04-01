@@ -1,11 +1,9 @@
 import {PropertySet} from '../../../data/PropertySet';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {Value} from '../../../data/Value';
 import {i18n} from '../../../util/Messages';
 import {DivEl} from '../../../dom/DivEl';
 import {ObjectHelper} from '../../../ObjectHelper';
-import {ValueTypeString} from '../../../data/ValueTypeString';
 import {FormOptionSet} from './FormOptionSet';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {FormItemView} from '../../FormItemView';
@@ -145,13 +143,13 @@ export class FormOptionSetOccurrenceView
     }
 
     protected ensureSelectionArrayExists(propertyArraySet: PropertySet) {
-        let selectionPropertyArray = propertyArraySet.getPropertyArray('_selected');
+        let selectionPropertyArray: PropertyArray = propertyArraySet.getPropertyArray('_selected');
+
         if (!selectionPropertyArray) {
             selectionPropertyArray =
                 PropertyArray.create().setType(ValueTypes.STRING).setName('_selected').setParent(
                     propertyArraySet).build();
             propertyArraySet.addPropertyArray(selectionPropertyArray);
-            this.addDefaultSelectionToSelectionArray(selectionPropertyArray);
         }
     }
 
@@ -229,10 +227,12 @@ export class FormOptionSetOccurrenceView
         }
     }
 
-    private addDefaultSelectionToSelectionArray(selectionPropertyArray: PropertyArray) {
-        this.getFormSet().getOptions().forEach((option: FormOptionSetOption) => {
-            if (option.isDefaultOption() && !this.getFormSet().getMultiselection().maximumReached(selectionPropertyArray.getSize())) {
-                selectionPropertyArray.add(new Value(option.getName(), new ValueTypeString()));
+    selectDefaultOption() {
+        const selectionPropertyArray: PropertyArray = this.getSelectedOptionsArray();
+
+        this.getFormItemViews().forEach((itemView: FormOptionSetOptionView) => {
+            if ((<FormOptionSetOption>itemView.getFormItem()).isDefaultOption()) {
+                itemView.select(true);
             }
         });
     }
