@@ -182,8 +182,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
     }
 
     public createAndAddOccurrence(insertAtIndex: number = this.countOccurrences(), validate: boolean = true): Q.Promise<V> {
-
-        let occurrence: FormItemOccurrence<V> = this.createNewOccurrence(this, insertAtIndex);
+        const occurrence: FormItemOccurrence<V> = this.createNewOccurrence(this, insertAtIndex);
 
         return this.addOccurrence(occurrence, validate);
     }
@@ -291,7 +290,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
             return Q(null);
         }
 
-        let occurrenceView: V = this.createNewOccurrenceView(occurrence);
+        const occurrenceView: V = this.createNewOccurrenceView(occurrence);
         occurrenceView.onFocus(this.focusListener);
         occurrenceView.onBlur(this.blurListener);
         occurrenceView.onOccurrenceChanged(this.occurrenceChangedListener);

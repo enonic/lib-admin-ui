@@ -33,8 +33,6 @@ export interface FormSetOccurrencesConfig<V extends FormSetOccurrenceView> {
 export class FormSetOccurrences<V extends FormSetOccurrenceView>
     extends FormItemOccurrences<V> {
 
-    private readonly context: FormContext;
-
     private readonly parent: FormSetOccurrenceView;
 
     private readonly formSet: FormSet;
@@ -44,6 +42,8 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
     private layerFactory: FormItemLayerFactory;
 
     private expandRequestedListeners: { (view: FormSetOccurrenceView): void }[] = [];
+
+    protected readonly context: FormContext;
 
     constructor(config: FormSetOccurrencesConfig<V>) {
         super({
