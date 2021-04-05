@@ -1,6 +1,5 @@
 import * as Q from 'q';
 import {Property} from '../../../data/Property';
-import {PropertyArray} from '../../../data/PropertyArray';
 import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
 import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
 import {Element} from '../../../dom/Element';
@@ -59,9 +58,7 @@ export class InputOccurrenceView
         this.refresh();
     }
 
-    update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
-        let property = propertyArray.get(this.inputOccurrence.getIndex());
-
+    update(property: Property, unchangedOnly?: boolean): Q.Promise<void> {
         this.registerProperty(property);
 
         this.inputTypeView.updateInputOccurrenceElement(this.inputElement, property, unchangedOnly);

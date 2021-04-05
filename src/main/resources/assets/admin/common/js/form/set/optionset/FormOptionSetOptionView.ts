@@ -104,7 +104,7 @@ export class FormOptionSetOptionView
         this.optionItemsContainer = new DivEl('option-items-container');
         this.appendChild(this.optionItemsContainer);
 
-        let optionItemsPropertySet = this.getOptionItemsPropertyArray(this.parentDataSet).getSet(0);
+        let optionItemsPropertySet = this.getOrPopulateOptionItemsPropertyArray(this.parentDataSet).getSet(0);
 
         let layoutPromise: Q.Promise<FormItemView[]> = this.formItemLayer.setFormItems(
             this.formOptionSetOption.getFormItems()).setParentElement(this.optionItemsContainer).setParent(this.getParent()).layout(
@@ -165,7 +165,8 @@ export class FormOptionSetOptionView
 
     update(propertySet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
         this.parentDataSet = propertySet;
-        const propertyArray: PropertyArray = this.getOptionItemsPropertyArray(propertySet);
+
+        const propertyArray: PropertyArray = this.getOrPopulateOptionItemsPropertyArray(propertySet);
 
         return this.formItemLayer.update(propertyArray.getSet(0), unchangedOnly).then(() => {
             if (!this.isSingleSelection()) {
@@ -326,7 +327,7 @@ export class FormOptionSetOptionView
         });
     }
 
-    private getOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
+    private getOrPopulateOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
         let propertyArray = propertySet.getPropertyArray(this.getName());
         if (!propertyArray) {
             propertyArray =
