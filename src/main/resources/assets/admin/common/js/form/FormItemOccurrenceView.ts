@@ -1,5 +1,4 @@
 import * as Q from 'q';
-import {PropertyArray} from '../data/PropertyArray';
 import {DivEl} from '../dom/DivEl';
 import {PropertyPath} from '../data/PropertyPath';
 import {InputValidationRecording} from './inputtype/InputValidationRecording';
@@ -34,15 +33,15 @@ export abstract class FormItemOccurrenceView
         return !!this.helpText;
     }
 
+    reset() {
+        throw new Error('Must be implemented by inheritor');
+    }
+
     getDataPath(): PropertyPath {
         throw new Error('Must be implemented by inheritor');
     }
 
     public layout(_validate: boolean = true): Q.Promise<void> {
-        return Q<void>(null);
-    }
-
-    public update(_propertyArray: PropertyArray, _unchangedOnly?: boolean): Q.Promise<void> {
         return Q<void>(null);
     }
 

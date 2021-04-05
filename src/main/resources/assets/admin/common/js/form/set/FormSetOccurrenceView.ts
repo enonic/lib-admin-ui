@@ -209,15 +209,11 @@ export abstract class FormSetOccurrenceView
         return super.toggleHelpText(show);
     }
 
-    update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
-        let set = propertyArray.getSet(this.formItemOccurrence.getIndex());
-        if (!set) {
-            set = propertyArray.addSet();
-        }
-        this.ensureSelectionArrayExists(set);
+    update(dataSet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
+        this.ensureSelectionArrayExists(dataSet);
         this.dirtyFormItemViewsMap = {};
         this.releasePropertySet(this.propertySet);
-        this.propertySet = set;
+        this.propertySet = dataSet;
         this.bindPropertySet(this.propertySet);
         return this.formItemLayer.update(this.propertySet, unchangedOnly);
     }

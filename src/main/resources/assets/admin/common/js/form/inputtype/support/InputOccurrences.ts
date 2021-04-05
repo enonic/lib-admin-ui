@@ -12,6 +12,7 @@ import {InputOccurrenceView} from './InputOccurrenceView';
 import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
 import {InputOccurrence} from './InputOccurrence';
 import {assertNotNull} from '../../../util/Assert';
+import {Value} from '../../../data/Value';
 
 export class InputOccurrencesBuilder {
 
@@ -47,9 +48,9 @@ export class InputOccurrencesBuilder {
 export class InputOccurrences
     extends FormItemOccurrences<InputOccurrenceView> {
 
-    private baseInputTypeView: BaseInputTypeNotManagingAdd;
+    private readonly baseInputTypeView: BaseInputTypeNotManagingAdd;
 
-    private input: Input;
+    private readonly input: Input;
 
     constructor(config: InputOccurrencesBuilder) {
         super(<FormItemOccurrencesConfig>{
@@ -89,80 +90,35 @@ export class InputOccurrences
     }
 
     createNewOccurrenceView(occurrence: InputOccurrence): InputOccurrenceView {
+        const property: Property = this.getOrPopulatePropertyFromArray(occurrence.getIndex());
+        const inputOccurrenceView: InputOccurrenceView = new InputOccurrenceView(occurrence, this.baseInputTypeView, property);
 
-        let property = this.getPropertyFromArray(occurrence.getIndex());
-        let inputOccurrenceView: InputOccurrenceView = new InputOccurrenceView(occurrence, this.baseInputTypeView, property);
-
-        let inputOccurrences: InputOccurrences = this;
         inputOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<InputOccurrenceView>) => {
-            inputOccurrences.removeOccurrenceView(event.getView());
+            this.removeOccurrenceView(event.getView());
         });
 
         return inputOccurrenceView;
     }
 
-    updateOccurrenceView(occurrenceView: InputOccurrenceView, propertyArray: PropertyArray,
-                         unchangedOnly?: boolean): Q.Promise<void> {
-        this.propertyArray = propertyArray;
-
-        return occurrenceView.update(propertyArray, unchangedOnly);
-    }
-
-    resetOccurrenceView(occurrenceView: InputOccurrenceView) {
-        occurrenceView.reset();
+    updateOccurrenceView(occurrenceView: InputOccurrenceView, unchangedOnly?: boolean): Q.Promise<void> {
+        const property: Property = this.getOrPopulatePropertyFromArray(occurrenceView.getIndex());
+        return occurrenceView.update(property, unchangedOnly);
     }
 
     giveFocus(): boolean {
-
-        let focusGiven = false;
-        let occurrenceViews = this.getOccurrenceViews();
-        if (occurrenceViews.length > 0) {
-            for (let i = 0; i < occurrenceViews.length; i++) {
-                if (occurrenceViews[i].giveFocus()) {
-                    focusGiven = true;
-                    break;
-                }
-            }
-        }
-        return focusGiven;
+        return this.getOccurrenceViews().some((view: InputOccurrenceView) => view.giveFocus());
     }
 
-    protected constructOccurrencesForNoData(): FormItemOccurrence<InputOccurrenceView>[] {
-        let occurrences: FormItemOccurrence<InputOccurrenceView>[] = [];
-        if (this.getAllowedOccurrences().getMinimum() > 0) {
+    private getOrPopulatePropertyFromArray(index: number): Property {
+        let property: Property = this.propertyArray.get(index);
 
-            for (let i = 0; i < this.getAllowedOccurrences().getMinimum(); i++) {
-                occurrences.push(this.createNewOccurrence(this, i));
-            }
-        } else {
-            occurrences.push(this.createNewOccurrence(this, 0));
-        }
-        return occurrences;
-    }
-
-    protected constructOccurrencesForData(): FormItemOccurrence<InputOccurrenceView>[] {
-        let occurrences: FormItemOccurrence<InputOccurrenceView>[] = [];
-
-        this.propertyArray.forEach((_property: Property, index: number) => {
-            occurrences.push(this.createNewOccurrence(this, index));
-        });
-
-        if (occurrences.length < this.input.getOccurrences().getMinimum()) {
-            for (let index: number = occurrences.length; index < this.input.getOccurrences().getMinimum(); index++) {
-                occurrences.push(this.createNewOccurrence(this, index));
-            }
-        }
-        return occurrences;
-    }
-
-    private getPropertyFromArray(index: number): Property {
-        let property = this.propertyArray.get(index);
         if (!property) {
-            let newInitialValue = this.baseInputTypeView.newInitialValue();
+            const newInitialValue: Value = this.baseInputTypeView.newInitialValue();
             assertNotNull(newInitialValue,
                 'InputTypeView-s extending BaseInputTypeNotManagingAdd must must return a Value from newInitialValue');
             property = this.propertyArray.add(newInitialValue);
         }
+
         return property;
     }
 }
