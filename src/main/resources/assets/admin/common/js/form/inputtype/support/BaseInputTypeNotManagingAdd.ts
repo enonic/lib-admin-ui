@@ -166,8 +166,10 @@ export abstract class BaseInputTypeNotManagingAdd
             InputOccurrences.create().setBaseInputTypeView(this).setInput(this.input).setPropertyArray(propertyArray).build();
 
         this.onAdded(() => {
-                this.onOccurrenceAdded(() => {
+                this.onOccurrenceAdded((event: OccurrenceAddedEvent) => {
                     $(this.getHTMLElement()).sortable('refresh');
+                    this.validateOccurrence((<InputOccurrenceView>event.getOccurrenceView()));
+                    this.updateValidationRecord();
                 });
 
                 this.onOccurrenceRemoved((event: OccurrenceRemovedEvent) => {
