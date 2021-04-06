@@ -149,6 +149,8 @@ export class FormOptionSetOptionView
     clean() {
         super.clean();
 
+        this.formItemViews.forEach((view: FormItemView) => view.clean());
+
         if (!this.isSelected()) {
             this.parentDataSet.removeProperty(this.getName(), 0);
             this.cleanValidationForThisOption();
