@@ -69,14 +69,6 @@ export class FormItemLayer {
         });
     }
 
-    clean() {
-        this.formItemViews.forEach((view: FormItemView) => {
-            if (ObjectHelper.iFrameSafeInstanceOf(view, FormOptionSetOptionView)) {
-                (<FormOptionSetOptionView>view).clean();
-            }
-        });
-    }
-
     update(propertySet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
         if (FormItemLayer.debug) {
             console.debug('FormItemLayer.update' + (unchangedOnly ? ' (unchanged only)' : ''), this, propertySet);

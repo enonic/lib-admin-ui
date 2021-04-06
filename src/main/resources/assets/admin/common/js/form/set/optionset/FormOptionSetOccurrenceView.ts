@@ -3,7 +3,6 @@ import {PropertyArray} from '../../../data/PropertyArray';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {i18n} from '../../../util/Messages';
 import {DivEl} from '../../../dom/DivEl';
-import {ObjectHelper} from '../../../ObjectHelper';
 import {FormOptionSet} from './FormOptionSet';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {FormItemView} from '../../FormItemView';
@@ -75,16 +74,12 @@ export class FormOptionSetOccurrenceView
     }
 
     clean() {
+        super.clean();
+
         const selectedOptionsArray: PropertyArray = this.getSelectedOptionsArray();
 
         if (!selectedOptionsArray || selectedOptionsArray.isEmpty()) {
             this.propertySet.removeAllProperties();
-        } else {
-            this.formItemViews.forEach((view: FormItemView) => {
-                if (ObjectHelper.iFrameSafeInstanceOf(view, FormOptionSetOptionView)) {
-                    (<FormOptionSetOptionView>view).clean();
-                }
-            });
         }
     }
 

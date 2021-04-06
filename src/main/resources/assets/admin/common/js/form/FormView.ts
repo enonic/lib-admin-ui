@@ -5,7 +5,6 @@ import {ContentSummary} from '../content/ContentSummary';
 import {FormEditEvent} from '../content/event/FormEditEvent';
 import {WindowDOM} from '../dom/WindowDOM';
 import {DefaultErrorHandler} from '../DefaultErrorHandler';
-import {ObjectHelper} from '../ObjectHelper';
 import {Form} from './Form';
 import {FormItemView} from './FormItemView';
 import {FormItemLayer} from './FormItemLayer';
@@ -14,7 +13,6 @@ import {ValidationRecording} from './ValidationRecording';
 import {FormContext} from './FormContext';
 import {assert} from '../util/Assert';
 import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
-import {FormOptionSetView} from './set/optionset/FormOptionSetView';
 import {FormItemLayerFactoryImpl} from './FormItemLayerFactory';
 
 /**
@@ -123,12 +121,7 @@ export class FormView
     }
 
     clean() {
-        this.formItemLayer.clean();
-        this.formItemViews.forEach((view: FormItemView) => {
-            if (ObjectHelper.iFrameSafeInstanceOf(view, FormOptionSetView)) {
-                (<FormOptionSetView>view).clean();
-            }
-        });
+        this.formItemViews.forEach((view: FormItemView) => view.clean());
     }
 
     public update(propertySet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {

@@ -370,6 +370,12 @@ export abstract class FormSetOccurrenceView
         });
     }
 
+    clean() {
+        super.clean();
+
+        this.formItemViews.forEach((view: FormItemView) => view.clean());
+    }
+
     onExpandRequested(listener: (view: FormSetOccurrenceView) => void): void {
         this.expandRequestedListeners.push(listener);
     }

@@ -263,8 +263,6 @@ export abstract class BaseInputTypeNotManagingAdd
     }
 
     validate(silent: boolean = true): InputValidationRecording {
-        console.log('validate: ' + this.getId());
-
         this.validateOccurrences();
         const newValidationRecord: InputValidationRecording = this.getCurrentValidationRecord();
 
