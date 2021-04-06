@@ -148,9 +148,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
     }
 
     clean() {
-        this.occurrenceViews.forEach((view: V) => {
-            view.clean();
-        });
+        this.occurrenceViews.forEach((view: V) => view.clean());
     }
 
     setEnabled(enable: boolean) {

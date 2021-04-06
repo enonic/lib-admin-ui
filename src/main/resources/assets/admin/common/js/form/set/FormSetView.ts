@@ -322,6 +322,8 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     clean() {
+        super.clean();
+
         this.formItemOccurrences.clean();
     }
 

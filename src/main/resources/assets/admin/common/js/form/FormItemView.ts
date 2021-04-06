@@ -63,6 +63,10 @@ export class FormItemView
         throw new Error('Must be implemented by inheritors');
     }
 
+    clean() {
+        //to be implemented on demand in inheritors
+    }
+
     refresh() {
         //to be implemented on demand in inheritors
     }
