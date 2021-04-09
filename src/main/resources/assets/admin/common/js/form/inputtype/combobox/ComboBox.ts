@@ -37,10 +37,6 @@ export class ComboBox
         return this.comboBox;
     }
 
-    availableSizeChanged() {
-        // console.log('ComboBox.availableSizeChanged(' + this.getEl().getWidth() + 'x' + this.getEl().getWidth() + ')');
-    }
-
     getValueType(): ValueType {
         return ValueTypes.STRING;
     }

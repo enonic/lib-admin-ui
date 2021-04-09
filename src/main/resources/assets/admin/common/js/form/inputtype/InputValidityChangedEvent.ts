@@ -2,17 +2,10 @@ import {InputValidationRecording} from './InputValidationRecording';
 
 export class InputValidityChangedEvent {
 
-    private inputName: string;
+    private readonly recording: InputValidationRecording;
 
-    private recording: InputValidationRecording;
-
-    constructor(recording: InputValidationRecording, inputName: string) {
+    constructor(recording: InputValidationRecording) {
         this.recording = recording;
-        this.inputName = inputName;
-    }
-
-    getInputName(): string {
-        return this.inputName;
     }
 
     isValid(): boolean {

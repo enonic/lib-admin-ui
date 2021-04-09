@@ -88,8 +88,7 @@ export class FormView
                 formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
                     if (!this.previousValidationRecording) {
                         this.previousValidationRecording = event.getRecording();
-                        this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording,
-                            event.isInputValueBroken()));
+                        this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
                     } else {
                         if (event.isValid()) {
                             this.previousValidationRecording.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
@@ -97,9 +96,7 @@ export class FormView
                             this.previousValidationRecording.flatten(event.getRecording());
                         }
 
-                        this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording,
-                            event.isInputValueBroken()));
-
+                        this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
                     }
                 });
 

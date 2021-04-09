@@ -48,11 +48,13 @@ export interface InputTypeView {
      */
     giveFocus(): boolean;
 
-    displayValidationErrors(value: boolean);
+    displayValidationErrors();
 
-    hasValidUserInput(recording?: InputValidationRecording): boolean;
+    hasValidUserInput(): boolean;
 
-    validate(silent: boolean): InputValidationRecording;
+    validate(silent: boolean);
+
+    getInputValidationRecording(): InputValidationRecording;
 
     onValidityChanged(listener: (event: InputValidityChangedEvent) => void);
 

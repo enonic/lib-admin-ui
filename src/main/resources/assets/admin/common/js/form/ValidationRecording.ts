@@ -8,8 +8,6 @@ export class ValidationRecording {
 
     private breaksMaximumOccurrencesArray: ValidationRecordingPath[] = [];
 
-    private additionalValidationRecords: Map<string, AdditionalValidationRecord> = new Map<string, AdditionalValidationRecord>();
-
     breaksMinimumOccurrences(path: ValidationRecordingPath) {
         if (!this.exists(path, this.breaksMinimumOccurrencesArray)) {
             this.breaksMinimumOccurrencesArray.push(path);
@@ -22,13 +20,8 @@ export class ValidationRecording {
         }
     }
 
-    addValidationRecord(path: string, record: AdditionalValidationRecord) {
-        this.additionalValidationRecords.set(path, record);
-    }
-
     isValid(): boolean {
-        return this.breaksMinimumOccurrencesArray.length === 0 && this.breaksMaximumOccurrencesArray.length === 0
-               && this.additionalValidationRecords.size === 0;
+        return this.breaksMinimumOccurrencesArray.length === 0 && this.breaksMaximumOccurrencesArray.length === 0;
     }
 
     isMinimumOccurrencesValid(): boolean {
@@ -56,14 +49,6 @@ export class ValidationRecording {
         recording.breaksMaximumOccurrencesArray.forEach((path: ValidationRecordingPath) => {
             this.breaksMaximumOccurrences(path);
         });
-
-        recording.additionalValidationRecords.forEach((value: AdditionalValidationRecord, key: string) => {
-            this.addValidationRecord(key, value);
-        });
-    }
-
-    removeRecord(key: string) {
-        this.additionalValidationRecords.delete(key);
     }
 
     /**
@@ -72,10 +57,8 @@ export class ValidationRecording {
      * @param includeChildren - param saying if nested children should be removed as well
      */
     removeByPath(path: ValidationRecordingPath, strict?: boolean, includeChildren?: boolean) {
-
         this.removeUnreachedMinimumOccurrencesByPath(path, strict, includeChildren);
         this.removeBreachedMaximumOccurrencesByPath(path, strict, includeChildren);
-        this.removeRecord(path.toString());
     }
 
     removeUnreachedMinimumOccurrencesByPath(path: ValidationRecordingPath, strict?: boolean, includeChildren?: boolean) {
@@ -116,8 +99,6 @@ export class ValidationRecording {
             return false;
         } else if (this.breaksMaximumOccurrencesArray.length !== other.breaksMaximumOccurrencesArray.length) {
             return false;
-        } else if (this.additionalValidationRecords.size !== other.additionalValidationRecords.size) {
-            return false;
         }
 
         for (let i = 0; i < this.breaksMinimumOccurrencesArray.length; i++) {
@@ -130,10 +111,6 @@ export class ValidationRecording {
             if (this.breaksMaximumOccurrencesArray[i].toString() !== other.breaksMaximumOccurrencesArray[i].toString()) {
                 return false;
             }
-        }
-
-        if (!this.mapEquals(this.additionalValidationRecords, other.additionalValidationRecords)) {
-            return false;
         }
 
         return true;

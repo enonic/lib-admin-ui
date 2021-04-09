@@ -1,28 +1,19 @@
 import * as Q from 'q';
 import {PropertyArray} from '../../../data/PropertyArray';
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
 import {SelectedOptionEvent} from '../../../ui/selector/combobox/SelectedOptionEvent';
 import {FocusSwitchEvent} from '../../../ui/FocusSwitchEvent';
-import {InputTypeView} from '../InputTypeView';
-import {DivEl} from '../../../dom/DivEl';
 import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
 import {ValueChangedEvent} from '../ValueChangedEvent';
 import {Input} from '../../Input';
 import {InputValidationRecording} from '../InputValidationRecording';
-import {Element} from '../../../dom/Element';
 import {ClassHelper} from '../../../ClassHelper';
-import {ContentSummary} from '../../../content/ContentSummary';
+import {BaseInputType} from './BaseInputType';
 
 export abstract class BaseInputTypeManagingAdd
-    extends DivEl
-    implements InputTypeView {
+    extends BaseInputType {
 
     public static debug: boolean = false;
-    private inputValidityChangedListeners: { (event: InputValidityChangedEvent): void }[] = [];
     private inputValueChangedListeners: { (event: ValueChangedEvent): void }[] = [];
-    private input: Input;
-    private previousValidationRecording: InputValidationRecording;
     private layoutInProgress: boolean;
     private propertyArray: PropertyArray;
     private propertyArrayListener: () => void;
@@ -33,42 +24,25 @@ export abstract class BaseInputTypeManagingAdd
         this.initListeners();
     }
 
-    availableSizeChanged() {
-        // must be implemented by children
-    }
-
-    getElement(): Element {
-        return this;
-    }
-
     isManagingAdd(): boolean {
         return true;
-    }
-
-    getValueType(): ValueType {
-        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
-    }
-
-    /**
-     * Must be overridden by inheritors.
-     */
-    newInitialValue(): Value {
-        throw new Error('Must be overridden by inheritor: ' + ClassHelper.getClassName(this));
     }
 
     /**
      * Must be resolved by inheritors.
      */
     layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {
-        if (BaseInputTypeManagingAdd.debug) {
-            console.log('BaseInputTypeManagingAdd.layout', input, propertyArray);
-        }
-        this.input = input;
         this.layoutInProgress = true;
 
-        this.registerPropertyArray(propertyArray);
+        return super.layout(input, propertyArray).then(() => {
+            if (BaseInputTypeManagingAdd.debug) {
+                console.log('BaseInputTypeManagingAdd.layout', input, propertyArray);
+            }
 
-        return Q<void>(null);
+            this.registerPropertyArray(propertyArray);
+
+            return Q<void>(null);
+        });
     }
 
     /**
@@ -83,69 +57,19 @@ export abstract class BaseInputTypeManagingAdd
         return Q<void>(null);
     }
 
-    reset() {
-        throw Error('Must be implemented in inheritors');
-    }
-
-    refresh() {
-        //to be implemented on demand in inheritors
-    }
-
-    setEnabled(enable: boolean) {
-    //
-    }
-
-    hasValidUserInput(): boolean {
-        return true;
-    }
-
-    displayValidationErrors(_value: boolean) {
-        // must be implemented by children
-    }
-
-    validate(silent: boolean = true,
-             rec: InputValidationRecording = null): InputValidationRecording {
-
-        let recording = rec || new InputValidationRecording();
-
+    validate(silent: boolean = true) {
         if (this.layoutInProgress) {
-            this.previousValidationRecording = recording;
-            return recording;
+            return;
         }
 
-        let numberOfValids = this.getNumberOfValids();
-
-        if (this.input.getOccurrences().minimumBreached(numberOfValids)) {
-            recording.setBreaksMinimumOccurrences(true);
-        }
-
-        if (this.input.getOccurrences().maximumBreached(numberOfValids)) {
-            recording.setBreaksMaximumOccurrences(true);
-        }
+        const totalValid: number = this.getNumberOfValids();
+        const recording: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), totalValid);
 
         if (!silent && recording.validityChanged(this.previousValidationRecording)) {
-            this.notifyValidityChanged(new InputValidityChangedEvent(recording, this.input.getName()));
+            this.notifyValidityChanged(new InputValidityChangedEvent(recording));
         }
 
         this.previousValidationRecording = recording;
-        return recording;
-    }
-
-    onValidityChanged(listener: (event: InputValidityChangedEvent) => void) {
-        this.inputValidityChangedListeners.push(listener);
-    }
-
-    unValidityChanged(listener: (event: InputValidityChangedEvent) => void) {
-        this.inputValidityChangedListeners.filter((currentListener: (event: InputValidityChangedEvent) => void) => {
-            return listener === currentListener;
-        });
-    }
-
-    notifyValidityChanged(event: InputValidityChangedEvent) {
-
-        this.inputValidityChangedListeners.forEach((listener: (event: InputValidityChangedEvent) => void) => {
-            listener(event);
-        });
     }
 
     onValueChanged(listener: (event: ValueChangedEvent) => void) {
@@ -165,14 +89,6 @@ export abstract class BaseInputTypeManagingAdd
         throw new Error('Must be overridden by inheritor: ' + ClassHelper.getClassName(this));
     }
 
-    onEditContentRequest(_listener: (content: ContentSummary) => void) {
-        // Have to use stub here because it doesn't extend BaseInputTypeView
-    }
-
-    unEditContentRequest(_listener: (content: ContentSummary) => void) {
-        // Have to use stub here because it doesn't extend BaseInputTypeView
-    }
-
     protected fireFocusSwitchEvent(event: SelectedOptionEvent<any>) {
         if (event.getKeyCode() === 13) {
             new FocusSwitchEvent(this).fire();
@@ -189,10 +105,6 @@ export abstract class BaseInputTypeManagingAdd
         this.inputValueChangedListeners.forEach((listener: (event: ValueChangedEvent) => void) => {
             listener(event);
         });
-    }
-
-    protected getInput(): Input {
-        return this.input;
     }
 
     protected getNumberOfValids(): number {

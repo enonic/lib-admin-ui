@@ -95,7 +95,7 @@ export class DateTimeRange
 
         if (error) {
             const record: AdditionalValidationRecord =
-                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(error).build();
+                AdditionalValidationRecord.create().setMessage(error).build();
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
         }
     }
@@ -190,7 +190,7 @@ export class DateTimeRange
     }
 
     protected getValue(): Value {
-        return this.createLocalDateTimePropertySetValue();
+        return this.useTimezone ?  this.createDateTimePropertySetValue() : this.createLocalDateTimePropertySetValue();
     }
 
     private createLocalDateTimePropertySetValue() {
@@ -223,12 +223,12 @@ export class DateTimeRange
 
         rangePicker.onStartDateTimeChanged((event: SelectedDateChangedEvent) => {
             this.from = event.getDate() ? DateTime.fromDate(event.getDate()) : null;
-            this.notifyOccurrenceValueChanged(rangePicker, this.createDateTimePropertySetValue());
+            this.handleOccurrenceInputValueChanged(rangePicker);
         });
 
         rangePicker.onEndDateTimeChanged((event: SelectedDateChangedEvent) => {
             this.to = event.getDate() ? DateTime.fromDate(event.getDate()) : null;
-            this.notifyOccurrenceValueChanged(rangePicker, this.createDateTimePropertySetValue());
+            this.handleOccurrenceInputValueChanged(rangePicker);
         });
 
         return rangePicker;

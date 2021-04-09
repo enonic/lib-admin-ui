@@ -5,12 +5,10 @@ import {Property} from '../data/Property';
 import {BaseInputTypeNotManagingAdd} from './inputtype/support/BaseInputTypeNotManagingAdd';
 import {i18n} from '../util/Messages';
 import {StringHelper} from '../util/StringHelper';
-import {Value} from '../data/Value';
 import {FormItemView, FormItemViewConfig} from './FormItemView';
 import {InputTypeView} from './inputtype/InputTypeView';
 import {DivEl} from '../dom/DivEl';
 import {Button} from '../ui/button/Button';
-import {ValidationRecordingViewer} from './ValidationRecordingViewer';
 import {ContentSummary} from '../content/ContentSummary';
 import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
 import {InputValidityChangedEvent} from './inputtype/InputValidityChangedEvent';
@@ -26,6 +24,7 @@ import {assertNotNull} from '../util/Assert';
 import {InputLabel} from './InputLabel';
 import {InputTypeManager} from './inputtype/InputTypeManager';
 import {ValidationRecordingPath} from './ValidationRecordingPath';
+import {InputViewValidationViewer} from './InputViewValidationViewer';
 
 export interface InputViewConfig {
 
@@ -48,9 +47,8 @@ export class InputView
     private inputTypeView: InputTypeView;
     private bottomButtonRow?: DivEl;
     private addButton?: Button;
-    private validationViewer: ValidationRecordingViewer;
+    private validationViewer: InputViewValidationViewer;
     private previousValidityRecording: ValidationRecording;
-    private userInputValid: boolean;
     private validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
     private helpText?: HelpTextContainer;
 
@@ -124,7 +122,7 @@ export class InputView
                 this.bottomButtonRow.appendChild(this.addButton);
             }
 
-            this.validationViewer = new ValidationRecordingViewer();
+            this.validationViewer = new InputViewValidationViewer();
             this.appendChild(this.validationViewer);
 
             this.inputTypeView.onValidityChanged((event: InputValidityChangedEvent) => {
@@ -185,22 +183,16 @@ export class InputView
     }
 
     public displayValidationErrors(value: boolean) {
-        this.inputTypeView.displayValidationErrors(value);
+        this.inputTypeView.displayValidationErrors();
     }
 
-    hasValidUserInput(recording?: InputValidationRecording): boolean {
-
-        return this.inputTypeView.hasValidUserInput(recording);
+    hasValidUserInput(): boolean {
+        return this.inputTypeView.hasValidUserInput();
     }
 
     validate(silent: boolean = true): ValidationRecording {
-
-        let inputRecording = this.inputTypeView.validate(silent);
-        return this.handleInputValidationRecording(inputRecording, silent);
-    }
-
-    userInputValidityChanged(currentState: boolean): boolean {
-        return this.userInputValid != null && this.userInputValid !== currentState;
+        this.inputTypeView.validate(silent);
+        return this.handleInputValidationRecording(this.inputTypeView.getInputValidationRecording(), silent);
     }
 
     giveFocus(): boolean {
@@ -286,78 +278,55 @@ export class InputView
     }
 
     private resolveValidationRecordingPath(): ValidationRecordingPath {
-
         return new ValidationRecordingPath(this.propertyArray.getParentPropertyPath(), this.input.getName(),
             this.input.getOccurrences().getMinimum(),
             this.input.getOccurrences().getMaximum());
     }
 
-    private handleInputValidationRecording(inputRecording: InputValidationRecording,
-                                           silent: boolean = true): ValidationRecording {
+    private handleInputValidationRecording(inputRecording: InputValidationRecording, silent: boolean = true): ValidationRecording {
+        const recording: ValidationRecording = new ValidationRecording();
+        const validationRecordingPath: ValidationRecordingPath = this.resolveValidationRecordingPath();
 
-        let recording = new ValidationRecording();
-        let validationRecordingPath = this.resolveValidationRecordingPath();
-        let hasValidInput = this.hasValidUserInput(inputRecording);
-
-        if (inputRecording.isMinimumOccurrencesBreached()) {
+        if (inputRecording?.isMinimumOccurrencesBreached()) {
             recording.breaksMinimumOccurrences(validationRecordingPath);
         }
-        if (inputRecording.isMaximumOccurrencesBreached()) {
+
+        if (inputRecording?.isMaximumOccurrencesBreached()) {
             recording.breaksMaximumOccurrences(validationRecordingPath);
         }
 
-        if (recording.validityChanged(this.previousValidityRecording) || this.userInputValidityChanged(hasValidInput)) {
+        if (recording.validityChanged(this.previousValidityRecording)) {
             if (!silent) {
-                this.notifyValidityChanged(new RecordingValidityChangedEvent(recording,
-                    validationRecordingPath).setInputValueBroken(!hasValidInput));
+                this.notifyValidityChanged(new RecordingValidityChangedEvent(recording, validationRecordingPath));
             }
             this.toggleClass('highlight-validity-change', this.highlightOnValidityChange());
         }
 
-        const initialValue: Value = this.inputTypeView.newInitialValue();
-
-        this.toggleClass('display-validation-errors', !!initialValue && !StringHelper.isEmpty(initialValue.getString()));
-
-        if (!silent && (recording.validityChanged(this.previousValidityRecording) || this.userInputValidityChanged(hasValidInput))) {
-            this.notifyValidityChanged(new RecordingValidityChangedEvent(recording,
-                validationRecordingPath).setInputValueBroken(!hasValidInput));
-        }
-
         this.previousValidityRecording = recording;
-        this.userInputValid = hasValidInput;
 
-        this.renderValidationErrors(recording, inputRecording);
+        this.renderValidationErrors(inputRecording);
+
         return recording;
     }
 
     private notifyValidityChanged(event: RecordingValidityChangedEvent) {
-
         this.validityChangedListeners.forEach((listener: (event: RecordingValidityChangedEvent) => void) => {
             listener(event);
         });
     }
 
-    private renderValidationErrors(recording: ValidationRecording, inputRecording: InputValidationRecording) {
+    private renderValidationErrors(recording: InputValidationRecording) {
         if (!this.mayRenderValidationError()) {
             return;
         }
 
-        if (recording.isValid() && this.hasValidUserInput(inputRecording)) {
-            this.removeClass('invalid');
-            this.addClass('valid');
-        } else {
-            this.removeClass('valid');
-            this.addClass('invalid');
-        }
+        this.toggleClass('valid', recording.isValid());
+        this.toggleClass('invalid', !recording.isValid());
 
         this.validationViewer.setObject(recording);
-
-        if (inputRecording.hasAdditionalValidationRecord() && inputRecording.getAdditionalValidationRecord().isOverwriteDefault()) {
-            this.validationViewer.appendValidationMessage(inputRecording.getAdditionalValidationRecord().getMessage());
-        }
     }
 
-    private mayRenderValidationError(): boolean {
-        return this.input.getInputType().getName() !== 'SiteConfigurator';
+    protected mayRenderValidationError(): boolean {
+        return true;
     }
 }
