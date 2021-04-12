@@ -63,6 +63,10 @@ export class ContentTypeSummaries
         return this.array.slice(from, to);
     }
 
+    sort(compareFn: (a: ContentTypeSummary, b: ContentTypeSummary) => number): ContentTypeSummary[] {
+        return this.array.sort(compareFn);
+    }
+
     equals(o: Equitable): boolean {
         if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentTypeSummaries)) {
             return false;
