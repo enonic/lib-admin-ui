@@ -75,10 +75,8 @@ export class RadioButton
         const isValueSelected: boolean = this.getProperty().getValue().isNotNull();
         const recording: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), isValueSelected ? 1 : 0);
 
-        if (!silent) {
-            if (recording.validityChanged(this.previousValidationRecording)) {
-                this.notifyValidityChanged(new InputValidityChangedEvent(recording));
-            }
+        if (!silent && recording.validityChanged(this.previousValidationRecording)) {
+            this.notifyValidityChanged(new InputValidityChangedEvent(recording));
         }
 
         this.previousValidationRecording = recording;
