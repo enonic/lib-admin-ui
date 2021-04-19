@@ -33,9 +33,7 @@ export class Path {
     public static fromParent(parent: Path, ...childElements: string[]) {
 
         let elements: string[] = parent.elements.slice(0);
-        childElements.forEach((element: string) => {
-            elements.push(element);
-        });
+        childElements.forEach((element: string) => element && elements.push(element));
 
         return new Path(elements, parent.elementDivider, parent.isAbsolute());
     }
