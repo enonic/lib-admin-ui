@@ -52,10 +52,6 @@ export class Checkbox
         return Q<void>(null);
     }
 
-    validate(_silent: boolean = true) {
-        this.previousValidationRecording = new InputValidationRecording(this.input.getOccurrences(), 1);
-    }
-
     updateProperty(property: Property, unchangedOnly?: boolean): Q.Promise<void> {
         if (Checkbox.debug) {
             console.debug('Checkbox.updateProperty' + (unchangedOnly ? ' (unchanged only)' : ''), property);

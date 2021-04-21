@@ -9,6 +9,7 @@ import {ValueChangedEvent} from '../ValueChangedEvent';
 import {ClassHelper} from '../../../ClassHelper';
 import {assertNotNull} from '../../../util/Assert';
 import {BaseInputType} from './BaseInputType';
+import {InputValidationRecording} from '../InputValidationRecording';
 
 export abstract class BaseInputTypeSingleOccurrence
     extends BaseInputType {
@@ -65,7 +66,7 @@ export abstract class BaseInputTypeSingleOccurrence
     }
 
     validate(_silent: boolean = true) {
-        // throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
+        this.previousValidationRecording = new InputValidationRecording(this.input.getOccurrences(), 1);
     }
 
     onValueChanged(listener: (event: ValueChangedEvent) => void) {
