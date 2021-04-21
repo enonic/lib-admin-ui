@@ -11,6 +11,7 @@ import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
+import {InputValidationRecording} from '../InputValidationRecording';
 
 export class Checkbox
     extends BaseInputTypeSingleOccurrence {
@@ -49,6 +50,10 @@ export class Checkbox
         });
 
         return Q<void>(null);
+    }
+
+    validate(_silent: boolean = true) {
+        this.previousValidationRecording = new InputValidationRecording(this.input.getOccurrences(), 1);
     }
 
     updateProperty(property: Property, unchangedOnly?: boolean): Q.Promise<void> {

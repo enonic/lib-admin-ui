@@ -143,12 +143,12 @@ export abstract class BaseInputTypeNotManagingAdd
                     this.onOccurrenceAdded((event: OccurrenceAddedEvent) => {
                         $(this.getHTMLElement()).sortable('refresh');
                         this.validateOccurrence((<InputOccurrenceView>event.getOccurrenceView()));
-                        this.updateValidationRecord();
+                        this.updateValidationRecordAndNotifyIfChanged();
                     });
 
                     this.onOccurrenceRemoved((event: OccurrenceRemovedEvent) => {
                         this.occurrenceValidationState.delete((<InputOccurrenceView>event.getOccurrenceView()).getInputElement().getId());
-                        this.updateValidationRecord();
+                        this.updateValidationRecordAndNotifyIfChanged();
                     });
                 }
             );
@@ -185,17 +185,7 @@ export abstract class BaseInputTypeNotManagingAdd
         this.validateRequiredContract(inputEl, value);
         this.notifyOccurrenceValueChanged(inputEl, value);
         this.displayValidationErrors();
-        this.updateValidationRecord();
-    }
-
-    private updateValidationRecord() {
-        const newValidationRecord: InputValidationRecording = this.getCurrentValidationRecord();
-
-        if (newValidationRecord.validityChanged(this.previousValidationRecording)) {
-            this.notifyValidityChanged(new InputValidityChangedEvent(newValidationRecord));
-        }
-
-        this.previousValidationRecording = newValidationRecord;
+        this.updateValidationRecordAndNotifyIfChanged();
     }
 
     protected abstract getValue(inputEl: Element, data?: any): Value;
@@ -241,16 +231,16 @@ export abstract class BaseInputTypeNotManagingAdd
 
     validate(silent: boolean = true) {
         this.validateOccurrences();
-        const newValidationRecord: InputValidationRecording = this.getCurrentValidationRecord();
 
-        if (!silent && newValidationRecord.validityChanged(this.previousValidationRecording)) {
-            this.notifyValidityChanged(new InputValidityChangedEvent(newValidationRecord));
+        if (silent) {
+            this.updateValidationRecord();
+        } else {
+            this.updateValidationRecordAndNotifyIfChanged();
         }
 
-        this.previousValidationRecording = newValidationRecord;
     }
 
-    private getCurrentValidationRecord(): InputValidationRecording {
+    private getTotalValidOccurrences(): number {
         let totalValid: number = 0;
 
         this.occurrenceValidationState.forEach((occurrenceValidationRecord: OccurrenceValidationRecord) => {
@@ -259,7 +249,22 @@ export abstract class BaseInputTypeNotManagingAdd
             }
         });
 
-        return new InputValidationRecording(this.input.getOccurrences(), totalValid);
+        return totalValid;
+    }
+
+    private updateValidationRecordAndNotifyIfChanged() {
+        const totalValid: number = this.getTotalValidOccurrences();
+        const newValidationRecord: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), totalValid);
+
+        if (newValidationRecord.validityChanged(this.previousValidationRecording)) {
+            this.notifyValidityChanged(new InputValidityChangedEvent(newValidationRecord));
+        }
+
+        this.previousValidationRecording = newValidationRecord;
+    }
+
+    private updateValidationRecord() {
+        this.previousValidationRecording = new InputValidationRecording(this.input.getOccurrences(), this.getTotalValidOccurrences());
     }
 
     valueBreaksRequiredContract(value: Value): boolean {
