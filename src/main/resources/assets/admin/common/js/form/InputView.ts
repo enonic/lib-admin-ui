@@ -304,7 +304,7 @@ export class InputView
 
         this.previousValidityRecording = recording;
 
-        if (inputRecording?.isValidationErrorToBeRendered()) {
+        if (inputRecording?.isValidationErrorToBeRendered() && !this.getContext()?.getFormState()?.isNew()) {
             this.renderValidationErrors(inputRecording);
         }
 
