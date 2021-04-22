@@ -33,6 +33,10 @@ export abstract class BaseInputType extends DivEl
         return this;
     }
 
+    isValidationErrorToBeRendered(): boolean {
+        return true;
+    }
+
     getInputValidationRecording(): InputValidationRecording {
         return this.previousValidationRecording;
     }

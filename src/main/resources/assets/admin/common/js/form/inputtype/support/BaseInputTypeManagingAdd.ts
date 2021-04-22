@@ -64,6 +64,7 @@ export abstract class BaseInputTypeManagingAdd
 
         const totalValid: number = this.getNumberOfValids();
         const recording: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), totalValid);
+        recording.setValidationErrorToBeRendered(this.isValidationErrorToBeRendered());
 
         if (!silent && recording.validityChanged(this.previousValidationRecording)) {
             this.notifyValidityChanged(new InputValidityChangedEvent(recording));

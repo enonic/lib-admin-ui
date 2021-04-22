@@ -7,9 +7,12 @@ export class InputValidationRecording implements Equitable {
 
     private readonly totalValid: number;
 
+    private validationErrorToBeRendered: boolean;
+
     constructor(occurrences: Occurrences, totalValid: number) {
         this.occurrences = occurrences;
         this.totalValid = totalValid;
+        this.validationErrorToBeRendered = true;
     }
 
     isValid(): boolean {
@@ -26,6 +29,14 @@ export class InputValidationRecording implements Equitable {
 
     isMaximumOccurrencesBreached(): boolean {
         return this.occurrences.maximumBreached(this.totalValid);
+    }
+
+    setValidationErrorToBeRendered(value: boolean) {
+        this.validationErrorToBeRendered = value;
+    }
+
+    isValidationErrorToBeRendered(): boolean {
+        return this.validationErrorToBeRendered;
     }
 
     equals(that: InputValidationRecording): boolean {

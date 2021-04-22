@@ -304,7 +304,9 @@ export class InputView
 
         this.previousValidityRecording = recording;
 
-        this.renderValidationErrors(inputRecording);
+        if (inputRecording?.isValidationErrorToBeRendered()) {
+            this.renderValidationErrors(inputRecording);
+        }
 
         return recording;
     }
@@ -316,17 +318,10 @@ export class InputView
     }
 
     private renderValidationErrors(recording: InputValidationRecording) {
-        if (!this.mayRenderValidationError()) {
-            return;
-        }
-
         this.toggleClass('valid', recording.isValid());
         this.toggleClass('invalid', !recording.isValid());
 
         this.validationViewer.setObject(recording);
     }
 
-    protected mayRenderValidationError(): boolean {
-        return true;
-    }
 }
