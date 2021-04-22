@@ -83,6 +83,11 @@ export class FormItemLayer {
         }
 
         const updatePromises = this.formItemViews.map((formItemView: FormItemView) => {
+            if (ObjectHelper.iFrameSafeInstanceOf(formItemView, FormItemSetView) ||
+                ObjectHelper.iFrameSafeInstanceOf(formItemView, FormOptionSetView)) {
+                this.setShowEmptyFormItemSetOccurrences(propertySet, formItemView.getFormItem().getName());
+            }
+
             return formItemView.update(propertySet, unchangedOnly);
         });
 
