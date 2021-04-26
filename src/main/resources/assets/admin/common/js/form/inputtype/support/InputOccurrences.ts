@@ -67,8 +67,8 @@ export class InputOccurrences
         return new InputOccurrencesBuilder();
     }
 
-    hasValidUserInput(recording?: InputValidationRecording): boolean {
-        return this.getOccurrenceViews().every((occurrenceView: FormItemOccurrenceView) => occurrenceView.hasValidUserInput(recording));
+    hasValidUserInput(): boolean {
+        return this.getOccurrenceViews().every((occurrenceView: FormItemOccurrenceView) => occurrenceView.hasValidUserInput());
     }
 
     moveOccurrence(fromIndex: number, toIndex: number) {

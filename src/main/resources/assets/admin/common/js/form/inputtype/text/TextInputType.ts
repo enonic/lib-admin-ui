@@ -100,7 +100,7 @@ export abstract class TextInputType
 
         if (!isLengthValid) {
             const record: AdditionalValidationRecord =
-                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                AdditionalValidationRecord.create().setMessage(
                     i18n('field.value.breaks.maxlength', this.maxLength)).build();
 
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);

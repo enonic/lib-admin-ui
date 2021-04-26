@@ -37,10 +37,6 @@ export class ComboBox
         return this.comboBox;
     }
 
-    availableSizeChanged() {
-        // console.log('ComboBox.availableSizeChanged(' + this.getEl().getWidth() + 'x' + this.getEl().getWidth() + ')');
-    }
-
     getValueType(): ValueType {
         return ValueTypes.STRING;
     }
@@ -53,22 +49,23 @@ export class ComboBox
         if (!ValueTypes.STRING.equals(propertyArray.getType())) {
             ValueTypeConverter.convertArrayValues(propertyArray, ValueTypes.STRING);
         }
-        super.layout(input, propertyArray);
 
-        this.selectedOptionsView = new BaseSelectedOptionsView<string>();
-        this.selectedOptionsView.setEditable(false);
-        this.comboBox = this.createComboBox(input, propertyArray);
+        return super.layout(input, propertyArray).then(() => {
+            this.selectedOptionsView = new BaseSelectedOptionsView<string>();
+            this.selectedOptionsView.setEditable(false);
+            this.comboBox = this.createComboBox(input, propertyArray);
 
-        this.comboBoxOptions.forEach((option: ComboBoxOption) => {
-            this.comboBox.addOption(Option.create<string>().setValue(option.value).setDisplayValue(option.label).build());
+            this.comboBoxOptions.forEach((option: ComboBoxOption) => {
+                this.comboBox.addOption(Option.create<string>().setValue(option.value).setDisplayValue(option.label).build());
+            });
+
+            this.appendChild(this.comboBox);
+            this.appendChild(<Element> this.selectedOptionsView);
+
+            this.setLayoutInProgress(false);
+
+            return Q<void>(null);
         });
-
-        this.appendChild(this.comboBox);
-        this.appendChild(<Element> this.selectedOptionsView);
-
-        this.setLayoutInProgress(false);
-
-        return Q<void>(null);
     }
 
     update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {

@@ -51,15 +51,14 @@ export class PrincipalSelector
     }
 
     layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {
+        return super.layout(input, propertyArray).then(() => {
+            this.comboBox = this.createComboBox(input);
+            this.appendChild(this.comboBox);
 
-        super.layout(input, propertyArray);
-        this.comboBox = this.createComboBox(input);
+            this.setLayoutInProgress(false);
 
-        this.appendChild(this.comboBox);
-
-        this.setLayoutInProgress(false);
-
-        return Q<void>(null);
+            return Q<void>(null);
+        });
     }
 
     update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {

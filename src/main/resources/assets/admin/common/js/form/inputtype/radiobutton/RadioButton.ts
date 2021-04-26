@@ -18,7 +18,6 @@ export class RadioButton
     extends BaseInputTypeSingleOccurrence {
 
     private selector: RadioGroup;
-    private previousValidationRecording: InputValidationRecording;
     private radioButtonOptions: { label: string; value: string; }[];
 
     constructor(config: InputTypeViewContext) {
@@ -35,7 +34,6 @@ export class RadioButton
     }
 
     layoutProperty(input: Input, property: Property): Q.Promise<void> {
-
         this.input = input;
 
         this.selector = this.createRadioElement(input.getName(), property);
@@ -73,19 +71,15 @@ export class RadioButton
         this.selector.setEnabled(enable);
     }
 
-    validate(silent: boolean = true): InputValidationRecording {
-        let recording = new InputValidationRecording();
-        let propertyValue = this.getProperty().getValue();
-        if (propertyValue.isNull() && this.input.getOccurrences().getMinimum() > 0) {
-            recording.setBreaksMinimumOccurrences(true);
+    validate(silent: boolean = true) {
+        const isValueSelected: boolean = this.getProperty().getValue().isNotNull();
+        const recording: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), isValueSelected ? 1 : 0);
+
+        if (!silent && recording.validityChanged(this.previousValidationRecording)) {
+            this.notifyValidityChanged(new InputValidityChangedEvent(recording));
         }
-        if (!silent) {
-            if (recording.validityChanged(this.previousValidationRecording)) {
-                this.notifyValidityChanged(new InputValidityChangedEvent(recording, this.input.getName()));
-            }
-        }
+
         this.previousValidationRecording = recording;
-        return recording;
     }
 
     onFocus(listener: (event: FocusEvent) => void) {
