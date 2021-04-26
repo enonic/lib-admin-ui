@@ -474,7 +474,7 @@ export class PropertySet
                 propertyArray.forEach((property: Property) => {
                     result = result.concat(property.getValue().getPropertySet().getValuesAsString());
                 });
-            } else {
+            } else if (!propertyArray.isEmpty()) {
                 const property = propertyArray.get(0);
                 const value = property.getValue() || ValueTypes.STRING.newNullValue();
                 result.push({
