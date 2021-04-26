@@ -178,6 +178,7 @@ export class FormOptionSetOptionView
             }
 
             this.updateViewState();
+            this.checkbox?.setChecked(this.isSelected(), true);
         });
     }
 
