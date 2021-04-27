@@ -45,6 +45,9 @@ export class ApplicationConfiguratorDialog
                     this.close();
                 },
                 noCallback: () => {
+                    if (cancelCallback) {
+                        cancelCallback();
+                    }
                     this.close();
                 }
             }
