@@ -80,7 +80,7 @@ export abstract class NumberInputType
             this.validateMinMax(inputEl);
         } else {
             const record: AdditionalValidationRecord =
-                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                AdditionalValidationRecord.create().setMessage(
                     i18n('field.value.invalid')).build();
 
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
@@ -94,12 +94,12 @@ export abstract class NumberInputType
 
         if (!this.isValidMin(NumberHelper.toNumber(value))) {
             const record: AdditionalValidationRecord =
-                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                AdditionalValidationRecord.create().setMessage(
                     i18n('field.value.breaks.min', this.min)).build();
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
         } else if (!this.isValidMax(NumberHelper.toNumber(value))) {
             const record: AdditionalValidationRecord =
-                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                AdditionalValidationRecord.create().setMessage(
                     i18n('field.value.breaks.max', this.max)).build();
 
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);

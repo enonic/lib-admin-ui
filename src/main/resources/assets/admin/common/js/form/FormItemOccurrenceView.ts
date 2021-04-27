@@ -45,8 +45,7 @@ export abstract class FormItemOccurrenceView
         return Q<void>(null);
     }
 
-    hasValidUserInput(_recording?: InputValidationRecording): boolean {
-
+    hasValidUserInput(): boolean {
         throw new Error('Must be implemented by inheritor');
     }
 

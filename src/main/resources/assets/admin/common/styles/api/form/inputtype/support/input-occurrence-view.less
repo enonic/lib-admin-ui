@@ -1,64 +1,79 @@
 .input-occurrence-view {
-  .clearfix();
   display: flex;
-  align-items: center;
+  flex-direction: column;
 
-  flex-wrap: wrap;
+  .data-block {
+    .clearfix();
+    display: flex;
+    align-items: center;
 
-  &:not(:last-child) {
-    margin-bottom: 7px;
-  }
+    flex-wrap: wrap;
 
-  > .drag-control {
-    order: 1;
-
-    float: left;
-    background: url("../../../../../images/nail-plate.png") no-repeat;
-    width: 5px;
-    height: 30px;
-    cursor: move;
-  }
-
-  .input-wrapper {
-    order: 2;
-    flex: 1;
-
-    .form-input {
-      width: 100%;
-    }
-  }
-
-  .remove-button {
-    &:extend(.icon);
-    .icon-close;
-
-    order: 3;
-
-    float: right;
-    text-decoration: none;
-    cursor: pointer;
-    background: none;
-  }
-
-  &.single-occurrence {
-    > .drag-control, > .remove-button {
-      display: none;
+    &:not(:last-child) {
+      margin-bottom: 7px;
     }
 
-  }
+    > .drag-control {
+      order: 1;
 
-  &.multiple-occurrence {
-
-    > .drag-control, > .remove-button {
-      display: block;
-      border: 1px solid transparent;
-      .focusable();
-
+      float: left;
+      background: url("../../../../../images/nail-plate.png") no-repeat;
+      width: 5px;
+      height: 30px;
+      cursor: move;
     }
 
     .input-wrapper {
-      margin: 0 5px 0 0;
+      order: 2;
+      flex: 1;
+
+      .form-input {
+        width: 100%;
+      }
     }
 
+    .remove-button {
+      &:extend(.icon);
+      .icon-close;
+
+      order: 3;
+
+      float: right;
+      text-decoration: none;
+      cursor: pointer;
+      background: none;
+    }
+  }
+
+  .error-block {
+    padding: 0 0 10px 6px;
+    color: @input-red-text;
+  }
+
+  &.single-occurrence {
+    .data-block {
+      > .drag-control, > .remove-button {
+        display: none;
+      }
+    }
+  }
+
+  &.multiple-occurrence {
+    .data-block {
+      > .drag-control, > .remove-button {
+        display: block;
+        border: 1px solid transparent;
+        .focusable();
+
+      }
+
+      .input-wrapper {
+        margin: 0 5px 0 0;
+      }
+    }
+
+    .error-block {
+      padding: 0 0 10px 17px;
+    }
   }
 }

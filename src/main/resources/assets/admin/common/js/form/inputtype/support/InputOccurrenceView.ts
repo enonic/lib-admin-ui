@@ -6,10 +6,10 @@ import {Element} from '../../../dom/Element';
 import {DivEl} from '../../../dom/DivEl';
 import {Value} from '../../../data/Value';
 import {PropertyPath} from '../../../data/PropertyPath';
-import {InputValidationRecording} from '../InputValidationRecording';
 import {InputOccurrence} from './InputOccurrence';
 import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
 import {ButtonEl} from '../../../dom/ButtonEl';
+import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
 
 export class InputOccurrenceView
     extends FormItemOccurrenceView {
@@ -23,39 +23,26 @@ export class InputOccurrenceView
     private dragControl: DivEl;
     private propertyValueChangedHandler: (event: PropertyValueChangedEvent) => void;
     private occurrenceValueChangedHandler: (occurrence: Element, value: Value) => void;
+    private validationErrorBlock: DivEl;
 
     constructor(inputOccurrence: InputOccurrence, baseInputTypeView: BaseInputTypeNotManagingAdd, property: Property) {
         super('input-occurrence-view', inputOccurrence);
 
         this.inputTypeView = baseInputTypeView;
-        this.inputElement = this.inputTypeView.createInputOccurrenceElement(inputOccurrence.getIndex(), property);
+        this.inputOccurrence = inputOccurrence;
+        this.property = property;
 
+        this.initElements();
         this.initListeners();
 
-        this.registerProperty(property);
-
-        this.inputOccurrence = inputOccurrence;
-
-        this.dragControl = new DivEl('drag-control');
-        this.appendChild(this.dragControl);
-
-        this.removeButtonEl = new ButtonEl();
-        this.removeButtonEl.addClass('remove-button');
-        this.removeButtonEl.onClicked((event: MouseEvent) => {
-            this.notifyRemoveButtonClicked();
-            event.stopPropagation();
-            event.preventDefault();
-            return false;
-        });
-
-        let inputWrapper = new DivEl('input-wrapper');
-        this.appendChild(inputWrapper);
-
-        inputWrapper.appendChild(this.inputElement);
-
-        this.appendChild(this.removeButtonEl);
-
         this.refresh();
+    }
+
+    private initElements() {
+        this.inputElement = this.inputTypeView.createInputOccurrenceElement(this.inputOccurrence.getIndex(), this.property);
+        this.dragControl = new DivEl('drag-control');
+        this.validationErrorBlock = new DivEl('error-block');
+        this.removeButtonEl = new ButtonEl();
     }
 
     update(property: Property, unchangedOnly?: boolean): Q.Promise<void> {
@@ -76,7 +63,6 @@ export class InputOccurrenceView
     }
 
     refresh() {
-
         if (this.inputOccurrence.oneAndOnly()) {
             this.addClass('single-occurrence').removeClass('multiple-occurrence');
         } else {
@@ -87,7 +73,6 @@ export class InputOccurrenceView
     }
 
     getDataPath(): PropertyPath {
-
         return this.property.getPath();
     }
 
@@ -99,7 +84,7 @@ export class InputOccurrenceView
         return this.inputElement;
     }
 
-    hasValidUserInput(recording?: InputValidationRecording): boolean {
+    hasValidUserInput(): boolean {
         return this.inputTypeView.isUserInputValid(this.inputElement);
     }
 
@@ -124,7 +109,7 @@ export class InputOccurrenceView
     }
 
     private initListeners() {
-        let ignorePropertyChange = false;
+        let ignorePropertyChange: boolean = false;
 
         this.occurrenceValueChangedHandler = (occurrence: Element, value: Value) => {
             // check if this is our occurrence because all views will receive occurrence value changed event
@@ -163,6 +148,15 @@ export class InputOccurrenceView
                 this.inputTypeView.unOccurrenceValueChanged(this.occurrenceValueChangedHandler);
             }
         });
+
+        this.removeButtonEl.onClicked((event: MouseEvent) => {
+            this.notifyRemoveButtonClicked();
+            event.stopPropagation();
+            event.preventDefault();
+            return false;
+        });
+
+        this.property.onPropertyValueChanged(this.propertyValueChangedHandler);
     }
 
     private registerProperty(property: Property) {
@@ -179,5 +173,31 @@ export class InputOccurrenceView
             property.onPropertyValueChanged(this.propertyValueChangedHandler);
         }
         this.property = property;
+    }
+
+    doRender(): Q.Promise<boolean> {
+        return super.doRender().then((rendered: boolean) => {
+            const dataBlock: DivEl = new DivEl('data-block');
+            this.appendChild(dataBlock);
+
+            dataBlock.appendChild(this.dragControl);
+
+            const inputWrapper: DivEl = new DivEl('input-wrapper');
+            dataBlock.appendChild(inputWrapper);
+            inputWrapper.appendChild(this.inputElement);
+            dataBlock.appendChild(this.removeButtonEl);
+
+            this.appendChild(this.validationErrorBlock);
+
+            this.removeButtonEl.addClass('remove-button');
+
+            return rendered;
+        });
+    }
+
+    displayValidationError(occurrenceValidationRecord: OccurrenceValidationRecord) {
+        this.validationErrorBlock.setVisible(occurrenceValidationRecord && !occurrenceValidationRecord.isValueValid());
+        const errorMessage: string = occurrenceValidationRecord?.getAdditionalValidationRecord()?.getMessage() || '';
+        this.validationErrorBlock.setHtml(errorMessage);
     }
 }

@@ -8,7 +8,7 @@ import {ValidationRecordingPath} from './ValidationRecordingPath';
 export class ValidationRecordingViewer
     extends Viewer<ValidationRecording> {
 
-    private list: UlEl;
+    private readonly list: UlEl;
 
     constructor() {
         super('validation-viewer');
@@ -32,13 +32,6 @@ export class ValidationRecordingViewer
                 this.list.appendChild(this.createItemView(path, false));
             });
         }
-    }
-
-    appendValidationMessage(message: string, removeExisting: boolean = true) {
-        if (removeExisting) {
-            this.list.removeChildren();
-        }
-        this.list.appendChild(new LiEl().setHtml(message));
     }
 
     setError(text: string) {

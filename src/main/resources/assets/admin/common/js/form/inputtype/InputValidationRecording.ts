@@ -1,67 +1,46 @@
-import {ObjectHelper} from '../../ObjectHelper';
-import {AdditionalValidationRecord} from '../AdditionalValidationRecord';
 import {Equitable} from '../../Equitable';
+import {Occurrences} from '../Occurrences';
 
 export class InputValidationRecording implements Equitable {
 
-    private breaksMinimumOccurrences: boolean;
+    private readonly occurrences: Occurrences;
 
-    private breaksMaximumOccurrences: boolean;
+    private readonly totalValid: number;
 
-    private additionalValidationRecord: AdditionalValidationRecord;
+    private validationErrorToBeRendered: boolean;
 
-    constructor() {
-        this.breaksMinimumOccurrences = false;
-        this.breaksMaximumOccurrences = false;
+    constructor(occurrences: Occurrences, totalValid: number) {
+        this.occurrences = occurrences;
+        this.totalValid = totalValid;
+        this.validationErrorToBeRendered = true;
     }
 
     isValid(): boolean {
-        return !this.breaksMaximumOccurrences && !this.breaksMinimumOccurrences && !this.additionalValidationRecord;
+        return this.totalValid >= this.occurrences.getMinimum() && !this.occurrences.maximumBreached(this.totalValid);
     }
 
-    setBreaksMinimumOccurrences(value: boolean) {
-        this.breaksMinimumOccurrences = value;
-    }
-
-    setBreaksMaximumOccurrences(value: boolean) {
-        this.breaksMaximumOccurrences = value;
-    }
-
-    setAdditionalValidationRecord(value: AdditionalValidationRecord) {
-        this.additionalValidationRecord = value;
+    getOccurrences(): Occurrences {
+        return this.occurrences;
     }
 
     isMinimumOccurrencesBreached(): boolean {
-        return this.breaksMinimumOccurrences;
+        return this.totalValid < this.occurrences.getMinimum();
     }
 
     isMaximumOccurrencesBreached(): boolean {
-        return this.breaksMaximumOccurrences;
+        return this.occurrences.maximumBreached(this.totalValid);
     }
 
-    getAdditionalValidationRecord(): AdditionalValidationRecord {
-        return this.additionalValidationRecord;
+    setValidationErrorToBeRendered(value: boolean) {
+        this.validationErrorToBeRendered = value;
     }
 
-    hasAdditionalValidationRecord(): boolean {
-        return !!this.additionalValidationRecord;
+    isValidationErrorToBeRendered(): boolean {
+        return this.validationErrorToBeRendered;
     }
 
     equals(that: InputValidationRecording): boolean {
-
-        if (this.breaksMinimumOccurrences !== that.breaksMinimumOccurrences) {
-            return false;
-        }
-
-        if (this.breaksMaximumOccurrences !== that.breaksMaximumOccurrences) {
-            return false;
-        }
-
-        if (!ObjectHelper.equals(this.additionalValidationRecord, that.additionalValidationRecord)) {
-            return false;
-        }
-
-        return true;
+        return this.isValid() === that.isValid();
     }
 
     validityChanged(other: InputValidationRecording) {

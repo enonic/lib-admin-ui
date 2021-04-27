@@ -3,11 +3,9 @@ import {ValidationRecording} from './ValidationRecording';
 
 export class RecordingValidityChangedEvent {
 
-    private origin: ValidationRecordingPath;
+    private readonly origin: ValidationRecordingPath;
 
-    private recording: ValidationRecording;
-
-    private inputValueBroken: boolean = false;
+    private readonly recording: ValidationRecording;
 
     private includeChildren: boolean = false;
 
@@ -21,20 +19,11 @@ export class RecordingValidityChangedEvent {
     }
 
     isValid(): boolean {
-        return this.recording.isValid() && !this.inputValueBroken;
+        return this.recording.isValid();
     }
 
     getRecording(): ValidationRecording {
         return this.recording;
-    }
-
-    setInputValueBroken(broken: boolean): RecordingValidityChangedEvent {
-        this.inputValueBroken = broken;
-        return this;
-    }
-
-    isInputValueBroken(): boolean {
-        return this.inputValueBroken;
     }
 
     setIncludeChildren(include: boolean): RecordingValidityChangedEvent {

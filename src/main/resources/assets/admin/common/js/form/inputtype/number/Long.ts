@@ -26,8 +26,7 @@ export class Long
     doValidateUserInput(inputEl: TextInput) {
         if (!NumberHelper.isWholeNumber(+inputEl.getValue())) {
             const record: AdditionalValidationRecord =
-                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
-                    i18n('field.value.invalid')).build();
+                AdditionalValidationRecord.create().setMessage(i18n('field.value.invalid')).build();
 
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
         }

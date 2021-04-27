@@ -2,31 +2,22 @@ import * as Q from 'q';
 import {Property} from '../../../data/Property';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
-import {InputTypeView} from '../InputTypeView';
-import {DivEl} from '../../../dom/DivEl';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Input} from '../../Input';
 import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
-import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
 import {ValueChangedEvent} from '../ValueChangedEvent';
-import {Element} from '../../../dom/Element';
 import {ClassHelper} from '../../../ClassHelper';
-import {InputValidationRecording} from '../InputValidationRecording';
-import {ContentSummary} from '../../../content/ContentSummary';
 import {assertNotNull} from '../../../util/Assert';
+import {BaseInputType} from './BaseInputType';
+import {InputValidationRecording} from '../InputValidationRecording';
 
 export abstract class BaseInputTypeSingleOccurrence
-    extends DivEl
-    implements InputTypeView {
+    extends BaseInputType {
 
-    protected input: Input;
     protected ignorePropertyChange: boolean;
     private context: InputTypeViewContext;
     private property: Property;
     private propertyListener: (event: PropertyValueChangedEvent) => void;
-    private inputValidityChangedListeners: { (event: InputValidityChangedEvent): void }[] = [];
-
     private inputValueChangedListeners: { (event: ValueChangedEvent): void }[] = [];
 
     constructor(ctx: InputTypeViewContext, className?: string) {
@@ -37,16 +28,8 @@ export abstract class BaseInputTypeSingleOccurrence
         this.initListeners();
     }
 
-    availableSizeChanged() {
-        // must be implemented by children
-    }
-
     public getContext(): InputTypeViewContext {
         return this.context;
-    }
-
-    getElement(): Element {
-        return this;
     }
 
     isManagingAdd(): boolean {
@@ -54,15 +37,16 @@ export abstract class BaseInputTypeSingleOccurrence
     }
 
     layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {
-        let property = propertyArray.get(0);
-        this.registerProperty(property);
+        return super.layout(input, propertyArray).then(() => {
+            const property: Property = propertyArray.get(0);
+            this.registerProperty(property);
+            this.layoutProperty(input, this.property);
 
-        this.layoutProperty(input, this.property);
-        return Q<void>(null);
+            return Q<void>(null);
+        });
     }
 
     layoutProperty(_input: Input, _property: Property): Q.Promise<void> {
-
         throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
     }
 
@@ -73,18 +57,6 @@ export abstract class BaseInputTypeSingleOccurrence
         return this.updateProperty(this.property, unchangedOnly);
     }
 
-    reset() {
-        throw Error('Must be implemented in inheritors');
-    }
-
-    refresh() {
-        //to be implemented on demand in inheritors
-    }
-
-    setEnabled(enable: boolean) {
-    //
-    }
-
     updateProperty(_property: Property, _unchangedOnly?: boolean): Q.Promise<void> {
         throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
     }
@@ -93,35 +65,8 @@ export abstract class BaseInputTypeSingleOccurrence
         return this.property;
     }
 
-    getValueType(): ValueType {
-        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
-    }
-
-    newInitialValue(): Value {
-        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
-    }
-
-    displayValidationErrors(_value: boolean) {
-        // must be implemented by children
-    }
-
-    hasValidUserInput(): boolean {
-        return true;
-    }
-
-    validate(_silent: boolean = true): InputValidationRecording {
-
-        throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
-    }
-
-    onValidityChanged(listener: (event: InputValidityChangedEvent) => void) {
-        this.inputValidityChangedListeners.push(listener);
-    }
-
-    unValidityChanged(listener: (event: InputValidityChangedEvent) => void) {
-        this.inputValidityChangedListeners.filter((currentListener: (event: InputValidityChangedEvent) => void) => {
-            return listener === currentListener;
-        });
+    validate(_silent: boolean = true) {
+        this.previousValidationRecording = new InputValidationRecording(this.input.getOccurrences(), 1);
     }
 
     onValueChanged(listener: (event: ValueChangedEvent) => void) {
@@ -150,14 +95,6 @@ export abstract class BaseInputTypeSingleOccurrence
         throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
     }
 
-    onEditContentRequest(_listener: (content: ContentSummary) => void) {
-        // Adapter for InputTypeView method, to be implemented on demand in inheritors
-    }
-
-    unEditContentRequest(_listener: (content: ContentSummary) => void) {
-        // Adapter for InputTypeView method, to be implemented on demand in inheritors
-    }
-
     protected registerProperty(property: Property) {
         if (this.property) {
             this.property.unPropertyValueChanged(this.propertyListener);
@@ -173,12 +110,6 @@ export abstract class BaseInputTypeSingleOccurrence
         this.property.setValue(value);
         this.validate(false);
         this.ignorePropertyChange = false;
-    }
-
-    protected notifyValidityChanged(event: InputValidityChangedEvent) {
-        this.inputValidityChangedListeners.forEach((listener: (event: InputValidityChangedEvent) => void) => {
-            listener(event);
-        });
     }
 
     protected notifyValueChanged(event: ValueChangedEvent) {

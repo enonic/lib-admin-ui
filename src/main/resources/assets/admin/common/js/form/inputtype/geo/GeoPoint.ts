@@ -57,8 +57,7 @@ export class GeoPoint
 
         if (!inputEl.isValid()) {
             const record: AdditionalValidationRecord =
-                AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
-                    i18n('field.value.invalid')).build();
+                AdditionalValidationRecord.create().setMessage(i18n('field.value.invalid')).build();
 
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
         }
