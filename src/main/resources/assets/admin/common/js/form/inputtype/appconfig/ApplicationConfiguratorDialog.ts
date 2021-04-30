@@ -15,6 +15,7 @@ import {Element} from '../../../dom/Element';
 import {ArrayHelper} from '../../../util/ArrayHelper';
 import {ObjectHelper} from '../../../ObjectHelper';
 import {ModalDialogWithConfirmation, ModalDialogWithConfirmationConfig} from '../../../ui/dialog/ModalDialogWithConfirmation';
+import {FormValidityChangedEvent} from '../../FormValidityChangedEvent';
 
 export interface ApplicationConfiguratorDialogConfig
     extends ModalDialogWithConfirmationConfig {
@@ -78,6 +79,24 @@ export class ApplicationConfiguratorDialog
         this.getCancelAction().onExecuted(this.config.cancelCallback);
 
         this.okAction.onExecuted(this.config.confirmation.yesCallback);
+
+        this.formView.onValidityChanged((event: FormValidityChangedEvent) => {
+            const isValid: boolean = event.isValid();
+            this.okAction.setEnabled(isValid);
+            this.formView.displayValidationErrors(!isValid);
+        });
+    }
+
+    protected handleClickOutside() {
+        if (this.formView.isValid()) {
+            super.handleClickOutside();
+        } else {
+            if (this.config.cancelCallback) {
+                this.config.cancelCallback();
+            }
+
+            this.close();
+        }
     }
 
     handleAvailableSizeChanged() {

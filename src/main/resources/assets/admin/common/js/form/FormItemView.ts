@@ -51,7 +51,7 @@ export class FormItemView
         throw new Error('Must be implemented by inheritors');
     }
 
-    layout(): Q.Promise<void> {
+    layout(validate: boolean = true): Q.Promise<void> {
         throw new Error('Must be implemented by inheritors');
     }
 
