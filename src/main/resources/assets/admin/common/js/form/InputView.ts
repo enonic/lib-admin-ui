@@ -130,6 +130,8 @@ export class InputView
             });
 
             this.refreshButtonsState();
+
+            return Q(null);
         });
     }
 
