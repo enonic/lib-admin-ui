@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@types/dompurify": "^2.2.2",
-    "@types/mousetrap": "^1.6.6",
+    "@types/mousetrap": "^1.6.8",
     "@types/slickgrid": "^2.1.30",
     "dompurify": "^2.2.8",
     "fine-uploader": "^5.16.2",
