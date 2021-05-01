@@ -21,7 +21,7 @@
     "@types/dompurify": "^2.2.1",
     "@types/mousetrap": "^1.6.6",
     "@types/slickgrid": "^2.1.30",
-    "dompurify": "^2.2.7",
+    "dompurify": "^2.2.8",
     "fine-uploader": "^5.16.2",
     "flag-icon-css": "^3.5.0",
     "jquery": "^3.6.0",
