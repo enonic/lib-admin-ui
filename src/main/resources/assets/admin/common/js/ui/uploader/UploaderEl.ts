@@ -151,11 +151,13 @@ export class UploaderEl<MODEL extends Equitable>
         if (value) {
             if (this.config.showResult) {
                 this.setResultVisible();
-            } else {
+            } else if (!this.config.hideDefaultDropZone) {
                 this.setDefaultDropzoneVisible();
             }
         } else {
-            this.setDefaultDropzoneVisible();
+            if (!this.config.hideDefaultDropZone) {
+                this.setDefaultDropzoneVisible();
+            }
             return this;
         }
 
@@ -227,8 +229,8 @@ export class UploaderEl<MODEL extends Equitable>
         return this;
     }
 
-    setDefaultDropzoneVisible(visible: boolean = true, isDrag: boolean = false) {
-        if (visible && this.config.hideDefaultDropZone && !isDrag) {
+    setDefaultDropzoneVisible(visible: boolean = true) {
+        if (visible && this.isItemsUploadLimitReached()) {
             return;
         }
 
