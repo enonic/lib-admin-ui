@@ -1,8 +1,6 @@
 import * as Q from 'q';
 import {PropertySet} from '../data/PropertySet';
 import {DivEl} from '../dom/DivEl';
-import {ContentSummary} from '../content/ContentSummary';
-import {FormEditEvent} from '../content/event/FormEditEvent';
 import {WindowDOM} from '../dom/WindowDOM';
 import {DefaultErrorHandler} from '../DefaultErrorHandler';
 import {Form} from './Form';
@@ -29,7 +27,7 @@ export class FormView
     public static VALIDATION_CLASS: string = 'display-validation-errors';
     private form: Form;
     private data: PropertySet;
-    private formItemViews: FormItemView[] = [];
+    protected formItemViews: FormItemView[] = [];
     private formItemLayer: FormItemLayer;
     private formValidityChangedListeners: { (event: FormValidityChangedEvent): void }[] = [];
     private previousValidationRecording: ValidationRecording;
@@ -49,6 +47,35 @@ export class FormView
         this.data = data;
 
         this.formItemLayer = FormItemLayerFactoryImpl.get().createLayer({context});
+    }
+
+    protected initFormItemViewEventListeners() {
+
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+
+            formItemView.onFocus((event: FocusEvent) => {
+                this.notifyFocused(event);
+            });
+
+            formItemView.onBlur((event: FocusEvent) => {
+                this.notifyBlurred(event);
+            });
+
+            formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
+                if (!this.previousValidationRecording) {
+                    this.previousValidationRecording = event.getRecording();
+                    this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
+                } else {
+                    if (event.isValid()) {
+                        this.previousValidationRecording.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
+                    } else {
+                        this.previousValidationRecording.flatten(event.getRecording());
+                    }
+
+                    this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
+                }
+            });
+        });
     }
 
     /**
@@ -75,35 +102,7 @@ export class FormView
 
             deferred.resolve(null);
 
-            this.formItemViews.forEach((formItemView: FormItemView) => {
-
-                formItemView.onFocus((event: FocusEvent) => {
-                    this.notifyFocused(event);
-                });
-
-                formItemView.onBlur((event: FocusEvent) => {
-                    this.notifyBlurred(event);
-                });
-
-                formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
-                    if (!this.previousValidationRecording) {
-                        this.previousValidationRecording = event.getRecording();
-                        this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
-                    } else {
-                        if (event.isValid()) {
-                            this.previousValidationRecording.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
-                        } else {
-                            this.previousValidationRecording.flatten(event.getRecording());
-                        }
-
-                        this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
-                    }
-                });
-
-                formItemView.onEditContentRequest((content: ContentSummary) => {
-                    new FormEditEvent(content).fire();
-                });
-            });
+            this.initFormItemViewEventListeners();
 
             WindowDOM.get().onResized(() => this.checkSizeChanges(), this);
             this.onShown(() => this.checkSizeChanges());

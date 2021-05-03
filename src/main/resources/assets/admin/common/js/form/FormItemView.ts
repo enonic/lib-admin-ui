@@ -1,7 +1,6 @@
 import * as Q from 'q';
 import {PropertySet} from '../data/PropertySet';
 import {DivEl} from '../dom/DivEl';
-import {ContentSummary} from '../content/ContentSummary';
 import {FormContext} from './FormContext';
 import {FormItem} from './FormItem';
 import {FormItemOccurrenceView} from './FormItemOccurrenceView';
@@ -28,8 +27,6 @@ export class FormItemView
     private formItem: FormItem;
 
     protected parent: FormItemOccurrenceView;
-
-    private editContentRequestListeners: { (content: ContentSummary): void }[] = [];
 
     private highlightOnValidityChanged: boolean;
 
@@ -115,23 +112,6 @@ export class FormItemView
 
     highlightOnValidityChange(): boolean {
         return this.highlightOnValidityChanged;
-    }
-
-    onEditContentRequest(listener: (content: ContentSummary) => void) {
-        this.editContentRequestListeners.push(listener);
-    }
-
-    unEditContentRequest(listener: (content: ContentSummary) => void) {
-        this.editContentRequestListeners = this.editContentRequestListeners
-            .filter(function (curr: (content: ContentSummary) => void) {
-                return curr !== listener;
-            });
-    }
-
-    notifyEditContentRequested(content: ContentSummary) {
-        this.editContentRequestListeners.forEach((listener) => {
-            listener(content);
-        });
     }
 
     onValidityChanged(_listener: (event: RecordingValidityChangedEvent) => void) {

@@ -9,7 +9,6 @@ import {FormItemView, FormItemViewConfig} from './FormItemView';
 import {InputTypeView} from './inputtype/InputTypeView';
 import {DivEl} from '../dom/DivEl';
 import {Button} from '../ui/button/Button';
-import {ContentSummary} from '../content/ContentSummary';
 import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
 import {InputValidityChangedEvent} from './inputtype/InputValidityChangedEvent';
 import {InputTypeName} from './InputTypeName';
@@ -90,9 +89,6 @@ export class InputView
         }
 
         this.inputTypeView = this.createInputTypeView();
-        this.inputTypeView.onEditContentRequest((content: ContentSummary) => {
-            this.notifyEditContentRequested(content);
-        });
 
         this.propertyArray = this.getPropertyArray(this.parentPropertySet);
 
@@ -254,7 +250,7 @@ export class InputView
         return array;
     }
 
-    private createInputTypeView(): InputTypeView {
+    protected createInputTypeView(): InputTypeView {
         let inputType: InputTypeName = this.input.getInputType();
         let inputTypeViewContext = this.getContext().createInputTypeViewContext(
             this.input.getInputTypeConfig() || {},

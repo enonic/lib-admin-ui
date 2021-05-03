@@ -1,19 +1,15 @@
 import * as $ from 'jquery';
 import * as Q from 'q';
 import {FormView} from '../../FormView';
-import {InputView} from '../../InputView';
 import {ComboBox} from '../../../ui/selector/combobox/ComboBox';
 import {Application} from '../../../application/Application';
 import {ResponsiveManager} from '../../../ui/responsive/ResponsiveManager';
-import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';
-import {ContentSummary} from '../../../content/ContentSummary';
 import {AppHelper} from '../../../util/AppHelper';
 import {Action} from '../../../ui/Action';
 import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
 import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';
 import {Element} from '../../../dom/Element';
 import {ArrayHelper} from '../../../util/ArrayHelper';
-import {ObjectHelper} from '../../../ObjectHelper';
 import {ModalDialogWithConfirmation, ModalDialogWithConfirmationConfig} from '../../../ui/dialog/ModalDialogWithConfirmation';
 
 export interface ApplicationConfiguratorDialogConfig
@@ -111,7 +107,7 @@ export class ApplicationConfiguratorDialog
                 setTimeout(() => {
                     ResponsiveManager.fireResizeEvent();
                     this.handleSelectorsDropdowns(this.formView);
-                    this.handleDialogClose(this.formView);
+                    //this.handleDialogClose(this.formView);
                 }, 100);
 
                 return rendered;
@@ -168,7 +164,7 @@ export class ApplicationConfiguratorDialog
 
         return ArrayHelper.flatten(element.getChildren().map(child => this.findComboboxes(child)));
     }
-
+/*
     private handleDialogClose(formView: FormView) {
         formView.getChildren().forEach((element: Element) => {
             if (ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
@@ -182,5 +178,5 @@ export class ApplicationConfiguratorDialog
                 }
             }
         });
-    }
+    }*/
 }

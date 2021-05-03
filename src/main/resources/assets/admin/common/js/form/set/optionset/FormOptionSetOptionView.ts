@@ -10,8 +10,6 @@ import {Checkbox} from '../../../ui/Checkbox';
 import {NotificationDialog} from '../../../ui/dialog/NotificationDialog';
 import {i18n} from '../../../util/Messages';
 import {DivEl} from '../../../dom/DivEl';
-import {ContentSummary} from '../../../content/ContentSummary';
-import {FormEditEvent} from '../../../content/event/FormEditEvent';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {ValueTypeString} from '../../../data/ValueTypeString';
 import {Element} from '../../../dom/Element';
@@ -131,13 +129,13 @@ export class FormOptionSetOptionView
             if (validate) {
                 this.validate(true);
             }
-
+/*
             this.formItemViews.forEach((formItemView: FormItemView) => {
                 formItemView.onEditContentRequest((content: ContentSummary) => {
                     new FormEditEvent(content).fire();
                 });
             });
-
+*/
             deferred.resolve(null);
         }).catch((reason: any) => {
             DefaultErrorHandler.handle(reason);

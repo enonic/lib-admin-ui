@@ -5,7 +5,6 @@ import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
 import {Element} from '../../../dom/Element';
 import {PropertyArray} from '../../../data/PropertyArray';
 import * as Q from 'q';
-import {ContentSummary} from '../../../content/ContentSummary';
 import {Value} from '../../../data/Value';
 import {ClassHelper} from '../../../ClassHelper';
 import {ValueType} from '../../../data/ValueType';
@@ -62,14 +61,6 @@ export abstract class BaseInputType extends DivEl
 
     newInitialValue(): Value {
         throw new Error('Must be overridden by inheritor: ' + ClassHelper.getClassName(this));
-    }
-
-    onEditContentRequest(_listener: (content: ContentSummary) => void) {
-        // Adapter for InputTypeView method, to be implemented on demand in inheritors
-    }
-
-    unEditContentRequest(_listener: (content: ContentSummary) => void) {
-        // Have to use stub here because it doesn't extend BaseInputTypeView
     }
 
     onValidityChanged(listener: (event: InputValidityChangedEvent) => void) {
