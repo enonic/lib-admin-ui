@@ -1,5 +1,3 @@
-import {StringHelper} from '../util/StringHelper';
-import {i18n} from '../util/Messages';
 import {Equitable} from '../Equitable';
 import {ObjectHelper} from '../ObjectHelper';
 import {ContentName} from './ContentName';
@@ -19,21 +17,6 @@ export class ContentUnnamed
 
     public static newUnnamed() {
         return new ContentUnnamed(ContentUnnamed.UNNAMED_PREFIX);
-    }
-
-    public static prettifyUnnamed(name?: string) {
-        if (!name) {
-            return `<${ContentUnnamed.getPrettyUnnamed()}>`;
-        }
-
-        let prettifiedName = name.replace(/-/g, ' ').trim();
-        prettifiedName = StringHelper.capitalizeAll(`${ContentUnnamed.getPrettyUnnamed()} ${prettifiedName}`);
-
-        return `<${prettifiedName}>`;
-    }
-
-    public static getPrettyUnnamed(): string {
-        return i18n('field.unnamed');
     }
 
     isUnnamed(): boolean {

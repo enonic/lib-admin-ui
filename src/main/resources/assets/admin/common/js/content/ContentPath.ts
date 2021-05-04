@@ -1,6 +1,7 @@
 import {Equitable} from '../Equitable';
 import {ObjectHelper} from '../ObjectHelper';
 import {ContentUnnamed} from './ContentUnnamed';
+import {NamePrettyfier} from '../NamePrettyfier';
 
 export class ContentPath
     implements Equitable {
@@ -121,7 +122,7 @@ export class ContentPath
         let prettyElements: string[] = [];
         this.elements.forEach((element: string) => {
             if (element.indexOf(ContentUnnamed.UNNAMED_PREFIX) === 0) {
-                prettyElements.push('<' + ContentUnnamed.getPrettyUnnamed() + '>');
+                prettyElements.push('<' + NamePrettyfier.getPrettyUnnamed() + '>');
             } else {
                 prettyElements.push(element);
             }
