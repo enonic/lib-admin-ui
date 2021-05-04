@@ -484,13 +484,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
             this.validate(false, event.validateViewOnRender() ? null : occurrenceView);
 
-            if (ObjectHelper.iFrameSafeInstanceOf(occurrenceView, FormSetOccurrenceView)) {/*
-                (<FormSetOccurrenceView>occurrenceView).getFormItemViews().forEach((formItemView: FormItemView) => {
-                    formItemView.onEditContentRequest((content: ContentSummary) => {
-                        new FormEditEvent(content).fire();
-                    });
-                });
-*/
+            if (ObjectHelper.iFrameSafeInstanceOf(occurrenceView, FormSetOccurrenceView)) {
                 this.onFormSetOccurrenceContainerVisibilityToggle((<FormSetOccurrenceView>occurrenceView).getContainer());
             }
         });
@@ -519,10 +513,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         this.formItemOccurrences.getOccurrenceViews().forEach((formSetOccurrenceView: V) => {
             formSetOccurrenceView.onValidityChanged((event: RecordingValidityChangedEvent) => {
                 this.handleFormSetOccurrenceViewValidityChanged(event);
-            });/*
-            formSetOccurrenceView.onEditContentRequest((summary: ContentSummary) => {
-                this.notifyEditContentRequested(summary);
-            });*/
+            });
             if (ObjectHelper.iFrameSafeInstanceOf(formSetOccurrenceView, FormSetOccurrenceView)) {
                 this.onFormSetOccurrenceContainerVisibilityToggle((<FormSetOccurrenceView>formSetOccurrenceView).getContainer());
             }

@@ -129,13 +129,7 @@ export class FormOptionSetOptionView
             if (validate) {
                 this.validate(true);
             }
-/*
-            this.formItemViews.forEach((formItemView: FormItemView) => {
-                formItemView.onEditContentRequest((content: ContentSummary) => {
-                    new FormEditEvent(content).fire();
-                });
-            });
-*/
+
             deferred.resolve(null);
         }).catch((reason: any) => {
             DefaultErrorHandler.handle(reason);

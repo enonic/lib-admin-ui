@@ -310,19 +310,7 @@ export abstract class FormSetOccurrenceView
         });
         return focusGiven;
     }
-/*
-    onEditContentRequest(listener: (content: ContentSummary) => void) {
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            formItemView.onEditContentRequest(listener);
-        });
-    }
 
-    unEditContentRequest(listener: (content: ContentSummary) => void) {
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            formItemView.unEditContentRequest(listener);
-        });
-    }
-*/
     public displayValidationErrors(value: boolean) {
         this.formItemViews.forEach((view: FormItemView) => {
             view.displayValidationErrors(value);

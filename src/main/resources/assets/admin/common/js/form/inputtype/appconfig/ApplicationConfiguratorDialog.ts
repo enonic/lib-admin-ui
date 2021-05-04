@@ -107,7 +107,6 @@ export class ApplicationConfiguratorDialog
                 setTimeout(() => {
                     ResponsiveManager.fireResizeEvent();
                     this.handleSelectorsDropdowns(this.formView);
-                    //this.handleDialogClose(this.formView);
                 }, 100);
 
                 return rendered;
@@ -164,19 +163,4 @@ export class ApplicationConfiguratorDialog
 
         return ArrayHelper.flatten(element.getChildren().map(child => this.findComboboxes(child)));
     }
-/*
-    private handleDialogClose(formView: FormView) {
-        formView.getChildren().forEach((element: Element) => {
-            if (ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
-                const inputTypeView = (<InputView> element).getInputTypeView();
-                if (ObjectHelper.iFrameSafeInstanceOf(inputTypeView, BaseInputTypeManagingAdd)) {
-                    (<BaseInputTypeManagingAdd> inputTypeView).onEditContentRequest((content: ContentSummary) => {
-                        if (content.isImage()) {
-                            this.close();
-                        }
-                    });
-                }
-            }
-        });
-    }*/
 }
