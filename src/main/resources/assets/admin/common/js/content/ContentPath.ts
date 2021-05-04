@@ -1,7 +1,6 @@
 import {Equitable} from '../Equitable';
 import {ObjectHelper} from '../ObjectHelper';
 import {ContentUnnamed} from './ContentUnnamed';
-import {ContentName} from './ContentName';
 
 export class ContentPath
     implements Equitable {
