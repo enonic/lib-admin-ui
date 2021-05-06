@@ -2,10 +2,10 @@ import {i18n} from '../util/Messages';
 import {Viewer} from './Viewer';
 import {NamesAndIconView, NamesAndIconViewBuilder} from '../app/NamesAndIconView';
 import {NamesAndIconViewSize} from '../app/NamesAndIconViewSize';
-import {ContentUnnamed} from '../content/ContentUnnamed';
 import {StringHelper} from '../util/StringHelper';
 import {ElementHelper} from '../dom/ElementHelper';
 import {Element} from '../dom/Element';
+import {NamePrettyfier} from '../NamePrettyfier';
 
 /**
  * A parent class capable of viewing a given object with names and icon.
@@ -53,7 +53,7 @@ export class NamesAndIconViewer<OBJECT>
 
         if (object) {
             const displayName = this.resolveDisplayName(object) || this.normalizeDisplayName(this.resolveUnnamedDisplayName(object));
-            const subName = this.resolveSubName(object) || ContentUnnamed.prettifyUnnamed();
+            const subName = this.resolveSubName(object) || NamePrettyfier.prettifyUnnamed();
             const subTitle = this.resolveSubTitle(object);
             const hint = this.resolveHint(object);
 
@@ -134,8 +134,7 @@ export class NamesAndIconViewer<OBJECT>
     private normalizeDisplayName(displayName: string): string {
         if (StringHelper.isEmpty(displayName)) {
             return this.emptyDisplayName;
-        } else {
-            return ContentUnnamed.prettifyUnnamed(displayName);
         }
+        return NamePrettyfier.prettifyUnnamed(displayName);
     }
 }

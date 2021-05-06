@@ -1,8 +1,6 @@
 import * as Q from 'q';
 import {PropertySet} from '../data/PropertySet';
 import {DivEl} from '../dom/DivEl';
-import {ContentSummary} from '../content/ContentSummary';
-import {FormEditEvent} from '../content/event/FormEditEvent';
 import {WindowDOM} from '../dom/WindowDOM';
 import {DefaultErrorHandler} from '../DefaultErrorHandler';
 import {Form} from './Form';
@@ -30,7 +28,7 @@ export class FormView
     public static VALIDATION_CLASS: string = 'display-validation-errors';
     private form: Form;
     private data: PropertySet;
-    private formItemViews: FormItemView[] = [];
+    protected formItemViews: FormItemView[] = [];
     private formItemLayer: FormItemLayer;
     private formValidityChangedListeners: { (event: FormValidityChangedEvent): void }[] = [];
     private previousValidationRecording: ValidationRecording;
@@ -115,10 +113,6 @@ export class FormView
 
                 this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
             }
-        });
-
-        formItemView.onEditContentRequest((content: ContentSummary) => {
-            new FormEditEvent(content).fire();
         });
     }
 

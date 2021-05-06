@@ -4,7 +4,6 @@ import {Value} from '../../data/Value';
 import {ValueType} from '../../data/ValueType';
 import {Element} from '../../dom/Element';
 import {Input} from '../Input';
-import {ContentSummary} from '../../content/ContentSummary';
 import {InputValidationRecording} from './InputValidationRecording';
 import {InputValidityChangedEvent} from './InputValidityChangedEvent';
 import {ValueChangedEvent} from './ValueChangedEvent';
@@ -32,16 +31,6 @@ export interface InputTypeView {
      * If false, then this is expected to implement interface InputTypeViewNotManagingOccurrences.
      */
     isManagingAdd(): boolean;
-
-    /*
-     * Invoked when input wants to edit embedded content
-     */
-    onEditContentRequest(listener: (content: ContentSummary) => void);
-
-    /*
-     * Invoked when input wants to edit embedded content
-     */
-    unEditContentRequest(listener: (content: ContentSummary) => void);
 
     /*
      * Returns true if focus was successfully given.

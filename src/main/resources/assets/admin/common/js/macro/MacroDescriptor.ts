@@ -1,6 +1,6 @@
 import {Equitable} from '../Equitable';
 import {Form} from '../form/Form';
-import {MacroJson} from './resource/MacrosJson';
+import {MacroJson} from './MacrosJson';
 import {ObjectHelper} from '../ObjectHelper';
 import {MacroKey} from './MacroKey';
 

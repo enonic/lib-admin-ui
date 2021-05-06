@@ -7,7 +7,6 @@ import {Value} from '../../data/Value';
 import {DivEl} from '../../dom/DivEl';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
 import {PropertyPath} from '../../data/PropertyPath';
-import {ContentSummary} from '../../content/ContentSummary';
 import {FormItemOccurrenceView} from '../FormItemOccurrenceView';
 import {FormItemView} from '../FormItemView';
 import {RecordingValidityChangedEvent} from '../RecordingValidityChangedEvent';
@@ -310,18 +309,6 @@ export abstract class FormSetOccurrenceView
             }
         });
         return focusGiven;
-    }
-
-    onEditContentRequest(listener: (content: ContentSummary) => void) {
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            formItemView.onEditContentRequest(listener);
-        });
-    }
-
-    unEditContentRequest(listener: (content: ContentSummary) => void) {
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            formItemView.unEditContentRequest(listener);
-        });
     }
 
     public displayValidationErrors(value: boolean) {

@@ -1,5 +1,6 @@
 import {StringHelper} from './util/StringHelper';
 import {BrowserHelper} from './BrowserHelper';
+import {i18n} from './util/Messages';
 
 export class NamePrettyfier {
 
@@ -552,5 +553,20 @@ export class NamePrettyfier {
         nonDiacriticsObject['\u03a9'] = 'o'; // ?
 
         return nonDiacriticsObject;
+    }
+
+    public static getPrettyUnnamed(): string {
+        return i18n('field.unnamed');
+    }
+
+    public static prettifyUnnamed(name?: string) {
+        if (!name) {
+            return `<${NamePrettyfier.getPrettyUnnamed()}>`;
+        }
+
+        let prettifiedName = name.replace(/-/g, ' ').trim();
+        prettifiedName = StringHelper.capitalizeAll(`${NamePrettyfier.getPrettyUnnamed()} ${prettifiedName}`);
+
+        return `<${prettifiedName}>`;
     }
 }
