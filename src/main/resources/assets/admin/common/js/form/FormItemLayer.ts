@@ -133,7 +133,7 @@ export class FormItemLayer {
         const inputs: InputView[] = [];
 
         const layoutPromises: Q.Promise<void>[] = this.formItems.map((formItem: FormItem) => {
-            let formItemView;
+            let formItemView: FormItemView;
 
             if (ObjectHelper.iFrameSafeInstanceOf(formItem, FormItemSet)) {
 
@@ -175,7 +175,7 @@ export class FormItemLayer {
                     parentDataSet: propertySet
                 });
 
-                inputs.push(formItemView);
+                inputs.push(<InputView>formItemView);
             }
 
             if (ObjectHelper.iFrameSafeInstanceOf(formItem, FormOptionSet)) {
@@ -209,7 +209,6 @@ export class FormItemLayer {
             this.formItemViews.push(formItemView);
 
             return formItemView.layout(validate);
-
         });
 
         this.parentEl.onRendered(() => {
