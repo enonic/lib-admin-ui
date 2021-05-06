@@ -49,7 +49,6 @@ export class FormView
         super('form-view');
         this.form = form;
         this.data = data;
-        this.layoutFinished = false;
 
         this.formItemLayer = FormItemLayerFactoryImpl.get().createLayer({context});
     }
@@ -59,6 +58,7 @@ export class FormView
      */
     public layout(validate: boolean = true): Q.Promise<void> {
         const deferred: Q.Deferred<void> = Q.defer<void>();
+        this.layoutFinished = false;
 
         if (!this.form) {
             deferred.resolve(null);
