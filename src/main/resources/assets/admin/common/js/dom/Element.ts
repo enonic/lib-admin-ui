@@ -476,21 +476,21 @@ export class Element {
     }
 
     setSpellcheck(value: boolean): Element {
-        this.getEl().setSpellcheck(value);
+        this.getEl().setAttribute('spellcheck', value ? 'true' : 'false');
         return this;
     }
 
     hasSpellcheck(): boolean {
-        return this.getEl().hasSpellcheck();
+        return this.getEl().hasAttribute('spellcheck');
     }
 
     setLang(value: string): Element {
-        this.getEl().setLang(value);
+        this.getEl().setAttribute('lang', value);
         return this;
     }
 
     getLang(): string {
-        return this.getEl().getLang();
+        return this.getEl().getAttribute('spellcheck');
     }
 
     giveFocus(): boolean {
