@@ -9,9 +9,12 @@ export class FormContext {
 
     private formState: FormState;
 
+    private language: string;
+
     constructor(builder: FormContextBuilder) {
         this.showEmptyFormItemSetOccurrences = builder.showEmptyFormItemSetOccurrences;
         this.formState = builder.formState;
+        this.language = builder.language;
     }
 
     static create(): FormContextBuilder {
@@ -29,7 +32,7 @@ export class FormContext {
     createInputTypeViewContext(inputTypeConfig: any, parentPropertyPath: PropertyPath,
                                input: Input): InputTypeViewContext {
 
-        return <InputTypeViewContext> {
+        return <InputTypeViewContext>{
             formContext: this,
             input: input,
             inputConfig: inputTypeConfig,
@@ -44,6 +47,14 @@ export class FormContext {
     setFormState(formState: FormState) {
         this.formState = formState;
     }
+
+    getLanguage(): string {
+        return this.language;
+    }
+
+    setLanguage(lang: string) {
+        this.language = lang;
+    }
 }
 
 export class FormContextBuilder {
@@ -52,6 +63,8 @@ export class FormContextBuilder {
 
     formState: FormState;
 
+    language: string;
+
     public setShowEmptyFormItemSetOccurrences(value: boolean): FormContextBuilder {
         this.showEmptyFormItemSetOccurrences = value;
         return this;
@@ -59,6 +72,11 @@ export class FormContextBuilder {
 
     public setFormState(value: FormState): FormContextBuilder {
         this.formState = value;
+        return this;
+    }
+
+    public setLanguage(lang: string): FormContextBuilder {
+        this.language = lang;
         return this;
     }
 

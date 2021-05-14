@@ -57,7 +57,7 @@ export class ElementHelper {
         while (previous && previous.nodeType !== Node.ELEMENT_NODE) {
             previous = previous.previousSibling;
         }
-        return previous ? new ElementHelper(<HTMLElement> previous) : null;
+        return previous ? new ElementHelper(<HTMLElement>previous) : null;
     }
 
     getNext(): ElementHelper {
@@ -65,12 +65,12 @@ export class ElementHelper {
         while (next && next.nodeType !== Node.ELEMENT_NODE) {
             next = next.nextSibling;
         }
-        return next ? new ElementHelper(<HTMLElement> next) : null;
+        return next ? new ElementHelper(<HTMLElement>next) : null;
     }
 
     getParent(): ElementHelper {
         let parent = this.el.parentElement;
-        return parent ? new ElementHelper(<HTMLElement> parent) : null;
+        return parent ? new ElementHelper(<HTMLElement>parent) : null;
     }
 
     setDisabled(value: boolean): ElementHelper {
@@ -89,6 +89,24 @@ export class ElementHelper {
 
     hasAutocomplete(): boolean {
         return this.el['autocomplete'] === 'on';
+    }
+
+    setSpellcheck(value: boolean): ElementHelper {
+        this.el['spellcheck'] = value;
+        return this;
+    }
+
+    hasSpellcheck(): boolean {
+        return this.el['spellcheck'];
+    }
+
+    setLang(value: string): ElementHelper {
+        this.el['lang'] = value;
+        return this;
+    }
+
+    getLang(): string {
+        return this.el['lang'];
     }
 
     getId(): string {
@@ -798,7 +816,7 @@ export class ElementHelper {
             return document.body;
         }
 
-        for (let parent = this.el;;(parent = parent.parentElement)) {
+        for (let parent = this.el; ; (parent = parent.parentElement)) {
             if (parent == null) {
                 break;
             }
