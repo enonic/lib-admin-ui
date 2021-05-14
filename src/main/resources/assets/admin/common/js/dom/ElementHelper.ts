@@ -91,24 +91,6 @@ export class ElementHelper {
         return this.el['autocomplete'] === 'on';
     }
 
-    setSpellcheck(value: boolean): ElementHelper {
-        this.el['spellcheck'] = value;
-        return this;
-    }
-
-    hasSpellcheck(): boolean {
-        return this.el['spellcheck'];
-    }
-
-    setLang(value: string): ElementHelper {
-        this.el['lang'] = value;
-        return this;
-    }
-
-    getLang(): string {
-        return this.el['lang'];
-    }
-
     getId(): string {
         return this.el.id;
     }
