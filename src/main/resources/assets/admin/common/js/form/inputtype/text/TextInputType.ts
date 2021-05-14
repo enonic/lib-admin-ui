@@ -5,7 +5,6 @@ import {i18n} from '../../../util/Messages';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Property} from '../../../data/Property';
-import {InputValidationRecording} from '../InputValidationRecording';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {InputValueLengthCounterEl} from './InputValueLengthCounterEl';
 import * as Q from 'q';
@@ -14,7 +13,6 @@ import {StringHelper} from '../../../util/StringHelper';
 import {Element} from '../../../dom/Element';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
-import {TextArea as TextAreaEl} from '../../../ui/text/TextArea';
 import {ValueType} from '../../../data/ValueType';
 import {TextInput} from '../../../ui/text/TextInput';
 
@@ -70,6 +68,13 @@ export abstract class TextInputType
         inputEl.onValueChanged((event: ValueChangedEvent) => {
             this.handleOccurrenceInputValueChanged(inputEl);
         });
+
+        inputEl.setSpellcheck(true);
+        const lang = this.getContext().formContext.getLanguage();
+        if (!StringHelper.isEmpty(lang)) {
+            const langs = lang.split('-');
+            inputEl.setLang(langs.length > 1 ? langs[0] : lang);
+        }
 
         this.initOccurrenceListeners(inputEl);
 

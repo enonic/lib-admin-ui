@@ -23,6 +23,7 @@ export class TextArea
     protected createInput(index: number, property: Property): FormInputEl {
         const value = property.hasNonNullValue() ? property.getString() : undefined;
         const inputEl: TextAreaEl = new TextAreaEl(this.getInput().getName() + '-' + index, value);
+        inputEl.setSpellcheck(true);
 
         return inputEl;
     }

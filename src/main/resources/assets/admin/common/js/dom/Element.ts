@@ -475,6 +475,24 @@ export class Element {
         return this.getEl().getAttribute('contenteditable') === 'true';
     }
 
+    setSpellcheck(value: boolean): Element {
+        this.getEl().setSpellcheck(value);
+        return this;
+    }
+
+    hasSpellcheck(): boolean {
+        return this.getEl().hasSpellcheck();
+    }
+
+    setLang(value: string): Element {
+        this.getEl().setLang(value);
+        return this;
+    }
+
+    getLang(): string {
+        return this.getEl().getLang();
+    }
+
     giveFocus(): boolean {
         if (!this.isVisible()) {
             return false;
