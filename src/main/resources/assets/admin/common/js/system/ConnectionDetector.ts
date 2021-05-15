@@ -24,6 +24,8 @@ export class ConnectionDetector {
 
     private sessionExpiredListeners: { (): void }[] = [];
 
+    private pollListeners: { (): void }[] = [];
+
     private readonlyStatusChangedListeners: { (readonly: boolean): void }[] = [];
 
     constructor(pollIntervalMs: number = 15000) {
@@ -42,8 +44,8 @@ export class ConnectionDetector {
     }
 
     setNotificationMessage(message: string): ConnectionDetector {
-
         let messageId: string;
+
         const hideNotificationMessage = () => {
             if (messageId) {
                 NotifyManager.get().hide(messageId);
@@ -113,6 +115,10 @@ export class ConnectionDetector {
         this.readonlyStatusChangedListeners.push(listener);
     }
 
+    onPoll(listener: () => void) {
+        this.pollListeners.push(listener);
+    }
+
     unConnectionLost(listener: () => void) {
         this.connectionLostListeners = this.connectionLostListeners.filter((currentListener: () => void) => {
             return currentListener !== listener;
@@ -138,9 +144,16 @@ export class ConnectionDetector {
             });
     }
 
+    unPoll(listener: () => void) {
+        this.pollListeners = this.pollListeners.filter((currentListener: () => void) => {
+            return currentListener !== listener;
+        });
+    }
+
     private doPoll() {
-        let request = new StatusRequest();
+        const request: StatusRequest = new StatusRequest();
         request.setTimeout(this.pollIntervalMs);
+
         request.sendAndParse().then((status: StatusResult) => {
             if (!this.connected) {
                 this.notifyConnectionRestored();
@@ -160,6 +173,8 @@ export class ConnectionDetector {
                 this.notifyConnectionLost();
                 this.connected = !this.connected;
             }
+        }).finally(() => {
+            this.notifyPoll();
         }).done();
     }
 
@@ -177,6 +192,12 @@ export class ConnectionDetector {
 
     private notifySessionExpired() {
         this.sessionExpiredListeners.forEach((listener: () => void) => {
+            listener.call(this);
+        });
+    }
+
+    private notifyPoll() {
+        this.pollListeners.forEach((listener: () => void) => {
             listener.call(this);
         });
     }
