@@ -46,7 +46,7 @@ jobs:
           name: changelog
 
       - name: Publish
-        if: ${{ github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/3.') }}
+        if: ${{ github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/3.') || contains(github.ref, 'refs/heads/4.') }}
         run: ./gradlew publish -PrepoKey=${{ steps.publish_vars.outputs.repo }} -PrepoUser=${{ secrets.ARTIFACTORY_USERNAME }} -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
 
       - name: Create Release
@@ -84,7 +84,7 @@ jobs:
       matrix:
         repo: ["enonic/app-admin-home", "enonic/app-applications", "enonic/app-users" ]
     runs-on: ubuntu-latest
-    if: "(github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/3.'))"
+    if: "(github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/3.')) || contains(github.ref, 'refs/heads/4.'))"
     steps:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
