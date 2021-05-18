@@ -476,7 +476,11 @@ export class Element {
     }
 
     setSpellcheck(value: boolean): Element {
-        this.getEl().setAttribute('spellcheck', '' + value);
+        if (value) {
+            this.getEl().setAttribute('spellcheck', 'true');
+        } else {
+            this.getEl().removeAttribute('spellcheck');
+        }
         return this;
     }
 
