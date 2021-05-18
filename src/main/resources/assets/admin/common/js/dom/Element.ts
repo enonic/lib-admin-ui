@@ -476,7 +476,7 @@ export class Element {
     }
 
     setSpellcheck(value: boolean): Element {
-        this.getEl().setAttribute('spellcheck', value ? 'true' : 'false');
+        this.getEl().setAttribute('spellcheck', '' + value);
         return this;
     }
 
@@ -490,7 +490,7 @@ export class Element {
     }
 
     getLang(): string {
-        return this.getEl().getAttribute('spellcheck');
+        return this.getEl().getAttribute('lang');
     }
 
     giveFocus(): boolean {
