@@ -48,7 +48,10 @@ export class FormOptionSetOccurrenceView
 
     layout(validate: boolean = true): Q.Promise<void> {
         this.resetAction = new Action(i18n('action.reset'))
-            .onExecuted(_action => this.singleSelectionDropdown.deselectOptions())
+            .onExecuted(_action => {
+                this.singleSelectionDropdown.deselectOptions();
+                this.singleSelectionDropdown.resetActiveSelection();
+            })
             .setEnabled(false);
         return super.layout(validate).then(rendered => {
             if (this.isSingleSelection()) {
