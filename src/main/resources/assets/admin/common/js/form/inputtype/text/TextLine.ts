@@ -43,13 +43,6 @@ export class TextLine
             parent.toggleClass('valid-regexp', isRegExpValid);
             parent.toggleClass('invalid-regexp', !isRegExpValid);
             parent.getEl().setAttribute('data-regex-status', i18n(`field.${isRegExpValid ? 'valid' : 'invalid'}`));
-
-            if (!isRegExpValid) {
-                const record: AdditionalValidationRecord =
-                    AdditionalValidationRecord.create().setMessage(i18n('field.invalid')).build();
-
-                this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
-            }
         }
     }
 
@@ -76,7 +69,7 @@ export class TextLine
         super.doValidateUserInput(inputEl);
 
         if (this.regexp) {
-            this.validateRegex(inputEl);
+            this.whenRendered(() => this.validateRegex(inputEl));
         }
     }
 
