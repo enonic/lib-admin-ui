@@ -1,3 +1,4 @@
+import * as Q from 'q';
 import {PropertySet} from '../../../data/PropertySet';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {ValueTypes} from '../../../data/ValueTypes';
@@ -28,8 +29,6 @@ export class FormOptionSetOccurrenceView
 
     private resetAction: Action;
 
-    private originalSingleSelectionDropdownValue: string;
-
     private formOptionsByNameMap: Map<string, { label: string, index: number }>;
 
     constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView>) {
@@ -46,6 +45,16 @@ export class FormOptionSetOccurrenceView
         this.ensureSelectionArrayExists(this.propertySet);
     }
 
+    update(dataSet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
+        return super.update(dataSet, unchangedOnly).then(() => {
+            if (this.isSingleSelection()) {
+                this.layoutSingleSelection();
+            }
+
+            return Q(null);
+        });
+    }
+
     layout(validate: boolean = true): Q.Promise<void> {
         this.resetAction = new Action(i18n('action.reset'))
             .onExecuted(_action => {
@@ -57,23 +66,26 @@ export class FormOptionSetOccurrenceView
             if (this.isSingleSelection()) {
                 this.addClass('single-selection');
                 this.moreButton.prependMenuActions([this.resetAction]);
-
-                let selectedValue = this.getSelectedOptionsArray().get(0)?.getString();
-                if (!selectedValue) {
-                    selectedValue = (<FormOptionSet>this.formSet).getOptions().find(op => op.isDefaultOption())?.getName();
-                }
-                this.originalSingleSelectionDropdownValue = selectedValue;
-
-                if (selectedValue) {
-                    // doing this after parent layout to make sure all formItemViews are ready
-                    this.singleSelectionDropdown.setValue(selectedValue);
-                } else {
-                    // showing/hiding instead of css to trigger FormSetOccurrences onShow/onHide listeners
-                    this.formSetOccurrencesContainer.hide();
-                }
+                this.layoutSingleSelection();
             }
             return rendered;
         });
+    }
+
+    private layoutSingleSelection() {
+        const selectedValue: string = this.getSelectedOptionsArray().get(0)?.getString() ||
+                                      (<FormOptionSet>this.formSet).getOptions().find(op => op.isDefaultOption())?.getName();
+
+
+        if (selectedValue) {
+            // doing this after parent layout to make sure all formItemViews are ready
+            this.singleSelectionDropdown.setValue(selectedValue);
+        } else {
+            // showing/hiding instead of css to trigger FormSetOccurrences onShow/onHide listeners
+            this.formSetOccurrencesContainer.hide();
+            this.singleSelectionDropdown.deselectOptions();
+            this.resetAction.setEnabled(false);
+        }
     }
 
     clean() {
@@ -84,14 +96,6 @@ export class FormOptionSetOccurrenceView
         if (!selectedOptionsArray || selectedOptionsArray.isEmpty()) {
             this.propertySet.removeAllProperties();
         }
-    }
-
-    reset(): void {
-        super.reset();
-        if (this.isSingleSelection()) {
-            this.originalSingleSelectionDropdownValue = this.singleSelectionDropdown.getValue();
-        }
-        this.updateValidationVisibility();
     }
 
     setEnabled(enable: boolean) {
@@ -339,7 +343,6 @@ export class FormOptionSetOccurrenceView
     }
 
     createSingleSelectionCombo(): Dropdown<FormOptionSetOption> {
-
         this.singleSelectionDropdown = new Dropdown<FormOptionSetOption>(this.formSet.getName(), {
             optionDisplayValueViewer: new FormOptionSetOptionViewer()
         });
@@ -360,7 +363,6 @@ export class FormOptionSetOccurrenceView
                 optionView.enableAndExpand();
             }
 
-            this.updateValidationVisibility();
             this.refresh();
             this.handleSelectionChanged(optionView);
             this.notifyOccurrenceChanged();
@@ -379,13 +381,5 @@ export class FormOptionSetOccurrenceView
         });
 
         return this.singleSelectionDropdown;
-    }
-
-    private updateValidationVisibility(): void {
-        if (this.isSingleSelection()) {
-            // hide validation for option form that is not equal to original
-            const shouldHide = this.singleSelectionDropdown.getValue() !== this.originalSingleSelectionDropdownValue;
-            this.toggleClass('hide-validation-errors', shouldHide);
-        }
     }
 }
