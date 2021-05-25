@@ -198,7 +198,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     }
 
     hideDropdown() {
-        if (this.selectedOptionView.getOption()) {
+        if (this.selectedOptionView.hasOption()) {
             this.input.hide();
             this.selectedOptionView.show();
         } else if (this.typeAhead) {
@@ -303,7 +303,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         this.dropdownList.markSelections([]);
         this.selectedOptionView.resetOption();
 
-        if (!silent) {
+        if (previousOption && !silent) {
             this.notifyOptionDeselected(previousOption);
         }
 
@@ -312,6 +312,10 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
 
     getSelectedOption(): Option<OPTION_DISPLAY_VALUE> {
         return this.selectedOptionView.getOption();
+    }
+
+    hasSelectedOption(): boolean {
+        return this.selectedOptionView.hasOption();
     }
 
     getSelectedOptionView(): SelectedOptionView<OPTION_DISPLAY_VALUE> {

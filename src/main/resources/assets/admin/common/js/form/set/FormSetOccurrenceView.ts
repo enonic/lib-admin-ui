@@ -21,7 +21,6 @@ import {FormSetOccurrence} from './FormSetOccurrence';
 import {Action} from '../../ui/Action';
 import {MoreButton} from '../../ui/button/MoreButton';
 import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
-import {Dropdown} from '../../ui/selector/dropdown/Dropdown';
 import {Element} from '../../dom/Element';
 import {KeyBindings} from '../../ui/KeyBindings';
 import {KeyBinding} from '../../ui/KeyBinding';
@@ -75,6 +74,8 @@ export abstract class FormSetOccurrenceView
 
     private confirmDeleteAction: Action;
 
+    private noAction: Action;
+
     private formDataChangedListener: (event: PropertyValueChangedEvent) => void;
 
     private formDataAddedOrRemovedListener: (_event: (PropertyAddedEvent | PropertyRemovedEvent)) => void;
@@ -90,8 +91,12 @@ export abstract class FormSetOccurrenceView
         this.propertySet = config.dataSet;
         this.formItemLayer = config.layer;
 
-        this.initConfirmationMask();
-        this.initFormDataChangeListener();
+        this.initElements();
+        this.postInitElements();
+        this.initListeners();
+        this.layoutElements();
+
+        this.appendChild(this.formSetOccurrencesContainer);
     }
 
     protected abstract getLabelText(): string;
@@ -102,72 +107,127 @@ export abstract class FormSetOccurrenceView
         return super.hasHelpText() || this.getFormItemViews().some((view) => view.hasHelpText());
     }
 
-    isSingleSelection(): boolean {
-        return false;
-    }
-
     isExpandable(): boolean {
         return this.formItemViews.length > 0;
     }
 
-    createSingleSelectionCombo(): Dropdown<any> {
-        return null;
-    }
-
     public layout(validate: boolean = true): Q.Promise<void> {
-
-        this.removeChildren();
-
-        this.moreButton = this.createMoreButton();
-
-        this.label = new FormOccurrenceDraggableLabel(this.getLabelText(), this.getLabelSubTitle());
-        if (!this.isExpandable()) {
-            this.label.setTitle(i18n('tooltip.header.collapse'));
-        }
-        this.label.setExpandable(this.isExpandable());
-        if (!this.isSingleSelection()) {
-            this.appendChildren<Element>(this.label, this.moreButton);
-        } else {
-            const headerDiv = new DivEl('single-selection-header');
-            const dropdown = this.createSingleSelectionCombo();
-            dropdown.onOptionSelected((_event) => {
-                headerDiv.addClass('selected');
-            });
-            dropdown.onOptionDeselected((_event) => {
-                headerDiv.removeClass('selected');
-            });
-            headerDiv.appendChildren<Element>(new DivEl('drag-control'), dropdown, this.label, this.moreButton);
-            this.appendChild(headerDiv);
-        }
-
-        this.label.onClicked(() => this.setContainerVisible(!this.isContainerVisible()));
-        this.initValidationMessageBlock();
-
-        this.formSetOccurrencesContainer = new DivEl(this.occurrenceContainerClassName);
-        this.appendChild(this.formSetOccurrencesContainer);
-
         return this.formItemLayer
             .setFormItems(this.getFormItems())
             .setParentElement(this.formSetOccurrencesContainer)
             .setParent(this)
             .layout(this.propertySet, validate)
             .then((formItemViews: FormItemView[]) => {
-
                 this.formItemViews = formItemViews;
-                if (validate) {
-                    this.validate(true);
+
+                this.postLayout(validate);
+
+                return Q(null);
+            });
+    }
+
+    protected postLayout(validate: boolean = true) {
+        if (validate) {
+            this.validate(true);
+        }
+
+        this.bindPropertySet(this.propertySet);
+
+        if (!this.isExpandable()) {
+            this.setContainerVisible(false);
+        }
+
+        this.label.setText(this.getLabelText());
+        this.label.setSubTitle(this.getLabelSubTitle());
+
+        this.subscribeOnItemEvents();
+        this.refresh();
+    }
+
+    protected initElements() {
+        this.moreButton = this.createMoreButton();
+        this.label = new FormOccurrenceDraggableLabel();
+        this.formSetOccurrencesContainer = new DivEl(this.occurrenceContainerClassName);
+        this.confirmDeleteAction = new Action(i18n('action.delete')).setClass('red large delete-button');
+        this.noAction = new Action(i18n('action.cancel')).setClass('black large');
+        this.deleteConfirmationMask = ConfirmationMask.create()
+            .setElement(this)
+            .setHideOnScroll(true)
+            .setHideOnOutsideClick(true)
+            .addAction(this.confirmDeleteAction)
+            .addAction(this.noAction)
+            .build();
+    }
+
+    protected postInitElements() {
+        this.label.setExpandable(this.isExpandable());
+
+        if (!this.isExpandable()) {
+            this.label.setTitle(i18n('tooltip.header.collapse'));
+        }
+    }
+
+    protected initListeners() {
+        this.label.onClicked(() => this.setContainerVisible(!this.isContainerVisible()));
+
+        this.confirmDeleteAction.onExecuted(() => {
+            this.notifyRemoveButtonClicked();
+            this.deleteConfirmationMask.hide();
+        });
+
+        this.noAction.onExecuted(() => {
+            this.deleteConfirmationMask.hide();
+        });
+
+        const bindings: KeyBindings = KeyBindings.get();
+        const maskBindings: KeyBinding[] = [
+            new KeyBinding('esc', () => this.noAction.execute()).setGlobal(true),
+        ];
+
+        let shelvedBindings: KeyBinding[];
+
+        this.deleteConfirmationMask.onShown(() => {
+            shelvedBindings = bindings.getActiveBindings();
+            bindings.shelveBindings(shelvedBindings);
+            bindings.bindKeys(maskBindings);
+        });
+
+        this.deleteConfirmationMask.onHidden(() => {
+            bindings.unbindKeys(maskBindings);
+            bindings.unshelveBindings(shelvedBindings);
+            shelvedBindings = null;
+        });
+
+        this.formDataChangedListener = (event: PropertyValueChangedEvent) => {
+            const newValue: Value = event.getNewValue();
+            const propertyPathAsString: string = event.getPath().toString();
+
+            if (!!this.dirtyFormItemViewsMap[propertyPathAsString]) {
+                if (newValue.equals(this.dirtyFormItemViewsMap[propertyPathAsString]['originalValue'])) {
+                    delete this.dirtyFormItemViewsMap[propertyPathAsString];
+                } else {
+                    this.dirtyFormItemViewsMap[propertyPathAsString]['currentValue'] = newValue;
                 }
-                this.bindPropertySet(this.propertySet);
+            } else {
+                this.dirtyFormItemViewsMap[propertyPathAsString] = {
+                    originalValue: event.getPreviousValue(),
+                    currentValue: newValue
+                };
+            }
+            this.updateLabel();
+        };
 
-                if (!this.isExpandable()) {
-                    this.setContainerVisible(false);
-                }
+        this.formDataAddedOrRemovedListener = (_event: PropertyAddedEvent | PropertyRemovedEvent) => this.updateLabel();
 
-                this.subscribeOnItemEvents();
-                this.refresh();
+        this.onRemoved(() => {
+            if (this.propertySet) {
+                this.releasePropertySet(this.propertySet);
+            }
+        });
+    }
 
-            })
-            .catch(DefaultErrorHandler.handle);
+    protected layoutElements() {
+        this.appendChildren<Element>(this.label, this.moreButton);
     }
 
     hasNonDefaultValues(): boolean {
@@ -183,11 +243,10 @@ export abstract class FormSetOccurrenceView
     }
 
     validate(silent: boolean = true): ValidationRecording {
-
-        const allRecordings = new ValidationRecording();
+        const allRecordings: ValidationRecording = new ValidationRecording();
 
         this.formItemViews.forEach((formItemView: FormItemView) => {
-            const currRecording = formItemView.validate(silent);
+            const currRecording: ValidationRecording = formItemView.validate(silent);
             allRecordings.flatten(currRecording);
         });
 
@@ -198,6 +257,7 @@ export abstract class FormSetOccurrenceView
                 this.notifyValidityChanged(new RecordingValidityChangedEvent(allRecordings, this.resolveValidationRecordingPath()));
             }
         }
+
         this.currentValidationState = allRecordings;
         this.toggleClass('invalid', !this.isValid());
         return allRecordings;
@@ -218,13 +278,14 @@ export abstract class FormSetOccurrenceView
     }
 
     hasValidUserInput(): boolean {
+        let result: boolean = true;
 
-        let result = true;
         this.formItemViews.forEach((formItemView: FormItemView) => {
             if (!formItemView.hasValidUserInput()) {
                 result = false;
             }
         });
+
         return result;
     }
 
@@ -382,16 +443,31 @@ export abstract class FormSetOccurrenceView
         this.label.setSubTitle(this.getLabelSubTitle());
     }
 
-    protected initValidationMessageBlock() {
-        // must be implemented by children
-    }
-
     protected extraValidation(_validationRecording: ValidationRecording) {
         // must be implemented by children
     }
 
     protected subscribeOnItemEvents() {
-        throw new Error('Must be implemented by inheritor');
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
+
+                if (!this.currentValidationState) {
+                    return; // currentValidationState is initialized on validate() call which may not be triggered in some cases
+                }
+
+                let previousValidState = this.currentValidationState.isValid();
+                if (event.isValid()) {
+                    this.currentValidationState.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
+                } else {
+                    this.currentValidationState.flatten(event.getRecording());
+                }
+
+                if (previousValidState !== this.currentValidationState.isValid()) {
+                    this.notifyValidityChanged(new RecordingValidityChangedEvent(this.currentValidationState,
+                        this.resolveValidationRecordingPath()).setIncludeChildren(true));
+                }
+            });
+        });
     }
 
     protected getFormSet(): FormSet {
@@ -498,75 +574,6 @@ export abstract class FormSetOccurrenceView
             .replace(/&nbsp;/g, '') // removing spaces
             .replace(/\s{2,}/g, ' ') // removing spaces
             .trim();
-    }
-
-    private initConfirmationMask() {
-        this.confirmDeleteAction = new Action(i18n('action.delete'))
-            .setClass('red large delete-button')
-            .onExecuted(_action => {
-                this.notifyRemoveButtonClicked();
-                this.deleteConfirmationMask.hide();
-            });
-        const noAction = new Action(i18n('action.cancel'))
-            .setClass('black large')
-            .onExecuted(_action => {
-                this.deleteConfirmationMask.hide();
-            });
-
-        this.deleteConfirmationMask = ConfirmationMask.create()
-            .setElement(this)
-            .setHideOnScroll(true)
-            .setHideOnOutsideClick(true)
-            .addAction(this.confirmDeleteAction)
-            .addAction(noAction)
-            .build();
-
-        const bindings = KeyBindings.get();
-        const maskBindings = [
-            new KeyBinding('esc', () => noAction.execute()).setGlobal(true),
-        ];
-        let shelvedBindings;
-
-        this.deleteConfirmationMask.onShown(() => {
-            shelvedBindings = bindings.getActiveBindings();
-            bindings.shelveBindings(shelvedBindings);
-            bindings.bindKeys(maskBindings);
-        });
-
-        this.deleteConfirmationMask.onHidden(() => {
-            bindings.unbindKeys(maskBindings);
-            bindings.unshelveBindings(shelvedBindings);
-            shelvedBindings = null;
-        });
-    }
-
-    private initFormDataChangeListener() {
-        this.formDataChangedListener = (event: PropertyValueChangedEvent) => {
-            const newValue: Value = event.getNewValue();
-            const propertyPathAsString: string = event.getPath().toString();
-
-            if (!!this.dirtyFormItemViewsMap[propertyPathAsString]) {
-                if (newValue.equals(this.dirtyFormItemViewsMap[propertyPathAsString]['originalValue'])) {
-                    delete this.dirtyFormItemViewsMap[propertyPathAsString];
-                } else {
-                    this.dirtyFormItemViewsMap[propertyPathAsString]['currentValue'] = newValue;
-                }
-            } else {
-                this.dirtyFormItemViewsMap[propertyPathAsString] = {
-                    originalValue: event.getPreviousValue(),
-                    currentValue: newValue
-                };
-            }
-            this.updateLabel();
-        };
-
-        this.formDataAddedOrRemovedListener = (_event: PropertyAddedEvent | PropertyRemovedEvent) => this.updateLabel();
-
-        this.onRemoved(() => {
-            if (this.propertySet) {
-                this.releasePropertySet(this.propertySet);
-            }
-        });
     }
 
     private releasePropertySet(set: PropertySet) {
