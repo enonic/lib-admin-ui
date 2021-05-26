@@ -4,8 +4,6 @@ import {OccurrencesJson} from './OccurrencesJson';
 export interface InputJson
     extends FormItemJson {
 
-    customText?: string;
-
     helpText?: string;
 
     immutable?: boolean;

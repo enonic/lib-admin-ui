@@ -23,12 +23,9 @@ export class FormItemSet
 
     private immutable: boolean;
 
-    private customText: string;
-
     constructor(formItemSetJson: FormItemSetJson, factory: FormItemFactory) {
         super(formItemSetJson);
         this.immutable = formItemSetJson.immutable;
-        this.customText = formItemSetJson.customText;
 
         if (formItemSetJson.items != null) {
             formItemSetJson.items.forEach((formItemJson) => {
@@ -66,16 +63,11 @@ export class FormItemSet
         return this.immutable;
     }
 
-    getCustomText(): string {
-        return this.customText;
-    }
-
     public toJson(): FormItemTypeWrapperJson {
 
         return {
             FormItemSet: {
                 name: this.getName(),
-                customText: this.getCustomText(),
                 helpText: this.getHelpText(),
                 immutable: this.isImmutable(),
                 items: this.getFormItems().map(formItem => formItem.toJson()),
@@ -98,10 +90,6 @@ export class FormItemSet
         let other: FormItemSet = <FormItemSet>o;
 
         if (!ObjectHelper.booleanEquals(this.immutable, other.immutable)) {
-            return false;
-        }
-
-        if (!ObjectHelper.stringEquals(this.customText, other.customText)) {
             return false;
         }
 
