@@ -12,7 +12,6 @@ export class InputViewValidationViewer extends Viewer<InputValidationRecording> 
         super.doLayout(object);
 
         if (object) {
-            this.setVisible(!object.isValid());
             this.setHtml(this.getText());
         }
     }
