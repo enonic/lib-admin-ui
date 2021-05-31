@@ -9,10 +9,13 @@ export class InputValidationRecording implements Equitable {
 
     private validationErrorToBeRendered: boolean;
 
+    private validationMessageToBeRendered: boolean;
+
     constructor(occurrences: Occurrences, totalValid: number) {
         this.occurrences = occurrences;
         this.totalValid = totalValid;
         this.validationErrorToBeRendered = true;
+        this.validationMessageToBeRendered = true;
     }
 
     isValid(): boolean {
@@ -37,6 +40,14 @@ export class InputValidationRecording implements Equitable {
 
     isValidationErrorToBeRendered(): boolean {
         return this.validationErrorToBeRendered;
+    }
+
+    setValidationMessageToBeRendered(value: boolean) {
+        this.validationMessageToBeRendered = value;
+    }
+
+    isValidationMessageToBeRendered(): boolean {
+        return this.validationMessageToBeRendered;
     }
 
     equals(that: InputValidationRecording): boolean {

@@ -34,15 +34,15 @@ export class TextLine
     }
 
     private validateRegex(inputEl: FormInputEl) {
-        const parent: Element = inputEl.getParentElement();
-
-        if (StringHelper.isEmpty(inputEl.getValue())) {
-            parent.removeClass('valid-regexp invalid-regexp');
-        } else {
+        if (!StringHelper.isEmpty(inputEl.getValue())) {
             const isRegExpValid: boolean = this.isRegExpValid(inputEl);
-            parent.toggleClass('valid-regexp', isRegExpValid);
-            parent.toggleClass('invalid-regexp', !isRegExpValid);
-            parent.getEl().setAttribute('data-regex-status', i18n(`field.${isRegExpValid ? 'valid' : 'invalid'}`));
+
+            if (!isRegExpValid) {
+                const record: AdditionalValidationRecord =
+                    AdditionalValidationRecord.create().setMessage(i18n('field.invalid')).build();
+
+                this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
+            }
         }
     }
 
@@ -69,7 +69,7 @@ export class TextLine
         super.doValidateUserInput(inputEl);
 
         if (this.regexp) {
-            this.whenRendered(() => this.validateRegex(inputEl));
+            this.validateRegex(inputEl);
         }
     }
 

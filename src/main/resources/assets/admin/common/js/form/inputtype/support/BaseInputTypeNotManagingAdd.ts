@@ -255,8 +255,11 @@ export abstract class BaseInputTypeNotManagingAdd
     private updateValidationRecordAndNotifyIfChanged() {
         const totalValid: number = this.getTotalValidOccurrences();
         const newValidationRecord: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), totalValid);
+        newValidationRecord.setValidationMessageToBeRendered(this.isValidationMessageToBeRendered());
 
-        if (newValidationRecord.validityChanged(this.previousValidationRecording)) {
+        if (newValidationRecord.validityChanged(this.previousValidationRecording) ||
+            !ObjectHelper.anyEquals(newValidationRecord.isValidationMessageToBeRendered(),
+                this.previousValidationRecording?.isValidationMessageToBeRendered())) {
             this.notifyValidityChanged(new InputValidityChangedEvent(newValidationRecord));
         }
 
@@ -264,7 +267,25 @@ export abstract class BaseInputTypeNotManagingAdd
     }
 
     private updateValidationRecord() {
-        this.previousValidationRecording = new InputValidationRecording(this.input.getOccurrences(), this.getTotalValidOccurrences());
+        const newValidationRecord: InputValidationRecording =
+            new InputValidationRecording(this.input.getOccurrences(), this.getTotalValidOccurrences());
+        newValidationRecord.setValidationMessageToBeRendered(this.isValidationMessageToBeRendered());
+
+        this.previousValidationRecording = newValidationRecord;
+    }
+
+    private isValidationMessageToBeRendered(): boolean {
+        if (this.input.getOccurrences().getMinimum() === 1 && this.input.getOccurrences().getMaximum() === 1) {
+            let hasValidationError: boolean = false;
+
+            this.occurrenceValidationState.forEach((occurrenceValidationRecord: OccurrenceValidationRecord) => {
+                hasValidationError = !!occurrenceValidationRecord.getAdditionalValidationRecord();
+            });
+
+            return !hasValidationError;
+        }
+
+        return true;
     }
 
     valueBreaksRequiredContract(value: Value): boolean {
