@@ -8,11 +8,11 @@ export class InputViewValidationViewer extends Viewer<InputValidationRecording> 
         super('validation-viewer');
     }
 
-    doLayout(object: InputValidationRecording) {
-        super.doLayout(object);
+    doLayout(recording: InputValidationRecording) {
+        super.doLayout(recording);
 
-        if (object) {
-            this.setHtml(this.getText());
+        if (recording) {
+            this.setHtml(recording.isValidationMessageToBeRendered() ? this.getText() : '');
         }
     }
 
@@ -23,12 +23,13 @@ export class InputViewValidationViewer extends Viewer<InputValidationRecording> 
             return '';
         }
 
+        const max: number = record.getOccurrences().getMaximum();
+
         if (record.isMinimumOccurrencesBreached()) {
             const min: number = record.getOccurrences().getMinimum();
-            return min > 1 ? i18n('field.occurrence.breaks.min', min) : i18n('field.value.required');
+            return (min >= 1 && max !== 1) ? i18n('field.occurrence.breaks.min', min) : i18n('field.value.required');
         }
 
-        const max: number = record.getOccurrences().getMaximum();
         return max > 1 ? i18n('field.occurrence.breaks.max.many', max) : i18n('field.occurrence.breaks.max.one');
     }
 }

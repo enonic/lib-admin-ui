@@ -147,34 +147,3 @@
     margin-top: 7px;
   }
 }
-
-.input-wrapper {
-
-  &.valid-regexp, &.invalid-regexp {
-    position: relative;
-
-    input {
-      padding-right: 100px;
-    }
-
-    &:after {
-      content: attr(data-regex-status);
-      position: absolute;
-      top: 7px;
-      right: 7px;
-    }
-  }
-
-  &.valid-regexp {
-    &:after {
-      color: @admin-level-1;
-    }
-  }
-
-  &.invalid-regexp {
-    &:after {
-      color: @admin-level-3;
-    }
-  }
-
-}
