@@ -65,9 +65,7 @@ export class TextLine
         inputEl.updateValidationStatusOnUserInput(isValid);
     }
 
-    doValidateUserInput(inputEl: FormInputEl) {
-        super.doValidateUserInput(inputEl);
-
+    protected validateTextInput(inputEl: FormInputEl) {
         if (this.regexp) {
             this.validateRegex(inputEl);
         }

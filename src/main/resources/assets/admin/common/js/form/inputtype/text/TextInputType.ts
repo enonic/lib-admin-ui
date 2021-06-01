@@ -95,7 +95,12 @@ export abstract class TextInputType
     doValidateUserInput(inputEl: FormInputEl) {
         super.doValidateUserInput(inputEl);
         this.validateInputLength(inputEl);
+        this.validateTextInput(inputEl);
         this.updateValidationStatusOnUserInput(inputEl, this.occurrenceValidationState.get(inputEl.getId()).isValueValid());
+    }
+
+    protected validateTextInput(inputEl: FormInputEl) {
+    //
     }
 
     protected abstract updateValidationStatusOnUserInput(inputEl: FormInputEl, isValid: boolean);
