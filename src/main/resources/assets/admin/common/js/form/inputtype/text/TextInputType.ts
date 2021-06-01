@@ -83,7 +83,7 @@ export abstract class TextInputType
 
     protected getValue(inputEl: TextInput): Value {
         const isValid: boolean = this.isUserInputValid(inputEl);
-        return isValid ? this.getValueType().newValue(inputEl.getValue().trim()) : this.newInitialValue();
+        return isValid ? this.getValueType().newValue(inputEl.getValue()) : this.newInitialValue();
     }
 
     protected abstract createInput(index: number, property: Property): FormInputEl;
