@@ -1302,7 +1302,7 @@ export class Element {
             rect.top >= 0 &&
             rect.left >= 0 &&
             rect.top <= 2 * (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            Math.abs(rect.right - (window.innerWidth || document.documentElement.clientWidth)) <= 1 // small delta for calc inaccuracy
         );
     }
 
