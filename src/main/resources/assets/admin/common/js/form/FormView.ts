@@ -81,6 +81,8 @@ export class FormView
 
             WindowDOM.get().onResized(() => this.checkSizeChanges(), this);
             this.onShown(() => this.checkSizeChanges());
+
+            return Q(null);
         }).catch((reason: any) => {
             DefaultErrorHandler.handle(reason);
         }).done(() => {
