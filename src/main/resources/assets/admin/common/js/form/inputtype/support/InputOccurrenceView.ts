@@ -45,6 +45,24 @@ export class InputOccurrenceView
         this.removeButtonEl = new ButtonEl();
     }
 
+    layout(_validate: boolean = true): Q.Promise<void> {
+        return super.layout(_validate).then(() => {
+            const dataBlock: DivEl = new DivEl('data-block');
+            const inputWrapper: DivEl = new DivEl('input-wrapper');
+
+            this.appendChild(dataBlock);
+            dataBlock.appendChild(this.dragControl);
+            dataBlock.appendChild(inputWrapper);
+            inputWrapper.appendChild(this.inputElement);
+            dataBlock.appendChild(this.removeButtonEl);
+            this.appendChild(this.validationErrorBlock);
+
+            this.removeButtonEl.addClass('remove-button');
+
+            return Q(null);
+        });
+    }
+
     update(property: Property, unchangedOnly?: boolean): Q.Promise<void> {
         this.registerProperty(property);
 
@@ -173,26 +191,6 @@ export class InputOccurrenceView
             property.onPropertyValueChanged(this.propertyValueChangedHandler);
         }
         this.property = property;
-    }
-
-    doRender(): Q.Promise<boolean> {
-        return super.doRender().then((rendered: boolean) => {
-            const dataBlock: DivEl = new DivEl('data-block');
-            this.appendChild(dataBlock);
-
-            dataBlock.appendChild(this.dragControl);
-
-            const inputWrapper: DivEl = new DivEl('input-wrapper');
-            dataBlock.appendChild(inputWrapper);
-            inputWrapper.appendChild(this.inputElement);
-            dataBlock.appendChild(this.removeButtonEl);
-
-            this.appendChild(this.validationErrorBlock);
-
-            this.removeButtonEl.addClass('remove-button');
-
-            return rendered;
-        });
     }
 
     displayValidationError(occurrenceValidationRecord: OccurrenceValidationRecord) {

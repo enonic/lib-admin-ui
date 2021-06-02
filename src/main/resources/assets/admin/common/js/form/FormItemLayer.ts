@@ -61,10 +61,11 @@ export class FormItemLayer {
     }
 
     layout(propertySet: PropertySet, validate: boolean = true): Q.Promise<FormItemView[]> {
-
         this.formItemViews = [];
 
         return this.doLayoutPropertySet(propertySet, validate).then(() => {
+            this.formItemViews.map(formItemView => this.parentEl.appendChild(formItemView));
+
             return Q<FormItemView[]>(this.formItemViews);
         });
     }
@@ -209,10 +210,6 @@ export class FormItemLayer {
             this.formItemViews.push(formItemView);
 
             return formItemView.layout(validate);
-        });
-
-        this.parentEl.onRendered(() => {
-            this.formItemViews.map(formItemView => this.parentEl.appendChild(formItemView, this.lazyRender));
         });
 
         // Bind next focus targets

@@ -68,7 +68,7 @@ export class ApplicationConfiguratorDialog
         });
 
         this.onRendered(() => {
-            $(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().focus();
+            $(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().trigger('focus');
             this.updateTabbable();
         });
 
