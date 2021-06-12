@@ -20,7 +20,7 @@ export class NamesAndIconViewer<OBJECT>
     protected isRelativePath: boolean = false;
 
     constructor(className?: string, size: NamesAndIconViewSize = NamesAndIconViewSize.small) {
-        super(className);
+        super('names-and-icon-viewer ' + (className || ''));
 
         this.size = size;
     }
@@ -120,7 +120,7 @@ export class NamesAndIconViewer<OBJECT>
     }
 
     getPreferredHeight(): number {
-        return 50;
+        return 40;
     }
 
     getNamesAndIconView(): NamesAndIconView {

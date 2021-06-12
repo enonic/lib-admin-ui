@@ -33,18 +33,6 @@
       color: @admin-white;
     }
 
-    .slick-cell {
-      .default-slick-cell-styling(4px 8px 4px 0);
-      cursor: pointer;
-      line-height: 37px;
-      height: 45px; // firefox ignores SlickGrid.rowHeight
-
-      * {
-        // force same cursor on every child
-        cursor: pointer;
-      }
-    }
-
     .slick-row {
 
       background-color: @admin-white;
@@ -75,7 +63,6 @@
       .slick-cell-checkboxsel {
         min-width: 45px;
         line-height: normal;
-        padding-left: 8px;
         display: flex;
         justify-content: center;
 
@@ -99,10 +86,6 @@
           background: url("../../../../images/box-checked.gif") center no-repeat;
         }
 
-        &:last-child {
-          padding-right: 20px;
-        }
-
       }
 
       .toggle {
@@ -112,9 +95,8 @@
 
         display: inline-block;
         position: relative;
-        float: left;
         height: 100%;
-        width: 20px;
+        min-width: 20px;
         text-align: center;
         margin-right: 17px;
       }
@@ -140,8 +122,6 @@
       }
 
       .viewer {
-        display: block;
-        height: 100%;
         .names-and-icon-view {
           .@{_COMMON_PREFIX}wrapper {
             line-height: 36px;
