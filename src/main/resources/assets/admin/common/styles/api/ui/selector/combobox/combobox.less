@@ -72,8 +72,6 @@
 
     .slick-row .slick-cell-checkboxsel {
       overflow: visible;
-      padding: 0;
-      padding-right: 20px;
 
       label {
         display: block;
@@ -96,7 +94,25 @@
     }
 
     .slick-cell {
-      .option-cell();
+      .viewer {
+        .names-and-icon-view {
+          .@{_COMMON_PREFIX}wrapper {
+            height: 26px;
+            width: 26px;
+            margin-right: 10px;
+          }
+
+          .@{_COMMON_PREFIX}names-view {
+            .@{_COMMON_PREFIX}main-name {
+              font-size: 13px;
+            }
+
+            .@{_COMMON_PREFIX}sub-name {
+              font-size: 11px;
+            }
+          }
+        }
+      }
     }
   }
 

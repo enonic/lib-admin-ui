@@ -9,10 +9,11 @@
   }
 
   .selected-option {
+    display: flex;
+    align-items: center;
     .option-cell();
     width: 100%;
     cursor: default;
-    position: relative;
 
     &:hover {
       background: none;
@@ -31,9 +32,16 @@
       }
     }
 
+    .option-value {
+      flex-grow: 1;
+    }
+
     .edit {
       .icon-pencil;
-      right: 30px;
+      order: 1;
+      margin-right: 10px;
+      position: relative;
+      top: 1px;
     }
 
     .remove, .edit {
@@ -41,17 +49,14 @@
       .focusable();
 
       border: 1px solid transparent;
-      position: absolute;
       font-size: 12px;
       text-decoration: none;
       cursor: pointer;
-      top: 9px;
     }
 
     .remove {
       .icon-close;
-      right: 0;
-      top: 5px;
+      order: 2;
     }
 
     &.non-editable {
@@ -69,7 +74,7 @@
 }
 
 .option-cell() {
-  .default-slick-cell-styling(8px 0 0 5px);
+  .default-slick-cell-styling(1px 8px 1px 0);
 
   &:hover, &.active {
     background: @admin-bg-light-gray;

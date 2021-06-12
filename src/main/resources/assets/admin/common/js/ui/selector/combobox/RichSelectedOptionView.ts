@@ -54,7 +54,7 @@ export class RichSelectedOptionView<T>
 
     doRender(): Q.Promise<boolean> {
         this.appendActionButtons();
-        this.appendChild(this.createView(this.optionDisplayValue));
+        this.appendChild(this.createView(this.optionDisplayValue).addClass('option-value'));
 
         return Q(true);
     }
