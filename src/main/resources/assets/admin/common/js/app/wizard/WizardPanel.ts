@@ -1,4 +1,3 @@
-import * as $ from 'jquery';
 import * as Q from 'q';
 import {Toolbar} from '../../ui/toolbar/Toolbar';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
@@ -9,9 +8,7 @@ import {Closeable} from '../../ui/Closeable';
 import {AppBarTabId} from '../bar/AppBarTabId';
 import {Element} from '../../dom/Element';
 import {LoadMask} from '../../ui/mask/LoadMask';
-import {SplitPanel, SplitPanelAlignment, SplitPanelBuilder, SplitPanelUnit} from '../../ui/panel/SplitPanel';
 import {DivEl} from '../../dom/DivEl';
-import {ActivatedEvent} from '../../ui/ActivatedEvent';
 import {ElementRenderedEvent} from '../../dom/ElementRenderedEvent';
 import {ElementShownEvent} from '../../dom/ElementShownEvent';
 import {ElementHiddenEvent} from '../../dom/ElementHiddenEvent';
@@ -26,7 +23,6 @@ import {WizardStepsPanel} from './WizardStepsPanel';
 import {WizardClosedEvent} from './WizardClosedEvent';
 import {WizardStepNavigatorAndToolbar} from './WizardStepNavigatorAndToolbar';
 import {WizardValidityManager} from './WizardValidityManager';
-import {MinimizeWizardPanelEvent} from './MinimizeWizardPanelEvent';
 import {WizardStepForm} from './WizardStepForm';
 import {ValidityChangedEvent} from '../../ValidityChangedEvent';
 import {i18n} from '../../util/Messages';
@@ -51,34 +47,27 @@ export class WizardPanel<EQUITABLE extends Equitable>
     protected params: WizardPanelParams<EQUITABLE>;
     protected wizardActions: WizardActions<EQUITABLE>;
     protected wizardHeader: WizardHeader;
-    protected livePanel: Panel;
     protected mainToolbar: Toolbar;
-    protected stepToolbar: Toolbar;
     protected formIcon: Element;
     protected formMask: LoadMask;
     protected liveMask: LoadMask;
     protected formState: FormState = new FormState(true);
     protected formPanel: Panel;
     protected canModify: boolean = false;
+    protected leftPanelAndToolbar: Panel;
+    protected stepNavigatorAndToolbarContainer: WizardStepNavigatorAndToolbar;
+    protected stepsPanel: WizardStepsPanel;
+    protected stepNavigator: WizardStepNavigator;
+    protected helpTextToggleButton: DivEl;
     private persistedItem: EQUITABLE;
-    private stepNavigator: WizardStepNavigator;
     private steps: WizardStep[] = [];
-    private stepsPanel: WizardStepsPanel;
     private dataLoaded: boolean = false;
     private closedListeners: { (event: WizardClosedEvent): void }[] = [];
     private dataLoadedListeners: { (item: EQUITABLE): void }[] = [];
     private lastFocusedElement: HTMLElement;
-    private stepNavigatorAndToolbarContainer: WizardStepNavigatorAndToolbar;
-    private splitPanel: SplitPanel;
-    private splitPanelThreshold: number = 960;
     private stepNavigatorPlaceholder: DivEl;
     private validityManager: WizardValidityManager;
-    private minimizeEditButton: DivEl;
-    private minimized: boolean = false;
-    private toggleMinimizeListener: (event: ActivatedEvent) => void;
-    private helpTextToggleButton: DivEl;
     private helpTextShown: boolean = false;
-    private scrollPosition: number = 0;
     private wizardHeaderCreatedListeners: any[] = [];
     private saving: boolean;
 
@@ -87,20 +76,30 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
         this.setParams(params);
 
-        this.wizardActions = this.createWizardActions();
-
         if (params.persistedItem) {
             this.setPersistedItem(params.persistedItem);
             this.formState.setIsNew(false);
         }
 
-        // have to be in constructor because onValidityChanged uses it
-        this.validityManager = new WizardValidityManager();
-
+        this.initElements();
         this.initEventsListeners();
+
+        this.mainToolbar = this.createMainToolbar();
     }
 
-    private initEventsListeners() {
+    protected initElements() {
+        this.wizardActions = this.createWizardActions();
+        this.validityManager = new WizardValidityManager();
+        this.formPanel = new Panel('form-panel rendering');
+        this.formIcon = this.createFormIcon().addClassEx('form-icon', StyleHelper.COMMON_PREFIX);
+        this.wizardHeader = this.createWizardHeader();
+        this.stepNavigator = new WizardStepNavigator();
+        this.stepNavigatorAndToolbarContainer = new WizardStepNavigatorAndToolbar(this.stepNavigator);
+        this.stepsPanel = new WizardStepsPanel(this.stepNavigator, this.formPanel);
+        this.leftPanelAndToolbar = new Panel();
+    }
+
+    protected initEventsListeners() {
         this.onRendered((event: ElementRenderedEvent) => {
             if (WizardPanel.debug) {
                 console.debug('WizardPanel: rendered', event);
@@ -122,10 +121,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
                 console.debug('WizardPanel: shown', event);
             }
             if (this.formPanel && !this.formPanel.isRendered()) {
-                this.formMask.show();
-            }
-            if (this.livePanel && !this.livePanel.isRendered()) {
-                this.liveMask.show();
+                this.formMask?.show();
             }
         });
 
@@ -133,15 +129,50 @@ export class WizardPanel<EQUITABLE extends Equitable>
             if (WizardPanel.debug) {
                 console.debug('WizardPanel: hidden', event);
             }
-            if (this.formMask && this.formMask.isVisible()) {
+            if (this.formMask?.isVisible()) {
                 this.formMask.hide();
             }
-            if (this.liveMask && this.liveMask.isVisible()) {
+            if (this.liveMask?.isVisible()) {
                 this.liveMask.hide();
             }
         });
-    }
 
+        this.formPanel.onScroll(() => this.updateStickyToolbar());
+        this.formPanel.onAdded(() => this.onFormPanelAdded());
+
+        let firstShow: boolean;
+        this.formPanel.onRendered(() => {
+            if (WizardPanel.debug) {
+                console.debug('WizardPanel: formPanel.onRendered');
+            }
+            firstShow = true;
+            this.formMask?.hide();
+            this.formPanel.removeClass('rendering');
+
+            if (this.mainToolbar) {
+                this.mainToolbar.removeClass('rendering');
+            }
+
+            if (firstShow) {
+                firstShow = false;
+                this.checkIfEditIsAllowed().then((editIsAllowed: boolean) => editIsAllowed && this.giveInitialFocus());
+            }
+
+            if (!!this.lastFocusedElement) {
+                this.lastFocusedElement.focus();
+            }
+
+            // check validity on rendered
+            this.notifyValidityChanged(this.isValid());
+        });
+
+        ResponsiveManager.onAvailableSizeChanged(this.formPanel);
+
+        this.stepNavigatorAndToolbarContainer.onShown((event: ElementShownEvent) => {
+            // set scroll offset equal to the height of the step navigator to switch steps at the bottom of it when sticky
+            this.stepsPanel.setScrollOffset(event.getElement().getEl().getHeight());
+        });
+    }
 
     /*
      Wait for loadData to finish in order to render
@@ -222,20 +253,12 @@ export class WizardPanel<EQUITABLE extends Equitable>
         return this.mainToolbar;
     }
 
-    public getLivePanel(): Panel {
-        return this.livePanel;
-    }
-
     public getWizardHeader(): WizardHeader {
         return this.wizardHeader;
     }
 
     public getFormIcon(): Element {
         return this.formIcon;
-    }
-
-    public getStepToolbar(): Toolbar {
-        return this.stepToolbar;
     }
 
     onDataLoaded(listener: (item: EQUITABLE) => void) {
@@ -287,13 +310,11 @@ export class WizardPanel<EQUITABLE extends Equitable>
             mainToolbar.removeClass('scroll-shadow');
         }
 
-        let navigationWidth;
-        if (this.minimized) {
-            navigationWidth = this.splitPanel.getEl().getHeight() + this.stepNavigatorAndToolbarContainer.getEl().getPaddingLeft();
-        } else {
-            navigationWidth = this.stepsPanel.getEl().getWidth() - this.stepNavigatorAndToolbarContainer.getEl().getPaddingLeft();
-        }
-        this.stepNavigatorAndToolbarContainer.getEl().setWidthPx(navigationWidth);
+        this.stepNavigatorAndToolbarContainer.getEl().setWidthPx(this.calcNavigationWidth());
+    }
+
+    protected calcNavigationWidth(): number {
+        return this.stepsPanel.getEl().getWidth() - this.stepNavigatorAndToolbarContainer.getEl().getPaddingLeft();
     }
 
     updateToolbarActions() {
@@ -307,53 +328,10 @@ export class WizardPanel<EQUITABLE extends Equitable>
         }
     }
 
-    toggleMinimize(navigationIndex: number = -1) {
-
-        this.stepsPanel.setListenToScroll(false);
-
-        let scroll = this.stepsPanel.getScroll();
-        this.minimized = !this.minimized;
-        this.splitPanel.setSplitterIsHidden(this.minimized);
-
-        this.stepNavigator.unNavigationItemActivated(this.toggleMinimizeListener);
-        this.formPanel.toggleClass('minimized');
-
-        new MinimizeWizardPanelEvent().fire();
-
-        if (this.minimized) {
-            this.stepNavigator.setScrollEnabled(false);
-
-            this.scrollPosition = scroll;
-            this.splitPanel.savePanelSizesAndDistribute(40, 0, SplitPanelUnit.PIXEL);
-            this.splitPanel.hideSplitter();
-
-            this.stepNavigator.onNavigationItemActivated(this.toggleMinimizeListener);
-        } else {
-            this.splitPanel.loadPanelSizesAndDistribute();
-            this.splitPanel.showSplitter();
-            this.stepsPanel.setScroll(this.scrollPosition);
-
-            this.stepsPanel.setListenToScroll(true);
-            this.stepNavigator.setScrollEnabled(true);
-
-            this.stepNavigator.selectNavigationItem(navigationIndex, false, true);
-        }
-
-        const maximized = !this.minimized;
-        if (this.helpTextToggleButton) {
-            this.helpTextToggleButton.setVisible(maximized);
-        }
-        this.stepNavigatorAndToolbarContainer.changeOrientation(maximized);
-    }
-
     hasHelpText(): boolean {
         return this.steps.some((step: WizardStep) => {
             return step.hasHelpText();
         });
-    }
-
-    isMinimized(): boolean {
-        return this.minimized;
     }
 
     giveInitialFocus() {
@@ -536,10 +514,6 @@ export class WizardPanel<EQUITABLE extends Equitable>
         });
     }
 
-    getSplitPanel(): SplitPanel {
-        return this.splitPanel;
-    }
-
     showMinimizeEditButton() {
         this.addClass('wizard-panel--live');
     }
@@ -650,19 +624,11 @@ export class WizardPanel<EQUITABLE extends Equitable>
         return null;
     }
 
-    protected createLivePanel(): Panel {
-        return null;
-    }
-
     protected createWizardHeader(): WizardHeader {
         return null;
     }
 
     protected createFormIcon(): Element {
-        return null;
-    }
-
-    protected createStepToolbar(): Toolbar {
         return null;
     }
 
@@ -684,39 +650,6 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
         this.updateToolbarActions();
 
-        this.formPanel = new Panel('form-panel rendering');
-        this.formPanel.onScroll(() => this.updateStickyToolbar());
-
-        this.formPanel.onAdded(() => this.onFormPanelAdded());
-        ResponsiveManager.onAvailableSizeChanged(this.formPanel);
-
-        let firstShow;
-        this.formPanel.onRendered(() => {
-            if (WizardPanel.debug) {
-                console.debug('WizardPanel: formPanel.onRendered');
-            }
-            firstShow = true;
-            this.formMask.hide();
-            this.formPanel.removeClass('rendering');
-
-            if (this.mainToolbar) {
-                this.mainToolbar.removeClass('rendering');
-            }
-
-            if (firstShow ) {
-                firstShow = false;
-                this.checkIfEditIsAllowed().then((editIsAllowed: boolean) => editIsAllowed && this.giveInitialFocus());
-            }
-
-            if (!!this.lastFocusedElement) {
-                this.lastFocusedElement.focus();
-            }
-
-            // check validity on rendered
-            this.notifyValidityChanged(this.isValid());
-        });
-
-        this.mainToolbar = this.createMainToolbar();
         if (this.mainToolbar) {
             this.mainToolbar.addClass('rendering');
         }
@@ -724,105 +657,37 @@ export class WizardPanel<EQUITABLE extends Equitable>
         const headerAndNavigatorContainer: DivEl = new DivEl('header-and-navigator-container');
         const headerContainer: DivEl = new DivEl('header-container');
 
-        this.formIcon = this.createFormIcon().addClassEx('form-icon', StyleHelper.COMMON_PREFIX);
         if (this.formIcon) {
             headerContainer.appendChild(this.formIcon);
         }
 
-        this.wizardHeader = this.createWizardHeader();
         if (this.wizardHeader) {
             headerContainer.appendChild(this.wizardHeader);
             this.notifyWizardHeaderCreated();
             this.validityManager.setHeader(this.wizardHeader);
         }
 
-        this.stepToolbar = this.createStepToolbar();
-        this.stepNavigator = new WizardStepNavigator();
-        this.stepNavigatorAndToolbarContainer = new WizardStepNavigatorAndToolbar(this.stepNavigator, this.stepToolbar);
-
         headerAndNavigatorContainer.appendChild(headerContainer);
         headerAndNavigatorContainer.appendChild(this.stepNavigatorAndToolbarContainer);
 
-        this.stepsPanel = new WizardStepsPanel(this.stepNavigator, this.formPanel);
-        this.stepNavigatorAndToolbarContainer.onShown((event: ElementShownEvent) => {
-            // set scroll offset equal to the height of the step navigator to switch steps at the bottom of it when sticky
-            this.stepsPanel.setScrollOffset(event.getElement().getEl().getHeight());
-        });
-
         this.formPanel.appendChildren(headerAndNavigatorContainer, this.stepsPanel);
 
-        let leftPanel: Panel;
-        this.livePanel = this.createLivePanel();
-        if (this.livePanel) {
-            this.livePanel.addClass('rendering');
-
-            this.toggleMinimizeListener = (event: ActivatedEvent) => {
-                this.toggleMinimize(event.getIndex());
-            };
-            this.minimizeEditButton = new DivEl('minimize-edit');
-            ResponsiveManager.onAvailableSizeChanged(this.formPanel);
-
-            this.minimizeEditButton.onClicked(this.toggleMinimize.bind(this, -1));
-
-            this.stepNavigatorAndToolbarContainer.appendChild(this.minimizeEditButton);
-
-            this.livePanel.onAdded(() => {
-                if (WizardPanel.debug) {
-                    console.debug('WizardPanel: livePanel.onAdded');
-                }
-                this.liveMask = new LoadMask(this.livePanel);
-            });
-
-            this.livePanel.onRendered(() => {
-                if (WizardPanel.debug) {
-                    console.debug('WizardPanel: livePanel.onRendered');
-                }
-                this.liveMask.hide();
-                this.livePanel.removeClass('rendering');
-            });
-
-            this.splitPanel = this.createSplitPanel(this.formPanel, this.livePanel);
-
-            if (WizardPanel.debug) {
-                this.splitPanel.onAdded(() => {
-                    console.debug('WizardPanel: splitPanel.onAdded');
-                });
-
-                this.splitPanel.onRendered(() => {
-                    console.debug('WizardPanel: splitPanel.onRendered');
-                });
-            }
-
-            leftPanel = this.splitPanel;
-        } else {
-            leftPanel = this.formPanel;
-        }
-
-        const leftPanelAndToolbar = new Panel();
         if (this.mainToolbar) {
-            leftPanelAndToolbar.prependChild(this.mainToolbar);
+            this.leftPanelAndToolbar.prependChild(this.mainToolbar);
         }
 
-        const detailsSplitPanel = this.createWizardAndDetailsSplitPanel(leftPanel);
-        if (detailsSplitPanel) {
-            detailsSplitPanel.addClass('rendering');
-            detailsSplitPanel.onRendered(() => detailsSplitPanel.removeClass('rendering'));
-            leftPanelAndToolbar.appendChild(detailsSplitPanel);
-        } else {
-            leftPanelAndToolbar.appendChild(leftPanel);
-        }
-        this.appendChild(leftPanelAndToolbar);
+        this.leftPanelAndToolbar.appendChild(this.prepareMainPanel());
+        this.appendChild(this.leftPanelAndToolbar);
 
         return Q(rendered);
     }
 
-    protected checkIfEditIsAllowed(): Q.Promise<boolean> {
-        return Q.resolve(true);
+    protected prepareMainPanel(): Panel {
+        return this.formPanel;
     }
 
-    protected createWizardAndDetailsSplitPanel(_leftPanel: Panel): SplitPanel {
-        // underscore prevents ts unused param check
-        return null;
+    protected checkIfEditIsAllowed(): Q.Promise<boolean> {
+        return Q.resolve(true);
     }
 
     protected getWizardStepsPanel(): WizardStepsPanel {
@@ -863,21 +728,6 @@ export class WizardPanel<EQUITABLE extends Equitable>
         this.helpTextToggleButton.onClicked(() => {
             this.toggleHelpTextShown();
         });
-    }
-
-    private createSplitPanel(firstPanel: Panel, secondPanel: Panel): SplitPanel {
-        const builder = new SplitPanelBuilder(firstPanel, secondPanel)
-            .setFirstPanelMinSize(280, SplitPanelUnit.PIXEL)
-            .setAlignment(SplitPanelAlignment.VERTICAL);
-
-        if ($(window).width() > this.splitPanelThreshold) {
-            builder.setFirstPanelSize(38, SplitPanelUnit.PERCENT);
-        }
-
-        const splitPanel = builder.build();
-        splitPanel.addClass('wizard-and-preview');
-
-        return splitPanel;
     }
 
     private notifyClosed(checkCanClose: boolean) {
