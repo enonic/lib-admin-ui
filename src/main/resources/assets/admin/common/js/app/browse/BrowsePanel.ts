@@ -60,7 +60,7 @@ export class BrowsePanel
 
         this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.treeGrid, this.createBrowseWithItemsPanel())
             .setAlignment(SplitPanelAlignment.VERTICAL)
-            .setFirstPanelSize(32, SplitPanelUnit.PERCENT)
+            .setFirstPanelSize(38, SplitPanelUnit.PERCENT)
             .build();
 
         if (this.filterPanel) {
