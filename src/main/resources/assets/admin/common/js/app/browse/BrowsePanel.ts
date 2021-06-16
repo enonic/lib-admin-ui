@@ -28,14 +28,13 @@ export class BrowsePanel
 
     protected filterPanel: BrowseFilterPanel<Object>;
     protected filterPanelToBeShownFullScreen: boolean = false;
+    protected gridAndItemsSplitPanel: SplitPanel;
     private gridAndToolbarPanel: Panel;
     private browseItemPanel: BrowseItemPanel;
-    private gridAndItemsSplitPanel: SplitPanel;
     private filterAndGridSplitPanel: SplitPanel;
     private filterPanelForcedShown: boolean = false;
     private filterPanelForcedHidden: boolean = false;
     private filterPanelIsHiddenByDefault: boolean = true;
-    private mainContentSplitPanel: SplitPanel;
 
     protected toggleFilterPanelAction: Action;
 
@@ -59,12 +58,10 @@ export class BrowsePanel
             this.browseItemPanel = this.createBrowseItemPanel();
         }
 
-        this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.treeGrid, this.browseItemPanel)
+        this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.treeGrid, this.createBrowseWithItemsPanel())
             .setAlignment(SplitPanelAlignment.VERTICAL)
-            .setFirstPanelSize(38, SplitPanelUnit.PERCENT)
+            .setFirstPanelSize(32, SplitPanelUnit.PERCENT)
             .build();
-        this.mainContentSplitPanel = this.createMainContentSplitPanel(this.gridAndItemsSplitPanel);
-
 
         if (this.filterPanel) {
             this.gridAndToolbarPanel = new Panel();
@@ -151,7 +148,7 @@ export class BrowsePanel
                 });
                 this.browseToolbar.onRendered(() => {
                     setTimeout(() => {
-                        this.gridAndToolbarPanel.appendChild(this.mainContentSplitPanel);
+                        this.gridAndToolbarPanel.appendChild(this.gridAndItemsSplitPanel);
                     });
                 });
             } else {
@@ -159,7 +156,7 @@ export class BrowsePanel
                 // Hack: Same hack.
                 this.browseToolbar.onRendered(() => {
                     setTimeout(() => {
-                        this.appendChild(this.mainContentSplitPanel);
+                        this.appendChild(this.gridAndItemsSplitPanel);
                     });
                 });
             }
@@ -235,10 +232,6 @@ export class BrowsePanel
 
     protected createFilterPanel(): BrowseFilterPanel<ViewItem> {
         return null;
-    }
-
-    protected createMainContentSplitPanel(gridAndItemsSplitPanel: SplitPanel): SplitPanel {
-        return gridAndItemsSplitPanel;
     }
 
     protected showFilterPanel() {
@@ -363,4 +356,7 @@ export class BrowsePanel
         this.getBrowseItemPanel().togglePreviewForItem(this.treeGrid.getLastSelectedOrHighlightedItem());
     }
 
+    protected createBrowseWithItemsPanel(): Panel {
+        return this.browseItemPanel;
+    }
 }
