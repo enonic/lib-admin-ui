@@ -7,7 +7,7 @@ import {LoginResultJson} from './LoginResultJson';
 export class IsAuthenticatedRequest
     extends AuthResourceRequest<LoginResult> {
 
-    private static CACHE: LoginResult;
+    private static cachedRequestPromise: Q.Promise<LoginResult>;
 
     constructor() {
         super();
@@ -15,13 +15,12 @@ export class IsAuthenticatedRequest
     }
 
     protected parseResponse(response: JsonResponse<LoginResultJson>): LoginResult {
-        IsAuthenticatedRequest.CACHE = new LoginResult(response.getResult());
-
-        return IsAuthenticatedRequest.CACHE;
+        return new LoginResult(response.getResult());
     }
 
     sendAndParse(): Q.Promise<LoginResult> {
-        return !!IsAuthenticatedRequest.CACHE ? Q(IsAuthenticatedRequest.CACHE) : super.sendAndParse();
+        IsAuthenticatedRequest.cachedRequestPromise = IsAuthenticatedRequest.cachedRequestPromise || super.sendAndParse();
+        return IsAuthenticatedRequest.cachedRequestPromise;
     }
 
 }
