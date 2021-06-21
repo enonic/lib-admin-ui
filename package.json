@@ -59,7 +59,7 @@
     "mini-css-extract-plugin": "^1.6.0",
     "postcss-loader": "^5.3.0",
     "postcss-normalize": "^10.0.0",
-    "postcss-sort-media-queries": "^3.10.11",
+    "postcss-sort-media-queries": "^3.11.12",
     "prettier": "^2.3.1",
     "style-loader": "^2.0.0",
     "terser": "^5.7.0",
