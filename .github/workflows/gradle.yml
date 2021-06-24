@@ -1,11 +1,32 @@
 name: Gradle Build
 
-on: [push]
+on:
+  push:
+
+concurrency: ${{ github.ref }}
 
 jobs:
-  build:
-
+  publish_vars:
     runs-on: ubuntu-latest
+
+    outputs:
+      publish: ${{ steps.publish_vars.outputs.release != 'true' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/4.')) }}
+      repo: ${{ steps.publish_vars.outputs.repo }}
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Get publishing variables
+        id: publish_vars
+        uses: enonic/release-tools/publish-vars@master
+        env:
+          PROPERTIES_PATH: './gradle.properties'
+
+  build:
+    runs-on: ubuntu-latest
+
+    needs: publish_vars
 
     steps:
       - uses: actions/checkout@v2
@@ -30,24 +51,17 @@ jobs:
 
       - uses: codecov/codecov-action@v1
 
-      - name: Get publishing variables
-        id: publish_vars
-        uses: enonic/release-tools/publish-vars@master
-        env:
-          PROPERTIES_PATH: './gradle.properties'
-          JAVA_HOME: ''
-
       - name: Publish
-        if: steps.publish_vars.outputs.release != 'true' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/3.') || startsWith(github.ref, 'refs/heads/4.'))
-        run: ./gradlew publish -PrepoKey=${{ steps.publish_vars.outputs.repo }} -PrepoUser=${{ secrets.ARTIFACTORY_USERNAME }} -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
+        if: needs.publish_vars.outputs.publish == 'true'
+        run: ./gradlew publish -PrepoKey=${{ needs.publish_vars.outputs.repo }} -PrepoUser=${{ secrets.ARTIFACTORY_USERNAME }} -PrepoPassword=${{ secrets.ARTIFACTORY_PASSWORD }}
 
   dispatch:
-    needs: build
+    needs: [ publish_vars, build ]
     strategy:
       matrix:
         repo: ["enonic/app-admin-home", "enonic/app-applications", "enonic/app-users" ]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/3.') || startsWith(github.ref, 'refs/heads/4.')
+    if: needs.publish_vars.outputs.publish == 'true'
     steps:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
