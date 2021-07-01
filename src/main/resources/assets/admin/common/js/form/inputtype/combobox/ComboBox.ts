@@ -97,6 +97,7 @@ export class ComboBox
             selectedOptionsView: this.selectedOptionsView,
             maximumOccurrences: input.getOccurrences().getMaximum(),
             optionDisplayValueViewer: new ComboBoxDisplayValueViewer(),
+            rowHeight: 34,
             hideComboBoxWhenMaxReached: true,
             value: this.getValueFromPropertyArray(propertyArray)
         });

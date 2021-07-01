@@ -13,7 +13,4 @@ export class DefaultOptionDisplayValueViewer
         return super.setObject(object);
     }
 
-    getPreferredHeight(): number {
-        return 34;
-    }
 }

@@ -41,6 +41,8 @@ export interface DropdownConfig<OPTION_DISPLAY_VALUE> {
     createColumns?: GridColumn<OPTION_DISPLAY_VALUE>[];
 
     listMaxHeight?: number;
+
+    rowHeight?: number;
 }
 
 export class Dropdown<OPTION_DISPLAY_VALUE>
@@ -103,7 +105,8 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         let filter = config.filter || this.defaultFilter;
 
         this.dropdownList = new DropdownList(<DropdownGridConfig<OPTION_DISPLAY_VALUE>>{
-            maxHeight: config.listMaxHeight || 200,
+            maxHeight: config.listMaxHeight || 370,
+            rowHeight: config.rowHeight || 40,
             width: this.input.getEl().getWidth(),
             optionDisplayValueViewer: config.optionDisplayValueViewer,
             filter: filter,

@@ -119,10 +119,6 @@ export class NamesAndIconViewer<OBJECT>
         return null;
     }
 
-    getPreferredHeight(): number {
-        return 50;
-    }
-
     getNamesAndIconView(): NamesAndIconView {
         return this.namesAndIconView;
     }
