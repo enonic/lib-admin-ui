@@ -120,7 +120,7 @@ export class NamesAndIconViewer<OBJECT>
     }
 
     getPreferredHeight(): number {
-        return 40;
+        return 50;
     }
 
     getNamesAndIconView(): NamesAndIconView {
