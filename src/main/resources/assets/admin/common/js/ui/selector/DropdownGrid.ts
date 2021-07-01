@@ -20,6 +20,8 @@ export interface DropdownGridConfig<OPTION_DISPLAY_VALUE> {
 
     optionDisplayValueViewer?: Viewer<OPTION_DISPLAY_VALUE>;
 
+    rowHeight?: number;
+
     filter: (item: Option<OPTION_DISPLAY_VALUE>, args: any) => boolean;
 
     dataIdProperty?: string;
@@ -35,9 +37,11 @@ export interface DropdownGridConfig<OPTION_DISPLAY_VALUE> {
     createColumns?: GridColumn<OPTION_DISPLAY_VALUE>[];
 }
 
-export class DropdownGrid<OPTION_DISPLAY_VALUE> {
+export abstract class DropdownGrid<OPTION_DISPLAY_VALUE> {
 
     protected maxHeight: number;
+
+    protected rowHeight: number;
 
     protected customHeight: number;
 
@@ -59,13 +63,14 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
 
     protected config: DropdownGridConfig<OPTION_DISPLAY_VALUE>;
 
-    constructor(config: DropdownGridConfig<OPTION_DISPLAY_VALUE>) {
+    protected constructor(config: DropdownGridConfig<OPTION_DISPLAY_VALUE>) {
         this.config = config;
         this.rowSelectionListeners = [];
         this.multipleSelectionListeners = [];
         this.optionDisplayValueViewer = config.optionDisplayValueViewer
                                         ? config.optionDisplayValueViewer.clone()
                                         : new DefaultOptionDisplayValueViewer();
+        this.rowHeight = config.rowHeight;
         this.filter = config.filter;
         this.dataIdProperty = config.dataIdProperty || 'value';
         this.maxHeight = config.maxHeight;
@@ -380,7 +385,6 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
     }
 
     protected createOptions(): GridOptions<any> {
-
         return new GridOptionsBuilder()
             .setWidth(this.width + 'px')
             .setHeight(this.maxHeight + 'px')
@@ -388,7 +392,7 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
             .setEnableColumnReorder(false)
             .setFullWidthRows(true)
             .setForceFitColumns(true)
-            .setRowHeight(this.optionDisplayValueViewer.getPreferredHeight())
+            .setRowHeight(this.rowHeight)
             .setCheckableRows(this.multipleSelections)
             .setLeftAlignedCheckbox(false)
             .setMultiSelect(this.multipleSelections)
@@ -426,7 +430,7 @@ export class DropdownGrid<OPTION_DISPLAY_VALUE> {
     }
 
     private initCommonGridProps() {
-        this.getGrid().addClass('options-container');
+        this.getGrid().addClass('options-container dropdown-grid');
         this.getGrid().getEl().setPosition('absolute');
         this.hide();
         this.getGrid().setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));

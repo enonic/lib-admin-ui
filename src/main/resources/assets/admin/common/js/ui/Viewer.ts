@@ -39,10 +39,6 @@ export class Viewer<OBJECT>
         return this.object;
     }
 
-    getPreferredHeight(): number {
-        throw new Error('Must be implemented by inheritors');
-    }
-
     clone(): Viewer<OBJECT> {
         return new (<any>this.constructor)(...this.getCloneArgs());
     }
