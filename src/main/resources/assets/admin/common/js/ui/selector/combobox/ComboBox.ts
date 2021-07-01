@@ -188,7 +188,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         }
 
         this.comboBoxDropdown = new ComboBoxDropdown(<DropdownGridConfig<OPTION_DISPLAY_VALUE>>{
-            maxHeight: config.maxHeight ? config.maxHeight : 370,
+            maxHeight: config.maxHeight ? config.maxHeight : 200,
             width: this.input.getWidth(),
             optionDisplayValueViewer: config.optionDisplayValueViewer,
             filter: config.filter,

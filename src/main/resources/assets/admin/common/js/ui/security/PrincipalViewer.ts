@@ -37,6 +37,10 @@ export class PrincipalViewer
         return '';
     }
 
+    getPreferredHeight(): number {
+        return 40;
+    }
+
 }
 
 export class PrincipalViewerCompact
