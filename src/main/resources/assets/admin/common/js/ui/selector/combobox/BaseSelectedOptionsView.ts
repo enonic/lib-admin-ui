@@ -7,7 +7,7 @@ import {ArrayHelper} from '../../../util/ArrayHelper';
 import {SelectedOptionsView} from './SelectedOptionsView';
 import {SelectedOption} from './SelectedOption';
 import {SelectedOptionEvent} from './SelectedOptionEvent';
-import {BaseSelectedOptionView} from './BaseSelectedOptionView';
+import {BaseSelectedOptionView, BaseSelectedOptionViewBuilder} from './BaseSelectedOptionView';
 import {assertNotNull} from '../../../util/Assert';
 
 export class BaseSelectedOptionsView<T>
@@ -29,6 +29,7 @@ export class BaseSelectedOptionsView<T>
 
     setReadonly(readonly: boolean) {
         this.readonly = readonly;
+
         this.getSelectedOptions().forEach((option: SelectedOption<T>) => {
             option.getOptionView().setReadonly(readonly);
         });
@@ -36,6 +37,7 @@ export class BaseSelectedOptionsView<T>
 
     setEditable(editable: boolean) {
         this.editable = editable;
+
         this.getSelectedOptions().forEach((option: SelectedOption<T>) => {
             option.getOptionView().setEditable(editable);
         });
@@ -60,7 +62,12 @@ export class BaseSelectedOptionsView<T>
     }
 
     createSelectedOption(option: Option<T>): SelectedOption<T> {
-        return new SelectedOption<T>(new BaseSelectedOptionView(option, this.editable, !this.readonly), this.count());
+        const builder: BaseSelectedOptionViewBuilder<T> = new BaseSelectedOptionViewBuilder<T>()
+            .setOption(option)
+            .setEditable(this.editable)
+            .setRemovable(!this.readonly);
+
+        return new SelectedOption<T>(new BaseSelectedOptionView(builder), this.count());
     }
 
     addOption(option: Option<T>, silent: boolean = false, keyCode: number): boolean {

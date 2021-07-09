@@ -1,6 +1,6 @@
 import * as Q from 'q';
 import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
-import {BaseSelectedOptionView} from './BaseSelectedOptionView';
+import {BaseSelectedOptionView, BaseSelectedOptionViewBuilder} from './BaseSelectedOptionView';
 import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
@@ -19,14 +19,11 @@ export class RichSelectedOptionView<T>
     private namesAndIconView: NamesAndIconView;
 
     constructor(builder: RichSelectedOptionViewBuilder<T>) {
-        super(builder.option);
+        super(builder);
 
         this.optionDisplayValue = builder.option.getDisplayValue();
         this.size = builder.size;
-
         this.draggable = builder.draggable;
-        this.setEditable(builder.editable);
-        this.setRemovable(builder.removable);
     }
 
     resolveIconUrl(_content: T): string {
@@ -96,32 +93,12 @@ export class RichSelectedOptionView<T>
     }
 }
 
-export class RichSelectedOptionViewBuilder<T> {
-    option: Option<T>;
+export class RichSelectedOptionViewBuilder<T> extends BaseSelectedOptionViewBuilder<T> {
     size: NamesAndIconViewSize = NamesAndIconViewSize.small;
-
-    editable: boolean = false;
     draggable: boolean = false;
-    removable: boolean = true;
-
-    constructor(option: Option<T>) {
-        this.option = option;
-    }
-
-    setEditable(value: boolean): RichSelectedOptionViewBuilder<T> {
-        this.editable = value;
-
-        return this;
-    }
 
     setDraggable(value: boolean): RichSelectedOptionViewBuilder<T> {
         this.draggable = value;
-
-        return this;
-    }
-
-    setRemovable(value: boolean): RichSelectedOptionViewBuilder<T> {
-        this.removable = value;
 
         return this;
     }

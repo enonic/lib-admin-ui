@@ -15,16 +15,20 @@ export class BaseSelectedOptionView<T>
 
     private removeClickedListeners: { (): void; }[] = [];
 
-    private editable: boolean;
+    protected editable: boolean;
 
-    private removable: boolean;
+    private editButton?: AEl;
 
-    constructor(option: Option<T>, editable: boolean = true, removable: boolean = true) {
+    protected removable: boolean;
+
+    private removeButton?: AEl;
+
+    constructor(builder: BaseSelectedOptionViewBuilder<T>) {
         super('selected-option');
 
-        this.option = option;
-        this.editable = editable;
-        this.removable = removable;
+        this.option = builder.option;
+        this.editable = builder.editable;
+        this.removable = builder.removable;
     }
 
     setOption(option: Option<T>) {
@@ -39,11 +43,12 @@ export class BaseSelectedOptionView<T>
     }
 
     doRender(): Q.Promise<boolean> {
-
         this.optionValueEl = new DivEl('option-value');
+
         if (this.option) {
             this.setOption(this.option);
         }
+
         this.appendChild(this.optionValueEl);
 
         this.appendActionButtons();
@@ -63,28 +68,43 @@ export class BaseSelectedOptionView<T>
 
     setReadonly(readonly: boolean) {
         this.toggleClass('readonly', readonly);
-        this.editable = readonly ? false : this.editable;
-        this.removable = readonly ? false : this.removable;
     }
 
     setEditable(editable: boolean) {
         this.editable = editable;
+
+        if (this.isRendered()) {
+            if (editable && !this.editButton) {
+                this.appendChild(this.createEditButton());
+            }
+
+            this.editButton?.setVisible(editable);
+        }
     }
 
     setRemovable(removable: boolean) {
         this.removable = removable;
+
+        if (this.isRendered()) {
+            if (removable && !this.removeButton) {
+                this.appendChild(this.createRemoveButton());
+            }
+
+            this.removeButton?.setVisible(removable);
+        }
     }
 
     isEditable(): boolean {
         return this.editable;
     }
 
-    protected appendActionButtons(container: Element = this) {
-        if (this.editable) {
-            container.appendChild(this.createEditButton());
+    protected appendActionButtons() {
+        if (this.editable && !this.editButton) {
+            this.appendChild(this.createEditButton());
         }
-        if (this.removable) {
-            container.appendChild(this.createRemoveButton());
+
+        if (this.removable && !this.removeButton) {
+            this.appendChild(this.createRemoveButton());
         }
     }
 
@@ -122,4 +142,30 @@ export class BaseSelectedOptionView<T>
 
         return removeButton;
     }
+}
+
+export class BaseSelectedOptionViewBuilder<T> {
+    option: Option<T>;
+
+    editable: boolean = false;
+
+    removable: boolean = true;
+
+    setOption(option: Option<T>): BaseSelectedOptionViewBuilder<T> {
+        this.option = option;
+        return this;
+    }
+
+    setEditable(value: boolean): BaseSelectedOptionViewBuilder<T> {
+        this.editable = value;
+
+        return this;
+    }
+
+    setRemovable(value: boolean): BaseSelectedOptionViewBuilder<T> {
+        this.removable = value;
+
+        return this;
+    }
+
 }
