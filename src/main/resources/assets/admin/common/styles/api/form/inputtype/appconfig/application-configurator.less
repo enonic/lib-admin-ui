@@ -60,35 +60,6 @@
           }
         }
       }
-
-      &.collapsed {
-        .header {
-          margin: 0;
-        }
-      }
-
-      .header {
-        display: flex;
-        align-items: center;
-        position: relative;
-        line-height: 48px;
-        overflow: hidden;
-        width: 100%;
-
-        .clearfix();
-
-        .names-and-icon-view {
-          float: left;
-          cursor: move;
-          flex: 0 1 100%;
-
-          .@{_COMMON_PREFIX}names-view {
-            > * {
-              cursor: move;
-            }
-          }
-        }
-      }
     }
 
     .selected-option:last-child {
