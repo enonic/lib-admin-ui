@@ -1,11 +1,11 @@
 import {LocaleListJson} from './json/LocaleListJson';
 import {LocaleJson} from './json/LocaleJson';
-import {ResourceRequest} from '../rest/ResourceRequest';
 import {JsonResponse} from '../rest/JsonResponse';
 import {Locale} from './Locale';
+import {CmsResourceRequest} from '../rest/CmsResourceRequest';
 
 export class GetLocalesRequest
-    extends ResourceRequest<Locale[]> {
+    extends CmsResourceRequest<Locale[]> {
 
     private searchQuery: string;
 
