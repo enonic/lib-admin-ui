@@ -1,5 +1,4 @@
 import {Equitable} from '../Equitable';
-import {ContentId} from '../content/ContentId';
 import {ObjectHelper} from '../ObjectHelper';
 
 export class Reference
@@ -9,10 +8,6 @@ export class Reference
 
     constructor(value: string) {
         this.referenceId = value;
-    }
-
-    static from(value: ContentId): Reference {
-        return new Reference(value.toString());
     }
 
     getNodeId(): string {

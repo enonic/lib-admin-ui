@@ -2,15 +2,23 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.0.1'
-    id 'com.enonic.xp.base' version '2.0.0'
-    id "com.github.node-gradle.node" version '3.0.1'
+    id 'com.enonic.xp.base' version '3.0.0'
+    id "com.github.node-gradle.node" version '3.1.0'
 }
 
 apply from: "$rootDir/gradle/env.gradle"
 apply from: "$rootDir/gradle/node.gradle"
 
+configurations {
+    devResources {
+        attributes {
+            attribute( LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named( LibraryElements, 'dev-resources' ) )
+        }
+    }
+}
+
 repositories {
-    jcenter()
+    mavenCentral()
     xp.enonicRepo()
 }
 
@@ -19,7 +27,7 @@ archivesBaseName = 'lib-admin-ui'
 
 node {
     download = true
-    version = '14.15.0'
+    version = '16.0.0'
 }
 
 def resourcesDir = file( 'src/main/resources' )
@@ -74,7 +82,7 @@ task typescript {
 }
 
 jar {
-    exclude 'dev/lib-admin-ui/lib.js'
+    exclude 'dev/**'
     exclude 'assets/spec/**'
     exclude 'assets/**/*.ts'
     exclude 'assets/**/*.less'
@@ -100,7 +108,25 @@ jar {
     }
 
     includeEmptyDirs = false
-    dependsOn += typescript
+    dependsOn typescript
+}
+
+task devJar ( type: Jar ) {
+    archiveClassifier = 'dev-resources'
+    from sourceSets.main.output
+    include 'dev/**'
+    exclude 'dev/lib-admin-ui/lib.js'
+    includeEmptyDirs = false
+    dependsOn typescript
+}
+
+tasks.assemble.dependsOn devJar
+
+artifacts {
+    devResources devJar
+}
+
+components.java.addVariantsFromConfiguration( configurations.devResources ) {
 }
 
 task flush( type: Delete, dependsOn: clean ) {

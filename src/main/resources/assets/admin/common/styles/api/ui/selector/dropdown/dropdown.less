@@ -59,9 +59,6 @@
     }
 
     .slick-cell {
-      height: 100%;
-      .default-slick-cell-styling();
-
       &:hover, &.active {
         background: @admin-bg-light-gray;
         cursor: pointer;
@@ -112,12 +109,6 @@
 .dropdown-tree-grid {
   .grid {
     .slick-row {
-      .slick-cell {
-        height: 50px;
-        .viewer {
-          padding-top: 3px;
-        }
-      }
       &.readonly {
         opacity: 0.5;
         pointer-events: none;
@@ -166,9 +157,6 @@
       .slick-row {
         .toggle.icon {
           display: none;
-        }
-        .content-summary-viewer, .content-tree-selector-item-viewer {
-          padding-left: 15px;
         }
       }
     }

@@ -41,6 +41,8 @@ export interface DropdownConfig<OPTION_DISPLAY_VALUE> {
     createColumns?: GridColumn<OPTION_DISPLAY_VALUE>[];
 
     listMaxHeight?: number;
+
+    rowHeight?: number;
 }
 
 export class Dropdown<OPTION_DISPLAY_VALUE>
@@ -103,7 +105,8 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         let filter = config.filter || this.defaultFilter;
 
         this.dropdownList = new DropdownList(<DropdownGridConfig<OPTION_DISPLAY_VALUE>>{
-            maxHeight: config.listMaxHeight || 200,
+            maxHeight: config.listMaxHeight || 370,
+            rowHeight: config.rowHeight || 40,
             width: this.input.getEl().getWidth(),
             optionDisplayValueViewer: config.optionDisplayValueViewer,
             filter: filter,
@@ -198,7 +201,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     }
 
     hideDropdown() {
-        if (this.selectedOptionView.getOption()) {
+        if (this.selectedOptionView.hasOption()) {
             this.input.hide();
             this.selectedOptionView.show();
         } else if (this.typeAhead) {
@@ -303,7 +306,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         this.dropdownList.markSelections([]);
         this.selectedOptionView.resetOption();
 
-        if (!silent) {
+        if (previousOption && !silent) {
             this.notifyOptionDeselected(previousOption);
         }
 
@@ -312,6 +315,10 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
 
     getSelectedOption(): Option<OPTION_DISPLAY_VALUE> {
         return this.selectedOptionView.getOption();
+    }
+
+    hasSelectedOption(): boolean {
+        return this.selectedOptionView.hasOption();
     }
 
     getSelectedOptionView(): SelectedOptionView<OPTION_DISPLAY_VALUE> {

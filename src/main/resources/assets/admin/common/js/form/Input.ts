@@ -22,8 +22,6 @@ export class InputBuilder {
 
     indexed: boolean = true;
 
-    customText: string;
-
     validationRegex: string;
 
     helpText: string;
@@ -64,11 +62,6 @@ export class InputBuilder {
         return this;
     }
 
-    setCustomText(value: string): InputBuilder {
-        this.customText = value;
-        return this;
-    }
-
     setValidationRegex(value: string): InputBuilder {
         this.validationRegex = value;
         return this;
@@ -96,7 +89,6 @@ export class InputBuilder {
         this.immutable = json.immutable;
         this.occurrences = Occurrences.fromJson(json.occurrences);
         this.indexed = json.indexed;
-        this.customText = json.customText;
         this.validationRegex = json.validationRegexp;
         this.helpText = json.helpText;
         this.inputTypeConfig = json.config;
@@ -135,8 +127,6 @@ export class Input
 
     private indexed: boolean;
 
-    private customText: string;
-
     private validationRegex: string;
 
     private helpText: string;
@@ -155,7 +145,6 @@ export class Input
         this.immutable = builder.immutable;
         this.occurrences = builder.occurrences;
         this.indexed = builder.indexed;
-        this.customText = builder.customText;
         this.validationRegex = builder.validationRegex;
         this.helpText = builder.helpText;
         this.maximizeUIInputWidth = builder.maximizeUIInputWidth;
@@ -190,10 +179,6 @@ export class Input
 
     isMaximizeUIInputWidth(): boolean {
         return this.maximizeUIInputWidth;
-    }
-
-    getCustomText(): string {
-        return this.customText;
     }
 
     getValidationRegex(): string {
@@ -244,10 +229,6 @@ export class Input
             return false;
         }
 
-        if (!ObjectHelper.stringEquals(this.customText, other.customText)) {
-            return false;
-        }
-
         if (!ObjectHelper.stringEquals(this.validationRegex, other.validationRegex)) {
             return false;
         }
@@ -268,7 +249,6 @@ export class Input
         return {
             Input: {
                 name: this.getName(),
-                customText: this.getCustomText(),
                 helpText: this.getHelpText(),
                 immutable: this.isImmutable(),
                 indexed: this.isIndexed(),

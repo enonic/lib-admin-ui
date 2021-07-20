@@ -1,7 +1,6 @@
 import * as Q from 'q';
 import {PropertySet} from '../data/PropertySet';
 import {DivEl} from '../dom/DivEl';
-import {ContentSummary} from '../content/ContentSummary';
 import {FormContext} from './FormContext';
 import {FormItem} from './FormItem';
 import {FormItemOccurrenceView} from './FormItemOccurrenceView';
@@ -29,8 +28,6 @@ export class FormItemView
 
     protected parent: FormItemOccurrenceView;
 
-    private editContentRequestListeners: { (content: ContentSummary): void }[] = [];
-
     private highlightOnValidityChanged: boolean;
 
     constructor(config: FormItemViewConfig) {
@@ -51,7 +48,7 @@ export class FormItemView
         throw new Error('Must be implemented by inheritors');
     }
 
-    layout(): Q.Promise<void> {
+    layout(validate: boolean = true): Q.Promise<void> {
         throw new Error('Must be implemented by inheritors');
     }
 
@@ -61,6 +58,10 @@ export class FormItemView
 
     reset() {
         throw new Error('Must be implemented by inheritors');
+    }
+
+    clean() {
+        //to be implemented on demand in inheritors
     }
 
     refresh() {
@@ -111,23 +112,6 @@ export class FormItemView
 
     highlightOnValidityChange(): boolean {
         return this.highlightOnValidityChanged;
-    }
-
-    onEditContentRequest(listener: (content: ContentSummary) => void) {
-        this.editContentRequestListeners.push(listener);
-    }
-
-    unEditContentRequest(listener: (content: ContentSummary) => void) {
-        this.editContentRequestListeners = this.editContentRequestListeners
-            .filter(function (curr: (content: ContentSummary) => void) {
-                return curr !== listener;
-            });
-    }
-
-    notifyEditContentRequested(content: ContentSummary) {
-        this.editContentRequestListeners.forEach((listener) => {
-            listener(content);
-        });
     }
 
     onValidityChanged(_listener: (event: RecordingValidityChangedEvent) => void) {

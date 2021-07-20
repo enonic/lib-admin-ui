@@ -4,7 +4,6 @@ import {Value} from '../../data/Value';
 import {ValueType} from '../../data/ValueType';
 import {Element} from '../../dom/Element';
 import {Input} from '../Input';
-import {ContentSummary} from '../../content/ContentSummary';
 import {InputValidationRecording} from './InputValidationRecording';
 import {InputValidityChangedEvent} from './InputValidityChangedEvent';
 import {ValueChangedEvent} from './ValueChangedEvent';
@@ -34,25 +33,17 @@ export interface InputTypeView {
     isManagingAdd(): boolean;
 
     /*
-     * Invoked when input wants to edit embedded content
-     */
-    onEditContentRequest(listener: (content: ContentSummary) => void);
-
-    /*
-     * Invoked when input wants to edit embedded content
-     */
-    unEditContentRequest(listener: (content: ContentSummary) => void);
-
-    /*
      * Returns true if focus was successfully given.
      */
     giveFocus(): boolean;
 
-    displayValidationErrors(value: boolean);
+    displayValidationErrors();
 
-    hasValidUserInput(recording?: InputValidationRecording): boolean;
+    hasValidUserInput(): boolean;
 
-    validate(silent: boolean): InputValidationRecording;
+    validate(silent: boolean);
+
+    getInputValidationRecording(): InputValidationRecording;
 
     onValidityChanged(listener: (event: InputValidityChangedEvent) => void);
 

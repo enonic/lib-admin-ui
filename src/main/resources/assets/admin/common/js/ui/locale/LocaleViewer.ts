@@ -6,7 +6,7 @@ import {StringHelper} from '../../util/StringHelper';
 export class LocaleViewer
     extends Viewer<Locale> {
 
-    private namesView: NamesView;
+    private readonly namesView: NamesView;
 
     private displayNamePattern: string = '{0} ({1})';
 
@@ -23,7 +23,4 @@ export class LocaleViewer
         return super.setObject(locale);
     }
 
-    getPreferredHeight(): number {
-        return 30;
-    }
 }

@@ -21,6 +21,11 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
     }
 
     protected doSetValue(value: string) {
+        if (StringHelper.isEmpty(value)) {
+            this.setIgnoreNextFocus(true);
+            super.doSetValue(value);
+            return;
+        }
 
         if (!this.loader.isLoaded()) {
             if (BaseLoaderComboBox.debug) {
@@ -28,6 +33,7 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
             }
             this.tempValue = value;
         }
+
         this.doWhenLoaded(() => {
             if (this.tempValue) {
                 if (BaseLoaderComboBox.debug) {
@@ -53,9 +59,10 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
 
     private doWhenLoaded(callback: Function, value: string) {
         if (this.loader.isLoaded() || this.loader.isPreLoaded()) {
-            let optionsMissing = !StringHelper.isEmpty(value) && this.splitValues(value).some((val) => {
+            const optionsMissing: boolean = this.splitValues(value).some((val) => {
                 return !this.getOptionByValue(val);
             });
+
             if (optionsMissing) { // option needs loading
                 this.loader.preLoad(value).then(() => {
                     callback();
@@ -67,7 +74,8 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
             if (BaseLoaderComboBox.debug) {
                 console.debug(this.toString() + '.doWhenLoaded: waiting to be loaded');
             }
-            let singleLoadListener = ((data) => {
+
+            const singleLoadListener = ((data) => {
                 if (BaseLoaderComboBox.debug) {
                     console.debug(this.toString() + '.doWhenLoaded: on loaded');
                 }
@@ -76,8 +84,10 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
 
                 return Q(null);
             });
+
             this.loader.onLoadedData(singleLoadListener);
-            if (!StringHelper.isEmpty(value) && this.loader.isNotStarted()) {
+
+            if (this.loader.isNotStarted()) {
                 this.loader.preLoad(value);
             }
         }

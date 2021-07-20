@@ -10,6 +10,8 @@ import {LocalTime} from '../../../util/LocalTime';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
+import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
+import {i18n} from '../../../util/Messages';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalTime]].
@@ -21,27 +23,23 @@ export class Time
         return ValueTypes.LOCAL_TIME;
     }
 
-    newInitialValue(): Value {
-        return super.newInitialValue() || ValueTypes.LOCAL_TIME.newNullValue();
-    }
-
     createInputOccurrenceElement(_index: number, property: Property): Element {
-        if (!ValueTypes.LOCAL_TIME.equals(property.getType())) {
-            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.LOCAL_TIME);
+        if (!this.getValueType().equals(property.getType())) {
+            ValueTypeConverter.convertPropertyValueType(property, this.getValueType());
         }
 
-        const value = this.getValueFromProperty(property);
+        const value: { hours: number; minutes: number } = this.getValueFromProperty(property);
         const timePicker: TimePicker = new TimePickerBuilder().setHours(value.hours).setMinutes(value.minutes).build();
 
         timePicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
-
-            let newValue = new Value(event.getDate() != null ? LocalTime.fromDate(event.getDate()) : null,
-                ValueTypes.LOCAL_TIME);
-
-            this.notifyOccurrenceValueChanged(timePicker, newValue);
+            this.handleOccurrenceInputValueChanged(timePicker, event);
         });
 
         return timePicker;
+    }
+
+    protected getValue(inputEl: Element, event: SelectedDateChangedEvent): Value {
+        return new Value(event.getDate() != null ? LocalTime.fromDate(event.getDate()) : null, this.getValueType());
     }
 
     updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean) {
@@ -68,17 +66,15 @@ export class Time
         input.setEnabled(enable);
     }
 
-    availableSizeChanged() {
-        // must be implemented by children
-    }
+    doValidateUserInput(inputEl: TimePicker) {
+        super.doValidateUserInput(inputEl);
 
-    valueBreaksRequiredContract(value: Value): boolean {
-        return value.isNull() || !value.getType().equals(ValueTypes.LOCAL_TIME);
-    }
+        if (!inputEl.isValid()) {
+            const record: AdditionalValidationRecord =
+                AdditionalValidationRecord.create().setMessage(i18n('field.value.invalid')).build();
 
-    hasInputElementValidUserInput(inputElement: Element) {
-        let timePicker = <TimePicker> inputElement;
-        return timePicker.isValid();
+            this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
+        }
     }
 
     private getValueFromProperty(property: Property): { hours: number; minutes: number } {

@@ -475,6 +475,28 @@ export class Element {
         return this.getEl().getAttribute('contenteditable') === 'true';
     }
 
+    setSpellcheck(value: boolean): Element {
+        if (value) {
+            this.getEl().setAttribute('spellcheck', 'true');
+        } else {
+            this.getEl().removeAttribute('spellcheck');
+        }
+        return this;
+    }
+
+    hasSpellcheck(): boolean {
+        return this.getEl().hasAttribute('spellcheck');
+    }
+
+    setLang(value: string): Element {
+        this.getEl().setAttribute('lang', value);
+        return this;
+    }
+
+    getLang(): string {
+        return this.getEl().getAttribute('lang');
+    }
+
     giveFocus(): boolean {
         if (!this.isVisible()) {
             return false;
@@ -1302,7 +1324,7 @@ export class Element {
             rect.top >= 0 &&
             rect.left >= 0 &&
             rect.top <= 2 * (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            (rect.right - (window.innerWidth || document.documentElement.clientWidth)) <= 1 // small delta for calc inaccuracy
         );
     }
 

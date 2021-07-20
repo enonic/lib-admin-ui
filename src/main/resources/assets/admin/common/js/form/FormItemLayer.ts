@@ -61,19 +61,12 @@ export class FormItemLayer {
     }
 
     layout(propertySet: PropertySet, validate: boolean = true): Q.Promise<FormItemView[]> {
-
         this.formItemViews = [];
 
         return this.doLayoutPropertySet(propertySet, validate).then(() => {
-            return Q<FormItemView[]>(this.formItemViews);
-        });
-    }
+            this.formItemViews.map(formItemView => this.parentEl.appendChild(formItemView));
 
-    clean() {
-        this.formItemViews.forEach((view: FormItemView) => {
-            if (ObjectHelper.iFrameSafeInstanceOf(view, FormOptionSetOptionView)) {
-                (<FormOptionSetOptionView>view).clean();
-            }
+            return Q<FormItemView[]>(this.formItemViews);
         });
     }
 
@@ -83,6 +76,11 @@ export class FormItemLayer {
         }
 
         const updatePromises = this.formItemViews.map((formItemView: FormItemView) => {
+            if (ObjectHelper.iFrameSafeInstanceOf(formItemView, FormItemSetView) ||
+                ObjectHelper.iFrameSafeInstanceOf(formItemView, FormOptionSetView)) {
+                this.setShowEmptyFormItemSetOccurrences(propertySet, formItemView.getFormItem().getName());
+            }
+
             return formItemView.update(propertySet, unchangedOnly);
         });
 
@@ -136,7 +134,7 @@ export class FormItemLayer {
         const inputs: InputView[] = [];
 
         const layoutPromises: Q.Promise<void>[] = this.formItems.map((formItem: FormItem) => {
-            let formItemView;
+            let formItemView: FormItemView;
 
             if (ObjectHelper.iFrameSafeInstanceOf(formItem, FormItemSet)) {
 
@@ -178,7 +176,7 @@ export class FormItemLayer {
                     parentDataSet: propertySet
                 });
 
-                inputs.push(formItemView);
+                inputs.push(<InputView>formItemView);
             }
 
             if (ObjectHelper.iFrameSafeInstanceOf(formItem, FormOptionSet)) {
@@ -212,11 +210,6 @@ export class FormItemLayer {
             this.formItemViews.push(formItemView);
 
             return formItemView.layout(validate);
-
-        });
-
-        this.parentEl.onRendered(() => {
-            this.formItemViews.map(formItemView => this.parentEl.appendChild(formItemView, this.lazyRender));
         });
 
         // Bind next focus targets

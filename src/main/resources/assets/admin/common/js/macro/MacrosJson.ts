@@ -1,4 +1,4 @@
-import {FormJson} from '../../form/json/FormJson';
+import {FormJson} from '../form/json/FormJson';
 
 export interface MacrosJson {
     macros: MacroJson[];

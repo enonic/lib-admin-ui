@@ -1,6 +1,5 @@
 import * as Q from 'q';
 import {PropertySet} from '../../data/PropertySet';
-import {Property} from '../../data/Property';
 import {PropertyArray} from '../../data/PropertyArray';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from './FormSetOccurrenceView';
 import {FormItemOccurrences} from '../FormItemOccurrences';
@@ -12,6 +11,7 @@ import {FormSetOccurrence} from './FormSetOccurrence';
 import {FormItemLayerFactory} from '../FormItemLayerFactory';
 import {Element} from '../../dom/Element';
 import {RemoveButtonClickedEvent} from '../RemoveButtonClickedEvent';
+import {FormItemLayer} from '../FormItemLayer';
 
 export interface FormSetOccurrencesConfig<V extends FormSetOccurrenceView> {
 
@@ -33,8 +33,6 @@ export interface FormSetOccurrencesConfig<V extends FormSetOccurrenceView> {
 export class FormSetOccurrences<V extends FormSetOccurrenceView>
     extends FormItemOccurrences<V> {
 
-    private readonly context: FormContext;
-
     private readonly parent: FormSetOccurrenceView;
 
     private readonly formSet: FormSet;
@@ -44,6 +42,8 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
     private layerFactory: FormItemLayerFactory;
 
     private expandRequestedListeners: { (view: FormSetOccurrenceView): void }[] = [];
+
+    protected readonly context: FormContext;
 
     constructor(config: FormSetOccurrencesConfig<V>) {
         super({
@@ -61,8 +61,8 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
     }
 
     protected getNewOccurrenceConfig(occurrence: FormSetOccurrence<V>): FormSetOccurrenceViewConfig<V> {
-        const dataSet = this.getSetFromArray(occurrence);
-        const layer = this.layerFactory.createLayer({context: this.context, lazyRender: this.lazyRender});
+        const dataSet: PropertySet = this.getOrPopulateSetFromArray(occurrence.getIndex());
+        const layer: FormItemLayer = this.layerFactory.createLayer({context: this.context, lazyRender: this.lazyRender});
 
         return {
             context: this.context,
@@ -134,27 +134,13 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         super.moveOccurrence(index, destinationIndex);
     }
 
-    updateOccurrenceView(occurrenceView: FormSetOccurrenceView, propertyArray: PropertyArray,
-                         _unchangedOnly?: boolean): Q.Promise<void> {
-        this.propertyArray = propertyArray;
-
-        return occurrenceView.update(propertyArray);
-    }
-
-    resetOccurrenceView(occurrenceView: FormSetOccurrenceView) {
-        occurrenceView.reset();
+    updateOccurrenceView(occurrenceView: FormSetOccurrenceView, _unchangedOnly?: boolean): Q.Promise<void> {
+        const propertySet: PropertySet = this.getOrPopulateSetFromArray(occurrenceView.getIndex());
+        return occurrenceView.update(propertySet);
     }
 
     refreshOccurence(index: number) {
         this.occurrenceViews[index].refreshViews();
-    }
-
-    update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
-        if (propertyArray.isEmpty()) {
-            return this.updateNoData(propertyArray, unchangedOnly);
-        } else {
-            return super.update(propertyArray, unchangedOnly);
-        }
     }
 
     onExpandRequested(listener: (view: FormSetOccurrenceView) => void): void {
@@ -171,59 +157,11 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         this.expandRequestedListeners.forEach((listener: (view: FormSetOccurrenceView) => void) => listener(view));
     }
 
-    protected getSetFromArray(occurrence: FormItemOccurrence<V>): PropertySet {
-        let dataSet = this.propertyArray.getSet(occurrence.getIndex());
-        if (!dataSet) {
-            dataSet = this.propertyArray.addSet();
-        }
-        return dataSet;
+    private getOrPopulateSetFromArray(index: number): PropertySet {
+        return this.propertyArray.getSet(index) || this.propertyArray.addSet();
     }
 
-    protected constructOccurrencesForNoData(): FormItemOccurrence<V>[] {
-        let occurrences: FormItemOccurrence<V>[] = [];
-        let minimumOccurrences = this.getAllowedOccurrences().getMinimum();
-
-        if (minimumOccurrences > 0) {
-            for (let i = 0; i < minimumOccurrences; i++) {
-                occurrences.push(this.createNewOccurrence(this, i));
-            }
-        } else if (this.context.getShowEmptyFormItemSetOccurrences()) {
-            occurrences.push(this.createNewOccurrence(this, 0));
-        }
-
-        return occurrences;
-    }
-
-    protected constructOccurrencesForData(): FormItemOccurrence<V>[] {
-        let occurrences: FormItemOccurrence<V>[] = [];
-
-        this.propertyArray.forEach((_property: Property, index: number) => {
-            occurrences.push(this.createNewOccurrence(this, index));
-        });
-
-        if (occurrences.length < this.getAllowedOccurrences().getMinimum()) {
-            for (let index: number = occurrences.length; index < this.getAllowedOccurrences().getMinimum(); index++) {
-                occurrences.push(this.createNewOccurrence(this, index));
-            }
-        }
-        return occurrences;
-    }
-
-    private updateNoData(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
-        const promises: Q.Promise<void>[] = [];
-        const occurrencesViewClone: V[] = [].concat(this.occurrenceViews);
-        const occurrencesNoDataSize: number = this.constructOccurrencesForNoData().length;
-
-        for (let i = 0; i < occurrencesNoDataSize; i++) {
-            promises.push(this.updateOccurrenceView(occurrencesViewClone[i], propertyArray, unchangedOnly));
-        }
-
-        for (let i = occurrencesNoDataSize; i < occurrencesViewClone.length; i++) {
-            this.removeOccurrenceView(occurrencesViewClone[i]);
-        }
-
-        this.propertyArray = propertyArray;
-
-        return Q.all(promises).spread<void>(() => Q<void>(null));
+    protected showEmptyFormItemOccurrences(): boolean {
+        return this.context.getShowEmptyFormItemSetOccurrences();
     }
 }

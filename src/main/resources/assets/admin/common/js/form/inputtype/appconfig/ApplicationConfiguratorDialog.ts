@@ -1,20 +1,17 @@
 import * as $ from 'jquery';
 import * as Q from 'q';
 import {FormView} from '../../FormView';
-import {InputView} from '../../InputView';
 import {ComboBox} from '../../../ui/selector/combobox/ComboBox';
 import {Application} from '../../../application/Application';
 import {ResponsiveManager} from '../../../ui/responsive/ResponsiveManager';
-import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';
-import {ContentSummary} from '../../../content/ContentSummary';
 import {AppHelper} from '../../../util/AppHelper';
 import {Action} from '../../../ui/Action';
 import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
 import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';
 import {Element} from '../../../dom/Element';
 import {ArrayHelper} from '../../../util/ArrayHelper';
-import {ObjectHelper} from '../../../ObjectHelper';
 import {ModalDialogWithConfirmation, ModalDialogWithConfirmationConfig} from '../../../ui/dialog/ModalDialogWithConfirmation';
+import {FormValidityChangedEvent} from '../../FormValidityChangedEvent';
 
 export interface ApplicationConfiguratorDialogConfig
     extends ModalDialogWithConfirmationConfig {
@@ -45,6 +42,9 @@ export class ApplicationConfiguratorDialog
                     this.close();
                 },
                 noCallback: () => {
+                    if (cancelCallback) {
+                        cancelCallback();
+                    }
                     this.close();
                 }
             }
@@ -68,13 +68,31 @@ export class ApplicationConfiguratorDialog
         });
 
         this.onRendered(() => {
-            $(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().focus();
+            $(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().trigger('focus');
             this.updateTabbable();
         });
 
         this.getCancelAction().onExecuted(this.config.cancelCallback);
 
         this.okAction.onExecuted(this.config.confirmation.yesCallback);
+
+        this.formView.onValidityChanged((event: FormValidityChangedEvent) => {
+            const isValid: boolean = event.isValid();
+            this.okAction.setEnabled(isValid);
+            this.formView.displayValidationErrors(!isValid);
+        });
+    }
+
+    protected handleClickOutside() {
+        if (this.formView.isValid()) {
+            super.handleClickOutside();
+        } else {
+            if (this.config.cancelCallback) {
+                this.config.cancelCallback();
+            }
+
+            this.close();
+        }
     }
 
     handleAvailableSizeChanged() {
@@ -108,7 +126,6 @@ export class ApplicationConfiguratorDialog
                 setTimeout(() => {
                     ResponsiveManager.fireResizeEvent();
                     this.handleSelectorsDropdowns(this.formView);
-                    this.handleDialogClose(this.formView);
                 }, 100);
 
                 return rendered;
@@ -164,20 +181,5 @@ export class ApplicationConfiguratorDialog
         }
 
         return ArrayHelper.flatten(element.getChildren().map(child => this.findComboboxes(child)));
-    }
-
-    private handleDialogClose(formView: FormView) {
-        formView.getChildren().forEach((element: Element) => {
-            if (ObjectHelper.iFrameSafeInstanceOf(element, InputView)) {
-                const inputTypeView = (<InputView> element).getInputTypeView();
-                if (ObjectHelper.iFrameSafeInstanceOf(inputTypeView, BaseInputTypeManagingAdd)) {
-                    (<BaseInputTypeManagingAdd> inputTypeView).onEditContentRequest((content: ContentSummary) => {
-                        if (content.isImage()) {
-                            this.close();
-                        }
-                    });
-                }
-            }
-        });
     }
 }

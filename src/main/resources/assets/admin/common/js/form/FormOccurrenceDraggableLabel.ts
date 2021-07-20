@@ -11,7 +11,7 @@ export class FormOccurrenceDraggableLabel
     private titleText: string;
     private subTitleText: string;
 
-    constructor(label: string, subTitle?: string) {
+    constructor(label?: string, subTitle?: string) {
         super('form-occurrence-draggable-label');
 
         let nodes: Node[] = [];

@@ -1,6 +1,9 @@
 .names-and-icon-view {
   .reset();
 
+  display: flex;
+  align-items: center;
+
   .names-and-icon-view-styles(48px);
 
   &.small {
@@ -20,7 +23,8 @@
     overflow: hidden;
 
     .@{_COMMON_PREFIX}wrapper {
-
+      display: flex;
+      align-items: center;
       height: @size;
       width: @size;
       margin-right: @icon-names-gap;
@@ -49,10 +53,11 @@
         margin: auto;
         vertical-align: middle;
       }
-    }
 
-    .@{_COMMON_PREFIX}names-view {
-      margin: 0 0 0 @size + @icon-names-gap;
+      svg {
+        width: 100%;
+        height: 100%;
+      }
     }
 
     .@{_COMMON_PREFIX}icon-label {

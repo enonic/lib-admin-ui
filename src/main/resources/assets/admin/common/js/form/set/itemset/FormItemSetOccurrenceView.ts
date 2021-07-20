@@ -13,33 +13,6 @@ export class FormItemSetOccurrenceView
         super('form-item-set-', config);
     }
 
-    protected extraValidation(_validationRecording: ValidationRecording) {
-        // No extra validation for item-sets
-    }
-
-    protected subscribeOnItemEvents() {
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
-
-                if (!this.currentValidationState) {
-                    return; // currentValidationState is initialized on validate() call which may not be triggered in some cases
-                }
-
-                let previousValidState = this.currentValidationState.isValid();
-                if (event.isValid()) {
-                    this.currentValidationState.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
-                } else {
-                    this.currentValidationState.flatten(event.getRecording());
-                }
-
-                if (previousValidState !== this.currentValidationState.isValid()) {
-                    this.notifyValidityChanged(new RecordingValidityChangedEvent(this.currentValidationState,
-                        this.resolveValidationRecordingPath()).setIncludeChildren(true));
-                }
-            });
-        });
-    }
-
     protected getLabelSubTitle(): string {
         const propArrays = this.propertySet.getPropertyArrays();
         const selectedValues = [];

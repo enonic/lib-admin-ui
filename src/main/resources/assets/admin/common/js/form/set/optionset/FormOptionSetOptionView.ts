@@ -10,8 +10,6 @@ import {Checkbox} from '../../../ui/Checkbox';
 import {NotificationDialog} from '../../../ui/dialog/NotificationDialog';
 import {i18n} from '../../../util/Messages';
 import {DivEl} from '../../../dom/DivEl';
-import {ContentSummary} from '../../../content/ContentSummary';
-import {FormEditEvent} from '../../../content/event/FormEditEvent';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {ValueTypeString} from '../../../data/ValueTypeString';
 import {Element} from '../../../dom/Element';
@@ -42,6 +40,7 @@ export class FormOptionSetOptionView
     extends FormItemView {
 
     protected helpText: HelpTextContainer;
+    protected parent: FormOptionSetOccurrenceView;
     private formOptionSetOption: FormOptionSetOption;
     private parentDataSet: PropertySet;
     private optionItemsContainer: DivEl;
@@ -49,7 +48,6 @@ export class FormOptionSetOptionView
     private formItemLayer: FormItemLayer;
     private selectionChangedListeners: { (): void }[] = [];
     private checkbox: Checkbox;
-    private requiresClean: boolean;
     private isOptionSetExpandedByDefault: boolean;
     private notificationDialog: NotificationDialog;
     private checkboxEnabledStatusHandler: () => void = (() => {
@@ -75,8 +73,6 @@ export class FormOptionSetOptionView
         this.formItemLayer = config.layerFactory.createLayer(config);
 
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
-
-        this.requiresClean = false;
     }
 
     toggleHelpText(show?: boolean) {
@@ -106,7 +102,7 @@ export class FormOptionSetOptionView
         this.optionItemsContainer = new DivEl('option-items-container');
         this.appendChild(this.optionItemsContainer);
 
-        let optionItemsPropertySet = this.getOptionItemsPropertyArray(this.parentDataSet).getSet(0);
+        let optionItemsPropertySet = this.getOrPopulateOptionItemsPropertyArray(this.parentDataSet).getSet(0);
 
         let layoutPromise: Q.Promise<FormItemView[]> = this.formItemLayer.setFormItems(
             this.formOptionSetOption.getFormItems()).setParentElement(this.optionItemsContainer).setParent(this.getParent()).layout(
@@ -134,12 +130,6 @@ export class FormOptionSetOptionView
                 this.validate(true);
             }
 
-            this.formItemViews.forEach((formItemView: FormItemView) => {
-                formItemView.onEditContentRequest((content: ContentSummary) => {
-                    new FormEditEvent(content).fire();
-                });
-            });
-
             deferred.resolve(null);
         }).catch((reason: any) => {
             DefaultErrorHandler.handle(reason);
@@ -149,12 +139,13 @@ export class FormOptionSetOptionView
     }
 
     clean() {
-        if (!this.isSelected() && this.requiresClean) {
-            this.resetAllFormItems();
+        super.clean();
+
+        this.formItemViews.forEach((view: FormItemView) => view.clean());
+
+        if (!this.isSelected()) {
+            this.parentDataSet.removeProperty(this.getName(), 0);
             this.cleanValidationForThisOption();
-            this.requiresClean = false;
-        } else if (this.isChildOfDeselectedParent()) {
-            this.removeNonDefaultOptionFromSelectionArray();
         }
     }
 
@@ -170,7 +161,8 @@ export class FormOptionSetOptionView
 
     update(propertySet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
         this.parentDataSet = propertySet;
-        const propertyArray: PropertyArray = this.getOptionItemsPropertyArray(propertySet);
+
+        const propertyArray: PropertyArray = this.getOrPopulateOptionItemsPropertyArray(propertySet);
 
         return this.formItemLayer.update(propertyArray.getSet(0), unchangedOnly).then(() => {
             if (!this.isSingleSelection()) {
@@ -178,6 +170,7 @@ export class FormOptionSetOptionView
             }
 
             this.updateViewState();
+            this.checkbox?.setChecked(this.isSelected(), true);
         });
     }
 
@@ -331,7 +324,7 @@ export class FormOptionSetOptionView
         });
     }
 
-    private getOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
+    private getOrPopulateOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
         let propertyArray = propertySet.getPropertyArray(this.getName());
         if (!propertyArray) {
             propertyArray =
@@ -348,11 +341,13 @@ export class FormOptionSetOptionView
 
     private getThisPropertyFromSelectedOptionsArray(): Property {
         let result: Property = null;
-        this.getSelectedOptionsArray().forEach((property: Property) => {
+
+        this.getSelectedOptionsArray()?.forEach((property: Property) => {
             if (property.getString() === this.getName()) {
                 result = property;
             }
         });
+
         return result;
     }
 
@@ -373,9 +368,8 @@ export class FormOptionSetOptionView
 
         button.onChange(() => {
             if (button.isChecked()) {
-                this.setSelected(true);
-                this.selectHandle(button.getFirstChild());
-                this.notifySelectionChanged();
+                this.select();
+                this.moveFocusToNextElement(button.getFirstChild());
             } else {
                 this.setSelected(false);
                 this.deselectHandle();
@@ -389,6 +383,25 @@ export class FormOptionSetOptionView
         return button;
     }
 
+    select(silent: boolean = false) {
+        this.checkbox?.setChecked(true, true);
+        this.selectHandle();
+
+        if (!this.isSelected()) {
+            this.setSelected(true);
+
+            if (!silent) {
+                this.notifySelectionChanged();
+            }
+        }
+    }
+
+    private moveFocusToNextElement(input: Element) {
+        const thisElSelector = `div[id='${this.getEl().getId()}']`;
+        FormEl.moveFocusToNextFocusable(input,
+            thisElSelector + ' input, ' + thisElSelector + ' select, ' + thisElSelector + ' textarea');
+    }
+
     private subscribeCheckboxOnPropertyEvents() {
         // as we call this method on each update() call - let's ensure there are no extra handlers binded
         this.getSelectedOptionsArray().unPropertyAdded(this.checkboxEnabledStatusHandler);
@@ -399,7 +412,8 @@ export class FormOptionSetOptionView
     }
 
     private setCheckBoxDisabled(checked?: boolean) {
-        let checkBoxShouldBeDisabled = (checked != null ? !checked : !this.checkbox.isChecked()) && this.isSelectionLimitReached();
+        const checkBoxShouldBeDisabled: boolean = (checked != null ? !checked : !this.checkbox.isChecked()) &&
+                                                  this.isSelectionLimitReached();
 
         if (this.checkbox.isDisabled() !== checkBoxShouldBeDisabled) {
             this.checkbox.setEnabled(!checkBoxShouldBeDisabled);
@@ -407,22 +421,18 @@ export class FormOptionSetOptionView
     }
 
     enableAndExpand() {
-        const input = this.getChildren()[0];
-        this.selectHandle(input);
+        this.select();
+        this.moveFocusToNextElement(this.getChildren()[0]);
     }
 
     disableAndCollapse() {
         this.deselectHandle();
     }
 
-    private selectHandle(input: Element) {
-        let thisElSelector = `div[id='${this.getEl().getId()}']`;
+    private selectHandle() {
         this.expand();
         this.enableFormItems();
-
         this.optionItemsContainer.show();
-        FormEl.moveFocusToNextFocusable(input,
-            thisElSelector + ' input, ' + thisElSelector + ' select, ' + thisElSelector + ' textarea');
         this.addClass('selected');
     }
 
@@ -437,41 +447,14 @@ export class FormOptionSetOptionView
         this.cleanValidationForThisOption();
         this.cleanSelectionMessageForThisOption();
         this.removeClass('selected');
-        this.requiresClean = true;
 
         if (!this.isEmpty()) {
             this.notificationDialog.open();
         }
     }
 
-    private removeNonDefaultOptionFromSelectionArray() {
-        if (this.formOptionSetOption.isDefaultOption()) {
-            return;
-        }
-
-        if (this.isSingleSelection()) {
-            const selectedProperty = this.getSelectedOptionsArray().get(0);
-            const checked = !!selectedProperty && selectedProperty.getString() === this.getName();
-            if (checked) {
-                this.getSelectedOptionsArray().remove(selectedProperty.getIndex());
-                this.removeClass('selected');
-            }
-        } else if (this.checkbox.isChecked()) {
-            const property: Property = this.getThisPropertyFromSelectedOptionsArray();
-            if (!!property) {
-                this.getSelectedOptionsArray().remove(property.getIndex());
-            }
-            this.checkbox.setChecked(false, true);
-            this.removeClass('selected');
-        }
-    }
-
     hasNonDefaultValues(): boolean {
         return this.formItemViews.some(v => v.hasNonDefaultValues());
-    }
-
-    private isChildOfDeselectedParent(): boolean {
-        return $(this.getEl().getHTMLElement()).parents('.form-option-set-option-view').not('.selected').length > 0;
     }
 
     private cleanValidationForThisOption() {
@@ -513,29 +496,9 @@ export class FormOptionSetOptionView
             });
     }
 
-    private resetAllFormItems(): void {
-
-        const array = this.getOptionItemsPropertyArray(this.parentDataSet);
-        array.getSet(0).forEach((property) => {
-            this.removeNonDataProperties(property);
-        });
-
-        this.update(this.parentDataSet);
-    }
-
-    private removeNonDataProperties(property: Property) {
-        if (property.getType().equals(ValueTypes.DATA)) {
-            property.getPropertySet().forEach((prop) => {
-                this.removeNonDataProperties(prop);
-            });
-        } else if (property.getName() !== '_selected') {
-            property.getParent().removeProperty(property.getName(), property.getIndex());
-        }
-    }
-
     private isSelectionLimitReached(): boolean {
         return this.getMultiselection().getMaximum() !== 0 &&
-               this.getMultiselection().getMaximum() <= this.getSelectedOptionsArray().getSize();
+               this.getMultiselection().getMaximum() <= this.parent.getTotalSelectedOptions();
     }
 
     private isSingleSelection(): boolean {

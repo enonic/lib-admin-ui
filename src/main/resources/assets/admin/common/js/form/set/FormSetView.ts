@@ -9,7 +9,6 @@ import {DivEl} from '../../dom/DivEl';
 import {Button} from '../../ui/button/Button';
 import {AEl} from '../../dom/AEl';
 import {ObjectHelper} from '../../ObjectHelper';
-import {ContentSummary} from '../../content/ContentSummary';
 import {Element} from '../../dom/Element';
 import {Occurrences} from '../Occurrences';
 import {FormSetOccurrenceView} from './FormSetOccurrenceView';
@@ -24,7 +23,6 @@ import {ValidationRecordingPath} from '../ValidationRecordingPath';
 import {OccurrenceRenderedEvent} from '../OccurrenceRenderedEvent';
 import {OccurrenceAddedEvent} from '../OccurrenceAddedEvent';
 import {OccurrenceRemovedEvent} from '../OccurrenceRemovedEvent';
-import {FormEditEvent} from '../../content/event/FormEditEvent';
 import {FormItemLayerFactory} from '../FormItemLayerFactory';
 import {FormContext} from '../FormContext';
 import {FormSetHeader} from './FormSetHeader';
@@ -322,6 +320,8 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     clean() {
+        super.clean();
+
         this.formItemOccurrences.clean();
     }
 
@@ -485,12 +485,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             this.validate(false, event.validateViewOnRender() ? null : occurrenceView);
 
             if (ObjectHelper.iFrameSafeInstanceOf(occurrenceView, FormSetOccurrenceView)) {
-                (<FormSetOccurrenceView>occurrenceView).getFormItemViews().forEach((formItemView: FormItemView) => {
-                    formItemView.onEditContentRequest((content: ContentSummary) => {
-                        new FormEditEvent(content).fire();
-                    });
-                });
-
                 this.onFormSetOccurrenceContainerVisibilityToggle((<FormSetOccurrenceView>occurrenceView).getContainer());
             }
         });
@@ -519,9 +513,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         this.formItemOccurrences.getOccurrenceViews().forEach((formSetOccurrenceView: V) => {
             formSetOccurrenceView.onValidityChanged((event: RecordingValidityChangedEvent) => {
                 this.handleFormSetOccurrenceViewValidityChanged(event);
-            });
-            formSetOccurrenceView.onEditContentRequest((summary: ContentSummary) => {
-                this.notifyEditContentRequested(summary);
             });
             if (ObjectHelper.iFrameSafeInstanceOf(formSetOccurrenceView, FormSetOccurrenceView)) {
                 this.onFormSetOccurrenceContainerVisibilityToggle((<FormSetOccurrenceView>formSetOccurrenceView).getContainer());
@@ -578,7 +569,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             .addClass('small')
             .onClicked(() => {
                 this.formItemOccurrences
-                    .createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), false)
+                    .createAndAddOccurrence(this.formItemOccurrences.countOccurrences())
                     .then((item: V) => this.expandOccurrenceView(item)
                 );
         });

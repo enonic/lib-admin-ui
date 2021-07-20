@@ -8,10 +8,10 @@ import {Checkbox as CheckboxEl, InputAlignment} from '../../../ui/Checkbox';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Input} from '../../Input';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
-import {InputValidationRecording} from '../InputValidationRecording';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
+import {InputValidationRecording} from '../InputValidationRecording';
 
 export class Checkbox
     extends BaseInputTypeSingleOccurrence {
@@ -74,11 +74,6 @@ export class Checkbox
 
     giveFocus(): boolean {
         return this.checkbox.giveFocus();
-    }
-
-    validate(): InputValidationRecording {
-
-        return new InputValidationRecording();
     }
 
     onFocus(listener: (event: FocusEvent) => void) {

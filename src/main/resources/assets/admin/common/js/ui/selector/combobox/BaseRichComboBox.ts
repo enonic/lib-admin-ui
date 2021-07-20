@@ -209,8 +209,6 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
 
         this.getComboBox().setEnabled(enable);
         this.getSelectedOptionView().setReadonly(!enable);
-        this.getSelectedOptionView().getSelectedOptions().forEach(
-            (o: SelectedOption<OPTION_DATA_TYPE>) => o.getOptionView().setEditable(enable));
     }
 
     onOptionDeselected(listener: { (option: SelectedOptionEvent<OPTION_DATA_TYPE>): void; }) {
@@ -295,6 +293,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
             value: builder.value,
             noOptionsText: builder.noOptionsText,
             maxHeight: builder.maxHeight,
+            rowHeight: builder.rowHeight,
             displayMissingSelectedOptions: builder.displayMissingSelectedOptions,
             removeMissingSelectedOptions: builder.removeMissingSelectedOptions,
             skipAutoDropShowOnValueChange: true,
@@ -463,6 +462,8 @@ export class BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
 
     maxHeight: number;
 
+    rowHeight: number;
+
     value: string;
 
     noOptionsText: string;
@@ -536,6 +537,11 @@ export class BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
 
     setMaxHeight(value: number): BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
         this.maxHeight = value;
+        return this;
+    }
+
+    setRowHeight(value: number): BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
+        this.rowHeight = value;
         return this;
     }
 

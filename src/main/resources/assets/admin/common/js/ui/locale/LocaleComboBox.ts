@@ -66,6 +66,8 @@ class LocaleSelectedOptionsView
 export class LocaleComboBoxBuilder
     extends RichComboBoxBuilder<Locale> {
 
+    rowHeight: number = 30;
+
     comboBoxName: string = 'localeSelector';
 
     loader: LocaleLoader = new LocaleLoader();

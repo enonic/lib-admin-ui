@@ -2,7 +2,6 @@ import * as Q from 'q';
 import {PropertySet} from '../../../data/PropertySet';
 import {DivEl} from '../../../dom/DivEl';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
-import {ContentSummary} from '../../../content/ContentSummary';
 import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
 import {FieldSet} from './FieldSet';
 import {FormItemView, FormItemViewConfig} from '../../FormItemView';
@@ -79,20 +78,6 @@ export class FieldSetView
 
     setEnabled(enable: boolean) {
         this.formItemLayer.setEnabled(enable);
-    }
-
-    onEditContentRequest(listener: (content: ContentSummary) => void) {
-        super.onEditContentRequest(listener);
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            formItemView.onEditContentRequest(listener);
-        });
-    }
-
-    unEditContentRequest(listener: (content: ContentSummary) => void) {
-        super.unEditContentRequest(listener);
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            formItemView.unEditContentRequest(listener);
-        });
     }
 
     giveFocus(): boolean {

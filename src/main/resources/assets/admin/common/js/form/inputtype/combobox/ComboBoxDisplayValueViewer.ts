@@ -13,8 +13,4 @@ export class ComboBoxDisplayValueViewer
         return super.setObject(value);
     }
 
-    getPreferredHeight(): number {
-        return 34;
-    }
-
 }

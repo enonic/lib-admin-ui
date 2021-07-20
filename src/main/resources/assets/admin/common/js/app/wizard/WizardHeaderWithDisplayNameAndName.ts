@@ -15,24 +15,14 @@ import {ElementHelper} from '../../dom/ElementHelper';
 import {Element} from '../../dom/Element';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 
-export interface WizardHeaderWithDisplayNameAndNameOptions {
-
-    displayNameGenerator?: DisplayNameGenerator;
-
-    displayNameLabel?: string;
-
-}
-
 export class WizardHeaderWithDisplayNameAndName
     extends WizardHeader {
+
+    private static GENERATED_CLASS: string = 'generated';
 
     private forbiddenChars: RegExp = /[\/\\]+/ig;
 
     protected displayNameEl: TextInput;
-
-    private displayNameProgrammaticallySet: boolean;
-
-    protected options?: WizardHeaderWithDisplayNameAndNameOptions;
 
     protected pathEl: SpanEl;
 
@@ -42,26 +32,20 @@ export class WizardHeaderWithDisplayNameAndName
 
     protected bottomRow: DivEl;
 
-    private autoGenerateName: boolean = false;
-
     private autoGenerationEnabled: boolean = true;
 
     private ignoreGenerateStatusForName: boolean = true;
 
     private simplifiedNameGeneration: boolean = false;
 
-    constructor(options?: WizardHeaderWithDisplayNameAndNameOptions) {
+    constructor() {
         super();
 
-        this.options = options;
         this.initElements();
         this.postInitElements();
-        this.initListeners();
     }
 
     protected initElements() {
-        this.displayNameProgrammaticallySet = !!this.options?.displayNameGenerator;
-
         this.topRow = new DivEl('wizard-header-top-row');
         this.bottomRow = new DivEl('wizard-header-bottom-row');
         this.displayNameEl = new TextInput('', TextInputSize.LARGE);
@@ -73,8 +57,7 @@ export class WizardHeaderWithDisplayNameAndName
     }
 
     protected postInitElements() {
-        const displayNamePlaceholder: string = !!this.options?.displayNameLabel ? this.options.displayNameLabel : i18n('field.displayName');
-        this.displayNameEl.setPlaceholder(`<${displayNamePlaceholder}>`).setName(QueryField.DISPLAY_NAME);
+        this.setPlaceholder(i18n('field.displayName'));
         this.nameEl.setPlaceholder(`<${i18n('field.path')}>`).setName('name');
     }
 
@@ -88,65 +71,29 @@ export class WizardHeaderWithDisplayNameAndName
         this.displayNameEl.onValueChanged(debounceNotify(QueryField.DISPLAY_NAME));
         this.nameEl.onValueChanged(debounceNotify(`<${i18n('field.path')}>`));
         this.displayNameEl.onValueChanged((event: ValueChangedEvent) => {
-            this.displayNameEl.removeClass('generated');
+            this.displayNameEl.removeClass(WizardHeaderWithDisplayNameAndName.GENERATED_CLASS);
+
             const currentDisplayName: string = event.getNewValue() || '';
 
-            if (this.options?.displayNameGenerator?.hasExpression()) {
-                const generatedDisplayName: string = this.options.displayNameGenerator.execute() || '';
-
-                this.displayNameProgrammaticallySet =
-                    generatedDisplayName.toLowerCase() === currentDisplayName.toLowerCase() ||
-                    generatedDisplayName.trim().toLowerCase() === currentDisplayName.toLowerCase() ||
-                    StringHelper.isEmpty(currentDisplayName);
-
-                if (this.displayNameProgrammaticallySet) {
-                    this.displayNameEl.addClass('generated');
-                }
+            if (this.autoGenerationEnabled && this.isNameEmptyOrEqualDisplayName(event.getOldValue())) {
+                this.nameEl.setValue(this.generateName(currentDisplayName));
+                this.nameEl.toggleClass(WizardHeaderWithDisplayNameAndName.GENERATED_CLASS, !this.ignoreGenerateStatusForName);
             }
-            this.doAutoGenerateName(currentDisplayName);
         });
 
-        this.nameEl.onValueChanged((event: ValueChangedEvent) => {
-            const currentName: string = event.getNewValue() || '';
-            const displayName: string = this.getDisplayName() || '';
-
-            this.autoGenerateName = this.checkAutoGenerateName(currentName, displayName);
-
-            this.updateNameGeneratedStatus();
+        this.nameEl.onValueChanged(() => {
+            this.nameEl.removeClass(WizardHeaderWithDisplayNameAndName.GENERATED_CLASS);
         });
+    }
+
+    setPlaceholder(value: string) {
+        if (value) {
+            this.displayNameEl.setPlaceholder(`<${value}>`).setName(QueryField.DISPLAY_NAME);
+        }
     }
 
     resetBaseValues() {
         this.displayNameEl.resetBaseValues();
-    }
-
-    // tslint:disable-next-line:max-line-length
-    initNames(displayName: string, name: string, forceDisplayNameProgrammaticallySet: boolean, ignoreDirtyFlag: boolean = true, silent: boolean = false) {
-
-        if (!ignoreDirtyFlag) {
-            if (this.displayNameEl.isDirty()) {
-                displayName = this.displayNameEl.getValue();
-                name = this.nameEl.getValue();
-            }
-        }
-
-        this.autoGenerateName = this.checkAutoGenerateName(name, displayName);
-
-        this.displayNameEl.setValue(displayName, silent);
-        if (name != null) {
-            this.nameEl.setValue(name, silent);
-        } else {
-            this.nameEl.setValue(this.generateName(displayName));
-        }
-
-        if (this.options?.displayNameGenerator?.hasExpression()) {
-            if (!forceDisplayNameProgrammaticallySet) {
-                const generatedDisplayName: string = this.options.displayNameGenerator.execute();
-                this.displayNameProgrammaticallySet = generatedDisplayName === displayName;
-            } else {
-                this.displayNameProgrammaticallySet = true;
-            }
-        }
     }
 
     isAutoGenerationEnabled(): boolean {
@@ -157,12 +104,9 @@ export class WizardHeaderWithDisplayNameAndName
         this.autoGenerationEnabled = value;
     }
 
-    setDisplayName(value: string) {
-        if (this.displayNameProgrammaticallySet) {
-            value = value.trim();
-            this.displayNameEl.setValue(value);
-            this.doAutoGenerateName(value);
-        }
+    setDisplayName(value: string, isGeneratedValue?: boolean) {
+        this.displayNameEl.setValue(value.trim());
+        this.displayNameEl.toggleClass(WizardHeaderWithDisplayNameAndName.GENERATED_CLASS, isGeneratedValue);
     }
 
     setPath(value: string) {
@@ -226,16 +170,12 @@ export class WizardHeaderWithDisplayNameAndName
         return !!this.displayNameEl.getValue() && !!this.nameEl.getValue();
     }
 
-    private checkAutoGenerateName(name: string, displayName: string): boolean {
+    private isNameEmptyOrEqualDisplayName(displayName: string): boolean {
+        const name: string = this.nameEl.getValue();
+
         return StringHelper.isEmpty(name) ||
                displayName.toLowerCase() === name.toLowerCase() ||
                name.toLowerCase() === this.generateName(displayName).toLowerCase();
-    }
-
-    private doAutoGenerateName(value: string) {
-        if (this.autoGenerateName && this.autoGenerationEnabled) {
-            this.nameEl.setValue(this.generateName(value));
-        }
     }
 
     private generateName(value: string): string {
@@ -246,26 +186,17 @@ export class WizardHeaderWithDisplayNameAndName
         if (!possibleInvalidName) {
             return '';
         }
-        let generated;
-        if (this.simplifiedNameGeneration) {
-            generated = possibleInvalidName.replace(Name.SIMPLIFIED_FORBIDDEN_CHARS, '').toLowerCase();
-        } else {
-            generated = NamePrettyfier.prettify(possibleInvalidName);
-        }
+
+        const generated: string = this.simplifiedNameGeneration ?
+                                  possibleInvalidName.replace(Name.SIMPLIFIED_FORBIDDEN_CHARS, '').toLowerCase() :
+                                  NamePrettyfier.prettify(possibleInvalidName);
         return (generated || '');
     }
 
     private setIgnoreGenerateStatusForName(value: boolean) {
         this.ignoreGenerateStatusForName = value;
-        this.updateNameGeneratedStatus();
-    }
-
-    private updateNameGeneratedStatus() {
-        if (this.autoGenerateName && !this.ignoreGenerateStatusForName) {
-            this.nameEl.addClass('generated');
-        } else {
-            this.nameEl.removeClass('generated');
-        }
+        this.nameEl.toggleClass(WizardHeaderWithDisplayNameAndName.GENERATED_CLASS,
+            !this.ignoreGenerateStatusForName && this.isNameEmptyOrEqualDisplayName(this.displayNameEl.getValue()));
     }
 
     setName(value: string) {
@@ -279,21 +210,10 @@ export class WizardHeaderWithDisplayNameAndName
         this.toggleDisplayNameInput(enable);
     }
 
-    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
-
-    disableNameInput() {
-        console.warn(`WizardHeaderWithDisplayNameAndName.disableNameInput() is deprecated and will be removed in lib-admin-ui 4.0.0`);
-        this.toggleNameInput(false);
-    }
-
-    disableDisplayNameInput() {
-        console.warn('WizardHeaderWithDisplayNameAndName.disableDisplayNameInput() ' +
-                     'is deprecated and will be removed in lib-admin-ui 4.0.0');
-        this.toggleDisplayNameInput(false);
-    }
-
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
+
+            this.initListeners();
             this.addClass('wizard-header-with-display-name-and-name');
 
             const separator: SpanEl = new SpanEl('separator');
@@ -307,6 +227,19 @@ export class WizardHeaderWithDisplayNameAndName
 
             return rendered;
         });
+    }
+
+    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
+
+    disableNameInput() {
+        console.warn(`WizardHeaderWithDisplayNameAndName.disableNameInput() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        this.toggleNameInput(false);
+    }
+
+    disableDisplayNameInput() {
+        console.warn('WizardHeaderWithDisplayNameAndName.disableDisplayNameInput() ' +
+                     'is deprecated and will be removed in lib-admin-ui 4.0.0');
+        this.toggleDisplayNameInput(false);
     }
 }
 

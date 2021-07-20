@@ -37,10 +37,6 @@ export class ComboBox
         return this.comboBox;
     }
 
-    availableSizeChanged() {
-        // console.log('ComboBox.availableSizeChanged(' + this.getEl().getWidth() + 'x' + this.getEl().getWidth() + ')');
-    }
-
     getValueType(): ValueType {
         return ValueTypes.STRING;
     }
@@ -53,22 +49,23 @@ export class ComboBox
         if (!ValueTypes.STRING.equals(propertyArray.getType())) {
             ValueTypeConverter.convertArrayValues(propertyArray, ValueTypes.STRING);
         }
-        super.layout(input, propertyArray);
 
-        this.selectedOptionsView = new BaseSelectedOptionsView<string>();
-        this.selectedOptionsView.setEditable(false);
-        this.comboBox = this.createComboBox(input, propertyArray);
+        return super.layout(input, propertyArray).then(() => {
+            this.selectedOptionsView = new BaseSelectedOptionsView<string>();
+            this.selectedOptionsView.setEditable(false);
+            this.comboBox = this.createComboBox(input, propertyArray);
 
-        this.comboBoxOptions.forEach((option: ComboBoxOption) => {
-            this.comboBox.addOption(Option.create<string>().setValue(option.value).setDisplayValue(option.label).build());
+            this.comboBoxOptions.forEach((option: ComboBoxOption) => {
+                this.comboBox.addOption(Option.create<string>().setValue(option.value).setDisplayValue(option.label).build());
+            });
+
+            this.appendChild(this.comboBox);
+            this.appendChild(<Element> this.selectedOptionsView);
+
+            this.setLayoutInProgress(false);
+
+            return Q<void>(null);
         });
-
-        this.appendChild(this.comboBox);
-        this.appendChild(<Element> this.selectedOptionsView);
-
-        this.setLayoutInProgress(false);
-
-        return Q<void>(null);
     }
 
     update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
@@ -100,6 +97,7 @@ export class ComboBox
             selectedOptionsView: this.selectedOptionsView,
             maximumOccurrences: input.getOccurrences().getMaximum(),
             optionDisplayValueViewer: new ComboBoxDisplayValueViewer(),
+            rowHeight: 34,
             hideComboBoxWhenMaxReached: true,
             value: this.getValueFromPropertyArray(propertyArray)
         });
@@ -108,7 +106,7 @@ export class ComboBox
             this.comboBox.setFilterArgs({searchString: event.getNewValue()});
         });
         comboBox.onOptionSelected((event: SelectedOptionEvent<string>) => {
-            this.ignorePropertyChange = true;
+            this.ignorePropertyChange(true);
 
             const option = event.getSelectedOption();
             let value = new Value(option.getOption().getValue(), ValueTypes.STRING);
@@ -118,17 +116,17 @@ export class ComboBox
                 this.getPropertyArray().add(value);
             }
 
-            this.ignorePropertyChange = false;
+            this.ignorePropertyChange(false);
             this.validate(false);
 
             this.fireFocusSwitchEvent(event);
         });
         comboBox.onOptionDeselected((event: SelectedOptionEvent<string>) => {
-            this.ignorePropertyChange = true;
+            this.ignorePropertyChange(true);
 
             this.getPropertyArray().remove(event.getSelectedOption().getIndex());
 
-            this.ignorePropertyChange = false;
+            this.ignorePropertyChange(false);
             this.validate(false);
         });
 

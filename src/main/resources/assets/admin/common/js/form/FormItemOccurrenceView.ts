@@ -1,5 +1,4 @@
 import * as Q from 'q';
-import {PropertyArray} from '../data/PropertyArray';
 import {DivEl} from '../dom/DivEl';
 import {PropertyPath} from '../data/PropertyPath';
 import {InputValidationRecording} from './inputtype/InputValidationRecording';
@@ -7,7 +6,7 @@ import {FormItemOccurrence} from './FormItemOccurrence';
 import {HelpTextContainer} from './HelpTextContainer';
 import {RemoveButtonClickedEvent} from './RemoveButtonClickedEvent';
 
-export class FormItemOccurrenceView
+export abstract class FormItemOccurrenceView
     extends DivEl {
 
     protected formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>;
@@ -34,6 +33,10 @@ export class FormItemOccurrenceView
         return !!this.helpText;
     }
 
+    reset() {
+        throw new Error('Must be implemented by inheritor');
+    }
+
     getDataPath(): PropertyPath {
         throw new Error('Must be implemented by inheritor');
     }
@@ -42,12 +45,7 @@ export class FormItemOccurrenceView
         return Q<void>(null);
     }
 
-    public update(_propertyArray: PropertyArray, _unchangedOnly?: boolean): Q.Promise<void> {
-        return Q<void>(null);
-    }
-
-    hasValidUserInput(_recording?: InputValidationRecording): boolean {
-
+    hasValidUserInput(): boolean {
         throw new Error('Must be implemented by inheritor');
     }
 

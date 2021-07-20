@@ -50,6 +50,10 @@ export class SelectedOptionView<T>
         return this.option;
     }
 
+    hasOption(): boolean {
+        return !!this.option;
+    }
+
     resetOption() {
         this.option = null;
     }

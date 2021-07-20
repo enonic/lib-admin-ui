@@ -4,9 +4,13 @@ import {i18n} from '../../../util/Messages';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {Property} from '../../../data/Property';
-import {InputValidationRecording} from '../InputValidationRecording';
 import {StringHelper} from '../../../util/StringHelper';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
+import {Element} from '../../../dom/Element';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
+import {TextInput} from '../../../ui/text/TextInput';
+import {ValueChangedEvent} from '../../../ValueChangedEvent';
+import {Value} from '../../../data/Value';
 
 export abstract class NumberInputType
     extends BaseInputTypeNotManagingAdd {
@@ -28,36 +32,78 @@ export abstract class NumberInputType
         occurrence.setValue(this.getPropertyValue(property));
     }
 
-    protected isValid(value: string, recording ?: InputValidationRecording): boolean {
-        if (StringHelper.isEmpty(value)) {
-            return true;
+    resetInputOccurrenceElement(occurrence: Element) {
+        (<FormInputEl>occurrence).resetBaseValues();
+    }
+
+    createInputOccurrenceElement(_index: number, property: Property): Element {
+        if (!this.getValueType().equals(property.getType())) {
+            ValueTypeConverter.convertPropertyValueType(property, this.getValueType());
         }
 
-        if (NumberHelper.isNumber(+value)) {
-            if (!this.isValidMin(NumberHelper.toNumber(value))) {
-                if (recording) {
-                    recording.setAdditionalValidationRecord(
-                        AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
-                            i18n('field.value.breaks.min', this.min)).build());
-                }
+        const inputEl: TextInput = this.createInput(_index, property);
 
-                return false;
-            }
+        inputEl.onValueChanged((event: ValueChangedEvent) => {
+            this.handleOccurrenceInputValueChanged(inputEl);
+        });
 
-            if (!this.isValidMax(NumberHelper.toNumber(value))) {
-                if (recording) {
-                    recording.setAdditionalValidationRecord(
-                        AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
-                            i18n('field.value.breaks.max', this.max)).build());
-                }
+        return inputEl;
+    }
 
-                return false;
-            }
+    protected getValue(inputEl: TextInput): Value {
+        const isValid: boolean = this.isUserInputValid(inputEl);
+        return isValid ? this.getValueType().newValue(inputEl.getValue()) : this.newInitialValue();
+    }
 
-            return true;
+    setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
+        const input: TextInput = <TextInput>occurrence;
+
+        input.setEnabled(enable);
+    }
+
+    protected createInput(index: number, property: Property): TextInput {
+        const inputEl: TextInput = TextInput.middle(undefined, this.getPropertyValue(property));
+        inputEl.setName(this.getInput().getName() + '-' + property.getIndex());
+        inputEl.setAutocomplete(true);
+
+        return inputEl;
+    }
+
+    protected updateValidationStatusOnUserInput(inputEl: TextInput, isValid: boolean) {
+        inputEl.updateValidationStatusOnUserInput(isValid);
+    }
+
+    doValidateUserInput(inputEl: TextInput) {
+        super.doValidateUserInput(inputEl);
+
+        if (NumberHelper.isNumber(+inputEl.getValue())) {
+            this.validateMinMax(inputEl);
+        } else {
+            const record: AdditionalValidationRecord =
+                AdditionalValidationRecord.create().setMessage(
+                    i18n('field.value.invalid')).build();
+
+            this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
         }
 
-        return false;
+        this.updateValidationStatusOnUserInput(inputEl, this.occurrenceValidationState.get(inputEl.getId()).isValueValid());
+    }
+
+    private validateMinMax(inputEl: TextInput) {
+        const value: string = inputEl.getValue();
+
+        if (!this.isValidMin(NumberHelper.toNumber(value))) {
+            const record: AdditionalValidationRecord =
+                AdditionalValidationRecord.create().setMessage(
+                    i18n('field.value.breaks.min', this.min)).build();
+            this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
+        } else if (!this.isValidMax(NumberHelper.toNumber(value))) {
+            const record: AdditionalValidationRecord =
+                AdditionalValidationRecord.create().setMessage(
+                    i18n('field.value.breaks.max', this.max)).build();
+
+            this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
+        }
     }
 
     private getConfigProperty(config: InputTypeViewContext, propertyName: string) {

@@ -1,11 +1,8 @@
 import * as Q from 'q';
 import {PropertySet} from '../data/PropertySet';
 import {DivEl} from '../dom/DivEl';
-import {ContentSummary} from '../content/ContentSummary';
-import {FormEditEvent} from '../content/event/FormEditEvent';
 import {WindowDOM} from '../dom/WindowDOM';
 import {DefaultErrorHandler} from '../DefaultErrorHandler';
-import {ObjectHelper} from '../ObjectHelper';
 import {Form} from './Form';
 import {FormItemView} from './FormItemView';
 import {FormItemLayer} from './FormItemLayer';
@@ -14,8 +11,8 @@ import {ValidationRecording} from './ValidationRecording';
 import {FormContext} from './FormContext';
 import {assert} from '../util/Assert';
 import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
-import {FormOptionSetView} from './set/optionset/FormOptionSetView';
 import {FormItemLayerFactoryImpl} from './FormItemLayerFactory';
+import {FormItem} from './FormItem';
 
 /**
  * Creates a UI component representing the given [[Form]] backed by given [[PropertySet]].
@@ -31,11 +28,12 @@ export class FormView
     public static VALIDATION_CLASS: string = 'display-validation-errors';
     private form: Form;
     private data: PropertySet;
-    private formItemViews: FormItemView[] = [];
+    protected formItemViews: FormItemView[] = [];
     private formItemLayer: FormItemLayer;
     private formValidityChangedListeners: { (event: FormValidityChangedEvent): void }[] = [];
     private previousValidationRecording: ValidationRecording;
     private width: number;
+    private layoutFinished: boolean;
     private focusListeners: { (event: FocusEvent): void }[] = [];
     private blurListeners: { (event: FocusEvent): void }[] = [];
     private layoutFinishedListeners: { (): void }[] = [];
@@ -57,78 +55,71 @@ export class FormView
      * Lays out the form.
      */
     public layout(validate: boolean = true): Q.Promise<void> {
-
-        let deferred = Q.defer<void>();
+        const deferred: Q.Deferred<void> = Q.defer<void>();
+        this.layoutFinished = false;
 
         if (!this.form) {
             deferred.resolve(null);
             return deferred.promise;
         }
 
-        let formItems = this.form.getFormItems();
-        let layoutPromise: Q.Promise<FormItemView[]> = this.formItemLayer.setFormItems(formItems).setParentElement(this).layout(
+        const formItems: FormItem[] = this.form.getFormItems();
+        const layoutPromise: Q.Promise<FormItemView[]> = this.formItemLayer.setFormItems(formItems).setParentElement(this).layout(
             this.data, validate);
 
         layoutPromise.then((formItemViews: FormItemView[]) => {
-
             this.formItemViews = formItemViews;
+
             assert(this.formItemViews.length === formItems.length,
                 'Not all FormItemView-s was created. Expected ' + formItems.length + ', was: ' + formItemViews.length);
 
             deferred.resolve(null);
 
             this.formItemViews.forEach((formItemView: FormItemView) => {
-
-                formItemView.onFocus((event: FocusEvent) => {
-                    this.notifyFocused(event);
-                });
-
-                formItemView.onBlur((event: FocusEvent) => {
-                    this.notifyBlurred(event);
-                });
-
-                formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
-                    if (!this.previousValidationRecording) {
-                        this.previousValidationRecording = event.getRecording();
-                        this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording,
-                            event.isInputValueBroken()));
-                    } else {
-                        if (event.isValid()) {
-                            this.previousValidationRecording.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
-                        } else {
-                            this.previousValidationRecording.flatten(event.getRecording());
-                        }
-
-                        this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording,
-                            event.isInputValueBroken()));
-
-                    }
-                });
-
-                formItemView.onEditContentRequest((content: ContentSummary) => {
-                    new FormEditEvent(content).fire();
-                });
+                this.initFormItemViewListeners(formItemView);
             });
 
             WindowDOM.get().onResized(() => this.checkSizeChanges(), this);
             this.onShown(() => this.checkSizeChanges());
 
+            return Q(null);
         }).catch((reason: any) => {
             DefaultErrorHandler.handle(reason);
         }).done(() => {
+            this.layoutFinished = true;
             this.notifyLayoutFinished();
         });
 
         return deferred.promise;
     }
 
-    clean() {
-        this.formItemLayer.clean();
-        this.formItemViews.forEach((view: FormItemView) => {
-            if (ObjectHelper.iFrameSafeInstanceOf(view, FormOptionSetView)) {
-                (<FormOptionSetView>view).clean();
+    private initFormItemViewListeners(formItemView: FormItemView) {
+        formItemView.onFocus((event: FocusEvent) => {
+            this.notifyFocused(event);
+        });
+
+        formItemView.onBlur((event: FocusEvent) => {
+            this.notifyBlurred(event);
+        });
+
+        formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
+            if (!this.previousValidationRecording) {
+                this.previousValidationRecording = event.getRecording();
+                this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
+            } else {
+                if (event.isValid()) {
+                    this.previousValidationRecording.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
+                } else {
+                    this.previousValidationRecording.flatten(event.getRecording());
+                }
+
+                this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
             }
         });
+    }
+
+    clean() {
+        this.formItemViews.forEach((view: FormItemView) => view.clean());
     }
 
     public update(propertySet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
@@ -258,6 +249,22 @@ export class FormView
         });
     }
 
+    whenLayoutFinished(callback: () => void) {
+        if (this.isLayoutFinished()) {
+            callback();
+        } else {
+            const listener = () => {
+                callback();
+                this.unLayoutFinished(listener);
+            };
+            this.onLayoutFinished(listener);
+        }
+    }
+
+    isLayoutFinished(): boolean {
+        return this.layoutFinished;
+    }
+
     toggleHelpText(show?: boolean) {
         this.formItemLayer.toggleHelpText(show);
     }
@@ -292,15 +299,6 @@ export class FormView
     }
 
     private notifyValidityChanged(event: FormValidityChangedEvent) {
-        //console.log('FormView.validityChanged');
-        //if (event.getRecording().isValid()) {
-        //    console.log(' valid: ');
-        //}
-        //else {
-        //    console.log(' invalid: ');
-        //    event.getRecording().print();
-        //}
-
         this.formValidityChangedListeners.forEach((listener: (event: FormValidityChangedEvent) => void) => {
             listener.call(this, event);
         });

@@ -31,9 +31,9 @@ export class OccurrencesBuilder {
 export class Occurrences
     implements Equitable {
 
-    private minimum: number;
+    private readonly minimum: number;
 
-    private maximum: number;
+    private readonly maximum: number;
 
     constructor(builder: OccurrencesBuilder) {
         this.minimum = builder.minimum;

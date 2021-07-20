@@ -1,0 +1,33 @@
+.custom-option-viewer(@size, @main, @sub) {
+  .viewer {
+    .names-and-icon-view {
+      .@{_COMMON_PREFIX}wrapper {
+        height: @size;
+        width: @size;
+        margin-right: 10px;
+
+        .font-icon-default {
+          font-size: @size;
+
+          &::before {
+            font-size: @size;
+          }
+        }
+      }
+
+      .@{_COMMON_PREFIX}names-view {
+        .@{_COMMON_PREFIX}main-name {
+          font-size: @main;
+        }
+
+        .@{_COMMON_PREFIX}sub-name {
+          font-size: @sub;
+        }
+      }
+    }
+  }
+}
+
+.compact-option-viewer() {
+  .custom-option-viewer(26px, 13px, 11px);
+}
