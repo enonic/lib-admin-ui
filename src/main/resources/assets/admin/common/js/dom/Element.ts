@@ -247,7 +247,7 @@ export class Element {
 
     static fromSelector(s: string, loadExistingChildren: boolean = true): Element[] {
         return $(s).map((_index, elem) => {
-            let htmlEl = <HTMLElement>elem;
+            let htmlEl = elem;
             let parentEl;
             if (htmlEl && htmlEl.parentElement) {
                 parentEl = Element.fromHtmlElement(htmlEl.parentElement);
@@ -1302,6 +1302,7 @@ export class Element {
     }
 
     private getFirstNonEmptyAncestor(): Element {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         let el: Element = this;
 
         while (!!el && el.isEmptyElement()) {

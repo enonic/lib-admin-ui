@@ -396,7 +396,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         const promises: Q.Promise<any>[] = [];
         const totalItemsNeeded: number = this.getTotalOccurrencesNeeded();
 
-        const extraItemsToRemove: V[] = this.occurrenceViews.filter((item: V, index: number) => index >= totalItemsNeeded );
+        const extraItemsToRemove: V[] = this.occurrenceViews.filter((item: V, index: number) => index >= totalItemsNeeded);
         extraItemsToRemove.forEach((item: V) => this.removeOccurrenceView(item));
 
         this.occurrenceViews.forEach((view: V) => {

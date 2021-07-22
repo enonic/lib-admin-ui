@@ -116,6 +116,7 @@ export class TreeNode<DATA extends IDentifiable>
     }
 
     getRoot(): TreeNode<DATA> {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         let root: TreeNode<DATA> = this;
         let parent: TreeNode<DATA> = this.getParent();
         while (parent) {
@@ -183,6 +184,7 @@ export class TreeNode<DATA extends IDentifiable>
         if (!child) {
             return;
         }
+        // eslint-disable-next-line @typescript-eslint/no-for-in-array
         for (let curChildIndex in this.children) {
             if (this.children[curChildIndex].getId() === child.getId()) {
                 this.children[curChildIndex] = child;

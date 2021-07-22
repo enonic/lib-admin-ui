@@ -166,7 +166,7 @@ export class FormItemBuilder {
 
     constructor(input: FormItemEl) {
         if (!input) {
-            throw new Error(`Input can't be null.`);
+            throw new Error('Input can\'t be null.');
         }
         this.input = input;
     }

@@ -354,16 +354,10 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         let optionsMap = this.getDisplayedOptions().map((x) => {
             return x.getValue();
         }).join();
-        let selectedOptions: Option<OPTION_DISPLAY_VALUE>[] = this.getSelectedOptions();
-        let filteredOption = [];
-        let gridOptions = [];
-        for (let k in selectedOptions) {
-            if (optionsMap.search(selectedOptions[k].getValue()) >= 0) {
-                filteredOption.push(selectedOptions[k].getValue());
-            }
-        }
-        this.comboBoxDropdown.getDropdownGrid().getGrid().getSelectedRows().forEach((row: number) => {
-            gridOptions.push(this.comboBoxDropdown.getDropdownGrid().getOptionByRow(row).getValue());
+        const selectedOptions: Option<OPTION_DISPLAY_VALUE>[] = this.getSelectedOptions();
+        const filteredOption = selectedOptions.filter(o => optionsMap.search(o.getValue()) >= 0);
+        const gridOptions = this.comboBoxDropdown.getDropdownGrid().getGrid().getSelectedRows().map((row: number) => {
+            return this.comboBoxDropdown.getDropdownGrid().getOptionByRow(row).getValue();
         });
 
         return (filteredOption.length !== gridOptions.length) ||

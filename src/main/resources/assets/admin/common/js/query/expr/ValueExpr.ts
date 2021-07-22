@@ -59,7 +59,7 @@ export class ValueExpr
     }
 
     private quoteString(value: string): string {
-        if (value.indexOf(`'`) > -1) {
+        if (value.indexOf('\'') > -1) {
             return `"${value}"`;
         } else {
             return `'${value}'`;

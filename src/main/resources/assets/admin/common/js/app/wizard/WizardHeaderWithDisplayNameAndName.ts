@@ -7,7 +7,6 @@ import {AutosizeTextInput} from '../../ui/text/AutosizeTextInput';
 import {ValueChangedEvent} from '../../ValueChangedEvent';
 import {StringHelper} from '../../util/StringHelper';
 import {NamePrettyfier} from '../../NamePrettyfier';
-import {DisplayNameGenerator} from './DisplayNameGenerator';
 import {WizardHeader} from './WizardHeader';
 import {Name} from '../../Name';
 import {DivEl} from '../../dom/DivEl';
@@ -232,7 +231,7 @@ export class WizardHeaderWithDisplayNameAndName
     /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
 
     disableNameInput() {
-        console.warn(`WizardHeaderWithDisplayNameAndName.disableNameInput() is deprecated and will be removed in lib-admin-ui 4.0.0`);
+        console.warn('WizardHeaderWithDisplayNameAndName.disableNameInput() is deprecated and will be removed in lib-admin-ui 4.0.0');
         this.toggleNameInput(false);
     }
 

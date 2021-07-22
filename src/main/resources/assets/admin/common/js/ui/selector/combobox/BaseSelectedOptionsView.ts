@@ -206,14 +206,14 @@ export class BaseSelectedOptionsView<T>
     }
 
     protected handleDnDStart(ui: JQueryUI.SortableUIParams): void {
-        let draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item[0]);
+        let draggedElement = Element.fromHtmlElement(ui.item[0]);
         this.draggingIndex = draggedElement.getSiblingIndex();
     }
 
     protected handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
 
         if (this.draggingIndex >= 0) {
-            let draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item[0]);
+            let draggedElement = Element.fromHtmlElement(ui.item[0]);
             let draggedToIndex = draggedElement.getSiblingIndex();
             this.handleMovedOccurrence(this.draggingIndex, draggedToIndex);
         }

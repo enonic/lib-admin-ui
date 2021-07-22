@@ -14,7 +14,7 @@ export class TabItem
     extends LiEl
     implements NavigationItem {
 
-    static tabIndexFormat: string = `{0}. `;
+    static tabIndexFormat: string = '{0}. ';
     private index: number;
     private label: string;
     private labelEl: AEl;
@@ -142,7 +142,7 @@ export class TabItem
 
     onClosed(listener: (event: TabItemClosedEvent) => void) {
         if (this.closeAction) {
-            throw new Error(`Failed to set 'on closed' listener. Close action is already setted.`);
+            throw new Error('Failed to set \'on closed\' listener. Close action is already setted.');
         } else {
             this.closedListeners.push(listener);
         }

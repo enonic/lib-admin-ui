@@ -52,7 +52,7 @@ export class BrowseFilterPanel<T>
         });
 
         this.clearFilter = new ClearFilterButton();
-        this.clearFilter.onClicked(() => this.reset());
+        this.clearFilter.onClicked(() => void this.reset());
 
         this.hitsCounterEl = new SpanEl('hits-counter');
 

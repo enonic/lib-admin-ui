@@ -48,12 +48,7 @@ export class ApplicationKey
     }
 
     isSystemReserved(): boolean {
-        for (let key in ApplicationKey.SYSTEM_RESERVED_APPLICATION_KEYS) {
-            if (ApplicationKey.SYSTEM_RESERVED_APPLICATION_KEYS[key].equals(this)) {
-                return true;
-            }
-        }
-        return false;
+        return ApplicationKey.SYSTEM_RESERVED_APPLICATION_KEYS.some(key => key.equals(this));
     }
 
     toString(): string {

@@ -177,7 +177,7 @@ export class ApplicationConfiguratorDialog
 
     private findComboboxes(element: Element): ComboBox<any>[] {
         if (element instanceof ComboBox) {
-            return [<ComboBox<any>>element];
+            return [element];
         }
 
         return ArrayHelper.flatten(element.getChildren().map(child => this.findComboboxes(child)));

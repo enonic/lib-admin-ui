@@ -26,7 +26,7 @@ export class TreeGridToolbar
         this.refreshButton = new Button();
         this.refreshButton
             .addClass(StyleHelper.getCommonIconCls('loop'))
-            .onClicked(() => treeGrid.reload());
+            .onClicked(() => void treeGrid.reload());
 
         this.leftWrapper = new DivEl('left-wrapper');
         this.leftWrapper.appendChildren<Element>(this.selectionController, this.selectionPanelToggler);
