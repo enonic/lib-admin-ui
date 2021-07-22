@@ -29,15 +29,14 @@ export class ApplicationLoader
     }
 
     load(): Q.Promise<Application[]> {
-        let me = this;
-        me.notifyLoadingData();
+        this.notifyLoadingData();
 
-        return me.sendRequest()
+        return this.sendRequest()
             .then((applications: Application[]) => {
-                if (me.filterObject) {
-                    applications = applications.filter(me.filterResults, me);
+                if (this.filterObject) {
+                    applications = applications.filter(this.filterResults, this);
                 }
-                me.notifyLoadedData(applications);
+                this.notifyLoadedData(applications);
 
                 return applications;
             });

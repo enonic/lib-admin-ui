@@ -962,7 +962,7 @@ export class UploaderEl<MODEL extends Equitable>
         const focusableElements: HTMLCollectionOf<HTMLInputElement> =
             this.getDefaultDropzoneContainer().getHTMLElement().getElementsByTagName('input');
         for (let i = 0; i < focusableElements.length; i++) {
-            const el = <HTMLInputElement>focusableElements.item(i);
+            const el = focusableElements.item(i);
             el.tabIndex = -1;
         }
     }

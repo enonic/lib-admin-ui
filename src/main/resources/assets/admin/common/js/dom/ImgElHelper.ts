@@ -11,7 +11,7 @@ export class ImgHelper
     }
 
     static create(): ElementHelper {
-        return new ImgHelper(<HTMLImageElement>document.createElement('img'));
+        return new ImgHelper(document.createElement('img'));
     }
 
     getHTMLElement(): HTMLImageElement {

@@ -399,7 +399,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         this.comboBox.setLoader(loader);
 
         this.comboBox.onOptionFilterInputValueChanged((event: OptionFilterInputValueChangedEvent) => {
-            return this.reload(event.getNewValue());
+            this.reload(event.getNewValue());
         });
 
         this.loader.onLoadingData((event: LoadingDataEvent) => {

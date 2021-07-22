@@ -461,13 +461,13 @@ export class Grid<T extends Slick.SlickData>
 
     subscribeBeforeMoveRows(callback: (e: any, args: any) => void) {
         if (this.rowManagerPlugin) {
-            (<Slick.Event<Slick.OnMoveRowsEventData>>this.rowManagerPlugin.onBeforeMoveRows).subscribe(callback);
+            (this.rowManagerPlugin.onBeforeMoveRows).subscribe(callback);
         }
     }
 
     subscribeMoveRows(callback: (e: any, args: any) => void) {
         if (this.rowManagerPlugin) {
-            (<Slick.Event<Slick.OnMoveRowsEventData>>this.rowManagerPlugin.onMoveRows).subscribe(callback);
+            (this.rowManagerPlugin.onMoveRows).subscribe(callback);
         }
     }
 

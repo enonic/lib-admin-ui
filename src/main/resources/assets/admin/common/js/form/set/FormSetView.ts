@@ -194,7 +194,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     validate(silent: boolean = true, viewToSkipValidation: FormItemOccurrenceView = null): ValidationRecording {
 
         if (!this.formItemOccurrences) {
-            throw new Error(`Can't validate before layout is done`);
+            throw new Error('Can\'t validate before layout is done');
         }
 
         const validationRecordingPath = this.resolveValidationRecordingPath();
@@ -429,7 +429,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     protected handleDnDStart(ui: JQueryUI.SortableUIParams): void {
-        const draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item[0]);
+        const draggedElement = Element.fromHtmlElement(ui.item[0]);
         assert(draggedElement.hasClass(this.classPrefix + '-occurrence-view'));
         this.draggingIndex = draggedElement.getSiblingIndex();
 
@@ -439,7 +439,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     protected handleDnDUpdate(ui: JQueryUI.SortableUIParams) {
         if (this.draggingIndex >= 0) {
-            const draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item[0]);
+            const draggedElement = Element.fromHtmlElement(ui.item[0]);
             assert(draggedElement.hasClass(this.classPrefix + '-occurrence-view'));
             const draggedToIndex = draggedElement.getSiblingIndex();
 
@@ -458,7 +458,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             return; // everything is already have been handled in update
         }
 
-        const draggedElement = Element.fromHtmlElement(<HTMLElement>ui.item[0]);
+        const draggedElement = Element.fromHtmlElement(ui.item[0]);
         assert(draggedElement.hasClass(this.classPrefix + '-occurrence-view'));
         const draggedToIndex = draggedElement.getSiblingIndex();
         this.formItemOccurrences.refreshOccurence(draggedToIndex);
@@ -537,7 +537,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         const views = this.formItemOccurrences.getOccurrenceViews();
         const occurrenceCount = views.length;
         const anyExpandable = occurrenceCount > 0 && views.some(view => view.isExpandable());
-        const isCollapsed = (<FormSetOccurrences<V>>this.formItemOccurrences).isCollapsed();
+        const isCollapsed = (this.formItemOccurrences).isCollapsed();
 
         const caption = occurrenceCount > 1 ?
                         (isCollapsed ? i18n('button.expandall') : i18n('button.collapseall')) :
@@ -549,7 +549,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     private makeCollapseButton(): AEl {
         const collapseButton = new AEl('collapse-button');
         collapseButton.onClicked((event: MouseEvent) => {
-            const isCollapsed = (<FormSetOccurrences<V>>this.formItemOccurrences).isCollapsed();
+            const isCollapsed = (this.formItemOccurrences).isCollapsed();
             this.toggleOccurrencesVisibility(isCollapsed);
             return false;
         });
@@ -585,9 +585,9 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         item.setContainerVisible(true);
         const processFormItemView = (formItemView: FormItemView) => {
             if (formItemView instanceof FormSetView) {
-                (<FormSetView<any>>formItemView).expandRecursively();
+                (formItemView).expandRecursively();
             } else if (formItemView instanceof FormOptionSetOptionView) {
-                (<FormOptionSetOptionView>formItemView).getFormItemViews().forEach(processFormItemView);
+                (formItemView).getFormItemViews().forEach(processFormItemView);
             }
         };
         item.getFormItemViews().forEach(processFormItemView);

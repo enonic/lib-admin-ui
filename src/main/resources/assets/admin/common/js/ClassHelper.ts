@@ -81,7 +81,7 @@ export class ClassHelper {
 
     static findPath(obj: Object, constructor: Function, nestLevel: number = 1): string {
         let value;
-        let path;
+        let path: string;
 
         // don't search in current package if nest level is to big
         if (nestLevel > ClassHelper.MAX_NEST_LEVEL) {

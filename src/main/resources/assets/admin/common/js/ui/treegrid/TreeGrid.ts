@@ -97,7 +97,7 @@ export class TreeGrid<DATA extends IDentifiable>
 
         event.preventDefault();
         event.stopImmediatePropagation();
-    }
+    };
 
     constructor(builder: TreeGridBuilder<DATA>) {
 
