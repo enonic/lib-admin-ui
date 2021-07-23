@@ -61,7 +61,6 @@ export class ServerEventsListener {
         this.fireEvent(event);
     }
 
-    // tslint:disable-next-line:no-unused-expression
     protected onUnknownServerEvent(_eventJson: EventJson) {
         //
     }

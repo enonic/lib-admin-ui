@@ -190,7 +190,7 @@ export class Element {
 
         if (this.parentElement && this.el.getHTMLElement().parentElement) {
             if (!(this.parentElement.getHTMLElement() === this.el.getHTMLElement().parentElement)) {
-                // tslint:disable-next-line:max-line-length
+                // eslint-disable-next-line max-len
                 throw new Error('Illegal state: HTMLElement in parent Element is not the as the HTMLElement parent to this HTMLElement');
             }
         }

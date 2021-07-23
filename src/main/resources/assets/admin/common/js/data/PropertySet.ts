@@ -220,7 +220,6 @@ export class PropertySet
 
     isEmpty(): boolean {
         let isEmpty: boolean = true;
-        // tslint:disable-next-line:forin
         for (const name in this.propertyArrayByName) {
             if (!isEmpty) {
                 return isEmpty;
@@ -575,6 +574,7 @@ export class PropertySet
      */
     newSet(): PropertySet {
         if (!this.tree) {
+            // eslint-disable-next-line max-len
             throw new Error(
                 'The PropertySet must be attached to a PropertyTree before this method can be invoked. Use PropertySet constructor with no arguments instead.');
         }
@@ -590,6 +590,7 @@ export class PropertySet
     addPropertySet(name: string, value?: PropertySet): PropertySet {
         if (!value) {
             if (!this.tree) {
+                // eslint-disable-next-line max-len
                 throw new Error(
                     'The PropertySet must be attached to a PropertyTree before this method can be invoked. Use PropertySet constructor with no arguments instead.');
             }
