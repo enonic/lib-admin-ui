@@ -87,18 +87,6 @@ export class TreeGrid<DATA extends IDentifiable>
 
     private keysBound: boolean = false;
 
-    private onAwithModKeyPress = (event: Mousetrap.ExtendedKeyboardEvent) => {
-        let selected = this.grid.getSelectedRows();
-        if (selected.length === this.gridData.getLength()) {
-            this.deselectAll();
-        } else {
-            this.selectAll();
-        }
-
-        event.preventDefault();
-        event.stopImmediatePropagation();
-    };
-
     constructor(builder: TreeGridBuilder<DATA>) {
 
         super(builder.getClasses());
@@ -162,6 +150,18 @@ export class TreeGrid<DATA extends IDentifiable>
 
         this.initEventListeners(builder);
         this.initKeyBindings();
+    }
+
+    private onAwithModKeyPress(event: Mousetrap.ExtendedKeyboardEvent) {
+        let selected = this.grid.getSelectedRows();
+        if (selected.length === this.gridData.getLength()) {
+            this.deselectAll();
+        } else {
+            this.selectAll();
+        }
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
     }
 
     hasHighlightedNode(): boolean {
