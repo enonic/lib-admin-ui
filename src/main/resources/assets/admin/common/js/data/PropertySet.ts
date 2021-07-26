@@ -576,7 +576,8 @@ export class PropertySet
         if (!this.tree) {
             // eslint-disable-next-line max-len
             throw new Error(
-                'The PropertySet must be attached to a PropertyTree before this method can be invoked. Use PropertySet constructor with no arguments instead.');
+                `The PropertySet must be attached to a PropertyTree before this method can be invoked.  
+Use PropertySet constructor with no arguments instead.`);
         }
         return this.tree.newPropertySet();
     }
@@ -592,7 +593,8 @@ export class PropertySet
             if (!this.tree) {
                 // eslint-disable-next-line max-len
                 throw new Error(
-                    'The PropertySet must be attached to a PropertyTree before this method can be invoked. Use PropertySet constructor with no arguments instead.');
+                    `The PropertySet must be attached to a PropertyTree before this method can be invoked. 
+Use PropertySet constructor with no arguments instead.`);
             }
             value = this.tree.newPropertySet();
         }
