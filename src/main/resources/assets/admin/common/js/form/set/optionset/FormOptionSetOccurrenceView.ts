@@ -55,7 +55,7 @@ export abstract class FormOptionSetOccurrenceView
         super.subscribeOnItemEvents();
 
         this.formItemViews.forEach((formItemView: FormOptionSetOptionView) => {
-            formItemView.onSelectionChanged(() => this.handleSelectionChanged(<FormOptionSetOptionView>formItemView));
+            formItemView.onSelectionChanged(() => this.handleSelectionChanged(formItemView));
         });
     }
 

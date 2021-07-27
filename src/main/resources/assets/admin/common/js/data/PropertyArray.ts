@@ -441,7 +441,8 @@ export class PropertyArray
 
     private checkType(type: ValueType) {
         if (!this.type.equals(type)) {
-            throw new Error(`This PropertyArray expects only properties with value of type '${this.type}', got: ${type}`);
+            const msg = `This PropertyArray expects only properties with value of type '${this.type.toString()}', got: ${type.toString()}`;
+            throw new Error(msg);
         }
     }
 

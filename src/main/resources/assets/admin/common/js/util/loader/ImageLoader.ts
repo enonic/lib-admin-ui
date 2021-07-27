@@ -7,10 +7,10 @@ export class ImageLoader {
         let returnImage: HTMLImageElement;
         url = encodeURI(url);
 
-        for (let i in ImageLoader.cachedImages) {
-            if (ImageLoader.cachedImages[i].src === url) {
+        for (let cachedImage of ImageLoader.cachedImages) {
+            if (cachedImage.src === url) {
                 imageFound = true;
-                returnImage = ImageLoader.cachedImages[i];
+                returnImage = cachedImage;
             }
         }
 

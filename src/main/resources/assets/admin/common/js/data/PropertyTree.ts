@@ -101,7 +101,7 @@ export class PropertyTree
     }
 
     /**
-     * @returns {PropertySet} Returns the root [[PropertySet]] of this tree.
+     * @returns {PropertySet} Returns the root [[PropertySet]] of this tree.
      */
     public getRoot(): PropertySet {
         return this.root;

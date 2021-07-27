@@ -11,6 +11,7 @@ export class ObjectHelper {
      * @returns {Object}
      */
     static create(constructor: Function, ..._args: any[]) {
+        // eslint-disable-next-line prefer-spread, prefer-rest-params
         let factory = constructor.bind.apply(constructor, arguments);
         return new factory();
     }

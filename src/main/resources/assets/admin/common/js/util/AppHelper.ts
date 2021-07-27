@@ -3,6 +3,8 @@ import {Element} from '../dom/Element';
 import {Body} from '../dom/Body';
 import {WindowDOM} from '../dom/WindowDOM';
 
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-this-alias, prefer-rest-params */
+
 export class AppHelper {
 
     // Returns a function, that, as long as it continues to be invoked, will not

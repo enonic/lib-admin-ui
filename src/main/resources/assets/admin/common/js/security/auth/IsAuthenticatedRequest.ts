@@ -19,6 +19,7 @@ export class IsAuthenticatedRequest
     }
 
     sendAndParse(): Q.Promise<LoginResult> {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         IsAuthenticatedRequest.cachedRequestPromise = IsAuthenticatedRequest.cachedRequestPromise || super.sendAndParse();
         return IsAuthenticatedRequest.cachedRequestPromise;
     }

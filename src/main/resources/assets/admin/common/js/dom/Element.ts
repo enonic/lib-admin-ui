@@ -190,7 +190,7 @@ export class Element {
 
         if (this.parentElement && this.el.getHTMLElement().parentElement) {
             if (!(this.parentElement.getHTMLElement() === this.el.getHTMLElement().parentElement)) {
-                // tslint:disable-next-line:max-line-length
+                // eslint-disable-next-line max-len
                 throw new Error('Illegal state: HTMLElement in parent Element is not the as the HTMLElement parent to this HTMLElement');
             }
         }
@@ -247,7 +247,7 @@ export class Element {
 
     static fromSelector(s: string, loadExistingChildren: boolean = true): Element[] {
         return $(s).map((_index, elem) => {
-            let htmlEl = <HTMLElement>elem;
+            let htmlEl = elem;
             let parentEl;
             if (htmlEl && htmlEl.parentElement) {
                 parentEl = Element.fromHtmlElement(htmlEl.parentElement);
@@ -1302,6 +1302,7 @@ export class Element {
     }
 
     private getFirstNonEmptyAncestor(): Element {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         let el: Element = this;
 
         while (!!el && el.isEmptyElement()) {

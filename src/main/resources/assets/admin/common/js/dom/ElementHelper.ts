@@ -70,7 +70,7 @@ export class ElementHelper {
 
     getParent(): ElementHelper {
         let parent = this.el.parentElement;
-        return parent ? new ElementHelper(<HTMLElement>parent) : null;
+        return parent ? new ElementHelper(parent) : null;
     }
 
     setDisabled(value: boolean): ElementHelper {

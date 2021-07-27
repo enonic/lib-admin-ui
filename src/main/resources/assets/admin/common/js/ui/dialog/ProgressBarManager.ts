@@ -57,7 +57,7 @@ export class ProgressBarManager {
         this.managingElement = config.managingElement;
         this.processHandler = config.processHandler;
         this.processingLabel = config.processingLabel;
-        this.unlockControlsHandler = config.unlockControlsHandler || (() => {/*empty*/
+        this.unlockControlsHandler = config.unlockControlsHandler || (() => { /*empty*/
         });
         this.createProcessingMessage = config.createProcessingMessage;
 
