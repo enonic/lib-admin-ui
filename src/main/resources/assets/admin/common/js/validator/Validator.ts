@@ -13,6 +13,6 @@ export class Validator {
             return true;
         }
 
-        return !text.match(/<script>/i) && !text.match(/%3cscript%3e/i);
+        return !(/<script>/i.exec(text)) && !(/%3cscript%3e/i.exec(text));
     }
 }

@@ -31,7 +31,7 @@ export class FulltextSearchExpression {
     }
 
     static escapeString(value: string): string {
-        return value.replace(/((\&\&)|(\|\|)|[+-=><!(){}\[\]^"~*?:\\/])/g, `\\$1`);
+        return value.replace(/((\&\&)|(\|\|)|[+-=><!(){}\[\]^"~*?:\\/])/g, '\\$1');
     }
 }
 

@@ -220,11 +220,7 @@ export class PropertySet
 
     isEmpty(): boolean {
         let isEmpty: boolean = true;
-        // tslint:disable-next-line:forin
         for (const name in this.propertyArrayByName) {
-            if (!isEmpty) {
-                return isEmpty;
-            }
             if (this.propertyArrayByName.hasOwnProperty(name)) {
                 let propertyArray: PropertyArray = this.propertyArrayByName[name];
                 propertyArray.forEach((property: Property) => {
@@ -246,9 +242,12 @@ export class PropertySet
                     }
                     isEmpty = false;
                 });
+                if (!isEmpty) {
+                    return false;
+                }
             }
         }
-        return isEmpty;
+        return true;
     }
 
     removeEmptyValues() {
@@ -575,8 +574,10 @@ export class PropertySet
      */
     newSet(): PropertySet {
         if (!this.tree) {
+            // eslint-disable-next-line max-len
             throw new Error(
-                'The PropertySet must be attached to a PropertyTree before this method can be invoked. Use PropertySet constructor with no arguments instead.');
+                `The PropertySet must be attached to a PropertyTree before this method can be invoked.
+ Use PropertySet constructor with no arguments instead.`);
         }
         return this.tree.newPropertySet();
     }
@@ -590,8 +591,10 @@ export class PropertySet
     addPropertySet(name: string, value?: PropertySet): PropertySet {
         if (!value) {
             if (!this.tree) {
+                // eslint-disable-next-line max-len
                 throw new Error(
-                    'The PropertySet must be attached to a PropertyTree before this method can be invoked. Use PropertySet constructor with no arguments instead.');
+                    `The PropertySet must be attached to a PropertyTree before this method can be invoked.
+ Use PropertySet constructor with no arguments instead.`);
             }
             value = this.tree.newPropertySet();
         }

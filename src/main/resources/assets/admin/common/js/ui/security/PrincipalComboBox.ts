@@ -89,8 +89,8 @@ export class PrincipalSelectedOptionsView
         let key = PrincipalKey.fromString(id);
 
         return Option.create<Principal>()
-                .setValue(id)
-                .setDisplayValue(<Principal>Principal.create().setKey(key).setDisplayName(key.getId()).build())
+            .setValue(id)
+            .setDisplayValue(Principal.create().setKey(key).setDisplayName(key.getId()).build())
                 .setEmpty(true)
                 .build();
     }

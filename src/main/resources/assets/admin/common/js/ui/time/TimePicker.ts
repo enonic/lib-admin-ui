@@ -89,7 +89,7 @@ export class TimePicker
                 this.setTime(null, null);
                 this.hidePopup();
             } else {
-                let parsedTime = typedTime.match(/^\s*([0-2][0-9]:[0-5][0-9])\s*$/);
+                let parsedTime = /^\s*([0-2][0-9]:[0-5][0-9])\s*$/.exec(typedTime);
                 if (parsedTime && parsedTime.length === 2) {
                     let splitTime = parsedTime[1].split(':');
                     this.setTime(parseInt(splitTime[0], 10), parseInt(splitTime[1], 10));

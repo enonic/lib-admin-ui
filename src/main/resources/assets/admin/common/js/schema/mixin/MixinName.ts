@@ -8,7 +8,7 @@ export class MixinName
     extends ApplicationBasedName {
 
     constructor(name: string) {
-        assertNotNull(name, `Mixin name can't be null`);
+        assertNotNull(name, 'Mixin name can\'t be null');
         let parts = name.split(ApplicationBasedName.SEPARATOR);
         super(ApplicationKey.fromString(parts[0]), parts[1]);
     }

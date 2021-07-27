@@ -51,7 +51,7 @@ export class ContentTypeName
     static IMAGE: ContentTypeName = ContentTypeName.from(ApplicationKey.MEDIA, 'image');
 
     constructor(name: string) {
-        assertNotNull(name, `Content type name can't be null`);
+        assertNotNull(name, 'Content type name can\'t be null');
         let parts = name.split(ApplicationBasedName.SEPARATOR);
         super(ApplicationKey.fromString(parts[0]), parts[1]);
     }

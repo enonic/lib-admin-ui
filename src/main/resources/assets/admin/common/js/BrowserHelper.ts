@@ -64,7 +64,7 @@ export class BrowserHelper {
 
     static isSafari(): boolean {
         return navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
-               navigator.userAgent && !navigator.userAgent.match('CriOS');
+               navigator.userAgent && !(/CriOS/.exec(navigator.userAgent));
     }
 
     static isAndroid(): boolean {
@@ -76,7 +76,7 @@ export class BrowserHelper {
     }
 
     private static init() {
-        let M = navigator.userAgent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+        let M = (/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i.exec(navigator.userAgent)) || [];
         BrowserHelper.BROWSER_NAME = (<any>BrowserName)[M[1].toLocaleUpperCase()];
         BrowserHelper.BROWSER_VERSION = M[2];
 
