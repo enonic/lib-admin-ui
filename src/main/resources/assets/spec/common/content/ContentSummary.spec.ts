@@ -45,7 +45,7 @@ module ContentSummarySpec {
             displayName: 'My Content',
             editable: true,
             hasChildren: false,
-            iconUrl: '/admin/rest/schema/content/icon/myapplication:my_type?hash=f95b70fdc3088560732a5ac135644506',
+            iconUrl: '/admin/v2/rest/schema/content/icon/myapplication:my_type?hash=f95b70fdc3088560732a5ac135644506',
             id: 'aaa',
             isPage: false,
             isRoot: true,
