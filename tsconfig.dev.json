@@ -6,7 +6,7 @@
         "declarationDir": "build/resources/main/dev/lib-admin-ui/",
         "declaration": true,
         "sourceMap": true,
-        "declarationMap": true
+        "inlineSources": true
     },
     "include": [
         "src/main/resources/assets/admin/common/js/**/*.ts"
