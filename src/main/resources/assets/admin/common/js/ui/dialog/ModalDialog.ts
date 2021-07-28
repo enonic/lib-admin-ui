@@ -80,6 +80,8 @@ export abstract class ModalDialog
 
     private responsiveItem: ResponsiveItem;
 
+    private pendingMasks: number = 0;
+
     protected constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
         super('modal-dialog', StyleHelper.COMMON_PREFIX);
         this.config = config;
@@ -587,10 +589,22 @@ export abstract class ModalDialog
     }
 
     protected showLoadMask() {
-        this.whenRendered(() => this.loadMask.show());
+        this.pendingMasks++;
+        this.whenRendered(() => {
+            if (this.pendingMasks === 0) {
+                // If hideLoadMask() was called before rendering is finished, don't show the mask
+                return;
+            }
+            this.loadMask.show();
+        });
     }
 
     protected hideLoadMask() {
+        if (this.pendingMasks === 0) {
+            return;
+        }
+
+        this.pendingMasks--;
         this.loadMask.hide();
     }
 
