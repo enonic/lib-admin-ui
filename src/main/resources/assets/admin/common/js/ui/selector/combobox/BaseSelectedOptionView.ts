@@ -98,6 +98,10 @@ export class BaseSelectedOptionView<T>
         return this.editable;
     }
 
+    isRemovable(): boolean {
+        return this.removable;
+    }
+
     protected appendActionButtons() {
         if (this.editable && !this.editButton) {
             this.appendChild(this.createEditButton());

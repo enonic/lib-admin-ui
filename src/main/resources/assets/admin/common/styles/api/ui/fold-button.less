@@ -1,12 +1,12 @@
 .fold-button {
-
   .button(@admin-font-gray2, transparent, @admin-font-gray3, transparent, false);
 
-  position: relative;
   padding: 0 20px 0 17px;
+  height: 100%;
   text-align: center;
   overflow: visible;
-  display: inline-block;
+  display: flex;
+  align-items: center;
   position: relative; // for the dropdown to position itself
 
   &:after {
@@ -25,7 +25,8 @@
     width: auto;
     display: none;
     position: absolute;
-    left: 0;
+    top: 0;
+    right: 0;
     z-index: @z-index-toolbar-element;
     padding: 4px 8px;
     background-color: @admin-white;
@@ -48,6 +49,11 @@
   &.expanded {
     .@{_COMMON_PREFIX}dropdown {
       display: block;
+    }
+
+    &:after {
+      border-top: none;
+      border-bottom: 7px solid @admin-font-gray2;
     }
   }
 
