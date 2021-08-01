@@ -21,7 +21,7 @@
   "dependencies": {
     "@types/dompurify": "^2.2.2",
     "@types/mousetrap": "^1.6.8",
-    "@types/slickgrid": "^2.1.30",
+    "@types/slickgrid": "^2.1.31",
     "dompurify": "^2.3.0",
     "fine-uploader": "^5.16.2",
     "flag-icon-css": "^3.5.0",
