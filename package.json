@@ -19,7 +19,7 @@
     "fix": "eslint --fix **/*.ts"
   },
   "dependencies": {
-    "@types/dompurify": "^2.2.2",
+    "@types/dompurify": "^2.2.3",
     "@types/mousetrap": "^1.6.8",
     "@types/slickgrid": "^2.1.31",
     "dompurify": "^2.3.0",
