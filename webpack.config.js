@@ -20,7 +20,8 @@ module.exports = {
     },
     output: {
         path: path.join(__dirname, '/build/resources/main/assets/admin/common'),
-        filename: './[name].js'
+        filename: './[name].js',
+        assetModuleFilename: './[file]'
     },
     resolve: {
         extensions: ['.ts', '.js', '.less', '.css']
@@ -41,19 +42,17 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(eot|woff|woff2|ttf)$|icomoon.svg|opensans\-.+/,
-                use: 'file-loader?name=fonts/[name].[ext]'
-            },
-            {
                 test: /^((?!icomoon|opensans|flag-icon-css).)*\.(svg|png|jpg|gif)$/,
-                use: 'file-loader?name=images/[name].[ext]'
+                type: 'asset/resource',
+                generator: {
+                    filename: 'images/[base]'
+                }
             },
             {
                 test: /^.*flag-icon-css.*(flags).*(1x1|4x3).*\.svg$/,
-                loader: 'file-loader',
-                options: {
-                    regExp: /^.*flag-icon-css.*(flags).*(1x1|4x3).*\.svg$/,
-                    name: 'images/[1]/[2]/[name].[ext]',
+                type: 'asset/resource',
+                generator: {
+                    filename: 'images/flags/[hash][ext]'
                 }
             }
         ]

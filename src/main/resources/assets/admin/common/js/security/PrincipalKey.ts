@@ -138,11 +138,11 @@ export class PrincipalKey
     }
 
     private isSystemRole(): boolean {
-        return this.isRole() && this.getId().startsWith(PrincipalKey.SYSTEM_ROLE_PREFIX);
+        return this.isRole() && this.getId().indexOf(PrincipalKey.SYSTEM_ROLE_PREFIX) === 0;
     }
 
     private isProjectRole(): boolean {
-        return this.isRole() && this.getId().startsWith(PrincipalKey.PROJECT_ROLE_PREFIX);
+        return this.isRole() && this.getId().indexOf(PrincipalKey.PROJECT_ROLE_PREFIX) === 0;
     }
 
     getIdProvider(): IdProviderKey {
