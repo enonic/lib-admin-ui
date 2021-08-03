@@ -3,7 +3,7 @@ name: Gradle Build
 on:
   push:
 
-concurrency: ${{ github.ref }}
+concurrency: build-${{ github.ref }}
 
 jobs:
   publish_vars:
@@ -59,7 +59,7 @@ jobs:
     needs: [ publish_vars, build ]
     strategy:
       matrix:
-        repo: ["enonic/app-admin-home", "enonic/app-applications", "enonic/app-users" ]
+        repo: ["enonic/app-admin-home", "enonic/app-applications", "enonic/app-users", "enonic/app-contentstudio" ]
     runs-on: ubuntu-latest
     if: needs.publish_vars.outputs.publish == 'true'
     steps:
