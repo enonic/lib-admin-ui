@@ -25,7 +25,7 @@ export class Path {
     }
 
     public static fromString(s: string, elementDivider: string = Path.DEFAULT_ELEMENT_DIVIDER) {
-        const absolute: boolean = s.startsWith(elementDivider);
+        const absolute: boolean = s.indexOf(elementDivider) === 0;
         const elements: string[] = s.split(elementDivider);
         return new Path(Path.removeEmptyElements(elements), elementDivider, absolute);
     }
