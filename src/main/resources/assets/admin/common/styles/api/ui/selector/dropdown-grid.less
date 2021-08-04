@@ -1,5 +1,14 @@
 .dropdown-grid {
   .slick-row .slick-cell {
     .compact-option-viewer();
+
+    &:first-child {
+      flex-grow: 1;
+    }
+
+    &:not(:first-child) {
+      flex-basis: 50px;
+      flex-shrink: 0;
+    }
   }
 }

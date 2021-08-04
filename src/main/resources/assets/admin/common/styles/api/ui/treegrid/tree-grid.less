@@ -33,6 +33,20 @@
       color: @admin-white;
     }
 
+    .slick-viewport {
+      > .grid-canvas {
+        width: 100% !important;
+
+        .slick-row {
+          display: flex;
+
+          .slick-cell {
+            position: static;
+          }
+        }
+      }
+    }
+
     .slick-row {
 
       background-color: @admin-white;
