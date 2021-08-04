@@ -88,7 +88,6 @@ jar {
     exclude 'assets/**/*.less'
     exclude 'assets/**/styles/*.js'
     exclude 'assets/**/icons/*.txt'
-    exclude 'assets/**/icons/**/icomoon.*'
 
     // COMMON/LIB excludes
     // Exclude complex files, that only present after the first build and must be evaluated dynamically
