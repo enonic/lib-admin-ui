@@ -9,7 +9,7 @@ export class PrincipalContainerSelectedEntryView<T extends PrincipalContainer>
     protected valueChangedListeners: { (item: T): void }[] = [];
 
     constructor(item: T, readonly: boolean = false) {
-        super('selected-option');
+        super('selected-option access-control-entry');
 
         this.item = item;
         this.setEditable(!readonly);
