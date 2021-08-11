@@ -1134,9 +1134,10 @@ export class TreeGrid<DATA extends IDentifiable>
                 updateColumns();
                 this.getGrid().syncGridSelection(true);
             } else {
-                this.getGrid().resizeCanvas();
                 this.highlightCurrentNode();
             }
+
+            this.getGrid().resizeCanvas();
         };
 
         const onBecameActive = (active: boolean) => {
