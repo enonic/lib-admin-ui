@@ -6,7 +6,7 @@ import {ApplicationKey} from './ApplicationKey';
 import {Application} from './Application';
 import {ApplicationCache} from './ApplicationCache';
 
-export class GetApplicationRequest
+export abstract class GetApplicationRequest
     extends ApplicationResourceRequest<Application> {
 
     private applicationKey: ApplicationKey;
