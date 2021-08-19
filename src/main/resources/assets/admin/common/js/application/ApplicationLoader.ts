@@ -3,20 +3,22 @@ import {BaseLoader} from '../util/loader/BaseLoader';
 import {Application} from './Application';
 import {ListApplicationsRequest} from './ListApplicationsRequest';
 
-export class ApplicationLoader
+export abstract class ApplicationLoader
     extends BaseLoader<Application> {
 
     protected request: ListApplicationsRequest;
 
     private filterObject: Object;
 
-    constructor(filterObject: Object, request?: ListApplicationsRequest) {
-        super(request);
+    constructor(filterObject: Object) {
+        super();
 
         if (filterObject) {
             this.filterObject = filterObject;
         }
     }
+
+    protected abstract createRequest(): ListApplicationsRequest;
 
     search(searchString: string): Q.Promise<Application[]> {
         this.getRequest().setSearchQuery(searchString);
@@ -40,10 +42,6 @@ export class ApplicationLoader
 
                 return applications;
             });
-    }
-
-    protected createRequest(): ListApplicationsRequest {
-        return new ListApplicationsRequest();
     }
 
     protected getRequest(): ListApplicationsRequest {

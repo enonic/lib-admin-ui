@@ -3,7 +3,7 @@ import {ApplicationResourceRequest} from './ApplicationResourceRequest';
 import {ApplicationListResult} from './ApplicationListResult';
 import {Application} from './Application';
 
-export class ListApplicationsRequest
+export abstract class ListApplicationsRequest
     extends ApplicationResourceRequest<Application[]> {
 
     private searchQuery: string;
