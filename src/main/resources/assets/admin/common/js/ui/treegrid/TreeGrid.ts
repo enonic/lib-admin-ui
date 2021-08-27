@@ -1587,7 +1587,7 @@ export class TreeGrid<DATA extends IDentifiable>
             const needToCheckFetchedChildren: boolean = this.areAllOldChildrenSelected(oldChildren);
             const childrenToAdd: TreeNode<DATA>[] = fetchedChildren.slice(oldChildren.length);
             childrenToAdd
-                .filter((child: TreeNode<DATA>) => this.expandedNodesDataIds.indexOf(child.getDataId()) > -1)
+                .filter((child: TreeNode<DATA>) => this.isToBeExpanded(child))
                 .forEach((child: TreeNode<DATA>) => {
                     this.expandNode(child);
                 });
