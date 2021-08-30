@@ -12,6 +12,8 @@ export class PrincipalLoader
 
     protected request: FindPrincipalListRequest;
 
+    protected getUri: string;
+
     private skipPrincipalKeys: { [key: string]: PrincipalKey; };
 
     constructor() {
@@ -51,6 +53,16 @@ export class PrincipalLoader
         return this;
     }
 
+    setListUri(listUri: string): PrincipalLoader {
+        this.getRequest().setRequestUri(listUri);
+        return this;
+    }
+
+    setGetUri(getUri: string): PrincipalLoader {
+        this.getUri = getUri;
+        return this;
+    }
+
     skipPrincipal(principalKey: PrincipalKey): PrincipalLoader {
         this.skipPrincipalKeys[principalKey.toString()] = principalKey;
         this.getRequest().setResultFilter((principal) => !this.skipPrincipalKeys[principal.getKey().toString()]);
@@ -77,8 +89,10 @@ export class PrincipalLoader
         let principalKeys = keys.split(';').map((key) => {
             return PrincipalKey.fromString(key);
         });
-        return new GetPrincipalsByKeysRequest(principalKeys).sendAndParse().then((value => {
-            return value;
-        }));
+        return new GetPrincipalsByKeysRequest(principalKeys)
+            .setRequestUri(this.getUri)
+            .sendAndParse().then((value => {
+                return value;
+            }));
     }
 }

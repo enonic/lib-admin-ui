@@ -15,9 +15,9 @@ export class FindPrincipalListRequest
 
     private results: Principal[] = [];
 
-    constructor() {
+    constructor(requestUri?: string) {
         super();
-        this.request = new FindPrincipalsRequest();
+        this.request = new FindPrincipalsRequest(requestUri);
     }
 
     sendAndParse(): Q.Promise<Principal[]> {
@@ -88,4 +88,8 @@ export class FindPrincipalListRequest
         this.request.setResultFilter(filterPredicate);
     }
 
+    setRequestUri(requestUri: string): FindPrincipalListRequest {
+        this.request.setRequestUri(requestUri);
+        return this;
+    }
 }

@@ -17,9 +17,8 @@ export class FindPrincipalsRequest
     private from: number;
     private size: number;
 
-    constructor() {
-        super();
-
+    constructor(requestUri?: string) {
+        super(requestUri);
         this.addRequestPathElements('principals');
     }
 
