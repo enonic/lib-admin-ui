@@ -23,9 +23,11 @@ export class EmailInput
 
     private blurListeners: { (event: FocusEvent): void }[];
 
-    constructor() {
-        super();
+    private requestUri: string;
 
+    constructor(requestUri?: string) {
+        super();
+        this.requestUri = requestUri;
         this.focusListeners = [];
         this.blurListeners = [];
 
@@ -132,7 +134,10 @@ export class EmailInput
             if (email === this.originEmail) {
                 promise = Q(true);
             } else {
-                promise = new CheckEmailAvailabilityRequest(email).setIdProviderKey(this.idProviderKey).sendAndParse();
+                promise = new CheckEmailAvailabilityRequest(email)
+                    .setIdProviderKey(this.idProviderKey)
+                    .setRequestUri(this.requestUri)
+                    .sendAndParse();
             }
             promise.then((available: boolean) => {
                 this.updateStatus(available ? 'available' : 'notavailable');
