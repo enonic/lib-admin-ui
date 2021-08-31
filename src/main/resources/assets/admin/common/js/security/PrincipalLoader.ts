@@ -1,6 +1,6 @@
 import * as Q from 'q';
 import {PostLoader} from '../util/loader/PostLoader';
-import {FindPrincipalListRequest} from './FindPrincipalListRequest';
+import {FindPrincipalsRequest} from './FindPrincipalsRequest';
 import {PrincipalType} from './PrincipalType';
 import {IdProviderKey} from './IdProviderKey';
 import {Principal} from './Principal';
@@ -10,9 +10,7 @@ import {GetPrincipalsByKeysRequest} from './GetPrincipalsByKeysRequest';
 export class PrincipalLoader
     extends PostLoader<Principal> {
 
-    protected request: FindPrincipalListRequest;
-
-    protected getUri: string;
+    protected request: FindPrincipalsRequest;
 
     private skipPrincipalKeys: { [key: string]: PrincipalKey; };
 
@@ -53,16 +51,6 @@ export class PrincipalLoader
         return this;
     }
 
-    setListUri(listUri: string): PrincipalLoader {
-        this.getRequest().setRequestUri(listUri);
-        return this;
-    }
-
-    setGetUri(getUri: string): PrincipalLoader {
-        this.getUri = getUri;
-        return this;
-    }
-
     skipPrincipal(principalKey: PrincipalKey): PrincipalLoader {
         this.skipPrincipalKeys[principalKey.toString()] = principalKey;
         this.getRequest().setResultFilter((principal) => !this.skipPrincipalKeys[principal.getKey().toString()]);
@@ -77,22 +65,20 @@ export class PrincipalLoader
         return this.getRequest().isPartiallyLoaded();
     }
 
-    protected createRequest(): FindPrincipalListRequest {
-        return new FindPrincipalListRequest().setSize(10);
+    protected createRequest(): FindPrincipalsRequest {
+        return new FindPrincipalsRequest().setSize(10);
     }
 
-    protected getRequest(): FindPrincipalListRequest {
+    protected getRequest(): FindPrincipalsRequest {
         return this.request;
     }
 
+    protected createPreLoadRequest(principalKeys: PrincipalKey[]): GetPrincipalsByKeysRequest {
+        return new GetPrincipalsByKeysRequest(principalKeys);
+    }
+
     protected sendPreLoadRequest(keys: string): Q.Promise<Principal[]> {
-        let principalKeys = keys.split(';').map((key) => {
-            return PrincipalKey.fromString(key);
-        });
-        return new GetPrincipalsByKeysRequest(principalKeys)
-            .setRequestUri(this.getUri)
-            .sendAndParse().then((value => {
-                return value;
-            }));
+        const principalKeys = keys.split(';').map((key) => PrincipalKey.fromString(key));
+        return this.createPreLoadRequest(principalKeys).sendAndParse();
     }
 }
