@@ -28,10 +28,6 @@ export class PrincipalSelector
 
     private comboBox: PrincipalComboBox;
 
-    private listUri: string;
-
-    private getUri: string;
-
     constructor(config?: InputTypeViewContext) {
         super('principal-selector');
         this.addClass('input-type-view');
@@ -141,16 +137,16 @@ export class PrincipalSelector
                 return !!val ? PrincipalKey.fromString(val) : null;
             })
             .filter((val) => val !== null);
+    }
 
-        this.listUri = inputConfig['listUri']?.toString();
-        this.getUri = inputConfig['getUri']?.toString();
+    protected createLoader(): PrincipalLoader {
+        return new PrincipalLoader();
     }
 
     private createComboBox(input: Input): PrincipalComboBox {
         const value: string = this.getValueFromPropertyArray(this.getPropertyArray());
-        const principalLoader: PrincipalLoader = new PrincipalLoader()
-            .setListUri(this.listUri)
-            .setGetUri(this.getUri)
+        const principalLoader: PrincipalLoader =
+            this.createLoader()
             .setAllowedTypes(this.principalTypes)
             .skipPrincipals(this.skipPrincipals);
 

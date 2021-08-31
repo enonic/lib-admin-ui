@@ -3,7 +3,6 @@ import {InputEl} from '../../dom/InputEl';
 import {StringHelper} from '../../util/StringHelper';
 import {CheckEmailAvailabilityRequest} from '../../security/CheckEmailAvailabilityRequest';
 import {i18n} from '../../util/Messages';
-import {IdProviderKey} from '../../security/IdProviderKey';
 import {CompositeFormInputEl} from '../../dom/CompositeFormInputEl';
 
 export class EmailInput
@@ -17,17 +16,16 @@ export class EmailInput
 
     private checkTimeout: number;
 
-    private idProviderKey: IdProviderKey;
+    //private idProviderKey: IdProviderKey;
+
+    private checkEmailAvailabilityRequest: CheckEmailAvailabilityRequest;
 
     private focusListeners: { (event: FocusEvent): void }[];
 
     private blurListeners: { (event: FocusEvent): void }[];
 
-    private requestUri: string;
-
-    constructor(requestUri?: string) {
+    constructor() {
         super();
-        this.requestUri = requestUri;
         this.focusListeners = [];
         this.blurListeners = [];
 
@@ -82,9 +80,15 @@ export class EmailInput
         this.originEmail = value;
         return this;
     }
-
+/*
     setIdProviderKey(idProviderKey: IdProviderKey): EmailInput {
         this.idProviderKey = idProviderKey;
+        return this;
+    }
+*/
+
+    setCheckEmailAvailabilityRequest(request: CheckEmailAvailabilityRequest): EmailInput {
+        this.checkEmailAvailabilityRequest = request;
         return this;
     }
 
@@ -134,10 +138,9 @@ export class EmailInput
             if (email === this.originEmail) {
                 promise = Q(true);
             } else {
-                promise = new CheckEmailAvailabilityRequest(email)
-                    .setIdProviderKey(this.idProviderKey)
-                    .setRequestUri(this.requestUri)
-                    .sendAndParse();
+                promise = /*new CheckEmailAvailabilityRequest(email)
+                    .setIdProviderKey(this.idProviderKey)*/
+                this.checkEmailAvailabilityRequest.sendAndParse();
             }
             promise.then((available: boolean) => {
                 this.updateStatus(available ? 'available' : 'notavailable');

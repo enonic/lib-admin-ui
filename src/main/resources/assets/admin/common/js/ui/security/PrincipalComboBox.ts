@@ -27,8 +27,6 @@ export class PrincipalComboBoxBuilder
 
     loader: PrincipalLoader = new PrincipalLoader();
 
-    listUri: string;
-
     getUri: string;
 
     maximumOccurrences: number = 0;
@@ -46,27 +44,7 @@ export class PrincipalComboBoxBuilder
     selectedOptionsView: SelectedOptionsView<Principal> = new PrincipalSelectedOptionsView();
 
     build(): PrincipalComboBox {
-        this.initLoader();
         return new PrincipalComboBox(this);
-    }
-
-    protected initLoader(): void {
-        if (this.listUri) {
-            this.loader.setListUri(this.listUri);
-        }
-        if (this.getUri) {
-            this.loader.setGetUri(this.getUri);
-        }
-    }
-
-    setListUri(listUri: string): PrincipalComboBoxBuilder {
-        this.listUri = listUri;
-        return this;
-    }
-
-    setGetUri(getUri: string): PrincipalComboBoxBuilder {
-        this.getUri = getUri;
-        return this;
     }
 }
 

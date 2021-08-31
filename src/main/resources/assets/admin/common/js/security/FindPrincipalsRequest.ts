@@ -8,7 +8,7 @@ import {PrincipalJson} from './PrincipalJson';
 import {Principal} from './Principal';
 
 export class FindPrincipalsRequest
-    extends SecurityResourceRequest<FindPrincipalsResult> {
+    extends SecurityResourceRequest<Principal[]> {
 
     private allowedTypes: PrincipalType[];
     private searchQuery: string;
@@ -16,10 +16,49 @@ export class FindPrincipalsRequest
     private filterPredicate: (principal: Principal) => boolean;
     private from: number;
     private size: number;
+    private results: Principal[] = [];
+    private loaded: boolean;
 
-    constructor(requestUri?: string) {
-        super(requestUri);
+    constructor() {
+        super();
         this.addRequestPathElements('principals');
+    }
+
+    isPartiallyLoaded(): boolean {
+        return this.results.length > 0 && !this.loaded;
+    }
+
+    isLoaded(): boolean {
+        return this.loaded;
+    }
+
+    resetParams() {
+        this.setFrom(0);
+        this.loaded = false;
+    }
+
+    protected parseResponse(response: JsonResponse<FindPrincipalsResultJson>): Principal[] {
+        let principals: Principal[] = response.getResult().principals
+            .map((principalJson: PrincipalJson) => Principal.fromJson(principalJson));
+
+        if (this.filterPredicate) {
+            principals = principals.filter(this.filterPredicate);
+        }
+
+        const result = new FindPrincipalsResult(principals, response.getResult().principals.length, response.getResult().totalSize);
+        return this.resultToPrincipalArray(result);
+    }
+
+    private resultToPrincipalArray(result: FindPrincipalsResult): Principal[] {
+        if (this.getFrom() === 0) {
+            this.results = [];
+        }
+        this.setFrom(this.getFrom() + result.getHits());
+        this.loaded = this.getFrom() >= result.getTotalHits();
+
+        this.results = this.results.concat(result.getPrincipals());
+
+        return this.results;
     }
 
     getParams(): Object {
@@ -73,18 +112,6 @@ export class FindPrincipalsRequest
         return types.map((type: PrincipalType) => {
             return PrincipalType[type].toUpperCase();
         });
-    }
-
-    protected parseResponse(response: JsonResponse<FindPrincipalsResultJson>): FindPrincipalsResult {
-        let principals: Principal[] = response.getResult().principals.map((principalJson: PrincipalJson) => {
-            return Principal.fromJson(principalJson);
-        });
-
-        if (this.filterPredicate) {
-            principals = principals.filter(this.filterPredicate);
-        }
-
-        return new FindPrincipalsResult(principals, response.getResult().principals.length, response.getResult().totalSize);
     }
 
 }
