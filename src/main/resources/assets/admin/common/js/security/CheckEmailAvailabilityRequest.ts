@@ -13,10 +13,13 @@ export class CheckEmailAvailabilityRequest
 
     private email: string;
 
-    constructor(email: string) {
+    constructor() {
         super();
-        this.email = email;
         this.addRequestPathElements('principals', 'emailAvailable');
+    }
+
+    setEmail(email: string) {
+        this.email = email;
     }
 
     setIdProviderKey(key: IdProviderKey): CheckEmailAvailabilityRequest {
