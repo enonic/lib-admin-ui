@@ -4,6 +4,7 @@ import {StringHelper} from '../../util/StringHelper';
 import {CheckEmailAvailabilityRequest} from '../../security/CheckEmailAvailabilityRequest';
 import {i18n} from '../../util/Messages';
 import {CompositeFormInputEl} from '../../dom/CompositeFormInputEl';
+import {IdProviderKey} from '../../security/IdProviderKey';
 
 export class EmailInput
     extends CompositeFormInputEl {
@@ -16,9 +17,9 @@ export class EmailInput
 
     private checkTimeout: number;
 
-    //private idProviderKey: IdProviderKey;
+    private idProviderKey: IdProviderKey;
 
-    private checkEmailAvailabilityRequest: CheckEmailAvailabilityRequest;
+    private request: CheckEmailAvailabilityRequest;
 
     private focusListeners: { (event: FocusEvent): void }[];
 
@@ -31,6 +32,7 @@ export class EmailInput
 
         this.input = this.createInput();
         this.input.setAutocomplete(true);
+        this.request = new CheckEmailAvailabilityRequest();
 
         this.setWrappedInput(this.input);
 
@@ -80,15 +82,9 @@ export class EmailInput
         this.originEmail = value;
         return this;
     }
-/*
+
     setIdProviderKey(idProviderKey: IdProviderKey): EmailInput {
         this.idProviderKey = idProviderKey;
-        return this;
-    }
-*/
-
-    setCheckEmailAvailabilityRequest(request: CheckEmailAvailabilityRequest): EmailInput {
-        this.checkEmailAvailabilityRequest = request;
         return this;
     }
 
@@ -138,9 +134,8 @@ export class EmailInput
             if (email === this.originEmail) {
                 promise = Q(true);
             } else {
-                promise = /*new CheckEmailAvailabilityRequest(email)
-                    .setIdProviderKey(this.idProviderKey)*/
-                this.checkEmailAvailabilityRequest.sendAndParse();
+                this.request.setIdProviderKey(this.idProviderKey).setEmail(email);
+                promise = this.request.sendAndParse();
             }
             promise.then((available: boolean) => {
                 this.updateStatus(available ? 'available' : 'notavailable');
