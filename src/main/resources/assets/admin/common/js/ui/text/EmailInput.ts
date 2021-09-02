@@ -4,7 +4,6 @@ import {StringHelper} from '../../util/StringHelper';
 import {CheckEmailAvailabilityRequest} from '../../security/CheckEmailAvailabilityRequest';
 import {i18n} from '../../util/Messages';
 import {CompositeFormInputEl} from '../../dom/CompositeFormInputEl';
-import {IdProviderKey} from '../../security/IdProviderKey';
 
 export class EmailInput
     extends CompositeFormInputEl {
@@ -16,8 +15,6 @@ export class EmailInput
     private status: string;
 
     private checkTimeout: number;
-
-    private idProviderKey: IdProviderKey;
 
     private request: CheckEmailAvailabilityRequest;
 
@@ -32,7 +29,6 @@ export class EmailInput
 
         this.input = this.createInput();
         this.input.setAutocomplete(true);
-        this.request = new CheckEmailAvailabilityRequest();
 
         this.setWrappedInput(this.input);
 
@@ -64,6 +60,10 @@ export class EmailInput
         return input;
     }
 
+    setRequest(request: CheckEmailAvailabilityRequest) {
+        this.request = request;
+    }
+
     getInput(): InputEl {
         return this.input;
     }
@@ -80,11 +80,6 @@ export class EmailInput
 
     setOriginEmail(value: string): EmailInput {
         this.originEmail = value;
-        return this;
-    }
-
-    setIdProviderKey(idProviderKey: IdProviderKey): EmailInput {
-        this.idProviderKey = idProviderKey;
         return this;
     }
 
@@ -131,10 +126,10 @@ export class EmailInput
         if (!StringHelper.isEmpty(email) && isValid) {
             status = 'checking';
             let promise;
-            if (email === this.originEmail) {
+            if (email === this.originEmail || !this.request) {
                 promise = Q(true);
             } else {
-                this.request.setIdProviderKey(this.idProviderKey).setEmail(email);
+                this.request.setEmail(email);
                 promise = this.request.sendAndParse();
             }
             promise.then((available: boolean) => {

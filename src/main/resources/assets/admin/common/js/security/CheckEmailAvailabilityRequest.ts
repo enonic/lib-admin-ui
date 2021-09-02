@@ -1,6 +1,7 @@
 import {JsonResponse} from '../rest/JsonResponse';
 import {SecurityResourceRequest} from './SecurityResourceRequest';
 import {IdProviderKey} from './IdProviderKey';
+import {Path} from '../rest/Path';
 
 export interface CheckEmailAvailabilityResponse {
     available: boolean;
@@ -9,22 +10,19 @@ export interface CheckEmailAvailabilityResponse {
 export class CheckEmailAvailabilityRequest
     extends SecurityResourceRequest<boolean> {
 
-    private idProviderKey: IdProviderKey;
+    private readonly idProviderKey: IdProviderKey;
 
     private email: string;
 
-    constructor() {
+    constructor(key: IdProviderKey, postfixUri: string) {
         super();
+        this.restPath = Path.fromString(postfixUri);
+        this.idProviderKey = key;
         this.addRequestPathElements('principals', 'emailAvailable');
     }
 
     setEmail(email: string) {
         this.email = email;
-    }
-
-    setIdProviderKey(key: IdProviderKey): CheckEmailAvailabilityRequest {
-        this.idProviderKey = key;
-        return this;
     }
 
     getParams(): Object {
