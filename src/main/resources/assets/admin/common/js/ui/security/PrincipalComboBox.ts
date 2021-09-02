@@ -27,8 +27,6 @@ export class PrincipalComboBoxBuilder
 
     loader: PrincipalLoader = new PrincipalLoader();
 
-    getUri: string;
-
     maximumOccurrences: number = 0;
 
     value: string;
