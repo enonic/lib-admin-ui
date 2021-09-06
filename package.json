@@ -46,7 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^4.30.0",
     "@typescript-eslint/parser": "^4.31.0",
     "autoprefixer": "^10.3.3",
-    "browserslist": "^4.16.8",
+    "browserslist": "^4.17.0",
     "browserslist-config-enonic": "^1.0.6",
     "circular-dependency-plugin": "^5.2.2",
     "copy-webpack-plugin": "^9.0.1",
