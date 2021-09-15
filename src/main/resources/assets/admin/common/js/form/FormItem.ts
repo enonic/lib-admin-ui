@@ -6,18 +6,30 @@ import {FormOptionSet} from './set/optionset/FormOptionSet';
 import {FormOptionSetOption} from './set/optionset/FormOptionSetOption';
 import {FieldSet} from './set/fieldset/FieldSet';
 import {FormItemPath, FormItemPathElement} from './FormItemPath';
+import {ApplicationKey} from '../application/ApplicationKey';
 
 export type FormItemParent = FieldSet | FormItemSet | FormOptionSet | FormOptionSetOption;
 
 export abstract class FormItem
     implements Equitable {
 
-    private name: string;
+    private readonly name: string;
 
     private parent: FormItem;
 
+    private applicationKey: ApplicationKey;
+
     protected constructor(name: string) {
         this.name = name;
+    }
+
+    setApplicationKey(value: ApplicationKey): FormItem {
+        this.applicationKey = value;
+        return this;
+    }
+
+    getApplicationKey(): ApplicationKey {
+        return this.applicationKey;
     }
 
     setParent(parent: FormItemParent) {
