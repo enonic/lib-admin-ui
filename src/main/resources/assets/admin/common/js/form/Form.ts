@@ -5,6 +5,7 @@ import {FormItem} from './FormItem';
 import {FormItemFactoryImpl} from './FormItemFactoryImpl';
 import {FormItemContainer} from './FormItemContainer';
 import {Input} from './Input';
+import {FormItemTypeWrapperJson} from './json/FormItemTypeWrapperJson';
 
 export class FormBuilder {
 
@@ -22,9 +23,13 @@ export class FormBuilder {
         return this;
     }
 
+    protected createFormItem(formItemJson: FormItemTypeWrapperJson): FormItem {
+        return FormItemFactoryImpl.get().createFormItem(formItemJson);
+    }
+
     fromJson(json: FormJson): FormBuilder {
-        json.formItems.forEach((formItemJson) => {
-            let formItem: FormItem = FormItemFactoryImpl.get().createFormItem(formItemJson);
+        json.formItems.forEach((formItemJson: FormItemTypeWrapperJson) => {
+            const formItem: FormItem = this.createFormItem(formItemJson);
             if (formItem) {
                 this.addFormItem(formItem);
             }
