@@ -61,7 +61,7 @@
     "less-loader": "^10.0.1",
     "mini-css-extract-plugin": "^2.3.0",
     "postcss-loader": "^6.1.1",
-    "postcss-normalize": "^10.0.0",
+    "postcss-normalize": "^10.0.1",
     "postcss-sort-media-queries": "^4.1.0",
     "prettier": "^2.4.0",
     "terser": "^5.8.0",
