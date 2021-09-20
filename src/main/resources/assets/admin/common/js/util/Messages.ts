@@ -24,6 +24,16 @@ export class Messages {
         }
     }
 
+    static addMessages(messages: Object) {
+        if (messages) {
+            for (let key in messages) {
+                if (messages.hasOwnProperty(key)) {
+                    Messages.getMessages().set(key, messages[key]);
+                }
+            }
+        }
+    }
+
     static isEmpty() {
         return Messages.getMessages().size === 0;
     }
