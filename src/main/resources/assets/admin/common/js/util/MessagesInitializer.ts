@@ -5,20 +5,34 @@ import {Messages} from './Messages';
 import {ResourceRequest} from '../rest/ResourceRequest';
 import {HttpMethod} from '../rest/HttpMethod';
 
-export function i18nInit(url: string, bundles?: string[]): Q.Promise<void> {
-    if (!Messages.isEmpty()) {
-        return Q(null);
-    }
-
+function getMessages(url: string, bundles?: string[]): Q.Promise<KeysJson> {
     const request: GetMessagesRequest = new GetMessagesRequest(url, bundles);
+
     if (!!bundles && bundles.length) {
         request.setMethod(HttpMethod.POST);
         request.setIsFormRequest(true);
     }
 
     return request.send().then((response: JsonResponse<KeysJson>) => {
-        const messages: KeysJson = response.getResult();
+        return response.getResult();
+    });
+}
+
+export function i18nInit(url: string, bundles?: string[]): Q.Promise<void> {
+    if (!Messages.isEmpty()) {
+        return Q(null);
+    }
+
+    return getMessages(url, bundles).then((messages: KeysJson) => {
         Messages.setMessages(messages);
+        return Q(null);
+    });
+}
+
+export function i18nAdd(url: string, bundles?: string[]): Q.Promise<void> {
+    return getMessages(url, bundles).then((messages: KeysJson) => {
+        Messages.addMessages(messages);
+        return Q(null);
     });
 }
 
