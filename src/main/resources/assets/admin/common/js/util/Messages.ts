@@ -14,22 +14,22 @@ export class Messages {
     }
 
     static setMessages(messages: Object) {
-        if (messages) {
-            Messages.getMessages().clear();
-            for (let key in messages) {
-                if (messages.hasOwnProperty(key)) {
-                    Messages.getMessages().set(key, messages[key]);
-                }
-            }
+        if (!messages) {
+            return;
         }
+
+        Messages.getMessages().clear();
+        Messages.addMessages(messages);
     }
 
     static addMessages(messages: Object) {
-        if (messages) {
-            for (let key in messages) {
-                if (messages.hasOwnProperty(key)) {
-                    Messages.getMessages().set(key, messages[key]);
-                }
+        if (!messages) {
+            return;
+        }
+
+        for (let key in messages) {
+            if (messages.hasOwnProperty(key)) {
+                Messages.getMessages().set(key, messages[key]);
             }
         }
     }
