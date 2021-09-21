@@ -5,6 +5,7 @@ import {ObjectHelper} from '../../../ObjectHelper';
 import {FormItem} from '../../FormItem';
 import {FormItemContainer} from '../../FormItemContainer';
 import {FormItemFactory} from '../../FormItemFactoryImpl';
+import {ApplicationKey} from '../../../application/ApplicationKey';
 
 export class FieldSet
     extends FormItem
@@ -14,13 +15,13 @@ export class FieldSet
 
     private formItems: FormItem[] = [];
 
-    constructor(fieldSetJson: FieldSetJson, factory: FormItemFactory) {
+    constructor(fieldSetJson: FieldSetJson, factory: FormItemFactory, applicationKey?: ApplicationKey) {
         super(fieldSetJson.name);
         this.label = fieldSetJson.label;
 
         if (fieldSetJson.items != null) {
             fieldSetJson.items.forEach((formItemJson) => {
-                let formItem = factory.createFormItem(formItemJson);
+                let formItem = factory.createFormItem(formItemJson, applicationKey);
                 if (formItem) {
                     this.addFormItem(formItem);
                 }

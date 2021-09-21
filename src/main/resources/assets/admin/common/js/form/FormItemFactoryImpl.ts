@@ -11,11 +11,12 @@ import {FormItem} from './FormItem';
 import {Input} from './Input';
 import {FieldSet} from './set/fieldset/FieldSet';
 import {Store} from '../store/Store';
+import {ApplicationKey} from '../application/ApplicationKey';
 
 export const FORM_ITEM_FACTORY_KEY: string = 'FormItemFactory';
 
 export interface FormItemFactory {
-    createFormItem(formItemTypeWrapperJson: FormItemTypeWrapperJson): FormItem;
+    createFormItem(formItemTypeWrapperJson: FormItemTypeWrapperJson, applicationKey?: ApplicationKey): FormItem;
 }
 
 export class FormItemFactoryImpl
@@ -35,18 +36,18 @@ export class FormItemFactoryImpl
         return instance;
     }
 
-    createFormItem(formItemTypeWrapperJson: FormItemTypeWrapperJson): FormItem {
+    createFormItem(formItemTypeWrapperJson: FormItemTypeWrapperJson, applicationKey?: ApplicationKey): FormItem {
 
         if (formItemTypeWrapperJson.Input) {
-            return this.createInput(formItemTypeWrapperJson.Input);
+            return this.createInput(formItemTypeWrapperJson.Input).setApplicationKey(applicationKey);
         } else if (formItemTypeWrapperJson.FormItemSet) {
-            return this.createFormItemSet(formItemTypeWrapperJson.FormItemSet);
+            return this.createFormItemSet(formItemTypeWrapperJson.FormItemSet, applicationKey);
         } else if (formItemTypeWrapperJson.FieldSet) {
-            return this.createFieldSetLayout(formItemTypeWrapperJson.FieldSet);
+            return this.createFieldSetLayout(formItemTypeWrapperJson.FieldSet, applicationKey);
         } else if (formItemTypeWrapperJson.FormOptionSet) {
-            return this.createFormOptionSet(formItemTypeWrapperJson.FormOptionSet);
+            return this.createFormOptionSet(formItemTypeWrapperJson.FormOptionSet, applicationKey);
         } else if (formItemTypeWrapperJson.FormOptionSetOption) {
-            return this.createFormOptionSetOption(formItemTypeWrapperJson.FormOptionSetOption);
+            return this.createFormOptionSetOption(formItemTypeWrapperJson.FormOptionSetOption, applicationKey);
         }
 
         console.error('Unknown FormItem type: ', formItemTypeWrapperJson);
@@ -57,19 +58,19 @@ export class FormItemFactoryImpl
         return Input.fromJson(inputJson);
     }
 
-    private createFormItemSet(formItemSetJson: FormItemSetJson): FormItemSet {
-        return new FormItemSet(formItemSetJson, this);
+    private createFormItemSet(formItemSetJson: FormItemSetJson, applicationKey?: ApplicationKey): FormItemSet {
+        return new FormItemSet(formItemSetJson, this, applicationKey);
     }
 
-    private createFieldSetLayout(fieldSetJson: FieldSetJson): FieldSet {
-        return new FieldSet(fieldSetJson, this);
+    private createFieldSetLayout(fieldSetJson: FieldSetJson, applicationKey?: ApplicationKey): FieldSet {
+        return new FieldSet(fieldSetJson, this, applicationKey);
     }
 
-    private createFormOptionSet(optionSetJson: FormOptionSetJson): FormOptionSet {
-        return new FormOptionSet(optionSetJson, this);
+    private createFormOptionSet(optionSetJson: FormOptionSetJson, applicationKey?: ApplicationKey): FormOptionSet {
+        return new FormOptionSet(optionSetJson, this, applicationKey);
     }
 
-    private createFormOptionSetOption(optionSetOptionJson: FormOptionSetOptionJson): FormOptionSetOption {
-        return new FormOptionSetOption(optionSetOptionJson, this);
+    private createFormOptionSetOption(optionSetOptionJson: FormOptionSetOptionJson, applicationKey?: ApplicationKey): FormOptionSetOption {
+        return new FormOptionSetOption(optionSetOptionJson, this, applicationKey);
     }
 }

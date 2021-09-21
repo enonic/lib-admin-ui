@@ -5,6 +5,7 @@ import {FormItemTypeWrapperJson} from '../../json/FormItemTypeWrapperJson';
 import {ObjectHelper} from '../../../ObjectHelper';
 import {FormItemContainer} from '../../FormItemContainer';
 import {FormItemFactory} from '../../FormItemFactoryImpl';
+import {ApplicationKey} from '../../../application/ApplicationKey';
 
 export class FormOptionSetOption
     extends FormItem
@@ -22,14 +23,14 @@ export class FormOptionSetOption
 
     private formItemByName: { [name: string]: FormItem; } = {};
 
-    constructor(optionJson: FormOptionSetOptionJson, factory: FormItemFactory) {
+    constructor(optionJson: FormOptionSetOptionJson, factory: FormItemFactory, applicationKey?: ApplicationKey) {
         super(optionJson.name);
         this.label = optionJson.label;
         this.defaultOption = optionJson.defaultOption;
         this.helpText = optionJson.helpText;
         if (optionJson.items != null) {
             optionJson.items.forEach((formItemJson) => {
-                let formItem: FormItem = factory.createFormItem(formItemJson);
+                let formItem: FormItem = factory.createFormItem(formItemJson, applicationKey);
                 if (formItem) {
                     this.addFormItem(formItem);
                 }
