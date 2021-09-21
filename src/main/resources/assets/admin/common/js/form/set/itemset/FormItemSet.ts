@@ -7,6 +7,7 @@ import {FormItemContainer} from '../../FormItemContainer';
 import {FormItem} from '../../FormItem';
 import {FormItemFactory} from '../../FormItemFactoryImpl';
 import {Input} from '../../Input';
+import {ApplicationKey} from '../../../application/ApplicationKey';
 
 /**
  * A set of [[FormItem]]s.
@@ -23,13 +24,13 @@ export class FormItemSet
 
     private immutable: boolean;
 
-    constructor(formItemSetJson: FormItemSetJson, factory: FormItemFactory) {
+    constructor(formItemSetJson: FormItemSetJson, factory: FormItemFactory, applicationKey?: ApplicationKey) {
         super(formItemSetJson);
         this.immutable = formItemSetJson.immutable;
 
         if (formItemSetJson.items != null) {
             formItemSetJson.items.forEach((formItemJson) => {
-                let formItem: FormItem = factory.createFormItem(formItemJson);
+                let formItem: FormItem = factory.createFormItem(formItemJson, applicationKey);
                 if (formItem) {
                     this.addFormItem(formItem);
                 }
