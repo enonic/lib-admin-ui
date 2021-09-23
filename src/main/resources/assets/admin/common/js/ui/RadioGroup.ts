@@ -74,6 +74,11 @@ export class RadioGroup
         return this.options.length < 1 ? false : this.options[0].giveFocus();
     }
 
+    public resetBaseValues(): void {
+        super.resetBaseValues();
+        this.options.forEach(o => o.resetBaseValues());
+    }
+
     /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
 
     setDisabled(disabled: boolean) {
