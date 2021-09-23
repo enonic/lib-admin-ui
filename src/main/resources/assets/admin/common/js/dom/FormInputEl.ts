@@ -25,14 +25,16 @@ export class FormInputEl
                                    this.originalValue + ', oldValue = ' + this.oldValue);
         }
 
+        this.onChange(() => {
+            if (this.isAdded()) {
+                this.refreshDirtyState();
+                this.refreshValueChanged();
+            }
+        });
+
         // Descendant class might override my methods
         // therefore set value on added to make sure it's ready
         this.onAdded(() => {
-
-            this.onChange(() => {
-                this.refreshDirtyState();
-                this.refreshValueChanged();
-            });
 
             if (!StringHelper.isBlank(this.originalValue)) {
                 if (FormInputEl.debug) {
@@ -113,7 +115,7 @@ export class FormInputEl
 
     public resetBaseValues() {
         this.originalValue = this.getValue();
-        this.oldValue = this.getValue();
+        this.oldValue = this.originalValue;
         this.dirty = false;
     }
 
