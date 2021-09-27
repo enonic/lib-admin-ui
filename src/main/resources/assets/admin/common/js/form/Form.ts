@@ -6,6 +6,7 @@ import {FormItemFactoryImpl} from './FormItemFactoryImpl';
 import {FormItemContainer} from './FormItemContainer';
 import {Input} from './Input';
 import {FormItemTypeWrapperJson} from './json/FormItemTypeWrapperJson';
+import {ApplicationKey} from '../application/ApplicationKey';
 
 export class FormBuilder {
 
@@ -23,13 +24,13 @@ export class FormBuilder {
         return this;
     }
 
-    protected createFormItem(formItemJson: FormItemTypeWrapperJson): FormItem {
-        return FormItemFactoryImpl.get().createFormItem(formItemJson);
+    protected createFormItem(formItemJson: FormItemTypeWrapperJson, applicationKey?: ApplicationKey): FormItem {
+        return FormItemFactoryImpl.get().createFormItem(formItemJson, applicationKey);
     }
 
-    fromJson(json: FormJson): FormBuilder {
+    fromJson(json: FormJson, applicationKey?: ApplicationKey): FormBuilder {
         json.formItems.forEach((formItemJson: FormItemTypeWrapperJson) => {
-            const formItem: FormItem = this.createFormItem(formItemJson);
+            const formItem: FormItem = this.createFormItem(formItemJson, applicationKey);
             if (formItem) {
                 this.addFormItem(formItem);
             }
@@ -63,9 +64,9 @@ export class Form
         });
     }
 
-    static fromJson(json: FormJson): Form {
+    static fromJson(json: FormJson, applicationKey?: ApplicationKey): Form {
         let builder: FormBuilder = new FormBuilder();
-        builder.fromJson(json);
+        builder.fromJson(json, applicationKey);
         return builder.build();
     }
 
