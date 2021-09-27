@@ -25,16 +25,11 @@ export class FormInputEl
                                    this.originalValue + ', oldValue = ' + this.oldValue);
         }
 
-        this.onChange(() => {
-            if (this.isAdded()) {
+        const initListenersOnce = () => {
+            this.onChange(() => {
                 this.refreshDirtyState();
                 this.refreshValueChanged();
-            }
-        });
-
-        // Descendant class might override my methods
-        // therefore set value on added to make sure it's ready
-        this.onAdded(() => {
+            });
 
             if (!StringHelper.isBlank(this.originalValue)) {
                 if (FormInputEl.debug) {
@@ -43,7 +38,12 @@ export class FormInputEl
                 // use this prototype's setValue because descendants might override setValue method (i.e. CheckBox, RadioGroup)
                 FormInputEl.prototype.setValue.call(this, this.originalValue, true);
             }
-        });
+            this.unAdded(initListenersOnce);
+        };
+
+        // Descendant class might override my methods
+        // therefore set value on added to make sure it's ready
+        this.onAdded(initListenersOnce);
 
         if (FormInputEl.debug) {
             console.groupEnd();
