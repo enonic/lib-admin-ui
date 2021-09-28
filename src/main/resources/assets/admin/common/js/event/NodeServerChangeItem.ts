@@ -2,19 +2,22 @@ import {NodeEventNodeJson} from './NodeServerEvent';
 
 export class NodeServerChangeItem {
 
-    private id: string;
+    protected readonly id: string;
 
-    private path: string;
+    protected readonly path: string;
 
-    private branch: string;
+    protected readonly newPath: string;
 
-    private repo: string;
+    protected readonly branch: string;
+
+    protected readonly repo: string;
 
     constructor(builder: NodeServerChangeItemBuilder) {
         this.id = builder.id;
         this.branch = builder.branch;
         this.repo = builder.repo;
         this.path = this.processPath(builder.path);
+        this.newPath = builder.newPath;
     }
 
     protected processPath(path: string): string {
@@ -27,6 +30,10 @@ export class NodeServerChangeItem {
 
     getPath(): string {
         return this.path;
+    }
+
+    getNewPath(): string {
+        return this.newPath;
     }
 
     getBranch(): string {
@@ -44,6 +51,8 @@ export class NodeServerChangeItemBuilder {
 
     path: string;
 
+    newPath: string;
+
     branch: string;
 
     repo: string;
@@ -53,6 +62,7 @@ export class NodeServerChangeItemBuilder {
         this.branch = json.branch;
         this.repo = json.repo;
         this.path = json.path;
+        this.newPath = json.newPath;
 
         return this;
     }
@@ -64,6 +74,11 @@ export class NodeServerChangeItemBuilder {
 
     setPath(value: string): NodeServerChangeItemBuilder {
         this.path = value;
+        return this;
+    }
+
+    setNewPath(value: string): NodeServerChangeItemBuilder {
+        this.newPath = value;
         return this;
     }
 
