@@ -61,7 +61,7 @@ export class BrowsePanel
 
         this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.treeGrid, this.createBrowseWithItemsPanel())
             .setAlignment(SplitPanelAlignment.VERTICAL)
-            .setFirstPanelSize(SplitPanelSize.Percents(38))
+            .setFirstPanelSize(SplitPanelSize.Percents(this.getFirstPanelSize()))
             .build();
 
         if (this.filterPanel) {
@@ -94,6 +94,10 @@ export class BrowsePanel
                 }
             });
         }
+    }
+
+    protected getFirstPanelSize(): number {
+        return 38;
     }
 
     private initTreeGridListeners() {
