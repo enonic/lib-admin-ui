@@ -17,16 +17,13 @@ export enum NodeServerChangeType {
 
 export abstract class NodeServerChange {
 
-    private changeItems: NodeServerChangeItem[];
+    private readonly changeItems: NodeServerChangeItem[];
 
-    private newNodePaths: string[];
+    private readonly type: NodeServerChangeType;
 
-    private type: NodeServerChangeType;
-
-    constructor(builder: NodeServerChangeBuilder) {
+    protected constructor(builder: NodeServerChangeBuilder) {
         this.type = builder.type;
         this.changeItems = builder.changeItems;
-        this.newNodePaths = builder.newNodePaths;
     }
 
     static fromJson(_nodeEventJson: NodeEventJson): NodeServerChange {
@@ -64,20 +61,13 @@ export abstract class NodeServerChange {
         return this.changeItems;
     }
 
-    getNewPaths(): string[] {
-        return this.newNodePaths;
-    }
-
     getChangeType(): NodeServerChangeType {
         return this.type;
     }
 
     toString(): string {
         return NodeServerChangeType[this.getChangeType()] + ': <' +
-               this.getChangeItems().map((item) => item.getPath()).join(', ') + !!this.getNewPaths()
-               ? this.getNewPaths().join(', ')
-               : '' +
-                 '>';
+               this.getChangeItems().map((item) => item.getPath()).join(', ') + '>';
     }
 }
 
@@ -85,15 +75,11 @@ export abstract class NodeServerChangeBuilder {
 
     changeItems: NodeServerChangeItem[];
 
-    newNodePaths: string[];
-
     type: NodeServerChangeType;
 
     fromJson(json: NodeEventJson): NodeServerChangeBuilder {
         this.type = NodeServerChange.getNodeServerChangeType(json.type);
-        this.changeItems = json.data.nodes
-            .filter((node) => node.path.indexOf(this.getPathPrefix()) === 0)
-            .map((node: NodeEventNodeJson) => this.nodeJsonToChangeItem(node));
+        this.changeItems = json.data.nodes.map((node: NodeEventNodeJson) => this.nodeJsonToChangeItem(node));
 
         return this;
     }
@@ -103,17 +89,10 @@ export abstract class NodeServerChangeBuilder {
         return this;
     }
 
-    setNewNodePaths(value: string[]): NodeServerChangeBuilder {
-        this.newNodePaths = value;
-        return this;
-    }
-
     setType(value: NodeServerChangeType): NodeServerChangeBuilder {
         this.type = value;
         return this;
     }
-
-    abstract getPathPrefix(): string;
 
     abstract nodeJsonToChangeItem(node: NodeEventNodeJson): NodeServerChangeItem;
 

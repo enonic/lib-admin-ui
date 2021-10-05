@@ -1,12 +1,13 @@
 import {NodeEventNodeJson} from './NodeServerEvent';
+import {NodePath} from '../NodePath';
 
 export class NodeServerChangeItem {
 
     protected readonly id: string;
 
-    protected readonly path: string;
+    protected readonly path: NodePath;
 
-    protected readonly newPath: string;
+    protected readonly newPath: NodePath;
 
     protected readonly branch: string;
 
@@ -17,22 +18,18 @@ export class NodeServerChangeItem {
         this.branch = builder.branch;
         this.repo = builder.repo;
         this.path = this.processPath(builder.path);
-        this.newPath = builder.newPath;
-    }
-
-    protected processPath(path: string): string {
-        return path;
+        this.newPath = this.processPath(builder.newPath);
     }
 
     getId(): string {
         return this.id;
     }
 
-    getPath(): string {
+    getPath(): NodePath {
         return this.path;
     }
 
-    getNewPath(): string {
+    getNewPath(): NodePath {
         return this.newPath;
     }
 
@@ -42,6 +39,10 @@ export class NodeServerChangeItem {
 
     getRepo(): string {
         return this.repo;
+    }
+
+    protected processPath(path: string): NodePath {
+        return path ? NodePath.create().fromString(path).build() : null;
     }
 }
 
