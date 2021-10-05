@@ -55,7 +55,7 @@ class GetMessagesRequest
     }
 
     getRequestPath(): Path {
-        return Path.fromString(this.url);
+        return Path.create().fromString(this.url).build();
     }
 
     getParams(): Object {

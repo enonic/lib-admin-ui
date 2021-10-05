@@ -1,49 +1,35 @@
 export class Path {
 
-    private static DEFAULT_ELEMENT_DIVIDER: string = '/';
+    public static DEFAULT_ELEMENT_DIVIDER: string = '/';
 
-    private elementDivider: string;
+    protected readonly elementDivider: string;
 
-    private absolute: boolean;
+    protected readonly absolute: boolean;
 
-    private elements: string[];
+    protected readonly elements: string[];
 
-    private refString: string;
+    protected readonly refString: string;
 
-    constructor(elements: string[], elementDivider?: string, absolute?: boolean) {
-        this.elementDivider = elementDivider != null ? elementDivider : Path.DEFAULT_ELEMENT_DIVIDER;
-        this.absolute = absolute == null ? true : absolute;
-        elements.forEach((element: string, index: number) => {
+    constructor(builder: PathBuilder) {
+        this.elementDivider = builder.elementDivider != null ? builder.elementDivider : Path.DEFAULT_ELEMENT_DIVIDER;
+        this.absolute = builder.absolute == null ? true : builder.absolute;
+        builder.elements.forEach((element: string, index: number) => {
             if (element == null) {
                 throw new Error('Path element was null at index: ' + index);
             } else if (element.length === 0) {
                 throw new Error('Path element was empty string at index: ' + index);
             }
         });
-        this.elements = elements;
+        this.elements = builder.elements;
         this.refString = (this.absolute ? this.elementDivider : '') + this.elements.join(this.elementDivider);
     }
 
-    public static fromString(s: string, elementDivider: string = Path.DEFAULT_ELEMENT_DIVIDER) {
-        const absolute: boolean = s.indexOf(elementDivider) === 0;
-        const elements: string[] = s.split(elementDivider);
-        return new Path(Path.removeEmptyElements(elements), elementDivider, absolute);
-    }
-
-    public static fromParent(parent: Path, ...childElements: string[]) {
-
-        let elements: string[] = parent.elements.slice(0);
-        childElements.forEach((element: string) => element && elements.push(element));
-
-        return new Path(elements, parent.elementDivider, parent.isAbsolute());
-    }
-
-    private static removeEmptyElements(elements: string[]): string[] {
+    public static removeEmptyElements(elements: string[]): string[] {
         return elements.filter((element: string) => element.length > 0);
     }
 
     getElements(): string[] {
-        return this.elements;
+        return this.elements.slice(0);
     }
 
     getElement(index: number): string {
@@ -54,18 +40,28 @@ export class Path {
         return this.elements.length > 1;
     }
 
-    getParentPath(): Path {
+    getDivider(): string {
+        return this.elementDivider;
+    }
 
+    getParentPath(): Path {
         if (this.elements.length < 1) {
             return null;
         }
-        let parentElemements: string[] = [];
+
+        const parentElements: string[] = [];
+
         this.elements.forEach((element: string, index: number) => {
             if (index < this.elements.length - 1) {
-                parentElemements.push(element);
+                parentElements.push(element);
             }
         });
-        return new Path(parentElemements);
+
+        return this.newBuilder().setElements(parentElements).build();
+    }
+
+    getLevel(): number {
+        return this.elements.length;
     }
 
     toString() {
@@ -74,5 +70,68 @@ export class Path {
 
     isAbsolute(): boolean {
         return this.absolute;
+    }
+
+    newBuilder(): PathBuilder {
+        return new PathBuilder(this);
+    }
+
+    public static create(): PathBuilder {
+        return new PathBuilder();
+    }
+}
+
+export class PathBuilder {
+
+    elementDivider: string;
+
+    absolute: boolean;
+
+    elements: string[];
+
+    constructor(source?: Path) {
+        if (source) {
+            this.elements = source.getElements();
+            this.elementDivider = source.getDivider();
+            this.absolute = source.isAbsolute();
+        }
+    }
+
+    fromString(s: string, elementDivider: string = Path.DEFAULT_ELEMENT_DIVIDER): PathBuilder {
+        this.elementDivider = elementDivider;
+        this.absolute = s.indexOf(elementDivider) === 0;
+        this.elements = Path.removeEmptyElements(s.split(elementDivider));
+
+        return this;
+    }
+
+    fromParent(parent: Path, ...childElements: string[]): PathBuilder {
+        const elements: string[] = parent.getElements();
+        childElements.forEach((element: string) => element && elements.push(element));
+
+        this.elements = elements;
+        this.elementDivider = parent.getDivider();
+        this.absolute = parent.isAbsolute();
+
+        return this;
+    }
+
+    setElements(value: string[]): PathBuilder {
+        this.elements = value;
+        return this;
+    }
+
+    setElementDivider(value: string): PathBuilder {
+        this.elementDivider = value;
+        return this;
+    }
+
+    setAbsolute(value: boolean): PathBuilder {
+        this.absolute = value;
+        return this;
+    }
+
+    build(): Path {
+        return new Path(this);
     }
 }

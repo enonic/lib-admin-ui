@@ -16,7 +16,7 @@ export class CheckEmailAvailabilityRequest
 
     constructor(key: IdProviderKey, postfixUri: string) {
         super();
-        this.restPath = Path.fromString(postfixUri);
+        this.restPath = Path.create().fromString(postfixUri).build();
         this.idProviderKey = key;
         this.addRequestPathElements('principals', 'emailAvailable');
     }
