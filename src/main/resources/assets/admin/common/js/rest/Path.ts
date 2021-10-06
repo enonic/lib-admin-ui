@@ -79,6 +79,10 @@ export class Path {
     public static create(): PathBuilder {
         return new PathBuilder();
     }
+
+    public static fromString(s: string, elementDivider: string = Path.DEFAULT_ELEMENT_DIVIDER): Path {
+        return Path.create().fromString(s, elementDivider).build();
+    }
 }
 
 export class PathBuilder {
