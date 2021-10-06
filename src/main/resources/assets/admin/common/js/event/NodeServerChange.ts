@@ -58,7 +58,7 @@ export abstract class NodeServerChange {
     }
 
     getChangeItems(): NodeServerChangeItem[] {
-        return this.changeItems;
+        return this.changeItems.slice(0);
     }
 
     getChangeType(): NodeServerChangeType {
