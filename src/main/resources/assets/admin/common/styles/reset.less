@@ -4,9 +4,32 @@ body {
   overflow-x: hidden;
 }
 
-html, body, div, dl, dt, dd, ul, ol, li, h1, h2, h3,
-h4, h5, h6, pre, code, form, fieldset, legend,
-input, textarea, p, blockquote, th, td {
+html,
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td {
   margin: 0;
   padding: 0;
 }
@@ -20,8 +43,15 @@ fieldset, img {
   border: 0;
 }
 
-address, caption, cite, code,
-dfn, em, strong, th, var {
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var {
   font-style: normal;
   font-weight: normal;
 }
@@ -39,7 +69,8 @@ q:after {
   content: "";
 }
 
-abbr, acronym {
+abbr,
+acronym {
   border: 0;
   font-variant: normal;
 }
@@ -52,7 +83,7 @@ sub {
   vertical-align: text-bottom;
 }
 
-input:not([type="radio"]), textarea, select {
+.input-reset() {
   -webkit-appearance: none;
   -moz-appearance: none;
   font-family: inherit;
@@ -60,7 +91,15 @@ input:not([type="radio"]), textarea, select {
   font-weight: inherit;
 }
 
-input, textarea, select, button {
+textarea,
+select {
+  .input-reset();
+}
+
+input,
+textarea,
+select,
+button {
   &:focus {
     outline-width: 2px;
     outline-style: auto;
@@ -69,15 +108,27 @@ input, textarea, select, button {
   }
 }
 
+input:not([type="radio"]) {
+  .input-reset();
+}
+
 @-moz-document url-prefix() {
-  input, textarea, select, button {
+  input,
+  textarea,
+  select,
+  button {
     &:focus {
       outline-color: rgba(66, 148, 222, 0.5);
     }
   }
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: normal;
 }
 

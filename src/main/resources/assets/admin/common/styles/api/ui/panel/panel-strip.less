@@ -7,6 +7,10 @@
     padding-top: 30px;
   }
 
+  .wizard-step-form:not(.x-data-wizard-step-form) + .panel-strip-panel-header.disabled {
+    margin-top: 60px;
+  }
+
   .x-data-wizard-step-form + .panel-strip-panel-header.enabled {
     padding-top: 10px;
   }
@@ -41,7 +45,6 @@
     }
 
     &.enabled {
-
       + .x-data-wizard-step-form + .panel-strip-panel-header:not(.enabled):not(.disabled) {
         padding-top: 10px;
       }
@@ -105,12 +108,7 @@
       &:hover:after {
         color: @admin-dark-gray;
       }
-
     }
-  }
-
-  .wizard-step-form:not(.x-data-wizard-step-form) + .panel-strip-panel-header.disabled {
-    margin-top: 60px;
   }
 }
 

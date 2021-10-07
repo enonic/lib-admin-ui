@@ -19,18 +19,16 @@
 }
 
 .input-view-error(@padding: 15px) {
-
   padding: @padding;
   border: 3px solid #cb0100;
 
   .form-input {
-
     outline: none;
 
     .input-error(@admin-white);
 
     &.uploader-el a.dropzone {
-      .highlight(@admin-white)
+      .highlight(@admin-white);
     }
 
     &.@{_COMMON_PREFIX}text-input {
@@ -42,7 +40,9 @@
     }
   }
 
-  .date-time-picker, .time-picker, .date-picker {
+  .date-time-picker,
+  .time-picker,
+  .date-picker {
     &.expanded .form-input {
       background-color: @admin-white;
     }
