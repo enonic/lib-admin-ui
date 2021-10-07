@@ -12,7 +12,7 @@
     }
 
     &.collapsible {
-      &:after {
+      &::after {
         content: "";
         position: absolute;
         left: 90%;
@@ -22,7 +22,7 @@
         border-top: 7px solid @admin-dark-gray;
       }
 
-      &.expanded:after {
+      &.expanded::after {
         border-top: none;
         border-bottom: 7px solid @admin-dark-gray;
       }

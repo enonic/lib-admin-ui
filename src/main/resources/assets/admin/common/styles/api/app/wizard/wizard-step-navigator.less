@@ -9,16 +9,16 @@
     line-height: 20px;
     cursor: pointer;
 
-   &.step-icon {
-     &.active:before {
-       line-height: 0px;
-       padding-left: 15px;
-       padding-right: 18px;
-     }
-     &:before {
-       font-size: 18px;
-     }
-   }
+    &.step-icon {
+      &.active::before {
+        line-height: 0px;
+        padding-left: 15px;
+        padding-right: 18px;
+      }
+      &::before {
+        font-size: 18px;
+      }
+    }
 
     &:hover {
       color: darken(@admin-font-gray1, 10%);
@@ -29,11 +29,7 @@
       color: @admin-font-gray3;
       padding-bottom: 0;
 
-      &:not(.step-icon):before {
-        content: " ";
-      }
-
-      &:before {
+      &::before {
         display: block;
         float: left;
         height: 0;
@@ -45,7 +41,11 @@
         margin-left: -25px;
       }
 
-      &:after {
+      &:not(.step-icon)::before {
+        content: " ";
+      }
+
+      &::after {
         content: " ";
         display: block;
         float: right;

@@ -8,10 +8,11 @@
     .input-glow();
     .input-font();
     .input-border();
+
     box-sizing: border-box;
   }
 
-  &:after {
+  &::after {
     position: absolute;
     top: 2px;
     right: 6px;
@@ -30,7 +31,7 @@
       padding-right: 120px;
     }
 
-    &:after {
+    &::after {
       color: @admin-level-2;
     }
   }
@@ -42,7 +43,7 @@
       padding-right: 82px;
     }
 
-    &:after {
+    &::after {
       color: @admin-level-3;
     }
   }
@@ -55,7 +56,7 @@
         padding-right: 60px;
       }
 
-      &:after {
+      &::after {
         color: @admin-level-1;
       }
     }
@@ -68,7 +69,7 @@
       padding-right: 105px;
     }
 
-    &:after {
+    &::after {
       color: @admin-level-3;
     }
   }
@@ -80,7 +81,7 @@
       padding-right: 80px;
     }
 
-    &:after {
+    &::after {
       color: @admin-level-3;
     }
   }
@@ -88,8 +89,7 @@
   ._0-240 &,
   ._240-360 &,
   ._360-540 & {
-
-    &:after {
+    &::after {
       position: static;
       display: block;
       text-align: right;
