@@ -64,6 +64,18 @@ export class NodePathBuilder extends PathBuilder {
         return <NodePathBuilder>super.fromParent(parent, ...childElements);
     }
 
+    setElements(value: string[]): NodePathBuilder {
+        return <NodePathBuilder>super.setElements(value);
+    }
+
+    setElementDivider(value: string): NodePathBuilder {
+        return <NodePathBuilder>super.setElementDivider(value);
+    }
+
+    setAbsolute(value: boolean): NodePathBuilder {
+        return <NodePathBuilder>super.setAbsolute(value);
+    }
+
     build(): NodePath {
         return new NodePath(this);
     }
