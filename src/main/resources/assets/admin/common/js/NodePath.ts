@@ -4,7 +4,7 @@ import {ObjectHelper} from './ObjectHelper';
 
 export class NodePath extends Path implements Equitable {
 
-    public static NODE_PATH_DIVIDER = Path.DEFAULT_ELEMENT_DIVIDER;
+    public static NODE_PATH_DIVIDER: string = Path.DEFAULT_ELEMENT_DIVIDER;
 
     isRoot(): boolean {
         return this.getLevel() === 1;
@@ -60,7 +60,7 @@ export class NodePathBuilder extends PathBuilder {
         return <NodePathBuilder>super.fromString(s, elementDivider);
     }
 
-    fromParent(parent: Path, ...childElements): NodePathBuilder {
+    fromParent(parent: Path, ...childElements: string[]): NodePathBuilder {
         return <NodePathBuilder>super.fromParent(parent, ...childElements);
     }
 
