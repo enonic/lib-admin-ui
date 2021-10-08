@@ -19,7 +19,7 @@
   }
 
   &.checking, &.notavailable, &.available:not(.just-shown), &.error, &.invalid {
-    &:after {
+    &::after {
       content: attr(data-status);
     }
   }
@@ -28,6 +28,7 @@
     .form-input {
       .input-border(@admin-level-2);
       .input-glow(@admin-level-2);
+
       padding-right: 120px;
     }
 
@@ -40,6 +41,7 @@
     .form-input {
       .input-border(@admin-level-3);
       .input-glow(@admin-level-3);
+
       padding-right: 82px;
     }
 
@@ -53,6 +55,7 @@
       .form-input {
         .input-border(@admin-level-1);
         .input-glow(@admin-level-1);
+
         padding-right: 60px;
       }
 
@@ -66,6 +69,7 @@
     .form-input {
       .input-border(@admin-level-3);
       .input-glow(@admin-level-3);
+
       padding-right: 105px;
     }
 
@@ -78,6 +82,7 @@
     .form-input {
       .input-border(@admin-input-red);
       .input-glow(@admin-input-red);
+
       padding-right: 80px;
     }
 
@@ -96,5 +101,4 @@
       padding: 10px 0;
     }
   }
-
 }

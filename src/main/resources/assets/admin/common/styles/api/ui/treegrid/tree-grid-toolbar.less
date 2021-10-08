@@ -10,6 +10,7 @@
 
   .@{_COMMON_PREFIX}button {
     .toolbar-button();
+
     border: none;
     flex: 0 0 auto;
 
@@ -29,7 +30,8 @@
         margin-right: 7px;
       }
 
-      &.active, &.updated {
+      &.active,
+      &.updated {
         &:disabled {
           opacity: 1;
         }
@@ -92,15 +94,15 @@
         }
       }
 
-      &:disabled:after {
+      &:disabled::after {
         display: none;
       }
 
-      &.active:after {
+      &.active::after {
         color: @admin-button-blue2;
       }
 
-      &:not(.active):after {
+      &:not(.active)::after {
         color: @admin-font-gray2;
       }
     }
@@ -130,7 +132,7 @@
       padding: 0;
       vertical-align: middle;
 
-      &:before {
+      &::before {
         margin: 0;
         position: static;
       }
@@ -143,6 +145,7 @@
         &:not(:disabled) span {
           color: @admin-button-blue2;
         }
+
         &:hover:not(:disabled) span {
           color: @admin-button-blue3;
         }
@@ -174,7 +177,10 @@
 }
 
 body {
-  &._0-240, &._240-360, &._360-540, &._540-720 {
+  &._0-240,
+  &._240-360,
+  &._360-540,
+  &._540-720 {
     .tree-grid-toolbar {
       .left-wrapper {
         order: 3;
@@ -182,13 +188,16 @@ body {
         min-width: 0;
         flex-direction: row-reverse;
       }
+
       .center-wrapper {
         padding-left: 17px;
       }
+
       .@{_COMMON_PREFIX}button.@{_CLS_PREFIX}icon-loop {
         float: left;
         padding: 0 0 0 16px;
       }
+
       .selection-controller {
         padding: 0 17px 0 5px;
       }
@@ -200,6 +209,7 @@ body {
   0%, 100% {
     transform: scale( 1 );
   }
+
   50% {
     transform: scale( 1.2 );
   }

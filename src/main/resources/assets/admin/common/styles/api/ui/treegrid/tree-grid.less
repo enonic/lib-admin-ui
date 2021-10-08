@@ -33,20 +33,6 @@
       color: @admin-white;
     }
 
-    .slick-viewport {
-      > .grid-canvas {
-        width: 100% !important;
-
-        .slick-row {
-          display: flex;
-
-          .slick-cell {
-            position: static;
-          }
-        }
-      }
-    }
-
     .slick-row {
       background-color: @admin-white;
       z-index: 1;
@@ -189,6 +175,20 @@
 
           label {
             opacity: 0.5;
+          }
+        }
+      }
+    }
+
+    .slick-viewport {
+      > .grid-canvas {
+        width: 100% !important;
+
+        .slick-row {
+          display: flex;
+
+          .slick-cell {
+            position: static;
           }
         }
       }

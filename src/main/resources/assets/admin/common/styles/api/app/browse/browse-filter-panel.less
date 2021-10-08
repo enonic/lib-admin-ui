@@ -12,10 +12,11 @@
   a.clear-filter-button {
     text-decoration: none;
     float: right;
+    font-size: 14px;
+
     &:hover {
       color: @admin-button-blue3;
     }
-    font-size: 14px;
   }
 
   .aggregation-bucket-view {
@@ -23,7 +24,6 @@
 
     .checkbox {
       input[type="checkbox"] {
-
         &:checked + label {
           color: @admin-black !important;
         }
@@ -35,7 +35,6 @@
         }
       }
     }
-
   }
 
   input.text-search-field {
@@ -111,6 +110,7 @@
     .show-filter-results-button {
       color: @admin-button-blue1;
       cursor: pointer;
+
       &:hover {
         color: @admin-button-blue3;
       }
@@ -142,7 +142,8 @@
       top: 30px;
       right: -22px;
       background-color: @admin-white;
-      &:before {
+
+      &::before {
         color: @admin-font-gray2;
       }
     }
@@ -162,11 +163,11 @@
           margin-right: 8px;
           line-height: 28px;
         }
+
         .@{_COMMON_PREFIX}names-view {
           margin-left: 28px;
         }
       }
     }
-
   }
 }

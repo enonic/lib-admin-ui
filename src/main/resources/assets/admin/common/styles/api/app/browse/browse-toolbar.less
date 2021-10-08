@@ -1,5 +1,4 @@
 .browse-toolbar {
-
   .icon-search.filtered {
     border-radius: 17px;
     background-color: @admin-input-blue;
@@ -9,14 +8,16 @@
     height: 34px;
     line-height: 24px;
 
-    &:before, span {
+    &::before,
+    span {
       color: @admin-white;
     }
 
     &:hover:not(:disabled) {
       background-color: @admin-input-blue;
 
-      &:before, span {
+      &::before,
+      span {
         color: @admin-white;
         font-weight: bold;
       }

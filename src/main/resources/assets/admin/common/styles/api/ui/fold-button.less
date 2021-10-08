@@ -9,7 +9,7 @@
   align-items: center;
   position: relative; // for the dropdown to position itself
 
-  &:after {
+  &::after {
     content: "";
     position: absolute;
     top: 42%;
@@ -51,10 +51,9 @@
       display: block;
     }
 
-    &:after {
+    &::after {
       border-top: none;
       border-bottom: 7px solid @admin-font-gray2;
     }
   }
-
 }
