@@ -8,8 +8,8 @@
   .dropzone {
     .reset();
     .dropzone-glow();
-    box-sizing: border-box;
 
+    box-sizing: border-box;
     font-size: 25px;
     font-weight: bold;
     color: @admin-dark-gray;
@@ -17,7 +17,6 @@
     overflow: hidden;
     min-height: 100px;
     line-height: 100px;
-
     text-decoration: none;
     display: block;
     width: 100%;
@@ -27,7 +26,7 @@
       line-height: 125px;
     }
 
-    &:before {
+    &::before {
       content: attr(data-drop-default);
     }
   }

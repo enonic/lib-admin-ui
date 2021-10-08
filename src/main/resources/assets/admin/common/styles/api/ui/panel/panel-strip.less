@@ -7,10 +7,6 @@
     padding-top: 30px;
   }
 
-  .wizard-step-form:not(.x-data-wizard-step-form) + .panel-strip-panel-header.disabled {
-    margin-top: 60px;
-  }
-
   .x-data-wizard-step-form + .panel-strip-panel-header.enabled {
     padding-top: 10px;
   }
@@ -92,6 +88,10 @@
           content: '+';
         }
       }
+    }
+
+    .wizard-step-form:not(.x-data-wizard-step-form) + .panel-strip-panel-header.disabled {
+      margin-top: 60px;
     }
 
     .x-data-toggler {

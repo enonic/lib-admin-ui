@@ -2,20 +2,17 @@
   .picker();
 
   .@{_COMMON_PREFIX}wrapper {
-
     .picker-icon();
 
     .date-time-dialog {
       .picker-dialog(100%, 10px 0);
+
       box-sizing: border-box;
       text-align: center;
 
       .picker-dialog-button(10px 20px 9px auto);
-
       .notSelectable();
-
       .date-picker-mixin(auto, 10px);
-
       .time-picker-mixin();
 
       .date-picker-dialog,
@@ -26,10 +23,9 @@
         box-shadow: none;
       }
     }
-
   }
-
 }
+
 @media screen and (max-width: 479px) {
   .date-time-dialog {
     .date-picker-dialog {
@@ -43,5 +39,4 @@
       margin: 0 auto !important;
     }
   }
-
 }

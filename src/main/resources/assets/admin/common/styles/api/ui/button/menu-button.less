@@ -67,8 +67,7 @@
 
   &:not(.transparent) {
     .@{_COMMON_PREFIX}dropdown-handle {
-
-      &:after {
+      &::after {
         border-top: 10px solid @admin-white;
       }
 
@@ -85,7 +84,6 @@
     }
 
     .action-button {
-
       span {
         color: @admin-white;
       }
@@ -104,16 +102,15 @@
 
   &.transparent {
     .@{_COMMON_PREFIX}dropdown-handle {
-
-      &:after {
+      &::after {
         border-top: 10px solid @form-button-bg;
       }
 
-      &[disabled]:after {
+      &[disabled]::after {
         border-top-color: @form-button-bg-disabled;
       }
 
-      &:not([disabled]):hover:after {
+      &:not([disabled]):hover::after {
         border-top-color: darken(@form-button-bg, 20%);
       }
     }
@@ -147,6 +144,5 @@
         color: @admin-font-gray3;
       }
     }
-
   }
 }
