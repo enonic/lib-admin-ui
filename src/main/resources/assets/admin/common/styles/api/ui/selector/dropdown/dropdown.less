@@ -34,13 +34,15 @@
     overflow-y: auto !important;
   }
 
-  .empty-options, .options-container {
+  .empty-options,
+  .options-container {
     position: absolute;
     box-sizing: border-box;
     width: 100%;
     margin: 0;
     padding: 0;
     .input-border();
+
     box-shadow: 2px 2px 2px @admin-medium-gray-border;
     background: white;
     z-index: 105;
@@ -59,7 +61,8 @@
     }
 
     .slick-cell {
-      &:hover, &.active {
+      &:hover,
+      &.active {
         background: @admin-bg-light-gray;
         cursor: pointer;
       }
@@ -88,7 +91,6 @@
       margin: 8px 0 4px 10px;
       width: calc(~'100% - ' 45px);
     }
-
   }
 
   &.readonly {
@@ -127,15 +129,15 @@
         }
       }
 
+      .toggle.icon {
+        margin-left: 10px;
+        height: 35px;
+      }
+
       &:not(.expandable) {
         .toggle.icon {
           visibility: hidden;
         }
-      }
-
-      .toggle.icon {
-        margin-left: 10px;
-        height: 35px;
       }
 
       .selected {
@@ -147,6 +149,7 @@
       }
     }
   }
+
   &.tree-mode {
     .grid .slick-row .slick-cell {
       padding-left: 0;
@@ -156,6 +159,7 @@
       }
     }
   }
+
   &:not(.tree-mode) {
     .grid {
       .slick-row {

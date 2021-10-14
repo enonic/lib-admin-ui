@@ -18,7 +18,11 @@
     right: 6px;
   }
 
-  &.checking, &.notavailable, &.available:not(.just-shown), &.error, &.invalid {
+  &.available:not(.just-shown),
+  &.checking,
+  &.error,
+  &.invalid,
+  &.notavailable {
     &::after {
       content: attr(data-status);
     }

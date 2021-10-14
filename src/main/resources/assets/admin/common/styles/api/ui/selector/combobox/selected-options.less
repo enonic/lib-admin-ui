@@ -1,21 +1,16 @@
+.custom-selector .selected-option .edit {
+  display: none;
+}
+
 // can be out of combobox (i.e ImageSelector)
 .selected-options {
   float: none;
-
-  &.sortable:not(.readonly) {
-    .selected-option {
-      cursor: move;
-
-      &:hover {
-        background: none;
-      }
-    }
-  }
 
   .selected-option {
     display: flex;
     align-items: center;
     .option-cell();
+
     width: 100%;
     cursor: default;
 
@@ -75,6 +70,12 @@
       }
     }
   }
+
+  &.sortable:not(.readonly) {
+    .selected-option {
+      cursor: move;
+    }
+  }
 }
 
 .display-validation-errors .invalid .selected-options:not(:empty) {
@@ -105,12 +106,9 @@
     pointer-events: none;
     opacity: 0.8;
 
-    .remove, .edit {
+    .remove,
+    .edit {
       display: none;
     }
   }
-}
-
-.custom-selector .selected-option .edit {
-  display: none;
 }

@@ -1,11 +1,11 @@
 .context-menu {
-
   z-index: @z-index-context-menu;
   position: absolute;
 
   dt {
     &:not(.collapsible) {
       display: none;
+
       &.expanded {
         display: block;
       }
@@ -32,13 +32,13 @@
   dd {
     padding-left: 20px;
     display: none;
+
     &.expanded {
       display: block;
     }
-    &:before {
+
+    &::before {
       margin-right: 5px;
     }
   }
-
 }
-

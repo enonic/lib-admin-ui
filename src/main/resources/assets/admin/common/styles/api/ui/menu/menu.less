@@ -10,7 +10,9 @@
   min-width: 120px;
   top: 100%;
 
-  li, dt, dd {
+  li,
+  dt,
+  dd {
     display: block;
     padding: 5px;
     margin: 0;
@@ -22,15 +24,15 @@
     border-width: 0;
     cursor: pointer;
 
+    &:disabled,
+    &.disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
     &:hover:not(.disabled) {
       background-color: @admin-bg-light-gray;
       color: @admin-font-gray3;
     }
-
-    &:disabled, &.disabled {
-      opacity: 0.5;
-      cursor: default;
-    }
   }
 }
-
