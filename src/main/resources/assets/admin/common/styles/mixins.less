@@ -13,7 +13,6 @@
     top: @top;
     font-size: @font-size;
     pointer-events: @pointer-events;
-
   }
 }
 
@@ -32,12 +31,14 @@
     .picker-dialog(@width, @padding);
     box-sizing: border-box;
 
-    h2, h5 {
+    h2,
+    h5 {
       text-align: center;
       position: relative;
     }
 
-    .prev, .next {
+    .prev,
+    .next {
       position: absolute;
       cursor: pointer;
       color: @admin-button-blue2;
@@ -109,11 +110,13 @@
         }
       }
 
-      a, span {
+      a,
+      span {
         display: block;
       }
 
-      .prev, .next {
+      .prev,
+      .next {
         cursor: pointer;
         overflow: hidden;
         height: 16px;
@@ -140,7 +143,6 @@
           .icon-arrow-up();
         }
       }
-
     }
 
     .timezone {

@@ -14,7 +14,7 @@
     cursor: default;
   }
 
-  &:before {
+  &::before {
     margin-right: 5px;
     float: left;
     width: 10px;
@@ -24,7 +24,7 @@
     background: @admin-green;
     color: white;
 
-    &:before {
+    &::before {
       content: 'V ';
     }
   }
@@ -33,7 +33,7 @@
     background: @admin-red;
     color: white;
 
-    &:before {
+    &::before {
       content: 'X ';
     }
   }
@@ -44,9 +44,8 @@
     border: 1px solid @admin-medium-gray-border;
     color: @admin-font-gray3;
 
-    &:before {
+    &::before {
       display: none;
     }
   }
-
 }

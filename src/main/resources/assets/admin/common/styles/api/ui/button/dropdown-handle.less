@@ -11,7 +11,7 @@
 
   .focusable();
 
-  &:after {
+  &::after {
     content: "";
     position: absolute;
     top: 50%;
@@ -27,18 +27,18 @@
     transition-timing-function: cubic-bezier(0, 0.4, 1, 0.6);
   }
 
-  &.down:after {
+  &.down::after {
     transform: rotateX(180deg);
   }
 
   &[disabled] {
     cursor: default;
 
-    &:after {
+    &::after {
       border-top: 10px solid @admin-medium-gray-border;
     }
 
-    &.down:after {
+    &.down::after {
       border-top: 0 solid transparent;
       border-bottom: 10px solid @admin-medium-gray-border;
     }

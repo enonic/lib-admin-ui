@@ -30,17 +30,6 @@
         margin-right: 7px;
       }
 
-      &.active,
-      &.updated {
-        &:disabled {
-          opacity: 1;
-        }
-
-        span {
-          background: @admin-blue;
-        }
-      }
-
       span {
         position: relative;
         display: inline-block;
@@ -55,6 +44,17 @@
         color: @admin-white !important;
         &:empty {
           display: none;
+        }
+      }
+
+      &.active,
+      &.updated {
+        &:disabled {
+          opacity: 1;
+        }
+
+        span {
+          background: @admin-blue;
         }
       }
 
@@ -207,10 +207,10 @@ body {
 
 @keyframes grow {
   0%, 100% {
-    transform: scale( 1 );
+    transform: scale(1);
   }
 
   50% {
-    transform: scale( 1.2 );
+    transform: scale(1.2);
   }
 }

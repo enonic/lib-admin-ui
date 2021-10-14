@@ -18,7 +18,7 @@
     position: absolute;
     top: 0;
     height: @toggle-height;
-    background: linear-gradient(to top, #fff, #E5E5E5);
+    background: linear-gradient(to top, #fff, #e5e5e5);
     border-radius: @toggle-border-radius;
     border: 1px solid #999;
   }
@@ -28,7 +28,8 @@
     overflow: hidden;
     border-radius: @toggle-border-radius;
 
-    .on, .off {
+    .on,
+    .off {
       display: inline-block;
       overflow: hidden;
       height: @toggle-height;
@@ -40,15 +41,15 @@
       text-transform: uppercase;
       vertical-align: top;
       white-space: nowrap;
-      box-shadow: inset -2px 2px 10px -5px black;
+      box-shadow: inset -2px 2px 10px -5px #000;
     }
 
     .on {
       padding-left: @toggle-side-padding;
       padding-right: @toggle-border-radius + @toggle-side-padding;
-      color: #F7FAFD;
-      text-shadow: 0 0 2px #364A5D;
-      background: #5EA2DA;
+      color: #f7fafd;
+      text-shadow: 0 0 2px #364a5d;
+      background: #5ea2da;
     }
 
     .off {
@@ -57,7 +58,7 @@
       text-align: right;
       color: #929496;
       text-shadow: 1px 0 1px #fff;
-      background: #D5D6D6;
+      background: #d5d6d6;
     }
   }
 }

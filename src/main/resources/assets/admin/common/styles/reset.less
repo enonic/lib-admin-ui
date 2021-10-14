@@ -39,7 +39,8 @@ table {
   border-spacing: 0;
 }
 
-fieldset, img {
+fieldset,
+img {
   border: 0;
 }
 
@@ -60,12 +61,13 @@ li {
   list-style: none;
 }
 
-caption, th {
+caption,
+th {
   text-align: left;
 }
 
-q:before,
-q:after {
+q::before,
+q::after {
   content: "";
 }
 
@@ -83,7 +85,7 @@ sub {
   vertical-align: text-bottom;
 }
 
-.input-reset() {
+.defaultInputs() {
   -webkit-appearance: none;
   -moz-appearance: none;
   font-family: inherit;
@@ -93,7 +95,7 @@ sub {
 
 textarea,
 select {
-  .input-reset();
+  .defaultInputs();
 }
 
 input,
@@ -109,7 +111,12 @@ button {
 }
 
 input:not([type="radio"]) {
-  .input-reset();
+  .defaultInputs();
+}
+
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
 }
 
 @-moz-document url-prefix() {
@@ -130,9 +137,4 @@ h4,
 h5,
 h6 {
   font-weight: normal;
-}
-
-button::-moz-focus-inner {
-  border: 0;
-  padding: 0;
 }

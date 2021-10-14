@@ -1,7 +1,7 @@
 .@{_COMMON_PREFIX}tooltip, #@{_COMMON_PREFIX}tooltip, .@{_COMMON_PREFIX}dropdown .@{_COMMON_PREFIX}tooltip {
   .reset();
-  opacity: .8;
 
+  opacity: 0.8;
   position: fixed;
   background: @admin-tooltip-bg;
   padding: 5px 8px 4px 8px !important; // to override bootstraps .tooltip.top etc.
@@ -14,12 +14,11 @@
   border-radius: 3px;
   white-space: pre-wrap;
 
-  &:before {
+  &::before {
     content: " ";
     position: absolute;
     overflow: hidden;
   }
 
   .arrow(@admin-tooltip-bg, 5px);
-
 }
