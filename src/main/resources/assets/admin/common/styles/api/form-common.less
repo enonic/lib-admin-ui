@@ -8,6 +8,21 @@
     display: none;
   }
 
+  .help-text {
+    font-size: 11px;
+    padding-top: 5px;
+
+    &:not(.visible) {
+      display: none;
+    }
+
+    p {
+      color: @admin-font-gray1;
+      font-style: italic;
+      text-align: justify;
+    }
+  }
+
   &.panel-may-display-validation-errors {
     .input-view {
       padding-top: 10px;
@@ -92,21 +107,6 @@
 
     &.on {
       background: @admin-button-blue1;
-    }
-  }
-
-  .help-text {
-    font-size: 11px;
-    padding-top: 5px;
-
-    &:not(.visible) {
-      display: none;
-    }
-
-    p {
-      color: @admin-font-gray1;
-      font-style: italic;
-      text-align: justify;
     }
   }
 
