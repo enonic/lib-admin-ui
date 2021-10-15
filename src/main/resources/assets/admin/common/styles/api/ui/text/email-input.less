@@ -54,21 +54,6 @@
     }
   }
 
-  &.available {
-    &:not(.just-shown) {
-      .form-input {
-        .input-border(@admin-level-1);
-        .input-glow(@admin-level-1);
-
-        padding-right: 60px;
-      }
-
-      &::after {
-        color: @admin-level-1;
-      }
-    }
-  }
-
   &.error {
     .form-input {
       .input-border(@admin-level-3);
@@ -92,6 +77,21 @@
 
     &::after {
       color: @admin-level-3;
+    }
+  }
+
+  &.available {
+    &:not(.just-shown) {
+      .form-input {
+        .input-border(@admin-level-1);
+        .input-glow(@admin-level-1);
+
+        padding-right: 60px;
+      }
+
+      &::after {
+        color: @admin-level-1;
+      }
     }
   }
 
