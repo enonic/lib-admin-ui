@@ -1,26 +1,27 @@
 @empty-node-size: 32px;
 
 .tree-grid {
-
   position: static;
   height: 100%;
+
   &:not(.no-toolbar) {
     padding-top: 40px;
   }
 
-  .slick-pane-top, .slick-viewport {
+  .slick-pane-top,
+  .slick-viewport {
     overflow-x: hidden !important;
     height: 100% !important; // only without animation
+  }
+
+  .slick-row {
+    transition: margin ease-in 0.3s;
   }
 
   &.quick .grid {
     .slick-row {
       transition: none 4s;
     }
-  }
-
-  .slick-row {
-    transition: margin ease-in 0.3s;
   }
 
   .grid {
@@ -33,22 +34,7 @@
       color: @admin-white;
     }
 
-    .slick-viewport {
-      > .grid-canvas {
-        width: 100% !important;
-
-        .slick-row {
-          display: flex;
-
-          .slick-cell {
-            position: static;
-          }
-        }
-      }
-    }
-
     .slick-row {
-
       background-color: @admin-white;
       z-index: 1;
       transition: margin ease-in 0.3s;
@@ -81,9 +67,7 @@
         justify-content: center;
 
         label {
-
           align-self: center;
-
           display: inline-block;
           width: 14px;
           height: 14px;
@@ -113,8 +97,9 @@
         flex-shrink: 0;
       }
 
-      .toggle.expand, .toggle.collapse {
-        &:before {
+      .toggle.expand,
+      .toggle.collapse {
+        &::before {
           position: relative;
           display: block;
           font-size: 24px;
@@ -127,8 +112,8 @@
 
       .toggle.collapse {
         .icon-arrow-right2();
-        &:before {
 
+        &::before {
           .rotate(45deg);
         }
       }
@@ -138,6 +123,7 @@
           .@{_COMMON_PREFIX}wrapper {
             line-height: 36px;
           }
+
           .@{_COMMON_PREFIX}names-view {
             margin-top: 1px;
             .@{_COMMON_PREFIX}main-name {
@@ -146,7 +132,8 @@
             }
           }
         }
-        &.invalid .names-and-icon-view .@{_COMMON_PREFIX}wrapper:before {
+
+        &.invalid .names-and-icon-view .@{_COMMON_PREFIX}wrapper::before {
           top: 2px;
         }
       }
@@ -158,15 +145,17 @@
       }
 
       &.empty-node {
-        .slick-cell {
-          display: none;
-        }
         top: 0;
         left: 0;
         .icon-spinner;
+
         font-size: @empty-node-size;
 
-        &:before {
+        .slick-cell {
+          display: none;
+        }
+
+        &::before {
           display: block;
           position: absolute;
           top: 50%;
@@ -194,10 +183,23 @@
         }
       }
     }
+
+    .slick-viewport {
+      > .grid-canvas {
+        width: 100% !important;
+
+        .slick-row {
+          display: flex;
+
+          .slick-cell {
+            position: static;
+          }
+        }
+      }
+    }
   }
 
   &.selection-mode .grid .slick-row .toggle.expand {
     visibility: hidden;
   }
 }
-

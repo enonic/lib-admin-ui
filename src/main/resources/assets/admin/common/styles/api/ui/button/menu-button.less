@@ -65,53 +65,17 @@
     text-align: center;
   }
 
-  &:not(.transparent) {
-    .@{_COMMON_PREFIX}dropdown-handle {
-
-      &:after {
-        border-top: 10px solid @admin-white;
-      }
-
-      &:hover {
-        span {
-          color: @admin-white;
-        }
-      }
-      &[disabled], &[disabled]:hover {
-        background-color: @form-button-bg-disabled;
-      }
-    }
-
-    .action-button {
-
-      span {
-        color: @admin-white;
-      }
-
-      &[disabled] {
-        background-color: @form-button-bg-disabled;
-      }
-
-      &:not([disabled]):hover {
-        span {
-          color: @admin-white;
-        }
-      }
-    }
-  }
-
   &.transparent {
     .@{_COMMON_PREFIX}dropdown-handle {
-
-      &:after {
+      &::after {
         border-top: 10px solid @form-button-bg;
       }
 
-      &[disabled]:after {
+      &[disabled]::after {
         border-top-color: @form-button-bg-disabled;
       }
 
-      &:not([disabled]):hover:after {
+      &:not([disabled]):hover::after {
         border-top-color: darken(@form-button-bg, 20%);
       }
     }
@@ -145,6 +109,40 @@
         color: @admin-font-gray3;
       }
     }
+  }
 
+  &:not(.transparent) {
+    .@{_COMMON_PREFIX}dropdown-handle {
+      &::after {
+        border-top: 10px solid @admin-white;
+      }
+
+      &:hover {
+        span {
+          color: @admin-white;
+        }
+      }
+
+      &[disabled],
+      &[disabled]:hover {
+        background-color: @form-button-bg-disabled;
+      }
+    }
+
+    .action-button {
+      span {
+        color: @admin-white;
+      }
+
+      &[disabled] {
+        background-color: @form-button-bg-disabled;
+      }
+
+      &:not([disabled]):hover {
+        span {
+          color: @admin-white;
+        }
+      }
+    }
   }
 }

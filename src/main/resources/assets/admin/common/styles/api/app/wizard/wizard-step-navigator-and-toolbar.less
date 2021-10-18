@@ -25,44 +25,6 @@
     }
   }
 
-  &.folded {
-    justify-content: flex-end;
-
-    .fold-button {
-      display: inline-flex;
-    }
-
-    .wizard-step-navigator {
-      display: block;
-
-      .tab-bar-item {
-
-        .label {
-          font-size: 14px;
-        }
-
-        .tab-item-index {
-          padding-left: 0;
-        }
-
-        &.step-icon {
-
-          &:not(.active) {
-            color: inherit;
-          }
-
-          .label {
-            display: inline-block;
-          }
-
-          &:before {
-            display: none;
-          }
-        }
-      }
-    }
-  }
-
   .toolbar {
     float: right;
     margin: 0 40px;
@@ -90,7 +52,7 @@
     align-items: center;
     justify-content: center;
 
-    &:after {
+    &::after {
       display: none;
     }
 
@@ -127,9 +89,11 @@
         margin-bottom: 0;
         padding-right: 0;
         background-color: @admin-white;
+
         li {
           padding: 5px;
           float: initial;
+
           span {
             color: @admin-font-gray2;
             transition: none;
@@ -138,9 +102,11 @@
           }
 
           &.active {
-            &:before, &:after {
+            &::before,
+            &::after {
               border-bottom: none;
             }
+
             span {
               color: @admin-font-gray3;
             }
@@ -148,6 +114,7 @@
 
           &:hover {
             background: @admin-bg-light-gray;
+
             &:not(.active) span {
               color: darken(@admin-font-gray1, 10%);
             }
@@ -165,12 +132,49 @@
     }
   }
 
+  &.folded {
+    justify-content: flex-end;
+
+    .fold-button {
+      display: inline-flex;
+    }
+
+    .wizard-step-navigator {
+      display: block;
+
+      .tab-bar-item {
+
+        .label {
+          font-size: 14px;
+        }
+
+        .tab-item-index {
+          padding-left: 0;
+        }
+
+        &.step-icon {
+
+          &:not(.active) {
+            color: inherit;
+          }
+
+          .label {
+            display: inline-block;
+          }
+
+          &::before {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
   &.scroll-stick {
     position: fixed;
     // to be above image input type mask and the input type itself
     z-index: @z-index-scroll-stick;
     top: @app-header-height - 1;
-
     box-shadow: -3px 3px 6px 0 @admin-toolbar-shadow;
   }
 
@@ -188,7 +192,7 @@
     order: 2;
     z-index: 1;
 
-    &:after {
+    &::after {
       display: block;
       content: "?";
       height: 22px;
@@ -201,11 +205,11 @@
       background: @form-button-bg-hover;
     }
 
-    &.on:after {
+    &.on::after {
       background: @admin-button-blue1;
     }
 
-    &:hover:not(.on):after {
+    &:hover:not(.on)::after {
       color: @admin-dark-gray;
     }
   }
@@ -217,7 +221,11 @@
   }
 }
 
-._0-240, ._240-360, ._360-540, ._540-720, ._720-960 {
+._0-240,
+._240-360,
+._360-540,
+._540-720,
+._720-960 {
   .wizard-step-navigator-and-toolbar {
     padding-left: 0;
   }

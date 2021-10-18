@@ -4,9 +4,9 @@
 
   .data-block {
     .clearfix();
+
     display: flex;
     align-items: center;
-
     flex-wrap: wrap;
 
     &:not(:last-child) {
@@ -15,7 +15,6 @@
 
     > .drag-control {
       order: 1;
-
       float: left;
       background: url("../../../../../images/nail-plate.png") no-repeat;
       width: 5px;
@@ -37,7 +36,6 @@
       .icon-close;
 
       order: 3;
-
       float: right;
       text-decoration: none;
       cursor: pointer;
@@ -51,7 +49,8 @@
 
   &.single-occurrence {
     .data-block {
-      > .drag-control, > .remove-button {
+      > .drag-control,
+      > .remove-button {
         display: none;
       }
     }
@@ -63,7 +62,6 @@
         display: block;
         border: 1px solid transparent;
         .focusable();
-
       }
 
       .input-wrapper {

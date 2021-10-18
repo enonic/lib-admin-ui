@@ -12,34 +12,16 @@
   a.clear-filter-button {
     text-decoration: none;
     float: right;
+    font-size: 14px;
+
     &:hover {
       color: @admin-button-blue3;
     }
-    font-size: 14px;
-  }
-
-  .aggregation-bucket-view {
-    padding: 1px 0;
-
-    .checkbox {
-      input[type="checkbox"] {
-
-        &:checked + label {
-          color: @admin-black !important;
-        }
-
-        & + label {
-          padding-left: 26px;
-          color: @admin-font-gray2 !important;
-          .ellipsis();
-        }
-      }
-    }
-
   }
 
   input.text-search-field {
     .placeholderColor(@admin-button-blue1);
+
     margin-left: 30px;
     margin-bottom: 7px;
     font-size: 14px;
@@ -49,9 +31,7 @@
     border: 0;
     box-sizing: border-box;
     outline: none;
-
     color: @admin-button-blue1;
-
     border-bottom-width: 1px;
     border-bottom-color: @admin-button-blue1;
     border-bottom-style: solid;
@@ -104,7 +84,6 @@
     text-align: center;
     font-size: 14px;
 
-
     @media screen and (min-width: 541px) {
       display: none;
     }
@@ -112,6 +91,7 @@
     .show-filter-results-button {
       color: @admin-button-blue1;
       cursor: pointer;
+
       &:hover {
         color: @admin-button-blue3;
       }
@@ -119,7 +99,6 @@
   }
 
   .constraint-section {
-
     position: relative;
     padding: 2px 0 16px 5px;
 
@@ -138,19 +117,38 @@
 
     .action-button.btn-close {
       .icon-close();
+
       position: absolute;
       padding: 0;
       top: 30px;
       right: -22px;
       background-color: @admin-white;
-      &:before {
+
+      &::before {
         color: @admin-font-gray2;
       }
     }
   }
 
-  .dependencies-filter-section {
+  .aggregation-bucket-view {
+    padding: 1px 0;
 
+    .checkbox {
+      input[type="checkbox"] {
+        & + label {
+          padding-left: 26px;
+          color: @admin-font-gray2 !important;
+          .ellipsis();
+        }
+
+        &:checked + label {
+          color: @admin-black !important;
+        }
+      }
+    }
+  }
+
+  .dependencies-filter-section {
     padding-bottom: 0;
 
     .dependency-item {
@@ -163,11 +161,11 @@
           margin-right: 8px;
           line-height: 28px;
         }
+
         .@{_COMMON_PREFIX}names-view {
           margin-left: 28px;
         }
       }
     }
-
   }
 }

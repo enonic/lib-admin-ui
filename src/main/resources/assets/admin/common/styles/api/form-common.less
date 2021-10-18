@@ -2,11 +2,25 @@
   font-size: 12px;
   position: relative;
   overflow: visible;
-
   padding: 10px;
 
   .validation-viewer {
     display: none;
+  }
+
+  .help-text {
+    font-size: 11px;
+    padding-top: 5px;
+
+    &:not(.visible) {
+      display: none;
+    }
+
+    p {
+      color: @admin-font-gray1;
+      font-style: italic;
+      text-align: justify;
+    }
   }
 
   &.panel-may-display-validation-errors {
@@ -16,7 +30,6 @@
   }
 
   &.display-validation-errors {
-
     .input-view,
     .form-item-set-view .input-view,
     .form-option-set-view .input-view {
@@ -33,9 +46,9 @@
   }
 
   &:not(.display-validation-errors) {
-
     .input-view {
-      &.highlight-validity-change, &.display-validation-errors {
+      &.highlight-validity-change,
+      &.display-validation-errors {
         &.invalid {
           padding: 10px;
           .input-view-error();
@@ -46,8 +59,9 @@
     }
   }
 
-  .field-set-view, .form-item-set-view, .form-option-set-view {
-
+  .field-set-view,
+  .form-item-set-view,
+  .form-option-set-view {
     &:not(:last-child) {
       margin-bottom: @form-field-spacing;
     }
@@ -96,24 +110,8 @@
     }
   }
 
-  .help-text {
-    font-size: 11px;
-    padding-top: 5px;
-
-    &:not(.visible) {
-      display: none;
-    }
-
-    p {
-      color: @admin-font-gray1;
-      font-style: italic;
-      text-align: justify;
-    }
-  }
-
   .drag-control {
     order: 0;
-
     display: none;
     float: left;
     background: url("../../images/nail-plate.png") no-repeat;
@@ -131,7 +129,9 @@
 }
 
 .form-panel {
-  &._0-240, &._240-360, &._360-540 {
+  &._0-240,
+  &._240-360,
+  &._360-540 {
     .form-view {
       padding: 10px 15px;
     }

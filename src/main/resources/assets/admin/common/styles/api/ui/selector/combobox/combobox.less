@@ -29,13 +29,15 @@
     margin-top: -14px;
   }
 
-  .empty-options, .options-container {
+  .empty-options,
+  .options-container {
     position: absolute;
     box-sizing: border-box;
     width: 100% !important;
     margin: 0;
     padding: 0;
     .input-border();
+
     box-shadow: 2px 2px 2px @admin-medium-gray-border;
     background: white;
     z-index: @z-index-wizard-filed-element;
@@ -61,7 +63,8 @@
     }
 
     .slick-row {
-      &:hover, &.active {
+      &:hover,
+      &.active {
         background: @admin-bg-light-gray;
       }
 
@@ -90,7 +93,6 @@
       &.selected label {
         background: url("../../../../../images/box-checked.gif") center no-repeat;
       }
-
     }
   }
 

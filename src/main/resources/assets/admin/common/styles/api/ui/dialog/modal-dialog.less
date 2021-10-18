@@ -102,6 +102,7 @@
       &::after {
         @width: 20px;
         @height: 3px;
+
         transform: rotate(0deg);
         content: '';
         position: absolute;
@@ -255,6 +256,7 @@
     from {
       transform: rotate(0deg);
     }
+
     to {
       transform: rotate(-45deg);
     }
@@ -264,13 +266,13 @@
     from {
       transform: rotate(0deg);
     }
+
     to {
       transform: rotate(-135deg);
     }
   }
 
   .back-button {
-
     .icon-arrow-left();
     .icon-xlarge();
 
@@ -308,7 +310,7 @@
           .icon-spinner();
 
           &::before {
-            .animation(rotate360, .5s, .0s, linear);
+            .animation(rotate360, 0.5s, 0s, linear);
             color: white;
             display: inline-block;
           }
@@ -395,7 +397,7 @@ body {
         .modal-dialog-header {
           padding: 15px 30px 15px 20px;
 
-          .back-button:before {
+          .back-button::before {
             left: 0;
           }
         }

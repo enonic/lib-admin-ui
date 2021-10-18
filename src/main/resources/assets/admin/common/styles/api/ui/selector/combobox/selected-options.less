@@ -1,17 +1,16 @@
+.custom-selector .selected-option .edit {
+  display: none;
+}
+
 // can be out of combobox (i.e ImageSelector)
 .selected-options {
   float: none;
-
-  &.sortable:not(.readonly) {
-    .selected-option {
-      cursor: move;
-    }
-  }
 
   .selected-option {
     display: flex;
     align-items: center;
     .option-cell();
+
     width: 100%;
     cursor: default;
 
@@ -26,7 +25,7 @@
       font-size: 22px;
       height: 53px !important;
 
-      &:before {
+      &::before {
         color: @admin-font-gray1;
         content: attr(data-drop);
       }
@@ -71,6 +70,12 @@
       }
     }
   }
+
+  &.sortable:not(.readonly) {
+    .selected-option {
+      cursor: move;
+    }
+  }
 }
 
 .display-validation-errors .invalid .selected-options:not(:empty) {
@@ -80,7 +85,8 @@
 .option-cell() {
   .default-slick-cell-styling(1px 8px 1px 0);
 
-  &:hover, &.active {
+  &:hover,
+  &.active {
     background: @admin-bg-light-gray;
   }
 
@@ -100,12 +106,9 @@
     pointer-events: none;
     opacity: 0.8;
 
-    .remove, .edit {
+    .remove,
+    .edit {
       display: none;
     }
   }
-}
-
-.custom-selector .selected-option .edit {
-  display: none;
 }

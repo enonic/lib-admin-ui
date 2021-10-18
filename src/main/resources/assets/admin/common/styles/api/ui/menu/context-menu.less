@@ -1,18 +1,18 @@
 .context-menu {
-
   z-index: @z-index-context-menu;
   position: absolute;
 
   dt {
     &:not(.collapsible) {
       display: none;
+
       &.expanded {
         display: block;
       }
     }
 
     &.collapsible {
-      &:after {
+      &::after {
         content: "";
         position: absolute;
         left: 90%;
@@ -22,7 +22,7 @@
         border-top: 7px solid @admin-dark-gray;
       }
 
-      &.expanded:after {
+      &.expanded::after {
         border-top: none;
         border-bottom: 7px solid @admin-dark-gray;
       }
@@ -32,13 +32,13 @@
   dd {
     padding-left: 20px;
     display: none;
+
     &.expanded {
       display: block;
     }
-    &:before {
+
+    &::before {
       margin-right: 5px;
     }
   }
-
 }
-

@@ -34,13 +34,15 @@
     overflow-y: auto !important;
   }
 
-  .empty-options, .options-container {
+  .empty-options,
+  .options-container {
     position: absolute;
     box-sizing: border-box;
     width: 100%;
     margin: 0;
     padding: 0;
     .input-border();
+
     box-shadow: 2px 2px 2px @admin-medium-gray-border;
     background: white;
     z-index: 105;
@@ -59,7 +61,8 @@
     }
 
     .slick-cell {
-      &:hover, &.active {
+      &:hover,
+      &.active {
         background: @admin-bg-light-gray;
         cursor: pointer;
       }
@@ -75,6 +78,7 @@
     position: relative;
     .input-border();
     .input-glow();
+
     width: 100%;
     min-height: 35px;
     padding: 0;
@@ -87,7 +91,6 @@
       margin: 8px 0 4px 10px;
       width: calc(~'100% - ' 45px);
     }
-
   }
 
   &.readonly {
@@ -113,18 +116,15 @@
         opacity: 0.5;
         pointer-events: none;
       }
+
       &:not(.selectable) {
         &.active {
           .slick-cell.active {
             width: 100%;
           }
         }
+
         .slick-cell-checkboxsel {
-          visibility: hidden;
-        }
-      }
-      &:not(.expandable) {
-        .toggle.icon {
           visibility: hidden;
         }
       }
@@ -132,6 +132,12 @@
       .toggle.icon {
         margin-left: 10px;
         height: 35px;
+      }
+
+      &:not(.expandable) {
+        .toggle.icon {
+          visibility: hidden;
+        }
       }
 
       .selected {
@@ -143,6 +149,7 @@
       }
     }
   }
+
   &.tree-mode {
     .grid .slick-row .slick-cell {
       padding-left: 0;
@@ -152,6 +159,7 @@
       }
     }
   }
+
   &:not(.tree-mode) {
     .grid {
       .slick-row {
