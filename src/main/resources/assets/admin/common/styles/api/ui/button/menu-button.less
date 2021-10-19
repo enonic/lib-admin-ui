@@ -13,6 +13,14 @@
     }
   }
 
+  .menu {
+    display: none;
+    position: absolute;
+    width: 100%;
+    z-index: @z-index-mask;
+    box-sizing: border-box;
+  }
+
   &.minimized {
     .action-button {
       display: none !important;
@@ -25,14 +33,6 @@
     .menu {
       right: 0;
     }
-  }
-
-  .menu {
-    display: none;
-    position: absolute;
-    width: 100%;
-    z-index: @z-index-mask;
-    box-sizing: border-box;
   }
 
   .menu-item {
@@ -85,6 +85,7 @@
 
       span {
         color: @admin-font-gray2;
+
         i {
           font-style: normal;
         }
@@ -95,6 +96,7 @@
 
         span {
           color: @admin-font-gray3;
+
           i {
             color: @admin-font-gray3;
           }

@@ -46,7 +46,7 @@
         .required {
           padding-left: 5px;
 
-          &:after {
+          &::after {
             content: '*';
             color: @input-red-text;
           }
@@ -63,7 +63,6 @@
     }
 
     > .occurrence-views-container {
-
       &:empty {
         display: none;
 
@@ -248,7 +247,8 @@
       }
     }
 
-    .form-item-set-drop-target-placeholder, .form-option-set-drop-target-placeholder {
+    .form-item-set-drop-target-placeholder,
+    .form-option-set-drop-target-placeholder {
       border: 2px dashed @admin-black;
       padding: 14px;
       color: @admin-black;

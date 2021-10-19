@@ -30,26 +30,6 @@
     }
   }
 
-  &.down {
-    background-color: @admin-bg-light-gray !important;
-    z-index: @z-index-toolbar-element;
-    box-shadow: 0 0 10px darken(@admin-input-blue, 10%);
-
-    ul {
-      display:block;
-    }
-  }
-
-  .action {
-    &.hidden {
-      display: none;
-    }
-
-    &:hover {
-      color: @admin-font-gray3;
-    }
-  }
-
   ul {
     display: none;
     z-index: 1;
@@ -70,6 +50,26 @@
       &:hover {
         background-color: @admin-bg-light-gray;
       }
+    }
+  }
+
+  &.down {
+    background-color: @admin-bg-light-gray !important;
+    z-index: @z-index-toolbar-element;
+    box-shadow: 0 0 10px darken(@admin-input-blue, 10%);
+
+    ul {
+      display: block;
+    }
+  }
+
+  .action {
+    &.hidden {
+      display: none;
+    }
+
+    &:hover {
+      color: @admin-font-gray3;
     }
   }
 }
