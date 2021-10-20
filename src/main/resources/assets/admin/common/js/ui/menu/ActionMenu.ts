@@ -2,8 +2,8 @@ import {DivEl} from '../../dom/DivEl';
 import {UlEl} from '../../dom/UlEl';
 import {StyleHelper} from '../../StyleHelper';
 import {Body} from '../../dom/Body';
-import {ActionMenuItem} from './ActionMenuItem';
 import {Action} from '../Action';
+import {MenuItem} from './MenuItem';
 
 export class ActionMenu
     extends DivEl {
@@ -44,8 +44,8 @@ export class ActionMenu
         this.labelEl.getEl().setInnerHtml(label);
     }
 
-    addAction(action: Action, hideInactive: boolean = true): ActionMenuItem {
-        const actionMenuItem = new ActionMenuItem(action, hideInactive);
+    addAction(action: Action): MenuItem {
+        const actionMenuItem = new MenuItem(action);
         actionMenuItem.onClicked(() => {
             this.removeClass('down');
             this.labelEl.removeClass('down');
