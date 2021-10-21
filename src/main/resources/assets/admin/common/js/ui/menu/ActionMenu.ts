@@ -8,14 +8,14 @@ import {MenuItem} from './MenuItem';
 export class ActionMenu
     extends DivEl {
 
-    private actionListEl: UlEl;
+    private readonly actionListEl: UlEl;
 
-    private labelEl: DivEl;
+    private readonly labelEl: DivEl;
 
     private expandedListeners: ((expanded: boolean) => void)[] = [];
 
     constructor(label: string, ...actions: Action[]) {
-        super('action-menu');
+        super('menu action-menu');
         this.labelEl = new DivEl('drop-down-button ' +
                                  StyleHelper.getCls('dropdown-handle', StyleHelper.COMMON_PREFIX));
         this.labelEl.setHtml(label);
