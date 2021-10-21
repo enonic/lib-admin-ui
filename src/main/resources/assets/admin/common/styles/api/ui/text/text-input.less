@@ -1,11 +1,9 @@
 .@{_COMMON_PREFIX}text-input {
-  @available-color: #008424;
-
   .reset();
   .input-border();
   .input-font();
 
-  background-color: #fff;
+  background-color: @admin-white;
 
   &.form-input {
     &.invalid {
@@ -15,11 +13,12 @@
     }
 
     &.valid {
-      .input-border(@available-color);
-      .input-glow(@available-color);
+      .input-border(@admin-level-1);
+      .input-glow(@admin-level-1);
 
     }
   }
+
   display: block;
   box-sizing: border-box;
   min-height: 30px;
@@ -43,5 +42,4 @@
       white-space: pre;
     }
   }
-
 }

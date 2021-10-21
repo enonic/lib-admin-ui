@@ -1,11 +1,11 @@
 .wizard-step-form {
+  max-width: @form-width;
+  overflow: visible;
+
   .panel {
     overflow: visible;
     position: static;
   }
-
-  max-width: @form-width;
-  overflow: visible;
 
   h3 {
     margin-top: 20px;
@@ -13,7 +13,10 @@
   }
 }
 
-._0-240, ._240-360, ._360-540, ._540-720 {
+._0-240,
+._240-360,
+._360-540,
+._540-720 {
   .wizard-step-form {
     width: 100%;
   }

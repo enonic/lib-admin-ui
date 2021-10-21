@@ -10,11 +10,6 @@
     cursor: pointer;
   }
 
-  input[disabled] + label {
-    cursor: default;
-    opacity: 0.8;
-  }
-
   &.top label {
     padding-left: 0;
     margin-top: 19px;
@@ -23,6 +18,11 @@
       position: absolute;
       top: 0;
     }
+  }
+
+  input[disabled] + label {
+    cursor: default;
+    opacity: 0.8;
   }
 
   &.left label::before {

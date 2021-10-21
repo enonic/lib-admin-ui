@@ -18,12 +18,6 @@
     transition: margin ease-in 0.3s;
   }
 
-  &.quick .grid {
-    .slick-row {
-      transition: none 4s;
-    }
-  }
-
   .grid {
     width: 100%;
     height: 100%;
@@ -51,11 +45,15 @@
         .notSelectable();
       }
 
-      .selected, &.selected, .highlight {
+      .selected,
+      &.selected,
+      .highlight {
         background-color: @admin-blue;
         color: @admin-white;
 
-        h6, p, .children-to-load {
+        h6,
+        p,
+        .children-to-load {
           color: @admin-white;
         }
       }
@@ -164,7 +162,7 @@
           height: @empty-node-size;
           margin: -@empty-node-size/2 0 0 -@empty-node-size/2;
           color: @admin-dark-gray;
-          .animation(rotate360, .5s, 0s, linear);
+          .animation(rotate360, 0.5s, 0s, linear);
         }
       }
 
@@ -196,6 +194,12 @@
           }
         }
       }
+    }
+  }
+
+  &.quick .grid {
+    .slick-row {
+      transition: none 4s;
     }
   }
 

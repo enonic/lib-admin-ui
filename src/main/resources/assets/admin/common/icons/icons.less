@@ -185,7 +185,6 @@
   &::before {
     content: "\e185";
   }
-
 }
 
 &.icon-system {
@@ -193,16 +192,16 @@
 
   position: relative;
 
-  &.icon-large:after {
+  &.icon-large::after {
     font-size: 12px;
     right: -6px;
     top: -2px;
   }
 
-  &.icon-xlarge:after {
+  &.icon-xlarge::after {
     font-size: 18px;
     right: 3px;
-    top: 0px;
+    top: 0;
   }
 
   &::after {
