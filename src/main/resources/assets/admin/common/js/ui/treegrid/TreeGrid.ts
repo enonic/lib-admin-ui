@@ -22,7 +22,6 @@ import {TreeGridBuilder} from './TreeGridBuilder';
 import {DataChangedEvent, DataChangedType} from './DataChangedEvent';
 import {TreeGridToolbar} from './TreeGridToolbar';
 import {TreeGridContextMenu} from './TreeGridContextMenu';
-import {TreeGridItemClickedEvent} from './TreeGridItemClickedEvent';
 import {ContextMenuShownEvent} from './ContextMenuShownEvent';
 import {TreeGridSelection} from './TreeGridSelection';
 import {GridSelectionHelper} from '../grid/GridSelectionHelper';
@@ -1251,10 +1250,6 @@ export class TreeGrid<DATA extends IDentifiable>
 
             if (this.selectionOnClick === SelectionOnClickType.HIGHLIGHT) {
                 this.onRowHighlighted(elem, data);
-            }
-
-            if (!elem.hasClass('sort-dialog-trigger')) {
-                new TreeGridItemClickedEvent(this.getItem(data.row), !!this.getFirstSelectedOrHighlightedNode()).fire();
             }
         });
 

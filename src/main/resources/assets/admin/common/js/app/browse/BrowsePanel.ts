@@ -323,7 +323,7 @@ export class BrowsePanel
         }
     }
 
-    private togglePreviewPanelDependingOnScreenSize(item: ResponsiveItem) {
+    protected togglePreviewPanelDependingOnScreenSize(item: ResponsiveItem) {
         if (item.isInRangeOrSmaller(ResponsiveRanges._540_720) && !this.gridAndItemsSplitPanel.isSecondPanelHidden()) {
             this.gridAndItemsSplitPanel.hideSecondPanel();
         } else if (item.isInRangeOrBigger(ResponsiveRanges._720_960) && this.gridAndItemsSplitPanel.isSecondPanelHidden()) {
