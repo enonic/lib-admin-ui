@@ -27,14 +27,12 @@
   }
 
   &.drop-allowed {
-    &:extend(.icon);
     .icon-checkmark;
 
     background-color: @admin-green;
   }
 
   &:not(.drop-allowed) {
-    &:extend(.icon);
     .icon-blocked;
 
     background-color: @admin-red;
