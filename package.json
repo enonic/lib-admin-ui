@@ -42,7 +42,7 @@
     "@types/jqueryui": "^1.12.16",
     "@types/q": "^1.5.5",
     "@types/semver": "^7.3.9",
-    "@types/validator": "^13.6.5",
+    "@types/validator": "^13.6.6",
     "@typescript-eslint/eslint-plugin": "^5.3.0",
     "@typescript-eslint/parser": "^5.3.0",
     "autoprefixer": "^10.3.7",
