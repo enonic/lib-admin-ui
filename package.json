@@ -50,7 +50,7 @@
     "browserslist-config-enonic": "^1.0.6",
     "circular-dependency-plugin": "^5.2.2",
     "copy-webpack-plugin": "^9.0.1",
-    "css-loader": "^6.4.0",
+    "css-loader": "^6.5.0",
     "cssnano": "^5.0.8",
     "del": "^6.0.0",
     "enonic-admin-artifacts": "^1.8.1",
