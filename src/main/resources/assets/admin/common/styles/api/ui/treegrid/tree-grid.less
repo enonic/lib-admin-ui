@@ -192,25 +192,7 @@
           .slick-cell {
             position: static;
 
-            &.l0 {
-              order: 0;
-            }
-
-            &.l1 {
-              order: 1;
-            }
-
-            &.l2 {
-              order: 2;
-            }
-
-            &.l3 {
-              order: 3;
-            }
-
-            &.l4 {
-              order: 4;
-            }
+            .loopingClass(0);
           }
         }
       }
@@ -226,4 +208,12 @@
   &.selection-mode .grid .slick-row .toggle.expand {
     visibility: hidden;
   }
+}
+
+@numLevels: 5;
+.loopingClass (@index) when (@index < @numLevels) {
+  &.l@{index}{
+    order: @index;
+  }
+  .loopingClass(@index + 1);
 }
