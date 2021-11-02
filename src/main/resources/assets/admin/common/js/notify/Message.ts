@@ -1,4 +1,4 @@
-export enum Type {
+export enum MessageType {
     INFO,
     ERROR,
     WARNING,
@@ -6,11 +6,11 @@ export enum Type {
     SUCCESS
 }
 
-export class Action {
+export class MessageAction {
     private name: string;
-    private handler: { (): void };
+    private handler: { (e: MouseEvent): void };
 
-    constructor(name: string, handler: { (): void }) {
+    constructor(name: string, handler: { (e: MouseEvent): void }) {
         this.name = name;
         this.handler = handler;
     }
@@ -19,18 +19,18 @@ export class Action {
         return this.name;
     }
 
-    getHandler(): { (): void } {
+    getHandler(): { (e: MouseEvent): void } {
         return this.handler;
     }
 }
 
 export class Message {
-    private type: Type;
+    private type: MessageType;
     private text: string;
-    private actions: Action[];
+    private actions: MessageAction[];
     private autoHide: boolean;
 
-    constructor(type: Type, text: string, autoHide: boolean = true) {
+    constructor(type: MessageType, text: string, autoHide: boolean = true) {
         this.type = type;
         this.text = text;
         this.actions = [];
@@ -38,26 +38,26 @@ export class Message {
     }
 
     static newSuccess(text: string, autoHide: boolean = true): Message {
-        return new Message(Type.SUCCESS, text, autoHide);
+        return new Message(MessageType.SUCCESS, text, autoHide);
     }
 
     static newInfo(text: string, autoHide: boolean = true): Message {
-        return new Message(Type.INFO, text, autoHide);
+        return new Message(MessageType.INFO, text, autoHide);
     }
 
     static newError(text: string, autoHide: boolean = true): Message {
-        return new Message(Type.ERROR, text, autoHide);
+        return new Message(MessageType.ERROR, text, autoHide);
     }
 
     static newWarning(text: string, autoHide: boolean = true): Message {
-        return new Message(Type.WARNING, text, autoHide);
+        return new Message(MessageType.WARNING, text, autoHide);
     }
 
     static newAction(text: string, autoHide: boolean = true): Message {
-        return new Message(Type.ACTION, text, autoHide);
+        return new Message(MessageType.ACTION, text, autoHide);
     }
 
-    getType(): Type {
+    getType(): MessageType {
         return this.type;
     }
 
@@ -65,7 +65,7 @@ export class Message {
         return this.text;
     }
 
-    getActions(): Action[] {
+    getActions(): MessageAction[] {
         return this.actions;
     }
 
@@ -73,7 +73,7 @@ export class Message {
         return this.autoHide;
     }
 
-    addAction(name: string, handler: () => void) {
-        this.actions.push(new Action(name, handler));
+    addAction(name: string, handler: (e: MouseEvent) => void) {
+        this.actions.push(new MessageAction(name, handler));
     }
 }

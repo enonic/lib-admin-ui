@@ -1,30 +1,53 @@
 import {DivEl} from '../dom/DivEl';
 import {SpanEl} from '../dom/SpanEl';
+import {UlEl} from '../dom/UlEl';
+import {Message, MessageAction, MessageType} from './Message';
+import {AEl} from '../dom/AEl';
 
 export class NotificationMessage
     extends DivEl {
 
     private autoHide: boolean;
 
-    private notificationContent: DivEl;
+    private notificationText: DivEl;
 
-    constructor(message: string, autoHide: boolean = false) {
+    private actionList: UlEl;
+
+    constructor(message: Message) {
         super('notification');
-        this.autoHide = autoHide;
+
+        if (message.getType()) {
+            this.addClass(MessageType[message.getType()].toLowerCase());
+        }
+
+        this.autoHide = message.getAutoHide();
         const notificationInner = new DivEl('notification-inner');
-        const notificationRemove = new SpanEl('notification-remove');
-        notificationRemove.setHtml('X');
-        this.notificationContent = new DivEl('notification-content');
-        this.notificationContent.setHtml(message);
-        notificationInner.appendChild(notificationRemove).appendChild(this.notificationContent);
-        this.appendChild(notificationInner);
+        const notificationRemove = new SpanEl('notification-remove icon-close');
+        this.notificationText = new DivEl('notification-text');
+        this.actionList = new DivEl('notification-actions');
+        this.notificationText.setHtml(message.getText());
+        notificationInner.appendChildren(this.notificationText, this.actionList);
+        this.appendChildren(notificationInner, notificationRemove);
     }
 
     isAutoHide(): boolean {
         return this.autoHide;
     }
 
-    setText(text: string) {
-        this.notificationContent.getEl().setInnerHtml(text);
+    setText(text: string): NotificationMessage {
+        this.notificationText.getEl().setInnerHtml(text);
+        return this;
+    }
+
+    addAction(action: MessageAction): NotificationMessage {
+        this.actionList.appendChild(NotificationMessage.createAction(action));
+        return this;
+    }
+
+    private static createAction(action: MessageAction): AEl {
+        const aEl = new AEl('action');
+        aEl.setHtml(action.getName());
+        aEl.onClicked(action.getHandler());
+        return aEl;
     }
 }

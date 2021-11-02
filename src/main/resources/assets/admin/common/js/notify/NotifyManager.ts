@@ -2,8 +2,7 @@ import * as $ from 'jquery';
 import {Body} from '../dom/Body';
 import {NotificationMessage} from './NotificationMessage';
 import {NotificationContainer} from './NotificationContainer';
-import {Message} from './Message';
-import {NotifyOpts} from './NotifyOpts';
+import {Message, MessageAction} from './Message';
 import {Store} from '../store/Store';
 
 export const NOTIFY_MANAGER_KEY: string = 'NotifyManager';
@@ -64,16 +63,15 @@ export class NotifyManager {
     }
 
     notify(message: Message): string {
-        const opts = NotifyOpts.buildOpts(message);
 
-        if (this.messageExistsInRegistry(opts)) {
+        if (this.messageExistsInRegistry(message)) {
             return null;
         }
 
         const limitReached = this.queue.length > 0
                              || this.el.getWrapper().getChildren().length >= this.notificationLimit;
 
-        const notification = this.createNotification(opts);
+        const notification = this.createNotification(message);
 
         if (limitReached) {
             this.queue.push(notification);
@@ -97,7 +95,7 @@ export class NotifyManager {
         }
     }
 
-    private messageExistsInRegistry(opts: NotifyOpts) {
+    private messageExistsInRegistry(message: Message) {
         if (Object.keys(this.registry).length === 0) {
             return false;
         }
@@ -105,20 +103,19 @@ export class NotifyManager {
         const registryArray = Object.keys(this.registry).map((key) => this.registry[key].opts);
 
         return registryArray.some((registryEntry) =>
-            registryEntry.message === opts.message && registryEntry.type === opts.type);
+            registryEntry.message === message && registryEntry.type === message.getType());
     }
 
-    private createNotification(opts: NotifyOpts): NotificationMessage {
-        const notificationEl = new NotificationMessage(opts.message, opts.autoHide);
-        if (opts.type) {
-            notificationEl.addClass(opts.type);
-        }
+    private createNotification(message: Message): NotificationMessage {
+        const notificationEl = new NotificationMessage(message);
 
         this.registry[notificationEl.getEl().getId()] = {
-            opts: opts,
+            opts: message,
             el: notificationEl
         };
-        this.setListeners(notificationEl, opts);
+
+        this.setListeners(notificationEl);
+        this.setActions(notificationEl, message.getActions());
 
         return notificationEl;
     }
@@ -144,7 +141,7 @@ export class NotifyManager {
         return notification;
     }
 
-    private setListeners(el: NotificationMessage, opts: NotifyOpts) {
+    private setListeners(el: NotificationMessage) {
         el.onClicked(() => {
             this.remove(el);
             return false;
@@ -155,14 +152,11 @@ export class NotifyManager {
         el.onMouseLeave(() => {
             this.startTimer(el);
         });
-
-        if (opts.listeners) {
-            opts.listeners.forEach((listener) => {
-                el.onClicked(listener);
-            });
-        }
-
         el.onRemoved(() => this.handleNotificationRemoved());
+    }
+
+    private setActions(notificationEl: NotificationMessage, actions: MessageAction[]) {
+        actions.forEach(action => notificationEl.addAction(action));
     }
 
     private handleNotificationRemoved() {
