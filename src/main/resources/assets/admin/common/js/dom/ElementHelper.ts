@@ -469,7 +469,7 @@ export class ElementHelper {
     }
 
     getMarginRight(): number {
-        return parseFloat(this.getComputedProperty('margin-right'));
+        return parseFloat(this.getComputedProperty('margin-right')) || 0;
     }
 
     setMarginRight(value: string): ElementHelper {
@@ -478,7 +478,7 @@ export class ElementHelper {
     }
 
     getMarginTop(): number {
-        return parseFloat(this.getComputedProperty('margin-top'));
+        return parseFloat(this.getComputedProperty('margin-top')) || 0;
     }
 
     setMarginTop(value: string): ElementHelper {
@@ -487,7 +487,7 @@ export class ElementHelper {
     }
 
     getMarginBottom(): number {
-        return parseFloat(this.getComputedProperty('margin-bottom'));
+        return parseFloat(this.getComputedProperty('margin-bottom')) || 0;
     }
 
     setMarginBottom(value: string): ElementHelper {
@@ -532,7 +532,7 @@ export class ElementHelper {
     }
 
     getPaddingRight(): number {
-        return parseFloat(this.getComputedProperty('padding-right'));
+        return parseFloat(this.getComputedProperty('padding-right')) || 0;
     }
 
     setPaddingRight(value: string): ElementHelper {
@@ -541,7 +541,7 @@ export class ElementHelper {
     }
 
     getPaddingTop(): number {
-        return parseFloat(this.getComputedProperty('padding-top'));
+        return parseFloat(this.getComputedProperty('padding-top')) || 0;
     }
 
     setPaddingTop(value: string): ElementHelper {
@@ -559,19 +559,19 @@ export class ElementHelper {
     }
 
     getBorderTopWidth(): number {
-        return parseFloat(this.getComputedProperty('border-top-width'));
+        return parseFloat(this.getComputedProperty('border-top-width')) || 0;
     }
 
     getBorderBottomWidth(): number {
-        return parseFloat(this.getComputedProperty('border-bottom-width'));
+        return parseFloat(this.getComputedProperty('border-bottom-width')) || 0;
     }
 
     getBorderRightWidth(): number {
-        return parseFloat(this.getComputedProperty('border-right-width'));
+        return parseFloat(this.getComputedProperty('border-right-width')) || 0;
     }
 
     getBorderLeftWidth(): number {
-        return parseFloat(this.getComputedProperty('border-left-width'));
+        return parseFloat(this.getComputedProperty('border-left-width')) || 0;
     }
 
     setZindex(value: number): ElementHelper {
