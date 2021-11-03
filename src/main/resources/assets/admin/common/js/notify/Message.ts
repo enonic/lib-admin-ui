@@ -73,7 +73,7 @@ export class Message {
         return this.autoHide;
     }
 
-    addAction(name: string, handler: (e: MouseEvent) => void) {
+    addAction(name: string, handler: (e: MouseEvent) => void): void {
         this.actions.push(new MessageAction(name, handler));
     }
 }
