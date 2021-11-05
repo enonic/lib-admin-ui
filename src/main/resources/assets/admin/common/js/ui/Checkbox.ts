@@ -1,7 +1,6 @@
 import {FormInputEl} from '../dom/FormInputEl';
 import {InputEl} from '../dom/InputEl';
 import {LabelEl} from '../dom/LabelEl';
-import {Element, NewElementBuilder} from '../dom/Element';
 
 export class Checkbox
     extends FormInputEl {
@@ -14,8 +13,7 @@ export class Checkbox
     constructor(builder: CheckboxBuilder) {
         super('div', 'checkbox', undefined, String(builder.checked || false));
 
-        this.initCheckbox(builder.inputAlignment);
-        this.initLabel(builder.text, builder.tooltip);
+        this.initElements(builder);
 
         this.appendChild(this.checkbox);
         this.appendChild(this.label);
@@ -23,6 +21,17 @@ export class Checkbox
 
     static create(): CheckboxBuilder {
         return new CheckboxBuilder();
+    }
+
+    protected initElements(builder: CheckboxBuilder): void {
+        const {name, inputAlignment, text, tooltip} = builder;
+
+        this.initCheckbox(inputAlignment);
+        this.initLabel(text, tooltip);
+
+        if (name) {
+            this.setName(name);
+        }
     }
 
     isDisabled(): boolean {
@@ -46,7 +55,7 @@ export class Checkbox
         if (Checkbox.debug) {
             console.warn('Checkbox.setValue sets the value attribute, you may have wanted to use setChecked instead');
         }
-        this.getEl().setValue(value);
+        super.setValue(value);
         return this;
     }
 
@@ -54,7 +63,7 @@ export class Checkbox
         if (Checkbox.debug) {
             console.warn('Checkbox.getValue gets the value attribute, you may have wanted to use getChecked instead');
         }
-        return this.getEl().getValue();
+        return super.getValue();
     }
 
     giveFocus(): boolean {
@@ -63,11 +72,6 @@ export class Checkbox
 
     giveBlur(): boolean {
         return this.checkbox.giveBlur();
-    }
-
-    setName(value: string): Checkbox {
-        this.checkbox.setName(value);
-        return this;
     }
 
     setPartial(value: boolean) {
@@ -93,12 +97,12 @@ export class Checkbox
     }
 
     setPlaceholder(value: string): Checkbox {
-        this.checkbox.getEl().setAttribute('placeholder', value);
+        this.checkbox.setPlaceholder(value);
         return this;
     }
 
     getPlaceholder(): string {
-        return this.checkbox.getEl().getAttribute('placeholder');
+        return this.checkbox.getPlaceholder();
     }
 
     onFocus(listener: (event: FocusEvent) => void) {
@@ -128,10 +132,8 @@ export class Checkbox
         return String(this.checkbox.getHTMLElement()['checked']);
     }
 
-    private initCheckbox(inputAlignment: InputAlignment) {            // we need an id for the label to interact nicely
-        // we need an id for the label to interact nicely
-        this.checkbox = <InputEl> new Element(new NewElementBuilder().setTagName('input').setGenerateId(true));
-        this.checkbox.getEl().setAttribute('type', 'checkbox');
+    private initCheckbox(inputAlignment: InputAlignment) {
+        this.checkbox = new InputEl('', 'checkbox');
         this.addClass(this.getInputAlignmentAsString(inputAlignment));
     }
 
@@ -164,6 +166,8 @@ export enum InputAlignment {
 }
 
 export class CheckboxBuilder {
+    name: string;
+
     text: string;
 
     checked: boolean;
@@ -171,6 +175,11 @@ export class CheckboxBuilder {
     inputAlignment: InputAlignment;
 
     tooltip: string;
+
+    setName(name: string): CheckboxBuilder {
+        this.name = name;
+        return this;
+    }
 
     setLabelText(value: string): CheckboxBuilder {
         this.text = value;
