@@ -60,10 +60,6 @@
     }
   }
 
-  .validation-viewer {
-    margin-top: 7px;
-  }
-
   .input-wrapper {
     position: relative;
 
@@ -145,6 +141,10 @@
     overflow: visible; // for button glow
 
     button {
+      margin-top: 7px;
+    }
+
+    &.visible + .validation-viewer {
       margin-top: 7px;
     }
   }

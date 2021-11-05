@@ -93,7 +93,15 @@ export abstract class FormOptionSetOccurrenceView
             }) : [];
     }
 
-    protected getLabelSubTitle(): string {
+    private getLabelsOfSelectedOptions(): string {
+        const selectedLabels: string[] = this.getSortedSelectedOptionsArrayProperties()
+            .map((selectedProp: Property) => this.formOptionsByNameMap.get(selectedProp.getString())?.label)
+            .filter((label: string) => !!label);
+
+        return selectedLabels.length ? selectedLabels.join(', ') : this.getFormSet().getLabel();
+    }
+
+    private getInputValuesOfSelectedOptions(): string {
         let selectedLabels: string[] = [];
 
         this.getSortedSelectedOptionsArrayProperties()
@@ -109,11 +117,11 @@ export abstract class FormOptionSetOccurrenceView
     }
 
     protected getLabelText(): string {
-        const selectedLabels: string[] = this.getSortedSelectedOptionsArrayProperties()
-            .map((selectedProp: Property) => this.formOptionsByNameMap.get(selectedProp.getString())?.label)
-            .filter((label: string) => !!label);
+        return this.getInputValuesOfSelectedOptions() || this.getLabelsOfSelectedOptions();
+    }
 
-        return selectedLabels.length ? selectedLabels.join(', ') : this.getFormSet().getLabel();
+    protected getLabelSubTitle(): string {
+        return this.getInputValuesOfSelectedOptions() ? this.getLabelsOfSelectedOptions() : '';
     }
 
     private renderSelectionValidationMessage(selectionValidationRecording: ValidationRecording) {

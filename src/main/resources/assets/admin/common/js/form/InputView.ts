@@ -270,8 +270,10 @@ export class InputView
 
     private refreshButtonsState() {
         if (!this.inputTypeView.isManagingAdd()) {
-            let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
-            this.addButton.setVisible(!inputTypeViewNotManagingAdd.maximumOccurrencesReached());
+            const inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
+            const isMaxOccurrencesReached = inputTypeViewNotManagingAdd.maximumOccurrencesReached();
+            this.bottomButtonRow.toggleClass('visible', !isMaxOccurrencesReached);
+            this.addButton.setVisible(!isMaxOccurrencesReached);
         }
     }
 

@@ -5,7 +5,6 @@ import {PropertyValueChangedEvent} from '../../data/PropertyValueChangedEvent';
 import {i18n} from '../../util/Messages';
 import {Value} from '../../data/Value';
 import {DivEl} from '../../dom/DivEl';
-import {DefaultErrorHandler} from '../../DefaultErrorHandler';
 import {PropertyPath} from '../../data/PropertyPath';
 import {FormItemOccurrenceView} from '../FormItemOccurrenceView';
 import {FormItemView} from '../FormItemView';
@@ -25,6 +24,7 @@ import {Element} from '../../dom/Element';
 import {KeyBindings} from '../../ui/KeyBindings';
 import {KeyBinding} from '../../ui/KeyBinding';
 import {Property} from '../../data/Property';
+import {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
 import {PropertyAddedEvent} from '../../data/PropertyAddedEvent';
 import {PropertyRemovedEvent} from '../../data/PropertyRemovedEvent';
@@ -496,9 +496,30 @@ export abstract class FormSetOccurrenceView
         return this.propertySet.getPropertyArray('_selected');
     }
 
+    private isAllowedValueAndType(property: Property) {
+        if (property.getValue().isNull()) {
+            return false;
+        }
+        const propertyType: ValueType = property.getType();
+
+        if (ValueTypes.LOCAL_TIME.equals(propertyType) && property.getString() === '00:00') {
+            return false;
+        }
+
+        const isAllowedType = [
+                ValueTypes.STRING,
+                ValueTypes.DOUBLE,
+                ValueTypes.LONG,
+                ValueTypes.LOCAL_DATE,
+                ValueTypes.LOCAL_TIME
+            ].some(valueType => valueType.equals(propertyType));
+
+        return isAllowedType && property.getString().length > 0;
+    }
+
     protected recursiveFetchLabels(propArray: PropertyArray, labels: string[], firstOnly?: boolean): void {
         propArray.some((prop: Property) => {
-            if (ValueTypes.STRING.equals(prop.getType()) && prop.getValue().isNotNull() && prop.getString().length > 0) {
+            if (this.isAllowedValueAndType(prop)) {
                 const label: string = this.filterLabel(prop.getString());
 
                 if (label.length > 0) {
