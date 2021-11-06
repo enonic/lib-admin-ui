@@ -22,7 +22,8 @@ export class Checkbox
             this.setName(name);
         }
 
-        this.appendChildren(this.checkbox, this.label);
+        this.appendChild(this.checkbox);
+        this.appendChild(this.label);
     }
 
     static create(): CheckboxBuilder {
