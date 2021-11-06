@@ -11,20 +11,9 @@ export class Checkbox
     private label: LabelEl;
 
     constructor(builder: CheckboxBuilder) {
-        super('div', 'checkbox', undefined, String(builder.checked || false));
+        const {name, inputAlignment, text, tooltip, checked} = builder;
 
-        this.initElements(builder);
-
-        this.appendChild(this.checkbox);
-        this.appendChild(this.label);
-    }
-
-    static create(): CheckboxBuilder {
-        return new CheckboxBuilder();
-    }
-
-    protected initElements(builder: CheckboxBuilder): void {
-        const {name, inputAlignment, text, tooltip} = builder;
+        super('div', 'checkbox', undefined, String(checked || false));
 
         this.initCheckbox(inputAlignment);
         this.initLabel(text, tooltip);
@@ -32,6 +21,13 @@ export class Checkbox
         if (name) {
             this.setName(name);
         }
+
+        this.appendChild(this.checkbox);
+        this.appendChild(this.label);
+    }
+
+    static create(): CheckboxBuilder {
+        return new CheckboxBuilder();
     }
 
     isDisabled(): boolean {
