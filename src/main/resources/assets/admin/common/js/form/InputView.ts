@@ -24,6 +24,7 @@ import {InputLabel} from './InputLabel';
 import {InputTypeManager} from './inputtype/InputTypeManager';
 import {ValidationRecordingPath} from './ValidationRecordingPath';
 import {InputViewValidationViewer} from './InputViewValidationViewer';
+import {ValidationError} from '../ValidationError';
 
 export interface InputViewConfig {
 
@@ -295,6 +296,10 @@ export class InputView
             recording.breaksMaximumOccurrences(validationRecordingPath);
         }
 
+        if (inputRecording?.hasCustomErrorText()) {
+            recording.setCustomError(inputRecording.getCustomErrorText());
+        }
+
         if (recording.validityChanged(this.previousValidityRecording)) {
             if (!silent) {
                 this.notifyValidityChanged(new RecordingValidityChangedEvent(recording, validationRecordingPath));
@@ -309,6 +314,11 @@ export class InputView
         }
 
         return recording;
+    }
+
+    private getCustomErrorByPath(validationRecordingPathAsString: string): ValidationError {
+        return this.getContext().getCustomValidationErrors().find(
+            (error: ValidationError) => error.getPropertyPath() === validationRecordingPathAsString);
     }
 
     private notifyValidityChanged(event: RecordingValidityChangedEvent) {

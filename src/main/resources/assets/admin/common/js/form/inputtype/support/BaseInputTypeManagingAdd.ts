@@ -62,15 +62,22 @@ export abstract class BaseInputTypeManagingAdd
             return;
         }
 
-        const totalValid: number = this.getNumberOfValids();
-        const recording: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), totalValid);
-        recording.setValidationErrorToBeRendered(this.isValidationErrorToBeRendered());
+
+        const recording: InputValidationRecording = this.doValidate();
 
         if (!silent && recording.validityChanged(this.previousValidationRecording)) {
             this.notifyValidityChanged(new InputValidityChangedEvent(recording));
         }
 
         this.previousValidationRecording = recording;
+    }
+
+    protected doValidate(): InputValidationRecording {
+        const totalValid: number = this.getNumberOfValids();
+        const recording: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), totalValid);
+        recording.setValidationErrorToBeRendered(this.isValidationErrorToBeRendered());
+
+        return recording;
     }
 
     onValueChanged(listener: (event: ValueChangedEvent) => void) {

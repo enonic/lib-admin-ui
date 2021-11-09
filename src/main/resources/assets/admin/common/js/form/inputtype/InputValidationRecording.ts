@@ -11,6 +11,8 @@ export class InputValidationRecording implements Equitable {
 
     private validationMessageToBeRendered: boolean;
 
+    private customErrorText: string;
+
     constructor(occurrences: Occurrences, totalValid: number) {
         this.occurrences = occurrences;
         this.totalValid = totalValid;
@@ -19,7 +21,8 @@ export class InputValidationRecording implements Equitable {
     }
 
     isValid(): boolean {
-        return this.totalValid >= this.occurrences.getMinimum() && !this.occurrences.maximumBreached(this.totalValid);
+        return !this.customErrorText && this.totalValid >= this.occurrences.getMinimum() &&
+               !this.occurrences.maximumBreached(this.totalValid);
     }
 
     getOccurrences(): Occurrences {
@@ -48,6 +51,18 @@ export class InputValidationRecording implements Equitable {
 
     isValidationMessageToBeRendered(): boolean {
         return this.validationMessageToBeRendered;
+    }
+
+    setCustomErrorText(value: string) {
+        this.customErrorText = value;
+    }
+
+    hasCustomErrorText(): boolean {
+        return !!this.customErrorText;
+    }
+
+    getCustomErrorText(): string {
+        return this.customErrorText;
     }
 
     equals(that: InputValidationRecording): boolean {
