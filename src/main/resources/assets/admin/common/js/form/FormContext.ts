@@ -12,13 +12,13 @@ export class FormContext {
 
     private language: string;
 
-    private customValidationErrors: ValidationError[];
+    private validationErrors: ValidationError[];
 
     constructor(builder: FormContextBuilder) {
         this.showEmptyFormItemSetOccurrences = builder.showEmptyFormItemSetOccurrences;
         this.formState = builder.formState;
         this.language = builder.language;
-        this.customValidationErrors = builder.customValidationErrors || [];
+        this.validationErrors = builder.validationErrors || [];
     }
 
     static create(): FormContextBuilder {
@@ -57,7 +57,7 @@ export class FormContext {
     }
 
     getCustomValidationErrors(): ValidationError[] {
-        return this.customValidationErrors.slice(0);
+        return this.validationErrors.slice(0);
     }
 
     setLanguage(lang: string) {
@@ -73,7 +73,7 @@ export class FormContextBuilder {
 
     language: string;
 
-    customValidationErrors: ValidationError[];
+    validationErrors: ValidationError[];
 
     public setShowEmptyFormItemSetOccurrences(value: boolean): FormContextBuilder {
         this.showEmptyFormItemSetOccurrences = value;
@@ -90,8 +90,8 @@ export class FormContextBuilder {
         return this;
     }
 
-    public setCustomValidationErrors(value: ValidationError[]): FormContextBuilder {
-        this.customValidationErrors = value;
+    public setValidationErrors(value: ValidationError[]): FormContextBuilder {
+        this.validationErrors = value;
         return this;
     }
 
