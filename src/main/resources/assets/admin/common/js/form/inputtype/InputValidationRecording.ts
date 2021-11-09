@@ -60,7 +60,7 @@ export class InputValidationRecording
     }
 
     hasErrorMessage(): boolean {
-        return StringHelper.isBlank(this.errorMessage);
+        return !StringHelper.isBlank(this.errorMessage);
     }
 
     getErrorMessage(): string {
