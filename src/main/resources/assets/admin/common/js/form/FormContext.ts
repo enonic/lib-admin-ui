@@ -2,6 +2,7 @@ import {PropertyPath} from '../data/PropertyPath';
 import {InputTypeViewContext} from './inputtype/InputTypeViewContext';
 import {Input} from './Input';
 import {FormState} from '../app/wizard/WizardPanel';
+import {ValidationError} from '../ValidationError';
 
 export class FormContext {
 
@@ -11,10 +12,13 @@ export class FormContext {
 
     private language: string;
 
+    private customValidationErrors: ValidationError[];
+
     constructor(builder: FormContextBuilder) {
         this.showEmptyFormItemSetOccurrences = builder.showEmptyFormItemSetOccurrences;
         this.formState = builder.formState;
         this.language = builder.language;
+        this.customValidationErrors = builder.customValidationErrors || [];
     }
 
     static create(): FormContextBuilder {
@@ -52,6 +56,10 @@ export class FormContext {
         return this.language;
     }
 
+    getCustomValidationErrors(): ValidationError[] {
+        return this.customValidationErrors.slice(0);
+    }
+
     setLanguage(lang: string) {
         this.language = lang;
     }
@@ -65,6 +73,8 @@ export class FormContextBuilder {
 
     language: string;
 
+    customValidationErrors: ValidationError[];
+
     public setShowEmptyFormItemSetOccurrences(value: boolean): FormContextBuilder {
         this.showEmptyFormItemSetOccurrences = value;
         return this;
@@ -77,6 +87,11 @@ export class FormContextBuilder {
 
     public setLanguage(lang: string): FormContextBuilder {
         this.language = lang;
+        return this;
+    }
+
+    public setCustomValidationErrors(value: ValidationError[]): FormContextBuilder {
+        this.customValidationErrors = value;
         return this;
     }
 

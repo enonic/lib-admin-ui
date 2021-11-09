@@ -1,12 +1,15 @@
 import {ValidationRecordingPath} from './ValidationRecordingPath';
 import {AdditionalValidationRecord} from './AdditionalValidationRecord';
 import {Equitable} from '../Equitable';
+import {ObjectHelper} from '../ObjectHelper';
 
 export class ValidationRecording {
 
     private breaksMinimumOccurrencesArray: ValidationRecordingPath[] = [];
 
     private breaksMaximumOccurrencesArray: ValidationRecordingPath[] = [];
+
+    private customError: string;
 
     breaksMinimumOccurrences(path: ValidationRecordingPath) {
         if (!this.exists(path, this.breaksMinimumOccurrencesArray)) {
@@ -20,8 +23,16 @@ export class ValidationRecording {
         }
     }
 
+    setCustomError(value: string) {
+        this.customError = value;
+    }
+
     isValid(): boolean {
-        return this.breaksMinimumOccurrencesArray.length === 0 && this.breaksMaximumOccurrencesArray.length === 0;
+        return !this.customError && this.breaksMinimumOccurrencesArray.length === 0 && this.breaksMaximumOccurrencesArray.length === 0;
+    }
+
+    hasCustomError(): boolean {
+        return !!this.customError;
     }
 
     isMinimumOccurrencesValid(): boolean {
@@ -40,6 +51,10 @@ export class ValidationRecording {
         return this.breaksMaximumOccurrencesArray;
     }
 
+    getCustomError(): string {
+        return this.customError;
+    }
+
     flatten(recording: ValidationRecording) {
 
         recording.breaksMinimumOccurrencesArray.forEach((path: ValidationRecordingPath) => {
@@ -49,6 +64,8 @@ export class ValidationRecording {
         recording.breaksMaximumOccurrencesArray.forEach((path: ValidationRecordingPath) => {
             this.breaksMaximumOccurrences(path);
         });
+
+        this.setCustomError(recording.getCustomError());
     }
 
     /**
@@ -113,7 +130,7 @@ export class ValidationRecording {
             }
         }
 
-        return true;
+        return ObjectHelper.stringEquals(this.customError, other.customError);
     }
 
     validityChanged(previous: ValidationRecording): boolean {
