@@ -1,7 +1,9 @@
 import {Equitable} from '../../Equitable';
 import {Occurrences} from '../Occurrences';
+import {StringHelper} from '../../util/StringHelper';
 
-export class InputValidationRecording implements Equitable {
+export class InputValidationRecording
+    implements Equitable {
 
     private readonly occurrences: Occurrences;
 
@@ -11,7 +13,7 @@ export class InputValidationRecording implements Equitable {
 
     private validationMessageToBeRendered: boolean;
 
-    private customErrorText: string;
+    private errorMessage: string;
 
     constructor(occurrences: Occurrences, totalValid: number) {
         this.occurrences = occurrences;
@@ -21,7 +23,7 @@ export class InputValidationRecording implements Equitable {
     }
 
     isValid(): boolean {
-        return !this.customErrorText && this.totalValid >= this.occurrences.getMinimum() &&
+        return !this.errorMessage && this.totalValid >= this.occurrences.getMinimum() &&
                !this.occurrences.maximumBreached(this.totalValid);
     }
 
@@ -53,16 +55,16 @@ export class InputValidationRecording implements Equitable {
         return this.validationMessageToBeRendered;
     }
 
-    setCustomErrorText(value: string): void {
-        this.customErrorText = value;
+    setErrorMessage(value: string): void {
+        this.errorMessage = value;
     }
 
-    hasCustomErrorText(): boolean {
-        return !!this.customErrorText;
+    hasErrorMessage(): boolean {
+        return StringHelper.isBlank(this.errorMessage);
     }
 
-    getCustomErrorText(): string {
-        return this.customErrorText;
+    getErrorMessage(): string {
+        return this.errorMessage;
     }
 
     equals(that: InputValidationRecording): boolean {

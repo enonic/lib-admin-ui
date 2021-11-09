@@ -34,6 +34,6 @@ export class InputViewValidationViewer extends Viewer<InputValidationRecording> 
             return max > 1 ? i18n('field.occurrence.breaks.max.many', max) : i18n('field.occurrence.breaks.max.one');
         }
 
-        return record.getCustomErrorText();
+        return record.getErrorMessage();
     }
 }

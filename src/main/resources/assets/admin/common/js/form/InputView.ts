@@ -296,8 +296,8 @@ export class InputView
             recording.breaksMaximumOccurrences(validationRecordingPath);
         }
 
-        if (inputRecording?.hasCustomErrorText()) {
-            recording.setCustomError(inputRecording.getCustomErrorText());
+        if (inputRecording?.hasErrorMessage()) {
+            recording.setErrorMessage(inputRecording.getErrorMessage());
         }
 
         if (recording.validityChanged(this.previousValidityRecording)) {
@@ -316,7 +316,7 @@ export class InputView
         return recording;
     }
 
-    private getCustomErrorByPath(validationRecordingPathAsString: string): ValidationError {
+    private getValidationErrorByPath(validationRecordingPathAsString: string): ValidationError {
         return this.getContext().getCustomValidationErrors().find(
             (error: ValidationError) => error.getPropertyPath() === validationRecordingPathAsString);
     }

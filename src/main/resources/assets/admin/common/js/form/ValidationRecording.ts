@@ -2,6 +2,7 @@ import {ValidationRecordingPath} from './ValidationRecordingPath';
 import {AdditionalValidationRecord} from './AdditionalValidationRecord';
 import {Equitable} from '../Equitable';
 import {ObjectHelper} from '../ObjectHelper';
+import {StringHelper} from '../util/StringHelper';
 
 export class ValidationRecording {
 
@@ -9,7 +10,7 @@ export class ValidationRecording {
 
     private breaksMaximumOccurrencesArray: ValidationRecordingPath[] = [];
 
-    private customError: string;
+    private errorMessage: string;
 
     breaksMinimumOccurrences(path: ValidationRecordingPath) {
         if (!this.exists(path, this.breaksMinimumOccurrencesArray)) {
@@ -23,16 +24,16 @@ export class ValidationRecording {
         }
     }
 
-    setCustomError(value: string): void {
-        this.customError = value;
+    setErrorMessage(value: string): void {
+        this.errorMessage = value;
     }
 
     isValid(): boolean {
-        return !this.customError && this.breaksMinimumOccurrencesArray.length === 0 && this.breaksMaximumOccurrencesArray.length === 0;
+        return !this.hasError() && this.breaksMinimumOccurrencesArray.length === 0 && this.breaksMaximumOccurrencesArray.length === 0;
     }
 
-    hasCustomError(): boolean {
-        return !!this.customError;
+    hasError(): boolean {
+        return StringHelper.isBlank(this.errorMessage);
     }
 
     isMinimumOccurrencesValid(): boolean {
@@ -51,8 +52,8 @@ export class ValidationRecording {
         return this.breaksMaximumOccurrencesArray;
     }
 
-    getCustomError(): string {
-        return this.customError;
+    getErrorMessage(): string {
+        return this.errorMessage;
     }
 
     flatten(recording: ValidationRecording) {
@@ -65,7 +66,7 @@ export class ValidationRecording {
             this.breaksMaximumOccurrences(path);
         });
 
-        this.setCustomError(recording.getCustomError());
+        this.setErrorMessage(recording.getErrorMessage());
     }
 
     /**
@@ -130,7 +131,7 @@ export class ValidationRecording {
             }
         }
 
-        return ObjectHelper.stringEquals(this.customError, other.customError);
+        return ObjectHelper.stringEquals(this.errorMessage, other.errorMessage);
     }
 
     validityChanged(previous: ValidationRecording): boolean {
