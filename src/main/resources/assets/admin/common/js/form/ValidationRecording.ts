@@ -33,7 +33,7 @@ export class ValidationRecording {
     }
 
     hasError(): boolean {
-        return StringHelper.isBlank(this.errorMessage);
+        return !StringHelper.isBlank(this.errorMessage);
     }
 
     isMinimumOccurrencesValid(): boolean {
