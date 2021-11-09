@@ -53,7 +53,7 @@ export class InputValidationRecording implements Equitable {
         return this.validationMessageToBeRendered;
     }
 
-    setCustomErrorText(value: string) {
+    setCustomErrorText(value: string): void {
         this.customErrorText = value;
     }
 

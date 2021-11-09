@@ -23,7 +23,7 @@ export class ValidationRecording {
         }
     }
 
-    setCustomError(value: string) {
+    setCustomError(value: string): void {
         this.customError = value;
     }
 
