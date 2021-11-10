@@ -78,7 +78,7 @@ export class InputValidationRecording
     }
 
     setToggleErrorDetailsCallback(callbackFn: () => void) {
-        return this.toggleErrorDetailsCallback = callbackFn;
+        this.toggleErrorDetailsCallback = callbackFn;
     }
 
     getToggleErrorDetailsCallback(): () => void {
