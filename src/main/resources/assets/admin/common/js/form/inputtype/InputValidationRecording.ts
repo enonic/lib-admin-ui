@@ -15,6 +15,8 @@ export class InputValidationRecording
 
     private errorMessage: string;
 
+    private toggleErrorDetailsCallback: () => void;
+
     constructor(occurrences: Occurrences, totalValid: number) {
         this.occurrences = occurrences;
         this.totalValid = totalValid;
@@ -73,5 +75,17 @@ export class InputValidationRecording
 
     validityChanged(other: InputValidationRecording) {
         return other == null || other == null || !other.equals(this);
+    }
+
+    setToggleErrorDetailsCallback(callbackFn: () => void) {
+        return this.toggleErrorDetailsCallback = callbackFn;
+    }
+
+    getToggleErrorDetailsCallback(): () => void {
+        return this.toggleErrorDetailsCallback;
+    }
+
+    hasToggleErrorDetailsCallback(): boolean {
+        return !!this.toggleErrorDetailsCallback;
     }
 }
