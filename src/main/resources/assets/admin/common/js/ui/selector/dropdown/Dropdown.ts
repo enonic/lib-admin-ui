@@ -160,6 +160,10 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         this.selectedOptionView.resetOption();
     }
 
+    refresh(): void {
+        this.dropdownList.getDropdownGrid().invalidate();
+    }
+
     resetActiveSelection() {
         this.dropdownList.resetActiveSelection();
     }
