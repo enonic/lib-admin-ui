@@ -103,8 +103,12 @@ export abstract class DropdownGrid<OPTION_DISPLAY_VALUE> {
         return this.config.optionDataLoader;
     }
 
-    renderGrid() {
+    renderGrid(): void {
         this.getGrid().renderGrid();
+    }
+
+    invalidate(): void {
+        this.getGrid().invalidate();
     }
 
     isVisible(): boolean {
