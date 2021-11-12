@@ -68,6 +68,35 @@
     }
   }
 
+  .validation-block {
+    display: flex;
+    align-items: center;
+
+    .validation-viewer {
+      margin-right: 10px;
+    }
+
+    .validation-toggler {
+      padding: 0;
+      background-color: @admin-white;
+      outline: none;
+      display: none;
+
+      span {
+        text-decoration: underline;
+        color: @admin-blue;
+      }
+
+      &:hover {
+        background-color: @admin-white;
+
+        span {
+          color: @admin-button-blue2;
+        }
+      }
+    }
+  }
+
   &.label-inline {
     > label,
     > .input-label {
@@ -89,6 +118,18 @@
 
     > .help-text-toggler {
       margin-left: 5px;
+    }
+  }
+
+  .input-occurrence-view {
+    .error-block {
+      display: none;
+    }
+
+    &.invalid {
+      .error-block {
+        display: block;
+      }
     }
   }
 
@@ -149,35 +190,6 @@
     }
   }
 
-  .validation-block {
-    display: flex;
-    align-items: center;
-
-    .validation-viewer {
-      margin-right: 10px;
-    }
-
-    .validation-toggler {
-      padding: 0;
-      background-color: @admin-white;
-      outline: none;
-      display: none;
-
-      span {
-        text-decoration: underline;
-        color: @admin-blue;
-      }
-
-      &:hover {
-        background-color: @admin-white;
-
-        span {
-          color: @admin-button-blue2;
-        }
-      }
-    }
-  }
-
   &.has-invalid-user-input,
   &.error-details-hidden-by-default {
     .validation-block {
@@ -190,18 +202,6 @@
   &.valid {
     .validation-block {
       display: none;
-    }
-  }
-
-  .input-occurrence-view {
-    .error-block {
-      display: none;
-    }
-
-    &.invalid {
-      .error-block {
-        display: block;
-      }
     }
   }
 
