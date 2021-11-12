@@ -20,6 +20,8 @@ import {InputOccurrences} from './InputOccurrences';
 import {assertNotNull} from '../../../util/Assert';
 import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
 import {BaseInputType} from './BaseInputType';
+import {ValidationError} from '../../../ValidationError';
+import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 
 export abstract class BaseInputTypeNotManagingAdd
     extends BaseInputType {
@@ -255,11 +257,8 @@ export abstract class BaseInputTypeNotManagingAdd
     private updateValidationRecordAndNotifyIfChanged() {
         const totalValid: number = this.getTotalValidOccurrences();
         const newValidationRecord: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), totalValid);
-        newValidationRecord.setValidationMessageToBeRendered(this.isValidationMessageToBeRendered());
 
-        if (newValidationRecord.validityChanged(this.previousValidationRecording) ||
-            !ObjectHelper.anyEquals(newValidationRecord.isValidationMessageToBeRendered(),
-                this.previousValidationRecording?.isValidationMessageToBeRendered())) {
+        if (newValidationRecord.validityChanged(this.previousValidationRecording)) {
             this.notifyValidityChanged(new InputValidityChangedEvent(newValidationRecord));
         }
 
@@ -269,23 +268,8 @@ export abstract class BaseInputTypeNotManagingAdd
     private updateValidationRecord() {
         const newValidationRecord: InputValidationRecording =
             new InputValidationRecording(this.input.getOccurrences(), this.getTotalValidOccurrences());
-        newValidationRecord.setValidationMessageToBeRendered(this.isValidationMessageToBeRendered());
 
         this.previousValidationRecording = newValidationRecord;
-    }
-
-    private isValidationMessageToBeRendered(): boolean {
-        if (this.input.getOccurrences().getMinimum() === 1 && this.input.getOccurrences().getMaximum() === 1) {
-            let hasValidationError: boolean = false;
-
-            this.occurrenceValidationState.forEach((occurrenceValidationRecord: OccurrenceValidationRecord) => {
-                hasValidationError = !!occurrenceValidationRecord.getAdditionalValidationRecord();
-            });
-
-            return !hasValidationError;
-        }
-
-        return true;
     }
 
     valueBreaksRequiredContract(value: Value): boolean {
@@ -295,9 +279,9 @@ export abstract class BaseInputTypeNotManagingAdd
     abstract createInputOccurrenceElement(_index: number, _property: Property);
 
     updateInputOccurrenceElement(_occurrence: Element, _property: Property, _unchangedOnly?: boolean) {
-        const formInputEl = ObjectHelper.iFrameSafeInstanceOf(_occurrence, FormInputEl) ? <FormInputEl> _occurrence :
+        const formInputEl = ObjectHelper.iFrameSafeInstanceOf(_occurrence, FormInputEl) ? <FormInputEl>_occurrence :
                             ObjectHelper.iFrameSafeInstanceOf(_occurrence.getFirstChild(), FormInputEl)
-                            ? <FormInputEl> _occurrence.getFirstChild()
+                            ? <FormInputEl>_occurrence.getFirstChild()
                             :
                             null;
 
@@ -357,6 +341,16 @@ export abstract class BaseInputTypeNotManagingAdd
             const inputEl: Element = occurrenceView.getInputElement();
             this.validateUserInput(inputEl);
             this.validateRequiredContract(inputEl, value);
+            this.validateCustomErrors(occurrenceView);
         }
+    }
+
+    protected validateCustomErrors(occurrenceView: InputOccurrenceView) {
+        this.getContext().formContext.getValidationErrors().forEach((error: ValidationError) => {
+            if (occurrenceView.getDataPath().asRelative().toString() === error.getPropertyPath()) {
+                this.occurrenceValidationState.get(occurrenceView.getInputElement().getId()).addAdditionalValidation(
+                    AdditionalValidationRecord.create().setMessage(error.getMessage()).build());
+            }
+        });
     }
 }

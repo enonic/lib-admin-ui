@@ -148,4 +148,74 @@
       margin-top: 7px;
     }
   }
+
+  .validation-block {
+    display: flex;
+    align-items: center;
+
+    .validation-viewer {
+      margin-right: 10px;
+    }
+
+    .validation-toggler {
+      padding: 0;
+      background-color: @admin-white;
+      outline: none;
+      display: none;
+
+      span {
+        text-decoration: underline;
+        color: @admin-blue;
+      }
+
+      &:hover {
+        background-color: @admin-white;
+
+        span {
+          color: @admin-button-blue2;
+        }
+      }
+    }
+  }
+
+  &.has-invalid-user-input,
+  &.error-details-hidden-by-default {
+    .validation-block {
+      .validation-toggler {
+        display: block;
+      }
+    }
+  }
+
+  &.valid {
+    .validation-block {
+      display: none;
+    }
+  }
+
+  .input-occurrence-view {
+    .error-block {
+      display: none;
+    }
+
+    &.invalid {
+      .error-block {
+        display: block;
+      }
+    }
+  }
+
+  &.error-details-hidden {
+    .input-occurrence-view {
+      .error-block {
+        display: none;
+      }
+    }
+  }
+
+  &.one-and-only.has-invalid-user-input {
+    .validation-viewer {
+      display: none;
+    }
+  }
 }

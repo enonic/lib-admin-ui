@@ -45,6 +45,10 @@ export interface InputTypeView {
 
     getInputValidationRecording(): InputValidationRecording;
 
+    hideValidationDetailsByDefault(): boolean;
+
+    isValidationErrorToBeRendered(): boolean;
+
     onValidityChanged(listener: (event: InputValidityChangedEvent) => void);
 
     unValidityChanged(listener: (event: InputValidityChangedEvent) => void);

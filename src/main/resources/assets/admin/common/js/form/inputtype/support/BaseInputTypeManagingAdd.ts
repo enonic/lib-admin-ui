@@ -75,7 +75,6 @@ export abstract class BaseInputTypeManagingAdd
     protected doValidate(): InputValidationRecording {
         const totalValid: number = this.getNumberOfValids();
         const recording: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), totalValid);
-        recording.setValidationErrorToBeRendered(this.isValidationErrorToBeRendered());
 
         return recording;
     }
