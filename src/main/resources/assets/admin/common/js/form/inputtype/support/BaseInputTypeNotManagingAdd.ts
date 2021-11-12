@@ -345,7 +345,7 @@ export abstract class BaseInputTypeNotManagingAdd
         }
     }
 
-    protected validateCustomErrors(occurrenceView: InputOccurrenceView) {
+    protected validateCustomErrors(occurrenceView: InputOccurrenceView): void {
         this.getContext().formContext.getValidationErrors().forEach((error: ValidationError) => {
             if (occurrenceView.getDataPath().asRelative().toString() === error.getPropertyPath()) {
                 this.occurrenceValidationState.get(occurrenceView.getInputElement().getId()).addAdditionalValidation(
