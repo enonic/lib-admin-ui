@@ -22,8 +22,8 @@ export class OccurrenceValidationRecord {
         return !this.isRequiredContractBroken() && this.isValueValid();
     }
 
-    getAdditionalValidationRecord(): AdditionalValidationRecord {
-        return this.additionalValidation[0];
+    getAdditionalValidationRecords(): AdditionalValidationRecord[] {
+        return this.additionalValidation;
     }
 
     addAdditionalValidation(record: AdditionalValidationRecord) {

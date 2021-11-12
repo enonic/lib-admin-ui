@@ -194,8 +194,8 @@ export class InputOccurrenceView
     }
 
     displayValidationError(occurrenceValidationRecord: OccurrenceValidationRecord) {
-        this.validationErrorBlock.setVisible(occurrenceValidationRecord && !occurrenceValidationRecord.isValueValid());
-        const errorMessage: string = occurrenceValidationRecord?.getAdditionalValidationRecord()?.getMessage() || '';
+        const errorMessage: string = occurrenceValidationRecord?.getAdditionalValidationRecords()[0]?.getMessage() || '';
         this.validationErrorBlock.setHtml(errorMessage);
+        this.toggleClass('invalid', !!errorMessage);
     }
 }

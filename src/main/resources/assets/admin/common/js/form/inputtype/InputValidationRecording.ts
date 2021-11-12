@@ -9,19 +9,11 @@ export class InputValidationRecording
 
     private readonly totalValid: number;
 
-    private validationErrorToBeRendered: boolean;
-
-    private validationMessageToBeRendered: boolean;
-
     private errorMessage: string;
-
-    private toggleErrorDetailsCallback: () => void;
 
     constructor(occurrences: Occurrences, totalValid: number) {
         this.occurrences = occurrences;
         this.totalValid = totalValid;
-        this.validationErrorToBeRendered = true;
-        this.validationMessageToBeRendered = true;
     }
 
     isValid(): boolean {
@@ -39,22 +31,6 @@ export class InputValidationRecording
 
     isMaximumOccurrencesBreached(): boolean {
         return this.occurrences.maximumBreached(this.totalValid);
-    }
-
-    setValidationErrorToBeRendered(value: boolean) {
-        this.validationErrorToBeRendered = value;
-    }
-
-    isValidationErrorToBeRendered(): boolean {
-        return this.validationErrorToBeRendered;
-    }
-
-    setValidationMessageToBeRendered(value: boolean) {
-        this.validationMessageToBeRendered = value;
-    }
-
-    isValidationMessageToBeRendered(): boolean {
-        return this.validationMessageToBeRendered;
     }
 
     setErrorMessage(value: string): void {
@@ -75,17 +51,5 @@ export class InputValidationRecording
 
     validityChanged(other: InputValidationRecording) {
         return other == null || other == null || !other.equals(this);
-    }
-
-    setToggleErrorDetailsCallback(callbackFn: () => void): void {
-        this.toggleErrorDetailsCallback = callbackFn;
-    }
-
-    getToggleErrorDetailsCallback(): () => void {
-        return this.toggleErrorDetailsCallback;
-    }
-
-    hasToggleErrorDetailsCallback(): boolean {
-        return !!this.toggleErrorDetailsCallback;
     }
 }
