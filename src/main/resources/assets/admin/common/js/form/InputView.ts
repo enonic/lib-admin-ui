@@ -24,7 +24,7 @@ import {InputLabel} from './InputLabel';
 import {InputTypeManager} from './inputtype/InputTypeManager';
 import {ValidationRecordingPath} from './ValidationRecordingPath';
 import {InputViewValidationViewer} from './InputViewValidationViewer';
-import {ValidationError} from '../ValidationError';
+import {TogglerButton} from '../ui/button/TogglerButton';
 
 export interface InputViewConfig {
 
@@ -41,6 +41,8 @@ export class InputView
     extends FormItemView {
 
     public static debug: boolean = false;
+    private static ERROR_DETAILS_HIDDEN_CLS: string = 'error-details-hidden';
+
     private input: Input;
     private parentPropertySet: PropertySet;
     private propertyArray: PropertyArray;
@@ -48,6 +50,7 @@ export class InputView
     private bottomButtonRow?: DivEl;
     private addButton?: Button;
     private validationViewer: InputViewValidationViewer;
+    private validationDetailsToggler: TogglerButton;
     private previousValidityRecording: ValidationRecording;
     private validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
     private helpText?: HelpTextContainer;
@@ -65,7 +68,6 @@ export class InputView
 
         this.input = config.input;
         this.parentPropertySet = config.parentDataSet;
-
     }
 
     public layout(validate: boolean = true): Q.Promise<void> {
@@ -101,8 +103,7 @@ export class InputView
             }
 
             if (!this.inputTypeView.isManagingAdd()) {
-
-                let inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
+                const inputTypeViewNotManagingAdd: BaseInputTypeNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
                 inputTypeViewNotManagingAdd.onOccurrenceAdded(() => {
                     this.refreshButtonsState();
                 });
@@ -117,14 +118,44 @@ export class InputView
                 this.bottomButtonRow = new DivEl('bottom-button-row');
                 this.appendChild(this.bottomButtonRow);
                 this.bottomButtonRow.appendChild(this.addButton);
+
+                this.toggleClass('one-and-only',
+                    this.input.getOccurrences().getMinimum() === 1 && this.input.getOccurrences().getMaximum() === 1);
+
+                inputTypeViewNotManagingAdd.onOccurrenceValueChanged(() => {
+                    this.toggleClass('has-invalid-user-input', !inputTypeViewNotManagingAdd.hasValidUserInput());
+                });
+
+                inputTypeViewNotManagingAdd.onValidityChanged((event: InputValidityChangedEvent) => {
+                    this.toggleClass('has-invalid-user-input', !inputTypeViewNotManagingAdd.hasValidUserInput());
+                });
+
+                this.toggleClass('has-invalid-user-input', !inputTypeViewNotManagingAdd.hasValidUserInput());
             }
 
             this.validationViewer = new InputViewValidationViewer();
-            this.appendChild(this.validationViewer);
+            this.validationDetailsToggler = new TogglerButton('validation-toggler');
+            this.validationDetailsToggler.setLabel(i18n('field.validation.hideDetails'));
+            this.validationDetailsToggler.setEnabled(true);
+            const validationBlock: DivEl = new DivEl('validation-block');
+            validationBlock.appendChild(this.validationViewer);
+            validationBlock.appendChild(this.validationDetailsToggler);
+            this.appendChild(validationBlock);
 
             this.inputTypeView.onValidityChanged((event: InputValidityChangedEvent) => {
                 this.handleInputValidationRecording(event.getRecording(), false);
             });
+
+            this.validationDetailsToggler.onActiveChanged((isActive: boolean) => {
+                this.toggleClass(InputView.ERROR_DETAILS_HIDDEN_CLS, isActive);
+                this.validationDetailsToggler.setLabel(
+                    isActive ? i18n('field.validation.showDetails') : i18n('field.validation.hideDetails'));
+            });
+
+            if (this.inputTypeView.hideValidationDetailsByDefault()) {
+                this.addClass(`${InputView.ERROR_DETAILS_HIDDEN_CLS}-by-default`);
+                this.validationDetailsToggler.setActive(true);
+            }
 
             this.refreshButtonsState();
 
@@ -309,16 +340,11 @@ export class InputView
 
         this.previousValidityRecording = recording;
 
-        if (inputRecording?.isValidationErrorToBeRendered() && !this.getContext()?.getFormState()?.isNew()) {
+        if (inputRecording && this.inputTypeView.isValidationErrorToBeRendered() && !this.getContext()?.getFormState()?.isNew()) {
             this.renderValidationErrors(inputRecording);
         }
 
         return recording;
-    }
-
-    private getValidationErrorByPath(validationRecordingPathAsString: string): ValidationError {
-        return this.getContext().getCustomValidationErrors().find(
-            (error: ValidationError) => error.getPropertyPath() === validationRecordingPathAsString);
     }
 
     private notifyValidityChanged(event: RecordingValidityChangedEvent) {

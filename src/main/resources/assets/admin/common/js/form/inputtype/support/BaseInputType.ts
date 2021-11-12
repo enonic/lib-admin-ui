@@ -79,6 +79,9 @@ export abstract class BaseInputType extends DivEl
         });
     }
 
+    hideValidationDetailsByDefault(): boolean {
+        return false;
+    }
 
     abstract onValueChanged(listener: (event: ValueChangedEvent) => void);
 
