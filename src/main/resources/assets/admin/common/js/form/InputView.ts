@@ -119,18 +119,18 @@ export class InputView
                 this.appendChild(this.bottomButtonRow);
                 this.bottomButtonRow.appendChild(this.addButton);
 
-                this.toggleClass('one-and-only',
+                this.toggleClass('single-occurrence',
                     this.input.getOccurrences().getMinimum() === 1 && this.input.getOccurrences().getMaximum() === 1);
 
                 inputTypeViewNotManagingAdd.onOccurrenceValueChanged(() => {
-                    this.toggleClass('has-invalid-user-input', !inputTypeViewNotManagingAdd.hasValidUserInput());
+                    this.toggleHasInvalidInputClass(inputTypeViewNotManagingAdd);
                 });
 
                 inputTypeViewNotManagingAdd.onValidityChanged((event: InputValidityChangedEvent) => {
-                    this.toggleClass('has-invalid-user-input', !inputTypeViewNotManagingAdd.hasValidUserInput());
+                    this.toggleHasInvalidInputClass(inputTypeViewNotManagingAdd);
                 });
 
-                this.toggleClass('has-invalid-user-input', !inputTypeViewNotManagingAdd.hasValidUserInput());
+                this.toggleHasInvalidInputClass(inputTypeViewNotManagingAdd);
             }
 
             this.validationViewer = new InputViewValidationViewer();
@@ -161,6 +161,10 @@ export class InputView
 
             return Q(null);
         });
+    }
+
+    private toggleHasInvalidInputClass(inputTypeViewNotManagingAdd: BaseInputTypeNotManagingAdd) {
+        this.toggleClass('has-invalid-user-input', !inputTypeViewNotManagingAdd.hasValidUserInput());
     }
 
     public update(propertySet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
