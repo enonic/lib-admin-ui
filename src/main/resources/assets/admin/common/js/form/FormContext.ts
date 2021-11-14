@@ -56,6 +56,10 @@ export class FormContext {
         return this.language;
     }
 
+    setValidationErrors(validationErrors: ValidationError[]): void {
+        this.validationErrors = validationErrors;
+    }
+
     getValidationErrors(): ValidationError[] {
         return this.validationErrors.slice(0);
     }

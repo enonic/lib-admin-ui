@@ -346,9 +346,12 @@ export abstract class BaseInputTypeNotManagingAdd
     }
 
     protected validateCustomErrors(occurrenceView: InputOccurrenceView): void {
+        const occurrenceDataPath: string = occurrenceView.getDataPath().asRelative().toString();
+        const occurrenceId: string = occurrenceView.getInputElement().getId();
+
         this.getContext().formContext.getValidationErrors().forEach((error: ValidationError) => {
-            if (occurrenceView.getDataPath().asRelative().toString() === error.getPropertyPath()) {
-                this.occurrenceValidationState.get(occurrenceView.getInputElement().getId()).addAdditionalValidation(
+            if (occurrenceDataPath === error.getPropertyPath()) {
+                this.occurrenceValidationState.get(occurrenceId).addAdditionalValidation(
                     AdditionalValidationRecord.create().setMessage(error.getMessage()).build());
             }
         });
