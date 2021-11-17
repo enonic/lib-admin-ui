@@ -93,22 +93,14 @@ export abstract class FormOptionSetOccurrenceView
             }) : [];
     }
 
-    private getLabelsOfSelectedOptions(): string {
-        const selectedLabels: string[] = this.getSortedSelectedOptionsArrayProperties()
-            .map((selectedProp: Property) => this.formOptionsByNameMap.get(selectedProp.getString())?.label)
-            .filter((label: string) => !!label);
-
-        return selectedLabels.length ? selectedLabels.join(', ') : this.getFormSet().getLabel();
-    }
-
-    private getInputValuesOfSelectedOptions(): string {
+    protected getLabelSubTitle(): string {
         let selectedLabels: string[] = [];
 
         this.getSortedSelectedOptionsArrayProperties()
             .some(selectedProp => {
                 const selectedOptionArray = this.propertySet.getPropertyArray(selectedProp.getString());
                 if (selectedOptionArray && !selectedOptionArray.isEmpty()) {
-                    this.recursiveFetchLabels(selectedOptionArray, selectedLabels, true);
+                    this.fetchPropertyValues(selectedOptionArray, selectedLabels, true);
                 }
                 return selectedLabels.length > 0;
             });
@@ -117,11 +109,11 @@ export abstract class FormOptionSetOccurrenceView
     }
 
     protected getLabelText(): string {
-        return this.getInputValuesOfSelectedOptions() || this.getLabelsOfSelectedOptions();
-    }
+        const selectedLabels: string[] = this.getSortedSelectedOptionsArrayProperties()
+            .map((selectedProp: Property) => this.formOptionsByNameMap.get(selectedProp.getString())?.label)
+            .filter((label: string) => !!label);
 
-    protected getLabelSubTitle(): string {
-        return this.getInputValuesOfSelectedOptions() ? this.getLabelsOfSelectedOptions() : '';
+        return selectedLabels.length ? selectedLabels.join(', ') : this.getFormSet().getLabel();
     }
 
     private renderSelectionValidationMessage(selectionValidationRecording: ValidationRecording) {
