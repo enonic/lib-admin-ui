@@ -44,7 +44,7 @@ export class MarketApplication implements IDentifiable {
     }
 
     public getId(): string {
-        return !!this.appKey ? this.appKey.toString() : '';
+        return this.appKey ? this.appKey.toString() : '';
     }
 
     public isEmpty(): boolean {
@@ -123,30 +123,26 @@ export enum MarketAppStatus {
 export class MarketAppStatusFormatter {
 
     public static statusInstallCssClass: string = 'install';
+
     public static statusInstalledCssClass: string = 'installed';
+
     public static statusInstallingCssClass: string = 'installing';
+
     public static statusUpdateCssClass: string = 'update';
 
-    public static formatStatus(appStatus: MarketAppStatus, progress?: number): string {
-
-        let status = i18n('status.unknown');
-
+    public static formatStatus(appStatus: MarketAppStatus, progress: number = 0): string {
         switch (appStatus) {
         case MarketAppStatus.NOT_INSTALLED:
-            status = i18n('action.install');
-            break;
+            return i18n('action.install');
         case MarketAppStatus.INSTALLED:
-            status = i18n('status.installed');
-            break;
+            return i18n('status.installed');
         case MarketAppStatus.INSTALLING:
-            status = String(progress || 0);
-            break;
+            return String(progress);
         case MarketAppStatus.OLDER_VERSION_INSTALLED:
-            status = i18n('action.update');
-            break;
+            return i18n('action.update');
+        default:
+            return i18n('status.unknown');
         }
-
-        return status;
     }
 
     public static createStatusElement(appStatus: MarketAppStatus, progress?: number) {
@@ -160,52 +156,29 @@ export class MarketAppStatusFormatter {
     }
 
     public static getStatusCssClass(appStatus: MarketAppStatus): string {
-
-        let cssClass;
-
         switch (appStatus) {
         case MarketAppStatus.NOT_INSTALLED:
-            cssClass = MarketAppStatusFormatter.statusInstallCssClass;
-            break;
+            return MarketAppStatusFormatter.statusInstallCssClass;
         case MarketAppStatus.INSTALLED:
-            cssClass = MarketAppStatusFormatter.statusInstalledCssClass;
-            break;
+            return MarketAppStatusFormatter.statusInstalledCssClass;
         case MarketAppStatus.INSTALLING:
-            cssClass = MarketAppStatusFormatter.statusInstallingCssClass;
-            break;
+            return MarketAppStatusFormatter.statusInstallingCssClass;
         case MarketAppStatus.OLDER_VERSION_INSTALLED:
-            cssClass = MarketAppStatusFormatter.statusUpdateCssClass;
-            break;
-        case MarketAppStatus.UNKNOWN:
-            cssClass = 'unknown';
-            break;
+            return MarketAppStatusFormatter.statusUpdateCssClass;
         default:
-            cssClass = 'Unknown';
-        }
-
-        if (!!MarketAppStatus[status]) {
             return 'unknown';
         }
-
-        return cssClass;
     }
 
     public static formatPerformedAction(appStatus: MarketAppStatus): string {
-
-        let performedOperation;
-
         switch (appStatus) {
         case MarketAppStatus.NOT_INSTALLED:
-            performedOperation = 'installed';
-            break;
+            return 'installed';
         case MarketAppStatus.OLDER_VERSION_INSTALLED:
-            performedOperation = 'updated';
-            break;
+            return 'updated';
         default:
-            performedOperation = 'installed';
+            return 'installed';
         }
-
-        return performedOperation;
     }
 }
 
