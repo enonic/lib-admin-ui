@@ -517,57 +517,57 @@ export abstract class FormSetOccurrenceView
         return isAllowedType && property.getString().length > 0;
     }
 
-    protected recursiveFetchLabels(propArray: PropertyArray, labels: string[], firstOnly?: boolean): void {
+    protected fetchPropertyValues(propArray: PropertyArray, propValues: string[], firstOnly?: boolean): void {
         propArray.some((prop: Property) => {
             if (this.isAllowedValueAndType(prop)) {
-                const label: string = this.filterLabel(prop.getString());
+                const propValue: string = this.sanitizeValue(prop.getString());
 
-                if (label.length > 0) {
-                    labels.push(label);
+                if (propValue.length > 0) {
+                    propValues.push(propValue);
                 }
             } else if (ValueTypes.DATA.equals(prop.getType())) {
                 const propertySet = prop.getPropertySet();
                 const formItem = this.getFormItemByName(prop.getName());
                 if (formItem instanceof FormOptionSet) {
-                    this.fetchLabelsFromOptionSet(propertySet, formItem, labels, firstOnly);
+                    this.fetchPropertyValuesFromOptionSet(propertySet, formItem, propValues, firstOnly);
                 } else {
-                    this.fetchLabelsFromGenericSet(propertySet, labels, firstOnly);
+                    this.fetchPropertyValuesFromSet(propertySet, propValues, firstOnly);
                 }
             }
-            return firstOnly && labels.length > 0;
+            return firstOnly && propValues.length > 0;
         });
     }
 
-    private fetchLabelsFromGenericSet(propertySet: PropertySet, labels: string[], firstOnly: boolean) {
+    private fetchPropertyValuesFromSet(propertySet: PropertySet, propValues: string[], firstOnly: boolean) {
         propertySet.getPropertyArrays().some(array => {
             if ('_selected' === array.getName()) {
                 return false;   // skip technical _selected array
             }
-            this.recursiveFetchLabels(array, labels, firstOnly);
-            return firstOnly && labels.length > 0;
+            this.fetchPropertyValues(array, propValues, firstOnly);
+            return firstOnly && propValues.length > 0;
         });
     }
 
-    private fetchLabelsFromOptionSet(propertySet: PropertySet, formItem: FormOptionSet, labels: string[], firstOnly: boolean) {
+    private fetchPropertyValuesFromOptionSet(propertySet: PropertySet, formItem: FormOptionSet, propValues: string[], firstOnly: boolean) {
         const selectionArray = propertySet.getPropertyArray('_selected');
 
         if (selectionArray && !selectionArray.isEmpty()) {
-            this.fetchLabelsFromOptionSetOptions(formItem, selectionArray, labels);
+            this.fetchPropertyValuesFromOptions(formItem, selectionArray, propValues);
 
-            if (labels.length === 0) {
+            if (propValues.length === 0) {
                 // should not happen, but in case no labels were found go inside selected options forms
                 selectionArray.some((selectedProp) => {
                     const selectedOptionArray = propertySet.getPropertyArray(selectedProp.getString());
                     if (selectedOptionArray && !selectedOptionArray.isEmpty()) {
-                        this.recursiveFetchLabels(selectedOptionArray, labels, firstOnly);
+                        this.fetchPropertyValues(selectedOptionArray, propValues, firstOnly);
                     }
-                    return firstOnly && labels.length > 0;
+                    return firstOnly && propValues.length > 0;
                 });
             }
         }
     }
 
-    private fetchLabelsFromOptionSetOptions(formItem: FormOptionSet, selectionArray: PropertyArray, labels: string[]) {
+    private fetchPropertyValuesFromOptions(formItem: FormOptionSet, selectionArray: PropertyArray, propValues: string[]) {
         const nameLabelMap = new Map<string, any>(
             formItem.getFormItems()
                 .filter((fi: FormItem) => fi instanceof FormOptionSetOption)
@@ -582,14 +582,14 @@ export abstract class FormSetOccurrenceView
             })
             .map((selectedProp: Property) => nameLabelMap.get(selectedProp.getString()).label);
 
-        labels.push(...selectedLabels);
+        propValues.push(...selectedLabels);
     }
 
     private getFormItemByName(name: string): FormItem {
         return this.getFormItems().find((item) => item.getName() === name);
     }
 
-    private filterLabel(label: string): string {
+    private sanitizeValue(label: string): string {
         return label
             .replace(/<\/?[^>]+(>|$)/g, '') // removing tags
             .replace(/&nbsp;/g, '') // removing spaces
