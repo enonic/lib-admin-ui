@@ -49,15 +49,20 @@ export class Toolbar
 
     removeActions() {
         this.actions.forEach((action: Action) => {
-            this.getChildren().forEach((element: Element) => {
-                if (ObjectHelper.iFrameSafeInstanceOf(element, ActionButton)) {
-                    if (action.getLabel() === (<ActionButton>element).getLabel()) {
-                        this.removeChild(element);
-                    }
-                }
-            });
+            this.removeAction(action);
         });
         this.actions = [];
+    }
+
+    removeAction(action: Action): void {
+        this.getChildren().concat(this.fold.getDropdown().getChildren()).forEach((element: Element) => {
+            if (ObjectHelper.iFrameSafeInstanceOf(element, ActionButton)) {
+                if (action.getLabel() === (<ActionButton>element).getLabel()) {
+                    element.remove();
+                    this.actions = this.actions.filter((a: Action) => a !== action);
+                }
+            }
+        });
     }
 
     getActions(): Action[] {
