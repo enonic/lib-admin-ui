@@ -97,7 +97,7 @@ export class Toolbar
         this.updateFoldButtonLabel();
     }
 
-    doFold(force: boolean = false) {
+    doFold(force: boolean = false): void {
         const toolbarWidth: number = this.getToolbarWidth();
         let nextFoldableButton: Element = this.getNextFoldableButton();
 
@@ -119,7 +119,7 @@ export class Toolbar
         return this.getEl().getWidthWithoutPadding();
     }
 
-    doExpand() {
+    doExpand(): void {
         const toolbarWidth: number = this.getToolbarWidth();
 
         // if fold has 1 child left then subtract fold button width because it will be hidden
@@ -174,7 +174,7 @@ export class Toolbar
         this.locked = value;
     }
 
-    updateFoldButtonLabel() {
+    updateFoldButtonLabel(): void {
         this.fold.setLabel(this.areAllActionsFolded() ? i18n('action.actions') : i18n('action.more'));
     }
 }
