@@ -14,6 +14,7 @@ export class Toolbar
 
     protected fold: FoldButton;
     protected actions: Action[] = [];
+    protected locked: boolean;
     private hasGreedySpacer: boolean;
 
     constructor(className?: string) {
@@ -83,41 +84,55 @@ export class Toolbar
     }
 
     protected foldOrExpand() {
-        if (!this.isRendered() || !this.isVisible()) {
+        if (!this.isRendered() || !this.isVisible() || this.locked) {
             return;
         }
 
-        let toolbarWidth = this.getEl().getWidthWithoutPadding();
-        if (toolbarWidth <= this.getVisibleButtonsWidth()) {
-
-            while (toolbarWidth <= this.getVisibleButtonsWidth() && this.getNextFoldableButton()) {
-
-                let buttonToHide = this.getNextFoldableButton();
-                let buttonWidth = buttonToHide.getEl().getWidthWithMargin();
-
-                this.removeChild(buttonToHide);
-                this.fold.push(buttonToHide, buttonWidth);
-
-                if (!this.fold.isVisible()) {
-                    this.fold.show();
-                }
-            }
-
+        if (this.getToolbarWidth() <= this.getVisibleButtonsWidth()) {
+            this.doFold();
         } else {
-            // if fold has 1 child left then subtract fold button width because it will be hidden
-            while (!this.fold.isEmpty() &&
-                   (this.getVisibleButtonsWidth(this.fold.getButtonsCount() > 1) + this.fold.getNextButtonWidth() < toolbarWidth)) {
-
-                let buttonToShow = this.fold.pop();
-                buttonToShow.insertBeforeEl(this.fold);
-
-                if (this.fold.isEmpty()) {
-                    this.fold.hide();
-                }
-            }
+           this.doExpand();
         }
 
-        this.fold.setLabel(this.areAllActionsFolded() ? i18n('action.actions') : i18n('action.more'));
+        this.updateFoldButtonLabel();
+    }
+
+    doFold(force: boolean = false) {
+        const toolbarWidth: number = this.getToolbarWidth();
+        let nextFoldableButton: Element = this.getNextFoldableButton();
+
+        while (nextFoldableButton && (force || toolbarWidth <= this.getVisibleButtonsWidth())) {
+            const buttonWidth: number = nextFoldableButton.getEl().getWidthWithMargin();
+
+            this.removeChild(nextFoldableButton);
+            this.fold.push(nextFoldableButton, buttonWidth);
+
+            if (!this.fold.isVisible()) {
+                this.fold.show();
+            }
+
+            nextFoldableButton = this.getNextFoldableButton();
+        }
+    }
+
+    protected getToolbarWidth(): number {
+        return this.getEl().getWidthWithoutPadding();
+    }
+
+    doExpand() {
+        const toolbarWidth: number = this.getToolbarWidth();
+
+        // if fold has 1 child left then subtract fold button width because it will be hidden
+        while (!this.fold.isEmpty() &&
+               (this.getVisibleButtonsWidth(this.fold.getButtonsCount() > 1) + this.fold.getNextButtonWidth() < toolbarWidth)) {
+
+            let buttonToShow = this.fold.pop();
+            buttonToShow.insertBeforeEl(this.fold);
+
+            if (this.fold.isEmpty()) {
+                this.fold.hide();
+            }
+        }
     }
 
     private getVisibleButtonsWidth(includeFold: boolean = true): number {
@@ -128,25 +143,38 @@ export class Toolbar
     }
 
     private getNextFoldableButton(): Element {
-
-        let button = this.fold.getPreviousElement();
+        let button: Element = this.fold.getPreviousElement();
 
         while (button) {
-            if (button.isVisible()) {
+            if (this.isItemAllowedToFold(button)) {
                 return this.getChildren().filter((child) => child.getId() === button.getId())[0];
             }
-            const prevEl = button.getPreviousElement();
+
+            const prevEl: Element = button.getPreviousElement();
+
             if (prevEl && button.getParentElement() !== prevEl.getParentElement()) {
                 return null;
             }
+
             button = button.getPreviousElement();
         }
 
         return null;
     }
 
+    protected isItemAllowedToFold(elem: Element): boolean {
+        return elem.isVisible();
+    }
+
     private areAllActionsFolded(): boolean {
         return this.actions.length === this.fold.getButtonsCount();
     }
 
+    setLocked(value: boolean): void {
+        this.locked = value;
+    }
+
+    updateFoldButtonLabel() {
+        this.fold.setLabel(this.areAllActionsFolded() ? i18n('action.actions') : i18n('action.more'));
+    }
 }
