@@ -90,7 +90,7 @@ export class ClassHelper {
 
         // iterate through object keys, check if they contains constructor function
         for (let key in obj) {
-            if (obj.hasOwnProperty(key)) {
+            if ('hasOwnProperty' in obj && obj.hasOwnProperty(key)) {
                 if (nestLevel === 1 && ClassHelper.ALLOWED_PACKAGES.indexOf(key) < 0) {
                     // look into allowed top level packages only or up to max nest level
                     continue;
