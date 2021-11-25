@@ -483,7 +483,7 @@ export class SplitPanel
 
     getActiveWidthPxOfSecondPanel(): number {
         if (this.secondPanelIsHidden) {
-            return this.secondPanelSize.isPixelsUnit() ? this.hiddenSecondPanelPreviousSize.getValue() :
+            return this.hiddenSecondPanelPreviousSize.isPixelsUnit() ? this.hiddenSecondPanelPreviousSize.getValue() :
                    Math.max(this.secondPanelMinSize.getValue(),
                        this.getEl().getWidthWithBorder() / 100 *
                        (this.hiddenSecondPanelPreviousSize.getValue() || this.secondPanelSize.getValue()));
