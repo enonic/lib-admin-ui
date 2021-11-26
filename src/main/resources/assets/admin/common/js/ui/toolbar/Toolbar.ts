@@ -12,17 +12,17 @@ export class Toolbar
     extends DivEl
     implements ActionContainer {
 
-    protected fold: FoldButton;
+    protected foldButton: FoldButton;
     protected actions: Action[] = [];
-    protected locked: boolean;
+    private locked: boolean;
     private hasGreedySpacer: boolean;
 
     constructor(className?: string) {
         super(!className ? 'toolbar' : className + ' toolbar');
 
-        this.fold = new FoldButton();
-        this.fold.hide();
-        this.appendChild(this.fold);
+        this.foldButton = new FoldButton();
+        this.foldButton.hide();
+        this.appendChild(this.foldButton);
 
         // Hack: Update after styles are applied to evaluate the sizes correctly
         ResponsiveManager.onAvailableSizeChanged(this, () => setTimeout(this.foldOrExpand.bind(this)));
@@ -55,7 +55,7 @@ export class Toolbar
     }
 
     removeAction(action: Action): void {
-        this.getChildren().concat(this.fold.getDropdown().getChildren()).forEach((element: Element) => {
+        this.getChildren().concat(this.foldButton.getDropdown().getChildren()).forEach((element: Element) => {
             if (ObjectHelper.iFrameSafeInstanceOf(element, ActionButton)) {
                 if (action.getLabel() === (<ActionButton>element).getLabel()) {
                     element.remove();
@@ -72,9 +72,9 @@ export class Toolbar
     addElement(element: Element): Element {
         if (this.hasGreedySpacer) {
             element.addClass('pull-right');
-            element.insertAfterEl(this.fold);
+            element.insertAfterEl(this.foldButton);
         } else {
-            element.insertBeforeEl(this.fold);
+            element.insertBeforeEl(this.foldButton);
         }
 
         return element;
@@ -94,15 +94,15 @@ export class Toolbar
         }
 
         if (this.getToolbarWidth() <= this.getVisibleButtonsWidth()) {
-            this.doFold();
+            this.fold();
         } else {
-           this.doExpand();
+           this.expand();
         }
 
         this.updateFoldButtonLabel();
     }
 
-    doFold(force: boolean = false): void {
+    fold(force: boolean = false): void {
         const toolbarWidth: number = this.getToolbarWidth();
         let nextFoldableButton: Element = this.getNextFoldableButton();
 
@@ -110,10 +110,10 @@ export class Toolbar
             const buttonWidth: number = nextFoldableButton.getEl().getWidthWithMargin();
 
             this.removeChild(nextFoldableButton);
-            this.fold.push(nextFoldableButton, buttonWidth);
+            this.foldButton.push(nextFoldableButton, buttonWidth);
 
-            if (!this.fold.isVisible()) {
-                this.fold.show();
+            if (!this.foldButton.isVisible()) {
+                this.foldButton.show();
             }
 
             nextFoldableButton = this.getNextFoldableButton();
@@ -124,31 +124,31 @@ export class Toolbar
         return this.getEl().getWidthWithoutPadding();
     }
 
-    doExpand(): void {
+    expand(): void {
         const toolbarWidth: number = this.getToolbarWidth();
 
         // if fold has 1 child left then subtract fold button width because it will be hidden
-        while (!this.fold.isEmpty() &&
-               (this.getVisibleButtonsWidth(this.fold.getButtonsCount() > 1) + this.fold.getNextButtonWidth() < toolbarWidth)) {
+        while (!this.foldButton.isEmpty() &&
+               (this.getVisibleButtonsWidth(this.foldButton.getButtonsCount() > 1) + this.foldButton.getNextButtonWidth() < toolbarWidth)) {
 
-            let buttonToShow = this.fold.pop();
-            buttonToShow.insertBeforeEl(this.fold);
+            let buttonToShow = this.foldButton.pop();
+            buttonToShow.insertBeforeEl(this.foldButton);
 
-            if (this.fold.isEmpty()) {
-                this.fold.hide();
+            if (this.foldButton.isEmpty()) {
+                this.foldButton.hide();
             }
         }
     }
 
     private getVisibleButtonsWidth(includeFold: boolean = true): number {
         return this.getChildren().reduce((totalWidth: number, element: Element) => {
-            return totalWidth + (element.isVisible() && (includeFold || element !== this.fold) ?
+            return totalWidth + (element.isVisible() && (includeFold || element !== this.foldButton) ?
                                  element.getEl().getWidthWithBorder() : 0);
         }, 0);
     }
 
     private getNextFoldableButton(): Element {
-        let button: Element = this.fold.getPreviousElement();
+        let button: Element = this.foldButton.getPreviousElement();
 
         while (button) {
             if (this.isItemAllowedToFold(button)) {
@@ -172,14 +172,22 @@ export class Toolbar
     }
 
     private areAllActionsFolded(): boolean {
-        return this.actions.length === this.fold.getButtonsCount();
+        return this.actions.length === this.foldButton.getButtonsCount();
     }
 
     setLocked(value: boolean): void {
         this.locked = value;
     }
 
+    isLocked(): boolean {
+        return this.locked;
+    }
+
     updateFoldButtonLabel(): void {
-        this.fold.setLabel(this.areAllActionsFolded() ? i18n('action.actions') : i18n('action.more'));
+        this.foldButton.setLabel(this.areAllActionsFolded() ? i18n('action.actions') : i18n('action.more'));
+    }
+
+    setFoldButtonLabel(value: string) {
+        this.foldButton.setLabel(value);
     }
 }
