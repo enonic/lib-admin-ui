@@ -187,7 +187,7 @@ export class Toolbar
         this.foldButton.setLabel(this.areAllActionsFolded() ? i18n('action.actions') : i18n('action.more'));
     }
 
-    setFoldButtonLabel(value: string) {
+    setFoldButtonLabel(value: string): void {
         this.foldButton.setLabel(value);
     }
 }
