@@ -21,7 +21,7 @@ export class ValidationRecording {
         }
     }
 
-    addValidationError(id: string, errorMessage): void {
+    addValidationError(id: string, errorMessage: string): void {
         this.validationErrors.set(id, errorMessage);
     }
 
