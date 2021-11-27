@@ -133,12 +133,10 @@ export class InputView
                 this.toggleHasInvalidInputClass(inputTypeViewNotManagingAdd);
             } else {
                 this.inputTypeView.onValidityChanged(() => {
-                    console.log('onValidityChanged');
                     this.toggleHasInvalidInputClass(<BaseInputType>this.inputTypeView);
                 });
 
                 this.inputTypeView.onValueChanged(() => {
-                    console.log('value changed');
                     this.toggleHasInvalidInputClass(<BaseInputType>this.inputTypeView);
                 });
             }
