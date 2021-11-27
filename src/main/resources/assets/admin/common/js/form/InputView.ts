@@ -25,6 +25,7 @@ import {InputTypeManager} from './inputtype/InputTypeManager';
 import {ValidationRecordingPath} from './ValidationRecordingPath';
 import {InputViewValidationViewer} from './InputViewValidationViewer';
 import {TogglerButton} from '../ui/button/TogglerButton';
+import {BaseInputType} from './inputtype/support/BaseInputType';
 
 export interface InputViewConfig {
 
@@ -119,8 +120,7 @@ export class InputView
                 this.appendChild(this.bottomButtonRow);
                 this.bottomButtonRow.appendChild(this.addButton);
 
-                this.toggleClass('single-occurrence',
-                    this.input.getOccurrences().getMinimum() === 1 && this.input.getOccurrences().getMaximum() === 1);
+                this.toggleClass('single-occurrence', this.isSingleOccurrence());
 
                 inputTypeViewNotManagingAdd.onOccurrenceValueChanged(() => {
                     this.toggleHasInvalidInputClass(inputTypeViewNotManagingAdd);
@@ -131,6 +131,16 @@ export class InputView
                 });
 
                 this.toggleHasInvalidInputClass(inputTypeViewNotManagingAdd);
+            } else {
+                this.inputTypeView.onValidityChanged(() => {
+                    console.log('onValidityChanged');
+                    this.toggleHasInvalidInputClass(<BaseInputType>this.inputTypeView);
+                });
+
+                this.inputTypeView.onValueChanged(() => {
+                    console.log('value changed');
+                    this.toggleHasInvalidInputClass(<BaseInputType>this.inputTypeView);
+                });
             }
 
             this.validationViewer = new InputViewValidationViewer();
@@ -152,8 +162,8 @@ export class InputView
                     isActive ? i18n('field.validation.showDetails') : i18n('field.validation.hideDetails'));
             });
 
-            if (this.inputTypeView.hideValidationDetailsByDefault()) {
-                this.addClass(`${InputView.ERROR_DETAILS_HIDDEN_CLS}-by-default`);
+            if (this.inputTypeView.hideValidationDetailsByDefault() && this.input.getOccurrences().getMinimum() > 0 &&
+                this.input.getOccurrences().getMaximum() > 1) {
                 this.validationDetailsToggler.setActive(true);
             }
 
@@ -163,8 +173,12 @@ export class InputView
         });
     }
 
-    private toggleHasInvalidInputClass(inputTypeViewNotManagingAdd: BaseInputTypeNotManagingAdd) {
-        this.toggleClass('has-invalid-user-input', !inputTypeViewNotManagingAdd.hasValidUserInput());
+    private isSingleOccurrence(): boolean {
+        return this.input.getOccurrences().getMinimum() === 1 && this.input.getOccurrences().getMaximum() === 1;
+    }
+
+    private toggleHasInvalidInputClass(inputTypeView: BaseInputType) {
+        this.toggleClass('has-invalid-user-input', !inputTypeView.hasValidUserInput());
     }
 
     public update(propertySet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
@@ -332,7 +346,7 @@ export class InputView
         }
 
         if (inputRecording?.hasErrorMessage()) {
-            recording.setErrorMessage(inputRecording.getErrorMessage());
+            recording.addValidationError(validationRecordingPath.toString(), inputRecording.getErrorMessage());
         }
 
         if (recording.validityChanged(this.previousValidityRecording)) {

@@ -261,7 +261,7 @@ export abstract class BaseInputTypeNotManagingAdd
         const newValidationRecord: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), totalValid);
 
         if (hasCustomError) {
-            newValidationRecord.setErrorMessage(i18n('field.custom.error'));
+            newValidationRecord.setErrorMessage(i18n('field.invalid'));
         }
 
         if (newValidationRecord.validityChanged(this.previousValidationRecording)) {
@@ -349,6 +349,10 @@ export abstract class BaseInputTypeNotManagingAdd
         throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
     }
 
+    hideValidationDetailsByDefault(): boolean {
+        return true;
+    }
+
     private validateOccurrences() {
         this.inputOccurrences.getOccurrenceViews().forEach((occurrenceView: InputOccurrenceView) => {
             this.validateOccurrence(occurrenceView);
@@ -372,6 +376,9 @@ export abstract class BaseInputTypeNotManagingAdd
 
         this.getContext().formContext.getValidationErrors().forEach((error: ValidationError) => {
             if (occurrenceDataPath === error.getPropertyPath()) {
+                occurrenceView.getInputElement().addClass('invalid');
+                occurrenceView.getInputElement().removeClass('valid');
+
                 this.occurrenceValidationState.get(occurrenceId).addAdditionalValidation(
                     AdditionalValidationRecord.create().setMessage(error.getMessage()).setCustom(true).build());
             }
