@@ -193,13 +193,12 @@
       margin-top: 7px;
     }
 
-    &.visible + .validation-viewer {
+    &.visible + .validation-block {
       margin-top: 7px;
     }
   }
 
-  &.has-invalid-user-input,
-  &.error-details-hidden-by-default {
+  &.invalid.has-invalid-user-input:not(.single-occurrence) {
     .validation-block {
       .validation-toggler {
         display: block;

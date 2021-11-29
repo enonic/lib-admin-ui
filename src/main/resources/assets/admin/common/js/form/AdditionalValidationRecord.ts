@@ -1,9 +1,12 @@
 export class AdditionalValidationRecord {
 
-    private message: string;
+    private readonly message: string;
+
+    private readonly custom: boolean;
 
     constructor(builder: Builder) {
         this.message = builder.message;
+        this.custom = builder.custom || false;
     }
 
     public static create(): Builder {
@@ -14,20 +17,27 @@ export class AdditionalValidationRecord {
         return this.message;
     }
 
-    equals(that: AdditionalValidationRecord): boolean {
-        if (this.message !== that.message) {
-            return false;
-        }
+    isCustom(): boolean {
+        return this.custom;
+    }
 
-        return true;
+    equals(that: AdditionalValidationRecord): boolean {
+        return this.message === that.message && this.custom === that.custom;
     }
 }
 
 export class Builder {
     message: string;
 
+    custom: boolean;
+
     setMessage(value: string): Builder {
         this.message = value;
+        return this;
+    }
+
+    setCustom(value: boolean): Builder {
+        this.custom = value;
         return this;
     }
 
