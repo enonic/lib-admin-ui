@@ -160,7 +160,9 @@ export class InputView
                     isActive ? i18n('field.validation.showDetails') : i18n('field.validation.hideDetails'));
             });
 
-            if (this.inputTypeView.hideValidationDetailsByDefault() && this.input.getOccurrences().getMinimum() > 0 &&
+            if (this.inputTypeView.hideValidationDetailsByDefault() &&
+                !this.isFormStateNew() &&
+                this.input.getOccurrences().getMinimum() > 0 &&
                 this.input.getOccurrences().getMaximum() > 1) {
                 this.validationDetailsToggler.setActive(true);
             }
@@ -356,7 +358,7 @@ export class InputView
 
         this.previousValidityRecording = recording;
 
-        if (inputRecording && this.inputTypeView.isValidationErrorToBeRendered() && !this.getContext()?.getFormState()?.isNew()) {
+        if (inputRecording && this.inputTypeView.isValidationErrorToBeRendered() && !this.isFormStateNew()) {
             this.renderValidationErrors(inputRecording);
         }
 
@@ -374,6 +376,10 @@ export class InputView
         this.toggleClass('invalid', !recording.isValid());
 
         this.validationViewer.setObject(recording);
+    }
+
+    private isFormStateNew(): boolean {
+        return this.getContext()?.getFormState()?.isNew();
     }
 
 }
