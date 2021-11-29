@@ -261,7 +261,7 @@ export abstract class BaseInputTypeNotManagingAdd
         const newValidationRecord: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), totalValid);
 
         if (hasCustomError) {
-            newValidationRecord.setErrorMessage(i18n('field.invalid'));
+            newValidationRecord.setErrorMessage(i18n('field.occurrence.invalid'));
         }
 
         if (newValidationRecord.validityChanged(this.previousValidationRecording)) {
