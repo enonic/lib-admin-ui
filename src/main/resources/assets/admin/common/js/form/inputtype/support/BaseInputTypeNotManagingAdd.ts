@@ -22,6 +22,7 @@ import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
 import {BaseInputType} from './BaseInputType';
 import {ValidationError} from '../../../ValidationError';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
+import {i18n} from '../../../util/Messages';
 
 export abstract class BaseInputTypeNotManagingAdd
     extends BaseInputType {
@@ -256,13 +257,33 @@ export abstract class BaseInputTypeNotManagingAdd
 
     private updateValidationRecordAndNotifyIfChanged() {
         const totalValid: number = this.getTotalValidOccurrences();
+        const hasCustomError: boolean = this.hasCustomError();
         const newValidationRecord: InputValidationRecording = new InputValidationRecording(this.input.getOccurrences(), totalValid);
+
+        if (hasCustomError) {
+            newValidationRecord.setErrorMessage(i18n('field.occurrence.invalid'));
+        }
 
         if (newValidationRecord.validityChanged(this.previousValidationRecording)) {
             this.notifyValidityChanged(new InputValidityChangedEvent(newValidationRecord));
         }
 
         this.previousValidationRecording = newValidationRecord;
+    }
+
+    private hasCustomError(): boolean {
+        let hasCustomError: boolean = false;
+
+        this.occurrenceValidationState.forEach((occurrenceValidationRecord: OccurrenceValidationRecord) => {
+            const isCustomError: boolean =
+                occurrenceValidationRecord.getAdditionalValidationRecords().some((rec: AdditionalValidationRecord) => rec.isCustom());
+
+            if (isCustomError) {
+                hasCustomError = true;
+            }
+        });
+
+        return hasCustomError;
     }
 
     private updateValidationRecord() {
@@ -328,6 +349,10 @@ export abstract class BaseInputTypeNotManagingAdd
         throw new Error('Must be implemented by inheritor: ' + ClassHelper.getClassName(this));
     }
 
+    hideValidationDetailsByDefault(): boolean {
+        return true;
+    }
+
     private validateOccurrences() {
         this.inputOccurrences.getOccurrenceViews().forEach((occurrenceView: InputOccurrenceView) => {
             this.validateOccurrence(occurrenceView);
@@ -351,8 +376,11 @@ export abstract class BaseInputTypeNotManagingAdd
 
         this.getContext().formContext.getValidationErrors().forEach((error: ValidationError) => {
             if (occurrenceDataPath === error.getPropertyPath()) {
+                occurrenceView.getInputElement().addClass('invalid');
+                occurrenceView.getInputElement().removeClass('valid');
+
                 this.occurrenceValidationState.get(occurrenceId).addAdditionalValidation(
-                    AdditionalValidationRecord.create().setMessage(error.getMessage()).build());
+                    AdditionalValidationRecord.create().setMessage(error.getMessage()).setCustom(true).build());
             }
         });
     }

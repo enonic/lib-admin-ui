@@ -1,8 +1,5 @@
 import {ValidationRecordingPath} from './ValidationRecordingPath';
-import {AdditionalValidationRecord} from './AdditionalValidationRecord';
 import {Equitable} from '../Equitable';
-import {ObjectHelper} from '../ObjectHelper';
-import {StringHelper} from '../util/StringHelper';
 
 export class ValidationRecording {
 
@@ -10,7 +7,7 @@ export class ValidationRecording {
 
     private breaksMaximumOccurrencesArray: ValidationRecordingPath[] = [];
 
-    private errorMessage: string;
+    private validationErrors: Map<string, string> = new Map<string, string>();
 
     breaksMinimumOccurrences(path: ValidationRecordingPath) {
         if (!this.exists(path, this.breaksMinimumOccurrencesArray)) {
@@ -24,8 +21,8 @@ export class ValidationRecording {
         }
     }
 
-    setErrorMessage(value: string): void {
-        this.errorMessage = value;
+    addValidationError(id: string, errorMessage: string): void {
+        this.validationErrors.set(id, errorMessage);
     }
 
     isValid(): boolean {
@@ -33,7 +30,7 @@ export class ValidationRecording {
     }
 
     hasError(): boolean {
-        return !StringHelper.isBlank(this.errorMessage);
+        return this.validationErrors.size > 0;
     }
 
     isMinimumOccurrencesValid(): boolean {
@@ -52,10 +49,6 @@ export class ValidationRecording {
         return this.breaksMaximumOccurrencesArray;
     }
 
-    getErrorMessage(): string {
-        return this.errorMessage;
-    }
-
     flatten(recording: ValidationRecording) {
 
         recording.breaksMinimumOccurrencesArray.forEach((path: ValidationRecordingPath) => {
@@ -66,7 +59,9 @@ export class ValidationRecording {
             this.breaksMaximumOccurrences(path);
         });
 
-        this.setErrorMessage(recording.getErrorMessage());
+        recording.validationErrors.forEach((value: string, key: string) => {
+            this.addValidationError(key, value);
+        });
     }
 
     /**
@@ -77,6 +72,7 @@ export class ValidationRecording {
     removeByPath(path: ValidationRecordingPath, strict?: boolean, includeChildren?: boolean) {
         this.removeUnreachedMinimumOccurrencesByPath(path, strict, includeChildren);
         this.removeBreachedMaximumOccurrencesByPath(path, strict, includeChildren);
+        this.validationErrors.delete(path.toString());
     }
 
     removeUnreachedMinimumOccurrencesByPath(path: ValidationRecordingPath, strict?: boolean, includeChildren?: boolean) {
@@ -131,7 +127,7 @@ export class ValidationRecording {
             }
         }
 
-        return ObjectHelper.stringEquals(this.errorMessage, other.errorMessage);
+        return this.validationErrors.size === other.validationErrors.size;
     }
 
     validityChanged(previous: ValidationRecording): boolean {
