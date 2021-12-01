@@ -205,13 +205,13 @@ export class DateTimePicker
             }
 
             this.validUserInput = true;
-            const inputValue: string = this.input.getValue().trim();
+            const inputValue: string = this.input.getValue();
 
             if (StringHelper.isEmpty(inputValue)) {
                 this.selectedDateTime = null;
                 this.hidePopup();
             } else {
-                const parsedValue: Date | TimeHM = this.getParsedValue(inputValue);
+                const parsedValue: Date | TimeHM = this.getParsedValue(inputValue.trim());
 
                 if (!!parsedValue) {
                     this.setParsedValue(parsedValue);
