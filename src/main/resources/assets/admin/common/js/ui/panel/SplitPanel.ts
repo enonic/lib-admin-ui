@@ -481,7 +481,7 @@ export class SplitPanel
 
     }
 
-    setActiveWidthPxOfSecondPanel(value: SplitPanelSize) {
+    setActiveWidthPxOfSecondPanel(value: SplitPanelSize): void {
         if (this.secondPanelIsHidden) {
             this.hiddenSecondPanelPreviousSize = value;
         } else {
