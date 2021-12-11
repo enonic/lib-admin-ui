@@ -514,8 +514,6 @@ export class SplitPanel
         this.ghostDragger = new DivEl('ghost-dragger');
         this.dragListener = (e: MouseEvent) => {
             if (this.isHorizontal()) {
-                console.log('drag');
-
                 if (this.isSplitterWithinBoundaries(initialPos - e.clientY)) {
                     this.splitterPosition = e.clientY;
                     this.ghostDragger.getEl().setTopPx(e.clientY - this.getEl().getOffsetTop());
