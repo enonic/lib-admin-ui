@@ -10,13 +10,14 @@ export class SelectionItem<M extends Equitable>
 
     protected item: ViewItem;
     protected removeEl: DivEl;
-    private viewer: Viewer<M>;
+    protected viewer: Viewer<M>;
     private removeListeners: { (event: MouseEvent): void }[] = [];
 
     private removeTooltip: string;
 
     constructor(viewer: Viewer<M>, item: ViewItem) {
         super('browse-selection-item');
+
         this.viewer = viewer;
         this.item = item;
     }
@@ -24,8 +25,8 @@ export class SelectionItem<M extends Equitable>
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered) => {
             this.removeEl = this.initRemoveButton();
-            this.appendChild(this.removeEl);
             this.appendChild(this.viewer);
+            this.appendChild(this.removeEl);
             return rendered;
         });
     }
@@ -66,16 +67,15 @@ export class SelectionItem<M extends Equitable>
         this.whenRendered(() => this.removeEl.hide());
     }
 
-    getRemoveButton(): Element {
-        return this.removeEl;
-    }
+    protected initRemoveButton(): Element {
+        const removeEl: DivEl = new DivEl('icon remove');
 
-    private initRemoveButton() {
-        let removeEl = new DivEl('icon remove');
         if (this.removeTooltip) {
             removeEl.getEl().setTitle(this.removeTooltip);
         }
+
         removeEl.onClicked(this.notifyRemoveClicked.bind(this));
+
         return removeEl;
     }
 }
