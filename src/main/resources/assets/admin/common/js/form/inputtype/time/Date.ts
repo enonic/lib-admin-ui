@@ -12,12 +12,17 @@ import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
+import {InputTypeViewContext} from '../InputTypeViewContext';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDate]].
  */
 export class Date
     extends BaseInputTypeNotManagingAdd {
+
+    getDefaultDate(): globalThis.Date {
+        return this.getContext().input.getDefaultValue()?.getDateTime().toDate();
+    }
 
     getValueType(): ValueType {
         return ValueTypes.LOCAL_DATE;
@@ -29,6 +34,7 @@ export class Date
         }
 
         const datePickerBuilder: DatePickerBuilder = new DatePickerBuilder();
+        datePickerBuilder.setDefaultDate(this.getDefaultDate());
 
         if (!property.hasNullValue()) {
             const date: LocalDate = property.getLocalDate();

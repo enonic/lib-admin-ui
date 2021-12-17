@@ -16,6 +16,8 @@ export class DateTimePickerBuilder {
 
     date: Date;
 
+    defaultDate: Date;
+
     startingDayOfWeek: DayOfWeek = DaysOfWeek.MONDAY;
 
     closeOnSelect: boolean = false;
@@ -24,6 +26,11 @@ export class DateTimePickerBuilder {
 
     // use local timezone if timezone value is not initialized
     useLocalTimezoneIfNotPresent: boolean = false;
+
+    setDefaultDate(value: Date): DateTimePickerBuilder {
+        this.defaultDate = value;
+        return this;
+    }
 
     setDate(value: Date): DateTimePickerBuilder {
         this.date = value;
@@ -61,6 +68,8 @@ export class DateTimePicker
 
     constructor(builder: DateTimePickerBuilder) {
         super(builder, 'date-time-picker');
+
+        this.showResetButton = true;
     }
 
     public setSelectedDateTime(date: Date, userInput?: boolean) {
@@ -71,6 +80,12 @@ export class DateTimePicker
     protected initData(builder: DateTimePickerBuilder) {
         if (builder.date) {
             this.setDate(builder.date);
+        }
+
+        if (builder.defaultDate) {
+            this.setHandleReset(() => {
+                this.setSelectedDateTime(builder.defaultDate);
+            });
         }
     }
 
@@ -86,8 +101,10 @@ export class DateTimePicker
     }
 
     protected initPopup(builder: DateTimePickerBuilder) {
-        let popupBuilder = new DateTimePickerPopupBuilder().setDate(this.selectedDate).setTimezone(
-            builder.timezone).setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent);
+        let popupBuilder = new DateTimePickerPopupBuilder()
+            .setDate(this.selectedDate)
+            .setTimezone(builder.timezone)
+            .setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent);
 
         this.popup = new DateTimePickerPopup(popupBuilder);
         this.popup.onShown(() => {

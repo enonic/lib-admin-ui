@@ -26,7 +26,12 @@ export class DateTime
 
     constructor(config: InputTypeViewContext) {
         super(config);
+
         this.readConfig(config.inputConfig);
+    }
+
+    getDefaultDate(): Date {
+        return this.getContext().input.getDefaultValue()?.getDateTime()?.toDate();
     }
 
     getValueType(): ValueType {
@@ -91,6 +96,7 @@ export class DateTime
 
     private createInputAsLocalDateTime(property: Property) {
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
+        dateTimeBuilder.setDefaultDate(this.getDefaultDate());
 
         if (!ValueTypes.LOCAL_DATE_TIME.equals(property.getType())) {
             ValueTypeConverter.convertPropertyValueType(property, ValueTypes.LOCAL_DATE_TIME);
@@ -119,6 +125,7 @@ export class DateTime
     private createInputAsDateTime(property: Property) {
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
         dateTimeBuilder.setUseLocalTimezoneIfNotPresent(true);
+        dateTimeBuilder.setDefaultDate(this.getDefaultDate());
 
         if (!ValueTypes.DATE_TIME.equals(property.getType())) {
             ValueTypeConverter.convertPropertyValueType(property, ValueTypes.DATE_TIME);
@@ -129,7 +136,7 @@ export class DateTime
             dateTimeBuilder.setDate(date.toDate()).setTimezone(date.getTimezone());
         }
 
-        const dateTimePicker: DateTimePicker = new DateTimePicker(dateTimeBuilder);
+        const dateTimePicker: DateTimePicker = dateTimeBuilder.build();
 
         dateTimePicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
             this.handleOccurrenceInputValueChanged(dateTimePicker, event);

@@ -12,15 +12,23 @@ import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 export class Picker<T extends Element>
     extends DivEl {
 
+    showResetButton: Boolean;
+
     protected popup: T;
 
     protected popupOkButton: Button;
+
+    protected popupResetButton: Button;
 
     protected selectedDate: Date;
 
     protected input: TextInput;
 
+    protected defaultDate: Date;
+
     protected validUserInput: boolean;
+
+    private handleReset: Function;
 
     private builder: any;
 
@@ -45,6 +53,10 @@ export class Picker<T extends Element>
 
     public resetBase() {
         this.input.resetBaseValues();
+    }
+
+    public setHandleReset(handleReset?: Function) {
+        this.handleReset = handleReset;
     }
 
     getTextInput(): TextInput {
@@ -187,13 +199,27 @@ export class Picker<T extends Element>
         }
     }
 
+    private initResetButton() {
+        this.popupResetButton = new Button(i18n('action.reset'));
+        this.popupResetButton.addClass('reset-button');
+        this.popupResetButton.onClicked(() => {
+            if (!this.handleReset) {
+                this.input.reset();
+            } else {
+                this.handleReset();
+            }
+        });
+        return this.popupResetButton;
+    }
+
     private initCloseButton() {
         this.popupOkButton = new Button(i18n('action.ok'));
         this.popupOkButton.addClass('ok-button');
         this.popupOkButton.onClicked(() => {
             this.hidePopup();
         });
-        this.popup.appendChild(this.popupOkButton);
+
+        return this.popupOkButton;
     }
 
     private createPopup() {
@@ -203,7 +229,17 @@ export class Picker<T extends Element>
 
         this.initPopup(this.builder);
         this.setupPopupListeners(this.builder);
-        this.initCloseButton();
+        const buttonContainer = new DivEl('btn-container');
+
+        if (this.showResetButton) {
+            const resetButton = this.initResetButton();
+            buttonContainer.appendChild(resetButton);
+        }
+
+        const okButton = this.initCloseButton();
+        buttonContainer.appendChild(okButton);
+
+        this.popup.appendChild(buttonContainer);
 
         this.popup.insertAfterEl(this.input);
     }

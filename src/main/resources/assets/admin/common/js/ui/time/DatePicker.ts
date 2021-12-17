@@ -14,9 +14,16 @@ export class DatePickerBuilder {
 
     date: Date;
 
+    defaultDate: Date;
+
     startingDayOfWeek: DayOfWeek = DaysOfWeek.MONDAY;
 
     closeOnSelect: boolean = true;
+
+    setDefaultDate(value: Date): DatePickerBuilder {
+        this.defaultDate = value;
+        return this;
+    }
 
     setDate(value: Date): DatePickerBuilder {
         this.date = value;
@@ -34,6 +41,8 @@ export class DatePicker
 
     constructor(builder: DatePickerBuilder) {
         super(builder, 'date-picker');
+
+        this.showResetButton = true;
     }
 
     setSelectedDate(date: Date) {
@@ -44,6 +53,13 @@ export class DatePicker
     protected initData(builder: DatePickerBuilder) {
         if (builder.date) {
             this.setDate(builder.date);
+        }
+
+        if (builder.defaultDate) {
+            this.setHandleReset(() => {
+                console.log('handleReset', builder.defaultDate);
+                this.setSelectedDate(builder.defaultDate);
+            });
         }
     }
 
