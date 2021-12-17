@@ -332,7 +332,7 @@ export class SplitPanel
         this.splitter.hide();
     }
 
-    distribute(noResizeEvent: boolean = false) {
+    distribute(noResizeEvent: boolean = false): void {
         if (this.isHorizontal()) {
             this.firstPanel.getEl().setHeight(this.getPanelSizeString(1)).setWidth(null);
             this.secondPanel.getEl().setHeight(this.getPanelSizeString(2)).setWidth(null);
