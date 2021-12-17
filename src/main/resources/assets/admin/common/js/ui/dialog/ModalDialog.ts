@@ -1,4 +1,5 @@
 import * as Q from 'q';
+import * as Ft from 'focus-trap';
 import {DivEl} from '../../dom/DivEl';
 import {Action} from '../Action';
 import {Element} from '../../dom/Element';
@@ -82,9 +83,12 @@ export abstract class ModalDialog
 
     private pendingMasks: number = 0;
 
+    private focusTrap: Ft.FocusTrap;
+
     protected constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
         super('modal-dialog', StyleHelper.COMMON_PREFIX);
         this.config = config;
+        this.focusTrap = Ft.createFocusTrap(this.getHTMLElement());
 
         this.initElements();
         this.postInitElements();
@@ -344,6 +348,8 @@ export abstract class ModalDialog
     }
 
     close() {
+        this.focusTrap.deactivate();
+
         if (this.isSingleDialogGroup()) {
             BodyMask.get().hide();
         }
@@ -481,6 +487,7 @@ export abstract class ModalDialog
     }
 
     open() {
+        setTimeout(() => this.focusTrap.activate(), 100);
 
         BodyMask.get().show();
 
