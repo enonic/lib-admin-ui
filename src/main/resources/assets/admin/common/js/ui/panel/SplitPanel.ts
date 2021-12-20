@@ -334,41 +334,23 @@ export class SplitPanel
 
     distribute(noResizeEvent: boolean = false): void {
         if (this.isHorizontal()) {
-            this.firstPanel.getEl().setHeight(this.getPanelSizeString(1)).setWidth(null);
-            this.secondPanel.getEl().setHeight(this.getPanelSizeString(2)).setWidth(null);
-            this.splitter.getEl().setHeightPx(this.getSplitterThickness()).setWidth(null).setLeft(null);
-            if (this.isVisible()) {
-                if (noResizeEvent) {
-                    this.firstPanelResponsiveItem.update();
-                    this.secondPanelResponsiveItem.update();
-                } else {
-                    this.triggerResizeDebounced();
-                }
-            }
+            this.distributeHeight();
         } else {
-            this.firstPanel.getEl().setWidth(this.getPanelSizeString(1)).setHeight(null);
-            this.secondPanel.getEl().setWidth(this.getPanelSizeString(2)).setHeight(null);
-            this.splitter.getEl().setWidthPx(this.getSplitterThickness()).setHeight(null);
-            if (this.isVisible()) {
-                if (noResizeEvent) {
-                    this.firstPanelResponsiveItem.update();
-                    this.secondPanelResponsiveItem.update();
-                } else {
-                    this.triggerResizeDebounced();
-                }
-            }
-            if (this.firstPanelSize.isPercentsUnit() && this.secondPanelSize.isPercentsUnit()) {
-                const positionInPercentage: number = (!this.firstPanelSize.isAuto()) ?
-                                                     this.firstPanelSize.getValue() : 100 - this.secondPanelSize.getValue();
-                this.splitter.getEl().setLeft('calc(' + positionInPercentage + '% - ' + (this.getSplitterThickness() / 2) + 'px)');
-            } else {
-                this.splitter.getEl().setLeft(this.getPanelSizeString(1));
-            }
+            this.distributeWidth();
+            this.updateSplitterPos();
         }
+
+        this.updatePanelsAfterDistribute(noResizeEvent);
     }
 
     isHorizontal() {
         return this.alignment === SplitPanelAlignment.HORIZONTAL;
+    }
+
+    protected distributeHeight(): void {
+        this.firstPanel.getEl().setHeight(this.getPanelSizeString(1)).setWidth(null);
+        this.secondPanel.getEl().setHeight(this.getPanelSizeString(2)).setWidth(null);
+        this.splitter.getEl().setHeightPx(this.getSplitterThickness()).setWidth(null).setLeft(null);
     }
 
     getPanelSizeString(panelNumber: number): string {
@@ -393,6 +375,35 @@ export class SplitPanel
         return otherPanelSize.isPixelsUnit() ?
                `calc(100% - ${(otherPanelSize.getValue() + (this.getSplitterThickness() / 2))}px)` :
                `calc(${(100 - otherPanelSize.getValue())}% - ${(this.getSplitterThickness() / 2)}px)`;
+    }
+
+    protected distributeWidth(): void {
+        this.firstPanel.getEl().setWidth(this.getPanelSizeString(1)).setHeight(null);
+        this.secondPanel.getEl().setWidth(this.getPanelSizeString(2)).setHeight(null);
+        this.splitter.getEl().setWidthPx(this.getSplitterThickness()).setHeight(null);
+    }
+
+    protected updatePanelsAfterDistribute(noResizeEvent: boolean): void {
+        if (!this.isVisible()) {
+            return;
+        }
+
+        if (noResizeEvent) {
+            this.firstPanelResponsiveItem.update();
+            this.secondPanelResponsiveItem.update();
+        } else {
+            this.triggerResizeDebounced();
+        }
+    }
+
+    protected updateSplitterPos(): void {
+        if (this.firstPanelSize.isPercentsUnit() && this.secondPanelSize.isPercentsUnit()) {
+            const positionInPercentage: number = (!this.firstPanelSize.isAuto()) ?
+                                                 this.firstPanelSize.getValue() : 100 - this.secondPanelSize.getValue();
+            this.splitter.getEl().setLeft('calc(' + positionInPercentage + '% - ' + (this.getSplitterThickness() / 2) + 'px)');
+        } else {
+            this.splitter.getEl().setLeft(this.getPanelSizeString(1));
+        }
     }
 
     showFirstPanel() {
