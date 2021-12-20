@@ -8,6 +8,7 @@ import {Panel} from './Panel';
 import {assert} from '../../util/Assert';
 import {Body} from '../../dom/Body';
 import {SplitPanelSize} from './SplitPanelSize';
+import {ResponsiveItem} from '../responsive/ResponsiveItem';
 
 export enum SplitPanelAlignment {
     HORIZONTAL,
@@ -141,53 +142,57 @@ export class SplitPanelBuilder {
 export class SplitPanel
     extends Panel {
 
-    private firstPanel: Panel;
+    protected firstPanel: Panel;
 
-    private secondPanel: Panel;
+    protected firstPanelResponsiveItem: ResponsiveItem;
 
-    private firstPanelSize: SplitPanelSize;
+    protected secondPanel: Panel;
 
-    private firstPanelMinSize: SplitPanelSize;
+    protected secondPanelResponsiveItem: ResponsiveItem;
 
-    private secondPanelSize: SplitPanelSize;
+    protected firstPanelSize: SplitPanelSize;
 
-    private secondPanelMinSize: SplitPanelSize;
+    protected firstPanelMinSize: SplitPanelSize;
+
+    protected secondPanelSize: SplitPanelSize;
+
+    protected secondPanelMinSize: SplitPanelSize;
 
     private splitterThickness: number;
 
-    private splitter: DivEl;
+    protected splitter: DivEl;
 
-    private alignment: SplitPanelAlignment;
+    protected alignment: SplitPanelAlignment;
 
     private alignmentTreshold: number;
 
-    private ghostDragger: DivEl;
+    protected ghostDragger: DivEl;
 
     private dragListener: (e: MouseEvent) => void;
 
     private mask: DragMask;
 
-    private splitterPosition: number;
+    protected splitterPosition: number;
 
-    private firstPanelIsHidden: boolean;
+    protected firstPanelIsHidden: boolean;
 
-    private firstPanelIsFullScreen: boolean;
+    protected firstPanelIsFullScreen: boolean;
 
-    private secondPanelIsHidden: boolean;
+    protected secondPanelIsHidden: boolean;
 
-    private hiddenFirstPanelPreviousSize: SplitPanelSize;
+    protected hiddenFirstPanelPreviousSize: SplitPanelSize;
 
-    private hiddenSecondPanelPreviousSize: SplitPanelSize;
+    protected hiddenSecondPanelPreviousSize: SplitPanelSize;
 
-    private splitterIsHidden: boolean;
+    protected splitterIsHidden: boolean;
 
-    private savedFirstPanelSize: SplitPanelSize;
+    protected savedFirstPanelSize: SplitPanelSize;
 
-    private savedFirstPanelMinSize: SplitPanelSize;
+    protected savedFirstPanelMinSize: SplitPanelSize;
 
-    private savedSecondPanelSize: SplitPanelSize;
+    protected savedSecondPanelSize: SplitPanelSize;
 
-    private savedSecondPanelMinSize: SplitPanelSize;
+    protected savedSecondPanelMinSize: SplitPanelSize;
 
     private animationDelay: number;
 
@@ -255,8 +260,8 @@ export class SplitPanel
 
         // Add all elements, needed to be tracked
         ResponsiveManager.onAvailableSizeChanged(this);
-        ResponsiveManager.onAvailableSizeChanged(this.firstPanel);
-        ResponsiveManager.onAvailableSizeChanged(this.secondPanel);
+        this.firstPanelResponsiveItem = ResponsiveManager.onAvailableSizeChanged(this.firstPanel);
+        this.secondPanelResponsiveItem = ResponsiveManager.onAvailableSizeChanged(this.secondPanel);
 
         this.onRemoved(() => {
             ResponsiveManager.unAvailableSizeChanged(this);
@@ -327,33 +332,25 @@ export class SplitPanel
         this.splitter.hide();
     }
 
-    distribute() {
+    distribute(noResizeEvent: boolean = false): void {
         if (this.isHorizontal()) {
-            this.firstPanel.getEl().setHeight(this.getPanelSizeString(1)).setWidth(null);
-            this.secondPanel.getEl().setHeight(this.getPanelSizeString(2)).setWidth(null);
-            this.splitter.getEl().setHeightPx(this.getSplitterThickness()).setWidth(null).setLeft(null);
-            if (this.isVisible()) {
-                this.triggerResizeDebounced();
-            }
+            this.distributeHeight();
         } else {
-            this.firstPanel.getEl().setWidth(this.getPanelSizeString(1)).setHeight(null);
-            this.secondPanel.getEl().setWidth(this.getPanelSizeString(2)).setHeight(null);
-            this.splitter.getEl().setWidthPx(this.getSplitterThickness()).setHeight(null);
-            if (this.isVisible()) {
-                this.triggerResizeDebounced();
-            }
-            if (this.firstPanelSize.isPercentsUnit() && this.secondPanelSize.isPercentsUnit()) {
-                const positionInPercentage: number = (!this.firstPanelSize.isAuto()) ?
-                                                     this.firstPanelSize.getValue() : 100 - this.secondPanelSize.getValue();
-                this.splitter.getEl().setLeft('calc(' + positionInPercentage + '% - ' + (this.getSplitterThickness() / 2) + 'px)');
-            } else {
-                this.splitter.getEl().setLeft(this.getPanelSizeString(1));
-            }
+            this.distributeWidth();
+            this.updateSplitterPos();
         }
+
+        this.updatePanelsAfterDistribute(noResizeEvent);
     }
 
     isHorizontal() {
         return this.alignment === SplitPanelAlignment.HORIZONTAL;
+    }
+
+    protected distributeHeight(): void {
+        this.firstPanel.getEl().setHeight(this.getPanelSizeString(1)).setWidth(null);
+        this.secondPanel.getEl().setHeight(this.getPanelSizeString(2)).setWidth(null);
+        this.splitter.getEl().setHeightPx(this.getSplitterThickness()).setWidth(null).setLeft(null);
     }
 
     getPanelSizeString(panelNumber: number): string {
@@ -378,6 +375,35 @@ export class SplitPanel
         return otherPanelSize.isPixelsUnit() ?
                `calc(100% - ${(otherPanelSize.getValue() + (this.getSplitterThickness() / 2))}px)` :
                `calc(${(100 - otherPanelSize.getValue())}% - ${(this.getSplitterThickness() / 2)}px)`;
+    }
+
+    protected distributeWidth(): void {
+        this.firstPanel.getEl().setWidth(this.getPanelSizeString(1)).setHeight(null);
+        this.secondPanel.getEl().setWidth(this.getPanelSizeString(2)).setHeight(null);
+        this.splitter.getEl().setWidthPx(this.getSplitterThickness()).setHeight(null);
+    }
+
+    protected updatePanelsAfterDistribute(noResizeEvent: boolean): void {
+        if (!this.isVisible()) {
+            return;
+        }
+
+        if (noResizeEvent) {
+            this.firstPanelResponsiveItem.update();
+            this.secondPanelResponsiveItem.update();
+        } else {
+            this.triggerResizeDebounced();
+        }
+    }
+
+    protected updateSplitterPos(): void {
+        if (this.firstPanelSize.isPercentsUnit() && this.secondPanelSize.isPercentsUnit()) {
+            const positionInPercentage: number = (!this.firstPanelSize.isAuto()) ?
+                                                 this.firstPanelSize.getValue() : 100 - this.secondPanelSize.getValue();
+            this.splitter.getEl().setLeft('calc(' + positionInPercentage + '% - ' + (this.getSplitterThickness() / 2) + 'px)');
+        } else {
+            this.splitter.getEl().setLeft(this.getPanelSizeString(1));
+        }
     }
 
     showFirstPanel() {
@@ -575,7 +601,7 @@ export class SplitPanel
             this.firstPanelSize = SplitPanelSize.Pixels(dragOffset);
         }
 
-        this.distribute();
+        this.distribute(true);
     }
 
     private isSplitterWithinBoundaries(offset: number): boolean {
