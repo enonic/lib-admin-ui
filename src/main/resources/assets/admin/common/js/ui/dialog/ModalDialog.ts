@@ -138,19 +138,9 @@ export abstract class ModalDialog
                 this.addClass('always-fullscreen');
                 this.toggleFullscreen(true);
             }
-
-            if (!this.skipTabbable) {
-                this.updateTabbable();
-            }
-
-            if (this.elementToFocusOnShow) {
-                this.elementToFocusOnShow.giveFocus();
-            } else {
-                this.buttonRow.focusDefaultAction();
-            }
         });
 
-        const closeIconCallback = this.config.closeIconCallback || (() => {
+        const closeIconCallback: () => void = this.config.closeIconCallback || (() => {
             if (this.cancelAction) {
                 this.cancelAction.execute();
             } else {
@@ -159,6 +149,12 @@ export abstract class ModalDialog
         });
 
         this.closeIcon.onClicked(closeIconCallback);
+
+        const descendantsAddedHandler = AppHelper.debounce(() => {
+            this.updateTabbable();
+        }, 200);
+
+        this.onDescendantAdded(descendantsAddedHandler);
 
         this.initClickOutsideListeners();
     }
@@ -223,36 +219,23 @@ export abstract class ModalDialog
     }
 
     private initFocusInOutEventsHandlers() {
-        let buttonRowIsFocused: boolean = false;
-        let buttonRowFocusOutTimeout: number;
         const focusOutTimeout: number = 10;
 
-        this.onMouseDown(() => {
-            buttonRowIsFocused = false; // making dialog focusOut event give focus to last tabbable elem
-        });
+        AppHelper.focusInOut(this, (lastFocused: HTMLElement) => {
+            if (this.isOpen() && this.hasTabbable() && !this.hasSubDialog() && !this.isMasked()) {
+                const lastTabbable: Element = this.getLastTabbable();
 
-        AppHelper.focusInOut(this, () => {
-            if (this.hasTabbable() && !this.hasSubDialog() && !this.isMasked()) {
-                // last focusable - Cancel
-                // first focusable - X
-                if (buttonRowIsFocused) { // last element lost focus
+                if (lastFocused === lastTabbable.getHTMLElement()) { // last element lost focus
                     this.focusFirstTabbable();
                 } else {
-                    this.tabbable[this.tabbable.length - 1].giveFocus();
+                    lastTabbable.giveFocus();
                 }
             }
         }, focusOutTimeout, false);
+    }
 
-        this.buttonRow.onFocusIn(() => {
-            buttonRowIsFocused = true;
-            clearTimeout(buttonRowFocusOutTimeout);
-        });
-
-        this.buttonRow.onFocusOut(() => {
-            buttonRowFocusOutTimeout = <any>setTimeout(() => {
-                buttonRowIsFocused = false;
-            }, focusOutTimeout + 5); // timeout should be > timeout for modal dialog to trigger after
-        });
+    private getLastTabbable(): Element {
+        return this.tabbable.slice().reverse().find((el: Element) => el.isVisible() && !el.getEl().isDisabled());
     }
 
     private hasTabbable(): boolean {
@@ -263,8 +246,8 @@ export abstract class ModalDialog
         return false;
     }
 
-    protected focusFirstTabbable() {
-        this.tabbable.some((el: Element) => {
+    protected focusFirstTabbable(): boolean {
+        return this.tabbable?.some((el: Element) => {
             return el.giveFocus();
         });
     }
@@ -490,10 +473,6 @@ export abstract class ModalDialog
 
         let keyBindings = Action.getKeyBindings(this.buttonRow.getActions());
 
-        if (!this.skipTabbable) {
-            this.updateTabbable();
-        }
-
         keyBindings = keyBindings.concat([
             new KeyBinding('right', (event) => {
                 this.focusNextTabbable();
@@ -525,13 +504,10 @@ export abstract class ModalDialog
 
         super.show();
 
-        if (this.isRendered()) {
-            if (this.elementToFocusOnShow) {
-                this.elementToFocusOnShow.giveFocus();
-            } else {
-                this.buttonRow.focusDefaultAction();
-            }
-        }
+        this.whenRendered(() => {
+            this.updateTabbable();
+            this.elementToFocusOnShow?.giveFocus() || this.focusFirstTabbable() || this.buttonRow.focusDefaultAction();
+        });
 
         if (this.resizeObserver) {
             this.resizeObserver.observe(this.body.getHTMLElement());
@@ -777,10 +753,8 @@ export class ButtonRow
         this.defaultElement = null;
     }
 
-    focusDefaultAction() {
-        if (this.defaultElement) {
-            this.defaultElement.giveFocus();
-        }
+    focusDefaultAction(): boolean {
+        return this.defaultElement?.giveFocus();
     }
 }
 

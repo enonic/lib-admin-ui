@@ -121,18 +121,19 @@ export class AppHelper {
         $(element.getHTMLElement()).trigger(name);
     }
 
-    static focusInOut(element: Element, onFocusOut: () => void, wait: number = 50, preventMouseDown: boolean = true): void {
-        let focusOutTimeout = 0;
-        let target;
+    static focusInOut(element: Element, onFocusOut: (target: HTMLElement) => void, wait: number = 50,
+                      preventMouseDown: boolean = true): void {
+        let focusOutTimeout: number = 0;
+        let target: HTMLElement;
 
-        element.onFocusOut((event) => {
+        element.onFocusOut((event: Event) => {
             if (target === event.target) {
-                focusOutTimeout = setTimeout(onFocusOut, wait);
+                focusOutTimeout = setTimeout(() => onFocusOut(target), wait);
             }
         });
 
-        element.onFocusIn((event) => {
-            target = event.target;
+        element.onFocusIn((event: Event) => {
+            target = <HTMLElement>event.target;
             clearTimeout(focusOutTimeout);
         });
 

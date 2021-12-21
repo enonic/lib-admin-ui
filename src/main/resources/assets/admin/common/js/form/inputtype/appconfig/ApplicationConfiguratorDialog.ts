@@ -69,7 +69,6 @@ export class ApplicationConfiguratorDialog
 
         this.onRendered(() => {
             $(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().trigger('focus');
-            this.updateTabbable();
         });
 
         this.getCancelAction().onExecuted(this.config.cancelCallback);
