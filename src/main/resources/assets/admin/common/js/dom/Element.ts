@@ -1057,25 +1057,20 @@ export class Element {
         this.getEl().removeEventListener('blur', listener);
     }
 
-    onFocusIn(listener: (event: any) => void) {
-        // this.getEl().addEventListener('focusin', listener);
-        $(this.el.getHTMLElement()).on('focusin', listener);
-
+    onFocusIn(listener: (event: Event) => void) {
+        this.getEl().addEventListener('focusin', listener);
     }
 
-    unFocusIn(listener: (event: any) => void) {
-        // this.getEl().removeEventListener('focusin', listener);
-        $(this.el.getHTMLElement()).off('focusin', listener);
+    unFocusIn(listener: (event: Event) => void) {
+        this.getEl().removeEventListener('focusin', listener);
     }
 
-    onFocusOut(listener: (event: any) => void) {
-        // this.getEl().addEventListener('focusout', listener);
-        $(this.el.getHTMLElement()).on('focusout', listener);
+    onFocusOut(listener: (event: Event) => void) {
+        this.getEl().addEventListener('focusout', listener);
     }
 
-    unFocusOut(listener: (event: any) => void) {
-        // this.getEl().removeEventListener('focusout', listener);
-        $(this.el.getHTMLElement()).off('focusout', listener);
+    unFocusOut(listener: (event: Event) => void) {
+        this.getEl().removeEventListener('focusout', listener);
     }
 
     onScroll(listener: (event: Event) => void) {
