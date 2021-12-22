@@ -642,4 +642,8 @@ export abstract class FormSetOccurrenceView
 
         return new MoreButton([addAboveAction, addBelowAction, removeAction]);
     }
+
+    setValidateOccurrenceOnAdd(value: boolean): void {
+        this.formItemLayer.setValidateOccurrenceOnAdd(value);
+    }
 }

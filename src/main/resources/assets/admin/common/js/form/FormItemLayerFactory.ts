@@ -5,6 +5,7 @@ import {Store} from '../store/Store';
 export interface CreatedFormItemLayerConfig {
     context: FormContext;
     lazyRender?: boolean;
+    validateOccurrenceOnAdded?: boolean;
 }
 
 export interface FormItemLayerFactory {
@@ -33,6 +34,9 @@ export class FormItemLayerFactoryImpl implements FormItemLayerFactory {
         if (config.lazyRender != null) {
             layer.setLazyRender(config.lazyRender);
         }
+
+        layer.setValidateOccurrenceOnAdd(!!config.validateOccurrenceOnAdded);
+
         return layer;
     }
 }
