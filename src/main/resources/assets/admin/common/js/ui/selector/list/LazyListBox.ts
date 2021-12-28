@@ -43,7 +43,7 @@ export class LazyListBox<T> extends ListBox<T> {
     //
     }
 
-    setItems(items: T[], silent?: boolean) {
+    setItems(items: T[], silent?: boolean): void {
         super.setItems(items, silent);
 
         if (items.length > 0) {
@@ -51,7 +51,7 @@ export class LazyListBox<T> extends ListBox<T> {
         }
     }
 
-    addItems(items: T[], silent: boolean = false) {
+    addItems(items: T[], silent: boolean = false): void {
         super.addItems(items, silent);
 
         if (items.length > 0) {
