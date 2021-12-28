@@ -155,7 +155,7 @@ export class ListBox<I>
         return this.items.length;
     }
 
-    getItemView(item: I) {
+    getItemView(item: I): Element {
         return this.itemViews.get(this.getItemId(item));
     }
 
