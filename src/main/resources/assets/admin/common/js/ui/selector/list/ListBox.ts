@@ -8,7 +8,7 @@ export class ListBox<I>
 
     private items: I[] = [];
 
-    private itemViews: { [key: string]: Element } = {};
+    protected itemViews: Map<string, Element> = new Map<string, Element>();
 
     private itemsAddedListeners: { (items: I[]): void }[] = [];
     private itemsRemovedListeners: { (items: I[]): void }[] = [];
@@ -32,15 +32,13 @@ export class ListBox<I>
         this.addEmptyView();
     }
 
-    setItems(items: I[], silent?: boolean) {
+    setItems(items: I[], silent?: boolean): void {
         this.clearItems(silent);
-
         this.items = items;
-        if (items.length > 0) {
-            this.layoutList(items);
-            if (!silent) {
-                this.notifyItemsAdded(items);
-            }
+        this.layoutList();
+
+        if (items.length > 0 && !silent) {
+            this.notifyItemsAdded(items);
         }
     }
 
@@ -49,26 +47,21 @@ export class ListBox<I>
     }
 
     getItem(id: string): I {
-        for (let i = 0; i < this.items.length; i++) {
-            let item = this.items[i];
-            if (this.getItemId(item) === id) {
-                return item;
-            }
-        }
-        return undefined;
+        return this.items.find((item: I) => this.getItemId(item) === id);
     }
 
-    clearItems(silent?: boolean) {
-        if (this.items.length > 0) {
-            let removedItems = this.items.slice();
-            // correct way to empty array
-            this.items.length = 0;
-            this.itemViews = {};
-            if (!silent) {
-                this.notifyItemsRemoved(removedItems);
-            }
+    clearItems(silent?: boolean): void {
+        const removedItems: I[] = this.items.slice();
+
+        this.items = [];
+        this.itemViews = new Map<string, Element>();
+
+        if (removedItems.length > 0 && !silent) {
+            this.notifyItemsRemoved(removedItems);
         }
-        this.layoutList(this.items);
+
+        this.removeChildren();
+        this.addEmptyView();
     }
 
     addItem(item: I, silent: boolean = false) {
@@ -87,26 +80,38 @@ export class ListBox<I>
         this.removeItems([item], silent);
     }
 
-    removeItems(items: I[], silent?: boolean) {
-        let itemsRemoved: I[] = [];
-        this.items = this.items.filter((item) => {
-            for (let i = 0; i < items.length; i++) {
-                if (this.getItemId(item) === this.getItemId(items[i])) {
-                    this.removeItemView(item);
-                    itemsRemoved.push(item);
-                    return false;
-                }
-            }
-            return true;
-        });
+    removeItems(itemsToRemove: I[], silent?: boolean): void {
+        const itemsRemoved: I[] = this.doRemoveItems(itemsToRemove);
+
         if (itemsRemoved.length > 0) {
             if (!silent) {
                 this.notifyItemsRemoved(itemsRemoved);
             }
+
             if (this.getItemCount() === 0) {
                 this.addEmptyView();
             }
         }
+    }
+
+    private doRemoveItems(itemsToRemove: I[]): I[] {
+        const itemsLeft: I[] = [];
+        const itemsRemoved: I[] = [];
+
+        this.items.forEach((item: I) => {
+            const itemId: string = this.getItemId(item);
+
+            if (itemsToRemove.some((itemToRemove: I) => itemId === this.getItemId(itemToRemove))) {
+                this.removeItemView(item);
+                itemsRemoved.push(item);
+            } else {
+                itemsLeft.push(item);
+            }
+        });
+
+        this.items = itemsLeft;
+
+        return itemsRemoved;
     }
 
     replaceItem(item: I, append: boolean = false, silent?: boolean) {
@@ -114,9 +119,11 @@ export class ListBox<I>
     }
 
     replaceItems(items: I[], append: boolean = false, silent?: boolean) {
-        const indexes = this.items.map(value => this.getItemId(value));
-        items.forEach((item) => {
-            const index = indexes.indexOf(this.getItemId(item));
+        const indexes: string[] = this.items.map(value => this.getItemId(value));
+
+        items.forEach((item: I) => {
+            const index: number = indexes.indexOf(this.getItemId(item));
+
             if (index > -1) {
                 if (append) {
                     this.items.splice(index, 1);
@@ -125,7 +132,8 @@ export class ListBox<I>
                     this.items[index] = item;
                 }
 
-                const itemView = this.getItemView(item);
+                const itemView: Element = this.getItemView(item);
+
                 if (itemView) {
                     this.updateItemView(itemView, item);
                 }
@@ -133,6 +141,7 @@ export class ListBox<I>
                 this.items.unshift(item);
             }
         });
+
         if (!silent) {
             this.notifyItemsChanged(items);
         }
@@ -147,15 +156,16 @@ export class ListBox<I>
     }
 
     getItemView(item: I) {
-        return this.itemViews[this.getItemId(item)];
+        return this.itemViews.get(this.getItemId(item));
     }
 
-    getItemViews() {
-        return this.getItems().map((item) => this.getItemView(item));
+    getItemViews(): Element[] {
+        return Array.from(this.itemViews.values());
     }
 
     refreshList() {
-        this.layoutList(this.items);
+        this.removeChildren();
+        this.layoutList();
     }
 
     public onItemsAdded(listener: (items: I[]) => void) {
@@ -206,43 +216,44 @@ export class ListBox<I>
         return view;
     }
 
-    private doAddItem(readOnly: boolean, items: I[], silent: boolean = false) {
+    private doAddItem(readOnly: boolean, items: I[], silent: boolean = false): void {
         if (this.getItemCount() === 0) {
             this.removeEmptyView();
         }
+
         this.items = this.items.concat(items);
-        items.forEach((item) => {
+
+        items.forEach((item: I) => {
             this.addItemView(item, readOnly);
         });
-        if (items.length > 0) {
-            if (!silent) {
-                this.notifyItemsAdded(items);
-            }
+
+        if (items.length > 0 && !silent) {
+            this.notifyItemsAdded(items);
         }
     }
 
-    private layoutList(items: I[]) {
-        this.removeChildren();
-        if (items.length > 0) {
-            for (let i = 0; i < items.length; i++) {
-                this.addItemView(items[i]);
-            }
+    private layoutList() {
+        if (this.items.length > 0) {
+            this.items.forEach((item: I) => this.addItemView(item));
         } else {
             this.addEmptyView();
         }
     }
 
     private removeItemView(item: I) {
-        let itemView = this.itemViews[this.getItemId(item)];
+        const id: string = this.getItemId(item);
+        const itemView: Element = this.itemViews.get(id);
+
         if (itemView) {
             this.removeChild(itemView);
-            delete this.itemViews[this.getItemId(item)];
+            this.itemViews.delete(id);
         }
     }
 
-    private addItemView(item: I, readOnly: boolean = false) {
-        let itemView = this.createItemView(item, readOnly);
-        this.itemViews[this.getItemId(item)] = itemView;
+    protected addItemView(item: I, readOnly: boolean = false): Element {
+        const itemView: Element = this.createItemView(item, readOnly);
+        this.itemViews.set(this.getItemId(item), itemView);
+
         if (this.sortFunc) {
             const pos: number = this.items.sort(this.sortFunc).indexOf(item);
             this.insertChild(itemView, pos);
@@ -250,6 +261,7 @@ export class ListBox<I>
             this.appendChild(itemView);
         }
 
+        return itemView;
     }
 
     private addEmptyView() {
