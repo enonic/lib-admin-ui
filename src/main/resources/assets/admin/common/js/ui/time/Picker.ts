@@ -55,7 +55,7 @@ export class Picker<T extends Element>
         this.input.resetBaseValues();
     }
 
-    public setHandleReset(handleReset?: Function) {
+    public setHandleReset(handleReset?: Function): void {
         this.handleReset = handleReset;
     }
 
