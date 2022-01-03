@@ -38,7 +38,7 @@ export class ManagedActionManager {
     }
 
     isExecuting(): boolean {
-        return this.executors.some(p => p.isExecuting());
+        return this.executors.some(p => p?.isExecuting());
     }
 
     onManagedActionStateChanged(listener: StateChangedListener) {

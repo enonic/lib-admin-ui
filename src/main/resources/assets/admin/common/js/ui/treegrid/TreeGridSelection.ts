@@ -14,6 +14,10 @@ export class TreeGridSelection {
     remove(id: string) {
         const totalSelected: number = this.selectedItems.length;
 
+        if (totalSelected === 0) {
+            return;
+        }
+
         this.selectedItems = this.selectedItems.filter((itemId: string) => itemId !== id);
 
         this.selectionChanged = totalSelected !== this.selectedItems.length;
