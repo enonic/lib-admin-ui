@@ -18,9 +18,10 @@ export class OccurrencesBuilder {
         return this;
     }
 
-    fromJson(json: OccurrencesJson) {
+    fromJson(json: OccurrencesJson): OccurrencesBuilder {
         this.minimum = json.minimum;
         this.maximum = json.maximum;
+        return this;
     }
 
     build(): Occurrences {
@@ -41,8 +42,23 @@ export class Occurrences
     }
 
     static fromJson(json: OccurrencesJson): Occurrences {
-        let builder = new OccurrencesBuilder();
-        builder.fromJson(json);
+        return new OccurrencesBuilder().fromJson(json).build();
+    }
+
+    static min(min: number): Occurrences {
+        return Occurrences.minmax(min, 0);
+    }
+
+    static max(max: number): Occurrences {
+        return Occurrences.minmax(0, max);
+    }
+
+    static minmax(min: number, max: number): Occurrences {
+        const builder: OccurrencesBuilder = new OccurrencesBuilder();
+
+        builder.setMinimum(min);
+        builder.setMaximum(max);
+
         return builder.build();
     }
 
