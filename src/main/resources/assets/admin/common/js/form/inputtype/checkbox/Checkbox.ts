@@ -11,7 +11,6 @@ import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
-import {InputValidationRecording} from '../InputValidationRecording';
 
 export class Checkbox
     extends BaseInputTypeSingleOccurrence {
@@ -66,6 +65,10 @@ export class Checkbox
 
     reset() {
         this.checkbox.resetBaseValues();
+    }
+
+    validate(_silent: boolean = true): void {
+    //
     }
 
     setEnabled(enable: boolean) {
