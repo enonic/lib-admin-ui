@@ -66,7 +66,7 @@ export class Checkbox
         return Q<void>(null);
     }
 
-    validate(silent: boolean = true) {
+    validate(silent: boolean = true): void {
         const isRequiredChecked: boolean = this.input.getOccurrences().getMinimum() > 0;
         const occurrences: Occurrences = isRequiredChecked ? Occurrences.minmax(1, 1) : Occurrences.min(0);
         const totalValid: number = ((isRequiredChecked && this.checkbox.isChecked()) || !isRequiredChecked) ? 1 : 0;
