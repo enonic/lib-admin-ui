@@ -12,6 +12,8 @@ import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {InputValidationRecording} from '../InputValidationRecording';
+import {Occurrences} from '../../Occurrences';
+import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
 
 export class Checkbox
     extends BaseInputTypeSingleOccurrence {
@@ -62,6 +64,19 @@ export class Checkbox
             this.checkbox.resetBaseValues();
         }
         return Q<void>(null);
+    }
+
+    validate(silent: boolean = true) {
+        const isRequiredChecked: boolean = this.input.getOccurrences().getMinimum() > 0;
+        const occurrences: Occurrences = isRequiredChecked ? Occurrences.minmax(1, 1) : Occurrences.min(0);
+        const totalValid: number = ((isRequiredChecked && this.checkbox.isChecked()) || !isRequiredChecked) ? 1 : 0;
+        const newValidationRecord: InputValidationRecording = new InputValidationRecording(occurrences, totalValid);
+
+        if (!silent && newValidationRecord.validityChanged(this.previousValidationRecording)) {
+            this.notifyValidityChanged(new InputValidityChangedEvent(newValidationRecord));
+        }
+
+        this.previousValidationRecording = newValidationRecord;
     }
 
     reset() {
