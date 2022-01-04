@@ -3,18 +3,9 @@ import {Element} from '../../../dom/Element';
 
 export class LazyListBox<T> extends ListBox<T> {
 
-    private scrollContainer: Element;
-
     private observer: IntersectionObserver;
 
     private observedItem: Element;
-
-    constructor(scrollContainer: Element, classname?: string) {
-        super(classname);
-
-        this.scrollContainer = scrollContainer;
-        this.initIntersectionObserver();
-    }
 
     private initIntersectionObserver(): void {
         this.observer = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
@@ -26,12 +17,24 @@ export class LazyListBox<T> extends ListBox<T> {
         }, this.initObserverOptions());
     }
 
-    protected initObserverOptions(): IntersectionObserverInit {
+    private initObserverOptions(): IntersectionObserverInit {
         return {
-            root: this.scrollContainer.getHTMLElement(),
-            rootMargin: '100px',
-            threshold: 0
+            root: this.getScrollContainer().getHTMLElement(),
+            rootMargin: this.getRootMargin(),
+            threshold: this.getThreshold()
         };
+    }
+
+    protected getRootMargin(): string {
+        return '100px';
+    }
+
+    protected getThreshold(): number {
+        return 0;
+    }
+
+    protected getScrollContainer(): Element {
+        return this.getScrollableParent();
     }
 
     protected handleLastItemIsVisible(): void {
@@ -60,9 +63,15 @@ export class LazyListBox<T> extends ListBox<T> {
     }
 
     private addLazyLoad(): void {
-        if (this.getItemCount() > 0) {
-            this.addLazyLoadWhenLastIsVisible(this.getLastChild());
+        if (this.getItemCount() === 0) {
+            return;
         }
+
+        if (!this.observer) {
+            this.initIntersectionObserver();
+        }
+
+        this.addLazyLoadWhenLastIsVisible(this.getLastChild());
     }
 
     protected addLazyLoadWhenLastIsVisible(itemView: Element): void {
