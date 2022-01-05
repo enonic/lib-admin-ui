@@ -173,7 +173,7 @@ export class FormItemLayer {
                     parent: this.parent,
                     dataSet: propertySet,
                     lazyRender: this.lazyRender,
-                    validateOccurrenceOnAdded: this.validateOccurrenceOnAdd
+                    validateOccurrenceOnAdd: this.validateOccurrenceOnAdd
                 });
             }
 
@@ -217,7 +217,7 @@ export class FormItemLayer {
                     parent: this.parent,
                     parentDataSet: propertySet,
                     lazyRender: this.lazyRender,
-                    validateOccurrenceOnAdded: this.validateOccurrenceOnAdd
+                    validateOccurrenceOnAdd: this.validateOccurrenceOnAdd
                 });
             }
 

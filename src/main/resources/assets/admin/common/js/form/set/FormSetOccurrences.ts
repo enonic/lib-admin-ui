@@ -68,7 +68,7 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
     protected getNewOccurrenceConfig(occurrence: FormSetOccurrence<V>): FormSetOccurrenceViewConfig<V> {
         const dataSet: PropertySet = this.getOrPopulateSetFromArray(occurrence.getIndex());
         const layer: FormItemLayer = this.layerFactory.createLayer(
-            {context: this.context, lazyRender: this.lazyRender, validateOccurrenceOnAdded: this.validateOccurrenceOnAdd});
+            {context: this.context, lazyRender: this.lazyRender, validateOccurrenceOnAdd: this.validateOccurrenceOnAdd});
 
         return {
             context: this.context,
