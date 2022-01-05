@@ -325,4 +325,8 @@ export class FormView
     setEnabled(enable: boolean) {
         this.formItemLayer.setEnabled(enable);
     }
+
+    setValidateOccurrenceOnAdd(value: boolean): void {
+        this.formItemLayer.setValidateOccurrenceOnAdd(value);
+    }
 }

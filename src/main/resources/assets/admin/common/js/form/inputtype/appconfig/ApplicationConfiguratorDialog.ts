@@ -122,6 +122,7 @@ export class ApplicationConfiguratorDialog
 
             return this.formView.layout().then(() => {
                 this.addClass('animated');
+                this.formView.setValidateOccurrenceOnAdd(true);
 
                 setTimeout(() => {
                     ResponsiveManager.fireResizeEvent();

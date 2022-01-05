@@ -38,6 +38,8 @@ export class FormItemLayer {
 
     private lazyRender: boolean = true;
 
+    private validateOccurrenceOnAdd: boolean = false;
+
     private formItemLayerFactory: FormItemLayerFactory;
 
     constructor(context: FormContext, layerFactory: FormItemLayerFactory) {
@@ -113,6 +115,14 @@ export class FormItemLayer {
         });
     }
 
+    setValidateOccurrenceOnAdd(value: boolean): void {
+        this.validateOccurrenceOnAdd = value;
+
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.setValidateOccurrenceOnAdd(value);
+        });
+    }
+
     setLazyRender(value: boolean) {
         this.lazyRender = value;
     }
@@ -148,7 +158,8 @@ export class FormItemLayer {
                     formSet: formItemSet,
                     parent: <FormSetOccurrenceView>this.parent,
                     parentDataSet: propertySet,
-                    occurrencesLazyRender: this.lazyRender
+                    occurrencesLazyRender: this.lazyRender,
+                    validateOccurrenceOnAdd: this.validateOccurrenceOnAdd
                 });
             }
 
@@ -161,7 +172,8 @@ export class FormItemLayer {
                     fieldSet: fieldSet,
                     parent: this.parent,
                     dataSet: propertySet,
-                    lazyRender: this.lazyRender
+                    lazyRender: this.lazyRender,
+                    validateOccurrenceOnAdd: this.validateOccurrenceOnAdd
                 });
             }
 
@@ -191,7 +203,8 @@ export class FormItemLayer {
                     formSet: formOptionSet,
                     parent: <FormSetOccurrenceView>this.parent,
                     parentDataSet: propertySet,
-                    occurrencesLazyRender: this.lazyRender
+                    occurrencesLazyRender: this.lazyRender,
+                    validateOccurrenceOnAdd: this.validateOccurrenceOnAdd
                 });
             }
 
@@ -203,7 +216,8 @@ export class FormItemLayer {
                     formOptionSetOption: formOptionSetOption,
                     parent: this.parent,
                     parentDataSet: propertySet,
-                    lazyRender: this.lazyRender
+                    lazyRender: this.lazyRender,
+                    validateOccurrenceOnAdd: this.validateOccurrenceOnAdd
                 });
             }
 
