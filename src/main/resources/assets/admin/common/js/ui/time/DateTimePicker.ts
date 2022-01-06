@@ -68,8 +68,6 @@ export class DateTimePicker
 
     constructor(builder: DateTimePickerBuilder) {
         super(builder, 'date-time-picker');
-
-        this.showResetButton = true;
     }
 
     public setSelectedDateTime(date: Date, userInput?: boolean) {
@@ -83,9 +81,12 @@ export class DateTimePicker
         }
 
         if (builder.defaultDate) {
-            this.setHandleReset(() => {
-                this.setSelectedDateTime(builder.defaultDate);
-            });
+            this.setDefaultHandler(
+                () => {
+                    this.setSelectedDateTime(builder.defaultDate);
+                },
+                builder.defaultDate
+            );
         }
     }
 

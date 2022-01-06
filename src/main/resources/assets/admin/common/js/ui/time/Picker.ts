@@ -12,13 +12,13 @@ import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 export class Picker<T extends Element>
     extends DivEl {
 
-    showResetButton: Boolean;
+    private showDefaultButton: Boolean = false;
 
     protected popup: T;
 
     protected popupOkButton: Button;
 
-    protected popupResetButton: Button;
+    protected popupDefaultButton: Button;
 
     protected selectedDate: Date;
 
@@ -28,7 +28,7 @@ export class Picker<T extends Element>
 
     protected validUserInput: boolean;
 
-    private handleReset: Function;
+    private defaultHandler: Function;
 
     private builder: any;
 
@@ -55,8 +55,11 @@ export class Picker<T extends Element>
         this.input.resetBaseValues();
     }
 
-    public setHandleReset(handleReset?: Function): void {
-        this.handleReset = handleReset;
+    public setDefaultHandler(setDefault: Function, defaultDate: Date | undefined): void {
+        if (defaultDate) {
+            this.showDefaultButton = true;
+        }
+        this.defaultHandler = setDefault;
     }
 
     getTextInput(): TextInput {
@@ -199,17 +202,15 @@ export class Picker<T extends Element>
         }
     }
 
-    private initResetButton() {
-        this.popupResetButton = new Button(i18n('action.reset'));
-        this.popupResetButton.addClass('reset-button');
-        this.popupResetButton.onClicked(() => {
-            if (!this.handleReset) {
-                this.input.reset();
-            } else {
-                this.handleReset();
+    private initDefaultButton() {
+        this.popupDefaultButton = new Button(i18n('action.setDefault'));
+        this.popupDefaultButton.addClass('default-button');
+        this.popupDefaultButton.onClicked(() => {
+            if (this.setDefaultHandler) {
+                this.defaultHandler();
             }
         });
-        return this.popupResetButton;
+        return this.popupDefaultButton;
     }
 
     private initCloseButton() {
@@ -231,9 +232,8 @@ export class Picker<T extends Element>
         this.setupPopupListeners(this.builder);
         const buttonContainer = new DivEl('btn-container');
 
-        if (this.showResetButton) {
-            const resetButton = this.initResetButton();
-            buttonContainer.appendChild(resetButton);
+        if (this.showDefaultButton) {
+            buttonContainer.appendChild(this.initDefaultButton());
         }
 
         const okButton = this.initCloseButton();

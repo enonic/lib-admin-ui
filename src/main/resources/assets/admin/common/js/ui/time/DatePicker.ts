@@ -41,8 +41,6 @@ export class DatePicker
 
     constructor(builder: DatePickerBuilder) {
         super(builder, 'date-picker');
-
-        this.showResetButton = true;
     }
 
     setSelectedDate(date: Date) {
@@ -56,10 +54,12 @@ export class DatePicker
         }
 
         if (builder.defaultDate) {
-            this.setHandleReset(() => {
-                console.log('handleReset', builder.defaultDate);
-                this.setSelectedDate(builder.defaultDate);
-            });
+            this.setDefaultHandler(
+                () => {
+                    this.setSelectedDate(builder.defaultDate);
+                },
+                builder.defaultDate
+            );
         }
     }
 
