@@ -538,8 +538,4 @@ export class FormOptionSetOptionView
         }
         this.formItemLayer.setEnabled(enable);
     }
-
-    setValidateOccurrenceOnAdd(value: boolean): void {
-        this.formItemLayer.setValidateOccurrenceOnAdd(value);
-    }
 }

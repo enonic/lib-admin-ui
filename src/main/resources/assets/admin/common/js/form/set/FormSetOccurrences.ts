@@ -28,8 +28,6 @@ export interface FormSetOccurrencesConfig<V extends FormSetOccurrenceView> {
     propertyArray: PropertyArray;
 
     lazyRender?: boolean;
-
-    validateOccurrenceOnAdd?: boolean;
 }
 
 export class FormSetOccurrences<V extends FormSetOccurrenceView>
@@ -40,8 +38,6 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
     private readonly formSet: FormSet;
 
     private readonly lazyRender: boolean;
-
-    private validateOccurrenceOnAdd: boolean;
 
     private layerFactory: FormItemLayerFactory;
 
@@ -62,13 +58,11 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         this.formSet = config.formSet;
         this.parent = config.parent;
         this.lazyRender = config.lazyRender;
-        this.validateOccurrenceOnAdd = !!config.validateOccurrenceOnAdd;
     }
 
     protected getNewOccurrenceConfig(occurrence: FormSetOccurrence<V>): FormSetOccurrenceViewConfig<V> {
         const dataSet: PropertySet = this.getOrPopulateSetFromArray(occurrence.getIndex());
-        const layer: FormItemLayer = this.layerFactory.createLayer(
-            {context: this.context, lazyRender: this.lazyRender, validateOccurrenceOnAdd: this.validateOccurrenceOnAdd});
+        const layer: FormItemLayer = this.layerFactory.createLayer({context: this.context, lazyRender: this.lazyRender});
 
         return {
             context: this.context,
@@ -90,7 +84,7 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
     }
 
     createNewOccurrenceView(occurrence: FormSetOccurrence<V>): V {
-        const newOccurrenceView: V = this.createOccurrenceView(this.getNewOccurrenceConfig(occurrence));
+        const newOccurrenceView = this.createOccurrenceView(this.getNewOccurrenceConfig(occurrence));
 
         newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<V>) => this.removeOccurrenceView(event.getView()));
         newOccurrenceView.onExpandRequested(view => this.notifyExpandRequested(view));
@@ -134,12 +128,6 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         return this.getOccurrenceViews().every((formSetOccurrenceView: FormSetOccurrenceView) => {
             return !formSetOccurrenceView.isContainerVisible();
         });
-    }
-
-    setValidateOccurrenceOnAdd(value: boolean): void {
-        super.setValidateOccurrenceOnAdd(value);
-
-        this.validateOccurrenceOnAdd = value;
     }
 
     moveOccurrence(index: number, destinationIndex: number) {
