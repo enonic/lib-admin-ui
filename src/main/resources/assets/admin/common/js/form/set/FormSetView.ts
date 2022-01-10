@@ -41,8 +41,6 @@ export interface FormSetViewConfig {
     formSet: FormSet;
 
     parent: FormSetOccurrenceView;
-
-    validateOccurrenceOnAdd?: boolean
 }
 
 export abstract class FormSetView<V extends FormSetOccurrenceView>
@@ -76,8 +74,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     protected occurrencesLazyRender: boolean;
 
-    protected validateOccurrenceOnAdd: boolean;
-
     /**
      * The index of child Data being dragged.
      */
@@ -97,7 +93,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         this.classPrefix = classPrefix;
         this.helpText = this.formSet.getHelpText();
         this.occurrencesLazyRender = config.occurrencesLazyRender;
-        this.validateOccurrenceOnAdd = !!config.validateOccurrenceOnAdd;
 
         this.addClass(this.formSet.getPath().getElements().length % 2 ? 'even' : 'odd');
         if (this.formSet.getOccurrences().getMaximum() === 1) {
@@ -121,8 +116,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             formSet: this.formSet,
             parent: this.getParent(),
             propertyArray: this.getPropertyArray(this.parentDataSet),
-            lazyRender: this.occurrencesLazyRender,
-            validateOccurrenceOnAdd: this.validateOccurrenceOnAdd
+            lazyRender: this.occurrencesLazyRender
         });
 
         return this.formItemOccurrences;
@@ -338,11 +332,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     setEnabled(enable: boolean) {
         this.formItemOccurrences.setEnabled(enable);
         this.addButton.setEnabled(enable);
-    }
-
-    setValidateOccurrenceOnAdd(value: boolean): void {
-        this.validateOccurrenceOnAdd = value;
-        this.formItemOccurrences.setValidateOccurrenceOnAdd(value);
     }
 
     onFocus(listener: (event: FocusEvent) => void) {
@@ -575,19 +564,16 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     private makeAddButton(): Button {
         const addButton: Button = new Button(i18n('action.add'));
-
         addButton
             .setTitle(i18n('button.add', this.formSet.getLabel()))
             .addClass('small')
-            .onClicked(this.addOccurrence.bind(this));
-
+            .onClicked(() => {
+                this.formItemOccurrences
+                    .createAndAddOccurrence(this.formItemOccurrences.countOccurrences())
+                    .then((item: V) => this.expandOccurrenceView(item)
+                );
+        });
         return addButton;
-    }
-
-    protected addOccurrence(): void {
-        this.formItemOccurrences
-            .createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), this.validateOccurrenceOnAdd)
-            .then((item: V) => this.expandOccurrenceView(item));
     }
 
     expandRecursively() {
