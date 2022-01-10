@@ -80,10 +80,6 @@ export class FieldSetView
         this.formItemLayer.setEnabled(enable);
     }
 
-    setValidateOccurrenceOnAdd(value: boolean): void {
-        this.formItemLayer.setValidateOccurrenceOnAdd(value);
-    }
-
     giveFocus(): boolean {
 
         let focusGiven = false;

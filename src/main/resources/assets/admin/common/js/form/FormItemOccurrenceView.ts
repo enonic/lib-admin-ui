@@ -106,8 +106,4 @@ export abstract class FormItemOccurrenceView
     setEnabled(enable: boolean) {
         //
     }
-
-    setValidateOccurrenceOnAdd(value: boolean): void {
-        //
-    }
 }
