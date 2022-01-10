@@ -1,6 +1,21 @@
 .application-configurator-dialog {
   .modal-dialog-body {
     overflow: auto !important; // to force lazy loading work
+
+    // overriding form-set-view.less styles to force displaying validation errors even on newly added occurrences
+    .form-view {
+      &.display-validation-errors {
+        .form-item-view.invalid {
+          .form-item-set-occurrence-view,
+          .form-option-set-occurrence-view {
+            &.invalid {
+              border: 3px solid @admin-red !important;
+              box-shadow: none;
+            }
+          }
+        }
+      }
+    }
   }
 
   .modal-dialog-header {
