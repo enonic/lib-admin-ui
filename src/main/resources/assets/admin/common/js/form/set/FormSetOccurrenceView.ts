@@ -260,6 +260,7 @@ export abstract class FormSetOccurrenceView
 
         this.currentValidationState = allRecordings;
         this.toggleClass('invalid', !this.isValid());
+        this.removeClass('hide-validation-errors');
         return allRecordings;
     }
 
@@ -615,13 +616,13 @@ export abstract class FormSetOccurrenceView
 
     private createMoreButton(): MoreButton {
         const addAboveAction = new Action(i18n('action.addAbove')).onExecuted(_action => {
-            void this.formItemOccurrence.addOccurrenceAbove().then(view => {
+            void this.formItemOccurrence.addOccurrenceAbove().then((view: FormItemOccurrenceView) => {
                 const setView = <FormSetOccurrenceView>view;
                 this.notifyExpandRequested(setView);
             });
         });
         const addBelowAction = new Action(i18n('action.addBelow')).onExecuted(_action => {
-            void this.formItemOccurrence.addOccurrenceBelow().then(view => {
+            void this.formItemOccurrence.addOccurrenceBelow().then((view: FormItemOccurrenceView) => {
                 const setView = <FormSetOccurrenceView>view;
                 this.notifyExpandRequested(setView);
             });

@@ -176,7 +176,12 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
     public createAndAddOccurrence(insertAtIndex: number = this.countOccurrences(), validate: boolean = true): Q.Promise<V> {
         const occurrence: FormItemOccurrence<V> = this.createNewOccurrence(this, insertAtIndex);
 
-        return this.addOccurrence(occurrence, validate);
+        return this.addOccurrence(occurrence, validate).then((view: V) => {
+            // hiding validation error on adding new items until validate() is invoked
+            view.addClass('hide-validation-errors');
+
+            return view;
+        });
     }
 
     onFocus(listener: (event: FocusEvent) => void) {
