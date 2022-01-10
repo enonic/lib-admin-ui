@@ -38,11 +38,11 @@ export class FormItemOccurrence<V extends FormItemOccurrenceView> {
     }
 
     addOccurrenceAbove(): Q.Promise<V> {
-        return this.occurrences.createAndAddOccurrence(this.index, false);
+        return this.occurrences.createAndAddOccurrence(this.index);
     }
 
     addOccurrenceBelow(): Q.Promise<V> {
-        return this.occurrences.createAndAddOccurrence(this.index + 1, false);
+        return this.occurrences.createAndAddOccurrence(this.index + 1);
     }
 
     showAddButton(): boolean {
