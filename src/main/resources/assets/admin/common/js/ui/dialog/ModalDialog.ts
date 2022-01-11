@@ -222,16 +222,29 @@ export abstract class ModalDialog
         const focusOutTimeout: number = 10;
 
         AppHelper.focusInOut(this, (lastFocused: HTMLElement) => {
-            if (this.isOpen() && this.hasTabbable() && !this.hasSubDialog() && !this.isMasked()) {
-                const lastTabbable: Element = this.getLastTabbable();
-
-                if (lastFocused === lastTabbable.getHTMLElement()) { // last element lost focus
-                    this.focusFirstTabbable();
-                } else {
-                    lastTabbable.giveFocus();
-                }
+            if (this.isFocusOutEventToBeProcessed()) {
+                this.bringFocusBackToDialog(lastFocused);
             }
         }, focusOutTimeout, false);
+    }
+
+    private isFocusOutEventToBeProcessed(): boolean {
+        return this.isOpen() && this.hasTabbable() && !this.hasSubDialog() && !this.isMasked() && !this.isIframeHavingFocus();
+    }
+
+    // html editor might have gotten focus
+    private isIframeHavingFocus(): boolean {
+        return document.activeElement?.tagName.toLowerCase() === 'iframe';
+    }
+
+    private bringFocusBackToDialog(lastFocused: HTMLElement): void {
+        const lastTabbable: Element = this.getLastTabbable();
+
+        if (lastFocused === lastTabbable.getHTMLElement()) { // last element lost focus
+            this.focusFirstTabbable();
+        } else {
+            lastTabbable.giveFocus();
+        }
     }
 
     private getLastTabbable(): Element {
