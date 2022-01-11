@@ -20,8 +20,10 @@ export class DatePickerBuilder {
 
     closeOnSelect: boolean = true;
 
-    setDefaultDate(value: Date): DatePickerBuilder {
-        this.defaultDate = value;
+    setDefaultDate(value: Date | undefined): DatePickerBuilder {
+        if (value) {
+            this.defaultDate = value;
+        }
         return this;
     }
 
@@ -54,12 +56,7 @@ export class DatePicker
         }
 
         if (builder.defaultDate) {
-            this.setDefaultHandler(
-                () => {
-                    this.setSelectedDate(builder.defaultDate);
-                },
-                builder.defaultDate
-            );
+            this.setDefaultValueHandler(() => this.setSelectedDate(builder.defaultDate));
         }
     }
 

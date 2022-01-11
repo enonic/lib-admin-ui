@@ -27,8 +27,11 @@ export class DateTimePickerBuilder {
     // use local timezone if timezone value is not initialized
     useLocalTimezoneIfNotPresent: boolean = false;
 
-    setDefaultDate(value: Date): DateTimePickerBuilder {
-        this.defaultDate = value;
+    setDefaultDate(value: Date | undefined): DateTimePickerBuilder {
+        // We don't want the set default button to appear when there is no default date
+        if (value) {
+            this.defaultDate = value;
+        }
         return this;
     }
 
@@ -81,12 +84,7 @@ export class DateTimePicker
         }
 
         if (builder.defaultDate) {
-            this.setDefaultHandler(
-                () => {
-                    this.setSelectedDateTime(builder.defaultDate);
-                },
-                builder.defaultDate
-            );
+            this.setDefaultValueHandler(() => this.setSelectedDateTime(builder.defaultDate));
         }
     }
 

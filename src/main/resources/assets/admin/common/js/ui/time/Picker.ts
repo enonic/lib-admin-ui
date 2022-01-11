@@ -12,23 +12,15 @@ import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 export class Picker<T extends Element>
     extends DivEl {
 
-    private showDefaultButton: Boolean = false;
-
     protected popup: T;
-
-    protected popupOkButton: Button;
-
-    protected popupDefaultButton: Button;
 
     protected selectedDate: Date;
 
     protected input: TextInput;
 
-    protected defaultDate: Date;
-
     protected validUserInput: boolean;
 
-    private defaultHandler: Function;
+    private defaultValueHandler: Function;
 
     private builder: any;
 
@@ -55,11 +47,8 @@ export class Picker<T extends Element>
         this.input.resetBaseValues();
     }
 
-    public setDefaultHandler(setDefault: Function, defaultDate: Date | undefined): void {
-        if (defaultDate) {
-            this.showDefaultButton = true;
-        }
-        this.defaultHandler = setDefault;
+    public setDefaultValueHandler(handler: Function): void {
+        this.defaultValueHandler = handler;
     }
 
     getTextInput(): TextInput {
@@ -202,25 +191,23 @@ export class Picker<T extends Element>
         }
     }
 
-    private initDefaultButton() {
-        this.popupDefaultButton = new Button(i18n('action.setDefault'));
-        this.popupDefaultButton.addClass('default-button');
-        this.popupDefaultButton.onClicked(() => {
-            if (this.setDefaultHandler) {
-                this.defaultHandler();
-            }
+    private initDefaultButton(): Button {
+        const popupDefaultButton = new Button(i18n('action.setDefault'));
+        popupDefaultButton.addClass('default-button');
+        popupDefaultButton.onClicked(() => {
+            this.defaultValueHandler();
         });
-        return this.popupDefaultButton;
+        return popupDefaultButton;
     }
 
-    private initCloseButton() {
-        this.popupOkButton = new Button(i18n('action.ok'));
-        this.popupOkButton.addClass('ok-button');
-        this.popupOkButton.onClicked(() => {
+    private initCloseButton(): Button {
+        const popupCloseButton = new Button(i18n('action.ok'));
+        popupCloseButton.addClass('close-button');
+        popupCloseButton.onClicked(() => {
             this.hidePopup();
         });
 
-        return this.popupOkButton;
+        return popupCloseButton;
     }
 
     private createPopup() {
@@ -230,16 +217,17 @@ export class Picker<T extends Element>
 
         this.initPopup(this.builder);
         this.setupPopupListeners(this.builder);
-        const buttonContainer = new DivEl('btn-container');
 
-        if (this.showDefaultButton) {
-            buttonContainer.appendChild(this.initDefaultButton());
+        const popUpItems = new DivEl();
+
+        if (this.defaultValueHandler) {
+            // Adds the needed css to align the buttons
+            popUpItems.setClass('btn-container');
+            popUpItems.appendChild(this.initDefaultButton());
         }
+        popUpItems.appendChild(this.initCloseButton());
 
-        const okButton = this.initCloseButton();
-        buttonContainer.appendChild(okButton);
-
-        this.popup.appendChild(buttonContainer);
+        this.popup.appendChild(popUpItems);
 
         this.popup.insertAfterEl(this.input);
     }
