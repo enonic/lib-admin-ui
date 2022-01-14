@@ -12,7 +12,6 @@ import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
-import {InputTypeViewContext} from '../InputTypeViewContext';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDate]].
@@ -34,7 +33,10 @@ export class Date
         }
 
         const datePickerBuilder: DatePickerBuilder = new DatePickerBuilder();
-        datePickerBuilder.setDefaultDate(this.getDefaultDate());
+        const defaultDate = this.getDefaultDate();
+        if (defaultDate) {
+            datePickerBuilder.setDefaultDate(defaultDate);
+        }
 
         if (!property.hasNullValue()) {
             const date: LocalDate = property.getLocalDate();

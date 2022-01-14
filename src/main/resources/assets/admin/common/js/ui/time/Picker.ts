@@ -191,21 +191,19 @@ export class Picker<T extends Element>
         }
     }
 
-    private initDefaultButton(): Button {
-        const popupDefaultButton = new Button(i18n('action.setDefault'));
-        popupDefaultButton.addClass('default-button');
-        popupDefaultButton.onClicked(() => {
+    private initDefaultValueButton(): Button {
+        const popupDefaultValueButton = new Button(i18n('action.setDefault'));
+        popupDefaultValueButton.addClass('default-button');
+        popupDefaultValueButton.onClicked(() => {
             this.defaultValueHandler();
         });
-        return popupDefaultButton;
+        return popupDefaultValueButton;
     }
 
     private initCloseButton(): Button {
         const popupCloseButton = new Button(i18n('action.ok'));
         popupCloseButton.addClass('close-button');
-        popupCloseButton.onClicked(() => {
-            this.hidePopup();
-        });
+        popupCloseButton.onClicked(() => this.hidePopup());
 
         return popupCloseButton;
     }
@@ -223,7 +221,7 @@ export class Picker<T extends Element>
         if (this.defaultValueHandler) {
             // Adds the needed css to align the buttons
             popUpItems.setClass('btn-container');
-            popUpItems.appendChild(this.initDefaultButton());
+            popUpItems.appendChild(this.initDefaultValueButton());
         }
         popUpItems.appendChild(this.initCloseButton());
 

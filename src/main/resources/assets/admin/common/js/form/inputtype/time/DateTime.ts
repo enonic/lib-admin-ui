@@ -96,7 +96,10 @@ export class DateTime
 
     private createInputAsLocalDateTime(property: Property) {
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
-        dateTimeBuilder.setDefaultDate(this.getDefaultDate());
+        const defaultDate = this.getDefaultDate();
+        if (defaultDate) {
+            dateTimeBuilder.setDefaultDate(defaultDate);
+        }
 
         if (!ValueTypes.LOCAL_DATE_TIME.equals(property.getType())) {
             ValueTypeConverter.convertPropertyValueType(property, ValueTypes.LOCAL_DATE_TIME);
