@@ -5,25 +5,18 @@ import {DateHelper} from '../../util/DateHelper';
 import {Event} from '../../event/Event';
 import {ClassHelper} from '../../ClassHelper';
 import {DayOfWeek} from './DayOfWeek';
-import {Picker} from './Picker';
+import {DefaultValuePickerBuilder, Picker} from './Picker';
 import {DaysOfWeek} from './DaysOfWeek';
 import {DatePickerPopup, DatePickerPopupBuilder} from './DatePickerPopup';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 
-export class DatePickerBuilder {
+export class DatePickerBuilder extends DefaultValuePickerBuilder {
 
     date: Date;
-
-    defaultDate: Date;
 
     startingDayOfWeek: DayOfWeek = DaysOfWeek.MONDAY;
 
     closeOnSelect: boolean = true;
-
-    setDefaultDate(value: Date): DatePickerBuilder {
-        this.defaultDate = value;
-        return this;
-    }
 
     setDate(value: Date): DatePickerBuilder {
         this.date = value;
@@ -53,8 +46,8 @@ export class DatePicker
             this.setDate(builder.date);
         }
 
-        if (builder.defaultDate) {
-            this.setDefaultValueHandler(() => this.setSelectedDate(builder.defaultDate));
+        if (builder.defaultValue) {
+            this.setDefaultValueHandler(() => this.setSelectedDate(builder.defaultValue));
         }
     }
 
@@ -91,6 +84,8 @@ export class DatePicker
             this.input.setValue(this.formatDate(e.getDate()), false, true);
             this.notifySelectedDateTimeChanged(e);
             this.updateInputStyling();
+
+            this.getDefaultValueButton().setEnabled(true);
         });
     }
 

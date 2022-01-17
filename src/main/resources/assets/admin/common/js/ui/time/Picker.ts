@@ -8,6 +8,21 @@ import {AppHelper} from '../../util/AppHelper';
 import {FormEl} from '../../dom/FormEl';
 import {StyleHelper} from '../../StyleHelper';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
+import {DateTime} from '../../util/DateTime';
+
+/**
+ * Not required for pickers
+ * Should only be used when th default value is needed in children
+ */
+export class DefaultValuePickerBuilder {
+    defaultValue: any;
+
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    setDefaultValue(value: any): DefaultValuePickerBuilder {
+        this.defaultValue = value;
+        return this;
+    }
+}
 
 export class Picker<T extends Element>
     extends DivEl {
@@ -25,6 +40,8 @@ export class Picker<T extends Element>
     private builder: any;
 
     private selectedDateTimeChangedListeners: { (event: SelectedDateChangedEvent): void }[] = [];
+
+    private defaultValueButton : Button;
 
     constructor(builder: any, className?: string) {
         super(className);
@@ -49,6 +66,10 @@ export class Picker<T extends Element>
 
     public setDefaultValueHandler(handler: Function): void {
         this.defaultValueHandler = handler;
+    }
+
+    public getDefaultValueButton(): Button {
+        return this.defaultValueButton;
     }
 
     getTextInput(): TextInput {
@@ -194,9 +215,17 @@ export class Picker<T extends Element>
     private initDefaultValueButton(): Button {
         const popupDefaultValueButton = new Button(i18n('action.setDefault'));
         popupDefaultValueButton.addClass('default-button');
-        popupDefaultValueButton.onClicked(() => {
-            this.defaultValueHandler();
+        popupDefaultValueButton.onClicked((event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (popupDefaultValueButton.isEnabled) {
+                popupDefaultValueButton.setEnabled(false);
+                this.defaultValueHandler();
+            }
         });
+
+        this.defaultValueButton = popupDefaultValueButton;
         return popupDefaultValueButton;
     }
 

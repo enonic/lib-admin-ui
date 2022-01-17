@@ -35,7 +35,7 @@ export class Date
         const datePickerBuilder: DatePickerBuilder = new DatePickerBuilder();
         const defaultDate = this.getDefaultDate();
         if (defaultDate) {
-            datePickerBuilder.setDefaultDate(defaultDate);
+            datePickerBuilder.setDefaultValue(defaultDate);
         }
 
         if (!property.hasNullValue()) {

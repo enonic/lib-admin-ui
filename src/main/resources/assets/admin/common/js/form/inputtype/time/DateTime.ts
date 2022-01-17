@@ -98,7 +98,7 @@ export class DateTime
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
         const defaultDate = this.getDefaultDate();
         if (defaultDate) {
-            dateTimeBuilder.setDefaultDate(defaultDate);
+            dateTimeBuilder.setDefaultValue(defaultDate);
         }
 
         if (!ValueTypes.LOCAL_DATE_TIME.equals(property.getType())) {
@@ -128,7 +128,7 @@ export class DateTime
     private createInputAsDateTime(property: Property) {
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
         dateTimeBuilder.setUseLocalTimezoneIfNotPresent(true);
-        dateTimeBuilder.setDefaultDate(this.getDefaultDate());
+        dateTimeBuilder.setDefaultValue(this.getDefaultDate());
 
         if (!ValueTypes.DATE_TIME.equals(property.getType())) {
             ValueTypeConverter.convertPropertyValueType(property, ValueTypes.DATE_TIME);

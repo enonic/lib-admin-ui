@@ -5,18 +5,16 @@ import {StringHelper} from '../../util/StringHelper';
 import {DateHelper} from '../../util/DateHelper';
 import {Event} from '../../event/Event';
 import {ClassHelper} from '../../ClassHelper';
-import {Picker} from './Picker';
+import {DefaultValuePickerBuilder, Picker} from './Picker';
 import {DateTimePickerPopup, DateTimePickerPopupBuilder} from './DateTimePickerPopup';
 import {DatePickerBuilder} from './DatePicker';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 import {DayOfWeek} from './DayOfWeek';
 import {DaysOfWeek} from './DaysOfWeek';
 
-export class DateTimePickerBuilder {
+export class DateTimePickerBuilder extends DefaultValuePickerBuilder {
 
     date: Date;
-
-    defaultDate: Date;
 
     startingDayOfWeek: DayOfWeek = DaysOfWeek.MONDAY;
 
@@ -26,11 +24,6 @@ export class DateTimePickerBuilder {
 
     // use local timezone if timezone value is not initialized
     useLocalTimezoneIfNotPresent: boolean = false;
-
-    setDefaultDate(value: Date | undefined): DateTimePickerBuilder {
-        this.defaultDate = value;
-        return this;
-    }
 
     setDate(value: Date): DateTimePickerBuilder {
         this.date = value;
@@ -80,8 +73,8 @@ export class DateTimePicker
             this.setDate(builder.date);
         }
 
-        if (builder.defaultDate) {
-            this.setDefaultValueHandler(() => this.setSelectedDateTime(builder.defaultDate));
+        if (builder.defaultValue) {
+            this.setDefaultValueHandler(() => this.setSelectedDateTime(builder.defaultValue));
         }
     }
 
@@ -94,6 +87,9 @@ export class DateTimePicker
     protected initInput() {
         this.input = TextInput.middle(undefined, this.formatDateTime(this.selectedDate));
         this.input.setPlaceholder('YYYY-MM-DD hh:mm');
+        this.input.onInput(() => {
+            this.handleDefaultValueButtonState();
+        });
     }
 
     protected initPopup(builder: DateTimePickerBuilder) {
@@ -117,11 +113,15 @@ export class DateTimePicker
             }
             this.setDate(e.getDate());
             this.setInputValue(true);
+            this.handleDefaultValueButtonState();
         });
+
+
 
         this.popup.onSelectedTimeChanged((hours: number, minutes: number) => {
             this.setTime(hours, minutes);
             this.setInputValue(true);
+            this.handleDefaultValueButtonState();
         });
     }
 
@@ -153,6 +153,10 @@ export class DateTimePicker
             this.updateInputStyling();
         });
     }
+
+    private handleDefaultValueButtonState = () => {
+        this.getDefaultValueButton().setEnabled(true);
+    };
 
     private onDateTimePickerShown(event: DateTimePickerShownEvent) {
         if (event.getDateTimePicker() !== this) {
