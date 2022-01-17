@@ -7,14 +7,12 @@ export class UriHelper {
 
     /**
      * Creates an URI from supplied path.
-     * Expects window.CONFIG to be present.
      *
      * @param path path to append to base URI.
      * @returns {string} the URI (base + path).
      */
     static getUri(path: string): string {
-        let basePath = window['CONFIG'] && window['CONFIG']['baseUri'] || UriHelper.DEFAULT_URI;
-        return UriHelper.joinPath(basePath, UriHelper.relativePath(path));
+        return UriHelper.joinPath(UriHelper.DEFAULT_URI, UriHelper.relativePath(path));
     }
 
     /**
@@ -35,7 +33,7 @@ export class UriHelper {
      * @returns {string} the URI to a admin path.
      */
     static getAdminUriPrefix(): string {
-        return window['CONFIG'] && window['CONFIG']['adminUrl'] || UriHelper.DEFAULT_ADMIN_URI;
+        return UriHelper.DEFAULT_ADMIN_URI;
     }
 
     /**

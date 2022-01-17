@@ -30,8 +30,7 @@
     },
     "include": [
         "src/main/resources/assets/admin/common/js/typings/*.d.ts",
-        "src/main/resources/assets/admin/common/js/lib.ts",
-        "src/main/resources/assets/admin/common/js/types.d.ts"
+        "src/main/resources/assets/admin/common/js/lib.ts"
     ],
     "exclude": [
         ".vscode",
