@@ -34,7 +34,7 @@ export class CONFIG {
         return CONFIG.CACHE[property];
     }
 
-    static setConfig(config: JSONObject) {
+    static setConfig(config: JSONObject): void {
         CONFIG.CACHE = Object.freeze(Object.assign({}, config));
     }
 
