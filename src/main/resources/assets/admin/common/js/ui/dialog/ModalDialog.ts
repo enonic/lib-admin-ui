@@ -229,18 +229,37 @@ export abstract class ModalDialog
     }
 
     private isFocusOutEventToBeProcessed(): boolean {
-        return this.isOpen() && this.hasTabbable() && !this.hasSubDialog() && !this.isMasked() && !this.isIframeHavingFocus();
+        return this.isOpen() && this.hasTabbable() && !this.hasSubDialog() && !this.isMasked() && !this.isIframeWithinDialogHavingFocus();
     }
 
     // html editor might have gotten focus
-    private isIframeHavingFocus(): boolean {
-        return document.activeElement?.tagName.toLowerCase() === 'iframe';
+    private isIframeWithinDialogHavingFocus(): boolean {
+        return document.activeElement?.tagName.toLowerCase() === 'iframe' &&
+               this.hasModalDialogAsParent(<HTMLElement>document.activeElement);
+    }
+
+    private hasModalDialogAsParent(el: HTMLElement): boolean {
+        const thisHtmlEl: HTMLElement = this.getHTMLElement();
+        let parentEl: HTMLElement = el.parentElement;
+
+        while (parentEl) {
+            if (parentEl === thisHtmlEl) {
+                return true;
+            }
+
+            parentEl = parentEl.parentElement;
+        }
+
+        return false;
     }
 
     private bringFocusBackToDialog(lastFocused: HTMLElement): void {
         const lastTabbable: Element = this.getLastTabbable();
 
-        if (lastFocused === lastTabbable.getHTMLElement()) { // last element lost focus
+        if (!lastTabbable) {
+            this.updateTabbable();
+            this.focusFirstTabbable();
+        } else if (lastFocused === lastTabbable.getHTMLElement()) { // last element lost focus
             this.focusFirstTabbable();
         } else {
             lastTabbable.giveFocus();
