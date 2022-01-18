@@ -1,3 +1,9 @@
+.wizard-steps-panel-responsive(@padding-right, @padding-left) {
+  .wizard-steps-panel {
+    padding: 0 @padding-right 0 @padding-left;
+  }
+}
+
 .form-panel {
   .wizard-steps-panel-responsive(0, 110px);
 
@@ -13,11 +19,5 @@
   &._240-360,
   &._360-540 {
     .wizard-steps-panel-responsive(0, 0);
-  }
-}
-
-.wizard-steps-panel-responsive(@padding-right, @padding-left) {
-  .wizard-steps-panel {
-    padding: 0 @padding-right 0 @padding-left;
   }
 }
