@@ -4,9 +4,9 @@ import {Path} from '../rest/Path';
 import {ResourceRequest} from '../rest/ResourceRequest';
 
 export class CONFIG {
-    private static CACHE: Object;
+    private static CACHE: JSONObject;
 
-    static init(url: string): Q.Promise<void> {
+    static init(url: string): Q.Promise<JSONObject> {
         return CONFIG.loadAndCache(url);
     }
 
@@ -14,7 +14,7 @@ export class CONFIG {
         return CONFIG.get(property) === 'true';
     }
 
-    static getConfig(): Object {
+    static getConfig(): JSONObject {
         return CONFIG.CACHE;
     }
 
@@ -22,7 +22,11 @@ export class CONFIG {
         return CONFIG.CACHE[property] !== undefined;
     }
 
-    static get(property: string): string {
+    static getString(property: string): string {
+        return <string>CONFIG.get(property);
+    }
+
+    static get(property: string): JSONValue {
         if (property.indexOf('.') > 0) {
             return CONFIG.getNested(property);
         }
@@ -30,11 +34,11 @@ export class CONFIG {
         return CONFIG.CACHE[property];
     }
 
-    static setConfig(config: Object) {
+    static setConfig(config: JSONObject) {
         CONFIG.CACHE = Object.freeze(Object.assign({}, config));
     }
 
-    private static getNested(property: string): string {
+    private static getNested(property: string): JSONValue {
         const propertyPaths = property.split('.');
         if (!CONFIG.has(propertyPaths[0])) {
             throw `Config property ${propertyPaths[0]} not found`;
@@ -49,21 +53,21 @@ export class CONFIG {
         return result;
     }
 
-    private static load(url: string): Q.Promise<KeysJson> {
+    private static load(url: string): Q.Promise<JSONObject> {
         const request: GetConfigRequest = new GetConfigRequest(url);
 
-        return request.send().then((response: JsonResponse<KeysJson>) => response.getResult());
+        return request.send().then((response: JsonResponse<JSONObject>) => response.getResult());
     }
 
-    private static loadAndCache(url: string): Q.Promise<void> {
-        return CONFIG.load(url).then((configJson: Object) => {
+    private static loadAndCache(url: string): Q.Promise<JSONObject> {
+        return CONFIG.load(url).then((configJson: JSONObject) => {
             CONFIG.setConfig(configJson);
 
             /* For compatibility with Launcher. To be removed in CS 5 */
             window['CONFIG'] = configJson;
             /* */
 
-            return Q();
+            return Q(configJson);
         });
     }
 }
