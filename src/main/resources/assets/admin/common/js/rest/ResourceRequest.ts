@@ -8,6 +8,7 @@ import {HttpMethod} from './HttpMethod';
 import {GetRequest} from './GetRequest';
 import {PostRequest} from './PostRequest';
 import {Response} from './Response';
+import {HeadRequest} from './HeadRequest';
 
 export abstract class ResourceRequest<PARSED_TYPE>
     implements HttpRequest<PARSED_TYPE> {
@@ -100,6 +101,10 @@ export abstract class ResourceRequest<PARSED_TYPE>
             const request: PostRequest = new PostRequest();
             request.setIsFormRequest(this.isFormRequest);
             return request;
+        }
+
+        if (HttpMethod.HEAD === this.method) {
+            return new HeadRequest();
         }
 
         throw new Error(`Request for "${this.method}" HTTP method Not Implemented`);
