@@ -96,4 +96,4 @@ export class Time
 
 }
 
-InputTypeManager.register(new Class('Time', Time), true);
+InputTypeManager.register(new Class('base:Time', Time), true);

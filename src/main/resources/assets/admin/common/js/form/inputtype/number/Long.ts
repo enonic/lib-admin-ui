@@ -35,4 +35,4 @@ export class Long
     }
 }
 
-InputTypeManager.register(new Class('Long', Long), true);
+InputTypeManager.register(new Class('base:Long', Long), true);

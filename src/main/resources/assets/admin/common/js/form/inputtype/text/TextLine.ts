@@ -22,7 +22,7 @@ export class TextLine
     }
 
     static getName(): InputTypeName {
-        return new InputTypeName('TextLine', false);
+        return new InputTypeName('base:TextLine', false);
     }
 
     protected createInput(index: number, property: Property): FormInputEl {

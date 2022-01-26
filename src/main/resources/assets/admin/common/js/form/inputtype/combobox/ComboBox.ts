@@ -191,4 +191,4 @@ export class ComboBox
 
 }
 
-InputTypeManager.register(new Class('ComboBox', ComboBox), true);
+InputTypeManager.register(new Class('base:ComboBox', ComboBox), true);

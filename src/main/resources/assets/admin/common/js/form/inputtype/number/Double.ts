@@ -18,4 +18,4 @@ export class Double
 
 }
 
-InputTypeManager.register(new Class('Double', Double), true);
+InputTypeManager.register(new Class('base:Double', Double), true);

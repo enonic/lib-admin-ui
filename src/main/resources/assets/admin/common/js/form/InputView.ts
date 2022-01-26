@@ -314,6 +314,7 @@ export class InputView
             return InputTypeManager.createView(inputType.getName(), inputTypeViewContext);
         }
 
+        // eslint-disable-next-line no-debugger
         console.warn('Input type [' + inputType.getName() + '] needs to be registered first.');
         return InputTypeManager.createView('NoInputTypeFound', inputTypeViewContext);
     }

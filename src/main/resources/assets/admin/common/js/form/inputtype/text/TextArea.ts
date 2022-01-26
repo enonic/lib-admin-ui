@@ -17,7 +17,7 @@ export class TextArea
     }
 
     static getName(): InputTypeName {
-        return new InputTypeName('TextArea', false);
+        return new InputTypeName('base:TextArea', false);
     }
 
     protected createInput(index: number, property: Property): FormInputEl {
