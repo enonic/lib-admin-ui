@@ -133,6 +133,10 @@ export class FieldSetView
         return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
     }
 
+    toggleHelpText(show?: boolean): void {
+        this.formItemLayer.toggleHelpText(show);
+    }
+
     onValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
 
         this.formItemViews.forEach((formItemView: FormItemView) => {
