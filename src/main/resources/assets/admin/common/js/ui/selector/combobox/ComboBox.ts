@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {Option} from '../Option';
 import {OptionFilterInputValueChangedEvent} from '../OptionFilterInputValueChangedEvent';
 import {DropdownHandle} from '../../button/DropdownHandle';

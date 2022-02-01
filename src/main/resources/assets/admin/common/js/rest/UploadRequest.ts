@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {Response} from './Response';
 import {PostRequest} from './PostRequest';
 

@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {ElementHelper} from '../../dom/ElementHelper';
 import {TreeNode} from '../treegrid/TreeNode';
 import {Element} from '../../dom/Element';

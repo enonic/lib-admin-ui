@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {ApplicationJson} from './json/ApplicationJson';
 import {JsonResponse} from '../rest/JsonResponse';
 import {ApplicationResourceRequest} from './ApplicationResourceRequest';

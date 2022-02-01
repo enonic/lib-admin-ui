@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+import $ = require('jquery');
 import {Element} from './Element';
 import {StringHelper} from '../util/StringHelper';
 import {assert, assertNotNull} from '../util/Assert';

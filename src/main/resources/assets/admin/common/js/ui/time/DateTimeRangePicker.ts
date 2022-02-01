@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {Timezone} from '../../util/Timezone';
 import {DivEl} from '../../dom/DivEl';
 import {DateTimePicker, DateTimePickerBuilder} from './DateTimePicker';

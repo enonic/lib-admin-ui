@@ -1,5 +1,5 @@
-import * as $ from 'jquery';
-import * as Q from 'q';
+import $ = require('jquery');
+import Q = require('q');
 import {H2El} from '../../dom/H2El';
 import {Element} from '../../dom/Element';
 import {LoadMask} from '../mask/LoadMask';

@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {BaseLoader} from '../../../util/loader/BaseLoader';
 import {StringHelper} from '../../../util/StringHelper';
 import {ComboBox, ComboBoxConfig} from './ComboBox';

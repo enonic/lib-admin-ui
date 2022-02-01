@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+import $ = require('jquery');
 
 export class StringHelper {
 

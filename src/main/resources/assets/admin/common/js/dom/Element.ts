@@ -1,6 +1,6 @@
-import * as $ from 'jquery';
+import $ = require('jquery');
 import 'jquery-ui/ui/tabbable';
-import * as Q from 'q';
+import Q = require('q');
 import {StyleHelper} from '../StyleHelper';
 import {StringHelper} from '../util/StringHelper';
 import {ObjectHelper} from '../ObjectHelper';

@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {PropertySet} from '../data/PropertySet';
 import {PropertyArray} from '../data/PropertyArray';
 import {FocusSwitchEvent} from '../ui/FocusSwitchEvent';

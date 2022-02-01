@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {InputEl} from '../../dom/InputEl';
 import {StringHelper} from '../../util/StringHelper';
 import {CheckEmailAvailabilityRequest} from '../../security/CheckEmailAvailabilityRequest';

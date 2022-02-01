@@ -6,7 +6,7 @@ import {DropdownHandle} from './DropdownHandle';
 import {ActionButton} from './ActionButton';
 import {Body} from '../../dom/Body';
 import {Element} from '../../dom/Element';
-import * as Q from 'q';
+import Q = require('q');
 
 export enum MenuButtonDropdownPos {
     LEFT, RIGHT

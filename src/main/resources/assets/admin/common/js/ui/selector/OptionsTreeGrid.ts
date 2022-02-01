@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {TreeNode} from '../treegrid/TreeNode';
 import {SelectionOnClickType, TreeGrid} from '../treegrid/TreeGrid';
 import {TreeGridBuilder} from '../treegrid/TreeGridBuilder';

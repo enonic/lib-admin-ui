@@ -1,5 +1,3 @@
-import * as Q from 'q';
-
 export class CookieHelper {
 
     static setCookie(name: string, value: string, days: number = 1): void {

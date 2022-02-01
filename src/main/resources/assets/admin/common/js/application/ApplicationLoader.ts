@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {BaseLoader} from '../util/loader/BaseLoader';
 import {Application} from './Application';
 import {ListApplicationsRequest} from './ListApplicationsRequest';

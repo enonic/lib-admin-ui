@@ -1,5 +1,5 @@
-import * as $ from 'jquery';
-import * as Q from 'q';
+import $ = require('jquery');
+import Q = require('q');
 import {Element} from '../../dom/Element';
 import {ElementHelper} from '../../dom/ElementHelper';
 import {ValidationRecordingViewer} from '../../form/ValidationRecordingViewer';

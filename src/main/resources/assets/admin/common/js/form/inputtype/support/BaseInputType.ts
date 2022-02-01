@@ -4,7 +4,7 @@ import {Input} from '../../Input';
 import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
 import {Element} from '../../../dom/Element';
 import {PropertyArray} from '../../../data/PropertyArray';
-import * as Q from 'q';
+import Q = require('q');
 import {Value} from '../../../data/Value';
 import {ClassHelper} from '../../../ClassHelper';
 import {ValueType} from '../../../data/ValueType';

@@ -10,7 +10,7 @@ import {FormOptionSetOptionViewer} from './FormOptionSetOptionViewer';
 import {Dropdown} from '../../../ui/selector/dropdown/Dropdown';
 import {Option, OptionBuilder} from '../../../ui/selector/Option';
 import {Action} from '../../../ui/Action';
-import * as Q from 'q';
+import Q = require('q');
 import {Element} from '../../../dom/Element';
 import {OptionSelectedEvent} from '../../../ui/selector/OptionSelectedEvent';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';

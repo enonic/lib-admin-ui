@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {Action} from '../../Action';
 import {IDentifiable} from '../../../IDentifiable';
 

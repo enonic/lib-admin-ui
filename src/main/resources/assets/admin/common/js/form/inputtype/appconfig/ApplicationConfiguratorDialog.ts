@@ -1,5 +1,5 @@
-import * as $ from 'jquery';
-import * as Q from 'q';
+import $ = require('jquery');
+import Q = require('q');
 import {FormView} from '../../FormView';
 import {ComboBox} from '../../../ui/selector/combobox/ComboBox';
 import {Application} from '../../../application/Application';

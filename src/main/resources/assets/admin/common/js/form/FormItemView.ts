@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {PropertySet} from '../data/PropertySet';
 import {DivEl} from '../dom/DivEl';
 import {FormContext} from './FormContext';

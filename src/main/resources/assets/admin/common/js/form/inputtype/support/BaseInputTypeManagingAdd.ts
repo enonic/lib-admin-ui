@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {PropertyArray} from '../../../data/PropertyArray';
 import {SelectedOptionEvent} from '../../../ui/selector/combobox/SelectedOptionEvent';
 import {FocusSwitchEvent} from '../../../ui/FocusSwitchEvent';

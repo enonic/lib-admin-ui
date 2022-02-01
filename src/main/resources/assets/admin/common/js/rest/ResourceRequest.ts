@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {HttpRequest} from './HttpRequest';
 import {UriHelper} from '../util/UriHelper';
 import {Path} from './Path';

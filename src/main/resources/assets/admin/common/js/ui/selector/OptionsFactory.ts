@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {OptionDataLoader} from './OptionDataLoader';
 import {OptionDataHelper} from './OptionDataHelper';
 import {Option} from './Option';

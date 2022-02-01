@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
 import {BaseSelectedOptionView, BaseSelectedOptionViewBuilder} from './BaseSelectedOptionView';
 import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';

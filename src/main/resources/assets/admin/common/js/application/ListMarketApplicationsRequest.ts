@@ -4,7 +4,7 @@ import {MarketApplicationResponse} from './MarketApplicationResponse';
 import {MarketApplication} from './MarketApplication';
 import {MarketApplicationMetadata} from './MarketApplicationMetadata';
 import {PostRequest} from '../rest/PostRequest';
-import * as Q from 'q';
+import Q = require('q');
 import {UriHelper} from '../util/UriHelper';
 
 export class ListMarketApplicationsRequest

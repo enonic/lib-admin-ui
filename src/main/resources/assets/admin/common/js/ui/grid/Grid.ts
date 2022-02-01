@@ -1,6 +1,6 @@
 /// <reference types="slickgrid/slick.checkboxselectcolumn" />
 /// <reference types="slickgrid/slick.rowselectionmodel" />
-import * as Q from 'q';
+import Q = require('q');
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
 import {DivEl} from '../../dom/DivEl';
 import {LoadMask} from '../mask/LoadMask';

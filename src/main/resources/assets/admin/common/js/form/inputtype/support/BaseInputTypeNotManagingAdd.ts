@@ -1,5 +1,5 @@
-import * as $ from 'jquery';
-import * as Q from 'q';
+import $ = require('jquery');
+import Q = require('q');
 import {Property} from '../../../data/Property';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Value} from '../../../data/Value';

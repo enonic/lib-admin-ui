@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+import $ = require('jquery');
 import {AggregationView} from './AggregationView';
 import {BucketAggregation} from './BucketAggregation';
 import {BucketView} from './BucketView';

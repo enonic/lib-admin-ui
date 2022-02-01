@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {JsonResponse} from '../rest/JsonResponse';
 import {Path} from '../rest/Path';
 import {Messages} from './Messages';

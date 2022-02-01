@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {AccessDeniedException} from '../AccessDeniedException';
 import {Path} from './Path';
 import {RequestError} from './RequestError';

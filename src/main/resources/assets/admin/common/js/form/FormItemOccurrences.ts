@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {PropertyArray} from '../data/PropertyArray';
 import {Element} from '../dom/Element';
 import {Property} from '../data/Property';

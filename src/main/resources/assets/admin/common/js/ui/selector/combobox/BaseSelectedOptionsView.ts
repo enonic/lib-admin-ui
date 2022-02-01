@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+import $ = require('jquery');
 import 'jquery-ui/ui/widgets/sortable';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';

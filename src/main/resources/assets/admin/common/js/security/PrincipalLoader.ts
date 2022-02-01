@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {PostLoader} from '../util/loader/PostLoader';
 import {FindPrincipalsRequest} from './FindPrincipalsRequest';
 import {PrincipalType} from './PrincipalType';

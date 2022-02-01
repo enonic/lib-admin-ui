@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {Viewer} from '../Viewer';
 import {GridColumn, GridColumnBuilder} from '../grid/GridColumn';
 import {Element} from '../../dom/Element';

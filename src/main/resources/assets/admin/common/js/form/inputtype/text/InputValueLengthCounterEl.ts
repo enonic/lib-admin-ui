@@ -2,7 +2,7 @@ import {DivEl} from '../../../dom/DivEl';
 import {SpanEl} from '../../../dom/SpanEl';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {i18n} from '../../../util/Messages';
-import * as Q from 'q';
+import Q = require('q');
 
 export class InputValueLengthCounterEl extends DivEl {
 

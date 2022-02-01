@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {LoadedDataEvent} from './event/LoadedDataEvent';
 import {LoadingDataEvent} from './event/LoadingDataEvent';
 import {LoaderErrorEvent} from './event/LoaderErrorEvent';

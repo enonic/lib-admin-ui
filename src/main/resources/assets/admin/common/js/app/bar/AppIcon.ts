@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {DivEl} from '../../dom/DivEl';
 import {Action} from '../../ui/Action';
 import {ImgEl} from '../../dom/ImgEl';

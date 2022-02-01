@@ -1,7 +1,7 @@
 import {FormItemOccurrenceView} from './FormItemOccurrenceView';
 import {FormItemOccurrences} from './FormItemOccurrences';
 import {Occurrences} from './Occurrences';
-import * as Q from 'q';
+import Q = require('q');
 
 export class FormItemOccurrence<V extends FormItemOccurrenceView> {
 

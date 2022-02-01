@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {KeyBinding} from './KeyBinding';
 import {Mnemonic} from './Mnemonic';
 

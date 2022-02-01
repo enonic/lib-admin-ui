@@ -7,7 +7,7 @@ import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Property} from '../../../data/Property';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {InputValueLengthCounterEl} from './InputValueLengthCounterEl';
-import * as Q from 'q';
+import Q = require('q');
 import {Value} from '../../../data/Value';
 import {StringHelper} from '../../../util/StringHelper';
 import {Element} from '../../../dom/Element';

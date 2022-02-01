@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+import $ = require('jquery');
 import {ButtonEl} from '../../dom/ButtonEl';
 import {SpanEl} from '../../dom/SpanEl';
 import {BrowserHelper} from '../../BrowserHelper';

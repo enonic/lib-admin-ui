@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q = require('q');
 import {Property} from '../../../data/Property';
 import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
 import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
