@@ -41,6 +41,24 @@ export class DockedPanel
         return this.deck.getPanelIndex(panel);
     }
 
+    setItemVisible<T extends Panel>(panel: T, visible: boolean): void {
+        const index = this.deck.getPanelIndex(panel);
+        if (index >= 0) {
+            const currentlyVisible = this.deck.getPanelShownIndex() == index;
+            this.items[index].toggleClass('hidden', !visible);
+            if (!visible && currentlyVisible && this.items.length >= 2) {
+                // currently visible item has been hidden, so find a substitute to show
+                for (let i = 0; i < this.items.length; i++) {
+                    const item = this.items[i];
+                    if (i !== index && !item.hasClass('hidden')) {
+                        this.navigator.selectNavigationItem(i);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     selectPanel<T extends Panel>(panel: T) {
         this.deck.selectPanelByIndex(this.deck.getPanelIndex(panel));
     }
