@@ -117,7 +117,7 @@ export class Grid<T extends Slick.SlickData>
         return this.slickGrid.getDataLength();
     }
 
-    getSlickGrid() {
+    getSlickGrid(): Slick.Grid<T> {
         return this.slickGrid;
     }
 
