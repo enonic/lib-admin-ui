@@ -117,6 +117,10 @@ export class Grid<T extends Slick.SlickData>
         return this.slickGrid.getDataLength();
     }
 
+    getSlickGrid() {
+        return this.slickGrid;
+    }
+
     setColumns(columns: GridColumn<T>[], toBegin: boolean = false) {
         if (this.checkboxSelectorPlugin) {
             let pluginColumn = this.checkboxSelectorPlugin.getColumnDefinition();
