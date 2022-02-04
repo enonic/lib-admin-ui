@@ -41,6 +41,31 @@ export class DockedPanel
         return this.deck.getPanelIndex(panel);
     }
 
+    setItemVisible<T extends Panel>(panel: T, visible: boolean): void {
+        const currentIndex = this.deck.getPanelIndex(panel);
+        if (currentIndex < 0) {
+            return;
+        }
+
+        // tabs are visible even when panels are hidden
+        this.items[currentIndex].toggleClass('hidden', !visible);
+
+        const isCurrentlyVisible = this.deck.getPanelShownIndex() === currentIndex;
+        if (isCurrentlyVisible === visible) {
+            // either active panel is shown, or non-active is hidden
+            // no additional work needed
+            return;
+        }
+
+        if (isCurrentlyVisible && this.items.length >= 2) {
+            // active panel has been hidden, so find a substitute to show
+            const indexToShow = this.items.findIndex((item: TabBarItem, i: number) => i !== currentIndex && !item.hasClass('hidden'));
+            if (indexToShow >= 0) {
+                this.navigator.selectNavigationItem(indexToShow);
+            }
+        }
+    }
+
     selectPanel<T extends Panel>(panel: T) {
         this.deck.selectPanelByIndex(this.deck.getPanelIndex(panel));
     }
