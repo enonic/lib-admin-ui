@@ -126,10 +126,6 @@ export class Checkbox
             this.inputAlignment = isNaN(inputAlignment) ? InputAlignment.LEFT : inputAlignment;
         }
     }
-
-    protected saveToProperty(value: Value) {
-        super.saveToProperty(value);
-    }
 }
 
 InputTypeManager.register(new Class('Checkbox', Checkbox), true);
