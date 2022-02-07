@@ -45,13 +45,16 @@ export class Checkbox
             ValueTypeConverter.convertPropertyValueType(property, ValueTypes.BOOLEAN);
         }
 
-        this.checkbox.onValueChanged((event: ValueChangedEvent) => {
-            let newValue = ValueTypes.BOOLEAN.newValue(event.getNewValue());
-
-            this.saveToProperty(newValue);
+        this.checkbox.onValueChanged(() => {
+            this.saveToProperty(ValueTypes.BOOLEAN.newBoolean(this.checkbox.isChecked() ? true : this.getUncheckedValue()));
         });
 
         return Q<void>(null);
+    }
+
+    private getUncheckedValue(): boolean {
+        // if checkbox is required to be checked, and it is not checked then using null as a value to make it invalid on backend
+        return this.isRequiredChecked() ? null : false;
     }
 
     updateProperty(property: Property, unchangedOnly?: boolean): Q.Promise<void> {
@@ -67,7 +70,7 @@ export class Checkbox
     }
 
     validate(silent: boolean = true): void {
-        const isRequiredChecked: boolean = this.input.getOccurrences().getMinimum() > 0;
+        const isRequiredChecked: boolean = this.isRequiredChecked();
         const occurrences: Occurrences = isRequiredChecked ? Occurrences.minmax(1, 1) : Occurrences.min(0);
         const totalValid: number = ((isRequiredChecked && this.checkbox.isChecked()) || !isRequiredChecked) ? 1 : 0;
         const newValidationRecord: InputValidationRecording = new InputValidationRecording(occurrences, totalValid);
@@ -77,6 +80,10 @@ export class Checkbox
         }
 
         this.previousValidationRecording = newValidationRecord;
+    }
+
+    private isRequiredChecked(): boolean {
+        return this.input.getOccurrences().getMinimum() > 0;
     }
 
     reset() {
@@ -118,6 +125,10 @@ export class Checkbox
             let inputAlignment: InputAlignment = InputAlignment[<string>inputAlignmentObj[0].value.toUpperCase()];
             this.inputAlignment = isNaN(inputAlignment) ? InputAlignment.LEFT : inputAlignment;
         }
+    }
+
+    protected saveToProperty(value: Value) {
+        super.saveToProperty(value);
     }
 }
 
