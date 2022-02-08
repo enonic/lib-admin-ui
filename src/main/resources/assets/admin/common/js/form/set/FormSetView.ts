@@ -150,7 +150,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         this.initOccurrences().layout(validate).then(() => {
             // formItemOccurrences should be ready to check for nested help text by hasHelpText
             this.header = new FormSetHeader(this.formSet, this.hasHelpText());
-            this.header.onHelpTextToggled((show) => this.toggleHelpText(show));
+            this.header.onHelpTextToggled((show: boolean) => this.toggleHelpText(show));
             this.prependChild(this.header);
 
             this.subscribeFormSetOccurrencesOnEvents();
@@ -298,6 +298,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     toggleHelpText(show?: boolean) {
         this.formItemOccurrences.toggleHelpText(show);
+        this.header.toggleHelpText(show);
     }
 
     hasHelpText(): boolean {
