@@ -16,7 +16,7 @@ export class ListMarketApplicationsRequest
     private ids: string[] = [];
     private url: string = 'https://market.enonic.com/applications';
 
-    setUrl(url: string) {
+    setUrl(url: string): ListMarketApplicationsRequest {
         this.url = url;
         return this;
     }
