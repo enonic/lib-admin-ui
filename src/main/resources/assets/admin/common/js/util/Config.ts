@@ -27,16 +27,6 @@ export class CONFIG {
         return <string>CONFIG.get(property);
     }
 
-    static getBoolean(property: string): boolean {
-        const propertyValue: string = <string>CONFIG.get(property);
-        const propertyValueLowerCase: string = propertyValue.toLowerCase();
-        if (propertyValueLowerCase !== 'true' && propertyValueLowerCase !== 'false') {
-            throw `Property ${property} is not a boolean`;
-        }
-
-        return propertyValueLowerCase === 'true';
-    }
-
     static getNumber(property: string): number {
         const propertyValue: string = <string>CONFIG.get(property);
         if (isNaN(<any>propertyValue)) {
@@ -86,10 +76,6 @@ export class CONFIG {
     private static loadAndCache(url: string): Q.Promise<JSONObject> {
         return CONFIG.load(url).then((configJson: JSONObject) => {
             CONFIG.setConfig(configJson);
-
-            /* For compatibility with Launcher. To be removed in CS 5 */
-            window['CONFIG'] = configJson;
-            /* */
 
             return Q(configJson);
         });
