@@ -2,6 +2,7 @@ import * as Q from 'q';
 import {JsonResponse} from '../rest/JsonResponse';
 import {Path} from '../rest/Path';
 import {ResourceRequest} from '../rest/ResourceRequest';
+import {JSONObject, JSONValue} from '../types';
 
 export class CONFIG {
     private static CACHE: JSONObject;
@@ -26,7 +27,29 @@ export class CONFIG {
         return <string>CONFIG.get(property);
     }
 
+    static getBoolean(property: string): boolean {
+        const propertyValue: string = <string>CONFIG.get(property);
+        const propertyValueLowerCase: string = propertyValue.toLowerCase();
+        if (propertyValueLowerCase !== 'true' && propertyValueLowerCase !== 'false') {
+            throw `Property ${property} is not a boolean`;
+        }
+
+        return propertyValueLowerCase === 'true';
+    }
+
+    static getNumber(property: string): number {
+        const propertyValue: string = <string>CONFIG.get(property);
+        if (isNaN(<any>propertyValue)) {
+            throw `Property ${property} is not a number`;
+        }
+        return parseInt(propertyValue);
+    }
+
     static get(property: string): JSONValue {
+        return CONFIG.getPropertyValue(property);
+    }
+
+    private static getPropertyValue(property: string): JSONValue {
         if (property.indexOf('.') > 0) {
             return CONFIG.getNested(property);
         }
@@ -38,12 +61,13 @@ export class CONFIG {
         CONFIG.CACHE = Object.freeze(Object.assign({}, config));
     }
 
+    // For getting nested value, like 'services.i18nUrl'
     private static getNested(property: string): JSONValue {
         const propertyPaths = property.split('.');
         if (!CONFIG.has(propertyPaths[0])) {
             throw `Config property ${propertyPaths[0]} not found`;
         }
-        let result = CONFIG.get(propertyPaths[0]);
+        let result: JSONValue = CONFIG.getPropertyValue(propertyPaths[0]);
         for (let i=1; i<propertyPaths.length; i++) {
             result = result[propertyPaths[i]];
             if (result === undefined) {
@@ -70,10 +94,6 @@ export class CONFIG {
             return Q(configJson);
         });
     }
-}
-
-interface KeysJson {
-    key: string;
 }
 
 class GetConfigRequest
