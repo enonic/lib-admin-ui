@@ -77,9 +77,7 @@ export class FormOptionSetOptionView
 
     toggleHelpText(show?: boolean) {
         this.formItemLayer.toggleHelpText(show);
-        if (this.helpText) {
-            this.helpText.toggleHelpText(show);
-        }
+        this.helpText?.toggleHelpText(show);
     }
 
     refresh() {
