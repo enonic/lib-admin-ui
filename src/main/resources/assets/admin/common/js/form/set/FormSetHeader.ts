@@ -36,9 +36,11 @@ export class FormSetHeader
         });
     }
 
-    public onHelpTextToggled(listener: (show: boolean) => void) {
-        if (this.helpTextContainer) {
-            this.helpTextContainer.onHelpTextToggled(listener);
-        }
+    public onHelpTextToggled(listener: (show: boolean) => void): void {
+        this.helpTextContainer?.onHelpTextToggled(listener);
+    }
+
+    toggleHelpText(show?: boolean): void {
+        this.helpTextContainer?.toggleHelpText(show);
     }
 }
