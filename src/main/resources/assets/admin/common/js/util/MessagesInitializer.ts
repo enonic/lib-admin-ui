@@ -29,6 +29,18 @@ export function i18nInit(url: string, bundles?: string[]): Q.Promise<void> {
     });
 }
 
+export function i18nFetch(url: string, bundles?: string[]): Q.Promise<Map<string, string>> {
+    return getMessages(url, bundles).then((messages: KeysJson) => {
+        let map: Map<string, string> = new Map();
+        for (let key in messages) {
+            if (messages.hasOwnProperty(key)) {
+                map.set(key, messages[key]);
+            }
+        }
+        return Q(map);
+    });
+}
+
 export function i18nAdd(url: string, bundles?: string[]): Q.Promise<void> {
     return getMessages(url, bundles).then((messages: KeysJson) => {
         Messages.addMessages(messages);
