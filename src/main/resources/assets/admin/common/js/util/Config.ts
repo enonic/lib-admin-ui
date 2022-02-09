@@ -12,7 +12,11 @@ export class CONFIG {
     }
 
     static isTrue(property: string): boolean {
-        return CONFIG.get(property) === 'true';
+        if (!CONFIG.has(property)) {
+            return false;
+        }
+
+        return CONFIG.get(property).toString() === 'true';
     }
 
     static getConfig(): JSONObject {
