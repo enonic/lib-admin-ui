@@ -496,16 +496,20 @@ export abstract class ModalDialog
     }
 
     open() {
-
         BodyMask.get().show();
-
         KeyBindings.get().shelveBindings();
 
         this.show();
 
-        let keyBindings = Action.getKeyBindings(this.buttonRow.getActions());
+        const keyBindings: KeyBinding[] = Action.getKeyBindings(this.buttonRow.getActions()).concat(this.addKeyBindings());
+        KeyBindings.get().bindKeys(keyBindings);
 
-        keyBindings = keyBindings.concat([
+        this.state = DialogState.OPEN;
+        DialogManagerInner.get().handleOpenDialog(this);
+    }
+
+    protected addKeyBindings(): KeyBinding[] {
+        return [
             new KeyBinding('right', (event) => {
                 this.focusNextTabbable();
 
@@ -518,12 +522,7 @@ export abstract class ModalDialog
                 event.stopPropagation();
                 event.preventDefault();
             })
-        ]);
-
-        KeyBindings.get().bindKeys(keyBindings);
-
-        this.state = DialogState.OPEN;
-        DialogManagerInner.get().handleOpenDialog(this);
+        ];
     }
 
     show() {
