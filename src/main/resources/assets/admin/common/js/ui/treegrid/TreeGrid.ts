@@ -26,6 +26,7 @@ import {ContextMenuShownEvent} from './ContextMenuShownEvent';
 import {TreeGridSelection} from './TreeGridSelection';
 import {GridSelectionHelper} from '../grid/GridSelectionHelper';
 import {IDentifiable} from '../../IDentifiable';
+import {NumberHelper} from '../../util/NumberHelper';
 
 export enum SelectionOnClickType {
     HIGHLIGHT,
@@ -1060,7 +1061,11 @@ export class TreeGrid<DATA extends IDentifiable>
             ];
         }
 
-        this.keyBindings = this.keyBindings.concat([
+        this.keyBindings = this.keyBindings.concat(this.createKeyBindings());
+    }
+
+    protected createKeyBindings(): KeyBinding[] {
+        return [
             new KeyBinding('up', this.onUpKeyPress.bind(this)),
             new KeyBinding('down', this.onDownKeyPress.bind(this)),
             new KeyBinding('left', this.onLeftKeyPress.bind(this)),
@@ -1068,7 +1073,7 @@ export class TreeGrid<DATA extends IDentifiable>
             new KeyBinding('mod+a', this.onAwithModKeyPress.bind(this)),
             new KeyBinding('space', this.onSpaceKeyPress.bind(this)),
             new KeyBinding('enter', this.onEnterKeyPress.bind(this))
-        ]);
+        ];
     }
 
     private onSelectRange(rowToToggle: number) {
@@ -1355,6 +1360,10 @@ export class TreeGrid<DATA extends IDentifiable>
             return;
         }
 
+        this.navigateUp();
+    }
+
+    protected navigateUp(): void {
         this.recursivelyExpandHighlightedNode();
 
         if (this.contextMenu) {
@@ -1368,7 +1377,7 @@ export class TreeGrid<DATA extends IDentifiable>
                 this.scrollToRow(row);
             }
         } else {
-            this.navigateUp();
+            this.highlightPrevious();
         }
     }
 
@@ -1377,6 +1386,10 @@ export class TreeGrid<DATA extends IDentifiable>
             return;
         }
 
+        this.navigateDown();
+    }
+
+    protected navigateDown(): void {
         this.recursivelyExpandHighlightedNode();
 
         if (this.contextMenu) {
@@ -1391,7 +1404,7 @@ export class TreeGrid<DATA extends IDentifiable>
                 this.scrollToRow(row);
             }
         } else {
-            this.navigateDown();
+            this.highlightNext();
         }
     }
 
@@ -1410,7 +1423,7 @@ export class TreeGrid<DATA extends IDentifiable>
             if (node.isExpanded()) {
                 this.setActive(false);
                 this.collapseNode(node);
-                if (!selected[0]) {
+                if (!NumberHelper.isNumber(selected[0])) {
                     this.highlightRowByNode(node);
                 }
             } else if (node.getParent() !== this.root.getCurrentRoot()) {
@@ -1418,7 +1431,7 @@ export class TreeGrid<DATA extends IDentifiable>
                 this.setActive(false);
                 let row = this.getRowIndexByNode(node);
                 this.collapseNode(node);
-                if (selected[0]) {
+                if (NumberHelper.isNumber(selected[0])) {
                     this.deselectAll();
                     this.selectRow(row, true);
                 } else {
@@ -1445,7 +1458,7 @@ export class TreeGrid<DATA extends IDentifiable>
             this.setActive(false);
             this.invalidate();
             this.expandNode(node).then(() => {
-                if (!selected[0]) {
+                if (!NumberHelper.isNumber(selected[0])) {
                     this.highlightCurrentNode();
                 }
             });
@@ -1462,9 +1475,11 @@ export class TreeGrid<DATA extends IDentifiable>
         }
     }
 
-    private onEnterKeyPress() {
-        if (this.highlightedDataId) {
-            this.editItem(this.getHighlightedNode());
+    private onEnterKeyPress(e: KeyboardEvent) {
+        const node: TreeNode<DATA> = this.getLastSelectedOrHighlightedNode();
+
+        if (node) {
+            this.editItem(node);
         }
     }
 
@@ -1492,7 +1507,7 @@ export class TreeGrid<DATA extends IDentifiable>
         }
     }
 
-    private navigateUp() {
+    protected highlightPrevious() {
         let selectedCount = this.grid.getSelectedRows().length;
         if (!this.highlightedDataId && selectedCount === 0) {
             return;
@@ -1510,7 +1525,7 @@ export class TreeGrid<DATA extends IDentifiable>
         }
     }
 
-    private navigateDown() {
+    protected highlightNext() {
         let selectedIndex = this.highlightedDataId ? this.getRowIndexByNode(this.getHighlightedNode()) : -1;
         if (this.grid.getSelectedRows().length > 0) {
             selectedIndex = this.grid.getSelectedRows()[0];
@@ -1743,7 +1758,7 @@ export class TreeGrid<DATA extends IDentifiable>
         this.expandedNodesDataIds = [];
     }
 
-    private selectRow(row: number, debounce?: boolean) {
+    protected selectRow(row: number, debounce?: boolean) {
         const nodeToSelect: TreeNode<DATA> = this.gridData.getItem(row);
         if (!nodeToSelect) {
             return;
