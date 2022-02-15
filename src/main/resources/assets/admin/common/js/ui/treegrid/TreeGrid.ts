@@ -685,34 +685,60 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     protected deleteNode(node: TreeNode<DATA>): void {
-        if (this.highlightedDataId === node.getDataId()) {
+        this.deleteNodes([node]);
+    }
+
+    protected deleteNodes(nodes: TreeNode<DATA>[]): void {
+        let isHighlightingToRemove: boolean = false;
+        let isSelectionChanged: boolean = false;
+        const nodesDeleted: TreeNode<DATA>[] = [];
+        const nodesToInvalidate: TreeNode<DATA>[] = [];
+
+        this.gridData.beginUpdate();
+
+        nodes.forEach((node: TreeNode<DATA>) => {
+            if (this.highlightedDataId === node.getDataId()) {
+                isHighlightingToRemove = true;
+            }
+
+            if (this.gridData.getItemById(node.getId())) {
+                this.gridData.deleteItem(node.getId());
+            }
+
+            if (this.selection.contains(node.getDataId())) {
+                this.selection.remove(node.getDataId());
+                isSelectionChanged = true;
+            }
+
+            const parent: TreeNode<DATA> = node.getParent();
+
+            if (parent) {
+                parent.removeChild(node);
+                parent.setMaxChildren(parent.getMaxChildren() - 1);
+
+                if (!parent.hasChildren()) {
+                    parent.setExpandable(false);
+                }
+
+                nodesDeleted.push(node);
+
+                if (nodesToInvalidate.indexOf(parent) < 0) {
+                    nodesToInvalidate.push(parent);
+                }
+            }
+        });
+
+        this.gridData.endUpdate();
+
+        this.invalidateNodes(nodesToInvalidate);
+        this.notifyDataChanged(new DataChangedEvent<DATA>(this.extractDataFromNodes(nodesDeleted), DataChangedType.DELETED));
+
+        if (isHighlightingToRemove) {
             this.removeHighlighting();
         }
 
-        if (node.hasChildren()) {
-            node.getChildren().forEach((child: TreeNode<DATA>) => {
-                this.deleteNode(child);
-            });
-        }
-
-        if (this.gridData.getItemById(node.getId())) {
-            this.gridData.deleteItem(node.getId());
-        }
-
-        if (this.selection.contains(node.getDataId())) {
-            this.selection.remove(node.getDataId());
+        if (isSelectionChanged) {
             this.handleSelectionChanged();
-        }
-
-        const parent: TreeNode<DATA> = node.getParent();
-        if (parent) {
-            parent.removeChild(node);
-            parent.setMaxChildren(parent.getMaxChildren() - 1);
-            if (!parent.hasChildren()) {
-                parent.setExpandable(false);
-            }
-            this.invalidateNodes([parent]);
-            this.notifyDataChanged(new DataChangedEvent<DATA>(this.extractDataFromNodes([node]), DataChangedType.DELETED));
         }
     }
 
