@@ -35,12 +35,11 @@ export class RadioButton
 
     layoutProperty(input: Input, property: Property): Q.Promise<void> {
         this.input = input;
-
         this.selector = this.createRadioElement(input.getName(), property);
 
         this.appendChild(this.selector);
 
-        if (!ValueTypes.STRING.equals(property.getType())) {
+        if (property && !ValueTypes.STRING.equals(property.getType())) {
             ValueTypeConverter.convertPropertyValueType(property, ValueTypes.STRING);
             if (!this.isValidOption(property.getString())) {
                 property.setValue(ValueTypes.STRING.newNullValue());
@@ -99,25 +98,25 @@ export class RadioButton
     }
 
     private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
-        let options: { label: string; value: string; }[] = [];
+        const options: { label: string; value: string; }[] = [];
+        const optionValues: { [name: string]: string }[] = inputConfig['option'] || [];
+        const l: number = optionValues.length;
+        let optionValue: { [name: string]: string };
 
-        let optionValues = inputConfig['option'] || [];
-        let l = optionValues.length;
-        let optionValue;
         for (let i = 0; i < l; i++) {
             optionValue = optionValues[i];
             options.push({label: optionValue['value'], value: optionValue['@value']});
         }
+
         this.radioButtonOptions = options;
     }
 
     private createRadioElement(name: string, property: Property): RadioGroup {
+        const value: string = property?.hasNonNullValue ? property.getString() : undefined;
+        const radioGroup = new RadioGroup(name, value);
+        const options: { label: string; value: string; }[] = this.radioButtonOptions;
+        const l: number = options.length;
 
-        let value = property.hasNonNullValue ? property.getString() : undefined;
-        let radioGroup = new RadioGroup(name, value);
-
-        let options = this.radioButtonOptions;
-        let l = options.length;
         for (let i = 0; i < l; i++) {
             let option = options[i];
             radioGroup.addOption(option.value, option.label);
@@ -131,14 +130,17 @@ export class RadioButton
     }
 
     private isValidOption(value: string): boolean {
-        let options = this.radioButtonOptions;
-        let l = options.length;
+        const options: { label: string; value: string; }[] = this.radioButtonOptions;
+        const l: number = options.length;
+
         for (let i = 0; i < l; i++) {
-            let option = options[i];
+            const option: { label: string; value: string; } = options[i];
+
             if (option.value === value) {
                 return true;
             }
         }
+
         return false;
     }
 }
