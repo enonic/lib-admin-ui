@@ -14,11 +14,16 @@ import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
+interface RadioButtonOption {
+    label: string;
+    value: string;
+}
+
 export class RadioButton
     extends BaseInputTypeSingleOccurrence {
 
     private selector: RadioGroup;
-    private radioButtonOptions: { label: string; value: string; }[];
+    private radioButtonOptions: RadioButtonOption[];
 
     constructor(config: InputTypeViewContext) {
         super(config, 'radio-button');
@@ -98,7 +103,7 @@ export class RadioButton
     }
 
     private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
-        const options: { label: string; value: string; }[] = [];
+        const options: RadioButtonOption[] = [];
         const optionValues: { [name: string]: string }[] = inputConfig['option'] || [];
         const l: number = optionValues.length;
         let optionValue: { [name: string]: string };
@@ -114,11 +119,11 @@ export class RadioButton
     private createRadioElement(name: string, property: Property): RadioGroup {
         const value: string = property?.hasNonNullValue ? property.getString() : undefined;
         const radioGroup = new RadioGroup(name, value);
-        const options: { label: string; value: string; }[] = this.radioButtonOptions;
+        const options: RadioButtonOption[] = this.radioButtonOptions;
         const l: number = options.length;
 
         for (let i = 0; i < l; i++) {
-            let option = options[i];
+            const option: RadioButtonOption = options[i];
             radioGroup.addOption(option.value, option.label);
         }
 
@@ -130,11 +135,11 @@ export class RadioButton
     }
 
     private isValidOption(value: string): boolean {
-        const options: { label: string; value: string; }[] = this.radioButtonOptions;
+        const options: RadioButtonOption[] = this.radioButtonOptions;
         const l: number = options.length;
 
         for (let i = 0; i < l; i++) {
-            const option: { label: string; value: string; } = options[i];
+            const option: RadioButtonOption = options[i];
 
             if (option.value === value) {
                 return true;
