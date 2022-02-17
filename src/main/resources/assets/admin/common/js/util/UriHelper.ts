@@ -37,7 +37,7 @@ export class UriHelper {
         return UriHelper.ADMIN_URI || UriHelper.DEFAULT_ADMIN_URI;
     }
 
-    static setAdminUri(value: string) {
+    static setAdminUri(value: string): void {
         UriHelper.ADMIN_URI = value;
     }
 
