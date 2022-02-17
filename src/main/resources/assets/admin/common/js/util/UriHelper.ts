@@ -4,6 +4,7 @@ export class UriHelper {
 
     private static DEFAULT_URI: string = '/';
     private static DEFAULT_ADMIN_URI: string = '/admin';
+    private static ADMIN_URI: string;
 
     /**
      * Creates an URI from supplied path.
@@ -22,7 +23,7 @@ export class UriHelper {
      * @returns {string} the URI to a admin path.
      */
     static getAdminUri(path: string): string {
-        let adminUri = UriHelper.getAdminUriPrefix();
+        const adminUri = UriHelper.getAdminUriPrefix();
         return UriHelper.getUri(UriHelper.joinPath(adminUri, UriHelper.relativePath(path)));
     }
 
@@ -33,7 +34,11 @@ export class UriHelper {
      * @returns {string} the URI to a admin path.
      */
     static getAdminUriPrefix(): string {
-        return UriHelper.DEFAULT_ADMIN_URI;
+        return UriHelper.ADMIN_URI || UriHelper.DEFAULT_ADMIN_URI;
+    }
+
+    static setAdminUri(value: string) {
+        UriHelper.ADMIN_URI = value;
     }
 
     /**
@@ -44,16 +49,6 @@ export class UriHelper {
      */
     static getRestUri(path: string): string {
         return UriHelper.getAdminUri(UriHelper.joinPath('rest', UriHelper.relativePath(path)));
-    }
-
-    /**
-     * Creates an URI to an admin tool.
-     *
-     * @param path path to append to base rest URI.
-     * @returns {string} the URI to a rest service.
-     */
-    static getToolUri(path: string): string {
-        return UriHelper.getAdminUri(UriHelper.joinPath('tool', UriHelper.relativePath(path)));
     }
 
     /**
