@@ -3,6 +3,7 @@ import {JsonResponse} from '../rest/JsonResponse';
 import {Path} from '../rest/Path';
 import {ResourceRequest} from '../rest/ResourceRequest';
 import {JSONObject, JSONValue} from '../types';
+import {UriHelper} from './UriHelper';
 
 export class CONFIG {
     private static CACHE: JSONObject;
@@ -53,6 +54,9 @@ export class CONFIG {
 
     static setConfig(config: JSONObject): void {
         CONFIG.CACHE = Object.freeze(Object.assign({}, config));
+        if (CONFIG.getString('adminUrl')) {
+            UriHelper.setAdminUri(CONFIG.getString('adminUrl'));
+        }
     }
 
     // For getting nested value, like 'services.i18nUrl'
