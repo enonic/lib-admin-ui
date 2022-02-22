@@ -16,8 +16,6 @@ import {Principal} from '../../../security/Principal';
 import {SelectedOption} from '../../../ui/selector/combobox/SelectedOption';
 import {Option} from '../../../ui/selector/Option';
 import {InputTypeName} from '../../InputTypeName';
-import {InputTypeManager} from '../InputTypeManager';
-import {Class} from '../../../Class';
 
 export class PrincipalSelector
     extends BaseInputTypeManagingAdd {
@@ -187,5 +185,3 @@ export class PrincipalSelector
     }
 
 }
-
-InputTypeManager.register(new Class('PrincipalSelector', PrincipalSelector), true);
