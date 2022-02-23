@@ -1,11 +1,14 @@
 import {Timezone} from '../../util/Timezone';
 import {DivEl} from '../../dom/DivEl';
-import {Element} from '../../dom/Element';
 import {DatePickerPopup, DatePickerPopupBuilder} from './DatePickerPopup';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 import {TimePickerPopup, TimePickerPopupBuilder} from './TimePickerPopup';
 
 export class DateTimePickerPopupBuilder {
+
+    manageDate: boolean;
+
+    manageTime: boolean;
 
     hours: number;
 
@@ -18,17 +21,27 @@ export class DateTimePickerPopupBuilder {
     // use local timezone if timezone value is not initialized
     useLocalTimezoneIfNotPresent: boolean = false;
 
+    setManageDate(value: boolean): DateTimePickerPopupBuilder {
+        this.manageDate = value;
+        return this;
+    }
+
+    setManageTime(value: boolean): DateTimePickerPopupBuilder {
+        this.manageTime = value;
+        return this;
+    }
+
     setDate(date: Date): DateTimePickerPopupBuilder {
         this.date = date;
         return this;
     }
 
     getHours(): number {
-        return this.date ? this.date.getHours() : null;
+        return this.date?.getHours();
     }
 
     getMinutes(): number {
-        return this.date ? this.date.getMinutes() : null;
+        return this.date?.getMinutes();
     }
 
     setTimezone(value: Timezone): DateTimePickerPopupBuilder {
@@ -58,43 +71,56 @@ export class DateTimePickerPopupBuilder {
 export class DateTimePickerPopup
     extends DivEl {
 
-    private datePickerPopup: DatePickerPopup;
+    private readonly datePickerPopup: DatePickerPopup;
 
-    private timePickerPopup: TimePickerPopup;
+    private readonly timePickerPopup: TimePickerPopup;
 
     constructor(builder: DateTimePickerPopupBuilder) {
         super('date-time-dialog');
 
-        this.datePickerPopup = new DatePickerPopupBuilder().setDate(builder.date).build();
+        if (builder.manageDate) {
+            this.datePickerPopup =
+                new DatePickerPopupBuilder()
+                .setDate(builder.date)
+                .build();
 
-        this.timePickerPopup =
-            new TimePickerPopupBuilder().setHours(builder.getHours()).setTimezone(builder.timezone).setUseLocalTimezoneIfNotPresent(
-                builder.useLocalTimezoneIfNotPresent).setMinutes(builder.getMinutes()).build();
+            this.appendChild(this.datePickerPopup);
+        }
 
-        this.appendChildren(<Element>this.datePickerPopup, <Element>this.timePickerPopup);
+        if (builder.manageTime) {
+            this.timePickerPopup =
+                new TimePickerPopupBuilder()
+                    .setHours(builder.getHours())
+                    .setTimezone(builder.timezone)
+                    .setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent)
+                    .setMinutes(builder.getMinutes())
+                    .build();
+
+            this.appendChild(this.timePickerPopup);
+        }
     }
 
     onSelectedDateChanged(listener: (event: SelectedDateChangedEvent) => void) {
-        this.datePickerPopup.onSelectedDateChanged(listener);
+        this.datePickerPopup?.onSelectedDateChanged(listener);
     }
 
     unSelectedDateChanged(listener: (event: SelectedDateChangedEvent) => void) {
-        this.datePickerPopup.unSelectedDateChanged(listener);
+        this.datePickerPopup?.unSelectedDateChanged(listener);
     }
 
     onSelectedTimeChanged(listener: (hours: number, minutes: number) => void) {
-        this.timePickerPopup.onSelectedTimeChanged(listener);
+        this.timePickerPopup?.onSelectedTimeChanged(listener);
     }
 
     unSelectedTimeChanged(listener: (hours: number, minutes: number) => void) {
-        this.timePickerPopup.unSelectedTimeChanged(listener);
+        this.timePickerPopup?.unSelectedTimeChanged(listener);
     }
 
     setSelectedTime(hours: number, minutes: number, silent?: boolean) {
-        this.timePickerPopup.setSelectedTime(hours, minutes, silent);
+        this.timePickerPopup?.setSelectedTime(hours, minutes, silent);
     }
 
     setSelectedDate(date: Date, silent?: boolean) {
-        this.datePickerPopup.setSelectedDate(date, silent);
+        this.datePickerPopup?.setSelectedDate(date, silent);
     }
 }

@@ -115,11 +115,11 @@ export class DateTimeRangePicker
     }
 
     public setStartDateTime(date: Date) {
-        this.startPicker.setSelectedDateTime(date, false);
+        this.startPicker.setDateTime(date);
     }
 
     public setEndDateTime(date: Date) {
-        this.endPicker.setSelectedDateTime(date, false);
+        this.endPicker.setDateTime(date);
     }
 
     onStartDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
@@ -171,13 +171,13 @@ export class DateTimeRangePicker
         switch (index) {
         case 1:
             if (builder.endDate) {
-                b.setDate(builder.endDate);
+                b.setDateTime(builder.endDate);
             }
             break;
         case 0:
         default:
             if (builder.startDate) {
-                b.setDate(builder.startDate);
+                b.setDateTime(builder.startDate);
             }
             break;
         }

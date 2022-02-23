@@ -48,7 +48,7 @@ export class Time
         if (!unchangedOnly || !localTime.isDirty() || !localTime.isValid()) {
 
             let value = this.getValueFromProperty(property);
-            localTime.setSelectedTime(value.hours, value.minutes);
+            localTime.setTime(value.hours, value.minutes);
         } else if (localTime.isDirty()) {
             localTime.forceSelectedDateTimeChangedEvent();
         }

@@ -7,43 +7,27 @@ import {KeyHelper} from '../KeyHelper';
 import {AppHelper} from '../../util/AppHelper';
 import {FormEl} from '../../dom/FormEl';
 import {StyleHelper} from '../../StyleHelper';
-import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 
 export class Picker<T extends Element>
     extends DivEl {
 
     protected popup: T;
 
-    protected popupOkButton: Button;
-
-    protected selectedDate: Date;
-
     protected input: TextInput;
 
     protected validUserInput: boolean;
 
-    private builder: any;
+    protected wrapperEl: DivEl;
 
-    private selectedDateTimeChangedListeners: { (event: SelectedDateChangedEvent): void }[] = [];
-
-    constructor(builder: any, className?: string) {
+    constructor(className?: string) {
         super(className);
-
-        this.builder = builder;
 
         this.validUserInput = true;
 
-        this.handleShownEvent();
-
-        this.initData(builder);
-
-        this.initInput(builder);
-        this.setupInputListeners();
-
-        this.wrapChildrenAndAppend();
+        this.appendWrapper();
     }
 
-    public resetBase() {
+    public resetBase(): void {
         this.input.resetBaseValues();
     }
 
@@ -59,7 +43,7 @@ export class Picker<T extends Element>
         return this.validUserInput;
     }
 
-    updateInputStyling() {
+    updateInputStyling(): void {
         this.input.updateValidationStatusOnUserInput(this.validUserInput);
     }
 
@@ -67,31 +51,11 @@ export class Picker<T extends Element>
         return this.input.giveFocus();
     }
 
-    setEnabled(enable: boolean) {
+    setEnabled(enable: boolean): void {
         this.input.setEnabled(enable);
     }
 
-    forceSelectedDateTimeChangedEvent() {
-        this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate));
-    }
-
-    onSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-        this.selectedDateTimeChangedListeners.push(listener);
-    }
-
-    unSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-        this.selectedDateTimeChangedListeners = this.selectedDateTimeChangedListeners.filter((curr) => {
-            return curr !== listener;
-        });
-    }
-
-    notifySelectedDateTimeChanged(event: SelectedDateChangedEvent) {
-        this.selectedDateTimeChangedListeners.forEach((listener) => {
-            listener(event);
-        });
-    }
-
-    protected setupPopupListeners(_builder: any) {
+    protected setupPopupListeners(): void {
         this.popup.onShown(() => this.addClass('expanded'));
         this.popup.onHidden(() => this.removeClass('expanded'));
 
@@ -109,7 +73,7 @@ export class Picker<T extends Element>
         });
     }
 
-    protected setupInputListeners() {
+    protected setupInputListeners(): void {
         AppHelper.focusInOut(this, () => {
             this.hidePopup();
         }, 50, false);
@@ -144,42 +108,28 @@ export class Picker<T extends Element>
         });
     }
 
-    protected handleShownEvent() {
-        // must be implemented by children
-    }
-
-    protected initData(_builder: any) {
-        // must be implemented by children
-    }
-
-    protected initPopup(_builder: any) {
+    protected initPopup(): void {
         throw new Error('must be implemented by inheritor');
     }
 
-    protected initInput(_builder: any) {
-        throw new Error('must be implemented by inheritor');
+    private appendWrapper(): void {
+        this.wrapperEl = new DivEl('wrapper', StyleHelper.COMMON_PREFIX);
+        this.appendChild(this.wrapperEl);
     }
 
-    protected wrapChildrenAndAppend() {
-        let wrapper = new DivEl('wrapper', StyleHelper.COMMON_PREFIX);
-        wrapper.appendChild(this.input);
-
-        this.appendChild(wrapper);
-    }
-
-    protected hidePopup() {
+    protected hidePopup(): void {
         if (this.popup) {
             this.popup.hide();
         }
     }
 
-    protected showPopup() {
+    protected showPopup(): void {
         this.createPopup();
         this.popup.resolveDropdownPosition();
         this.popup.show();
     }
 
-    protected togglePopupVisibility() {
+    protected togglePopupVisibility(): void {
         if (this.popup && this.popup.isVisible()) {
             this.hidePopup();
         } else {
@@ -187,22 +137,20 @@ export class Picker<T extends Element>
         }
     }
 
-    private initCloseButton() {
-        this.popupOkButton = new Button(i18n('action.ok'));
-        this.popupOkButton.addClass('ok-button');
-        this.popupOkButton.onClicked(() => {
-            this.hidePopup();
-        });
-        this.popup.appendChild(this.popupOkButton);
+    private initCloseButton(): void {
+        const popupOkButton = new Button(i18n('action.ok'));
+        popupOkButton.addClass('ok-button');
+        popupOkButton.onClicked(() => this.hidePopup());
+        this.popup.appendChild(popupOkButton);
     }
 
-    private createPopup() {
+    private createPopup(): void {
         if (this.popup) {
             return;
         }
 
-        this.initPopup(this.builder);
-        this.setupPopupListeners(this.builder);
+        this.initPopup();
+        this.setupPopupListeners();
         this.initCloseButton();
 
         this.popup.insertAfterEl(this.input);
