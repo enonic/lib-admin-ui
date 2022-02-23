@@ -1,6 +1,7 @@
 import {i18n} from './Messages';
 
 export class DateHelper {
+    public static DATE_SEPARATOR: string = '-';
 
     public static isInvalidDate(value: Date): boolean {
         return isNaN(value.getTime());
@@ -106,6 +107,10 @@ export class DateHelper {
 
     public static padNumber(num: number): string {
         return ((num || 0) < 10 ? '0' : '') + (num || 0);
+    }
+
+    public static parseLocalDate(value: string): Date {
+        return DateHelper.parseDate(value, DateHelper.DATE_SEPARATOR, true);
     }
 
     /**
@@ -269,7 +274,7 @@ export class DateHelper {
      * @param value
      * @returns {*}
      */
-    private static parseTime(value: string): Time {
+    static parseTime(value: string): Time {
         let dateStr = (value || '').trim();
         if (dateStr.length !== 5) {
             return null;
@@ -324,7 +329,7 @@ export class DateHelper {
     }
 }
 
-interface Time {
+export interface Time {
     hour: number;
     minute: number;
 }

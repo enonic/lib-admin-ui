@@ -100,6 +100,10 @@ export class DatePickerPopup
         this.calendar.selectDate(date, silent);
     }
 
+    getSelectedDate(): Date {
+        return this.calendar.getSelectedDate();
+    }
+
     onSelectedDateChanged(listener: (event: SelectedDateChangedEvent) => void) {
         this.calendar.onSelectedDateChanged(listener);
     }

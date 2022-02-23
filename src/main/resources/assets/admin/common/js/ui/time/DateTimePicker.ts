@@ -2,31 +2,38 @@ import {Timezone} from '../../util/Timezone';
 import {TextInput} from '../text/TextInput';
 import {KeyHelper} from '../KeyHelper';
 import {StringHelper} from '../../util/StringHelper';
-import {DateHelper} from '../../util/DateHelper';
+import {DateHelper, Time} from '../../util/DateHelper';
 import {Event} from '../../event/Event';
 import {ClassHelper} from '../../ClassHelper';
-import {Picker} from './Picker';
+import {Picker, PickerBuilder} from './Picker';
 import {DateTimePickerPopup, DateTimePickerPopupBuilder} from './DateTimePickerPopup';
-import {DatePickerBuilder} from './DatePicker';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 import {DayOfWeek} from './DayOfWeek';
 import {DaysOfWeek} from './DaysOfWeek';
+import {ObjectHelper} from '../../ObjectHelper';
 
-export class DateTimePickerBuilder {
+export class DateTimePickerBuilder
+    extends PickerBuilder {
 
-    date: Date;
+    dateTime: Date;
+
+    timezone: Timezone;
 
     startingDayOfWeek: DayOfWeek = DaysOfWeek.MONDAY;
 
     closeOnSelect: boolean = false;
 
-    timezone: Timezone;
-
     // use local timezone if timezone value is not initialized
     useLocalTimezoneIfNotPresent: boolean = false;
 
-    setDate(value: Date): DateTimePickerBuilder {
-        this.date = value;
+    inputPlaceholder: string = 'YYYY-MM-DD hh:mm';
+
+    manageDate: boolean = true;
+
+    manageTime: boolean = true;
+
+    setDateTime(value: Date): DateTimePickerBuilder {
+        this.dateTime = value;
         return this;
     }
 
@@ -59,152 +66,237 @@ export class DateTimePickerBuilder {
 export class DateTimePicker
     extends Picker<DateTimePickerPopup> {
 
-    constructor(builder: DateTimePickerBuilder) {
-        super(builder, 'date-time-picker');
+    protected builder: DateTimePickerBuilder;
+
+    protected selectedDateTime: Date;
+
+    private selectedDateTimeChangedListeners: { (event: SelectedDateChangedEvent): void }[] = [];
+
+    constructor(builder: DateTimePickerBuilder, cls: string = '') {
+        super(builder, `date-time-picker ${cls}`);
+
+        if (this.builder.closeOnSelect) {
+            this.addClass('hide-ok-button');
+        }
+
+        this.initData();
     }
 
-    public setSelectedDateTime(date: Date, userInput?: boolean) {
-        this.setDateTime(date);
-        this.setInputValue(userInput);
+    notifySelectedDateTimeChanged(event: SelectedDateChangedEvent): void {
+        this.selectedDateTimeChangedListeners.forEach((listener) => listener(event));
     }
 
-    protected initData(builder: DateTimePickerBuilder) {
-        if (builder.date) {
-            this.setDate(builder.date);
+    forceSelectedDateTimeChangedEvent(): void {
+        this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDateTime));
+    }
+
+    onSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void): void {
+        this.selectedDateTimeChangedListeners.push(listener);
+    }
+
+    unSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void): void {
+        this.selectedDateTimeChangedListeners =
+            this.selectedDateTimeChangedListeners.filter((curr) => curr !== listener);
+    }
+
+    protected initData(): void {
+        if (this.builder.dateTime) {
+            this.setDateTime(this.builder.dateTime, false);
         }
     }
 
-    protected handleShownEvent() {
-        let onDatePickerShown = this.onDateTimePickerShown.bind(this);
-        DateTimePickerShownEvent.on(onDatePickerShown);
-        this.onRemoved(() => DateTimePickerShownEvent.un(onDatePickerShown));
+    protected createInput(): TextInput {
+        const input = TextInput.middle('', this.formatDateTime());
+        input.setPlaceholder(this.builder.inputPlaceholder);
+
+        return input;
     }
 
-    protected initInput() {
-        this.input = TextInput.middle(undefined, this.formatDateTime(this.selectedDate));
-        this.input.setPlaceholder('YYYY-MM-DD hh:mm');
+    protected createPopup(): DateTimePickerPopup {
+        const popupBuilder = new DateTimePickerPopupBuilder()
+            .setDate(this.selectedDateTime)
+            .setManageDate(this.builder.manageDate)
+            .setManageTime(this.builder.manageTime);
+
+        if (this.builder.timezone) {
+            popupBuilder.setTimezone(this.builder.timezone);
+        }
+
+        if (this.builder.useLocalTimezoneIfNotPresent) {
+            popupBuilder.setUseLocalTimezoneIfNotPresent(true);
+        }
+
+        return new DateTimePickerPopup(popupBuilder);
     }
 
-    protected initPopup(builder: DateTimePickerBuilder) {
-        let popupBuilder = new DateTimePickerPopupBuilder().setDate(this.selectedDate).setTimezone(
-            builder.timezone).setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent);
-
-        this.popup = new DateTimePickerPopup(popupBuilder);
-        this.popup.onShown(() => {
-            new DateTimePickerShownEvent(this).fire();
-        });
-    }
-
-    protected setupPopupListeners(builder: DatePickerBuilder) {
-        super.setupPopupListeners(builder);
+    protected setupPopupListeners(): void {
+        super.setupPopupListeners();
 
         this.popup.onSelectedDateChanged((e: SelectedDateChangedEvent) => {
-            if (builder.closeOnSelect) {
+            if (this.builder.closeOnSelect) {
                 this.popup.hide();
             }
-            this.setDate(e.getDate());
-            this.setInputValue(true);
+            const newDate = e.getDate();
+            if (this.builder.manageTime && this.selectedDateTime) {
+                newDate.setHours(this.selectedDateTime.getHours());
+                newDate.setMinutes(this.selectedDateTime.getMinutes());
+            }
+            this.setDateTime(newDate);
         });
 
-        this.popup.onSelectedTimeChanged((hours: number, minutes: number) => {
-            this.setTime(hours, minutes);
-            this.setInputValue(true);
-        });
+        if (this.builder.manageTime) {
+            this.popup.onSelectedTimeChanged((hours: number, minutes: number) => {
+                this.setTime(hours, minutes);
+                this.setInputValue();
+            });
+        }
+        this.popup.onSubmit(() => this.setDefaultDateTime());
+
+        this.handleShownEvent();
     }
 
-    protected setupInputListeners() {
+    private handleShownEvent(): void {
+        const onAnyDateTimePickerShown = (event: DateTimePickerShownEvent) => {
+            if (event.getDateTimePicker() !== this) {
+                this.hidePopup();
+            }
+        };
+
+        const onThisDateTimePickerShown = () => {
+            new DateTimePickerShownEvent(this).fire();
+            DateTimePickerShownEvent.on(onAnyDateTimePickerShown);
+        };
+
+        this.popup.onShown(() => onThisDateTimePickerShown());
+        this.popup.onHidden(() => DateTimePickerShownEvent.un(onAnyDateTimePickerShown));
+        this.onRemoved(() => DateTimePickerShownEvent.un(onAnyDateTimePickerShown));
+    }
+
+    protected getParsedValue(value: string): Date | Time {
+        return DateHelper.parseDateTime(value);
+    }
+
+    protected setParsedValue(value: Date | Time): void {
+        if (value instanceof Date) {
+            this.setDateTime(value);
+        } else {
+            this.setTime(value.hour, value.minute);
+        }
+    }
+
+    private setDefaultDateTime(): void {
+        if (!this.selectedDateTime) {
+            this.setDateTime(this.popup.getSelectedDateTime());
+        }
+    }
+
+    protected setupInputListeners(): void {
         super.setupInputListeners();
 
         this.input.onKeyUp((event: KeyboardEvent) => {
-            if (KeyHelper.isArrowKey(event) || KeyHelper.isModifierKey(event)) {
+            if (KeyHelper.isArrowKey(event) || KeyHelper.isModifierKey(event) ||
+                KeyHelper.isTabKey(event) || KeyHelper.isSystemKey(event)) {
                 return;
             }
-            let typedDateTime = this.input.getValue();
-            let date: Date = null;
+
             this.validUserInput = true;
-            if (StringHelper.isEmpty(typedDateTime)) {
-                this.setDateTime(null);
+            const inputValue = this.input.getValue().trim();
+
+            if (StringHelper.isEmpty(inputValue)) {
+                this.selectedDateTime = null;
                 this.hidePopup();
             } else {
-                date = DateHelper.parseDateTime(typedDateTime);
-                let dateLength = date && date.getFullYear().toString().length + 12;
-                if (date && date.toString() !== 'Invalid Date' && typedDateTime.trim().length === dateLength) {
-                    this.setDateTime(date);
+                const parsedValue: Date | Time = this.getParsedValue(inputValue);
+                if (!!parsedValue) {
+                    this.setParsedValue(parsedValue);
                     this.showPopup();
                 } else {
-                    this.selectedDate = null;
+                    this.selectedDateTime = null;
                     this.validUserInput = false;
                 }
             }
-            this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(date));
+            this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDateTime));
             this.updateInputStyling();
         });
     }
 
-    private onDateTimePickerShown(event: DateTimePickerShownEvent) {
-        if (event.getDateTimePicker() !== this) {
-            this.hidePopup();
-        }
-    }
-
-    private setDateTime(date: Date) {
-        this.selectedDate = date;
-        if (this.popup) {
-            this.popup.setSelectedDate(date, true);
-            this.popup.setSelectedTime(date ? date.getHours() : null, date ? date.getMinutes() : null, true);
-        }
-    }
-
-    private setInputValue(userInput: boolean) {
+    private setInputValue(userInput: boolean = true): void {
         this.validUserInput = true;
-        this.input.setValue(this.formatDateTime(this.selectedDate), false, userInput);
-        this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate, userInput));
+        this.input.setValue(this.formatDateTime(), false, true);
+        if (userInput) {
+            this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDateTime, true));
+        }
         this.updateInputStyling();
     }
 
-    private setTime(hours: number, minutes: number) {
-        if (!this.selectedDate) {
-            let today = new Date();
-            this.selectedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    public setDateTime(date: Date, userInput: boolean = true): void {
+        if (this.builder.manageDate) {
+            this.setDate(date);
         }
-        this.selectedDate.setHours(hours);
-        this.selectedDate.setMinutes(minutes);
+        if (this.builder.manageTime && ObjectHelper.isDefined(date)) {
+            this.setTime(date.getHours(), date.getMinutes());
+        }
+        this.setInputValue(userInput);
     }
 
-    private setDate(date: Date) {
-        let hours = this.selectedDate ? this.selectedDate.getHours() : 0;
-        let minutes = this.selectedDate ? this.selectedDate.getMinutes() : 0;
-
-        this.selectedDate = date;
-
-        if (hours || minutes) {
-            this.setTime(hours, minutes);
+    private setDate(date: Date): void {
+        this.selectedDateTime = date;
+        if (this.popup) {
+            this.popup.setSelectedDate(date, true);
         }
     }
 
-    private formatDateTime(date: Date): string {
-        if (!date) {
-            return '';
+    setTime(hours: number, minutes: number): void {
+        const firstInit = !this.selectedDateTime;
+        if (firstInit) {
+            this.selectedDateTime = new Date();
         }
-        return DateHelper.formatDate(date) + ' ' + DateHelper.getFormattedTimeFromDate(date, false);
+
+        this.selectedDateTime.setHours(hours);
+        this.selectedDateTime.setMinutes(minutes);
+        this.selectedDateTime.setSeconds(0);
+
+        if (this.popup) {
+            this.popup.setSelectedTime(hours, minutes, true);
+        }
+        if (firstInit) {
+            this.setInputValue();
+        }
+    }
+
+    protected formatDateTime(): string {
+        let result = '';
+        if (this.selectedDateTime) {
+            if (this.builder.manageDate) {
+                result += DateHelper.formatDate(this.selectedDateTime);
+            }
+            if (this.builder.manageTime) {
+                if (result) {
+                    result += ' ';
+                }
+                result += DateHelper.getFormattedTimeFromDate(this.selectedDateTime, false);
+            }
+        }
+
+        return result;
     }
 }
 
 export class DateTimePickerShownEvent
     extends Event {
 
-    private dateTimePicker: DateTimePicker;
+    private readonly dateTimePicker: DateTimePicker;
 
     constructor(dateTimePicker: DateTimePicker) {
         super();
         this.dateTimePicker = dateTimePicker;
     }
 
-    static on(handler: (event: DateTimePickerShownEvent) => void) {
+    static on(handler: (event: DateTimePickerShownEvent) => void): void {
         Event.bind(ClassHelper.getFullName(this), handler);
     }
 
-    static un(handler?: (event: DateTimePickerShownEvent) => void) {
+    static un(handler?: (event: DateTimePickerShownEvent) => void): void {
         Event.unbind(ClassHelper.getFullName(this), handler);
     }
 

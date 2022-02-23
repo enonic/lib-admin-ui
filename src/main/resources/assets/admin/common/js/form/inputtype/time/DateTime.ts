@@ -8,7 +8,6 @@ import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Element} from '../../../dom/Element';
 import {SelectedDateChangedEvent} from '../../../ui/time/SelectedDateChangedEvent';
 import {LocalDateTime} from '../../../util/LocalDateTime';
-import {InputTypeName} from '../../InputTypeName';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {DateTime as DateTimeUtil} from '../../../util/DateTime';
@@ -51,7 +50,7 @@ export class DateTime
                          ? property.getDateTime().toDate()
                          : property.getLocalDateTime().toDate()
                        : null;
-            dateTimePicker.setSelectedDateTime(date);
+            dateTimePicker.setDateTime(date);
         } else if (dateTimePicker.isDirty()) {
             dateTimePicker.forceSelectedDateTimeChangedEvent();
         }
@@ -98,7 +97,7 @@ export class DateTime
 
         if (property.hasNonNullValue()) {
             const date: LocalDateTime = property.getLocalDateTime();
-            dateTimeBuilder.setDate(date.toDate());
+            dateTimeBuilder.setDateTime(date.toDate());
         }
 
         const dateTimePicker: DateTimePicker = dateTimeBuilder.build();
@@ -126,7 +125,7 @@ export class DateTime
 
         if (property.hasNonNullValue()) {
             const date: DateTimeUtil = property.getDateTime();
-            dateTimeBuilder.setDate(date.toDate()).setTimezone(date.getTimezone());
+            dateTimeBuilder.setDateTime(date.toDate()).setTimezone(date.getTimezone());
         }
 
         const dateTimePicker: DateTimePicker = new DateTimePicker(dateTimeBuilder);

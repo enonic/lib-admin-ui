@@ -98,6 +98,10 @@ export class KeyHelper {
                KeyHelper.isMetaKey(event);
     }
 
+    static isSystemKey(event: KeyboardEvent): boolean {
+        return KeyHelper.isControlKey(event) || KeyHelper.isShiftKey(event) || KeyHelper.isAltKey(event);
+    }
+
     static isEscKey(event: KeyboardEvent): boolean {
         return event.key === 'Escape' || event.key === 'Esc';
     }
