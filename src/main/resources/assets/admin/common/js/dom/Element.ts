@@ -1009,12 +1009,28 @@ export class Element {
         this.getEl().removeEventListener(eventName, listener);
     }
 
-    onTouchStart(listener: (event: MouseEvent) => void, isPassive: boolean = true) {
+    onTouchStart(listener: (event: TouchEvent) => void, isPassive: boolean = true) {
         this.getEl().addEventListener('touchstart', listener, isPassive);
     }
 
-    unTouchStart(listener: (event: MouseEvent) => void) {
+    unTouchStart(listener: (event: TouchEvent) => void) {
         this.getEl().removeEventListener('touchstart', listener);
+    }
+
+    onTouchMove(listener: (event: TouchEvent) => void, isPassive: boolean = true) {
+        this.getEl().addEventListener('touchmove', listener, isPassive);
+    }
+
+    unTouchMove(listener: (event: TouchEvent) => void) {
+        this.getEl().removeEventListener('touchmove', listener);
+    }
+
+    onTouchEnd(listener: (event: TouchEvent) => void, isPassive: boolean = true) {
+        this.getEl().addEventListener('touchend', listener, isPassive);
+    }
+
+    unTouchEnd(listener: (event: TouchEvent) => void) {
+        this.getEl().removeEventListener('touchend', listener);
     }
 
     onKeyUp(listener: (event: KeyboardEvent) => void) {
