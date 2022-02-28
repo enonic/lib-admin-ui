@@ -351,13 +351,18 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     isSelectionChanged(): boolean {
-        let optionsMap = this.getDisplayedOptions().map((x) => {
-            return x.getValue();
-        }).join();
+        const optionsMap: string = this.getDisplayedOptions().map((x: Option<OPTION_DISPLAY_VALUE>) => x.getValue()).join();
         const selectedOptions: Option<OPTION_DISPLAY_VALUE>[] = this.getSelectedOptions();
-        const filteredOption = selectedOptions.filter(o => optionsMap.search(o.getValue()) >= 0);
-        const gridOptions = this.comboBoxDropdown.getDropdownGrid().getGrid().getSelectedRows().map((row: number) => {
-            return this.comboBoxDropdown.getDropdownGrid().getOptionByRow(row).getValue();
+        const filteredOption: Option<OPTION_DISPLAY_VALUE>[] =
+            selectedOptions.filter((o: Option<OPTION_DISPLAY_VALUE>) => optionsMap.search(o.getValue()) >= 0);
+        const gridOptions: string[] = [];
+
+        this.comboBoxDropdown.getDropdownGrid().getGrid().getSelectedRows().forEach((row: number) => {
+            const value: string = this.comboBoxDropdown.getDropdownGrid().getOptionByRow(row)?.getValue();
+
+            if (value) {
+                gridOptions.push(value);
+            }
         });
 
         return (filteredOption.length !== gridOptions.length) ||
