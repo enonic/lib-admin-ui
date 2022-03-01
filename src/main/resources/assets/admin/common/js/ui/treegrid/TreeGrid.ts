@@ -1620,7 +1620,6 @@ export class TreeGrid<DATA extends IDentifiable>
                 oldChildren.pop();
             }
             const fetchedChildren: TreeNode<DATA>[] = this.dataToTreeNodes(dataList, node.getParent());
-            const needToCheckFetchedChildren: boolean = this.areAllOldChildrenSelected(oldChildren);
             const childrenToAdd: TreeNode<DATA>[] = fetchedChildren.slice(oldChildren.length);
             childrenToAdd
                 .filter((child: TreeNode<DATA>) => this.isToBeExpanded(child))
@@ -1630,36 +1629,12 @@ export class TreeGrid<DATA extends IDentifiable>
             const newChildren: TreeNode<DATA>[] = oldChildren.concat(childrenToAdd);
             node.getParent().setChildren(newChildren);
             this.initData(this.root.getCurrentRoot().treeToList());
-            if (needToCheckFetchedChildren) {
-                this.select(fetchedChildren);
-            }
         }).catch((reason: any) => {
             this.handleError(reason);
         }).then(() => {
             this.notifyLoaded();
             this.loading = false;
         });
-    }
-
-    private select(fetchedChildren: TreeNode<DATA>[]) {
-        let rowsToSelect: number[] = [];
-        fetchedChildren.forEach((node: TreeNode<DATA>) => {
-            let row = this.getRowIndexByNode(node);
-            if (row) {
-                rowsToSelect.push(row);
-            }
-        });
-        this.grid.addSelectedRows(rowsToSelect);
-    }
-
-    private areAllOldChildrenSelected(oldChildren: TreeNode<DATA>[]): boolean {
-        if (oldChildren && oldChildren.length > 0) {
-            return oldChildren.every(node =>
-                this.grid.isRowSelected(this.getRowIndexByNode(node))
-            );
-        } else {
-            return false;
-        }
     }
 
     private postLoad() {
