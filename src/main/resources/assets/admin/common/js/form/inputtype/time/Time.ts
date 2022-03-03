@@ -12,6 +12,8 @@ import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
+import {TimeHMS} from '../../../util/TimeHMS';
+import {TimeHM} from '../../../util/TimeHM';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalTime]].
@@ -28,7 +30,7 @@ export class Time
             ValueTypeConverter.convertPropertyValueType(property, this.getValueType());
         }
 
-        const value: { hours: number; minutes: number } = this.getValueFromProperty(property);
+        const value: TimeHM = this.getValueFromProperty(property);
         const timePicker: TimePicker = new TimePickerBuilder().setHours(value.hours).setMinutes(value.minutes).build();
 
         timePicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
@@ -42,13 +44,12 @@ export class Time
         return new Value(event.getDate() != null ? LocalTime.fromDate(event.getDate()) : null, this.getValueType());
     }
 
-    updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean) {
-        const localTime = <TimePicker> occurrence;
+    updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean): void {
+        const localTime: TimePicker = <TimePicker> occurrence;
 
         if (!unchangedOnly || !localTime.isDirty() || !localTime.isValid()) {
-
-            let value = this.getValueFromProperty(property);
-            localTime.setTime(value.hours, value.minutes);
+            const value: TimeHM = this.getValueFromProperty(property);
+            localTime.setTime(value);
         } else if (localTime.isDirty()) {
             localTime.forceSelectedDateTimeChangedEvent();
         }
@@ -77,21 +78,21 @@ export class Time
         }
     }
 
-    private getValueFromProperty(property: Property): { hours: number; minutes: number } {
-        let hours;
-        let minutes;
+    private getValueFromProperty(property: Property): TimeHM {
+        let hours: number;
+        let minutes: number;
+
         if (property && property.hasNonNullValue()) {
             const localTime: LocalTime = property.getLocalTime();
+
             if (localTime) {
-                const adjustedTime = localTime.getAdjustedTime();
-                hours = adjustedTime.hour;
-                minutes = adjustedTime.minute;
+                const adjustedTime: TimeHMS = localTime.getAdjustedTime();
+                hours = adjustedTime.hours;
+                minutes = adjustedTime.minutes;
             }
         }
-        return {
-            hours: hours,
-            minutes: minutes
-        };
+
+        return new TimeHM(hours, minutes);
     }
 
 }

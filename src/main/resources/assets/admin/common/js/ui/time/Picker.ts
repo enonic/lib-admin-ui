@@ -156,7 +156,7 @@ export abstract class Picker<T extends PickerPopup>
         this.input = this.createInput();
         this.setupInputListeners();
 
-        const wrapperEl = new DivEl('wrapper', StyleHelper.COMMON_PREFIX);
+        const wrapperEl: DivEl = new DivEl('wrapper', StyleHelper.COMMON_PREFIX);
         wrapperEl.appendChild(this.input);
 
         this.appendChild(wrapperEl);

@@ -6,11 +6,11 @@ import {ObjectHelper} from '../ObjectHelper';
 export class LocalDate
     implements Equitable {
 
-    private year: number;
+    private readonly year: number;
 
-    private month: number; // 0-11
+    private readonly month: number; // 0-11
 
-    private day: number;
+    private readonly day: number;
 
     constructor(builder: LocalDateBuilder) {
         this.year = builder.year;
