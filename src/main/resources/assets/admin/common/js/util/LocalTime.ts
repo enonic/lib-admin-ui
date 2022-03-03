@@ -1,22 +1,17 @@
 import {StringHelper} from './StringHelper';
 import {Equitable} from '../Equitable';
 import {ObjectHelper} from '../ObjectHelper';
+import {TimeHMS} from './TimeHMS';
 
 export class LocalTime
     implements Equitable {
 
     private static TIME_SEPARATOR: string = ':';
 
-    private hours: number;
-
-    private minutes: number;
-
-    private seconds: number;
+    private readonly timeData: TimeHMS;
 
     constructor(builder: LocalTimeBuilder) {
-        this.hours = builder.hours;
-        this.minutes = builder.minutes;
-        this.seconds = builder.seconds;
+        this.timeData = new TimeHMS(builder.hours, builder.minutes, builder.seconds);
     }
 
     static isValidString(s: string): boolean {
@@ -58,21 +53,22 @@ export class LocalTime
     }
 
     getHours(): number {
-        return this.hours;
+        return this.timeData.hours;
     }
 
     getMinutes(): number {
-        return this.minutes;
+        return this.timeData.minutes;
     }
 
     getSeconds(): number {
-        return this.seconds || 0;
+        return this.timeData.seconds || 0;
     }
 
     toString(): string {
-        let strSeconds = this.seconds ? LocalTime.TIME_SEPARATOR + this.padNumber(this.seconds) : StringHelper.EMPTY_STRING;
+        const strSeconds: string = this.timeData.seconds ?
+                                   LocalTime.TIME_SEPARATOR + this.padNumber(this.timeData.seconds) : StringHelper.EMPTY_STRING;
 
-        return this.padNumber(this.hours) + LocalTime.TIME_SEPARATOR + this.padNumber(this.minutes) + strSeconds;
+        return this.padNumber(this.timeData.hours) + LocalTime.TIME_SEPARATOR + this.padNumber(this.timeData.minutes) + strSeconds;
     }
 
     equals(o: Equitable): boolean {
@@ -95,15 +91,11 @@ export class LocalTime
         return true;
     }
 
-    public getAdjustedTime(): { hour: number; minute: number; seconds: number } {
-        let date = new Date();
+    public getAdjustedTime(): TimeHMS {
+        const date: Date = new Date();
         date.setHours(this.getHours(), this.getMinutes(), this.getSeconds());
 
-        return {
-            hour: date.getHours(),
-            minute: date.getMinutes(),
-            seconds: date.getSeconds()
-        };
+        return new TimeHMS(date.getHours(), date.getMinutes(), date.getTime());
     }
 
     private padNumber(num: number): string {

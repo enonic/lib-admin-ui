@@ -2,7 +2,7 @@ import {Timezone} from '../../util/Timezone';
 import {TextInput} from '../text/TextInput';
 import {KeyHelper} from '../KeyHelper';
 import {StringHelper} from '../../util/StringHelper';
-import {DateHelper, Time} from '../../util/DateHelper';
+import {DateHelper} from '../../util/DateHelper';
 import {Event} from '../../event/Event';
 import {ClassHelper} from '../../ClassHelper';
 import {Picker, PickerBuilder} from './Picker';
@@ -11,6 +11,7 @@ import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 import {DayOfWeek} from './DayOfWeek';
 import {DaysOfWeek} from './DaysOfWeek';
 import {ObjectHelper} from '../../ObjectHelper';
+import {TimeHM} from '../../util/TimeHM';
 
 export class DateTimePickerBuilder
     extends PickerBuilder {
@@ -106,14 +107,14 @@ export class DateTimePicker
     }
 
     protected createInput(): TextInput {
-        const input = TextInput.middle('', this.formatDateTime());
+        const input: TextInput = TextInput.middle('', this.formatDateTime());
         input.setPlaceholder(this.builder.inputPlaceholder);
 
         return input;
     }
 
     protected createPopup(): DateTimePickerPopup {
-        const popupBuilder = new DateTimePickerPopupBuilder()
+        const popupBuilder: DateTimePickerPopupBuilder = new DateTimePickerPopupBuilder()
             .setDate(this.selectedDateTime)
             .setManageDate(this.builder.manageDate)
             .setManageTime(this.builder.manageTime);
@@ -136,20 +137,24 @@ export class DateTimePicker
             if (this.builder.closeOnSelect) {
                 this.popup.hide();
             }
-            const newDate = e.getDate();
+
+            const newDate: Date = e.getDate();
+
             if (this.builder.manageTime && this.selectedDateTime) {
                 newDate.setHours(this.selectedDateTime.getHours());
                 newDate.setMinutes(this.selectedDateTime.getMinutes());
             }
+
             this.setDateTime(newDate);
         });
 
         if (this.builder.manageTime) {
-            this.popup.onSelectedTimeChanged((hours: number, minutes: number) => {
-                this.setTime(hours, minutes);
+            this.popup.onSelectedTimeChanged((time: TimeHM) => {
+                this.setTime(time);
                 this.setInputValue();
             });
         }
+
         this.popup.onSubmit(() => this.setDefaultDateTime());
 
         this.handleShownEvent();
@@ -172,15 +177,15 @@ export class DateTimePicker
         this.onRemoved(() => DateTimePickerShownEvent.un(onAnyDateTimePickerShown));
     }
 
-    protected getParsedValue(value: string): Date | Time {
+    protected getParsedValue(value: string): Date | TimeHM {
         return DateHelper.parseDateTime(value);
     }
 
-    protected setParsedValue(value: Date | Time): void {
+    protected setParsedValue(value: Date | TimeHM): void {
         if (value instanceof Date) {
             this.setDateTime(value);
         } else {
-            this.setTime(value.hour, value.minute);
+            this.setTime(value);
         }
     }
 
@@ -200,13 +205,14 @@ export class DateTimePicker
             }
 
             this.validUserInput = true;
-            const inputValue = this.input.getValue().trim();
+            const inputValue: string = this.input.getValue().trim();
 
             if (StringHelper.isEmpty(inputValue)) {
                 this.selectedDateTime = null;
                 this.hidePopup();
             } else {
-                const parsedValue: Date | Time = this.getParsedValue(inputValue);
+                const parsedValue: Date | TimeHM = this.getParsedValue(inputValue);
+
                 if (!!parsedValue) {
                     this.setParsedValue(parsedValue);
                     this.showPopup();
@@ -223,9 +229,11 @@ export class DateTimePicker
     private setInputValue(userInput: boolean = true): void {
         this.validUserInput = true;
         this.input.setValue(this.formatDateTime(), false, true);
+
         if (userInput) {
             this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDateTime, true));
         }
+
         this.updateInputStyling();
     }
 
@@ -233,47 +241,55 @@ export class DateTimePicker
         if (this.builder.manageDate) {
             this.setDate(date);
         }
+
         if (this.builder.manageTime && ObjectHelper.isDefined(date)) {
-            this.setTime(date.getHours(), date.getMinutes());
+            this.setTime(new TimeHM(date.getHours(), date.getMinutes()));
         }
+
         this.setInputValue(userInput);
     }
 
     private setDate(date: Date): void {
         this.selectedDateTime = date;
+
         if (this.popup) {
             this.popup.setSelectedDate(date, true);
         }
     }
 
-    setTime(hours: number, minutes: number): void {
-        const firstInit = !this.selectedDateTime;
-        if (firstInit) {
+    setTime(time: TimeHM): void {
+        const isFirstInit: boolean = !this.selectedDateTime;
+
+        if (isFirstInit) {
             this.selectedDateTime = new Date();
         }
 
-        this.selectedDateTime.setHours(hours);
-        this.selectedDateTime.setMinutes(minutes);
+        this.selectedDateTime.setHours(time.hours);
+        this.selectedDateTime.setMinutes(time.minutes);
         this.selectedDateTime.setSeconds(0);
 
         if (this.popup) {
-            this.popup.setSelectedTime(hours, minutes, true);
+            this.popup.setSelectedTime(time, true);
         }
-        if (firstInit) {
+
+        if (isFirstInit) {
             this.setInputValue();
         }
     }
 
     protected formatDateTime(): string {
-        let result = '';
+        let result: string = '';
+
         if (this.selectedDateTime) {
             if (this.builder.manageDate) {
                 result += DateHelper.formatDate(this.selectedDateTime);
             }
+
             if (this.builder.manageTime) {
                 if (result) {
                     result += ' ';
                 }
+
                 result += DateHelper.getFormattedTimeFromDate(this.selectedDateTime, false);
             }
         }
@@ -303,5 +319,4 @@ export class DateTimePickerShownEvent
     getDateTimePicker(): DateTimePicker {
         return this.dateTimePicker;
     }
-
 }

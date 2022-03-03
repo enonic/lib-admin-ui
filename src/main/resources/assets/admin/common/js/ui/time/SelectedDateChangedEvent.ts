@@ -1,8 +1,8 @@
 export class SelectedDateChangedEvent {
 
-    private date: Date;
+    private readonly date: Date;
 
-    private userInput: boolean;
+    private readonly userInput: boolean;
 
     constructor(selectedDate: Date, userInput?: boolean) {
         this.date = selectedDate;

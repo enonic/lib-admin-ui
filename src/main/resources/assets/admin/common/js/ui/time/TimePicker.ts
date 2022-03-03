@@ -1,6 +1,7 @@
-import {DateHelper, Time} from '../../util/DateHelper';
+import {DateHelper} from '../../util/DateHelper';
 import {DateTimePicker, DateTimePickerBuilder} from './DateTimePicker';
 import {ObjectHelper} from '../../ObjectHelper';
+import {TimeHM} from '../../util/TimeHM';
 
 export class TimePickerBuilder
     extends DateTimePickerBuilder {
@@ -36,13 +37,14 @@ export class TimePicker
     }
 
     protected initData(): void {
-        const builder = <TimePickerBuilder>this.builder;
+        const builder: TimePickerBuilder = <TimePickerBuilder>this.builder;
+
         if (ObjectHelper.bothDefined(builder.hours, builder.minutes)) {
-            this.setTime(builder.hours, builder.minutes);
+            this.setTime(new TimeHM(builder.hours, builder.minutes));
         }
     }
 
-    protected getParsedValue(value: string): Time {
+    protected getParsedValue(value: string): TimeHM {
         return DateHelper.parseTime(value);
     }
 }

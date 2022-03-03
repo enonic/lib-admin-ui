@@ -4,6 +4,7 @@ import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 import {TimePickerPopup, TimePickerPopupBuilder} from './TimePickerPopup';
 import {PickerPopup} from './Picker';
 import {Element} from '../../dom/Element';
+import {TimeHM} from '../../util/TimeHM';
 
 export class DateTimePickerPopupBuilder {
 
@@ -72,9 +73,9 @@ export class DateTimePickerPopupBuilder {
 export class DateTimePickerPopup
     extends PickerPopup {
 
-    private readonly datePickerPopup: DatePickerPopup;
+    private readonly datePickerPopup?: DatePickerPopup;
 
-    private readonly timePickerPopup: TimePickerPopup;
+    private readonly timePickerPopup?: TimePickerPopup;
 
     constructor(builder: DateTimePickerPopupBuilder) {
         super('date-time-dialog');
@@ -99,9 +100,9 @@ export class DateTimePickerPopup
 
     getSelectedDateTime(): Date {
         const selectedDateTime: Date = this.datePickerPopup?.getSelectedDate() || new Date();
-        const selectedTime = this.timePickerPopup?.getSelectedTime();
-        selectedDateTime.setHours(selectedTime?.hour || 0);
-        selectedDateTime.setMinutes(selectedTime?.minute || 0);
+        const selectedTime: TimeHM = this.timePickerPopup?.getSelectedTime();
+        selectedDateTime.setHours(selectedTime?.hours || 0);
+        selectedDateTime.setMinutes(selectedTime?.minutes || 0);
 
         return selectedDateTime;
     }
@@ -128,16 +129,16 @@ export class DateTimePickerPopup
         this.datePickerPopup?.unSelectedDateChanged(listener);
     }
 
-    onSelectedTimeChanged(listener: (hours: number, minutes: number) => void) {
+    onSelectedTimeChanged(listener: (time: TimeHM) => void) {
         this.timePickerPopup?.onSelectedTimeChanged(listener);
     }
 
-    unSelectedTimeChanged(listener: (hours: number, minutes: number) => void) {
+    unSelectedTimeChanged(listener: (time: TimeHM) => void) {
         this.timePickerPopup?.unSelectedTimeChanged(listener);
     }
 
-    setSelectedTime(hours: number, minutes: number, silent?: boolean) {
-        this.timePickerPopup?.setSelectedTime(hours, minutes, silent);
+    setSelectedTime(time: TimeHM, silent?: boolean) {
+        this.timePickerPopup?.setSelectedTime(time, silent);
     }
 
     setSelectedDate(date: Date, silent?: boolean) {
