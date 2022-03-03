@@ -170,11 +170,11 @@ export class TimePickerPopup
         return this.selectedHour != null && this.selectedMinute != null ? new TimeHM(this.selectedHour, this.selectedMinute) : null;
     }
 
-    onSelectedTimeChanged(listener: (time: TimeHM) => void) {
+    onSelectedTimeChanged(listener: (time: TimeHM) => void): void {
         this.timeChangedListeners.push(listener);
     }
 
-    unSelectedTimeChanged(listener: (time: TimeHM) => void) {
+    unSelectedTimeChanged(listener: (time: TimeHM) => void): void {
         this.timeChangedListeners = this.timeChangedListeners.filter((curr: (time: TimeHM) => void) => {
             return curr !== listener;
         });

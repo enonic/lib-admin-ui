@@ -129,15 +129,15 @@ export class DateTimePickerPopup
         this.datePickerPopup?.unSelectedDateChanged(listener);
     }
 
-    onSelectedTimeChanged(listener: (time: TimeHM) => void) {
+    onSelectedTimeChanged(listener: (time: TimeHM) => void): void {
         this.timePickerPopup?.onSelectedTimeChanged(listener);
     }
 
-    unSelectedTimeChanged(listener: (time: TimeHM) => void) {
+    unSelectedTimeChanged(listener: (time: TimeHM) => void): void {
         this.timePickerPopup?.unSelectedTimeChanged(listener);
     }
 
-    setSelectedTime(time: TimeHM, silent?: boolean) {
+    setSelectedTime(time: TimeHM, silent?: boolean): void {
         this.timePickerPopup?.setSelectedTime(time, silent);
     }
 
