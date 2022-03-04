@@ -6,13 +6,11 @@ import {ObjectHelper} from '../ObjectHelper';
 export class LocalDate
     implements Equitable {
 
-    public static DATE_SEPARATOR: string = '-';
+    private readonly year: number;
 
-    private year: number;
+    private readonly month: number; // 0-11
 
-    private month: number; // 0-11
-
-    private day: number;
+    private readonly day: number;
 
     constructor(builder: LocalDateBuilder) {
         this.year = builder.year;
@@ -43,7 +41,7 @@ export class LocalDate
             throw new Error('Cannot parse LocalDate from string: ' + s);
         }
 
-        let date: string[] = s.split(LocalDate.DATE_SEPARATOR);
+        let date: string[] = s.split(DateHelper.DATE_SEPARATOR);
         return LocalDate.create().setYear(Number(date[0])).setMonth(Number(date[1]) - 1).setDay(Number(date[2])).build();
     }
 
@@ -76,12 +74,12 @@ export class LocalDate
 
     /** Returns date in ISO format. Month value is incremented because ISO month range is 1-12, whereas JS Date month range is 0-11 */
     toString(): string {
-        return this.year + LocalDate.DATE_SEPARATOR + this.padNumber(this.month + 1) + LocalDate.DATE_SEPARATOR +
+        return this.year + DateHelper.DATE_SEPARATOR + this.padNumber(this.month + 1) + DateHelper.DATE_SEPARATOR +
                this.padNumber(this.day);
     }
 
     toDate(): Date {
-        return DateHelper.parseDate(this.toString(), LocalDate.DATE_SEPARATOR);
+        return DateHelper.parseDate(this.toString(), DateHelper.DATE_SEPARATOR);
     }
 
     private padNumber(num: number, length: number = 2): string {

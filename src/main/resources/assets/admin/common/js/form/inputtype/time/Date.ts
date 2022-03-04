@@ -32,7 +32,7 @@ export class Date
 
         if (!property.hasNullValue()) {
             const date: LocalDate = property.getLocalDate();
-            datePickerBuilder.setDate(date.toDate());
+            datePickerBuilder.setDateTime(date.toDate());
         }
 
         const datePicker: DatePicker = datePickerBuilder.build();
@@ -64,7 +64,7 @@ export class Date
 
         if (!unchangedOnly || !datePicker.isDirty()) {
             let date = property.hasNonNullValue() ? property.getLocalDate().toDate() : null;
-            datePicker.setSelectedDate(date);
+            datePicker.setDateTime(date);
         } else if (datePicker.isDirty()) {
             datePicker.forceSelectedDateTimeChangedEvent();
         }

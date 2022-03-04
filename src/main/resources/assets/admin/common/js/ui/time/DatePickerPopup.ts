@@ -6,6 +6,7 @@ import {H5El} from '../../dom/H5El';
 import {Calendar, CalendarBuilder} from './Calendar';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 import {MonthsOfYear} from './MonthsOfYear';
+import * as Q from 'q';
 
 export class DatePickerPopupBuilder {
 
@@ -36,68 +37,64 @@ export class DatePickerPopup
     constructor(builder: DatePickerPopupBuilder) {
         super('date-picker-dialog');
 
-        let yearContainer = new H2El('year-container');
-        this.appendChild(yearContainer);
+        this.initElements(builder);
+        this.initListeners();
+    }
 
+    protected initElements(builder: DatePickerPopupBuilder): void {
         this.prevYear = new AEl('prev');
+        this.year = new SpanEl();
+        this.nextYear = new AEl('next');
+        this.prevMonth = new AEl('prev');
+        this.month = new SpanEl();
+        this.nextMonth = new AEl('next');
+
+        this.calendar = new CalendarBuilder().setSelectedDate(builder.date).build();
+        this.year.setHtml(this.calendar.getYear().toString());
+        this.month.setHtml(MonthsOfYear.getByNumberCode(this.calendar.getMonth()).getFullName());
+    }
+
+    protected initListeners(): void {
         this.prevYear.onClicked((e: MouseEvent) => {
             this.calendar.previousYear();
             e.stopPropagation();
             e.preventDefault();
             return false;
         });
-        yearContainer.appendChild(this.prevYear);
 
-        this.year = new SpanEl();
-        yearContainer.appendChild(this.year);
-
-        this.nextYear = new AEl('next');
         this.nextYear.onClicked((e: MouseEvent) => {
             this.calendar.nextYear();
             e.stopPropagation();
             e.preventDefault();
             return false;
         });
-        yearContainer.appendChild(this.nextYear);
 
-        let monthContainer = new H5El('month-container');
-        this.appendChild(monthContainer);
-
-        this.prevMonth = new AEl('prev');
         this.prevMonth.onClicked((e: MouseEvent) => {
             this.calendar.previousMonth();
             e.stopPropagation();
             e.preventDefault();
             return false;
         });
-        monthContainer.appendChild(this.prevMonth);
 
-        this.month = new SpanEl();
-        monthContainer.appendChild(this.month);
-
-        this.nextMonth = new AEl('next');
         this.nextMonth.onClicked((e: MouseEvent) => {
             this.calendar.nextMonth();
             e.stopPropagation();
             e.preventDefault();
             return false;
         });
-        monthContainer.appendChild(this.nextMonth);
-
-        this.calendar = new CalendarBuilder().setSelectedDate(builder.date).build();
-
-        this.year.setHtml(this.calendar.getYear().toString());
-        this.month.setHtml(MonthsOfYear.getByNumberCode(this.calendar.getMonth()).getFullName());
 
         this.calendar.onShownMonthChanged((month: number, year: number) => {
             this.month.setHtml(MonthsOfYear.getByNumberCode(month).getFullName());
             this.year.setHtml(year.toString());
         });
-        this.appendChild(this.calendar);
     }
 
     setSelectedDate(date: Date, silent?: boolean) {
         this.calendar.selectDate(date, silent);
+    }
+
+    getSelectedDate(): Date {
+        return this.calendar.getSelectedDate();
     }
 
     onSelectedDateChanged(listener: (event: SelectedDateChangedEvent) => void) {
@@ -106,6 +103,26 @@ export class DatePickerPopup
 
     unSelectedDateChanged(listener: (event: SelectedDateChangedEvent) => void) {
         this.calendar.unSelectedDateChanged(listener);
+    }
+
+    doRender(): Q.Promise<boolean> {
+        return super.doRender().then((rendered: boolean) => {
+            const yearContainer: H2El = new H2El('year-container');
+            this.appendChild(yearContainer);
+            yearContainer.appendChild(this.prevYear);
+            yearContainer.appendChild(this.year);
+            yearContainer.appendChild(this.nextYear);
+
+            const monthContainer: H5El = new H5El('month-container');
+            this.appendChild(monthContainer);
+            monthContainer.appendChild(this.prevMonth);
+            monthContainer.appendChild(this.month);
+            monthContainer.appendChild(this.nextMonth);
+
+            this.appendChild(this.calendar);
+
+            return rendered;
+        });
     }
 }
 

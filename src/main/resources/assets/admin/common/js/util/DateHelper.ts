@@ -1,6 +1,9 @@
 import {i18n} from './Messages';
+import {TimeHM} from './TimeHM';
+import {LongTimeHMS} from './LongTimeHMS';
 
 export class DateHelper {
+    public static DATE_SEPARATOR: string = '-';
 
     public static isInvalidDate(value: Date): boolean {
         return isNaN(value.getTime());
@@ -108,6 +111,10 @@ export class DateHelper {
         return ((num || 0) < 10 ? '0' : '') + (num || 0);
     }
 
+    public static parseLocalDate(value: string): Date {
+        return DateHelper.parseDate(value, DateHelper.DATE_SEPARATOR, true);
+    }
+
     /**
      * Parses passed iso-like string 2010-01-01 into js date,
      * month expected to be in a 1-12 range
@@ -115,11 +122,14 @@ export class DateHelper {
      * @returns {string}
      */
     public static parseDate(value: string, dateSeparator: string = '-', forceDaysBeOfTwoChars: boolean = false): Date {
-        let dateStr = (value || '').trim();
+        const dateStr: string = (value || '').trim();
+
         if (dateStr.length < 8 || dateStr.length > 10) {
             return null;
         }
-        let parts = dateStr.split(dateSeparator);
+
+        const parts: string[] = dateStr.split(dateSeparator);
+
         if (parts.length !== 3 || parts[0].length !== 4) {
             return null;
         }
@@ -128,9 +138,9 @@ export class DateHelper {
             return null;
         }
 
-        let parsedYear: number = Number(parts[0]);
-        let parsedMonth: number = Number(parts[1]);
-        let parsedDayOfMonth: number = Number(parts[2]);
+        const parsedYear: number = Number(parts[0]);
+        const parsedMonth: number = Number(parts[1]);
+        const parsedDayOfMonth: number = Number(parts[2]);
 
         let date = new Date(parsedYear, parsedMonth - 1, parsedDayOfMonth);
         return date.getFullYear() === parsedYear && date.getMonth() === (parsedMonth - 1) && date.getDate() === parsedDayOfMonth
@@ -144,25 +154,34 @@ export class DateHelper {
      * @returns {*}
      */
     static parseDateTime(value: string): Date {
-        let dateStr = (value || '').trim();
+        const dateStr: string = (value || '').trim();
+
         if (dateStr.length < 14 || dateStr.length > 16) {
             return null;
         }
-        let parts = dateStr.split(' ');
+
+        const parts: string[] = dateStr.split(' ');
+
         if (parts.length !== 2) {
             return null;
         }
-        let datePart = parts[0];
-        let timePart = parts[1];
-        let date = DateHelper.parseDate(datePart);
+
+        const datePart: string = parts[0];
+        const timePart: string = parts[1];
+        const date: Date = DateHelper.parseDate(datePart);
+
         if (!date) {
             return null;
         }
-        let time = DateHelper.parseTime(timePart);
+
+        const time: TimeHM = DateHelper.parseTime(timePart);
+
         if (!time) {
             return null;
         }
-        date.setHours(time.hour, time.minute, 0, 0);
+
+        date.setHours(time.hours, time.minutes, 0, 0);
+
         return date;
     }
 
@@ -177,23 +196,29 @@ export class DateHelper {
      */
     static parseLongDateTime(value: string, dateTimeSeparator: string = '-', dateSeparator: string = '-', timeSeparator: string = ':',
                              fractionSeparator: string = '.'): Date {
-        let dateStr = (value || '').trim();
+        const dateStr: string = (value || '').trim();
 
-        let parts = dateStr.split(dateTimeSeparator);
+        const parts: string[] = dateStr.split(dateTimeSeparator);
+
         if (parts.length !== 2) {
             return null;
         }
-        let datePart = parts[0];
-        let timePart = parts[1];
 
-        let date = DateHelper.parseDate(datePart, dateSeparator);
+        const datePart: string = parts[0];
+        const timePart: string = parts[1];
+
+        const date: Date = DateHelper.parseDate(datePart, dateSeparator);
+
         if (!date) {
             return null;
         }
-        let time = DateHelper.parseLongTime(timePart, timeSeparator, fractionSeparator);
+
+        const time: LongTimeHMS = DateHelper.parseLongTime(timePart, timeSeparator, fractionSeparator);
+
         if (!time) {
             return null;
         }
+
         date.setHours(time.hours, time.minutes, time.seconds, time.fractions);
 
         return date;
@@ -222,13 +247,13 @@ export class DateHelper {
     }
 
     static getModifiedString(modified: Date): string {
-        let timeDiff = Math.abs(Date.now() - modified.getTime());
-        let secInMs = 1000;
-        let minInMs = secInMs * 60;
-        let hrInMs = minInMs * 60;
-        let dayInMs = hrInMs * 24;
-        let monInMs = dayInMs * 31;
-        let yrInMs = dayInMs * 365;
+        const timeDiff: number = Math.abs(Date.now() - modified.getTime());
+        const secInMs: number = 1000;
+        const minInMs: number = secInMs * 60;
+        const hrInMs: number = minInMs * 60;
+        const dayInMs: number = hrInMs * 24;
+        const monInMs: number = dayInMs * 31;
+        const yrInMs: number = dayInMs * 365;
 
         if (timeDiff < minInMs) {
             return i18n('field.lessthanminuteago');
@@ -269,36 +294,44 @@ export class DateHelper {
      * @param value
      * @returns {*}
      */
-    private static parseTime(value: string): Time {
-        let dateStr = (value || '').trim();
+    static parseTime(value: string): TimeHM {
+        const dateStr: string = (value || '').trim();
+
         if (dateStr.length !== 5) {
             return null;
         }
-        let parts = dateStr.split(':');
+
+        const parts: string[] = dateStr.split(':');
+
         if (parts.length !== 2) {
             return null;
         }
-        let hour: number = Number(parts[0]);
-        let minute: number = Number(parts[1]);
+
+        const hour: number = Number(parts[0]);
+        const minute: number = Number(parts[1]);
+
         if (isNaN(hour) || isNaN(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
             return null;
         }
-        return {hour: hour, minute: minute};
+
+        return new TimeHM(hour, minute);
     }
 
-    private static parseLongTime(value: string, timeSeparator: string = ':', fractionSeparator: string = '.'): LongTime {
-        let timeStr = (value || '').trim();
+    private static parseLongTime(value: string, timeSeparator: string = ':', fractionSeparator: string = '.'): LongTimeHMS {
+        const timeStr: string = (value || '').trim();
+
         if (timeStr.length < 5 || timeStr.length > 12) {
             return null;
         }
-        let time: string[] = timeStr.split(timeSeparator);
+
+        const time: string[] = timeStr.split(timeSeparator);
 
         if (time.length < 2 || time.length > 3) {
             return null;
         }
 
-        let hours = Number(time[0]);
-        let minutes = Number(time[1]);
+        const hours: number = Number(time[0]);
+        const minutes: number = Number(time[1]);
         let seconds: number = 0;
         let fractions: number = 0;
 
@@ -315,23 +348,6 @@ export class DateHelper {
             return null;
         }
 
-        return {
-            hours: hours,
-            minutes: minutes,
-            seconds: seconds,
-            fractions: fractions
-        };
+        return new LongTimeHMS(hours, minutes, seconds, fractions);
     }
-}
-
-interface Time {
-    hour: number;
-    minute: number;
-}
-
-interface LongTime {
-    hours: number;
-    minutes: number;
-    seconds: number;
-    fractions: number;
 }

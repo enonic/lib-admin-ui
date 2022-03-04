@@ -11,7 +11,6 @@ import {DateTime} from '../../../util/DateTime';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Element} from '../../../dom/Element';
 import {SelectedDateChangedEvent} from '../../../ui/time/SelectedDateChangedEvent';
-import {InputValidationRecording} from '../InputValidationRecording';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';

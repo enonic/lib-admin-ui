@@ -7,43 +7,73 @@ import {KeyHelper} from '../KeyHelper';
 import {AppHelper} from '../../util/AppHelper';
 import {FormEl} from '../../dom/FormEl';
 import {StyleHelper} from '../../StyleHelper';
-import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
+import * as Q from 'q';
 
-export class Picker<T extends Element>
+export class PickerBuilder {
+    inputPlaceholder: string = '';
+}
+
+export abstract class PickerPopup
     extends DivEl {
+
+    private submitButton: Button;
+
+    protected constructor(className?: string) {
+        super(className);
+
+        this.createSubmitButton();
+    }
+
+    doRender(): Q.Promise<boolean> {
+        return super.doRender().then((rendered) => {
+            this.appendPopupElements();
+            return rendered;
+        });
+    }
+
+    show(): void {
+        super.resolveDropdownPosition();
+        super.show();
+    }
+
+    protected createSubmitButton(): void {
+        this.submitButton = new Button(i18n('action.ok'));
+        this.submitButton.addClass('ok-button');
+        this.submitButton.onClicked(() => this.hide());
+    }
+
+    protected getChildElements(): Element[] {
+        return [this.submitButton];
+    }
+
+    onSubmit(listener: () => void): void {
+        this.submitButton.onClicked(listener);
+    }
+
+    private appendPopupElements(): void {
+        this.appendChildren(...this.getChildElements());
+    }
+}
+
+export abstract class Picker<T extends PickerPopup>
+    extends DivEl {
+
+    protected builder: PickerBuilder;
 
     protected popup: T;
 
-    protected popupOkButton: Button;
-
-    protected selectedDate: Date;
-
     protected input: TextInput;
 
-    protected validUserInput: boolean;
+    protected validUserInput: boolean = true;
 
-    private builder: any;
-
-    private selectedDateTimeChangedListeners: { (event: SelectedDateChangedEvent): void }[] = [];
-
-    constructor(builder: any, className?: string) {
+    protected constructor(builder: PickerBuilder, className?: string) {
         super(className);
 
         this.builder = builder;
-
-        this.validUserInput = true;
-
-        this.handleShownEvent();
-
-        this.initData(builder);
-
-        this.initInput(builder);
-        this.setupInputListeners();
-
-        this.wrapChildrenAndAppend();
+        this.appendInput();
     }
 
-    public resetBase() {
+    public resetBase(): void {
         this.input.resetBaseValues();
     }
 
@@ -59,7 +89,7 @@ export class Picker<T extends Element>
         return this.validUserInput;
     }
 
-    updateInputStyling() {
+    updateInputStyling(): void {
         this.input.updateValidationStatusOnUserInput(this.validUserInput);
     }
 
@@ -67,66 +97,36 @@ export class Picker<T extends Element>
         return this.input.giveFocus();
     }
 
-    setEnabled(enable: boolean) {
+    setEnabled(enable: boolean): void {
         this.input.setEnabled(enable);
     }
 
-    forceSelectedDateTimeChangedEvent() {
-        this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDate));
-    }
-
-    onSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-        this.selectedDateTimeChangedListeners.push(listener);
-    }
-
-    unSelectedDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
-        this.selectedDateTimeChangedListeners = this.selectedDateTimeChangedListeners.filter((curr) => {
-            return curr !== listener;
-        });
-    }
-
-    notifySelectedDateTimeChanged(event: SelectedDateChangedEvent) {
-        this.selectedDateTimeChangedListeners.forEach((listener) => {
-            listener(event);
-        });
-    }
-
-    protected setupPopupListeners(_builder: any) {
+    protected setupPopupListeners(): void {
         this.popup.onShown(() => this.addClass('expanded'));
         this.popup.onHidden(() => this.removeClass('expanded'));
 
         // Prevent focus loss on mouse down
-        this.popup.onMouseDown((event: MouseEvent) => {
-            event.preventDefault();
-        });
+        this.popup.onMouseDown((event: MouseEvent) => event.preventDefault());
 
         this.popup.onKeyDown((event: KeyboardEvent) => {
             if (KeyHelper.isTabKey(event)) {
                 if (!(document.activeElement === this.input.getEl().getHTMLElement())) {
-                    this.popup.hide();
+                    this.hidePopup();
                 }
             }
         });
     }
 
-    protected setupInputListeners() {
-        AppHelper.focusInOut(this, () => {
-            this.hidePopup();
-        }, 50, false);
+    protected setupInputListeners(): void {
+        AppHelper.focusInOut(this, () => this.hidePopup(), 50, false);
 
-        this.input.onClicked((e: MouseEvent) => {
-            e.preventDefault();
-            this.togglePopupVisibility();
+        this.input.onFocus((e: FocusEvent) => {
+            if (!this.popup || !this.popup.isVisible()) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.showPopup();
+            }
         });
-
-        this.input.onFocus((e: FocusEvent) =>
-            setTimeout(() => {
-                if (!this.popup || !this.popup.isVisible()) {
-                    e.preventDefault();
-                    this.showPopup();
-                }
-            }, 150)
-        );
 
         this.input.onKeyDown((event: KeyboardEvent) => {
             if (KeyHelper.isEnterKey(event)) {
@@ -144,67 +144,48 @@ export class Picker<T extends Element>
         });
     }
 
-    protected handleShownEvent() {
-        // must be implemented by children
-    }
-
-    protected initData(_builder: any) {
-        // must be implemented by children
-    }
-
-    protected initPopup(_builder: any) {
+    protected createPopup(): T {
         throw new Error('must be implemented by inheritor');
     }
 
-    protected initInput(_builder: any) {
+    protected createInput(): TextInput {
         throw new Error('must be implemented by inheritor');
     }
 
-    protected wrapChildrenAndAppend() {
-        let wrapper = new DivEl('wrapper', StyleHelper.COMMON_PREFIX);
-        wrapper.appendChild(this.input);
+    private appendInput(): void {
+        this.input = this.createInput();
+        this.setupInputListeners();
 
-        this.appendChild(wrapper);
+        const wrapperEl: DivEl = new DivEl('wrapper', StyleHelper.COMMON_PREFIX);
+        wrapperEl.appendChild(this.input);
+
+        this.appendChild(wrapperEl);
     }
 
-    protected hidePopup() {
-        if (this.popup) {
-            this.popup.hide();
-        }
+    protected hidePopup(): void {
+        this.popup?.hide();
     }
 
-    protected showPopup() {
-        this.createPopup();
-        this.popup.resolveDropdownPosition();
+    protected showPopup(): void {
+        this.initPopup();
         this.popup.show();
     }
 
-    protected togglePopupVisibility() {
-        if (this.popup && this.popup.isVisible()) {
+    protected togglePopupVisibility(): void {
+        if (this.popup?.isVisible()) {
             this.hidePopup();
         } else {
             this.showPopup();
         }
     }
 
-    private initCloseButton() {
-        this.popupOkButton = new Button(i18n('action.ok'));
-        this.popupOkButton.addClass('ok-button');
-        this.popupOkButton.onClicked(() => {
-            this.hidePopup();
-        });
-        this.popup.appendChild(this.popupOkButton);
-    }
-
-    private createPopup() {
+    private initPopup(): void {
         if (this.popup) {
             return;
         }
 
-        this.initPopup(this.builder);
-        this.setupPopupListeners(this.builder);
-        this.initCloseButton();
-
+        this.popup = this.createPopup();
         this.popup.insertAfterEl(this.input);
+        this.setupPopupListeners();
     }
 }
