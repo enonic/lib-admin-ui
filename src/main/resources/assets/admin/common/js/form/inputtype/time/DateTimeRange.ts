@@ -67,8 +67,8 @@ export class DateTimeRange
 
             [this.from, this.to] = this.getFromTo(property.getPropertySet());
 
-            dateTimePicker.setStartDateTime(this.from ? this.from.toDate() : null);
-            dateTimePicker.setEndDateTime(this.to ? this.to.toDate() : null);
+            dateTimePicker.setStartDateTime(this.from ? this.from.toDate() : null, false);
+            dateTimePicker.setEndDateTime(this.to ? this.to.toDate() : null, false);
 
         } else if (dateTimePicker.isDirty()) {
             dateTimePicker.forceSelectedDateTimeChangedEvent();

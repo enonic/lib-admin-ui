@@ -228,7 +228,7 @@ export class DateTimePicker
 
     private setInputValue(userInput: boolean = true): void {
         this.validUserInput = true;
-        this.input.setValue(this.formatDateTime(), false, true);
+        this.input.setValue(this.formatDateTime(), false, userInput);
 
         if (userInput) {
             this.notifySelectedDateTimeChanged(new SelectedDateChangedEvent(this.selectedDateTime, true));

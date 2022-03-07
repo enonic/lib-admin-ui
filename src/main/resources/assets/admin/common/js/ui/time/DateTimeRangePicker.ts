@@ -114,12 +114,12 @@ export class DateTimeRangePicker
         });
     }
 
-    public setStartDateTime(date: Date) {
-        this.startPicker.setDateTime(date);
+    public setStartDateTime(date: Date, userInput: boolean = true) {
+        this.startPicker.setDateTime(date, userInput);
     }
 
-    public setEndDateTime(date: Date) {
-        this.endPicker.setDateTime(date);
+    public setEndDateTime(date: Date, userInput: boolean = true) {
+        this.endPicker.setDateTime(date, userInput);
     }
 
     onStartDateTimeChanged(listener: (event: SelectedDateChangedEvent) => void) {
