@@ -414,6 +414,10 @@ export class SplitPanel
         this.panelResizedListeners.push(listener);
     }
 
+    unPanelResized(listener: () => void): void {
+        this.panelResizedListeners = this.panelResizedListeners.filter((curr: { (): void }) => curr !== listener);
+    }
+
     showFirstPanel() {
         if (!this.firstPanelIsHidden) {
             return;
