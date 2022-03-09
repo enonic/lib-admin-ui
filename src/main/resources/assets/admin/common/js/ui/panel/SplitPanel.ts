@@ -200,6 +200,8 @@ export class SplitPanel
 
     private triggerResizeDebounced: Function;
 
+    private panelResizedListeners: { (): void }[] = [];
+
     constructor(builder: SplitPanelBuilder) {
         super('split-panel');
         this.firstPanel = builder.getFirstPanel();
@@ -394,6 +396,8 @@ export class SplitPanel
         } else {
             this.triggerResizeDebounced();
         }
+
+        this.notifyPanelResized();
     }
 
     protected updateSplitterPos(): void {
@@ -404,6 +408,10 @@ export class SplitPanel
         } else {
             this.splitter.getEl().setLeft(this.getPanelSizeString(1));
         }
+    }
+
+    onPanelResized(listener: () => void): void {
+        this.panelResizedListeners.push(listener);
     }
 
     showFirstPanel() {
@@ -656,5 +664,9 @@ export class SplitPanel
 
     private slideOutSecondPanelRight() {
         this.secondPanel.getEl().setRightPx(-this.secondPanel.getEl().getWidthWithBorder());
+    }
+
+    private notifyPanelResized(): void {
+        this.panelResizedListeners.forEach((listener: { (): void }) => listener());
     }
 }
