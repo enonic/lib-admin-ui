@@ -497,7 +497,7 @@ export class Grid<T extends Slick.SlickData>
     }
 
     getViewportEl(): HTMLElement {
-        const canvas = this.getCanvasNode();
+        const canvas: HTMLCanvasElement = this.getCanvasNode();
         return new ElementHelper(canvas.parentElement).getHTMLElement();
     }
 

@@ -22,6 +22,7 @@ import {SelectedOptionEvent} from './SelectedOptionEvent';
 import {OptionDataHelper} from '../OptionDataHelper';
 import {BaseLoaderComboBox} from './BaseLoaderComboBox';
 import {OptionDataLoader} from '../OptionDataLoader';
+import {Grid} from '../../grid/Grid';
 
 export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
     extends CompositeFormInputEl {
@@ -365,13 +366,17 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
     }
 
     private loadNextRangeIfNeeded(containerEl: HTMLElement, handler: () => void): void {
-        if (Math.ceil(containerEl.scrollHeight - containerEl.scrollTop) <= 2 * containerEl.clientHeight) {
+        if (this.isScrolledToBottom(containerEl)) {
             handler();
         }
     }
 
+    private isScrolledToBottom(containerEl: HTMLElement): boolean {
+        return Math.ceil(containerEl.scrollHeight - containerEl.scrollTop) <= 2 * containerEl.clientHeight;
+    }
+
     private handleRangeLoad(handler: () => void) {
-        const viewportEl = this.comboBox.getComboBoxDropdownGrid().getGrid().getViewportEl();
+        const viewportEl: HTMLElement = this.comboBox.getComboBoxDropdownGrid().getGrid().getViewportEl();
 
         viewportEl.addEventListener('scroll', () => this.loadNextRangeIfNeeded(viewportEl, handler));
         this.onLoaded(() => this.loadNextRangeIfNeeded(viewportEl, handler));
@@ -400,12 +405,14 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         });
 
         if (ObjectHelper.iFrameSafeInstanceOf(this.loader, PostLoader)) {
-            const grid = this.comboBox.getComboBoxDropdownGrid().getGrid();
+            const grid: Grid<any> = this.comboBox.getComboBoxDropdownGrid().getGrid();
             const loader: PostLoader<LOADER_DATA_TYPE> = <PostLoader<LOADER_DATA_TYPE>>this.loader;
+
             const onShownHandler = () => {
                 this.handleRangeLoad(() => loader.postLoad());
                 grid.unShown(onShownHandler);
             };
+
             grid.onShown(onShownHandler);
         }
     }

@@ -82,18 +82,15 @@ export class BaseLoader<OBJECT> {
     }
 
     search(searchString: string): Q.Promise<OBJECT[]> {
-
         this.searchString = searchString;
 
-        if (this.results) {
-            const totalCount = this.results.length;
-            const filtered = this.results.filter(this.filterFn, this);
-            if (filtered.length < totalCount) {
-                this.notifyLoadedData(filtered);
-            }
-            return Q(filtered);
+        const searchResult: OBJECT[] = this.results ? this.results.filter(this.filterFn, this) : [];
+
+        if (searchResult.length < this.results?.length) {
+            this.notifyLoadedData(searchResult);
         }
-        return Q([]);
+
+        return Q(searchResult);
     }
 
     getResults(): OBJECT[] {
