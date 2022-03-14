@@ -86,9 +86,12 @@ export class BaseLoader<OBJECT> {
         this.searchString = searchString;
 
         if (this.results) {
-            let filtered = this.results.filter(this.filterFn, this);
-            this.notifyLoadedData(filtered);
-            return Q(this.results);
+            const totalCount = this.results.length;
+            const filtered = this.results.filter(this.filterFn, this);
+            if (filtered.length < totalCount) {
+                this.notifyLoadedData(filtered);
+            }
+            return Q(filtered);
         }
         return Q([]);
     }
