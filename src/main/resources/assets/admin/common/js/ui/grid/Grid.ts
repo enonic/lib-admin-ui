@@ -11,6 +11,7 @@ import {GridOnClickData} from './GridOnClickData';
 import {DataView} from './DataView';
 import {EventBus} from '../../event/EventBus';
 import {GridSelectionHelper} from './GridSelectionHelper';
+import {ElementHelper} from '../../dom/ElementHelper';
 
 export class Grid<T extends Slick.SlickData>
     extends DivEl {
@@ -493,6 +494,11 @@ export class Grid<T extends Slick.SlickData>
 
     subscribeOnMouseLeave(callback: (e: any, args: any) => void) {
         this.slickGrid.onMouseLeave.subscribe(callback);
+    }
+
+    getViewportEl(): HTMLElement {
+        const canvas: HTMLCanvasElement = this.getCanvasNode();
+        return new ElementHelper(canvas.parentElement).getHTMLElement();
     }
 
     protected createOptions(): GridOptions<any> {
