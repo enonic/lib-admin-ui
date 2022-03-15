@@ -129,7 +129,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     private requestMissingOptions: (missingOptionIds: string[]) => Q.Promise<Object>;
     private keyEventsHandler: KeyEventsHandler;
     private optionsToSelect: Map<string, Option<OPTION_DISPLAY_VALUE>> = new Map<string, Option<OPTION_DISPLAY_VALUE>>();
-    private optionsToUnSelect: Map<string, Option<OPTION_DISPLAY_VALUE>> = new Map<string, Option<OPTION_DISPLAY_VALUE>>();
+    private optionsToUnselect: Map<string, Option<OPTION_DISPLAY_VALUE>> = new Map<string, Option<OPTION_DISPLAY_VALUE>>();
 
     constructor(name: string, config: ComboBoxConfig<OPTION_DISPLAY_VALUE>) {
         super('div', 'combobox', StyleHelper.COMMON_PREFIX, config.value);
@@ -272,7 +272,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         }
 
         this.optionsToSelect.clear();
-        this.optionsToUnSelect.clear();
+        this.optionsToUnselect.clear();
     }
 
     setOptions(options: Option<OPTION_DISPLAY_VALUE>[], saveSelection?: boolean) {
@@ -378,13 +378,13 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
             if (isCurrentlySelected !== isPreviouslySelected) {
                 if (isPreviouslySelected) {
-                    this.optionsToUnSelect.set(option.getValue(), option);
+                    this.optionsToUnselect.set(option.getValue(), option);
                 } else {
                     this.optionsToSelect.set(option.getValue(), option);
                 }
             } else {
                 this.optionsToSelect.delete(option.getValue());
-                this.optionsToUnSelect.delete(option.getValue());
+                this.optionsToUnselect.delete(option.getValue());
             }
         });
     }
@@ -400,7 +400,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         }
 
     private applySelection(keyCode: number = -1) {
-        this.toggleOptions(Array.from(this.optionsToSelect.values()).concat(Array.from(this.optionsToUnSelect.values())), keyCode);
+        this.toggleOptions(Array.from(this.optionsToSelect.values()).concat(Array.from(this.optionsToUnselect.values())), keyCode);
         this.input.setValue('', true);
         this.hideDropdown();
     }
@@ -954,7 +954,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
         this.comboBoxDropdown.onRowCountChanged(AppHelper.debounce(() => {
             const optionsToSelect: Option<OPTION_DISPLAY_VALUE>[] = this.getSelectedOptions()
-                .filter((so: Option<OPTION_DISPLAY_VALUE>) => !this.optionsToUnSelect.has(so.getValue()))
+                .filter((so: Option<OPTION_DISPLAY_VALUE>) => !this.optionsToUnselect.has(so.getValue()))
                 .concat(Array.from(this.optionsToSelect.values()));
             this.comboBoxDropdown.markSelections(optionsToSelect);
             this.doUpdateDropdownTopPositionAndWidth();
@@ -1105,7 +1105,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     private handleMultipleSelectionChanged() {
         this.updateOptionsToToggle();
 
-        if (this.optionsToSelect.size > 0 || this.optionsToUnSelect.size > 0) {
+        if (this.optionsToSelect.size > 0 || this.optionsToUnselect.size > 0) {
             if (this.comboBoxDropdown.isDropdownShown()) {
                 this.applySelectionsButton.show();
             }
