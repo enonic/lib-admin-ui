@@ -13,7 +13,6 @@ import {CompositeFormInputEl} from '../../../dom/CompositeFormInputEl';
 import {BaseLoader} from '../../../util/loader/BaseLoader';
 import {DivEl} from '../../../dom/DivEl';
 import {ObjectHelper} from '../../../ObjectHelper';
-import {ElementHelper} from '../../../dom/ElementHelper';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {LoadingDataEvent} from '../../../util/loader/event/LoadingDataEvent';
 import {LoadedDataEvent} from '../../../util/loader/event/LoadedDataEvent';
@@ -23,6 +22,7 @@ import {SelectedOptionEvent} from './SelectedOptionEvent';
 import {OptionDataHelper} from '../OptionDataHelper';
 import {BaseLoaderComboBox} from './BaseLoaderComboBox';
 import {OptionDataLoader} from '../OptionDataLoader';
+import {Grid} from '../../grid/Grid';
 
 export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
     extends CompositeFormInputEl {
@@ -35,7 +35,6 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
     private identifierMethod: string;
     private loadingListeners: { (): void; }[];
     private loadedListeners: { (items: OPTION_DATA_TYPE[], postLoaded?: boolean): void; }[];
-    private interval: number;
 
     constructor(builder: BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE>) {
         super();
@@ -336,18 +335,18 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         return this.reload(this.comboBox.getInput().getValue());
     }
 
-    protected reload(inputValue: string): Q.Promise<any> {
+    protected reload(inputValue: string, force: boolean = false): Q.Promise<any> {
         let loadPromise;
-        if (!this.loader.isLoaded()) {
+        if (force || !this.loader.isLoaded()) {
             this.loader.setSearchString(inputValue);
             loadPromise = this.loader.load();
         } else {
             loadPromise = Q(null);
         }
 
-        return loadPromise.then(() => {
-            return this.loader.search(inputValue);
-        }).catch(DefaultErrorHandler.handle);
+        return loadPromise
+            .then(() => this.loader.search(inputValue))
+            .catch(DefaultErrorHandler.handle);
     }
 
     protected notifyLoaded(items: OPTION_DATA_TYPE[], postLoaded?: boolean) {
@@ -366,32 +365,21 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         return comboBox;
     }
 
-    private handleLastRange(handler: () => void) {
-        let grid = this.getComboBox().getComboBoxDropdownGrid().getGrid();
+    private loadNextRangeIfNeeded(containerEl: HTMLElement, handler: () => void): void {
+        if (this.isScrolledToBottom(containerEl)) {
+            handler();
+        }
+    }
 
-        grid.onShown(() => {
-            if (this.interval) {
-                clearInterval(this.interval);
-            }
-            this.interval = setInterval(() => {
-                grid = this.getComboBox().getComboBoxDropdownGrid().getGrid();
-                let canvas = grid.getCanvasNode();
-                let canvasEl = new ElementHelper(canvas);
-                let viewportEl = new ElementHelper(canvas.parentElement);
+    private isScrolledToBottom(containerEl: HTMLElement): boolean {
+        return Math.ceil(containerEl.scrollHeight - containerEl.scrollTop) <= 2 * containerEl.clientHeight;
+    }
 
-                let isLastRange = viewportEl.getScrollTop() >= canvasEl.getHeight() - 3 * viewportEl.getHeight();
+    private handleRangeLoad(handler: () => void) {
+        const viewportEl: HTMLElement = this.comboBox.getComboBoxDropdownGrid().getGrid().getViewportEl();
 
-                if (isLastRange) {
-                    handler();
-                }
-            }, 200);
-        });
-
-        grid.onHidden(() => {
-            if (this.interval) {
-                clearInterval(this.interval);
-            }
-        });
+        viewportEl.addEventListener('scroll', () => this.loadNextRangeIfNeeded(viewportEl, handler));
+        this.onLoaded(() => this.loadNextRangeIfNeeded(viewportEl, handler));
     }
 
     private setupLoader(loader: BaseLoader<LOADER_DATA_TYPE>) {
@@ -417,7 +405,15 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         });
 
         if (ObjectHelper.iFrameSafeInstanceOf(this.loader, PostLoader)) {
-            this.handleLastRange((<PostLoader<LOADER_DATA_TYPE>>this.loader).postLoad.bind(this.loader));
+            const grid: Grid<any> = this.comboBox.getComboBoxDropdownGrid().getGrid();
+            const loader: PostLoader<LOADER_DATA_TYPE> = <PostLoader<LOADER_DATA_TYPE>>this.loader;
+
+            const onShownHandler = () => {
+                this.handleRangeLoad(() => loader.postLoad());
+                grid.unShown(onShownHandler);
+            };
+
+            grid.onShown(onShownHandler);
         }
     }
 
