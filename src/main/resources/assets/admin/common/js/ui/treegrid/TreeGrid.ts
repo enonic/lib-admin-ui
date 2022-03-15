@@ -631,7 +631,7 @@ export class TreeGrid<DATA extends IDentifiable>
     setSelectedItems(dataIds: string[]) {
         this.selection.set(dataIds);
         this.removeHighlighting(true);
-        this.resetCurrentSelection(this.gridData.getItems());
+        this.resetCurrentSelection();
     }
 
     getSelectedItems(): string[] {
@@ -754,7 +754,7 @@ export class TreeGrid<DATA extends IDentifiable>
     initData(nodes: TreeNode<DATA>[]) {
         this.grid.removeCellCssStyles('highlight');
         this.gridData.setItems(nodes, this.idPropertyName);
-        this.resetCurrentSelection(nodes);
+        this.resetCurrentSelection();
     }
 
     expandNodeByDataId(dataId: string): Q.Promise<boolean> {
@@ -1667,15 +1667,19 @@ export class TreeGrid<DATA extends IDentifiable>
         return parentNode && parentNode.hasParent() ? this.fetchChildren(parentNode) : this.fetchRoot();
     }
 
-    private resetCurrentSelection(nodes: TreeNode<DATA>[]) {
+    private resetCurrentSelection() {
         const selection: number[] = [];
 
-        this.selection.getItems().forEach((selectionId) => {
-            nodes.forEach((node, index) => {
-                if (node.getDataId() === selectionId) {
-                    selection.push(index);
+        this.selection.getItems().forEach((selectionId: string) => {
+            const nodeToSelect: TreeNode<DATA> = this.root.getNodeByDataId(selectionId);
+
+            if (nodeToSelect) {
+                const rowNumber: number = this.getRowIndexByNode(nodeToSelect);
+
+                if (NumberHelper.isNumber(rowNumber) && rowNumber > -1) {
+                    selection.push(rowNumber);
                 }
-            });
+            }
         });
 
         this.grid.setSelectedRows(selection);

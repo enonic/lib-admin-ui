@@ -121,7 +121,6 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     private expandedListeners: { (event: DropdownExpandedEvent): void }[] = [];
     private valueLoadedListeners: { (options: Option<OPTION_DISPLAY_VALUE>[]): void }[] = [];
     private contentMissingListeners: { (ids: string[]): void }[] = [];
-    private selectiondDelta: string[] = [];
     private noOptionsText: string;
     private displayMissingSelectedOptions: boolean = false;
     private removeMissingSelectedOptions: boolean = false;
@@ -129,6 +128,8 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     private onDropdownShownCallback: () => Q.Promise<void>;
     private requestMissingOptions: (missingOptionIds: string[]) => Q.Promise<Object>;
     private keyEventsHandler: KeyEventsHandler;
+    private optionsToSelect: Map<string, Option<OPTION_DISPLAY_VALUE>> = new Map<string, Option<OPTION_DISPLAY_VALUE>>();
+    private optionsToUnselect: Map<string, Option<OPTION_DISPLAY_VALUE>> = new Map<string, Option<OPTION_DISPLAY_VALUE>>();
 
     constructor(name: string, config: ComboBoxConfig<OPTION_DISPLAY_VALUE>) {
         super('div', 'combobox', StyleHelper.COMMON_PREFIX, config.value);
@@ -269,6 +270,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         if (this.isDropdownRendered()) {
             this.removeDropdown();
         }
+
+        this.optionsToSelect.clear();
+        this.optionsToUnselect.clear();
     }
 
     setOptions(options: Option<OPTION_DISPLAY_VALUE>[], saveSelection?: boolean) {
@@ -334,8 +338,15 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     handleRowSelected(index: number, keyCode: number = -1) {
-        let option = this.getOptionByRow(index);
+        const option: Option<OPTION_DISPLAY_VALUE> = this.getOptionByRow(index);
+
         if (option) {
+            this.toggleOptions([option], keyCode);
+        }
+    }
+
+    private toggleOptions(options: Option<OPTION_DISPLAY_VALUE>[], keyCode: number = -1): void {
+        options.forEach((option: Option<OPTION_DISPLAY_VALUE>) => {
             if (!option.isSelectable()) {
                 this.comboBoxDropdown.markSelections(this.getSelectedOptions());
             } else if (!option.isReadOnly()) {
@@ -345,28 +356,37 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                     this.deselectOption(option);
                 }
             }
-        }
+        });
+
         this.refreshDirtyState();
         this.refreshValueChanged();
     }
 
-    isSelectionChanged(): boolean {
-        const optionsMap: string = this.getDisplayedOptions().map((x: Option<OPTION_DISPLAY_VALUE>) => x.getValue()).join();
+    private updateOptionsToToggle(): void {
+        const displayedOptions: Option<OPTION_DISPLAY_VALUE>[] = this.getDisplayedOptions();
         const selectedOptions: Option<OPTION_DISPLAY_VALUE>[] = this.getSelectedOptions();
-        const filteredOption: Option<OPTION_DISPLAY_VALUE>[] =
-            selectedOptions.filter((o: Option<OPTION_DISPLAY_VALUE>) => optionsMap.search(o.getValue()) >= 0);
-        const gridOptions: string[] = [];
+        const gridSelectedOptions: Option<OPTION_DISPLAY_VALUE>[] = this.comboBoxDropdown.getDropdownGrid().getGrid().getSelectedRows()
+            .map((row: number) => this.comboBoxDropdown.getDropdownGrid().getOptionByRow(row))
+            .filter((o: Option<OPTION_DISPLAY_VALUE>) => o);
 
-        this.comboBoxDropdown.getDropdownGrid().getGrid().getSelectedRows().forEach((row: number) => {
-            const value: string = this.comboBoxDropdown.getDropdownGrid().getOptionByRow(row)?.getValue();
+        displayedOptions.forEach((option: Option<OPTION_DISPLAY_VALUE>) => {
+            const isCurrentlySelected: boolean =
+                gridSelectedOptions.some((so: Option<OPTION_DISPLAY_VALUE>) => option.getValue() === so.getValue());
 
-            if (value) {
-                gridOptions.push(value);
+            const isPreviouslySelected: boolean =
+                selectedOptions.some((so: Option<OPTION_DISPLAY_VALUE>) => option.getValue() === so.getValue());
+
+            if (isCurrentlySelected !== isPreviouslySelected) {
+                if (isPreviouslySelected) {
+                    this.optionsToUnselect.set(option.getValue(), option);
+                } else {
+                    this.optionsToSelect.set(option.getValue(), option);
+                }
+            } else {
+                this.optionsToSelect.delete(option.getValue());
+                this.optionsToUnselect.delete(option.getValue());
             }
         });
-
-        return (filteredOption.length !== gridOptions.length) ||
-               (filteredOption.sort().join() !== gridOptions.sort().join());
     }
 
         private handleEnterPressed() {
@@ -379,14 +399,11 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             }
         }
 
-        private applySelection(keyCode: number = -1) {
-            this.selectiondDelta.forEach((value: string) => {
-                const row: number = this.comboBoxDropdown.getDropdownGrid().getRowByValue(value);
-                this.handleRowSelected(row, keyCode);
-            });
-            this.input.setValue('', true);
-            this.hideDropdown();
-        }
+    private applySelection(keyCode: number = -1) {
+        this.toggleOptions(Array.from(this.optionsToSelect.values()).concat(Array.from(this.optionsToUnselect.values())), keyCode);
+        this.input.setValue('', true);
+        this.hideDropdown();
+    }
 
     selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false, keyCode: number = -1) {
         assertNotNull(option, 'option cannot be null');
@@ -935,10 +952,13 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             this.handleRowSelected(event.getRow());
         });
 
-        this.comboBoxDropdown.onRowCountChanged(() => {
-            this.comboBoxDropdown.markSelections(this.getSelectedOptions());
+        this.comboBoxDropdown.onRowCountChanged(AppHelper.debounce(() => {
+            const optionsToSelect: Option<OPTION_DISPLAY_VALUE>[] = this.getSelectedOptions()
+                .filter((so: Option<OPTION_DISPLAY_VALUE>) => !this.optionsToUnselect.has(so.getValue()))
+                .concat(Array.from(this.optionsToSelect.values()));
+            this.comboBoxDropdown.markSelections(optionsToSelect);
             this.doUpdateDropdownTopPositionAndWidth();
-        });
+        }, 200));
 
         this.comboBoxDropdown.getDropdownGrid().onRowCountChanged(() => {
             if (this.comboBoxDropdown.isDropdownShown()) {
@@ -946,8 +966,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                 this.doUpdateDropdownTopPositionAndWidth();
             }
         });
+
         if (this.applySelectionsButton) {
-            this.comboBoxDropdown.onMultipleSelection(this.handleMultipleSelectionChanged.bind(this));
+            this.comboBoxDropdown.onMultipleSelection(AppHelper.debounce(this.handleMultipleSelectionChanged.bind(this), 100));
         }
     }
 
@@ -1082,36 +1103,20 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     private handleMultipleSelectionChanged() {
-        if (this.isSelectionChanged()) {
+        this.updateOptionsToToggle();
+
+        if (this.optionsToSelect.size > 0 || this.optionsToUnselect.size > 0) {
             if (this.comboBoxDropdown.isDropdownShown()) {
                 this.applySelectionsButton.show();
             }
-            this.updateSelectionDelta();
         } else {
             this.applySelectionsButton.hide();
         }
     }
 
-    private updateSelectionDelta() {
-
-        let selectedValues = this.getSelectedOptions().map((x) => {
-            return x.getValue();
-        });
-
-        let gridOptions = [];
-
-        this.comboBoxDropdown.getDropdownGrid().getGrid().getSelectedRows().forEach((row: number) => {
-            gridOptions.push(this.comboBoxDropdown.getDropdownGrid().getOptionByRow(row).getValue());
-        });
-
-        this.selectiondDelta = gridOptions
-            .filter(x => selectedValues.indexOf(x) === -1)
-            .concat(selectedValues.filter(x => gridOptions.indexOf(x) === -1));
-
-    }
-
     private notifyOptionFilterInputValueChanged(oldValue: string, newValue: string) {
-        let event = new OptionFilterInputValueChangedEvent(oldValue, newValue);
+        const event: OptionFilterInputValueChangedEvent = new OptionFilterInputValueChangedEvent(oldValue, newValue);
+
         this.optionFilterInputValueChangedListeners.forEach(
             (listener: (event: OptionFilterInputValueChangedEvent) => void) => {
                 listener(event);
