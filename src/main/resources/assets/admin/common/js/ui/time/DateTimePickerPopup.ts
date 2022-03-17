@@ -2,15 +2,20 @@ import {Timezone} from '../../util/Timezone';
 import {DatePickerPopup, DatePickerPopupBuilder} from './DatePickerPopup';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 import {TimePickerPopup, TimePickerPopupBuilder} from './TimePickerPopup';
-import {PickerPopup} from './Picker';
 import {Element} from '../../dom/Element';
 import {TimeHM} from '../../util/TimeHM';
+import {PickerPopup} from './Picker';
+import {Button} from '../button/Button';
+import {i18n} from '../../util/Messages';
+import {DivEl} from '../../dom/DivEl';
 
 export class DateTimePickerPopupBuilder {
 
     manageDate: boolean;
 
     manageTime: boolean;
+
+    defaultValue: Date;
 
     hours: number;
 
@@ -31,6 +36,11 @@ export class DateTimePickerPopupBuilder {
     setManageTime(value: boolean): DateTimePickerPopupBuilder {
         this.manageTime = value;
         return this;
+    }
+
+    setDefaultValue(value: Date): DateTimePickerPopupBuilder {
+         this.defaultValue = value;
+         return this;
     }
 
     setDate(date: Date): DateTimePickerPopupBuilder {
@@ -77,8 +87,14 @@ export class DateTimePickerPopup
 
     private readonly timePickerPopup?: TimePickerPopup;
 
+    private defaultValueButton : Button;
+
     constructor(builder: DateTimePickerPopupBuilder) {
         super('date-time-dialog');
+
+        if (builder.defaultValue) {
+            this.defaultValueButton = this.createDefaultValueButton(builder.defaultValue);
+        }
 
         if (builder.manageDate) {
             this.datePickerPopup =
@@ -96,6 +112,22 @@ export class DateTimePickerPopup
                     .setMinutes(builder.getMinutes())
                     .build();
         }
+    }
+
+    createDefaultValueButton(defaultValue: Date): Button {
+        const defaultButton = new Button(i18n('action.setDefault'));
+        defaultButton.addClass('default-button');
+        defaultButton.onClicked(() => {
+            if (this.datePickerPopup) {
+                this.setSelectedDate(defaultValue);
+            }
+
+            if (this.timePickerPopup) {
+                this.setSelectedTime(new TimeHM(defaultValue.getHours(), defaultValue.getMinutes()));
+            }
+        });
+
+        return defaultButton;
     }
 
     getSelectedDateTime(): Date {
@@ -118,7 +150,15 @@ export class DateTimePickerPopup
             popupElements.push(this.timePickerPopup);
         }
 
-        return popupElements.concat(super.getChildElements());
+        const wrapper = new DivEl('picker-buttons');
+        if (this.defaultValueButton) {
+            wrapper.appendChild(this.defaultValueButton);
+        }
+
+        wrapper.appendChildren(...super.getChildElements());
+        popupElements.push(wrapper);
+
+        return popupElements.concat(popupElements);
     }
 
     onSelectedDateChanged(listener: (event: SelectedDateChangedEvent) => void) {

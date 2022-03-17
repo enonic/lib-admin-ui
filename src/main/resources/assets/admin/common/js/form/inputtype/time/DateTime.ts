@@ -14,6 +14,8 @@ import {DateTime as DateTimeUtil} from '../../../util/DateTime';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
+import {ValueTypeDateTime} from '../../../data/ValueTypeDateTime';
+import {ObjectHelper} from '../../../ObjectHelper';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDateTime]].
@@ -28,16 +30,45 @@ export class DateTime
         this.readConfig(config.inputConfig);
     }
 
+    getDefaultValue(): Date {
+        return this.getContext().input.getDefaultValue()?.getDateTime()?.toDate();
+    }
+
     getValueType(): ValueType {
         return this.valueType;
     }
 
     createInputOccurrenceElement(_index: number, property: Property): Element {
-        if (this.getValueType() === ValueTypes.DATE_TIME) {
-            return this.createInputAsDateTime(property);
+        const valueType: ValueType = this.getValueType();
+        const useLocalTimeZone: boolean = ObjectHelper.iFrameSafeInstanceOf(valueType, ValueTypeDateTime);
+
+        const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
+        dateTimeBuilder.setUseLocalTimezoneIfNotPresent(useLocalTimeZone);
+
+        const defaultDate: Date = this.getDefaultValue();
+        if (defaultDate) {
+            dateTimeBuilder.setDefaultValue(defaultDate);
         }
 
-        return this.createInputAsLocalDateTime(property);
+        if (!valueType.equals(property.getType())) {
+            ValueTypeConverter.convertPropertyValueType(property, valueType);
+        }
+
+        if (property.hasNonNullValue()) {
+            const date: DateTimeUtil | LocalDateTime = useLocalTimeZone ? property.getDateTime() : property.getLocalDateTime();
+            dateTimeBuilder.setDateTime(date.toDate());
+            if (useLocalTimeZone) {
+                dateTimeBuilder.setTimezone((<DateTimeUtil>date).getTimezone());
+            }
+        }
+
+        const dateTimePicker: DateTimePicker = dateTimeBuilder.build();
+
+        dateTimePicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) =>
+            this.handleOccurrenceInputValueChanged(dateTimePicker, event)
+        );
+
+        return dateTimePicker;
     }
 
     updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean) {
@@ -88,53 +119,10 @@ export class DateTime
         }
     }
 
-    private createInputAsLocalDateTime(property: Property) {
-        const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
-
-        if (!ValueTypes.LOCAL_DATE_TIME.equals(property.getType())) {
-            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.LOCAL_DATE_TIME);
-        }
-
-        if (property.hasNonNullValue()) {
-            const date: LocalDateTime = property.getLocalDateTime();
-            dateTimeBuilder.setDateTime(date.toDate());
-        }
-
-        const dateTimePicker: DateTimePicker = dateTimeBuilder.build();
-
-        dateTimePicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
-            this.handleOccurrenceInputValueChanged(dateTimePicker, event);
-        });
-
-        return dateTimePicker;
-    }
-
     protected getValue(inputEl: Element, event: SelectedDateChangedEvent): Value {
         return new Value(event.getDate() != null ? this.getValueType() === ValueTypes.LOCAL_DATE_TIME
                                                    ? LocalDateTime.fromDate(event.getDate())
                                                    : DateTimeUtil.fromDate(event.getDate()) : null, this.getValueType());
-    }
-
-    private createInputAsDateTime(property: Property) {
-        const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
-        dateTimeBuilder.setUseLocalTimezoneIfNotPresent(true);
-
-        if (!ValueTypes.DATE_TIME.equals(property.getType())) {
-            ValueTypeConverter.convertPropertyValueType(property, ValueTypes.DATE_TIME);
-        }
-
-        if (property.hasNonNullValue()) {
-            const date: DateTimeUtil = property.getDateTime();
-            dateTimeBuilder.setDateTime(date.toDate()).setTimezone(date.getTimezone());
-        }
-
-        const dateTimePicker: DateTimePicker = new DateTimePicker(dateTimeBuilder);
-
-        dateTimePicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
-            this.handleOccurrenceInputValueChanged(dateTimePicker, event);
-        });
-
-        return dateTimePicker;
     }
 }
 

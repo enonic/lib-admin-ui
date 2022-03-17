@@ -120,10 +120,20 @@ export abstract class Picker<T extends PickerPopup>
     protected setupInputListeners(): void {
         AppHelper.focusInOut(this, () => this.hidePopup(), 50, false);
 
+        let isFocusHandlerRunning = false;
+        this.input.onClicked((e: MouseEvent) => {
+            if (isFocusHandlerRunning) {
+                isFocusHandlerRunning = false;
+                return;
+            }
+
+            this.togglePopupVisibility();
+        });
+
         this.input.onFocus((e: FocusEvent) => {
+            isFocusHandlerRunning = true;
+
             if (!this.popup || !this.popup.isVisible()) {
-                e.stopPropagation();
-                e.preventDefault();
                 this.showPopup();
             }
         });
