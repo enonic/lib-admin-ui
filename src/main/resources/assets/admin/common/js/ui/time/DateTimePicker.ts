@@ -33,6 +33,13 @@ export class DateTimePickerBuilder
 
     manageTime: boolean = true;
 
+    defaultValue: Date;
+
+    setDefaultValue(value: Date): DateTimePickerBuilder {
+        this.defaultValue = value;
+        return this;
+    }
+
     setDateTime(value: Date): DateTimePickerBuilder {
         this.dateTime = value;
         return this;
@@ -119,12 +126,17 @@ export class DateTimePicker
             .setManageDate(this.builder.manageDate)
             .setManageTime(this.builder.manageTime);
 
+
         if (this.builder.timezone) {
             popupBuilder.setTimezone(this.builder.timezone);
         }
 
         if (this.builder.useLocalTimezoneIfNotPresent) {
             popupBuilder.setUseLocalTimezoneIfNotPresent(true);
+        }
+
+        if (this.builder.defaultValue) {
+            popupBuilder.setDefaultValue(this.builder.defaultValue);
         }
 
         return new DateTimePickerPopup(popupBuilder);
@@ -138,7 +150,7 @@ export class DateTimePicker
                 this.popup.hide();
             }
 
-            const newDate: Date = e.getDate();
+            const newDate: Date = new Date(e.getDate());
 
             if (this.builder.manageTime && this.selectedDateTime) {
                 newDate.setHours(this.selectedDateTime.getHours());

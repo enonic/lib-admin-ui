@@ -16,8 +16,12 @@ import {i18n} from '../../../util/Messages';
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDate]].
  */
-export class Date
+export class DateType
     extends BaseInputTypeNotManagingAdd {
+
+    getDefaultValue(): Date {
+        return this.getContext().input.getDefaultValue()?.getDateTime()?.toDate();
+    }
 
     getValueType(): ValueType {
         return ValueTypes.LOCAL_DATE;
@@ -33,6 +37,11 @@ export class Date
         if (!property.hasNullValue()) {
             const date: LocalDate = property.getLocalDate();
             datePickerBuilder.setDateTime(date.toDate());
+        }
+
+        const defaultDate: Date = this.getDefaultValue();
+        if (defaultDate) {
+            datePickerBuilder.setDefaultValue(defaultDate);
         }
 
         const datePicker: DatePicker = datePickerBuilder.build();
@@ -83,4 +92,4 @@ export class Date
     }
 }
 
-InputTypeManager.register(new Class('Date', Date), true);
+InputTypeManager.register(new Class('Date', DateType), true);

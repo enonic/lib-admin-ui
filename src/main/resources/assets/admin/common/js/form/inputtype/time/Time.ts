@@ -21,6 +21,18 @@ import {TimeHM} from '../../../util/TimeHM';
 export class Time
     extends BaseInputTypeNotManagingAdd {
 
+    getDefaultValue(): Date {
+        const defaultTime: LocalTime = this.getContext().input.getDefaultValue()?.getLocalTime();
+        if (!defaultTime) {
+            return null;
+        }
+        const result: Date = new Date();
+        result.setHours(defaultTime.getHours());
+        result.setMinutes(defaultTime.getMinutes());
+
+        return result;
+    }
+
     getValueType(): ValueType {
         return ValueTypes.LOCAL_TIME;
     }
@@ -30,8 +42,18 @@ export class Time
             ValueTypeConverter.convertPropertyValueType(property, this.getValueType());
         }
 
-        const value: TimeHM = this.getValueFromProperty(property);
-        const timePicker: TimePicker = new TimePickerBuilder().setHours(value.hours).setMinutes(value.minutes).build();
+        const timePickerBuilder: TimePickerBuilder = new TimePickerBuilder();
+        if (!property.hasNullValue()) {
+            const value: TimeHM = this.getValueFromProperty(property);
+            timePickerBuilder.setHours(value.hours).setMinutes(value.minutes);
+        }
+
+        const defaultDate: Date = this.getDefaultValue();
+        if (defaultDate) {
+            timePickerBuilder.setDefaultValue(defaultDate);
+        }
+
+        const timePicker: TimePicker = timePickerBuilder.build();
 
         timePicker.onSelectedDateTimeChanged((event: SelectedDateChangedEvent) => {
             this.handleOccurrenceInputValueChanged(timePicker, event);
@@ -48,8 +70,10 @@ export class Time
         const localTime: TimePicker = <TimePicker> occurrence;
 
         if (!unchangedOnly || !localTime.isDirty() || !localTime.isValid()) {
-            const value: TimeHM = this.getValueFromProperty(property);
-            localTime.setTime(value);
+            if (!property.hasNullValue()) {
+                const value: TimeHM = this.getValueFromProperty(property);
+                localTime.setTime(value);
+            }
         } else if (localTime.isDirty()) {
             localTime.forceSelectedDateTimeChangedEvent();
         }
