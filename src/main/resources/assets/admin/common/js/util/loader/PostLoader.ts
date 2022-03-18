@@ -6,6 +6,12 @@ export class PostLoader<OBJECT>
 
     private isPostLoading: boolean = false;
 
+    load(postLoad: boolean = false): Q.Promise<OBJECT[]> {
+        this.isPostLoading = postLoad;
+
+        return super.load(postLoad);
+    }
+
     sendRequest(): Q.Promise<OBJECT[]> {
         if (!this.isPostLoading) {
             this.resetParams();
@@ -24,10 +30,10 @@ export class PostLoader<OBJECT>
     postLoad() {
         // already have elements and not more than total
         if (this.isPartiallyLoaded() && this.isLoaded()) {
-            this.isPostLoading = true;
-            this.load(true).finally(() => {
-                this.isPostLoading = false;
-            });
+            this.load(true)
+                .finally(() => {
+                    this.isPostLoading = false;
+                });
         }
     }
 }
