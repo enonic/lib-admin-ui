@@ -54,8 +54,11 @@ export class CONFIG {
 
     static setConfig(config: JSONObject): void {
         CONFIG.CACHE = Object.freeze(Object.assign({}, config));
-        if (CONFIG.getString('adminUrl')) {
-            UriHelper.setAdminUri(CONFIG.getString('adminUrl'));
+        try {
+            const adminUrl = CONFIG.getString('adminUrl');
+            UriHelper.setAdminUri(adminUrl);
+        } catch {
+            //
         }
     }
 
