@@ -230,7 +230,11 @@ export class Element {
 
     static fromString(s: string, loadExistingChildren: boolean = true): Element {
         const sanitizedHtml: string = DOMPurify.sanitize(s);
-        const htmlEl = $(sanitizedHtml).get(0);
+        return Element.fromHtml(sanitizedHtml, loadExistingChildren);
+    }
+
+    static fromHtml(html: string, loadExistingChildren: boolean = true): Element {
+        const htmlEl = $(html).get(0);
 
         if (!htmlEl) {
             return null;
