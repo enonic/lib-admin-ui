@@ -245,6 +245,22 @@ export class Element {
         return this.fromHtmlElement(htmlEl, loadExistingChildren, parentEl);
     }
 
+    static fromHtml(html: string, loadExistingChildren: boolean = true): Element {
+        const htmlEl = $(html).get(0);
+
+        if (!htmlEl) {
+            return null;
+        }
+
+        let parentEl: Element;
+
+        if (htmlEl && htmlEl.parentElement) {
+            parentEl = Element.fromHtmlElement(htmlEl.parentElement);
+        }
+
+        return this.fromHtmlElement(htmlEl, loadExistingChildren, parentEl);
+    }
+
     static fromSelector(s: string, loadExistingChildren: boolean = true): Element[] {
         return $(s).map((_index, elem) => {
             let htmlEl = elem;
