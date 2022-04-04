@@ -819,12 +819,12 @@ export class UploaderEl<MODEL extends Equitable>
     }
 
     private sanitizeName(name: string): string {
-        return name.replace(UploaderEl.FORBIDDEN_CHARS, '_');
+        return name.normalize('NFC').replace(UploaderEl.FORBIDDEN_CHARS, '_');
     }
 
     private removeFileNameExtension(name: string): string {
         if (name.lastIndexOf('.') > 0) {
-            return name.substr(0, name.lastIndexOf('.'));
+            return name.substring(0, name.lastIndexOf('.'));
         }
 
         return name;
