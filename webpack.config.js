@@ -42,17 +42,10 @@ module.exports = {
                 ]
             },
             {
-                test: /^((?!icomoon|opensans|flag-icon-css).)*\.(svg|png|jpg|gif)$/,
+                test: /^((?!icomoon|opensans).)*\.(svg|png|jpg|gif)$/,
                 type: 'asset/resource',
                 generator: {
                     filename: 'images/[base]'
-                }
-            },
-            {
-                test: /^.*flag-icon-css.*(flags).*(1x1|4x3).*\.svg$/,
-                type: 'asset/resource',
-                generator: {
-                    filename: 'images/flags/[hash][ext]'
                 }
             }
         ]
