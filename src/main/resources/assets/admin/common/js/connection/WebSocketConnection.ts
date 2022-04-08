@@ -41,7 +41,6 @@ export class WebSocketConnection {
     constructor(builder: WebSocketConnectionBuilder) {
         assertNotNull(builder.url, i18n('connection.websocket.url.missing'));
 
-        this.ws = null;
         this.wsUrl = builder.url;
         this.protocols = builder.protocols || [];
         this.reconnectInterval = builder.reconnectInterval || 5 * 1000;
@@ -114,10 +113,8 @@ export class WebSocketConnection {
             }
 
             console.warn(m);
-        }
 
-        if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED) {
-            if (this.debug) {
+            if (this.connectionState === CONNECTION_STATE.NOT_ESTABLISHED) {
                 console.warn('Error establishing WS connection');
             }
         }
@@ -158,7 +155,7 @@ export class WebSocketConnection {
         this.notifyConnectionError();
     }
 
-    protected handleWSMessage(wsMessage: any): void {
+    protected handleWSMessage(wsMessage: MessageEvent): void {
         if (this.debug) {
             console.debug('WebSocketConnection: WebSocket message ', wsMessage);
         }

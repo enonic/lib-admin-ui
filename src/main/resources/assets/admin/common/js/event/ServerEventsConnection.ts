@@ -63,7 +63,7 @@ export class ServerEventsConnection extends WebSocketConnection {
             );
     }
 
-    protected handleWSMessage(remoteEvent: any): void {
+    protected handleWSMessage(remoteEvent: MessageEvent): void {
         const jsonEvent: NodeEventJson = <NodeEventJson>JSON.parse(remoteEvent.data);
 
         if (this.debug) {
