@@ -136,7 +136,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             tolerance: 'pointer',
             handle: '.drag-control',
             placeholder: this.classPrefix + '-drop-target-placeholder',
-            cancel: '.form-item-set-occurrences-container', // Elements with this class will not trigger this sortable
+            cancel: '.input-type-view.ui-sortable', // Elements with this class will not trigger this sortable
             helper: () => DragHelper.get().getHTMLElement(),
             start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
             update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui),
