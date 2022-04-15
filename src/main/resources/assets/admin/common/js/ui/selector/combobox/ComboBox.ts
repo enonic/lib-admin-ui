@@ -395,13 +395,13 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                 this.applySelection(13);
             } else {
                 this.handleRowSelected(this.comboBoxDropdown.getActiveRow(), 13);
-                this.input.setValue('', true);
+                this.input.setValue('');
             }
         }
 
     private applySelection(keyCode: number = -1) {
         this.toggleOptions(Array.from(this.optionsToSelect.values()).concat(Array.from(this.optionsToUnselect.values())), keyCode);
-        this.input.setValue('', true);
+        this.input.setValue('');
         this.hideDropdown();
     }
 
