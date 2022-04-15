@@ -355,7 +355,7 @@ export class FormOptionSetOptionView
 
     private makeSelectionCheckbox(): Checkbox {
         const checked: boolean = this.isSelected();
-        const labelText = this.formOptionSetOption.getLabel();
+        const labelText: string = this.formOptionSetOption.getLabel();
         const button: Checkbox = Checkbox.create()
             .setLabelText(labelText)
             .setTooltip(labelText)
@@ -530,10 +530,21 @@ export class FormOptionSetOptionView
         this.selectionChangedListeners.forEach((listener: () => void) => listener());
     }
 
-    setEnabled(enable: boolean) {
+    setEnabled(enable: boolean): void {
         if (!this.isSingleSelection()) {
-            this.checkbox.setEnabled(enable);
+            this.toggleCheckboxState(enable);
         }
+
         this.formItemLayer.setEnabled(enable);
+    }
+
+    private toggleCheckboxState(enable: boolean): void {
+        if (enable) {
+            if (!this.isSelectionLimitReached()) {
+                this.checkbox.setEnabled(true);
+            }
+        } else {
+            this.checkbox.setEnabled(false);
+        }
     }
 }
