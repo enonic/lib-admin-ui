@@ -12,6 +12,7 @@ import {OptionDataLoader, OptionDataLoaderData} from './OptionDataLoader';
 import {OptionDataHelper} from './OptionDataHelper';
 import {OptionsFactory} from './OptionsFactory';
 import {Option} from './Option';
+import {ElementHelper} from '../../dom/ElementHelper';
 
 export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
     extends TreeGrid<Option<OPTION_DISPLAY_VALUE>> {
@@ -59,6 +60,18 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         this.optionsFactory = new OptionsFactory(this.loader, this.treeDataHelper);
 
         this.setActive(true);
+    }
+
+    protected expandOnClick(elem: ElementHelper, data: Slick.OnClickEventArgs<Option<OPTION_DISPLAY_VALUE>>) {
+        super.expandOnClick(elem, data);
+
+        this.getGrid().resetActiveCell();
+    }
+
+    protected collapseOnClick(elem: ElementHelper, data: Slick.OnClickEventArgs<Option<OPTION_DISPLAY_VALUE>>) {
+        super.collapseOnClick(elem, data);
+
+        this.getGrid().resetActiveCell();
     }
 
     removeAllOptions() {
