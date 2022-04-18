@@ -352,26 +352,29 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         this.formItemOccurrences.unBlur(listener);
     }
 
-    protected handleFormSetOccurrenceViewValidityChanged(event: RecordingValidityChangedEvent) {
-
+    protected handleFormSetOccurrenceViewValidityChanged(event: RecordingValidityChangedEvent): void {
         if (!this.previousValidationRecording) {
             return; // skip handling if not previousValidationRecording is not set
         }
-        const previousValidState = this.previousValidationRecording.isValid();
+
+        const previousValidState: boolean = this.previousValidationRecording.isValid();
+
         if (event.isValid()) {
-            this.previousValidationRecording.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
+            this.previousValidationRecording.removeByPath(event.getOrigin(), true, event.isIncludeChildren());
         } else {
             this.previousValidationRecording.flatten(event.getRecording());
         }
 
-        const validationRecordingPath = this.resolveValidationRecordingPath();
+        const validationRecordingPath: ValidationRecordingPath = this.resolveValidationRecordingPath();
 
-        const occurrenceViews = this.formItemOccurrences.getOccurrenceViews();
-        const occurrenceRecording = new ValidationRecording(); // validity state of occurrences
+        const occurrenceViews: V[] = this.formItemOccurrences.getOccurrenceViews();
+        const occurrenceRecording: ValidationRecording = new ValidationRecording(); // validity state of occurrences
 
-        let numberOfValids = 0;
+        let numberOfValids: number = 0;
+
         occurrenceViews.forEach((occurrenceView: FormSetOccurrenceView) => {
-            const recordingForOccurrence = occurrenceView.getValidationRecording();
+            const recordingForOccurrence: ValidationRecording = occurrenceView.getValidationRecording();
+
             if (recordingForOccurrence) {
                 if (recordingForOccurrence.isValid()) {
                     numberOfValids++;
