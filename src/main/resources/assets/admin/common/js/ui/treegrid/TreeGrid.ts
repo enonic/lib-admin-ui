@@ -1231,8 +1231,8 @@ export class TreeGrid<DATA extends IDentifiable>
         KeyBindings.get().unshelveBindings(this.keyBindings);
     }
 
-    private bindClickEvents(toggleClickEnabled: boolean) {
-        let clickHandler = ((event, data) => {
+    private bindClickEvents(toggleClickEnabled: boolean): void {
+        const clickHandler = ((event, data) => {
             if (!this.isActive()) {
                 return;
             }
@@ -1257,12 +1257,12 @@ export class TreeGrid<DATA extends IDentifiable>
 
             if (toggleClickEnabled) {
                 if (elem.hasClass('expand')) {
-                    this.onExpand(elem, data);
+                    this.expandOnClick(elem, data);
                     return;
                 }
 
                 if (elem.hasClass('collapse')) {
-                    this.onCollapse(elem, data);
+                    this.collapseOnClick(elem, data);
                     return;
                 }
             }
@@ -1333,8 +1333,8 @@ export class TreeGrid<DATA extends IDentifiable>
         this.toggleRow(data.row);
     }
 
-    private onExpand(elem: ElementHelper, data: Slick.OnClickEventArgs<DATA>) {
-        const node = this.gridData.getItem(data.row);
+    protected expandOnClick(elem: ElementHelper, data: Slick.OnClickEventArgs<DATA>): void {
+        const node: TreeNode<DATA> = this.gridData.getItem(data.row);
         elem.removeClass('expand').addClass('collapse');
         this.expandNode(node).then(() => {
             this.highlightCurrentNode();
@@ -1358,8 +1358,8 @@ export class TreeGrid<DATA extends IDentifiable>
 
     }
 
-    private onCollapse(elem: ElementHelper, data: Slick.OnClickEventArgs<DATA>) {
-        const node = this.gridData.getItem(data.row);
+    protected collapseOnClick(elem: ElementHelper, data: Slick.OnClickEventArgs<DATA>): void {
+        const node: TreeNode<DATA> = this.gridData.getItem(data.row);
         elem.removeClass('collapse').addClass('expand');
         this.collapseNode(node);
     }
