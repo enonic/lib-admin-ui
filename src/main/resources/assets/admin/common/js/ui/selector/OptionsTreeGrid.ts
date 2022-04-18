@@ -62,13 +62,13 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
         this.setActive(true);
     }
 
-    protected expandOnClick(elem: ElementHelper, data: Slick.OnClickEventArgs<Option<OPTION_DISPLAY_VALUE>>) {
+    protected expandOnClick(elem: ElementHelper, data: Slick.OnClickEventArgs<Option<OPTION_DISPLAY_VALUE>>): void {
         super.expandOnClick(elem, data);
 
         this.getGrid().resetActiveCell();
     }
 
-    protected collapseOnClick(elem: ElementHelper, data: Slick.OnClickEventArgs<Option<OPTION_DISPLAY_VALUE>>) {
+    protected collapseOnClick(elem: ElementHelper, data: Slick.OnClickEventArgs<Option<OPTION_DISPLAY_VALUE>>): void {
         super.collapseOnClick(elem, data);
 
         this.getGrid().resetActiveCell();
