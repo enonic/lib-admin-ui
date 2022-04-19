@@ -18,6 +18,8 @@ export class ServerEventsConnection extends WebSocketConnection {
 
     private constructor(builder: WebSocketConnectionBuilder) {
         super(builder);
+
+        this.serverEventsTranslator = new ServerEventsTranslator();
     }
 
     static get(): ServerEventsConnection {
