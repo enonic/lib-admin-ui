@@ -13,7 +13,6 @@
     "build:dev": "tsc -p tsconfig.dev.json",
     "build:lib": "webpack --color",
     "profile": "webpack --color --progress --profile",
-    "build:minify": "node util/minify.js",
     "lint": "eslint **/*.ts",
     "lint:quiet": "eslint **/*.ts --quiet",
     "fix": "eslint --fix **/*.ts"

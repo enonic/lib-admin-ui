@@ -57,15 +57,6 @@ task typescriptLib( type: NpmTask, dependsOn: lint ) {
     outputs.dir "$buildDir/resources/main/assets/admin/common"
 }
 
-task minifyPkg( type: NpmTask, dependsOn: typescriptPkg ) {
-    description = 'Minify transpiled code.'
-    args = [ 'run', "build:minify" ]
-    inputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
-    outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
-    mustRunAfter typescriptPkg
-    enabled isProd()
-}
-
 task copyPackage( type: Copy ) {
     from( './' ) {
         include 'package.json'
@@ -77,7 +68,6 @@ task copyPackage( type: Copy ) {
 task typescript {
     dependsOn 'typescriptPkg'
     dependsOn 'typescriptLib'
-    dependsOn 'minifyPkg'
     dependsOn 'copyPackage'
 }
 
