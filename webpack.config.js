@@ -7,8 +7,6 @@ const path = require('path');
 
 const MiniCssExtractPluginCleanup = require('./util/MiniCssExtractPluginCleanup');
 
-const terserOptions = require('./terser.config');
-
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
@@ -53,7 +51,13 @@ module.exports = {
     optimization: {
         minimizer: [
             new TerserPlugin({
-                terserOptions
+                terserOptions: {
+                    compress: {
+                        drop_console: false
+                    },
+                    keep_classnames: true,
+                    keep_fnames: true
+                }
             })
         ]
     },
