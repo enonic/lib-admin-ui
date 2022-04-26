@@ -4,6 +4,7 @@ import {Action} from '../../ui/Action';
 import {ImgEl} from '../../dom/ImgEl';
 import {SpanEl} from '../../dom/SpanEl';
 import {Application} from '../Application';
+import {KeyHelper} from '../../ui/KeyHelper';
 
 export class AppIcon
     extends DivEl {
@@ -16,6 +17,7 @@ export class AppIcon
         super('home-button');
 
         this.initElements(app);
+        this.getEl().setTabIndex(0);
 
         if (action) {
             this.setAction(action);
@@ -39,6 +41,7 @@ export class AppIcon
     setAction(action: Action): void {
         this.addClass('clickable');
         this.onClicked(() => action.execute());
+        this.onKeyDown((e: KeyboardEvent) => KeyHelper.isEnterKey(e) && action.execute());
     }
 
     setAppName(name: string) {
