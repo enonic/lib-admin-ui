@@ -13,11 +13,14 @@ export class AppIcon
 
     private nameEl: SpanEl;
 
+    private clickListener: () => void;
+
+    private enterListener: (e: KeyboardEvent) => void;
+
     constructor(app: Application, action?: Action) {
         super('home-button');
 
         this.initElements(app);
-        this.getEl().setTabIndex(0);
 
         if (action) {
             this.setAction(action);
@@ -39,13 +42,29 @@ export class AppIcon
     }
 
     setAction(action: Action): void {
+        if(!this.clickListener || !this.enterListener){
+            this.initListeners(action);
+        }
         this.addClass('clickable');
-        this.onClicked(() => action.execute());
-        this.onKeyDown((e: KeyboardEvent) => KeyHelper.isEnterKey(e) && action.execute());
+        this.getEl().setTabIndex(0);
+        this.onClicked(this.clickListener);
+        this.onKeyDown(this.enterListener);
+    }
+
+    removeAction(): void {
+        this.removeClass('clickable');
+        this.getEl().removeAttribute('tabindex');
+        this.unClicked(this.clickListener);
+        this.onKeyDown(this.enterListener);
     }
 
     setAppName(name: string) {
         this.nameEl.setHtml(name);
+    }
+
+    private initListeners(action): void {
+        this.clickListener = () => { action.execute(); };
+        this.enterListener = (e: KeyboardEvent) => { KeyHelper.isEnterKey(e) && action.execute(); };
     }
 
     protected initElements(app: Application): void {

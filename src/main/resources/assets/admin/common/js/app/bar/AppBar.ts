@@ -45,7 +45,11 @@ export class AppBar
         return [this.showAppLauncherAction];
     }
 
-    setHomeIconAction() {
+    setHomeIconAction(): void {
         this.appIcon.setAction(AppBarActions.SHOW_BROWSE_PANEL);
+    }
+
+    unsetHomeIconAction(): void {
+        this.appIcon.removeAction();
     }
 }
