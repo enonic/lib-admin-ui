@@ -10,7 +10,7 @@ export class TabbedAppBar
 
     private tabMenu: AppBarTabMenu;
 
-    constructor(application: Application) {
+    constructor(application: Application, managedHomeIconAction: boolean = false) {
         super(application);
 
         this.tabMenu = new AppBarTabMenu();
@@ -23,8 +23,10 @@ export class TabbedAppBar
         // Responsive events to update homeButton styles
         ResponsiveManager.onAvailableSizeChanged(this, () => {
             if (this.tabMenu.countVisible() > 0) {
+                managedHomeIconAction && super.setHomeIconAction();
                 this.addClass('tabs-present');
             } else {
+                managedHomeIconAction && super.unsetHomeIconAction();
                 this.removeClass('tabs-present');
             }
         });
