@@ -37,7 +37,7 @@ export class Workflow
 
     toJson(): WorkflowJson {
         return {
-            state: WorkflowState[this.state],
+            state: this.state.toUpperCase(),
             checks: {}
         };
     }
