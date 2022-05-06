@@ -476,6 +476,10 @@ export class Grid<T extends Slick.SlickData>
         this.slickGrid.onScroll.subscribe(callback);
     }
 
+    unsubscribeOnScroll(callback: (e: any) => void) {
+        this.slickGrid.onScroll.unsubscribe(callback);
+    }
+
     // scrolled event is for the mouse wheel only
     subscribeOnScrolled(callback: (e: Event) => void) {
         if (this.getHTMLElement().addEventListener) {
