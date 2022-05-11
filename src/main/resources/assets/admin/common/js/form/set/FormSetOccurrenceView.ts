@@ -30,6 +30,9 @@ import {PropertyAddedEvent} from '../../data/PropertyAddedEvent';
 import {PropertyRemovedEvent} from '../../data/PropertyRemovedEvent';
 import {FormOptionSet} from './optionset/FormOptionSet';
 import {FormOptionSetOption} from './optionset/FormOptionSetOption';
+import {FormItemSet} from './itemset/FormItemSet';
+import {Input} from '../Input';
+import {RadioButton} from '../inputtype/radiobutton/RadioButton';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
@@ -518,17 +521,40 @@ export abstract class FormSetOccurrenceView
         return isAllowedType && property.getString().length > 0;
     }
 
+    private getRadioButtonTextByValue(radioGroup: Input, selectedValue: string): string {
+        const radioButtons: Object[] = radioGroup.getInputTypeConfig().option;
+        if (!radioButtons) {
+            return '';
+        }
+
+        const selectedRadioButton: Object = radioButtons.find((option: Object) => option['@value'] === selectedValue);
+        return selectedRadioButton['value'];
+    }
+
+    private getPropertyValue(prop: Property, formItem: FormItem): string {
+        if (!formItem) {
+            return '';
+        }
+
+        // Special treatment of RadioButton as it stores button value, not label in the property
+        if ((<Input>formItem).getInputType().toString() === 'RadioButton') {
+            return this.getRadioButtonTextByValue(<Input>formItem, prop.getString());
+        }
+
+        return prop.getString();
+    }
+
     protected fetchPropertyValues(propArray: PropertyArray, propValues: string[], firstOnly?: boolean): void {
         propArray.some((prop: Property) => {
+            const formItem = this.getFormItemByName(prop.getName());
             if (this.isAllowedValueAndType(prop)) {
-                const propValue: string = this.sanitizeValue(prop.getString());
+                const propValue: string = this.sanitizeValue(this.getPropertyValue(prop, formItem));
 
                 if (propValue.length > 0) {
                     propValues.push(propValue);
                 }
             } else if (ValueTypes.DATA.equals(prop.getType())) {
                 const propertySet = prop.getPropertySet();
-                const formItem = this.getFormItemByName(prop.getName());
                 if (formItem instanceof FormOptionSet) {
                     this.fetchPropertyValuesFromOptionSet(propertySet, formItem, propValues, firstOnly);
                 } else {
@@ -586,8 +612,18 @@ export abstract class FormSetOccurrenceView
         propValues.push(...selectedLabels);
     }
 
-    private getFormItemByName(name: string): FormItem {
-        return this.getFormItems().find((item) => item.getName() === name);
+    private getFormItemByName(name: string, formItems?: FormItem[]): FormItem {
+        let formItem: FormItem;
+        (formItems || this.getFormItems()).find((item: FormItem) => {
+            if (item.getName() === name) {
+                formItem = item;
+            } else if (item instanceof FormOptionSetOption || item instanceof FormItemSet) {
+                formItem = this.getFormItemByName(name, item.getFormItems());
+            }
+            return !!formItem;
+        });
+
+        return formItem;
     }
 
     private sanitizeValue(label: string): string {
