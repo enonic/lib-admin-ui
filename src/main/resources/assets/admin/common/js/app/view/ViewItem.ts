@@ -9,4 +9,6 @@ export interface ViewItem
     getIconClass(): string;
 
     getIconUrl(): string;
+
+    getIconSrc?(): string;
 }
