@@ -476,7 +476,7 @@ export class Grid<T extends Slick.SlickData>
         this.slickGrid.onScroll.subscribe(callback);
     }
 
-    unsubscribeOnScroll(callback: (e: any) => void) {
+    unsubscribeOnScroll(callback: (e: any) => void): void {
         this.slickGrid.onScroll.unsubscribe(callback);
     }
 
