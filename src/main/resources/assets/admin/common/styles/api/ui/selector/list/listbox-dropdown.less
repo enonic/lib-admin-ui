@@ -1,0 +1,21 @@
+.listbox-dropdown {
+  position: relative;
+
+  .filter-container {
+    position: relative;
+  }
+
+  .selectable-listbox {
+    position: absolute;
+    width: 100%;
+    background-color: @admin-white;
+    z-index: 1;
+    border: 1px solid @admin-medium-gray-border;
+    box-shadow: 2px 2px 2px @admin-medium-gray-border;
+    box-sizing: border-box;
+
+    .aggregation-bucket-view {
+      padding: 2px 4px;
+    }
+  }
+}

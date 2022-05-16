@@ -213,6 +213,11 @@ export class ListBox<I>
         throw new Error('You must override getItemId to find item views by items');
     }
 
+    // public method to not break compatibility by removing 'protected' from getItemId()
+    public getIdOfItem(item: I): string {
+        return this.getItemId(item);
+    }
+
     protected createEmptyView(text: string): Element {
         const view = new H5El('empty-list-item');
         view.setHtml(text);
