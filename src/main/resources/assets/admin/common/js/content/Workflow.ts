@@ -6,7 +6,7 @@ import {ObjectHelper} from '../ObjectHelper';
 export class Workflow
     implements Equitable {
 
-    private state: WorkflowState;
+    private readonly state: WorkflowState;
 
     constructor(builder: WorkflowBuilder) {
         this.state = builder.state;
@@ -41,7 +41,7 @@ export class Workflow
 
     toJson(): WorkflowJson {
         return {
-            state: WorkflowState[this.state],
+            state: this.state.toUpperCase(),
             checks: {}
         };
     }
