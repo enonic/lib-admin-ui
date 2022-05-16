@@ -17,7 +17,7 @@ export class BucketViewer
         this.appendChild(this.namesView);
     }
 
-    setObject(bucket: Bucket) {
+    setObject(bucket: Bucket): void {
         this.namesView.setMainName(
             StringHelper.format(this.displayNamePattern, bucket.getDisplayName(), bucket.getDocCount()));
 

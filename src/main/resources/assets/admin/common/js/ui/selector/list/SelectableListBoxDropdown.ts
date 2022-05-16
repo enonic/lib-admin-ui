@@ -32,7 +32,7 @@ export class SelectableListBoxDropdown<I>
         super(listBox, options);
     }
 
-    protected initElements() {
+    protected initElements(): void {
         super.initElements();
 
         if (this.options.multiple) {
@@ -41,7 +41,7 @@ export class SelectableListBoxDropdown<I>
         }
     }
 
-    protected initListeners() {
+    protected initListeners(): void {
         super.initListeners();
 
         this.addListBoxListeners();
@@ -220,7 +220,7 @@ export class SelectableListBoxDropdown<I>
         return this.selectedItems.has(id);
     }
 
-    protected filterItem(item: I, searchString: string) {
+    protected filterItem(item: I, searchString: string): void {
         this.itemsWrappers.get(this.listBox.getIdOfItem(item))?.setVisible(this.options.filter(item, searchString));
     }
 
@@ -243,7 +243,7 @@ export class SelectableListBoxDropdown<I>
         this.toggleSelection(item, false, silent);
     }
 
-    toggleSelection(item: I, selected: boolean, silent?: boolean) {
+    toggleSelection(item: I, selected: boolean, silent?: boolean): void {
         const id: string = this.listBox.getIdOfItem(item);
 
         if (!id) {

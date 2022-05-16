@@ -87,7 +87,7 @@ export class BucketAggregationView
         this.bucketViews.forEach((bucketView: BucketView) => bucketView.remove());
     }
 
-    protected addBucket(bucket, isSelected?: boolean): void {
+    protected addBucket(bucket: Bucket, isSelected?: boolean): void {
         const bucketView: BucketView = new BucketView(bucket);
 
         if (isSelected) {
