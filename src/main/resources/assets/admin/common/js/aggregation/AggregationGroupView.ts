@@ -90,18 +90,18 @@ export class AggregationGroupView
         });
     }
 
-    onBucketViewSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void) {
+    onBucketViewSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void): void {
         this.bucketSelectionChangedListeners.push(listener);
     }
 
-    unBucketViewSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void) {
+    unBucketViewSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void): void {
         this.bucketSelectionChangedListeners = this.bucketSelectionChangedListeners
             .filter((curr: (selected: Bucket[], deselected: Bucket[]) => void) => {
                 return curr !== listener;
             });
     }
 
-    notifyBucketViewSelectionChanged(selected: Bucket[], deselected: Bucket[]) {
+    notifyBucketViewSelectionChanged(selected: Bucket[], deselected: Bucket[]): void {
         this.bucketSelectionChangedListeners.forEach(
             (listener: (selected: Bucket[], deselected: Bucket[]) => void) => {
                 listener(selected, deselected);

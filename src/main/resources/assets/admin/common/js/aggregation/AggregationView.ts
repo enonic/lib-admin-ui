@@ -59,18 +59,18 @@ export class AggregationView
         throw new Error('Must be implemented by inheritor');
     }
 
-    onBucketSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void) {
+    onBucketSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void): void {
         this.bucketSelectionChangedListeners.push(listener);
     }
 
-    unBucketSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void) {
+    unBucketSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void): void {
         this.bucketSelectionChangedListeners = this.bucketSelectionChangedListeners
             .filter(function (curr: (selected: Bucket[], deselected: Bucket[]) => void) {
                 return curr !== listener;
             });
     }
 
-    notifyBucketSelectionChanged(selected: Bucket[], deselected: Bucket[]) {
+    notifyBucketSelectionChanged(selected: Bucket[], deselected: Bucket[]): void {
         this.bucketSelectionChangedListeners.forEach((listener: (selected: Bucket[], deselected: Bucket[]) => void) => {
             listener(selected, deselected);
         });
