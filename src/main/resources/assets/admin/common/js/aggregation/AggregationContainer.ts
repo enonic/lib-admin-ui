@@ -1,8 +1,8 @@
 import {DivEl} from '../dom/DivEl';
 import {AggregationGroupView} from './AggregationGroupView';
-import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
 import {Aggregation} from './Aggregation';
 import {AggregationSelection} from './AggregationSelection';
+import {Bucket} from './Bucket';
 
 export class AggregationContainer
     extends DivEl {
@@ -18,10 +18,9 @@ export class AggregationContainer
     addAggregationGroupView(aggregationGroupView: AggregationGroupView) {
         this.appendChild(aggregationGroupView);
 
-        aggregationGroupView.onBucketViewSelectionChanged((event: BucketViewSelectionChangedEvent) => {
-
-            if (event.getNewValue()) {
-                this.lastSelectedGroupView = event.getBucketView().getParentAggregationView().getParentGroupView();
+        aggregationGroupView.onBucketViewSelectionChanged((selected: Bucket[], deselected: Bucket[]) => {
+            if (selected.length > 0) {
+                this.lastSelectedGroupView = aggregationGroupView;
             }
         });
 

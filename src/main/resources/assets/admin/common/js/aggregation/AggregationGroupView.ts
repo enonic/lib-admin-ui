@@ -3,23 +3,21 @@ import {AggregationSelection} from './AggregationSelection';
 import {DivEl} from '../dom/DivEl';
 import {AggregationView} from './AggregationView';
 import {H2El} from '../dom/H2El';
-import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
 import {Aggregation} from './Aggregation';
 import {Bucket} from './Bucket';
-import {ObjectHelper} from '../ObjectHelper';
 
 export class AggregationGroupView
     extends DivEl {
 
-    private name: string;
+    private readonly name: string;
 
-    private displayName: string;
+    private readonly displayName: string;
 
-    private aggregationViews: AggregationView[] = [];
+    protected aggregationViews: AggregationView[] = [];
 
     private titleEl: H2El = new H2El();
 
-    private bucketSelectionChangedListeners: Function[] = [];
+    private bucketSelectionChangedListeners: { (selected: Bucket[], deselected: Bucket[]): void }[] = [];
 
     constructor(name: string, displayName: string) {
         super('aggregation-group-view');
@@ -92,62 +90,53 @@ export class AggregationGroupView
         });
     }
 
-    onBucketViewSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
+    onBucketViewSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void) {
         this.bucketSelectionChangedListeners.push(listener);
     }
 
-    unBucketViewSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
+    unBucketViewSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void) {
         this.bucketSelectionChangedListeners = this.bucketSelectionChangedListeners
-            .filter(function (curr: (event: BucketViewSelectionChangedEvent) => void) {
+            .filter((curr: (selected: Bucket[], deselected: Bucket[]) => void) => {
                 return curr !== listener;
             });
     }
 
-    notifyBucketViewSelectionChanged(event: BucketViewSelectionChangedEvent) {
-
-        this.bucketSelectionChangedListeners.forEach((listener: (event: BucketViewSelectionChangedEvent) => void) => {
-            listener(event);
-        });
+    notifyBucketViewSelectionChanged(selected: Bucket[], deselected: Bucket[]) {
+        this.bucketSelectionChangedListeners.forEach(
+            (listener: (selected: Bucket[], deselected: Bucket[]) => void) => {
+                listener(selected, deselected);
+            });
     }
 
     update(aggregations: Aggregation[]) {
-
         aggregations.forEach((aggregation: Aggregation) => {
+            const aggregationView: AggregationView =
+                this.getAggregationView(aggregation.getName()) || this.addAggregationView(aggregation);
 
-            let existingAggregationView: AggregationView = this.getAggregationView(aggregation.getName());
-
-            if (existingAggregationView == null) {
-                this.addAggregationView(BucketAggregationView.createAggregationView(aggregation, this));
-            } else {
-                if (ObjectHelper.iFrameSafeInstanceOf(existingAggregationView, BucketAggregationView)) {
-
-                    let bucketAggregationView: BucketAggregationView = <BucketAggregationView>existingAggregationView;
-                    bucketAggregationView.update(aggregation);
-                }
-                // Here be Metric-aggregations
-            }
+            aggregationView.update(aggregation);
         });
     }
 
-    private addAggregationView(aggregationView: AggregationView) {
+    private addAggregationView(aggregation: Aggregation): AggregationView {
+        const aggregationView: AggregationView = this.createAggregationView(aggregation);
+
         this.appendChild(aggregationView);
 
-        aggregationView.onBucketViewSelectionChanged((event: BucketViewSelectionChangedEvent) => {
-                this.notifyBucketViewSelectionChanged(event);
+        aggregationView.onBucketSelectionChanged((selected: Bucket[], deselected: Bucket[]) => {
+                this.notifyBucketViewSelectionChanged(selected, deselected);
             }
         );
 
         this.aggregationViews.push(aggregationView);
+
+        return aggregationView;
+    }
+
+    protected createAggregationView(aggregation: Aggregation): AggregationView {
+        return BucketAggregationView.createAggregationView(aggregation);
     }
 
     private getAggregationView(name: string): AggregationView {
-
-        for (let i = 0; i < this.aggregationViews.length; i++) {
-            let aggregationView: AggregationView = this.aggregationViews[i];
-            if (aggregationView.getName() === name) {
-                return aggregationView;
-            }
-        }
-        return null;
+        return this.aggregationViews.find((aggregationView: AggregationView) => aggregationView.getName() === name);
     }
 }

@@ -2,7 +2,6 @@ import {Tooltip} from '../ui/Tooltip';
 import {DivEl} from '../dom/DivEl';
 import {Bucket} from './Bucket';
 import {Checkbox} from '../ui/Checkbox';
-import {AggregationView} from './AggregationView';
 import {ValueChangedEvent} from '../ValueChangedEvent';
 import {StringHelper} from '../util/StringHelper';
 import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
@@ -14,23 +13,18 @@ export class BucketView
 
     private checkbox: Checkbox;
 
-    private parentAggregationView: AggregationView;
-
     private selectionChangedListeners: Function[] = [];
 
     private displayName: string;
 
     private tooltip: Tooltip;
 
-    constructor(bucket: Bucket, parentAggregationView: AggregationView, select: boolean,
-                displayName?: string) {
-
+    constructor(bucket: Bucket) {
         super('aggregation-bucket-view');
         this.bucket = bucket;
-        this.parentAggregationView = parentAggregationView;
-        this.displayName = displayName || bucket.getDisplayName();
 
-        this.checkbox = Checkbox.create().setLabelText(this.resolveLabelValue()).setChecked(select).build();
+        this.displayName = bucket.getDisplayName();
+        this.checkbox = Checkbox.create().setLabelText(this.resolveLabelValue()).build();
         this.tooltip = new Tooltip(this.checkbox, bucket.getKey(), 1000);
         this.tooltip.setActive(false);
 
@@ -76,12 +70,7 @@ export class BucketView
         this.checkbox.setChecked(true, supressEvent);
     }
 
-    getParentAggregationView() {
-        return this.parentAggregationView;
-    }
-
     notifySelectionChanged(oldValue: boolean, newValue: boolean) {
-
         this.selectionChangedListeners.forEach((listener: (event: BucketViewSelectionChangedEvent) => void) => {
             listener(new BucketViewSelectionChangedEvent(oldValue, newValue, this));
         });
@@ -99,7 +88,6 @@ export class BucketView
     }
 
     private resolveLabelValue(): string {
-
         if (this.displayName != null) {
             return this.displayName + ' (' + this.bucket.getDocCount() + ')';
         }

@@ -1,8 +1,6 @@
-import * as $ from 'jquery';
 import {AggregationView} from './AggregationView';
 import {BucketAggregation} from './BucketAggregation';
 import {BucketView} from './BucketView';
-import {AggregationGroupView} from './AggregationGroupView';
 import {Bucket} from './Bucket';
 import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
 import {Aggregation} from './Aggregation';
@@ -11,34 +9,17 @@ import {ObjectHelper} from '../ObjectHelper';
 export class BucketAggregationView
     extends AggregationView {
 
-    private bucketAggregation: BucketAggregation;
+    protected aggregation: BucketAggregation;
 
-    private bucketViews: BucketView[] = [];
+    protected bucketViews: BucketView[] = [];
 
-    private showBucketView: boolean;
-
-    constructor(bucketAggregation: BucketAggregation, parentGroupView: AggregationGroupView) {
-        super(bucketAggregation, parentGroupView);
-
-        this.bucketAggregation = bucketAggregation;
-
-        this.showBucketView = false;
-        this.bucketAggregation.getBuckets().forEach((bucket: Bucket) => {
-            this.addBucket(new BucketView(bucket, this, false, this.getDisplayNameForName(bucket.getKey())));
-            if (bucket.getDocCount() > 0) {
-                this.showBucketView = true;
-            }
-
-        });
-
-        if (!this.showBucketView) {
-            this.hide();
-        }
+    constructor(bucketAggregation: BucketAggregation) {
+        super(bucketAggregation);
     }
 
-    static createAggregationView(aggregation: Aggregation, parentGroupView: AggregationGroupView): BucketAggregationView {
+    static createAggregationView(aggregation: Aggregation): BucketAggregationView {
         if (ObjectHelper.iFrameSafeInstanceOf(aggregation, BucketAggregation)) {
-            return new BucketAggregationView(<BucketAggregation>aggregation, parentGroupView);
+            return new BucketAggregationView(<BucketAggregation>aggregation);
         } else {
             throw Error('Creating BucketAggregationView of this type of Aggregation is not supported: ' + aggregation);
         }
@@ -76,16 +57,9 @@ export class BucketAggregationView
     }
 
     getSelectedValues(): Bucket[] {
-
-        let selectedBuckets: Bucket[] = [];
-
-        this.bucketViews.forEach((bucketView: BucketView) => {
-            if (bucketView.isSelected()) {
-                selectedBuckets.push(bucketView.getBucket());
-            }
-        });
-
-        return selectedBuckets;
+        return this.bucketViews
+            .filter((bucketView: BucketView) => bucketView.isSelected())
+            .map((bucketView: BucketView) => bucketView.getBucket());
     }
 
     deselectFacet(supressEvent?: boolean) {
@@ -95,58 +69,67 @@ export class BucketAggregationView
     }
 
     update(aggregation: Aggregation) {
+        const selectedBucketNames: string[] = this.getSelectedBucketNames();
 
-        let selectedBucketNames: string[] = this.getSelectedBucketNames();
-
-        this.bucketAggregation = <BucketAggregation> aggregation;
+        this.removeAll();
+        this.aggregation = <BucketAggregation> aggregation;
         this.bucketViews = [];
-        this.removeChildren();
 
-        let anyBucketVisible = false;
-
-        this.bucketAggregation.getBuckets().forEach((bucket: Bucket) => {
-
-            let wasSelected: boolean = ($.inArray(bucket.getKey(), selectedBucketNames)) > -1;
-
-            let bucketView: BucketView = new BucketView(bucket, this, wasSelected,
-                this.getDisplayNameForName(bucket.getKey()));
-
-            this.addBucket(bucketView);
-
-            if (bucket.getDocCount() > 0 || wasSelected) {
-                anyBucketVisible = true;
-            }
-
+        this.aggregation.getBuckets().forEach((bucket: Bucket) => {
+            const wasSelected: boolean = selectedBucketNames.some((selectedBucketName: string) =>  selectedBucketName === bucket.getKey());
+            this.addBucket(bucket, wasSelected);
         });
 
-        this.showBucketView = anyBucketVisible;
-
-        if (!this.showBucketView) {
-            this.hide();
-        } else if (!this.isVisible()) {
-            this.show();
-        }
+        this.setVisible(this.aggregation.getBuckets().some((bucket: Bucket) => bucket.getDocCount() > 0));
     }
 
-    private addBucket(bucketView: BucketView) {
-        this.appendChild(bucketView);
+    protected removeAll(): void {
+        this.bucketViews.forEach((bucketView: BucketView) => bucketView.remove());
+    }
+
+    protected addBucket(bucket, isSelected?: boolean): void {
+        const bucketView: BucketView = new BucketView(bucket);
+
+        if (isSelected) {
+            bucketView.select(true);
+        }
+
+        this.addBucketView(bucketView);
+    }
+
+    protected addBucketView(bucketView: BucketView): void {
         bucketView.onSelectionChanged((event: BucketViewSelectionChangedEvent) => {
-                this.notifyBucketViewSelectionChanged(event);
+                const selected: Bucket[] = [];
+                const deselected: Bucket[] = [];
+
+                if (event.getNewValue()) {
+                    selected.push(event.getBucketView().getBucket());
+                } else {
+                    deselected.push(event.getBucketView().getBucket());
+                }
+
+                this.notifyBucketSelectionChanged(selected, deselected);
             }
         );
+
         this.bucketViews.push(bucketView);
+        this.appendBucketView(bucketView);
+    }
+
+    protected appendBucketView(bucketView: BucketView): void {
+        this.appendChild(bucketView);
     }
 
     private getSelectedBucketNames(): string[] {
+        return this.getSelectedValues().map((bucket: Bucket) => bucket.getKey());
+    }
 
-        let selectedBucketNames: string[] = [];
+    protected hasBucketWithId(id: string): boolean {
+        return this.bucketViews.some((bucketView: BucketView) => bucketView.getBucket().getKey() === id);
+    }
 
-        let selectedBuckets: Bucket[] = this.getSelectedValues();
-
-        selectedBuckets.forEach((bucket: Bucket) => {
-            selectedBucketNames.push(bucket.getKey());
-        });
-
-        return selectedBucketNames;
+    protected removeBucketView(bucketView: BucketView): void {
+        this.bucketViews = this.bucketViews.filter((view: BucketView) => view !== bucketView);
+        bucketView.remove();
     }
 }
