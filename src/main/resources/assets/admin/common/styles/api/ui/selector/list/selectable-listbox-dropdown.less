@@ -1,0 +1,45 @@
+.selectable-listbox-dropdown {
+  .filter-container {
+    .apply-selection-button {
+      position: absolute;
+      top: 0px;
+      right: 0;
+      width: 37px;
+      height: 100%;
+      text-align: center;
+      padding: 0;
+      background-color: @admin-green;
+      z-index: 1;
+    }
+  }
+
+  .item-view-wrapper {
+    display: flex;
+    padding: 4px 0 2px 5px;
+
+    .item-view {
+      flex-grow: 1;
+      padding-left: 5px;
+      .ellipsis();
+
+      * {
+        cursor: pointer;
+      }
+    }
+
+    .checkbox {
+      flex-shrink: 0;
+
+      label {
+        width: 14px;
+        height: 14px;
+        padding: 0;
+      }
+    }
+
+    &.selected {
+      background-color: @admin-blue;
+      color: @admin-white;
+    }
+  }
+}
