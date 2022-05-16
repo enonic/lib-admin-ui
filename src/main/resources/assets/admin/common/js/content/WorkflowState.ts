@@ -1,3 +1,3 @@
 export enum WorkflowState {
-    READY, IN_PROGRESS
+    READY = 'ready', IN_PROGRESS = 'in_progress'
 }
