@@ -1,24 +1,19 @@
 import {DivEl} from '../dom/DivEl';
-import {AggregationGroupView} from './AggregationGroupView';
 import {Aggregation} from './Aggregation';
 import {Bucket} from './Bucket';
-import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
 
 export class AggregationView
     extends DivEl {
 
-    private parentGroupView: AggregationGroupView;
+    protected aggregation: Aggregation;
 
-    private aggregation: Aggregation;
-
-    private bucketSelectionChangedListeners: Function[] = [];
+    private bucketSelectionChangedListeners: { (selected: Bucket[], deselected: Bucket[]): void }[] = [];
 
     private displayNameMap: { [name: string]: string } = {};
 
-    constructor(aggregation: Aggregation, parentGroupView: AggregationGroupView) {
+    constructor(aggregation: Aggregation) {
         super('aggregation-view');
         this.aggregation = aggregation;
-        this.parentGroupView = parentGroupView;
     }
 
     setDisplayNamesMap(displayNameMap: { [name: string]: string }): void {
@@ -44,10 +39,6 @@ export class AggregationView
         return this.aggregation;
     }
 
-    getParentGroupView() {
-        return this.parentGroupView;
-    }
-
     getName(): string {
         return this.aggregation.getName();
     }
@@ -68,21 +59,20 @@ export class AggregationView
         throw new Error('Must be implemented by inheritor');
     }
 
-    onBucketViewSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
+    onBucketSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void) {
         this.bucketSelectionChangedListeners.push(listener);
     }
 
-    unBucketViewSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
+    unBucketSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void) {
         this.bucketSelectionChangedListeners = this.bucketSelectionChangedListeners
-            .filter(function (curr: (event: BucketViewSelectionChangedEvent) => void) {
+            .filter(function (curr: (selected: Bucket[], deselected: Bucket[]) => void) {
                 return curr !== listener;
             });
     }
 
-    notifyBucketViewSelectionChanged(event: BucketViewSelectionChangedEvent) {
-
-        this.bucketSelectionChangedListeners.forEach((listener: (event: BucketViewSelectionChangedEvent) => void) => {
-            listener(event);
+    notifyBucketSelectionChanged(selected: Bucket[], deselected: Bucket[]) {
+        this.bucketSelectionChangedListeners.forEach((listener: (selected: Bucket[], deselected: Bucket[]) => void) => {
+            listener(selected, deselected);
         });
     }
 }
