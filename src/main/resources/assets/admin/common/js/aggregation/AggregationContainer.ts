@@ -2,6 +2,7 @@ import {DivEl} from '../dom/DivEl';
 import {AggregationGroupView} from './AggregationGroupView';
 import {Aggregation} from './Aggregation';
 import {AggregationSelection} from './AggregationSelection';
+import {SelectionChange} from '../util/SelectionChange';
 import {Bucket} from './Bucket';
 
 export class AggregationContainer
@@ -11,15 +12,11 @@ export class AggregationContainer
 
     private lastSelectedGroupView: AggregationGroupView;
 
-    constructor() {
-        super();
-    }
-
     addAggregationGroupView(aggregationGroupView: AggregationGroupView) {
         this.appendChild(aggregationGroupView);
 
-        aggregationGroupView.onBucketViewSelectionChanged((selected: Bucket[], deselected: Bucket[]) => {
-            if (selected.length > 0) {
+        aggregationGroupView.onBucketViewSelectionChanged((bucketSelection: SelectionChange<Bucket>) => {
+            if (bucketSelection.selected.length > 0) {
                 this.lastSelectedGroupView = aggregationGroupView;
             }
         });

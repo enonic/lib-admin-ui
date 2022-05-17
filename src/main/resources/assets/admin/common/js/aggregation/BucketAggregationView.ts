@@ -2,6 +2,7 @@ import {AggregationView} from './AggregationView';
 import {BucketAggregation} from './BucketAggregation';
 import {BucketView} from './BucketView';
 import {Bucket} from './Bucket';
+import {SelectionChange} from '../util/SelectionChange';
 import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
 import {Aggregation} from './Aggregation';
 import {ObjectHelper} from '../ObjectHelper';
@@ -13,10 +14,6 @@ export class BucketAggregationView
 
     protected bucketViews: BucketView[] = [];
 
-    constructor(bucketAggregation: BucketAggregation) {
-        super(bucketAggregation);
-    }
-
     static createAggregationView(aggregation: Aggregation): BucketAggregationView {
         if (ObjectHelper.iFrameSafeInstanceOf(aggregation, BucketAggregation)) {
             return new BucketAggregationView(<BucketAggregation>aggregation);
@@ -26,25 +23,19 @@ export class BucketAggregationView
     }
 
     setDisplayNames(): void {
-        this.bucketViews.forEach((bucketView: BucketView) => {
-            bucketView.setDisplayName(this.getDisplayNameForName(bucketView.getName()));
-        });
+        this.bucketViews.forEach((bucketView: BucketView) =>
+            bucketView.setDisplayName(this.getDisplayNameForName(bucketView.getName()))
+        );
     }
 
     hasSelectedEntry(): boolean {
-        let isSelected: boolean = false;
-        this.bucketViews.forEach((bucketView: BucketView) => {
-            if (bucketView.isSelected()) {
-                isSelected = true;
-            }
-        });
-        return isSelected;
+        return this.bucketViews.some((bucketView: BucketView) => bucketView.isSelected());
     }
 
-    selectBucketViewByKey(key: string, supressEvent?: boolean) {
+    selectBucketViewByKey(key: string, suppressEvent?: boolean): void {
         this.bucketViews.some((bucketView: BucketView) => {
             if (bucketView.getName() === key) {
-                bucketView.select(supressEvent);
+                bucketView.select(suppressEvent);
                 return true;
             }
 
@@ -52,7 +43,7 @@ export class BucketAggregationView
         });
     }
 
-    setTooltipActive(flag: boolean) {
+    setTooltipActive(flag: boolean): void {
         this.bucketViews.forEach(bv => bv.setTooltipActive(flag));
     }
 
@@ -62,25 +53,29 @@ export class BucketAggregationView
             .map((bucketView: BucketView) => bucketView.getBucket());
     }
 
-    deselectFacet(supressEvent?: boolean) {
-        this.bucketViews.forEach((bucketView: BucketView) => {
-            bucketView.deselect(supressEvent);
-        });
+    deselectFacet(suppressEvent?: boolean): void {
+        this.bucketViews.forEach((bucketView: BucketView) =>
+            bucketView.deselect(suppressEvent)
+        );
     }
 
-    update(aggregation: Aggregation) {
+    update(aggregation: Aggregation): void {
         const selectedBucketNames: string[] = this.getSelectedBucketNames();
 
         this.removeAll();
         this.aggregation = <BucketAggregation> aggregation;
         this.bucketViews = [];
 
+        let isEmpty: boolean = true;
         this.aggregation.getBuckets().forEach((bucket: Bucket) => {
             const wasSelected: boolean = selectedBucketNames.some((selectedBucketName: string) =>  selectedBucketName === bucket.getKey());
             this.addBucket(bucket, wasSelected);
+            if (bucket.getDocCount() > 0) {
+                isEmpty = false;
+            }
         });
 
-        this.setVisible(this.aggregation.getBuckets().some((bucket: Bucket) => bucket.getDocCount() > 0));
+        this.setVisible(!isEmpty);
     }
 
     protected removeAll(): void {
@@ -99,18 +94,17 @@ export class BucketAggregationView
 
     protected addBucketView(bucketView: BucketView): void {
         bucketView.onSelectionChanged((event: BucketViewSelectionChangedEvent) => {
-                const selected: Bucket[] = [];
-                const deselected: Bucket[] = [];
+            const bucketSelection: SelectionChange<Bucket> = {selected: [], deselected: []};
+            const bucket: Bucket = event.getBucketView().getBucket();
 
-                if (event.getNewValue()) {
-                    selected.push(event.getBucketView().getBucket());
-                } else {
-                    deselected.push(event.getBucketView().getBucket());
-                }
-
-                this.notifyBucketSelectionChanged(selected, deselected);
+            if (event.getNewValue()) {
+                bucketSelection.selected.push(bucket);
+            } else {
+                bucketSelection.deselected.push(bucket);
             }
-        );
+
+            this.notifyBucketSelectionChanged(bucketSelection);
+        });
 
         this.bucketViews.push(bucketView);
         this.appendBucketView(bucketView);
