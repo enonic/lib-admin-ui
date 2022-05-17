@@ -5,6 +5,7 @@ import {AggregationView} from './AggregationView';
 import {H2El} from '../dom/H2El';
 import {Aggregation} from './Aggregation';
 import {Bucket} from './Bucket';
+import {SelectionChange} from '../util/SelectionChange';
 
 export class AggregationGroupView
     extends DivEl {
@@ -17,7 +18,7 @@ export class AggregationGroupView
 
     private titleEl: H2El = new H2El();
 
-    private bucketSelectionChangedListeners: { (selected: Bucket[], deselected: Bucket[]): void }[] = [];
+    private bucketSelectionChangedListeners: { (bucketSelection: SelectionChange<Bucket>): void }[] = [];
 
     constructor(name: string, displayName: string) {
         super('aggregation-group-view');
@@ -90,22 +91,19 @@ export class AggregationGroupView
         });
     }
 
-    onBucketViewSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void): void {
+    onBucketViewSelectionChanged(listener: (bucketSelection: SelectionChange<Bucket>) => void): void {
         this.bucketSelectionChangedListeners.push(listener);
     }
 
-    unBucketViewSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void): void {
+    unBucketViewSelectionChanged(listener: (bucketSelection: SelectionChange<Bucket>) => void): void {
         this.bucketSelectionChangedListeners = this.bucketSelectionChangedListeners
-            .filter((curr: (selected: Bucket[], deselected: Bucket[]) => void) => {
-                return curr !== listener;
-            });
+            .filter((curr: (bucketSelection: SelectionChange<Bucket>) => void) => curr !== listener);
     }
 
-    notifyBucketViewSelectionChanged(selected: Bucket[], deselected: Bucket[]): void {
+    notifyBucketViewSelectionChanged(bucketSelection: SelectionChange<Bucket>): void {
         this.bucketSelectionChangedListeners.forEach(
-            (listener: (selected: Bucket[], deselected: Bucket[]) => void) => {
-                listener(selected, deselected);
-            });
+            (listener: (bucketSelection: SelectionChange<Bucket>) => void) => listener(bucketSelection)
+        );
     }
 
     update(aggregations: Aggregation[]) {
@@ -122,9 +120,8 @@ export class AggregationGroupView
 
         this.appendChild(aggregationView);
 
-        aggregationView.onBucketSelectionChanged((selected: Bucket[], deselected: Bucket[]) => {
-                this.notifyBucketViewSelectionChanged(selected, deselected);
-            }
+        aggregationView.onBucketSelectionChanged((bucketSelection: SelectionChange<Bucket>) =>
+            this.notifyBucketViewSelectionChanged(bucketSelection)
         );
 
         this.aggregationViews.push(aggregationView);
