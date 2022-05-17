@@ -4,6 +4,7 @@ import {Element} from '../../../dom/Element';
 import {DivEl} from '../../../dom/DivEl';
 import {Checkbox} from '../../Checkbox';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
+import {SelectionChange} from '../../../util/SelectionChange';
 import {Button} from '../../button/Button';
 import {i18n} from '../../../util/Messages';
 import {Body} from '../../../dom/Body';
@@ -26,7 +27,7 @@ export class SelectableListBoxDropdown<I>
 
     private applyButton?: Button;
 
-    private selectionChangedListeners: { (selected: I[], deselected: I[]): void }[] = [];
+    private selectionChangedListeners: { (selectionChange: SelectionChange<I>): void }[] = [];
 
     constructor(listBox: ListBox<I>, options?: SelectableListBoxDropdownOptions<I>) {
         super(listBox, options);
@@ -188,17 +189,16 @@ export class SelectableListBoxDropdown<I>
     }
 
     private applySelection(): void {
-        const newSelectedItems: I[] = [];
-        const deselectedItems: I[] = [];
+        const selectionChange: SelectionChange<I> = {selected: [], deselected: []};
 
         this.selectionDelta.forEach((isSelected: boolean, id: string) => {
             const item: I = this.listBox.getItem(id);
 
             if (isSelected) {
-                newSelectedItems.push(item);
+                selectionChange.selected.push(item);
                 this.selectedItems.set(id, item);
             } else {
-                deselectedItems.push(item);
+                selectionChange.deselected.push(item);
                 this.selectedItems.delete(id);
             }
         });
@@ -212,7 +212,7 @@ export class SelectableListBoxDropdown<I>
         this.optionFilterInput.setValue('', true);
         Array.from(this.itemsWrappers.values()).forEach((itemWrapper: Element) => itemWrapper.setVisible(true));
 
-        this.notifySelectionChanged(newSelectedItems, deselectedItems);
+        this.notifySelectionChanged(selectionChange);
     }
 
     private isSelected(item: I): boolean {
@@ -255,32 +255,31 @@ export class SelectableListBoxDropdown<I>
             this.handleItemSelected(item);
 
             if (!silent) {
-                this.notifySelectionChanged([item], []);
+                this.notifySelectionChanged({selected: [item]});
             }
         } else {
             this.selectedItems.delete(id);
             this.handleItemDeselected(item);
 
             if (!silent) {
-                this.notifySelectionChanged([], [item]);
+                this.notifySelectionChanged({deselected: [item]});
             }
         }
     }
 
-    onSelectionChanged(listener: (selected: I[], deselected: I[]) => void): void {
+    onSelectionChanged(listener: (selectionChange: SelectionChange<I>) => void): void {
         this.selectionChangedListeners.push(listener);
     }
 
-    unSelectionChanged(listener: (selected: I[], deselected: I[]) => void): void {
+    unSelectionChanged(listener: (selectionChange: SelectionChange<I>) => void): void {
         this.selectionChangedListeners =
-            this.selectionChangedListeners.filter((currentListener: (selected: I[], deselected: I[]) => void) => {
-                return currentListener !== listener;
-            });
+            this.selectionChangedListeners.
+                filter((currentListener: (selectionChange: SelectionChange<I>) => void) => currentListener !== listener);
     }
 
-    private notifySelectionChanged(selected: I[], deselected: I[]): void {
-        this.selectionChangedListeners.forEach((listener: (selected: I[], deselected: I[]) => void) => {
-            listener(selected, deselected);
-        });
+    private notifySelectionChanged(selectionChange: SelectionChange<I>): void {
+        this.selectionChangedListeners
+            .forEach((listener: (selectionChange: SelectionChange<I>) => void) => listener(selectionChange)
+        );
     }
 }

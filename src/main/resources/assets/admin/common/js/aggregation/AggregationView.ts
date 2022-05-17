@@ -1,13 +1,14 @@
 import {DivEl} from '../dom/DivEl';
 import {Aggregation} from './Aggregation';
 import {Bucket} from './Bucket';
+import {SelectionChange} from '../util/SelectionChange';
 
 export class AggregationView
     extends DivEl {
 
     protected aggregation: Aggregation;
 
-    private bucketSelectionChangedListeners: { (selected: Bucket[], deselected: Bucket[]): void }[] = [];
+    private bucketSelectionChangedListeners: { (bucketSelection: SelectionChange<Bucket>): void }[] = [];
 
     private displayNameMap: { [name: string]: string } = {};
 
@@ -59,20 +60,18 @@ export class AggregationView
         throw new Error('Must be implemented by inheritor');
     }
 
-    onBucketSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void): void {
+    onBucketSelectionChanged(listener: (bucketSelection: SelectionChange<Bucket>) => void): void {
         this.bucketSelectionChangedListeners.push(listener);
     }
 
-    unBucketSelectionChanged(listener: (selected: Bucket[], deselected: Bucket[]) => void): void {
-        this.bucketSelectionChangedListeners = this.bucketSelectionChangedListeners
-            .filter(function (curr: (selected: Bucket[], deselected: Bucket[]) => void) {
-                return curr !== listener;
-            });
+    unBucketSelectionChanged(listener: (bucketSelection: SelectionChange<Bucket>) => void): void {
+        this.bucketSelectionChangedListeners =
+            this.bucketSelectionChangedListeners.filter((curr: (bucketSelection: SelectionChange<Bucket>) => void) => curr !== listener);
     }
 
-    notifyBucketSelectionChanged(selected: Bucket[], deselected: Bucket[]): void {
-        this.bucketSelectionChangedListeners.forEach((listener: (selected: Bucket[], deselected: Bucket[]) => void) => {
-            listener(selected, deselected);
-        });
+    notifyBucketSelectionChanged(bucketSelection: SelectionChange<Bucket>): void {
+        this.bucketSelectionChangedListeners.forEach((listener: (bucketSelection: SelectionChange<Bucket>) => void) =>
+            listener(bucketSelection)
+        );
     }
 }

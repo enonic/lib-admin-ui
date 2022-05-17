@@ -10,10 +10,6 @@ export class BucketAggregation
 
     private buckets: Bucket[] = [];
 
-    constructor(name: string) {
-        super(name);
-    }
-
     public static fromJsonArray(aggregationWrapperJsons: AggregationTypeWrapperJson[]): BucketAggregation[] {
 
         let aggregations: BucketAggregation[] = [];

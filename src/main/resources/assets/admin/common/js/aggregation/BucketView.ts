@@ -66,8 +66,8 @@ export class BucketView
         this.checkbox.setChecked(false, supressEvent);
     }
 
-    select(supressEvent?: boolean) {
-        this.checkbox.setChecked(true, supressEvent);
+    select(suppressEvent?: boolean) {
+        this.checkbox.setChecked(true, suppressEvent);
     }
 
     notifySelectionChanged(oldValue: boolean, newValue: boolean) {
