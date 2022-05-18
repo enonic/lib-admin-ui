@@ -36,11 +36,11 @@ export class BucketView
         this.updateUI();
     }
 
-    setTooltipActive(flag: boolean) {
+    setTooltipActive(flag: boolean): void {
         this.tooltip.setActive(flag);
     }
 
-    setDisplayName(displayName: string) {
+    setDisplayName(displayName: string): void {
         this.displayName = displayName;
         this.updateLabel();
     }
@@ -53,7 +53,7 @@ export class BucketView
         return this.bucket.getKey();
     }
 
-    update(bucket: Bucket) {
+    update(bucket: Bucket): void {
         this.bucket = bucket;
         this.updateUI();
     }
@@ -62,28 +62,28 @@ export class BucketView
         return this.checkbox.isChecked();
     }
 
-    deselect(supressEvent?: boolean) {
+    deselect(supressEvent?: boolean): void {
         this.checkbox.setChecked(false, supressEvent);
     }
 
-    select(suppressEvent?: boolean) {
+    select(suppressEvent?: boolean): void {
         this.checkbox.setChecked(true, suppressEvent);
     }
 
-    notifySelectionChanged(oldValue: boolean, newValue: boolean) {
+    notifySelectionChanged(oldValue: boolean, newValue: boolean): void {
         this.selectionChangedListeners.forEach((listener: (event: BucketViewSelectionChangedEvent) => void) => {
             listener(new BucketViewSelectionChangedEvent(oldValue, newValue, this));
         });
     }
 
-    unSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
+    unSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void): void {
         this.selectionChangedListeners = this.selectionChangedListeners
             .filter(function (curr: (event: BucketViewSelectionChangedEvent) => void) {
                 return curr !== listener;
             });
     }
 
-    onSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void) {
+    onSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void): void {
         this.selectionChangedListeners.push(listener);
     }
 
@@ -108,15 +108,9 @@ export class BucketView
         this.checkbox.setLabel(this.resolveLabelValue());
     }
 
-    private updateUI() {
-
+    private updateUI(): void {
         this.updateLabel();
-
-        if (this.bucket.getDocCount() > 0 || this.isSelected()) {
-            this.show();
-        } else {
-            this.hide();
-        }
+        this.setVisible(this.bucket.getDocCount() > 0 || this.isSelected());
     }
 
 }
