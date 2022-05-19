@@ -31,6 +31,8 @@ export class BaseLoader<OBJECT> {
 
     private comparator: Comparator<OBJECT>;
 
+    private useDataPreLoad: boolean = false;
+
     constructor(request?: HttpRequest<OBJECT[]>) {
         this.setRequest(request || this.createRequest());
     }
@@ -50,7 +52,15 @@ export class BaseLoader<OBJECT> {
     preLoad(searchString: string = ''): Q.Promise<OBJECT[]> {
         this.notifyLoadingData(false);
 
-        return this.sendPreLoadRequest(searchString)
+        let promise: Q.Promise<OBJECT[]>;
+
+        if (this.useDataPreLoad) {
+            promise = this.preLoadData(searchString);
+        } else {
+            promise = this.sendPreLoadRequest(searchString);
+        }
+
+        return promise
             .then<OBJECT[]>(this.handleLoadSuccess.bind(this, false))
             .catch<OBJECT[]>(this.handleLoadError.bind(this, false))
             .finally(() => this.status = LoaderStatus.PRE_LOADED);
@@ -171,6 +181,15 @@ export class BaseLoader<OBJECT> {
         this.loaderErrorListeners.forEach((listener) => {
             listener(error);
         });
+    }
+
+    setUseDataPreLoad(bool: boolean): BaseLoader<OBJECT> {
+        this.useDataPreLoad = bool;
+        return this;
+    }
+
+    preLoadData(searchString: string): Q.Promise<OBJECT[]> {
+        throw new Error('Must be implemented in deriving classes!');
     }
 
     protected createRequest(): HttpRequest<OBJECT[]> {

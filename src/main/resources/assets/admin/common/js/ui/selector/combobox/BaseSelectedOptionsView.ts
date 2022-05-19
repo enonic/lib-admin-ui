@@ -9,6 +9,8 @@ import {SelectedOption} from './SelectedOption';
 import {SelectedOptionEvent} from './SelectedOptionEvent';
 import {BaseSelectedOptionView, BaseSelectedOptionViewBuilder} from './BaseSelectedOptionView';
 import {assertNotNull} from '../../../util/Assert';
+import {PEl} from '../../../dom/PEl';
+import {i18n} from '../../../util/Messages';
 
 export class BaseSelectedOptionsView<T>
     extends DivEl
@@ -22,6 +24,7 @@ export class BaseSelectedOptionsView<T>
     private optionAddedListeners: { (added: SelectedOptionEvent<T>): void; }[] = [];
     private optionMovedListeners: { (moved: SelectedOption<T>, fromIndex: number): void }[] = [];
     private editable: boolean = true;
+    static MAX_TO_APPEND: number = 100;
 
     constructor(className?: string) {
         super('selected-options' + (className ? ' ' + className : ''));
@@ -68,6 +71,37 @@ export class BaseSelectedOptionsView<T>
             .setRemovable(!this.readonly);
 
         return new SelectedOption<T>(new BaseSelectedOptionView(builder), this.count());
+    }
+
+    /* Will mark all options as selected, but if there are more options than {MAX_TO_APPEND}
+    it'll append only {MAX_TO_APPEND} of them to the view in order to improve performance. */
+    addOptions(options: Option<T>[], silent: boolean = false, keyCode: number): boolean {
+        let result: boolean;
+
+        if (this.maximumOccurrencesReached()) { return false; }
+
+        if (options.length <= BaseSelectedOptionsView.MAX_TO_APPEND) {
+            result = options.every(option => this.addOption(option, silent, keyCode));
+        } else {
+
+            const selectedOptions: SelectedOption<T>[] = options.map((option, index) => {
+                const selectedOption = this.createSelectedOption(option);
+
+                if (index <= BaseSelectedOptionsView.MAX_TO_APPEND) {
+                    const optionView = selectedOption.getOptionView();
+                    optionView.onRemoveClicked(() => this.removeOption(option));
+                    this.appendChild(optionView);
+                }
+
+                return selectedOption;
+            });
+
+            this.list = selectedOptions;
+
+            this.appendChild(new PEl('warning-truncated-users').setHtml(i18n('warning.optionsview.truncated')));
+        }
+
+        return result;
     }
 
     addOption(option: Option<T>, silent: boolean = false, keyCode: number): boolean {

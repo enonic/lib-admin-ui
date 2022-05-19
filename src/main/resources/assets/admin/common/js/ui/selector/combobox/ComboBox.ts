@@ -325,6 +325,10 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         return this.comboBoxDropdown.getOptions();
     }
 
+    getOptionsByValues(values: string[]): Option<OPTION_DISPLAY_VALUE>[] {
+        return this.comboBoxDropdown.getOptionsByValues(values);
+    }
+
     getOptionByValue(value: string): Option<OPTION_DISPLAY_VALUE> {
         return this.comboBoxDropdown.getOptionByValue(value);
     }
@@ -405,18 +409,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         this.hideDropdown();
     }
 
-    selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false, keyCode: number = -1) {
-        assertNotNull(option, 'option cannot be null');
-        if (this.isOptionSelected(option)) {
-            return;
-        }
-
-        let added = this.selectedOptionsView.addOption(option, silent, keyCode);
-        if (!added) {
-            return;
-        }
-
-        this.comboBoxDropdown.markSelections(this.getSelectedOptions());
+    private selectOptionHelper(keyCode: number = -1) {
         this.hideDropdown();
         this.addClass('followed-by-options');
 
@@ -433,7 +426,36 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         if (this.maximumOccurrencesReached() && this.hideComboBoxWhenMaxReached) {
             this.hide();
         }
+
         this.ignoreNextFocus = false;
+    }
+
+    selectOptions(options: Option<OPTION_DISPLAY_VALUE>[], silent: boolean = false, keyCode: number = -1): void {
+        assertNotNull(options, 'options cannot be null');
+
+        const added = this.selectedOptionsView.addOptions(options, silent, keyCode);
+
+        if (!added) { return; }
+
+        this.comboBoxDropdown.markSelections(options);
+
+        this.selectOptionHelper(keyCode);
+    }
+
+    selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false, keyCode: number = -1): void {
+        assertNotNull(option, 'option cannot be null');
+
+        if (this.isOptionSelected(option)) {
+            return;
+        }
+
+        const added = this.selectedOptionsView.addOption(option, silent, keyCode);
+
+        if (!added) { return; }
+
+        this.comboBoxDropdown.markSelections(this.getSelectedOptions());
+
+        this.selectOptionHelper(keyCode);
     }
 
     isOptionSelected(option: Option<OPTION_DISPLAY_VALUE>): boolean {
@@ -682,16 +704,16 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             this.clearSelection(false, false, true);
         }
 
-        let valueSetPromise;
         let optionIds = this.splitValues(value);
         let missingOptionIds = this.getMissingOptionsIds(optionIds);
 
         if (this.displayMissingSelectedOptions || this.removeMissingSelectedOptions && missingOptionIds.length > 0) {
-            valueSetPromise = this.selectExistingAndHandleMissing(optionIds, missingOptionIds);
+            this.selectExistingAndHandleMissing(optionIds, missingOptionIds)
+                .then((options) => { this.notifyValueLoaded(options); });
         } else {
-            valueSetPromise = Q(this.selectExistingOptions(optionIds));
+            const options = this.selectExistingOptions(optionIds);
+            this.notifyValueLoaded(options);
         }
-        valueSetPromise.done((options) => this.notifyValueLoaded(options));
     }
 
     protected splitValues(value: string): string[] {
@@ -799,14 +821,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
     private selectExistingOptions(optionIds: string[]) {
         let selectedOptions = [];
-
-        optionIds.forEach((val) => {
-            let option = this.getOptionByValue(val);
-            if (option != null) {
-                selectedOptions.push(option);
-                this.selectOption(option, true);
-            }
-        });
+        const options = this.getOptionsByValues(optionIds);
+        this.selectOptions(options);
+        selectedOptions = options;
         return selectedOptions;
     }
 

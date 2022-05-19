@@ -177,6 +177,10 @@ export abstract class DropdownGrid<OPTION_DISPLAY_VALUE> {
         });
     }
 
+    getOptionsByValues(values: string[]): Option<OPTION_DISPLAY_VALUE>[] {
+        return this.getGridData().getItemsByIds(values);
+    }
+
     getOptionByValue(value: string): Option<OPTION_DISPLAY_VALUE> {
         return this.getGridData().getItemById(value);
     }
