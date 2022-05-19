@@ -65,6 +65,11 @@ export class PrincipalLoader
         return this.getRequest().isPartiallyLoaded();
     }
 
+    setUsePreData(bool: boolean): PrincipalLoader {
+        super.setUsePreData(bool);
+        return this;
+    }
+
     protected createRequest(): FindPrincipalsRequest {
         return new FindPrincipalsRequest().setSize(10);
     }

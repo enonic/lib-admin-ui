@@ -430,7 +430,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         this.ignoreNextFocus = false;
     }
 
-    selectOptions(options: Option<OPTION_DISPLAY_VALUE>[], silent: boolean = false, keyCode: number = -1){
+    selectOptions(options: Option<OPTION_DISPLAY_VALUE>[], silent: boolean = false, keyCode: number = -1): void {
         assertNotNull(options, 'options cannot be null');
 
         let added = this.selectedOptionsView.addOptions(options, silent, keyCode);
@@ -442,7 +442,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         this.selectOptionHelper(keyCode);
     }
 
-    selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false, keyCode: number = -1) {
+    selectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false, keyCode: number = -1): void {
         assertNotNull(option, 'option cannot be null');
 
         if (this.isOptionSelected(option)) {
