@@ -66,7 +66,7 @@ export class DataView<T extends Slick.SlickData> {
         return this.slickDataView.getItems();
     }
 
-    getItemsByIds(ids: string[]) {
+    getItemsByIds(ids: string[]): T[] {
         return ids.map(id => this.getItemById(id));
     }
 

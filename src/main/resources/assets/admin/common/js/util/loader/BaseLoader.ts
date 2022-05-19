@@ -183,7 +183,7 @@ export class BaseLoader<OBJECT> {
         });
     }
 
-    setUsePreData(bool: boolean) {
+    setUsePreData(bool: boolean): BaseLoader<OBJECT> {
         this.usePreData = bool;
         return this;
     }
