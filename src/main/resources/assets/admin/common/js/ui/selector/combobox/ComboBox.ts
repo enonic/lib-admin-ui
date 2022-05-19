@@ -433,9 +433,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     selectOptions(options: Option<OPTION_DISPLAY_VALUE>[], silent: boolean = false, keyCode: number = -1): void {
         assertNotNull(options, 'options cannot be null');
 
-        let added = this.selectedOptionsView.addOptions(options, silent, keyCode);
+        const added = this.selectedOptionsView.addOptions(options, silent, keyCode);
 
-        if(!added) { return; }
+        if (!added) { return; }
 
         this.comboBoxDropdown.markSelections(options);
 
@@ -449,7 +449,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             return;
         }
 
-        let added = this.selectedOptionsView.addOption(option, silent, keyCode);
+        const added = this.selectedOptionsView.addOption(option, silent, keyCode);
 
         if (!added) { return; }
 
