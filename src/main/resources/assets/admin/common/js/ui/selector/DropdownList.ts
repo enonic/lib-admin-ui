@@ -87,6 +87,10 @@ export class DropdownList<OPTION_DISPLAY_VALUE> {
         return this.dropdownGrid.getSelectedOptions();
     }
 
+    getOptionsByValues(values: string[]): Option<OPTION_DISPLAY_VALUE>[] {
+        return this.dropdownGrid.getOptionsByValues(values);
+    }
+
     getOptionByValue(value: string): Option<OPTION_DISPLAY_VALUE> {
         return this.dropdownGrid.getOptionByValue(value);
     }

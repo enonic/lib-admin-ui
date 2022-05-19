@@ -12,6 +12,8 @@ export interface SelectedOptionsView<T>
 
     createSelectedOption(option: Option<T>): SelectedOption<T>;
 
+    addOptions(option: Option<T>[], silent: boolean, keyCode: number): boolean;
+
     addOption(option: Option<T>, silent: boolean, keyCode: number): boolean;
 
     updateOption(option: Option<T>, newOption: Option<T>, silent?: boolean);
