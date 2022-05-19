@@ -17,7 +17,7 @@ export class Validators {
 
     public static validUrl(input: FormInputEl): string {
         let regexUrl =
-            /^http(s)?:\/\/.?(www\.)?[a-zA-Z0-9][-a-zA-Z0-9@:%._\+~#=]{0,255}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+            /^http(s)?:\/\/\w+(\.\w+)*(:[0-9]+)?(\/.*)?$/;
         let value = input.getValue();
         return !regexUrl.test(value) ? i18n('field.value.invalid') : undefined;
     }
