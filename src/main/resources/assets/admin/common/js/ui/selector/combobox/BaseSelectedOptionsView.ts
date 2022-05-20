@@ -76,32 +76,29 @@ export class BaseSelectedOptionsView<T>
     /* Will mark all options as selected, but if there are more options than {MAX_TO_APPEND}
     it'll append only {MAX_TO_APPEND} of them to the view in order to improve performance. */
     addOptions(options: Option<T>[], silent: boolean = false, keyCode: number): boolean {
-        let result: boolean;
-
         if (this.maximumOccurrencesReached()) { return false; }
 
         if (options.length <= BaseSelectedOptionsView.MAX_TO_APPEND) {
-            result = options.every(option => this.addOption(option, silent, keyCode));
-        } else {
-
-            const selectedOptions: SelectedOption<T>[] = options.map((option, index) => {
-                const selectedOption = this.createSelectedOption(option);
-
-                if (index <= BaseSelectedOptionsView.MAX_TO_APPEND) {
-                    const optionView = selectedOption.getOptionView();
-                    optionView.onRemoveClicked(() => this.removeOption(option));
-                    this.appendChild(optionView);
-                }
-
-                return selectedOption;
-            });
-
-            this.list = selectedOptions;
-
-            this.appendChild(new PEl('warning-truncated-users').setHtml(i18n('warning.optionsview.truncated')));
+            return options.every(option => this.addOption(option, silent, keyCode));
         }
 
-        return result;
+        const selectedOptions: SelectedOption<T>[] = options.map((option, index) => {
+            const selectedOption = this.createSelectedOption(option);
+
+            if (index <= BaseSelectedOptionsView.MAX_TO_APPEND) {
+                const optionView = selectedOption.getOptionView();
+                optionView.onRemoveClicked(() => this.removeOption(option));
+                this.appendChild(optionView);
+            }
+
+            return selectedOption;
+        });
+
+        this.list = selectedOptions;
+
+        this.appendChild(new PEl('warning-truncated-users').setHtml(i18n('warning.optionsview.truncated')));
+
+        return true;
     }
 
     addOption(option: Option<T>, silent: boolean = false, keyCode: number): boolean {
