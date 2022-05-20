@@ -16,12 +16,12 @@ export class PickerBuilder {
 export abstract class PickerPopup
     extends DivEl {
 
-    private submitButton: Button;
+    private readonly submitButton: Button;
 
     protected constructor(className?: string) {
         super(className);
 
-        this.createSubmitButton();
+        this.submitButton = this.createSubmitButton();
     }
 
     doRender(): Q.Promise<boolean> {
@@ -36,10 +36,16 @@ export abstract class PickerPopup
         super.show();
     }
 
-    protected createSubmitButton(): void {
-        this.submitButton = new Button(i18n('action.ok'));
-        this.submitButton.addClass('ok-button');
-        this.submitButton.onClicked(() => this.hide());
+    protected createSubmitButton(): Button {
+        const button: Button = new Button(i18n('action.ok'));
+        button.addClass('ok-button');
+        button.onClicked(() => this.hide());
+
+        return button;
+    }
+
+    getSubmitButton(): Button {
+        return this.submitButton;
     }
 
     protected getChildElements(): Element[] {
@@ -172,11 +178,11 @@ export abstract class Picker<T extends PickerPopup>
         this.appendChild(wrapperEl);
     }
 
-    protected hidePopup(): void {
+    hidePopup(): void {
         this.popup?.hide();
     }
 
-    protected showPopup(): void {
+    showPopup(): void {
         this.initPopup();
         this.popup.show();
     }
