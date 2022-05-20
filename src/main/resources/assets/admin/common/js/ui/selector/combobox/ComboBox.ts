@@ -431,7 +431,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     selectOptions(options: Option<OPTION_DISPLAY_VALUE>[], silent: boolean = false, keyCode: number = -1): void {
-        assertNotNull(options, 'options cannot be null');
+        assert(options.every(option => option !== null), 'no option in options can be null');
 
         const added = this.selectedOptionsView.addOptions(options, silent, keyCode);
 
@@ -821,7 +821,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
     private selectExistingOptions(optionIds: string[]) {
         let selectedOptions = [];
-        const options = this.getOptionsByValues(optionIds);
+        const options = this.getOptionsByValues(optionIds).filter(option => !!option);
         this.selectOptions(options);
         selectedOptions = options;
         return selectedOptions;
