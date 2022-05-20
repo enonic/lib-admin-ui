@@ -1,6 +1,6 @@
 .filter-panel {
   transition: all 0.1s ease-in-out;
-  padding: 8px 20px 20px 10px;
+  padding: 8px 10px 20px 10px;
   border-style: none;
   position: absolute;
   top: 0 !important;
@@ -131,12 +131,13 @@
   }
 
   .aggregation-bucket-view {
-    padding: 1px 0;
+    padding: 3px 0;
 
     .checkbox {
       input[type="checkbox"] {
         & + label {
           padding-left: 26px;
+          display: block;
           color: @admin-font-gray2 !important;
           .ellipsis();
         }
