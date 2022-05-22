@@ -820,11 +820,9 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     private selectExistingOptions(optionIds: string[]) {
-        let selectedOptions = [];
         const options = this.getOptionsByValues(optionIds).filter(option => !!option);
-        this.selectOptions(options);
-        selectedOptions = options;
-        return selectedOptions;
+        this.selectOptions(options, true);
+        return options;
     }
 
     private selectExistingAndHandleMissing(optionIds: string[],

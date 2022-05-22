@@ -178,6 +178,9 @@ export abstract class DropdownGrid<OPTION_DISPLAY_VALUE> {
     }
 
     getOptionsByValues(values: string[]): Option<OPTION_DISPLAY_VALUE>[] {
+        if (values.length === 1) {
+            return [this.getOptionByValue(values[0])];
+        }
         return this.getGridData().getItemsByIds(values);
     }
 
