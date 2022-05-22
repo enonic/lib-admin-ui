@@ -75,7 +75,9 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
                 callback();
             }
         } else {
-            this.mask.show();
+            if (this.isVisible()) {
+                this.mask.show();
+            }
             if (BaseLoaderComboBox.debug) {
                 console.debug(this.toString() + '.doWhenLoaded: waiting to be loaded');
             }
