@@ -84,6 +84,10 @@ export class DropdownTreeGrid<OPTION_DISPLAY_VALUE>
         return item ? item.getData() : null;
     }
 
+    getOptionsByValues(values: string[]): Option<OPTION_DISPLAY_VALUE>[] {
+        return values.map((value: string) => this.getOptionByValue(value));
+    }
+
     getOptionByValue(value: string): Option<OPTION_DISPLAY_VALUE> {
         const item: TreeNode<Option<OPTION_DISPLAY_VALUE>> = this.getItemByDataId(value);
         return item ? item.getData() : null;
