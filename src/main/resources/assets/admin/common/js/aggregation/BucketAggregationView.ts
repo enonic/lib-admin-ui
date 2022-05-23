@@ -5,6 +5,7 @@ import {Bucket} from './Bucket';
 import {SelectionChange} from '../util/SelectionChange';
 import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
 import {Aggregation} from './Aggregation';
+import {BucketsContainer} from './BucketsContainer';
 
 export class BucketAggregationView
     extends AggregationView {
@@ -13,7 +14,16 @@ export class BucketAggregationView
 
     protected bucketViews: BucketView[] = [];
 
+    protected bucketsContainer: BucketsContainer;
+
     private bucketSelectionChangedListeners: { (bucketSelection: SelectionChange<Bucket>): void }[] = [];
+
+    constructor(aggregation: Aggregation) {
+        super(aggregation);
+
+        this.initElements();
+        this.initListeners();
+    }
 
     setDisplayNames(): void {
         this.bucketViews.forEach((bucketView: BucketView) =>
@@ -59,16 +69,20 @@ export class BucketAggregationView
         this.aggregation = <BucketAggregation> aggregation;
         this.bucketViews = [];
 
-        let isEmpty: boolean = true;
-        this.aggregation.getBuckets().forEach((bucket: Bucket) => {
+        this.aggregation.getBuckets().filter((bucket: Bucket) => bucket.getDocCount() > 0).forEach((bucket: Bucket) => {
             const wasSelected: boolean = selectedBucketNames.some((selectedBucketName: string) =>  selectedBucketName === bucket.getKey());
             this.addBucket(bucket, wasSelected);
-            if (bucket.getDocCount() > 0) {
-                isEmpty = false;
-            }
         });
 
-        this.setVisible(!isEmpty);
+        this.setVisible(this.bucketViews.length > 0);
+    }
+
+    protected initElements(): void {
+        this.bucketsContainer = new BucketsContainer();
+    }
+
+    protected initListeners(): void {
+    //
     }
 
     protected removeAll(): void {
@@ -100,11 +114,7 @@ export class BucketAggregationView
         });
 
         this.bucketViews.push(bucketView);
-        this.appendBucketView(bucketView);
-    }
-
-    protected appendBucketView(bucketView: BucketView): void {
-        this.appendChild(bucketView);
+        this.bucketsContainer.addBucketView(bucketView);
     }
 
     private getSelectedBucketNames(): string[] {
@@ -133,5 +143,13 @@ export class BucketAggregationView
         this.bucketSelectionChangedListeners.forEach((listener: (bucketSelection: SelectionChange<Bucket>) => void) =>
             listener(bucketSelection)
         );
+    }
+
+    doRender(): Q.Promise<boolean> {
+        return super.doRender().then((rendered: boolean) => {
+            this.appendChild(this.bucketsContainer);
+
+            return rendered;
+        });
     }
 }
