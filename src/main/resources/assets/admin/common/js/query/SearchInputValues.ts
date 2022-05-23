@@ -16,21 +16,11 @@ export class SearchInputValues {
     }
 
     public getTextSearchFieldValue(): string {
-
         return this.textSearchFieldValue;
     }
 
     public getSelectedValuesForAggregationName(name: string): Bucket[] {
-
-        for (let i = 0; i < this.aggregationSelections.length; i++) {
-
-            if (this.aggregationSelections[i].getName() === name) {
-
-                return this.aggregationSelections[i].getSelectedBuckets();
-            }
-
-        }
-
-        return null;
+        return this.aggregationSelections.find(
+            (aggregationSelection: AggregationSelection) => aggregationSelection.getName() === name)?.getSelectedBuckets();
     }
 }

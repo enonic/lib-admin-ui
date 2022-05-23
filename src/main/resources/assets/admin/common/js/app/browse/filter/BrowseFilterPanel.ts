@@ -15,6 +15,7 @@ import {SearchInputValues} from '../../../query/SearchInputValues';
 import {LabelEl} from '../../../dom/LabelEl';
 import {ActionButton} from '../../../ui/button/ActionButton';
 import {Action} from '../../../ui/Action';
+import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 
 export class BrowseFilterPanel<T>
     extends Panel {
@@ -63,16 +64,16 @@ export class BrowseFilterPanel<T>
         this.aggregationContainer.hide();
         this.appendChild(this.aggregationContainer);
 
-        let groupViews = this.getGroupViews();
-        if (groupViews != null) {
-            groupViews.forEach((aggregationGroupView: AggregationGroupView) => {
+        this.getGroupViews()?.forEach((aggregationGroupView: AggregationGroupView) => {
+                aggregationGroupView.onBucketViewSelectionChanged(() => {
+                    this.search().then(() => {
+                        aggregationGroupView.getHTMLElement().scrollIntoView();
+                    }).catch(DefaultErrorHandler.handle);
+                });
 
-                    aggregationGroupView.onBucketViewSelectionChanged(() => this.search());
-
-                    this.aggregationContainer.addAggregationGroupView(aggregationGroupView);
-                }
-            );
-        }
+                this.aggregationContainer.addAggregationGroupView(aggregationGroupView);
+            }
+        );
 
         this.onRendered(() => {
             this.appendChild(this.hideFilterPanelButton);
@@ -128,13 +129,12 @@ export class BrowseFilterPanel<T>
         this.searchField.giveFocus();
     }
 
-    updateAggregations(aggregations: Aggregation[], doUpdateAll?: boolean) {
-        this.aggregationContainer.updateAggregations(aggregations, doUpdateAll);
+    updateAggregations(aggregations: Aggregation[]) {
+        this.aggregationContainer.updateAggregations(aggregations);
     }
 
     getSearchInputValues(): SearchInputValues {
-
-        let searchInputValues: SearchInputValues = new SearchInputValues();
+        const searchInputValues: SearchInputValues = new SearchInputValues();
 
         searchInputValues.setAggregationSelections(this.aggregationContainer.getSelectedValuesByAggregationName());
         searchInputValues.setTextSearchFieldValue(this.searchField.getEl().getValue());
@@ -150,14 +150,14 @@ export class BrowseFilterPanel<T>
         return this.searchField.getHTMLElement()['value'].trim() !== '';
     }
 
-    search() {
+    search(): Q.Promise<void> {
         const hasFilterSet = this.hasFilterSet();
 
         this.clearFilter.setVisible(hasFilterSet);
         this.updateResultsTitle(!hasFilterSet);
 
         this.notifySearchStarted();
-        this.doSearch();
+        return this.doSearch();
     }
 
     refresh() {

@@ -5,7 +5,6 @@ import {Bucket} from './Bucket';
 import {SelectionChange} from '../util/SelectionChange';
 import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
 import {Aggregation} from './Aggregation';
-import {ObjectHelper} from '../ObjectHelper';
 
 export class BucketAggregationView
     extends AggregationView {
@@ -14,13 +13,7 @@ export class BucketAggregationView
 
     protected bucketViews: BucketView[] = [];
 
-    static createAggregationView(aggregation: Aggregation): BucketAggregationView {
-        if (ObjectHelper.iFrameSafeInstanceOf(aggregation, BucketAggregation)) {
-            return new BucketAggregationView(<BucketAggregation>aggregation);
-        } else {
-            throw Error('Creating BucketAggregationView of this type of Aggregation is not supported: ' + aggregation);
-        }
-    }
+    private bucketSelectionChangedListeners: { (bucketSelection: SelectionChange<Bucket>): void }[] = [];
 
     setDisplayNames(): void {
         this.bucketViews.forEach((bucketView: BucketView) =>
@@ -125,5 +118,20 @@ export class BucketAggregationView
     protected removeBucketView(bucketView: BucketView): void {
         this.bucketViews = this.bucketViews.filter((view: BucketView) => view !== bucketView);
         bucketView.remove();
+    }
+
+    onBucketSelectionChanged(listener: (bucketSelection: SelectionChange<Bucket>) => void): void {
+        this.bucketSelectionChangedListeners.push(listener);
+    }
+
+    unBucketSelectionChanged(listener: (bucketSelection: SelectionChange<Bucket>) => void): void {
+        this.bucketSelectionChangedListeners =
+            this.bucketSelectionChangedListeners.filter((curr: (bucketSelection: SelectionChange<Bucket>) => void) => curr !== listener);
+    }
+
+    notifyBucketSelectionChanged(bucketSelection: SelectionChange<Bucket>): void {
+        this.bucketSelectionChangedListeners.forEach((listener: (bucketSelection: SelectionChange<Bucket>) => void) =>
+            listener(bucketSelection)
+        );
     }
 }
