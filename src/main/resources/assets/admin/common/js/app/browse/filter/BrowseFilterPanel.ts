@@ -129,7 +129,7 @@ export class BrowseFilterPanel<T>
         this.searchField.giveFocus();
     }
 
-    updateAggregations(aggregations: Aggregation[]) {
+    updateAggregations(aggregations: Aggregation[]): void {
         this.aggregationContainer.updateAggregations(aggregations);
     }
 

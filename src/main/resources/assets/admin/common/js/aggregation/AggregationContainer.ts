@@ -31,7 +31,7 @@ export class AggregationContainer
         return hasSelected;
     }
 
-    updateAggregations(aggregations: Aggregation[]) {
+    updateAggregations(aggregations: Aggregation[]): void {
         this.aggregationGroupViews.forEach((aggregationGroupView: AggregationGroupView) => {
             const matchingAggregations: Aggregation[] = aggregations.filter((current: Aggregation) => {
                 return aggregationGroupView.handlesAggregation(current);
