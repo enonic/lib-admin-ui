@@ -6,6 +6,7 @@ import {H2El} from '../dom/H2El';
 import {Aggregation} from './Aggregation';
 import {Bucket} from './Bucket';
 import {SelectionChange} from '../util/SelectionChange';
+import {BucketAggregation} from './BucketAggregation';
 
 export class AggregationGroupView
     extends DivEl {
@@ -50,20 +51,17 @@ export class AggregationGroupView
      * Override this method to give other criteria for this group to display given facet.
      */
     handlesAggregation(aggregation: Aggregation) {
-
         return aggregation.getName() === this.name;
     }
 
     getSelectedValuesByAggregationName(): AggregationSelection[] {
-
-        let aggregationSelections: AggregationSelection[] = [];
+        const aggregationSelections: AggregationSelection[] = [];
 
         this.aggregationViews.forEach((bucketAggregationView: BucketAggregationView) => {
-
-            let selectedBuckets: Bucket[] = bucketAggregationView.getSelectedValues();
+            const selectedBuckets: Bucket[] = bucketAggregationView.getSelectedValues();
 
             if (selectedBuckets != null) {
-                let aggregationSelection: AggregationSelection = new AggregationSelection(bucketAggregationView.getName());
+                const aggregationSelection: AggregationSelection = new AggregationSelection(bucketAggregationView.getName());
                 aggregationSelection.setValues(selectedBuckets);
 
                 aggregationSelections.push(aggregationSelection);
@@ -85,7 +83,6 @@ export class AggregationGroupView
     }
 
     deselectGroup(supressEvent?: boolean) {
-
         this.aggregationViews.forEach((aggregationView: AggregationView) => {
             aggregationView.deselectFacet(supressEvent);
         });
@@ -119,18 +116,23 @@ export class AggregationGroupView
         const aggregationView: AggregationView = this.createAggregationView(aggregation);
 
         this.appendChild(aggregationView);
-
-        aggregationView.onBucketSelectionChanged((bucketSelection: SelectionChange<Bucket>) =>
-            this.notifyBucketViewSelectionChanged(bucketSelection)
-        );
-
         this.aggregationViews.push(aggregationView);
 
         return aggregationView;
     }
 
     protected createAggregationView(aggregation: Aggregation): AggregationView {
-        return BucketAggregationView.createAggregationView(aggregation);
+        if (aggregation instanceof BucketAggregation) {
+            const bucketAggregationView: BucketAggregationView = new BucketAggregationView(aggregation);
+
+            bucketAggregationView.onBucketSelectionChanged((bucketSelection: SelectionChange<Bucket>) =>
+                this.notifyBucketViewSelectionChanged(bucketSelection)
+            );
+
+            return bucketAggregationView;
+        } else {
+            throw Error('Creating this type of Aggregation view is not supported: ' + aggregation);
+        }
     }
 
     private getAggregationView(name: string): AggregationView {

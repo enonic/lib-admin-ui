@@ -1,14 +1,11 @@
 import {DivEl} from '../dom/DivEl';
 import {Aggregation} from './Aggregation';
 import {Bucket} from './Bucket';
-import {SelectionChange} from '../util/SelectionChange';
 
 export class AggregationView
     extends DivEl {
 
     protected aggregation: Aggregation;
-
-    private bucketSelectionChangedListeners: { (bucketSelection: SelectionChange<Bucket>): void }[] = [];
 
     private displayNameMap: { [name: string]: string } = {};
 
@@ -58,20 +55,5 @@ export class AggregationView
 
     update(_aggregation: Aggregation) {
         throw new Error('Must be implemented by inheritor');
-    }
-
-    onBucketSelectionChanged(listener: (bucketSelection: SelectionChange<Bucket>) => void): void {
-        this.bucketSelectionChangedListeners.push(listener);
-    }
-
-    unBucketSelectionChanged(listener: (bucketSelection: SelectionChange<Bucket>) => void): void {
-        this.bucketSelectionChangedListeners =
-            this.bucketSelectionChangedListeners.filter((curr: (bucketSelection: SelectionChange<Bucket>) => void) => curr !== listener);
-    }
-
-    notifyBucketSelectionChanged(bucketSelection: SelectionChange<Bucket>): void {
-        this.bucketSelectionChangedListeners.forEach((listener: (bucketSelection: SelectionChange<Bucket>) => void) =>
-            listener(bucketSelection)
-        );
     }
 }
