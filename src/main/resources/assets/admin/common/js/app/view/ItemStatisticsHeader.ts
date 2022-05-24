@@ -68,7 +68,7 @@ export class ItemStatisticsHeader
     private createIconEl(item: ViewItem) {
         let iconEl: Element;
 
-        if (item.getIconSrc && item.getIconSrc()) {
+        if (typeof item.getIconSrc === 'function' && item.getIconSrc()) {
             iconEl = new ImgEl(item.getIconSrc());
         } else if (item.getIconUrl()) {
             let size = this.getIconSize(item);
