@@ -66,7 +66,7 @@ export class BrowseFilterPanel<T>
 
         this.getGroupViews()?.forEach((aggregationGroupView: AggregationGroupView) => {
                 aggregationGroupView.onBucketViewSelectionChanged(() => {
-                    this.search().then(() => {
+                    this.search(aggregationGroupView.getName()).then(() => {
                         aggregationGroupView.getHTMLElement().scrollIntoView();
                     }).catch(DefaultErrorHandler.handle);
                 });
@@ -150,14 +150,14 @@ export class BrowseFilterPanel<T>
         return this.searchField.getHTMLElement()['value'].trim() !== '';
     }
 
-    search(): Q.Promise<void> {
+    search(lastChangedAggregation?: string): Q.Promise<void> {
         const hasFilterSet = this.hasFilterSet();
 
         this.clearFilter.setVisible(hasFilterSet);
         this.updateResultsTitle(!hasFilterSet);
 
         this.notifySearchStarted();
-        return this.doSearch();
+        return this.doSearch(lastChangedAggregation);
     }
 
     refresh() {
@@ -276,7 +276,7 @@ export class BrowseFilterPanel<T>
         return this.hasFilterSet() || this.selectionSection.isActive();
     }
 
-    protected doSearch(): Q.Promise<void> {
+    protected doSearch(lastChangedAggregation?: string): Q.Promise<void> {
         throw new Error('Must be implemented by inheritors');
     }
 
