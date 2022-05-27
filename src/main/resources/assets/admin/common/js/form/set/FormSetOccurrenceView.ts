@@ -33,6 +33,7 @@ import {FormOptionSetOption} from './optionset/FormOptionSetOption';
 import {FormItemSet} from './itemset/FormItemSet';
 import {Input} from '../Input';
 import {RadioButton} from '../inputtype/radiobutton/RadioButton';
+import {ObjectHelper} from '../../ObjectHelper';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
@@ -531,13 +532,18 @@ export abstract class FormSetOccurrenceView
         return selectedRadioButton['value'];
     }
 
+    private isRadioButtonInput(formItem: FormItem): boolean {
+        return (ObjectHelper.iFrameSafeInstanceOf(formItem, Input) &&
+                (<Input>formItem).getInputType().toString() === 'RadioButton');
+    }
+
     private getPropertyValue(prop: Property, formItem: FormItem): string {
         if (!formItem) {
             return '';
         }
 
         // Special treatment of RadioButton as it stores button value, not label in the property
-        if ((<Input>formItem).getInputType().toString() === 'RadioButton') {
+        if (this.isRadioButtonInput(formItem)) {
             return this.getRadioButtonTextByValue(<Input>formItem, prop.getString());
         }
 
