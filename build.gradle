@@ -27,7 +27,7 @@ archivesBaseName = 'lib-admin-ui'
 
 node {
     download = true
-    version = '16.0.0'
+    version = '16.15.0'
 }
 
 def resourcesDir = file( 'src/main/resources' )
