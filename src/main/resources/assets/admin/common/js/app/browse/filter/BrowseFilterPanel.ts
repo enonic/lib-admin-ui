@@ -66,9 +66,7 @@ export class BrowseFilterPanel<T>
 
         this.getGroupViews()?.forEach((aggregationGroupView: AggregationGroupView) => {
                 aggregationGroupView.onBucketViewSelectionChanged(() => {
-                    this.search(aggregationGroupView.getName()).then(() => {
-                        aggregationGroupView.getHTMLElement().scrollIntoView();
-                    }).catch(DefaultErrorHandler.handle);
+                    this.search(aggregationGroupView.getName()).catch(DefaultErrorHandler.handle);
                 });
 
                 this.aggregationContainer.addAggregationGroupView(aggregationGroupView);
