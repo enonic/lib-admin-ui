@@ -183,9 +183,15 @@
         }
       }
 
-      &.max-length-limited.show-counter {
-        .separator {
-          display: inline;
+      &.max-length-limited {
+        + .help-text {
+          padding-right: 175px;
+        }
+        
+        &.show-counter {
+          .separator {
+            display: inline;
+          }
         }
       }
     }
