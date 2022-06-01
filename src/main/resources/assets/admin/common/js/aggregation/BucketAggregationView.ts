@@ -74,10 +74,10 @@ export class BucketAggregationView
             this.addBucket(bucket, wasSelected);
         });
 
-        this.setVisible(this.isToBeShown());
+        this.setVisible(this.hasNonEmptyBuckets());
     }
 
-    protected isToBeShown(): boolean {
+    protected hasNonEmptyBuckets(): boolean {
         return this.bucketViews.length > 0;
     }
 
