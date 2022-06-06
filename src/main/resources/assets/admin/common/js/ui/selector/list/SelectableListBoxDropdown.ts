@@ -8,6 +8,10 @@ import {SelectionChange} from '../../../util/SelectionChange';
 import {Button} from '../../button/Button';
 import {i18n} from '../../../util/Messages';
 import {Body} from '../../../dom/Body';
+import {KeyBindings} from '../../KeyBindings';
+import {KeyBinding} from '../../KeyBinding';
+import * as Q from 'q';
+import {ExtendedKeyboardEvent} from 'mousetrap';
 
 export interface SelectableListBoxDropdownOptions<I>
     extends ListBoxDropdownOptions<I> {
@@ -25,7 +29,7 @@ export class SelectableListBoxDropdown<I>
 
     private itemsWrappers: Map<string, Element> = new Map();
 
-    private applyButton?: Button;
+    private applyButton: Button;
 
     private selectionChangedListeners: { (selectionChange: SelectionChange<I>): void }[] = [];
 
@@ -36,10 +40,8 @@ export class SelectableListBoxDropdown<I>
     protected initElements(): void {
         super.initElements();
 
-        if (this.options.multiple) {
-            this.applyButton = new Button(i18n('action.ok'));
-            this.applyButton.hide();
-        }
+        this.applyButton = new Button(i18n('action.ok'));
+        this.applyButton.hide();
     }
 
     protected initListeners(): void {
@@ -47,56 +49,103 @@ export class SelectableListBoxDropdown<I>
 
         this.addListBoxListeners();
         this.listenClickOutside();
-        this.applyButton?.onClicked(() => this.applySelection());
+        this.addKeyboardNavigation();
+        this.applyButton.onClicked(() => this.applySelection());
     }
 
     private addListBoxListeners(): void {
         this.listBox.onItemsAdded((items: I[]) => {
-            items.forEach((item: I) => {
-                const view: Element = this.listBox.getItemView(item);
-                const wrapper: Element = new DivEl('item-view-wrapper');
-
-                this.itemsWrappers.set(this.listBox.getIdOfItem(item), wrapper);
-
-                view.replaceWith(wrapper);
-                view.addClass('item-view');
-
-                if (this.options.multiple) {
-                    wrapper.appendChild(this.createCheckbox(item, view));
-                } else {
-                    view.onClicked(() => {
-                        if (this.isSelected(item)) {
-                            this.handleItemDeselected(item);
-                        } else {
-                            if (this.selectedItems.size > 0) {
-                                Array.from(this.selectedItems.values()).forEach((item: I) => this.handleItemDeselected(item));
-                            }
-
-                            this.handleItemSelected(item);
-                        }
-                    });
-                }
-
-                wrapper.appendChild(view);
-            });
+            items.forEach((item: I) => this.handleItemAdded(item));
         });
 
         this.listBox.onItemsRemoved((items: I[]) => {
-            items.forEach((item: I) => {
-                const id: string = this.listBox.getIdOfItem(item);
-                const wrapper: Element = this.itemsWrappers.get(id);
-                wrapper?.remove();
-                this.itemsWrappers.delete(id);
-            });
+            items.forEach((item: I) => this.handleItemRemoved(item));
         });
+    }
+
+    private handleItemAdded(item: I): void {
+        const view: Element = this.listBox.getItemView(item);
+        const wrapper: Element = new DivEl('item-view-wrapper');
+        const id: string = this.listBox.getIdOfItem(item);
+
+        this.itemsWrappers.set(id, wrapper);
+
+        view.replaceWith(wrapper);
+        view.addClass('item-view');
+
+        if (this.options.multiple) {
+            wrapper.appendChild(this.createCheckbox(item, view));
+        } else {
+            wrapper.getEl().setTabIndex(0);
+
+            view.onClicked(() => {
+                this.toggleMarkedSelected(item);
+            });
+        }
+
+        wrapper.appendChild(view);
+    }
+
+    private handleItemRemoved(item: I): void {
+        const id: string = this.listBox.getIdOfItem(item);
+        const wrapper: Element = this.itemsWrappers.get(id);
+        wrapper?.remove();
+        this.itemsWrappers.delete(id);
+    }
+
+    private addKeyboardNavigation(): void {
+        let isShowListBoxEvent: boolean = false;
+
+        const navigationKeyBindings = [
+            new KeyBinding('esc').setGlobal(true).setCallback(this.handleClickOutside.bind(this)),
+            new KeyBinding('up').setGlobal(true).setCallback((e: ExtendedKeyboardEvent) => {
+                e.stopPropagation();
+                this.focusPrevious();
+                return false;
+            }),
+            new KeyBinding('down').setGlobal(true).setCallback(() => {
+                if (!isShowListBoxEvent) {
+                    this.focusNext();
+                }
+                return false;
+            }),
+            new KeyBinding('enter').setGlobal(true).setCallback(() => {
+                this.handlerEnterPressed();
+                return false;
+            }),
+        ];
+
+        if (!this.options.multiple) { // when multiple is on then space works for checkboxes automatically
+            const spaceKeyBinding: KeyBinding = new KeyBinding('space')
+                .setGlobal(true)
+                .setCallback(() => {
+                    const focusedItem: I = this.getFocusedItem();
+
+                    if (focusedItem) {
+                        this.toggleMarkedSelected(focusedItem);
+                    }
+                    return false;
+                });
+
+            navigationKeyBindings.push(spaceKeyBinding);
+        }
 
         this.listBox.onShown(() => {
             this.selectionDelta = new Map();
+            isShowListBoxEvent = true;
+            KeyBindings.get().shelveBindings();
+            KeyBindings.get().bindKeys(navigationKeyBindings);
+
+            setTimeout(() => { // if open by arrow key then wait for event to finish
+                isShowListBoxEvent = false;
+            }, 1);
         });
 
         this.listBox.onHidden(() => {
             this.resetSelection();
             this.selectionDelta = new Map();
+            KeyBindings.get().unbindKeys(navigationKeyBindings);
+            KeyBindings.get().unshelveBindings();
         });
     }
 
@@ -105,14 +154,14 @@ export class SelectableListBoxDropdown<I>
             const itemWrapper: Element = this.itemsWrappers.get(id);
 
             if (itemWrapper) {
-                this.toggleItemWrapperSelection(itemWrapper, !value);
+                this.toggleItemWrapperSelected(itemWrapper, !value);
             }
         });
 
         this.selectionDelta = new Map();
     }
 
-    private toggleItemWrapperSelection(itemWrapper: Element, isSelected: boolean): void {
+    private toggleItemWrapperSelected(itemWrapper: Element, isSelected: boolean): void {
         itemWrapper?.toggleClass('selected', isSelected);
 
         if (this.options.multiple) {
@@ -149,9 +198,9 @@ export class SelectableListBoxDropdown<I>
 
         checkbox.onValueChanged((event: ValueChangedEvent) => {
             if (event.getNewValue()?.toLowerCase() === 'true') {
-                this.handleItemSelected(item);
+                this.handleItemMarkedSelected(item);
             } else {
-                this.handleItemDeselected(item);
+                this.handleItemMarkedDeselected(item);
             }
         });
 
@@ -162,9 +211,9 @@ export class SelectableListBoxDropdown<I>
         return checkbox;
     }
 
-    private handleItemSelected(item: I): void {
+    private handleItemMarkedSelected(item: I): void {
         const id: string = this.listBox.getIdOfItem(item);
-        this.toggleItemWrapperSelection(this.itemsWrappers.get(id), true);
+        this.toggleItemWrapperSelected(this.itemsWrappers.get(id), true);
 
         if (this.isSelected(item)) {
             this.selectionDelta.delete(id);
@@ -172,12 +221,12 @@ export class SelectableListBoxDropdown<I>
             this.selectionDelta.set(id, true);
         }
 
-        this.applyButton?.setVisible(this.selectionDelta.size > 0);
+        this.applyButton.setVisible(this.selectionDelta.size > 0);
     }
 
-    private handleItemDeselected(item: I): void {
+    private handleItemMarkedDeselected(item: I): void {
         const id: string = this.listBox.getIdOfItem(item);
-        this.toggleItemWrapperSelection(this.itemsWrappers.get(id), false);
+        this.toggleItemWrapperSelected(this.itemsWrappers.get(id), false);
 
         if (this.isSelected(item)) {
             this.selectionDelta.set(id, false);
@@ -185,10 +234,25 @@ export class SelectableListBoxDropdown<I>
             this.selectionDelta.delete(id);
         }
 
-        this.applyButton?.setVisible(this.selectionDelta.size > 0);
+        this.applyButton.setVisible(this.selectionDelta.size > 0);
     }
 
     private applySelection(): void {
+        const selectionChange: SelectionChange<I> = this.getSelectionChange();
+
+        this.selectionDelta = new Map();
+        this.listBox.hide();
+        this.applyButton.hide();
+
+        this.optionFilterInput.setValue('', true);
+        Array.from(this.itemsWrappers.values()).forEach((itemWrapper: Element) => itemWrapper.setVisible(true));
+
+        if (selectionChange.selected.length > 0 || selectionChange.deselected.length > 0) {
+            this.notifySelectionChanged(selectionChange);
+        }
+    }
+
+    private getSelectionChange(): SelectionChange<I> {
         const selectionChange: SelectionChange<I> = {selected: [], deselected: []};
 
         this.selectionDelta.forEach((isSelected: boolean, id: string) => {
@@ -203,16 +267,7 @@ export class SelectableListBoxDropdown<I>
             }
         });
 
-        if (this.options.multiple) {
-            this.selectionDelta = new Map();
-            this.listBox.hide();
-            this.applyButton.hide();
-        }
-
-        this.optionFilterInput.setValue('', true);
-        Array.from(this.itemsWrappers.values()).forEach((itemWrapper: Element) => itemWrapper.setVisible(true));
-
-        this.notifySelectionChanged(selectionChange);
+        return selectionChange;
     }
 
     private isSelected(item: I): boolean {
@@ -224,12 +279,97 @@ export class SelectableListBoxDropdown<I>
         this.itemsWrappers.get(this.listBox.getIdOfItem(item))?.setVisible(this.options.filter(item, searchString));
     }
 
+    private focusNext(): void {
+        const focusedItemIndex: number = this.getFocusedItemIndex();
+        const arrayAfterFocusedItem: Element[] = focusedItemIndex > -1 ? this.listBox.getChildren().slice(focusedItemIndex + 1) : [];
+        const arrayToLookForItemToFocus: Element[] = arrayAfterFocusedItem.concat(this.listBox.getChildren());
+        this.focusFirstAvailableItem(arrayToLookForItemToFocus);
+    }
+
+    private focusFirstAvailableItem(items: Element[]): void {
+        items.filter((el: Element) => el.isVisible()).some((itemWrapper: Element) => {
+            return this.options.multiple ? itemWrapper.getFirstChild().giveFocus() : itemWrapper.giveFocus();
+        });
+    }
+
+    private focusPrevious(): void {
+        const focusedItemIndex: number = this.getFocusedItemIndex();
+        const arrayBeforeFocusedItem: Element[] = focusedItemIndex > -1 ? this.listBox.getChildren().slice(0, focusedItemIndex) : [];
+        const arrayToLookForItemToFocus: Element[] =
+            arrayBeforeFocusedItem.reverse().concat(this.listBox.getChildren().slice().reverse());
+        this.focusFirstAvailableItem(arrayToLookForItemToFocus);
+    }
+
+    private getFocusedItemIndex(): number {
+        let focusedItemIndex: number = -1;
+
+        this.listBox.getChildren().find((itemWrapper: Element, index: number) => {
+            focusedItemIndex = index;
+            const elemToCheck: HTMLElement = this.options.multiple ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() :
+                                             itemWrapper.getHTMLElement();
+            return elemToCheck === document.activeElement;
+        });
+
+        return focusedItemIndex;
+    }
+
+    private getFocusedItem(): I {
+        let focusedItem: I = null;
+
+        this.itemsWrappers.forEach((itemWrapper: Element, key: string) => {
+            const elemToCheck: HTMLElement =
+                this.options.multiple ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() : itemWrapper.getHTMLElement();
+
+            if (elemToCheck === document.activeElement) {
+                focusedItem = this.listBox.getItem(key);
+            }
+        });
+
+        return focusedItem;
+    }
+
+    private toggleMarkedSelected(item: I): void { // only when in single selection mode
+        const id: string = this.listBox.getIdOfItem(item);
+
+        if ((this.isSelected(item) && !this.selectionDelta.has(id)) || this.selectionDelta.get(id)) {
+            this.handleItemMarkedDeselected(item);
+        } else {
+            if (this.selectionDelta.size > 0) {
+                this.resetSelection();
+            }
+
+            if (this.selectedItems.size > 0) { // unselecting previous selection
+                const selectedId: string = this.selectedItems.keys().next().value;
+                this.toggleItemWrapperSelected(this.itemsWrappers.get(selectedId), false);
+                this.selectionDelta.set(selectedId, false);
+            }
+
+            this.handleItemMarkedSelected(item);
+        }
+    }
+
+    private handlerEnterPressed(): void {
+        const focusedItem: I = this.getFocusedItem();
+
+        if (focusedItem) {
+            if (this.selectionDelta.size === 0) {
+                if (this.isSelected(focusedItem)) {
+                    this.handleItemMarkedDeselected(focusedItem);
+                } else {
+                    this.handleItemMarkedSelected(focusedItem);
+                }
+            }
+
+            this.applySelection();
+        }
+    }
+
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
             this.addClass('selectable-listbox-dropdown');
             this.listBox.addClass('selectable-listbox');
-            this.applyButton?.addClass('apply-selection-button');
-            this.applyButton?.insertAfterEl(this.optionFilterInput);
+            this.applyButton.addClass('apply-selection-button');
+            this.applyButton.insertAfterEl(this.optionFilterInput);
 
             return rendered;
         });
@@ -252,14 +392,14 @@ export class SelectableListBoxDropdown<I>
 
         if (selected) {
             this.selectedItems.set(id, item);
-            this.handleItemSelected(item);
+            this.handleItemMarkedSelected(item);
 
             if (!silent) {
                 this.notifySelectionChanged({selected: [item]});
             }
         } else {
             this.selectedItems.delete(id);
-            this.handleItemDeselected(item);
+            this.handleItemMarkedDeselected(item);
 
             if (!silent) {
                 this.notifySelectionChanged({deselected: [item]});
@@ -272,14 +412,11 @@ export class SelectableListBoxDropdown<I>
     }
 
     unSelectionChanged(listener: (selectionChange: SelectionChange<I>) => void): void {
-        this.selectionChangedListeners =
-            this.selectionChangedListeners.
-                filter((currentListener: (selectionChange: SelectionChange<I>) => void) => currentListener !== listener);
+        this.selectionChangedListeners = this.selectionChangedListeners
+            .filter((currentListener: (selectionChange: SelectionChange<I>) => void) => currentListener !== listener);
     }
 
     private notifySelectionChanged(selectionChange: SelectionChange<I>): void {
-        this.selectionChangedListeners
-            .forEach((listener: (selectionChange: SelectionChange<I>) => void) => listener(selectionChange)
-        );
+        this.selectionChangedListeners.forEach((listener: (selectionChange: SelectionChange<I>) => void) => listener(selectionChange));
     }
 }
