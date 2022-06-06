@@ -4,6 +4,7 @@ import {DropdownHandle} from '../../button/DropdownHandle';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
+import {KeyHelper} from '../../KeyHelper';
 
 export interface ListBoxDropdownOptions<I> {
     filter?: (item: I, searchString: string) => boolean;
@@ -56,6 +57,12 @@ export class ListBoxDropdown<I> extends DivEl {
                 this.listBox.getItems().forEach((item: I) => {
                     this.filterItem(item, searchString);
                 });
+            }
+        });
+
+        this.optionFilterInput.onKeyDown((event: KeyboardEvent) => {
+            if (!this.listBox.isVisible() && KeyHelper.isArrowDownKey(event)) {
+                this.listBox.setVisible(true);
             }
         });
     }

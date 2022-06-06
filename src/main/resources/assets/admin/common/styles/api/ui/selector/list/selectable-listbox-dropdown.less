@@ -15,11 +15,11 @@
 
   .item-view-wrapper {
     display: flex;
-    padding: 4px 0 2px 5px;
+    padding: 3px 0 3px 5px;
 
     .item-view {
       flex-grow: 1;
-      padding-left: 5px;
+      padding-left: 7px;
       .ellipsis();
 
       * {
@@ -38,8 +38,12 @@
     }
 
     &.selected {
-      background-color: @admin-blue;
       color: @admin-white;
+    }
+
+    &:focus-visible {
+      outline: none;
+      background-color: @admin-bg-light-gray;
     }
   }
 }
