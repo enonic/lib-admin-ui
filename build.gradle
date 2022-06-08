@@ -32,6 +32,36 @@ node {
 
 def resourcesDir = file( 'src/main/resources' )
 
+publishing {
+    publications {
+        mavenJava( MavenPublication ) {
+            pom {
+                name = 'Enonic Admin UI Library'
+                description = 'UI components for Enonic XP applications'
+                url = 'https://github.com/enonic/lib-admin-ui'
+                licenses {
+                    license {
+                        name = 'GNU General Public License v3.0'
+                        url = 'https://github.com/enonic/lib-admin-ui/blob/master/LICENSE.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'developers'
+                        name = 'Enonic developers'
+                        email = 'developers@enonic.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/enonic/lib-admin-ui.git'
+                    developerConnection = 'scm:git:git@github.com:enonic/lib-admin-ui.git'
+                    url = 'https://github.com/enonic/lib-admin-ui'
+                }
+            }
+        }
+    }
+}
+
 loadConfiguration()
 
 task lint( type: NpmTask, dependsOn: npmInstall ) {
