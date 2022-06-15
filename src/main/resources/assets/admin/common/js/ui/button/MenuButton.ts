@@ -58,6 +58,10 @@ export class MenuButton
         return this.actionButton;
     }
 
+    getMenuItems(): MenuItem[] {
+        return this.menu.getMenuItems();
+    }
+
     getMenuItem(action: Action): MenuItem {
         return this.menu.getMenuItem(action);
     }
