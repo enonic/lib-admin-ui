@@ -17,6 +17,17 @@ import {assert, assertNotNull, assertState} from '../util/Assert';
 import {ElementEvent} from './ElementEvent';
 import * as DOMPurify from 'dompurify';
 
+export interface PurifyConfig {
+    addTags?: string[];
+    addAttributes?: string[];
+}
+
+// wrapper interface for a DOMPurify interface to make a sanitize function return expected string output
+interface DOMPurifyConfig extends DOMPurify.Config {
+    RETURN_DOM_FRAGMENT?: false | undefined;
+    RETURN_DOM?: false | undefined
+}
+
 export class ElementBuilder {
 
     generateId: boolean;
@@ -231,6 +242,25 @@ export class Element {
     static fromString(s: string, loadExistingChildren: boolean = true): Element {
         const sanitizedHtml: string = DOMPurify.sanitize(s);
         return Element.fromHtml(sanitizedHtml, loadExistingChildren);
+    }
+
+    static fromCustomarilySanitizedString(s: string, loadExistingChildren: boolean = true, sanitizeConfig: PurifyConfig): Element {
+        const sanitizedHtml: string = DOMPurify.sanitize(s, Element.createDOMPurifyConfig(sanitizeConfig));
+        return Element.fromHtml(sanitizedHtml, loadExistingChildren);
+    }
+
+    private static createDOMPurifyConfig(purifyConfig?: PurifyConfig): DOMPurifyConfig  {
+        const config: DOMPurifyConfig = {};
+
+        if (purifyConfig.addTags) {
+            config.ADD_TAGS = purifyConfig.addTags.slice();
+        }
+
+        if (purifyConfig.addAttributes) {
+            config.ADD_ATTR = purifyConfig.addAttributes.slice();
+        }
+
+        return config;
     }
 
     static fromHtml(html: string, loadExistingChildren: boolean = true): Element {
