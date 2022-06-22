@@ -6,7 +6,6 @@ import {IdProviderKey} from './IdProviderKey';
 import {Principal} from './Principal';
 import {PrincipalKey} from './PrincipalKey';
 import {GetPrincipalsByKeysRequest} from './GetPrincipalsByKeysRequest';
-import {BaseLoader} from '../util/loader/BaseLoader';
 
 export class PrincipalLoader
     extends PostLoader<Principal> {
