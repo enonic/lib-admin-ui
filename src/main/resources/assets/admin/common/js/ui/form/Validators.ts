@@ -14,7 +14,7 @@ export class Validators {
     }
 
     public static validUrl(input: FormInputEl): string {
-        const regex = /^http(s):\/\/\w+(\.\w+)*(:[0-9]+)?((\/|\#).*)?(\?([^&=]+)=([^&=]+))?(?:&([^&=]+)=([^&=]+))*$/;
+        const regex = /^http(s)?:\/\/\w+(\.\w+)*(:[0-9]+)?((\/|\#).*)?(\?([^&=]+)=([^&=]+))?(?:&([^&=]+)=([^&=]+))*$/;
         return !regex.test(input.getValue()) ? i18n('field.value.invalid') : undefined;
     }
 
@@ -24,7 +24,7 @@ export class Validators {
     }
 
     public static validRelativeUrl(input: FormInputEl): string {
-        const regex = /^[^\/]+\/[^\/].*$|^\/[^\/].*$/;
+        const regex = /^\w+.*$|^[^\/]+\/[^\/].*$|^\/[^\/].*$/;
         return !regex.test(input.getValue()) ? i18n('field.value.invalid') : undefined;
     }
 }
