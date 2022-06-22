@@ -5,6 +5,7 @@ import {LoaderErrorEvent} from './event/LoaderErrorEvent';
 import {HttpRequest} from '../../rest/HttpRequest';
 import {ClassHelper} from '../../ClassHelper';
 import {Comparator} from '../../Comparator';
+import {ObjectHelper} from '../../ObjectHelper';
 
 enum LoaderStatus {
     NOT_STARTED,
@@ -20,6 +21,8 @@ export class BaseLoader<OBJECT> {
     private status: LoaderStatus = LoaderStatus.NOT_STARTED;
 
     private results: OBJECT[];
+
+    private filteredResults: OBJECT[];
 
     private searchString: string;
 
@@ -92,15 +95,15 @@ export class BaseLoader<OBJECT> {
     }
 
     search(searchString: string): Q.Promise<OBJECT[]> {
-        this.searchString = searchString;
+        this.setSearchString(searchString);
 
-        const searchResult: OBJECT[] = this.results ? this.results.filter(this.filterFn, this) : [];
+        const searchResults: OBJECT[] = this.results ? this.results.filter(this.filterFn, this) : [];
 
-        if (searchResult.length < this.results?.length) {
-            this.notifyLoadedData(searchResult);
+        if (!ObjectHelper.anyArrayEquals(searchResults, this.filteredResults)) {
+            this.notifyLoadedData(searchResults);
         }
 
-        return Q(searchResult);
+        return Q(searchResults);
     }
 
     getResults(): OBJECT[] {
@@ -128,6 +131,7 @@ export class BaseLoader<OBJECT> {
     }
 
     notifyLoadedData(results: OBJECT[], postLoad?: boolean, silent: boolean = false) {
+        this.filteredResults = results;
         this.status = LoaderStatus.LOADED;
         if (!silent) {
             const evt = new LoadedDataEvent<OBJECT>(results, postLoad);
