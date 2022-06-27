@@ -130,6 +130,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     private keyEventsHandler: KeyEventsHandler;
     private optionsToSelect: Map<string, Option<OPTION_DISPLAY_VALUE>> = new Map<string, Option<OPTION_DISPLAY_VALUE>>();
     private optionsToUnselect: Map<string, Option<OPTION_DISPLAY_VALUE>> = new Map<string, Option<OPTION_DISPLAY_VALUE>>();
+    private static EXPANDED_CLASS: string = 'expanded';
 
     constructor(name: string, config: ComboBoxConfig<OPTION_DISPLAY_VALUE>) {
         super('div', 'combobox', StyleHelper.COMMON_PREFIX, config.value);
@@ -225,7 +226,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     isDropdownShown(): boolean {
-        return this.comboBoxDropdown.isDropdownShown();
+        return this.comboBoxDropdown.isDropdownShown() || this.hasClass(ComboBox.EXPANDED_CLASS);
     }
 
     isDropdownRendered() {
@@ -249,7 +250,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
 
         this.comboBoxDropdown.resetActiveSelection();
 
-        this.addClass('expanded');
+        this.addClass(ComboBox.EXPANDED_CLASS);
     }
 
     setEmptyDropdownText(label: string) {
@@ -260,13 +261,14 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         if (!this.isDropdownShown()) {
             return;
         }
+
         this.dropdownHandle.up();
         this.comboBoxDropdown.hideDropdown();
         if (this.applySelectionsButton) {
             this.applySelectionsButton.hide();
         }
 
-        this.removeClass('expanded');
+        this.removeClass(ComboBox.EXPANDED_CLASS);
         if (this.isDropdownRendered()) {
             this.removeDropdown();
         }
