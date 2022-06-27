@@ -229,13 +229,21 @@ export abstract class ModalDialog
     }
 
     private isFocusOutEventToBeProcessed(): boolean {
-        return this.isOpen() && this.hasTabbable() && !this.hasSubDialog() && !this.isMasked() && !this.isIframeWithinDialogHavingFocus();
+        return this.isOpen() &&
+            this.hasTabbable() &&
+            !this.hasSubDialog() &&
+            !this.isMasked() &&
+            !this.isIframeWithinDialogHavingFocus() &&
+            !this.isValidFocusedElement();
     }
 
     // html editor might have gotten focus
     private isIframeWithinDialogHavingFocus(): boolean {
-        return document.activeElement?.tagName.toLowerCase() === 'iframe' &&
-               this.hasModalDialogAsParent(<HTMLElement>document.activeElement);
+        return this.isIframeFocused() && this.hasModalDialogAsParent(<HTMLElement>document.activeElement);
+    }
+
+    private isIframeFocused(): boolean {
+        return document.activeElement?.tagName.toLowerCase() === 'iframe';
     }
 
     private hasModalDialogAsParent(el: HTMLElement): boolean {
@@ -251,6 +259,10 @@ export abstract class ModalDialog
         }
 
         return false;
+    }
+
+    private isValidFocusedElement(): boolean {
+        return this.isIframeFocused() && document.activeElement?.className?.indexOf('cke_') > -1;
     }
 
     private bringFocusBackToDialog(lastFocused: HTMLElement): void {
