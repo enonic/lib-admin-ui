@@ -375,7 +375,8 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
     }
 
     private isScrolledToBottom(containerEl: HTMLElement): boolean {
-        return Math.ceil(containerEl.scrollHeight - containerEl.scrollTop) <= 2 * containerEl.clientHeight;
+        // distance to the end of scroll is less than 50px
+        return containerEl.scrollHeight - containerEl.scrollTop - containerEl.clientHeight <= 50;
     }
 
     private handleRangeLoad(handler: () => void) {
