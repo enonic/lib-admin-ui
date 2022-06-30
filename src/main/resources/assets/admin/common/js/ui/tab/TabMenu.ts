@@ -382,7 +382,6 @@ export class TabMenu
     protected handleClick(e: MouseEvent) {
         // menu itself was clicked so do nothing
         e.preventDefault();
-        e.stopPropagation();
         new HideTabMenuEvent(this).fire();
     }
 
