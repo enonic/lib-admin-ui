@@ -18,9 +18,10 @@ export class Validators {
 
         const protocol: RegExp = /^http(s)?:\/\//;
         const domain: RegExp = /\w+(\.\w+)*/;
-        const port: RegExp = /(:[0-9]+)?/   ;
-        const path: RegExp = /((\/)+([A-z0-9\-\%]+\/)*[A-z0-9\-\%]*\/?)?/;
-        const pathFile: RegExp = /(\.\w+)?/;
+        const port: RegExp = Validators.getPortRegExp();
+        const path: RegExp = Validators.getPathRegExp();
+        const endWithSlash: RegExp = /(\/)?/;
+        const extension: RegExp = Validators.getExtensionRegExp();
         const query: RegExp = Validators.getQueryRegExp();
         const fragment: RegExp = Validators.getFragmentRegExp();
 
@@ -29,7 +30,8 @@ export class Validators {
             domain,
             port,
             path,
-            pathFile,
+            endWithSlash,
+            extension,
             query,
             fragment
         ]);
@@ -46,8 +48,8 @@ export class Validators {
         const userWithoutPassword: RegExp = /([\w\d\S]+\@)?/;
         const userAndPassword: RegExp = /(([\w\d\S])+\:([\w\d\S])+\@)?/ ;
         const host: RegExp = /([a-zA-Z0-9][a-zA-Z0-9\.]*)+/;
-        const port: RegExp = /(:[0-9]+)?/;
-        const path: RegExp = /((\/)+([A-z0-9\-\%]+\/)*[A-z0-9\-\%]*)?/;
+        const port: RegExp = Validators.getPortRegExp();
+        const path: RegExp = Validators.getPathRegExp();
         const extension: RegExp = Validators.getExtensionRegExp();
         const typecode: RegExp = /(\;type=(a|i|d))?/;
 
@@ -87,6 +89,14 @@ export class Validators {
 
     private static getRegexFromArray(regexes: RegExp[]): RegExp {
         return new RegExp(regexes.map((regex: RegExp): string => regex.source).join(''));
+    }
+
+    private static getPortRegExp(): RegExp {
+        return /(:[0-9]+)?/;
+    }
+
+    private static getPathRegExp(): RegExp {
+        return /((\/)+([A-z0-9\-\%]+\/)*[A-z0-9\-\%]*)?/;
     }
 
     private static getExtensionRegExp(): RegExp {
