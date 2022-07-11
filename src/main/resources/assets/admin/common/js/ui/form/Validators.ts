@@ -17,7 +17,7 @@ export class Validators {
         //http://<host>:<port>/<path>?<query>#<fragment>
 
         const protocol: RegExp = /^http(s)?:\/\//;
-        const domain: RegExp = /\w+(\.\w+)*/;
+        const domain: RegExp = /((?!-)[A-Za-z0-9-]+([\-\.]{1}[a-z0-9]+)*(\.[A-Za-z]{2,6})?)+/;
         const port: RegExp = Validators.getPortRegExp();
         const path: RegExp = Validators.getPathRegExp();
         const endWithSlash: RegExp = /(\/)?/;
@@ -96,7 +96,7 @@ export class Validators {
     }
 
     private static getPathRegExp(): RegExp {
-        return /((\/)+([A-z0-9\-\%]+\/)*[A-z0-9\-\%]*)?/;
+        return /((\/)+([A-z0-9\-\%\.]+\/)*[A-z0-9\-\%\.]*)?/;
     }
 
     private static getExtensionRegExp(): RegExp {
@@ -104,7 +104,7 @@ export class Validators {
     }
 
     private static getQueryRegExp(): RegExp {
-        return /(\?([^&=]+)=([^&=]+))?(?:&([^&=]+)=([^&=]+))*/;
+        return /(\?([^&=]+)=([^&=]*))?(?:&([^&=]+)=([^&=]*))*/;
     }
 
     private static getFragmentRegExp(): RegExp {
