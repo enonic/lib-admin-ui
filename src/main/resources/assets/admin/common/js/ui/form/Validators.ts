@@ -112,7 +112,7 @@ export class Validators {
     }
 
     private static isInputValueValid(regex: RegExp, input: FormInputEl): boolean {
-        const matches: RegExpExecArray | null = regex.exec(input.getValue());
+        const matches: RegExpExecArray | null = regex.exec(input.getValue().trim());
         return Boolean(matches && matches[0] === matches?.input);
     }
 
