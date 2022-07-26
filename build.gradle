@@ -64,14 +64,16 @@ publishing {
 
 loadConfiguration()
 
-task lint( type: NpmTask, dependsOn: npmInstall ) {
+task lint( type: NpmTask ) {
     args = [ 'run', 'lint:quiet' ]
     inputs.files fileTree( dir: 'modules', include: '**/src/main/**.*' )
     outputs.dir file('gradle')
     outputs.upToDateWhen { false }
 }
 
-task typescriptPkg( type: NpmTask, dependsOn: lint ) {
+lint.onlyIf { !project.gradle.startParameter.getExcludedTaskNames().contains('lint') }
+
+task typescriptPkg( type: NpmTask, dependsOn: [npmInstall, lint] ) {
     def buildEnv = isProd() ? 'prod' : 'dev'
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     args = [ 'run', "build:$buildEnv" ]
@@ -79,7 +81,7 @@ task typescriptPkg( type: NpmTask, dependsOn: lint ) {
     outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
 }
 
-task typescriptLib( type: NpmTask, dependsOn: lint ) {
+task typescriptLib( type: NpmTask, dependsOn: [npmInstall, lint] ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build library, that should be included to HTML.'
     args = [ 'run', 'build:lib' ]
