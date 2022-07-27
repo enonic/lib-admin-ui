@@ -71,7 +71,9 @@ task lint( type: NpmTask, dependsOn: npmInstall ) {
     outputs.upToDateWhen { false }
 }
 
-task typescriptPkg( type: NpmTask, dependsOn: lint ) {
+check.dependsOn( lint )
+
+task typescriptPkg( type: NpmTask, dependsOn: npmInstall ) {
     def buildEnv = isProd() ? 'prod' : 'dev'
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     args = [ 'run', "build:$buildEnv" ]
@@ -79,7 +81,7 @@ task typescriptPkg( type: NpmTask, dependsOn: lint ) {
     outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
 }
 
-task typescriptLib( type: NpmTask, dependsOn: lint ) {
+task typescriptLib( type: NpmTask, dependsOn: npmInstall ) {
     environment = [ 'NODE_ENV': nodeEnvironment() ]
     description = 'Build library, that should be included to HTML.'
     args = [ 'run', 'build:lib' ]
