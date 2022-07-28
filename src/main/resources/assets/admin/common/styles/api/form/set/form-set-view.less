@@ -8,6 +8,7 @@
         &:not(.hide-validation-errors).invalid {
           border: 3px solid @admin-red;
           box-shadow: none;
+          padding: 7px 7px 7px 10px;
         }
       }
     }
@@ -67,16 +68,20 @@
         }
       }
 
+      > .form-item-set-occurrence-view {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
       > .form-item-set-occurrence-view,
       > .form-option-set-occurrence-view {
-        clear: left;
         margin: 0;
         box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+        padding: 10px 10px 10px 13px;
 
         .more-button {
-          width: 40px;
-          height: 40px;
-          float: right;
+          width: 26px;
+          height: 26px;
 
           &[disabled] {
             display: none;
@@ -88,15 +93,12 @@
         }
 
         .form-occurrence-draggable-label {
-          display: inline-block;
+          padding-top: 2px;
+          line-height: 24px;
+          flex-grow: 1;
           font-size: 16px;
           width: calc(100% - 55px);
-          padding: 10px 0 0 13px;
           .ellipsis();
-
-          &:not(.custom-label) {
-            margin-bottom: 5px;
-          }
 
           &.expandable {
             cursor: zoom-out;
@@ -104,7 +106,7 @@
 
           .drag-control {
             display: none;
-            height: 20px;
+            height: 18px;
             width: 10px;
             background-position-x: center;
             padding-right: 0;
@@ -117,7 +119,7 @@
           }
 
           &.custom-label {
-            line-height: 16px;
+            line-height: 12px;
 
             .drag-control {
               height: 27px;
@@ -126,15 +128,15 @@
             p.note {
               display: block;
               font-size: 10px;
+              line-height: 10px;
+              margin-top: 6px;
             }
           }
         }
 
         > .form-item-set-occurrences-container,
         > .form-option-set-occurrences-container {
-          &:not(.empty) {
-            padding: 0 13px 13px 13px;
-          }
+          flex-basis: 100%;
 
           > .input-view:last-child {
             margin-bottom: 0;
@@ -223,8 +225,9 @@
 
           .form-occurrence-draggable-label {
             &:not(.custom-label) {
-              line-height: 22px;
+              line-height: 16px;
               height: 20px;
+              margin-top: 4px;
             }
 
             > .drag-control {

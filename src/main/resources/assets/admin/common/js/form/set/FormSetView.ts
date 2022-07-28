@@ -171,8 +171,8 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
                 this.validate(true);
             }
 
-            if (this.shouldCollapseOccurrences()) {
-                this.toggleOccurrencesVisibility(false, true);
+            if (this.shouldExpandOccurrences()) {
+                this.toggleOccurrencesVisibility(true);
             }
 
             deferred.resolve(null);
@@ -181,15 +181,16 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         return deferred.promise;
     }
 
-    private shouldCollapseOccurrences(): boolean {
+    private shouldExpandOccurrences(): boolean {
         if (this.getContext().getFormState().isNew()) {
-            return false;
-        }
-        if (this.formItemOccurrences.getOccurrences().length === 1) {
-            return false;
+            return true;
         }
 
-        return true;
+        if (this.formItemOccurrences.getOccurrences().length === 1) {
+            return true;
+        }
+
+        return false;
     }
 
     validate(silent: boolean = true, viewToSkipValidation: FormItemOccurrenceView = null): ValidationRecording {

@@ -14,21 +14,18 @@ export class FormOccurrenceDraggableLabel
     constructor(label?: string, subTitle?: string) {
         super('form-occurrence-draggable-label');
 
-        let nodes: Node[] = [];
+        const dragHandle = new DivEl('drag-control');
 
-        let dragHandle = new DivEl('drag-control');
-        nodes.push(dragHandle.getHTMLElement());
+        this.title = document.createTextNode(label || '');
 
-        this.title = document.createTextNode(label);
-        nodes.push(this.title);
-
-        this.subTitleText = subTitle;
         this.subTitle = new PEl('note');
-        this.subTitle.setHtml(subTitle);
-        nodes.push(this.subTitle.getHTMLElement());
-        this.refreshCustomClass();
+        if (subTitle) {
+            this.subTitleText = subTitle;
+            this.subTitle.setHtml(subTitle);
+            this.refreshCustomClass();
+        }
 
-        this.getEl().appendChildren(nodes);
+        this.getEl().appendChildren([dragHandle.getHTMLElement(), this.title, this.subTitle.getHTMLElement()]);
     }
 
     setText(label: string) {

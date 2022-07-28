@@ -38,7 +38,7 @@ export class FormItemLayer {
 
     private lazyRender: boolean = true;
 
-    private formItemLayerFactory: FormItemLayerFactory;
+    private readonly formItemLayerFactory: FormItemLayerFactory;
 
     constructor(context: FormContext, layerFactory: FormItemLayerFactory) {
         this.context = context;
@@ -50,8 +50,13 @@ export class FormItemLayer {
         return this;
     }
 
+    hasParentElement(): boolean {
+        return !!this.parentEl;
+    }
+
     setParentElement(parentEl: Element): FormItemLayer {
         this.parentEl = parentEl;
+        this.appendFormItemViews();
         return this;
     }
 
@@ -60,11 +65,18 @@ export class FormItemLayer {
         return this;
     }
 
+    private appendFormItemViews(): void {
+        if (!this.parentEl) {
+            return;
+        }
+        this.parentEl.appendChildren(...this.formItemViews);
+    }
+
     layout(propertySet: PropertySet, validate: boolean = true): Q.Promise<FormItemView[]> {
         this.formItemViews = [];
 
         return this.doLayoutPropertySet(propertySet, validate).then(() => {
-            this.formItemViews.map(formItemView => this.parentEl.appendChild(formItemView));
+            this.appendFormItemViews();
 
             return Q<FormItemView[]>(this.formItemViews);
         });
