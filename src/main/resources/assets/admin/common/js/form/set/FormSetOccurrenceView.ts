@@ -99,8 +99,6 @@ export abstract class FormSetOccurrenceView
         this.postInitElements();
         this.initListeners();
         this.layoutElements();
-
-        this.appendChild(this.formSetOccurrencesContainer);
     }
 
     protected abstract getLabelText(): string;
@@ -118,7 +116,6 @@ export abstract class FormSetOccurrenceView
     public layout(validate: boolean = true): Q.Promise<void> {
         return this.formItemLayer
             .setFormItems(this.getFormItems())
-            .setParentElement(this.formSetOccurrencesContainer)
             .setParent(this)
             .layout(this.propertySet, validate)
             .then((formItemViews: FormItemView[]) => {
@@ -137,10 +134,6 @@ export abstract class FormSetOccurrenceView
 
         this.bindPropertySet(this.propertySet);
 
-        if (!this.isExpandable()) {
-            this.setContainerVisible(false);
-        }
-
         this.label.setText(this.getLabelText());
         this.label.setSubTitle(this.getLabelSubTitle());
 
@@ -152,6 +145,7 @@ export abstract class FormSetOccurrenceView
         this.moreButton = this.createMoreButton();
         this.label = new FormOccurrenceDraggableLabel();
         this.formSetOccurrencesContainer = new DivEl(this.occurrenceContainerClassName);
+        this.formSetOccurrencesContainer.setVisible(false);
         this.confirmDeleteAction = new Action(i18n('action.delete')).setClass('red large delete-button');
         this.noAction = new Action(i18n('action.cancel')).setClass('black large');
         this.deleteConfirmationMask = ConfirmationMask.create()
@@ -230,8 +224,12 @@ export abstract class FormSetOccurrenceView
         });
     }
 
+    private initOccurrencesContainer(): void {
+        this.formItemLayer.setParentElement(this.formSetOccurrencesContainer);
+    }
+
     protected layoutElements() {
-        this.appendChildren<Element>(this.label, this.moreButton);
+        this.appendChildren<Element>(this.label, this.moreButton, this.formSetOccurrencesContainer);
     }
 
     hasNonDefaultValues(): boolean {
@@ -301,6 +299,9 @@ export abstract class FormSetOccurrenceView
     setContainerVisible(visible: boolean) {
         if (!this.isExpandable()) {
             return;
+        }
+        if (visible && !this.formItemLayer.hasParentElement()) {
+            this.initOccurrencesContainer();
         }
         this.formSetOccurrencesContainer.setVisible(visible);
         this.toggleClass('collapsed', !visible);
