@@ -6,7 +6,7 @@ import {BrowserHelper} from '../../BrowserHelper';
 export class Button
     extends ButtonEl {
 
-    private labelEl: SpanEl;
+    private readonly labelEl: SpanEl;
 
     constructor(label?: string) {
         super('button');
@@ -16,10 +16,6 @@ export class Button
             this.labelEl.getEl().setInnerHtml(label);
         }
         this.appendChild(this.labelEl);
-    }
-
-    isEnabled() {
-        return !this.getEl().isDisabled();
     }
 
     setLabel(label: string, escapeHtml: boolean = true): Button {
@@ -45,13 +41,6 @@ export class Button
                 this.getEl().removeAttribute('title');
             }
         }
-        return this;
-    }
-
-    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
-
-    setEnabled(value: boolean) {
-        super.setEnabled(value);
         return this;
     }
 }
