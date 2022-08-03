@@ -8,6 +8,9 @@ import {Input} from '../../Input';
 import {InputValidationRecording} from '../InputValidationRecording';
 import {ClassHelper} from '../../../ClassHelper';
 import {BaseInputType} from './BaseInputType';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {ValidationError} from '../../../ValidationError';
+import {FormItemPath} from '../../FormItemPath';
 
 export abstract class BaseInputTypeManagingAdd
     extends BaseInputType {
@@ -18,8 +21,8 @@ export abstract class BaseInputTypeManagingAdd
     private propertyArray: PropertyArray;
     private propertyArrayListener: () => void;
 
-    constructor(className: string) {
-        super('input-type-view' + (className ? ' ' + className : ''));
+    protected constructor(context: InputTypeViewContext, className?: string) {
+        super(context, className);
 
         this.initListeners();
     }
@@ -62,14 +65,56 @@ export abstract class BaseInputTypeManagingAdd
             return;
         }
 
-
         const recording: InputValidationRecording = this.doValidate();
+
+        this.addCustomValidation(recording);
 
         if (!silent && recording.validityChanged(this.previousValidationRecording)) {
             this.notifyValidityChanged(new InputValidityChangedEvent(recording));
         }
 
         this.previousValidationRecording = recording;
+    }
+
+    private addCustomValidation(recording: InputValidationRecording): void {
+        const customValidationError: ValidationError = this.getCustomError();
+
+        if (customValidationError) {
+            recording.setErrorMessage(customValidationError.getMessage());
+        }
+    }
+
+    private getCustomError(): ValidationError {
+        if (!this.context.formContext.hasValidationErrors()) {
+            return null;
+        }
+
+        const inputPath: FormItemPath = this.input.getPath();
+        const inputPathAsString: string = inputPath.isAbsolute() ? inputPath.toString().substring(1) : inputPath.toString();
+
+        return this.context.formContext.getValidationErrors().find((error: ValidationError) => {
+            return error.getPropertyPath() === inputPathAsString;
+        });
+    }
+
+    handleValueChanged(silent: boolean = true): void {
+        this.cleanCustomValidationErrors();
+        this.validate(silent);
+    }
+
+    private cleanCustomValidationErrors(): void {
+        const customValidationError: ValidationError = this.getCustomError();
+
+        if (customValidationError) {
+            this.removeCustomValidationError(customValidationError);
+        }
+    }
+
+    private removeCustomValidationError(errorToRemove: ValidationError): void {
+        const customValidationErrors: ValidationError[] = this.context.formContext.getValidationErrors();
+        const newCustomValidationErrors: ValidationError[] =
+            customValidationErrors.filter((error: ValidationError) => error !== errorToRemove);
+        this.context.formContext.setValidationErrors(newCustomValidationErrors);
     }
 
     protected doValidate(): InputValidationRecording {

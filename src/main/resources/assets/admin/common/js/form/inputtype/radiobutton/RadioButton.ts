@@ -27,7 +27,6 @@ export class RadioButton
 
     constructor(config: InputTypeViewContext) {
         super(config, 'radio-button');
-        this.readConfig(config.inputConfig);
     }
 
     getValueType(): ValueType {
@@ -102,9 +101,9 @@ export class RadioButton
         this.selector.unBlur(listener);
     }
 
-    private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
+    protected readInputConfig():  void {
         const options: RadioButtonOption[] = [];
-        const optionValues: { [name: string]: string }[] = inputConfig['option'] || [];
+        const optionValues: { [name: string]: string }[] = this.context.inputConfig['option'] || [];
         const l: number = optionValues.length;
         let optionValue: { [name: string]: string };
 

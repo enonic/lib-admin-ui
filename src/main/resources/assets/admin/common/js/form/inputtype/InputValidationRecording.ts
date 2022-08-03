@@ -46,7 +46,7 @@ export class InputValidationRecording
     }
 
     equals(that: InputValidationRecording): boolean {
-        return this.isValid() === that.isValid();
+        return this.isValid() === that.isValid() && this.errorMessage == that.errorMessage;
     }
 
     validityChanged(other: InputValidationRecording) {
