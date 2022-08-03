@@ -15,7 +15,7 @@ export interface MultiStepDialogConfig
 
     steps: DialogStep[];
 
-    submitCallback?: { (): void; };
+    submitCallback?: () => void;
 
     closeOnSubmit?: boolean;
 }
@@ -102,7 +102,7 @@ export class MultiStepDialog
 
     protected submit(): void {
         if (this.config.submitCallback) {
-            this.config.submitCallback;
+            this.config.submitCallback();
         }
 
         if (this.config.closeOnSubmit) {
