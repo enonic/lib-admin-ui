@@ -15,15 +15,13 @@ export abstract class BaseInputTypeSingleOccurrence
     extends BaseInputType {
 
     protected ignorePropertyChange: boolean;
-    private context: InputTypeViewContext;
     private property: Property;
     private propertyListener: (event: PropertyValueChangedEvent) => void;
     private inputValueChangedListeners: { (event: ValueChangedEvent): void }[] = [];
 
-    constructor(ctx: InputTypeViewContext, className?: string) {
-        super('input-type-view' + (className ? ' ' + className : ''));
+    protected constructor(ctx: InputTypeViewContext, className?: string) {
+        super(ctx, className);
         assertNotNull(ctx, 'CONTEXT cannot be null');
-        this.context = ctx;
 
         this.initListeners();
     }

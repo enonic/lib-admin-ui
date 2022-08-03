@@ -18,6 +18,7 @@ import {Class} from '../../../Class';
 import {ComboBoxOption} from './ComboBoxOption';
 import {ComboBoxDisplayValueViewer} from './ComboBoxDisplayValueViewer';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
+import {InputValidationRecording} from '../InputValidationRecording';
 
 export class ComboBox
     extends BaseInputTypeManagingAdd {
@@ -29,8 +30,7 @@ export class ComboBox
     private selectedOptionsView: SelectedOptionsView<string>;
 
     constructor(context: InputTypeViewContext) {
-        super('');
-        this.readConfig(context.inputConfig);
+        super(context, 'combobox-input-type-view');
     }
 
     getComboBox(): ComboBoxEl<string> {
@@ -117,7 +117,7 @@ export class ComboBox
             }
 
             this.ignorePropertyChange(false);
-            this.validate(false);
+            this.handleValueChanged(false);
 
             this.fireFocusSwitchEvent(event);
         });
@@ -127,7 +127,7 @@ export class ComboBox
             this.getPropertyArray().remove(event.getSelectedOption().getIndex());
 
             this.ignorePropertyChange(false);
-            this.validate(false);
+            this.handleValueChanged(false);
         });
 
         return comboBox;
@@ -164,16 +164,17 @@ export class ComboBox
         return this.getPropertyArray().getSize();
     }
 
-    private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
-        let options: ComboBoxOption[] = [];
+    protected readInputConfig(): void {
+        const options: ComboBoxOption[] = [];
+        const optionValues: { [name: string]: string }[] = this.context.inputConfig['option'] || [];
+        const l: number = optionValues.length;
+        let optionValue: { [name: string]: string };
 
-        let optionValues = inputConfig['option'] || [];
-        let l = optionValues.length;
-        let optionValue;
         for (let i = 0; i < l; i++) {
             optionValue = optionValues[i];
             options.push({label: optionValue['value'], value: optionValue['@value']});
         }
+
         this.comboBoxOptions = options;
     }
 
