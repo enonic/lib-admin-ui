@@ -29,17 +29,17 @@ export abstract class DialogStep {
 
     abstract getHtmlEl(): Element;
 
-    onDataChanged(listener: () => void) {
+    onDataChanged(listener: () => void): void {
         this.dataChangedListeners.push(listener);
     }
 
-    unDataChanged(listener: () => void) {
+    unDataChanged(listener: () => void): void {
         this.dataChangedListeners.filter((currentListener: () => void) => {
             return listener === currentListener;
         });
     }
 
-    protected notifyDataChanged() {
+    protected notifyDataChanged(): void {
         this.dataChangedListeners.forEach((listener: () => void) => {
             listener();
         });

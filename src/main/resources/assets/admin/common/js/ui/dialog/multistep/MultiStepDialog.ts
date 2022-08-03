@@ -45,7 +45,7 @@ export class MultiStepDialog
         super(config);
     }
 
-    protected initElements() {
+    protected initElements(): void {
         super.initElements();
 
         this.steps = this.config.steps;
@@ -60,7 +60,7 @@ export class MultiStepDialog
         return new DivEl();
     }
 
-    protected initListeners() {
+    protected initListeners(): void {
         super.initListeners();
 
         this.whenShown(() => {
