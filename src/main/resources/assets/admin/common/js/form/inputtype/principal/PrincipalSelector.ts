@@ -26,10 +26,8 @@ export class PrincipalSelector
 
     private comboBox: PrincipalComboBox;
 
-    constructor(config?: InputTypeViewContext) {
-        super('principal-selector');
-        this.addClass('input-type-view');
-        this.readConfig(config.inputConfig);
+    constructor(context: InputTypeViewContext) {
+        super(context, 'principal-selector');
     }
 
     static getName(): InputTypeName {
@@ -107,8 +105,9 @@ export class PrincipalSelector
         return this.getPropertyArray().getSize();
     }
 
-    private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
-        const principalTypeConfig = inputConfig['principalType'] || [];
+    protected readInputConfig(): void {
+        const principalTypeConfig: { [name: string]: string }[] = this.context.inputConfig['principalType'] || [];
+
         this.principalTypes = [].concat(principalTypeConfig)
             .map((cfg: any) => {
                 let val: string;
@@ -121,7 +120,8 @@ export class PrincipalSelector
             })
             .filter((val) => val !== null);
 
-        const skipPrincipalsConfig = inputConfig['skipPrincipals'] || [];
+        const skipPrincipalsConfig: { [name: string]: string }[] = this.context.inputConfig['skipPrincipals'] || [];
+
         this.skipPrincipals = [].concat(skipPrincipalsConfig)
             .map((cfg: any) => {
                 let val: string;
@@ -156,7 +156,7 @@ export class PrincipalSelector
 
         comboBox.onOptionDeselected((event: SelectedOptionEvent<Principal>) => {
             this.getPropertyArray().remove(event.getSelectedOption().getIndex());
-            this.validate(false);
+            this.handleValueChanged(false);
         });
 
         comboBox.onOptionSelected((event: SelectedOptionEvent<Principal>) => {
@@ -169,7 +169,7 @@ export class PrincipalSelector
             }
             let selectedOptionView: PrincipalSelectedOptionView = <PrincipalSelectedOptionView>selectedOption.getOptionView();
             this.saveToSet(selectedOptionView.getOption(), selectedOption.getIndex());
-            this.validate(false);
+            this.handleValueChanged(false);
         });
 
         comboBox.onOptionMoved((selectedOption: SelectedOption<Principal>, fromIndex: number) => {

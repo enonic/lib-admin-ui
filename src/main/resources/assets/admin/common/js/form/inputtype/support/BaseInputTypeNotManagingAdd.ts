@@ -31,7 +31,6 @@ export abstract class BaseInputTypeNotManagingAdd
     protected propertyArray: PropertyArray;
     protected ignorePropertyChange: boolean;
     protected occurrenceValidationState: Map<string, OccurrenceValidationRecord> = new Map<string, OccurrenceValidationRecord>();
-    private context: InputTypeViewContext;
     private inputOccurrences: InputOccurrences;
     private occurrenceValueChangedListeners: { (occurrence: Element, value: Value): void }[] = [];
     /**
@@ -40,9 +39,8 @@ export abstract class BaseInputTypeNotManagingAdd
     private draggingIndex: number;
 
     constructor(context: InputTypeViewContext, className?: string) {
-        super('input-type-view' + (className ? ' ' + className : ''));
+        super(context, className);
         assertNotNull(context, 'context cannot be null');
-        this.context = context;
 
         $(this.getHTMLElement()).sortable({
             axis: 'y',

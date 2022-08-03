@@ -10,15 +10,29 @@ import {ClassHelper} from '../../../ClassHelper';
 import {ValueType} from '../../../data/ValueType';
 import {InputValidationRecording} from '../InputValidationRecording';
 import {ValueChangedEvent} from '../ValueChangedEvent';
+import {InputTypeViewContext} from '../InputTypeViewContext';
 
 export abstract class BaseInputType extends DivEl
     implements InputTypeView {
 
     protected input: Input;
 
+    protected context: InputTypeViewContext;
+
     protected previousValidationRecording: InputValidationRecording;
 
     private inputValidityChangedListeners: { (event: InputValidityChangedEvent): void }[] = [];
+
+    protected constructor(context: InputTypeViewContext, className?: string) {
+        super('input-type-view' + (className ? ' ' + className : ''));
+
+        this.context = context;
+        this.readInputConfig();
+    }
+
+    protected readInputConfig(): void {
+    //
+    }
 
     availableSizeChanged() {
         // must be implemented by children
