@@ -17,7 +17,7 @@ export interface MultiStepDialogConfig
 
     submitCallback?: () => void;
 
-    closeOnSubmit?: boolean;
+    keepOpenOnSubmit?: boolean;
 }
 
 export class MultiStepDialog
@@ -105,7 +105,7 @@ export class MultiStepDialog
             this.config.submitCallback();
         }
 
-        if (this.config.closeOnSubmit) {
+        if (!this.config.keepOpenOnSubmit) {
             this.close();
         }
     }
