@@ -146,8 +146,8 @@ export class FormOptionSetOccurrenceViewSingleOption
     }
 
     protected handleSelectionChanged(optionView: FormOptionSetOptionView) {
-        this.formSetOccurrencesContainer.setVisible(
-            this.singleSelectionDropdown.hasSelectedOption() && optionView.getFormItemViews().length !== 0);
+        const isToBeVisible: boolean = this.singleSelectionDropdown.hasSelectedOption() && optionView.getFormItemViews().length !== 0;
+        this.setContainerVisible(isToBeVisible);
 
         super.handleSelectionChanged(optionView);
     }
@@ -169,5 +169,6 @@ export class FormOptionSetOccurrenceViewSingleOption
             this.moreButton);
         this.appendChild(this.singleSelectionHeader);
         this.appendChild(this.selectionValidationMessage);
+        this.appendChild(this.formSetOccurrencesContainer);
     }
 }
