@@ -167,11 +167,13 @@ export class ElementHelper {
         return this;
     }
 
-    addClass(clsName: string): ElementHelper {
-        assert(!StringHelper.isEmpty(clsName), 'Class name cannot be empty');
-        // spaces are not allowed
-        let classList: string[] = clsName.split(' ');
-        classList.forEach((classItem: string) => {
+    addClass(className: string): ElementHelper {
+        const trimmedClassName = className?.trim();
+
+        assert(!StringHelper.isEmpty(trimmedClassName), 'Class name cannot be empty');
+
+        const classList = StringHelper.removeEmptyStrings(trimmedClassName.split(' '));
+        classList.forEach((classItem) => {
             if (this.el.classList && !this.hasClass(classItem)) {
                 this.el.classList.add(classItem);
             }
