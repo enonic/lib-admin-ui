@@ -369,6 +369,10 @@ export abstract class BaseInputTypeNotManagingAdd
     }
 
     protected validateCustomErrors(occurrenceView: InputOccurrenceView): void {
+        if (this.context.formContext.getFormState().isNew()) {
+            return;
+        }
+
         const occurrenceDataPath: string = occurrenceView.getDataPath().asRelative().toString();
         const occurrenceId: string = occurrenceView.getInputElement().getId();
 
