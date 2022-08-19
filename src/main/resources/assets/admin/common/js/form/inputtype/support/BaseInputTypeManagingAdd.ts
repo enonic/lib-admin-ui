@@ -77,6 +77,10 @@ export abstract class BaseInputTypeManagingAdd
     }
 
     private addCustomValidation(recording: InputValidationRecording): void {
+        if (this.context.formContext.getFormState().isNew()) {
+            return;
+        }
+
         const customValidationError: ValidationError = this.getCustomError();
 
         if (customValidationError) {
