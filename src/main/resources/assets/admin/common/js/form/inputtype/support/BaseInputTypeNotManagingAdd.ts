@@ -369,7 +369,7 @@ export abstract class BaseInputTypeNotManagingAdd
     }
 
     protected validateCustomErrors(occurrenceView: InputOccurrenceView): void {
-        if (this.context.formContext.getFormState().isNew()) {
+        if (this.context.formContext?.getFormState()?.isNew()) {
             return;
         }
 
