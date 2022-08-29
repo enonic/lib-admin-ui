@@ -18,10 +18,10 @@
     "fix": "eslint --fix **/*.ts"
   },
   "dependencies": {
-    "@types/dompurify": "^2.3.3",
+    "@types/dompurify": "^2.3.4",
     "@types/mousetrap": "^1.6.9",
     "@types/slickgrid": "^2.1.32",
-    "dompurify": "^2.3.10",
+    "dompurify": "^2.4.0",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.6.0",
     "jquery-simulate": "^1.0.2",
