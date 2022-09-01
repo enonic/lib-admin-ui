@@ -48,7 +48,7 @@ export class FormOptionSetOptionView
     private formItemLayer: FormItemLayer;
     private selectionChangedListeners: { (): void }[] = [];
     private checkbox: Checkbox;
-    private isOptionSetExpandedByDefault: boolean;
+    private readonly isOptionSetExpandedByDefault: boolean;
     private notificationDialog: NotificationDialog;
     private checkboxEnabledStatusHandler: () => void = (() => {
         this.setCheckBoxDisabled();
@@ -87,7 +87,7 @@ export class FormOptionSetOptionView
     }
 
     public layout(validate: boolean = true): Q.Promise<void> {
-        let deferred = Q.defer<void>();
+        const deferred = Q.defer<void>();
 
         if (this.formOptionSetOption.getHelpText() && !this.isSingleSelection()) {
             this.helpText = new HelpTextContainer(this.formOptionSetOption.getHelpText());
@@ -98,13 +98,19 @@ export class FormOptionSetOptionView
         }
 
         this.optionItemsContainer = new DivEl('option-items-container');
-        this.appendChild(this.optionItemsContainer);
+        const isContainerVisibleByDefault = this.isOptionSetExpandedByDefault || this.isSingleSelection() || this.isSelected();
+        if (isContainerVisibleByDefault) {
+            this.appendChild(this.optionItemsContainer);
+        }
 
-        let optionItemsPropertySet = this.getOrPopulateOptionItemsPropertyArray(this.parentDataSet).getSet(0);
+        const optionItemsPropertySet = this.getOrPopulateOptionItemsPropertyArray(this.parentDataSet).getSet(0);
 
-        let layoutPromise: Q.Promise<FormItemView[]> = this.formItemLayer.setFormItems(
-            this.formOptionSetOption.getFormItems()).setParentElement(this.optionItemsContainer).setParent(this.getParent()).layout(
-            optionItemsPropertySet, validate && this.isSelected());
+        const layoutPromise: Q.Promise<FormItemView[]> =
+            this.formItemLayer
+                .setFormItems(this.formOptionSetOption.getFormItems())
+                .setParentElement(this.optionItemsContainer)
+                .setParent(this.getParent())
+                .layout(optionItemsPropertySet, validate && this.isSelected());
 
         layoutPromise.then((formItemViews: FormItemView[]) => {
 
@@ -427,11 +433,18 @@ export class FormOptionSetOptionView
         this.deselectHandle();
     }
 
-    private selectHandle() {
+    private doSelect() {
         this.expand();
         this.enableFormItems();
         this.optionItemsContainer.show();
         this.addClass('selected');
+    }
+
+    private selectHandle() {
+        if (!this.optionItemsContainer.isRendered()) {
+            this.appendChild(this.optionItemsContainer);
+        }
+        this.doSelect();
     }
 
     private deselectHandle() {
@@ -456,7 +469,7 @@ export class FormOptionSetOptionView
     }
 
     private cleanValidationForThisOption() {
-        let regExp = /-view(\s|$)/;
+        const regExp = /-view(\s|$)/;
 
         $(this.getEl().getHTMLElement()).find('.invalid').filter(function () {
             return regExp.test(this.className);

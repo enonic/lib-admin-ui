@@ -27,7 +27,7 @@
         display: block;
         color: @input-red-text;
         font-size: 14px;
-        padding: 0 0 10px 13px;
+        padding: 0 0 5px 13px;
         margin-top: -5px;
 
         &.empty {
@@ -50,11 +50,14 @@
       font-size: 14px;
       color: @admin-font-gray2;
       padding-top: 0;
+      line-height: 26px;
+      padding-bottom: 5px;
     }
 
     > .single-selection-header {
       display: flex;
       align-items: center;
+      width: 100%;
 
       &:not(.selected) {
         padding: 13px;
@@ -108,7 +111,6 @@
     }
 
     .form-option-set-occurrences-container {
-      padding: 10px 0;
 
       .form-option-set-option-view {
         border: 1px solid transparent;
@@ -146,7 +148,11 @@
         > .option-items-container {
           display: none;
           opacity: 0.5;
-          padding: 0 6px;
+          padding: 0 10px;
+
+          &:empty {
+            display: none;
+          }
 
           * {
             pointer-events: none;
