@@ -575,7 +575,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             .addClass('small')
             .onClicked(() => {
                 this.formItemOccurrences
-                    .createAndAddOccurrence(this.formItemOccurrences.countOccurrences())
+                    .createAndAddOccurrence(this.formItemOccurrences.countOccurrences(), false)
                     .then((item: V) => this.expandOccurrenceView(item)
                 );
         });
