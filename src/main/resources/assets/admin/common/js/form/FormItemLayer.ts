@@ -76,7 +76,7 @@ export class FormItemLayer {
         this.formItemViews = [];
 
         return this.doLayoutPropertySet(propertySet, validate).then(() => {
-            this.appendFormItemViews();
+            this.parentEl?.whenRendered(() => this.appendFormItemViews());
 
             return Q<FormItemView[]>(this.formItemViews);
         });
