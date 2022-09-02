@@ -6,27 +6,18 @@
   height: 100%;
   border: 0;
   cursor: pointer;
-  z-index: auto;
   background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  .focusable();
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    margin: -5px 0 0 -7px;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 10px solid @admin-dark-gray;
+  &::before {
+    font-size: 28px;
     transition: 0.2s;
     transition-timing-function: cubic-bezier(0, 0.4, 1, 0.6);
   }
 
-  &.down::after {
+  &.down::before {
     transform: rotateX(180deg);
   }
 
