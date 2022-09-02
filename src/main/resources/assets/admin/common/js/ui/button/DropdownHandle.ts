@@ -8,7 +8,7 @@ export class DropdownHandle
 
         this.setEnabled(true);
         this.removeClass('down');
-        this.addClass('icon-arrow_drop_up');
+        this.addClass('icon-arrow_drop_down');
     }
 
     down() {
