@@ -1897,4 +1897,19 @@ export class TreeGrid<DATA extends IDentifiable>
     private extractDataFromNodes(nodes: TreeNode<DATA>[]): DATA[] {
         return nodes.map((node: TreeNode<DATA>) => node.getData());
     }
+
+    highlightItemById(dataId: string, expand: boolean = false) {
+        const root: TreeNode<DATA> = this.root.getCurrentRoot();
+        const node: TreeNode<DATA> = root.findNode(dataId);
+
+        if (node) {
+            if (expand) {
+                this.recursivelyExpandNode(node);
+            }
+
+            this.highlightRowByNode(node);
+        } else {
+            this.removeHighlighting();
+        }
+    }
 }
