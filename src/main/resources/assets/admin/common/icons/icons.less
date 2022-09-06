@@ -414,7 +414,10 @@
 
 .icon-arrow_drop_down {
   .icon-arrow_drop_up;
-  .rotate(180deg);
+
+  &::before {
+    transform: rotateX(180deg);
+  }
 }
 
 .icon-arrow-right2 {
