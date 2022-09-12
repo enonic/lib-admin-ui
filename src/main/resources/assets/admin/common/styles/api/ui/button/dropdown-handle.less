@@ -23,14 +23,6 @@
 
   &[disabled] {
     cursor: default;
-
-    &::after {
-      border-top: 10px solid @admin-medium-gray-border;
-    }
-
-    &.down::after {
-      border-top: 0 solid transparent;
-      border-bottom: 10px solid @admin-medium-gray-border;
-    }
+    opacity: 0.5;
   }
 }
