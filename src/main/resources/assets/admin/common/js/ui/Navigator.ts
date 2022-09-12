@@ -3,35 +3,35 @@ import {NavigatorEvent} from './NavigatorEvent';
 
 export interface Navigator {
 
-    insertNavigationItem(item: NavigationItem, index: number);
+    insertNavigationItem(item: NavigationItem, index: number): void;
 
-    addNavigationItem(item: NavigationItem);
+    addNavigationItem(item: NavigationItem): void;
 
-    removeNavigationItem(item: NavigationItem);
+    removeNavigationItem(item: NavigationItem): void;
 
     getNavigationItem(index: number): NavigationItem;
 
-    selectNavigationItem(index: number, silent?: boolean);
+    selectNavigationItem(index: number, silent?: boolean): void;
 
     getSelectedNavigationItem(): NavigationItem;
 
     getSelectedIndex(): number;
 
-    deselectNavigationItem();
+    deselectNavigationItem(): void;
 
     getSize(): number;
 
     getNavigationItems(): NavigationItem[];
 
-    onNavigationItemAdded(listener: (event: NavigatorEvent) => void);
+    onNavigationItemAdded(listener: (event: NavigatorEvent) => void): void;
 
-    onNavigationItemSelected(listener: (event: NavigatorEvent) => void);
+    onNavigationItemSelected(listener: (event: NavigatorEvent) => void): void;
 
-    onNavigationItemDeselected(listener: (event: NavigatorEvent) => void);
+    onNavigationItemDeselected(listener: (event: NavigatorEvent) => void): void;
 
-    unNavigationItemAdded(listener: (event: NavigatorEvent) => void);
+    unNavigationItemAdded(listener: (event: NavigatorEvent) => void): void;
 
-    unNavigationItemSelected(listener: (event: NavigatorEvent) => void);
+    unNavigationItemSelected(listener: (event: NavigatorEvent) => void): void;
 
-    unNavigationItemDeselected(listener: (event: NavigatorEvent) => void);
+    unNavigationItemDeselected(listener: (event: NavigatorEvent) => void): void;
 }
