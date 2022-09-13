@@ -68,7 +68,7 @@ export class MultiStepDialog
         return i18n('action.next');
     }
 
-    setHeading(value: string) {
+    setHeading(value: string): void {
         this.headerContent.setMainName(value);
     }
 
