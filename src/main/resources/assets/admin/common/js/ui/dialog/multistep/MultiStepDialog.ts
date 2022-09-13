@@ -8,7 +8,8 @@ import {i18n} from '../../../util/Messages';
 import {Action} from '../../Action';
 import {AppHelper} from '../../../util/AppHelper';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
-
+import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
+import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';
 
 export interface MultiStepDialogConfig
     extends ModalDialogConfig {
@@ -31,13 +32,13 @@ export class MultiStepDialog
 
     private stepsContainer: Element;
 
+    protected headerContent: NamesAndIconView;
+
     private forwardButton: ActionButton;
 
     private backButton: ActionButton;
 
     private noStepsBlock?: Element;
-
-    private stepCounter: Element;
 
     private currentStepDataChangedHandler: { (): void };
 
@@ -50,14 +51,25 @@ export class MultiStepDialog
 
         this.steps = this.config.steps;
         this.stepsContainer = this.createStepsContainer();
-        this.stepCounter = new DivEl();
-        this.backButton = this.addAction(new Action(i18n('dialog.multistep.previous')));
-        this.getButtonRow().addElement(this.stepCounter);
-        this.forwardButton = this.addAction(new Action(i18n('action.next')));
+        this.backButton = this.addAction(new Action(this.getBackButtonLabel()));
+        this.forwardButton = this.addAction(new Action(this.getForwardButtonLabel()));
+        this.headerContent = this.createHeaderContent();
     }
 
     protected createStepsContainer(): Element {
         return new DivEl();
+    }
+
+    protected getBackButtonLabel(): string {
+        return i18n('dialog.multistep.previous');
+    }
+
+    protected getForwardButtonLabel(): string {
+        return i18n('action.next');
+    }
+
+    setHeading(value: string): void {
+        this.headerContent.setMainName(value);
     }
 
     protected initListeners(): void {
@@ -127,7 +139,6 @@ export class MultiStepDialog
         this.displayStep(step);
         this.updateButtonsState();
         this.bindCurrentStepEvents();
-        this.updateStepCounter();
     }
 
     private unbindCurrentStepEvents(): void {
@@ -138,23 +149,18 @@ export class MultiStepDialog
         this.currentStep?.onDataChanged(this.currentStepDataChangedHandler);
     }
 
-    private updateStepCounter(): void {
-        let curIndex: number = null;
+    private getCurrentStepNumber(): number {
+        let stepNumber: number = -1;
 
-        const isFound: boolean = this.steps.some((step: DialogStep, index: number) => {
+        this.steps.some((step: DialogStep, index: number) => {
             if (step === this.currentStep) {
-                curIndex = index;
+                stepNumber = ++index;
                 return true;
             }
             return false;
         });
 
-        if (isFound) {
-            this.stepCounter.setHtml(i18n('dialog.project.wizard.step', ++curIndex, this.steps.length));
-            this.stepCounter.show();
-        } else {
-            this.stepCounter.hide();
-        }
+        return stepNumber;
     }
 
     protected handleCurrentStepDataChanged(): void {
@@ -172,7 +178,17 @@ export class MultiStepDialog
             this.stepsContainer.appendChild(el);
         }
 
+        this.updateSubTitle();
+
         el.show();
+    }
+
+    protected updateSubTitle(): void {
+        const stepNumber: number = this.getCurrentStepNumber();
+        const totalSteps: number = this.steps.length;
+        const stepCount: string = i18n('dialog.multistep.step.counter', stepNumber, totalSteps);
+        const description: string = this.currentStep.getDescription() ? ` - ${this.currentStep.getDescription()}` : '';
+        this.headerContent.setSubName(`${stepCount}${description}`);
     }
 
     private getNextStep(): DialogStep {
@@ -194,18 +210,22 @@ export class MultiStepDialog
     }
 
     private updateForwardButtonLabel(): void {
-        this.forwardButton.setLabel(this.getForwardButtonLabel());
+        this.forwardButton.setLabel(this.getForwardButtonLabelDependingOnState());
     }
 
-    private getForwardButtonLabel(): string {
+    private getForwardButtonLabelDependingOnState(): string {
         if (this.isLastStep()) {
             return this.getSubmitActionLabel();
         }
 
         if (!this.currentStep.isOptional() || this.currentStep.hasData()) {
-            return i18n('action.next');
+            return this.getForwardButtonLabel();
         }
 
+        return this.getSkipButtonLabel();
+    }
+
+    protected getSkipButtonLabel(): string {
         return i18n('dialog.multistep.skip');
     }
 
@@ -269,13 +289,25 @@ export class MultiStepDialog
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
             this.addClass('multi-step-dialog');
+            this.appendChildToHeader(this.headerContent);
             this.stepsContainer.addClass('steps-container');
             this.appendChildToContentPanel(this.stepsContainer);
             this.backButton.addClass('back');
             this.forwardButton.addClass('forward');
-            this.stepCounter.addClass('step-counter');
 
             return rendered;
         });
+    }
+
+    protected createHeaderContent(): NamesAndIconView {
+        return <NamesAndIconView>new NamesAndIconViewBuilder()
+            .setSize(NamesAndIconViewSize.medium)
+            .build()
+            .setMainName(this.config.title)
+            .addClass('no-icon');
+    }
+
+    protected toggleHeaderIcon(value: boolean): void {
+        this.headerContent.toggleClass('no-icon', !value);
     }
 }
