@@ -132,6 +132,13 @@
         > .form-item-set-occurrences-container,
         > .form-option-set-occurrences-container {
           flex-basis: 100%;
+          min-width: 0;
+        }
+
+        > .form-item-set-occurrences-container {
+          > .input-view:first-child {
+            margin-top: 10px;
+          }
 
           > .input-view:last-child {
             margin-bottom: 0;
