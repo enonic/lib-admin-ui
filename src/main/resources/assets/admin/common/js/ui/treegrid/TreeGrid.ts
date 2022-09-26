@@ -780,7 +780,7 @@ export class TreeGrid<DATA extends IDentifiable>
     private doExpandNode(node: TreeNode<DATA>): Q.Promise<boolean> {
         const dataId: string = node.getDataId();
 
-        if (this.expandedNodesDataIds.indexOf(dataId) < 0) {
+        if (dataId && this.expandedNodesDataIds.indexOf(dataId) < 0) {
             this.expandedNodesDataIds.push(dataId);
         }
 
