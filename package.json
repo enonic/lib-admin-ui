@@ -51,7 +51,7 @@
     "css-loader": "^6.7.1",
     "cssnano": "^5.1.13",
     "del": "^7.0.0",
-    "enonic-admin-artifacts": "^1.8.2",
+    "enonic-admin-artifacts": "^1.8.3",
     "error-logger-webpack-plugin": "^1.1.1",
     "eslint": "^8.24.0",
     "glob": "^8.0.3",

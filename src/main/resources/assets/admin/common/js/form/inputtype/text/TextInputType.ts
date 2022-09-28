@@ -15,6 +15,7 @@ import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {ValueType} from '../../../data/ValueType';
 import {TextInput} from '../../../ui/text/TextInput';
+import {Locale} from '../../../locale/Locale';
 
 export abstract class TextInputType
     extends BaseInputTypeNotManagingAdd {
@@ -50,12 +51,14 @@ export abstract class TextInputType
         (<FormInputEl>occurrence).resetBaseValues();
     }
 
-    protected initOccurrenceListeners(inputEl: FormInputEl) {
+    protected initOccurrenceListeners(inputEl: FormInputEl): void {
         if (this.hasMaxLengthSet() || this.showTotalCounter) {
-            const counterEl: InputValueLengthCounterEl = new InputValueLengthCounterEl(inputEl, this.maxLength, this.showTotalCounter);
+            new InputValueLengthCounterEl(inputEl, this.maxLength, this.showTotalCounter);
         }
 
-        return inputEl;
+        inputEl.onValueChanged((event: ValueChangedEvent) => {
+            this.handleOccurrenceInputValueChanged(inputEl);
+        });
     }
 
     createInputOccurrenceElement(index: number, property: Property): Element {
@@ -63,22 +66,25 @@ export abstract class TextInputType
             ValueTypeConverter.convertPropertyValueType(property, this.getValueType());
         }
 
-        const inputEl: FormInputEl = this.createInput(index, property);
+        const inputEl: FormInputEl = <FormInputEl>this.createInput(index, property).setSpellcheck(true);
 
-        inputEl.onValueChanged((event: ValueChangedEvent) => {
-            this.handleOccurrenceInputValueChanged(inputEl);
-        });
-
-        inputEl.setSpellcheck(true);
-        const lang = this.getContext().formContext.getLanguage();
-        if (!StringHelper.isEmpty(lang)) {
-            const langs = lang.split('-');
-            inputEl.setLang(langs.length > 1 ? langs[0] : lang);
-        }
-
+        this.updateInputLangParams(inputEl);
         this.initOccurrenceListeners(inputEl);
 
         return inputEl;
+    }
+
+    protected updateInputLangParams(inputEl: FormInputEl): void {
+        const locale: string = this.getContext().formContext.getLanguage();
+
+        if (!StringHelper.isEmpty(locale)) {
+            const language: string = Locale.extractLanguage(locale);
+            inputEl.setLang(language);
+
+            if (Locale.supportsRtl(language)) {
+                inputEl.setDir('rtl');
+            }
+        }
     }
 
     protected getValue(inputEl: TextInput): Value {

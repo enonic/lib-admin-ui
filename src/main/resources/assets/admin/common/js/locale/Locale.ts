@@ -5,12 +5,13 @@ import {LocaleJson} from './json/LocaleJson';
 export class Locale
     implements Equitable {
 
-    private static TH: string = 'th-TH-u-nu-thai-x-lvariant-TH';
-    private static TH_TAG: string = 'th-TH-TH';
-    private static JP: string = 'ja-JP-u-ca-japanese-x-lvariant-JP';
-    private static JP_TAG: string = 'ja-JP-JP';
-    private static NO: string = 'nn-NO-x-lvariant-NY';
-    private static NO_TAG: string = 'nn-NO-NY';
+    private static readonly TH: string = 'th-TH-u-nu-thai-x-lvariant-TH';
+    private static readonly TH_TAG: string = 'th-TH-TH';
+    private static readonly JP: string = 'ja-JP-u-ca-japanese-x-lvariant-JP';
+    private static readonly JP_TAG: string = 'ja-JP-JP';
+    private static readonly NO: string = 'nn-NO-x-lvariant-NY';
+    private static readonly NO_TAG: string = 'nn-NO-NY';
+    private static readonly RTL_CODES: string[] = ['ar', 'dv', 'fa', 'ha', 'he', 'iw', 'ji', 'ps', 'sd', 'ug', 'ur', 'yi'];
 
     private tag: string;
     private displayName: string;
@@ -20,6 +21,14 @@ export class Locale
     private displayVariant: string;
     private country: string;
     private displayCountry: string;
+
+    public static supportsRtl(code: string): boolean {
+        return ObjectHelper.isDefined(code) && Locale.RTL_CODES.indexOf(Locale.extractLanguage(code)) > -1;
+    }
+
+    public static extractLanguage(value: string): string {
+        return value.split('-')[0];
+    }
 
     public static fromJson(json: LocaleJson): Locale {
         let l = new Locale();
