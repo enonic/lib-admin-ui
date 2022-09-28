@@ -6,7 +6,6 @@ import {StringHelper} from '../util/StringHelper';
 import {ObjectHelper} from '../ObjectHelper';
 import {ClassHelper} from '../ClassHelper';
 import {ElementHelper} from './ElementHelper';
-import {ArticleEl} from './ArticleEl';
 import {ElementAddedEvent} from './ElementAddedEvent';
 import {ElementRemovedEvent} from './ElementRemovedEvent';
 import {ElementRenderedEvent} from './ElementRenderedEvent';
@@ -500,7 +499,7 @@ export class Element {
         return this.getEl().getAttribute('draggable') === 'true';
     }
 
-    setContentEditable(flag: boolean): ArticleEl {
+    setContentEditable(flag: boolean): Element {
         this.getEl().setAttribute('contenteditable', flag ? 'true' : 'false');
         return this;
     }
@@ -529,6 +528,15 @@ export class Element {
 
     getLang(): string {
         return this.getEl().getAttribute('lang');
+    }
+
+    setDir(value: string): Element {
+        this.getEl().setAttribute('dir', value);
+        return this;
+    }
+
+    getDir(): string {
+        return this.getEl().getAttribute('dir');
     }
 
     giveFocus(): boolean {
