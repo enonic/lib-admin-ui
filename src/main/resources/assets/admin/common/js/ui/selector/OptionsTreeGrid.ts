@@ -76,6 +76,7 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
 
     removeAllOptions() {
         this.getGrid().getDataView().setItems([]);
+        this.resetExpandedNodesDataIds();
     }
 
     setOptions(options: Option<OPTION_DISPLAY_VALUE>[]) {
