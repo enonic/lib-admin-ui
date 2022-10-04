@@ -1698,7 +1698,7 @@ export class TreeGrid<DATA extends IDentifiable>
         this.setActive(true);
     }
 
-    private highlightRowByNode(node: TreeNode<DATA>) {
+    private highlightRowByNode(node: TreeNode<DATA>, silent: boolean = false) {
         if (!node) {
             return;
         }
@@ -1714,9 +1714,12 @@ export class TreeGrid<DATA extends IDentifiable>
         }
 
         if (!isCurRowHighlighted) {
-            this.removeHighlighting();
+            this.removeHighlighting(silent);
             this.highlightedDataId = node.getDataId();
-            this.notifyHighlightingChanged();
+
+            if (!silent) {
+                this.notifyHighlightingChanged();
+            }
         }
 
         let row = this.getRowByNode(node);
@@ -1898,7 +1901,7 @@ export class TreeGrid<DATA extends IDentifiable>
         return nodes.map((node: TreeNode<DATA>) => node.getData());
     }
 
-    highlightItemById(dataId: string, expand: boolean = false) {
+    highlightItemById(dataId: string, expand: boolean = false, silent: boolean = false) {
         const root: TreeNode<DATA> = this.root.getCurrentRoot();
         const node: TreeNode<DATA> = root.findNode(dataId);
 
@@ -1907,7 +1910,7 @@ export class TreeGrid<DATA extends IDentifiable>
                 this.recursivelyExpandNode(node);
             }
 
-            this.highlightRowByNode(node);
+            this.highlightRowByNode(node, silent);
         } else {
             this.removeHighlighting();
         }
