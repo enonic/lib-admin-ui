@@ -146,10 +146,14 @@ export class FormOptionSetOccurrenceViewSingleOption
     }
 
     protected handleSelectionChanged(optionView: FormOptionSetOptionView) {
-        const shouldBeVisible: boolean = this.singleSelectionDropdown.hasSelectedOption() && optionView.getFormItemViews().length !== 0;
-        this.setContainerVisible(shouldBeVisible);
-
+        this.setContainerVisible(this.isContainerExpansionRequired(optionView));
         super.handleSelectionChanged(optionView);
+    }
+
+    private isContainerExpansionRequired(optionView: FormOptionSetOptionView): boolean {
+        return this.getFormSet().isExpanded() &&
+               this.singleSelectionDropdown.hasSelectedOption()
+               && optionView.getFormItemViews().length > 0;
     }
 
     isExpandable(): boolean {
