@@ -24,10 +24,6 @@ export class FormOptionSetOccurrenceViewSingleOption
 
     private resetAction: Action;
 
-    constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView>) {
-        super(config);
-    }
-
     update(dataSet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
         return super.update(dataSet, unchangedOnly).then(() => {
             this.layoutSingleSelection();
@@ -75,7 +71,8 @@ export class FormOptionSetOccurrenceViewSingleOption
 
         if (selectedValue) {
             // doing this after parent layout to make sure all formItemViews are ready
-            this.singleSelectionDropdown.setValue(selectedValue);
+            this.singleSelectionDropdown.setValue(selectedValue, true);
+            this.expandSelectedOptionView();
         } else {
             // showing/hiding instead of css to trigger FormSetOccurrences onShow/onHide listeners
             this.formSetOccurrencesContainer.hide();
@@ -95,16 +92,9 @@ export class FormOptionSetOccurrenceViewSingleOption
         this.singleSelectionDropdown.onOptionSelected((event: OptionSelectedEvent<FormOptionSetOption>) => {
             const optionIdx: number = event.getIndex();
             this.getFormItemViews().forEach((view, idx) => view.setVisible(idx === optionIdx));
+            this.expandSelectedOptionView();
 
-            const optionView: FormOptionSetOptionView = <FormOptionSetOptionView>this.getFormItemViews()[event.getIndex()];
-
-            if (optionView) {
-                optionView.enableAndExpand();
-            }
-
-            this.singleSelectionHeader.addClass('selected');
-            this.refresh();
-            this.handleSelectionChanged(optionView);
+            this.handleSelectionChanged(this.getSelectedOptionView());
             this.notifyOccurrenceChanged();
         });
 
@@ -146,9 +136,7 @@ export class FormOptionSetOccurrenceViewSingleOption
     }
 
     protected handleSelectionChanged(optionView: FormOptionSetOptionView) {
-        const shouldBeVisible: boolean = this.singleSelectionDropdown.hasSelectedOption() && optionView.getFormItemViews().length !== 0;
-        this.setContainerVisible(shouldBeVisible);
-
+        this.setContainerVisible(this.isContainerExpansionRequired(optionView));
         super.handleSelectionChanged(optionView);
     }
 
@@ -169,5 +157,23 @@ export class FormOptionSetOccurrenceViewSingleOption
             new DivEl('drag-control'), this.singleSelectionDropdown, this.label, this.moreButton
         );
         this.appendChildren(this.singleSelectionHeader, this.selectionValidationMessage, this.formSetOccurrencesContainer);
+    }
+
+    private getSelectedOptionView(): FormOptionSetOptionView {
+        const selectedOptionName: string = this.singleSelectionDropdown.getValue();
+        return <FormOptionSetOptionView>this.getFormItemViews()
+            .find((view: FormOptionSetOptionView) => view.getFormItem().getName() === selectedOptionName);
+    }
+
+    private expandSelectedOptionView(): void {
+        this.getSelectedOptionView()?.enableAndExpand();
+
+        this.singleSelectionHeader.addClass('selected');
+        this.refresh();
+    }
+
+    private isContainerExpansionRequired(optionView: FormOptionSetOptionView): boolean {
+        return this.singleSelectionDropdown.hasSelectedOption()
+            && optionView.getFormItemViews().length > 0;
     }
 }
