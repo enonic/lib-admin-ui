@@ -103,7 +103,17 @@ export class FormOptionSetOptionView
             this.appendChild(this.optionItemsContainer);
         }
 
+        let isDefaultSelected: boolean = false;
+
+        if (this.formOptionSetOption.isDefaultOption() && !this.getOptionItemsPropertyArray(this.parentDataSet)) {
+            isDefaultSelected = true;
+        }
+
         const optionItemsPropertySet = this.getOrPopulateOptionItemsPropertyArray(this.parentDataSet).getSet(0);
+
+        if (isDefaultSelected) {
+            this.setSelected(true);
+        }
 
         const layoutPromise: Q.Promise<FormItemView[]> =
             this.formItemLayer
@@ -329,13 +339,19 @@ export class FormOptionSetOptionView
     }
 
     private getOrPopulateOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
-        let propertyArray = propertySet.getPropertyArray(this.getName());
-        if (!propertyArray) {
-            propertyArray =
-                PropertyArray.create().setType(ValueTypes.DATA).setName(this.getName()).setParent(this.parentDataSet).build();
-            propertyArray.addSet();
-            propertySet.addPropertyArray(propertyArray);
-        }
+        return this.getOptionItemsPropertyArray(propertySet) || this.populateOptionItemsPropertyArray(propertySet);
+    }
+
+    private getOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
+        return propertySet.getPropertyArray(this.getName());
+    }
+
+    private populateOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
+        const propertyArray: PropertyArray =
+            PropertyArray.create().setType(ValueTypes.DATA).setName(this.getName()).setParent(this.parentDataSet).build();
+        propertyArray.addSet();
+        propertySet.addPropertyArray(propertyArray);
+
         return propertyArray;
     }
 
