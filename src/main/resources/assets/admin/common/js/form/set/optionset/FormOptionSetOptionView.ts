@@ -103,12 +103,12 @@ export class FormOptionSetOptionView
             this.appendChild(this.optionItemsContainer);
         }
 
-        const isDefaultSelected: boolean =
+        const isDefaultAndNew: boolean =
             this.formOptionSetOption.isDefaultOption() && !this.getOptionItemsPropertyArray(this.parentDataSet);
 
         const optionItemsPropertySet = this.getOrPopulateOptionItemsPropertyArray(this.parentDataSet).getSet(0);
 
-        if (isDefaultSelected) {
+        if (isDefaultAndNew) {
             this.setSelected(true);
         }
 
