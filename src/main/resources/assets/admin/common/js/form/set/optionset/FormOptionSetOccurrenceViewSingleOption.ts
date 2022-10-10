@@ -140,12 +140,6 @@ export class FormOptionSetOccurrenceViewSingleOption
         super.handleSelectionChanged(optionView);
     }
 
-    private isContainerExpansionRequired(optionView: FormOptionSetOptionView): boolean {
-        return this.getFormSet().isExpanded() &&
-               this.singleSelectionDropdown.hasSelectedOption()
-               && optionView.getFormItemViews().length > 0;
-    }
-
     isExpandable(): boolean {
         const option: Option<FormOptionSetOption> = this.singleSelectionDropdown?.getSelectedOption();
 
