@@ -14,14 +14,10 @@ import {ModalDialogWithConfirmation, ModalDialogWithConfirmationConfig} from '..
 import {FormValidityChangedEvent} from '../../FormValidityChangedEvent';
 
 export interface ApplicationConfiguratorDialogConfig
-    extends ModalDialogWithConfirmationConfig, ApplicationConfiguratorDialogParams {
-}
-
-export interface ApplicationConfiguratorDialogParams {
+    extends ModalDialogWithConfirmationConfig {
     formView: FormView;
     application: Application;
-    okCallback?: () => void;
-    cancelCallback?: () => void;
+    cancelCallback: () => void;
 }
 
 export class ApplicationConfiguratorDialog
@@ -32,22 +28,22 @@ export class ApplicationConfiguratorDialog
     private formView: FormView;
     private okAction: Action;
 
-    constructor(params: ApplicationConfiguratorDialogParams) {
+    constructor(application: Application, formView: FormView, okCallback?: () => void, cancelCallback?: () => void) {
         super(<ApplicationConfiguratorDialogConfig>{
-            application: params.application,
-            formView: params.formView,
-            cancelCallback: params.cancelCallback,
+            application: application,
+            formView: formView,
+            cancelCallback: cancelCallback,
             class: 'application-configurator-dialog',
             confirmation: {
                 yesCallback: () => {
-                    if (params.okCallback) {
-                        params.okCallback();
+                    if (okCallback) {
+                        okCallback();
                     }
                     this.close();
                 },
                 noCallback: () => {
-                    if (params.cancelCallback) {
-                        params.cancelCallback();
+                    if (cancelCallback) {
+                        cancelCallback();
                     }
                     this.close();
                 }

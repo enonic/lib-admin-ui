@@ -144,6 +144,16 @@ export abstract class FormOptionSetOccurrenceView
         }
     }
 
+    selectDefaultOption() {
+        const selectionPropertyArray: PropertyArray = this.getSelectedOptionsArray();
+
+        this.getFormItemViews().forEach((itemView: FormOptionSetOptionView) => {
+            if ((<FormOptionSetOption>itemView.getFormItem()).isDefaultOption()) {
+                itemView.select(true);
+            }
+        });
+    }
+
     private validateMultiSelection(): ValidationRecording {
         const multiSelectionRecording: ValidationRecording = new ValidationRecording();
         const validationRecordingPath: ValidationRecordingPath = this.resolveValidationRecordingPath();
