@@ -8,7 +8,7 @@ import {FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 export class FormItemSetOccurrences
     extends FormSetOccurrences<FormItemSetOccurrenceView> {
 
-    protected createOccurrenceView(config: FormSetOccurrenceViewConfig<FormItemSetOccurrenceView>): FormItemSetOccurrenceView {
+    protected createFormSetOccurrenceView(config: FormSetOccurrenceViewConfig<FormItemSetOccurrenceView>): FormItemSetOccurrenceView {
         return new FormItemSetOccurrenceView(config);
     }
 }
