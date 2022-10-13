@@ -38,6 +38,8 @@ export class FormItemLayer {
 
     private lazyRender: boolean = true;
 
+    private isNew: boolean;
+
     private readonly formItemLayerFactory: FormItemLayerFactory;
 
     constructor(context: FormContext, layerFactory: FormItemLayerFactory) {
@@ -62,6 +64,11 @@ export class FormItemLayer {
 
     setParent(value: FormItemOccurrenceView): FormItemLayer {
         this.parent = value;
+        return this;
+    }
+
+    setIsNew(value: boolean): FormItemLayer {
+        this.isNew = value;
         return this;
     }
 
@@ -215,7 +222,8 @@ export class FormItemLayer {
                     formOptionSetOption: formOptionSetOption,
                     parent: this.parent,
                     parentDataSet: propertySet,
-                    lazyRender: this.lazyRender
+                    lazyRender: this.lazyRender,
+                    isNew: this.isNew
                 });
             }
 

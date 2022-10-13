@@ -9,9 +9,13 @@ import {assertNotNull} from '../util/Assert';
 export class ApplicationConfig
     implements Equitable, Cloneable {
 
-    private applicationKey: ApplicationKey;
+    public static PROPERTY_CONFIG = 'config';
 
-    private config: PropertySet;
+    public static PROPERTY_KEY = 'applicationKey';
+
+    private readonly applicationKey: ApplicationKey;
+
+    private readonly config: PropertySet;
 
     constructor(builder: ApplicationConfigBuilder) {
         this.applicationKey = builder.applicationKey;
@@ -80,10 +84,12 @@ export class ApplicationConfigBuilder {
 
     fromData(propertySet: PropertySet): ApplicationConfigBuilder {
         assertNotNull(propertySet, 'data cannot be null');
-        const applicationKey = ApplicationKey.fromString(propertySet.getString('applicationKey'));
-        const config = propertySet.getPropertySet('config');
+
+        const applicationKey: ApplicationKey = ApplicationKey.fromString(propertySet.getString(ApplicationConfig.PROPERTY_KEY));
+        const config: PropertySet = propertySet.getPropertySet(ApplicationConfig.PROPERTY_CONFIG);
         this.setApplicationKey(applicationKey);
         this.setConfig(config);
+
         return this;
     }
 

@@ -157,7 +157,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         });
     }
 
-    createNewOccurrenceView(_occurrence: FormItemOccurrence<V>): V {
+    createNewOccurrenceView(_occurrence: FormItemOccurrence<V>, isNew: boolean = false): V {
         throw new Error('Must be implemented by inheritor');
     }
 
@@ -176,7 +176,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
     public createAndAddOccurrence(insertAtIndex: number = this.countOccurrences(), validate: boolean = true): Q.Promise<V> {
         const occurrence: FormItemOccurrence<V> = this.createNewOccurrence(this, insertAtIndex);
 
-        return this.addOccurrence(occurrence, validate).then((view: V) => {
+        return this.addOccurrence(occurrence, validate, true).then((view: V) => {
             // hiding validation error on adding new items until validate() is invoked
             view.addClass('hide-validation-errors');
 
@@ -283,7 +283,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         return this.showEmptyFormItemOccurrences() ? 1 : 0;
     }
 
-    protected addOccurrence(occurrence: FormItemOccurrence<V>, validate: boolean = true): Q.Promise<V> {
+    protected addOccurrence(occurrence: FormItemOccurrence<V>, validate: boolean = true, isNew: boolean = false): Q.Promise<V> {
         if (FormItemOccurrences.debug) {
             console.debug('FormItemOccurrences.addOccurrence:', occurrence);
         }
@@ -294,7 +294,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
             return Q(null);
         }
 
-        const occurrenceView: V = this.createNewOccurrenceView(occurrence);
+        const occurrenceView: V = this.createNewOccurrenceView(occurrence, isNew);
         occurrenceView.onFocus(this.focusListener);
         occurrenceView.onBlur(this.blurListener);
         occurrenceView.onOccurrenceChanged(this.occurrenceChangedListener);

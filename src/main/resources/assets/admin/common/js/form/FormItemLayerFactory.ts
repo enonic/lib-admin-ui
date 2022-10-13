@@ -5,6 +5,7 @@ import {Store} from '../store/Store';
 export interface CreatedFormItemLayerConfig {
     context: FormContext;
     lazyRender?: boolean;
+    isNew?: boolean;
 }
 
 export interface FormItemLayerFactory {
@@ -29,10 +30,14 @@ export class FormItemLayerFactoryImpl implements FormItemLayerFactory {
     }
 
     createLayer(config: CreatedFormItemLayerConfig): FormItemLayer {
-        const layer = new FormItemLayer(config.context, FormItemLayerFactoryImpl.get());
+        const layer: FormItemLayer = new FormItemLayer(config.context, FormItemLayerFactoryImpl.get());
+
         if (config.lazyRender != null) {
             layer.setLazyRender(config.lazyRender);
         }
+
+        layer.setIsNew(config.isNew);
+
         return layer;
     }
 }

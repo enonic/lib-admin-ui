@@ -60,9 +60,10 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         this.lazyRender = config.lazyRender;
     }
 
-    protected getNewOccurrenceConfig(occurrence: FormSetOccurrence<V>): FormSetOccurrenceViewConfig<V> {
+    protected getNewOccurrenceConfig(occurrence: FormSetOccurrence<V>, isNew: boolean): FormSetOccurrenceViewConfig<V> {
         const dataSet: PropertySet = this.getOrPopulateSetFromArray(occurrence.getIndex());
-        const layer: FormItemLayer = this.layerFactory.createLayer({context: this.context, lazyRender: this.lazyRender});
+        const layer: FormItemLayer =
+            this.layerFactory.createLayer({context: this.context, lazyRender: this.lazyRender, isNew: isNew});
 
         return {
             context: this.context,
@@ -74,17 +75,17 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         };
     }
 
-    protected addOccurrence(occurrence: FormItemOccurrence<V>, validate: boolean = true): Q.Promise<V> {
+    protected addOccurrence(occurrence: FormItemOccurrence<V>, validate: boolean = true, isNew: boolean = false): Q.Promise<V> {
         if (occurrence.getIndex() < this.countOccurrences()) {
             // we're adding to the middle of array, add set and then move it to necessary index
             this.propertyArray.addSet();
             this.propertyArray.move(this.propertyArray.getSize() - 1, occurrence.getIndex());
         }
-        return super.addOccurrence(occurrence, validate);
+        return super.addOccurrence(occurrence, validate, isNew);
     }
 
-    createNewOccurrenceView(occurrence: FormSetOccurrence<V>): V {
-        const newOccurrenceView = this.createOccurrenceView(this.getNewOccurrenceConfig(occurrence));
+    createNewOccurrenceView(occurrence: FormSetOccurrence<V>, isNew: boolean = false): V {
+        const newOccurrenceView = this.createOccurrenceView(this.getNewOccurrenceConfig(occurrence, isNew));
 
         newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<V>) => this.removeOccurrenceView(event.getView()));
         newOccurrenceView.onExpandRequested(view => this.notifyExpandRequested(view));
