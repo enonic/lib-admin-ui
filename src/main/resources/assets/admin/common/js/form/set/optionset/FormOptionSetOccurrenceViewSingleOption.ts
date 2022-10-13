@@ -69,9 +69,7 @@ export class FormOptionSetOccurrenceViewSingleOption
     }
 
     private layoutSingleSelection() {
-        const selectedValue: string = this.getSelectedOptionsArray().get(0)?.getString() ||
-                                      (<FormOptionSet>this.formSet).getOptions().find(op => op.isDefaultOption())?.getName();
-
+        const selectedValue: string = this.getSelectedOptionsArray().get(0)?.getString();
 
         if (selectedValue) {
             // doing this after parent layout to make sure all formItemViews are ready

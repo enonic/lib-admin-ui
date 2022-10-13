@@ -21,6 +21,7 @@ import {FormOptionSet} from './set/optionset/FormOptionSet';
 import {FormOptionSetOption} from './set/optionset/FormOptionSetOption';
 import {FormItemLayerFactory} from './FormItemLayerFactory';
 import {FormSetOccurrenceView} from './set/FormSetOccurrenceView';
+import {FormItemState} from './FormItemState';
 
 export class FormItemLayer {
 
@@ -37,6 +38,8 @@ export class FormItemLayer {
     private parent: FormItemOccurrenceView;
 
     private lazyRender: boolean = true;
+
+    private formItemState: FormItemState;
 
     private readonly formItemLayerFactory: FormItemLayerFactory;
 
@@ -62,6 +65,11 @@ export class FormItemLayer {
 
     setParent(value: FormItemOccurrenceView): FormItemLayer {
         this.parent = value;
+        return this;
+    }
+
+    setFormItemState(formItemState: FormItemState): FormItemLayer {
+        this.formItemState = formItemState;
         return this;
     }
 
@@ -215,7 +223,8 @@ export class FormItemLayer {
                     formOptionSetOption: formOptionSetOption,
                     parent: this.parent,
                     parentDataSet: propertySet,
-                    lazyRender: this.lazyRender
+                    lazyRender: this.lazyRender,
+                    formItemState: this.formItemState
                 });
             }
 

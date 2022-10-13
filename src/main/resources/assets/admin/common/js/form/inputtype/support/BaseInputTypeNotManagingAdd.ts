@@ -131,7 +131,7 @@ export abstract class BaseInputTypeNotManagingAdd
     }
 
     createAndAddOccurrence() {
-        this.inputOccurrences.createAndAddOccurrence();
+        this.inputOccurrences.addNewOccurrence();
     }
 
     layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {
