@@ -84,12 +84,12 @@ export class InputOccurrences
         return this.input.getOccurrences();
     }
 
-    createNewOccurrence(formItemOccurrences: FormItemOccurrences<InputOccurrenceView>,
-                        insertAtIndex: number): FormItemOccurrence<InputOccurrenceView> {
+    createOccurrence(formItemOccurrences: FormItemOccurrences<InputOccurrenceView>,
+                     insertAtIndex: number): FormItemOccurrence<InputOccurrenceView> {
         return new InputOccurrence(<InputOccurrences>formItemOccurrences, insertAtIndex);
     }
 
-    createNewOccurrenceView(occurrence: InputOccurrence): InputOccurrenceView {
+    createOccurrenceView(occurrence: InputOccurrence): InputOccurrenceView {
         const property: Property = this.getOrPopulatePropertyFromArray(occurrence.getIndex());
         const inputOccurrenceView: InputOccurrenceView = new InputOccurrenceView(occurrence, this.baseInputTypeView, property);
 

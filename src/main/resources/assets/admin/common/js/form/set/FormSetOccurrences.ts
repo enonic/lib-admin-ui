@@ -12,6 +12,7 @@ import {FormItemLayerFactory} from '../FormItemLayerFactory';
 import {Element} from '../../dom/Element';
 import {RemoveButtonClickedEvent} from '../RemoveButtonClickedEvent';
 import {FormItemLayer} from '../FormItemLayer';
+import {FormItemState} from '../FormItemState';
 
 export interface FormSetOccurrencesConfig<V extends FormSetOccurrenceView> {
 
@@ -60,9 +61,10 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         this.lazyRender = config.lazyRender;
     }
 
-    protected getNewOccurrenceConfig(occurrence: FormSetOccurrence<V>): FormSetOccurrenceViewConfig<V> {
+    protected getNewOccurrenceConfig(occurrence: FormSetOccurrence<V>, state: FormItemState): FormSetOccurrenceViewConfig<V> {
         const dataSet: PropertySet = this.getOrPopulateSetFromArray(occurrence.getIndex());
-        const layer: FormItemLayer = this.layerFactory.createLayer({context: this.context, lazyRender: this.lazyRender});
+        const layer: FormItemLayer =
+            this.layerFactory.createLayer({context: this.context, lazyRender: this.lazyRender, formItemState: state});
 
         return {
             context: this.context,
@@ -74,25 +76,25 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         };
     }
 
-    protected addOccurrence(occurrence: FormItemOccurrence<V>, validate: boolean = true): Q.Promise<V> {
+    protected addOccurrenceView(occurrence: FormItemOccurrence<V>, validate: boolean = true, state: FormItemState): V {
         if (occurrence.getIndex() < this.countOccurrences()) {
             // we're adding to the middle of array, add set and then move it to necessary index
             this.propertyArray.addSet();
             this.propertyArray.move(this.propertyArray.getSize() - 1, occurrence.getIndex());
         }
-        return super.addOccurrence(occurrence, validate);
+        return super.addOccurrenceView(occurrence, validate, state);
     }
 
-    createNewOccurrenceView(occurrence: FormSetOccurrence<V>): V {
-        const newOccurrenceView = this.createOccurrenceView(this.getNewOccurrenceConfig(occurrence));
+    createOccurrenceView(occurrence: FormSetOccurrence<V>, state: FormItemState): V {
+        const occurrenceView: V = this.createFormSetOccurrenceView(this.getNewOccurrenceConfig(occurrence, state));
 
-        newOccurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<V>) => this.removeOccurrenceView(event.getView()));
-        newOccurrenceView.onExpandRequested(view => this.notifyExpandRequested(view));
+        occurrenceView.onRemoveButtonClicked((event: RemoveButtonClickedEvent<V>) => this.removeOccurrenceView(event.getView()));
+        occurrenceView.onExpandRequested(view => this.notifyExpandRequested(view));
 
-        return newOccurrenceView;
+        return occurrenceView;
     }
 
-    protected createOccurrenceView(_config: FormSetOccurrenceViewConfig<V>): V {
+    protected createFormSetOccurrenceView(_config: FormSetOccurrenceViewConfig<V>): V {
         throw new Error('Must be implemented by inheritor');
     }
 
@@ -113,8 +115,8 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         return this.formSet.getOccurrences();
     }
 
-    createNewOccurrence(formItemOccurrences: FormItemOccurrences<V>,
-                        insertAtIndex: number): FormItemOccurrence<V> {
+    createOccurrence(formItemOccurrences: FormItemOccurrences<V>,
+                     insertAtIndex: number): FormItemOccurrence<V> {
         return new FormSetOccurrence(<FormSetOccurrences<V>>formItemOccurrences, insertAtIndex);
     }
 

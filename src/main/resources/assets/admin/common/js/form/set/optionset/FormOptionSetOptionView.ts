@@ -23,6 +23,7 @@ import {FormOptionSet} from './FormOptionSet';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
 import {ValidationRecording} from '../../ValidationRecording';
 import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
+import {FormItemState} from '../../FormItemState';
 
 export interface FormOptionSetOptionViewConfig
     extends CreatedFormItemLayerConfig {
@@ -49,6 +50,7 @@ export class FormOptionSetOptionView
     private selectionChangedListeners: { (): void }[] = [];
     private checkbox: Checkbox;
     private readonly isOptionSetExpandedByDefault: boolean;
+    private formItemState: FormItemState;
     private notificationDialog: NotificationDialog;
     private checkboxEnabledStatusHandler: () => void = (() => {
         this.setCheckBoxDisabled();
@@ -67,6 +69,8 @@ export class FormOptionSetOptionView
         this.formOptionSetOption = config.formOptionSetOption;
 
         this.isOptionSetExpandedByDefault = (<FormOptionSet>config.formOptionSetOption.getParent()).isExpanded();
+
+        this.formItemState = config.formItemState;
 
         this.addClass(this.formOptionSetOption.getPath().getElements().length % 2 ? 'even' : 'odd');
 
@@ -103,7 +107,14 @@ export class FormOptionSetOptionView
             this.appendChild(this.optionItemsContainer);
         }
 
+        const isDefaultAndNew: boolean = this.formOptionSetOption.isDefaultOption() &&
+                                         (this.getContext().getFormState().isNew() || this.formItemState === FormItemState.NEW);
+
         const optionItemsPropertySet = this.getOrPopulateOptionItemsPropertyArray(this.parentDataSet).getSet(0);
+
+         if (isDefaultAndNew) {
+             this.setSelected(true);
+         }
 
         const layoutPromise: Q.Promise<FormItemView[]> =
             this.formItemLayer
@@ -113,7 +124,7 @@ export class FormOptionSetOptionView
                 .layout(optionItemsPropertySet, validate && this.isSelected());
 
         layoutPromise.then((formItemViews: FormItemView[]) => {
-
+            this.formItemState = FormItemState.EXISTING;
             this.updateViewState();
 
             if (this.formOptionSetOption.getFormItems().length > 0) {
@@ -215,7 +226,9 @@ export class FormOptionSetOptionView
             }
         } else {
             if (selected) {
-                array.add(value);
+                if (!array.containsValue(value)) {
+                    array.add(value);
+                }
             } else {
                 const property: Property = this.getThisPropertyFromSelectedOptionsArray();
                 if (!!property) {
@@ -329,13 +342,19 @@ export class FormOptionSetOptionView
     }
 
     private getOrPopulateOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
-        let propertyArray = propertySet.getPropertyArray(this.getName());
-        if (!propertyArray) {
-            propertyArray =
-                PropertyArray.create().setType(ValueTypes.DATA).setName(this.getName()).setParent(this.parentDataSet).build();
-            propertyArray.addSet();
-            propertySet.addPropertyArray(propertyArray);
-        }
+        return this.getOptionItemsPropertyArray(propertySet) || this.populateOptionItemsPropertyArray(propertySet);
+    }
+
+    private getOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
+        return propertySet.getPropertyArray(this.getName());
+    }
+
+    private populateOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
+        const propertyArray: PropertyArray =
+            PropertyArray.create().setType(ValueTypes.DATA).setName(this.getName()).setParent(this.parentDataSet).build();
+        propertyArray.addSet();
+        propertySet.addPropertyArray(propertyArray);
+
         return propertyArray;
     }
 

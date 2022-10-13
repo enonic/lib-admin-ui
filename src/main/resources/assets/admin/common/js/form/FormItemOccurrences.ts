@@ -11,6 +11,7 @@ import {FormItemOccurrence} from './FormItemOccurrence';
 import {OccurrenceAddedEvent} from './OccurrenceAddedEvent';
 import {OccurrenceRenderedEvent} from './OccurrenceRenderedEvent';
 import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
+import {FormItemState} from './FormItemState';
 
 export interface FormItemOccurrencesConfig {
 
@@ -124,7 +125,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
     layout(validate: boolean = true): Q.Promise<void> {
         const occurrences: FormItemOccurrence<V>[] = this.constructOccurrences();
 
-        return this.layoutOccurrences(occurrences, validate);
+        return this.layoutOccurrences(occurrences, validate, FormItemState.EXISTING);
     }
 
     update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
@@ -157,7 +158,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         });
     }
 
-    createNewOccurrenceView(_occurrence: FormItemOccurrence<V>): V {
+    createOccurrenceView(_occurrence: FormItemOccurrence<V>, state: FormItemState): V {
         throw new Error('Must be implemented by inheritor');
     }
 
@@ -169,18 +170,19 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         _occurrenceView.reset();
     }
 
-    createNewOccurrence(_formItemOccurrences: FormItemOccurrences<V>, _insertAtIndex: number): FormItemOccurrence<V> {
+    createOccurrence(_formItemOccurrences: FormItemOccurrences<V>, _insertAtIndex: number): FormItemOccurrence<V> {
         throw new Error('Must be implemented by inheritor');
     }
 
-    public createAndAddOccurrence(insertAtIndex: number = this.countOccurrences(), validate: boolean = true): Q.Promise<V> {
-        const occurrence: FormItemOccurrence<V> = this.createNewOccurrence(this, insertAtIndex);
+    public addNewOccurrence(insertAtIndex: number = this.countOccurrences(), validate: boolean = true): Q.Promise<V> {
+        const occurrence: FormItemOccurrence<V> = this.createOccurrence(this, insertAtIndex);
+        const occurrenceView: V = this.addOccurrenceView(occurrence, validate, FormItemState.NEW);
+        this.notifyOccurrenceAdded(occurrence, occurrenceView);
 
-        return this.addOccurrence(occurrence, validate).then((view: V) => {
+        return this.layoutOccurrence(occurrence, occurrenceView, validate).then(() => {
             // hiding validation error on adding new items until validate() is invoked
-            view.addClass('hide-validation-errors');
-
-            return view;
+            occurrenceView.addClass('hide-validation-errors');
+            return occurrenceView;
         });
     }
 
@@ -225,7 +227,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
     }
 
     isExpandable(): boolean {
-        return this.occurrenceViews.some((view) => view.isExpandable());
+        return this.occurrenceViews.some((view: V) => view.isExpandable());
     }
 
     getOccurrenceViewElementBefore(index: number): V {
@@ -283,7 +285,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         return this.showEmptyFormItemOccurrences() ? 1 : 0;
     }
 
-    protected addOccurrence(occurrence: FormItemOccurrence<V>, validate: boolean = true): Q.Promise<V> {
+    protected addOccurrenceView(occurrence: FormItemOccurrence<V>, validate: boolean = true, state: FormItemState): V {
         if (FormItemOccurrences.debug) {
             console.debug('FormItemOccurrences.addOccurrence:', occurrence);
         }
@@ -291,15 +293,15 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         const countOccurrences: number = this.countOccurrences();
 
         if (this.allowedOccurrences.maximumReached(countOccurrences)) {
-            return Q(null);
+            return null;
         }
 
-        const occurrenceView: V = this.createNewOccurrenceView(occurrence);
+        const occurrenceView: V = this.createOccurrenceView(occurrence, state);
         occurrenceView.onFocus(this.focusListener);
         occurrenceView.onBlur(this.blurListener);
         occurrenceView.onOccurrenceChanged(this.occurrenceChangedListener);
 
-        let insertAtIndex = occurrence.getIndex();
+        let insertAtIndex: number = occurrence.getIndex();
         this.occurrences.splice(insertAtIndex, 0, occurrence);
         if (insertAtIndex === 0) {
             this.occurrenceViewContainer.prependChild(occurrenceView);
@@ -314,14 +316,16 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
 
         this.occurrenceViews.splice(insertAtIndex, 0, occurrenceView);
 
-        this.notifyOccurrenceAdded(occurrence, occurrenceView);
+        return occurrenceView;
+    }
 
+    protected layoutOccurrence(occurrence: FormItemOccurrence<V>, occurrenceView: V, validate: boolean = true): Q.Promise<void> {
         return occurrenceView.layout(validate).then(() => {
             this.resetOccurrenceIndexes();
             this.refreshOccurrenceViews();
             occurrenceView.giveFocus();
             this.notifyOccurrenceRendered(occurrence, occurrenceView, validate);
-            return occurrenceView;
+            return Q.resolve();
         }).catch((reason: any) => {
             DefaultErrorHandler.handle(reason);
             return null;
@@ -381,17 +385,22 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         const totalItemsToCreate: number = this.getTotalOccurrencesNeeded();
 
         for (let index: number = 0; index < totalItemsToCreate; index++) {
-            occurrences.push(this.createNewOccurrence(this, index));
+            occurrences.push(this.createOccurrence(this, index));
         }
 
         return occurrences;
     }
 
-    private layoutOccurrences(occurrences: FormItemOccurrence<V>[], validate: boolean = true): Q.Promise<void> {
-        const layoutPromises: Q.Promise<V>[] = [];
+    private layoutOccurrences(occurrences: FormItemOccurrence<V>[], validate: boolean, state: FormItemState): Q.Promise<void> {
+        const layoutPromises: Q.Promise<void>[] = [];
 
         occurrences.forEach((occurrence: FormItemOccurrence<V>) => {
-            layoutPromises.push(this.addOccurrence(occurrence, validate));
+            const occurrenceView: V = this.addOccurrenceView(occurrence, validate, state);
+            this.notifyOccurrenceAdded(occurrence, occurrenceView);
+
+            if (occurrenceView) {
+                layoutPromises.push(this.layoutOccurrence(occurrence, occurrenceView, validate));
+            }
         });
 
         return Q.all(layoutPromises).spread<void>(() => Q<void>(null));
@@ -409,7 +418,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         });
 
         while (this.occurrenceViews.length < totalItemsNeeded) {
-            promises.push(this.createAndAddOccurrence());
+            promises.push(this.addNewOccurrence());
         }
 
         return Q.all(promises).spread<void>(() => Q<void>(null));

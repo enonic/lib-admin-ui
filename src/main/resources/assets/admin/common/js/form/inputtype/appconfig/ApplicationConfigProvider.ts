@@ -2,6 +2,7 @@ import {Property} from '../../../data/Property';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {ApplicationKey} from '../../../application/ApplicationKey';
 import {ApplicationConfig} from '../../../application/ApplicationConfig';
+import {PropertySet} from '../../../data/PropertySet';
 
 export class ApplicationConfigProvider {
 
@@ -22,36 +23,38 @@ export class ApplicationConfigProvider {
         this.notifyPropertyChanged();
     }
 
-    getConfig(applicationKey: ApplicationKey, addMissing: boolean = true): ApplicationConfig {
-        let match: ApplicationConfig = null;
-
+    getConfig(applicationKey: ApplicationKey): ApplicationConfig {
         if (!applicationKey) {
-            return match;
+            return null;
         }
+
+        let match: ApplicationConfig = null;
 
         this.propertyArray.forEach((property: Property) => {
             if (property.hasNonNullValue()) {
-                let applicationConfigAsSet = property.getPropertySet();
-                let applicationConfig = ApplicationConfig.create().fromData(applicationConfigAsSet).build();
+                const applicationConfigAsSet: PropertySet = property.getPropertySet();
+                const applicationConfig: ApplicationConfig = ApplicationConfig.create().fromData(applicationConfigAsSet).build();
+
                 if (applicationConfig.getApplicationKey().equals(applicationKey)) {
                     match = applicationConfig;
                 }
             }
         });
 
-        if (!match && addMissing) {
-            this.notifyBeforePropertyChanged();
-
-            let applicationConfigAsSet = this.propertyArray.addSet();
-            applicationConfigAsSet.addString('applicationKey', applicationKey.toString());
-            applicationConfigAsSet.addPropertySet('config');
-            let newApplicationConfig = ApplicationConfig.create().fromData(applicationConfigAsSet).build();
-
-            this.notifyAfterPropertyChanged();
-            return newApplicationConfig;
-
-        }
         return match;
+    }
+
+    addConfig(applicationKey: ApplicationKey): ApplicationConfig {
+        this.notifyBeforePropertyChanged();
+
+        const applicationConfigAsSet: PropertySet = this.propertyArray.addSet();
+        applicationConfigAsSet.addString(ApplicationConfig.PROPERTY_KEY, applicationKey.toString());
+        applicationConfigAsSet.addPropertySet(ApplicationConfig.PROPERTY_CONFIG);
+
+        const newApplicationConfig = ApplicationConfig.create().fromData(applicationConfigAsSet).build();
+
+        this.notifyAfterPropertyChanged();
+        return newApplicationConfig;
     }
 
     onPropertyChanged(listener: () => void) {
