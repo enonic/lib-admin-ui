@@ -131,6 +131,12 @@ export class NewElementBuilder
     }
 }
 
+export enum LangDirection {
+    AUTO = '',
+    LTR = 'ltr',
+    RTL = 'rtl'
+}
+
 export class Element {
 
     public static debug: boolean = false;
@@ -530,7 +536,7 @@ export class Element {
         return this.getEl().getAttribute('lang');
     }
 
-    setDir(value: string): Element {
+    setDir(value: LangDirection): Element {
         this.getEl().setAttribute('dir', value);
         return this;
     }

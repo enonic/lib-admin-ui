@@ -10,7 +10,7 @@ import {InputValueLengthCounterEl} from './InputValueLengthCounterEl';
 import * as Q from 'q';
 import {Value} from '../../../data/Value';
 import {StringHelper} from '../../../util/StringHelper';
-import {Element} from '../../../dom/Element';
+import {Element, LangDirection} from '../../../dom/Element';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {ValueType} from '../../../data/ValueType';
@@ -82,7 +82,7 @@ export abstract class TextInputType
             inputEl.setLang(language);
 
             if (Locale.supportsRtl(language)) {
-                inputEl.setDir('rtl');
+                inputEl.setDir(LangDirection.RTL);
             }
         }
     }
