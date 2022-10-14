@@ -11,7 +11,7 @@ import {WizardHeader} from './WizardHeader';
 import {Name} from '../../Name';
 import {DivEl} from '../../dom/DivEl';
 import {ElementHelper} from '../../dom/ElementHelper';
-import {Element} from '../../dom/Element';
+import {Element, LangDirection} from '../../dom/Element';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 
 export class WizardHeaderWithDisplayNameAndName
@@ -106,6 +106,12 @@ export class WizardHeaderWithDisplayNameAndName
     setDisplayName(value: string, isGeneratedValue?: boolean) {
         this.displayNameEl.setValue(value.trim());
         this.displayNameEl.toggleClass(WizardHeaderWithDisplayNameAndName.GENERATED_CLASS, isGeneratedValue);
+    }
+
+    setDir(value: LangDirection): Element {
+        this.displayNameEl.setDir(value);
+        this.nameEl.setDir(value);
+        return this;
     }
 
     setPath(value: string) {
