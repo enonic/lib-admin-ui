@@ -11,7 +11,7 @@ export class Locale
     private static readonly JP_TAG: string = 'ja-JP-JP';
     private static readonly NO: string = 'nn-NO-x-lvariant-NY';
     private static readonly NO_TAG: string = 'nn-NO-NY';
-    private static readonly RTL_CODES: string[] = ['ar', 'dv', 'fa', 'ha', 'he', 'iw', 'ji', 'ps', 'sd', 'ug', 'ur', 'yi'];
+    private static readonly RTL_CODES: string[] = ['ar', 'dv', 'fa', 'ha', 'he', 'ks', 'ku', 'ps', 'sd', 'ur', 'yi'];
 
     private tag: string;
     private displayName: string;
