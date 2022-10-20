@@ -40,9 +40,10 @@ export class GeoPoint
         return  isValid ? this.getValueType().newValue(event.getNewValue()) : this.getValueType().newNullValue();
     }
 
-    resetInputOccurrenceElement(occurrence: Element) {
-        const input: GeoPointEl = <GeoPointEl> occurrence;
+    resetInputOccurrenceElement(occurrence: Element): void {
+        super.resetInputOccurrenceElement(occurrence);
 
+        const input: GeoPointEl = <GeoPointEl> occurrence;
         input.resetBaseValues();
     }
 

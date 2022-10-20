@@ -32,7 +32,9 @@ export abstract class NumberInputType
         occurrence.setValue(this.getPropertyValue(property));
     }
 
-    resetInputOccurrenceElement(occurrence: Element) {
+    resetInputOccurrenceElement(occurrence: Element): void {
+        super.resetInputOccurrenceElement(occurrence);
+
         (<FormInputEl>occurrence).resetBaseValues();
     }
 

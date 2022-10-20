@@ -47,7 +47,8 @@ export abstract class TextInputType
         occurrence.setValue(property.getString());
     }
 
-    resetInputOccurrenceElement(occurrence: Element) {
+    resetInputOccurrenceElement(occurrence: Element): void {
+        super.resetInputOccurrenceElement(occurrence);
         (<FormInputEl>occurrence).resetBaseValues();
     }
 

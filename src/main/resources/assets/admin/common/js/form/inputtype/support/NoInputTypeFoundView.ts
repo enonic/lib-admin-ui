@@ -48,9 +48,10 @@ export class NoInputTypeFoundView
         return this.getValueType().newValue(data.getNewValue());
     }
 
-    resetInputOccurrenceElement(occurrence: Element) {
-        const input: TextInput = <TextInput> occurrence;
+    resetInputOccurrenceElement(occurrence: Element): void {
+        super.resetInputOccurrenceElement(occurrence);
 
+        const input: TextInput = <TextInput> occurrence;
         input.resetBaseValues();
     }
 
