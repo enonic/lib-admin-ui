@@ -79,7 +79,9 @@ export class DateType
         }
     }
 
-    resetInputOccurrenceElement(occurrence: Element) {
+    resetInputOccurrenceElement(occurrence: Element): void {
+        super.resetInputOccurrenceElement(occurrence);
+
         let input = <DatePicker> occurrence;
 
         input.resetBase();
