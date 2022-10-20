@@ -6,6 +6,7 @@ import {TextSearchField} from './TextSearchField';
 import {ClearFilterButton} from './ClearFilterButton';
 import {SpanEl} from '../../../dom/SpanEl';
 import {DivEl} from '../../../dom/DivEl';
+import {Element} from '../../../dom/Element';
 import {AggregationGroupView} from '../../../aggregation/AggregationGroupView';
 import {KeyBindings} from '../../../ui/KeyBindings';
 import {KeyBinding} from '../../../ui/KeyBinding';
@@ -58,7 +59,7 @@ export class BrowseFilterPanel<T>
         this.hitsCounterEl = new SpanEl('hits-counter');
 
         let hitsCounterAndClearButtonWrapper = new DivEl('hits-and-clear');
-        hitsCounterAndClearButtonWrapper.appendChildren(this.clearFilter, this.hitsCounterEl);
+        hitsCounterAndClearButtonWrapper.appendChild(this.hitsCounterEl);
 
         this.aggregationContainer = new AggregationContainer();
         this.aggregationContainer.hide();
@@ -76,10 +77,13 @@ export class BrowseFilterPanel<T>
         this.onRendered(() => {
             this.appendChild(this.hideFilterPanelButton);
             this.appendExtraSections();
-            this.appendChild(this.searchField);
-            this.appendChild(hitsCounterAndClearButtonWrapper);
-            this.appendChild(this.aggregationContainer);
-            this.appendChild(showResultsButtonWrapper);
+            this.appendChildren(
+                <Element>this.searchField,
+                this.clearFilter,
+                hitsCounterAndClearButtonWrapper,
+                this.aggregationContainer,
+                showResultsButtonWrapper
+            );
 
             this.showResultsButton.hide();
 
