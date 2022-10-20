@@ -10,12 +10,18 @@
   overflow-y: auto;
 
   a.clear-filter-button {
+    .icon-close();
     text-decoration: none;
     float: right;
     font-size: 14px;
+    line-height: 24px;
 
-    &:hover {
-      color: @admin-button-blue3;
+    &:before {
+      color: @admin-button-blue1;
+    }
+
+    &:hover:before {
+      color: @admin-button-blue2;
     }
   }
 
@@ -25,8 +31,8 @@
     margin-left: 30px;
     margin-bottom: 7px;
     font-size: 14px;
-    width: 85%;
-    padding: 0 21px 8px 1px;
+    width: 70%;
+    padding: 0 10px 8px 1px;
     line-height: 24px;
     border: 0;
     box-sizing: border-box;
@@ -61,6 +67,10 @@
     cursor: pointer;
     color: @admin-button-blue1;
     top: 8px;
+
+    &:hover {
+      color: @admin-button-blue2;
+    }
   }
 
   &.show-constraint {
