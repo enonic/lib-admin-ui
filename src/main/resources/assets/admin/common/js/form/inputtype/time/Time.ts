@@ -79,9 +79,10 @@ export class Time
         }
     }
 
-    resetInputOccurrenceElement(occurrence: Element) {
-        const input: TimePicker = <TimePicker> occurrence;
+    resetInputOccurrenceElement(occurrence: Element): void {
+        super.resetInputOccurrenceElement(occurrence);
 
+        const input: TimePicker = <TimePicker> occurrence;
         input.resetBase();
     }
 

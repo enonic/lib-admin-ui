@@ -314,7 +314,9 @@ export abstract class BaseInputTypeNotManagingAdd
         }
     }
 
-    abstract resetInputOccurrenceElement(_occurrence: Element);
+    resetInputOccurrenceElement(_occurrence: Element): void {
+        this.occurrenceValidationState.delete(_occurrence.getId());
+    }
 
     abstract setEnabledInputOccurrenceElement(_occurrence: Element, enable: boolean);
 

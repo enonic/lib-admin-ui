@@ -87,9 +87,10 @@ export class DateTime
         }
     }
 
-    resetInputOccurrenceElement(occurrence: Element) {
-        const input: DateTimePicker = <DateTimePicker> occurrence;
+    resetInputOccurrenceElement(occurrence: Element): void {
+        super.resetInputOccurrenceElement(occurrence);
 
+        const input: DateTimePicker = <DateTimePicker> occurrence;
         input.resetBase();
     }
 
