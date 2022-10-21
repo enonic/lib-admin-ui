@@ -79,6 +79,12 @@ export class TextLine
         return this.regexp.test(inputEl.getValue());
     }
 
+  cleanInputOccurrenceElement(occurrence: Element): void {
+      super.cleanInputOccurrenceElement(occurrence);
+
+      (<TextInput>occurrence).setValue('');
+  }
+
 }
 
 InputTypeManager.register(new Class(TextLine.getName().getName(), TextLine), true);

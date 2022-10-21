@@ -382,4 +382,9 @@ export class InputView
         return this.getContext()?.getFormState()?.isNew();
     }
 
+    clean(): void {
+        super.clean();
+        this.inputTypeView.clean();
+    }
+
 }

@@ -20,6 +20,8 @@ export interface InputTypeView {
 
     reset();
 
+    clean(): void;
+
     refresh();
 
     setEnabled(enable: boolean);

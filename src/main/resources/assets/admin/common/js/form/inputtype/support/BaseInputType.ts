@@ -107,6 +107,10 @@ export abstract class BaseInputType extends DivEl
         throw Error('Must be implemented in inheritors');
     }
 
+    clean(): void {
+        //to be implemented on demand in inheritors
+    }
+
     setEnabled(enable: boolean) {
     //
     }

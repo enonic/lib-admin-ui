@@ -75,6 +75,11 @@ export class InputOccurrenceView
         this.inputTypeView.resetInputOccurrenceElement(this.inputElement);
     }
 
+    clean(): void {
+        super.clean();
+        this.inputTypeView.cleanInputOccurrenceElement(this.inputElement);
+    }
+
     setEnabled(enable: boolean) {
         this.inputTypeView.setEnabledInputOccurrenceElement(this.inputElement, enable);
         this.removeButtonEl.setEnabled(enable);

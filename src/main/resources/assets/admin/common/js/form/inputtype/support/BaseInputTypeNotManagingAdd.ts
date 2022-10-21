@@ -172,6 +172,10 @@ export abstract class BaseInputTypeNotManagingAdd
         this.inputOccurrences.reset();
     }
 
+    clean(): void {
+        this.inputOccurrences.clean();
+    }
+
     setEnabled(enable: boolean) {
         this.inputOccurrences.setEnabled(enable);
     }
@@ -316,6 +320,10 @@ export abstract class BaseInputTypeNotManagingAdd
 
     resetInputOccurrenceElement(_occurrence: Element): void {
         this.occurrenceValidationState.delete(_occurrence.getId());
+    }
+
+    cleanInputOccurrenceElement(occurrence: Element): void {
+      // implement in inheritors on demand
     }
 
     abstract setEnabledInputOccurrenceElement(_occurrence: Element, enable: boolean);
