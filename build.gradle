@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.1'
     id 'com.enonic.xp.base' version '3.2.0'
-    id "com.github.node-gradle.node" version '3.4.0'
+    id "com.github.node-gradle.node" version '3.5.0'
 }
 
 apply from: "$rootDir/gradle/env.gradle"
