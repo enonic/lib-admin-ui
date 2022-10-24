@@ -13,12 +13,6 @@ export class Menu
         super('menu');
 
         actions.forEach((action) => this.addAction(action));
-
-        this.onClicked((e: MouseEvent) => {
-            // menu itself was clicked so do nothing
-            e.preventDefault();
-            e.stopPropagation();
-        });
     }
 
     isHideOnItemClick(): boolean {
