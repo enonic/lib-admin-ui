@@ -1,5 +1,6 @@
 export enum NamesAndIconViewSize {
     large,
     medium,
-    small
+    small,
+    compact
 }

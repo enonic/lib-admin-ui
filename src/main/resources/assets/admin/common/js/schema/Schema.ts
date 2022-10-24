@@ -106,6 +106,11 @@ export class SchemaBuilder
         return this;
     }
 
+    setDisplayName(value: string): SchemaBuilder {
+        this.displayName = value;
+        return this;
+    }
+
     build(): Schema {
         return new Schema(this);
     }

@@ -31,6 +31,21 @@
       }
     }
 
+    &.not-found {
+      margin: 5px 0;
+
+      .highlight-option(@admin-input-red);
+
+      .@{_COMMON_PREFIX}wrapper {
+        div.font-icon-default {
+          display: flex !important;
+          align-items: center;
+          justify-content: center;
+          .icon-alert();
+        }
+      }
+    }
+
     .option-value,
     > .names-and-icon-view,
     > .@{_COMMON_PREFIX}names-view {
@@ -84,7 +99,7 @@
 }
 
 .option-cell() {
-  .default-slick-cell-styling(1px 8px 1px 0);
+  .default-slick-cell-styling(1px 8px);
 
   &:hover,
   &.active {

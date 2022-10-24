@@ -161,3 +161,12 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+
+.highlight-option(@color) {
+  background-color: @color !important;
+
+  .names-and-icon-view .@{_COMMON_PREFIX}names-view .@{_COMMON_PREFIX}sub-name {
+    color: @admin-shadow-gray;
+  }
+}

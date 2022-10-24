@@ -89,6 +89,10 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
                 callback(data);
                 this.loader.unLoadedData(singleLoadListener);
 
+                if (!this.loader.isNotStarted()) {
+                    this.mask.hide();
+                }
+
                 return Q(null);
             });
 
