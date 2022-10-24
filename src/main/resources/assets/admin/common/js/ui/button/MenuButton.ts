@@ -102,12 +102,14 @@ export class MenuButton
         this.dropdownHandle.addClass('down');
         this.dropdownHandle.giveFocus();
         Body.get().onClicked(this.onBodyClicked);
+        Body.get().onContextMenu(this.onBodyClicked);
     }
 
     collapseMenu(): void {
         this.menu.hide();
         this.dropdownHandle.removeClass('down');
         Body.get().unClicked(this.onBodyClicked);
+        Body.get().unContextMenu(this.onBodyClicked);
     }
 
     setDropdownHandleEnabled(enabled: boolean = true): void {
@@ -215,8 +217,6 @@ export class MenuButton
         this.dropdownHandle.onClicked((e: MouseEvent) => {
             if (this.dropdownHandle.isEnabled()) {
                 this.toggleMenu();
-                e.stopPropagation();
-                e.preventDefault();
             }
         });
 
