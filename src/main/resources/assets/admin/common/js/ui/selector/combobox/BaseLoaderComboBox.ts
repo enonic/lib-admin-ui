@@ -3,6 +3,7 @@ import {BaseLoader} from '../../../util/loader/BaseLoader';
 import {StringHelper} from '../../../util/StringHelper';
 import {ComboBox, ComboBoxConfig} from './ComboBox';
 import {LoadMask} from '../../mask/LoadMask';
+import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 
 export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
     extends ComboBox<OPTION_DISPLAY_VALUE> {
@@ -99,7 +100,7 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
             this.loader.onLoadedData(singleLoadListener);
 
             if (this.loader.isNotStarted()) {
-                this.loader.preLoad(value).then(() => { this.mask.hide(); });
+                this.loader.preLoad(value).catch(DefaultErrorHandler.handle).finally(() => this.mask.hide());
             }
         }
     }
