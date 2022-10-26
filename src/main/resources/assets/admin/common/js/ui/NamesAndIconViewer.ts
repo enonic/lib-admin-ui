@@ -127,7 +127,7 @@ export class NamesAndIconViewer<OBJECT>
         return this.getEl();
     }
 
-    private normalizeDisplayName(displayName: string): string {
+    protected normalizeDisplayName(displayName: string): string {
         if (StringHelper.isEmpty(displayName)) {
             return this.emptyDisplayName;
         }
