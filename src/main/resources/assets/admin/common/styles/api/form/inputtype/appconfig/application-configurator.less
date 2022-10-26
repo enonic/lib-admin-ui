@@ -14,33 +14,21 @@
 
   .selected-options {
     .selected-option {
-      padding: 10px !important;
+      padding: 10px;
       margin-bottom: 10px; // each child should have this for smooth sorting
 
       &:not(.placeholder) {
-        height: auto !important;
-        background-color: @admin-bg-light-gray;
+        height: auto;
 
-        &:hover {
-          background-color: @admin-bg-light-gray;
-        }
-
-        &.invalid {
+        &.invalid,
+        &.uninstalled {
           .highlight-option(@admin-input-red);
+          margin-bottom: 5px;
         }
 
         &.uninstalled {
-          .highlight-option(@admin-input-red);
-
           .@{_COMMON_PREFIX}wrapper {
-            &::before {
-              content: "!";
-              display: block;
-              background-color: @admin-red;
-              color: @admin-white;
-              left: 10px;
-              top: 7px;
-            }
+            .icon-alert();
 
             .font-icon-default {
               display: none;
@@ -76,14 +64,6 @@
         display: none;
       }
     }
-  }
-}
-
-.highlight-option(@color) {
-  background-color: @color !important;
-
-  .@{_COMMON_PREFIX}names-view .@{_COMMON_PREFIX}sub-name {
-    color: @admin-dark-gray;
   }
 }
 
