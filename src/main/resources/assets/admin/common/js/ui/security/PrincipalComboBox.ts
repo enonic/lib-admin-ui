@@ -84,17 +84,15 @@ export class PrincipalSelectedOptionsView
         return new SelectedOption<Principal>(<any>optionView, this.count());
     }
 
-    makeEmptyOption(id: string): Option<Principal> {
+    protected getEmptyDisplayValue(id: string): Principal {
+        const key: PrincipalKey = PrincipalKey.fromString(id);
 
-        let key = PrincipalKey.fromString(id);
-
-        return Option.create<Principal>()
-            .setValue(id)
-            .setDisplayValue(Principal.create().setKey(key).setDisplayName(key.getId()).build())
-            .setEmpty(true)
+        return Principal
+            .create()
+            .setKey(key)
+            .setDisplayName(id)
             .build();
     }
-
 }
 
 export class RemovedPrincipalSelectedOptionView

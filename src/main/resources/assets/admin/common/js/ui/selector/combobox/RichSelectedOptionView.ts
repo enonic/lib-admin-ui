@@ -51,6 +51,7 @@ export class RichSelectedOptionView<T>
 
     doRender(): Q.Promise<boolean> {
         this.appendActionButtons();
+        this.toggleClass('not-found', this.getOption().isEmpty() === true);
         this.appendChild(this.createView(this.optionDisplayValue).addClass('option-value'));
 
         return Q(true);
@@ -94,7 +95,7 @@ export class RichSelectedOptionView<T>
 }
 
 export class RichSelectedOptionViewBuilder<T> extends BaseSelectedOptionViewBuilder<T> {
-    size: NamesAndIconViewSize = NamesAndIconViewSize.small;
+    size: NamesAndIconViewSize = NamesAndIconViewSize.compact;
     draggable: boolean = false;
 
     setDraggable(value: boolean): RichSelectedOptionViewBuilder<T> {

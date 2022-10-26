@@ -200,9 +200,13 @@ export class BaseSelectedOptionsView<T>
     makeEmptyOption(id: string): Option<T> {
         return Option.create<T>()
             .setValue(id)
-            .setDisplayValue(null)
+            .setDisplayValue(this.getEmptyDisplayValue(id))
             .setEmpty(true)
             .build();
+    }
+
+    protected getEmptyDisplayValue(_id: string): T {
+        return null;
     }
 
     onOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; }) {
