@@ -7,7 +7,7 @@
   .names-and-icon-view-styles(48px);
 
   &.compact {
-    .names-and-icon-view-styles(28px);
+    .names-and-icon-view-styles(28px, 10px);
   }
 
   &.small {
@@ -22,9 +22,7 @@
     .names-and-icon-view-styles(64px);
   }
 
-  .names-and-icon-view-styles(@size) {
-    @icon-names-gap: 10px;
-
+  .names-and-icon-view-styles(@size, @icon-names-gap: 15px) {
     position: relative;
     overflow: hidden;
 
