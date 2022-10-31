@@ -3,7 +3,6 @@ import {PropertyArray} from '../../../data/PropertyArray';
 import {i18n} from '../../../util/Messages';
 import {DivEl} from '../../../dom/DivEl';
 import {FormOptionSet} from './FormOptionSet';
-import {FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {FormOptionSetOptionView} from './FormOptionSetOptionView';
 import {FormOptionSetOption} from './FormOptionSetOption';
 import {FormOptionSetOptionViewer} from './FormOptionSetOptionViewer';
@@ -12,7 +11,6 @@ import {Option, OptionBuilder} from '../../../ui/selector/Option';
 import {Action} from '../../../ui/Action';
 import * as Q from 'q';
 import {Element} from '../../../dom/Element';
-import {OptionSelectedEvent} from '../../../ui/selector/OptionSelectedEvent';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
 
 export class FormOptionSetOccurrenceViewSingleOption
@@ -79,6 +77,10 @@ export class FormOptionSetOccurrenceViewSingleOption
         }
     }
 
+    private hideAllOptionViews(): void {
+        this.getFormItemViews().forEach((view: FormOptionSetOptionView) => view.hide());
+    }
+
     protected initListeners() {
         super.initListeners();
 
@@ -87,12 +89,8 @@ export class FormOptionSetOccurrenceViewSingleOption
             this.singleSelectionDropdown.resetActiveSelection();
         });
 
-        this.singleSelectionDropdown.onOptionSelected((event: OptionSelectedEvent<FormOptionSetOption>) => {
-            const optionIdx: number = event.getIndex();
-            this.getFormItemViews().forEach((view, idx) => view.setVisible(idx === optionIdx));
+        this.singleSelectionDropdown.onOptionSelected(() => {
             this.expandSelectedOptionView();
-
-            this.handleSelectionChanged(this.getSelectedOptionView());
             this.notifyOccurrenceChanged();
         });
 
@@ -134,6 +132,7 @@ export class FormOptionSetOccurrenceViewSingleOption
     }
 
     protected handleSelectionChanged(optionView: FormOptionSetOptionView) {
+        optionView.setVisible(optionView.isSelected());
         this.setContainerVisible(this.isContainerExpansionRequired(optionView));
         super.handleSelectionChanged(optionView);
     }
@@ -164,10 +163,14 @@ export class FormOptionSetOccurrenceViewSingleOption
     }
 
     private expandSelectedOptionView(): void {
-        this.getSelectedOptionView()?.enableAndExpand();
+        this.hideAllOptionViews();
 
+        const selectedOptionView: FormOptionSetOptionView = this.getSelectedOptionView();
+
+        selectedOptionView?.enableAndExpand();
         this.singleSelectionHeader.addClass('selected');
         this.refresh();
+        this.handleSelectionChanged(selectedOptionView);
     }
 
     private isContainerExpansionRequired(optionView: FormOptionSetOptionView): boolean {
