@@ -39,7 +39,7 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
                 .setPartialLoadEnabled(true)
                 .setLoadBufferSize(20)
                 .setAutoLoad(false)
-                .prependClasses('dropdown-tree-grid')
+                .prependClasses('options-tree-grid')
                 .setRowHeight(gridOptions.rowHeight)
                 .setHotkeysEnabled(true)
                 .setShowToolbar(false)

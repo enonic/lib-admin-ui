@@ -1,0 +1,66 @@
+.options-tree-grid {
+  .grid {
+    .slick-row {
+      &.readonly {
+        .slick-cell {
+          pointer-events: none;
+
+          > *:not(.toggle) {
+            opacity: 0.5;
+          }
+
+          .toggle {
+            pointer-events: all;
+          }
+        }
+      }
+
+      &:not(.selectable) {
+        &.active {
+          .slick-cell.active {
+            width: 100%;
+          }
+        }
+
+        .slick-cell-checkboxsel {
+          visibility: hidden;
+        }
+      }
+
+      .toggle.icon {
+        margin-left: 10px;
+        height: 35px;
+      }
+
+      &:not(.expandable) {
+        .toggle.icon {
+          visibility: hidden;
+        }
+      }
+
+      .selected {
+        .@{_COMMON_PREFIX}names-view {
+          .@{_COMMON_PREFIX}main-name {
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  &.tree-mode {
+    .grid .slick-row .slick-cell {
+      padding-left: 0;
+    }
+  }
+
+  &:not(.tree-mode) {
+    .grid {
+      .slick-row {
+        .toggle.icon {
+          display: none;
+        }
+      }
+    }
+  }
+}
