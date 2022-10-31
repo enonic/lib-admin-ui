@@ -374,7 +374,7 @@ export class FormOptionSetOptionView
         return result;
     }
 
-    private isSelected(): boolean {
+    isSelected(): boolean {
         return !!this.getThisPropertyFromSelectedOptionsArray();
     }
 
