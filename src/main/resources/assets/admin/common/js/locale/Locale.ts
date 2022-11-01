@@ -23,7 +23,12 @@ export class Locale
     private displayCountry: string;
 
     public static supportsRtl(code: string): boolean {
-        return ObjectHelper.isDefined(code) && Locale.RTL_CODES.indexOf(Locale.extractLanguage(code)) > -1;
+        return ObjectHelper.isDefined(code) &&
+            (Locale.RTL_CODES.indexOf(Locale.extractLanguage(code)) > -1 || Locale.isSubsetOf(code, 'arab'));
+    }
+
+    private static isSubsetOf(code: string, langFamily: string): boolean {
+        return code.split('-')[1]?.toLowerCase() === langFamily.toLowerCase();
     }
 
     public static extractLanguage(value: string): string {
