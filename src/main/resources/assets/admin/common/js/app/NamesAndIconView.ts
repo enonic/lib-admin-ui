@@ -97,11 +97,17 @@ export class NamesAndIconView
     }
 
     setIconClass(value: string): NamesAndIconView {
-        this.iconDivEl
-            .setClass('font-icon-default ' + value)
-            .removeChildren()
-            .getEl().setDisplay('inline-block');
-        this.iconImageEl.hide();
+        const cls: string = value.toLowerCase().trim();
+        if (cls) {
+            this.iconDivEl
+                .setClass(`font-icon-default ${cls}`)
+                .removeChildren()
+                .getEl().setDisplay('inline-block');
+
+            this.iconImageEl.hide();
+        } else {
+            this.iconDivEl.setClass('font-icon-default').removeChildren();
+        }
 
         return this;
     }
