@@ -413,7 +413,8 @@ export abstract class DropdownGrid<OPTION_DISPLAY_VALUE> {
 
     protected createColumns(): GridColumn<any>[] {
         let columnFormatter =
-            (_row: number, _cell: number, value: OPTION_DISPLAY_VALUE, _columnDef: any, _dataContext: Option<OPTION_DISPLAY_VALUE>) => {
+            (_row: number, _cell: number, value: OPTION_DISPLAY_VALUE, _columnDef: any, option: Option<OPTION_DISPLAY_VALUE>) => {
+                this.optionDisplayValueViewer.toggleClass('non-selectable', !option.isSelectable());
                 this.optionDisplayValueViewer.setObject(value);
                 return this.optionDisplayValueViewer.toString();
             };
