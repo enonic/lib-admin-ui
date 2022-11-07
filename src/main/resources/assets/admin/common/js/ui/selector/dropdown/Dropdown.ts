@@ -291,6 +291,10 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
     }
 
     private doSelectOption(option: Option<OPTION_DISPLAY_VALUE>, silent: boolean = false) {
+        if (!option.isSelectable()) {
+            return;
+        }
+
         const previousOption: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
 
         this.dropdownList.markSelections([option]);
