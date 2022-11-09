@@ -72,7 +72,7 @@ export class UploaderEl<MODEL extends Equitable>
     protected dragAndDropper: DragAndDrop;
     protected value: string;
     protected dropzone: DropZone;
-    private uploadedItems: UploadItem<MODEL>[] = [];
+    protected uploadedItems: UploadItem<MODEL>[] = [];
     private extraDropzoneIds: string[] = [];
     private defaultDropzoneContainer: DropzoneContainer;
     private uploadButton: Button;
@@ -774,6 +774,10 @@ export class UploaderEl<MODEL extends Equitable>
             return false;
         }
 
+        if (!this.isAllowedToUpload(id, name)) {
+            return false;
+        }
+
         this.beforeSubmit();
         const uploadItem = this.processFile(id, name);
 
@@ -793,6 +797,10 @@ export class UploaderEl<MODEL extends Equitable>
 
         this.debouncedUploadStart();
 
+        return true;
+    }
+
+    protected isAllowedToUpload(id: number, name: string): boolean {
         return true;
     }
 
