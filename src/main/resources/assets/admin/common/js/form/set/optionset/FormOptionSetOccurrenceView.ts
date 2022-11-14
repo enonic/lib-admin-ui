@@ -59,7 +59,7 @@ export abstract class FormOptionSetOccurrenceView
         });
     }
 
-    protected ensureSelectionArrayExists(propertyArraySet: PropertySet) {
+    ensureSelectionArrayExists(propertyArraySet: PropertySet) {
         let selectionPropertyArray: PropertyArray = propertyArraySet.getPropertyArray('_selected');
 
         if (!selectionPropertyArray) {
