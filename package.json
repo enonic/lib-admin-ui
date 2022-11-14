@@ -28,7 +28,7 @@
     "jquery-ui": "^1.13.2",
     "mousetrap": "^1.6.5",
     "q": "^1.5.1",
-    "slickgrid": "^3.0.0",
+    "slickgrid": "^3.0.1",
     "validator": "^13.7.0"
   },
   "peerDependencies": {
