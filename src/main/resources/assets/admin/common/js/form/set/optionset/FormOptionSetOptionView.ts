@@ -208,6 +208,10 @@ export class FormOptionSetOptionView
     }
 
     public setSelected(selected: boolean) {
+        if (!this.getSelectedOptionsArray()) {
+            this.parent.ensureSelectionArrayExists(this.parentDataSet);
+        }
+
         const array = this.getSelectedOptionsArray();
         const value = new Value(this.getName(), new ValueTypeString());
 
