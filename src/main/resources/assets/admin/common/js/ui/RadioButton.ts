@@ -126,4 +126,8 @@ export class RadioButton
         console.warn('RadioButton.setDisabled() is deprecated and will be removed in lib-admin-ui 4.0.0');
         this.setEnabled(!disabled);
     }
+
+    clear(): void {
+        this.setChecked(false);
+    }
 }

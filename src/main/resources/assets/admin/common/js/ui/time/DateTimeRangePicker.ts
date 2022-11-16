@@ -161,6 +161,11 @@ export class DateTimeRangePicker
         this.endPicker.resetBase();
     }
 
+    clear(): void {
+        this.startPicker.clear();
+        this.endPicker.clear();
+    }
+
     private createPicker(builder: DateTimeRangePickerBuilder, index: number = 0): DateTimePicker {
         const b = new DateTimePickerBuilder()
             .setStartingDayOfWeek(builder.startingDayOfWeek)

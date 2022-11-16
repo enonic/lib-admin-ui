@@ -451,6 +451,10 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
             listener();
         });
     }
+
+    clear(): void {
+        this.clearCombobox();
+    }
 }
 
 export class BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {

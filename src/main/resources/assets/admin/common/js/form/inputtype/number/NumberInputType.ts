@@ -38,6 +38,12 @@ export abstract class NumberInputType
         (<FormInputEl>occurrence).resetBaseValues();
     }
 
+    clearInputOccurrenceElement(occurrence: Element): void {
+        super.clearInputOccurrenceElement(occurrence);
+
+        (<FormInputEl>occurrence).clear();
+    }
+
     createInputOccurrenceElement(_index: number, property: Property): Element {
         if (!this.getValueType().equals(property.getType())) {
             ValueTypeConverter.convertPropertyValueType(property, this.getValueType());

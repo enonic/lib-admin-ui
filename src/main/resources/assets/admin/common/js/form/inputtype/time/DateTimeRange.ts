@@ -82,6 +82,12 @@ export class DateTimeRange
         input.reset();
     }
 
+    clearInputOccurrenceElement(occurrence: Element): void{
+        super.clearInputOccurrenceElement(occurrence);
+
+        (<DateTimeRangePicker>occurrence).clear();
+    }
+
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
         const input: DateTimeRangePicker = <DateTimeRangePicker>occurrence;
 
