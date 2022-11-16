@@ -95,8 +95,12 @@ export abstract class FormItemOccurrenceView
         throw false;
     }
 
-    clean() {
+    clean(): void {
         // empty
+    }
+
+    clear(): void {
+        //
     }
 
     giveFocus(): boolean {

@@ -192,8 +192,14 @@ export class InputView
         return this.inputTypeView.update(this.propertyArray, unchangedOnly);
     }
 
-    public reset() {
+    public reset(): void {
         this.inputTypeView.reset();
+    }
+
+    clear(): void {
+        super.clear();
+
+        this.inputTypeView.clear();
     }
 
     refresh() {

@@ -322,10 +322,15 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         return focusGiven;
     }
 
-    clean() {
+    clean(): void {
         super.clean();
 
         this.formItemOccurrences.clean();
+    }
+
+    clear(): void {
+        super.clear();
+        this.formItemOccurrences.clear();
     }
 
     reset() {

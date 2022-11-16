@@ -18,7 +18,9 @@ export interface InputTypeView {
 
     update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void>;
 
-    reset();
+    reset(): void;
+
+    clear(): void;
 
     refresh();
 

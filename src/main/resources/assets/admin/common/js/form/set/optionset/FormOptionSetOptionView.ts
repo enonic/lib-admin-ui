@@ -153,15 +153,20 @@ export class FormOptionSetOptionView
         return deferred.promise;
     }
 
-    clean() {
+    clean(): void {
         super.clean();
 
-        this.formItemViews.forEach((view: FormItemView) => view.clean());
-
         if (!this.isSelected()) {
-            this.parentDataSet.removeProperty(this.getName(), 0);
-            this.cleanValidationForThisOption();
+            this.clear();
+        } else {
+            this.formItemViews.forEach((view: FormItemView) => view.clean());
         }
+    }
+
+    clear(): void {
+        super.clear();
+        this.parentDataSet.removeProperty(this.getName(), 0);
+        this.formItemViews.forEach((view: FormItemView) => view.clear());
     }
 
     getName(): string {
@@ -209,6 +214,10 @@ export class FormOptionSetOptionView
 
     public setSelected(selected: boolean) {
         if (!this.getSelectedOptionsArray()) {
+            if (!selected) {
+                return;
+            }
+
             this.parent.ensureSelectionArrayExists(this.parentDataSet);
         }
 
