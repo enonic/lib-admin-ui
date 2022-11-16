@@ -16,6 +16,7 @@ import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
 import {ValueTypeDateTime} from '../../../data/ValueTypeDateTime';
 import {ObjectHelper} from '../../../ObjectHelper';
+import {FormInputEl} from '../../../dom/FormInputEl';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDateTime]].
@@ -92,6 +93,11 @@ export class DateTime
 
         const input: DateTimePicker = <DateTimePicker> occurrence;
         input.resetBase();
+    }
+
+    clearInputOccurrenceElement(occurrence: Element): void {
+        super.clearInputOccurrenceElement(occurrence);
+        (<DateTimePicker> occurrence).clear();
     }
 
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {

@@ -87,6 +87,11 @@ export class DateType
         input.resetBase();
     }
 
+    clearInputOccurrenceElement(occurrence: Element): void {
+        super.clearInputOccurrenceElement(occurrence);
+        (<DatePicker> occurrence).clear();
+    }
+
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
         const input: DatePicker = <DatePicker> occurrence;
 

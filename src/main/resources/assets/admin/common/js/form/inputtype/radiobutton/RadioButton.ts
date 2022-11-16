@@ -66,6 +66,10 @@ export class RadioButton
         this.selector.resetBaseValues();
     }
 
+    clear(): void {
+        this.selector.clear();
+    }
+
     giveFocus(): boolean {
         return this.selector.giveFocus();
     }

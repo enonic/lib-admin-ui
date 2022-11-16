@@ -47,6 +47,12 @@ export class GeoPoint
         input.resetBaseValues();
     }
 
+    clearInputOccurrenceElement(occurrence: Element): void {
+        super.clearInputOccurrenceElement(occurrence);
+
+        (<GeoPointEl> occurrence).clear();
+    }
+
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
         const input: GeoPointEl = <GeoPointEl> occurrence;
 

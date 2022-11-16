@@ -39,6 +39,10 @@ export class Checkbox
         return this;
     }
 
+    clear(): void {
+        this.setChecked(false);
+    }
+
     isChecked(): boolean {
         return super.getValue() === 'true';
     }

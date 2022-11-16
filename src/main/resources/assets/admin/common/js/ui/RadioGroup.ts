@@ -79,6 +79,10 @@ export class RadioGroup
         this.options.forEach(o => o.resetBaseValues());
     }
 
+    clear(): void {
+        this.options.forEach((o: RadioButton) => o.clear());
+    }
+
     /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
 
     setDisabled(disabled: boolean) {
