@@ -168,8 +168,13 @@ export abstract class BaseInputTypeNotManagingAdd
         return this.inputOccurrences.update(propertyArray, unchangedOnly);
     }
 
-    reset() {
+    reset(): void {
         this.inputOccurrences.reset();
+    }
+
+    clear(): void {
+        super.clear();
+        this.inputOccurrences.clear();
     }
 
     setEnabled(enable: boolean) {
@@ -315,6 +320,10 @@ export abstract class BaseInputTypeNotManagingAdd
     }
 
     resetInputOccurrenceElement(_occurrence: Element): void {
+        this.occurrenceValidationState.delete(_occurrence.getId());
+    }
+
+    clearInputOccurrenceElement(_occurrence: Element): void {
         this.occurrenceValidationState.delete(_occurrence.getId());
     }
 

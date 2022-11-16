@@ -72,8 +72,13 @@ export class FieldSetView
         return this.formItemLayer.update(propertySet, unchangedOnly);
     }
 
-    public reset() {
+    public reset(): void {
         this.formItemLayer.reset();
+    }
+
+    clear(): void {
+        super.clear();
+        this.formItemViews.forEach((view: FormItemView) => view.clear());
     }
 
     setEnabled(enable: boolean) {

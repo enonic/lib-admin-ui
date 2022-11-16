@@ -52,6 +52,11 @@ export abstract class TextInputType
         (<FormInputEl>occurrence).resetBaseValues();
     }
 
+    clearInputOccurrenceElement(occurrence: Element): void {
+        super.clearInputOccurrenceElement(occurrence);
+        (<FormInputEl>occurrence).clear();
+    }
+
     protected initOccurrenceListeners(inputEl: FormInputEl): void {
         if (this.hasMaxLengthSet() || this.showTotalCounter) {
             new InputValueLengthCounterEl(inputEl, this.maxLength, this.showTotalCounter);
