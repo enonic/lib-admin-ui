@@ -103,8 +103,13 @@ export abstract class BaseInputType extends DivEl
         //to be implemented on demand in inheritors
     }
 
-    reset() {
+    reset(): void {
         throw Error('Must be implemented in inheritors');
+    }
+
+    clear(): void {
+        this.previousValidationRecording = null;
+        //to be implemented on demand in inheritors
     }
 
     setEnabled(enable: boolean) {

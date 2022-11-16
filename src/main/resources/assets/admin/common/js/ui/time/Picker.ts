@@ -83,6 +83,10 @@ export abstract class Picker<T extends PickerPopup>
         this.input.resetBaseValues();
     }
 
+    clear(): void {
+        this.input.clear();
+    }
+
     getTextInput(): TextInput {
         return this.input;
     }

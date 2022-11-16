@@ -52,6 +52,7 @@ export class FormOptionSetOptionView
     private readonly isOptionSetExpandedByDefault: boolean;
     private formItemState: FormItemState;
     private notificationDialog: NotificationDialog;
+    private stashedPropSet?: PropertySet;
     private checkboxEnabledStatusHandler: () => void = (() => {
         this.setCheckBoxDisabled();
     });
@@ -153,15 +154,21 @@ export class FormOptionSetOptionView
         return deferred.promise;
     }
 
-    clean() {
+    clean(): void {
         super.clean();
 
-        this.formItemViews.forEach((view: FormItemView) => view.clean());
-
         if (!this.isSelected()) {
-            this.parentDataSet.removeProperty(this.getName(), 0);
-            this.cleanValidationForThisOption();
+            this.clear();
+        } else {
+            this.formItemViews.forEach((view: FormItemView) => view.clean());
         }
+    }
+
+    clear(): void {
+        super.clear();
+        this.stashedPropSet = this.getOptionItemsPropertyArray(this.parentDataSet)?.getSet(0);
+        this.parentDataSet.removeProperty(this.getName(), 0);
+        this.formItemViews.forEach((view: FormItemView) => view.clear());
     }
 
     getName(): string {
@@ -176,6 +183,7 @@ export class FormOptionSetOptionView
 
     update(propertySet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
         this.parentDataSet = propertySet;
+        this.stashedPropSet = null;
 
         const propertyArray: PropertyArray = this.getOrPopulateOptionItemsPropertyArray(propertySet);
 
@@ -209,7 +217,16 @@ export class FormOptionSetOptionView
 
     public setSelected(selected: boolean) {
         if (!this.getSelectedOptionsArray()) {
-            this.parent.ensureSelectionArrayExists(this.parentDataSet);
+            if (!selected) {
+                return;
+            }
+
+            this.parent.ensureSelectionArrayExists();
+        }
+
+        if (selected && this.stashedPropSet) {
+            this.parentDataSet.addPropertySet(this.getName(), this.stashedPropSet);
+            this.stashedPropSet = null;
         }
 
         const array = this.getSelectedOptionsArray();
@@ -363,7 +380,7 @@ export class FormOptionSetOptionView
     }
 
     private getSelectedOptionsArray(): PropertyArray {
-        return this.parentDataSet.getPropertyArray('_selected');
+        return this.parent.getSelectedOptionsArray();
     }
 
     private getThisPropertyFromSelectedOptionsArray(): Property {

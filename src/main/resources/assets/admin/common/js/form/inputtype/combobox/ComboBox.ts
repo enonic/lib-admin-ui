@@ -85,6 +85,11 @@ export class ComboBox
         this.comboBox.resetBaseValues();
     }
 
+    clear(): void {
+        super.clear();
+        this.comboBox.clear();
+    }
+
     setEnabled(enable: boolean) {
         super.setEnabled(enable);
         this.comboBox.setEnabled(enable);

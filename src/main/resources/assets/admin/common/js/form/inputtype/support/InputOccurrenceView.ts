@@ -71,8 +71,13 @@ export class InputOccurrenceView
         return Q<void>(null);
     }
 
-    reset() {
+    reset(): void {
         this.inputTypeView.resetInputOccurrenceElement(this.inputElement);
+    }
+
+    clear(): void {
+        super.clear();
+        this.inputTypeView.clearInputOccurrenceElement(this.inputElement);
     }
 
     setEnabled(enable: boolean) {

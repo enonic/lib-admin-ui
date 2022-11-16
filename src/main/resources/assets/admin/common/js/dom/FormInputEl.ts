@@ -119,6 +119,10 @@ export class FormInputEl
         this.dirty = false;
     }
 
+    clear(): void {
+        this.setValue('');
+    }
+
     onChange(listener: (event: Event) => void) {
         this.getEl().addEventListener('change', listener);
     }

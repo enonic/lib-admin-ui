@@ -7,7 +7,6 @@ import {BaseInputTypeSingleOccurrence} from '../support/BaseInputTypeSingleOccur
 import {Checkbox as CheckboxEl, InputAlignment} from '../../../ui/Checkbox';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Input} from '../../Input';
-import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
@@ -88,6 +87,11 @@ export class Checkbox
 
     reset() {
         this.checkbox.resetBaseValues();
+    }
+
+    clear(): void {
+        super.clear();
+        this.checkbox.clear();
     }
 
     setEnabled(enable: boolean) {

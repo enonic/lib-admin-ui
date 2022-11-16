@@ -109,16 +109,6 @@ export class FormOptionSetOccurrenceViewSingleOption
         });
     }
 
-    clean() {
-        super.clean();
-
-        const selectedOptionsArray: PropertyArray = this.getSelectedOptionsArray();
-
-        if (!selectedOptionsArray || selectedOptionsArray.isEmpty()) {
-            this.propertySet.removeAllProperties();
-        }
-    }
-
     setEnabled(enable: boolean) {
         super.setEnabled(enable);
 

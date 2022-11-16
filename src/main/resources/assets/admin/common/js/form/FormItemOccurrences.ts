@@ -148,8 +148,12 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         });
     }
 
-    clean() {
+    clean(): void {
         this.occurrenceViews.forEach((view: V) => view.clean());
+    }
+
+    clear(): void {
+        this.occurrenceViews.forEach((view: V) => view.clear());
     }
 
     setEnabled(enable: boolean) {

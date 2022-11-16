@@ -73,6 +73,11 @@ export class PrincipalSelector
         this.comboBox.resetBaseValues();
     }
 
+    clear(): void {
+        super.clear();
+        this.comboBox.clearCombobox();
+    }
+
     setEnabled(enable: boolean) {
         super.setEnabled(enable);
         this.comboBox.setEnabled(enable);
