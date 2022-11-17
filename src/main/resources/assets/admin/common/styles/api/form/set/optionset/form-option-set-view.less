@@ -149,8 +149,14 @@
           opacity: 0.5;
           padding: 0 10px;
 
-          > .input-view:first-child {
-            margin-top: 10px;
+          > .input-view {
+            &:first-child {
+              margin-top: 10px;
+            }
+
+            &:last-child {
+              margin-bottom: 0;
+            }
           }
 
           &:empty {
