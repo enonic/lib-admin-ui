@@ -554,7 +554,7 @@ export abstract class FormSetOccurrenceView
 
     protected fetchPropertyValues(propArray: PropertyArray, propValues: string[], firstOnly?: boolean): void {
         propArray.some((prop: Property) => {
-            const formItem = this.getFormItemByName(prop.getName());
+            const formItem = this.getFormItemByName(prop.getPath().toString());
             if (this.isAllowedValueAndType(prop)) {
                 const propValue: string = this.sanitizeValue(this.getPropertyValue(prop, formItem));
 
@@ -620,13 +620,13 @@ export abstract class FormSetOccurrenceView
         propValues.push(...selectedLabels);
     }
 
-    private getFormItemByName(name: string, formItems?: FormItem[]): FormItem {
+    private getFormItemByName(path: string, formItems?: FormItem[]): FormItem {
         let formItem: FormItem;
         (formItems || this.getFormItems()).find((item: FormItem) => {
-            if (item.getName() === name) {
+            if (item.getPath().toString() === path) {
                 formItem = item;
             } else if (item instanceof FormOptionSetOption || item instanceof FormItemSet) {
-                formItem = this.getFormItemByName(name, item.getFormItems());
+                formItem = this.getFormItemByName(path, item.getFormItems());
             }
             return !!formItem;
         });
