@@ -272,12 +272,15 @@ export abstract class FormSetOccurrenceView
     }
 
     update(dataSet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
-        this.ensureSelectionArrayExists(dataSet);
+        this.updatePropertySet(dataSet);
+        return this.formItemLayer.update(this.propertySet, unchangedOnly);
+    }
+
+    protected updatePropertySet(dataSet: PropertySet): void {
         this.dirtyFormItemViewsMap = {};
         this.releasePropertySet(this.propertySet);
         this.propertySet = dataSet;
         this.bindPropertySet(this.propertySet);
-        return this.formItemLayer.update(this.propertySet, unchangedOnly);
     }
 
     hasValidUserInput(): boolean {
@@ -490,10 +493,6 @@ export abstract class FormSetOccurrenceView
         throw new Error('Must be implemented by inheritor');
     }
 
-    protected ensureSelectionArrayExists(_propertyArraySet: PropertySet) {
-        // override if needed to add default selection to property set
-    }
-
     protected resolveValidationRecordingPath(): ValidationRecordingPath {
         return new ValidationRecordingPath(this.getDataPath(), null);
     }
@@ -502,10 +501,6 @@ export abstract class FormSetOccurrenceView
         this.validityChangedListeners.forEach((listener: (event: RecordingValidityChangedEvent) => void) => {
             listener(event);
         });
-    }
-
-    protected getSelectedOptionsArray(): PropertyArray {
-        return this.propertySet.getPropertyArray('_selected');
     }
 
     private isAllowedValueAndType(property: Property) {

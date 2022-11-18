@@ -67,6 +67,7 @@ export class RadioButton
     }
 
     clear(): void {
+        super.clear();
         this.selector.clear();
     }
 

@@ -108,6 +108,7 @@ export abstract class BaseInputType extends DivEl
     }
 
     clear(): void {
+        this.previousValidationRecording = null;
         //to be implemented on demand in inheritors
     }
 

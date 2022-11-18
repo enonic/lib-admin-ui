@@ -32,7 +32,7 @@ export abstract class FormOptionSetOccurrenceView
                 })
         );
 
-        this.ensureSelectionArrayExists(this.propertySet);
+        this.ensureSelectionArrayExists();
     }
 
     protected initElements() {
@@ -59,15 +59,24 @@ export abstract class FormOptionSetOccurrenceView
         });
     }
 
-    ensureSelectionArrayExists(propertyArraySet: PropertySet) {
-        let selectionPropertyArray: PropertyArray = propertyArraySet.getPropertyArray('_selected');
+    protected updatePropertySet(dataSet: PropertySet) {
+        super.updatePropertySet(dataSet);
+        this.ensureSelectionArrayExists();
+    }
+
+    ensureSelectionArrayExists(): void {
+        let selectionPropertyArray: PropertyArray = this.getSelectedOptionsArray();
 
         if (!selectionPropertyArray) {
             selectionPropertyArray =
                 PropertyArray.create().setType(ValueTypes.STRING).setName('_selected').setParent(
-                    propertyArraySet).build();
-            propertyArraySet.addPropertyArray(selectionPropertyArray);
+                    this.propertySet).build();
+            this.propertySet.addPropertyArray(selectionPropertyArray);
         }
+    }
+
+    getSelectedOptionsArray(): PropertyArray {
+        return this.propertySet.getPropertyArray('_selected');
     }
 
     protected extraValidation(validationRecording: ValidationRecording) {
@@ -193,6 +202,8 @@ export abstract class FormOptionSetOccurrenceView
         if (!this.currentValidationState) {
             return; // currentValidationState is initialized on validate() call which may not be triggered in some cases
         }
+
+        this.ensureSelectionArrayExists();
 
         const previousValidationValid: boolean = this.currentValidationState.isValid();
         const multiSelectionState: ValidationRecording = this.validateMultiSelection();

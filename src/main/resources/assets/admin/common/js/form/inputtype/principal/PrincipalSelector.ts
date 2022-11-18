@@ -74,6 +74,7 @@ export class PrincipalSelector
     }
 
     clear(): void {
+        super.clear();
         this.comboBox.clearCombobox();
     }
 

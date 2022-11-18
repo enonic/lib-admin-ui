@@ -90,6 +90,7 @@ export class Checkbox
     }
 
     clear(): void {
+        super.clear();
         this.checkbox.clear();
     }
 

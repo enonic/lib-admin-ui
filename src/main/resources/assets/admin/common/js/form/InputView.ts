@@ -199,6 +199,7 @@ export class InputView
     clear(): void {
         super.clear();
 
+        this.previousValidityRecording = null;
         this.inputTypeView.clear();
     }
 
