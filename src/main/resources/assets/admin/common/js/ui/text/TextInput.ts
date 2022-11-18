@@ -1,6 +1,7 @@
 import {InputEl} from '../../dom/InputEl';
 import {StyleHelper} from '../../StyleHelper';
 import {StringHelper} from '../../util/StringHelper';
+import {KeyHelper} from '../KeyHelper';
 
 export enum TextInputSize {
     MIDDLE ='middle', LARGE = 'large'
@@ -36,9 +37,8 @@ export class TextInput
         this.previousValue = this.getValue();
 
         this.onKeyUp((event: KeyboardEvent) => {
-            if (event.keyCode === 27) {
+            if (KeyHelper.isEscKey(event)) {
                 this.setPreviousValue();
-                this.getEl().blur();
             }
         });
 
