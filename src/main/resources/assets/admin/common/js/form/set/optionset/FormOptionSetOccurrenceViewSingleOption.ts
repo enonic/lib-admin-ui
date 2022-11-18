@@ -1,5 +1,4 @@
 import {PropertySet} from '../../../data/PropertySet';
-import {PropertyArray} from '../../../data/PropertyArray';
 import {i18n} from '../../../util/Messages';
 import {DivEl} from '../../../dom/DivEl';
 import {FormOptionSet} from './FormOptionSet';
@@ -87,6 +86,7 @@ export class FormOptionSetOccurrenceViewSingleOption
         this.resetAction.onExecuted(() => {
             this.singleSelectionDropdown.deselectOptions();
             this.singleSelectionDropdown.resetActiveSelection();
+            this.singleSelectionDropdown.giveFocus();
         });
 
         this.singleSelectionDropdown.onOptionSelected(() => {

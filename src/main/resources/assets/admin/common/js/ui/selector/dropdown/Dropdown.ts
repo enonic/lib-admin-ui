@@ -17,6 +17,7 @@ import {DropdownList} from '../DropdownList';
 import {DropdownGridConfig} from '../DropdownGrid';
 import {DropdownGridRowSelectedEvent} from '../DropdownGridRowSelectedEvent';
 import {SelectedOptionView} from './SelectedOptionView';
+import {KeyHelper} from '../../KeyHelper';
 
 export interface DropdownConfig<OPTION_DISPLAY_VALUE> {
 
@@ -476,22 +477,20 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
 
         this.input.onClicked(() => {
             this.giveFocus();
-            this.input.setEnabled(true);
         });
 
         this.input.onKeyDown((event: KeyboardEvent) => {
-            if (event.which === 9) { // tab
+            if (KeyHelper.isTabKey(event)) { // tab
                 this.hideDropdown();
                 return;
             }
 
-            if (event.which === 16 || event.which === 17 || event.which === 18) {  // shift or ctrl or alt
+            if (KeyHelper.isShiftKey(event) || KeyHelper.isControlKey(event) || KeyHelper.isAltKey(event)) {  // shift or ctrl or alt
                 return;
             }
 
             if (!this.isDropdownShown()) {
-                if (event.which === 40) { // down
-                    this.input.setEnabled(false);
+                if (KeyHelper.isArrowDownKey(event)) { // down
                     this.showDropdown();
                     this.dropdownList.navigateToRowIfNotActive();
                     event.stopPropagation();
@@ -501,11 +500,11 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
                 return;
             }
 
-            if (event.which === 38) { // up
+            if (KeyHelper.isArrowUpKey(event)) {
                 this.dropdownList.navigateToPreviousRow();
-            } else if (event.which === 40) { // down
+            } else if (KeyHelper.isArrowDownKey(event)) {
                 this.dropdownList.navigateToNextRow();
-            } else if (event.which === 13) { // enter
+            } else if (KeyHelper.isEnterKey(event)) { // enter
                 if (this.dropdownList.hasOptions()) {
                     const selectionBefore: Option<OPTION_DISPLAY_VALUE> = this.getSelectedOption();
                     this.selectRow(this.dropdownList.getActiveRow(), false);
@@ -515,16 +514,17 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
                         this.hideDropdown();
                     }
                 }
-            } else if (event.which === 27) { // esc
+            } else if (KeyHelper.isEscKey(event)) { // esc
                 this.hideDropdown();
             }
 
-            if (event.which === 38 || event.which === 40 || event.which === 13 || event.which === 27) {
+            if (KeyHelper.isArrowUpKey(event) || KeyHelper.isArrowDownKey(event) || KeyHelper.isEnterKey(event) ||
+                KeyHelper.isEscKey(event)) {
                 event.stopPropagation();
                 event.preventDefault();
             }
 
-            this.input.getHTMLElement().focus();
+            this.input.giveFocus();
         });
     }
 
