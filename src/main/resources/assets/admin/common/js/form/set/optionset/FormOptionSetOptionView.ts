@@ -165,6 +165,10 @@ export class FormOptionSetOptionView
     }
 
     clear(): void {
+        if (this.stashedPropSet) { // item was already cleared
+            return;
+        }
+
         super.clear();
         this.stashedPropSet = this.getOptionItemsPropertyArray(this.parentDataSet)?.getSet(0);
         this.parentDataSet.removeProperty(this.getName(), 0);
