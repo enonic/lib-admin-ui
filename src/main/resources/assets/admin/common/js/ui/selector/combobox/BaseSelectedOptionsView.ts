@@ -289,7 +289,7 @@ export class BaseSelectedOptionsView<T>
                 stop: () => this.handleDnDStop()
             });
         } else {
-            $(this.getHtml()).sortable('destroy');
+            $(this.getHTMLElement()).sortable('destroy');
         }
         this.toggleClass('sortable', sortable);
     }
