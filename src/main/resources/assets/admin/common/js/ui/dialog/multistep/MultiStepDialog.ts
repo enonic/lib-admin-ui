@@ -1,7 +1,6 @@
 import {DialogStep} from './DialogStep';
 import {Element} from '../../../dom/Element';
 import * as Q from 'q';
-import {ModalDialog, ModalDialogConfig} from '../ModalDialog';
 import {ActionButton} from '../../button/ActionButton';
 import {DivEl} from '../../../dom/DivEl';
 import {i18n} from '../../../util/Messages';
@@ -10,9 +9,10 @@ import {AppHelper} from '../../../util/AppHelper';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
 import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';
+import {ModalDialogWithConfirmation, ModalDialogWithConfirmationConfig} from '../ModalDialogWithConfirmation';
 
 export interface MultiStepDialogConfig
-    extends ModalDialogConfig {
+    extends ModalDialogWithConfirmationConfig {
 
     steps: DialogStep[];
 
@@ -22,7 +22,7 @@ export interface MultiStepDialogConfig
 }
 
 export class MultiStepDialog
-    extends ModalDialog {
+    extends ModalDialogWithConfirmation {
 
     protected steps: DialogStep[];
 
@@ -41,10 +41,6 @@ export class MultiStepDialog
     private noStepsBlock?: Element;
 
     private currentStepDataChangedHandler: { (): void };
-
-    protected constructor(config: MultiStepDialogConfig) {
-        super(config);
-    }
 
     protected initElements(): void {
         super.initElements();
@@ -309,5 +305,9 @@ export class MultiStepDialog
 
     protected toggleHeaderIcon(value: boolean): void {
         this.headerContent.toggleClass('no-icon', !value);
+    }
+
+    isDirty(): boolean {
+        return this.steps.some((step: DialogStep) => step.hasData());
     }
 }
