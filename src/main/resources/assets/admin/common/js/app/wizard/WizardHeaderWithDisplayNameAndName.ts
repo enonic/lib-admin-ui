@@ -75,7 +75,7 @@ export class WizardHeaderWithDisplayNameAndName
             const currentDisplayName: string = event.getNewValue() || '';
 
             if (this.autoGenerationEnabled && this.isNameEmptyOrEqualDisplayName(event.getOldValue())) {
-                this.nameEl.setValue(this.generateName(currentDisplayName));
+                this.nameEl.setValue(this.generateName(currentDisplayName), false, true);
                 this.nameEl.toggleClass(WizardHeaderWithDisplayNameAndName.GENERATED_CLASS, !this.ignoreGenerateStatusForName);
             }
         });
@@ -93,6 +93,7 @@ export class WizardHeaderWithDisplayNameAndName
 
     resetBaseValues() {
         this.displayNameEl.resetBaseValues();
+        this.nameEl.resetBaseValues();
     }
 
     isAutoGenerationEnabled(): boolean {
