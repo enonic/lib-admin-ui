@@ -104,9 +104,13 @@ export class WizardHeaderWithDisplayNameAndName
         this.autoGenerationEnabled = value;
     }
 
-    setDisplayName(value: string, isGeneratedValue?: boolean) {
-        this.displayNameEl.setValue(value.trim());
-        this.displayNameEl.toggleClass(WizardHeaderWithDisplayNameAndName.GENERATED_CLASS, isGeneratedValue);
+    setDisplayName(value: string, silent?: boolean): void {
+        this.displayNameEl.setValue(value.trim(), silent);
+    }
+
+    setGeneratedDisplayName(value: string, silent?: boolean): void {
+        this.setDisplayName(value, silent);
+        this.displayNameEl.toggleClass(WizardHeaderWithDisplayNameAndName.GENERATED_CLASS, true);
     }
 
     setDir(value: LangDirection): Element {
@@ -205,8 +209,8 @@ export class WizardHeaderWithDisplayNameAndName
             !this.ignoreGenerateStatusForName && this.isNameEmptyOrEqualDisplayName(this.displayNameEl.getValue()));
     }
 
-    setName(value: string) {
-        this.nameEl.setValue(value);
+    setName(value: string, silent?: boolean): void {
+        this.nameEl.setValue(value, silent);
     }
 
     toggleEnabled(enable: boolean) {
