@@ -1,17 +1,12 @@
 import * as $ from 'jquery';
 import * as Q from 'q';
 import {PropertySet} from '../../../data/PropertySet';
-import {Property} from '../../../data/Property';
-import {PropertyArray} from '../../../data/PropertyArray';
-import {Value} from '../../../data/Value';
-import {ValueTypes} from '../../../data/ValueTypes';
 import {Occurrences} from '../../Occurrences';
 import {Checkbox} from '../../../ui/Checkbox';
 import {NotificationDialog} from '../../../ui/dialog/NotificationDialog';
 import {i18n} from '../../../util/Messages';
 import {DivEl} from '../../../dom/DivEl';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
-import {ValueTypeString} from '../../../data/ValueTypeString';
 import {Element} from '../../../dom/Element';
 import {FormEl} from '../../../dom/FormEl';
 import {FormOptionSetOption} from './FormOptionSetOption';
@@ -33,8 +28,6 @@ export interface FormOptionSetOptionViewConfig
     formOptionSetOption: FormOptionSetOption;
 
     parent: FormOptionSetOccurrenceView;
-
-    parentDataSet: PropertySet;
 }
 
 export class FormOptionSetOptionView
@@ -43,29 +36,22 @@ export class FormOptionSetOptionView
     protected helpText: HelpTextContainer;
     protected parent: FormOptionSetOccurrenceView;
     private formOptionSetOption: FormOptionSetOption;
-    private parentDataSet: PropertySet;
     private optionItemsContainer: DivEl;
     private formItemViews: FormItemView[] = [];
     private formItemLayer: FormItemLayer;
-    private selectionChangedListeners: { (): void }[] = [];
+    private selectionChangedListeners: { (isSelected: boolean): void }[] = [];
     private checkbox: Checkbox;
     private readonly isOptionSetExpandedByDefault: boolean;
     private formItemState: FormItemState;
     private notificationDialog: NotificationDialog;
-    private stashedPropSet?: PropertySet;
-    private checkboxEnabledStatusHandler: () => void = (() => {
-        this.setCheckBoxDisabled();
-    });
 
     constructor(config: FormOptionSetOptionViewConfig) {
         super(<FormItemViewConfig>{
             className: 'form-option-set-option-view',
             context: config.context,
             formItem: config.formOptionSetOption,
-            parent: config.parent // null
+            parent: config.parent
         });
-
-        this.parentDataSet = config.parentDataSet;
 
         this.formOptionSetOption = config.formOptionSetOption;
 
@@ -93,8 +79,9 @@ export class FormOptionSetOptionView
 
     public layout(validate: boolean = true): Q.Promise<void> {
         const deferred = Q.defer<void>();
+        const isSingleSelection: boolean = this.parent.isSingleSelection();
 
-        if (this.formOptionSetOption.getHelpText() && !this.isSingleSelection()) {
+        if (this.formOptionSetOption.getHelpText() && !isSingleSelection) {
             this.helpText = new HelpTextContainer(this.formOptionSetOption.getHelpText());
 
             this.appendChild(this.helpText.getHelpText());
@@ -103,7 +90,7 @@ export class FormOptionSetOptionView
         }
 
         this.optionItemsContainer = new DivEl('option-items-container');
-        const isContainerVisibleByDefault = this.isOptionSetExpandedByDefault || this.isSingleSelection() || this.isSelected();
+        const isContainerVisibleByDefault = this.isOptionSetExpandedByDefault || isSingleSelection || this.isSelected();
         if (isContainerVisibleByDefault) {
             this.appendChild(this.optionItemsContainer);
         }
@@ -111,10 +98,10 @@ export class FormOptionSetOptionView
         const isDefaultAndNew: boolean = this.formOptionSetOption.isDefaultOption() &&
                                          (this.getContext().getFormState().isNew() || this.formItemState === FormItemState.NEW);
 
-        const optionItemsPropertySet = this.getOrPopulateOptionItemsPropertyArray(this.parentDataSet).getSet(0);
+        const optionItemsPropertySet: PropertySet = this.parent.getOrPopulateOptionItemsPropertySet(this.getName());
 
          if (isDefaultAndNew) {
-             this.setSelected(true);
+             this.notifySelectionChanged(true);
          }
 
         const layoutPromise: Q.Promise<FormItemView[]> =
@@ -132,7 +119,7 @@ export class FormOptionSetOptionView
                 this.addClass('expandable');
             }
 
-            if (!this.isSingleSelection()) {
+            if (!isSingleSelection) {
                 this.prependChild(this.makeSelectionCheckbox());
             }
 
@@ -165,13 +152,7 @@ export class FormOptionSetOptionView
     }
 
     clear(): void {
-        if (this.stashedPropSet) { // item was already cleared
-            return;
-        }
-
         super.clear();
-        this.stashedPropSet = this.getOptionItemsPropertyArray(this.parentDataSet)?.getSet(0);
-        this.parentDataSet.removeProperty(this.getName(), 0);
         this.formItemViews.forEach((view: FormItemView) => view.clear());
     }
 
@@ -185,17 +166,10 @@ export class FormOptionSetOptionView
         });
     }
 
-    update(propertySet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
-        this.parentDataSet = propertySet;
-        this.stashedPropSet = null;
+    update(parentSet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
+        const propertySet: PropertySet = this.parent.getOrPopulateOptionItemsPropertySet(this.getName());
 
-        const propertyArray: PropertyArray = this.getOrPopulateOptionItemsPropertyArray(propertySet);
-
-        return this.formItemLayer.update(propertyArray.getSet(0), unchangedOnly).then(() => {
-            if (!this.isSingleSelection()) {
-                this.subscribeCheckboxOnPropertyEvents();
-            }
-
+        return this.formItemLayer.update(propertySet, unchangedOnly).then(() => {
             this.updateViewState();
             this.checkbox?.setChecked(this.isSelected(), true);
         });
@@ -217,50 +191,6 @@ export class FormOptionSetOptionView
         this.formItemViews.forEach((view: FormItemView) => {
             view.setHighlightOnValidityChange(highlight);
         });
-    }
-
-    public setSelected(selected: boolean) {
-        if (!this.getSelectedOptionsArray()) {
-            if (!selected) {
-                return;
-            }
-
-            this.parent.ensureSelectionArrayExists();
-        }
-
-        if (selected && this.stashedPropSet) {
-            this.parentDataSet.addPropertySet(this.getName(), this.stashedPropSet);
-            this.stashedPropSet = null;
-        }
-
-        const array = this.getSelectedOptionsArray();
-        const value = new Value(this.getName(), new ValueTypeString());
-
-        if (this.isSingleSelection()) {
-            const selectedProp = array.get(0);
-            if (selected) {
-                if (!selectedProp) {
-                    array.set(0, value);
-                } else {
-                    selectedProp.setValue(value);
-                }
-            } else {
-                if (!!selectedProp) {
-                    array.remove(selectedProp.getIndex());
-                }
-            }
-        } else {
-            if (selected) {
-                if (!array.containsValue(value)) {
-                    array.add(value);
-                }
-            } else {
-                const property: Property = this.getThisPropertyFromSelectedOptionsArray();
-                if (!!property) {
-                    array.remove(property.getIndex());
-                }
-            }
-        }
     }
 
     hasValidUserInput(): boolean {
@@ -319,12 +249,12 @@ export class FormOptionSetOptionView
         });
     }
 
-    onSelectionChanged(listener: () => void) {
+    onSelectionChanged(listener: (isSelected: boolean) => void): void {
         this.selectionChangedListeners.push(listener);
     }
 
-    unSelectionChanged(listener: () => void) {
-        this.selectionChangedListeners.filter((currentListener: () => void) => {
+    unSelectionChanged(listener: (isSelected: boolean) => void): void {
+        this.selectionChangedListeners.filter((currentListener: (isSelected: boolean) => void) => {
             return listener === currentListener;
         });
     }
@@ -366,41 +296,8 @@ export class FormOptionSetOptionView
         });
     }
 
-    private getOrPopulateOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
-        return this.getOptionItemsPropertyArray(propertySet) || this.populateOptionItemsPropertyArray(propertySet);
-    }
-
-    private getOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
-        return propertySet.getPropertyArray(this.getName());
-    }
-
-    private populateOptionItemsPropertyArray(propertySet: PropertySet): PropertyArray {
-        const propertyArray: PropertyArray =
-            PropertyArray.create().setType(ValueTypes.DATA).setName(this.getName()).setParent(this.parentDataSet).build();
-        propertyArray.addSet();
-        propertySet.addPropertyArray(propertyArray);
-
-        return propertyArray;
-    }
-
-    private getSelectedOptionsArray(): PropertyArray {
-        return this.parent.getSelectedOptionsArray();
-    }
-
-    private getThisPropertyFromSelectedOptionsArray(): Property {
-        let result: Property = null;
-
-        this.getSelectedOptionsArray()?.forEach((property: Property) => {
-            if (property.getString() === this.getName()) {
-                result = property;
-            }
-        });
-
-        return result;
-    }
-
-    isSelected(): boolean {
-        return !!this.getThisPropertyFromSelectedOptionsArray();
+    private isSelected(): boolean {
+        return this.parent.isSelected(this.getName());
     }
 
     private makeSelectionCheckbox(): Checkbox {
@@ -419,28 +316,20 @@ export class FormOptionSetOptionView
                 this.select();
                 this.moveFocusToNextElement(button.getFirstChild());
             } else {
-                this.setSelected(false);
                 this.deselectHandle();
-                this.notifySelectionChanged();
+                this.notifySelectionChanged(false);
             }
         });
-
-        this.setCheckBoxDisabled(checked);
-        this.subscribeCheckboxOnPropertyEvents();
 
         return button;
     }
 
-    select(silent: boolean = false) {
+    select(): void {
         this.checkbox?.setChecked(true, true);
         this.selectHandle();
 
         if (!this.isSelected()) {
-            this.setSelected(true);
-
-            if (!silent) {
-                this.notifySelectionChanged();
-            }
+            this.notifySelectionChanged(true);
         }
     }
 
@@ -450,18 +339,8 @@ export class FormOptionSetOptionView
             thisElSelector + ' input, ' + thisElSelector + ' select, ' + thisElSelector + ' textarea');
     }
 
-    private subscribeCheckboxOnPropertyEvents() {
-        // as we call this method on each update() call - let's ensure there are no extra handlers binded
-        this.getSelectedOptionsArray().unPropertyAdded(this.checkboxEnabledStatusHandler);
-        this.getSelectedOptionsArray().unPropertyRemoved(this.checkboxEnabledStatusHandler);
-
-        this.getSelectedOptionsArray().onPropertyAdded(this.checkboxEnabledStatusHandler);
-        this.getSelectedOptionsArray().onPropertyRemoved(this.checkboxEnabledStatusHandler);
-    }
-
-    private setCheckBoxDisabled(checked?: boolean) {
-        const checkBoxShouldBeDisabled: boolean = (checked != null ? !checked : !this.checkbox.isChecked()) &&
-                                                  this.isSelectionLimitReached();
+    updateCheckBoxDisabled(): void {
+        const checkBoxShouldBeDisabled: boolean = !this.checkbox.isChecked() && this.isSelectionLimitReached();
 
         if (this.checkbox.isDisabled() !== checkBoxShouldBeDisabled) {
             this.checkbox.setEnabled(!checkBoxShouldBeDisabled);
@@ -537,14 +416,14 @@ export class FormOptionSetOptionView
         this.removeClass('expanded');
     }
 
-    private enableFormItems() {
+    private enableFormItems(): void {
         $(this.getEl().getHTMLElement()).find('.option-items-container input, .option-items-container button').each(
             (_index, elem) => {
                 elem.removeAttribute('disabled');
             });
     }
 
-    private disableFormItems() {
+    private disableFormItems(): void {
         $(this.getEl().getHTMLElement()).find('.option-items-container input, .option-items-container button').each(
             (_index, elem) => {
                 elem.setAttribute('disabled', 'true');
@@ -556,15 +435,11 @@ export class FormOptionSetOptionView
                this.getMultiselection().getMaximum() <= this.parent.getTotalSelectedOptions();
     }
 
-    private isSingleSelection(): boolean {
-        return this.getMultiselection().getMinimum() === 1 && this.getMultiselection().getMaximum() === 1;
-    }
-
     private getMultiselection(): Occurrences {
         return (<FormOptionSet>this.formOptionSetOption.getParent()).getMultiselection();
     }
 
-    private updateViewState() {
+    private updateViewState(): void {
         const isSelected: boolean = this.isSelected();
 
         if (this.isOptionSetExpandedByDefault || isSelected) {
@@ -583,12 +458,12 @@ export class FormOptionSetOptionView
         this.toggleClass('selected', isSelected);
     }
 
-    private notifySelectionChanged() {
-        this.selectionChangedListeners.forEach((listener: () => void) => listener());
+    private notifySelectionChanged(isSelected: boolean): void {
+        this.selectionChangedListeners.forEach((listener: (isSelected: boolean) => void) => listener(isSelected));
     }
 
     setEnabled(enable: boolean): void {
-        if (!this.isSingleSelection()) {
+        if (this.checkbox) {
             this.toggleCheckboxState(enable);
         }
 
