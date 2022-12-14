@@ -62,7 +62,7 @@ export class FormOptionSetOccurrenceViewSingleOption
     }
 
     private layoutSingleSelection() {
-        const selectedValue: string = this.getSelectedOptionsArray().get(0)?.getString();
+        const selectedValue: string = this.getSelectedOptionsArray()?.get(0)?.getString();
 
         if (selectedValue) {
             // doing this after parent layout to make sure all formItemViews are ready
@@ -99,13 +99,12 @@ export class FormOptionSetOccurrenceViewSingleOption
             const optionView: FormOptionSetOptionView = <FormOptionSetOptionView>this.getFormItemViews()[idx];
 
             if (optionView) {
-                optionView.setSelected(false);
                 optionView.disableAndCollapse();
             }
 
             this.singleSelectionHeader.removeClass('selected');
             this.refresh();
-            this.handleSelectionChanged(optionView);
+            this.handleSelectionChanged(optionView, false);
         });
     }
 
@@ -121,10 +120,10 @@ export class FormOptionSetOccurrenceViewSingleOption
         this.resetAction.setEnabled(this.singleSelectionDropdown.hasSelectedOption());
     }
 
-    protected handleSelectionChanged(optionView: FormOptionSetOptionView) {
-        optionView.setVisible(optionView.isSelected());
+    protected handleSelectionChanged(optionView: FormOptionSetOptionView, isSelected: boolean): void {
+        optionView.setVisible(isSelected);
         this.setContainerVisible(this.isContainerExpansionRequired(optionView));
-        super.handleSelectionChanged(optionView);
+        super.handleSelectionChanged(optionView, isSelected);
     }
 
     isExpandable(): boolean {
@@ -160,7 +159,7 @@ export class FormOptionSetOccurrenceViewSingleOption
         selectedOptionView?.enableAndExpand();
         this.singleSelectionHeader.addClass('selected');
         this.refresh();
-        this.handleSelectionChanged(selectedOptionView);
+        this.handleSelectionChanged(selectedOptionView, true);
     }
 
     private isContainerExpansionRequired(optionView: FormOptionSetOptionView): boolean {
