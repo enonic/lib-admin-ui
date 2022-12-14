@@ -13,16 +13,29 @@ import {FormItem} from '../../FormItem';
 import {Occurrences} from '../../Occurrences';
 import {FormOptionSetOption} from './FormOptionSetOption';
 import {Property} from '../../../data/Property';
+import {OptionSetArrayHelper} from './OptionSetArrayHelper';
 
 export abstract class FormOptionSetOccurrenceView
     extends FormSetOccurrenceView {
+
+    protected static SELECTED_NAME: string = '_selected';
 
     protected selectionValidationMessage: DivEl;
 
     protected formOptionsByNameMap: Map<string, { label: string, index: number }>;
 
+    private stashedPropertySets: Map<string, PropertySet | PropertyArray> = new Map<string, PropertySet | PropertyArray>();
+
+    private checkboxEnabledStatusHandler: () => void;
+
     constructor(config: FormSetOccurrenceViewConfig<FormOptionSetOccurrenceView>) {
         super('form-option-set-', config);
+    }
+
+    protected initElements() {
+        super.initElements();
+
+        this.selectionValidationMessage = new DivEl('selection-message');
 
         this.formOptionsByNameMap = new Map<string, any>(
             this.getFormItems()
@@ -32,13 +45,9 @@ export abstract class FormOptionSetOccurrenceView
                 })
         );
 
-        this.ensureSelectionArrayExists();
-    }
-
-    protected initElements() {
-        super.initElements();
-
-        this.selectionValidationMessage = new DivEl('selection-message');
+        this.checkboxEnabledStatusHandler = (() => {
+            this.formItemViews.forEach((formItemView: FormOptionSetOptionView) => formItemView.updateCheckBoxDisabled());
+        });
     }
 
     clean() {
@@ -55,28 +64,49 @@ export abstract class FormOptionSetOccurrenceView
         super.subscribeOnItemEvents();
 
         this.formItemViews.forEach((formItemView: FormOptionSetOptionView) => {
-            formItemView.onSelectionChanged(() => this.handleSelectionChanged(formItemView));
+            formItemView.onSelectionChanged((isSelected: boolean) => this.handleSelectionChanged(formItemView, isSelected));
+        });
+    }
+
+    protected postLayout(validate: boolean = true): void {
+        super.postLayout(validate);
+
+        this.formItemViews.forEach((formItemView: FormOptionSetOptionView) => {
+            if (!this.isSelected(formItemView.getName())) {
+                this.handleOptionDeselected(formItemView);
+            }
         });
     }
 
     protected updatePropertySet(dataSet: PropertySet) {
+        this.unSubscribeOnSelectedOptionsArray();
         super.updatePropertySet(dataSet);
         this.ensureSelectionArrayExists();
     }
 
-    ensureSelectionArrayExists(): void {
-        let selectionPropertyArray: PropertyArray = this.getSelectedOptionsArray();
-
-        if (!selectionPropertyArray) {
-            selectionPropertyArray =
-                PropertyArray.create().setType(ValueTypes.STRING).setName('_selected').setParent(
-                    this.propertySet).build();
-            this.propertySet.addPropertyArray(selectionPropertyArray);
+    private ensureSelectionArrayExists(): void {
+        if (!this.getSelectedOptionsArray()) {
+            if (this.stashedPropertySets.has(FormOptionSetOccurrenceView.SELECTED_NAME)) {
+                this.propertySet.addPropertyArray(this.stashedPropertySets.get(FormOptionSetOccurrenceView.SELECTED_NAME) as PropertyArray);
+            } else {
+                this.createSelectionArray();
+                this.subscribeOnSelectedOptionsArray();
+            }
         }
     }
 
-    getSelectedOptionsArray(): PropertyArray {
-        return this.propertySet.getPropertyArray('_selected');
+    private createSelectionArray(): void {
+        const selectionPropertyArray: PropertyArray =
+            PropertyArray.create()
+                .setType(ValueTypes.STRING)
+                .setName(FormOptionSetOccurrenceView.SELECTED_NAME)
+                .setParent(this.propertySet)
+                .build();
+        this.propertySet.addPropertyArray(selectionPropertyArray);
+    }
+
+    protected getSelectedOptionsArray(): PropertyArray {
+        return this.propertySet.getPropertyArray(FormOptionSetOccurrenceView.SELECTED_NAME);
     }
 
     protected extraValidation(validationRecording: ValidationRecording) {
@@ -198,13 +228,52 @@ export abstract class FormOptionSetOccurrenceView
             .length;
     }
 
-    protected handleSelectionChanged(optionView: FormOptionSetOptionView) {
+    protected handleSelectionChanged(optionView: FormOptionSetOptionView, isSelected: boolean): void {
         if (!this.currentValidationState) {
             return; // currentValidationState is initialized on validate() call which may not be triggered in some cases
         }
 
-        this.ensureSelectionArrayExists();
+        this.updateSelectionAndOptionArrays(optionView, isSelected);
+        this.updateValidation(optionView);
+    }
 
+    private updateSelectionAndOptionArrays(optionView: FormOptionSetOptionView, isSelected: boolean): void {
+        if (isSelected) {
+            this.handleOptionSelected(optionView);
+        } else {
+            this.handleOptionDeselected(optionView);
+        }
+    }
+
+    private handleOptionSelected(optionView: FormOptionSetOptionView): void {
+        const name: string = optionView.getName();
+
+        if (this.stashedPropertySets.has(name)) {
+            this.addPropertySet(name, this.stashedPropertySets.get(name) as PropertySet);
+            this.stashedPropertySets.delete(name);
+        }
+
+        this.ensureSelectionArrayExists();
+        new OptionSetArrayHelper(this.getSelectedOptionsArray()).add(name, this.isSingleSelection());
+    }
+
+    private handleOptionDeselected(optionView: FormOptionSetOptionView): void {
+        const name: string = optionView.getName();
+        this.stashAndRemoveExistingSetFromParent(name);
+
+        const selectedOptionsArray: PropertyArray = this.getSelectedOptionsArray();
+
+        if (selectedOptionsArray) {
+            new OptionSetArrayHelper(selectedOptionsArray).remove(name);
+
+            if (selectedOptionsArray.isEmpty()) {
+                this.stashedPropertySets.set(FormOptionSetOccurrenceView.SELECTED_NAME, selectedOptionsArray);
+                this.propertySet.removeEmptySets();
+            }
+        }
+    }
+
+    private updateValidation(optionView: FormOptionSetOptionView): void {
         const previousValidationValid: boolean = this.currentValidationState.isValid();
         const multiSelectionState: ValidationRecording = this.validateMultiSelection();
 
@@ -235,5 +304,70 @@ export abstract class FormOptionSetOccurrenceView
     protected layoutElements() {
         super.layoutElements();
         this.appendChild(this.selectionValidationMessage);
+    }
+
+    getOrPopulateOptionItemsPropertySet(name: string): PropertySet {
+        return this.getPropertySetByName(name) || this.populateOptionItemsPropertySet(name);
+    }
+
+    private getPropertySetByName(name: string): PropertySet {
+        return this.propertySet.getPropertyArray(name)?.getSet(0);
+    }
+
+    private populateOptionItemsPropertySet(name: string): PropertySet {
+        const propertyArray: PropertyArray =
+            PropertyArray.create().setType(ValueTypes.DATA).setName(name).setParent(this.propertySet).build();
+        propertyArray.addSet();
+        this.propertySet.addPropertyArray(propertyArray);
+
+        return propertyArray.getSet(0);
+    }
+
+    removeProperty(name: string): void {
+        this.propertySet.removeProperty(name, 0);
+    }
+
+    addPropertySet(name: string, propertySet: PropertySet): void {
+        this.propertySet.addPropertySet(name, propertySet);
+    }
+
+    isSelected(name: string): boolean {
+        return this.getSelectedOptionsArray()?.some((property: Property) => property.getString() === name);
+    }
+
+    private stashAndRemoveExistingSetFromParent(name: string): void {
+        const existingSet: PropertySet = this.getPropertySetByName(name);
+
+        if (existingSet) {
+            this.stashedPropertySets.set(name, this.getPropertySetByName(name));
+            this.removeProperty(name);
+        }
+    }
+
+    private subscribeOnSelectedOptionsArray() {
+        if (this.isSingleSelection()) {
+            return;
+        }
+
+        this.getSelectedOptionsArray().onPropertyAdded(this.checkboxEnabledStatusHandler);
+        this.getSelectedOptionsArray().onPropertyRemoved(this.checkboxEnabledStatusHandler);
+    }
+
+    private unSubscribeOnSelectedOptionsArray() {
+        if (this.isSingleSelection()) {
+            return;
+        }
+
+        this.getSelectedOptionsArray()?.unPropertyAdded(this.checkboxEnabledStatusHandler);
+        this.getSelectedOptionsArray()?.unPropertyRemoved(this.checkboxEnabledStatusHandler);
+    }
+
+    isSingleSelection(): boolean {
+        const multiSelection: Occurrences = this.getMultiSelection();
+        return multiSelection.getMinimum() === 1 && multiSelection.getMaximum() === 1;
+    }
+
+    private getMultiSelection(): Occurrences {
+        return (<FormOptionSet>this.formSet).getMultiselection();
     }
 }

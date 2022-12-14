@@ -222,7 +222,6 @@ export class FormItemLayer {
                     layerFactory: this.formItemLayerFactory,
                     formOptionSetOption: formOptionSetOption,
                     parent: this.parent,
-                    parentDataSet: propertySet,
                     lazyRender: this.lazyRender,
                     formItemState: this.formItemState
                 });
