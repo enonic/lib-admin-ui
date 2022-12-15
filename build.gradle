@@ -30,8 +30,6 @@ node {
     version = '18.12.1'
 }
 
-def resourcesDir = file( 'src/main/resources' )
-
 publishing {
     publications {
         mavenJava( MavenPublication ) {
@@ -65,7 +63,7 @@ publishing {
 loadConfiguration()
 
 task lint( type: NpmTask, dependsOn: npmInstall ) {
-    args = [ 'run', 'lint:quiet' ]
+    args = ['run', 'lint']
     inputs.files fileTree( dir: 'modules', include: '**/src/main/**.*' )
     outputs.dir file('gradle')
     outputs.upToDateWhen { false }
@@ -73,34 +71,32 @@ task lint( type: NpmTask, dependsOn: npmInstall ) {
 
 check.dependsOn( lint )
 
-task typescriptPkg( type: NpmTask, dependsOn: npmInstall ) {
+task typescript( type: NpmTask, dependsOn: npmInstall ) {
+    description = 'Build JS and DTS'
     def buildEnv = isProd() ? 'prod' : 'dev'
-    environment = [ 'NODE_ENV': nodeEnvironment() ]
-    args = [ 'run', "build:$buildEnv" ]
-    inputs.dir "$resourcesDir/assets/admin/common"
-    outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
+    environment = ['NODE_ENV': nodeEnvironment()]
+    args = ['run', "build:$buildEnv"]
+    inputs.dir 'src/main/resources/assets/admin/common'
+    outputs.dirs( "$buildDir/tmp/src/main/resources/assets/admin/common/js",
+                  "$buildDir/resources/main/dev/lib-admin-ui",
+                  "$buildDir/resources/main/assets/admin/common" )
 }
 
-task typescriptLib( type: NpmTask, dependsOn: npmInstall ) {
-    environment = [ 'NODE_ENV': nodeEnvironment() ]
-    description = 'Build library, that should be included to HTML.'
-    args = [ 'run', 'build:lib' ]
-    inputs.dir "$resourcesDir/assets/admin/common"
-    outputs.dir "$buildDir/resources/main/assets/admin/common"
+task copyJS( type: Copy, dependsOn: typescript ) {
+    if ( !isProd() )
+    {
+        from "$buildDir/tmp/src/main/resources/assets/admin/common/js"
+        into "$buildDir/resources/main/dev/lib-admin-ui"
+        includeEmptyDirs false
+    }
 }
 
-task copyPackage( type: Copy ) {
+task copyPackage( type: Copy, dependsOn: typescript ) {
     from( './' ) {
         include 'package.json'
     }
     into "$buildDir/resources/main/dev/lib-admin-ui"
-    includeEmptyDirs = false
-}
-
-task typescript {
-    dependsOn 'typescriptPkg'
-    dependsOn 'typescriptLib'
-    dependsOn 'copyPackage'
+    includeEmptyDirs false
 }
 
 jar {
@@ -120,16 +116,19 @@ jar {
 
     if (isProd()) {
         exclude '**/*.map'
-    } else {
+    }
+    else
+    {
         whitelist.add( /.*\.map$/ )
     }
 
-    exclude {
-        FileTreeElement el -> !el.directory && el.relativePath.contains('common/lib') && (!whitelist.any { re -> el.relativePath.toString().matches( re ) })
+    exclude { FileTreeElement el ->
+        !el.directory && el.relativePath.contains( 'common/lib' ) && ( !whitelist.any { re -> el.relativePath.toString().matches( re ) } )
     }
 
     includeEmptyDirs = false
-    dependsOn typescript
+    dependsOn copyJS
+    dependsOn copyPackage
 }
 
 task devJar ( type: Jar ) {

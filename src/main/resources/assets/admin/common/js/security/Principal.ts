@@ -111,8 +111,8 @@ export class PrincipalBuilder
     modifiedTime: Date;
 
     constructor(source?: Principal) {
+        super(source);
         if (source) {
-            super(source);
             this.modifiedTime = source.getModifiedTime();
         }
     }

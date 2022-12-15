@@ -1,9 +1,10 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 const ProvidePlugin = require('webpack/lib/ProvidePlugin');
-const ErrorLoggerPlugin = require('error-logger-webpack-plugin');
 const path = require('path');
+const fs = require('fs');
+
+const swcConfig = JSON.parse(fs.readFileSync('./.swcrc'));
 
 const MiniCssExtractPluginCleanup = require('./util/MiniCssExtractPluginCleanup');
 
@@ -27,8 +28,18 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
-                use: [{loader: 'ts-loader', options: {configFile: 'tsconfig.json'}}]
+                test: /\.ts$/,
+                use: [
+                    {
+                        loader: 'swc-loader',
+                        options: {
+                            ...swcConfig,
+                            minify: isProd,
+                            sourceMaps: isProd ? false : 'inline',
+                            inlineSourcesContent: !isProd,
+                        },
+                    },
+                ],
             },
             {
                 test: /\.less$/,
@@ -48,19 +59,6 @@ module.exports = {
             }
         ]
     },
-    optimization: {
-        minimizer: [
-            new TerserPlugin({
-                terserOptions: {
-                    compress: {
-                        drop_console: false
-                    },
-                    keep_classnames: true,
-                    keep_fnames: true
-                }
-            })
-        ]
-    },
     plugins: [
         new ProvidePlugin({
             $: 'jquery',
@@ -76,7 +74,6 @@ module.exports = {
             exclude: /a\.js|node_modules/,
             failOnError: true
         }),
-        //new ErrorLoggerPlugin({showColumn: false})
     ],
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? false : 'source-map',

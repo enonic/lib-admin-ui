@@ -82,8 +82,8 @@ export class SchemaBuilder
     iconUrl: string;
 
     constructor(source?: Schema) {
+        super(source);
         if (source) {
-            super(source);
             this.name = source.getName();
             this.displayName = source.getDisplayName();
             this.description = source.getDescription();

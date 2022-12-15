@@ -1,38 +1,13 @@
 module.exports = {
-    'extends': [
-        'eslint:recommended',
-        'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/recommended-requiring-type-checking',
-    ],
-    'parser': '@typescript-eslint/parser',
-    'parserOptions': {
-        'ecmaVersion': 2019,
-        'project': 'tsconfig.dev.json',
-        'tsconfigRootDir': '.',
+    extends: '@enonic/eslint-config',
+    parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
     },
-    'rules': {
-        'max-len': ['error', {'code': 140, 'comments': 180}],
-        'block-spacing': ['error', 'always'],
-        'space-before-function-paren': ['error', {'anonymous': 'always', 'named': 'never'}],
-        'space-in-parens': ['error', 'never'],
-        'object-curly-spacing': ['error', 'never'],
-        'lines-between-class-members': ['error', 'always', {exceptAfterSingleLine: true}],
-        'arrow-spacing': ['error', {'before': true, 'after': true}],
-        'array-bracket-spacing': ['error', 'never'],
-        'computed-property-spacing': ['error', 'never'],
-        'template-curly-spacing': ['error', 'never'],
-        'object-property-newline': ['off', {'allowMultiplePropertiesPerLine': true}],
-        'no-plusplus': ['error', {'allowForLoopAfterthoughts': true}],
-        'quotes': ['error', 'single', {'avoidEscape': true}],
-        'no-unused-vars': 'off',
-        '@typescript-eslint/no-unused-vars': ['off'],
-        'semi': 'off',
-        '@typescript-eslint/semi': ['error'],
-        'no-control-regex': 'off',
-
+    rules: {
+        'no-control-regex': ['off'],
+        'constructor-super': ['error'],
         // TODO: Remove rules, during the refactoring
-
         // === DEFAULT RULES ===
         'prefer-const': ['off'],
         'no-plusplus': ['off'],
@@ -74,8 +49,9 @@ module.exports = {
         // '@typescript-eslint/unbound-method': ['error', {ignoreStatic: true}],
         '@typescript-eslint/unbound-method': ['off'],
     },
-    'env': {
-        'browser': true,
-        'es6': true,
-    }
+    ignorePatterns: [
+        'build/',
+        'dist/',
+        '.xp/',
+    ],
 };

@@ -189,8 +189,8 @@ export class ContentTypeSummaryBuilder
     metadata: MixinNames;
 
     constructor(source?: ContentTypeSummary) {
+        super(source);
         if (source) {
-            super(source);
             this.allowChildContent = source.isAllowChildContent();
             this.abstract = source.isAbstract();
             this.final = source.isFinal();
