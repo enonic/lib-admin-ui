@@ -13,9 +13,9 @@
     "build:dev": "tsc -p tsconfig.dev.json",
     "build:lib": "webpack --color",
     "profile": "webpack --color --progress --profile",
-    "lint": "eslint **/*.ts",
-    "lint:quiet": "eslint **/*.ts --quiet",
-    "fix": "eslint --fix **/*.ts"
+    "lint": "eslint **/*.ts --cache",
+    "lint:quiet": "eslint **/*.ts --quiet --cache",
+    "fix": "eslint --fix **/*.ts --cache"
   },
   "dependencies": {
     "@types/dompurify": "^2.4.0",
