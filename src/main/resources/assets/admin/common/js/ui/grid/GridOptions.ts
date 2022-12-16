@@ -87,6 +87,8 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
 
     dragAndDrop: boolean;
 
+    rerenderOnResize: boolean;
+
     constructor(source?: GridOptions<T>) {
 
         if (source) {
@@ -134,6 +136,7 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
             this.leftAlignedCheckbox = source.isLeftAlignedCheckbox();
             this.disabledMultipleSelection = source.isMultipleSelectionDisabled();
             this.dragAndDrop = source.isDragAndDrop();
+            this.rerenderOnResize = source.isRerenderOnResize();
         }
     }
 
@@ -352,6 +355,11 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
         return this;
     }
 
+    setRerenderOnResize(value: boolean): GridOptionsBuilder<T> {
+        this.rerenderOnResize = value;
+        return this;
+    }
+
     build(): GridOptions<T> {
         return new GridOptions<T>(this);
     }
@@ -455,6 +463,8 @@ export class GridOptions<T extends Slick.SlickData>
 
     galleryModeColumns: number;
 
+    rerenderOnResize: boolean;
+
     constructor(builder: GridOptionsBuilder<T>) {
         this.asyncEditorLoading = builder.asyncEditorLoading;
         this.asyncEditorLoadDelay = builder.asyncEditorLoadDelay;
@@ -500,6 +510,7 @@ export class GridOptions<T extends Slick.SlickData>
         this.leftAlignedCheckbox = builder.leftAlignedCheckbox;
         this.disabledMultipleSelection = builder.disabledMultipleSelection;
         this.dragAndDrop = builder.dragAndDrop;
+        this.rerenderOnResize = builder.rerenderOnResize;
     }
 
     isAsyncEditorLoading(): boolean {
@@ -672,6 +683,10 @@ export class GridOptions<T extends Slick.SlickData>
 
     isDragAndDrop(): boolean {
         return this.dragAndDrop;
+    }
+
+    isRerenderOnResize(): boolean {
+        return this.rerenderOnResize;
     }
 
     isEnableGalleryMode(): boolean {
