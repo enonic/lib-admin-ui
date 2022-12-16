@@ -6,10 +6,10 @@
             "es2015",
             "dom"
         ],
-        "outDir": "build/resources/main/assets/admin/common/js/",
-        "declaration": false,
-        "sourceMap": false,
-        "declarationMap": false,
+        "outDir": "build/resources/main/dev/lib-admin-ui/",
+        "moduleResolution": "node",
+        "declaration": true,
+        "declarationDir": "build/resources/main/dev/lib-admin-ui/",
         "allowSyntheticDefaultImports": true,
         "suppressImplicitAnyIndexErrors": true,
         "forceConsistentCasingInFileNames": true,
@@ -29,9 +29,7 @@
         ]
     },
     "include": [
-        "src/main/resources/assets/admin/common/js/typings/*.d.ts",
-        "src/main/resources/assets/admin/common/js/lib.ts",
-        "src/main/resources/assets/admin/common/js/types.d.ts"
+        "src/**/*"
     ],
     "exclude": [
         ".vscode",
