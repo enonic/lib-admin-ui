@@ -71,12 +71,14 @@ export class Grid<T extends Slick.SlickData>
             this.slickGrid.registerPlugin(<Slick.Plugin<T>>this.rowManagerPlugin);
         }
 
-        ResponsiveManager.onAvailableSizeChanged(this, () => {
-            // notify slick grid the resize has occured
-            const slickResize = EventBus.createEvent('resize');
-            this.getHTMLElement().dispatchEvent(slickResize);
-        });
-        this.onRemoved(() => ResponsiveManager.unAvailableSizeChanged(this));
+        if (options.isRerenderOnResize() !== false) {
+            ResponsiveManager.onAvailableSizeChanged(this, () => {
+                // notify slick grid the resize has occured
+                const slickResize = EventBus.createEvent('resize');
+                this.getHTMLElement().dispatchEvent(slickResize);
+            });
+            this.onRemoved(() => ResponsiveManager.unAvailableSizeChanged(this));
+        }
 
         // The only way to dataIdProperty before adding items
         this.dataView.setItems([], options.getDataIdProperty());
