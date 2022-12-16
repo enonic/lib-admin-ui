@@ -153,10 +153,6 @@
             &:first-child {
               margin-top: 10px;
             }
-
-            &:last-child {
-              margin-bottom: 0;
-            }
           }
 
           &:empty {
@@ -250,6 +246,16 @@
             > input[type="checkbox"] + label {
               &::before {
                 background: url("../../../../../images/box-checked-optionset.gif") -1px no-repeat;
+              }
+            }
+          }
+        }
+
+        &:not(.selected) {
+          > .option-items-container {
+            .input-view {
+              &:last-child {
+                margin-bottom: 0;
               }
             }
           }
