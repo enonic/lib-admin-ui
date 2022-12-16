@@ -455,7 +455,7 @@ export class FormOptionSetOptionView
             this.cleanValidationForThisOption();
         }
 
-        this.toggleClass('selected', isSelected);
+        this.toggleClass('selected', !!isSelected);
     }
 
     private notifySelectionChanged(isSelected: boolean): void {
