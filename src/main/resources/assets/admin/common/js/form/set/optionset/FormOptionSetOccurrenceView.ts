@@ -18,11 +18,13 @@ import {OptionSetArrayHelper} from './OptionSetArrayHelper';
 export abstract class FormOptionSetOccurrenceView
     extends FormSetOccurrenceView {
 
+    protected static SELECTED_NAME: string = '_selected';
+
     protected selectionValidationMessage: DivEl;
 
     protected formOptionsByNameMap: Map<string, { label: string, index: number }>;
 
-    private stashedPropertySets: Map<string, PropertySet> = new Map<string, PropertySet>();
+    private stashedPropertySets: Map<string, PropertySet | PropertyArray> = new Map<string, PropertySet | PropertyArray>();
 
     private checkboxEnabledStatusHandler: () => void;
 
@@ -84,19 +86,27 @@ export abstract class FormOptionSetOccurrenceView
 
     private ensureSelectionArrayExists(): void {
         if (!this.getSelectedOptionsArray()) {
-            this.createSelectionArray();
-            this.subscribeOnSelectedOptionsArray();
+            if (this.stashedPropertySets.has(FormOptionSetOccurrenceView.SELECTED_NAME)) {
+                this.propertySet.addPropertyArray(this.stashedPropertySets.get(FormOptionSetOccurrenceView.SELECTED_NAME) as PropertyArray);
+            } else {
+                this.createSelectionArray();
+                this.subscribeOnSelectedOptionsArray();
+            }
         }
     }
 
     private createSelectionArray(): void {
         const selectionPropertyArray: PropertyArray =
-            PropertyArray.create().setType(ValueTypes.STRING).setName('_selected').setParent(this.propertySet).build();
+            PropertyArray.create()
+                .setType(ValueTypes.STRING)
+                .setName(FormOptionSetOccurrenceView.SELECTED_NAME)
+                .setParent(this.propertySet)
+                .build();
         this.propertySet.addPropertyArray(selectionPropertyArray);
     }
 
     protected getSelectedOptionsArray(): PropertyArray {
-        return this.propertySet.getPropertyArray('_selected');
+        return this.propertySet.getPropertyArray(FormOptionSetOccurrenceView.SELECTED_NAME);
     }
 
     protected extraValidation(validationRecording: ValidationRecording) {
@@ -228,18 +238,18 @@ export abstract class FormOptionSetOccurrenceView
     }
 
     private updateSelectionAndOptionArrays(optionView: FormOptionSetOptionView, isSelected: boolean): void {
-       if (isSelected) {
-           this.handleOptionSelected(optionView);
-       } else {
-           this.handleOptionDeselected(optionView);
-       }
+        if (isSelected) {
+            this.handleOptionSelected(optionView);
+        } else {
+            this.handleOptionDeselected(optionView);
+        }
     }
 
     private handleOptionSelected(optionView: FormOptionSetOptionView): void {
         const name: string = optionView.getName();
 
         if (this.stashedPropertySets.has(name)) {
-            this.addPropertySet(name, this.stashedPropertySets.get(name));
+            this.addPropertySet(name, this.stashedPropertySets.get(name) as PropertySet);
             this.stashedPropertySets.delete(name);
         }
 
@@ -249,13 +259,18 @@ export abstract class FormOptionSetOccurrenceView
 
     private handleOptionDeselected(optionView: FormOptionSetOptionView): void {
         const name: string = optionView.getName();
+        this.stashAndRemoveExistingSetFromParent(name);
+
         const selectedOptionsArray: PropertyArray = this.getSelectedOptionsArray();
 
         if (selectedOptionsArray) {
             new OptionSetArrayHelper(selectedOptionsArray).remove(name);
-        }
 
-        this.stashAndRemoveExistingSetFromParent(name);
+            if (selectedOptionsArray.isEmpty()) {
+                this.stashedPropertySets.set(FormOptionSetOccurrenceView.SELECTED_NAME, selectedOptionsArray);
+                this.propertySet.removeEmptySets();
+            }
+        }
     }
 
     private updateValidation(optionView: FormOptionSetOptionView): void {
@@ -343,8 +358,8 @@ export abstract class FormOptionSetOccurrenceView
             return;
         }
 
-        this.getSelectedOptionsArray().unPropertyAdded(this.checkboxEnabledStatusHandler);
-        this.getSelectedOptionsArray().unPropertyRemoved(this.checkboxEnabledStatusHandler);
+        this.getSelectedOptionsArray()?.unPropertyAdded(this.checkboxEnabledStatusHandler);
+        this.getSelectedOptionsArray()?.unPropertyRemoved(this.checkboxEnabledStatusHandler);
     }
 
     isSingleSelection(): boolean {
