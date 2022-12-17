@@ -245,7 +245,7 @@ export abstract class FormOptionSetOccurrenceView
         }
     }
 
-    private handleOptionSelected(optionView: FormOptionSetOptionView): void {
+    handleOptionSelected(optionView: FormOptionSetOptionView): void {
         const name: string = optionView.getName();
 
         if (this.stashedPropertySets.has(name)) {
@@ -257,7 +257,7 @@ export abstract class FormOptionSetOccurrenceView
         new OptionSetArrayHelper(this.getSelectedOptionsArray()).add(name, this.isSingleSelection());
     }
 
-    private handleOptionDeselected(optionView: FormOptionSetOptionView): void {
+    handleOptionDeselected(optionView: FormOptionSetOptionView): void {
         const name: string = optionView.getName();
         this.stashAndRemoveExistingSetFromParent(name);
 
