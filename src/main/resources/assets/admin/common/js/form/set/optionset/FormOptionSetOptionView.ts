@@ -340,7 +340,7 @@ export class FormOptionSetOptionView
     }
 
     updateCheckBoxDisabled(): void {
-        const checkBoxShouldBeDisabled: boolean = !this.checkbox.isChecked() && this.isSelectionLimitReached();
+        const checkBoxShouldBeDisabled: boolean = !this.isSelected() && this.isSelectionLimitReached();
 
         if (this.checkbox.isDisabled() !== checkBoxShouldBeDisabled) {
             this.checkbox.setEnabled(!checkBoxShouldBeDisabled);

@@ -76,6 +76,12 @@ export abstract class FormOptionSetOccurrenceView
                 this.handleOptionDeselected(formItemView);
             }
         });
+
+        if (!this.isSingleSelection()) {
+            this.checkboxEnabledStatusHandler();
+        }
+
+        this.subscribeOnSelectedOptionsArray();
     }
 
     protected updatePropertySet(dataSet: PropertySet) {
@@ -90,7 +96,6 @@ export abstract class FormOptionSetOccurrenceView
                 this.propertySet.addPropertyArray(this.stashedPropertySets.get(FormOptionSetOccurrenceView.SELECTED_NAME) as PropertyArray);
             } else {
                 this.createSelectionArray();
-                this.subscribeOnSelectedOptionsArray();
             }
         }
     }
