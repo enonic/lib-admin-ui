@@ -79,27 +79,38 @@ task typescriptPkg( type: NpmTask, dependsOn: npmInstall ) {
     args = [ 'run', "build:$buildEnv" ]
     inputs.dir "$resourcesDir/assets/admin/common"
     outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
+    outputs.dir "$buildDir/tmp/src/main/resources/assets/admin/common/js"
 }
 
 task typescriptLib( type: NpmTask, dependsOn: npmInstall ) {
-    environment = [ 'NODE_ENV': nodeEnvironment() ]
+    environment = ['NODE_ENV': nodeEnvironment()]
     description = 'Build library, that should be included to HTML.'
-    args = [ 'run', 'build:lib' ]
+    args = ['run', 'build:lib']
     inputs.dir "$resourcesDir/assets/admin/common"
     outputs.dir "$buildDir/resources/main/assets/admin/common"
 }
 
-task copyPackage( type: Copy ) {
+task copyJS( type: Copy, dependsOn: typescriptPkg ) {
+    if ( !isProd() )
+    {
+        from "$buildDir/tmp/src/main/resources/assets/admin/common/js"
+        into "$buildDir/resources/main/dev/lib-admin-ui"
+        includeEmptyDirs false
+    }
+}
+
+task copyPackage( type: Copy, dependsOn: typescriptPkg ) {
     from( './' ) {
         include 'package.json'
     }
     into "$buildDir/resources/main/dev/lib-admin-ui"
-    includeEmptyDirs = false
+    includeEmptyDirs false
 }
 
 task typescript {
     dependsOn 'typescriptPkg'
     dependsOn 'typescriptLib'
+    dependsOn 'copyJS'
     dependsOn 'copyPackage'
 }
 

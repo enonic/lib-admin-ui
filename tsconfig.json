@@ -18,7 +18,6 @@
         "noImplicitThis": true,
         "strictNullChecks": false,
         "types": [
-            "core-js",
             "jquery",
             "jqueryui",
             "mousetrap",
@@ -29,7 +28,7 @@
         ]
     },
     "include": [
-        "src/**/*"
+        "src/main/resources/assets/admin/common/js/**/*.ts"
     ],
     "exclude": [
         ".vscode",
