@@ -96,6 +96,7 @@ export abstract class FormOptionSetOccurrenceView
                 this.propertySet.addPropertyArray(this.stashedPropertySets.get(FormOptionSetOccurrenceView.SELECTED_NAME) as PropertyArray);
             } else {
                 this.createSelectionArray();
+                this.subscribeOnSelectedOptionsArray();
             }
         }
     }
@@ -354,8 +355,8 @@ export abstract class FormOptionSetOccurrenceView
             return;
         }
 
-        this.getSelectedOptionsArray().onPropertyAdded(this.checkboxEnabledStatusHandler);
-        this.getSelectedOptionsArray().onPropertyRemoved(this.checkboxEnabledStatusHandler);
+        this.getSelectedOptionsArray()?.onPropertyAdded(this.checkboxEnabledStatusHandler);
+        this.getSelectedOptionsArray()?.onPropertyRemoved(this.checkboxEnabledStatusHandler);
     }
 
     private unSubscribeOnSelectedOptionsArray() {
