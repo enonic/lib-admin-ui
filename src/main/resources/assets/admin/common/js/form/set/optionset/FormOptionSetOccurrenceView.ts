@@ -14,6 +14,7 @@ import {Occurrences} from '../../Occurrences';
 import {FormOptionSetOption} from './FormOptionSetOption';
 import {Property} from '../../../data/Property';
 import {OptionSetArrayHelper} from './OptionSetArrayHelper';
+import * as Q from 'q';
 
 export abstract class FormOptionSetOccurrenceView
     extends FormSetOccurrenceView {
@@ -71,11 +72,7 @@ export abstract class FormOptionSetOccurrenceView
     protected postLayout(validate: boolean = true): void {
         super.postLayout(validate);
 
-        this.formItemViews.forEach((formItemView: FormOptionSetOptionView) => {
-            if (!this.isSelected(formItemView.getName())) {
-                this.handleOptionDeselected(formItemView);
-            }
-        });
+        this.removeNotSelectedEntriesFromPropertySet();
 
         if (!this.isSingleSelection()) {
             this.checkboxEnabledStatusHandler();
@@ -84,10 +81,27 @@ export abstract class FormOptionSetOccurrenceView
         this.subscribeOnSelectedOptionsArray();
     }
 
+    private removeNotSelectedEntriesFromPropertySet(): void {
+        this.formItemViews.forEach((formItemView: FormOptionSetOptionView) => {
+            if (!this.isSelected(formItemView.getName())) {
+                this.handleOptionDeselected(formItemView);
+            }
+        });
+    }
+
+    update(dataSet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
+        this.stashedPropertySets.clear();
+
+        return super.update(dataSet, unchangedOnly).then(() => {
+            this.removeNotSelectedEntriesFromPropertySet();
+            return Q.resolve();
+        });
+    }
+
     protected updatePropertySet(dataSet: PropertySet) {
         this.unSubscribeOnSelectedOptionsArray();
         super.updatePropertySet(dataSet);
-        this.ensureSelectionArrayExists();
+        this.subscribeOnSelectedOptionsArray();
     }
 
     private ensureSelectionArrayExists(): void {
