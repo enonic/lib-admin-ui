@@ -9,15 +9,14 @@
   },
   "main": "entry.js",
   "scripts": {
-    "build:prod": "tsc",
-    "build:dev": "run-p build:dev:types build:dev:js",
+    "build:prod": "run-p build:prod:js build:lib",
+    "build:prod:js": "tsc",
+    "build:dev": "run-p build:dev:types build:dev:js build:lib",
     "build:dev:js": "swc src --out-dir build/tmp/src",
     "build:dev:types": "tsc --skipLibCheck --emitDeclarationOnly --declaration",
     "build:lib": "webpack --color",
     "typecheck": "tsc --pretty --skipLibCheck --noEmit",
-    "profile": "webpack --color --progress --profile",
-    "lint": "eslint **/*.ts --cache",
-    "lint:quiet": "eslint **/*.ts --quiet --cache",
+    "lint": "eslint **/*.ts --quiet --cache",
     "fix": "eslint --fix **/*.ts --cache"
   },
   "dependencies": {
