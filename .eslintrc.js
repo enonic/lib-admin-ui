@@ -6,6 +6,7 @@ module.exports = {
     },
     rules: {
         'no-control-regex': ['off'],
+        'constructor-super': ['error'],
         // TODO: Remove rules, during the refactoring
         // === DEFAULT RULES ===
         'prefer-const': ['off'],

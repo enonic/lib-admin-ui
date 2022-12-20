@@ -3,7 +3,7 @@
         "parser": {
             "syntax": "typescript",
             "tsx": false,
-            "decorators": true,
+            "decorators": false,
             "dynamicImport": true
         },
         "transform": {
@@ -14,8 +14,13 @@
         "keepClassNames": true,
         "loose": true,
         "minify": {
-            "compress": true,
-            "mangle": true
+            "compress": {
+                "keep_classnames": true
+            },
+            "mangle": {
+                "keepClassNames": true,
+                "keepFnNames": true
+            }
         }
     },
     "exclude": [
