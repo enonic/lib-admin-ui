@@ -76,6 +76,10 @@ task typescript( type: NpmTask, dependsOn: npmInstall ) {
     def buildEnv = isProd() ? 'prod' : 'dev'
     environment = ['NODE_ENV': nodeEnvironment()]
     args = ['run', "build:$buildEnv"]
+    inputs.dir 'src/main/resources/assets/admin/common'
+    outputs.dirs( "$buildDir/tmp/src/main/resources/assets/admin/common/js",
+                  "$buildDir/resources/main/dev/lib-admin-ui",
+                  "$buildDir/resources/main/assets/admin/common" )
 }
 
 task copyJS( type: Copy, dependsOn: typescript ) {
