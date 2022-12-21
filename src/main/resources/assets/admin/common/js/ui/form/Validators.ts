@@ -108,7 +108,7 @@ export class Validators {
     }
 
     private static getFragmentRegExp(): RegExp {
-        return /(\#(\w|\?|\/|\:|\@|\-|\.|\_|\~|\!|\$|\&|\'|\(|\)|\*|\+|\,|\;|\=|(\%[0-9]{1,2}))+)*/;
+        return /(\#(\w|\?|\/|\:|\@|\-|\.|\_|\~|\!|\$|\&|\'|\(|\)|\*|\+|\,|\;|\=|\%)+)*/;
     }
 
     private static isInputValueValid(regex: RegExp, input: FormInputEl): boolean {
