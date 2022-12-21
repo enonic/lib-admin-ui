@@ -64,8 +64,6 @@ loadConfiguration()
 
 task lint( type: NpmTask, dependsOn: npmInstall ) {
     args = ['run', 'lint']
-    inputs.files fileTree( dir: 'modules', include: '**/src/main/**.*' )
-    outputs.dir file('gradle')
     outputs.upToDateWhen { false }
 }
 
@@ -168,5 +166,5 @@ def loadConfiguration() {
         throw new ResourceException( message )
     }
 
-    println "Environment is set to $nodeEnvironment()"
+    println "Environment is set to $nodeEnvironment"
 }

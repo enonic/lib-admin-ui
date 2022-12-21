@@ -54,7 +54,6 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
     "cssnano": "^5.1.14",
-    "del": "^7.0.0",
     "enonic-admin-artifacts": "^1.8.3",
     "error-logger-webpack-plugin": "^1.1.1",
     "eslint": "^8.30.0",
