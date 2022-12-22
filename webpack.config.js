@@ -1,5 +1,6 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 const path = require('path');
 const fs = require('fs');
@@ -34,7 +35,6 @@ module.exports = {
                         loader: 'swc-loader',
                         options: {
                             ...swcConfig,
-                            minify: isProd,
                             sourceMaps: isProd ? false : 'inline',
                             inlineSourcesContent: !isProd,
                         },
@@ -57,6 +57,16 @@ module.exports = {
                     filename: 'images/[base]'
                 }
             }
+        ]
+    },
+    optimization: {
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    keep_classnames: true,
+                    keep_fnames: true
+                }
+            })
         ]
     },
     plugins: [
