@@ -64,8 +64,6 @@ loadConfiguration()
 
 task lint( type: NpmTask, dependsOn: npmInstall ) {
     args = ['run', 'lint']
-    inputs.files fileTree( dir: 'modules', include: '**/src/main/**.*' )
-    outputs.dir file('gradle')
     outputs.upToDateWhen { false }
 }
 
@@ -137,7 +135,8 @@ task devJar ( type: Jar ) {
     include 'dev/**'
     exclude 'dev/lib-admin-ui/lib.js'
     includeEmptyDirs = false
-    dependsOn typescript
+    dependsOn copyJS
+    dependsOn copyPackage
 }
 
 tasks.assemble.dependsOn devJar
@@ -163,5 +162,5 @@ def loadConfiguration() {
         throw new ResourceException( message )
     }
 
-    println "Environment is set to $nodeEnvironment()"
+    println "Environment is set to $nodeEnvironment"
 }
