@@ -64,8 +64,6 @@ loadConfiguration()
 
 task lint( type: NpmTask, dependsOn: npmInstall ) {
     args = ['run', 'lint']
-    inputs.files fileTree( dir: 'modules', include: '**/src/main/**.*' )
-    outputs.dir file('gradle')
     outputs.upToDateWhen { false }
 }
 
@@ -89,6 +87,8 @@ task copyJS( type: Copy, dependsOn: typescript ) {
         into "$buildDir/resources/main/dev/lib-admin-ui"
         includeEmptyDirs false
     }
+    inputs.dir "$buildDir/tmp/src/main/resources/assets/admin/common/js"
+    outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
 }
 
 task copyPackage( type: Copy, dependsOn: typescript ) {
@@ -97,6 +97,8 @@ task copyPackage( type: Copy, dependsOn: typescript ) {
     }
     into "$buildDir/resources/main/dev/lib-admin-ui"
     includeEmptyDirs false
+    inputs.file "./package.json"
+    outputs.file "$buildDir/resources/main/dev/lib-admin-ui/package.json"
 }
 
 jar {
@@ -137,7 +139,8 @@ task devJar ( type: Jar ) {
     include 'dev/**'
     exclude 'dev/lib-admin-ui/lib.js'
     includeEmptyDirs = false
-    dependsOn typescript
+    dependsOn copyJS
+    dependsOn copyPackage
 }
 
 tasks.assemble.dependsOn devJar
@@ -163,5 +166,5 @@ def loadConfiguration() {
         throw new ResourceException( message )
     }
 
-    println "Environment is set to $nodeEnvironment()"
+    println "Environment is set to $nodeEnvironment"
 }
