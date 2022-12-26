@@ -25,7 +25,7 @@
     "@types/slickgrid": "^2.1.32",
     "dompurify": "^2.4.1",
     "fine-uploader": "^5.16.2",
-    "jquery": "^3.6.2",
+    "jquery": "^3.6.3",
     "jquery-simulate": "^1.0.2",
     "jquery-ui": "^1.13.2",
     "mousetrap": "^1.6.5",
