@@ -14,6 +14,7 @@ import {Occurrences} from '../../Occurrences';
 import {FormOptionSetOption} from './FormOptionSetOption';
 import {Property} from '../../../data/Property';
 import {OptionSetArrayHelper} from './OptionSetArrayHelper';
+import * as Q from 'q';
 
 export abstract class FormOptionSetOccurrenceView
     extends FormSetOccurrenceView {
@@ -71,6 +72,16 @@ export abstract class FormOptionSetOccurrenceView
     protected postLayout(validate: boolean = true): void {
         super.postLayout(validate);
 
+        this.removeNotSelectedEntriesFromPropertySet();
+
+        if (!this.isSingleSelection()) {
+            this.checkboxEnabledStatusHandler();
+        }
+
+        this.subscribeOnSelectedOptionsArray();
+    }
+
+    private removeNotSelectedEntriesFromPropertySet(): void {
         this.formItemViews.forEach((formItemView: FormOptionSetOptionView) => {
             if (!this.isSelected(formItemView.getName())) {
                 this.handleOptionDeselected(formItemView);
@@ -78,10 +89,19 @@ export abstract class FormOptionSetOccurrenceView
         });
     }
 
+    update(dataSet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
+        this.stashedPropertySets.clear();
+
+        return super.update(dataSet, unchangedOnly).then(() => {
+            this.removeNotSelectedEntriesFromPropertySet();
+            return Q.resolve();
+        });
+    }
+
     protected updatePropertySet(dataSet: PropertySet) {
         this.unSubscribeOnSelectedOptionsArray();
         super.updatePropertySet(dataSet);
-        this.ensureSelectionArrayExists();
+        this.subscribeOnSelectedOptionsArray();
     }
 
     private ensureSelectionArrayExists(): void {
@@ -245,7 +265,7 @@ export abstract class FormOptionSetOccurrenceView
         }
     }
 
-    private handleOptionSelected(optionView: FormOptionSetOptionView): void {
+    handleOptionSelected(optionView: FormOptionSetOptionView): void {
         const name: string = optionView.getName();
 
         if (this.stashedPropertySets.has(name)) {
@@ -257,7 +277,7 @@ export abstract class FormOptionSetOccurrenceView
         new OptionSetArrayHelper(this.getSelectedOptionsArray()).add(name, this.isSingleSelection());
     }
 
-    private handleOptionDeselected(optionView: FormOptionSetOptionView): void {
+    handleOptionDeselected(optionView: FormOptionSetOptionView): void {
         const name: string = optionView.getName();
         this.stashAndRemoveExistingSetFromParent(name);
 
@@ -349,8 +369,8 @@ export abstract class FormOptionSetOccurrenceView
             return;
         }
 
-        this.getSelectedOptionsArray().onPropertyAdded(this.checkboxEnabledStatusHandler);
-        this.getSelectedOptionsArray().onPropertyRemoved(this.checkboxEnabledStatusHandler);
+        this.getSelectedOptionsArray()?.onPropertyAdded(this.checkboxEnabledStatusHandler);
+        this.getSelectedOptionsArray()?.onPropertyRemoved(this.checkboxEnabledStatusHandler);
     }
 
     private unSubscribeOnSelectedOptionsArray() {

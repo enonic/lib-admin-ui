@@ -95,13 +95,13 @@ export class FormOptionSetOptionView
             this.appendChild(this.optionItemsContainer);
         }
 
-        const isDefaultAndNew: boolean = this.formOptionSetOption.isDefaultOption() &&
+        const isDefaultAndNew: boolean = this.formOptionSetOption.isDefaultOption() && !this.isSelected() &&
                                          (this.getContext().getFormState().isNew() || this.formItemState === FormItemState.NEW);
 
         const optionItemsPropertySet: PropertySet = this.parent.getOrPopulateOptionItemsPropertySet(this.getName());
 
          if (isDefaultAndNew) {
-             this.notifySelectionChanged(true);
+             this.parent.handleOptionSelected(this);
          }
 
         const layoutPromise: Q.Promise<FormItemView[]> =
@@ -340,7 +340,7 @@ export class FormOptionSetOptionView
     }
 
     updateCheckBoxDisabled(): void {
-        const checkBoxShouldBeDisabled: boolean = !this.checkbox.isChecked() && this.isSelectionLimitReached();
+        const checkBoxShouldBeDisabled: boolean = !this.isSelected() && this.isSelectionLimitReached();
 
         if (this.checkbox.isDisabled() !== checkBoxShouldBeDisabled) {
             this.checkbox.setEnabled(!checkBoxShouldBeDisabled);
