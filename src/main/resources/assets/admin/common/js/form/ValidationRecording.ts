@@ -9,6 +9,13 @@ export class ValidationRecording {
 
     private validationErrors: Map<string, string> = new Map<string, string>();
 
+    private hideValidationErrors: boolean = false;
+
+    setHideValidationErrors(value: boolean): ValidationRecording {
+        this.hideValidationErrors = value;
+        return this;
+    }
+
     breaksMinimumOccurrences(path: ValidationRecordingPath) {
         if (!this.exists(path, this.breaksMinimumOccurrencesArray)) {
             this.breaksMinimumOccurrencesArray.push(path);
@@ -29,6 +36,10 @@ export class ValidationRecording {
         return !this.hasError() && this.breaksMinimumOccurrencesArray.length === 0 && this.breaksMaximumOccurrencesArray.length === 0;
     }
 
+    isInvalid(): boolean {
+        return !this.isValid();
+    }
+
     hasError(): boolean {
         return this.validationErrors.size > 0;
     }
@@ -39,6 +50,10 @@ export class ValidationRecording {
 
     isMaximumOccurrencesValid(): boolean {
         return this.breaksMaximumOccurrencesArray.length === 0;
+    }
+
+    isValidationErrorsHidden(): boolean {
+        return this.hideValidationErrors;
     }
 
     getBreakMinimumOccurrences(): ValidationRecordingPath[] {
@@ -149,23 +164,5 @@ export class ValidationRecording {
             }
         }
         return false;
-    }
-
-    /*
-     * Should be moved to ObjectHelper.ts after changing gulp to webpack in common module
-     * */
-    private mapEquals(mapA: Map<string, Equitable>, mapB: Map<string, Equitable>): boolean {
-        if (mapA.size !== mapB.size) {
-            return false;
-        }
-
-        const keys: string[] = [];
-        mapA.forEach((_value: Equitable, key: string) => {
-            keys.push(key);
-        });
-
-        return keys.every(key => {
-            return mapA.get(key).equals(mapB.get(key));
-        });
     }
 }
