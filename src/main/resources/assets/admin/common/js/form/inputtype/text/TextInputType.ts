@@ -52,9 +52,18 @@ export abstract class TextInputType
         (<FormInputEl>occurrence).resetBaseValues();
     }
 
-    clearInputOccurrenceElement(occurrence: Element): void {
+    clearInputOccurrenceElement(occurrence: FormInputEl): void {
         super.clearInputOccurrenceElement(occurrence);
-        (<FormInputEl>occurrence).clear();
+
+        if (!this.hasDefaultValue(occurrence)) {
+            occurrence.clear();
+        }
+    }
+
+    private hasDefaultValue(occurrence: FormInputEl): boolean {
+        const value: string = occurrence.getValue();
+
+        return value && value === this.newInitialValue().getString();
     }
 
     protected initOccurrenceListeners(inputEl: FormInputEl): void {
