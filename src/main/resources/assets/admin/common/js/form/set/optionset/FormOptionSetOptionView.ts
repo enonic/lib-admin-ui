@@ -44,6 +44,7 @@ export class FormOptionSetOptionView
     private readonly isOptionSetExpandedByDefault: boolean;
     private formItemState: FormItemState;
     private notificationDialog: NotificationDialog;
+    private isSelectedInitially: boolean;
 
     constructor(config: FormOptionSetOptionViewConfig) {
         super(<FormItemViewConfig>{
@@ -113,6 +114,7 @@ export class FormOptionSetOptionView
 
         layoutPromise.then((formItemViews: FormItemView[]) => {
             this.formItemState = FormItemState.EXISTING;
+            this.isSelectedInitially = this.isSelected();
             this.updateViewState();
 
             if (this.formOptionSetOption.getFormItems().length > 0) {
@@ -161,6 +163,8 @@ export class FormOptionSetOptionView
     }
 
     reset() {
+        this.isSelectedInitially = this.isSelected();
+
         this.formItemViews.forEach((formItemView: FormItemView) => {
             formItemView.reset();
         });
@@ -170,6 +174,7 @@ export class FormOptionSetOptionView
         const propertySet: PropertySet = this.parent.getOrPopulateOptionItemsPropertySet(this.getName());
 
         return this.formItemLayer.update(propertySet, unchangedOnly).then(() => {
+            this.isSelectedInitially = this.isSelected();
             this.updateViewState();
             this.checkbox?.setChecked(this.isSelected(), true);
         });
@@ -205,18 +210,21 @@ export class FormOptionSetOptionView
     }
 
     validate(silent: boolean = true): ValidationRecording {
-
         if (!this.isSelected()) {
+            this.toggleClass('hide-validation-errors', true);
             return new ValidationRecording();
         }
 
-        let recording = new ValidationRecording();
+        const recording: ValidationRecording = new ValidationRecording();
 
         this.formItemViews.forEach((formItemView: FormItemView) => {
             recording.flatten(formItemView.validate(silent));
         });
 
-        this.toggleClass('invalid', !recording.isValid());
+        const hideValidationErrors: boolean = recording.isInvalid() && !this.isSelectedInitially;
+
+        recording.setHideValidationErrors(hideValidationErrors);
+        this.toggleClass('hide-validation-errors', hideValidationErrors);
 
         return recording;
     }

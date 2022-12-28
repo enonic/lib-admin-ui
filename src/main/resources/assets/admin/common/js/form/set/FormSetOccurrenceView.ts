@@ -246,11 +246,15 @@ export abstract class FormSetOccurrenceView
 
     validate(silent: boolean = true): ValidationRecording {
         const allRecordings: ValidationRecording = new ValidationRecording();
+        let hideValidationErrors: boolean = true;
 
         this.formItemViews.forEach((formItemView: FormItemView) => {
             const currRecording: ValidationRecording = formItemView.validate(silent);
+            hideValidationErrors = hideValidationErrors && (currRecording.isValid() || currRecording.isValidationErrorsHidden());
             allRecordings.flatten(currRecording);
         });
+
+        hideValidationErrors = allRecordings.isInvalid() && hideValidationErrors;
 
         this.extraValidation(allRecordings);
 
@@ -262,7 +266,7 @@ export abstract class FormSetOccurrenceView
 
         this.currentValidationState = allRecordings;
         this.toggleClass('invalid', !this.isValid());
-        this.removeClass('hide-validation-errors');
+        this.toggleClass('hide-validation-errors', hideValidationErrors);
         return allRecordings;
     }
 
@@ -346,7 +350,8 @@ export abstract class FormSetOccurrenceView
 
     public reset() {
         this.dirtyFormItemViewsMap = {};
-        return this.formItemLayer.reset();
+        this.formItemLayer.reset();
+        this.validate();
     }
 
     setEnabled(enable: boolean) {
