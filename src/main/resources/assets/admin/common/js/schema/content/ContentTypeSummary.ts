@@ -10,26 +10,29 @@ export class ContentTypeSummary
     extends Schema
     implements Equitable {
 
-    private allowChildContent: boolean;
+    private readonly allowChildContent: boolean;
 
-    private abstract: boolean;
+    private readonly abstract: boolean;
 
-    private final: boolean;
+    private readonly final: boolean;
 
-    private superType: ContentTypeName;
+    private readonly superType: ContentTypeName;
 
-    private displayNameExpression: string;
+    private readonly displayNameExpression: string;
 
-    private displayNameLabel: string;
+    private readonly displayNameLabel: string;
 
-    private modifier: string;
+    private readonly modifier: string;
 
-    private owner: string;
+    private readonly owner: string;
 
-    private metadata: MixinNames;
+    private readonly metadata: MixinNames;
+
+    private readonly allowedChildContentTypes: string[];
 
     constructor(builder: ContentTypeSummaryBuilder) {
         super(builder);
+
         this.allowChildContent = builder.allowChildContent;
         this.final = builder.final;
         this.abstract = builder.abstract;
@@ -39,6 +42,7 @@ export class ContentTypeSummary
         this.modifier = builder.modifier;
         this.metadata = builder.metadata;
         this.displayNameLabel = builder.displayNameLabel;
+        this.allowedChildContentTypes = builder.allowedChildContentTypes;
     }
 
     static fromJsonArray(jsonArray: ContentTypeSummaryJson[]): ContentTypeSummary[] {
@@ -118,6 +122,10 @@ export class ContentTypeSummary
         return this.metadata;
     }
 
+    getAllowedChildContentTypes(): string[] {
+        return this.allowedChildContentTypes;
+    }
+
     equals(o: Equitable): boolean {
 
         if (!ObjectHelper.iFrameSafeInstanceOf(o, ContentTypeSummary)) {
@@ -188,8 +196,11 @@ export class ContentTypeSummaryBuilder
 
     metadata: MixinNames;
 
+    allowedChildContentTypes: string[];
+
     constructor(source?: ContentTypeSummary) {
         super(source);
+
         if (source) {
             this.allowChildContent = source.isAllowChildContent();
             this.abstract = source.isAbstract();
@@ -200,6 +211,7 @@ export class ContentTypeSummaryBuilder
             this.modifier = source.getModifier();
             this.owner = source.getOwner();
             this.metadata = source.getMetadata();
+            this.allowedChildContentTypes = source.getAllowedChildContentTypes();
         }
     }
 
@@ -215,6 +227,7 @@ export class ContentTypeSummaryBuilder
         this.owner = json.owner;
         this.modifier = json.modifier;
         this.metadata = MixinNames.create().fromStrings(json.metadata).build();
+        this.allowedChildContentTypes = json.allowChildContentType;
         return this;
     }
 
