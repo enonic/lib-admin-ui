@@ -20,4 +20,6 @@ export interface ContentTypeSummaryJson
     modifier: string;
 
     metadata: string[];
+
+    allowChildContentType: string[];
 }
