@@ -425,17 +425,11 @@ export class FormOptionSetOptionView
     }
 
     private enableFormItems(): void {
-        $(this.getEl().getHTMLElement()).find('.option-items-container input, .option-items-container button').each(
-            (_index, elem) => {
-                elem.removeAttribute('disabled');
-            });
+        this.formItemLayer.setEnabled(true);
     }
 
     private disableFormItems(): void {
-        $(this.getEl().getHTMLElement()).find('.option-items-container input, .option-items-container button').each(
-            (_index, elem) => {
-                elem.setAttribute('disabled', 'true');
-            });
+        this.formItemLayer.setEnabled(false);
     }
 
     private isSelectionLimitReached(): boolean {
@@ -463,7 +457,15 @@ export class FormOptionSetOptionView
             this.cleanValidationForThisOption();
         }
 
-        this.toggleClass('selected', !!isSelected);
+        this.toggleClass('selected', isSelected);
+
+        this.whenRendered(() => {
+            if (this.isSelected()) {
+                this.enableFormItems();
+            } else {
+                this.disableFormItems();
+            }
+        });
     }
 
     private notifySelectionChanged(isSelected: boolean): void {
