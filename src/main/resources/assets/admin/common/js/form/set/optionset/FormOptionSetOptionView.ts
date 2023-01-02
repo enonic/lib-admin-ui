@@ -90,12 +90,6 @@ export class FormOptionSetOptionView
             this.toggleHelpText(this.formOptionSetOption.isHelpTextOn());
         }
 
-        this.optionItemsContainer = new DivEl('option-items-container');
-        const isContainerVisibleByDefault = this.isOptionSetExpandedByDefault || isSingleSelection || this.isSelected();
-        if (isContainerVisibleByDefault) {
-            this.appendChild(this.optionItemsContainer);
-        }
-
         const isDefaultAndNew: boolean = this.formOptionSetOption.isDefaultOption() && !this.isSelected() &&
                                          (this.getContext().getFormState().isNew() || this.formItemState === FormItemState.NEW);
 
@@ -104,6 +98,12 @@ export class FormOptionSetOptionView
          if (isDefaultAndNew) {
              this.parent.handleOptionSelected(this);
          }
+
+        this.optionItemsContainer = new DivEl('option-items-container');
+        const isContainerVisibleByDefault = this.isOptionSetExpandedByDefault || isSingleSelection || this.isSelected();
+        if (isContainerVisibleByDefault) {
+            this.appendChild(this.optionItemsContainer);
+        }
 
         const layoutPromise: Q.Promise<FormItemView[]> =
             this.formItemLayer
