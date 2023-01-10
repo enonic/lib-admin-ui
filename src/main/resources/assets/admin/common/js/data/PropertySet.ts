@@ -164,6 +164,16 @@ export class PropertySet
         });
     }
 
+    removePropertyArray(array: PropertyArray) {
+        assertState(this.tree === array.getTree(),
+            'Added PropertyArray must be attached to the same PropertyTree as this PropertySet');
+        assert(this === array.getParent(), 'propertyArray must have this PropertySet as parent');
+
+        delete this.propertyArrayByName[array.getName()];
+
+        this.unRegisterPropertyArrayListeners(array);
+    }
+
     addProperty(name: string, value: Value): Property {
 
         if (this.skipNulls && value.isNull()) {
@@ -1179,6 +1189,17 @@ export class PropertySet
         array.onPropertyRemoved(this.propertyRemovedEventHandler);
         array.onPropertyIndexChanged(this.propertyIndexChangedEventHandler);
         array.onPropertyValueChanged(this.propertyValueChangedEventHandler);
+    }
+
+    private unRegisterPropertyArrayListeners(array: PropertyArray) {
+        if (PropertySet.debug) {
+            console.debug('PropertySet[' + this.getPropertyPath().toString() + '].unRegisterPropertyArrayListeners: ' + array.getName());
+        }
+
+        array.unPropertyAdded(this.propertyAddedEventHandler);
+        array.unPropertyRemoved(this.propertyRemovedEventHandler);
+        array.unPropertyIndexChanged(this.propertyIndexChangedEventHandler);
+        array.unPropertyValueChanged(this.propertyValueChangedEventHandler);
     }
 
     private notifyChangedListeners(event: PropertyEvent) {

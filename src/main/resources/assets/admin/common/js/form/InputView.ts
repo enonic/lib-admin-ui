@@ -26,6 +26,8 @@ import {ValidationRecordingPath} from './ValidationRecordingPath';
 import {InputViewValidationViewer} from './InputViewValidationViewer';
 import {TogglerButton} from '../ui/button/TogglerButton';
 import {BaseInputType} from './inputtype/support/BaseInputType';
+import {Value} from '../data/Value';
+import {InputTypeViewContext} from './inputtype/InputTypeViewContext';
 
 export interface InputViewConfig {
 
@@ -55,6 +57,7 @@ export class InputView
     private previousValidityRecording: ValidationRecording;
     private validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
     private helpText?: HelpTextContainer;
+    private isExistingPropertyArray: boolean;
 
     constructor(config: InputViewConfig) {
         super(<FormItemViewConfig>{
@@ -72,7 +75,6 @@ export class InputView
     }
 
     public layout(validate: boolean = true): Q.Promise<void> {
-
         if (this.input.getInputType().getName().toLowerCase() !== 'checkbox') { //checkbox input type generates clickable label itself
             if (this.input.getLabel()) {
                 let label = new InputLabel(this.input);
@@ -94,7 +96,22 @@ export class InputView
 
         this.inputTypeView = this.createInputTypeView();
 
-        this.propertyArray = this.getPropertyArray(this.parentPropertySet);
+        this.propertyArray = this.getOrPopulatePropertyArray(this.parentPropertySet);
+
+        this.propertyArray.onPropertyAdded(() => {
+            console.log(this.isEmpty());
+            this.attachOrDetachPropertyArray();
+        });
+
+        this.propertyArray.onPropertyRemoved(() => {
+            console.log(this.isEmpty());
+            this.attachOrDetachPropertyArray();
+        });
+
+        this.propertyArray.onPropertyValueChanged(() => {
+            console.log(this.isEmpty());
+            this.attachOrDetachPropertyArray();
+        });
 
         return this.inputTypeView.layout(this.input, this.propertyArray).then(() => {
             this.appendChild(this.inputTypeView.getElement());
@@ -187,13 +204,25 @@ export class InputView
         }
         // update parent first because it can be used in getPropertyArray
         this.parentPropertySet = propertySet;
-        this.propertyArray = this.getPropertyArray(propertySet);
+        this.propertyArray = this.getOrPopulatePropertyArray(propertySet);
 
         return this.inputTypeView.update(this.propertyArray, unchangedOnly);
     }
 
     public reset(): void {
         this.inputTypeView.reset();
+    }
+
+    private attachOrDetachPropertyArray(): void {
+        if (this.isEmpty()) {
+            if (!this.isExistingPropertyArray && this.parentPropertySet.getPropertyArray(this.input.getName())) {
+                this.parentPropertySet.removePropertyArray(this.propertyArray);
+            }
+        } else {
+            if (!this.parentPropertySet.getPropertyArray(this.input.getName())) {
+                this.parentPropertySet.addPropertyArray(this.propertyArray);
+            }
+        }
     }
 
     clear(): void {
@@ -290,28 +319,31 @@ export class InputView
         return !!this.input.getHelpText();
     }
 
-    private getPropertyArray(propertySet: PropertySet): PropertyArray {
+    private getOrPopulatePropertyArray(propertySet: PropertySet): PropertyArray {
         let array = propertySet.getPropertyArray(this.input.getName());
-        if (!array) {
-            array = PropertyArray.create().setType(this.inputTypeView.getValueType()).setName(this.input.getName()).setParent(
-                this.parentPropertySet).build();
 
-            propertySet.addPropertyArray(array);
-
-            let initialValue = this.input.getDefaultValue();
-            if (!initialValue) {
-                initialValue = this.inputTypeView.newInitialValue();
-            }
-            if (initialValue) {
-                array.add(initialValue);
-            }
+        if (array) {
+            this.isExistingPropertyArray = true;
+            return array;
         }
+
+        array = PropertyArray.create()
+            .setType(this.inputTypeView.getValueType())
+            .setName(this.input.getName())
+            .setParent(this.parentPropertySet).build();
+
+        const initialValue: Value = this.inputTypeView.newInitialValue();
+
+        if (initialValue) {
+            array.add(initialValue);
+        }
+
         return array;
     }
 
     protected createInputTypeView(): InputTypeView {
-        let inputType: InputTypeName = this.input.getInputType();
-        let inputTypeViewContext = this.getContext().createInputTypeViewContext(
+        const inputType: InputTypeName = this.input.getInputType();
+        const inputTypeViewContext: InputTypeViewContext = this.getContext().createInputTypeViewContext(
             this.input.getInputTypeConfig() || {},
             this.parentPropertySet.getPropertyPath(),
             this.input
