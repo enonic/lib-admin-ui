@@ -352,7 +352,7 @@ export abstract class FormOptionSetOccurrenceView
     }
 
     isSelected(name: string): boolean {
-        return this.getSelectedOptionsArray()?.some((property: Property) => property.getString() === name);
+        return !!this.getSelectedOptionsArray()?.some((property: Property) => property.getString() === name);
     }
 
     private stashAndRemoveExistingSetFromParent(name: string): void {
