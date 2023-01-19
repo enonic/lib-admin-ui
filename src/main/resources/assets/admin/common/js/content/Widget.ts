@@ -5,13 +5,13 @@ import {ObjectHelper} from '../ObjectHelper';
 
 export class Widget {
 
-    private url: string;
-    private iconUrl: string;
-    private displayName: string;
-    private description: string;
-    private interfaces: string[];
-    private widgetDescriptorKey: WidgetDescriptorKey;
-    private config: { [key: string]: string };
+    private readonly url: string;
+    private readonly iconUrl: string;
+    private readonly displayName: string;
+    private readonly description: string;
+    private readonly interfaces: string[];
+    private readonly widgetDescriptorKey: WidgetDescriptorKey;
+    protected readonly config: WidgetConfig;
 
     constructor(builder: WidgetBuilder) {
         this.url = builder.url;
@@ -55,10 +55,13 @@ export class Widget {
         return this.widgetDescriptorKey;
     }
 
-    public getConfig(): { [key: string]: string } {
+    public getConfig(): WidgetConfig {
         return this.config;
     }
 
+    getContext(): string {
+        return this.config.getContext();
+    }
 }
 
 export class WidgetBuilder {
@@ -75,7 +78,7 @@ export class WidgetBuilder {
 
     widgetDescriptorKey: WidgetDescriptorKey;
 
-    config: { [key: string]: string };
+    config: WidgetConfig;
 
     constructor(source?: Widget) {
         if (source) {
@@ -86,9 +89,6 @@ export class WidgetBuilder {
             this.interfaces = source.getInterfaces();
             this.widgetDescriptorKey = source.getWidgetDescriptorKey();
             this.config = source.getConfig();
-        } else {
-            this.interfaces = [];
-            this.config = {};
         }
     }
 
@@ -105,8 +105,38 @@ export class WidgetBuilder {
         this.description = json.description;
         this.interfaces = json.interfaces;
         this.widgetDescriptorKey = WidgetBuilder.makeWidgetDescriptorKey(json.key);
-        this.config = json.config;
+        this.config = new WidgetConfig().fromJson(json.config);
 
+        return this;
+    }
+
+    setUrl(url: string): WidgetBuilder {
+        this.url = url;
+        return this;
+    }
+
+    setIconUrl(iconUrl: string): WidgetBuilder {
+        this.iconUrl = iconUrl;
+        return this;
+    }
+
+    setDisplayName(displayName: string): WidgetBuilder {
+        this.displayName = displayName;
+        return this;
+    }
+
+    setDescription(description: string): WidgetBuilder {
+        this.description = description;
+        return this;
+    }
+
+    setWidgetDescriptorKey(keyAsString: string): WidgetBuilder {
+        this.widgetDescriptorKey = WidgetDescriptorKey.fromString(keyAsString);
+        return this;
+    }
+
+    setConfig(config: WidgetConfig): WidgetBuilder {
+        this.config = config;
         return this;
     }
 
@@ -120,11 +150,11 @@ export class WidgetDescriptorKey
 
     private static SEPARATOR: string = ':';
 
-    private applicationKey: ApplicationKey;
+    private readonly applicationKey: ApplicationKey;
 
-    private name: string;
+    private readonly name: string;
 
-    private refString: string;
+    private readonly refString: string;
 
     constructor(applicationKey: ApplicationKey, name: string) {
         this.applicationKey = applicationKey;
@@ -169,5 +199,24 @@ export class WidgetDescriptorKey
         }
 
         return true;
+    }
+}
+
+export class WidgetConfig {
+    private context: string;
+
+    fromJson(json: {[key: string]: string}): WidgetConfig {
+        this.context = json.context;
+
+        return this;
+    }
+
+    setContext(context: string): WidgetConfig {
+        this.context = context;
+        return this;
+    }
+
+    getContext(): string {
+        return this.context;
     }
 }
