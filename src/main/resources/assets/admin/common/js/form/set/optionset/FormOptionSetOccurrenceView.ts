@@ -249,12 +249,11 @@ export abstract class FormOptionSetOccurrenceView
     }
 
     protected handleSelectionChanged(optionView: FormOptionSetOptionView, isSelected: boolean): void {
-        if (!this.currentValidationState) {
-            return; // currentValidationState is initialized on validate() call which may not be triggered in some cases
-        }
-
         this.updateSelectionAndOptionArrays(optionView, isSelected);
-        this.updateValidation(optionView);
+
+        if (this.currentValidationState) {
+            this.updateValidation(optionView);
+        }
     }
 
     private updateSelectionAndOptionArrays(optionView: FormOptionSetOptionView, isSelected: boolean): void {
