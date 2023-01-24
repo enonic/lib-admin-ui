@@ -16,7 +16,7 @@ export class ActionMenu
 
     constructor(label: string, ...actions: Action[]) {
         super('menu action-menu');
-        this.labelEl = new DivEl('drop-down-button ' +
+        this.labelEl = new DivEl('drop-down-button icon-arrow_drop_down ' +
                                  StyleHelper.getCls('dropdown-handle', StyleHelper.COMMON_PREFIX));
         this.labelEl.setHtml(label);
         this.appendChild(this.labelEl);
