@@ -510,12 +510,8 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         this.comboBoxDropdown.markSelections([], ignoreEmpty);
 
         if (giveInputFocus) {
-            this.input.openForTypingAndFocus();
-        } else {
-            this.input.openForTyping();
+            this.input.giveFocus();
         }
-
-        this.dropdownHandle.setEnabled(true);
 
         if (this.hideComboBoxWhenMaxReached) {
             this.show();
