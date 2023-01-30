@@ -220,7 +220,7 @@ export abstract class DropdownGrid<OPTION_DISPLAY_VALUE> {
             rowsHeight = Math.ceil(this.getOptionCount() / options.getGalleryModeColums()) * options.getRowHeight();
         }
 
-        const borderWidth = gridEl.getBorderTopWidth() + gridEl.getBorderBottomWidth();
+        const borderWidth = Math.ceil(gridEl.getBorderTopWidth()) + Math.ceil(gridEl.getBorderBottomWidth());
 
         if (rowsHeight < this.customHeight) {
             gridEl.setHeightPx(rowsHeight + borderWidth);
