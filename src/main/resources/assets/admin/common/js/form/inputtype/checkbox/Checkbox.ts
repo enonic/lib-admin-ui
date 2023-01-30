@@ -35,10 +35,14 @@ export class Checkbox
     }
 
     layoutProperty(input: Input, property: Property): Q.Promise<void> {
-        let checked = property.hasNonNullValue() ? property.getBoolean() : false;
+        const isToBeChecked: boolean = property.hasNonNullValue() ? property.getBoolean() : false;
         this.checkbox =
-            CheckboxEl.create().setLabelText(input.getLabel()).setChecked(checked).setInputAlignment(this.inputAlignment).build();
+            CheckboxEl.create().setLabelText(input.getLabel()).setChecked(isToBeChecked).setInputAlignment(this.inputAlignment).build();
         this.appendChild(this.checkbox);
+
+        if (isToBeChecked) {
+            this.checkbox.setChecked(true, true);
+        }
 
         if (!ValueTypes.BOOLEAN.equals(property.getType())) {
             ValueTypeConverter.convertPropertyValueType(property, ValueTypes.BOOLEAN);
