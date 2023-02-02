@@ -29,7 +29,9 @@ export class BucketView
         this.tooltip.setActive(false);
 
         this.checkbox.onValueChanged((event: ValueChangedEvent) => {
-            this.notifySelectionChanged(eval(event.getOldValue()), eval(event.getNewValue()));
+            const oldValue = event.getOldValue() === 'true';
+            const newValue = event.getNewValue() === 'true';
+            this.notifySelectionChanged(oldValue, newValue);
         });
         this.appendChild(this.checkbox);
 
