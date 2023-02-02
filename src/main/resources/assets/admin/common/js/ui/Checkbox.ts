@@ -148,14 +148,6 @@ export class Checkbox
 
         return InputAlignment[inputAlignment].toLowerCase();
     }
-
-    /* TODO: DEPRECATE METHODS BELOW IN 4.0 */
-
-    setDisabled(value: boolean) {
-        console.warn('Checkbox.setDisabled() is deprecated and will be removed in lib-admin-ui 4.0.0');
-        this.setEnabled(!value);
-        return this;
-    }
 }
 
 export enum InputAlignment {
@@ -176,27 +168,27 @@ export class CheckboxBuilder {
 
     tooltip: string;
 
-    setName(name: string): CheckboxBuilder {
+    setName(name: string): this {
         this.name = name;
         return this;
     }
 
-    setLabelText(value: string): CheckboxBuilder {
+    setLabelText(value: string): this {
         this.text = value;
         return this;
     }
 
-    setTooltip(value: string): CheckboxBuilder {
+    setTooltip(value: string): this {
         this.tooltip = value;
         return this;
     }
 
-    setChecked(value: boolean): CheckboxBuilder {
+    setChecked(value: boolean): this {
         this.checked = value;
         return this;
     }
 
-    setInputAlignment(value: InputAlignment): CheckboxBuilder {
+    setInputAlignment(value: InputAlignment): this {
         this.inputAlignment = value;
         return this;
     }
