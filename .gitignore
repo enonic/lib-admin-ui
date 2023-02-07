@@ -19,3 +19,9 @@ generated-java
 node_modules/
 src/main/resources/spec/coverage
 src/main/resources/assets/spec/coverage/
+
+# Enonic
+/.enonic
+
+# Visual Studio Code
+/bin/
