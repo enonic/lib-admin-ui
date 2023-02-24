@@ -96,7 +96,7 @@ export class Validators {
     }
 
     private static getPathRegExp(): RegExp {
-        return /((\/)+([A-z0-9\-\%\.\:]+\/)*[A-z0-9\-\%\.\:\§]*)?/;
+        return /((\/)+([A-z0-9\-\%\.\:\§]+\/{0,2})*)?/;
     }
 
     private static getExtensionRegExp(): RegExp {
