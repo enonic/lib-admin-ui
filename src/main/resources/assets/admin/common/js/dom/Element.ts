@@ -688,10 +688,13 @@ export class Element {
         replacement.el.insertAfterEl(this.el);
         replacement.notifyAdded();
 
-        // during these operation this.parentElement will become unavailable
-        let parent = this.parentElement;
-        let index = parent.unregisterChildElement(this);
-        parent.registerChildElement(replacement, index);
+        const parent = this.parentElement.getParentOf(this);
+        if (!parent) {
+            throw new Error('Source element is missing parent');
+        }
+        const childIndex = parent.children.indexOf(this);
+        parent.unregisterChildElement(this);
+        parent.registerChildElement(replacement, childIndex);
 
         // Run init of replacement if parent is rendered
         if (parent.isRendered()) {
@@ -1302,9 +1305,9 @@ export class Element {
     private removeChildElement(child: Element): Element {
         assertNotNull(child, 'Child element to insert cannot be null');
 
-        this.unregisterChildElement(child);
+        const parent: Element = this.unregisterChildElement(child);
 
-        child.notifyRemoved(this);
+        child.notifyRemoved(parent);
         return this;
     }
 
@@ -1335,14 +1338,34 @@ export class Element {
         child.parentElement = this;
     }
 
-    private unregisterChildElement(child: Element): number {
-        let childIndex = this.children.indexOf(child);
-        if (childIndex < 0) {
-            throw new Error('Child element to remove not found');
+    private getParentOf(child: Element): Element {
+        if (this.children.indexOf(child) > -1) {
+            return this;
         }
-        this.children.splice(childIndex, 1);
+
+        for (let i: number = 0; i < this.children.length; i++) {
+            const parent: Element = this.children[i].getParentOf(child);
+            if (parent) {
+                return parent;
+            }
+        }
+
+        return null;
+    }
+
+    private unregisterChildElement(child: Element): Element {
+        if (!this.children?.length || !child.parentElement) {
+            return null;
+        }
+        const parentElement = this.getParentOf(child);
+        if (!parentElement) {
+            return null;
+        }
+        const childIndex = parentElement.children.indexOf(child);
+        parentElement.children.splice(childIndex, 1);
         child.parentElement = null;
-        return childIndex;
+
+        return parentElement;
     }
 
     private notifyDescendantAdded(e: ElementEvent) {
