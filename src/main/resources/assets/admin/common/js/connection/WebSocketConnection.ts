@@ -119,7 +119,7 @@ export class WebSocketConnection {
             }
         }
 
-        this.reconnectIntervalId = setTimeout(() => {
+        this.reconnectIntervalId = window.setTimeout(() => {
             if (this.isConnected()) {
                 if (this.keepConnected) {
                     this.notifyDisconnected();
@@ -175,7 +175,7 @@ export class WebSocketConnection {
 
         clearTimeout(this.reconnectIntervalId);
 
-        this.keepAliveIntervalId = setInterval(() => {
+        this.keepAliveIntervalId = window.setInterval(() => {
             if (this.isConnected()) {
                 this.ws.send('KeepAlive');
 

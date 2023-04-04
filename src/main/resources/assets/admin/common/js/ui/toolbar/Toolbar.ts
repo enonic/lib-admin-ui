@@ -25,7 +25,7 @@ export class Toolbar
         this.appendChild(this.foldButton);
 
         // Hack: Update after styles are applied to evaluate the sizes correctly
-        ResponsiveManager.onAvailableSizeChanged(this, () => setTimeout(this.foldOrExpand.bind(this)));
+        ResponsiveManager.onAvailableSizeChanged(this, () => window.setTimeout(this.foldOrExpand.bind(this)));
 
         this.onShown(() => this.foldOrExpand());
     }

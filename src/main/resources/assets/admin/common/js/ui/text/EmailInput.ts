@@ -53,7 +53,7 @@ export class EmailInput
                 clearTimeout(this.checkTimeout);
             }
 
-            this.checkTimeout = setTimeout((email) => this.checkAvailability(email), 500, this.input.getValue());
+            this.checkTimeout = window.setTimeout((email) => this.checkAvailability(email), 500, this.input.getValue());
 
         });
 

@@ -25,7 +25,7 @@ export class AppHelper {
             };
             const callNow = immediate && !timeout;
             clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
+            timeout = window.setTimeout(later, wait);
             if (callNow) {
                 func.apply(context, args);
             }
@@ -46,7 +46,7 @@ export class AppHelper {
             };
             const callNow = (immediate && !timeout) || interrupt;
             clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
+            timeout = window.setTimeout(later, wait);
             if (callNow) {
                 func.apply(context, args);
             }
@@ -73,7 +73,7 @@ export class AppHelper {
             };
             const callNow = !trailing && !timeout;
             clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
+            timeout = window.setTimeout(later, wait);
             if (callNow) {
                 func.apply(context, args);
             } else {
@@ -128,7 +128,7 @@ export class AppHelper {
 
         element.onFocusOut((event: Event) => {
             if (target === event.target) {
-                focusOutTimeout = setTimeout(() => onFocusOut(target), wait);
+                focusOutTimeout = window.setTimeout(() => onFocusOut(target), wait);
             }
         });
 

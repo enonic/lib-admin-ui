@@ -341,7 +341,7 @@ export class Tooltip {
         this.stopTimeout();
         let t = ms || this.hideTimeout;
         if (t > 0) {
-            this.timeoutTimer = setTimeout(() => {
+            this.timeoutTimer = window.setTimeout(() => {
                 this.hide();
             }, t);
         } else {
@@ -358,7 +358,7 @@ export class Tooltip {
                 // so we need to check whether mouse has moved from tooltip target or not
                 //this.hideOnMouseOut();
             }
-            this.timeoutTimer = setTimeout(() => {
+            this.timeoutTimer = window.setTimeout(() => {
                 this.show();
             }, t);
         } else {
