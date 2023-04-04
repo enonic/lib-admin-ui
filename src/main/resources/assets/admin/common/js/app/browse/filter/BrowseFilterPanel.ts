@@ -88,7 +88,7 @@ export class BrowseFilterPanel<T>
             this.showResultsButton.hide();
 
             KeyBindings.get().bindKey(new KeyBinding('/', () => {
-                setTimeout(this.giveFocusToSearch.bind(this), 100);
+                window.setTimeout(this.giveFocusToSearch.bind(this), 100);
             }).setGlobal(true));
         });
 
@@ -97,7 +97,7 @@ export class BrowseFilterPanel<T>
         });
 
         this.onShown(() => {
-            setTimeout(this.aggregationContainer.show.bind(this.aggregationContainer), 100);
+            window.setTimeout(this.aggregationContainer.show.bind(this.aggregationContainer), 100);
             this.refresh();
         });
     }
@@ -111,7 +111,7 @@ export class BrowseFilterPanel<T>
             this.resetControls();
             this.search();
             this.addClass('show-constraint');
-            setTimeout(this.giveFocusToSearch.bind(this), 100);
+            window.setTimeout(this.giveFocusToSearch.bind(this), 100);
         }
     }
 

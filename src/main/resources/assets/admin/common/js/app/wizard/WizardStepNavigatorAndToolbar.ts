@@ -94,7 +94,7 @@ export class WizardStepNavigatorAndToolbar
             this.addClass('no-dropdown-hover');
             // Place call in the queue outside of the stack and current context,
             // so the repaint will be triggered between those two calls
-            setTimeout(this.removeClass.bind(this, 'no-dropdown-hover'));
+            window.setTimeout(this.removeClass.bind(this, 'no-dropdown-hover'));
         });
 
         this.stepNavigator.onNavigationItemActivated((event: ActivatedEvent) => {

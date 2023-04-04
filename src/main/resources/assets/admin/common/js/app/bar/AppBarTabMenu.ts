@@ -139,7 +139,7 @@ export class AppBarTabMenu
     private moveTabs(timeout: number = 0) {
         clearInterval(this.timeoutHandler);
         if (timeout > 0) {
-            this.timeoutHandler = setTimeout(this.moveTabsHandler.bind(this), timeout);
+            this.timeoutHandler = window.setTimeout(this.moveTabsHandler.bind(this), timeout);
         } else {
             this.moveTabsHandler();
         }

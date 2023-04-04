@@ -1188,7 +1188,7 @@ export class TreeGrid<DATA extends IDentifiable>
 
     private enablePostLoad(builder: TreeGridBuilder<DATA>) {
         if (builder.isPartialLoadEnabled() && !this.interval) {
-            this.interval = setInterval(this.postLoad.bind(this), 200);
+            this.interval = window.setInterval(this.postLoad.bind(this), 200);
         }
     }
 

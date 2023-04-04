@@ -22,7 +22,7 @@ export class Animation {
     start(): void {
         let startTime = this.getCurrentTime();
 
-        this.id = setInterval(() => {
+        this.id = window.setInterval(() => {
             let progress = Math.min((this.getCurrentTime() - startTime) / this.duration, 1);
 
             if (this.doStep) {
