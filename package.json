@@ -20,7 +20,7 @@
     "fix": "eslint --fix **/*.ts --cache"
   },
   "dependencies": {
-    "@types/dompurify": "^3.0.0",
+    "@types/dompurify": "^3.0.2",
     "@types/mousetrap": "^1.6.11",
     "@types/slickgrid": "^2.1.32",
     "dompurify": "^3.0.2",
