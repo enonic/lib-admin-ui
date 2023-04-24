@@ -22,7 +22,7 @@
   "dependencies": {
     "@types/dompurify": "^3.0.0",
     "@types/mousetrap": "^1.6.11",
-    "@types/slickgrid": "^2.1.32",
+    "@types/slickgrid": "^2.1.33",
     "dompurify": "^3.0.2",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.6.4",
