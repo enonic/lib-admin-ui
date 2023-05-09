@@ -71,15 +71,13 @@ export class TreeGridBuilder<NODE extends IDentifiable> {
 
     buildDefaultOptions(): GridOptions<TreeNode<NODE>> {
         return new GridOptionsBuilder<TreeNode<NODE>>()
+            //.setAutoRenderGridOnDataChanges(true)
             .setDataItemColumnValueExtractor(this.nodeExtractor)
-            .setEditable(false)
+            //.setEditable(false)
             .setEnableAsyncPostRender(true)
-            .setAutoRenderGridOnDataChanges(true)
             // It is necessary to turn off the library key handling. It may cause
             // the conflicts with Mousetrap, which leads to skipping the key events
             // Do not set to true, if you are not fully aware of the result
-            .setEnableCellNavigation(false)
-            .setEnableColumnReorder(false)
             .setForceFitColumns(true)
             .setHideColumnHeaders(true)
             .setCheckableRows(true)
