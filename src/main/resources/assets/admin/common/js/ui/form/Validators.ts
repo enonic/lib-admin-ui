@@ -104,7 +104,7 @@ export class Validators {
     }
 
     private static getQueryRegExp(): RegExp {
-        return /(\?([^&=]+)=([^&=]*))?(?:&([^&=]+)=([^&=]*))*/;
+        return /(\?([^&]+))?(?:&([^&]+))*/;
     }
 
     private static getFragmentRegExp(): RegExp {
