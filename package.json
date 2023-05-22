@@ -46,7 +46,7 @@
     "@types/semver": "^7.5.0",
     "@types/validator": "^13.7.17",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
-    "@typescript-eslint/parser": "^5.59.6",
+    "@typescript-eslint/parser": "^5.59.7",
     "autoprefixer": "^10.4.14",
     "browserslist": "^4.21.5",
     "browserslist-config-enonic": "^1.0.7",
