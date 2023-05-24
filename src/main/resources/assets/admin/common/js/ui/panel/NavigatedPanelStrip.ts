@@ -140,6 +140,9 @@ export class NavigatedPanelStrip
     }
 
     private getFocusedHeaderHeight(curStrip: number): number {
+        if (curStrip === 0) {
+            return 0;
+        }
         return this.getHeader(curStrip + 1) ? this.getHeader(curStrip + 1).getEl().getHeightWithBorder() :
                this.getHeader(curStrip).getEl().getHeightWithBorder();
     }
