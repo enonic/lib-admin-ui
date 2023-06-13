@@ -13,6 +13,22 @@ export class Validators {
         return !regex.test(input.getValue()) ? i18n('field.value.invalid') : undefined;
     }
 
+    public static validTel(input: FormInputEl): string | undefined {
+        //tel:+<numbers>
+
+        const protocol: RegExp = /^tel:/;
+        const plus: RegExp = /\+?/;
+        const digits: RegExp = /[0-9]+/ ;
+
+        const regex: RegExp = Validators.getRegexFromArray([
+            protocol,
+            plus,
+            digits,
+        ]);
+
+        return !Validators.isInputValueValid(regex, input) ? i18n('field.value.invalid') : undefined;
+    }
+
     public static validUrl(input: FormInputEl): string | undefined {
         //http://<host>:<port>/<path>?<query>#<fragment>
 
