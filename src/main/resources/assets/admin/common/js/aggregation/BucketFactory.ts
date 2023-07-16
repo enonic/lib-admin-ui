@@ -11,7 +11,7 @@ export class BucketFactory {
         } else if (json.BucketJson) {
             return Bucket.fromJson(json.BucketJson);
         } else {
-            throw new Error('Bucket-type not recognized: ' + json);
+            throw new Error(`Bucket-type not recognized: ${JSON.stringify(json)}`);
         }
     }
 }

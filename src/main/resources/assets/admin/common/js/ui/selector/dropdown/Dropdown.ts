@@ -404,7 +404,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
             return true;
         }
 
-        let displayVaueAsString = option.getDisplayValue().toString();
+        let displayVaueAsString = JSON.stringify(option.getDisplayValue());
         if (displayVaueAsString.toLowerCase().indexOf(lowerCasedSearchString) > -1) {
             return true;
         }

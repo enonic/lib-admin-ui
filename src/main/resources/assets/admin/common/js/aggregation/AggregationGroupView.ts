@@ -131,7 +131,7 @@ export class AggregationGroupView
 
             return bucketAggregationView;
         } else {
-            throw Error('Creating this type of Aggregation view is not supported: ' + aggregation);
+            throw Error(`Creating this type of Aggregation view is not supported: ${aggregation.getName()}`);
         }
     }
 

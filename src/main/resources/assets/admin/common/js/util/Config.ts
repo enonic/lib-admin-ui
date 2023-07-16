@@ -17,7 +17,7 @@ export class CONFIG {
             return false;
         }
 
-        return CONFIG.get(property).toString() === 'true';
+        return <string>CONFIG.get(property) === 'true';
     }
 
     static getConfig(): JSONObject {

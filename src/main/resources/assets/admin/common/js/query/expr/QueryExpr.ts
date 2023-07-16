@@ -27,7 +27,7 @@ export class QueryExpr
         let result: string = '';
 
         if (this.constraint != null) {
-            result = result.concat(this.constraint.toString());
+            result = result.concat(JSON.stringify(this.constraint));
         }
 
         if (this.orderList.length > 0) {
@@ -35,7 +35,7 @@ export class QueryExpr
 
             let sub = [];
             this.orderList.forEach((expr: OrderExpr) => {
-                sub.push(expr.toString());
+                sub.push(JSON.stringify(expr));
             });
             result = result.concat(sub.join(', '));
         }

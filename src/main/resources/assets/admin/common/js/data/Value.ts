@@ -30,7 +30,7 @@ export class Value
                 throw new Error(ClassHelper.getClassName(this.type) + '.isValid() did not return any value: ' + isValid);
             }
             if (isValid === false) {
-                throw new Error('Invalid value for type ' + type.toString() + ': ' + value);
+                throw new Error(`Invalid value for type ${type.toString()}: ${JSON.stringify(value)}`);
             }
         }
     }
