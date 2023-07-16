@@ -35,7 +35,7 @@ export class LogicalExpr
     }
 
     toString() {
-        return '(' + this.left.toString() + ' ' + this.operatorAsString() + ' ' + this.right.toString() + ')';
+        return `(${JSON.stringify(this.left)} ${this.operatorAsString()} ${JSON.stringify(this.right)})`;
     }
 
     private operatorAsString(): string {

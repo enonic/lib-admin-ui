@@ -33,7 +33,7 @@ export class BaseSelectedOptionView<T>
 
     setOption(option: Option<T>) {
         if (this.optionValueEl) {
-            this.optionValueEl.getEl().setInnerHtml(option.getDisplayValue().toString());
+            this.optionValueEl.getEl().setInnerHtml(JSON.stringify(option.getDisplayValue()));
         }
         this.option = option;
     }

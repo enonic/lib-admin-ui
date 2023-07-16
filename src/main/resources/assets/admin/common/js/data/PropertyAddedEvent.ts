@@ -11,6 +11,6 @@ export class PropertyAddedEvent
 
     toString(): string {
         let value = this.getProperty().getValue();
-        return '' + this.getPath().toString() + ' = ' + (value.getObject() ? value.getObject().toString() : null);
+        return `${this.getPath().toString()} = ${JSON.stringify(value?.getObject()) || ''}`;
     }
 }

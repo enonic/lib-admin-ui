@@ -26,7 +26,7 @@ export class BucketAggregation
         if (json.BucketAggregation) {
             return BucketAggregation.fromJson(<BucketAggregationJson>json.BucketAggregation);
         } else {
-            throw new Error('Aggregation type not recognized: ' + json);
+            throw new Error(`Aggregation type not recognized: ${JSON.stringify(json)}`);
         }
     }
 

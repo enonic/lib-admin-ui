@@ -37,7 +37,7 @@ export class ValueTypeBoolean
     }
 
     valueToString(value: Value): string {
-        return (<Boolean>value.getObject()).toString();
+        return JSON.stringify(<Boolean>value.getObject());
     }
 
     valueEquals(a: boolean, b: boolean): boolean {
