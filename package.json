@@ -23,7 +23,7 @@
     "@types/dompurify": "^3.0.2",
     "@types/mousetrap": "^1.6.11",
     "@types/slickgrid": "^2.1.35",
-    "dompurify": "^3.0.4",
+    "dompurify": "^3.0.5",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.7.0",
     "jquery-simulate": "^1.0.2",
