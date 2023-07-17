@@ -108,9 +108,9 @@ export class RadioButton
 
     protected readInputConfig():  void {
         const options: RadioButtonOption[] = [];
-        const optionValues: { [name: string]: string }[] = this.context.inputConfig['option'] || [];
+        const optionValues: Record<string, string>[] = this.context.inputConfig['option'] || [];
         const l: number = optionValues.length;
-        let optionValue: { [name: string]: string };
+        let optionValue: Record<string, string>;
 
         for (let i = 0; i < l; i++) {
             optionValue = optionValues[i];

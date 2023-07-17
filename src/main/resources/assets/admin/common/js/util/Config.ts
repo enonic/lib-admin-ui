@@ -17,7 +17,7 @@ export class CONFIG {
             return false;
         }
 
-        return <string>CONFIG.get(property) === 'true';
+        return CONFIG.getString(property) === 'true';
     }
 
     static getConfig(): JSONObject {
@@ -29,15 +29,15 @@ export class CONFIG {
     }
 
     static getString(property: string): string {
-        return <string>CONFIG.get(property);
+        return String(CONFIG.get(property));
     }
 
     static getNumber(property: string): number {
-        const propertyValue: string = <string>CONFIG.get(property);
-        if (isNaN(<any>propertyValue)) {
+        const propertyValue = CONFIG.get(property);
+        if (isNaN(propertyValue as unknown as number)) {
             throw `Property ${property} is not a number`;
         }
-        return parseInt(propertyValue);
+        return parseInt(String(propertyValue));
     }
 
     static get(property: string): JSONValue {

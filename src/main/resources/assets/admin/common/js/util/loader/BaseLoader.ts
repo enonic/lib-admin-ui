@@ -26,11 +26,11 @@ export class BaseLoader<OBJECT> {
 
     private searchString: string;
 
-    private loadedDataListeners: { (event: LoadedDataEvent<OBJECT>): Q.Promise<any> }[] = [];
+    private loadedDataListeners: ((event: LoadedDataEvent<OBJECT>) => Q.Promise<any>)[] = [];
 
-    private loadingDataListeners: { (event: LoadingDataEvent): void }[] = [];
+    private loadingDataListeners: ((event: LoadingDataEvent) => void)[] = [];
 
-    private loaderErrorListeners: { (event: LoaderErrorEvent): void }[] = [];
+    private loaderErrorListeners: ((event: LoaderErrorEvent) => void)[] = [];
 
     private comparator: Comparator<OBJECT>;
 

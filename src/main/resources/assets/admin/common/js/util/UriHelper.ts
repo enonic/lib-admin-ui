@@ -97,12 +97,12 @@ export class UriHelper {
         return StringHelper.isBlank(url) ? StringHelper.EMPTY_STRING : url.split(/\?|&/i)[0];
     }
 
-    static decodeUrlParams(url: string): { [key: string]: string } {
+    static decodeUrlParams(url: string): Record<string, string> {
         if (StringHelper.isBlank(url)) {
             return {};
         }
         let array = url.split(/\?|&/i);
-        let params: { [name: string]: string } = {};
+        let params: Record<string, string> = {};
         let param;
         if (array.length > 1) {
             for (let i = 1; i < array.length; i++) {
@@ -121,7 +121,7 @@ export class UriHelper {
      * @param prefix
      * @returns {string}
      */
-    static encodeUrlParams(params: { [name: string]: any }, prefix?: string, encode: boolean = true): string {
+    static encodeUrlParams(params: Record<string, any>, prefix?: string, encode: boolean = true): string {
         if (!params) {
             return StringHelper.EMPTY_STRING;
         }
@@ -142,7 +142,7 @@ export class UriHelper {
         return urlArray.join('&');
     }
 
-    static appendUrlParams(url: string, params: { [name: string]: any }, encode: boolean = true): string {
+    static appendUrlParams(url: string, params: Record<string, any>, encode: boolean = true): string {
         if (!params || Object.keys(params).length === 0) {
             return url;
         }

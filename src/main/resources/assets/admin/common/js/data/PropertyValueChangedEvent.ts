@@ -25,7 +25,7 @@ export class PropertyValueChangedEvent
     }
 
     toString(): string {
-        return `[${JSON.stringify(this.previousValue?.getObject()) || ''}] ->
-                [${JSON.stringify(this.newValue?.getString()) || ''}]`;
+        return `[${String(this.previousValue?.getObject() || '')}] ->
+                [${String(this.newValue?.getString() || '')}]`;
     }
 }

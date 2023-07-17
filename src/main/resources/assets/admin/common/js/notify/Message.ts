@@ -8,9 +8,9 @@ export enum MessageType {
 
 export class MessageAction {
     private name: string;
-    private handler: { (e: MouseEvent): void };
+    private handler: (e: MouseEvent) => void;
 
-    constructor(name: string, handler: { (e: MouseEvent): void }) {
+    constructor(name: string, handler: (e: MouseEvent) => void) {
         this.name = name;
         this.handler = handler;
     }
@@ -19,7 +19,7 @@ export class MessageAction {
         return this.name;
     }
 
-    getHandler(): { (e: MouseEvent): void } {
+    getHandler(): (e: MouseEvent) => void {
         return this.handler;
     }
 }

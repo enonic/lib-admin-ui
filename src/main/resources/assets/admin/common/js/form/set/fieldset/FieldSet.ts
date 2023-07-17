@@ -62,7 +62,7 @@ export class FieldSet
             return false;
         }
 
-        let other = <FieldSet>o;
+        let other = o as FieldSet;
 
         if (!ObjectHelper.stringEquals(this.label, other.label)) {
             return false;

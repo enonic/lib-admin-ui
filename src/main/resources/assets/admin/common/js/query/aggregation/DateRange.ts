@@ -31,7 +31,7 @@ export class DateRange
 
     public toJson(): DateRangeJson {
 
-        let json: DateRangeJson = <DateRangeJson>super.toRangeJson();
+        let json: DateRangeJson = super.toRangeJson() as DateRangeJson;
 
         json.from = this.from;
         json.to = this.to;

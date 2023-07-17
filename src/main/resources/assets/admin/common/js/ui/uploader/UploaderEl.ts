@@ -50,7 +50,7 @@ export interface UploaderElConfig {
     showResult?: boolean;
     getTotalAllowedToUpload?: () => number;
     deferred?: boolean;
-    params?: { [key: string]: any };
+    params?: Record<string, any>;
     value?: string;
     disabled?: boolean;
     hideDefaultDropZone?: boolean;
@@ -79,15 +79,15 @@ export class UploaderEl<MODEL extends Equitable>
     private progress: ProgressBar;
     private cancelBtn: Button;
     private resultContainer: DivEl;
-    private uploadStartedListeners: { (event: UploadStartedEvent<MODEL>): void }[] = [];
-    private uploadProgressListeners: { (event: UploadProgressEvent<MODEL>): void }[] = [];
-    private fileUploadedListeners: { (event: UploadedEvent<MODEL>): void }[] = [];
-    private uploadCompleteListeners: { (event: UploadCompleteEvent<MODEL>): void }[] = [];
-    private uploadFailedListeners: { (event: UploadFailedEvent<MODEL>): void }[] = [];
-    private uploadResetListeners: { (): void }[] = [];
-    private dropzoneDragEnterListeners: { (event: DragEvent): void }[] = [];
-    private dropzoneDragLeaveListeners: { (event: DragEvent): void }[] = [];
-    private dropzoneDropListeners: { (event: DragEvent): void }[] = [];
+    private uploadStartedListeners: ((event: UploadStartedEvent<MODEL>) => void)[] = [];
+    private uploadProgressListeners: ((event: UploadProgressEvent<MODEL>) => void)[] = [];
+    private fileUploadedListeners: ((event: UploadedEvent<MODEL>) => void)[] = [];
+    private uploadCompleteListeners: ((event: UploadCompleteEvent<MODEL>) => void)[] = [];
+    private uploadFailedListeners: ((event: UploadFailedEvent<MODEL>) => void)[] = [];
+    private uploadResetListeners: (() => void)[] = [];
+    private dropzoneDragEnterListeners: ((event: DragEvent) => void)[] = [];
+    private dropzoneDragLeaveListeners: ((event: DragEvent) => void)[] = [];
+    private dropzoneDropListeners: ((event: DragEvent) => void)[] = [];
     private debouncedUploadStart: () => void;
     private shownInitHandler: (event: ElementShownEvent) => void;
     private renderedInitHandler: (event: ElementRenderedEvent) => void;
@@ -274,7 +274,7 @@ export class UploaderEl<MODEL extends Equitable>
         throw new Error('Should be overridden by inheritors');
     }
 
-    setParams(params: { [key: string]: any }): UploaderEl<MODEL> {
+    setParams(params: Record<string, any>): UploaderEl<MODEL> {
         if (this.uploader) {
             this.uploader.setParams(params);
         }
@@ -344,7 +344,7 @@ export class UploaderEl<MODEL extends Equitable>
         return !this.config.disabled;
     }
 
-    getParams(): { [key: string]: any } {
+    getParams(): Record<string, any> {
         return this.config.params;
     }
 
@@ -760,10 +760,9 @@ export class UploaderEl<MODEL extends Equitable>
     }
 
     private findUploadItemById(id: number): UploadItem<MODEL> {
-        for (let i = 0; i < this.uploadedItems.length; i++) {
-            const uploadItem = this.uploadedItems[i];
-            if (uploadItem.getId() === String(id)) {
-                return uploadItem;
+        for (const uploadedItem of this.uploadedItems) {
+            if (uploadedItem.getId() === String(id)) {
+                return uploadedItem;
             }
         }
         return null;

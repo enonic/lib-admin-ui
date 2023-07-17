@@ -65,7 +65,7 @@ export class LocalDate
         if (!ObjectHelper.iFrameSafeInstanceOf(o, LocalDate)) {
             return false;
         }
-        let other = <LocalDate>o;
+        let other = o as LocalDate;
         if (!ObjectHelper.stringEquals(this.toString(), other.toString())) {
             return false;
         }

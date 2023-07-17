@@ -49,7 +49,7 @@ export class Thumbnail
             return false;
         }
 
-        let other = <Thumbnail>o;
+        let other = o as Thumbnail;
 
         if (!ObjectHelper.equals(this.binaryReference, other.binaryReference)) {
             return false;

@@ -122,7 +122,7 @@ export class Checkbox
         this.checkbox.unBlur(listener);
     }
 
-    private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
+    private readConfig(inputConfig: Record<string, Record<string, string>[]>): void {
         if (inputConfig) {
             this.setInputAlignment(inputConfig['alignment']);
         }
@@ -130,7 +130,7 @@ export class Checkbox
 
     private setInputAlignment(inputAlignmentObj: any) {
         if (inputAlignmentObj) {
-            let inputAlignment: InputAlignment = InputAlignment[<string>inputAlignmentObj[0].value.toUpperCase()];
+            let inputAlignment: InputAlignment = InputAlignment[inputAlignmentObj[0].value.toUpperCase() as string];
             this.inputAlignment = isNaN(inputAlignment) ? InputAlignment.LEFT : inputAlignment;
         }
     }

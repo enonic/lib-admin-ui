@@ -11,7 +11,7 @@ export class WizardValidityManager {
 
     private prevValue: boolean;
 
-    private validityChangedListeners: { (event: ValidityChangedEvent): void }[] = [];
+    private validityChangedListeners: ((event: ValidityChangedEvent) => void)[] = [];
 
     constructor() {
         this.steps = [];
@@ -61,8 +61,8 @@ export class WizardValidityManager {
             return false;
         }
 
-        for (let i = 0; i < this.steps.length; i++) {
-            if (!this.steps[i].getStepForm().isValid()) {
+        for (const step of this.steps) {
+            if (!step.getStepForm().isValid()) {
                 return false;
             }
         }

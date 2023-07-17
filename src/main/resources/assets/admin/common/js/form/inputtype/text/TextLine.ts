@@ -47,12 +47,12 @@ export class TextLine
     }
 
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
-        const input: TextInput = <TextInput>occurrence;
+        const input: TextInput = occurrence as TextInput;
 
         input.setEnabled(enable);
     }
 
-    protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
+    protected readConfig(inputConfig: Record<string, Record<string, string>[]>): void {
         super.readConfig(inputConfig);
 
         const regexpConfig = inputConfig['regexp'] ? inputConfig['regexp'][0] : {};

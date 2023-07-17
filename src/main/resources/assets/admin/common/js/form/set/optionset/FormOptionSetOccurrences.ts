@@ -16,7 +16,7 @@ export class FormOptionSetOccurrences
     }
 
     private isSingleSelection(): boolean {
-        const multi: Occurrences = (<FormOptionSet>this.getFormSet()).getMultiselection();
+        const multi: Occurrences = (this.getFormSet() as FormOptionSet).getMultiselection();
         return multi.getMinimum() === 1 && multi.getMaximum() === 1;
     }
 }

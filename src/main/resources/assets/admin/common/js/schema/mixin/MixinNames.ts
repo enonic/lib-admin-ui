@@ -58,7 +58,7 @@ export class MixinNames
             return false;
         }
 
-        let other = <MixinNames>o;
+        let other = o as MixinNames;
         return ObjectHelper.arrayEquals(this.array, other.array);
     }
 }

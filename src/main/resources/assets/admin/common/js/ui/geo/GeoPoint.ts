@@ -33,7 +33,7 @@ export class GeoPoint
         if (StringHelper.isEmpty(value)) {
             return null;
         }
-        return <GeoPoint> GeoPoint.fromString(value);
+        return GeoPoint.fromString(value) as GeoPoint;
     }
 
     isValid(): boolean {

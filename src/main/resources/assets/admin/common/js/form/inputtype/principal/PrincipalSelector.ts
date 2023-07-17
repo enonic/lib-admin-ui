@@ -111,7 +111,7 @@ export class PrincipalSelector
     }
 
     protected readInputConfig(): void {
-        const principalTypeConfig: { [name: string]: string }[] = this.context.inputConfig['principalType'] || [];
+        const principalTypeConfig: Record<string, string>[] = this.context.inputConfig['principalType'] || [];
 
         this.principalTypes = [].concat(principalTypeConfig)
             .map((cfg: any) => {
@@ -125,7 +125,7 @@ export class PrincipalSelector
             })
             .filter((val) => val !== null);
 
-        const skipPrincipalsConfig: { [name: string]: string }[] = this.context.inputConfig['skipPrincipals'] || [];
+        const skipPrincipalsConfig: Record<string, string>[] = this.context.inputConfig['skipPrincipals'] || [];
 
         this.skipPrincipals = [].concat(skipPrincipalsConfig)
             .map((cfg: any) => {
@@ -153,11 +153,11 @@ export class PrincipalSelector
             .setAllowedTypes(this.principalTypes)
             .skipPrincipals(this.skipPrincipals);
 
-        const comboBox: PrincipalComboBox = <PrincipalComboBox>PrincipalComboBox.create()
+        const comboBox: PrincipalComboBox = PrincipalComboBox.create()
             .setLoader(principalLoader)
             .setMaximumOccurrences(input.getOccurrences().getMaximum())
             .setValue(value)
-            .build();
+            .build() as PrincipalComboBox;
 
         comboBox.onOptionDeselected((event: SelectedOptionEvent<Principal>) => {
             this.getPropertyArray().remove(event.getSelectedOption().getIndex());
@@ -172,7 +172,7 @@ export class PrincipalSelector
             if (!key) {
                 return;
             }
-            let selectedOptionView: PrincipalSelectedOptionView = <PrincipalSelectedOptionView>selectedOption.getOptionView();
+            let selectedOptionView: PrincipalSelectedOptionView = selectedOption.getOptionView() as PrincipalSelectedOptionView;
             this.saveToSet(selectedOptionView.getOption(), selectedOption.getIndex());
             this.handleValueChanged(false);
         });

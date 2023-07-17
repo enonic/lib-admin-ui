@@ -11,7 +11,7 @@ export class SelectionItem<M extends Equitable>
     protected item: ViewItem;
     protected removeEl: DivEl;
     protected viewer: Viewer<M>;
-    private removeListeners: { (event: MouseEvent): void }[] = [];
+    private removeListeners: ((event: MouseEvent) => void)[] = [];
 
     private removeTooltip: string;
 

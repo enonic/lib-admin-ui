@@ -2,7 +2,7 @@ import * as Q from 'q';
 
 export class Cache<T, KEY> {
 
-    private objectsByKey: { [s: string]: T; } = {};
+    private objectsByKey: Record<string, T> = {};
 
     private loading: string[] = [];
 

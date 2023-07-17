@@ -18,15 +18,15 @@ export class ConnectionDetector {
 
     private readonly: boolean;
 
-    private connectionLostListeners: { (): void }[] = [];
+    private connectionLostListeners: (() => void)[] = [];
 
-    private connectionRestoredListeners: { (): void }[] = [];
+    private connectionRestoredListeners: (() => void)[] = [];
 
-    private sessionExpiredListeners: { (): void }[] = [];
+    private sessionExpiredListeners: (() => void)[] = [];
 
-    private pollListeners: { (): void }[] = [];
+    private pollListeners: (() => void)[] = [];
 
-    private readonlyStatusChangedListeners: { (readonly: boolean): void }[] = [];
+    private readonlyStatusChangedListeners: ((readonly: boolean) => void)[] = [];
 
     constructor(pollIntervalMs: number = 15000) {
         this.pollIntervalMs = pollIntervalMs;
@@ -67,7 +67,7 @@ export class ConnectionDetector {
 
     startPolling(immediate: boolean = false) {
         this.stopPolling();
-        this.intervalId = <any>setInterval(this.doPoll.bind(this), this.pollIntervalMs);
+        this.intervalId = setInterval(this.doPoll.bind(this), this.pollIntervalMs) as any;
         if (immediate) {
             this.doPoll();
         }

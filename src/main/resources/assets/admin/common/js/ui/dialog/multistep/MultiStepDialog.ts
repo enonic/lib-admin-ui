@@ -40,7 +40,7 @@ export class MultiStepDialog
 
     private noStepsBlock?: Element;
 
-    private currentStepDataChangedHandler: { (): void };
+    private currentStepDataChangedHandler: () => void;
 
     protected initElements(): void {
         super.initElements();
@@ -296,11 +296,11 @@ export class MultiStepDialog
     }
 
     protected createHeaderContent(): NamesAndIconView {
-        return <NamesAndIconView>new NamesAndIconViewBuilder()
+        return new NamesAndIconViewBuilder()
             .setSize(NamesAndIconViewSize.medium)
             .build()
             .setMainName(this.config.title)
-            .addClass('no-icon');
+            .addClass('no-icon') as NamesAndIconView;
     }
 
     protected toggleHeaderIcon(value: boolean): void {

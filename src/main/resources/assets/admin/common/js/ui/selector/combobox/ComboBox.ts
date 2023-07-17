@@ -117,10 +117,10 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     private setNextInputFocusWhenMaxReached: boolean = true;
     private ignoreNextFocus: boolean = false;
     private minWidth: number = -1;
-    private optionFilterInputValueChangedListeners: { (event: OptionFilterInputValueChangedEvent): void }[] = [];
-    private expandedListeners: { (event: DropdownExpandedEvent): void }[] = [];
-    private valueLoadedListeners: { (options: Option<OPTION_DISPLAY_VALUE>[]): void }[] = [];
-    private contentMissingListeners: { (ids: string[]): void }[] = [];
+    private optionFilterInputValueChangedListeners: ((event: OptionFilterInputValueChangedEvent) => void)[] = [];
+    private expandedListeners: ((event: DropdownExpandedEvent) => void)[] = [];
+    private valueLoadedListeners: ((options: Option<OPTION_DISPLAY_VALUE>[]) => void)[] = [];
+    private contentMissingListeners: ((ids: string[]) => void)[] = [];
     private noOptionsText: string;
     private displayMissingSelectedOptions: boolean = false;
     private removeMissingSelectedOptions: boolean = false;
@@ -191,7 +191,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             this.appendChild(this.applySelectionsButton);
         }
 
-        this.comboBoxDropdown = new ComboBoxDropdown(<DropdownGridConfig<OPTION_DISPLAY_VALUE>>{
+        this.comboBoxDropdown = new ComboBoxDropdown({
             maxHeight: config.maxHeight || 370,
             rowHeight: config.rowHeight || 40,
             width: this.input.getWidth(),
@@ -203,7 +203,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
             optionDataHelper: config.optionDataHelper,
             optionDataLoader: config.optionDataLoader,
             createColumns: config.createColumns
-        });
+        } as DropdownGridConfig<OPTION_DISPLAY_VALUE>);
         this.initDropdown();
         this.setupListeners();
     }
@@ -643,19 +643,19 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         });
     }
 
-    onOptionDeselected(listener: { (removed: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void; }) {
+    onOptionDeselected(listener: (removed: SelectedOptionEvent<OPTION_DISPLAY_VALUE>) => void) {
         this.selectedOptionsView.onOptionDeselected(listener);
     }
 
-    unOptionDeselected(listener: { (removed: SelectedOptionEvent<OPTION_DISPLAY_VALUE>): void; }) {
+    unOptionDeselected(listener: (removed: SelectedOptionEvent<OPTION_DISPLAY_VALUE>) => void) {
         this.selectedOptionsView.unOptionDeselected(listener);
     }
 
-    onOptionMoved(listener: { (moved: SelectedOption<OPTION_DISPLAY_VALUE>, fromIndex: number): void; }) {
+    onOptionMoved(listener: (moved: SelectedOption<OPTION_DISPLAY_VALUE>, fromIndex: number) => void) {
         this.selectedOptionsView.onOptionMoved(listener);
     }
 
-    unOptionMoved(listener: { (moved: SelectedOption<OPTION_DISPLAY_VALUE>, fromIndex: number): void; }) {
+    unOptionMoved(listener: (moved: SelectedOption<OPTION_DISPLAY_VALUE>, fromIndex: number) => void) {
         this.selectedOptionsView.unOptionMoved(listener);
     }
 
@@ -835,7 +835,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
                     if (option == null) {
                         const contentExists = ObjectHelper.propertyExists(result, val);
                         if (this.displayMissingSelectedOptions && (contentExists || !this.removeMissingSelectedOptions)) {
-                            const selectedOption = (<BaseSelectedOptionsView<OPTION_DISPLAY_VALUE>> this.selectedOptionsView)
+                            const selectedOption = (this.selectedOptionsView as BaseSelectedOptionsView<OPTION_DISPLAY_VALUE>)
                                 .makeEmptyOption(val);
 
                             selectedOptions.push(selectedOption);
@@ -1137,7 +1137,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     }
 
     private notifyExpanded(expanded: boolean) {
-        const grid: Element = <Element>this.comboBoxDropdown.getDropdownGrid().getGrid();
+        const grid: Element = this.comboBoxDropdown.getDropdownGrid().getGrid() as Element;
         const event = new DropdownExpandedEvent(grid, expanded);
         this.expandedListeners.forEach((listener: (event: DropdownExpandedEvent) => void) => {
             listener(event);

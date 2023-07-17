@@ -65,13 +65,13 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
 
     private selectedOptionView: SelectedOptionView<OPTION_DISPLAY_VALUE>;
 
-    private optionSelectedListeners: { (event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>): void }[] = [];
+    private optionSelectedListeners: ((event: OptionSelectedEvent<OPTION_DISPLAY_VALUE>) => void)[] = [];
 
-    private optionDeselectedListeners: { (previousOption: Option<OPTION_DISPLAY_VALUE>): void }[] = [];
+    private optionDeselectedListeners: ((previousOption: Option<OPTION_DISPLAY_VALUE>) => void)[] = [];
 
-    private optionFilterInputValueChangedListeners: { (event: OptionFilterInputValueChangedEvent): void }[] = [];
+    private optionFilterInputValueChangedListeners: ((event: OptionFilterInputValueChangedEvent) => void)[] = [];
 
-    private expandedListeners: { (event: DropdownExpandedEvent): void }[] = [];
+    private expandedListeners: ((event: DropdownExpandedEvent) => void)[] = [];
 
     private noOptionsText: string;
 
@@ -105,7 +105,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
 
         let filter = config.filter || this.defaultFilter;
 
-        this.dropdownList = new DropdownList(<DropdownGridConfig<OPTION_DISPLAY_VALUE>>{
+        this.dropdownList = new DropdownList({
             maxHeight: config.listMaxHeight || 370,
             rowHeight: config.rowHeight || 40,
             width: this.input.getEl().getWidth(),
@@ -113,7 +113,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
             filter: filter,
             dataIdProperty: config.dataIdProperty,
             createColumns: config.createColumns
-        });
+        } as DropdownGridConfig<OPTION_DISPLAY_VALUE>);
         if (filter) {
             this.dropdownList.setFilterArgs({searchString: ''});
         }
@@ -399,24 +399,21 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
             return true;
         }
 
-        let lowerCasedSearchString = args.searchString.toLowerCase();
+        const lowerCasedSearchString = args.searchString.toLowerCase();
         if (option.getValue().toLowerCase().indexOf(lowerCasedSearchString) > -1) {
             return true;
         }
 
-        let displayVaueAsString = JSON.stringify(option.getDisplayValue());
-        if (displayVaueAsString.toLowerCase().indexOf(lowerCasedSearchString) > -1) {
+        const displayValueAsString = String(option.getDisplayValue());
+        if (displayValueAsString?.toLowerCase().indexOf(lowerCasedSearchString) > -1) {
             return true;
         }
 
-        let indices = option.getIndices();
-        if (indices && indices.length > 0) {
-            for (let i = 0; i < indices.length; i++) {
-                let index = indices[i];
-                if (index) {
-                    if (index.toLocaleLowerCase().indexOf(lowerCasedSearchString) > -1) {
-                        return true;
-                    }
+        const indices = option.getIndices();
+        if (indices?.length) {
+            for (const index of indices) {
+                if (index?.toLocaleLowerCase().indexOf(lowerCasedSearchString) > -1) {
+                    return true;
                 }
             }
         }

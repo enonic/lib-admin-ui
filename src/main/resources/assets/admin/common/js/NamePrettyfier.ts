@@ -59,10 +59,8 @@ export class NamePrettyfier {
         }
 
         let result = '';
-
-        for (let i = 0; i < prettifiedName.length; i++) {
-            let character = prettifiedName[i];
-            let replace = this.REPLACE_WITH_HYPHEN_CHARS[character];
+        for (const character of prettifiedName) {
+            const replace = this.REPLACE_WITH_HYPHEN_CHARS[character];
             result += (replace != null ? replace : character);
         }
 
@@ -121,19 +119,16 @@ export class NamePrettyfier {
         }
 
         let result = '';
-
-        for (let i = 0; i < transcribeMe.length; i++) {
-            let character = transcribeMe[i];
+        for (const character of transcribeMe) {
             let replace = this.NON_DIACRITICS[character];
-
             replace = replace != null ? replace : this.DIACRITICS[character];
-            result += (replace != null ? replace : character);
+            result += replace != null ? replace : character;
         }
 
         let normalized = result;
 
-        if ((<any>result).normalize) {
-            normalized = (<any>result).normalize('NFD');
+        if ((result as any).normalize) {
+            normalized = (result as any).normalize('NFD');
         }
 
         let nonAsciiCleaned = normalized.replace(this.NOT_ASCII, this.DEFAULT_REPLACE);
@@ -141,7 +136,7 @@ export class NamePrettyfier {
     }
 
     private static buildDiacriticsMap(): Object {
-        let defaultDiacriticsRemovalMap = [
+        const defaultDiacriticsRemovalMapArray = [
             {
                 base: 'A',
                 // eslint-disable-next-line max-len
@@ -304,10 +299,10 @@ export class NamePrettyfier {
         ];
 
         let diacriticsMap = {};
-        for (let i = 0; i < defaultDiacriticsRemovalMap.length; i++) {
-            let letters = defaultDiacriticsRemovalMap [i].letters;
-            for (let j = 0; j < letters.length; j++) {
-                diacriticsMap[letters[j]] = defaultDiacriticsRemovalMap [i].base;
+        for (const defaultDiacriticsRemovalMap of defaultDiacriticsRemovalMapArray) {
+            const letters = defaultDiacriticsRemovalMap.letters;
+            for (const letter of letters) {
+                diacriticsMap[letter] = defaultDiacriticsRemovalMap.base;
             }
         }
 

@@ -27,7 +27,7 @@ export class PrincipalContainerSelectedOptionView<T extends PrincipalContainer>
         return this.option;
     }
 
-    onRemoveClicked(listener: { (): void }) {
+    onRemoveClicked(listener: () => void) {
         this.view.onRemoveClicked(listener);
     }
 
@@ -39,7 +39,7 @@ export class PrincipalContainerSelectedOptionView<T extends PrincipalContainer>
         this.view.setReadonly(readonly);
     }
 
-    unRemoveClicked(listener: { (): void }) {
+    unRemoveClicked(listener: () => void) {
         this.view.unRemoveClicked(listener);
     }
 

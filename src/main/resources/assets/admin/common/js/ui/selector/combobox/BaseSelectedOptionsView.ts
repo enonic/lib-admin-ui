@@ -20,9 +20,9 @@ export class BaseSelectedOptionsView<T>
     private list: SelectedOption<T>[] = [];
     private draggingIndex: number;
     private maximumOccurrences: number;
-    private optionRemovedListeners: { (removed: SelectedOptionEvent<T>): void; }[] = [];
-    private optionAddedListeners: { (added: SelectedOptionEvent<T>): void; }[] = [];
-    private optionMovedListeners: { (moved: SelectedOption<T>, fromIndex: number): void }[] = [];
+    private optionRemovedListeners: ((removed: SelectedOptionEvent<T>) => void)[] = [];
+    private optionAddedListeners: ((added: SelectedOptionEvent<T>) => void)[] = [];
+    private optionMovedListeners: ((moved: SelectedOption<T>, fromIndex: number) => void)[] = [];
     private editable: boolean = true;
     static MAX_TO_APPEND: number = 100;
 
@@ -209,12 +209,12 @@ export class BaseSelectedOptionsView<T>
         return null;
     }
 
-    onOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; }) {
+    onOptionDeselected(listener: (removed: SelectedOptionEvent<T>) => void) {
         this.optionRemovedListeners.push(listener);
     }
 
-    unOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; }) {
-        this.optionRemovedListeners = this.optionRemovedListeners.filter(function (curr: { (removed: SelectedOptionEvent<T>): void; }) {
+    unOptionDeselected(listener: (removed: SelectedOptionEvent<T>) => void) {
+        this.optionRemovedListeners = this.optionRemovedListeners.filter(function (curr: (removed: SelectedOptionEvent<T>) => void) {
             return curr !== listener;
         });
     }

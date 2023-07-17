@@ -31,7 +31,7 @@ export function i18nInit(url: string, bundles?: string[]): Q.Promise<void> {
 
 export function i18nFetch(url: string, bundles?: string[]): Q.Promise<Map<string, string>> {
     return getMessages(url, bundles).then((messages: KeysJson) => {
-        let map: Map<string, string> = new Map();
+        let map = new Map<string, string>();
         for (let key in messages) {
             if (messages.hasOwnProperty(key)) {
                 map.set(key, messages[key]);

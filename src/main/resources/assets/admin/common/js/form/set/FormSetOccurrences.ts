@@ -42,7 +42,7 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
 
     private layerFactory: FormItemLayerFactory;
 
-    private expandRequestedListeners: { (view: FormSetOccurrenceView): void }[] = [];
+    private expandRequestedListeners: ((view: FormSetOccurrenceView) => void)[] = [];
 
     protected readonly context: FormContext;
 
@@ -117,7 +117,7 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
 
     createOccurrence(formItemOccurrences: FormItemOccurrences<V>,
                      insertAtIndex: number): FormItemOccurrence<V> {
-        return new FormSetOccurrence(<FormSetOccurrences<V>>formItemOccurrences, insertAtIndex);
+        return new FormSetOccurrence(formItemOccurrences as FormSetOccurrences<V>, insertAtIndex);
     }
 
     toggleHelpText(show?: boolean) {

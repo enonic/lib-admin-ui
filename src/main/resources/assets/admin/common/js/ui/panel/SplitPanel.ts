@@ -200,7 +200,7 @@ export class SplitPanel
 
     private triggerResizeDebounced: Function;
 
-    private panelResizedListeners: { (): void }[] = [];
+    private panelResizedListeners: (() => void)[] = [];
 
     constructor(builder: SplitPanelBuilder) {
         super('split-panel');
@@ -415,7 +415,7 @@ export class SplitPanel
     }
 
     unPanelResized(listener: () => void): void {
-        this.panelResizedListeners = this.panelResizedListeners.filter((curr: { (): void }) => curr !== listener);
+        this.panelResizedListeners = this.panelResizedListeners.filter((curr: () => void) => curr !== listener);
     }
 
     showFirstPanel() {
@@ -671,6 +671,6 @@ export class SplitPanel
     }
 
     private notifyPanelResized(): void {
-        this.panelResizedListeners.forEach((listener: { (): void }) => listener());
+        this.panelResizedListeners.forEach((listener: () => void) => listener());
     }
 }

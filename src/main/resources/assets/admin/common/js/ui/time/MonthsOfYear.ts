@@ -15,7 +15,7 @@ export class MonthsOfYear {
     public static NOVEMBER: MonthOfYear = new MonthOfYear(10, 'N', 'Nov', 'November');
     public static DECEMBER: MonthOfYear = new MonthOfYear(11, 'D', 'Dec', 'December');
 
-    private static monthsByCode: { [key: number]: MonthOfYear } = {
+    private static monthsByCode: Record<number, MonthOfYear> = {
         0: MonthsOfYear.JANUARY,
         1: MonthsOfYear.FEBRUARY,
         2: MonthsOfYear.MARCH,

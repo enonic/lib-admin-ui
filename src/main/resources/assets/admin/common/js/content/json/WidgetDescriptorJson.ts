@@ -6,5 +6,5 @@ export interface WidgetDescriptorJson {
     url: string;
     interfaces: string[];
     key: string;
-    config: { [key: string]: string };
+    config: Record<string, string>;
 }

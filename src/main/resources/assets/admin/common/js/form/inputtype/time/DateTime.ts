@@ -59,7 +59,7 @@ export class DateTime
             const date: DateTimeUtil | LocalDateTime = useLocalTimeZone ? property.getDateTime() : property.getLocalDateTime();
             dateTimeBuilder.setDateTime(date.toDate());
             if (useLocalTimeZone) {
-                dateTimeBuilder.setTimezone((<DateTimeUtil>date).getTimezone());
+                dateTimeBuilder.setTimezone((date as DateTimeUtil).getTimezone());
             }
         }
 
@@ -73,7 +73,7 @@ export class DateTime
     }
 
     updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean) {
-        const dateTimePicker: DateTimePicker = <DateTimePicker> occurrence;
+        const dateTimePicker: DateTimePicker = occurrence as DateTimePicker;
 
         if (!unchangedOnly || !dateTimePicker.isDirty()) {
 
@@ -91,17 +91,17 @@ export class DateTime
     resetInputOccurrenceElement(occurrence: Element): void {
         super.resetInputOccurrenceElement(occurrence);
 
-        const input: DateTimePicker = <DateTimePicker> occurrence;
+        const input: DateTimePicker = occurrence as DateTimePicker;
         input.resetBase();
     }
 
     clearInputOccurrenceElement(occurrence: Element): void {
         super.clearInputOccurrenceElement(occurrence);
-        (<DateTimePicker> occurrence).clear();
+        (occurrence as DateTimePicker).clear();
     }
 
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
-        const input: DateTimePicker = <DateTimePicker> occurrence;
+        const input: DateTimePicker = occurrence as DateTimePicker;
 
         input.setEnabled(enable);
     }
@@ -117,7 +117,7 @@ export class DateTime
         }
     }
 
-    private readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
+    private readConfig(inputConfig: Record<string, Record<string, string>[]>): void {
         const timeZoneConfig = inputConfig['timezone'] && inputConfig['timezone'][0];
         const timeZone = timeZoneConfig && timeZoneConfig['value'];
 

@@ -56,7 +56,7 @@ export class Form
 
     private formItems: FormItem[] = [];
 
-    private formItemByName: { [name: string]: FormItem; } = {};
+    private formItemByName: Record<string, FormItem> = {};
 
     constructor(builder: FormBuilder) {
         builder.formItems.forEach((formItem: FormItem) => {
@@ -88,7 +88,7 @@ export class Form
     }
 
     getInputByName(name: string): Input {
-        return <Input>this.formItemByName[name];
+        return this.formItemByName[name] as Input;
     }
 
     toJson(): FormJson {
@@ -104,7 +104,7 @@ export class Form
             return false;
         }
 
-        let other: Form = <Form>o;
+        let other: Form = o as Form;
 
         if (this.formItems.length !== other.formItems.length) {
             return false;

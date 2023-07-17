@@ -99,7 +99,7 @@ export class ElementFromHelperBuilder
             .setHelper(new ElementHelper(element))
             .setLoadExistingChildren(loadExistingChildren)
             .setParentElement(parent);
-        return <ElementFromHelperBuilder>builder;
+        return builder as ElementFromHelperBuilder;
     }
 
     static fromString(s: string, loadExistingChildren: boolean = true): ElementFromHelperBuilder {
@@ -147,14 +147,14 @@ export class Element {
     private rendering: boolean;
     private lazyRenderer: boolean = false;
     private childrenAddedDuringInit: boolean;
-    private addedListeners: { (event: ElementAddedEvent): void }[] = [];
-    private descendantAddedListeners: { (event: ElementAddedEvent): void }[] = [];
-    private removedListeners: { (event: ElementRemovedEvent): void }[] = [];
-    private renderedListeners: { (event: ElementRenderedEvent): void }[] = [];
-    private shownListeners: { (event: ElementShownEvent): void }[] = [];
-    private hiddenListeners: { (event: ElementHiddenEvent): void }[] = [];
-    private lazyRenderListeners: { (): void }[] = [];
-    private lazyRenderedListeners: { (): void }[] = [];
+    private addedListeners: ((event: ElementAddedEvent) => void)[] = [];
+    private descendantAddedListeners: ((event: ElementAddedEvent) => void)[] = [];
+    private removedListeners: ((event: ElementRemovedEvent) => void)[] = [];
+    private renderedListeners: ((event: ElementRenderedEvent) => void)[] = [];
+    private shownListeners: ((event: ElementShownEvent) => void)[] = [];
+    private hiddenListeners: ((event: ElementHiddenEvent) => void)[] = [];
+    private lazyRenderListeners: (() => void)[] = [];
+    private lazyRenderedListeners: (() => void)[] = [];
     /*
      *      Event listeners
      */
@@ -166,7 +166,7 @@ export class Element {
         this.rendered = false;
 
         if (ObjectHelper.iFrameSafeInstanceOf(builder, ElementFromElementBuilder)) {
-            let fromElementBuilder = <ElementFromElementBuilder>builder;
+            let fromElementBuilder = builder as ElementFromElementBuilder;
             let sourceElement = fromElementBuilder.element;
             if (sourceElement) {
                 this.parentElement = fromElementBuilder.parentElement ? fromElementBuilder.parentElement : sourceElement.parentElement;
@@ -177,7 +177,7 @@ export class Element {
                 this.el = sourceElement.el;
             }
         } else if (ObjectHelper.iFrameSafeInstanceOf(builder, ElementFromHelperBuilder)) {
-            let fromHelperBuilder = <ElementFromHelperBuilder>builder;
+            let fromHelperBuilder = builder as ElementFromHelperBuilder;
 
             this.el = fromHelperBuilder.helper;
             if (fromHelperBuilder.loadExistingChildren) {
@@ -187,7 +187,7 @@ export class Element {
                 this.parentElement = fromHelperBuilder.parentElement;
             }
         } else if (ObjectHelper.iFrameSafeInstanceOf(builder, NewElementBuilder)) {
-            let newElementBuilder = <NewElementBuilder>builder;
+            let newElementBuilder = builder as NewElementBuilder;
             if (!newElementBuilder.tagName) {
                 throw new Error('tagName cannot be null');
             }
@@ -298,8 +298,8 @@ export class Element {
     public loadExistingChildren(): Element {
 
         let children = this.el.getChildren();
-        for (let i = 0; i < children.length; i++) {
-            let childAsElement = Element.fromHtmlElement(<HTMLElement>children[i], true, this);
+        for (const child of children) {
+            const childAsElement = Element.fromHtmlElement(child as HTMLElement, true, this);
             this.children.push(childAsElement);
         }
 
@@ -307,8 +307,7 @@ export class Element {
     }
 
     public findChildById(id: string, deep: boolean = false): Element {
-        for (let i = 0; i < this.children.length; i++) {
-            let child = this.children[i];
+        for (const child of this.children) {
             if (child.getId() === id) {
                 return child;
             } else if (deep) {
@@ -740,7 +739,7 @@ export class Element {
         if (!nextSiblingHtmlElement) {
             return null;
         }
-        return Element.fromHtmlElement(<HTMLElement>nextSiblingHtmlElement);
+        return Element.fromHtmlElement(nextSiblingHtmlElement as HTMLElement);
     }
 
     getPreviousElement(): Element {
@@ -748,7 +747,7 @@ export class Element {
         if (!previousSiblingHtmlElement) {
             return null;
         }
-        return Element.fromHtmlElement(<HTMLElement>previousSiblingHtmlElement);
+        return Element.fromHtmlElement(previousSiblingHtmlElement as HTMLElement);
     }
 
     /**
@@ -767,12 +766,15 @@ export class Element {
     }
 
     getTabbableElements(): Element[] {
-        let selected = $(this.getHTMLElement()).find(':tabbable');
-        let elements = [];
-        for (let i = 0; i < selected.length; i++) {
-            elements.push(Element.fromHtmlElement(selected[i]));
+        const selected = $(this.getHTMLElement()).find(':tabbable');
+        const elements = [];
+
+        for (const element of selected.toArray()) {
+            elements.push(Element.fromHtmlElement(element));
         }
+
         return elements;
+
     }
 
     toString(): string {
@@ -848,13 +850,13 @@ export class Element {
         if (typeof this.getHTMLElement().onmouseenter !== 'undefined') {
             this.getEl().addEventListener('mouseenter', handler);
         } else {
-            this.mouseEnterByHandler[<any>handler] = (e: MouseEvent) => {
+            this.mouseEnterByHandler[handler as any] = (e: MouseEvent) => {
                 // execute handler only if mouse came from outside
-                if (!this.getEl().contains(<HTMLElement>(e.relatedTarget || e['fromElement']))) {
+                if (!this.getEl().contains((e.relatedTarget || e['fromElement']) as HTMLElement)) {
                     handler(e);
                 }
             };
-            this.getEl().addEventListener('mouseover', this.mouseEnterByHandler[<any>handler]);
+            this.getEl().addEventListener('mouseover', this.mouseEnterByHandler[handler as any]);
         }
     }
 
@@ -862,7 +864,7 @@ export class Element {
         if (typeof this.getHTMLElement().onmouseenter !== 'undefined') {
             this.getEl().removeEventListener('mouseenter', handler);
         } else {
-            this.getEl().removeEventListener('mouseover', this.mouseEnterByHandler[<any>handler]);
+            this.getEl().removeEventListener('mouseover', this.mouseEnterByHandler[handler as any]);
         }
     }
 
@@ -870,13 +872,13 @@ export class Element {
         if (typeof this.getHTMLElement().onmouseleave !== 'undefined') {
             this.getEl().addEventListener('mouseleave', handler);
         } else {
-            this.mouseLeaveByHandler[<any>handler] = (e: MouseEvent) => {
+            this.mouseLeaveByHandler[handler as any] = (e: MouseEvent) => {
                 // execute handler only if mouse moves outside
-                if (!this.getEl().contains(<HTMLElement>(e.relatedTarget || e['toElement']))) {
+                if (!this.getEl().contains((e.relatedTarget || e['toElement']) as HTMLElement)) {
                     handler(e);
                 }
             };
-            this.getEl().addEventListener('mouseout', this.mouseLeaveByHandler[<any>handler]);
+            this.getEl().addEventListener('mouseout', this.mouseLeaveByHandler[handler as any]);
         }
     }
 
@@ -884,7 +886,7 @@ export class Element {
         if (typeof this.getHTMLElement().onmouseleave !== 'undefined') {
             this.getEl().removeEventListener('mouseleave', handler);
         } else {
-            this.getEl().removeEventListener('mouseout', this.mouseLeaveByHandler[<any>handler]);
+            this.getEl().removeEventListener('mouseout', this.mouseLeaveByHandler[handler as any]);
         }
     }
 
@@ -1338,13 +1340,13 @@ export class Element {
         child.parentElement = this;
     }
 
-    private getParentOf(child: Element): Element {
-        if (this.children.indexOf(child) > -1) {
+    private getParentOf(targetChild: Element): Element {
+        if (this.children.indexOf(targetChild) > -1) {
             return this;
         }
 
-        for (let i: number = 0; i < this.children.length; i++) {
-            const parent: Element = this.children[i].getParentOf(child);
+        for (const child of this.children) {
+            const parent: Element = child.getParentOf(targetChild);
             if (parent) {
                 return parent;
             }

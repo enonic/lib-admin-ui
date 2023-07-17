@@ -81,7 +81,7 @@ export class TimePickerPopup
     private timezone?: Timezone;
     private useLocalTimezoneIfNotPresent: boolean = false;
 
-    private timeChangedListeners: { (time: TimeHM): void }[] = [];
+    private timeChangedListeners: ((time: TimeHM) => void)[] = [];
 
     constructor(builder: TimePickerPopupBuilder) {
         super('time-picker-dialog');

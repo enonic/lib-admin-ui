@@ -18,9 +18,9 @@ export class FormItem
     private validator: (input: FormItemEl) => string;
     private validationMessage: string;
 
-    private focusListeners: { (event: FocusEvent): void }[] = [];
+    private focusListeners: ((event: FocusEvent) => void)[] = [];
 
-    private blurListeners: { (event: FocusEvent): void }[] = [];
+    private blurListeners: ((event: FocusEvent) => void)[] = [];
 
     constructor(builder: FormItemBuilder) {
         super('input-view');

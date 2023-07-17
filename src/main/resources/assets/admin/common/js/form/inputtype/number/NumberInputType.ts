@@ -35,13 +35,13 @@ export abstract class NumberInputType
     resetInputOccurrenceElement(occurrence: Element): void {
         super.resetInputOccurrenceElement(occurrence);
 
-        (<FormInputEl>occurrence).resetBaseValues();
+        (occurrence as FormInputEl).resetBaseValues();
     }
 
     clearInputOccurrenceElement(occurrence: Element): void {
         super.clearInputOccurrenceElement(occurrence);
 
-        (<FormInputEl>occurrence).clear();
+        (occurrence as FormInputEl).clear();
     }
 
     createInputOccurrenceElement(_index: number, property: Property): Element {
@@ -64,7 +64,7 @@ export abstract class NumberInputType
     }
 
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
-        const input: TextInput = <TextInput>occurrence;
+        const input: TextInput = occurrence as TextInput;
 
         input.setEnabled(enable);
     }

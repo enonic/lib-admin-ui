@@ -8,11 +8,11 @@ export class ApplicationConfigProvider {
 
     private propertyArray: PropertyArray;
 
-    private arrayChangedListeners: { (): void }[] = [];
+    private arrayChangedListeners: (() => void)[] = [];
 
-    private beforeArrayChangedListeners: { (): void }[] = [];
+    private beforeArrayChangedListeners: (() => void)[] = [];
 
-    private afterArrayChangedListeners: { (): void }[] = [];
+    private afterArrayChangedListeners: (() => void)[] = [];
 
     constructor(propertyArray: PropertyArray) {
         this.setPropertyArray(propertyArray);

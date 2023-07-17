@@ -1,4 +1,3 @@
-/* tslint:disable:max-line-length */
 import {Reference} from '../util/Reference';
 import {BinaryReference} from '../util/BinaryReference';
 import {GeoPoint} from '../util/GeoPoint';
@@ -73,22 +72,22 @@ export class PropertySet
      */
     private property: Property = null;
 
-    private propertyArrayByName: { [s: string]: PropertyArray; } = {};
+    private propertyArrayByName: Record<string, PropertyArray> = {};
 
     /**
      * If true, do not add property if it's value is null.
      */
     private skipNulls: boolean = false;
 
-    private changedListeners: { (event: PropertyEvent): void }[] = [];
+    private changedListeners: ((event: PropertyEvent) => void)[] = [];
 
-    private propertyAddedListeners: { (event: PropertyAddedEvent): void }[] = [];
+    private propertyAddedListeners: ((event: PropertyAddedEvent) => void)[] = [];
 
-    private propertyRemovedListeners: { (event: PropertyRemovedEvent): void }[] = [];
+    private propertyRemovedListeners: ((event: PropertyRemovedEvent) => void)[] = [];
 
-    private propertyIndexChangedListeners: { (event: PropertyIndexChangedEvent): void }[] = [];
+    private propertyIndexChangedListeners: ((event: PropertyIndexChangedEvent) => void)[] = [];
 
-    private propertyValueChangedListeners: { (event: PropertyValueChangedEvent): void }[] = [];
+    private propertyValueChangedListeners: ((event: PropertyValueChangedEvent) => void)[] = [];
 
     private propertyAddedEventHandler: (event: PropertyAddedEvent) => void;
 
@@ -178,7 +177,7 @@ export class PropertySet
 
     setPropertyByPath(path: any, value: Value): Property {
         if (ObjectHelper.iFrameSafeInstanceOf(path, PropertyPath)) {
-            return this.doSetProperty(<PropertyPath>path, value);
+            return this.doSetProperty(path as PropertyPath, value);
         } else {
             return this.doSetProperty(PropertyPath.fromString(path.toString()), value);
         }
@@ -378,7 +377,7 @@ export class PropertySet
             return false;
         }
 
-        let other = <PropertySet>o;
+        let other = o as PropertySet;
 
         if (!ObjectHelper.objectMapEquals(this.propertyArrayByName, other.propertyArrayByName)) {
             return false;
@@ -487,11 +486,11 @@ export class PropertySet
         return result;
     }
 
-    onChanged(listener: { (event: PropertyEvent): void; }) {
+    onChanged(listener: (event: PropertyEvent) => void) {
         this.changedListeners.push(listener);
     }
 
-    unChanged(listener: { (event: PropertyEvent): void; }) {
+    unChanged(listener: (event: PropertyEvent) => void) {
         this.changedListeners = this.changedListeners.filter((curr) => (curr !== listener));
     }
 
@@ -500,7 +499,7 @@ export class PropertySet
      * @param listener
      * @see [[PropertyAddedEvent]]
      */
-    onPropertyAdded(listener: { (event: PropertyAddedEvent): void; }) {
+    onPropertyAdded(listener: (event: PropertyAddedEvent) => void) {
         this.propertyAddedListeners.push(listener);
     }
 
@@ -509,7 +508,7 @@ export class PropertySet
      * @param listener
      * @see [[PropertyAddedEvent]]
      */
-    unPropertyAdded(listener: { (event: PropertyAddedEvent): void; }) {
+    unPropertyAdded(listener: (event: PropertyAddedEvent) => void) {
         this.propertyAddedListeners = this.propertyAddedListeners.filter((curr) => (curr !== listener));
     }
 
@@ -518,7 +517,7 @@ export class PropertySet
      * @param listener
      * @see [[PropertyRemovedEvent]]
      */
-    onPropertyRemoved(listener: { (event: PropertyRemovedEvent): void; }) {
+    onPropertyRemoved(listener: (event: PropertyRemovedEvent) => void) {
         this.propertyRemovedListeners.push(listener);
     }
 
@@ -527,7 +526,7 @@ export class PropertySet
      * @param listener
      * @see [[PropertyRemovedEvent]]
      */
-    unPropertyRemoved(listener: { (event: PropertyRemovedEvent): void; }) {
+    unPropertyRemoved(listener: (event: PropertyRemovedEvent) => void) {
         this.propertyRemovedListeners = this.propertyRemovedListeners.filter((curr) => (curr !== listener));
     }
 
@@ -536,7 +535,7 @@ export class PropertySet
      * @param listener
      * @see [[PropertyRemovedEvent]]
      */
-    onPropertyIndexChanged(listener: { (event: PropertyIndexChangedEvent): void; }) {
+    onPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
         this.propertyIndexChangedListeners.push(listener);
     }
 
@@ -545,7 +544,7 @@ export class PropertySet
      * @param listener
      * @see [[PropertyIndexChangedEvent]]
      */
-    unPropertyIndexChanged(listener: { (event: PropertyIndexChangedEvent): void; }) {
+    unPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
         this.propertyIndexChangedListeners = this.propertyIndexChangedListeners.filter((curr) => (curr !== listener));
     }
 
@@ -554,7 +553,7 @@ export class PropertySet
      * @param listener
      * @see [[PropertyValueChangedEvent]]
      */
-    onPropertyValueChanged(listener: { (event: PropertyValueChangedEvent): void; }) {
+    onPropertyValueChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.propertyValueChangedListeners.push(listener);
     }
 
@@ -563,7 +562,7 @@ export class PropertySet
      * @param listener
      * @see [[PropertyValueChangedEvent]]
      */
-    unPropertyValueChanged(listener: { (event: PropertyValueChangedEvent): void; }) {
+    unPropertyValueChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.propertyValueChangedListeners = this.propertyValueChangedListeners.filter((curr) => (curr !== listener));
     }
 
@@ -1109,7 +1108,7 @@ export class PropertySet
     private getPropertyByPath(path: any): Property {
 
         if (ObjectHelper.iFrameSafeInstanceOf(path, PropertyPath)) {
-            return this.doGetPropertyByPath(<PropertyPath>path);
+            return this.doGetPropertyByPath(path as PropertyPath);
         } else {
             return this.doGetPropertyByPath(PropertyPath.fromString(path.toString()));
         }

@@ -7,14 +7,14 @@ export class AggregationView
 
     protected aggregation: Aggregation;
 
-    private displayNameMap: { [name: string]: string } = {};
+    private displayNameMap: Record<string, string> = {};
 
     constructor(aggregation: Aggregation) {
         super('aggregation-view');
         this.aggregation = aggregation;
     }
 
-    setDisplayNamesMap(displayNameMap: { [name: string]: string }): void {
+    setDisplayNamesMap(displayNameMap: Record<string, string>): void {
         this.displayNameMap = displayNameMap;
         this.setDisplayNames();
     }

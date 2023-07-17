@@ -241,7 +241,7 @@ export class DateTime
             return false;
         }
 
-        let other = <DateTime>o;
+        let other = o as DateTime;
 
         if (!ObjectHelper.stringEquals(this.toString(), other.toString())) {
             return false;

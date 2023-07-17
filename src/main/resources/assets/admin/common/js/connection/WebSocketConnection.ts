@@ -24,11 +24,11 @@ export class WebSocketConnection {
 
     private keepAliveIntervalId: number;
 
-    private disconnectedListeners: { (): void }[] = [];
+    private disconnectedListeners: (() => void)[] = [];
 
-    private connectedListeners: { (): void }[] = [];
+    private connectedListeners: (() => void)[] = [];
 
-    private connectionErrorListeners: { (): void }[] = [];
+    private connectionErrorListeners: (() => void)[] = [];
 
     private keepConnected: boolean = false;
 

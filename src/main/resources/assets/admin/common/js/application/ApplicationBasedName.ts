@@ -37,7 +37,7 @@ export class ApplicationBasedName
             return false;
         }
 
-        let other = <ApplicationBasedName>o;
+        let other = o as ApplicationBasedName;
 
         if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
             return false;

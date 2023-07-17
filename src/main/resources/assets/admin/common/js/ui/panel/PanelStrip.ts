@@ -20,7 +20,7 @@ export class PanelStrip
 
     private panelShown: Panel = null;
 
-    private panelShownListeners: { (event: PanelShownEvent): void }[] = [];
+    private panelShownListeners: ((event: PanelShownEvent) => void)[] = [];
 
     constructor(scrollable?: Element, className?: string) {
         super('panel-strip' + (className ? ' ' + className : ''));

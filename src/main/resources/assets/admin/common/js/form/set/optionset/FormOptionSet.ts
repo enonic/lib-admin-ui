@@ -29,7 +29,7 @@ export class FormOptionSet
         if (formOptionSetJson.options != null) {
             formOptionSetJson.options.forEach((formOptionSetOptionJson: FormOptionSetOptionJson) => {
                 const json = {FormOptionSetOption: formOptionSetOptionJson};
-                const option = <FormOptionSetOption>factory.createFormItem(json, applicationKey);
+                const option = factory.createFormItem(json, applicationKey) as FormOptionSetOption;
                 if (option) {
                     this.addSetOption(option);
                 }
@@ -87,7 +87,7 @@ export class FormOptionSet
             return false;
         }
 
-        let other = <FormOptionSet>o;
+        let other = o as FormOptionSet;
 
         if (!ObjectHelper.booleanEquals(this.expanded, other.expanded)) {
             return false;

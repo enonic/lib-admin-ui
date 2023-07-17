@@ -17,7 +17,7 @@ export class TreeNode<DATA extends IDentifiable>
     /**
      * A cache for stashing viewers by name, so that they can be reused.
      */
-    private viewersByName: { [s: string]: Viewer<any>; } = {};
+    private viewersByName: Record<string, Viewer<any>> = {};
 
     constructor(builder: TreeNodeBuilder<DATA>) {
         this.id = Math.random().toString(36).substring(2);
@@ -198,11 +198,11 @@ export class TreeNode<DATA extends IDentifiable>
         }
     }
 
-    removeChild(child: TreeNode<DATA>) {
+    removeChild(targetChild: TreeNode<DATA>) {
         let children: TreeNode<DATA>[] = [];
-        for (let i = 0; i < this.children.length; i++) {
-            if (this.children[i].getId() !== child.getId()) {
-                children.push(this.children[i]);
+        for (const child of this.children) {
+            if (child.getId() !== targetChild.getId()) {
+                children.push(child);
             }
         }
         this.children = children;
@@ -264,15 +264,14 @@ export class TreeNode<DATA extends IDentifiable>
     }
 
     findNode(dataId: string): TreeNode<DATA> {
-
         if (this.hasData() && this.getDataId() === dataId) {
             return this;
         }
 
-        for (let i = 0; i < this.children.length; i++) {
-            let child = this.children[i].findNode(dataId);
-            if (child) {
-                return child;
+        for (const child of this.children) {
+            const childNode = child.findNode(dataId);
+            if (childNode) {
+                return childNode;
             }
         }
 

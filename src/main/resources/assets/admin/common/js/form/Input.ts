@@ -207,7 +207,7 @@ export class Input
             return false;
         }
 
-        let other = <Input>o;
+        let other = o as Input;
 
         if (!ObjectHelper.equals(this.inputType, other.inputType)) {
             return false;

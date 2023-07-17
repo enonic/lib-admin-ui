@@ -261,7 +261,7 @@ export class Tooltip {
         let x = event.clientX;
         let y = event.clientY;
         let el = this.tooltipEl.getEl();
-        let windowEl = <any> WindowDOM.get().getHTMLElement();
+        let windowEl = WindowDOM.get().getHTMLElement() as any;
         let elProps = {
             height: el.getHeightWithMargin(),
             width: el.getWidthWithMargin(),

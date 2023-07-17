@@ -18,9 +18,9 @@ export class EmailInput
 
     private request: CheckEmailAvailabilityRequest;
 
-    private focusListeners: { (event: FocusEvent): void }[];
+    private focusListeners: ((event: FocusEvent) => void)[];
 
-    private blurListeners: { (event: FocusEvent): void }[];
+    private blurListeners: ((event: FocusEvent) => void)[];
 
     constructor() {
         super();

@@ -11,8 +11,8 @@ export abstract class FormItemOccurrenceView
 
     protected formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>;
     protected helpText: HelpTextContainer;
-    private removeButtonClickedListeners: { (event: RemoveButtonClickedEvent<FormItemOccurrenceView>): void }[] = [];
-    private occurrenceChangedListeners: { (view: FormItemOccurrenceView): void }[] = [];
+    private removeButtonClickedListeners: ((event: RemoveButtonClickedEvent<FormItemOccurrenceView>) => void)[] = [];
+    private occurrenceChangedListeners: ((view: FormItemOccurrenceView) => void)[] = [];
 
     constructor(className: string, formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>) {
         super(className);

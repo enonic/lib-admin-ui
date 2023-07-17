@@ -74,7 +74,7 @@ export class ListBoxDropdown<I> extends DivEl {
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
             const filterContainer: DivEl = new DivEl('filter-container');
-            filterContainer.appendChildren(this.optionFilterInput, <Element>this.dropdownHandle);
+            filterContainer.appendChildren(this.optionFilterInput, this.dropdownHandle as Element);
             this.appendChildren(filterContainer, this.listBox);
 
             return rendered;

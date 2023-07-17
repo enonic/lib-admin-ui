@@ -135,7 +135,7 @@ export class MoreButton
     }
 
     private listenOutsideClick(event: MouseEvent): void {
-        if (!this.getEl().contains(<HTMLElement>event.target)) {
+        if (!this.getEl().contains(event.target as HTMLElement)) {
             this.collapseMenu();
         }
     }

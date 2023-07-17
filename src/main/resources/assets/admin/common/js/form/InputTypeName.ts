@@ -54,7 +54,7 @@ export class InputTypeName
             return false;
         }
 
-        let other = <InputTypeName>o;
+        let other = o as InputTypeName;
 
         if (!ObjectHelper.booleanEquals(this.custom, other.custom)) {
             return false;

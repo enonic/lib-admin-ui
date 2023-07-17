@@ -10,7 +10,7 @@ export class ServerEventsTranslator {
         const eventType: string = eventJson.type;
 
         if (eventType === 'application') {
-            return ApplicationEvent.fromJson(<ApplicationEventJson>eventJson);
+            return ApplicationEvent.fromJson(eventJson as ApplicationEventJson);
         }
 
         if (eventType.indexOf('repository.') === 0) {
@@ -18,7 +18,7 @@ export class ServerEventsTranslator {
         }
 
         if (eventType.indexOf('task.') === 0) {
-            return TaskEvent.fromJson(<TaskEventJson>eventJson);
+            return TaskEvent.fromJson(eventJson as TaskEventJson);
         }
 
         return null;

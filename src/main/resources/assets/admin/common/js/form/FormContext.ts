@@ -36,12 +36,12 @@ export class FormContext {
     createInputTypeViewContext(inputTypeConfig: any, parentPropertyPath: PropertyPath,
                                input: Input): InputTypeViewContext {
 
-        return <InputTypeViewContext>{
+        return {
             formContext: this,
             input: input,
             inputConfig: inputTypeConfig,
             parentDataPath: parentPropertyPath
-        };
+        } as InputTypeViewContext;
     }
 
     getFormState(): FormState {

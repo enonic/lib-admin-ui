@@ -54,7 +54,7 @@ export abstract class FormItem
             return false;
         }
 
-        let other = <FormItem>o;
+        let other = o as FormItem;
 
         if (!ObjectHelper.stringEquals(this.name, other.name)) {
             return false;

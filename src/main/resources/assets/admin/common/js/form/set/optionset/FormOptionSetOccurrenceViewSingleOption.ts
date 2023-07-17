@@ -54,7 +54,7 @@ export class FormOptionSetOccurrenceViewSingleOption
     protected postInitElements() {
         super.postInitElements();
 
-        this.singleSelectionDropdown.setOptions((<FormOptionSet>this.formSet).getOptions()
+        this.singleSelectionDropdown.setOptions((this.formSet as FormOptionSet).getOptions()
             .map(fop => new OptionBuilder<FormOptionSetOption>()
                 .setValue(fop.getName())    // this is the option ID !
                 .setDisplayValue(fop)
@@ -96,7 +96,7 @@ export class FormOptionSetOccurrenceViewSingleOption
 
         this.singleSelectionDropdown.onOptionDeselected((option: Option<FormOptionSetOption>) => {
             const idx: number = this.singleSelectionDropdown.getOptions().indexOf(option);
-            const optionView: FormOptionSetOptionView = <FormOptionSetOptionView>this.getFormItemViews()[idx];
+            const optionView: FormOptionSetOptionView = this.getFormItemViews()[idx] as FormOptionSetOptionView;
 
             if (optionView) {
                 optionView.disableAndCollapse();
@@ -134,7 +134,7 @@ export class FormOptionSetOccurrenceViewSingleOption
         }
 
         const idx: number = this.singleSelectionDropdown.getOptions().indexOf(option);
-        const view: FormOptionSetOptionView = <FormOptionSetOptionView>this.formItemViews[idx];
+        const view: FormOptionSetOptionView = this.formItemViews[idx] as FormOptionSetOptionView;
         return view?.isExpandable();
     }
 
@@ -147,8 +147,8 @@ export class FormOptionSetOccurrenceViewSingleOption
 
     private getSelectedOptionView(): FormOptionSetOptionView {
         const selectedOptionName: string = this.singleSelectionDropdown.getValue();
-        return <FormOptionSetOptionView>this.getFormItemViews()
-            .find((view: FormOptionSetOptionView) => view.getFormItem().getName() === selectedOptionName);
+        return this.getFormItemViews()
+            .find((view: FormOptionSetOptionView) => view.getFormItem().getName() === selectedOptionName) as FormOptionSetOptionView;
     }
 
     private expandSelectedOptionView(): void {

@@ -11,7 +11,7 @@ export class SelectedOptionView<T>
 
     private option: Option<T>;
 
-    private openDropdownListeners: { (): void; }[] = [];
+    private openDropdownListeners: (() => void)[] = [];
 
     constructor(objectViewer: Viewer<T>, skipExpandOnClick: boolean = false) {
         super('selected-option');
@@ -58,12 +58,12 @@ export class SelectedOptionView<T>
         this.option = null;
     }
 
-    onOpenDropdown(listener: { (): void; }) {
+    onOpenDropdown(listener: () => void) {
         this.openDropdownListeners.push(listener);
     }
 
-    unOpenDropdown(listener: { (): void; }) {
-        this.openDropdownListeners = this.openDropdownListeners.filter(function (curr: { (): void; }) {
+    unOpenDropdown(listener: () => void) {
+        this.openDropdownListeners = this.openDropdownListeners.filter(function (curr: () => void) {
             return curr !== listener;
         });
     }

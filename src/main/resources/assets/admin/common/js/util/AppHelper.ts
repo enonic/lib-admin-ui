@@ -133,7 +133,7 @@ export class AppHelper {
         });
 
         element.onFocusIn((event: Event) => {
-            target = <HTMLElement>event.target;
+            target = event.target as HTMLElement;
             clearTimeout(focusOutTimeout);
         });
 
@@ -141,7 +141,7 @@ export class AppHelper {
         if (preventMouseDown) {
             element.onMouseDown((e) => {
                 // if click is inside of input then focus will remain in it and no need to prevent default
-                if ((<HTMLElement>e.target).tagName.toLowerCase() !== 'input') {
+                if ((e.target as HTMLElement).tagName.toLowerCase() !== 'input') {
                     e.preventDefault();
                 }
             });

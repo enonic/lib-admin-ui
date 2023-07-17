@@ -15,15 +15,14 @@ export class CookieHelper {
     }
 
     static getCookie(name: string): string {
-        let nameEQ = CookieHelper.escape(name) + '=';
-        let ca = document.cookie.split(';');
-        for (let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) === ' ') {
-                c = c.substring(1, c.length);
+        const nameEQ = CookieHelper.escape(name) + '=';
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            while (cookie.charAt(0) === ' ') {
+                cookie = cookie.substring(1, cookie.length);
             }
-            if (c.indexOf(nameEQ) === 0) {
-                return CookieHelper.unescape(c.substring(nameEQ.length, c.length));
+            if (cookie.indexOf(nameEQ) === 0) {
+                return CookieHelper.unescape(cookie.substring(nameEQ.length, cookie.length));
             }
         }
         return null;

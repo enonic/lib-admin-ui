@@ -55,7 +55,7 @@ export class DayOfWeek
             return false;
         }
 
-        let other = <DayOfWeek>o;
+        let other = o as DayOfWeek;
 
         if (!ObjectHelper.numberEquals(this.numberCode, other.numberCode)) {
             return false;

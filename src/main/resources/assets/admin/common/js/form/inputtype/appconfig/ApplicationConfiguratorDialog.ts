@@ -33,7 +33,7 @@ export class ApplicationConfiguratorDialog
     private okAction: Action;
 
     constructor(params: ApplicationConfiguratorDialogParams) {
-        super(<ApplicationConfiguratorDialogConfig>{
+        super({
             application: params.application,
             formView: params.formView,
             cancelCallback: params.cancelCallback,
@@ -52,7 +52,7 @@ export class ApplicationConfiguratorDialog
                     this.close();
                 }
             }
-        });
+        } as ApplicationConfiguratorDialogConfig);
     }
 
     protected initElements() {

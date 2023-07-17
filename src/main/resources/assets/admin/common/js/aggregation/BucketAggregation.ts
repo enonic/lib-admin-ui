@@ -24,7 +24,7 @@ export class BucketAggregation
     public static createFromJson(json: AggregationTypeWrapperJson): BucketAggregation {
 
         if (json.BucketAggregation) {
-            return BucketAggregation.fromJson(<BucketAggregationJson>json.BucketAggregation);
+            return BucketAggregation.fromJson(json.BucketAggregation as BucketAggregationJson);
         } else {
             throw new Error(`Aggregation type not recognized: ${JSON.stringify(json)}`);
         }
@@ -42,13 +42,7 @@ export class BucketAggregation
     }
 
     public getBucketByName(name: string): Bucket {
-        for (let i = 0; i < this.buckets.length; i++) {
-            let bucket: Bucket = this.buckets[i];
-            if (bucket.getKey() === name) {
-                return bucket;
-            }
-        }
-        return null;
+        return this.buckets.find((bucket) => bucket.getKey() === name);
     }
 
     public getBuckets(): Bucket[] {

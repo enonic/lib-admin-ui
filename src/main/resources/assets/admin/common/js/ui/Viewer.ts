@@ -12,7 +12,7 @@ export class Viewer<OBJECT>
     private editable: boolean = true;
     private object: OBJECT;
     private removeButton: AEl;
-    private removeClickedListeners: { (event: MouseEvent): void }[] = [];
+    private removeClickedListeners: ((event: MouseEvent) => void)[] = [];
 
     constructor(className?: string) {
         super(new NewElementBuilder().setTagName('div').setClassName('viewer ' + (className || '')).setGenerateId(false));
@@ -40,7 +40,7 @@ export class Viewer<OBJECT>
     }
 
     clone(): Viewer<OBJECT> {
-        return new (<any>this.constructor)(...this.getCloneArgs());
+        return new (this.constructor as any)(...this.getCloneArgs());
     }
 
     /**

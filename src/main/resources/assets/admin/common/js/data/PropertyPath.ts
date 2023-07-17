@@ -105,7 +105,7 @@ export class PropertyPath
             return false;
         }
 
-        let other = <PropertyPath>o;
+        let other = o as PropertyPath;
 
         if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
             return false;

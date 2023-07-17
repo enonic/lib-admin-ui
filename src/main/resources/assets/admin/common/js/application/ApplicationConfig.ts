@@ -47,7 +47,7 @@ export class ApplicationConfig
             return false;
         }
 
-        let other = <ApplicationConfig>o;
+        let other = o as ApplicationConfig;
 
         if (!ObjectHelper.equals(this.applicationKey, other.applicationKey)) {
             return false;

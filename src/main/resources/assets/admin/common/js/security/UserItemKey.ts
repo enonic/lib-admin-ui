@@ -34,7 +34,7 @@ export class UserItemKey
             return false;
         }
 
-        let other = <UserItemKey>o;
+        let other = o as UserItemKey;
         return this.id === other.id;
     }
 

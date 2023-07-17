@@ -50,7 +50,7 @@ export class SplitPanelSize implements Equitable {
             return false;
         }
 
-        const other: SplitPanelSize = <SplitPanelSize>o;
+        const other: SplitPanelSize = o as SplitPanelSize;
 
         return this.unit === other?.unit && this.value === other?.value;
     }

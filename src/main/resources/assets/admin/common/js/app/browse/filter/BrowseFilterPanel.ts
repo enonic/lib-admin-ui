@@ -23,16 +23,16 @@ export class BrowseFilterPanel<T>
 
     protected filterPanelRefreshNeeded: boolean = false;
     protected selectionSection: ConstraintSection;
-    private searchStartedListeners: { (): void }[] = [];
-    private hideFilterPanelButtonClickedListeners: { (): void }[] = [];
-    private showResultsButtonClickedListeners: { (): void }[] = [];
+    private searchStartedListeners: (() => void)[] = [];
+    private hideFilterPanelButtonClickedListeners: (() => void)[] = [];
+    private showResultsButtonClickedListeners: (() => void)[] = [];
     private aggregationContainer: AggregationContainer;
     private searchField: TextSearchField;
     private clearFilter: ClearFilterButton;
     private hitsCounterEl: SpanEl;
     private hideFilterPanelButton: SpanEl;
     private showResultsButton: SpanEl;
-    private refreshStartedListeners: { (): void }[] = [];
+    private refreshStartedListeners: (() => void)[] = [];
 
     constructor() {
         super();
@@ -78,7 +78,7 @@ export class BrowseFilterPanel<T>
             this.appendChild(this.hideFilterPanelButton);
             this.appendExtraSections();
             this.appendChildren(
-                <Element>this.searchField,
+                this.searchField as Element,
                 this.clearFilter,
                 hitsCounterAndClearButtonWrapper,
                 this.aggregationContainer,

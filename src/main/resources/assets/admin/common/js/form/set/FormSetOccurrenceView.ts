@@ -54,7 +54,7 @@ export abstract class FormSetOccurrenceView
 
     protected formItemViews: FormItemView[] = [];
 
-    protected validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
+    protected validityChangedListeners: ((event: RecordingValidityChangedEvent) => void)[] = [];
 
     protected moreButton: MoreButton;
 
@@ -84,7 +84,7 @@ export abstract class FormSetOccurrenceView
 
     private formDataAddedOrRemovedListener: (_event: (PropertyAddedEvent | PropertyRemovedEvent)) => void;
 
-    private expandRequestedListeners: { (view: FormSetOccurrenceView): void }[] = [];
+    private expandRequestedListeners: ((view: FormSetOccurrenceView) => void)[] = [];
 
     protected constructor(classPrefix: string, config: FormSetOccurrenceViewConfig<FormSetOccurrenceView>) {
         super(`${classPrefix}occurrence-view`, config.formSetOccurrence);
@@ -541,7 +541,7 @@ export abstract class FormSetOccurrenceView
 
     private isRadioButtonInput(formItem: FormItem): boolean {
         return (ObjectHelper.iFrameSafeInstanceOf(formItem, Input) &&
-                (<Input>formItem).getInputType().toString() === 'RadioButton');
+                (formItem as Input).getInputType().toString() === 'RadioButton');
     }
 
     private getPropertyValue(prop: Property, formItem: FormItem): string {
@@ -551,7 +551,7 @@ export abstract class FormSetOccurrenceView
 
         // Special treatment of RadioButton as it stores button value, not label in the property
         if (this.isRadioButtonInput(formItem)) {
-            return this.getRadioButtonTextByValue(<Input>formItem, prop.getString());
+            return this.getRadioButtonTextByValue(formItem as Input, prop.getString());
         }
 
         return prop.getString();
@@ -671,13 +671,13 @@ export abstract class FormSetOccurrenceView
     private createMoreButton(): MoreButton {
         const addAboveAction = new Action(i18n('action.addAbove')).onExecuted(_action => {
             void this.formItemOccurrence.addOccurrenceAbove().then((view: FormItemOccurrenceView) => {
-                const setView = <FormSetOccurrenceView>view;
+                const setView = view as FormSetOccurrenceView;
                 this.notifyExpandRequested(setView);
             });
         });
         const addBelowAction = new Action(i18n('action.addBelow')).onExecuted(_action => {
             void this.formItemOccurrence.addOccurrenceBelow().then((view: FormItemOccurrenceView) => {
-                const setView = <FormSetOccurrenceView>view;
+                const setView = view as FormSetOccurrenceView;
                 this.notifyExpandRequested(setView);
             });
         });

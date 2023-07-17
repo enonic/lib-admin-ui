@@ -47,7 +47,7 @@ export class Mixin
             return false;
         }
 
-        let other = <Mixin>o;
+        let other = o as Mixin;
 
         if (!ObjectHelper.stringEquals(this.schemaKey, other.schemaKey)) {
             return false;

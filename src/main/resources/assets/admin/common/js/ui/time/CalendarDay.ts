@@ -56,7 +56,7 @@ export class CalendarDay
 
     private selectedDay: boolean = false;
 
-    private calendarDayClickedListeners: { (event: CalendarDayClickedEvent): void }[] = [];
+    private calendarDayClickedListeners: ((event: CalendarDayClickedEvent) => void)[] = [];
 
     constructor(builder: CalendarDayBuilder) {
         super('calendar-day');
@@ -158,7 +158,7 @@ export class CalendarDay
             return false;
         }
 
-        let other = <CalendarDay>o;
+        let other = o as CalendarDay;
 
         if (!ObjectHelper.dateEquals(this.date, other.date)) {
             return false;
