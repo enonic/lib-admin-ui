@@ -35,7 +35,7 @@ export class Name
             return false;
         }
 
-        let other = <Name>o;
+        let other = o as Name;
 
         if (this.value !== other.value) {
             return false;

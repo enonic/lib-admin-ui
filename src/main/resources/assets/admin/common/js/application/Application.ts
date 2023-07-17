@@ -180,7 +180,7 @@ export class Application
         if (!ObjectHelper.iFrameSafeInstanceOf(o, Application) || !super.equals(o)) {
             return false;
         }
-        let other = <Application>o;
+        let other = o as Application;
 
         return this.applicationKey.equals(other.applicationKey) &&
                this.displayName === other.displayName &&

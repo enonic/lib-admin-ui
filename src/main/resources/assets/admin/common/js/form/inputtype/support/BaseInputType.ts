@@ -21,7 +21,7 @@ export abstract class BaseInputType extends DivEl
 
     protected previousValidationRecording: InputValidationRecording;
 
-    private inputValidityChangedListeners: { (event: InputValidityChangedEvent): void }[] = [];
+    private inputValidityChangedListeners: ((event: InputValidityChangedEvent) => void)[] = [];
 
     protected constructor(context: InputTypeViewContext, className?: string) {
         super('input-type-view' + (className ? ' ' + className : ''));

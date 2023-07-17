@@ -34,7 +34,7 @@ export class MarketApplicationMetadata
             return false;
         }
 
-        let other = <MarketApplicationMetadata>o;
+        let other = o as MarketApplicationMetadata;
 
         if (this.hits !== other.hits ||
             this.totalHits !== other.totalHits) {

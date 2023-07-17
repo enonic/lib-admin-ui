@@ -68,7 +68,7 @@ export class MacroDescriptor
             return false;
         }
 
-        let other = <MacroDescriptor>o;
+        let other = o as MacroDescriptor;
 
         if (this.displayName !== other.displayName) {
             return false;

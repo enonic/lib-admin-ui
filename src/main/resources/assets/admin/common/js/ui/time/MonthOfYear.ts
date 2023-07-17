@@ -55,7 +55,7 @@ export class MonthOfYear
             return false;
         }
 
-        let other = <MonthOfYear>o;
+        let other = o as MonthOfYear;
 
         if (!ObjectHelper.numberEquals(this.numberCode, other.numberCode)) {
             return false;

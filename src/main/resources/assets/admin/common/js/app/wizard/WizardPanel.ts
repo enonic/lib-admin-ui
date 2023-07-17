@@ -62,8 +62,8 @@ export class WizardPanel<EQUITABLE extends Equitable>
     private persistedItem: EQUITABLE;
     private steps: WizardStep[] = [];
     private dataLoaded: boolean = false;
-    private closedListeners: { (event: WizardClosedEvent): void }[] = [];
-    private dataLoadedListeners: { (item: EQUITABLE): void }[] = [];
+    private closedListeners: ((event: WizardClosedEvent) => void)[] = [];
+    private dataLoadedListeners: ((item: EQUITABLE) => void)[] = [];
     private lastFocusedElement: HTMLElement;
     private stepNavigatorPlaceholder: DivEl;
     private validityManager: WizardValidityManager;
@@ -344,7 +344,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
     startRememberFocus() {
         this.steps.forEach((step) => {
             step.getStepForm().onFocus((el) => {
-                this.lastFocusedElement = <HTMLElement>el.target;
+                this.lastFocusedElement = el.target as HTMLElement;
             });
         });
     }

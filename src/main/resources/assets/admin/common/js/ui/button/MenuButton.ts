@@ -165,7 +165,7 @@ export class MenuButton
         if (!this.dropdownHandle.hasClass('down')) {
             return;
         }
-        if (!this.getEl().contains(<HTMLElement> e.target)) {
+        if (!this.getEl().contains(e.target as HTMLElement)) {
             // click outside menu
             this.collapseMenu();
 

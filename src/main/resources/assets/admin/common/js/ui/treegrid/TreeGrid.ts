@@ -60,8 +60,8 @@ export class TreeGrid<DATA extends IDentifiable>
     private highlightingChangeListeners: Function[] = [];
     private highlightingChangedDebouncedHandler: Function;
     private selectionChangedDebouncedHandler: Function;
-    private dataChangeListeners: { (event: DataChangedEvent<DATA>): void }[] = [];
-    private activeChangedListeners: { (active: boolean): void }[] = [];
+    private dataChangeListeners: ((event: DataChangedEvent<DATA>) => void)[] = [];
+    private activeChangedListeners: ((active: boolean) => void)[] = [];
     private loadBufferSize: number;
     private scrollable: Element;
 
@@ -593,14 +593,12 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     deselectNodes(dataIds: string[]) {
-        const oldSelected: TreeNode<DATA>[] = this.getFullSelectionNodes();
-        const newSelected: TreeNode<DATA>[] = [];
+        const oldSelectedArr: TreeNode<DATA>[] = this.getFullSelectionNodes();
         const newSelectedRows: number[] = [];
 
-        for (let i = 0; i < oldSelected.length; i++) {
-            if (dataIds.indexOf(oldSelected[i].getDataId()) < 0) {
-                newSelected.push(oldSelected[i]);
-                newSelectedRows.push(this.getRowIndexByNode(oldSelected[i]));
+        for (const oldSelected of oldSelectedArr) {
+            if (dataIds.indexOf(oldSelected.getDataId()) < 0) {
+                newSelectedRows.push(this.getRowIndexByNode(oldSelected));
             }
         }
 
@@ -1044,7 +1042,7 @@ export class TreeGrid<DATA extends IDentifiable>
         if (!this.isSelectableNode(node)) {
             node.setSelectable(false);
 
-            return <any>{cssClasses: 'non-selectable', selectable: false};
+            return {cssClasses: 'non-selectable', selectable: false} as any;
         }
 
         return null;
@@ -1053,7 +1051,7 @@ export class TreeGrid<DATA extends IDentifiable>
     private initSelectorPlugin() {
         let selectorPlugin = this.grid.getCheckboxSelectorPlugin();
         if (selectorPlugin) {
-            this.grid.unregisterPlugin(<Slick.Plugin<TreeNode<DATA>>>this.grid.getCheckboxSelectorPlugin());
+            this.grid.unregisterPlugin(this.grid.getCheckboxSelectorPlugin() as Slick.Plugin<TreeNode<DATA>>);
         }
     }
 

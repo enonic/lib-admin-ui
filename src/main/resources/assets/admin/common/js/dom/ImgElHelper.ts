@@ -6,7 +6,7 @@ export class ImgHelper
     private imgEl: HTMLImageElement;
 
     constructor(element: HTMLImageElement) {
-        super(<HTMLElement>element);
+        super(element as HTMLElement);
         this.imgEl = element;
     }
 

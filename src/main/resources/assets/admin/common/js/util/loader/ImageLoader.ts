@@ -1,6 +1,6 @@
 export class ImageLoader {
 
-    private static cachedImages: Map<string,HTMLImageElement> = new Map();
+    private static cachedImages = new Map<string,HTMLImageElement>();
 
     static get(url: string, width?: number, height?: number): HTMLImageElement {
         const encodedUrl: string = encodeURI(url);

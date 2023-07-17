@@ -57,7 +57,7 @@ export class NavigatedAppPanel
     removeNavigablePanel(panel: Panel, checkCanRemovePanel: boolean = true): number {
         let index = this.removePanel(panel, checkCanRemovePanel);
         if (index > -1) {
-            let navigationItem: AppBarTabMenuItem = <AppBarTabMenuItem>this.appBarTabMenu.getNavigationItem(index);
+            let navigationItem: AppBarTabMenuItem = this.appBarTabMenu.getNavigationItem(index) as AppBarTabMenuItem;
             this.appBarTabMenu.removeNavigationItem(navigationItem);
         }
 
@@ -88,7 +88,7 @@ export class NavigatedAppPanel
 
     canRemovePanel(panel: Panel): boolean {
         if (ObjectHelper.iFrameSafeInstanceOf(panel, WizardPanel)) {
-            let wizardPanel: WizardPanel<any> = <WizardPanel<any>>panel;
+            let wizardPanel: WizardPanel<any> = panel as WizardPanel<any>;
             return wizardPanel.canClose();
         }
         return true;

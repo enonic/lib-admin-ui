@@ -69,7 +69,7 @@ export class DateType
     }
 
     updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly?: boolean) {
-        const datePicker = <DatePicker> occurrence;
+        const datePicker = occurrence as DatePicker;
 
         if (!unchangedOnly || !datePicker.isDirty()) {
             let date = property.hasNonNullValue() ? property.getLocalDate().toDate() : null;
@@ -82,18 +82,18 @@ export class DateType
     resetInputOccurrenceElement(occurrence: Element): void {
         super.resetInputOccurrenceElement(occurrence);
 
-        let input = <DatePicker> occurrence;
+        let input = occurrence as DatePicker;
 
         input.resetBase();
     }
 
     clearInputOccurrenceElement(occurrence: Element): void {
         super.clearInputOccurrenceElement(occurrence);
-        (<DatePicker> occurrence).clear();
+        (occurrence as DatePicker).clear();
     }
 
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
-        const input: DatePicker = <DatePicker> occurrence;
+        const input: DatePicker = occurrence as DatePicker;
 
         input.setEnabled(enable);
     }

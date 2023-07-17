@@ -13,7 +13,7 @@ export class BaseSelectedOptionView<T>
 
     private optionValueEl: DivEl;
 
-    private removeClickedListeners: { (): void; }[] = [];
+    private removeClickedListeners: (() => void)[] = [];
 
     protected editable: boolean;
 
@@ -33,7 +33,7 @@ export class BaseSelectedOptionView<T>
 
     setOption(option: Option<T>) {
         if (this.optionValueEl) {
-            this.optionValueEl.getEl().setInnerHtml(JSON.stringify(option.getDisplayValue()));
+            this.optionValueEl.getEl().setInnerHtml(String(option.getDisplayValue()));
         }
         this.option = option;
     }
@@ -56,12 +56,12 @@ export class BaseSelectedOptionView<T>
         return Q(true);
     }
 
-    onRemoveClicked(listener: { (): void; }) {
+    onRemoveClicked(listener: () => void) {
         this.removeClickedListeners.push(listener);
     }
 
-    unRemoveClicked(listener: { (): void; }) {
-        this.removeClickedListeners = this.removeClickedListeners.filter(function (curr: { (): void; }) {
+    unRemoveClicked(listener: () => void) {
+        this.removeClickedListeners = this.removeClickedListeners.filter(function (curr: () => void) {
             return curr !== listener;
         });
     }

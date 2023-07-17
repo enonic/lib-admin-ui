@@ -77,7 +77,7 @@ export class LocalTime
             return false;
         }
 
-        let other = <LocalTime>o;
+        let other = o as LocalTime;
 
         if (!ObjectHelper.numberEquals(this.getHours(), other.getHours())) {
             return false;

@@ -122,7 +122,7 @@ export class PrincipalKey
             return false;
         }
 
-        let other = <PrincipalKey>o;
+        let other = o as PrincipalKey;
         if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
             return false;
         }

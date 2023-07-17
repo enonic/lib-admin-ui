@@ -9,10 +9,10 @@ export class UploadItem<MODEL extends Equitable>
     private model: MODEL;
     private fileName: string;
 
-    private failedListeners: { (): void }[] = [];
-    private uploadStoppedListeners: { (): void }[] = [];
-    private uploadListeners: { (model: MODEL): void }[] = [];
-    private progressListeners: { (progress: number): void }[] = [];
+    private failedListeners: (() => void)[] = [];
+    private uploadStoppedListeners: (() => void)[] = [];
+    private uploadListeners: ((model: MODEL) => void)[] = [];
+    private progressListeners: ((progress: number) => void)[] = [];
 
     constructor(file: FineUploaderFile) {
         this.file = file;
@@ -88,7 +88,7 @@ export class UploadItem<MODEL extends Equitable>
             return false;
         }
 
-        let other = <UploadItem<MODEL>>o;
+        let other = o as UploadItem<MODEL>;
 
         if (!ObjectHelper.equals(this.model, other.model)) {
             return false;

@@ -29,7 +29,7 @@ export class DateRangeAggregationQuery
 
     toJson(): AggregationQueryTypeWrapperJson {
 
-        let json: DateRangeAggregationQueryJson = <DateRangeAggregationQueryJson>super.toAggregationQueryJson();
+        let json: DateRangeAggregationQueryJson = super.toAggregationQueryJson() as DateRangeAggregationQueryJson;
         json.fieldName = this.getFieldName();
         json.ranges = [];
 
@@ -37,10 +37,9 @@ export class DateRangeAggregationQuery
             json.ranges.push(range.toJson());
         });
 
-        return <AggregationQueryTypeWrapperJson>
-            {
+        return {
                 DateRangeAggregationQuery: json
-            };
+            } as AggregationQueryTypeWrapperJson;
     }
 
 }

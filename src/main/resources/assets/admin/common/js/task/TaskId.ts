@@ -27,7 +27,7 @@ export class TaskId
         if (!ObjectHelper.iFrameSafeInstanceOf(o, TaskId)) {
             return false;
         }
-        let other = <TaskId>o;
+        let other = o as TaskId;
         return this.value === other.value;
     }
 

@@ -8,9 +8,9 @@ export interface SelectedOptionView<T>
 
     getOption(): Option<T>;
 
-    onRemoveClicked(listener: { (): void; });
+    onRemoveClicked(listener: () => void);
 
-    unRemoveClicked(listener: { (): void; });
+    unRemoveClicked(listener: () => void);
 
     setReadonly(readonly: boolean);
 

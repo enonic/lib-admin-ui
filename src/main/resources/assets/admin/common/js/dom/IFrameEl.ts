@@ -36,7 +36,7 @@ export class IFrameEl
     }
 
     postMessage(data: any, targetOrigin: string = '*') {
-        let thisIFrameElement: HTMLIFrameElement = <HTMLIFrameElement>this.getHTMLElement();
+        let thisIFrameElement: HTMLIFrameElement = this.getHTMLElement() as HTMLIFrameElement;
         thisIFrameElement.contentWindow.postMessage(data, targetOrigin);
     }
 

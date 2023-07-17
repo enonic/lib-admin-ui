@@ -41,9 +41,9 @@ export class Property
 
     private value: Value;
 
-    private propertyIndexChangedListeners: { (event: PropertyIndexChangedEvent): void }[] = [];
+    private propertyIndexChangedListeners: ((event: PropertyIndexChangedEvent) => void)[] = [];
 
-    private propertyValueChangedListeners: { (event: PropertyValueChangedEvent): void }[] = [];
+    private propertyValueChangedListeners: ((event: PropertyValueChangedEvent) => void)[] = [];
 
     constructor(builder: PropertyBuilder) {
         assertNotNull(builder.array, 'array of a Property cannot be null');
@@ -254,7 +254,7 @@ export class Property
             return false;
         }
 
-        let other = <Property>o;
+        let other = o as Property;
 
         if (!ObjectHelper.stringEquals(this.name, other.name)) {
             return false;
@@ -286,20 +286,20 @@ export class Property
         return Property.create().setName(this.name).setValue(value).setIndex(this.index).setArray(destinationPropertyArray).build();
     }
 
-    onPropertyIndexChanged(listener: { (event: PropertyIndexChangedEvent): void; }) {
+    onPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
         this.propertyIndexChangedListeners.push(listener);
     }
 
-    unPropertyIndexChanged(listener: { (event: PropertyIndexChangedEvent): void; }) {
+    unPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
         this.propertyIndexChangedListeners =
             this.propertyIndexChangedListeners.filter((curr) => (curr !== listener));
     }
 
-    onPropertyValueChanged(listener: { (event: PropertyValueChangedEvent): void; }) {
+    onPropertyValueChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.propertyValueChangedListeners.push(listener);
     }
 
-    unPropertyValueChanged(listener: { (event: PropertyValueChangedEvent): void; }) {
+    unPropertyValueChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.propertyValueChangedListeners =
             this.propertyValueChangedListeners.filter((curr) => (curr !== listener));
     }

@@ -7,7 +7,7 @@ interface HandlersMapEntry {
 
 export class EventBus {
 
-    private static handlersMap: { [eventName: string]: HandlersMapEntry[] } = {};
+    private static handlersMap: Record<string, HandlersMapEntry[]> = {};
 
     static onEvent(eventName: string, handler: (apiEventObj: Event) => void, contextWindow: Window = window) {
         let customEventHandler = (customEvent: any) => handler(customEvent.detail);

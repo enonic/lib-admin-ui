@@ -2,7 +2,7 @@ import * as Q from 'q';
 import {KeyBinding} from './KeyBinding';
 import {Mnemonic} from './Mnemonic';
 
-type ExecutionListener = { (action: Action): Q.Promise<any> | void };
+type ExecutionListener = (action: Action) => Q.Promise<any> | void;
 
 export class Action {
 
@@ -34,9 +34,9 @@ export class Action {
 
     private sortOrder: number = 10;
 
-    private beforeExecuteListeners: { (action: Action): void }[] = [];
+    private beforeExecuteListeners: ((action: Action) => void)[] = [];
 
-    private afterExecuteListeners: { (action: Action): void }[] = [];
+    private afterExecuteListeners: ((action: Action) => void)[] = [];
 
     constructor(label?: string, shortcut?: string, global?: boolean) {
         this.label = label;

@@ -4,9 +4,9 @@ const APP_MANAGER_KEY: string = 'AppManager';
 
 export class AppManager {
 
-    private connectionLostListeners: { (): void }[];
+    private connectionLostListeners: (() => void)[];
 
-    private connectionRestoredListeners: { (): void }[];
+    private connectionRestoredListeners: (() => void)[];
 
     constructor() {
         this.connectionLostListeners = [];

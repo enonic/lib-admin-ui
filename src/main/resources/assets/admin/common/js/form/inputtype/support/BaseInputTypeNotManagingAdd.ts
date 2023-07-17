@@ -32,7 +32,7 @@ export abstract class BaseInputTypeNotManagingAdd
     protected ignorePropertyChange: boolean;
     protected occurrenceValidationState: Map<string, OccurrenceValidationRecord> = new Map<string, OccurrenceValidationRecord>();
     private inputOccurrences: InputOccurrences;
-    private occurrenceValueChangedListeners: { (occurrence: Element, value: Value): void }[] = [];
+    private occurrenceValueChangedListeners: ((occurrence: Element, value: Value) => void)[] = [];
     /**
      * The index of child Data being dragged.
      */
@@ -143,12 +143,12 @@ export abstract class BaseInputTypeNotManagingAdd
             this.onAdded(() => {
                     this.onOccurrenceAdded((event: OccurrenceAddedEvent) => {
                         $(this.getHTMLElement()).sortable('refresh');
-                        this.validateOccurrence((<InputOccurrenceView>event.getOccurrenceView()));
+                        this.validateOccurrence((event.getOccurrenceView() as InputOccurrenceView));
                         this.updateValidationRecordAndNotifyIfChanged();
                     });
 
                     this.onOccurrenceRemoved((event: OccurrenceRemovedEvent) => {
-                        this.occurrenceValidationState.delete((<InputOccurrenceView>event.getOccurrenceView()).getInputElement().getId());
+                        this.occurrenceValidationState.delete((event.getOccurrenceView() as InputOccurrenceView).getInputElement().getId());
                         this.updateValidationRecordAndNotifyIfChanged();
                     });
                 }
@@ -303,9 +303,9 @@ export abstract class BaseInputTypeNotManagingAdd
     abstract createInputOccurrenceElement(_index: number, _property: Property);
 
     updateInputOccurrenceElement(_occurrence: Element, _property: Property, _unchangedOnly?: boolean) {
-        const formInputEl = ObjectHelper.iFrameSafeInstanceOf(_occurrence, FormInputEl) ? <FormInputEl>_occurrence :
+        const formInputEl = ObjectHelper.iFrameSafeInstanceOf(_occurrence, FormInputEl) ? _occurrence as FormInputEl :
                             ObjectHelper.iFrameSafeInstanceOf(_occurrence.getFirstChild(), FormInputEl)
-                            ? <FormInputEl>_occurrence.getFirstChild()
+                            ? _occurrence.getFirstChild() as FormInputEl
                             :
                             null;
 

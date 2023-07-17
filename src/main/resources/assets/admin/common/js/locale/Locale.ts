@@ -52,7 +52,7 @@ export class Locale
         if (!ObjectHelper.iFrameSafeInstanceOf(other, Locale)) {
             return false;
         }
-        let o = <Locale> other;
+        let o = other as Locale;
         return this.tag === o.tag &&
                this.displayName === o.displayName &&
                this.language === o.language &&

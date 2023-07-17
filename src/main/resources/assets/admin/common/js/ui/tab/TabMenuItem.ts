@@ -32,11 +32,11 @@ export class TabMenuItemBuilder
     }
 
     setLabel(label: string): TabMenuItemBuilder {
-        return <TabMenuItemBuilder>super.setLabel(label);
+        return super.setLabel(label) as TabMenuItemBuilder;
     }
 
     setAddLabelTitleAttribute(addLabelTitleAttribute: boolean): TabMenuItemBuilder {
-        return <TabMenuItemBuilder>super.setAddLabelTitleAttribute(addLabelTitleAttribute);
+        return super.setAddLabelTitleAttribute(addLabelTitleAttribute) as TabMenuItemBuilder;
     }
 
 }

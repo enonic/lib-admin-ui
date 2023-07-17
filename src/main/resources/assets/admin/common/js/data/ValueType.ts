@@ -50,7 +50,7 @@ export class ValueType
             return false;
         }
 
-        let other = <ValueType>o;
+        let other = o as ValueType;
 
         if (!ObjectHelper.stringEquals(this.name, other.name)) {
             return false;

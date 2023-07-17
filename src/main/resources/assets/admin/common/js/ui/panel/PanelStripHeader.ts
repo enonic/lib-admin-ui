@@ -13,7 +13,7 @@ export class PanelStripHeader
 
     private tooltip: Tooltip;
 
-    private enableChangedListeners: { (value: boolean): void }[] = [];
+    private enableChangedListeners: ((value: boolean) => void)[] = [];
 
     constructor(text: string, isTogglerAllowed: boolean = false) {
         super();

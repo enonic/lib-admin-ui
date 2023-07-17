@@ -60,7 +60,7 @@ export class ComboBox
             });
 
             this.appendChild(this.comboBox);
-            this.appendChild(<Element> this.selectedOptionsView);
+            this.appendChild(this.selectedOptionsView as Element);
 
             this.setLayoutInProgress(false);
 
@@ -171,9 +171,9 @@ export class ComboBox
 
     protected readInputConfig(): void {
         const options: ComboBoxOption[] = [];
-        const optionValues: { [name: string]: string }[] = this.context.inputConfig['option'] || [];
+        const optionValues: Record<string, string>[] = this.context.inputConfig['option'] || [];
         const l: number = optionValues.length;
-        let optionValue: { [name: string]: string };
+        let optionValue: Record<string, string>;
 
         for (let i = 0; i < l; i++) {
             optionValue = optionValues[i];

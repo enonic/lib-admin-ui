@@ -57,7 +57,7 @@ export class Toolbar
     removeAction(action: Action): void {
         this.getChildren().concat(this.foldButton.getDropdown().getChildren()).forEach((element: Element) => {
             if (ObjectHelper.iFrameSafeInstanceOf(element, ActionButton)) {
-                if (action.getLabel() === (<ActionButton>element).getLabel()) {
+                if (action.getLabel() === (element as ActionButton).getLabel()) {
                     element.remove();
                     this.actions = this.actions.filter((a: Action) => a !== action);
                 }

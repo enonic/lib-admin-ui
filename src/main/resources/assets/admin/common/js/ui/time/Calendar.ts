@@ -68,9 +68,9 @@ export class Calendar
 
     private weeks: CalendarWeek [];
 
-    private selectedDateChangedListeners: { (event: SelectedDateChangedEvent): void }[] = [];
+    private selectedDateChangedListeners: ((event: SelectedDateChangedEvent) => void)[] = [];
 
-    private shownMonthChangedListeners: { (month: number, year: number): void }[] = [];
+    private shownMonthChangedListeners: ((month: number, year: number) => void)[] = [];
 
     constructor(builder: CalendarBuilder) {
         super('calendar');

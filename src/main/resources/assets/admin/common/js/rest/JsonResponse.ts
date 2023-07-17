@@ -28,9 +28,9 @@ export class JsonResponse<RAW_JSON_TYPE>
         }
 
         if (this.json.result) {
-            return <RAW_JSON_TYPE>this.json.result;
+            return this.json.result as RAW_JSON_TYPE;
         } else {
-            return <RAW_JSON_TYPE>this.json;
+            return this.json as RAW_JSON_TYPE;
         }
     }
 }

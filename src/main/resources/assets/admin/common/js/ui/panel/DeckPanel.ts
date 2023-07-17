@@ -11,7 +11,7 @@ export class DeckPanel
 
     private panelShown: Panel = null;
 
-    private panelShownListeners: { (event: PanelShownEvent): void }[] = [];
+    private panelShownListeners: ((event: PanelShownEvent) => void)[] = [];
 
     constructor(className?: string) {
         super('deck-panel' + (className ? ' ' + className : ''));

@@ -33,8 +33,8 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
     private comboBox: BaseLoaderComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>;
     private errorContainer: DivEl;
     private identifierMethod: string;
-    private loadingListeners: { (): void; }[];
-    private loadedListeners: { (items: OPTION_DATA_TYPE[], postLoaded?: boolean): void; }[];
+    private loadingListeners: (() => void)[];
+    private loadedListeners: ((items: OPTION_DATA_TYPE[], postLoaded?: boolean) => void)[];
 
     constructor(builder: BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE>) {
         super();
@@ -183,8 +183,8 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
     isSelected(value: OPTION_DATA_TYPE): boolean {
         let selectedValues = this.getSelectedValues();
         let valueToFind = this.getDisplayValueId(value);
-        for (let i = 0; i < selectedValues.length; i++) {
-            if (selectedValues[i] === valueToFind) {
+        for (const selectedValue of selectedValues) {
+            if (selectedValue === valueToFind) {
                 return true;
             }
         }
@@ -210,44 +210,44 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         this.getSelectedOptionView().setReadonly(!enable);
     }
 
-    onOptionDeselected(listener: { (option: SelectedOptionEvent<OPTION_DATA_TYPE>): void; }) {
+    onOptionDeselected(listener: (option: SelectedOptionEvent<OPTION_DATA_TYPE>) => void) {
         this.comboBox.onOptionDeselected(listener);
     }
 
-    unOptionDeselected(listener: { (removed: SelectedOptionEvent<OPTION_DATA_TYPE>): void; }) {
+    unOptionDeselected(listener: (removed: SelectedOptionEvent<OPTION_DATA_TYPE>) => void) {
         this.comboBox.unOptionDeselected(listener);
     }
 
-    onOptionSelected(listener: { (option: SelectedOptionEvent<OPTION_DATA_TYPE>): void; }) {
+    onOptionSelected(listener: (option: SelectedOptionEvent<OPTION_DATA_TYPE>) => void) {
         this.comboBox.onOptionSelected(listener);
     }
 
-    unOptionSelected(listener: { (option: SelectedOptionEvent<OPTION_DATA_TYPE>): void; }) {
+    unOptionSelected(listener: (option: SelectedOptionEvent<OPTION_DATA_TYPE>) => void) {
         this.comboBox.unOptionSelected(listener);
     }
 
-    onOptionMoved(listener: { (option: SelectedOption<OPTION_DATA_TYPE>, fromIndex: number): void; }) {
+    onOptionMoved(listener: (option: SelectedOption<OPTION_DATA_TYPE>, fromIndex: number) => void) {
         this.comboBox.onOptionMoved(listener);
     }
 
-    unOptionMoved(listener: { (option: SelectedOption<OPTION_DATA_TYPE>, fromIndex: number): void; }) {
+    unOptionMoved(listener: (option: SelectedOption<OPTION_DATA_TYPE>, fromIndex: number) => void) {
         this.comboBox.unOptionMoved(listener);
     }
 
-    onLoading(listener: { (): void; }) {
+    onLoading(listener: () => void) {
         this.loadingListeners.push(listener);
     }
 
-    unLoading(listener: { (): void; }) {
+    unLoading(listener: () => void) {
         let index = this.loadedListeners.indexOf(listener);
         this.loadedListeners.splice(index, 1);
     }
 
-    onLoaded(listener: { (items: OPTION_DATA_TYPE[], postLoaded?: boolean): void; }) {
+    onLoaded(listener: (items: OPTION_DATA_TYPE[], postLoaded?: boolean) => void) {
         this.loadedListeners.push(listener);
     }
 
-    unLoaded(listenerToBeRemoved: { (items: OPTION_DATA_TYPE[], postLoaded?: boolean): void; }) {
+    unLoaded(listenerToBeRemoved: (items: OPTION_DATA_TYPE[], postLoaded?: boolean) => void) {
         let index = this.loadedListeners.indexOf(listenerToBeRemoved);
         this.loadedListeners.splice(index, 1);
     }
@@ -298,7 +298,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
             skipAutoDropShowOnValueChange: true,
             optionDataHelper: builder.optionDataHelper,
             optionDataLoader: ObjectHelper.iFrameSafeInstanceOf(builder.loader, OptionDataLoader)
-                              ? <OptionDataLoader<any>>builder.loader
+                              ? builder.loader as OptionDataLoader<any>
                               : null,
             onDropdownShownCallback: this.loadOptionsAfterShowDropdown.bind(this),
             createColumns: builder.createColumns,
@@ -322,7 +322,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
     protected createOption(value: Object, readOnly?: boolean): Option<OPTION_DATA_TYPE> {
         return Option.create<OPTION_DATA_TYPE>()
             .setValue(this.getDisplayValueId(value))
-            .setDisplayValue(<OPTION_DATA_TYPE>value)
+            .setDisplayValue(value as OPTION_DATA_TYPE)
             .setReadOnly(readOnly)
             .build();
     }
@@ -410,7 +410,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
 
         if (ObjectHelper.iFrameSafeInstanceOf(this.loader, PostLoader)) {
             const grid: Grid<any> = this.comboBox.getComboBoxDropdownGrid().getGrid();
-            const loader: PostLoader<LOADER_DATA_TYPE> = <PostLoader<LOADER_DATA_TYPE>>this.loader;
+            const loader: PostLoader<LOADER_DATA_TYPE> = this.loader as PostLoader<LOADER_DATA_TYPE>;
 
             const onShownHandler = () => {
                 this.handleRangeLoad(() => loader.postLoad());

@@ -33,7 +33,7 @@ export class TextArea
     }
 
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
-        const input: TextAreaEl = <TextAreaEl> occurrence;
+        const input: TextAreaEl = occurrence as TextAreaEl;
 
         input.setEnabled(enable);
     }

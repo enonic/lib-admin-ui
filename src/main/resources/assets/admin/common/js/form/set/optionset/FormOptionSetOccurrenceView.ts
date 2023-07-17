@@ -136,7 +136,7 @@ export abstract class FormOptionSetOccurrenceView
     }
 
     protected getFormSet(): FormOptionSet {
-        return <FormOptionSet>this.formSet;
+        return this.formSet as FormOptionSet;
     }
 
     protected getFormItems(): FormItem[] {
@@ -387,6 +387,6 @@ export abstract class FormOptionSetOccurrenceView
     }
 
     private getMultiSelection(): Occurrences {
-        return (<FormOptionSet>this.formSet).getMultiselection();
+        return (this.formSet as FormOptionSet).getMultiselection();
     }
 }

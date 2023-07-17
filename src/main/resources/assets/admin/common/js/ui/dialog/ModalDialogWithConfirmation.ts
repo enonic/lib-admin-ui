@@ -44,7 +44,7 @@ export class ModalDialogWithConfirmation
     }
 
     getConfig(): ModalDialogWithConfirmationConfig {
-        return <ModalDialogWithConfirmationConfig>this.config;
+        return this.config as ModalDialogWithConfirmationConfig;
     }
 
     protected canHandleOutsideClick(): boolean {

@@ -9,7 +9,7 @@ export class HelpTextContainer {
 
     private helpTextToggler: DivEl;
 
-    private toggleListeners: { (show: boolean): void }[] = [];
+    private toggleListeners: ((show: boolean) => void)[] = [];
 
     constructor(value: string) {
         this.initHelpTextToggler();

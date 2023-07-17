@@ -58,7 +58,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     protected collapseButtons: AEl[] = [];
 
-    protected validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
+    protected validityChangedListeners: ((event: RecordingValidityChangedEvent) => void)[] = [];
 
     protected previousValidationRecording: ValidationRecording;
 
@@ -101,7 +101,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     getParent(): V {
-        return <V>this.parent;
+        return this.parent as V;
     }
 
     protected createOccurrences(config: FormSetOccurrencesConfig<V>): FormSetOccurrences<V> {
@@ -308,12 +308,11 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     giveFocus(): boolean {
-
         let focusGiven = false;
         if (this.formItemOccurrences.getOccurrenceViews().length > 0) {
             const views: FormItemOccurrenceView[] = this.formItemOccurrences.getOccurrenceViews();
-            for (let i = 0; i < views.length; i++) {
-                if (views[i].giveFocus()) {
+            for (const view of views) {
+                if (view.giveFocus()) {
                     focusGiven = true;
                     break;
                 }
@@ -496,7 +495,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             this.validate(false, event.validateViewOnRender() ? null : occurrenceView);
 
             if (ObjectHelper.iFrameSafeInstanceOf(occurrenceView, FormSetOccurrenceView)) {
-                this.onFormSetOccurrenceContainerVisibilityToggle((<FormSetOccurrenceView>occurrenceView).getContainer());
+                this.onFormSetOccurrenceContainerVisibilityToggle((occurrenceView as FormSetOccurrenceView).getContainer());
             }
         });
 
@@ -505,7 +504,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             $(this.occurrenceViewsContainer.getHTMLElement()).sortable('refresh');
 
             if (ObjectHelper.iFrameSafeInstanceOf(event.getOccurrenceView(), FormSetOccurrenceView)) {
-                const addedFormSetOccurrenceView = <V>event.getOccurrenceView();
+                const addedFormSetOccurrenceView = event.getOccurrenceView() as V;
                 addedFormSetOccurrenceView.onValidityChanged((addedEvent: RecordingValidityChangedEvent) => {
                     this.handleFormSetOccurrenceViewValidityChanged(addedEvent);
                 });
@@ -526,7 +525,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
                 this.handleFormSetOccurrenceViewValidityChanged(event);
             });
             if (ObjectHelper.iFrameSafeInstanceOf(formSetOccurrenceView, FormSetOccurrenceView)) {
-                this.onFormSetOccurrenceContainerVisibilityToggle((<FormSetOccurrenceView>formSetOccurrenceView).getContainer());
+                this.onFormSetOccurrenceContainerVisibilityToggle((formSetOccurrenceView as FormSetOccurrenceView).getContainer());
             }
         });
     }

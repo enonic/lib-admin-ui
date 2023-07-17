@@ -1,15 +1,15 @@
 export class KeyEventsHandler {
 
-    private backspaceListeners: { (e: KeyboardEvent): boolean }[] = [];
-    private tabListeners: { (e: KeyboardEvent): boolean }[] = [];
-    private enterListeners: { (e: KeyboardEvent): boolean }[] = [];
-    private escapeListeners: { (e: KeyboardEvent): boolean }[] = [];
-    private spaceListeners: { (e: KeyboardEvent): boolean }[] = [];
-    private upListeners: { (e: KeyboardEvent): boolean }[] = [];
-    private leftListeners: { (e: KeyboardEvent): boolean }[] = [];
-    private rightListeners: { (e: KeyboardEvent): boolean }[] = [];
-    private downListeners: { (e: KeyboardEvent): boolean }[] = [];
-    private keyListeners: { (e: KeyboardEvent): boolean }[] = [];
+    private backspaceListeners: ((e: KeyboardEvent) => boolean)[] = [];
+    private tabListeners: ((e: KeyboardEvent) => boolean)[] = [];
+    private enterListeners: ((e: KeyboardEvent) => boolean)[] = [];
+    private escapeListeners: ((e: KeyboardEvent) => boolean)[] = [];
+    private spaceListeners: ((e: KeyboardEvent) => boolean)[] = [];
+    private upListeners: ((e: KeyboardEvent) => boolean)[] = [];
+    private leftListeners: ((e: KeyboardEvent) => boolean)[] = [];
+    private rightListeners: ((e: KeyboardEvent) => boolean)[] = [];
+    private downListeners: ((e: KeyboardEvent) => boolean)[] = [];
+    private keyListeners: ((e: KeyboardEvent) => boolean)[] = [];
 
     onBackspace(listener: (event: KeyboardEvent) => boolean): KeyEventsHandler {
         return this.push(this.backspaceListeners, listener);
@@ -76,12 +76,12 @@ export class KeyEventsHandler {
         }
     }
 
-    private push(listeners: { (e: KeyboardEvent): boolean }[], listener: (e: KeyboardEvent) => boolean): KeyEventsHandler {
+    private push(listeners: ((e: KeyboardEvent) => boolean)[], listener: (e: KeyboardEvent) => boolean): KeyEventsHandler {
         listeners.push(listener);
         return this;
     }
 
-    private notify(listeners: { (e: KeyboardEvent): boolean }[], e: KeyboardEvent): boolean {
+    private notify(listeners: ((e: KeyboardEvent) => boolean)[], e: KeyboardEvent): boolean {
         return listeners.reduce((handled, listener) => {
             return listener(e) || handled;
         }, false);

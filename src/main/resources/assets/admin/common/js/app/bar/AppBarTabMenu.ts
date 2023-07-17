@@ -18,7 +18,7 @@ export class AppBarTabMenu
 
     private barEl: UlEl;
 
-    private buttonLabelChangedListeners: { (): void }[] = [];
+    private buttonLabelChangedListeners: (() => void)[] = [];
 
     private timeoutHandler: number;
 
@@ -50,7 +50,7 @@ export class AppBarTabMenu
         super.removeNavigationItem(tab);
 
         this.appBarTabMenuButton.setTabCount(this.countVisible());
-        let newSelectedTab = <AppBarTabMenuItem>this.getSelectedNavigationItem();
+        let newSelectedTab = this.getSelectedNavigationItem() as AppBarTabMenuItem;
         if (newSelectedTab) {
             this.appBarTabMenuButton.setEditing(newSelectedTab.isEditing());
         }
@@ -61,24 +61,20 @@ export class AppBarTabMenu
     }
 
     getNavigationItemById(tabId: AppBarTabId): AppBarTabMenuItem {
-        let items: TabMenuItem[] = this.getNavigationItems();
-        let item: AppBarTabMenuItem;
-        for (let i = 0; i < items.length; i++) {
-            item = <AppBarTabMenuItem>items[i];
-            if (item.getTabId().equals(tabId)) {
-                return item;
+        const items: TabMenuItem[] = this.getNavigationItems();
+        for (const item of items) {
+            if ((item as unknown as AppBarTabMenuItem).getTabId().equals(tabId)) {
+                return item as unknown as AppBarTabMenuItem;
             }
         }
         return null;
     }
 
     getNavigationItemByIdValue(tabIdValue: string): AppBarTabMenuItem {
-        let items: TabMenuItem[] = this.getNavigationItems();
-        let item: AppBarTabMenuItem;
-        for (let i = 0; i < items.length; i++) {
-            item = <AppBarTabMenuItem>items[i];
-            if (item.getTabId().getId() === tabIdValue) {
-                return item;
+        const items: TabMenuItem[] = this.getNavigationItems();
+        for (const item of items) {
+            if ((item as unknown as AppBarTabMenuItem).getTabId().getId() === tabIdValue) {
+                return item as unknown as AppBarTabMenuItem;
             }
         }
         return null;
@@ -86,7 +82,7 @@ export class AppBarTabMenu
 
     selectNavigationItem(tabIndex: number) {
         super.selectNavigationItem(tabIndex);
-        const tab = <AppBarTabMenuItem>this.getNavigationItem(tabIndex);
+        const tab = this.getNavigationItem(tabIndex) as AppBarTabMenuItem;
         this.appBarTabMenuButton.setEditing(tab.isEditing());
 
         this.hideMenu();

@@ -70,9 +70,9 @@ export abstract class ModalDialog
 
     private listOfClickIgnoredElements: Element[];
 
-    private onClosedListeners: { (): void; }[] = [];
+    private onClosedListeners: (() => void)[] = [];
 
-    private resizeListeners: { (): void; }[] = [];
+    private resizeListeners: (() => void)[] = [];
 
     private skipTabbable: boolean;
 
@@ -82,7 +82,7 @@ export abstract class ModalDialog
 
     private pendingMasks: number = 0;
 
-    protected constructor(config: ModalDialogConfig = <ModalDialogConfig>{}) {
+    protected constructor(config: ModalDialogConfig = {} as ModalDialogConfig) {
         super('modal-dialog', StyleHelper.COMMON_PREFIX);
         this.config = config;
 
@@ -163,8 +163,8 @@ export abstract class ModalDialog
         if (!this.getConfig().keepOpenOnClickOutside) {
             const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
                 if (this.canHandleOutsideClick()) {
-                    for (let element = event.target; element; element = (<any>element).parentNode) {
-                        if (element === this.getHTMLElement() || this.isIgnoredElementClicked(<any>element)) {
+                    for (let element = event.target; element; element = (element as any).parentNode) {
+                        if (element === this.getHTMLElement() || this.isIgnoredElementClicked(element as any)) {
                             return;
                         }
                     }
@@ -239,7 +239,7 @@ export abstract class ModalDialog
 
     // html editor might have gotten focus
     private isIframeWithinDialogHavingFocus(): boolean {
-        return this.isIframeFocused() && this.hasModalDialogAsParent(<HTMLElement>document.activeElement);
+        return this.isIframeFocused() && this.hasModalDialogAsParent(document.activeElement as HTMLElement);
     }
 
     private isIframeFocused(): boolean {
@@ -570,8 +570,8 @@ export abstract class ModalDialog
         this.onClosedListeners.push(onCloseCallback);
     }
 
-    unClosed(listener: { (): void; }) {
-        this.onClosedListeners = this.onClosedListeners.filter(function (curr: { (): void; }) {
+    unClosed(listener: () => void) {
+        this.onClosedListeners = this.onClosedListeners.filter(function (curr: () => void) {
             return curr !== listener;
         });
     }
@@ -819,7 +819,7 @@ class DialogManagerInner {
 
     private maskedBy: Map<string, ModalDialog[]>;
 
-    private dialogOpenListeners: { (dialog: ModalDialog): void; } [];
+    private dialogOpenListeners: ((dialog: ModalDialog) => void) [];
 
     private constructor() {
         this.openDialogs = [];

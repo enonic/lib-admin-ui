@@ -78,7 +78,7 @@ export class DateTimePicker
 
     protected selectedDateTime: Date;
 
-    private selectedDateTimeChangedListeners: { (event: SelectedDateChangedEvent): void }[] = [];
+    private selectedDateTimeChangedListeners: ((event: SelectedDateChangedEvent) => void)[] = [];
 
     constructor(builder: DateTimePickerBuilder, cls: string = '') {
         super(builder, `date-time-picker ${cls}`);

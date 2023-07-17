@@ -30,13 +30,13 @@ export class FormView
     private data: PropertySet;
     protected formItemViews: FormItemView[] = [];
     private formItemLayer: FormItemLayer;
-    private formValidityChangedListeners: { (event: FormValidityChangedEvent): void }[] = [];
+    private formValidityChangedListeners: ((event: FormValidityChangedEvent) => void)[] = [];
     private previousValidationRecording: ValidationRecording;
     private width: number;
     private layoutFinished: boolean;
-    private focusListeners: { (event: FocusEvent): void }[] = [];
-    private blurListeners: { (event: FocusEvent): void }[] = [];
-    private layoutFinishedListeners: { (): void }[] = [];
+    private focusListeners: ((event: FocusEvent) => void)[] = [];
+    private blurListeners: ((event: FocusEvent) => void)[] = [];
+    private layoutFinishedListeners: (() => void)[] = [];
 
     /**
      * @param context the form context.
@@ -182,8 +182,8 @@ export class FormView
         } else {
             this.removeClass(FormView.VALIDATION_CLASS);
         }
-        for (let i = 0; i < this.formItemViews.length; i++) {
-            this.formItemViews[i].displayValidationErrors(value);
+        for (const formItemView of this.formItemViews) {
+            formItemView.displayValidationErrors(value);
         }
     }
 
@@ -198,8 +198,8 @@ export class FormView
     giveFocus(): boolean {
         let focusGiven = false;
         if (this.formItemViews.length > 0) {
-            for (let i = 0; i < this.formItemViews.length; i++) {
-                if (this.formItemViews[i].giveFocus()) {
+            for (const formItemView of this.formItemViews) {
+                if (formItemView.giveFocus()) {
                     focusGiven = true;
                     break;
                 }

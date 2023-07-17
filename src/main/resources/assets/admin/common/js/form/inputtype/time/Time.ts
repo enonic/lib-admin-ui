@@ -67,7 +67,7 @@ export class Time
     }
 
     updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean): void {
-        const localTime: TimePicker = <TimePicker> occurrence;
+        const localTime: TimePicker = occurrence as TimePicker;
 
         if (!unchangedOnly || !localTime.isDirty() || !localTime.isValid()) {
             if (!property.hasNullValue()) {
@@ -82,17 +82,17 @@ export class Time
     resetInputOccurrenceElement(occurrence: Element): void {
         super.resetInputOccurrenceElement(occurrence);
 
-        const input: TimePicker = <TimePicker> occurrence;
+        const input: TimePicker = occurrence as TimePicker;
         input.resetBase();
     }
 
     clearInputOccurrenceElement(occurrence: Element): void {
         super.clearInputOccurrenceElement(occurrence);
-        (<TimePicker> occurrence).clear();
+        (occurrence as TimePicker).clear();
     }
 
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
-        const input: TimePicker = <TimePicker> occurrence;
+        const input: TimePicker = occurrence as TimePicker;
 
         input.setEnabled(enable);
     }

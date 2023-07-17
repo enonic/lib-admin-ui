@@ -8,10 +8,10 @@ import {PrincipalContainerSelectedOptionView} from './PrincipalContainerSelected
 export class PrincipalContainerSelectedOptionsView<T extends PrincipalContainer>
     extends BaseSelectedOptionsView<T> {
 
-    private itemValueChangedListeners: { (item: T): void }[] = [];
+    private itemValueChangedListeners: ((item: T) => void)[] = [];
 
     createSelectedOption(option: Option<T>): SelectedOption<T> {
-        const selectedOptionView: PrincipalContainerSelectedOptionView<T> = new PrincipalContainerSelectedOptionView(option,
+        const selectedOptionView = new PrincipalContainerSelectedOptionView<T>(option,
             this.createSelectedEntryView(option));
 
         selectedOptionView.onValueChanged((item: T) => {

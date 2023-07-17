@@ -100,7 +100,7 @@ export class ObjectHelper {
         return ObjectHelper.equallyDefined(arrayA, arrayB);
     }
 
-    private static getObjectProperties(obj: { [s: string]: Equitable; }): string[] {
+    private static getObjectProperties(obj: Record<string, Equitable>): string[] {
         const keys: string[] = [];
         for (const key in obj) {
             if (obj.hasOwnProperty(key)) {
@@ -110,7 +110,7 @@ export class ObjectHelper {
         return keys;
     }
 
-    static objectMapEquals(mapA: { [s: string]: Equitable; }, mapB: { [s: string]: Equitable; }): boolean {
+    static objectMapEquals(mapA: Record<string, Equitable>, mapB: Record<string, Equitable>): boolean {
         if (ObjectHelper.bothDefined(mapA, mapB)) {
 
             // Gather keys for both maps
@@ -204,7 +204,7 @@ export class ObjectHelper {
         return ObjectHelper.equallyDefined(a, b);
     }
 
-    static objectPropertyIterator(object: any, callback: { (name: string, property: any, index?: number): void; }) {
+    static objectPropertyIterator(object: any, callback: (name: string, property: any, index?: number) => void) {
 
         let index = 0;
         for (let name  in object) {

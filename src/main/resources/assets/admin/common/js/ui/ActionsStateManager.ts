@@ -1,12 +1,8 @@
 import {Action} from './Action';
 
-export type ActionsState = {
-    [key: string]: boolean
-};
+export type ActionsState = Record<string, boolean>;
 
-export type ActionsMap = {
-    [key: string]: Action
-};
+export type ActionsMap = Record<string, Action>;
 
 export class ActionsStateManager {
 

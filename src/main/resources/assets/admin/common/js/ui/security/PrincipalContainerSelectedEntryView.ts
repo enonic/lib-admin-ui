@@ -6,7 +6,7 @@ export class PrincipalContainerSelectedEntryView<T extends PrincipalContainer>
 
     protected item: T;
 
-    protected valueChangedListeners: { (item: T): void }[] = [];
+    protected valueChangedListeners: ((item: T) => void)[] = [];
 
     constructor(item: T, readonly: boolean = false) {
         super('selected-option access-control-entry');
@@ -21,7 +21,7 @@ export class PrincipalContainerSelectedEntryView<T extends PrincipalContainer>
         this.item = item;
     }
 
-    getValueChangedListeners(): { (item: T): void }[] {
+    getValueChangedListeners(): ((item: T) => void)[] {
         return this.valueChangedListeners;
     }
 

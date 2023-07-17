@@ -8,8 +8,8 @@ export class ImgEl
     /* 1px x 1px gif with a 1bit palette */
     public static PLACEHOLDER: string = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
     private loaded: boolean;
-    private loadedListeners: { (event: UIEvent): void }[] = [];
-    private errorListeners: { (event: UIEvent): void }[] = [];
+    private loadedListeners: ((event: UIEvent) => void)[] = [];
+    private errorListeners: ((event: UIEvent) => void)[] = [];
 
     constructor(src?: string, className?: string, usePlaceholder: boolean = false) {
         super(new NewElementBuilder().setTagName('img').setHelper(ImgHelper.create()).setClassName(className));
@@ -51,7 +51,7 @@ export class ImgEl
     }
 
     getEl(): ImgHelper {
-        return <ImgHelper>super.getEl();
+        return super.getEl() as ImgHelper;
     }
 
     onLoaded(listener: (event: UIEvent) => void) {
@@ -83,7 +83,7 @@ export class ImgEl
     }
 
     getHTMLElement(): HTMLImageElement {
-        return <HTMLImageElement> super.getHTMLElement();
+        return super.getHTMLElement() as HTMLImageElement;
     }
 
     private notifyLoaded(event: UIEvent) {

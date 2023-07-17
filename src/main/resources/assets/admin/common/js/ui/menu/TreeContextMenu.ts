@@ -6,9 +6,9 @@ import {TreeMenuItem} from './TreeMenuItem';
 export class TreeContextMenu
     extends DlEl {
 
-    private itemClickListeners: { (): void }[] = [];
+    private itemClickListeners: (() => void)[] = [];
 
-    private itemExpandedListeners: { (heightChange: number): void }[] = [];
+    private itemExpandedListeners: ((heightChange: number) => void)[] = [];
 
     private actions: Action[] = [];
 
@@ -163,7 +163,7 @@ export class TreeContextMenu
     }
 
     private hideMenuOnOutsideClick(evt: Event): void {
-        if (!this.getEl().contains(<HTMLElement> evt.target)) {
+        if (!this.getEl().contains(evt.target as HTMLElement)) {
             // click outside menu
             this.hide();
         }

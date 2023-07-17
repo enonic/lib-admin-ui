@@ -7,7 +7,7 @@ export class Menu
 
     private menuItems: MenuItem[] = [];
     private hideOnItemClick: boolean = true;
-    private itemClickListeners: { (item: MenuItem): void }[] = [];
+    private itemClickListeners: ((item: MenuItem) => void)[] = [];
 
     constructor(actions: Action[] = []) {
         super('menu');
@@ -83,8 +83,7 @@ export class Menu
     }
 
     public getMenuItem(action: Action): MenuItem {
-        for (let i = 0; i < this.menuItems.length; i++) {
-            let menuItem = this.menuItems[i];
+        for (const menuItem of this.menuItems) {
             if (menuItem.getAction() === action) {
                 return menuItem;
             }

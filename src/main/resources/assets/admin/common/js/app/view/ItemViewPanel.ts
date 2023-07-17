@@ -15,7 +15,7 @@ export class ItemViewPanel
 
     private browseItem: ViewItem;
 
-    private closedListeners: { (event: ItemViewClosedEvent): void }[] = [];
+    private closedListeners: ((event: ItemViewClosedEvent) => void)[] = [];
 
     constructor() {
         super('item-view-panel');

@@ -74,7 +74,7 @@ export class ActionMenu
     }
 
     private foldMenuOnOutsideClick(evt: Event): void {
-        if (!this.getEl().contains(<HTMLElement>evt.target)) {
+        if (!this.getEl().contains(evt.target as HTMLElement)) {
             // click outside menu
             this.removeClass('down');
             this.labelEl.removeClass('down');

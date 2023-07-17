@@ -37,7 +37,7 @@ export class TimePicker
     }
 
     protected initData(): void {
-        const builder: TimePickerBuilder = <TimePickerBuilder>this.builder;
+        const builder: TimePickerBuilder = this.builder as TimePickerBuilder;
 
         if (ObjectHelper.bothDefined(builder.hours, builder.minutes)) {
             this.setTime(new TimeHM(builder.hours, builder.minutes));

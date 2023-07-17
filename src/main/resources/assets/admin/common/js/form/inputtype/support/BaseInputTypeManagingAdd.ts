@@ -16,7 +16,7 @@ export abstract class BaseInputTypeManagingAdd
     extends BaseInputType {
 
     public static debug: boolean = false;
-    private inputValueChangedListeners: { (event: ValueChangedEvent): void }[] = [];
+    private inputValueChangedListeners: ((event: ValueChangedEvent) => void)[] = [];
     private layoutInProgress: boolean;
     private propertyArray: PropertyArray;
     private propertyArrayListener: () => void;

@@ -36,13 +36,13 @@ export interface SelectedOptionsView<T>
 
     moveOccurrence(formIndex: number, toIndex: number);
 
-    onOptionSelected(listener: { (added: SelectedOptionEvent<T>): void; });
+    onOptionSelected(listener: (added: SelectedOptionEvent<T>) => void);
 
-    unOptionSelected(listener: { (added: SelectedOptionEvent<T>): void; });
+    unOptionSelected(listener: (added: SelectedOptionEvent<T>) => void);
 
-    onOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; });
+    onOptionDeselected(listener: (removed: SelectedOptionEvent<T>) => void);
 
-    unOptionDeselected(listener: { (removed: SelectedOptionEvent<T>): void; });
+    unOptionDeselected(listener: (removed: SelectedOptionEvent<T>) => void);
 
     onOptionMoved(listener: (moved: SelectedOption<T>, fromIndex: number) => void);
 

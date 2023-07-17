@@ -3,7 +3,7 @@ import {Button} from './Button';
 export class TogglerButton
     extends Button {
 
-    private activeListeners: { (isActive: boolean): void }[] = [];
+    private activeListeners: ((isActive: boolean) => void)[] = [];
 
     constructor(className?: string, title?: string) {
         super();
@@ -37,7 +37,7 @@ export class TogglerButton
         if (!value) {
             this.setActive(value);
         }
-        return <TogglerButton>super.setVisible(value);
+        return super.setVisible(value) as TogglerButton;
     }
 
     isActive() {
