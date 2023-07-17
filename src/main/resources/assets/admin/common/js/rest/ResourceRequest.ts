@@ -55,7 +55,7 @@ export abstract class ResourceRequest<PARSED_TYPE>
         return Path.create().fromParent(this.getRestPath(), ...this.pathElements).build();
     }
 
-    getParams(): Object {
+    getParams(): object {
         return {};
     }
 
