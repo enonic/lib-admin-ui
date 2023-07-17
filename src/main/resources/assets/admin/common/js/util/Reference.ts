@@ -20,7 +20,7 @@ export class Reference
             return false;
         }
 
-        let other = <Reference>o;
+        let other = o as Reference;
 
         if (!ObjectHelper.stringEquals(this.referenceId, other.referenceId)) {
             return false;

@@ -50,7 +50,7 @@ export class BaseItem
             return false;
         }
 
-        let other = <BaseItem>o;
+        let other = o as BaseItem;
 
         if (!ObjectHelper.stringEquals(this.id, other.id)) {
             return false;

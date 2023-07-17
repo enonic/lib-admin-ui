@@ -136,7 +136,7 @@ export class ContentTypeSummary
             return false;
         }
 
-        let other = <ContentTypeSummary>o;
+        let other = o as ContentTypeSummary;
 
         if (!ObjectHelper.booleanEquals(this.allowChildContent, other.allowChildContent)) {
             return false;

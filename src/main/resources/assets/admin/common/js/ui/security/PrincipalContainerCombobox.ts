@@ -15,11 +15,11 @@ export class PrincipalContainerCombobox<T extends PrincipalContainer>
     }
 
     onOptionValueChanged(listener: (item: T) => void) {
-        (<PrincipalContainerSelectedOptionsView<T>>this.getSelectedOptionView()).onItemValueChanged(listener);
+        (this.getSelectedOptionView() as PrincipalContainerSelectedOptionsView<T>).onItemValueChanged(listener);
     }
 
     unItemValueChanged(listener: (item: T) => void) {
-        (<PrincipalContainerSelectedOptionsView<T>>this.getSelectedOptionView()).unItemValueChanged(listener);
+        (this.getSelectedOptionView() as PrincipalContainerSelectedOptionsView<T>).unItemValueChanged(listener);
     }
 }
 

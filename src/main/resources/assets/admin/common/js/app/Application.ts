@@ -17,7 +17,7 @@ export class Application {
     private status: ApplicationShowStatus;
     private loaded: boolean;
     private path: Path;
-    private loadedListeners: {(): void}[] = [];
+    private loadedListeners: (() => void)[] = [];
     private window: Window;
 
     constructor(id: string, name: string, shortName: string, icon?: string, iconTooltip?: string) {
@@ -35,7 +35,7 @@ export class Application {
     }
 
     static getAppId(): string {
-        return window.frameElement ? new ElementHelper(<HTMLElement>window.frameElement).getAttribute('data-wem-app-id') : null;
+        return window.frameElement ? new ElementHelper(window.frameElement as HTMLElement).getAttribute('data-wem-app-id') : null;
     }
 
     isLoaded(): boolean {

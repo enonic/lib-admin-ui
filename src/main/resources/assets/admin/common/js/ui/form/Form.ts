@@ -8,11 +8,11 @@ export class Form
 
     private fieldsets: Fieldset[] = [];
 
-    private focusListeners: { (event: FocusEvent): void }[] = [];
+    private focusListeners: ((event: FocusEvent) => void)[] = [];
 
-    private blurListeners: { (event: FocusEvent): void }[] = [];
+    private blurListeners: ((event: FocusEvent) => void)[] = [];
 
-    private validityChangedListeners: { (event: ValidityChangedEvent): void }[] = [];
+    private validityChangedListeners: ((event: ValidityChangedEvent) => void)[] = [];
 
     constructor(className?: string) {
         super(className);

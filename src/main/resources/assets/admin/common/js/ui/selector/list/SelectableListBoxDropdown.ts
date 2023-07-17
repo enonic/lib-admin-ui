@@ -23,15 +23,15 @@ export class SelectableListBoxDropdown<I>
 
     options: SelectableListBoxDropdownOptions<I>;
 
-    private selectedItems: Map<string, I> = new Map();
+    private selectedItems = new Map<string, I>();
 
-    private selectionDelta: Map<string, boolean> = new Map();
+    private selectionDelta = new Map<string, boolean>();
 
-    private itemsWrappers: Map<string, Element> = new Map();
+    private itemsWrappers = new Map<string, Element>();
 
     private applyButton: Button;
 
-    private selectionChangedListeners: { (selectionChange: SelectionChange<I>): void }[] = [];
+    private selectionChangedListeners: ((selectionChange: SelectionChange<I>) => void)[] = [];
 
     constructor(listBox: ListBox<I>, options?: SelectableListBoxDropdownOptions<I>) {
         super(listBox, options);
@@ -165,13 +165,13 @@ export class SelectableListBoxDropdown<I>
         itemWrapper?.toggleClass('selected', isSelected);
 
         if (this.options.multiple) {
-            (<Checkbox>itemWrapper?.getFirstChild()).setChecked(isSelected, true);
+            (itemWrapper?.getFirstChild() as Checkbox).setChecked(isSelected, true);
         }
     }
 
     private listenClickOutside(): void {
         const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
-            for (let element = event.target; element; element = (<any>element).parentNode) {
+            for (let element = event.target; element; element = (element as any).parentNode) {
                 if (element === this.getHTMLElement()) {
                     return;
                 }

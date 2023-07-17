@@ -61,7 +61,7 @@ export class ApplicationKey
             return false;
         }
 
-        let other = <ApplicationKey>o;
+        let other = o as ApplicationKey;
         return ObjectHelper.stringEquals(this.name, other.name);
     }
 }

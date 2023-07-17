@@ -53,12 +53,12 @@ export class InputOccurrences
     private readonly input: Input;
 
     constructor(config: InputOccurrencesBuilder) {
-        super(<FormItemOccurrencesConfig>{
+        super({
             formItem: config.input,
             propertyArray: config.propertyArray,
             occurrenceViewContainer: config.baseInputTypeView,
             allowedOccurrences: config.input.getOccurrences()
-        });
+        } as FormItemOccurrencesConfig);
         this.baseInputTypeView = config.baseInputTypeView;
         this.input = config.input;
     }
@@ -86,7 +86,7 @@ export class InputOccurrences
 
     createOccurrence(formItemOccurrences: FormItemOccurrences<InputOccurrenceView>,
                      insertAtIndex: number): FormItemOccurrence<InputOccurrenceView> {
-        return new InputOccurrence(<InputOccurrences>formItemOccurrences, insertAtIndex);
+        return new InputOccurrence(formItemOccurrences as InputOccurrences, insertAtIndex);
     }
 
     createOccurrenceView(occurrence: InputOccurrence): InputOccurrenceView {

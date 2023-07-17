@@ -3,15 +3,15 @@
  */
 export class PropertyChangedEvent {
 
-    private propertyName: string;
+    private readonly propertyName: string;
 
-    private oldValue: any;
+    private readonly oldValue: Object;
 
-    private newValue: any;
+    private readonly newValue: Object;
 
-    private source: any;
+    private readonly source: Object;
 
-    constructor(propertyName: string, oldValue: any, newValue: any, source?: any) {
+    constructor(propertyName: string, oldValue: Object, newValue: Object, source?: Object) {
 
         this.propertyName = propertyName;
         this.oldValue = oldValue;

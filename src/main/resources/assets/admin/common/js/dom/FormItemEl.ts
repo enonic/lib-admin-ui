@@ -6,7 +6,7 @@ export class FormItemEl
 
     private enabled: boolean = true;
 
-    private validityChangedListeners: { (event: ValidityChangedEvent): void }[] = [];
+    private validityChangedListeners: ((event: ValidityChangedEvent) => void)[] = [];
 
     constructor(tagName: string, className?: string, prefix?: string) {
         super(new NewElementBuilder().setTagName(tagName).setClassName(className, prefix));

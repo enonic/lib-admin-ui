@@ -28,13 +28,13 @@ export class TabMenu
 
     private hideOnItemClick: boolean = true;
 
-    private navigationItemAddedListeners: { (event: NavigatorEvent): void }[] = [];
+    private navigationItemAddedListeners: ((event: NavigatorEvent) => void)[] = [];
 
-    private navigationItemRemovedListeners: { (event: NavigatorEvent): void }[] = [];
+    private navigationItemRemovedListeners: ((event: NavigatorEvent) => void)[] = [];
 
-    private navigationItemSelectedListeners: { (event: NavigatorEvent): void }[] = [];
+    private navigationItemSelectedListeners: ((event: NavigatorEvent) => void)[] = [];
 
-    private navigationItemDeselectedListeners: { (event: NavigatorEvent): void }[] = [];
+    private navigationItemDeselectedListeners: ((event: NavigatorEvent) => void)[] = [];
 
     private enabled: boolean = true;
 
@@ -434,7 +434,7 @@ export class TabMenu
     }
 
     private hideMenuOnOutsideClick(evt: Event): void {
-        if (this.isMenuVisible() && !this.getEl().contains(<HTMLElement> evt.target)) {
+        if (this.isMenuVisible() && !this.getEl().contains(evt.target as HTMLElement)) {
             // click outside menu
             this.hideMenu();
         }

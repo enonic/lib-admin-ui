@@ -15,13 +15,11 @@ export class FormOptionSetOption
 
     private defaultOption: boolean;
 
-    private formItems: FormItem[] = [];
-
     private helpText: string;
 
     private helpTextIsOn: boolean = false;
 
-    private formItemByName: { [name: string]: FormItem; } = {};
+    private formItemByName: Record<string, FormItem> = {};
 
     constructor(optionJson: FormOptionSetOptionJson, factory: FormItemFactory, applicationKey?: ApplicationKey) {
         super(optionJson.name);
@@ -54,10 +52,6 @@ export class FormOptionSetOption
         formItem.setParent(this);
         this.formItemByName[formItem.getName()] = formItem;
         this.formItems.push(formItem);
-    }
-
-    getFormItems(): FormItem[] {
-        return this.formItems;
     }
 
     toString(): string {
@@ -103,7 +97,7 @@ export class FormOptionSetOption
             return false;
         }
 
-        const other: FormOptionSetOption = <FormOptionSetOption>o;
+        const other: FormOptionSetOption = o as FormOptionSetOption;
 
         if (!ObjectHelper.stringEquals(this.label, other.label)) {
             return false;

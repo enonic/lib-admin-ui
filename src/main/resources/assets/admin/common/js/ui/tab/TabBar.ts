@@ -15,13 +15,13 @@ export class TabBar
 
     private selectedIndex: number = -1;
 
-    private navigationItemAddedListeners: { (event: NavigatorEvent): void }[] = [];
+    private navigationItemAddedListeners: ((event: NavigatorEvent) => void)[] = [];
 
-    private navigationItemRemovedListeners: { (index: number): void }[] = [];
+    private navigationItemRemovedListeners: ((index: number) => void)[] = [];
 
-    private navigationItemSelectedListeners: { (event: NavigatorEvent): void }[] = [];
+    private navigationItemSelectedListeners: ((event: NavigatorEvent) => void)[] = [];
 
-    private navigationItemActivatedListeners: { (event: ActivatedEvent): void }[] = [];
+    private navigationItemActivatedListeners: ((event: ActivatedEvent) => void)[] = [];
 
     constructor(classes?: string) {
         super('tab-bar' + (!classes ? '' : ' ' + classes));

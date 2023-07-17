@@ -34,7 +34,7 @@ export class Option<T>
             return false;
         }
 
-        const other: Option<T> = <Option<T>>o;
+        const other: Option<T> = o as Option<T>;
 
         return this.value === other.value;
     }

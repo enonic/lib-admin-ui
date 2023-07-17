@@ -142,7 +142,7 @@ export class LocalDateTime
             return false;
         }
 
-        let other = <LocalDateTime>o;
+        let other = o as LocalDateTime;
 
         if (!ObjectHelper.stringEquals(this.toString(), other.toString())) {
             return false;

@@ -35,7 +35,7 @@ export class ValueTypePropertySet
         if (value.isNull()) {
             return null;
         }
-        let data = <PropertySet>value.getObject();
+        let data = value.getObject() as PropertySet;
         return data.toJson();
     }
 

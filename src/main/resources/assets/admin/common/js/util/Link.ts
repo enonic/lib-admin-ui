@@ -20,7 +20,7 @@ export class Link
             return false;
         }
 
-        let other = <Link>o;
+        let other = o as Link;
 
         if (ObjectHelper.stringEquals(this.path, other.path)) {
             return true;

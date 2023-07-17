@@ -2,8 +2,6 @@ export type JSONValue =
     | string
     | number
     | boolean
-    | JSONObject;
+    | object;
 
-export interface JSONObject {
-    [key: string]: JSONValue;
-}
+export type JSONObject = Record<string, JSONValue>;

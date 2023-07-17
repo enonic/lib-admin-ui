@@ -45,9 +45,9 @@ export class Grid<T extends Slick.SlickData>
             });
 
             if (options.isLeftAlignedCheckbox()) {
-                columns.unshift(<GridColumn<T>>this.checkboxSelectorPlugin.getColumnDefinition());
+                columns.unshift(this.checkboxSelectorPlugin.getColumnDefinition() as GridColumn<T>);
             } else {
-                columns.push(<GridColumn<T>>this.checkboxSelectorPlugin.getColumnDefinition());
+                columns.push(this.checkboxSelectorPlugin.getColumnDefinition() as GridColumn<T>);
             }
         }
 
@@ -65,10 +65,10 @@ export class Grid<T extends Slick.SlickData>
             this.autoRenderGridOnDataChanges(this.dataView);
         }
         if (this.checkboxSelectorPlugin != null) {
-            this.slickGrid.registerPlugin(<Slick.Plugin<T>>this.checkboxSelectorPlugin);
+            this.slickGrid.registerPlugin(this.checkboxSelectorPlugin as Slick.Plugin<T>);
         }
         if (this.rowManagerPlugin != null) {
-            this.slickGrid.registerPlugin(<Slick.Plugin<T>>this.rowManagerPlugin);
+            this.slickGrid.registerPlugin(this.rowManagerPlugin as Slick.Plugin<T>);
         }
 
         if (options.isRerenderOnResize() !== false) {
@@ -123,13 +123,13 @@ export class Grid<T extends Slick.SlickData>
     setColumns(columns: GridColumn<T>[], toBegin: boolean = false) {
         if (this.checkboxSelectorPlugin) {
             let pluginColumn = this.checkboxSelectorPlugin.getColumnDefinition();
-            toBegin ? columns.push(<GridColumn<T>>pluginColumn) : columns.unshift(<GridColumn<T>>pluginColumn);
+            toBegin ? columns.push(pluginColumn as GridColumn<T>) : columns.unshift(pluginColumn as GridColumn<T>);
         }
         this.slickGrid.setColumns(columns);
     }
 
     getColumns(): GridColumn<T>[] {
-        return <GridColumn<T>[]>this.slickGrid.getColumns();
+        return this.slickGrid.getColumns() as GridColumn<T>[];
     }
 
     getColumnIndex(id: string): number {
@@ -145,7 +145,7 @@ export class Grid<T extends Slick.SlickData>
     }
 
     getOptions(): GridOptions<T> {
-        return <GridOptions<T>>this.slickGrid.getOptions();
+        return this.slickGrid.getOptions() as GridOptions<T>;
     }
 
     setOption(name: string, value: any) {
@@ -208,7 +208,7 @@ export class Grid<T extends Slick.SlickData>
     setOnClick(callback: (event: any, data: GridOnClickData) => void) {
         this.slickGrid.onClick.subscribe((event, data) => {
             event.stopPropagation();
-            callback(event, <GridOnClickData>data);
+            callback(event, data as GridOnClickData);
         });
     }
 

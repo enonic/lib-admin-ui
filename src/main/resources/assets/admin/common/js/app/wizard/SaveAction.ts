@@ -19,6 +19,6 @@ export class SaveAction
     }
 
     protected saveChanges(wizardPanel: WizardPanel<any>): Q.Promise<any> {
-        return wizardPanel.saveChanges().catch((reason: any) => DefaultErrorHandler.handle(reason)).finally(() => this.setEnabled(true));
+        return wizardPanel.saveChanges().catch((reason) => DefaultErrorHandler.handle(reason)).finally(() => this.setEnabled(true));
     }
 }

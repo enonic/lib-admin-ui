@@ -8,8 +8,8 @@ export class FormInputEl
     extends FormItemEl {
 
     public static debug: boolean = false;
-    private dirtyChangedListeners: { (dirty: boolean): void }[] = [];
-    private valueChangedListeners: { (event: ValueChangedEvent): void }[] = [];
+    private dirtyChangedListeners: ((dirty: boolean) => void)[] = [];
+    private valueChangedListeners: ((event: ValueChangedEvent) => void)[] = [];
     private originalValue: string;
     private oldValue: string = '';
     private dirty: boolean = false;

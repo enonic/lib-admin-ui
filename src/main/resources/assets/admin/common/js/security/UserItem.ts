@@ -41,7 +41,7 @@ export abstract class UserItem
             return false;
         }
 
-        let other = <UserItem> o;
+        let other = o as UserItem;
 
         if (!ObjectHelper.equals(this.key, other.key)) {
             return false;

@@ -57,7 +57,7 @@ export class ElementHelper {
         while (previous && previous.nodeType !== Node.ELEMENT_NODE) {
             previous = previous.previousSibling;
         }
-        return previous ? new ElementHelper(<HTMLElement>previous) : null;
+        return previous ? new ElementHelper(previous as HTMLElement) : null;
     }
 
     getNext(): ElementHelper {
@@ -65,7 +65,7 @@ export class ElementHelper {
         while (next && next.nodeType !== Node.ELEMENT_NODE) {
             next = next.nextSibling;
         }
-        return next ? new ElementHelper(<HTMLElement>next) : null;
+        return next ? new ElementHelper(next as HTMLElement) : null;
     }
 
     getParent(): ElementHelper {
@@ -211,9 +211,8 @@ export class ElementHelper {
     hasClass(clsName: string): boolean {
         assert(!StringHelper.isEmpty(clsName), 'Class name cannot be empty');
         // spaces are not allowed
-        let classList: string[] = clsName.split(' ');
-        for (let i = 0; i < classList.length; i++) {
-            let classItem = classList[i];
+        const classList: string[] = clsName.split(' ');
+        for (const classItem of classList) {
             if (this.el.classList && this.el.classList.contains(classItem)) {
                 return true;
             }
@@ -636,7 +635,7 @@ export class ElementHelper {
         if (className) {
             let nodeList = this.el.getElementsByClassName(className);
             for (let i = 0; i < nodeList.length; i++) {
-                items.push(new ElementHelper(<HTMLElement>nodeList.item(i)));
+                items.push(new ElementHelper(nodeList.item(i) as HTMLElement));
             }
         }
         return items;
@@ -747,7 +746,7 @@ export class ElementHelper {
      */
     getSiblingIndex(): number {
 
-        const getPrevSibling = (elem) => <HTMLElement>elem.previousElementSibling;
+        const getPrevSibling = (elem) => elem.previousElementSibling as HTMLElement;
         let prev: HTMLElement;
         let index;
 

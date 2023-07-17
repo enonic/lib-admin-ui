@@ -157,9 +157,9 @@ export class ValidationRecording {
         return this.exists(path, this.breaksMaximumOccurrencesArray);
     }
 
-    private exists(path: ValidationRecordingPath, array: ValidationRecordingPath[]): boolean {
-        for (let i = 0; i < array.length; i++) {
-            if (array[i].toString() === path.toString()) {
+    private exists(targetPath: ValidationRecordingPath, paths: ValidationRecordingPath[]): boolean {
+        for (const path of paths) {
+            if (targetPath.toString() === path.toString()) {
                 return true;
             }
         }

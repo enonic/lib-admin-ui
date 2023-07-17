@@ -47,7 +47,7 @@ export class TextInput
                 return null;
             }
 
-            let symbol = String.fromCharCode((<any> event).charCode);
+            let symbol = String.fromCharCode((event as any).charCode);
             // prevent input of forbidden symbols
             if (this.containsForbiddenChars(symbol)) {
                 if (!this.keyCodeAllowed(event.keyCode)) {
@@ -91,7 +91,7 @@ export class TextInput
     }
 
     selectText(from?: number, to?: number) {
-        let htmlEl = <HTMLInputElement> this.getHTMLElement();
+        let htmlEl = this.getHTMLElement() as HTMLInputElement;
 
         if (!from) {
             htmlEl.select();
@@ -149,13 +149,13 @@ export class TextInput
 
     private containsForbiddenChars(value: string): boolean {
         // create new RegExp object in order not to mess RegExp.lastIndex
-        let forbidden = new RegExp(<any> this.stripCharsRe);
+        let forbidden = new RegExp(this.stripCharsRe as any);
         return forbidden.test(value);
     }
 
     private keyCodeAllowed(keyCode: number): boolean {
-        for (let i = 0; i < this.allowedKeyCodes.length; i++) {
-            if (keyCode === this.allowedKeyCodes[i]) {
+        for (const allowedKeyCode of this.allowedKeyCodes) {
+            if (keyCode === allowedKeyCode) {
                 return true;
             }
         }

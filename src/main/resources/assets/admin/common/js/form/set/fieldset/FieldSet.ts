@@ -11,9 +11,7 @@ export class FieldSet
     extends FormItem
     implements FormItemContainer {
 
-    private label: string;
-
-    private formItems: FormItem[] = [];
+    private readonly label: string;
 
     constructor(fieldSetJson: FieldSetJson, factory: FormItemFactory, applicationKey?: ApplicationKey) {
         super(fieldSetJson.name);
@@ -37,10 +35,6 @@ export class FieldSet
         return this.label;
     }
 
-    getFormItems(): FormItem[] {
-        return this.formItems;
-    }
-
     public toJson(): FormItemTypeWrapperJson {
 
         return {
@@ -62,7 +56,7 @@ export class FieldSet
             return false;
         }
 
-        let other = <FieldSet>o;
+        let other = o as FieldSet;
 
         if (!ObjectHelper.stringEquals(this.label, other.label)) {
             return false;

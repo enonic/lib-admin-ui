@@ -29,9 +29,9 @@ export class BooleanFilter
             should: this.toJsonWrapperElements(this.should)
         };
 
-        return <FilterTypeWrapperJson> {
+        return {
             BooleanFilter: json
-        };
+        } as FilterTypeWrapperJson;
     }
 
     toJsonWrapperElements(filters: Filter[]): FilterTypeWrapperJson[] {

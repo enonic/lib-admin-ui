@@ -8,5 +8,5 @@ export interface OptionDataHelper<DATA> {
 
     isExpandable(data: DATA): boolean;
 
-    isDescendingPath(childOption: DATA, parentOption: DATA);
+    isDescendingPath(childOption: DATA, parentOption: DATA): boolean;
 }

@@ -11,11 +11,11 @@ export class Fieldset
 
     private items: FormItem[] = [];
 
-    private focusListeners: { (event: FocusEvent): void }[] = [];
+    private focusListeners: ((event: FocusEvent) => void)[] = [];
 
-    private blurListeners: { (event: FocusEvent): void }[] = [];
+    private blurListeners: ((event: FocusEvent) => void)[] = [];
 
-    private validityChangedListeners: { (event: ValidityChangedEvent): void }[] = [];
+    private validityChangedListeners: ((event: ValidityChangedEvent) => void)[] = [];
 
     constructor(legend?: string) {
         super();

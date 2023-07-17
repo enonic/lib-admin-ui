@@ -52,7 +52,7 @@ export class ContextMenu
     }
 
     private hideMenuOnOutsideClick(evt: Event): void {
-        if (!this.getEl().contains(<HTMLElement> evt.target)) {
+        if (!this.getEl().contains(evt.target as HTMLElement)) {
             // click outside menu
             this.hide();
         }

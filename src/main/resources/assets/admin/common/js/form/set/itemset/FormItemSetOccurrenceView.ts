@@ -36,7 +36,7 @@ export class FormItemSetOccurrenceView
     }
 
     protected getFormSet(): FormItemSet {
-        return <FormItemSet>this.formSet;
+        return this.formSet as FormItemSet;
     }
 
     protected getFormItems(): FormItem[] {

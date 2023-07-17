@@ -20,7 +20,7 @@ export class FormEl
 
         // set focus to the next visible input
         for (let i = index + 1; i < focusableElements.length; i++) {
-            let nextFocusable = Element.fromHtmlElement(<HTMLElement>focusableElements[i]);
+            let nextFocusable = Element.fromHtmlElement(focusableElements[i] as HTMLElement);
             if (nextFocusable.isVisible() &&
                 !(!ignoreTabIndex && nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0)) {
                 return nextFocusable;
@@ -50,7 +50,7 @@ export class FormEl
         do {
             index = index - 1;
             if (0 <= index) {
-                nextFocusable = Element.fromHtmlElement(<HTMLElement>focusableElements[index]);
+                nextFocusable = Element.fromHtmlElement(focusableElements[index] as HTMLElement);
             }
         } while (nextFocusable.getEl().getTabIndex() && nextFocusable.getEl().getTabIndex() < 0);
 

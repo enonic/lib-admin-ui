@@ -16,7 +16,7 @@ export class BucketAggregationView
 
     protected bucketsContainer: BucketsContainer;
 
-    private bucketSelectionChangedListeners: { (bucketSelection: SelectionChange<Bucket>): void }[] = [];
+    private bucketSelectionChangedListeners: ((bucketSelection: SelectionChange<Bucket>) => void)[] = [];
 
     constructor(aggregation: Aggregation) {
         super(aggregation);
@@ -66,7 +66,7 @@ export class BucketAggregationView
         const selectedBucketNames: string[] = this.getSelectedBucketNames();
 
         this.removeAll();
-        this.aggregation = <BucketAggregation> aggregation;
+        this.aggregation = aggregation as BucketAggregation;
         this.bucketViews = [];
 
         this.aggregation.getBuckets().filter((bucket: Bucket) => bucket.getDocCount() > 0).forEach((bucket: Bucket) => {

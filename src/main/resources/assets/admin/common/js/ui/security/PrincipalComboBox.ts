@@ -81,7 +81,7 @@ export class PrincipalSelectedOptionsView
         if (this.readonly) {
             optionView.setReadonly(true);
         }
-        return new SelectedOption<Principal>(<any>optionView, this.count());
+        return new SelectedOption<Principal>(optionView as any, this.count());
     }
 
     protected getEmptyDisplayValue(id: string): Principal {

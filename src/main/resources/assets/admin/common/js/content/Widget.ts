@@ -192,7 +192,7 @@ export class WidgetDescriptorKey
             return false;
         }
 
-        let other = <WidgetDescriptorKey>o;
+        let other = o as WidgetDescriptorKey;
 
         if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
             return false;
@@ -205,7 +205,7 @@ export class WidgetDescriptorKey
 export class WidgetConfig {
     private context: string;
 
-    fromJson(json: {[key: string]: string}): WidgetConfig {
+    fromJson(json: Record<string, string>): WidgetConfig {
         this.context = json.context;
 
         return this;

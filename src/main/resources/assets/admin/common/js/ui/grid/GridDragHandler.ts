@@ -14,7 +14,7 @@ export class GridDragHandler<MODEL extends IDentifiable> {
 
     protected activeItem: MODEL;
 
-    private positionChangedListeners: { (): void }[] = [];
+    private positionChangedListeners: (() => void)[] = [];
 
     private draggableItem: Element;
 
@@ -82,7 +82,7 @@ export class GridDragHandler<MODEL extends IDentifiable> {
     protected getRowIndex(row: ElementHelper): number {
         const parent: ElementHelper = row.getParent();
 
-        const sortedByTop: number[] = (<HTMLElement[]>parent.getChildren())
+        const sortedByTop: number[] = (parent.getChildren() as HTMLElement[])
             .filter((el: HTMLElement) => el.classList.contains('slick-row'))
             .map((el: HTMLElement) => +el.style.top.replace('px', ''))
             .sort((a: number, b: number) => a - b);

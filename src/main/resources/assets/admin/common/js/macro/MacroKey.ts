@@ -48,7 +48,7 @@ export class MacroKey
             return false;
         }
 
-        let other = <MacroKey>o;
+        let other = o as MacroKey;
 
         if (this.name !== other.name) {
             return false;

@@ -39,7 +39,7 @@ export class FormOptionSetOptionView
     private optionItemsContainer: DivEl;
     private formItemViews: FormItemView[] = [];
     private formItemLayer: FormItemLayer;
-    private selectionChangedListeners: { (isSelected: boolean): void }[] = [];
+    private selectionChangedListeners: ((isSelected: boolean) => void)[] = [];
     private checkbox: Checkbox;
     private readonly isOptionSetExpandedByDefault: boolean;
     private formItemState: FormItemState;
@@ -47,16 +47,16 @@ export class FormOptionSetOptionView
     private isSelectedInitially: boolean;
 
     constructor(config: FormOptionSetOptionViewConfig) {
-        super(<FormItemViewConfig>{
+        super({
             className: 'form-option-set-option-view',
             context: config.context,
             formItem: config.formOptionSetOption,
             parent: config.parent
-        });
+        } as FormItemViewConfig);
 
         this.formOptionSetOption = config.formOptionSetOption;
 
-        this.isOptionSetExpandedByDefault = (<FormOptionSet>config.formOptionSetOption.getParent()).isExpanded();
+        this.isOptionSetExpandedByDefault = (config.formOptionSetOption.getParent() as FormOptionSet).isExpanded();
 
         this.formItemState = config.formItemState;
 
@@ -136,7 +136,7 @@ export class FormOptionSetOptionView
             }
 
             deferred.resolve(null);
-        }).catch((reason: any) => {
+        }).catch((reason) => {
             DefaultErrorHandler.handle(reason);
         }).done();
 
@@ -270,8 +270,8 @@ export class FormOptionSetOptionView
     giveFocus(): boolean {
         let focusGiven = false;
         if (this.formItemViews.length > 0) {
-            for (let i = 0; i < this.formItemViews.length; i++) {
-                if (this.formItemViews[i].giveFocus()) {
+            for (const formItemView of this.formItemViews) {
+                if (formItemView.giveFocus()) {
                     focusGiven = true;
                     break;
                 }
@@ -438,7 +438,7 @@ export class FormOptionSetOptionView
     }
 
     private getMultiselection(): Occurrences {
-        return (<FormOptionSet>this.formOptionSetOption.getParent()).getMultiselection();
+        return (this.formOptionSetOption.getParent() as FormOptionSet).getMultiselection();
     }
 
     private updateViewState(): void {

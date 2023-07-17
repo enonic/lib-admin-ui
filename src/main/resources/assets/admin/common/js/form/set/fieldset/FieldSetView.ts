@@ -35,12 +35,12 @@ export class FieldSetView
     private formItemLayer: FormItemLayer;
 
     constructor(config: FieldSetViewConfig) {
-        super(<FormItemViewConfig>{
+        super({
             context: config.context,
             formItem: config.fieldSet,
             parent: config.parent,
             className: 'field-set-view'
-        });
+        } as FormItemViewConfig);
 
         this.formItemLayer = config.layerFactory.createLayer(config);
 
@@ -89,8 +89,8 @@ export class FieldSetView
 
         let focusGiven = false;
         if (this.formItemViews.length > 0) {
-            for (let i = 0; i < this.formItemViews.length; i++) {
-                if (this.formItemViews[i].giveFocus()) {
+            for (const formItemView of this.formItemViews) {
+                if (formItemView.giveFocus()) {
                     focusGiven = true;
                     break;
                 }
@@ -195,7 +195,7 @@ export class FieldSetView
             this.formItemViews = formItemViews;
 
             deferred.resolve(null);
-        }).catch((reason: any) => {
+        }).catch((reason) => {
             let fieldSetValue = this.fieldSet ? this.fieldSet.toJson() : {};
             console.error('Could not render FieldSet view: ' + reason + '\r\n FieldSet value:', JSON.stringify(fieldSetValue));
             DefaultErrorHandler.handle(reason);

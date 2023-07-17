@@ -4,7 +4,7 @@ import {PropertyChangedEvent} from '../../PropertyChangedEvent';
 export class WizardHeader
     extends DivEl {
 
-    private propertyChangedListeners: { (event: PropertyChangedEvent): void }[] = [];
+    private propertyChangedListeners: ((event: PropertyChangedEvent) => void)[] = [];
 
     constructor() {
         super('wizard-header');

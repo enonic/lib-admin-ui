@@ -37,7 +37,7 @@ export class MarketApplication implements IDentifiable {
         const array: MarketApplication[] = [];
         for (const name in appsObj) {
             if (appsObj.hasOwnProperty(name)) {
-                array.push(MarketApplication.fromJson(name, <MarketApplicationJson>appsObj[name]));
+                array.push(MarketApplication.fromJson(name, appsObj[name] as MarketApplicationJson));
             }
         }
         return array;

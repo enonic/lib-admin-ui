@@ -60,8 +60,8 @@ export class TreeGrid<DATA extends IDentifiable>
     private highlightingChangeListeners: Function[] = [];
     private highlightingChangedDebouncedHandler: Function;
     private selectionChangedDebouncedHandler: Function;
-    private dataChangeListeners: { (event: DataChangedEvent<DATA>): void }[] = [];
-    private activeChangedListeners: { (active: boolean): void }[] = [];
+    private dataChangeListeners: ((event: DataChangedEvent<DATA>) => void)[] = [];
+    private activeChangedListeners: ((active: boolean) => void)[] = [];
     private loadBufferSize: number;
     private scrollable: Element;
 
@@ -519,7 +519,7 @@ export class TreeGrid<DATA extends IDentifiable>
 
         return this.doExpandNode(this.root.getCurrentRoot()).then(() => {
             this.invalidate();
-        }).catch((reason: any) => {
+        }).catch((reason) => {
             this.handleError(reason);
         }).finally(() => {
             this.setActive(true);
@@ -593,14 +593,12 @@ export class TreeGrid<DATA extends IDentifiable>
     }
 
     deselectNodes(dataIds: string[]) {
-        const oldSelected: TreeNode<DATA>[] = this.getFullSelectionNodes();
-        const newSelected: TreeNode<DATA>[] = [];
+        const oldSelectedArr: TreeNode<DATA>[] = this.getFullSelectionNodes();
         const newSelectedRows: number[] = [];
 
-        for (let i = 0; i < oldSelected.length; i++) {
-            if (dataIds.indexOf(oldSelected[i].getDataId()) < 0) {
-                newSelected.push(oldSelected[i]);
-                newSelectedRows.push(this.getRowIndexByNode(oldSelected[i]));
+        for (const oldSelected of oldSelectedArr) {
+            if (dataIds.indexOf(oldSelected.getDataId()) < 0) {
+                newSelectedRows.push(this.getRowIndexByNode(oldSelected));
             }
         }
 
@@ -647,7 +645,7 @@ export class TreeGrid<DATA extends IDentifiable>
         this.gridData.setItems([], this.idPropertyName);
 
         return this.doExpandNode(this.root.getCurrentRoot())
-            .catch((reason: any) => {
+            .catch((reason) => {
                 this.initData([]);
                 this.handleError(reason);
             }).then(() => {
@@ -790,7 +788,7 @@ export class TreeGrid<DATA extends IDentifiable>
                 this.initData(this.root.getCurrentRoot().treeToList());
                 this.invalidateNodes([node]);
                 return this.expandNodeChildren(node);
-            }).catch((reason: any) => {
+            }).catch((reason) => {
                 this.handleError(reason);
                 return false;
             }).finally(() => this.setActive(true));
@@ -1044,7 +1042,7 @@ export class TreeGrid<DATA extends IDentifiable>
         if (!this.isSelectableNode(node)) {
             node.setSelectable(false);
 
-            return <any>{cssClasses: 'non-selectable', selectable: false};
+            return {cssClasses: 'non-selectable', selectable: false} as any;
         }
 
         return null;
@@ -1053,7 +1051,7 @@ export class TreeGrid<DATA extends IDentifiable>
     private initSelectorPlugin() {
         let selectorPlugin = this.grid.getCheckboxSelectorPlugin();
         if (selectorPlugin) {
-            this.grid.unregisterPlugin(<Slick.Plugin<TreeNode<DATA>>>this.grid.getCheckboxSelectorPlugin());
+            this.grid.unregisterPlugin(this.grid.getCheckboxSelectorPlugin() as Slick.Plugin<TreeNode<DATA>>);
         }
     }
 
@@ -1629,7 +1627,7 @@ export class TreeGrid<DATA extends IDentifiable>
             const newChildren: TreeNode<DATA>[] = oldChildren.concat(childrenToAdd);
             node.getParent().setChildren(newChildren);
             this.initData(this.root.getCurrentRoot().treeToList());
-        }).catch((reason: any) => {
+        }).catch((reason) => {
             this.handleError(reason);
         }).then(() => {
             this.notifyLoaded();

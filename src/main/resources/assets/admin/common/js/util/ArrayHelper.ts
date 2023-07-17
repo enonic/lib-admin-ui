@@ -47,10 +47,10 @@ export class ArrayHelper {
 
     // Non-symmetric difference of A and B
     // Will return all values from A, that is absent in B
-    static difference<T>(left: T[], right: T[], equals: (valueLeft: T, valueRight: T) => boolean): T[] {
-        return left.filter((value) => {
-            for (let i = 0; i < right.length; i++) {
-                if (equals(value, right[i])) {
+    static difference<T>(leftValues: T[], rightValues: T[], equals: (valueLeft: T, valueRight: T) => boolean): T[] {
+        return leftValues.filter((leftValue) => {
+            for (const rightValue of rightValues) {
+                if (equals(leftValue, rightValue)) {
                     return false;
                 }
             }
@@ -58,10 +58,10 @@ export class ArrayHelper {
         });
     }
 
-    static intersection<T>(left: T[], right: T[], equals: (valueLeft: T, valueRight: T) => boolean): T[] {
-        return left.filter((value) => {
-            for (let i = 0; i < right.length; i++) {
-                if (equals(value, right[i])) {
+    static intersection<T>(leftValues: T[], rightValues: T[], equals: (valueLeft: T, valueRight: T) => boolean): T[] {
+        return leftValues.filter((leftValue) => {
+            for (const rightValue of rightValues) {
+                if (equals(leftValue, rightValue)) {
                     return true;
                 }
             }
@@ -69,7 +69,7 @@ export class ArrayHelper {
         });
     }
 
-    static findElementByFieldValue<T>(array: Array<T>, field: string, value: any): T {
+    static findElementByFieldValue<T>(array: T[], field: string, value: any): T {
         let result: T = null;
 
         array.every((element: T) => {
@@ -98,7 +98,7 @@ export class ArrayHelper {
         });
     }
 
-    static flatten(array: Array<any>): Array<any> {
+    static flatten(array: any[]): any[] {
         return array.reduce((flatArray: any, toFlattenArray: any) => {
             return flatArray.concat(Array.isArray(toFlattenArray) ? ArrayHelper.flatten(toFlattenArray) : toFlattenArray);
         }, []);

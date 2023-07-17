@@ -66,7 +66,7 @@ export class InputEl
      * @returns {boolean}
      */
     isValid(): boolean {
-        let validity: ValidityState = (<HTMLInputElement> this.getHTMLElement()).validity;
+        let validity: ValidityState = (this.getHTMLElement() as HTMLInputElement).validity;
         return validity && validity.valid;
     }
 
@@ -75,7 +75,7 @@ export class InputEl
      * @returns {boolean}
      */
     validate(): boolean {
-        return (<HTMLInputElement> this.getHTMLElement()).checkValidity();
+        return (this.getHTMLElement() as HTMLInputElement).checkValidity();
     }
 
     setRequired(required: boolean): InputEl {

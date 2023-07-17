@@ -52,7 +52,7 @@ export class Schema
             return false;
         }
 
-        let other = <Schema>o;
+        let other = o as Schema;
 
         if (!ObjectHelper.stringEquals(this.name, other.name)) {
             return false;

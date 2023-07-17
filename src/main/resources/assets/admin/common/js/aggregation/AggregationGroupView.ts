@@ -19,7 +19,7 @@ export class AggregationGroupView
 
     private titleEl: H2El = new H2El();
 
-    private bucketSelectionChangedListeners: { (bucketSelection: SelectionChange<Bucket>): void }[] = [];
+    private bucketSelectionChangedListeners: ((bucketSelection: SelectionChange<Bucket>) => void)[] = [];
 
     constructor(name: string, displayName: string) {
         super('aggregation-group-view');
@@ -73,8 +73,8 @@ export class AggregationGroupView
 
     hasSelections(): boolean {
         let hasSelections = false;
-        for (let i = 0; i < this.aggregationViews.length; i++) {
-            if (this.aggregationViews[i].hasSelectedEntry()) {
+        for (const aggregationView of this.aggregationViews) {
+            if (aggregationView.hasSelectedEntry()) {
                 hasSelections = true;
                 break;
             }

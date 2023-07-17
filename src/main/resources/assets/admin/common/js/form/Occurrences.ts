@@ -102,10 +102,10 @@ export class Occurrences
 
     public toJson(): OccurrencesJson {
 
-        return <OccurrencesJson>{
+        return {
             maximum: this.getMaximum(),
             minimum: this.getMinimum()
-        };
+        } as OccurrencesJson;
     }
 
     equals(o: Equitable): boolean {
@@ -114,7 +114,7 @@ export class Occurrences
             return false;
         }
 
-        let other = <Occurrences>o;
+        let other = o as Occurrences;
 
         if (!ObjectHelper.numberEquals(this.minimum, other.minimum)) {
             return false;

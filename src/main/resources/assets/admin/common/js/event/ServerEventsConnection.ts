@@ -10,9 +10,9 @@ export const SERVER_EVENTS_CONNECTION_KEY: string = 'ServerEventsConnection';
 
 export class ServerEventsConnection extends WebSocketConnection {
 
-    private serverEventReceivedListeners: { (event: Event): void }[] = [];
+    private serverEventReceivedListeners: ((event: Event) => void)[] = [];
 
-    private unknownServerEventReceivedListeners: { (eventJson: EventJson): void }[] = [];
+    private unknownServerEventReceivedListeners: ((eventJson: EventJson) => void)[] = [];
 
     private serverEventsTranslator: ServerEventsTranslator;
 
@@ -66,7 +66,7 @@ export class ServerEventsConnection extends WebSocketConnection {
     }
 
     protected handleWSMessage(remoteEvent: MessageEvent): void {
-        const jsonEvent: NodeEventJson = <NodeEventJson>JSON.parse(remoteEvent.data);
+        const jsonEvent: NodeEventJson = JSON.parse(remoteEvent.data) as NodeEventJson;
 
         if (this.debug) {
             console.debug('ServerEventsConnection: Server event [' + jsonEvent.type + ']', jsonEvent);

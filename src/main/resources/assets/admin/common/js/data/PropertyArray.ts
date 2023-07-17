@@ -35,13 +35,13 @@ export class PropertyArray
 
     private array: Property[];
 
-    private propertyAddedListeners: { (event: PropertyAddedEvent): void }[] = [];
+    private propertyAddedListeners: ((event: PropertyAddedEvent) => void)[] = [];
 
-    private propertyRemovedListeners: { (event: PropertyRemovedEvent): void }[] = [];
+    private propertyRemovedListeners: ((event: PropertyRemovedEvent) => void)[] = [];
 
-    private propertyIndexChangedListeners: { (event: PropertyIndexChangedEvent): void }[] = [];
+    private propertyIndexChangedListeners: ((event: PropertyIndexChangedEvent) => void)[] = [];
 
-    private propertyValueChangedListeners: { (event: PropertyValueChangedEvent): void }[] = [];
+    private propertyValueChangedListeners: ((event: PropertyValueChangedEvent) => void)[] = [];
 
     private propertyAddedEventHandler: (event: PropertyAddedEvent) => void;
 
@@ -324,7 +324,7 @@ export class PropertyArray
             return false;
         }
 
-        let other = <PropertyArray>o;
+        let other = o as PropertyArray;
 
         if (!ObjectHelper.stringEquals(this.name, other.name)) {
             return false;
@@ -379,38 +379,38 @@ export class PropertyArray
         propertySet.unPropertyValueChanged(this.propertyValueChangedEventHandler);
     }
 
-    onPropertyAdded(listener: { (event: PropertyAddedEvent): void; }) {
+    onPropertyAdded(listener: (event: PropertyAddedEvent) => void) {
         this.propertyAddedListeners.push(listener);
     }
 
-    unPropertyAdded(listener: { (event: PropertyAddedEvent): void; }) {
+    unPropertyAdded(listener: (event: PropertyAddedEvent) => void) {
         this.propertyAddedListeners =
             this.propertyAddedListeners.filter((curr) => (curr !== listener));
     }
 
-    onPropertyRemoved(listener: { (event: PropertyRemovedEvent): void; }) {
+    onPropertyRemoved(listener: (event: PropertyRemovedEvent) => void) {
         this.propertyRemovedListeners.push(listener);
     }
 
-    unPropertyRemoved(listener: { (event: PropertyRemovedEvent): void; }) {
+    unPropertyRemoved(listener: (event: PropertyRemovedEvent) => void) {
         this.propertyRemovedListeners =
             this.propertyRemovedListeners.filter((curr) => (curr !== listener));
     }
 
-    onPropertyIndexChanged(listener: { (event: PropertyIndexChangedEvent): void; }) {
+    onPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
         this.propertyIndexChangedListeners.push(listener);
     }
 
-    unPropertyIndexChanged(listener: { (event: PropertyIndexChangedEvent): void; }) {
+    unPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
         this.propertyIndexChangedListeners =
             this.propertyIndexChangedListeners.filter((curr) => (curr !== listener));
     }
 
-    onPropertyValueChanged(listener: { (event: PropertyValueChangedEvent): void; }) {
+    onPropertyValueChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.propertyValueChangedListeners.push(listener);
     }
 
-    unPropertyValueChanged(listener: { (event: PropertyValueChangedEvent): void; }) {
+    unPropertyValueChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.propertyValueChangedListeners =
             this.propertyValueChangedListeners.filter((curr) => (curr !== listener));
     }
@@ -421,22 +421,22 @@ export class PropertyArray
         this.array.forEach((property: Property) => {
             if (this.type.equals(ValueTypes.DATA)) {
                 let valueSetJson = property.hasNullValue() ? null : property.getPropertySet().toJson();
-                valuesJson.push(<PropertyValueJson>{
+                valuesJson.push({
                     set: valueSetJson
-                });
+                } as PropertyValueJson);
             } else {
                 let valueJson = this.type.toJsonValue(property.getValue());
-                valuesJson.push(<PropertyValueJson>{
+                valuesJson.push({
                     v: valueJson
-                });
+                } as PropertyValueJson);
             }
 
         });
-        return <PropertyArrayJson>{
+        return {
             name: this.name,
             type: this.type.toString(),
             values: valuesJson
-        };
+        } as PropertyArrayJson;
     }
 
     private checkType(type: ValueType) {

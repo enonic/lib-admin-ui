@@ -33,7 +33,7 @@ export abstract class TextInputType
         return ValueTypes.STRING;
     }
 
-    protected readConfig(inputConfig: { [element: string]: { [name: string]: string }[]; }): void {
+    protected readConfig(inputConfig: Record<string, Record<string, string>[]>): void {
         const maxLengthConfig: Object = inputConfig['maxLength'] ? inputConfig['maxLength'][0] : {};
         const maxLength: number = NumberHelper.toNumber(maxLengthConfig['value']);
         this.maxLength = maxLength > 0 ? maxLength : -1;
@@ -49,7 +49,7 @@ export abstract class TextInputType
 
     resetInputOccurrenceElement(occurrence: Element): void {
         super.resetInputOccurrenceElement(occurrence);
-        (<FormInputEl>occurrence).resetBaseValues();
+        (occurrence as FormInputEl).resetBaseValues();
     }
 
     clearInputOccurrenceElement(occurrence: FormInputEl): void {
@@ -81,7 +81,7 @@ export abstract class TextInputType
             ValueTypeConverter.convertPropertyValueType(property, this.getValueType());
         }
 
-        const inputEl: FormInputEl = <FormInputEl>this.createInput(index, property).setSpellcheck(true);
+        const inputEl: FormInputEl = this.createInput(index, property).setSpellcheck(true) as FormInputEl;
 
         this.updateInputLangParams(inputEl);
         this.initOccurrenceListeners(inputEl);

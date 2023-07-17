@@ -23,7 +23,7 @@ export class NodePath extends Path implements Equitable {
             return false;
         }
 
-        let other: NodePath = <NodePath>o;
+        let other: NodePath = o as NodePath;
 
         if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
             return false;
@@ -57,23 +57,23 @@ export class NodePathBuilder extends PathBuilder {
     elementDivider: string = NodePath.NODE_PATH_DIVIDER;
 
     fromString(s: string, elementDivider: string = NodePath.NODE_PATH_DIVIDER): NodePathBuilder {
-        return <NodePathBuilder>super.fromString(s, elementDivider);
+        return super.fromString(s, elementDivider) as NodePathBuilder;
     }
 
     fromParent(parent: Path, ...childElements: string[]): NodePathBuilder {
-        return <NodePathBuilder>super.fromParent(parent, ...childElements);
+        return super.fromParent(parent, ...childElements) as NodePathBuilder;
     }
 
     setElements(value: string[]): NodePathBuilder {
-        return <NodePathBuilder>super.setElements(value);
+        return super.setElements(value) as NodePathBuilder;
     }
 
     setElementDivider(value: string): NodePathBuilder {
-        return <NodePathBuilder>super.setElementDivider(value);
+        return super.setElementDivider(value) as NodePathBuilder;
     }
 
     setAbsolute(value: boolean): NodePathBuilder {
-        return <NodePathBuilder>super.setAbsolute(value);
+        return super.setAbsolute(value) as NodePathBuilder;
     }
 
     build(): NodePath {

@@ -15,7 +15,7 @@ export class KeyBindings {
 
     private shelves: Map<string, KeyBinding>[];
 
-    private helpKeyPressedListeners: { (event: Mousetrap.ExtendedKeyboardEvent): void }[];
+    private helpKeyPressedListeners: ((event: Mousetrap.ExtendedKeyboardEvent) => void)[];
 
     private constructor() {
         if (this.debug) {
@@ -113,7 +113,7 @@ export class KeyBindings {
             this.shelves.push(this.activeBindings);
             this.activeBindings = new Map();
         } else {
-            let curBindings: Map<string, KeyBinding> = new Map();
+            let curBindings = new Map<string, KeyBinding>();
 
             keyBindings.forEach(binding => {
                 if (this.activeBindings.get(this.getBindingKey(binding))) {

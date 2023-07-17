@@ -8,7 +8,7 @@ export interface InputTypeViewContext {
 
     input: Input;
 
-    inputConfig: { [element: string]: { [name: string]: string }[]; };
+    inputConfig: Record<string, Record<string, string>[]>;
 
     parentDataPath: PropertyPath;
 }

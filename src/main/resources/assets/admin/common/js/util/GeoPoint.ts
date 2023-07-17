@@ -69,7 +69,7 @@ export class GeoPoint
             return false;
         }
 
-        let other = <GeoPoint>o;
+        let other = o as GeoPoint;
 
         if (!ObjectHelper.numberEquals(this.latitude, other.latitude)) {
             return false;

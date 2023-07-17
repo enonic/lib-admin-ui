@@ -10,9 +10,9 @@ export class ComboBoxDropdown<OPTION_DISPLAY_VALUE>
 
         selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
             if (selectedOption.isReadOnly()) {
-                for (let i = 0; i < options.length; i++) {
-                    if (selectedOption.getValue() === options[i].getValue()) {
-                        options[i].setReadOnly(true);
+                for (const option of options) {
+                    if (selectedOption.getValue() === option.getValue()) {
+                        option.setReadOnly(true);
                         break;
                     }
                 }

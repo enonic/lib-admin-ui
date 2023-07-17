@@ -36,7 +36,7 @@ export class IdProviderConfig
             return false;
         }
 
-        let other = <IdProviderConfig> o;
+        let other = o as IdProviderConfig;
 
         return this.applicationKey.equals(other.applicationKey) &&
                PropertyTreeHelper.propertyTreesEqual(this.config, other.config, ignoreEmptyValues);

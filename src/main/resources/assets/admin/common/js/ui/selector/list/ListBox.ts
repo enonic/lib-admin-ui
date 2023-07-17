@@ -10,9 +10,9 @@ export class ListBox<I>
 
     protected itemViews: Map<string, Element> = new Map<string, Element>();
 
-    private itemsAddedListeners: { (items: I[]): void }[] = [];
-    private itemsRemovedListeners: { (items: I[]): void }[] = [];
-    private itemsChangedListeners: { (items: I[]): void }[] = [];
+    private itemsAddedListeners: ((items: I[]) => void)[] = [];
+    private itemsRemovedListeners: ((items: I[]) => void)[] = [];
+    private itemsChangedListeners: ((items: I[]) => void)[] = [];
 
     private emptyText: string;
     private emptyView: DivEl;

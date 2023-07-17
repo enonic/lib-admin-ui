@@ -43,18 +43,18 @@ export class GeoPoint
     resetInputOccurrenceElement(occurrence: Element): void {
         super.resetInputOccurrenceElement(occurrence);
 
-        const input: GeoPointEl = <GeoPointEl> occurrence;
+        const input: GeoPointEl = occurrence as GeoPointEl;
         input.resetBaseValues();
     }
 
     clearInputOccurrenceElement(occurrence: Element): void {
         super.clearInputOccurrenceElement(occurrence);
 
-        (<GeoPointEl> occurrence).clear();
+        (occurrence as GeoPointEl).clear();
     }
 
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
-        const input: GeoPointEl = <GeoPointEl> occurrence;
+        const input: GeoPointEl = occurrence as GeoPointEl;
 
         input.setEnabled(enable);
     }
@@ -71,7 +71,7 @@ export class GeoPoint
     }
 
     protected updateFormInputElValue(occurrence: FormInputEl, property: Property) {
-        const geoPoint = <GeoPointEl> occurrence;
+        const geoPoint = occurrence as GeoPointEl;
         geoPoint.setGeoPoint(property.getGeoPoint());
     }
 }

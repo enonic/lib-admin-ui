@@ -3,7 +3,7 @@ import {Element} from '../../../dom/Element';
 
 export abstract class DialogStep {
 
-    private dataChangedListeners: { (): void }[] = [];
+    private dataChangedListeners: (() => void)[] = [];
 
     isValid(): Q.Promise<boolean> {
         return Q.resolve(true);

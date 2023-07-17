@@ -1,4 +1,3 @@
-/* tslint:disable:max-line-length */
 import {Reference} from '../util/Reference';
 import {BinaryReference} from '../util/BinaryReference';
 import {GeoPoint} from '../util/GeoPoint';
@@ -161,7 +160,7 @@ export class PropertyTree
             return false;
         }
 
-        let other = <PropertyTree>o;
+        let other = o as PropertyTree;
 
         if (!ObjectHelper.equals(this.root, other.root)) {
             return false;
@@ -197,7 +196,7 @@ export class PropertyTree
      * @param listener
      * @see [[PropertyEvent]]
      */
-    onChanged(listener: { (event: PropertyEvent): void; }) {
+    onChanged(listener: (event: PropertyEvent) => void) {
         this.root.onChanged(listener);
     }
 
@@ -206,7 +205,7 @@ export class PropertyTree
      * @param listener
      * @see [[PropertyEvent]]
      */
-    unChanged(listener: { (event: PropertyEvent): void; }) {
+    unChanged(listener: (event: PropertyEvent) => void) {
         this.root.unChanged(listener);
     }
 
@@ -215,7 +214,7 @@ export class PropertyTree
      * @param listener
      * @see [[PropertyAddedEvent]]
      */
-    onPropertyAdded(listener: { (event: PropertyAddedEvent): void; }) {
+    onPropertyAdded(listener: (event: PropertyAddedEvent) => void) {
         this.root.onPropertyAdded(listener);
     }
 
@@ -224,7 +223,7 @@ export class PropertyTree
      * @param listener
      * @see [[PropertyAddedEvent]]
      */
-    unPropertyAdded(listener: { (event: PropertyAddedEvent): void; }) {
+    unPropertyAdded(listener: (event: PropertyAddedEvent) => void) {
         this.root.unPropertyAdded(listener);
     }
 
@@ -233,7 +232,7 @@ export class PropertyTree
      * @param listener
      * @see [[PropertyRemovedEvent]]
      */
-    onPropertyRemoved(listener: { (event: PropertyRemovedEvent): void; }) {
+    onPropertyRemoved(listener: (event: PropertyRemovedEvent) => void) {
         this.root.onPropertyRemoved(listener);
     }
 
@@ -242,7 +241,7 @@ export class PropertyTree
      * @param listener
      * @see [[PropertyRemovedEvent]]
      */
-    unPropertyRemoved(listener: { (event: PropertyRemovedEvent): void; }) {
+    unPropertyRemoved(listener: (event: PropertyRemovedEvent) => void) {
         this.root.unPropertyRemoved(listener);
     }
 
@@ -251,7 +250,7 @@ export class PropertyTree
      * @param listener
      * @see [[PropertyIndexChangedEvent]]
      */
-    onPropertyIndexChanged(listener: { (event: PropertyIndexChangedEvent): void; }) {
+    onPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
         this.root.onPropertyIndexChanged(listener);
     }
 
@@ -260,7 +259,7 @@ export class PropertyTree
      * @param listener
      * @see [[PropertyIndexChangedEvent]]
      */
-    unPropertyIndexChanged(listener: { (event: PropertyIndexChangedEvent): void; }) {
+    unPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
         this.root.unPropertyIndexChanged(listener);
     }
 
@@ -269,7 +268,7 @@ export class PropertyTree
      * @param listener
      * @see [[PropertyValueChangedEvent]]
      */
-    onPropertyValueChanged(listener: { (event: PropertyValueChangedEvent): void; }) {
+    onPropertyValueChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.root.onPropertyValueChanged(listener);
     }
 
@@ -278,7 +277,7 @@ export class PropertyTree
      * @param listener
      * @see [[PropertyValueChangedEvent]]
      */
-    unPropertyValueChanged(listener: { (event: PropertyValueChangedEvent): void; }) {
+    unPropertyValueChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.root.unPropertyValueChanged(listener);
     }
 

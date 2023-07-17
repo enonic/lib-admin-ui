@@ -21,9 +21,9 @@ export class TabItem
     private active: boolean = false;
     private closeAction: Action;
     private removeButton: ActionButton;
-    private labelChangedListeners: { (event: TabItemLabelChangedEvent): void }[] = [];
-    private closedListeners: { (event: TabItemClosedEvent): void }[] = [];
-    private selectedListeners: { (event: TabItemSelectedEvent): void }[] = [];
+    private labelChangedListeners: ((event: TabItemLabelChangedEvent) => void)[] = [];
+    private closedListeners: ((event: TabItemClosedEvent) => void)[] = [];
+    private selectedListeners: ((event: TabItemSelectedEvent) => void)[] = [];
     private indexEl: SpanEl;
 
     constructor(builder: TabItemBuilder, classes?: string) {

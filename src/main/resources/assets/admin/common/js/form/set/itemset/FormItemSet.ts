@@ -18,11 +18,9 @@ export class FormItemSet
     extends FormSet
     implements FormItemContainer {
 
-    private formItems: FormItem[] = [];
+    private formItemByName: Record<string, FormItem> = {};
 
-    private formItemByName: { [name: string]: FormItem; } = {};
-
-    private immutable: boolean;
+    private readonly immutable: boolean;
 
     constructor(formItemSetJson: FormItemSetJson, factory: FormItemFactory, applicationKey?: ApplicationKey) {
         super(formItemSetJson);
@@ -48,16 +46,12 @@ export class FormItemSet
         this.formItems.push(formItem);
     }
 
-    getFormItems(): FormItem[] {
-        return this.formItems;
-    }
-
     getFormItemByName(name: string): FormItem {
         return this.formItemByName[name];
     }
 
     getInputByName(name: string): Input {
-        return <Input>this.formItemByName[name];
+        return this.formItemByName[name] as Input;
     }
 
     isImmutable(): boolean {
@@ -88,7 +82,7 @@ export class FormItemSet
             return false;
         }
 
-        let other: FormItemSet = <FormItemSet>o;
+        let other: FormItemSet = o as FormItemSet;
 
         if (!ObjectHelper.booleanEquals(this.immutable, other.immutable)) {
             return false;

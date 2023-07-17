@@ -34,12 +34,12 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
     private occurrenceViewContainer: Element;
     private formItem: FormItem;
     private allowedOccurrences: Occurrences;
-    private occurrenceAddedListeners: { (event: OccurrenceAddedEvent): void }[] = [];
-    private occurrenceRenderedListeners: { (event: OccurrenceRenderedEvent): void }[] = [];
-    private occurrenceRemovedListeners: { (event: OccurrenceRemovedEvent): void }[] = [];
-    private occurrenceChangedListeners: { (view: FormItemOccurrenceView): void }[] = [];
-    private focusListeners: { (event: FocusEvent): void }[] = [];
-    private blurListeners: { (event: FocusEvent): void }[] = [];
+    private occurrenceAddedListeners: ((event: OccurrenceAddedEvent) => void)[] = [];
+    private occurrenceRenderedListeners: ((event: OccurrenceRenderedEvent) => void)[] = [];
+    private occurrenceRemovedListeners: ((event: OccurrenceRemovedEvent) => void)[] = [];
+    private occurrenceChangedListeners: ((view: FormItemOccurrenceView) => void)[] = [];
+    private focusListeners: ((event: FocusEvent) => void)[] = [];
+    private blurListeners: ((event: FocusEvent) => void)[] = [];
     private focusListener: (event: FocusEvent) => void;
     private blurListener: (event: FocusEvent) => void;
     private occurrenceChangedListener: (view: FormItemOccurrenceView) => void;
@@ -330,7 +330,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
             occurrenceView.giveFocus();
             this.notifyOccurrenceRendered(occurrence, occurrenceView, validate);
             return Q.resolve();
-        }).catch((reason: any) => {
+        }).catch((reason) => {
             DefaultErrorHandler.handle(reason);
             return null;
         });

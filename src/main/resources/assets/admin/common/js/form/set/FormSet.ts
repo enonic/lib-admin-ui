@@ -56,7 +56,7 @@ export class FormSet
             return false;
         }
 
-        let other = <FormSet>o;
+        let other = o as FormSet;
 
         if (!ObjectHelper.stringEquals(this.label, other.label)) {
             return false;

@@ -158,7 +158,7 @@ export class FormItemLayer {
 
             if (ObjectHelper.iFrameSafeInstanceOf(formItem, FormItemSet)) {
 
-                const formItemSet: FormItemSet = <FormItemSet>formItem;
+                const formItemSet: FormItemSet = formItem as FormItemSet;
 
                 this.setShowEmptyFormItemSetOccurrences(propertySet, formItemSet.getName());
 
@@ -166,7 +166,7 @@ export class FormItemLayer {
                     context: this.context,
                     layerFactory: this.formItemLayerFactory,
                     formSet: formItemSet,
-                    parent: <FormSetOccurrenceView>this.parent,
+                    parent: this.parent as FormSetOccurrenceView,
                     parentDataSet: propertySet,
                     occurrencesLazyRender: this.lazyRender
                 });
@@ -174,34 +174,34 @@ export class FormItemLayer {
 
             if (ObjectHelper.iFrameSafeInstanceOf(formItem, FieldSet)) {
 
-                const fieldSet: FieldSet = <FieldSet>formItem;
-                formItemView = new FieldSetView(<FieldSetViewConfig>{
+                const fieldSet: FieldSet = formItem as FieldSet;
+                formItemView = new FieldSetView({
                     context: this.context,
                     layerFactory: this.formItemLayerFactory,
                     fieldSet: fieldSet,
                     parent: this.parent,
                     dataSet: propertySet,
                     lazyRender: this.lazyRender
-                });
+                } as FieldSetViewConfig);
             }
 
             if (ObjectHelper.iFrameSafeInstanceOf(formItem, Input)) {
 
-                const input: Input = <Input>formItem;
+                const input: Input = formItem as Input;
 
-                formItemView = new InputView(<InputViewConfig>{
+                formItemView = new InputView({
                     context: this.context,
                     input: input,
                     parent: this.parent,
                     parentDataSet: propertySet
-                });
+                } as InputViewConfig);
 
-                inputs.push(<InputView>formItemView);
+                inputs.push(formItemView as InputView);
             }
 
             if (ObjectHelper.iFrameSafeInstanceOf(formItem, FormOptionSet)) {
 
-                const formOptionSet: FormOptionSet = <FormOptionSet>formItem;
+                const formOptionSet: FormOptionSet = formItem as FormOptionSet;
 
                 this.setShowEmptyFormItemSetOccurrences(propertySet, formOptionSet.getName());
 
@@ -209,22 +209,22 @@ export class FormItemLayer {
                     layerFactory: this.formItemLayerFactory,
                     context: this.context,
                     formSet: formOptionSet,
-                    parent: <FormSetOccurrenceView>this.parent,
+                    parent: this.parent as FormSetOccurrenceView,
                     parentDataSet: propertySet,
                     occurrencesLazyRender: this.lazyRender
                 });
             }
 
             if (ObjectHelper.iFrameSafeInstanceOf(formItem, FormOptionSetOption)) {
-                const formOptionSetOption: FormOptionSetOption = <FormOptionSetOption>formItem;
-                formItemView = new FormOptionSetOptionView(<FormOptionSetOptionViewConfig>{
+                const formOptionSetOption: FormOptionSetOption = formItem as FormOptionSetOption;
+                formItemView = new FormOptionSetOptionView({
                     context: this.context,
                     layerFactory: this.formItemLayerFactory,
                     formOptionSetOption: formOptionSetOption,
                     parent: this.parent,
                     lazyRender: this.lazyRender,
                     formItemState: this.formItemState
-                });
+                } as FormOptionSetOptionViewConfig);
             }
 
             this.formItemViews.push(formItemView);

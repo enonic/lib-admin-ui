@@ -21,15 +21,15 @@ export class TermsAggregationQuery
 
     toJson(): AggregationQueryTypeWrapperJson {
 
-        let json: TermsAggregationQueryJson = <TermsAggregationQueryJson>super.toAggregationQueryJson();
+        let json: TermsAggregationQueryJson = super.toAggregationQueryJson() as TermsAggregationQueryJson;
         json.fieldName = this.getFieldName();
         json.size = this.getSize();
         json.orderByDirection = this.orderByDirection;
         json.orderByType = this.orderByType;
 
-        return <AggregationQueryTypeWrapperJson> {
+        return {
             TermsAggregationQuery: json
-        };
+        } as AggregationQueryTypeWrapperJson;
     }
 
     public setFieldName(fieldName: string) {

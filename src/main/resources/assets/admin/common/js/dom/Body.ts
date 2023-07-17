@@ -18,7 +18,7 @@ export class Body
         let html = Element.fromHtmlElement(body.parentElement);
 
             if (BrowserHelper.isIE() && html.getEl().getChild(0) instanceof HTMLHeadElement) {
-                html.insertChild(Element.fromHtmlElement(<HTMLElement>html.getEl().getChild(1)), 1);
+                html.insertChild(Element.fromHtmlElement(html.getEl().getChild(1) as HTMLElement), 1);
             }
 
         super(new ElementFromHelperBuilder().setHelper(new ElementHelper(body)).setLoadExistingChildren(loadExistingChildren));

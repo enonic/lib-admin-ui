@@ -53,11 +53,11 @@ export abstract class DropdownGrid<OPTION_DISPLAY_VALUE> {
 
     protected filter: (item: Option<OPTION_DISPLAY_VALUE>, args: any) => boolean;
 
-    protected rowSelectionListeners: { (event: DropdownGridRowSelectedEvent): void }[];
+    protected rowSelectionListeners: ((event: DropdownGridRowSelectedEvent) => void)[];
 
-    protected multipleSelectionListeners: { (event: DropdownGridMultipleSelectionEvent): void }[];
+    protected multipleSelectionListeners: ((event: DropdownGridMultipleSelectionEvent) => void)[];
 
-    protected rowCountChangedListeners: { (): void }[] = [];
+    protected rowCountChangedListeners: (() => void)[] = [];
 
     protected multipleSelections: boolean;
 

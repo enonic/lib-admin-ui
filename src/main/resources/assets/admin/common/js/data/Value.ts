@@ -63,7 +63,7 @@ export class Value
             return null;
         }
 
-        return <PropertySet>this.value;
+        return this.value as PropertySet;
     }
 
     getBoolean(): boolean {
@@ -91,56 +91,56 @@ export class Value
         if (this.isNull()) {
             return null;
         }
-        return <DateTime>this.value;
+        return this.value as DateTime;
     }
 
     getLocalDate(): LocalDate {
         if (this.isNull()) {
             return null;
         }
-        return <LocalDate>this.value;
+        return this.value as LocalDate;
     }
 
     getLocalDateTime(): LocalDateTime {
         if (this.isNull()) {
             return null;
         }
-        return <LocalDateTime>this.value;
+        return this.value as LocalDateTime;
     }
 
     getLocalTime(): LocalTime {
         if (this.isNull()) {
             return null;
         }
-        return <LocalTime>this.value;
+        return this.value as LocalTime;
     }
 
     getGeoPoint(): GeoPoint {
         if (this.isNull()) {
             return null;
         }
-        return <GeoPoint>this.value;
+        return this.value as GeoPoint;
     }
 
     getBinaryReference(): BinaryReference {
         if (this.isNull()) {
             return null;
         }
-        return <BinaryReference>this.value;
+        return this.value as BinaryReference;
     }
 
     getReference(): Reference {
         if (this.isNull()) {
             return null;
         }
-        return <Reference>this.value;
+        return this.value as Reference;
     }
 
     getLink(): Link {
         if (this.isNull()) {
             return null;
         }
-        return <Link>this.value;
+        return this.value as Link;
     }
 
     equals(o: Equitable): boolean {
@@ -149,7 +149,7 @@ export class Value
             return false;
         }
 
-        let other = <Value>o;
+        let other = o as Value;
 
         if (!ObjectHelper.equals(this.type, other.type)) {
             return false;

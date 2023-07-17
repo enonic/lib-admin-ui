@@ -47,7 +47,7 @@ export class ValidationRecordingPath
         if (!ObjectHelper.iFrameSafeInstanceOf(o, ValidationRecordingPath)) {
             return false;
         }
-        let other = <ValidationRecordingPath>o;
+        let other = o as ValidationRecordingPath;
 
         return ObjectHelper.stringEquals(this.refString, other.refString);
     }

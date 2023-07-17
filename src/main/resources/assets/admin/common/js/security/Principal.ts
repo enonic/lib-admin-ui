@@ -14,7 +14,7 @@ export class Principal
 
     constructor(builder: PrincipalBuilder) {
         super(builder);
-        this.type = (<PrincipalKey>builder.key).getType();
+        this.type = (builder.key as PrincipalKey).getType();
         this.modifiedTime = builder.modifiedTime;
     }
 
@@ -42,7 +42,7 @@ export class Principal
     }
 
     getKey(): PrincipalKey {
-        return <PrincipalKey>super.getKey();
+        return super.getKey() as PrincipalKey;
     }
 
     getTypeName(): string {
@@ -83,7 +83,7 @@ export class Principal
             return false;
         }
 
-        let other = <Principal>o;
+        let other = o as Principal;
 
         if (!super.equals(o)) {
             return false;

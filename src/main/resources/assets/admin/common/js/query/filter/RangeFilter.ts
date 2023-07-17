@@ -25,9 +25,9 @@ export class RangeFilter
             to: this.to != null ? this.to.getString() : null
         };
 
-        return <FilterTypeWrapperJson> {
+        return {
             RangeFilter: json
-        };
+        } as FilterTypeWrapperJson;
 
     }
 

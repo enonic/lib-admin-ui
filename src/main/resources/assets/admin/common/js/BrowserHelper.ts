@@ -77,7 +77,7 @@ export class BrowserHelper {
 
     private static init() {
         let M = (/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i.exec(navigator.userAgent)) || [];
-        BrowserHelper.BROWSER_NAME = (<any>BrowserName)[M[1].toLocaleUpperCase()];
+        BrowserHelper.BROWSER_NAME = (BrowserName as any)[M[1].toLocaleUpperCase()];
         BrowserHelper.BROWSER_VERSION = M[2];
 
         BrowserHelper.AVAILABLE_VERSIONS[BrowserName.CHROME] = '39';

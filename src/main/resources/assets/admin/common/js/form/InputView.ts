@@ -53,16 +53,16 @@ export class InputView
     private validationViewer: InputViewValidationViewer;
     private validationDetailsToggler: TogglerButton;
     private previousValidityRecording: ValidationRecording;
-    private validityChangedListeners: { (event: RecordingValidityChangedEvent): void }[] = [];
+    private validityChangedListeners: ((event: RecordingValidityChangedEvent) => void)[] = [];
     private helpText?: HelpTextContainer;
 
     constructor(config: InputViewConfig) {
-        super(<FormItemViewConfig>{
+        super({
             className: 'input-view',
             context: config.context,
             formItem: config.input,
             parent: config.parent
-        });
+        } as FormItemViewConfig);
 
         assertNotNull(config.parentDataSet, 'parentDataSet not expected to be null');
         assertNotNull(config.input, 'input not expected to be null');
@@ -104,7 +104,7 @@ export class InputView
             }
 
             if (!this.inputTypeView.isManagingAdd()) {
-                const inputTypeViewNotManagingAdd: BaseInputTypeNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
+                const inputTypeViewNotManagingAdd: BaseInputTypeNotManagingAdd = this.inputTypeView as BaseInputTypeNotManagingAdd;
                 inputTypeViewNotManagingAdd.onOccurrenceAdded(() => {
                     this.refreshButtonsState();
                 });
@@ -133,11 +133,11 @@ export class InputView
                 this.toggleHasInvalidInputClass(inputTypeViewNotManagingAdd);
             } else {
                 this.inputTypeView.onValidityChanged(() => {
-                    this.toggleHasInvalidInputClass(<BaseInputType>this.inputTypeView);
+                    this.toggleHasInvalidInputClass(this.inputTypeView as BaseInputType);
                 });
 
                 this.inputTypeView.onValueChanged(() => {
-                    this.toggleHasInvalidInputClass(<BaseInputType>this.inputTypeView);
+                    this.toggleHasInvalidInputClass(this.inputTypeView as BaseInputType);
                 });
             }
 
@@ -327,7 +327,7 @@ export class InputView
 
     private refreshButtonsState() {
         if (!this.inputTypeView.isManagingAdd()) {
-            const inputTypeViewNotManagingAdd = <BaseInputTypeNotManagingAdd>this.inputTypeView;
+            const inputTypeViewNotManagingAdd = this.inputTypeView as BaseInputTypeNotManagingAdd;
             const isMaxOccurrencesReached = inputTypeViewNotManagingAdd.maximumOccurrencesReached();
             this.bottomButtonRow.toggleClass('visible', !isMaxOccurrencesReached);
             this.addButton.setVisible(!isMaxOccurrencesReached);

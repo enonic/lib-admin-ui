@@ -6,10 +6,10 @@ export class WizardStepForm
     extends Panel {
 
     previousValidation: ValidationRecording;
-    private validityChangedListeners: { (event: WizardStepValidityChangedEvent): void }[] = [];
-    private focusListeners: { (event: FocusEvent): void }[] = [];
+    private validityChangedListeners: ((event: WizardStepValidityChangedEvent) => void)[] = [];
+    private focusListeners: ((event: FocusEvent) => void)[] = [];
 
-    private blurListeners: { (event: FocusEvent): void }[] = [];
+    private blurListeners: ((event: FocusEvent) => void)[] = [];
 
     constructor(className?: string) {
         super(className);

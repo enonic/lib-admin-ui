@@ -17,7 +17,7 @@ export abstract class BaseInputTypeSingleOccurrence
     protected ignorePropertyChange: boolean;
     private property: Property;
     private propertyListener: (event: PropertyValueChangedEvent) => void;
-    private inputValueChangedListeners: { (event: ValueChangedEvent): void }[] = [];
+    private inputValueChangedListeners: ((event: ValueChangedEvent) => void)[] = [];
 
     protected constructor(ctx: InputTypeViewContext, className?: string) {
         super(ctx, className);

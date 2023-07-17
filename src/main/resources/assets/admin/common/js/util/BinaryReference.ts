@@ -20,7 +20,7 @@ export class BinaryReference
             return false;
         }
 
-        let other = <BinaryReference>o;
+        let other = o as BinaryReference;
 
         if (!ObjectHelper.stringEquals(this.value, other.value)) {
             return false;

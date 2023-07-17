@@ -12,7 +12,7 @@ export class PrincipalLoader
 
     protected request: FindPrincipalsRequest;
 
-    private skipPrincipalKeys: { [key: string]: PrincipalKey; };
+    private skipPrincipalKeys: Record<string, PrincipalKey>;
 
     constructor() {
         super();

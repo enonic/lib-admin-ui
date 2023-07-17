@@ -9,7 +9,7 @@ export class ApplicationViewer
     }
 
     doLayout(object: Application | ApplicationUploadMock) {
-        super.doLayout(<Application>object);
+        super.doLayout(object as Application);
         if (object && object.isLocal()) {
             this.getNamesAndIconView().setIconToolTip('Local application');
         }

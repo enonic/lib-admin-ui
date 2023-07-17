@@ -19,8 +19,14 @@ export abstract class FormItem
 
     private applicationKey: ApplicationKey;
 
+    protected formItems: FormItem[] = [];
+
     protected constructor(name: string) {
         this.name = name;
+    }
+
+    getFormItems(): FormItem[] {
+        return this.formItems;
     }
 
     setApplicationKey(value: ApplicationKey): FormItem {
@@ -54,7 +60,7 @@ export abstract class FormItem
             return false;
         }
 
-        let other = <FormItem>o;
+        let other = o as FormItem;
 
         if (!ObjectHelper.stringEquals(this.name, other.name)) {
             return false;

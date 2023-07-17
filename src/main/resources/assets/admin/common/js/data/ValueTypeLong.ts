@@ -39,7 +39,7 @@ export class ValueTypeLong
     }
 
     valueToString(value: Value): string {
-        return (<Number>value.getObject()).toString();
+        return (value.getObject() as Number).toString();
     }
 
     valueEquals(a: number, b: number): boolean {

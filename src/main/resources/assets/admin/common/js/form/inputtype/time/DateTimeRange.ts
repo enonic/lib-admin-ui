@@ -61,7 +61,7 @@ export class DateTimeRange
     }
 
     updateInputOccurrenceElement(occurrence: Element, property: Property, unchangedOnly: boolean) {
-        const dateTimePicker = <DateTimeRangePicker>occurrence;
+        const dateTimePicker = occurrence as DateTimeRangePicker;
 
         if (!unchangedOnly || !dateTimePicker.isDirty()) {
 
@@ -77,7 +77,7 @@ export class DateTimeRange
 
     resetInputOccurrenceElement(occurrence: Element): void {
         super.resetInputOccurrenceElement(occurrence);
-        const input: DateTimeRangePicker = <DateTimeRangePicker>occurrence;
+        const input: DateTimeRangePicker = occurrence as DateTimeRangePicker;
 
         input.reset();
     }
@@ -85,11 +85,11 @@ export class DateTimeRange
     clearInputOccurrenceElement(occurrence: Element): void{
         super.clearInputOccurrenceElement(occurrence);
 
-        (<DateTimeRangePicker>occurrence).clear();
+        (occurrence as DateTimeRangePicker).clear();
     }
 
     setEnabledInputOccurrenceElement(occurrence: Element, enable: boolean) {
-        const input: DateTimeRangePicker = <DateTimeRangePicker>occurrence;
+        const input: DateTimeRangePicker = occurrence as DateTimeRangePicker;
 
         input.setEnabled(enable);
     }
@@ -147,7 +147,7 @@ export class DateTimeRange
                || to && to.getType() !== ValueTypes.DATE_TIME && to.getType() !== ValueTypes.LOCAL_DATE_TIME;
     }
 
-    private readConfig(inputConfig: { [element: string]: any; }): void {
+    private readConfig(inputConfig: Record<string, any>): void {
         if (this.readConfigValue(inputConfig, 'timezone') === 'true') {
             this.useTimezone = true;
         }
@@ -169,7 +169,7 @@ export class DateTimeRange
         };
     }
 
-    private readConfigValue(inputConfig: { [element: string]: any; }, name: string): string {
+    private readConfigValue(inputConfig: Record<string, any>, name: string): string {
         return inputConfig[name];
     }
 
@@ -205,10 +205,10 @@ export class DateTimeRange
         if (this.from || this.to) {
             pSet = new PropertySet();
             if (this.from) {
-                pSet.setLocalDateTimeByPath('from', <LocalDateTime>this.from);
+                pSet.setLocalDateTimeByPath('from', this.from as LocalDateTime);
             }
             if (this.to) {
-                pSet.setLocalDateTimeByPath('to', <LocalDateTime>this.to);
+                pSet.setLocalDateTimeByPath('to', this.to as LocalDateTime);
             }
         } else {
             pSet = null;
@@ -242,8 +242,8 @@ export class DateTimeRange
 
     private createDateTimePropertySetValue() {
         const pSet: PropertySet = new PropertySet();
-        pSet.setLocalDateTimeByPath('from', <LocalDateTime>this.from);
-        pSet.setLocalDateTimeByPath('to', <LocalDateTime>this.to);
+        pSet.setLocalDateTimeByPath('from', this.from as LocalDateTime);
+        pSet.setLocalDateTimeByPath('to', this.to as LocalDateTime);
         return new Value(pSet, ValueTypes.DATA);
     }
 
@@ -252,13 +252,13 @@ export class DateTimeRange
             const [from, to] = this.getFromTo(property.getPropertySet());
             if (from || to) {
                 if (from) {
-                    builder.setStartDate((<DateTime>from).toDate());
+                    builder.setStartDate((from as DateTime).toDate());
                 }
                 if (to) {
-                    builder.setEndDate((<DateTime>to).toDate());
+                    builder.setEndDate((to as DateTime).toDate());
                 }
                 if (this.useTimezone) {
-                    builder.setTimezone((<DateTime>(from || to)).getTimezone());
+                    builder.setTimezone(((from || to) as DateTime).getTimezone());
                 }
             }
         }

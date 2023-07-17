@@ -140,7 +140,7 @@ export class ValueTypeConverter {
         if (value.getType() === ValueTypes.STRING && ValueTypes.LOCAL_DATE_TIME.isConvertible(value.getString())) { // from string
             return ValueTypes.LOCAL_DATE_TIME.newValue(value.getString());
         } else if (value.getType() === ValueTypes.LOCAL_DATE && value.isNotNull()) { // from LocalDate
-            let localDate = <LocalDate>value.getObject();
+            let localDate = value.getObject() as LocalDate;
             return new Value(LocalDateTime.fromString(localDate.toString() + 'T00:00:00'), ValueTypes.LOCAL_DATE_TIME);
         } else if (value.getType() === ValueTypes.DATE_TIME && value.isNotNull()) { // from DateTime
             let dateTime = value.getString();
@@ -165,11 +165,11 @@ export class ValueTypeConverter {
         if (value.getType() === ValueTypes.STRING && ValueTypes.LOCAL_TIME.isConvertible(value.getString())) { // from string
             return ValueTypes.LOCAL_TIME.newValue(value.getString());
         } else if (value.getType() === ValueTypes.LOCAL_DATE_TIME && value.isNotNull()) { // from LocalDateTime
-            let localDateTime = <Date>value.getObject();
+            let localDateTime = value.getObject() as Date;
             return ValueTypes.LOCAL_TIME.newValue(localDateTime.getHours() + ':' + localDateTime.getMinutes() + ':' +
                                                   localDateTime.getSeconds());
         } else if (value.getType() === ValueTypes.DATE_TIME && value.isNotNull()) { // from DateTime
-            let dateTime = <DateTime> value.getObject();
+            let dateTime = value.getObject() as DateTime;
             return ValueTypes.LOCAL_TIME.newValue(dateTime.getHours() + ':' + dateTime.getMinutes() + ':' + dateTime.getSeconds());
         }
         return ValueTypes.LOCAL_TIME.newNullValue();

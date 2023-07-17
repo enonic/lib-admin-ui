@@ -46,8 +46,7 @@ export class RadioGroup
 
     doSetValue(value: string): RadioGroup {
         let option;
-        for (let i = 0; i < this.options.length; i++) {
-            option = this.options[i];
+        for (const option of this.options) {
             option.setChecked(option.getValue() === value, true);
         }
         return this;
@@ -55,8 +54,7 @@ export class RadioGroup
 
     doGetValue(): string {
         let option;
-        for (let i = 0; i < this.options.length; i++) {
-            option = this.options[i];
+        for (const option of this.options) {
             if (option.isChecked()) {
                 return option.getValue();
             }

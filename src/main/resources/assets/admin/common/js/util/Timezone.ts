@@ -77,7 +77,7 @@ export class Timezone
             return false;
         }
 
-        let other = <Timezone>o;
+        let other = o as Timezone;
 
         if (!ObjectHelper.stringEquals(this.toString(), other.toString())) {
             return false;

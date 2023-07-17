@@ -61,10 +61,9 @@ export class ValueTypes {
     ];
 
     public static fromName(name: string): ValueType {
-        for (let i = 0; i < ValueTypes.ALL.length; i++) {
-            let type = ValueTypes.ALL[i];
-            if (type.toString() === name) {
-                return type;
+        for (const valueType of ValueTypes.ALL) {
+            if (valueType.toString() === name) {
+                return valueType;
             }
         }
         throw('Unknown ValueType: ' + name);
