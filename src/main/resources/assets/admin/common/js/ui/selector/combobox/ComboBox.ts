@@ -46,7 +46,7 @@ export interface ComboBoxConfig<T> {
 
     maximumOccurrences?: number;
 
-    filter?: (item: any, args: any) => boolean;
+    filter?: (item: Option<T>, args: unknown) => boolean;
 
     hideComboBoxWhenMaxReached?: boolean;
 
