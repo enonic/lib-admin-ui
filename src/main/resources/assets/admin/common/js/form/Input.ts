@@ -26,7 +26,7 @@ export class InputBuilder {
 
     helpText: string;
 
-    inputTypeConfig: any;
+    inputTypeConfig: object;
 
     maximizeUIInputWidth: boolean;
 
@@ -72,7 +72,7 @@ export class InputBuilder {
         return this;
     }
 
-    setInputTypeConfig(value: any): InputBuilder {
+    setInputTypeConfig(value: object): InputBuilder {
         this.inputTypeConfig = value;
         return this;
     }
@@ -131,7 +131,7 @@ export class Input
 
     private helpText: string;
 
-    private inputTypeConfig: any;
+    private inputTypeConfig: object;
 
     private maximizeUIInputWidth: boolean;
 
@@ -189,7 +189,7 @@ export class Input
         return this.helpText;
     }
 
-    getInputTypeConfig(): any {
+    getInputTypeConfig(): object {
         return this.inputTypeConfig;
     }
 
@@ -237,11 +237,7 @@ export class Input
             return false;
         }
 
-        if (!ObjectHelper.anyEquals(this.inputTypeConfig, other.inputTypeConfig)) {
-            return false;
-        }
-
-        return true;
+        return ObjectHelper.objectEquals(this.inputTypeConfig, other.inputTypeConfig);
     }
 
     public toJson(): FormItemTypeWrapperJson {
