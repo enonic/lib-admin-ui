@@ -21,13 +21,13 @@ export class SplitPanelBuilder {
 
     private secondPanel: Panel;
 
-    private firstPanelSize: SplitPanelSize = SplitPanelSize.Auto();
+    private firstPanelSize: SplitPanelSize = SplitPanelSize.AUTO();
 
-    private firstPanelMinSize: SplitPanelSize = SplitPanelSize.Percents(0);
+    private firstPanelMinSize: SplitPanelSize = SplitPanelSize.PERCENTS(0);
 
-    private secondPanelSize: SplitPanelSize = SplitPanelSize.Auto();
+    private secondPanelSize: SplitPanelSize = SplitPanelSize.AUTO();
 
-    private secondPanelMinSize: SplitPanelSize = SplitPanelSize.Percents(0);
+    private secondPanelMinSize: SplitPanelSize = SplitPanelSize.PERCENTS(0);
 
     private alignment: SplitPanelAlignment = SplitPanelAlignment.HORIZONTAL;
 
@@ -274,7 +274,7 @@ export class SplitPanel
 
     setFirstPanelSize(size: SplitPanelSize) {
         this.firstPanelSize = size;
-        this.secondPanelSize = SplitPanelSize.Auto();
+        this.secondPanelSize = SplitPanelSize.AUTO();
     }
 
     setFirstPanelIsFullScreen(fullScreen: boolean) {
@@ -283,7 +283,7 @@ export class SplitPanel
 
     setSecondPanelSize(size: SplitPanelSize) {
         this.secondPanelSize = size;
-        this.firstPanelSize = SplitPanelSize.Auto();
+        this.firstPanelSize = SplitPanelSize.AUTO();
     }
 
     savePanelSizes() {
@@ -305,7 +305,7 @@ export class SplitPanel
     savePanelSizesAndDistribute(newFirstPanelSize: SplitPanelSize) {
         this.savePanelSizes();
         this.firstPanelSize = newFirstPanelSize.isAuto() ? this.firstPanelSize : newFirstPanelSize;
-        this.secondPanelSize = SplitPanelSize.Auto();
+        this.secondPanelSize = SplitPanelSize.AUTO();
         this.distribute();
     }
 
@@ -424,7 +424,7 @@ export class SplitPanel
         }
 
         if (this.firstPanelIsFullScreen) {
-            this.firstPanelSize = SplitPanelSize.Auto();
+            this.firstPanelSize = SplitPanelSize.AUTO();
         } else {
             this.firstPanelSize = this.hiddenFirstPanelPreviousSize;
 
@@ -607,10 +607,10 @@ export class SplitPanel
         let splitPanelSize = this.isHorizontal() ? splitPanelEl.getHeightWithBorder() : splitPanelEl.getWidthWithBorder();
 
         if (this.firstPanelSize.isPercentsUnit()) {
-            this.firstPanelSize = SplitPanelSize.Percents((dragOffset / splitPanelSize) * 100);
-            this.setSecondPanelSize(SplitPanelSize.Percents(100 - this.firstPanelSize.getValue()));
+            this.firstPanelSize = SplitPanelSize.PERCENTS((dragOffset / splitPanelSize) * 100);
+            this.setSecondPanelSize(SplitPanelSize.PERCENTS(100 - this.firstPanelSize.getValue()));
         } else {
-            this.firstPanelSize = SplitPanelSize.Pixels(dragOffset);
+            this.firstPanelSize = SplitPanelSize.PIXELS(dragOffset);
         }
 
         this.distribute(true);
