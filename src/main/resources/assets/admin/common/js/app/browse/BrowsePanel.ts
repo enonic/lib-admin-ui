@@ -61,7 +61,7 @@ export class BrowsePanel
 
         this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.treeGrid, this.createBrowseWithItemsPanel())
             .setAlignment(SplitPanelAlignment.VERTICAL)
-            .setFirstPanelSize(SplitPanelSize.Percents(this.getFirstPanelSize()))
+            .setFirstPanelSize(SplitPanelSize.PERCENTS(this.getFirstPanelSize()))
             .build();
 
         if (this.filterPanel) {
@@ -284,8 +284,8 @@ export class BrowsePanel
 
     private setupFilterPanel() {
         let splitPanel = new SplitPanelBuilder(this.filterPanel, this.gridAndToolbarPanel)
-            .setFirstPanelMinSize(SplitPanelSize.Pixels(215))
-            .setFirstPanelSize(SplitPanelSize.Pixels(215))
+            .setFirstPanelMinSize(SplitPanelSize.PIXELS(215))
+            .setFirstPanelSize(SplitPanelSize.PIXELS(215))
             .setAlignment(SplitPanelAlignment.VERTICAL)
             .setAnimationDelay(100)     // filter panel animation time
             .build();

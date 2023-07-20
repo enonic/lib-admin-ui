@@ -33,15 +33,15 @@ export class SplitPanelSize implements Equitable {
         return this.value < 0;
     }
 
-    static Pixels(value: number): SplitPanelSize {
+    static PIXELS(value: number): SplitPanelSize {
         return new SplitPanelSize(value, SplitPanelUnit.PIXEL);
     }
 
-    static Percents(value: number): SplitPanelSize {
+    static PERCENTS(value: number): SplitPanelSize {
         return new SplitPanelSize(value, SplitPanelUnit.PERCENT);
     }
 
-    static Auto(): SplitPanelSize {
+    static AUTO(): SplitPanelSize {
         return new SplitPanelSize(-1, SplitPanelUnit.PERCENT);
     }
 
