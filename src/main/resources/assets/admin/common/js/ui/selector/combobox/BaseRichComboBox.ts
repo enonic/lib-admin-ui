@@ -331,11 +331,11 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         throw new Error('Must be implemented by inheritor');
     }
 
-    protected loadOptionsAfterShowDropdown(): Q.Promise<void> {
+    protected loadOptionsAfterShowDropdown(): Q.Promise<LOADER_DATA_TYPE[]> {
         return this.reload(this.comboBox.getInput().getValue());
     }
 
-    protected reload(inputValue: string, force: boolean = false): Q.Promise<any> {
+    protected reload(inputValue: string, force: boolean = false): Q.Promise<LOADER_DATA_TYPE[]> {
         const oldSearchValue: string = this.loader.getSearchString() || '';
         const newSearchValue: string = inputValue || '';
         const searchStringChanged: boolean = oldSearchValue.trim() !== newSearchValue.trim();
@@ -344,12 +344,9 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
 
         const loadPromise: Q.Promise<LOADER_DATA_TYPE[]> = (force || !this.loader.isLoaded()) ? this.loader.load() : Q(null);
 
-        return loadPromise.then(() => {
-                if (searchStringChanged) {
-                    this.loader.search(inputValue);
-                }
-            })
-            .catch(DefaultErrorHandler.handle);
+        return loadPromise.then(() =>
+            searchStringChanged ? this.loader.search(inputValue) : Q(null)
+        );
     }
 
     protected notifyLoaded(items: OPTION_DATA_TYPE[], postLoaded?: boolean) {
