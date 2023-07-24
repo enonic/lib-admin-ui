@@ -13,6 +13,7 @@ import {DivEl} from '../../dom/DivEl';
 import {ElementHelper} from '../../dom/ElementHelper';
 import {Element, LangDirection} from '../../dom/Element';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
+import {Property, PropertyBuilder} from '../../data/Property';
 
 export class WizardHeaderWithDisplayNameAndName
     extends WizardHeader {
@@ -63,12 +64,13 @@ export class WizardHeaderWithDisplayNameAndName
     protected initListeners() {
         ResponsiveManager.onAvailableSizeChanged(this);
 
-        const debounceNotify = (query: string) => AppHelper.debounce((event: ValueChangedEvent) => {
-            this.notifyPropertyChanged(query, event.getOldValue(), event.getNewValue());
+        const debounceNotifyValueChanged = (propertyName: string) => AppHelper.debounce((event: ValueChangedEvent) => {
+            const valueProperty = Property.create().setName(propertyName).build();
+            this.notifyPropertyChanged(valueProperty, event.getOldValue(), event.getNewValue());
         }, 100);
 
-        this.displayNameEl.onValueChanged(debounceNotify(QueryField.DISPLAY_NAME));
-        this.nameEl.onValueChanged(debounceNotify(`<${i18n('field.path')}>`));
+        this.displayNameEl.onValueChanged(debounceNotifyValueChanged(QueryField.DISPLAY_NAME));
+        this.nameEl.onValueChanged(debounceNotifyValueChanged(`<${i18n('field.path')}>`));
         this.displayNameEl.onValueChanged((event: ValueChangedEvent) => {
             this.displayNameEl.removeClass(WizardHeaderWithDisplayNameAndName.GENERATED_CLASS);
 

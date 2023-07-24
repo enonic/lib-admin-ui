@@ -1,29 +1,32 @@
 import {DivEl} from '../../dom/DivEl';
-import {PropertyChangedEvent} from '../../PropertyChangedEvent';
+import {Property} from '../../data/Property';
+import {PropertyValueChangedEvent} from '../../data/PropertyValueChangedEvent';
+import {ValueTypes} from '../../data/ValueTypes';
 
 export class WizardHeader
     extends DivEl {
 
-    private propertyChangedListeners: ((event: PropertyChangedEvent) => void)[] = [];
+    private propertyChangedListeners: ((event: PropertyValueChangedEvent) => void)[] = [];
 
     constructor() {
         super('wizard-header');
     }
 
-    onPropertyChanged(listener: (event: PropertyChangedEvent) => void) {
+    onPropertyChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.propertyChangedListeners.push(listener);
     }
 
-    unPropertyChanged(listener: (event: PropertyChangedEvent) => void) {
+    unPropertyChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.propertyChangedListeners =
-            this.propertyChangedListeners.filter((currentListener: (event: PropertyChangedEvent) => void) => {
+            this.propertyChangedListeners.filter((currentListener: (event: PropertyValueChangedEvent) => void) => {
                 return listener !== currentListener;
             });
     }
 
-    notifyPropertyChanged(property: string, oldValue: string, newValue: string) {
-        let event = new PropertyChangedEvent(property, oldValue, newValue);
-        this.propertyChangedListeners.forEach((listener: (event: PropertyChangedEvent) => void) => {
+    notifyPropertyChanged(property: Property, oldValue: string, newValue: string) {
+        //let event = new PropertyChangedEvent(property, oldValue, newValue);
+        const event = new PropertyValueChangedEvent(property, ValueTypes.STRING.newValue(oldValue), ValueTypes.STRING.newValue(newValue));
+        this.propertyChangedListeners.forEach((listener: (event: PropertyValueChangedEvent) => void) => {
             listener.call(this, event);
         });
     }
