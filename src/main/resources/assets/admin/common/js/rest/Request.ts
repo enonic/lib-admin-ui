@@ -4,6 +4,7 @@ import {Path} from './Path';
 import {RequestError} from './RequestError';
 import {HttpMethod} from './HttpMethod';
 import {Response} from './Response';
+import {StatusCode} from './StatusCode';
 
 export abstract class Request {
 
@@ -43,11 +44,11 @@ export abstract class Request {
             if (this.request.readyState === 4) {
                 let errorJson = null;
 
-                if (this.request.status === 204) {
+                if (this.request.status === StatusCode.NO_CONTENT) {
                     deferred.resolve(null);
-                } else if (this.request.status >= 200 && this.request.status < 300) {
+                } else if (this.request.status >= StatusCode.OK && this.request.status < StatusCode.MULTIPLE_OPTIONS) {
                     deferred.resolve(this.request.response);
-                } else if (this.request.status === 403) {
+                } else if (this.request.status === StatusCode.FORBIDDEN) {
                     deferred.reject(new AccessDeniedException('Access denied'));
                 } else {
                     try {
@@ -73,9 +74,12 @@ export abstract class Request {
     }
 
     send(): Q.Promise<Response> {
-
         this.prepareRequest();
         return this.sendRequest();
+    }
+
+    getStatus(): number {
+        return this.request.status;
     }
 
     protected createRequestData(): any {

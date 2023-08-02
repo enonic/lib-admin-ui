@@ -2,8 +2,11 @@ export class Response {
 
     readonly data: any;
 
-    constructor(data: any) {
+    readonly status: number;
+
+    constructor(data: any, status?: number) {
         this.data = data;
+        this.status = status;
     }
 
     isBlank(): boolean {
@@ -16,5 +19,9 @@ export class Response {
 
     getResult(): any {
         return this.data;
+    }
+
+    getStatus(): number {
+        return this.status;
     }
 }

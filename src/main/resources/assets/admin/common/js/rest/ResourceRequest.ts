@@ -88,7 +88,7 @@ export abstract class ResourceRequest<PARSED_TYPE>
             .setTimeout(!this.heavyOperation ? this.timeoutMillis : 0);
 
         return request.send().then((rawResponse: any) => {
-            return this.isJsonResponse ? new JsonResponse(rawResponse) : new Response(rawResponse);
+            return this.isJsonResponse ? new JsonResponse(rawResponse, request.getStatus()) : new Response(rawResponse, request.getStatus());
         });
     }
 
