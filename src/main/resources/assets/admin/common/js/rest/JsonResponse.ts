@@ -5,8 +5,8 @@ export class JsonResponse<RAW_JSON_TYPE>
 
     readonly json: any;
 
-    constructor(data: any) {
-        super(data);
+    constructor(data: any, status?: number) {
+        super(data, status);
         this.json = JSON.parse(data);
     }
 
