@@ -9,6 +9,7 @@ import {GetRequest} from './GetRequest';
 import {PostRequest} from './PostRequest';
 import {Response} from './Response';
 import {HeadRequest} from './HeadRequest';
+import {StatusCode} from './StatusCode';
 
 export abstract class ResourceRequest<PARSED_TYPE>
     implements HttpRequest<PARSED_TYPE> {
@@ -25,18 +26,12 @@ export abstract class ResourceRequest<PARSED_TYPE>
 
     protected isJsonResponse: boolean = true;
 
+    protected status: number;
+
     private pathElements: string[] = [];
 
     constructor() {
         this.restPath = Path.create().fromString(this.getPostfixUri()).build();
-    }
-
-    protected getPostfixUri() {
-        return UriHelper.getRestUri('');
-    }
-
-    protected addRequestPathElements(...items: string[]) {
-        this.pathElements.push(...items);
     }
 
     setMethod(value: string | HttpMethod) {
@@ -57,6 +52,22 @@ export abstract class ResourceRequest<PARSED_TYPE>
 
     getParams(): object {
         return {};
+    }
+
+    protected getPostfixUri() {
+        return UriHelper.getRestUri('');
+    }
+
+    protected addRequestPathElements(...items: string[]) {
+        this.pathElements.push(...items);
+    }
+
+    protected isRedirect(): boolean {
+        return this.status === StatusCode.REDIRECT;
+    }
+
+    protected parseResponse(response: Response): PARSED_TYPE {
+        return response.getResult();
     }
 
     setTimeout(timeoutMillis: number) {
@@ -88,6 +99,8 @@ export abstract class ResourceRequest<PARSED_TYPE>
             .setTimeout(!this.heavyOperation ? this.timeoutMillis : 0);
 
         return request.send().then((rawResponse: any) => {
+            this.status = request.getStatus();
+
             return this.isJsonResponse ? new JsonResponse(rawResponse) : new Response(rawResponse);
         });
     }
@@ -114,9 +127,5 @@ export abstract class ResourceRequest<PARSED_TYPE>
         return this.send().then((response: Response) => {
             return this.parseResponse(response);
         });
-    }
-
-    protected parseResponse(response: Response): PARSED_TYPE {
-        return response.getResult();
     }
 }
