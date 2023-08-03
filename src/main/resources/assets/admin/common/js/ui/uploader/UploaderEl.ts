@@ -25,6 +25,7 @@ import {UploadFailedEvent} from './UploadFailedEvent';
 import {KeyBindings} from '../KeyBindings';
 import {KeyBinding} from '../KeyBinding';
 import {KeyHelper} from '../KeyHelper';
+import {StatusCode} from '../../rest/StatusCode';
 
 export interface FineUploaderFile {
     name: string;
@@ -857,7 +858,7 @@ export class UploaderEl<MODEL extends Equitable>
     }
 
     private fileCompleteCallback(id: number, _name: string, response: any, xhrOrXdr: XMLHttpRequest) {
-        if (xhrOrXdr && xhrOrXdr.status === 200) {
+        if (xhrOrXdr && xhrOrXdr.status === StatusCode.OK) {
             try {
                 const uploadItem = this.findUploadItemById(id);
                 if (uploadItem) {
@@ -877,7 +878,7 @@ export class UploaderEl<MODEL extends Equitable>
     }
 
     private errorCallback(id: number, name: string, _errorReason: any, xhrOrXdr: XMLHttpRequest) {
-        if (xhrOrXdr && xhrOrXdr.status !== 200) {
+        if (xhrOrXdr && xhrOrXdr.status !== StatusCode.OK) {
             try {
                 const responseObj = JSON.parse(xhrOrXdr.response);
                 const error = new RequestError(responseObj.status, responseObj.message);

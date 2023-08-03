@@ -4,6 +4,7 @@ import {Path} from './Path';
 import {RequestError} from './RequestError';
 import {HttpMethod} from './HttpMethod';
 import {Response} from './Response';
+import {StatusCode} from './StatusCode';
 
 export abstract class Request {
 
@@ -16,6 +17,8 @@ export abstract class Request {
     protected timeoutMillis: number = 10000;
 
     protected request: XMLHttpRequest = new XMLHttpRequest();
+
+    private status: number;
 
     constructor(method: HttpMethod) {
         this.method = method;
@@ -43,11 +46,17 @@ export abstract class Request {
             if (this.request.readyState === 4) {
                 let errorJson = null;
 
-                if (this.request.status === 204) {
+                if (this.isRedirect()) {
+                    this.status = StatusCode.REDIRECT;
+                } else {
+                    this.status = this.request.status;
+                }
+
+                if (this.request.status === StatusCode.NO_CONTENT) {
                     deferred.resolve(null);
-                } else if (this.request.status >= 200 && this.request.status < 300) {
+                } else if (this.request.status >= StatusCode.OK && this.request.status < StatusCode.MULTIPLE_OPTIONS) {
                     deferred.resolve(this.request.response);
-                } else if (this.request.status === 403) {
+                } else if (this.request.status === StatusCode.FORBIDDEN) {
                     deferred.reject(new AccessDeniedException('Access denied'));
                 } else {
                     try {
@@ -64,16 +73,11 @@ export abstract class Request {
         return deferred;
     }
 
-    private sendRequest(): Q.Promise<Response> {
-        const deferred = this.bindRequestEventsHandlers();
-
-        this.request.send(this.createRequestData());
-
-        return deferred.promise;
+    getStatus(): number {
+        return this.status;
     }
 
     send(): Q.Promise<Response> {
-
         this.prepareRequest();
         return this.sendRequest();
     }
@@ -88,4 +92,16 @@ export abstract class Request {
     }
 
     protected abstract createRequestURI(): string;
+
+    private sendRequest(): Q.Promise<Response> {
+        const deferred = this.bindRequestEventsHandlers();
+
+        this.request.send(this.createRequestData());
+
+        return deferred.promise;
+    }
+
+    private isRedirect(): boolean {
+        return !this.request.responseURL.endsWith(this.createRequestURI());
+    }
 }
