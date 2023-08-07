@@ -31,7 +31,7 @@
     "mousetrap": "^1.6.5",
     "q": "^1.5.1",
     "slickgrid": "^4.0.1",
-    "validator": "^13.9.0"
+    "validator": "^13.11.0"
   },
   "peerDependencies": {
     "postcss": "^8.2.2"
@@ -44,7 +44,7 @@
     "@types/jqueryui": "^1.12.17",
     "@types/q": "^1.5.5",
     "@types/semver": "^7.5.0",
-    "@types/validator": "^13.7.17",
+    "@types/validator": "^13.9.0",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.2.1",
     "autoprefixer": "^10.4.14",
