@@ -27,7 +27,7 @@ archivesBaseName = 'lib-admin-ui'
 
 node {
     download = true
-    version = '18.12.1'
+    version = '18.17.1'
 }
 
 publishing {
@@ -62,14 +62,16 @@ publishing {
 
 loadConfiguration()
 
-task lint( type: NpmTask, dependsOn: npmInstall ) {
+tasks.register( 'lint', NpmTask ) {
+    dependsOn npmInstall
     args = ['run', 'lint']
     outputs.upToDateWhen { false }
 }
 
 check.dependsOn( lint )
 
-task typescript( type: NpmTask, dependsOn: npmInstall ) {
+tasks.register( 'typescript', NpmTask ) {
+    dependsOn npmInstall
     description = 'Build JS and DTS'
     def buildEnv = isProd() ? 'prod' : 'dev'
     environment = ['NODE_ENV': nodeEnvironment()]
@@ -80,7 +82,8 @@ task typescript( type: NpmTask, dependsOn: npmInstall ) {
                   "$buildDir/resources/main/assets/admin/common" )
 }
 
-task copyJS( type: Copy, dependsOn: typescript ) {
+tasks.register( 'copyJS', Copy ) {
+    dependsOn typescript
     if ( !isProd() )
     {
         from "$buildDir/tmp/src/main/resources/assets/admin/common/js"
@@ -91,7 +94,8 @@ task copyJS( type: Copy, dependsOn: typescript ) {
     outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
 }
 
-task copyPackage( type: Copy, dependsOn: typescript ) {
+tasks.register( 'copyPackage', Copy ) {
+    dependsOn typescript
     from( './' ) {
         include 'package.json'
     }
@@ -133,7 +137,7 @@ jar {
     dependsOn copyPackage
 }
 
-task devJar ( type: Jar ) {
+tasks.register( 'devJar', Jar ) {
     archiveClassifier = 'dev-resources'
     from sourceSets.main.output
     include 'dev/**'
@@ -152,7 +156,8 @@ artifacts {
 components.java.addVariantsFromConfiguration( configurations.devResources ) {
 }
 
-task flush( type: Delete, dependsOn: clean ) {
+tasks.register( 'flush', Delete ) {
+    dependsOn clean
     description = 'Clean the project from built sources and dependencies'
     delete '.xp'
 }
