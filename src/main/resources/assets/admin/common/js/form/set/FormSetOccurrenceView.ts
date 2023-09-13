@@ -649,6 +649,7 @@ export abstract class FormSetOccurrenceView
             .replace(/<\/?[^>]+(>|$)/g, '') // removing tags
             .replace(/&nbsp;/g, '') // removing spaces
             .replace(/\s{2,}/g, ' ') // removing spaces
+            .replace(/\n/g, ' ') // removing linebreaks
             .trim();
     }
 
