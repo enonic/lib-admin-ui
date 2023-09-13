@@ -11,6 +11,8 @@ export class FormOccurrenceDraggableLabel
     private titleText: string;
     private subTitleText: string;
 
+    private static MAX_LABEL_LENGTH = 255;
+
     constructor(label?: string, subTitle?: string) {
         super('form-occurrence-draggable-label');
 
@@ -20,16 +22,14 @@ export class FormOccurrenceDraggableLabel
 
         this.subTitle = new PEl('note');
         if (subTitle) {
-            this.subTitleText = subTitle;
-            this.subTitle.setHtml(subTitle);
-            this.refreshCustomClass();
+            this.setSubTitle(subTitle);
         }
 
         this.getEl().appendChildren([dragHandle.getHTMLElement(), this.title, this.subTitle.getHTMLElement()]);
     }
 
-    setText(label: string) {
-        this.title.textContent = label.trim();
+    setText(value: string) {
+        this.title.textContent = this.getPrettifiedText(value);
     }
 
     setExpandable(expandable: boolean) {
@@ -46,9 +46,10 @@ export class FormOccurrenceDraggableLabel
         return super.setTitle(title);
     }
 
-    setSubTitle(subTitle: string) {
-        this.subTitleText = subTitle;
-        this.subTitle.setHtml(subTitle);
+    setSubTitle(value: string) {
+        const prettifiedText = this.getPrettifiedText(value);
+        this.subTitleText = prettifiedText;
+        this.subTitle.setHtml(prettifiedText);
         this.refreshCustomClass();
     }
 
@@ -58,5 +59,9 @@ export class FormOccurrenceDraggableLabel
 
     private refreshCustomClass() {
         this.toggleClass('custom-label', !StringHelper.isBlank(this.subTitleText));
+    }
+
+    private getPrettifiedText(value: string): string {
+        return value.trim().substring(0, FormOccurrenceDraggableLabel.MAX_LABEL_LENGTH);
     }
 }
