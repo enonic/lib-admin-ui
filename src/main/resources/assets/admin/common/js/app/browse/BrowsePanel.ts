@@ -69,7 +69,7 @@ export class BrowsePanel
             this.filterAndGridSplitPanel = this.setupFilterPanel();
         }
 
-        this.debouncedActionsAndPreviewUpdate = AppHelper.debounce(this.updateActionsAndPreview.bind(this), 100);
+        this.debouncedActionsAndPreviewUpdate = AppHelper.debounce(this.updateActionsAndPreview.bind(this), 250);
     }
 
     protected initListeners() {
@@ -118,7 +118,11 @@ export class BrowsePanel
             this.updateSelectionModeShownItems(totalFullSelected);
         }
 
-        this.debouncedActionsAndPreviewUpdate();
+        if (totalFullSelected) {
+            this.debouncedActionsAndPreviewUpdate();
+        } else {
+            this.updateActionsAndPreview();
+        }
 
         if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
             this.updateFilterPanelOnSelectionChange();
@@ -275,7 +279,11 @@ export class BrowsePanel
     }
 
     private handleHighlightingChanged() {
-        this.debouncedActionsAndPreviewUpdate();
+        if (this.treeGrid.hasHighlightedNode()) {
+            this.debouncedActionsAndPreviewUpdate();
+        } else {
+            this.updateActionsAndPreview();
+        }
     }
 
     private filterPanelIsHidden(): boolean {

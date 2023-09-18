@@ -13,6 +13,8 @@ export class Mask
 
     private removeWhenMaskedRemoved: boolean;
 
+    private visible: boolean = false;
+
     constructor(itemToMask?: Element) {
         super('mask', StyleHelper.COMMON_PREFIX);
 
@@ -44,7 +46,13 @@ export class Mask
     }
 
     hide() {
+        if (!this.visible) {
+            return;
+        }
+
         super.hide();
+
+        this.visible = false;
 
         if (Body.get().contains(this)) {
             this.remove();
@@ -52,9 +60,14 @@ export class Mask
     }
 
     show() {
+        if (this.visible) {
+            return;
+        }
         Body.get().appendChild(this);
 
         super.show();
+
+        this.visible = true;
 
         if (this.masked) {
             this.masked.whenRendered(() => this.positionOverMaskedEl());
