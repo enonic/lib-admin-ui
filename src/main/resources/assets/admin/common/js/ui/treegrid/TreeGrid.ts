@@ -34,6 +34,12 @@ export enum SelectionOnClickType {
     NONE,
 }
 
+interface SelectionEventListener {
+    handler: () => void
+    eventType: SelectionOnClickType
+    debounced: boolean
+}
+
 /*
  * There are several methods that should be overridden:
  * 1. hasChildren(data: DATA)  -- Should be implemented if a grid has a tree structure and supports expand/collapse.
@@ -41,6 +47,7 @@ export enum SelectionOnClickType {
  * 3. fetchChildren(parentData?: DATA) -- Should fetch children of a parent data;
  * 4. fetchRoot() -- Fetches root nodes. by default return fetchChildren() with an empty parameter.
  */
+
 export class TreeGrid<DATA extends IDentifiable>
     extends Panel {
 
@@ -54,12 +61,11 @@ export class TreeGrid<DATA extends IDentifiable>
     private toolbar: TreeGridToolbar;
     private contextMenu: TreeGridContextMenu;
     private active: boolean;
-    private loadedListeners: Function[] = [];
-    private contextMenuListeners: Function[] = [];
-    private selectionChangeListeners: Function[] = [];
-    private highlightingChangeListeners: Function[] = [];
-    private highlightingChangedDebouncedHandler: Function;
-    private selectionChangedDebouncedHandler: Function;
+    private loadedListeners: ((scope: TreeGrid<DATA>) => void)[] = [];
+    private contextMenuListeners: ((scope: ContextMenuShownEvent) => void)[] = [];
+    private selectionChangeListeners: SelectionEventListener[] = [];
+    private readonly debouncedSelectionChangeHandler: (type: SelectionOnClickType) => void;
+
     private dataChangeListeners: ((event: DataChangedEvent<DATA>) => void)[] = [];
     private activeChangedListeners: ((active: boolean) => void)[] = [];
     private loadBufferSize: number;
@@ -140,13 +146,13 @@ export class TreeGrid<DATA extends IDentifiable>
         }
 
         this.idPropertyName = builder.getIdPropertyName();
-        this.highlightingChangedDebouncedHandler = AppHelper.debounce(() => {
-            this.highlightingChangeListeners.forEach((listener: Function) => listener());
-        }, 200);
 
-        this.selectionChangedDebouncedHandler = AppHelper.debounce(() => {
-            this.selectionChangeListeners.forEach((listener: Function) => listener());
-        }, 200);
+        this.debouncedSelectionChangeHandler = AppHelper.debounce((eventType: SelectionOnClickType) =>
+                this.getSelectionChangeListenersForType(eventType)
+                    .forEach(
+                        (eventListener: SelectionEventListener) => eventListener.debounced && eventListener.handler()
+                    )
+            , 200);
 
         this.initEventListeners(builder);
         this.initKeyBindings();
@@ -276,9 +282,47 @@ export class TreeGrid<DATA extends IDentifiable>
         this.collapseNode(node);
     }
 
-    onHighlightingChanged(listener: () => void) {
-        this.highlightingChangeListeners.push(listener);
+    onSelectionOrHighlightingChanged(listener: () => void, debounced: boolean = true) {
+        this.selectionChangeListeners.push({handler: listener, eventType: SelectionOnClickType.NONE, debounced});
+    }
+
+    private getSelectionChangeListenersForType(eventType: SelectionOnClickType): SelectionEventListener[] {
+        return this.selectionChangeListeners.filter((eventListener: SelectionEventListener) =>
+            eventListener.eventType === eventType || eventListener.eventType === SelectionOnClickType.NONE
+        );
+    }
+
+    private notifySelectionChanged() {
+        this.debouncedSelectionChangeHandler(SelectionOnClickType.SELECT);
+        this.getSelectionChangeListenersForType(SelectionOnClickType.SELECT).forEach(
+            (eventListener: SelectionEventListener) => !eventListener.debounced && eventListener.handler()
+        );
+    }
+
+    onSelectionChanged(listener: () => void, debounced: boolean = true) {
+        this.selectionChangeListeners.push({handler: listener, eventType: SelectionOnClickType.SELECT, debounced});
+    }
+
+    unSelectionChanged(listener: () => void) {
+        this.selectionChangeListeners = this.selectionChangeListeners.filter((curr) => {
+            return curr.handler !== listener;
+        });
+    }
+
+    private notifyHighlightingChanged(): void {
+        this.debouncedSelectionChangeHandler(SelectionOnClickType.HIGHLIGHT);
+        this.getSelectionChangeListenersForType(SelectionOnClickType.HIGHLIGHT).forEach(
+            (eventListener: SelectionEventListener) => !eventListener.debounced && eventListener.handler()
+        );
+    }
+
+    onHighlightingChanged(listener: () => void, debounced: boolean = true) {
+        this.selectionChangeListeners.push({handler: listener, eventType: SelectionOnClickType.HIGHLIGHT, debounced});
         return this;
+    }
+
+    unHighlightingChanged(listener: () => void) {
+        this.unSelectionChanged(listener);
     }
 
     private getRowByNode(node: TreeNode<DATA>): JQuery {
@@ -286,13 +330,6 @@ export class TreeGrid<DATA extends IDentifiable>
         let cell = this.grid.getCellNode(rowIndex, 0);
 
         return $(cell).closest('.slick-row');
-    }
-
-    unHighlightingChanged(listener: () => void) {
-        this.highlightingChangeListeners = this.highlightingChangeListeners.filter((curr) => {
-            return curr !== listener;
-        });
-        return this;
     }
 
     removeHighlighting(skipEvent: boolean = false) {
@@ -902,22 +939,6 @@ export class TreeGrid<DATA extends IDentifiable>
 
     protected getItem(rowIndex: number): TreeNode<DATA> {
         return this.gridData.getItem(rowIndex);
-    }
-
-    private triggerSelectionChangedListeners() {
-        this.selectionChangedDebouncedHandler();
-    }
-
-    onSelectionChanged(listener: () => void) {
-        this.selectionChangeListeners.push(listener);
-        return this;
-    }
-
-    unSelectionChanged(listener: () => void) {
-        this.selectionChangeListeners = this.selectionChangeListeners.filter((curr) => {
-            return curr !== listener;
-        });
-        return this;
     }
 
     onContextMenuShown(listener: () => void) {
@@ -1685,7 +1706,7 @@ export class TreeGrid<DATA extends IDentifiable>
 
     private handleSelectionChanged(): void {
         if (this.selection.isSelectionChanged()) {
-            this.triggerSelectionChangedListeners();
+            this.notifySelectionChanged();
             this.selection.resetSelectionChanged();
         }
     }
@@ -1730,10 +1751,6 @@ export class TreeGrid<DATA extends IDentifiable>
             });
             this.grid.setCellCssStyles('highlight', stylesHash);
         }
-    }
-
-    private notifyHighlightingChanged(): void {
-        this.highlightingChangedDebouncedHandler();
     }
 
     private notifyContextMenuShown(x: number, y: number) {

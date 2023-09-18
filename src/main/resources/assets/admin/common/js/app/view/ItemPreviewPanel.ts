@@ -21,7 +21,6 @@ export class ItemPreviewPanel<M extends Equitable>
         this.toolbar = this.createToolbar();
         this.mask = new LoadMask(this);
         this.frame = new IFrameEl();
-        this.frame.onLoaded(() => this.mask.hide());
         this.wrapper = new DivEl('wrapper');
         this.wrapper.appendChild(this.frame);
         this.appendChildren(this.toolbar, this.wrapper, this.mask);
@@ -29,5 +28,15 @@ export class ItemPreviewPanel<M extends Equitable>
 
     createToolbar(): ItemPreviewToolbar<M> {
         return new ItemPreviewToolbar<M>();
+    }
+
+    public showMask() {
+        if (this.isVisible()) {
+            this.mask.show();
+        }
+    }
+
+    public hideMask() {
+        this.mask.hide();
     }
 }
