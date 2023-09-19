@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+// import * as $ from 'jquery'; // jquery is a peerDependency
 import 'jquery-simulate/jquery.simulate.js';
 import * as qq from 'fine-uploader/lib/core';
 import {DragAndDrop} from 'fine-uploader/dnd/dnd';

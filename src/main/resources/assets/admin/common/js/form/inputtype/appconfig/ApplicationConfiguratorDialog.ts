@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+// import * as $ from 'jquery'; // jquery is a peerDependency
 import * as Q from 'q';
 import {FormView} from '../../FormView';
 import {ComboBox} from '../../../ui/selector/combobox/ComboBox';

@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+// import * as $ from 'jquery'; // jquery is a peerDependency
 import {Element} from './Element';
 import {StringHelper} from '../util/StringHelper';
 import {assert, assertNotNull} from '../util/Assert';
