@@ -1,4 +1,3 @@
-import * as $ from 'jquery';
 import * as Q from 'q';
 import {Element} from '../../dom/Element';
 import {ElementHelper} from '../../dom/ElementHelper';

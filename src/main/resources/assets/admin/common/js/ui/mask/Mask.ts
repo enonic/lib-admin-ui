@@ -1,4 +1,3 @@
-import * as $ from 'jquery';
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
 import {DivEl} from '../../dom/DivEl';
 import {Element} from '../../dom/Element';

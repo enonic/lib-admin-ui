@@ -1,4 +1,3 @@
-import * as $ from 'jquery';
 import {Element} from '../../dom/Element';
 import {TreeGrid} from '../treegrid/TreeGrid';
 import {TreeNode} from '../treegrid/TreeNode';
