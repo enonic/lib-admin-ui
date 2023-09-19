@@ -1,4 +1,3 @@
-import * as $ from 'jquery';
 import 'jquery-simulate/jquery.simulate.js';
 import * as qq from 'fine-uploader/lib/core';
 import {DragAndDrop} from 'fine-uploader/dnd/dnd';

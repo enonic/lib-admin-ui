@@ -1,5 +1,5 @@
-import * as $ from 'jquery';
-import 'jquery-ui/ui/widgets/sortable';
+// import * as $ from 'jquery'; // jquery is a peerDependency
+// import 'jquery-ui/ui/widgets/sortable'; // jquery-ui is a peerDependency
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
 import {Option} from '../Option';

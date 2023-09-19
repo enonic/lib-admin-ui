@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+// import * as $ from 'jquery'; // jquery is a peerDependency
 import * as Q from 'q';
 import {H2El} from '../../dom/H2El';
 import {Element} from '../../dom/Element';

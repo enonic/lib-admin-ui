@@ -1,4 +1,3 @@
-import * as $ from 'jquery';
 import {Body} from '../dom/Body';
 import {NotificationMessage} from './NotificationMessage';
 import {NotificationContainer} from './NotificationContainer';

@@ -1,4 +1,3 @@
-import * as $ from 'jquery';
 import {ButtonEl} from '../../dom/ButtonEl';
 import {SpanEl} from '../../dom/SpanEl';
 import {BrowserHelper} from '../../BrowserHelper';
