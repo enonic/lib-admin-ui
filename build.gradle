@@ -9,6 +9,10 @@ plugins {
 apply from: "$rootDir/gradle/env.gradle"
 apply from: "$rootDir/gradle/node.gradle"
 
+compileJava {
+	options.release = 11
+}
+
 configurations {
     devResources {
         attributes {
