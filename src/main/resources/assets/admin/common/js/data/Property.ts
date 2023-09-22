@@ -12,7 +12,6 @@ import {LocalDate} from '../util/LocalDate';
 import {Equitable} from '../Equitable';
 import {ObjectHelper} from '../ObjectHelper';
 import {StringHelper} from '../util/StringHelper';
-import {PropertyIndexChangedEvent} from './PropertyIndexChangedEvent';
 import {PropertyValueChangedEvent} from './PropertyValueChangedEvent';
 import {assertNotNull} from '../util/Assert';
 import {ValueTypes} from './ValueTypes';
@@ -40,8 +39,6 @@ export class Property
     private index: number;
 
     private value: Value;
-
-    private propertyIndexChangedListeners: ((event: PropertyIndexChangedEvent) => void)[] = [];
 
     private propertyValueChangedListeners: ((event: PropertyValueChangedEvent) => void)[] = [];
 
@@ -89,12 +86,7 @@ export class Property
      * @param newIndex
      */
     setIndex(newIndex: number) {
-        let oldIndex = this.index;
         this.index = newIndex;
-
-        if (oldIndex !== newIndex) {
-            this.notifyPropertyIndexChangedEvent(oldIndex, newIndex);
-        }
     }
 
     /**
@@ -142,7 +134,6 @@ export class Property
         }
         this.array = null;
         this.parent = null;
-        this.propertyIndexChangedListeners = [];
         this.propertyValueChangedListeners = [];
     }
 
@@ -286,15 +277,6 @@ export class Property
         return Property.create().setName(this.name).setValue(value).setIndex(this.index).setArray(destinationPropertyArray).build();
     }
 
-    onPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
-        this.propertyIndexChangedListeners.push(listener);
-    }
-
-    unPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
-        this.propertyIndexChangedListeners =
-            this.propertyIndexChangedListeners.filter((curr) => (curr !== listener));
-    }
-
     onPropertyValueChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.propertyValueChangedListeners.push(listener);
     }
@@ -302,14 +284,6 @@ export class Property
     unPropertyValueChanged(listener: (event: PropertyValueChangedEvent) => void) {
         this.propertyValueChangedListeners =
             this.propertyValueChangedListeners.filter((curr) => (curr !== listener));
-    }
-
-    private notifyPropertyIndexChangedEvent(previousIndex: number, newIndex: number) {
-        let event = new PropertyIndexChangedEvent(this, previousIndex, newIndex);
-        if (Property.debug) {
-            console.debug('Property[' + this.getPath().toString() + '].notifyPropertyIndexChangedEvent: ' + event.toString());
-        }
-        this.propertyIndexChangedListeners.forEach((listener) => listener(event));
     }
 
     private notifyPropertyValueChangedEvent(previousValue: Value, newValue: Value) {

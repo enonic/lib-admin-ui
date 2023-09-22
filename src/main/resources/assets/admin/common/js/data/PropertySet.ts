@@ -11,7 +11,6 @@ import {DateTime} from '../util/DateTime';
 import {PropertyEvent} from './PropertyEvent';
 import {PropertyAddedEvent} from './PropertyAddedEvent';
 import {PropertyRemovedEvent} from './PropertyRemovedEvent';
-import {PropertyIndexChangedEvent} from './PropertyIndexChangedEvent';
 import {PropertyValueChangedEvent} from './PropertyValueChangedEvent';
 import {PropertyTree, PropertyTreeDiff} from './PropertyTree';
 import {PropertyArray} from './PropertyArray';
@@ -23,6 +22,7 @@ import {PropertyArrayJson} from './PropertyArrayJson';
 import {ValueType} from './ValueType';
 import {ValueTypePropertySet} from './ValueTypePropertySet';
 import {Typable} from './Typable';
+import {PropertyMovedEvent} from './PropertyMovedEvent';
 
 /**
  * A PropertySet manages a set of properties. The properties are grouped in arrays by name ([[Property.name]]).
@@ -85,7 +85,7 @@ export class PropertySet
 
     private propertyRemovedListeners: ((event: PropertyRemovedEvent) => void)[] = [];
 
-    private propertyIndexChangedListeners: ((event: PropertyIndexChangedEvent) => void)[] = [];
+    private propertyMovedListeners: ((event: PropertyMovedEvent) => void)[] = [];
 
     private propertyValueChangedListeners: ((event: PropertyValueChangedEvent) => void)[] = [];
 
@@ -93,7 +93,7 @@ export class PropertySet
 
     private propertyRemovedEventHandler: (event: PropertyRemovedEvent) => void;
 
-    private propertyIndexChangedEventHandler: (event: PropertyIndexChangedEvent) => void;
+    private propertyMovedEventHandler: (event: PropertyMovedEvent) => void;
 
     private propertyValueChangedEventHandler: (event: PropertyValueChangedEvent) => void;
 
@@ -106,8 +106,8 @@ export class PropertySet
         this.propertyRemovedEventHandler = (event) => {
             this.forwardPropertyRemovedEvent(event);
         };
-        this.propertyIndexChangedEventHandler = (event) => {
-            this.forwardPropertyIndexChangedEvent(event);
+        this.propertyMovedEventHandler = (event) => {
+            this.forwardPropertyMovedEvent(event);
         };
         this.propertyValueChangedEventHandler = (event) => {
             this.forwardPropertyValueChangedEvent(event);
@@ -535,8 +535,8 @@ export class PropertySet
      * @param listener
      * @see [[PropertyRemovedEvent]]
      */
-    onPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
-        this.propertyIndexChangedListeners.push(listener);
+    onPropertyMoved(listener: (event: PropertyMovedEvent) => void) {
+        this.propertyMovedListeners.push(listener);
     }
 
     /**
@@ -544,8 +544,8 @@ export class PropertySet
      * @param listener
      * @see [[PropertyIndexChangedEvent]]
      */
-    unPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
-        this.propertyIndexChangedListeners = this.propertyIndexChangedListeners.filter((curr) => (curr !== listener));
+    unPropertyMoved(listener: (event: PropertyMovedEvent) => void) {
+        this.propertyMovedListeners = this.propertyMovedListeners.filter((curr) => (curr !== listener));
     }
 
     /**
@@ -1176,7 +1176,7 @@ export class PropertySet
 
         array.onPropertyAdded(this.propertyAddedEventHandler);
         array.onPropertyRemoved(this.propertyRemovedEventHandler);
-        array.onPropertyIndexChanged(this.propertyIndexChangedEventHandler);
+        array.onPropertyMoved(this.propertyMovedEventHandler);
         array.onPropertyValueChanged(this.propertyValueChangedEventHandler);
     }
 
@@ -1206,12 +1206,12 @@ export class PropertySet
         this.notifyChangedListeners(event);
     }
 
-    private forwardPropertyIndexChangedEvent(event: PropertyIndexChangedEvent) {
+    private forwardPropertyMovedEvent(event: PropertyMovedEvent) {
         if (PropertySet.debug) {
-            console.debug('PropertySet[' + this.getPropertyPath().toString() + '].forwardPropertyIndexChangedEvent: ' +
+            console.debug('PropertySet[' + this.getPropertyPath().toString() + '].forwardPropertyMovedEvent: ' +
                           event.toString());
         }
-        this.propertyIndexChangedListeners.forEach((listener) => listener(event));
+        this.propertyMovedListeners.forEach((listener) => listener(event));
         this.notifyChangedListeners(event);
     }
 

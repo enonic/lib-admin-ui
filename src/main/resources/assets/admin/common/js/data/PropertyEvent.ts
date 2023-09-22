@@ -4,9 +4,9 @@ import {PropertyPath} from './PropertyPath';
 
 export class PropertyEvent {
 
-    private type: PropertyEventType;
+    private readonly type: PropertyEventType;
 
-    private property: Property;
+    private readonly property: Property;
 
     constructor(type: PropertyEventType, property: Property) {
         this.type = type;

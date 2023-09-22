@@ -1,7 +1,7 @@
 export enum PropertyEventType {
 
     ADDED,
-    INDEX_CHANGED,
+    MOVED,
     VALUE_CHANGED,
     REMOVED,
 
