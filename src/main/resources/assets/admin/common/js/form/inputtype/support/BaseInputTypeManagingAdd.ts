@@ -220,7 +220,7 @@ export abstract class BaseInputTypeManagingAdd
             propertyArray.onPropertyValueChanged(this.propertyArrayListener);
             propertyArray.onPropertyAdded(this.propertyArrayListener);
             propertyArray.onPropertyRemoved(this.propertyArrayListener);
-            propertyArray.onPropertyIndexChanged(this.propertyArrayListener);
+            propertyArray.onPropertyMoved(this.propertyArrayListener);
         }
         this.propertyArray = propertyArray;
     }
@@ -229,7 +229,7 @@ export abstract class BaseInputTypeManagingAdd
         this.propertyArray.unPropertyValueChanged(this.propertyArrayListener);
         this.propertyArray.unPropertyAdded(this.propertyArrayListener);
         this.propertyArray.unPropertyRemoved(this.propertyArrayListener);
-        this.propertyArray.unPropertyIndexChanged(this.propertyArrayListener);
+        this.propertyArray.unPropertyMoved(this.propertyArrayListener);
     }
 
     private ensureOccurrenceLimits(propertyArray: PropertyArray) {

@@ -15,9 +15,9 @@ import {PropertyArray} from './PropertyArray';
 import {Value} from './Value';
 import {PropertyEvent} from './PropertyEvent';
 import {PropertyAddedEvent} from './PropertyAddedEvent';
-import {PropertyIndexChangedEvent} from './PropertyIndexChangedEvent';
 import {PropertyRemovedEvent} from './PropertyRemovedEvent';
 import {PropertyValueChangedEvent} from './PropertyValueChangedEvent';
+import {PropertyMovedEvent} from './PropertyMovedEvent';
 
 export interface PropertyTreeDiff {
     added: Property[];
@@ -248,19 +248,19 @@ export class PropertyTree
     /**
      * Register a listener-function to be called when a [[Property.index]] has changed anywhere in the tree.
      * @param listener
-     * @see [[PropertyIndexChangedEvent]]
+     * @see [[PropertyMovedEvent]]
      */
-    onPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
-        this.root.onPropertyIndexChanged(listener);
+    onPropertyMoved(listener: (event: PropertyMovedEvent) => void) {
+        this.root.onPropertyMoved(listener);
     }
 
     /**
      * Deregister a listener-function.
      * @param listener
-     * @see [[PropertyIndexChangedEvent]]
+     * @see [[PropertyMovedEvent]]
      */
-    unPropertyIndexChanged(listener: (event: PropertyIndexChangedEvent) => void) {
-        this.root.unPropertyIndexChanged(listener);
+    unPropertyMoved(listener: (event: PropertyMovedEvent) => void) {
+        this.root.unPropertyMoved(listener);
     }
 
     /**
