@@ -1,7 +1,5 @@
-// import * as $ from 'jquery'; // jquery is a peerDependency
-// import 'jquery-ui/ui/tabbable'; // jquery-ui is a peerDependency
-
 import * as Q from 'q';
+import 'jquery-ui/ui/tabbable';
 import {StyleHelper} from '../StyleHelper';
 import {StringHelper} from '../util/StringHelper';
 import {ObjectHelper} from '../ObjectHelper';
