@@ -47,7 +47,7 @@
     "@types/validator": "^13.11.1",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.3",
-    "autoprefixer": "^10.4.15",
+    "autoprefixer": "^10.4.16",
     "browserslist": "^4.21.11",
     "browserslist-config-enonic": "^1.0.8",
     "circular-dependency-plugin": "^5.2.2",
