@@ -1,0 +1,1 @@
+export {GeoPoint} from './GeoPoint';

@@ -53,5 +53,6 @@ module.exports = {
         'build/',
         'dist/',
         '.xp/',
+        'tsup.config.ts'
     ],
 };

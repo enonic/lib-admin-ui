@@ -1,0 +1,28 @@
+{
+  "author": "Alan Semenov <ase@enonic.com>",
+  "contributors": [
+    "Christian Westgaard <cwe@enonic.com>"
+  ],
+  "description": "Admin UI Library",
+  "files": [
+    "*.js",
+    "*.map"
+  ],
+  "keywords": [
+    "enonic",
+    "admin",
+    "slickgrid"
+  ],
+  "license": "GPL-3.0",
+  "main": "lib-admin-ui.min.js",
+  "name": "@enonic/lib-admin-ui",
+  "peerDependencies": {
+    "jquery": "^3.7.1",
+    "jquery-ui-dist": "^1.13.2"
+  },
+  "repository": {
+    "url": "git+https://github.com/enonic/lib-admin-ui.git"
+  },
+  "scripts": {},
+  "version": "0.0.1-SNAPSHOT"
+}

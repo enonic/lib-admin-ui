@@ -1,6 +1,6 @@
-import {PrincipalJson} from './PrincipalJson';
+import type {PrincipalJson} from './PrincipalJson';
 
-export class PrincipalListJson {
+export interface PrincipalListJson {
 
     principals: PrincipalJson[];
 

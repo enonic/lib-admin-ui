@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        // "esModuleInterop": true,
         "module": "commonjs",
         "target": "es5",
         "lib": [
@@ -27,7 +28,8 @@
         ]
     },
     "include": [
-        "src/main/resources/assets/admin/common/js/**/*.ts"
+        "src/main/resources/assets/admin/common/js/**/*.ts",
+        "src/main/resources/assets/admin/common/lib/**/*.ts"
     ],
     "exclude": [
         ".vscode",

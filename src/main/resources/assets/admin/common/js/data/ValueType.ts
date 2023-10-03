@@ -45,7 +45,7 @@ export class ValueType
     }
 
     equals(o: Equitable): boolean {
-
+        console.debug('ValueType.equals', o);
         if (!ObjectHelper.iFrameSafeInstanceOf(o, ValueType)) {
             return false;
         }

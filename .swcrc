@@ -16,8 +16,7 @@
     },
     "exclude": [
         ".*\\.d\\.ts$",
-        "/spec/",
-        "/lib/"
+        "/spec/"
     ],
     "module": {
         "type": "commonjs",
