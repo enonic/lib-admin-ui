@@ -1,10 +1,8 @@
 export class Class {
+    private readonly name: string;
+    private readonly fn: new (...args: any[]) => any;
 
-    private name: string;
-
-    private fn: Function;
-
-    constructor(name: string, fn: Function) {
+    constructor(name: string, fn: new (...args: any[]) => any) {
         this.name = name;
         this.fn = fn;
     }
@@ -14,9 +12,6 @@ export class Class {
     }
 
     newInstance(constructorParams?: any): any {
-
-        let newInstance = Object.create(this.fn.prototype);
-        newInstance.constructor.call(newInstance, constructorParams);
-        return newInstance;
+        return new this.fn(constructorParams);
     }
 }
