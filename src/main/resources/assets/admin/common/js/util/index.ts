@@ -24,7 +24,10 @@ export {LocalDate} from './LocalDate';
 export {LocalDateTime} from './LocalDateTime';
 export {LocalTime} from './LocalTime';
 export {LongTimeHMS} from './LongTimeHMS';
-export {Messages} from './Messages';
+export {
+    Messages,
+    i18n
+} from './Messages';
 export {
     i18nInit,
     i18nFetch,

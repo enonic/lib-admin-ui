@@ -4,7 +4,7 @@
 import {
     AppManager,
     AppPanel,
-    // Application, // TODO name collision
+    Application, // app.users only uses this one, not the one from ./application
     NamesAndIconView,
     NamesAndIconViewSize,
     NamesView,
@@ -18,7 +18,7 @@ import {
 } from './app';
 
 import {
-    // Application, // TODO name collision
+    // Application, // TODO name collision // app-users uses the one from ./app
     ApplicationBasedName,
     ApplicationCache,
     ApplicationCaches,
@@ -434,9 +434,6 @@ import {
     LocalTime,
     LongTimeHMS,
     Messages,
-    i18nInit,
-    i18nFetch,
-    i18nAdd,
     NumberHelper,
     PropertyTreeHelper,
     Reference,
@@ -449,6 +446,10 @@ import {
     assertState,
     assertNotNull,
     assertNull,
+    i18n,
+    i18nAdd,
+    i18nFetch,
+    i18nInit,
     // loader
 } from './util';
 
@@ -1250,7 +1251,7 @@ export {
     //─────────────────────────────────────────────────────────────────────────
     AppManager,
     AppPanel,
-    // Application, // TODO name collision
+    Application,
     NamesAndIconView,
     NamesAndIconViewSize,
     NamesView,
@@ -1979,9 +1980,6 @@ export {
     LocalTime,
     LongTimeHMS,
     Messages,
-    i18nInit,
-    i18nFetch,
-    i18nAdd,
     NumberHelper,
     PropertyTreeHelper,
     Reference,
@@ -1994,6 +1992,10 @@ export {
     assertState,
     assertNotNull,
     assertNull,
+    i18n,
+    i18nAdd,
+    i18nFetch,
+    i18nInit,
     //─────────────────────────────────────────────────────────────────────────
     // util.loader
     //─────────────────────────────────────────────────────────────────────────
