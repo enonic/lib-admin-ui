@@ -1,4 +1,4 @@
-export class RelationshipJson {
+export interface RelationshipJson {
 
     type: string;
     fromContent: string;

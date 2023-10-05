@@ -1,6 +1,6 @@
 import {FormItemTypeWrapperJson} from './FormItemTypeWrapperJson';
 
-export class FormJson {
+export interface FormJson {
 
     formItems: FormItemTypeWrapperJson[];
 }

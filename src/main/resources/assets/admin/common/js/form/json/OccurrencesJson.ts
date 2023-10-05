@@ -1,4 +1,4 @@
-export class OccurrencesJson {
+export interface OccurrencesJson {
 
     maximum: number;
 
