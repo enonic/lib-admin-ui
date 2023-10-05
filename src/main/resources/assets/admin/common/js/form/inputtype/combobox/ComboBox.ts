@@ -18,7 +18,7 @@ import {Class} from '../../../Class';
 import {ComboBoxOption} from './ComboBoxOption';
 import {ComboBoxDisplayValueViewer} from './ComboBoxDisplayValueViewer';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
-import {InputValidationRecording} from '../InputValidationRecording';
+// import {InputValidationRecording} from '../InputValidationRecording';
 
 export class ComboBox
     extends BaseInputTypeManagingAdd {
