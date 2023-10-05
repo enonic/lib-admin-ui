@@ -14,7 +14,7 @@ import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 
-interface RadioButtonOption {
+export interface RadioButtonOption {
     label: string;
     value: string;
 }
