@@ -1,3 +1,7 @@
+export {
+    BODY_KEY,
+    Body
+} from './Body';
 export {ButtonEl} from './ButtonEl';
 export {CompositeFormInputEl} from './CompositeFormInputEl';
 export {DdDtEl} from './DdDtEl';

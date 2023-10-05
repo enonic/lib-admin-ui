@@ -90,6 +90,8 @@ import {
 } from './data';
 
 import {
+    BODY_KEY,
+    Body,
     ButtonEl,
     CompositeFormInputEl,
     DdDtEl,
@@ -149,6 +151,157 @@ import {
 } from './event';
 
 import {
+    AdditionalValidationRecord,
+    // Form, // TODO: name collision
+    FormContext,
+    // FormItem, // TODO: name collision
+    FormItemContainer,
+    FormItemFactoryImpl,
+    FormItemLayer,
+    FormItemLayerFactory,
+    FormItemOccurrence,
+    FormItemOccurrenceView,
+    FormItemOccurrences,
+    FormItemPath,
+    FormItemState,
+    FormItemView,
+    FormOccurrenceDraggableLabel,
+    FormValidityChangedEvent,
+    FormView,
+    HelpTextContainer,
+    Input,
+    InputLabel,
+    InputTypeName,
+    InputView,
+    InputViewValidationViewer,
+    OccurrenceAddedEvent,
+    OccurrenceRemovedEvent,
+    OccurrenceRenderedEvent,
+    Occurrences,
+    RecordingValidityChangedEvent,
+    RemoveButtonClickedEvent,
+    ValidationRecording,
+    ValidationRecordingPath,
+    ValidationRecordingViewer,
+    ApplicationConfigProvider,
+    ApplicationConfiguratorDialog,
+    BaseInputType,
+    BaseInputTypeManagingAdd,
+    BaseInputTypeNotManagingAdd,
+    BaseInputTypeSingleOccurrence,
+    // Checkbox, // TODO: name collision
+    // ComboBox, // TODO: name collision
+    ComboBoxDisplayValueViewer,
+    // DateTime, // TODO: name collision
+    DateTimeRange,
+    DateType,
+    Double,
+    GeoPoint,
+    InputOccurrence,
+    InputOccurrences,
+    InputOccurrencesBuilder,
+    InputOccurrenceView,
+    InputTypeManager,
+    InputValidationRecording,
+    InputValidityChangedEvent,
+    InputValueLengthCounterEl,
+    Long,
+    NoInputTypeFoundView,
+    NumberInputType,
+    OccurrenceValidationRecord,
+    PrincipalSelector,
+    // RadioButton, // TODO: name collision
+    // TextArea, // TODO: name collision
+    TextInputType,
+    TextLine,
+    Time,
+    // ValueChangedEvent, // TODO: name collision
+    FieldSet,
+    FieldSetLabel,
+    FieldSetView,
+    FormItemSet,
+    FormItemSetOccurrences,
+    FormItemSetOccurrenceView,
+    FormItemSetView,
+    FormOptionSet,
+    FormOptionSetOccurrences,
+    FormOptionSetOccurrenceView,
+    FormOptionSetOccurrenceViewMultiOptions,
+    FormOptionSetOccurrenceViewSingleOption,
+    FormOptionSetOption,
+    FormOptionSetOptionView,
+    FormOptionSetOptionViewer,
+    FormOptionSetView,
+    FormSet,
+    FormSetHeader,
+    FormSetOccurrence,
+    FormSetOccurrences,
+    FormSetOccurrenceView,
+    FormSetView,
+    OptionSetArrayHelper
+} from './form';
+
+import {
+    IconUrlResolver
+} from './icon/IconUrlResolver';
+
+import {
+    BaseItem,
+    BaseItemBuilder,
+    Item
+} from './item';
+
+import {Locale} from './locale';
+
+import {
+    MacroDescriptor,
+    MacroDescriptorBuilder,
+    MacroKey
+} from './macro';
+
+import {
+    MANAGED_ACTION_MANAGER_KEY,
+    ManagedActionManager,
+    ManagedActionState
+} from './managedaction';
+
+import {
+    AggregationQuery,
+    BooleanFilter,
+    CompareExpr,
+    CompareOperator,
+    DateRange,
+    DateRangeAggregationQuery,
+    DateRangeJson,
+    DynamicConstraintExpr,
+    DynamicOrderExpr,
+    FieldExpr,
+    FieldOrderExpr,
+    Filter,
+    FulltextSearchExpression,
+    FulltextSearchExpressionBuilder,
+    FunctionExpr,
+    LogicalExpr,
+    LogicalOperator,
+    OrderDirection,
+    OrderExpr,
+    PathMatchExpression,
+    PathMatchExpressionBuilder,
+    QueryExpr,
+    QueryField,
+    QueryFields,
+    Range,
+    RangeFilter,
+    SearchInputValues,
+    TermsAggregationOrderDirection,
+    TermsAggregationOrderType,
+    TermsAggregationQuery,
+    ValueExpr
+} from './query';
+
+import {Relationship} from './relationship';
+
+import {
     Expand,
     GetRequest,
     HeadRequest,
@@ -182,8 +335,26 @@ import {
     UserItem,
     UserItemBuilder,
     UserItemKey,
-    auth
+    // auth
 } from './security';
+
+import {
+    ContentTypeName,
+    ContentTypeSummary,
+    ContentTypeSummaryBuilder,
+    Mixin,
+    MixinBuilder,
+    MixinName,
+    MixinNames,
+    MixinNamesBuilder,
+    Schema,
+    SchemaBuilder
+} from './schema';
+
+import {
+    GLOBAL,
+    Store
+} from './store';
 
 import {
     ConnectionDetector,
@@ -192,10 +363,26 @@ import {
 } from './system';
 
 import {
+    TaskEvent,
+    TaskEventType,
+    TaskId,
+    TaskInfo,
+    TaskInfoBuilder,
+    TaskProgress,
+    TaskProgressBuilder,
+    TaskState
+} from './task';
+
+import {
+    Thumbnail,
+    ThumbnailBuilder
+} from './thumb';
+
+import {
     Action,
     ActionsStateManager,
     ActivatedEvent,
-    Checkbox,
+    // Checkbox, // TODO: name collision
     DragHelper,
     Dropdown as DropdownSelectEl,
     FocusSwitchEvent,
@@ -207,27 +394,27 @@ import {
     Navigator, // IDE is confused by this import, say's it's not used, but it is.
     NavigatorEvent,
     ProgressBar,
-    RadioButton,
+    // RadioButton, // TODO: name collision
     RadioGroup,
     Tooltip,
     Viewer,
-    button,
-    dialog,
-    form,
-    geo,
-    grid,
-    mask,
-    menu,
-    panel,
-    responsive,
-    security as uiSecurity,
-    selector,
-    tab,
-    text,
-    time,
-    toolbar,
-    treegrid,
-    uploader
+    // button,
+    // dialog,
+    // form,
+    // geo,
+    // grid,
+    // mask,
+    // menu,
+    // panel,
+    // responsive,
+    // security as uiSecurity,
+    // selector,
+    // tab,
+    // text,
+    // time,
+    // toolbar,
+    // treegrid,
+    // uploader
 } from './ui';
 
 import {
@@ -238,7 +425,7 @@ import {
     CONFIG,
     CookieHelper,
     DateHelper,
-    DateTime,
+    // DateTime, // TODO: name collision
     DelayedFunctionCall,
     GeoPoint as GeoPointUtil,
     Link,
@@ -265,6 +452,7 @@ import {
     // loader
 } from './util';
 
+import {Validator} from './validator/Validator';
 
 //─────────────────────────────────────────────────────────────────────────────
 // Type Exports
@@ -280,7 +468,9 @@ export type {
 } from './app';
 
 export type {
-
+    ApplicationJson,
+    MarketApplicationJson,
+    MarketApplicationsListJson
 } from './application';
 
 export type {
@@ -298,8 +488,89 @@ export type {
 } from './data';
 
 export type {
+    RepositoryEventJson,
+    RepositoryEventDataJson,
+    WidgetDescriptorJson,
+    WorkflowJson
+} from './content';
+
+export type {
     EventJson
 } from './event';
+
+export type {
+    ApplicationConfiguratorDialogConfig,
+    ApplicationConfiguratorDialogParams,
+    ComboBoxOption,
+    FieldSetJson,
+    FieldSetTypeWrapperJson,
+    FieldSetViewConfig,
+    FormItemJson,
+    FormItemSetJson,
+    FormItemTypeWrapperJson,
+    FormJson,
+    FormOptionSetJson,
+    FormOptionSetOptionJson,
+    FormOptionSetOptionViewConfig,
+    FormSetJson,
+    FormSetOccurrencesConfig,
+    FormSetOccurrenceViewConfig,
+    FormSetViewConfig,
+    InputJson,
+    InputTypeView,
+    InputTypeViewContext,
+    LayoutJson,
+    OccurrencesJson,
+    RadioButtonOption
+} from './form';
+
+export type {
+    ItemJson
+} from './item';
+
+export type {
+    LocaleJson,
+    LocaleListJson
+} from './locale';
+
+export type {
+    MacrosJson,
+    MacroJson
+} from './macro';
+
+export type {
+    ManagedActionExecutor,
+    StateChangedListener
+} from './managedaction';
+
+import {
+    NOTIFY_MANAGER_KEY,
+    Message,
+    MessageAction,
+    MessageType,
+    NotificationContainer,
+    NotificationMessage,
+    NotifyManager,
+    showError,
+    showFeedback,
+    showSuccess,
+    showWarning
+} from './notify';
+
+export type {
+    AggregationQueryJson,
+    AggregationQueryTypeWrapperJson,
+    DateRangeAggregationQueryJson,
+    RangeJson,
+    TermsAggregationQueryJson,
+    ConstraintExpr,
+    Expression,
+    BooleanFilterJson,
+    FilterTypeWrapperJson,
+    RangeFilterJson
+} from './query';
+
+export type {RelationshipJson} from './relationship';
 
 export type {
     HttpRequest,
@@ -315,8 +586,30 @@ export type {
 } from './security';
 
 export type {
+    ContentTypeSummaryJson,
+    ContentTypeSummaryListJson,
+    MixinJson,
+    MixinListJson,
+    SchemaJson,
+} from './schema';
+
+export type {
+    GlobalLibAdmin
+} from './store';
+
+export type {
     StatusJson
 } from './system';
+
+export type {
+    TaskEventDataJson,
+    TaskEventJson,
+    TaskIdJson,
+    TaskInfoJson,
+    TaskProgressJson
+} from './task';
+
+export type {ThumbnailJson} from './thumb';
 
 export type {
     ActionContainer,
@@ -352,271 +645,273 @@ export {ValidationError} from './ValidationError';
 export {ValidationErrorHelper} from './ValidationErrorHelper';
 export {ValidationErrorJson} from './ValidationErrorJson';
 export {ValidityChangedEvent} from './ValidityChangedEvent';
-export {ValueChangedEvent} from './ValueChangedEvent';
+// export {ValueChangedEvent} from './ValueChangedEvent'; // TODO: name collision
 
-export const app = {
-    AppManager,
-    AppPanel,
-    // Application, // TODO: name collision
-    NamesAndIconView,
-    NamesAndIconViewSize,
-    NamesView,
-    NavigatedAppPanel,
-    ShowAppLauncherEvent,
-    ShowBrowsePanelEvent,
-    // bar,
-    // browse,
-    // view,
-    // wizard
-};
+// export const app = {
+//     AppManager,
+//     AppPanel,
+//     // Application, // TODO: name collision
+//     NamesAndIconView,
+//     NamesAndIconViewSize,
+//     NamesView,
+//     NavigatedAppPanel,
+//     ShowAppLauncherEvent,
+//     ShowBrowsePanelEvent,
+//     // bar,
+//     // browse,
+//     // view,
+//     // wizard
+// };
 
-export const application = {
-    // Application, // TODO name collision
-    ApplicationBasedName,
-    ApplicationCache,
-    ApplicationCaches,
-    ApplicationConfig,
-    ApplicationEvent,
-    ApplicationKey,
-    ApplicationListResult,
-    ApplicationLoader,
-    ApplicationResourceRequest,
-    ApplicationViewer,
-    GetApplicationRequest,
-    ListApplicationsRequest,
-    ListMarketApplicationsRequest,
-    MarketApplication,
-    MarketApplicationMetadata,
-    MarketApplicationResponse,
-    MarketHelper
-};
+// export const application = {
+//     // Application, // TODO name collision
+//     ApplicationBasedName,
+//     ApplicationCache,
+//     ApplicationCaches,
+//     ApplicationConfig,
+//     ApplicationEvent,
+//     ApplicationKey,
+//     ApplicationListResult,
+//     ApplicationLoader,
+//     ApplicationResourceRequest,
+//     ApplicationViewer,
+//     GetApplicationRequest,
+//     ListApplicationsRequest,
+//     ListMarketApplicationsRequest,
+//     MarketApplication,
+//     MarketApplicationMetadata,
+//     MarketApplicationResponse,
+//     MarketHelper
+// };
 
-export const aggregation = {
-    Aggregation,
-    AggregationContainer,
-    AggregationGroupView,
-    AggregationSelection,
-    AggregationView,
-    Bucket,
-    BucketAggregation,
-    BucketAggregationView,
-    BucketFactory,
-    BucketListBox,
-    BucketView,
-    BucketViewSelectionChangedEvent,
-    BucketViewer,
-    BucketsContainer,
-    DateRangeBucket
-};
+// export const aggregation = {
+//     Aggregation,
+//     AggregationContainer,
+//     AggregationGroupView,
+//     AggregationSelection,
+//     AggregationView,
+//     Bucket,
+//     BucketAggregation,
+//     BucketAggregationView,
+//     BucketFactory,
+//     BucketListBox,
+//     BucketView,
+//     BucketViewSelectionChangedEvent,
+//     BucketViewer,
+//     BucketsContainer,
+//     DateRangeBucket
+// };
 
-export const data = {
-    Property,
-    PropertyAddedEvent,
-    PropertyArray,
-    PropertyEvent,
-    PropertyEventType,
-    PropertyIndexChangedEvent,
-    PropertyPath,
-    PropertyRemovedEvent,
-    PropertySet,
-    PropertyTree,
-    PropertyTreeComparator,
-    PropertyValueChangedEvent,
-    Value,
-    ValueType,
-    ValueTypeBinaryReference,
-    ValueTypeBoolean,
-    ValueTypeConverter,
-    ValueTypeDateTime,
-    ValueTypeDouble,
-    ValueTypeGeoPoint,
-    ValueTypeLink,
-    ValueTypeLocalDate,
-    ValueTypeLocalDateTime,
-    ValueTypeLocalTime,
-    ValueTypeLong,
-    ValueTypePropertySet,
-    ValueTypeReference,
-    ValueTypes,
-    ValueTypeString,
-    ValueTypeXml
-};
+// export const data = {
+//     Property,
+//     PropertyAddedEvent,
+//     PropertyArray,
+//     PropertyEvent,
+//     PropertyEventType,
+//     PropertyIndexChangedEvent,
+//     PropertyPath,
+//     PropertyRemovedEvent,
+//     PropertySet,
+//     PropertyTree,
+//     PropertyTreeComparator,
+//     PropertyValueChangedEvent,
+//     Value,
+//     ValueType,
+//     ValueTypeBinaryReference,
+//     ValueTypeBoolean,
+//     ValueTypeConverter,
+//     ValueTypeDateTime,
+//     ValueTypeDouble,
+//     ValueTypeGeoPoint,
+//     ValueTypeLink,
+//     ValueTypeLocalDate,
+//     ValueTypeLocalDateTime,
+//     ValueTypeLocalTime,
+//     ValueTypeLong,
+//     ValueTypePropertySet,
+//     ValueTypeReference,
+//     ValueTypes,
+//     ValueTypeString,
+//     ValueTypeXml
+// };
 
-export const dom = {
-    ButtonEl,
-    CompositeFormInputEl,
-    DdDtEl,
-    DivEl,
-    DlEl,
-    Element,
-    ElementAddedEvent,
-    ElementEvent,
-    ElementHelper,
-    ElementHiddenEvent,
-    ElementRegistry,
-    ElementRemovedEvent,
-    ElementRenderedEvent,
-    ElementShownEvent,
-    EmEl,
-    FieldsetEl,
-    FigureEl,
-    FormEl,
-    FormInputEl,
-    FormItemEl,
-    H1El,
-    H2El,
-    H3El,
-    H4El,
-    H5El,
-    H6El,
-    IEl,
-    IFrameEl,
-    ImgEl,
-    ImgHelper,
-    InputEl,
-    LabelEl,
-    LegendEl,
-    LiEl,
-    LinkEl,
-    OptionEl,
-    PEl,
-    SectionEl,
-    SelectEl,
-    SpanEl,
-    UlEl,
-    WindowDOM
-};
+// export const dom = {
+//     BODY_KEY,
+//     Body
+//     ButtonEl,
+//     CompositeFormInputEl,
+//     DdDtEl,
+//     DivEl,
+//     DlEl,
+//     Element,
+//     ElementAddedEvent,
+//     ElementEvent,
+//     ElementHelper,
+//     ElementHiddenEvent,
+//     ElementRegistry,
+//     ElementRemovedEvent,
+//     ElementRenderedEvent,
+//     ElementShownEvent,
+//     EmEl,
+//     FieldsetEl,
+//     FigureEl,
+//     FormEl,
+//     FormInputEl,
+//     FormItemEl,
+//     H1El,
+//     H2El,
+//     H3El,
+//     H4El,
+//     H5El,
+//     H6El,
+//     IEl,
+//     IFrameEl,
+//     ImgEl,
+//     ImgHelper,
+//     InputEl,
+//     LabelEl,
+//     LegendEl,
+//     LiEl,
+//     LinkEl,
+//     OptionEl,
+//     PEl,
+//     SectionEl,
+//     SelectEl,
+//     SpanEl,
+//     UlEl,
+//     WindowDOM
+// };
 
-export const event = {
-    Event,
-    EventBus,
-    KeyEventsHandler,
-    NodeServerChange,
-    NodeServerChangeBuilder,
-    NodeServerChangeItem,
-    NodeServerChangeItemBuilder,
-    NodeServerEvent,
-    ServerEventsConnection,
-    ServerEventsListener,
-    ServerEventsTranslator
-};
+// export const event = {
+//     Event,
+//     EventBus,
+//     KeyEventsHandler,
+//     NodeServerChange,
+//     NodeServerChangeBuilder,
+//     NodeServerChangeItem,
+//     NodeServerChangeItemBuilder,
+//     NodeServerEvent,
+//     ServerEventsConnection,
+//     ServerEventsListener,
+//     ServerEventsTranslator
+// };
 
-export const rest = {
-    Expand,
-    GetRequest,
-    HeadRequest,
-    HttpMethod,
-    JsonResponse,
-    Path,
-    PostRequest,
-    Request,
-    RequestError,
-    ResourceRequest,
-    Response,
-    StatusCode,
-    UploadRequest
-};
+// export const rest = {
+//     Expand,
+//     GetRequest,
+//     HeadRequest,
+//     HttpMethod,
+//     JsonResponse,
+//     Path,
+//     PostRequest,
+//     Request,
+//     RequestError,
+//     ResourceRequest,
+//     Response,
+//     StatusCode,
+//     UploadRequest
+// };
 
-export const security = {
-    CheckEmailAvailabilityRequest,
-    FindPrincipalsRequest,
-    FindPrincipalsResult,
-    GetPrincipalsByKeysRequest,
-    IdProviderConfig,
-    IdProviderKey,
-    IdProviderMode,
-    Principal,
-    PrincipalBuilder,
-    PrincipalKey,
-    PrincipalLoader,
-    PrincipalType,
-    RoleKeys,
-    SecurityResourceRequest,
-    UserItem,
-    UserItemBuilder,
-    UserItemKey,
-    auth
-};
+// export const security = {
+//     CheckEmailAvailabilityRequest,
+//     FindPrincipalsRequest,
+//     FindPrincipalsResult,
+//     GetPrincipalsByKeysRequest,
+//     IdProviderConfig,
+//     IdProviderKey,
+//     IdProviderMode,
+//     Principal,
+//     PrincipalBuilder,
+//     PrincipalKey,
+//     PrincipalLoader,
+//     PrincipalType,
+//     RoleKeys,
+//     SecurityResourceRequest,
+//     UserItem,
+//     UserItemBuilder,
+//     UserItemKey,
+//     auth
+// };
 
-export const system = {
-    ConnectionDetector,
-    StatusRequest,
-    StatusResult
-};
+// export const system = {
+//     ConnectionDetector,
+//     StatusRequest,
+//     StatusResult
+// };
 
-export const ui = {
-    Action,
-    ActionsStateManager,
-    ActivatedEvent,
-    Checkbox,
-    DragHelper,
-    Dropdown: DropdownSelectEl, // NOTE: renamed from Dropdown to DropdownSelectEl to avoid conflict with ui/selector/dropdown/Dropdown
-    FocusSwitchEvent,
-    KeyBinding,
-    KeyBindings,
-    KeyHelper,
-    Mnemonic,
-    NamesAndIconViewer,
-    Navigator,
-    NavigatorEvent,
-    ProgressBar,
-    RadioButton,
-    RadioGroup,
-    Tooltip,
-    Viewer,
-    button,
-    dialog,
-    form,
-    geo,
-    grid,
-    mask,
-    menu,
-    panel,
-    responsive,
-    security: uiSecurity,
-    selector,
-    tab,
-    text,
-    time,
-    toolbar,
-    treegrid,
-    uploader
-};
+// export const ui = {
+//     Action,
+//     ActionsStateManager,
+//     ActivatedEvent,
+//     Checkbox,
+//     DragHelper,
+//     Dropdown: DropdownSelectEl, // NOTE: renamed from Dropdown to DropdownSelectEl to avoid conflict with ui/selector/dropdown/Dropdown
+//     FocusSwitchEvent,
+//     KeyBinding,
+//     KeyBindings,
+//     KeyHelper,
+//     Mnemonic,
+//     NamesAndIconViewer,
+//     Navigator,
+//     NavigatorEvent,
+//     ProgressBar,
+//     RadioButton,
+//     RadioGroup,
+//     Tooltip,
+//     Viewer,
+//     button,
+//     dialog,
+//     form,
+//     geo,
+//     grid,
+//     mask,
+//     menu,
+//     panel,
+//     responsive,
+//     security: uiSecurity,
+//     selector,
+//     tab,
+//     text,
+//     time,
+//     toolbar,
+//     treegrid,
+//     uploader
+// };
 
-export const util = {
-    Animation,
-    AppHelper,
-    ArrayHelper,
-    BinaryReference,
-    CONFIG,
-    CookieHelper,
-    DateHelper,
-    DateTime,
-    DelayedFunctionCall,
-    GeoPointUtil, // NOTE: renamed from GeoPoint to GeoPointUtil to avoid conflict with ui/geo/GeoPoint
-    Link,
-    LocalDate,
-    LocalDateTime,
-    LocalTime,
-    LongTimeHMS,
-    Messages,
-    i18nInit,
-    i18nFetch,
-    i18nAdd,
-    NumberHelper,
-    PropertyTreeHelper,
-    Reference,
-    StringHelper,
-    TimeHM,
-    TimeHMS,
-    Timezone,
-    UriHelper,
-    assert,
-    assertState,
-    assertNotNull,
-    assertNull,
-    // loader
-};
+// export const util = {
+//     Animation,
+//     AppHelper,
+//     ArrayHelper,
+//     BinaryReference,
+//     CONFIG,
+//     CookieHelper,
+//     DateHelper,
+//     DateTime,
+//     DelayedFunctionCall,
+//     GeoPointUtil, // NOTE: renamed from GeoPoint to GeoPointUtil to avoid conflict with ui/geo/GeoPoint
+//     Link,
+//     LocalDate,
+//     LocalDateTime,
+//     LocalTime,
+//     LongTimeHMS,
+//     Messages,
+//     i18nInit,
+//     i18nFetch,
+//     i18nAdd,
+//     NumberHelper,
+//     PropertyTreeHelper,
+//     Reference,
+//     StringHelper,
+//     TimeHM,
+//     TimeHMS,
+//     Timezone,
+//     UriHelper,
+//     assert,
+//     assertState,
+//     assertNotNull,
+//     assertNull,
+//     // loader
+// };
 
 //─────────────────────────────────────────────────────────────────────────────
 // Flattened Value Imports
@@ -685,6 +980,24 @@ import {
 } from './app/wizard';
 
 import {
+    Cache
+} from './cache/Cache';
+
+import {
+    WebSocketConnection,
+    WebSocketConnectionBuilder
+} from './connection';
+
+import type {
+    RepositoryEvent,
+    RepositoryEventType,
+    Widget,
+    WidgetBuilder,
+    WidgetConfig,
+    WidgetDescriptorKey
+} from './content';
+
+import {
     AuthResourceRequest,
     IsAuthenticatedRequest,
     LoginResult,
@@ -716,8 +1029,8 @@ import {
 
 import {
     Fieldset,
-    Form,
-    FormItem,
+    // Form, // TODO: name collision
+    // FormItem, // TODO: name collision
     ValidationResult,
     Validators
 } from './ui/form';
@@ -819,7 +1132,7 @@ import {
     BaseRichComboBox,
     BaseSelectedOptionView,
     BaseSelectedOptionsView,
-    ComboBox,
+    // ComboBox, // TODO: name collision
     ComboBoxDropdown,
     ComboBoxOptionFilterInput,
     RichComboBox,
@@ -833,7 +1146,7 @@ import {
     Dropdown as DropdownFormInputEl,
     DropdownOptionFilterInput,
     RichDropdown,
-    SelectedOptionView
+    // SelectedOptionView // TODO
 } from './ui/selector/dropdown';
 
 import {
@@ -861,7 +1174,7 @@ import {
     AutosizeTextInput,
     EmailInput,
     PasswordInput,
-    TextArea,
+    // TextArea, // TODO: name collision
     TextInput
 } from './ui/text';
 
@@ -1041,6 +1354,24 @@ export {
     BucketsContainer,
     DateRangeBucket,
     //─────────────────────────────────────────────────────────────────────────
+    // cache
+    //─────────────────────────────────────────────────────────────────────────
+    Cache,
+    //─────────────────────────────────────────────────────────────────────────
+    // connection
+    //─────────────────────────────────────────────────────────────────────────
+    WebSocketConnection,
+    WebSocketConnectionBuilder,
+    //─────────────────────────────────────────────────────────────────────────
+    // content
+    //─────────────────────────────────────────────────────────────────────────
+    RepositoryEvent,
+    RepositoryEventType,
+    Widget,
+    WidgetBuilder,
+    WidgetConfig,
+    WidgetDescriptorKey,
+    //─────────────────────────────────────────────────────────────────────────
     // data
     //─────────────────────────────────────────────────────────────────────────
     Property,
@@ -1076,6 +1407,8 @@ export {
     //─────────────────────────────────────────────────────────────────────────
     // dom
     //─────────────────────────────────────────────────────────────────────────
+    BODY_KEY,
+    Body,
     ButtonEl,
     CompositeFormInputEl,
     DdDtEl,
@@ -1133,6 +1466,175 @@ export {
     ServerEventsListener,
     ServerEventsTranslator,
     //─────────────────────────────────────────────────────────────────────────
+    // form
+    //─────────────────────────────────────────────────────────────────────────
+    AdditionalValidationRecord,
+    // Form, // TODO: name collision
+    FormContext,
+    // FormItem, // TODO: name collision
+    FormItemContainer,
+    FormItemFactoryImpl,
+    FormItemLayer,
+    FormItemLayerFactory,
+    FormItemOccurrence,
+    FormItemOccurrenceView,
+    FormItemOccurrences,
+    FormItemPath,
+    FormItemState,
+    FormItemView,
+    FormOccurrenceDraggableLabel,
+    FormValidityChangedEvent,
+    FormView,
+    HelpTextContainer,
+    Input,
+    InputLabel,
+    InputTypeName,
+    InputView,
+    InputViewValidationViewer,
+    OccurrenceAddedEvent,
+    OccurrenceRemovedEvent,
+    OccurrenceRenderedEvent,
+    Occurrences,
+    RecordingValidityChangedEvent,
+    RemoveButtonClickedEvent,
+    ValidationRecording,
+    ValidationRecordingPath,
+    ValidationRecordingViewer,
+    ApplicationConfigProvider,
+    ApplicationConfiguratorDialog,
+    BaseInputType,
+    BaseInputTypeManagingAdd,
+    BaseInputTypeNotManagingAdd,
+    BaseInputTypeSingleOccurrence,
+    // Checkbox, // TODO: name collision
+    // ComboBox, // TODO: name collision
+    ComboBoxDisplayValueViewer,
+    // DateTime, // TODO: name collision
+    DateTimeRange,
+    DateType,
+    Double,
+    GeoPoint,
+    InputOccurrence,
+    InputOccurrences,
+    InputOccurrencesBuilder,
+    InputOccurrenceView,
+    InputTypeManager,
+    InputValidationRecording,
+    InputValidityChangedEvent,
+    InputValueLengthCounterEl,
+    Long,
+    NoInputTypeFoundView,
+    NumberInputType,
+    OccurrenceValidationRecord,
+    PrincipalSelector,
+    // RadioButton, // TODO: name collision
+    // TextArea, // TODO: name collision
+    TextInputType,
+    TextLine,
+    Time,
+    // ValueChangedEvent, // TODO: name collision
+    FieldSet,
+    FieldSetLabel,
+    FieldSetView,
+    FormItemSet,
+    FormItemSetOccurrences,
+    FormItemSetOccurrenceView,
+    FormItemSetView,
+    FormOptionSet,
+    FormOptionSetOccurrences,
+    FormOptionSetOccurrenceView,
+    FormOptionSetOccurrenceViewMultiOptions,
+    FormOptionSetOccurrenceViewSingleOption,
+    FormOptionSetOption,
+    FormOptionSetOptionView,
+    FormOptionSetOptionViewer,
+    FormOptionSetView,
+    FormSet,
+    FormSetHeader,
+    FormSetOccurrence,
+    FormSetOccurrences,
+    FormSetOccurrenceView,
+    FormSetView,
+    OptionSetArrayHelper,
+    //─────────────────────────────────────────────────────────────────────────
+    // Icon
+    //─────────────────────────────────────────────────────────────────────────
+    IconUrlResolver,
+    //─────────────────────────────────────────────────────────────────────────
+    // Item
+    //─────────────────────────────────────────────────────────────────────────
+    BaseItem,
+    BaseItemBuilder,
+    Item,
+    //─────────────────────────────────────────────────────────────────────────
+    // locale
+    //─────────────────────────────────────────────────────────────────────────
+    Locale,
+    //─────────────────────────────────────────────────────────────────────────
+    // macro
+    //─────────────────────────────────────────────────────────────────────────
+    MacroDescriptor,
+    MacroDescriptorBuilder,
+    MacroKey,
+    //─────────────────────────────────────────────────────────────────────────
+    // managedaction
+    //─────────────────────────────────────────────────────────────────────────
+    MANAGED_ACTION_MANAGER_KEY,
+    ManagedActionManager,
+    ManagedActionState,
+    //─────────────────────────────────────────────────────────────────────────
+    // notify
+    //─────────────────────────────────────────────────────────────────────────
+    NOTIFY_MANAGER_KEY,
+    Message,
+    MessageAction,
+    MessageType,
+    NotificationContainer,
+    NotificationMessage,
+    NotifyManager,
+    showError,
+    showFeedback,
+    showSuccess,
+    showWarning,
+    //─────────────────────────────────────────────────────────────────────────
+    // query
+    //─────────────────────────────────────────────────────────────────────────
+    AggregationQuery,
+    BooleanFilter,
+    CompareExpr,
+    CompareOperator,
+    DateRange,
+    DateRangeAggregationQuery,
+    DateRangeJson,
+    DynamicConstraintExpr,
+    DynamicOrderExpr,
+    FieldExpr,
+    FieldOrderExpr,
+    Filter,
+    FulltextSearchExpression,
+    FulltextSearchExpressionBuilder,
+    FunctionExpr,
+    LogicalExpr,
+    LogicalOperator,
+    OrderDirection,
+    OrderExpr,
+    PathMatchExpression,
+    PathMatchExpressionBuilder,
+    QueryExpr,
+    QueryField,
+    QueryFields,
+    Range,
+    RangeFilter,
+    SearchInputValues,
+    TermsAggregationOrderDirection,
+    TermsAggregationOrderType,
+    TermsAggregationQuery,
+    ValueExpr,
+    //─────────────────────────────────────────────────────────────────────────
+    // relationship
+    //─────────────────────────────────────────────────────────────────────────
+    Relationship,
+    //─────────────────────────────────────────────────────────────────────────
     // rest
     //─────────────────────────────────────────────────────────────────────────
     Expand,
@@ -1175,18 +1677,52 @@ export {
     IsAuthenticatedRequest,
     LoginResult,
     //─────────────────────────────────────────────────────────────────────────
+    // schema
+    //─────────────────────────────────────────────────────────────────────────
+    ContentTypeName,
+    ContentTypeSummary,
+    ContentTypeSummaryBuilder,
+    Mixin,
+    MixinBuilder,
+    MixinName,
+    MixinNames,
+    MixinNamesBuilder,
+    Schema,
+    SchemaBuilder,
+    //─────────────────────────────────────────────────────────────────────────
+    // store
+    //─────────────────────────────────────────────────────────────────────────
+    GLOBAL,
+    Store,
+    //─────────────────────────────────────────────────────────────────────────
     // system
     //─────────────────────────────────────────────────────────────────────────
     ConnectionDetector,
     StatusRequest,
     StatusResult,
     //─────────────────────────────────────────────────────────────────────────
+    // task
+    //─────────────────────────────────────────────────────────────────────────
+    TaskEvent,
+    TaskEventType,
+    TaskId,
+    TaskInfo,
+    TaskInfoBuilder,
+    TaskProgress,
+    TaskProgressBuilder,
+    TaskState,
+    //─────────────────────────────────────────────────────────────────────────
+    // thumb
+    //─────────────────────────────────────────────────────────────────────────
+    Thumbnail,
+    ThumbnailBuilder,
+    //─────────────────────────────────────────────────────────────────────────
     // ui
     //─────────────────────────────────────────────────────────────────────────
     Action,
     ActionsStateManager,
     ActivatedEvent,
-    Checkbox,
+    // Checkbox, // TODO: name collision
     DragHelper,
     DropdownSelectEl, // NOTE: renamed from Dropdown to DropdownSelectEl to avoid conflict with ui/selector/dropdown/Dropdown
     FocusSwitchEvent,
@@ -1198,7 +1734,7 @@ export {
     Navigator,
     NavigatorEvent,
     ProgressBar,
-    RadioButton,
+    // RadioButton, // TODO: name collision
     RadioGroup,
     Tooltip,
     Viewer,
@@ -1230,8 +1766,8 @@ export {
     // ui.form
     //─────────────────────────────────────────────────────────────────────────
     Fieldset,
-    Form,
-    FormItem,
+    // Form, // TODO: name collision
+    // FormItem, // TODO: name collision
     ValidationResult,
     Validators,
     //─────────────────────────────────────────────────────────────────────────
@@ -1330,7 +1866,7 @@ export {
     BaseRichComboBox,
     BaseSelectedOptionView,
     BaseSelectedOptionsView,
-    ComboBox,
+    // ComboBox,
     ComboBoxDropdown,
     ComboBoxOptionFilterInput,
     RichComboBox,
@@ -1372,7 +1908,7 @@ export {
     AutosizeTextInput,
     EmailInput,
     PasswordInput,
-    TextArea,
+    // TextArea, // TODO: name collision
     TextInput,
     //─────────────────────────────────────────────────────────────────────────
     // ui.time
@@ -1434,7 +1970,7 @@ export {
     CONFIG,
     CookieHelper,
     DateHelper,
-    DateTime,
+    // DateTime, // TODO: name collision
     DelayedFunctionCall,
     GeoPointUtil, // NOTE: renamed from GeoPoint to GeoPointUtil to avoid conflict with ui/geo/GeoPoint
     Link,
@@ -1470,5 +2006,9 @@ export {
     LoadedDataEvent,
     LoaderErrorEvent,
     LoaderEvent,
-    LoadingDataEvent
+    LoadingDataEvent,
+    //─────────────────────────────────────────────────────────────────────────
+    // validator
+    //─────────────────────────────────────────────────────────────────────────
+    Validator
 };
