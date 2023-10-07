@@ -1,3 +1,6 @@
+@margin-left: 30px;
+@margin-right: 20px;
+
 .filter-panel {
   transition: all 0.1s ease-in-out;
   padding: 8px 10px 20px 10px;
@@ -9,38 +12,45 @@
   width: auto;
   overflow-y: auto;
 
-  a.clear-filter-button {
-    .icon-close();
-    text-decoration: none;
-    float: right;
-    font-size: 14px;
-    line-height: 24px;
-
-    &:before {
-      color: @admin-button-blue1;
-    }
-
-    &:hover:before {
-      color: @admin-button-blue2;
-    }
-  }
-
-  input.text-search-field {
-    .placeholderColor(@admin-button-blue1);
-
-    margin-left: 30px;
+  .search-container {
+    display: flex;
+    width: auto;
+    margin-left: @margin-left;
     margin-bottom: 7px;
-    font-size: 14px;
-    width: 70%;
-    padding: 0 10px 8px 1px;
-    line-height: 24px;
-    border: 0;
-    box-sizing: border-box;
-    outline: none;
-    color: @admin-button-blue1;
-    border-bottom-width: 1px;
-    border-bottom-color: @admin-button-blue1;
-    border-bottom-style: solid;
+
+    a.clear-filter-button {
+      .icon-close();
+      text-decoration: none;
+      font-size: 14px;
+      text-align: center;
+      width: @margin-right;
+      margin-left: 5px;
+      line-height: 26px;
+
+      &:before {
+        color: @admin-button-blue1;
+      }
+
+      &:hover:before {
+        color: @admin-button-blue2;
+      }
+    }
+
+    input.text-search-field {
+      .placeholderColor(@admin-button-blue1);
+
+      font-size: 14px;
+      min-width: 0;
+      flex: 1;
+      padding: 0 0 8px 1px;
+      line-height: 24px;
+      border: 0;
+      outline: none;
+      color: @admin-button-blue1;
+      border-bottom-width: 1px;
+      border-bottom-color: @admin-button-blue1;
+      border-bottom-style: solid;
+    }
   }
 
   h2 {
@@ -55,8 +65,15 @@
     line-height: 24px;
     font-size: 16px;
     margin-bottom: 20px;
-    padding-left: 30px;
+    padding-left: @margin-left;
     white-space: pre;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .search-container.has-filter-set + .hits-and-clear {
+    padding-right: @margin-right;
   }
 
   .hide-filter-panel-button {
@@ -78,14 +95,12 @@
       display: none;
     }
 
-    input.text-search-field {
+    .search-container {
       margin-left: 6px;
-      padding-right: 27px;
-      width: 100%;
     }
 
     .hits-and-clear {
-      padding: 6px;
+      padding: 6px 0 6px 6px;
     }
   }
 
