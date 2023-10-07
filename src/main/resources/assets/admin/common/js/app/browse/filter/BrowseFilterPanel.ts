@@ -32,6 +32,7 @@ export class BrowseFilterPanel<T>
     private hitsCounterEl: SpanEl;
     private hideFilterPanelButton: SpanEl;
     private showResultsButton: SpanEl;
+    private searchContainer: DivEl;
     private refreshStartedListeners: (() => void)[] = [];
 
     constructor() {
@@ -56,11 +57,6 @@ export class BrowseFilterPanel<T>
         this.clearFilter = new ClearFilterButton();
         this.clearFilter.onClicked(() => void this.reset());
 
-        this.hitsCounterEl = new SpanEl('hits-counter');
-
-        let hitsCounterAndClearButtonWrapper = new DivEl('hits-and-clear');
-        hitsCounterAndClearButtonWrapper.appendChild(this.hitsCounterEl);
-
         this.aggregationContainer = new AggregationContainer();
         this.aggregationContainer.hide();
         this.appendChild(this.aggregationContainer);
@@ -78,9 +74,8 @@ export class BrowseFilterPanel<T>
             this.appendChild(this.hideFilterPanelButton);
             this.appendExtraSections();
             this.appendChildren(
-                this.searchField as Element,
-                this.clearFilter,
-                hitsCounterAndClearButtonWrapper,
+                this.createSearchContainer(),
+                this.createHitsCountContainer(),
                 this.aggregationContainer,
                 showResultsButtonWrapper
             );
@@ -100,6 +95,30 @@ export class BrowseFilterPanel<T>
             window.setTimeout(this.aggregationContainer.show.bind(this.aggregationContainer), 100);
             this.refresh();
         });
+    }
+
+    protected createSearchContainer(): DivEl {
+        this.searchField = new TextSearchField(i18n('panel.filter.search'));
+        this.searchField.onValueChanged(() => {
+            this.search();
+        });
+
+        this.clearFilter = new ClearFilterButton();
+        this.clearFilter.onClicked(() => void this.reset());
+
+        this.searchContainer = new DivEl('search-container');
+        this.searchContainer.appendChildren(this.searchField, this.clearFilter as Element);
+
+        return this.searchContainer;
+    }
+
+    protected createHitsCountContainer(): DivEl {
+        this.hitsCounterEl = new SpanEl('hits-counter');
+
+        const hitsCounterAndClearButtonWrapper = new DivEl('hits-and-clear');
+        hitsCounterAndClearButtonWrapper.appendChild(this.hitsCounterEl);
+
+        return hitsCounterAndClearButtonWrapper;
     }
 
     setConstraintItems(constraintSection: ConstraintSection, itemsIds: string[]) {
@@ -156,6 +175,7 @@ export class BrowseFilterPanel<T>
         const hasFilterSet = this.hasFilterSet();
 
         this.clearFilter.setVisible(hasFilterSet);
+        this.searchContainer.toggleClass('has-filter-set', hasFilterSet);
         this.updateResultsTitle(!hasFilterSet);
 
         this.notifySearchStarted();
@@ -189,6 +209,7 @@ export class BrowseFilterPanel<T>
         this.searchField.clear();
         this.aggregationContainer.deselectAll(true);
         this.clearFilter.hide();
+        this.searchContainer.removeClass('has-filter-set');
         this.updateResultsTitle(true);
     }
 
