@@ -17,6 +17,7 @@
         "noImplicitThis": true,
         "strictNullChecks": false,
         "types": [
+            // TODO remove jquery and jqueryui.
             "jquery",
             "jqueryui",
             "mousetrap",

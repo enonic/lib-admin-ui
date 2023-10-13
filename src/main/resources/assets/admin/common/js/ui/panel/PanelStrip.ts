@@ -6,6 +6,7 @@ import {LoadMask} from '../mask/LoadMask';
 import {Panel} from './Panel';
 import {PanelShownEvent} from './PanelShownEvent';
 import {PanelStripHeader} from './PanelStripHeader';
+import {animateScrollTop} from '../../dom/util/animateScrollTop';
 
 export class PanelStrip
     extends Panel {
@@ -253,13 +254,13 @@ export class PanelStrip
                               - this.offset
                               + (headerToShow.getEl().getPaddingTop() / 2)
                               + headerToShow.getEl().getOffsetToParent().top;
-
-        $(this.getScrollable().getHTMLElement()).animate({
-            scrollTop: scrollTop
-        }, {
-            duration: 500,
-            complete: callback
-        });
+        // TODO: Can this be done with CSS instead?
+        animateScrollTop(
+            this.getScrollable().getHTMLElement(),
+            scrollTop,
+            500,
+            callback
+        );
     }
 
     private notifyPanelShown(panel: Panel, panelIndex: number, previousPanel: Panel) {

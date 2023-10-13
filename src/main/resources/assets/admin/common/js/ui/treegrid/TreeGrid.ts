@@ -324,11 +324,11 @@ export class TreeGrid<DATA extends IDentifiable>
         this.unSelectionChanged(listener);
     }
 
-    private getRowByNode(node: TreeNode<DATA>): JQuery {
+    private getRowByNode(node: TreeNode<DATA>) {
         let rowIndex = this.getRowIndexByNode(node);
         let cell = this.grid.getCellNode(rowIndex, 0);
 
-        return $(cell).closest('.slick-row');
+        return cell.closest('.slick-row');
     }
 
     removeHighlighting(skipEvent: boolean = false) {
@@ -1529,10 +1529,10 @@ export class TreeGrid<DATA extends IDentifiable>
 
     private onRowHighlighted(elem: ElementHelper, data: Slick.OnClickEventArgs<DATA>) {
         const node = this.gridData.getItem(data.row);
-        const clickedCell = $(elem.getHTMLElement()).closest('.slick-cell');
+        const clickedCell = elem.getHTMLElement().closest('.slick-cell');
         const isRowSelected = this.grid.isRowSelected(data.row);
         const isMultipleRowsSelected = this.grid.getSelectedRows().length > 1;
-        const isRowHighlighted = clickedCell.hasClass('highlight');
+        const isRowHighlighted = clickedCell.classList.contains('highlight');
 
         if (elem.hasClass('sort-dialog-trigger') && (isRowSelected || isRowHighlighted)) {
             if (isMultipleRowsSelected) {

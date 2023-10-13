@@ -1,6 +1,17 @@
 import {Element} from './Element';
 import {StringHelper} from '../util/StringHelper';
 import {assert, assertNotNull} from '../util/Assert';
+import {getData} from './util/getData';
+import {getOuterHeightWithMargin} from './util/getOuterHeightWithMargin';
+import {getOuterWidthWithMargin} from './util/getOuterWidthWithMargin';
+import {getOffset} from './util/getOffset';
+import {getOffsetParent} from './util/getOffsetParent';
+import {getPosition} from './util/getPosition';
+import {isVisible} from './util/isVisible';
+import {setData} from './util/setData';
+import {setInnerHtml} from './util/setInnerHtml';
+import {setOffset} from './util/setOffset';
+
 
 export interface ElementDimensions {
     top: number;
@@ -100,7 +111,7 @@ export class ElementHelper {
     }
 
     setInnerHtml(value: string, escapeHtml: boolean = true): ElementHelper {
-        $(this.el).html(escapeHtml ? StringHelper.escapeHtml(value) : value);
+        setInnerHtml(this.el, escapeHtml ? StringHelper.escapeHtml(value) : value);
         return this;
     }
 
@@ -109,7 +120,7 @@ export class ElementHelper {
     }
 
     setText(value: string): ElementHelper {
-        $(this.el).text(value);
+        this.el.textContent = value;
         return this;
     }
 
@@ -138,13 +149,12 @@ export class ElementHelper {
     setData(name: string, value: string): ElementHelper {
         assert(!StringHelper.isEmpty(name), 'Name cannot be empty');
         assert(!StringHelper.isEmpty(value), 'Value cannot be empty');
-        this.el.setAttribute('data-' + name, value);
-        $(this.el).data(name, value);
+        setData(this.el, name, value);
         return this;
     }
 
     getData(name: string): string {
-        let data = $(this.el).data(name);
+        let data = getData(this.el, name);
         return data ? data.toString() : undefined;
     }
 
@@ -330,19 +340,19 @@ export class ElementHelper {
     }
 
     getWidth(): number {
-        return $(this.el).innerWidth();
+        return this.el.clientWidth;
     }
 
     getWidthWithoutPadding(): number {
-        return $(this.el).width();
+        return this.el.getBoundingClientRect().width;
     }
 
     getWidthWithBorder(): number {
-        return $(this.el).outerWidth();
+        return this.el.offsetWidth;
     }
 
     getWidthWithMargin(): number {
-        return $(this.el).outerWidth(true);
+        return getOuterWidthWithMargin(this.el);
     }
 
     getMinWidth(): number {
@@ -364,7 +374,7 @@ export class ElementHelper {
     }
 
     getHeight(): number {
-        return $(this.el).innerHeight();
+        return this.el.clientHeight;
     }
 
     setMaxHeight(value: string): ElementHelper {
@@ -396,15 +406,15 @@ export class ElementHelper {
     }
 
     getHeightWithoutPadding(): number {
-        return $(this.el).height();
+        return this.el.getBoundingClientRect().height;
     }
 
     getHeightWithBorder(): number {
-        return $(this.el).outerHeight();
+        return this.el.offsetHeight;
     }
 
     getHeightWithMargin(): number {
-        return $(this.el).outerHeight(true);
+        return getOuterHeightWithMargin(this.el);
     }
 
     setTop(value: string): ElementHelper {
@@ -658,12 +668,15 @@ export class ElementHelper {
     getOffset(): {
         top: number; left: number;
     } {
-        return $(this.el).offset();
+        return getOffset(this.el);
     }
 
+    /**
+     * Set the coordinates of every element, in the set of matched elements, relative to the document.
+     */
     setOffset(offset: { top: number; left: number; }): ElementHelper {
-        $(this.el).offset(offset);
-        return this;
+        setOffset(this.el, offset);
+        return this; // TODO: return this or this.el?
     }
 
     getDimensions(): ElementDimensions {
@@ -694,7 +707,7 @@ export class ElementHelper {
      * @returns {HTMLElement}
      */
     getOffsetParent(): HTMLElement {
-        return $(this.el).offsetParent()[0];
+        return getOffsetParent(this.el);
     }
 
     /**
@@ -704,7 +717,7 @@ export class ElementHelper {
     getOffsetToParent(): {
         top: number; left: number;
     } {
-        return $(this.el).position();
+        return getPosition(this.el);
     }
 
     getOffsetTop(): number {
@@ -757,7 +770,7 @@ export class ElementHelper {
     }
 
     isVisible(): boolean {
-        return $(this.el).is(':visible');
+        return isVisible(this.el);
     }
 
     countChildren(): number {
