@@ -418,26 +418,12 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         }
     }
 
-    private handleLoadedData(event: LoadedDataEvent<LOADER_DATA_TYPE>) {
+    private handleLoadedData(event: LoadedDataEvent<LOADER_DATA_TYPE>): Q.Promise<void> {
         this.errorContainer.hide();
-        const optionCount: number = this.getOptionCount();
+
         return this.createOptions(event.getData().map(this.loadedItemToDisplayValue.bind(this))).then(
             (options: Option<OPTION_DATA_TYPE>[]) => {
-                let appendOptions: boolean = false;
-
-                if (event.isPostLoad() && optionCount > 0) {
-                    const lastOption: Option<OPTION_DATA_TYPE> = this.getOptionByRow(optionCount - 1);
-                    appendOptions = options.length > optionCount && options[optionCount - 1].getValue() === lastOption.getValue();
-                }
-
-                if (appendOptions) {
-                    for (let i: number = optionCount; i < options.length; i++) {
-                        this.comboBox.addOption(options[i]);
-                    }
-                } else {
-                    this.comboBox.setOptions(options, event.isPostLoad());
-                }
-
+                this.comboBox.setOptions(options, event.isPostLoad());
                 this.notifyLoaded(options.map((option) => option.getDisplayValue()), event.isPostLoad());
                 return;
             });
