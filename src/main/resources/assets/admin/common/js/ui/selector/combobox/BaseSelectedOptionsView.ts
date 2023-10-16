@@ -1,4 +1,3 @@
-// import 'jquery-ui/ui/widgets/sortable'; // jquery-ui is a peerDependency
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
 import {Option} from '../Option';
