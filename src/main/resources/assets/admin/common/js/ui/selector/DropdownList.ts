@@ -117,16 +117,21 @@ export class DropdownList<OPTION_DISPLAY_VALUE> {
     }
 
     showDropdown(selectedOptions?: Option<OPTION_DISPLAY_VALUE>[], noOptionsText?: string) {
+        const isShown: boolean = this.isDropdownShown();
 
         if (this.hasOptions()) {
             this.emptyDropdown.hide();
             this.dropdownGrid.show();
             this.dropdownGrid.adjustGridHeight();
+
             if (selectedOptions) {
                 this.dropdownGrid.markSelections(selectedOptions);
                 if (selectedOptions.length > 0) {
                     this.dropdownGrid.markReadOnly(selectedOptions);
-                    this.navigateToRowIfNotActive(selectedOptions[0]);
+
+                    if (!isShown) {
+                        this.navigateToRowIfNotActive(selectedOptions[0]);
+                    }
                 }
             }
         } else {
