@@ -13,6 +13,10 @@ import {ElementRegistry} from './ElementRegistry';
 import {assert, assertNotNull, assertState} from '../util/Assert';
 import {ElementEvent} from './ElementEvent';
 import * as DOMPurify from 'dompurify';
+import {findHTMLElements} from './util/findHTMLElements';
+import {selectHTMLElement} from './util/selectHTMLElement';
+import {show} from './util/show';
+
 
 export interface PurifyConfig {
     addTags?: string[];
@@ -101,8 +105,8 @@ export class ElementFromHelperBuilder
     }
 
     static fromString(s: string, loadExistingChildren: boolean = true): ElementFromHelperBuilder {
-        let htmlEl = $(s).get(0);
-        let parentEl;
+        const htmlEl = selectHTMLElement(s);
+        let parentEl: Element | undefined;
         if (htmlEl && htmlEl.parentElement) {
             parentEl = Element.fromHtmlElement(htmlEl.parentElement);
         }
@@ -267,7 +271,7 @@ export class Element {
     }
 
     static fromHtml(html: string, loadExistingChildren: boolean = true): Element {
-        const htmlEl = $(html).get(0);
+        const htmlEl = selectHTMLElement(html);
 
         if (!htmlEl) {
             return null;
@@ -283,14 +287,13 @@ export class Element {
     }
 
     static fromSelector(s: string, loadExistingChildren: boolean = true): Element[] {
-        return $(s).map((_index, elem) => {
-            let htmlEl = elem;
-            let parentEl;
+        return findHTMLElements(s).map((htmlEl) => {
+            let parentEl: Element | undefined;
             if (htmlEl && htmlEl.parentElement) {
                 parentEl = Element.fromHtmlElement(htmlEl.parentElement);
             }
             return Element.fromHtmlElement(htmlEl, loadExistingChildren, parentEl);
-        }).get();
+        });
     }
 
     public loadExistingChildren(): Element {
@@ -378,7 +381,7 @@ export class Element {
 
     show() {
         // Using jQuery to show, since it seems to contain some smartness
-        $(this.el.getHTMLElement()).show();
+        show(this.el.getHTMLElement());
         this.notifyShown(this, true);
     }
 

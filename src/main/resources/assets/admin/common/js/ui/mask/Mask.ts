@@ -4,6 +4,10 @@ import {Element} from '../../dom/Element';
 import {StyleHelper} from '../../StyleHelper';
 import {ElementHiddenEvent} from '../../dom/ElementHiddenEvent';
 import {Body} from '../../dom/Body';
+import {elementExists} from '../../dom/util/elementExists';
+import {getInnerHeight} from '../../dom/util/getInnerHeight';
+import {getPosition} from '../../dom/util/getPosition';
+
 
 export class Mask
     extends DivEl {
@@ -73,33 +77,33 @@ export class Mask
         }
     }
 
-    private getWrapperEl(): JQuery<HTMLElement> {
-        let wrapperEl: JQuery<HTMLElement> = $(this.getEl().getHTMLElement()).closest('.mask-wrapper');
-        if (wrapperEl.length) {
+    private getWrapperEl(): HTMLElement {
+        let wrapperEl: HTMLElement = this.getEl().getHTMLElement().closest('.mask-wrapper');
+        if (elementExists(wrapperEl)) {
             return wrapperEl;
         }
 
         if (!this.masked) {
-            return $(this.getEl().getOffsetParent());
+            return this.getEl().getOffsetParent();
         }
 
-        const maskedEl = $(this.masked.getHTMLElement());
+        const maskedEl = this.masked.getHTMLElement();
         wrapperEl = maskedEl;
 
-        while (wrapperEl.length && $(wrapperEl).innerHeight() === 0) {
-            wrapperEl = $(wrapperEl).parent();
+        while (elementExists(wrapperEl) && getInnerHeight(wrapperEl) === 0) {
+            wrapperEl = wrapperEl.parentElement;
         }
 
-        if (wrapperEl.length) {
+        if (elementExists(wrapperEl)) {
             return wrapperEl;
         }
 
         return maskedEl;
     }
 
-    private maskAndWrapperHaveEqualOffset(wrapperEl: JQuery<HTMLElement>): boolean {
+    private maskAndWrapperHaveEqualOffset(wrapperEl: HTMLElement): boolean {
         const offsetParentOfMask = this.getEl().getOffsetParent();
-        const offsetParentOfMaskWrapper = wrapperEl.offsetParent()[0];
+        const offsetParentOfMaskWrapper = wrapperEl.offsetParent;
 
         return offsetParentOfMask === offsetParentOfMaskWrapper;
     }
@@ -108,14 +112,14 @@ export class Mask
         const maskedEl = this.getWrapperEl();
 
         const maskDimensions: { width: string; height: string } = {
-            width: maskedEl.outerWidth() + 'px',
-            height: maskedEl.outerHeight() + 'px'
+            width: `${maskedEl.offsetWidth}px`,
+            height: `${maskedEl.offsetHeight}px`
         };
 
-        let maskOffset: { top: number; left: number } = maskedEl.position();
+        let maskOffset: { top: number; left: number } = getPosition(maskedEl);
 
         if (!this.maskAndWrapperHaveEqualOffset(maskedEl)) {
-            maskOffset = maskedEl.offset();
+            maskOffset = maskedEl.getBoundingClientRect();
         }
 
         this.getEl()
