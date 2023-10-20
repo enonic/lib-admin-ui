@@ -1397,7 +1397,7 @@ export class Element {
 
     }
 
-    private isInViewport(): boolean {
+    isInViewport(): boolean {
         const container = this.getFirstNonEmptyAncestor();
 
         if (!container || container.isEmptyElement()) {
