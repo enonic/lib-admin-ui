@@ -1,5 +1,11 @@
 export class GridOptionsBuilder<T extends Slick.SlickData> {
 
+    dataItemColumnValueExtractor: any;
+
+    enableAsyncPostRender: boolean;
+
+    hideColumnHeaders: boolean;
+/*
     asyncEditorLoading: boolean;
 
     asyncEditorLoadDelay: number;
@@ -11,8 +17,6 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
     cellFlashingCssClass: string;
 
     cellHighlightCssClass: string;
-
-    dataItemColumnValueExtractor: any;
 
     defaultColumnWidth: number;
 
@@ -28,13 +32,11 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
 
     enableAddRow: boolean;
 
-    enableAsyncPostRender: boolean;
-
     enableCellRangeSelection: any;
 
-    enableCellNavigation: boolean;
+    enableCellNavigation: boolean = false;
 
-    enableColumnReorder: boolean;
+    enableColumnReorder: boolean = false;
 
     enableRowReordering: any;
 
@@ -69,7 +71,6 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
     topPanelHeight: number;
 
     // Additional properties
-    hideColumnHeaders: boolean;
 
     width: string;
 
@@ -88,10 +89,14 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
     dragAndDrop: boolean;
 
     rerenderOnResize: boolean;
-
+*/
     constructor(source?: GridOptions<T>) {
 
         if (source) {
+            this.dataItemColumnValueExtractor = source.getDataItemColumnValueExtractor();
+            this.enableAsyncPostRender = source.isEnableAsyncPostRender();
+            this.hideColumnHeaders = source.isHideColumnHeaders();
+            /*
             this.asyncEditorLoading = source.isAsyncEditorLoading();
             this.asyncEditorLoadDelay = source.getAsyncEditorLoadDelay();
             this.asyncPostRenderDelay = source.getAsyncPostRenderDelay();
@@ -127,7 +132,6 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
             this.syncColumnCellResize = source.isSyncColumnCellResize();
             this.topPanelHeight = source.getTopPanelHeight();
             // Additional properties
-            this.hideColumnHeaders = source.isHideColumnHeaders();
             this.width = source.getWidth();
             this.height = source.getHeight();
             this.dataIdProperty = source.getDataIdProperty();
@@ -137,51 +141,12 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
             this.disabledMultipleSelection = source.isMultipleSelectionDisabled();
             this.dragAndDrop = source.isDragAndDrop();
             this.rerenderOnResize = source.isRerenderOnResize();
+            */
         }
-    }
-
-    setAsyncEditorLoading(asyncEditorLoading: boolean): GridOptionsBuilder<T> {
-        this.asyncEditorLoading = asyncEditorLoading;
-        return this;
-    }
-
-    setAsyncEditorLoadDelay(asyncEditorLoadDelay: number): GridOptionsBuilder<T> {
-        this.asyncEditorLoadDelay = asyncEditorLoadDelay;
-        return this;
-    }
-
-    setAsyncPostRenderDelay(asyncPostRenderDelay: number): GridOptionsBuilder<T> {
-        this.asyncPostRenderDelay = asyncPostRenderDelay;
-        return this;
-    }
-
-    setAutoEdit(autoEdit: boolean): GridOptionsBuilder<T> {
-        this.autoEdit = autoEdit;
-        return this;
-    }
-
-    setCellFlashingCssClass(cellFlashingCssClass: string): GridOptionsBuilder<T> {
-        this.cellFlashingCssClass = cellFlashingCssClass;
-        return this;
-    }
-
-    setCellHighlightCssClass(cellHighlightCssClass: string): GridOptionsBuilder<T> {
-        this.cellHighlightCssClass = cellHighlightCssClass;
-        return this;
     }
 
     setDataItemColumnValueExtractor(dataItemColumnValueExtractor: any): GridOptionsBuilder<T> {
         this.dataItemColumnValueExtractor = dataItemColumnValueExtractor;
-        return this;
-    }
-
-    setDefaultColumnWidth(defaultColumnWidth: number): GridOptionsBuilder<T> {
-        this.defaultColumnWidth = defaultColumnWidth;
-        return this;
-    }
-
-    setDefaultFormatter(defaultFormatter: Slick.Formatter<T>): GridOptionsBuilder<T> {
-        this.defaultFormatter = defaultFormatter;
         return this;
     }
 
@@ -190,58 +155,8 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
         return this;
     }
 
-    setEditCommandHandler(editCommandHandler: any): GridOptionsBuilder<T> {
-        this.editCommandHandler = editCommandHandler;
-        return this;
-    }
-
-    setEditorFactory(editorFactory: Slick.EditorFactory): GridOptionsBuilder<T> {
-        this.editorFactory = editorFactory;
-        return this;
-    }
-
-    setEditorLock(editorLock: Slick.EditorLock<T>): GridOptionsBuilder<T> {
-        this.editorLock = editorLock;
-        return this;
-    }
-
-    setEnableAddRow(enableAddRow: boolean): GridOptionsBuilder<T> {
-        this.enableAddRow = enableAddRow;
-        return this;
-    }
-
     setEnableAsyncPostRender(enableAsyncPostRender: boolean): GridOptionsBuilder<T> {
         this.enableAsyncPostRender = enableAsyncPostRender;
-        return this;
-    }
-
-    setEnableCellRangeSelection(enableCellRangeSelection: any): GridOptionsBuilder<T> {
-        this.enableCellRangeSelection = enableCellRangeSelection;
-        return this;
-    }
-
-    setEnableCellNavigation(enableCellNavigation: boolean): GridOptionsBuilder<T> {
-        this.enableCellNavigation = enableCellNavigation;
-        return this;
-    }
-
-    setEnableColumnReorder(enableColumnReorder: boolean): GridOptionsBuilder<T> {
-        this.enableColumnReorder = enableColumnReorder;
-        return this;
-    }
-
-    setEnableRowReordering(enableRowReordering: any): GridOptionsBuilder<T> {
-        this.enableRowReordering = enableRowReordering;
-        return this;
-    }
-
-    setEnableTextSelectionOnCells(enableTextSelectionOnCells: boolean): GridOptionsBuilder<T> {
-        this.enableTextSelectionOnCells = enableTextSelectionOnCells;
-        return this;
-    }
-
-    setExplicitInitialization(explicitInitialization: boolean): GridOptionsBuilder<T> {
-        this.explicitInitialization = explicitInitialization;
         return this;
     }
 
@@ -250,33 +165,8 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
         return this;
     }
 
-    setForceSyncScrolling(forceSyncScrolling: boolean): GridOptionsBuilder<T> {
-        this.forceSyncScrolling = forceSyncScrolling;
-        return this;
-    }
-
-    setFormatterFactory(formatterFactory: Slick.FormatterFactory<T>): GridOptionsBuilder<T> {
-        this.formatterFactory = formatterFactory;
-        return this;
-    }
-
     setFullWidthRows(fullWidthRows: boolean): GridOptionsBuilder<T> {
         this.fullWidthRows = fullWidthRows;
-        return this;
-    }
-
-    setHeaderRowHeight(headerRowHeight: number): GridOptionsBuilder<T> {
-        this.headerRowHeight = headerRowHeight;
-        return this;
-    }
-
-    setLeaveSpaceForNewRows(leaveSpaceForNewRows: boolean): GridOptionsBuilder<T> {
-        this.leaveSpaceForNewRows = leaveSpaceForNewRows;
-        return this;
-    }
-
-    setMultiColumnSort(multiColumnSort: boolean): GridOptionsBuilder<T> {
-        this.multiColumnSort = multiColumnSort;
         return this;
     }
 
@@ -287,26 +177,6 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
 
     setRowHeight(rowHeight: number): GridOptionsBuilder<T> {
         this.rowHeight = rowHeight;
-        return this;
-    }
-
-    setSelectedCellCssClass(selectedCellCssClass: string): GridOptionsBuilder<T> {
-        this.selectedCellCssClass = selectedCellCssClass;
-        return this;
-    }
-
-    setShowHeaderRow(showHeaderRow: boolean): GridOptionsBuilder<T> {
-        this.showHeaderRow = showHeaderRow;
-        return this;
-    }
-
-    setSyncColumnCellResize(syncColumnCellResize: boolean): GridOptionsBuilder<T> {
-        this.syncColumnCellResize = syncColumnCellResize;
-        return this;
-    }
-
-    setTopPanelHeight(topPanelHeight: number): GridOptionsBuilder<T> {
-        this.topPanelHeight = topPanelHeight;
         return this;
     }
 
@@ -342,21 +212,6 @@ export class GridOptionsBuilder<T extends Slick.SlickData> {
 
     setLeftAlignedCheckbox(leftAlignedCheckbox: boolean): GridOptionsBuilder<T> {
         this.leftAlignedCheckbox = leftAlignedCheckbox;
-        return this;
-    }
-
-    disableMultipleSelection(disabledMultipleSelection: boolean): GridOptionsBuilder<T> {
-        this.disabledMultipleSelection = disabledMultipleSelection;
-        return this;
-    }
-
-    setDragAndDrop(dragAndDrop: boolean): GridOptionsBuilder<T> {
-        this.dragAndDrop = dragAndDrop;
-        return this;
-    }
-
-    setRerenderOnResize(value: boolean): GridOptionsBuilder<T> {
-        this.rerenderOnResize = value;
         return this;
     }
 
@@ -404,9 +259,9 @@ export class GridOptions<T extends Slick.SlickData>
 
     enableCellRangeSelection: any;
 
-    enableCellNavigation: boolean;
+    enableCellNavigation: boolean = false;
 
-    enableColumnReorder: boolean;
+    enableColumnReorder: boolean = false;
 
     enableRowReordering: any;
 
@@ -414,7 +269,9 @@ export class GridOptions<T extends Slick.SlickData>
 
     explicitInitialization: boolean;
 
-    forceFitColumns: boolean;
+    //forceFitColumns: boolean;
+
+    autosizeColsMode: boolean = true;
 
     forceSyncScrolling: boolean;
 
@@ -465,6 +322,8 @@ export class GridOptions<T extends Slick.SlickData>
 
     rerenderOnResize: boolean;
 
+    suppressCssChangesOnHiddenInit: boolean = true;
+
     constructor(builder: GridOptionsBuilder<T>) {
         this.asyncEditorLoading = builder.asyncEditorLoading;
         this.asyncEditorLoadDelay = builder.asyncEditorLoadDelay;
@@ -487,7 +346,7 @@ export class GridOptions<T extends Slick.SlickData>
         this.enableRowReordering = builder.enableRowReordering;
         this.enableTextSelectionOnCells = builder.enableTextSelectionOnCells;
         this.explicitInitialization = builder.explicitInitialization;
-        this.forceFitColumns = builder.forceFitColumns;
+        //this.forceFitColumns = builder.forceFitColumns;
         this.forceSyncScrolling = builder.forceSyncScrolling;
         this.formatterFactory = builder.formatterFactory;
         this.fullWidthRows = builder.fullWidthRows;
@@ -513,120 +372,8 @@ export class GridOptions<T extends Slick.SlickData>
         this.rerenderOnResize = builder.rerenderOnResize;
     }
 
-    isAsyncEditorLoading(): boolean {
-        return this.asyncEditorLoading;
-    }
-
-    getAsyncEditorLoadDelay(): number {
-        return this.asyncEditorLoadDelay;
-    }
-
-    getAsyncPostRenderDelay(): number {
-        return this.asyncPostRenderDelay;
-    }
-
-    isAutoEdit(): boolean {
-        return this.autoEdit;
-    }
-
-    getCellFlashingCssClass(): string {
-        return this.cellFlashingCssClass;
-    }
-
-    getCellHighlightCssClass(): string {
-        return this.cellHighlightCssClass;
-    }
-
     getDataItemColumnValueExtractor(): any {
         return this.dataItemColumnValueExtractor;
-    }
-
-    getDefaultColumnWidth(): number {
-        return this.defaultColumnWidth;
-    }
-
-    getDefaultFormatter(): Slick.Formatter<T> {
-        return this.defaultFormatter;
-    }
-
-    isEditable(): boolean {
-        return this.editable;
-    }
-
-    getEditCommandHandler(): any {
-        return this.editCommandHandler;
-    }
-
-    getEditorFactory(): Slick.EditorFactory {
-        return this.editorFactory;
-    }
-
-    getEditorLock(): Slick.EditorLock<T> {
-        return this.editorLock;
-    }
-
-    isEnableAddRow(): boolean {
-        return this.enableAddRow;
-    }
-
-    isEnableAsyncPostRender(): boolean {
-        return this.enableAsyncPostRender;
-    }
-
-    getEnableCellRangeSelection(): any {
-        return this.enableCellRangeSelection;
-    }
-
-    isEnableCellNavigation(): boolean {
-        return this.enableCellNavigation;
-    }
-
-    isEnableColumnReorder(): boolean {
-        return this.enableColumnReorder;
-    }
-
-    getEnableRowReordering(): any {
-        return this.enableRowReordering;
-    }
-
-    isEnableTextSelectionOnCells(): boolean {
-        return this.enableTextSelectionOnCells;
-    }
-
-    isExplicitInitialization(): boolean {
-        return this.explicitInitialization;
-    }
-
-    isForceFitColumns(): boolean {
-        return this.forceFitColumns;
-    }
-
-    isForceSyncScrolling(): boolean {
-        return this.forceSyncScrolling;
-    }
-
-    getFormatterFactory(): Slick.FormatterFactory<T> {
-        return this.formatterFactory;
-    }
-
-    isFullWidthRows(): boolean {
-        return this.fullWidthRows;
-    }
-
-    getHeaderRowHeight(): number {
-        return this.headerRowHeight;
-    }
-
-    isLeaveSpaceForNewRows(): boolean {
-        return this.leaveSpaceForNewRows;
-    }
-
-    isMultiColumnSort(): boolean {
-        return this.multiColumnSort;
-    }
-
-    isMultiSelect(): boolean {
-        return this.multiSelect;
     }
 
     getRowHeight(): number {
@@ -635,18 +382,6 @@ export class GridOptions<T extends Slick.SlickData>
 
     getSelectedCellCssClass(): string {
         return this.selectedCellCssClass;
-    }
-
-    getShowHeaderRow(): boolean {
-        return this.showHeaderRow;
-    }
-
-    isSyncColumnCellResize(): boolean {
-        return this.syncColumnCellResize;
-    }
-
-    getTopPanelHeight(): number {
-        return this.topPanelHeight;
     }
 
     isHideColumnHeaders(): boolean {
@@ -697,153 +432,8 @@ export class GridOptions<T extends Slick.SlickData>
         return this.galleryModeColumns;
     }
 
-    setAsyncEditorLoading(asyncEditorLoading: boolean): GridOptions<T> {
-        this.asyncEditorLoading = asyncEditorLoading;
-        return this;
-    }
-
-    setAsyncEditorLoadDelay(asyncEditorLoadDelay: number): GridOptions<T> {
-        this.asyncEditorLoadDelay = asyncEditorLoadDelay;
-        return this;
-    }
-
-    setAsyncPostRenderDelay(asyncPostRenderDelay: number): GridOptions<T> {
-        this.asyncPostRenderDelay = asyncPostRenderDelay;
-        return this;
-    }
-
-    setAutoEdit(autoEdit: boolean): GridOptions<T> {
-        this.autoEdit = autoEdit;
-        return this;
-    }
-
-    setCellFlashingCssClass(cellFlashingCssClass: string): GridOptions<T> {
-        this.cellFlashingCssClass = cellFlashingCssClass;
-        return this;
-    }
-
-    setCellHighlightCssClass(cellHighlightCssClass: string): GridOptions<T> {
-        this.cellHighlightCssClass = cellHighlightCssClass;
-        return this;
-    }
-
     setDataItemColumnValueExtractor(dataItemColumnValueExtractor: any): GridOptions<T> {
         this.dataItemColumnValueExtractor = dataItemColumnValueExtractor;
-        return this;
-    }
-
-    setDefaultColumnWidth(defaultColumnWidth: number): GridOptions<T> {
-        this.defaultColumnWidth = defaultColumnWidth;
-        return this;
-    }
-
-    setDefaultFormatter(defaultFormatter: Slick.Formatter<T>): GridOptions<T> {
-        this.defaultFormatter = defaultFormatter;
-        return this;
-    }
-
-    setEditable(editable: boolean): GridOptions<T> {
-        this.editable = editable;
-        return this;
-    }
-
-    setEditCommandHandler(editCommandHandler: any): GridOptions<T> {
-        this.editCommandHandler = editCommandHandler;
-        return this;
-    }
-
-    setEditorFactory(editorFactory: Slick.EditorFactory): GridOptions<T> {
-        this.editorFactory = editorFactory;
-        return this;
-    }
-
-    setEditorLock(editorLock: Slick.EditorLock<T>): GridOptions<T> {
-        this.editorLock = editorLock;
-        return this;
-    }
-
-    setEnableAddRow(enableAddRow: boolean): GridOptions<T> {
-        this.enableAddRow = enableAddRow;
-        return this;
-    }
-
-    setEnableAsyncPostRender(enableAsyncPostRender: boolean): GridOptions<T> {
-        this.enableAsyncPostRender = enableAsyncPostRender;
-        return this;
-    }
-
-    setEnableCellRangeSelection(enableCellRangeSelection: any): GridOptions<T> {
-        this.enableCellRangeSelection = enableCellRangeSelection;
-        return this;
-    }
-
-    setEnableCellNavigation(enableCellNavigation: boolean): GridOptions<T> {
-        this.enableCellNavigation = enableCellNavigation;
-        return this;
-    }
-
-    setEnableColumnReorder(enableColumnReorder: boolean): GridOptions<T> {
-        this.enableColumnReorder = enableColumnReorder;
-        return this;
-    }
-
-    setEnableRowReordering(enableRowReordering: any): GridOptions<T> {
-        this.enableRowReordering = enableRowReordering;
-        return this;
-    }
-
-    setEnableTextSelectionOnCells(enableTextSelectionOnCells: boolean): GridOptions<T> {
-        this.enableTextSelectionOnCells = enableTextSelectionOnCells;
-        return this;
-    }
-
-    setExplicitInitialization(explicitInitialization: boolean): GridOptions<T> {
-        this.explicitInitialization = explicitInitialization;
-        return this;
-    }
-
-    setForceFitColumns(forceFitColumns: boolean): GridOptions<T> {
-        this.forceFitColumns = forceFitColumns;
-        return this;
-    }
-
-    setForceSyncScrolling(forceSyncScrolling: boolean): GridOptions<T> {
-        this.forceSyncScrolling = forceSyncScrolling;
-        return this;
-    }
-
-    setFormatterFactory(formatterFactory: Slick.FormatterFactory<T>): GridOptions<T> {
-        this.formatterFactory = formatterFactory;
-        return this;
-    }
-
-    setFullWidthRows(fullWidthRows: boolean): GridOptions<T> {
-        this.fullWidthRows = fullWidthRows;
-        return this;
-    }
-
-    setHeaderRowHeight(headerRowHeight: number): GridOptions<T> {
-        this.headerRowHeight = headerRowHeight;
-        return this;
-    }
-
-    setLeaveSpaceForNewRows(leaveSpaceForNewRows: boolean): GridOptions<T> {
-        this.leaveSpaceForNewRows = leaveSpaceForNewRows;
-        return this;
-    }
-
-    setMultiColumnSort(multiColumnSort: boolean): GridOptions<T> {
-        this.multiColumnSort = multiColumnSort;
-        return this;
-    }
-
-    setMultiSelect(multiSelect: boolean): GridOptions<T> {
-        this.multiSelect = multiSelect;
-        return this;
-    }
-
-    setRowHeight(rowHeight: number): GridOptions<T> {
-        this.rowHeight = rowHeight;
         return this;
     }
 
@@ -852,43 +442,8 @@ export class GridOptions<T extends Slick.SlickData>
         return this;
     }
 
-    setShowHeaderRow(showHeaderRow: boolean): GridOptions<T> {
-        this.showHeaderRow = showHeaderRow;
-        return this;
-    }
-
-    setSyncColumnCellResize(syncColumnCellResize: boolean): GridOptions<T> {
-        this.syncColumnCellResize = syncColumnCellResize;
-        return this;
-    }
-
-    setTopPanelHeight(topPanelHeight: number): GridOptions<T> {
-        this.topPanelHeight = topPanelHeight;
-        return this;
-    }
-
-    setHideColumnHeaders(hideColumnHeaders: boolean): GridOptions<T> {
-        this.hideColumnHeaders = hideColumnHeaders;
-        return this;
-    }
-
     setWidth(width: string): GridOptions<T> {
         this.width = width;
-        return this;
-    }
-
-    setHeight(height: string): GridOptions<T> {
-        this.height = height;
-        return this;
-    }
-
-    setDataIdProperty(dataIdProperty: string): GridOptions<T> {
-        this.dataIdProperty = dataIdProperty;
-        return this;
-    }
-
-    setAutoRenderGridOnDataChanges(autoRenderGridOnDataChanges: boolean): GridOptions<T> {
-        this.autoRenderGridOnDataChanges = autoRenderGridOnDataChanges;
         return this;
     }
 
@@ -909,16 +464,6 @@ export class GridOptions<T extends Slick.SlickData>
 
     setDragAndDrop(dragAndDrop: boolean): GridOptions<T> {
         this.dragAndDrop = dragAndDrop;
-        return this;
-    }
-
-    setEnableGalleryMode(value: boolean): GridOptions<T> {
-        this.enableGalleryMode = value;
-        return this;
-    }
-
-    setGalleryModeColumns(value: number): GridOptions<T> {
-        this.galleryModeColumns = value;
         return this;
     }
 }

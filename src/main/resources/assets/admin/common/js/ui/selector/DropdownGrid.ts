@@ -400,7 +400,6 @@ export abstract class DropdownGrid<OPTION_DISPLAY_VALUE> {
             .setWidth(this.width + 'px')
             .setHeight(this.maxHeight + 'px')
             .setHideColumnHeaders(true)
-            .setEnableColumnReorder(false)
             .setFullWidthRows(true)
             .setForceFitColumns(true)
             .setRowHeight(this.rowHeight)
