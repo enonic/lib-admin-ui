@@ -34,7 +34,7 @@ export class UriHelper {
      * @returns {string} the URI to a admin path.
      */
     static getAdminUriPrefix(): string {
-        return UriHelper.ADMIN_URI || UriHelper.DEFAULT_ADMIN_URI;
+        return UriHelper.ADMIN_URI ?? UriHelper.DEFAULT_ADMIN_URI;
     }
 
     static setAdminUri(value: string): void {
