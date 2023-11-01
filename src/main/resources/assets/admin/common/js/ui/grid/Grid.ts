@@ -1,5 +1,13 @@
 /// <reference types="slickgrid/slick.checkboxselectcolumn" />
 /// <reference types="slickgrid/slick.rowselectionmodel" />
+import 'jquery-ui/ui/widgets/sortable'; // Required by slick.grid
+import '@enonic/legacy-slickgrid/lib/jquery.event.drag-2.3.js'; // Needed by slick.grid
+import '@enonic/legacy-slickgrid/slick.core'; // Needed by slick.grid
+import '@enonic/legacy-slickgrid/slick.checkboxselectcolumn'; // Slick.CheckboxSelectColumn
+import '@enonic/legacy-slickgrid/slick.grid'; // Slick.Grid
+import '@enonic/legacy-slickgrid/slick.rowmovemanager'; // Slick.RowMoveManager
+import '@enonic/legacy-slickgrid/slick.rowselectionmodel'; // Not sure this is needed actually
+
 import * as Q from 'q';
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
 import {DivEl} from '../../dom/DivEl';

@@ -1,3 +1,5 @@
+import '@enonic/legacy-slickgrid/slick.core'; // This needs jQuery and probably jQuery UI.
+
 import {IDentifiable} from '../../IDentifiable';
 import {Equitable} from '../../Equitable';
 import {ObjectHelper} from '../../ObjectHelper';

@@ -1,3 +1,12 @@
+import '@enonic/legacy-slickgrid/lib/jquery.event.drag-2.3'; // Needed by slick.grid
+import '@enonic/legacy-slickgrid/lib/jquery.event.drop-2.3';
+import 'jquery-ui/ui/widgets/sortable'; // Required by slick.grid
+import '@enonic/legacy-slickgrid/slick.core'; // Needed by slick.grid // Slick.EditorLock
+import '@enonic/legacy-slickgrid/slick.editors'; // Not sure this is needed
+import '@enonic/legacy-slickgrid/slick.formatters'; // Not sure this is needed
+import '@enonic/legacy-slickgrid/slick.grid'; // Not sure this is needed
+
+
 export class GridOptionsBuilder<T extends Slick.SlickData> {
 
     asyncEditorLoading: boolean;

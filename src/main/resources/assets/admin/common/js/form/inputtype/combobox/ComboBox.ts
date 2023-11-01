@@ -1,3 +1,5 @@
+import '@enonic/legacy-slickgrid/slick.core'; // This needs jQuery and probably jQuery UI.
+
 import * as Q from 'q';
 import {Element} from '../../../dom/Element';
 import {PropertyArray} from '../../../data/PropertyArray';

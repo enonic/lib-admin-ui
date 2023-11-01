@@ -1,3 +1,5 @@
+import * as $ from 'jquery'; // tabbable
+
 import * as Q from 'q';
 import {StyleHelper} from '../StyleHelper';
 import {StringHelper} from '../util/StringHelper';

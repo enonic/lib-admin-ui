@@ -2,8 +2,9 @@ import {KeyBinding, KeyBindingAction} from './KeyBinding';
 import * as Mousetrap from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
 import {Store} from '../store/Store';
+import {KEY_BINDINGS_KEY} from './constants';
 
-export const KEY_BINDINGS_KEY = 'keyBindings';
+export {KEY_BINDINGS_KEY}; // Backwards compatibility
 
 export class KeyBindings {
 

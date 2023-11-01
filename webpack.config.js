@@ -18,9 +18,58 @@ module.exports = {
         'styles/lib': './styles/main.less',
         'styles/lib.lite': './styles/main.lite.less',
     },
-    externals: {
-        jquery: 'jQuery',
-    },
+    externals: [
+        {
+            dompurify: 'DOMPurify',
+            jquery: 'jQuery',
+            mousetrap: 'Mousetrap',
+            'mousetrap/plugins/global-bind/mousetrap-global-bind': 'Mousetrap',
+            q: 'Q',
+        },
+        function ({
+            context,
+            request,
+            dependencyType,
+            contextInfo: {
+                issuer,
+                // issuerLayer,
+                // compiler
+            }
+        }, callback) {
+            // if (!['amd', 'commonjs', 'esm', 'loaderImport', 'url'].includes(dependencyType)) {
+            //     console.log({
+            //         context,
+            //         request,
+            //         dependencyType,
+            //         issuer
+            //     });
+            // }
+            if (issuer.endsWith('.ts')) {
+                if (request.startsWith('@enonic/legacy-slickgrid')) {
+                    return callback(null, 'Slick'); // The external is a global variable called `Slick`.
+                }
+                if (request.startsWith('jquery-ui')) {
+                    return callback(null, 'jQuery'); // The external is a global variable called `jQuery`.
+                }
+            }
+            if (
+                request.startsWith('.')
+                || request.endsWith('.gif')
+                || request.endsWith('.png')
+                || issuer.endsWith('.css')
+                || issuer.endsWith('.less')
+            ) {
+                return callback(); // Continue without externalizing the import
+            }
+            console.error('Not externalizing unhandeled import', {
+                context,
+                request,
+                dependencyType,
+                issuer
+            });
+            return callback(); // Continue without externalizing the import
+        }
+    ],
     output: {
         path: path.join(__dirname, '/build/resources/main/assets/admin/common'),
         filename: './[name].js',

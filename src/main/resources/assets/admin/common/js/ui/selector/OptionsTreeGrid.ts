@@ -1,3 +1,5 @@
+import '@enonic/legacy-slickgrid/slick.core'; // This needs jQuery and probably jQuery UI.
+
 import * as Q from 'q';
 import {TreeNode} from '../treegrid/TreeNode';
 import {SelectionOnClickType, TreeGrid} from '../treegrid/TreeGrid';

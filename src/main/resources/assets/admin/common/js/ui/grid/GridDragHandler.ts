@@ -1,3 +1,5 @@
+import '@enonic/legacy-slickgrid/slick.core'; // This needs jQuery and probably jQuery UI.
+
 import {Element} from '../../dom/Element';
 import {TreeGrid} from '../treegrid/TreeGrid';
 import {TreeNode} from '../treegrid/TreeNode';

@@ -1,3 +1,8 @@
+import '@enonic/legacy-slickgrid/slick.core';
+import '@enonic/legacy-slickgrid/slick.editors'; // Slick.Editors
+import '@enonic/legacy-slickgrid/slick.formatters'; // Slick.Formatter
+
+
 export interface GridColumnConfig {
     name: string;
     id: string;

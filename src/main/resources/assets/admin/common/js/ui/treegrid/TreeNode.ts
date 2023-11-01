@@ -1,3 +1,6 @@
+import '@enonic/legacy-slickgrid/slick.core'; // This needs jQuery and probably jQuery UI.
+
+
 import {Viewer} from '../Viewer';
 import {ArrayHelper} from '../../util/ArrayHelper';
 import {IDentifiable} from '../../IDentifiable';

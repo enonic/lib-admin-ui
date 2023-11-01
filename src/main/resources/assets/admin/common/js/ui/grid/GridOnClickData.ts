@@ -1,3 +1,6 @@
+import '@enonic/legacy-slickgrid/slick.core'; // This needs jQuery and probably jQuery UI.
+
+
 export class GridOnClickDataBuilder {
 
     row: number;

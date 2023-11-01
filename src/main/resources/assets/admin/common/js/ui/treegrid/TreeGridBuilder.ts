@@ -1,3 +1,6 @@
+import '@enonic/legacy-slickgrid/slick.core'; // This needs jQuery and probably jQuery UI.
+
+
 import {GridColumn, GridColumnBuilder, GridColumnConfig} from '../grid/GridColumn';
 import {GridOptions, GridOptionsBuilder} from '../grid/GridOptions';
 import {TreeGridContextMenu} from './TreeGridContextMenu';

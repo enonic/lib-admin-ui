@@ -1,3 +1,9 @@
+import 'jquery-ui/ui/widgets/sortable'; // Required by slick.grid
+import '@enonic/legacy-slickgrid/lib/jquery.event.drag-2.3.js'; // Needed by slick.grid
+import '@enonic/legacy-slickgrid/slick.core'; // Needed by slick.grid // This needs jQuery and probably jQuery UI.
+import '@enonic/legacy-slickgrid/slick.rowselectionmodel'; // Slick.RowSelectionModel
+import '@enonic/legacy-slickgrid/slick.grid'; // Only place I found something about plugins.
+
 import * as Q from 'q';
 import {Element} from '../../dom/Element';
 import {ElementHelper} from '../../dom/ElementHelper';

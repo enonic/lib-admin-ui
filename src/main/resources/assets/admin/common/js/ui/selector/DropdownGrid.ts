@@ -1,3 +1,7 @@
+import '@enonic/legacy-slickgrid/slick.core'; // This needs jQuery and probably jQuery UI.
+import '@enonic/legacy-slickgrid/slick.rowselectionmodel';// Slick.RowSelectionModel
+
+
 import * as Q from 'q';
 import {Viewer} from '../Viewer';
 import {GridColumn, GridColumnBuilder} from '../grid/GridColumn';

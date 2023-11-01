@@ -1,3 +1,9 @@
+import 'jquery-ui/ui/widgets/sortable'; // Required by slick.grid
+import '@enonic/legacy-slickgrid/lib/jquery.event.drag-2.3.js'; // Needed by slick.grid
+import '@enonic/legacy-slickgrid/slick.core'; // Needed by slick.grid // Slick.EventData
+import '@enonic/legacy-slickgrid/slick.dataview'; // Slick.Data
+import '@enonic/legacy-slickgrid/slick.grid'; // Slick.Grid
+
 export class DataView<T extends Slick.SlickData> {
 
     private slickDataView: Slick.Data.DataView<T>;
