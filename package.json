@@ -15,6 +15,7 @@
     "build:dev:js": "swc src --out-dir build/tmp/src",
     "build:dev:types": "tsc --skipLibCheck --emitDeclarationOnly --declaration",
     "build:lib": "webpack --color",
+    "clean": "del-cli build",
     "typecheck": "tsc --pretty --skipLibCheck --noEmit",
     "lint": "eslint **/*.ts --quiet --cache",
     "fix": "eslint --fix **/*.ts --cache"
@@ -63,6 +64,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.8.1",
     "cssnano": "^6.0.1",
+    "del-cli": "^5.1.0",
     "enonic-admin-artifacts": "^1.8.5",
     "error-logger-webpack-plugin": "^1.1.1",
     "eslint": "^8.51.0",

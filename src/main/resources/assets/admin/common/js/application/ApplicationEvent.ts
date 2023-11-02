@@ -14,7 +14,7 @@ export interface ApplicationEventJson
 
 export interface ApplicationEventDataJson {
     eventType: string;
-    applicationKey: string;
+    applicationKey?: string; // ApplicationEvent.fromJson indicates it can be undefined
     applicationUrl?: string;
     systemApplication: boolean;
     progress?: number;
@@ -23,7 +23,7 @@ export interface ApplicationEventDataJson {
 export class ApplicationEvent
     extends Event {
 
-    private applicationKey: ApplicationKey;
+    private applicationKey: ApplicationKey | null;
 
     private applicationUrl: string;
 
@@ -33,7 +33,7 @@ export class ApplicationEvent
 
     private progress: number;
 
-    constructor(applicationKey: ApplicationKey,
+    constructor(applicationKey: ApplicationKey | null,
                 eventType: ApplicationEventType,
                 systemApplication: boolean,
                 applicationUrl?: string,
@@ -64,7 +64,8 @@ export class ApplicationEvent
         return new ApplicationEvent(applicationKey, eventType, systemApplication, applicationUrl, progress);
     }
 
-    public getApplicationKey(): ApplicationKey {
+    // Since fromJson
+    public getApplicationKey(): ApplicationKey | null {
         return this.applicationKey;
     }
 
