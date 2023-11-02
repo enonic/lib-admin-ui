@@ -21,11 +21,7 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
 
     private treeDataHelper: OptionDataHelper<OPTION_DISPLAY_VALUE>;
 
-    private defaultOption: OPTION_DISPLAY_VALUE;
-
     private optionsFactory: OptionsFactory<OPTION_DISPLAY_VALUE>;
-
-    private isDefaultOptionActive: boolean;
 
     constructor(columns: GridColumn<any>[],
                 gridOptions: GridOptions<any>,
@@ -120,12 +116,7 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
 
     reload(): Q.Promise<void> {
         this.toggleTreeMode(true);
-        return super.reload().then(() => {
-            if (this.defaultOption && !this.isDefaultOptionActive) {
-                this.scrollToDefaultOption(this.getRoot().getCurrentRoot(), 0);
-                this.isDefaultOptionActive = true;
-            }
-        });
+        return super.reload();
     }
 
     hasChildren(option: Option<OPTION_DISPLAY_VALUE>): boolean {
@@ -168,11 +159,6 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
                     return options;
                 });
             });
-    }
-
-    presetDefaultOption(data: OPTION_DISPLAY_VALUE) {
-        this.defaultOption = data;
-        this.isDefaultOptionActive = false;
     }
 
     protected handleItemMetadata(row: number) {
@@ -235,45 +221,6 @@ export class OptionsTreeGrid<OPTION_DISPLAY_VALUE>
                 this.getGrid().resizeCanvas();
             }
         });
-    }
-
-    private scrollToDefaultOption(parentNode: TreeNode<Option<OPTION_DISPLAY_VALUE>>, startFrom: number) {
-        const length = parentNode.getChildren().length;
-        const defaultOptionId = this.treeDataHelper.getDataId(this.defaultOption);
-        for (let i = startFrom; i < length; i++) {
-            const child = parentNode.getChildren()[i];
-            const childOption = child.getData().getDisplayValue();
-            if (childOption) {
-                if (this.treeDataHelper.getDataId(childOption) === defaultOptionId) {
-                    this.scrollToRow(this.getGrid().getDataView().getRowById(child.getId()), true); // found target data node
-                    return;
-                }
-                if (this.treeDataHelper.isDescendingPath(this.defaultOption, childOption)) {
-                    // found ancestor of target data node
-                    this.expandNode(child).then(() => {
-                        this.scrollToDefaultOption(child, 0); // expand target data node ancestor and keep searching
-                    });
-                    return;
-                }
-            }
-        }
-
-        // if reached here  - no matches were found, need to load more children
-        this.fetchBatchOfChildren(parentNode);
-    }
-
-    private fetchBatchOfChildren(parentNode: TreeNode<Option<OPTION_DISPLAY_VALUE>>) {
-        const length = parentNode.getChildren().length;
-        const from = parentNode.getChildren()[length - 1].getData().getDisplayValue() ? length : length - 1;
-        if (from < parentNode.getMaxChildren()) {
-            this.fetchChildren(parentNode).then((children: Option<OPTION_DISPLAY_VALUE>[]) => {
-                let fetchedChildrenNodes = this.dataToTreeNodes(children, parentNode);
-                parentNode.setChildren(fetchedChildrenNodes);
-                this.initData(this.getRoot().getCurrentRoot().treeToList());
-
-                this.scrollToDefaultOption(parentNode, from);
-            });
-        }
     }
 
     private makeEmptyData(): Option<OPTION_DISPLAY_VALUE> {

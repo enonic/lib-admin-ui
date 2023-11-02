@@ -42,10 +42,6 @@ export class DropdownTreeGrid<OPTION_DISPLAY_VALUE>
         this.optionsTreeGrid.setReadonlyChecker(checker);
     }
 
-    presetDefaultOption(data: OPTION_DISPLAY_VALUE) {
-        this.optionsTreeGrid.presetDefaultOption(data);
-    }
-
     removeAllOptions() {
         this.optionsTreeGrid.removeAllOptions();
     }
