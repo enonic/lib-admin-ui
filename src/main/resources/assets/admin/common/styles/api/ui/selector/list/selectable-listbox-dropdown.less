@@ -8,14 +8,48 @@
       height: 100%;
       text-align: center;
       padding: 0;
-      background-color: @admin-blue;
+      background-color: @form-button-bg;
       z-index: 1;
     }
   }
 
   .item-view-wrapper {
     display: flex;
-    padding: 3px 0 3px 5px;
+    padding: 3px;
+    cursor: pointer;
+
+    .checkbox {
+      grid-area: checkbox;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      label::before {
+        position: static;
+      }
+    }
+
+    .item-view {
+      grid-area: data;
+    }
+
+    &.checkbox-right {
+      display: grid;
+      grid-template-columns: 1fr 30px;
+      grid-template-areas:
+        "data checkbox"
+    }
+
+    &.checkbox-left {
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      grid-template-areas:
+        "checkbox data"
+    }
+
+    &:hover {
+      background-color: @admin-bg-light-gray;
+    }
 
     .item-view {
       flex-grow: 1;
@@ -35,10 +69,13 @@
         height: 14px;
         padding: 0;
       }
+
+      background-color: inherit !important; // overriding styles in form-common.less
     }
 
     &.selected {
       color: @admin-white;
+      background-color: @admin-blue;
     }
 
     &:focus-visible {
