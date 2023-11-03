@@ -51,6 +51,10 @@ module.exports = {
                 if (request.startsWith('jquery-ui')) {
                     return callback(null, 'jQuery'); // The external is a global variable called `jQuery`.
                 }
+                // if (request.startsWith('@swc/helpers')) {
+                //     return callback(null, request, dependencyType); // Leave the require as is?
+                //     // return callback(null, 'swcHelpers'); // The external is a global variable called `swcHelpers`.
+                // }
             }
             if (
                 request.startsWith('.')
