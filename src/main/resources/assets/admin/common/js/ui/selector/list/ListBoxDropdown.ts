@@ -52,11 +52,7 @@ export class ListBoxDropdown<I> extends DivEl {
             this.listBox.setVisible(true);
 
             if (this.options.filter) {
-                const searchString: string = event.getNewValue();
-
-                this.listBox.getItems().forEach((item: I) => {
-                    this.filterItem(item, searchString);
-                });
+                this.filterItems(event.getNewValue());
             }
         });
 
@@ -64,6 +60,12 @@ export class ListBoxDropdown<I> extends DivEl {
             if (!this.listBox.isVisible() && KeyHelper.isArrowDownKey(event)) {
                 this.listBox.setVisible(true);
             }
+        });
+    }
+
+    protected filterItems(searchString: string): void {
+        this.listBox.getItems().forEach((item: I) => {
+            this.filterItem(item, searchString);
         });
     }
 
@@ -79,5 +81,30 @@ export class ListBoxDropdown<I> extends DivEl {
 
             return rendered;
         });
+    }
+
+    setEnabled(enable: boolean): void {
+        this.optionFilterInput.setEnabled(enable);
+        this.dropdownHandle.setEnabled(enable);
+    }
+
+    onFocus(listener: (event: FocusEvent) => void) {
+        this.optionFilterInput.onFocus(listener);
+    }
+
+    unFocus(listener: (event: FocusEvent) => void) {
+        this.optionFilterInput.unFocus(listener);
+    }
+
+    onBlur(listener: (event: FocusEvent) => void) {
+        this.optionFilterInput.onBlur(listener);
+    }
+
+    unBlur(listener: (event: FocusEvent) => void) {
+        this.optionFilterInput.unBlur(listener);
+    }
+
+    giveFocus(): boolean {
+        return this.optionFilterInput.giveFocus();
     }
 }

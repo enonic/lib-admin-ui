@@ -15,23 +15,24 @@ import {ExtendedKeyboardEvent} from 'mousetrap';
 
 export interface SelectableListBoxDropdownOptions<I>
     extends ListBoxDropdownOptions<I> {
-    multiple?: boolean;
+    maxSelected?: number;
+    checkboxPosition?: 'left' | 'right';
 }
 
 export class SelectableListBoxDropdown<I>
     extends ListBoxDropdown<I> {
 
-    options: SelectableListBoxDropdownOptions<I>;
+    protected options: SelectableListBoxDropdownOptions<I>;
 
-    private selectedItems = new Map<string, I>();
+    protected selectedItems = new Map<string, I>();
 
-    private selectionDelta = new Map<string, boolean>();
+    protected selectionDelta = new Map<string, boolean>();
 
-    private itemsWrappers = new Map<string, Element>();
+    protected itemsWrappers = new Map<string, Element>();
 
-    private applyButton: Button;
+    protected applyButton: Button;
 
-    private selectionChangedListeners: ((selectionChange: SelectionChange<I>) => void)[] = [];
+    protected selectionChangedListeners: ((selectionChange: SelectionChange<I>) => void)[];
 
     constructor(listBox: ListBox<I>, options?: SelectableListBoxDropdownOptions<I>) {
         super(listBox, options);
@@ -40,6 +41,7 @@ export class SelectableListBoxDropdown<I>
     protected initElements(): void {
         super.initElements();
 
+        this.selectionChangedListeners = [];
         this.applyButton = new Button(i18n('action.ok'));
         this.applyButton.hide();
     }
@@ -50,7 +52,8 @@ export class SelectableListBoxDropdown<I>
         this.addListBoxListeners();
         this.listenClickOutside();
         this.addKeyboardNavigation();
-        this.applyButton.onClicked(() => this.applySelection());
+
+        this.applyButton.onClicked(this.applySelection.bind(this));
     }
 
     private addListBoxListeners(): void {
@@ -73,8 +76,9 @@ export class SelectableListBoxDropdown<I>
         view.replaceWith(wrapper);
         view.addClass('item-view');
 
-        if (this.options.multiple) {
+        if (this.isMultiSelect()) {
             wrapper.appendChild(this.createCheckbox(item, view));
+            wrapper.addClass(this.options.checkboxPosition === 'left' ? 'checkbox-left' : 'checkbox-right');
         } else {
             wrapper.getEl().setTabIndex(0);
 
@@ -115,7 +119,7 @@ export class SelectableListBoxDropdown<I>
             }),
         ];
 
-        if (!this.options.multiple) { // when multiple is on then space works for checkboxes automatically
+        if (!this.isMultiSelect()) { // when multiple is on then space works for checkboxes automatically
             const spaceKeyBinding: KeyBinding = new KeyBinding('space')
                 .setGlobal(true)
                 .setCallback(() => {
@@ -164,8 +168,8 @@ export class SelectableListBoxDropdown<I>
     private toggleItemWrapperSelected(itemWrapper: Element, isSelected: boolean): void {
         itemWrapper?.toggleClass('selected', isSelected);
 
-        if (this.options.multiple) {
-            (itemWrapper?.getFirstChild() as Checkbox).setChecked(isSelected, true);
+        if (this.isMultiSelect()) {
+            (itemWrapper?.getFirstChild() as Checkbox)?.setChecked(isSelected, true);
         }
     }
 
@@ -288,7 +292,7 @@ export class SelectableListBoxDropdown<I>
 
     private focusFirstAvailableItem(items: Element[]): void {
         items.filter((el: Element) => el.isVisible()).some((itemWrapper: Element) => {
-            return this.options.multiple ? itemWrapper.getFirstChild().giveFocus() : itemWrapper.giveFocus();
+            return this.isMultiSelect() ? itemWrapper.getFirstChild().giveFocus() : itemWrapper.giveFocus();
         });
     }
 
@@ -305,7 +309,7 @@ export class SelectableListBoxDropdown<I>
 
         this.listBox.getChildren().find((itemWrapper: Element, index: number) => {
             focusedItemIndex = index;
-            const elemToCheck: HTMLElement = this.options.multiple ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() :
+            const elemToCheck: HTMLElement = this.isMultiSelect() ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() :
                                              itemWrapper.getHTMLElement();
             return elemToCheck === document.activeElement;
         });
@@ -318,7 +322,7 @@ export class SelectableListBoxDropdown<I>
 
         this.itemsWrappers.forEach((itemWrapper: Element, key: string) => {
             const elemToCheck: HTMLElement =
-                this.options.multiple ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() : itemWrapper.getHTMLElement();
+                this.isMultiSelect() ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() : itemWrapper.getHTMLElement();
 
             if (elemToCheck === document.activeElement) {
                 focusedItem = this.listBox.getItem(key);
@@ -349,6 +353,11 @@ export class SelectableListBoxDropdown<I>
     }
 
     private handlerEnterPressed(): void {
+        if (this.applyButton.hasFocus()) {
+            this.applySelection();
+            return;
+        }
+
         const focusedItem: I = this.getFocusedItem();
 
         if (focusedItem) {
@@ -407,6 +416,10 @@ export class SelectableListBoxDropdown<I>
         }
     }
 
+    countSelected(): number {
+        return this.selectedItems.size;
+    }
+
     onSelectionChanged(listener: (selectionChange: SelectionChange<I>) => void): void {
         this.selectionChangedListeners.push(listener);
     }
@@ -418,5 +431,9 @@ export class SelectableListBoxDropdown<I>
 
     private notifySelectionChanged(selectionChange: SelectionChange<I>): void {
         this.selectionChangedListeners.forEach((listener: (selectionChange: SelectionChange<I>) => void) => listener(selectionChange));
+    }
+
+    private isMultiSelect(): boolean {
+        return this.options.maxSelected === 0 || this.options.maxSelected > 1;
     }
 }
