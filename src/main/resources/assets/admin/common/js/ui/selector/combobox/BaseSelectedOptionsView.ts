@@ -23,7 +23,7 @@ export class BaseSelectedOptionsView<T>
     private optionRemovedListeners: ((removed: SelectedOptionEvent<T>) => void)[] = [];
     private optionAddedListeners: ((added: SelectedOptionEvent<T>) => void)[] = [];
     private optionMovedListeners: ((moved: SelectedOption<T>, fromIndex: number) => void)[] = [];
-    private editable: boolean = true;
+    protected editable: boolean = true;
     static MAX_TO_APPEND: number = 100;
 
     constructor(className?: string) {

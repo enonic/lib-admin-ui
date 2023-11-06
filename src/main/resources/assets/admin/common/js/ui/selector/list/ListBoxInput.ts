@@ -16,6 +16,7 @@ export abstract class ListBoxInput<I>
         super(listBox, options);
 
         this.selectedOptionsView = selectedOptionsView;
+        this.selectedOptionsView.setMaximumOccurrences(options.maxSelected);
 
         this.selectedOptionsView.onOptionDeselected((event: SelectedOptionEvent<I>) => {
             this.deselect(event.getSelectedOption().getOption().getDisplayValue());
