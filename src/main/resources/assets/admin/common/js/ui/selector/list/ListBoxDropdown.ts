@@ -8,6 +8,7 @@ import {KeyHelper} from '../../KeyHelper';
 
 export interface ListBoxDropdownOptions<I> {
     filter?: (item: I, searchString: string) => boolean;
+    className?: string;
 }
 
 export class ListBoxDropdown<I> extends DivEl {
@@ -21,7 +22,7 @@ export class ListBoxDropdown<I> extends DivEl {
     private dropdownHandle: DropdownHandle;
 
     constructor(listBox: ListBox<I>, options?: ListBoxDropdownOptions<I>) {
-        super('listbox-dropdown');
+        super('listbox-dropdown ' + (options.className || ''));
 
         this.listBox = listBox;
         this.options = options || {};
