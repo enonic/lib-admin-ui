@@ -21,7 +21,7 @@
     "fix": "eslint --fix **/*.ts --cache"
   },
   "dependencies": {
-    "@enonic/legacy-slickgrid": "v0.0.2",
+    "@enonic/legacy-slickgrid": "0.0.4",
     "@types/dompurify": "^3.0.3",
     "@types/mousetrap": "^1.6.12",
     "@types/slickgrid": "^2.1.36",
