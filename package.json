@@ -45,7 +45,7 @@
     "@types/q": "^1.5.7",
     "@types/semver": "^7.5.4",
     "@types/validator": "^13.11.6",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
     "@typescript-eslint/parser": "^6.11.0",
     "autoprefixer": "^10.4.16",
     "browserslist": "^4.22.1",
