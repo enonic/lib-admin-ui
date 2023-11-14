@@ -5,22 +5,26 @@ import {SelectionChange} from '../../../util/SelectionChange';
 import {Option} from '../Option';
 import {SelectedOptionEvent} from '../combobox/SelectedOptionEvent';
 
+export interface ListBoxInputOptions<I> extends SelectableListBoxDropdownOptions<I> {
+    selectedOptionsView: BaseSelectedOptionsView<I>
+}
+
 export abstract class ListBoxInput<I>
     extends SelectableListBoxDropdown<I> {
 
     protected selectedOptionsView: BaseSelectedOptionsView<I>;
 
-    protected constructor(listBox: ListBox<I>,
-                          selectedOptionsView: BaseSelectedOptionsView<I>,
-                          options?: SelectableListBoxDropdownOptions<I>) {
+    protected options: ListBoxInputOptions<I>;
+
+    protected constructor(listBox: ListBox<I>, options?: ListBoxInputOptions<I>) {
         super(listBox, options);
+    }
 
-        this.selectedOptionsView = selectedOptionsView;
-        this.selectedOptionsView.setMaximumOccurrences(options.maxSelected);
+    protected initElements() {
+        super.initElements();
 
-        this.selectedOptionsView.onOptionDeselected((event: SelectedOptionEvent<I>) => {
-            this.deselect(event.getSelectedOption().getOption().getDisplayValue());
-        });
+        this.selectedOptionsView = this.options.selectedOptionsView;
+        this.selectedOptionsView.setMaximumOccurrences(this.options.maxSelected);
     }
 
     protected initListeners(): void {
@@ -39,6 +43,10 @@ export abstract class ListBoxInput<I>
                     this.selectedOptionsView.removeOption(this.createOption(item), true);
                 }
             });
+        });
+
+        this.selectedOptionsView.onOptionDeselected((event: SelectedOptionEvent<I>) => {
+            this.deselect(event.getSelectedOption().getOption().getDisplayValue());
         });
     }
 

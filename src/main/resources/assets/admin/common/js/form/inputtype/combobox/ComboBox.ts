@@ -18,6 +18,7 @@ import {ComboBoxListInput} from './ComboBoxListInput';
 import {StringHelper} from '../../../util/StringHelper';
 import {ValueChangedEvent} from '../ValueChangedEvent';
 import {SelectionChange} from '../../../util/SelectionChange';
+import {ComboBoxSelectedOptionsView} from './ComboBoxSelectedOptionsView';
 
 export class ComboBox
     extends BaseInputTypeManagingAdd {
@@ -54,6 +55,7 @@ export class ComboBox
 
     private createListInput(): ComboBoxListInput {
         const listInput = new ComboBoxListInput({
+            selectedOptionsView: new ComboBoxSelectedOptionsView(),
             maxSelected: this.getInput().getOccurrences().getMaximum(),
             checkboxPosition: 'right',
             filter: this.comboBoxFilter.bind(this),

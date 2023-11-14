@@ -1,19 +1,16 @@
-import {ListBoxInput} from '../../../ui/selector/list/ListBoxInput';
+import {ListBoxInput, ListBoxInputOptions} from '../../../ui/selector/list/ListBoxInput';
 import {Option} from '../../../ui/selector/Option';
 import {ComboBoxOption} from './ComboBoxOption';
-import {BaseSelectedOptionsView} from '../../../ui/selector/combobox/BaseSelectedOptionsView';
 import {ComboBoxList} from './ComboBoxList';
-import {SelectableListBoxDropdownOptions} from '../../../ui/selector/list/SelectableListBoxDropdown';
-import {ComboBoxSelectedOptionsView} from './ComboBoxSelectedOptionsView';
 
-export interface ComboBoxListInputOptions extends SelectableListBoxDropdownOptions<ComboBoxOption> {
+export interface ComboBoxListInputOptions extends ListBoxInputOptions<ComboBoxOption> {
     items: ComboBoxOption[];
 }
 
 export class ComboBoxListInput extends ListBoxInput<ComboBoxOption> {
 
     constructor(options: ComboBoxListInputOptions) {
-        super(new ComboBoxList(), new ComboBoxSelectedOptionsView(), options);
+        super(new ComboBoxList(), options);
 
         this.selectedOptionsView.setEditable(false);
         this.listBox.setItems(options.items);
