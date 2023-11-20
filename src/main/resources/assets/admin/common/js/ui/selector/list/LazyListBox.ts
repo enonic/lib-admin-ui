@@ -43,27 +43,22 @@ export class LazyListBox<T> extends ListBox<T> {
     }
 
     protected handleLazyLoad(): void {
-    //
+        // must be implemented by subclasses
     }
 
     setItems(items: T[], silent?: boolean): void {
         super.setItems(items, silent);
-
-        if (items.length > 0) {
-            this.addLazyLoad();
-        }
+        this.addLazyLoad();
     }
 
     addItems(items: T[], silent: boolean = false): void {
         super.addItems(items, silent);
-
-        if (items.length > 0) {
-            this.addLazyLoad();
-        }
+        this.addLazyLoad();
     }
 
     private addLazyLoad(): void {
-        if (this.getItemCount() === 0) {
+        const lastVisibleChild = this.getLastVisibleChild();
+        if (!lastVisibleChild) {
             return;
         }
 
@@ -71,7 +66,17 @@ export class LazyListBox<T> extends ListBox<T> {
             this.initIntersectionObserver();
         }
 
-        this.addLazyLoadWhenLastIsVisible(this.getLastChild());
+        this.addLazyLoadWhenLastIsVisible(lastVisibleChild);
+    }
+
+    protected getLastVisibleChild(): Element | undefined {
+        if (!this.isVisible() || this.getItemCount() === 0) {
+            return undefined;
+        }
+
+        return [...this.getChildren()].reverse().find((item: Element) => {
+            return item.isVisible();
+        });
     }
 
     protected addLazyLoadWhenLastIsVisible(itemView: Element): void {
