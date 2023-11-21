@@ -5,38 +5,44 @@ import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {KeyHelper} from '../../KeyHelper';
+import {SelectableListBoxWrapper, SelectableListBoxDropdownOptions} from './SelectableListBoxWrapper';
+import {Button} from '../../button/Button';
+import {i18n} from '../../../util/Messages';
 
-export interface ListBoxDropdownOptions<I> {
+export interface FilterableListBoxOptions<I> extends SelectableListBoxDropdownOptions<I> {
     filter?: (item: I, searchString: string) => boolean;
-    className?: string;
 }
 
-export class ListBoxDropdown<I> extends DivEl {
+export class FilterableListBoxWrapper<I> extends SelectableListBoxWrapper<I> {
 
     protected readonly listBox: ListBox<I>;
 
-    protected options: ListBoxDropdownOptions<I>;
+    protected options: FilterableListBoxOptions<I>;
 
     protected optionFilterInput: OptionFilterInput;
 
-    private dropdownHandle: DropdownHandle;
+    protected applyButton: Button;
 
-    constructor(listBox: ListBox<I>, options?: ListBoxDropdownOptions<I>) {
-        super('listbox-dropdown ' + (options.className || ''));
+    protected dropdownHandle: DropdownHandle;
 
-        this.listBox = listBox;
-        this.options = options || {};
-        this.initElements();
-        this.initListeners();
+    constructor(listBox: ListBox<I>, options?: FilterableListBoxOptions<I>) {
+        super(listBox, options);
     }
 
     protected initElements(): void {
+        super.initElements();
+
         this.optionFilterInput = new OptionFilterInput();
         this.dropdownHandle = new DropdownHandle();
-        this.listBox.hide();
+        this.applyButton = new Button(i18n('action.ok'));
+        this.applyButton.hide();
     }
 
     protected initListeners(): void {
+        super.initListeners();
+
+        this.applyButton.onClicked(this.applySelection.bind(this));
+
         this.dropdownHandle.onClicked(() => {
             this.listBox.setVisible(!this.listBox.isVisible());
         });
@@ -50,18 +56,20 @@ export class ListBoxDropdown<I> extends DivEl {
         });
 
         this.optionFilterInput.onValueChanged((event: ValueChangedEvent) => {
-            this.listBox.setVisible(true);
-
-            if (this.options.filter) {
-                this.filterItems(event.getNewValue());
-            }
+           this.handleValueChange(event);
         });
 
         this.optionFilterInput.onKeyDown((event: KeyboardEvent) => {
-            if (!this.listBox.isVisible() && KeyHelper.isArrowDownKey(event)) {
-                this.listBox.setVisible(true);
-            }
+            this.handleKeyDown(event);
         });
+    }
+
+    protected handleValueChange(event: ValueChangedEvent): void {
+        this.listBox.setVisible(true);
+
+        if (this.options.filter) {
+            this.filterItems(event.getNewValue());
+        }
     }
 
     protected filterItems(searchString: string): void {
@@ -71,14 +79,57 @@ export class ListBoxDropdown<I> extends DivEl {
     }
 
     protected filterItem(item: I, searchString: string): void {
-        this.listBox.getItemView(item).setVisible(this.options.filter(item, searchString));
+        this.itemsWrappers.get(this.listBox.getIdOfItem(item))?.setVisible(this.options.filter(item, searchString));
+    }
+
+    protected handleKeyDown(event: KeyboardEvent): void {
+        if (!this.listBox.isVisible() && KeyHelper.isArrowDownKey(event)) {
+            this.listBox.setVisible(true);
+        }
+    }
+
+    protected handlerEnterPressed(): void {
+        if (this.applyButton.hasFocus()) {
+            this.applySelection();
+            return;
+        }
+
+        super.handlerEnterPressed();
+    }
+
+    protected handleClickOutside(): void {
+        super.handleClickOutside();
+        this.applyButton.hide();
+    }
+
+    protected handleItemMarkedSelected(item: I): void {
+        super.handleItemMarkedSelected(item);
+
+        this.applyButton.setVisible(this.selectionDelta.size > 0);
+    }
+
+    protected handleItemMarkedDeselected(item: I): void {
+        super.handleItemMarkedDeselected(item);
+
+        this.applyButton.setVisible(this.selectionDelta.size > 0);
+    }
+
+    protected applySelection(): void {
+        super.applySelection();
+
+        this.applyButton.hide();
+        this.optionFilterInput.setValue('', true);
     }
 
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
+            this.addClass('filterable-listbox-wrapper');
             const filterContainer: DivEl = new DivEl('filter-container');
             filterContainer.appendChildren(this.optionFilterInput, this.dropdownHandle as Element);
             this.appendChildren(filterContainer, this.listBox);
+
+            this.applyButton.addClass('apply-selection-button');
+            this.applyButton.insertAfterEl(this.optionFilterInput);
 
             return rendered;
         });

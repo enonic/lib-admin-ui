@@ -1,9 +1,21 @@
-.listbox-dropdown {
+.filterable-listbox-wrapper {
   position: relative;
   margin-top: 5px;
 
   .filter-container {
     position: relative;
+
+    .apply-selection-button {
+      position: absolute;
+      top: 0px;
+      right: 0;
+      width: 37px;
+      height: 100%;
+      text-align: center;
+      padding: 0;
+      background-color: @form-button-bg;
+      z-index: 1;
+    }
   }
 
   .selectable-listbox {
