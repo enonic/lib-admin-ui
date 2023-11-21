@@ -1,16 +1,17 @@
-import {SelectableListBoxDropdown, SelectableListBoxDropdownOptions} from './SelectableListBoxDropdown';
 import {ListBox} from './ListBox';
 import {BaseSelectedOptionsView} from '../combobox/BaseSelectedOptionsView';
 import {SelectionChange} from '../../../util/SelectionChange';
 import {Option} from '../Option';
 import {SelectedOptionEvent} from '../combobox/SelectedOptionEvent';
+import {FilterableListBoxWrapper, FilterableListBoxOptions} from './FilterableListBoxWrapper';
+import {SelectableListBoxDropdownOptions} from './SelectableListBoxWrapper';
 
-export interface ListBoxInputOptions<I> extends SelectableListBoxDropdownOptions<I> {
+export interface ListBoxInputOptions<I> extends FilterableListBoxOptions<I> {
     selectedOptionsView: BaseSelectedOptionsView<I>
 }
 
-export abstract class ListBoxInput<I>
-    extends SelectableListBoxDropdown<I> {
+export abstract class FilterableListBoxWrapperWithSelectedView<I>
+    extends FilterableListBoxWrapper<I> {
 
     protected selectedOptionsView: BaseSelectedOptionsView<I>;
 
@@ -32,15 +33,15 @@ export abstract class ListBoxInput<I>
 
         this.onSelectionChanged((selectionChange: SelectionChange<I>) => {
             selectionChange.selected?.forEach((item: I) => {
-                this.selectedOptionsView.addOption(this.createOption(item), true, -1);
+                this.selectedOptionsView.addOption(this.createSelectedOption(item), true, -1);
             });
 
             selectionChange.deselected?.forEach((item: I) => {
-                const option = this.createOption(item);
+                const option = this.createSelectedOption(item);
                 const existing = this.selectedOptionsView.getById(option.getId());
 
                 if (existing) {
-                    this.selectedOptionsView.removeOption(this.createOption(item), true);
+                    this.selectedOptionsView.removeOption(this.createSelectedOption(item), true);
                 }
             });
         });
@@ -50,10 +51,11 @@ export abstract class ListBoxInput<I>
         });
     }
 
-    abstract createOption(item: I): Option<I>;
+    abstract createSelectedOption(item: I): Option<I>;
 
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
+            this.addClass('filterable-listbox-wrapper-with-selected-view');
             this.appendChild(this.selectedOptionsView);
 
             return rendered;

@@ -1,4 +1,4 @@
-import {ListBoxInput, ListBoxInputOptions} from '../../../ui/selector/list/ListBoxInput';
+import {FilterableListBoxWrapperWithSelectedView, ListBoxInputOptions} from '../../../ui/selector/list/FilterableListBoxWrapperWithSelectedView';
 import {Option} from '../../../ui/selector/Option';
 import {ComboBoxOption} from './ComboBoxOption';
 import {ComboBoxList} from './ComboBoxList';
@@ -7,7 +7,7 @@ export interface ComboBoxListInputOptions extends ListBoxInputOptions<ComboBoxOp
     items: ComboBoxOption[];
 }
 
-export class ComboBoxListInput extends ListBoxInput<ComboBoxOption> {
+export class ComboBoxListInput extends FilterableListBoxWrapperWithSelectedView<ComboBoxOption> {
 
     constructor(options: ComboBoxListInputOptions) {
         super(new ComboBoxList(), options);
@@ -16,7 +16,7 @@ export class ComboBoxListInput extends ListBoxInput<ComboBoxOption> {
         this.listBox.setItems(options.items);
     }
 
-    createOption(item: ComboBoxOption): Option<ComboBoxOption> {
+    createSelectedOption(item: ComboBoxOption): Option<ComboBoxOption> {
         return Option.create<ComboBoxOption>()
             .setValue(item.value)
             .setDisplayValue(item)
