@@ -48,12 +48,16 @@ export class LazyListBox<T> extends ListBox<T> {
 
     setItems(items: T[], silent?: boolean): void {
         super.setItems(items, silent);
-        this.addLazyLoad();
+        if (items.length > 0) {
+            this.addLazyLoad();
+        }
     }
 
     addItems(items: T[], silent: boolean = false): void {
         super.addItems(items, silent);
-        this.addLazyLoad();
+        if (items.length > 0) {
+            this.addLazyLoad();
+        }
     }
 
     private addLazyLoad(): void {
@@ -70,13 +74,7 @@ export class LazyListBox<T> extends ListBox<T> {
     }
 
     protected getLastVisibleChild(): Element | undefined {
-        if (!this.isVisible() || this.getItemCount() === 0) {
-            return undefined;
-        }
-
-        return [...this.getChildren()].reverse().find((item: Element) => {
-            return item.isVisible();
-        });
+        return this.isVisible() ? [...this.getChildren()].reverse().find((item: Element) => item.isVisible()) : undefined;
     }
 
     protected addLazyLoadWhenLastIsVisible(itemView: Element): void {
