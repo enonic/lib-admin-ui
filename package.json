@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@types/dompurify": "^3.0.5",
-    "@types/mousetrap": "^1.6.14",
+    "@types/mousetrap": "^1.6.15",
     "@types/slickgrid": "^2.1.36",
     "dompurify": "^3.0.6",
     "fine-uploader": "^5.16.2",
