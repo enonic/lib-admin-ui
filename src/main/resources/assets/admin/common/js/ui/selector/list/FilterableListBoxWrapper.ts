@@ -8,18 +8,27 @@ import {KeyHelper} from '../../KeyHelper';
 import {SelectableListBoxWrapper, SelectableListBoxDropdownOptions} from './SelectableListBoxWrapper';
 import {Button} from '../../button/Button';
 import {i18n} from '../../../util/Messages';
+import {Body} from '../../../dom/Body';
+import {KeyBinding} from '../../KeyBinding';
+import {ExtendedKeyboardEvent} from 'mousetrap';
+import {KeyBindings} from '../../KeyBindings';
+import {SelectionChange} from '../../../util/SelectionChange';
 
-export interface FilterableListBoxOptions<I> extends SelectableListBoxDropdownOptions<I> {
+export interface FilterableListBoxOptions<I>
+    extends SelectableListBoxDropdownOptions<I> {
     filter?: (item: I, searchString: string) => boolean;
 }
 
-export class FilterableListBoxWrapper<I> extends SelectableListBoxWrapper<I> {
+export class FilterableListBoxWrapper<I>
+    extends SelectableListBoxWrapper<I> {
 
     protected readonly listBox: ListBox<I>;
 
     protected options: FilterableListBoxOptions<I>;
 
     protected optionFilterInput: OptionFilterInput;
+
+    protected selectionDelta = new Map<string, boolean>();
 
     protected applyButton: Button;
 
@@ -41,27 +50,119 @@ export class FilterableListBoxWrapper<I> extends SelectableListBoxWrapper<I> {
     protected initListeners(): void {
         super.initListeners();
 
+        this.addKeyboardNavigation();
+
         this.applyButton.onClicked(this.applySelection.bind(this));
 
         this.dropdownHandle.onClicked(() => {
-            this.listBox.setVisible(!this.listBox.isVisible());
-        });
-
-        this.listBox.onShown(() => {
-            this.dropdownHandle.down();
-        });
-
-        this.listBox.onHidden(() => {
-            this.dropdownHandle.up();
+            this.dropdownHandle.toggle();
+            this.handleDropdownClicked();
         });
 
         this.optionFilterInput.onValueChanged((event: ValueChangedEvent) => {
-           this.handleValueChange(event);
+            this.handleValueChange(event);
         });
 
         this.optionFilterInput.onKeyDown((event: KeyboardEvent) => {
             this.handleKeyDown(event);
         });
+
+        this.listenClickOutside();
+    }
+
+    protected listenClickOutside(): void {
+        const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
+            for (let element = event.target; element; element = (element as any).parentNode) {
+                if (element === this.getHTMLElement()) {
+                    return;
+                }
+            }
+            this.handleClickOutside();
+        };
+
+        let isShown: boolean = false;
+
+        this.listBox.onHidden(() => {
+            if (isShown) {
+                isShown = false;
+                Body.get().unMouseDown(mouseClickListener);
+            }
+        });
+
+        this.listBox.onShown(() => {
+            if (!isShown) {
+                isShown = true;
+                Body.get().onMouseDown(mouseClickListener);
+            }
+        });
+    }
+
+    private addKeyboardNavigation(): void {
+        let isShowListBoxEvent: boolean = false;
+
+        const navigationKeyBindings = [
+            new KeyBinding('esc').setGlobal(true).setCallback(this.handleClickOutside.bind(this)),
+            new KeyBinding('up').setGlobal(true).setCallback((e: ExtendedKeyboardEvent) => {
+                e.stopPropagation();
+                this.focusPrevious();
+                return false;
+            }),
+            new KeyBinding('down').setGlobal(true).setCallback(() => {
+                if (!isShowListBoxEvent) {
+                    this.focusNext();
+                }
+                return false;
+            }),
+            new KeyBinding('enter').setGlobal(true).setCallback(() => {
+                this.handlerEnterPressed();
+                return false;
+            }),
+        ];
+
+        if (!this.isMultiSelect()) { // when multiple is on then space works for checkboxes automatically
+            const spaceKeyBinding: KeyBinding = new KeyBinding('space')
+                .setGlobal(true)
+                .setCallback(() => {
+                    const focusedItem: I = this.getFocusedItem();
+
+                    if (focusedItem) {
+                        this.toggleSelection(focusedItem, this.isItemSelected(focusedItem));
+                    }
+                    return false;
+                });
+
+            navigationKeyBindings.push(spaceKeyBinding);
+        }
+
+        this.listBox.onShown(() => {
+            this.selectionDelta = new Map();
+            isShowListBoxEvent = true;
+            KeyBindings.get().shelveBindings();
+            KeyBindings.get().bindKeys(navigationKeyBindings);
+
+            setTimeout(() => { // if open by arrow key then wait for event to finish
+                isShowListBoxEvent = false;
+            }, 1);
+        });
+
+        this.listBox.onHidden(() => {
+            this.resetSelection();
+            this.selectionDelta = new Map();
+            KeyBindings.get().unbindKeys(navigationKeyBindings);
+            KeyBindings.get().unshelveBindings();
+        });
+    }
+
+    protected resetSelection(): void {
+        this.selectionDelta.forEach((value: boolean, id: string) => {
+            this.toggleItemWrapperSelected(id, !value);
+        });
+
+        this.selectionDelta = new Map();
+    }
+
+    protected handleDropdownClicked(): void {
+        this.listBox.setVisible(!this.listBox.isVisible());
     }
 
     protected handleValueChange(event: ValueChangedEvent): void {
@@ -94,36 +195,159 @@ export class FilterableListBoxWrapper<I> extends SelectableListBoxWrapper<I> {
             return;
         }
 
-        super.handlerEnterPressed();
+        const focusedItem: I = this.getFocusedItem();
+
+        if (focusedItem) {
+            if (this.selectionDelta.size === 0) {
+                if (this.isItemSelected(focusedItem)) {
+                    this.deselect(focusedItem);
+                } else {
+                    this.select(focusedItem);
+                }
+            }
+
+            this.applySelection();
+        }
     }
 
     protected handleClickOutside(): void {
-        super.handleClickOutside();
+        this.dropdownHandle.up();
         this.applyButton.hide();
+        this.listBox.hide();
     }
 
-    protected handleItemMarkedSelected(item: I): void {
-        super.handleItemMarkedSelected(item);
+    handleUserSelected(item: I): void {
+        const id: string = this.listBox.getIdOfItem(item);
+        this.toggleItemWrapperSelected(id, true);
+
+        if (super.isSelected(id)) {
+            this.selectionDelta.delete(id);
+        } else {
+            this.selectionDelta.set(id, true);
+        }
 
         this.applyButton.setVisible(this.selectionDelta.size > 0);
     }
 
-    protected handleItemMarkedDeselected(item: I): void {
-        super.handleItemMarkedDeselected(item);
+    handleUserDeselected(item: I): void {
+        const id: string = this.listBox.getIdOfItem(item);
+        this.toggleItemWrapperSelected(id, false);
+
+        if (super.isSelected(id)) {
+            this.selectionDelta.set(id, false);
+        } else {
+            this.selectionDelta.delete(id);
+        }
 
         this.applyButton.setVisible(this.selectionDelta.size > 0);
+    }
+
+    protected isSelected(id: string): boolean {
+        return this.selectionDelta.has(id) ? this.selectionDelta.get(id) : super.isSelected(id);
+    }
+
+    protected getCurrentlySelectedItems(): I[] {
+        return super.getCurrentlySelectedItems()
+            .filter((savedItem: I) => this.isItemSelected(savedItem))
+            .concat(this.getSelectedDeltaItems());
+    }
+
+    private getSelectedDeltaItems(): I[] {
+        const result: I[] = [];
+
+        this.selectionDelta.forEach((isSelected: boolean, id: string) => {
+            const item: I = this.listBox.getItem(id);
+
+            if (isSelected) {
+                result.push(item);
+            }
+        });
+
+        return result;
     }
 
     protected applySelection(): void {
-        super.applySelection();
+        const selectionChange: SelectionChange<I> = {selected: [], deselected: []};
+
+        this.selectionDelta.forEach((isSelected: boolean, id: string) => {
+            const item: I = this.listBox.getItem(id);
+
+            if (isSelected) {
+                selectionChange.selected.push(item);
+                this.selectedItems.set(id, item);
+            } else {
+                selectionChange.deselected.push(item);
+                this.selectedItems.delete(id);
+            }
+        });
+
+        this.selectionDelta = new Map();
+        this.listBox.hide();
+        this.dropdownHandle.up();
+
+        Array.from(this.itemsWrappers.values()).forEach((itemWrapper: Element) => itemWrapper.setVisible(true));
+
+        if (selectionChange.selected.length > 0 || selectionChange.deselected.length > 0) {
+            this.notifySelectionChanged(selectionChange);
+        }
 
         this.applyButton.hide();
         this.optionFilterInput.setValue('', true);
     }
 
+    private focusNext(): void {
+        const focusedItemIndex: number = this.getFocusedItemIndex();
+        const arrayAfterFocusedItem: Element[] = focusedItemIndex > -1 ? this.listBox.getChildren().slice(focusedItemIndex + 1) : [];
+        const arrayToLookForItemToFocus: Element[] = arrayAfterFocusedItem.concat(this.listBox.getChildren());
+        this.focusFirstAvailableItem(arrayToLookForItemToFocus);
+    }
+
+    private focusFirstAvailableItem(items: Element[]): void {
+        items.filter((el: Element) => el.isVisible()).some((itemWrapper: Element) => {
+            return this.isMultiSelect() ? itemWrapper.getFirstChild().giveFocus() : itemWrapper.giveFocus();
+        });
+    }
+
+    private focusPrevious(): void {
+        const focusedItemIndex: number = this.getFocusedItemIndex();
+        const arrayBeforeFocusedItem: Element[] = focusedItemIndex > -1 ? this.listBox.getChildren().slice(0, focusedItemIndex) : [];
+        const arrayToLookForItemToFocus: Element[] =
+            arrayBeforeFocusedItem.reverse().concat(this.listBox.getChildren().slice().reverse());
+        this.focusFirstAvailableItem(arrayToLookForItemToFocus);
+    }
+
+    private getFocusedItemIndex(): number {
+        let focusedItemIndex: number = -1;
+
+        this.listBox.getChildren().find((itemWrapper: Element, index: number) => {
+            focusedItemIndex = index;
+            const elemToCheck: HTMLElement = this.isMultiSelect() ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() :
+                                             itemWrapper.getHTMLElement();
+            return elemToCheck === document.activeElement;
+        });
+
+        return focusedItemIndex;
+    }
+
+    private getFocusedItem(): I {
+        let focusedItem: I = null;
+
+        this.itemsWrappers.forEach((itemWrapper: Element, key: string) => {
+            const elemToCheck: HTMLElement =
+                this.isMultiSelect() ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() : itemWrapper.getHTMLElement();
+
+            if (elemToCheck === document.activeElement) {
+                focusedItem = this.listBox.getItem(key);
+            }
+        });
+
+        return focusedItem;
+    }
+
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
             this.addClass('filterable-listbox-wrapper');
+            this.listBox.addClass('filterable-listbox');
             const filterContainer: DivEl = new DivEl('filter-container');
             filterContainer.appendChildren(this.optionFilterInput, this.dropdownHandle as Element);
             this.appendChildren(filterContainer, this.listBox);
