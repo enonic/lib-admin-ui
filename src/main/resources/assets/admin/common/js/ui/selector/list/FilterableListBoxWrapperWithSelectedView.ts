@@ -32,10 +32,6 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
         super.initListeners();
 
         this.onSelectionChanged((selectionChange: SelectionChange<I>) => {
-            selectionChange.selected?.forEach((item: I) => {
-                this.selectedOptionsView.addOption(this.createSelectedOption(item), true, -1);
-            });
-
             selectionChange.deselected?.forEach((item: I) => {
                 const option = this.createSelectedOption(item);
                 const existing = this.selectedOptionsView.getById(option.getId());
@@ -43,6 +39,10 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
                 if (existing) {
                     this.selectedOptionsView.removeOption(this.createSelectedOption(item), true);
                 }
+            });
+
+            selectionChange.selected?.forEach((item: I) => {
+                this.selectedOptionsView.addOption(this.createSelectedOption(item), true, -1);
             });
         });
 

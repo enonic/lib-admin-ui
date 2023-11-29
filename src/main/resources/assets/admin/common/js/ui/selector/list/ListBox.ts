@@ -289,19 +289,19 @@ export abstract class ListBox<I>
         }
     }
 
-    private notifyItemsAdded(items: I[]): void {
+    protected notifyItemsAdded(items: I[]): void {
         this.itemsAddedListeners.forEach((listener) => {
             listener(items);
         });
     }
 
-    private notifyItemsRemoved(items: I[]): void {
+    protected notifyItemsRemoved(items: I[]): void {
         this.itemsRemovedListeners.forEach((listener) => {
             listener(items);
         });
     }
 
-    private notifyItemsChanged(items: I[]): void {
+    protected notifyItemsChanged(items: I[]): void {
         this.itemsChangedListeners.forEach((listener) => {
             listener(items);
         });
