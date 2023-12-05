@@ -270,7 +270,7 @@ export class FilterableListBoxWrapper<I>
         const selectionChange: SelectionChange<I> = {selected: [], deselected: []};
 
         this.selectionDelta.forEach((isSelected: boolean, id: string) => {
-            const item: I = this.listBox.getItem(id);
+            const item: I = this.getItemById(id);
 
             if (isSelected) {
                 selectionChange.selected.push(item);
@@ -293,6 +293,10 @@ export class FilterableListBoxWrapper<I>
 
         this.applyButton.hide();
         this.optionFilterInput.setValue('', true);
+    }
+
+    protected getItemById(id: string): I {
+        return this.listBox.getItem(id);
     }
 
     private focusNext(): void {
