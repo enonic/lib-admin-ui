@@ -16,7 +16,7 @@ export class Button
 
     private createLabelEl(): void {
         this.labelEl = new SpanEl();
-        this.appendChild(this.labelEl);
+        this.prependChild(this.labelEl);
     }
 
     setLabel(label: string, escapeHtml: boolean = true): Button {
@@ -29,8 +29,8 @@ export class Button
         return this;
     }
 
-    getLabel(): string | undefined {
-        return this.labelEl?.getEl().getInnerHtml() || undefined;
+    getLabel(): string {
+        return this.labelEl?.getEl().getInnerHtml() || '';
     }
 
     setTitle(title: string, forceAction: boolean = true): Button {
