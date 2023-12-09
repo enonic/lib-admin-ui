@@ -3,8 +3,8 @@ import {BaseSelectedOptionsView} from '../combobox/BaseSelectedOptionsView';
 import {SelectionChange} from '../../../util/SelectionChange';
 import {Option} from '../Option';
 import {SelectedOptionEvent} from '../combobox/SelectedOptionEvent';
-import {FilterableListBoxWrapper, FilterableListBoxOptions} from './FilterableListBoxWrapper';
-import {SelectableListBoxDropdownOptions} from './SelectableListBoxWrapper';
+import {FilterableListBoxOptions, FilterableListBoxWrapper} from './FilterableListBoxWrapper';
+import {SelectedOption} from '../combobox/SelectedOption';
 
 export interface ListBoxInputOptions<I> extends FilterableListBoxOptions<I> {
     selectedOptionsView: BaseSelectedOptionsView<I>
@@ -68,5 +68,9 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
 
     maximumOccurrencesReached(): boolean {
         return this.selectedOptionsView.maximumOccurrencesReached();
+    }
+
+    getSelectedOptions(): SelectedOption<I>[] {
+        return this.selectedOptionsView.getSelectedOptions();
     }
 }
