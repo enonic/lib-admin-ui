@@ -2,6 +2,7 @@ import {FilterableListBoxWrapperWithSelectedView, ListBoxInputOptions} from '../
 import {Option} from '../../../ui/selector/Option';
 import {ComboBoxOption} from './ComboBoxOption';
 import {ComboBoxList} from './ComboBoxList';
+import {SelectedOption} from '../../../ui/selector/combobox/SelectedOption';
 
 export interface ComboBoxListInputOptions extends ListBoxInputOptions<ComboBoxOption> {
     items: ComboBoxOption[];
@@ -33,6 +34,16 @@ export class ComboBoxListInput extends FilterableListBoxWrapperWithSelectedView<
 
     clear(): void {
         //
+    }
+
+    updateSelectedItems(items: string[]): void {
+        // unselecting all items
+        this.selectedOptionsView.getSelectedOptions().forEach((selectedOption: SelectedOption<ComboBoxOption>) => {
+            this.selectedOptionsView.removeOption(selectedOption.getOption(), true);
+        });
+
+        // selecting items
+        this.selectItems(items);
     }
 
 }
