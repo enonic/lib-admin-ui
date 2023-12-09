@@ -19,6 +19,7 @@ import {StringHelper} from '../../../util/StringHelper';
 import {ValueChangedEvent} from '../ValueChangedEvent';
 import {SelectionChange} from '../../../util/SelectionChange';
 import {ComboBoxSelectedOptionsView} from './ComboBoxSelectedOptionsView';
+import {ObjectHelper} from '../../../ObjectHelper';
 
 export class ComboBox
     extends BaseInputTypeManagingAdd {
@@ -26,6 +27,8 @@ export class ComboBox
     private comboBoxOptions: ComboBoxOption[];
 
     private listInput: ComboBoxListInput;
+
+    private initiallySelectedItems: string[];
 
     constructor(context: InputTypeViewContext) {
         super(context, 'combobox-input-type-view');
@@ -45,6 +48,7 @@ export class ComboBox
         }
 
         return super.layout(input, propertyArray).then(() => {
+            this.initiallySelectedItems = this.getSelectedItems();
             this.listInput = this.createListInput();
             this.appendChild(this.listInput);
             this.setLayoutInProgress(false);
@@ -80,20 +84,38 @@ export class ComboBox
     }
 
     update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
-        const superPromise = super.update(propertyArray, unchangedOnly);
+        const isDirty = this.isDirty();
 
-        if (!unchangedOnly || this.getPropertyArray().equals(propertyArray)) {
-            return superPromise.then(() => {
-                //this.listInput.updateSelectedOptions();
-            });
-        } else if (!this.getPropertyArray().equals(propertyArray)) {
-            this.notifyValueChanged(new ValueChangedEvent(null, -1)); // triggering Save button
-        }
-        return superPromise;
+        return super.update(propertyArray, unchangedOnly).then(() => {
+            this.initiallySelectedItems = this.getSelectedItems();
+
+            if (!unchangedOnly || !isDirty) {
+                this.listInput.updateSelectedItems(this.initiallySelectedItems.slice());
+            } else if (isDirty) {
+                this.updateDirty();
+            }
+        });
+    }
+
+    private isDirty(): boolean {
+        return !ObjectHelper.stringArrayEquals(this.initiallySelectedItems, this.getSelectedItems());
+    }
+
+    private updateDirty(): void {
+        this.ignorePropertyChange(true);
+
+        this.getPropertyArray().removeAll(true);
+
+        this.listInput.getSelectedOptions().filter((option) => {
+            const value = new Value(option.getOption().getDisplayValue().value, ValueTypes.STRING);
+            this.getPropertyArray().add(value);
+        });
+
+        this.ignorePropertyChange(false);
     }
 
     reset() {
-        //
+        this.listInput.updateSelectedItems(this.getSelectedItems());
     }
 
     clear(): void {
