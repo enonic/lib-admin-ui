@@ -191,6 +191,10 @@ export class SelectableListBoxWrapper<I>
         }
     }
 
+    updateItem(item: I): void {
+        this.listBox.replaceItem(item);
+    }
+
     onSelectionChanged(listener: (selectionChange: SelectionChange<I>) => void): void {
         this.selectionChangedListeners.push(listener);
     }
