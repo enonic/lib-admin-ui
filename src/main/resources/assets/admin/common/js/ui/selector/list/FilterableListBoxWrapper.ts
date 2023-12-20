@@ -34,6 +34,10 @@ export class FilterableListBoxWrapper<I>
 
     protected dropdownHandle: DropdownHandle;
 
+    protected dropdownVisibilityChangedListeners: ((isVisible: boolean) => void)[];
+
+    protected dropdownShown: boolean = false;
+
     constructor(listBox: ListBox<I>, options?: FilterableListBoxOptions<I>) {
         super(listBox, options);
     }
@@ -41,6 +45,7 @@ export class FilterableListBoxWrapper<I>
     protected initElements(): void {
         super.initElements();
 
+        this.dropdownVisibilityChangedListeners = [];
         this.optionFilterInput = new OptionFilterInput();
         this.dropdownHandle = new DropdownHandle();
         this.applyButton = new Button(i18n('action.ok'));
@@ -56,7 +61,12 @@ export class FilterableListBoxWrapper<I>
 
         this.dropdownHandle.onClicked(() => {
             this.dropdownHandle.toggle();
-            this.handleDropdownClicked();
+
+            if (this.dropdownHandle.isDown()) {
+                this.showDropdown();
+            } else {
+                this.hideDropdown();
+            }
         });
 
         this.optionFilterInput.onValueChanged((event: ValueChangedEvent) => {
@@ -70,6 +80,29 @@ export class FilterableListBoxWrapper<I>
         this.listenClickOutside();
     }
 
+    protected showDropdown(): void {
+        this.dropdownHandle.down();
+        this.dropdownShown = true;
+        this.doShowDropdown();
+        this.notifyDropdownVisibilityChanged(true);
+    }
+
+    protected doShowDropdown(): void {
+        this.listBox.show();
+    }
+
+    protected hideDropdown(): void {
+        this.dropdownHandle.up();
+        this.applyButton.hide();
+        this.dropdownShown = false;
+        this.doHideDropdown();
+        this.notifyDropdownVisibilityChanged(false);
+    }
+
+    protected doHideDropdown(): void {
+        this.listBox.hide();
+    }
+
     protected listenClickOutside(): void {
         const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
             for (let element = event.target; element; element = (element as any).parentNode) {
@@ -77,22 +110,14 @@ export class FilterableListBoxWrapper<I>
                     return;
                 }
             }
-            this.handleClickOutside();
+            this.hideDropdown();
         };
 
-        let isShown: boolean = false;
-
-        this.listBox.onHidden(() => {
-            if (isShown) {
-                isShown = false;
-                Body.get().unMouseDown(mouseClickListener);
-            }
-        });
-
-        this.listBox.onShown(() => {
-            if (!isShown) {
-                isShown = true;
+        this.onDropdownVisibilityChanged((isVisible: boolean) => {
+            if (isVisible) {
                 Body.get().onMouseDown(mouseClickListener);
+            } else {
+                Body.get().unMouseDown(mouseClickListener);
             }
         });
     }
@@ -161,12 +186,8 @@ export class FilterableListBoxWrapper<I>
         this.selectionDelta = new Map();
     }
 
-    protected handleDropdownClicked(): void {
-        this.listBox.setVisible(!this.listBox.isVisible());
-    }
-
     protected handleValueChange(event: ValueChangedEvent): void {
-        this.listBox.setVisible(true);
+        this.showDropdown();
 
         if (this.options.filter) {
             this.filterItems(event.getNewValue());
@@ -386,5 +407,24 @@ export class FilterableListBoxWrapper<I>
 
     giveFocus(): boolean {
         return this.optionFilterInput.giveFocus();
+    }
+
+    notifyDropdownVisibilityChanged(isVisible: boolean): void {
+        this.dropdownVisibilityChangedListeners.forEach((listener: (isVisible: boolean) => void) => {
+            listener(isVisible);
+        });
+    }
+
+    onDropdownVisibilityChanged(listener: (isVisible: boolean) => void): void {
+        this.dropdownVisibilityChangedListeners.push(listener);
+    }
+
+    unDropdownVisibilityChanged(listener: (isVisible: boolean) => void): void {
+        this.dropdownVisibilityChangedListeners = this.dropdownVisibilityChangedListeners
+            .filter((currentListener: (isVisible: boolean) => void) => currentListener !== listener);
+    }
+
+    isDropdownShown(): boolean {
+        return this.dropdownShown;
     }
 }

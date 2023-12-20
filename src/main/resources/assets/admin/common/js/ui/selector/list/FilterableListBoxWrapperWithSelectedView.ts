@@ -73,4 +73,8 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
     getSelectedOptions(): SelectedOption<I>[] {
         return this.selectedOptionsView.getSelectedOptions();
     }
+
+    getSelectedOptionsView(): BaseSelectedOptionsView<I> {
+        return this.selectedOptionsView;
+    }
 }
