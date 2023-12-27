@@ -313,7 +313,6 @@ export class FilterableListBoxWrapper<I>
         }
 
         this.applyButton.hide();
-        this.optionFilterInput.setValue('', true);
     }
 
     protected getItemById(id: string): I {
