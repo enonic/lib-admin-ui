@@ -103,6 +103,11 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
     }
 }
 
+export interface TreeListElementParams {
+    scrollParent: Element,
+    level: number,
+}
+
 export abstract class TreeListElement<I>
     extends LiEl {
 
@@ -118,16 +123,13 @@ export abstract class TreeListElement<I>
 
     protected readonly item: I;
 
-    protected readonly scrollParent: Element;
+    protected readonly options: TreeListElementParams;
 
-    protected readonly level: number;
-
-    protected constructor(content: I, scrollParent: Element, level: number) {
+    protected constructor(content: I, options: TreeListElementParams) {
         super('tree-list-element');
 
         this.item = content;
-        this.scrollParent = scrollParent;
-        this.level = level;
+        this.options = options;
         this.initElements();
         this.initListeners();
     }
@@ -142,7 +144,7 @@ export abstract class TreeListElement<I>
     }
 
     protected createChildrenListParams(): TreeListBoxParams {
-        return {scrollParent: this.scrollParent, level: this.level + 1};
+        return {scrollParent: this.options.scrollParent, level: this.options.level + 1};
     }
 
     protected abstract createChildrenList(params?: TreeListBoxParams): TreeListBox<I>;
@@ -180,7 +182,7 @@ export abstract class TreeListElement<I>
             this.childrenList.hide();
 
             this.elementsWrapper.appendChildren(this.toggleElement, this.itemViewer);
-            this.elementsWrapper.getEl().setPaddingLeft(`${this.level * 24}px`);
+            this.elementsWrapper.getEl().setPaddingLeft(`${this.options.level * 24}px`);
             this.appendChild(this.childrenList);
 
             return rendered;
