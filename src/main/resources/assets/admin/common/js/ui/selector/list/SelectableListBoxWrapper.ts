@@ -18,7 +18,7 @@ export class SelectableListBoxWrapper<I>
 
     protected readonly listBox: ListBox<I>;
 
-    protected options: SelectableListBoxDropdownOptions<I>;
+    protected readonly options: SelectableListBoxDropdownOptions<I>;
 
     protected selectedItems = new Map<string, I>();
 
