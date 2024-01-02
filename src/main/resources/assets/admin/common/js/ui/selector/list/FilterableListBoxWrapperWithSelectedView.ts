@@ -13,9 +13,13 @@ export interface ListBoxInputOptions<I> extends FilterableListBoxOptions<I> {
 export abstract class FilterableListBoxWrapperWithSelectedView<I>
     extends FilterableListBoxWrapper<I> {
 
+    public static LIMIT_REACHED_CLASS: string = 'selection-limit-reached';
+
     protected selectedOptionsView: BaseSelectedOptionsView<I>;
 
     protected options: ListBoxInputOptions<I>;
+
+    protected selectionLimitReached: boolean = false;
 
     protected constructor(listBox: ListBox<I>, options?: ListBoxInputOptions<I>) {
         super(listBox, options);
@@ -44,6 +48,8 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
             selectionChange.selected?.forEach((item: I) => {
                 this.selectedOptionsView.addOption(this.createSelectedOption(item), true, -1);
             });
+
+            this.checkSelectionLimitReached();
         });
 
         this.selectedOptionsView.onOptionDeselected((event: SelectedOptionEvent<I>) => {
@@ -52,6 +58,28 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
     }
 
     abstract createSelectedOption(item: I): Option<I>;
+
+    protected checkSelectionLimitReached(): void {
+        const isMaxOccurrencesReached = this.maximumOccurrencesReached();
+
+        if (this.selectionLimitReached && !isMaxOccurrencesReached) {
+            this.selectionLimitReached = false;
+            this.handleSelectionLimitIsNoLongerReached();
+        } else if (!this.selectionLimitReached && isMaxOccurrencesReached) {
+            this.selectionLimitReached = true;
+            this.handleSelectionLimitReached();
+        }
+    }
+
+    protected handleSelectionLimitReached(): void {
+        this.filterAndListContainer.hide();
+        this.toggleClass(FilterableListBoxWrapperWithSelectedView.LIMIT_REACHED_CLASS, true);
+    }
+
+    protected handleSelectionLimitIsNoLongerReached(): void {
+        this.filterAndListContainer.show();
+        this.toggleClass(FilterableListBoxWrapperWithSelectedView.LIMIT_REACHED_CLASS, false);
+    }
 
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
