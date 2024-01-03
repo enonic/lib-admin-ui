@@ -153,34 +153,46 @@ export class SelectableListBoxWrapper<I>
         });
     }
 
-    select(item: I, silent?: boolean): void {
-        const id: string = this.listBox.getIdOfItem(item);
+    select(item: I | I[], silent?: boolean): void {
+        const items: I[] = Array.isArray(item) ? item : [item];
 
-        if (!id) {
-            return;
-        }
+        items.forEach((itemToSelect: I) => {
+            const id: string = this.listBox.getIdOfItem(itemToSelect);
 
-        this.selectedItems.set(id, item);
-        this.toggleItemWrapperSelected(id, true);
+            if (!id) {
+                return;
+            }
+
+            this.selectedItems.set(id, itemToSelect);
+            this.toggleItemWrapperSelected(id, true);
+        });
 
         if (!silent) {
-            this.notifySelectionChanged({selected: [item]});
+            this.notifySelectionChanged({selected: items});
         }
     }
 
-    deselect(item: I, silent?: boolean): void {
-        const id: string = this.listBox.getIdOfItem(item);
+    deselect(item: I | I[], silent?: boolean): void {
+        const items: I[] = Array.isArray(item) ? item : [item];
 
-        if (!id) {
-            return;
-        }
+        items.forEach((itemToDeselect: I) => {
+            const id: string = this.listBox.getIdOfItem(itemToDeselect);
 
-        this.selectedItems.delete(id);
-        this.toggleItemWrapperSelected(id, false);
+            if (!id) {
+                return;
+            }
+
+            this.selectedItems.delete(id);
+            this.toggleItemWrapperSelected(id, false);
+        });
 
         if (!silent) {
-            this.notifySelectionChanged({deselected: [item]});
+            this.notifySelectionChanged({deselected: items});
         }
+    }
+
+    deselectAll(silent?: boolean): void {
+        this.deselect(this.getCurrentlySelectedItems(), silent);
     }
 
     toggleSelection(item: I, selected: boolean, silent?: boolean): void {
