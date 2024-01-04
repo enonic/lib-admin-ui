@@ -100,4 +100,12 @@ export class ConfirmationDialog
             }
         });
     }
+
+    protected handleClickOutside(): void {
+        this.close();
+
+        if (this.noCallback) {
+            this.noCallback();
+        }
+    }
 }
