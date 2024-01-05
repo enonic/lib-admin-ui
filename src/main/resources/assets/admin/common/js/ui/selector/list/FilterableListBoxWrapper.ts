@@ -49,6 +49,9 @@ export class FilterableListBoxWrapper<I>
     protected initElements(): void {
         super.initElements();
 
+        this.filterContainer = new DivEl('filter-container');
+        this.filterAndListContainer = new DivEl('filter-and-list-container');
+
         this.dropdownVisibilityChangedListeners = [];
         this.optionFilterInput = new OptionFilterInput();
         this.dropdownHandle = new DropdownHandle();
@@ -376,9 +379,7 @@ export class FilterableListBoxWrapper<I>
         return super.doRender().then((rendered: boolean) => {
             this.addClass('filterable-listbox-wrapper');
             this.listBox.addClass('filterable-listbox');
-            this.filterContainer = new DivEl('filter-container');
             this.filterContainer.appendChildren(this.optionFilterInput, this.dropdownHandle as Element);
-            this.filterAndListContainer = new DivEl('filter-and-list-container');
             this.filterAndListContainer.appendChildren(this.filterContainer, this.listBox);
             this.appendChild(this.filterAndListContainer);
 
