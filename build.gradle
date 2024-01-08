@@ -27,7 +27,7 @@ archivesBaseName = 'lib-admin-ui'
 
 node {
     download = true
-    version = '18.17.1'
+    version = '20.10.0'
 }
 
 publishing {
