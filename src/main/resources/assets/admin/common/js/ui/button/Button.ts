@@ -6,25 +6,31 @@ import {BrowserHelper} from '../../BrowserHelper';
 export class Button
     extends ButtonEl {
 
-    private readonly labelEl: SpanEl;
+    private labelEl?: SpanEl;
 
     constructor(label?: string) {
         super('button');
 
+        this.setLabel(label);
+    }
+
+    private createLabelEl(): void {
         this.labelEl = new SpanEl();
-        if (label) {
-            this.labelEl.getEl().setInnerHtml(label);
-        }
-        this.appendChild(this.labelEl);
+        this.prependChild(this.labelEl);
     }
 
     setLabel(label: string, escapeHtml: boolean = true): Button {
-        this.labelEl.setHtml(label, escapeHtml);
+        if (!this.labelEl && label) {
+            this.createLabelEl();
+        }
+
+        this.labelEl?.setHtml(label, escapeHtml);
+
         return this;
     }
 
     getLabel(): string {
-        return this.labelEl.getEl().getInnerHtml();
+        return this.labelEl?.getEl().getInnerHtml() || '';
     }
 
     setTitle(title: string, forceAction: boolean = true): Button {
