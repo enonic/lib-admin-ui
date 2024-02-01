@@ -123,8 +123,16 @@
           margin-bottom: 0;
         }
 
-        .form-option-set-view.max-1-occurrence .drag-control {
-          display: none;
+        .form-option-set-view.max-1-occurrence {
+          > .occurrence-views-container {
+            > .form-option-set-occurrence-view {
+              > .single-selection-header {
+                .drag-control {
+                  display: none;
+                }
+              }
+            }
+          }
         }
 
         .input-view {
