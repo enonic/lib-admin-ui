@@ -1,4 +1,25 @@
 .principal-combobox {
+  .principals-list-box {
+    max-height: 370px;
+    overflow: auto;
+
+    .item-view-wrapper.selected {
+      .viewer {
+        .names-and-icon-view {
+          .@{_COMMON_PREFIX}names-view {
+            .@{_COMMON_PREFIX}main-name {
+              color: @admin-white;
+            }
+
+            .@{_COMMON_PREFIX}sub-name {
+              color: @admin-white;
+            }
+          }
+        }
+      }
+    }
+  }
+
   .principal-selected-option-view {
     position: relative;
     .clearfix();

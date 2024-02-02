@@ -14,9 +14,12 @@ export class PrincipalLoader
 
     private skipPrincipalKeys: Record<string, PrincipalKey>;
 
-    constructor() {
-        super();
+    private readonly postfixUri: string;
 
+    constructor(postfixUri?: string) {
+        super(new FindPrincipalsRequest().setPostfixUri(postfixUri).setSize(10));
+
+        this.postfixUri = postfixUri || null;
         this.skipPrincipalKeys = {};
         // allow all by default
         this.setAllowedTypes([PrincipalType.GROUP, PrincipalType.USER, PrincipalType.ROLE]);
@@ -70,16 +73,12 @@ export class PrincipalLoader
         return this;
     }
 
-    protected createRequest(): FindPrincipalsRequest {
-        return new FindPrincipalsRequest().setSize(10);
-    }
-
     protected getRequest(): FindPrincipalsRequest {
         return this.request;
     }
 
     protected createPreLoadRequest(principalKeys: PrincipalKey[]): GetPrincipalsByKeysRequest {
-        return new GetPrincipalsByKeysRequest(principalKeys);
+        return new GetPrincipalsByKeysRequest(principalKeys).setPostfixUri(this.postfixUri);
     }
 
     protected sendPreLoadRequest(keys: string): Q.Promise<Principal[]> {
