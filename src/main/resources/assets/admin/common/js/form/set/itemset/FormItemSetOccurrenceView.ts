@@ -19,7 +19,11 @@ export class FormItemSetOccurrenceView
     }
 
     private getFirstPropertyValue(): string {
-        const propArrays = this.propertySet.getPropertyArrays();
+        const formItemNames = this.getFormItems().map((formItem: FormItem) => formItem.getName());
+        const propArrays =
+            this.propertySet.getPropertyArrays().sort((prop1: PropertyArray, prop2: PropertyArray) =>
+                        formItemNames.indexOf(prop1.getName()) - formItemNames.indexOf(prop2.getName())
+            );
         const propValues = [];
 
         if (propArrays && propArrays.length > 0) {
