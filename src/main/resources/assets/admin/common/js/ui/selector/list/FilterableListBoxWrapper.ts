@@ -302,10 +302,10 @@ export class FilterableListBoxWrapper<I>
 
             if (isSelected) {
                 selectionChange.selected.push(item);
-                this.selectedItems.set(id, item);
+                this.doSelect(item);
             } else {
                 selectionChange.deselected.push(item);
-                this.selectedItems.delete(id);
+                this.doDeselect(item);
             }
         });
 

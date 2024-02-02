@@ -37,11 +37,11 @@ export class BaseLoader<OBJECT> {
     private useDataPreLoad: boolean = false;
 
     constructor(request?: HttpRequest<OBJECT[]>) {
-        this.setRequest(request || this.createRequest());
+        this.request = request || this.createRequest();
     }
 
     sendRequest(): Q.Promise<OBJECT[]> {
-        return this.request.sendAndParse();
+        return this.getRequest().sendAndParse();
     }
 
     load(postLoad: boolean = false): Q.Promise<OBJECT[]> {
@@ -88,10 +88,6 @@ export class BaseLoader<OBJECT> {
     setComparator(comparator: Comparator<OBJECT>): BaseLoader<OBJECT> {
         this.comparator = comparator;
         return this;
-    }
-
-    setRequest(request: HttpRequest<OBJECT[]>) {
-        this.request = request;
     }
 
     search(searchString: string): Q.Promise<OBJECT[]> {

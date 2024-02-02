@@ -35,26 +35,28 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
     protected initListeners(): void {
         super.initListeners();
 
-        this.onSelectionChanged((selectionChange: SelectionChange<I>) => {
-            selectionChange.deselected?.forEach((item: I) => {
-                const option = this.createSelectedOption(item);
-                const existing = this.selectedOptionsView.getById(option.getId());
-
-                if (existing) {
-                    this.selectedOptionsView.removeOption(this.createSelectedOption(item), true);
-                }
-            });
-
-            selectionChange.selected?.forEach((item: I) => {
-                this.selectedOptionsView.addOption(this.createSelectedOption(item), true, -1);
-            });
-
-            this.checkSelectionLimitReached();
-        });
-
         this.selectedOptionsView.onOptionDeselected((event: SelectedOptionEvent<I>) => {
             this.deselect(event.getSelectedOption().getOption().getDisplayValue());
         });
+    }
+
+    protected doSelect(itemToSelect: I): void {
+        super.doSelect(itemToSelect);
+
+        this.selectedOptionsView.addOption(this.createSelectedOption(itemToSelect), true, -1);
+        this.checkSelectionLimitReached();
+    }
+
+    protected doDeselect(itemToDeselect: I): void {
+        super.doDeselect(itemToDeselect);
+
+        const option = this.createSelectedOption(itemToDeselect);
+        const existing = this.selectedOptionsView.getById(option.getId());
+
+        if (existing) {
+            this.selectedOptionsView.removeOption(this.createSelectedOption(itemToDeselect), true);
+        }
+        this.checkSelectionLimitReached();
     }
 
     abstract createSelectedOption(item: I): Option<I>;

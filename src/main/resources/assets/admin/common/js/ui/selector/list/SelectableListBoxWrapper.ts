@@ -77,6 +77,10 @@ export class SelectableListBoxWrapper<I>
             }
         });
 
+        if (this.isItemSelected(item)) {
+            this.toggleItemWrapperSelected(id, true);
+        }
+
         wrapper.appendChild(view);
     }
 
@@ -95,6 +99,10 @@ export class SelectableListBoxWrapper<I>
     }
 
     protected getCurrentlySelectedItems(): I[] {
+        return Array.from(this.selectedItems.values());
+    }
+
+    getSelectedItems(): I[] {
         return Array.from(this.selectedItems.values());
     }
 
@@ -157,14 +165,7 @@ export class SelectableListBoxWrapper<I>
         const items: I[] = Array.isArray(item) ? item : [item];
 
         items.forEach((itemToSelect: I) => {
-            const id: string = this.listBox.getIdOfItem(itemToSelect);
-
-            if (!id) {
-                return;
-            }
-
-            this.selectedItems.set(id, itemToSelect);
-            this.toggleItemWrapperSelected(id, true);
+            this.doSelect(itemToSelect);
         });
 
         if (!silent) {
@@ -172,23 +173,38 @@ export class SelectableListBoxWrapper<I>
         }
     }
 
+    protected doSelect(itemToSelect: I): void {
+        const id: string = this.listBox.getIdOfItem(itemToSelect);
+
+        if (!id) {
+            return;
+        }
+
+        this.selectedItems.set(id, itemToSelect);
+        this.toggleItemWrapperSelected(id, true);
+    }
+
     deselect(item: I | I[], silent?: boolean): void {
         const items: I[] = Array.isArray(item) ? item : [item];
 
         items.forEach((itemToDeselect: I) => {
-            const id: string = this.listBox.getIdOfItem(itemToDeselect);
-
-            if (!id) {
-                return;
-            }
-
-            this.selectedItems.delete(id);
-            this.toggleItemWrapperSelected(id, false);
+            this.doDeselect(itemToDeselect);
         });
 
         if (!silent) {
             this.notifySelectionChanged({deselected: items});
         }
+    }
+
+    protected doDeselect(itemToDeselect: I): void {
+        const id: string = this.listBox.getIdOfItem(itemToDeselect);
+
+        if (!id) {
+            return;
+        }
+
+        this.selectedItems.delete(id);
+        this.toggleItemWrapperSelected(id, false);
     }
 
     deselectAll(silent?: boolean): void {
