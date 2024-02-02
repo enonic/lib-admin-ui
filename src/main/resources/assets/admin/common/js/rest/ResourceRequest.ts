@@ -25,14 +25,16 @@ export abstract class ResourceRequest<PARSED_TYPE>
 
     protected isJsonResponse: boolean = true;
 
+    protected postfixUri: string;
+
     private pathElements: string[] = [];
 
     constructor() {
-        this.restPath = Path.create().fromString(this.getPostfixUri()).build();
+        //
     }
 
-    protected getPostfixUri() {
-        return UriHelper.getRestUri('');
+    protected getPostfixUri(): string {
+        return this.postfixUri ?? UriHelper.getRestUri('');
     }
 
     protected addRequestPathElements(...items: string[]) {
@@ -47,7 +49,16 @@ export abstract class ResourceRequest<PARSED_TYPE>
         this.method = value as HttpMethod;
     }
 
+    setPostfixUri(value: string): this {
+        this.postfixUri = value;
+        return this;
+    }
+
     getRestPath(): Path {
+        if (!this.restPath) {
+            this.restPath = Path.create().fromString(this.getPostfixUri()).build();
+        }
+
         return this.restPath;
     }
 
