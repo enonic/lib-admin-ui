@@ -43,7 +43,12 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
     protected doSelect(itemToSelect: I): void {
         super.doSelect(itemToSelect);
 
-        this.selectedOptionsView.addOption(this.createSelectedOption(itemToSelect), true, -1);
+        const optionToSelect = this.createSelectedOption(itemToSelect);
+
+        if (!this.selectedOptionsView.isSelected(optionToSelect)) {
+            this.selectedOptionsView.addOption(optionToSelect, true, -1);
+        }
+
         this.checkSelectionLimitReached();
     }
 
@@ -106,5 +111,11 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
 
     getSelectedOptionsView(): BaseSelectedOptionsView<I> {
         return this.selectedOptionsView;
+    }
+
+    setEnabled(enable: boolean): void {
+        super.setEnabled(enable);
+
+        this.selectedOptionsView.setReadonly(!enable);
     }
 }
