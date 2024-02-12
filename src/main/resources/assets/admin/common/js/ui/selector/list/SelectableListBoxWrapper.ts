@@ -16,6 +16,8 @@ export interface SelectableListBoxDropdownOptions<I> {
 export class SelectableListBoxWrapper<I>
     extends DivEl {
 
+    public static LIMIT_REACHED_CLASS: string = 'selection-limit-reached';
+
     protected readonly listBox: ListBox<I>;
 
     protected readonly options: SelectableListBoxDropdownOptions<I>;
@@ -25,6 +27,8 @@ export class SelectableListBoxWrapper<I>
     protected itemsWrappers = new Map<string, Element>();
 
     protected selectionChangedListeners: ((selectionChange: SelectionChange<I>) => void)[];
+
+    protected selectionLimitReached: boolean = false;
 
     constructor(listBox: ListBox<I>, options?: SelectableListBoxDropdownOptions<I>) {
         super('selectable-listbox-wrapper ' + (options.className || ''));
@@ -182,6 +186,7 @@ export class SelectableListBoxWrapper<I>
 
         this.selectedItems.set(id, itemToSelect);
         this.toggleItemWrapperSelected(id, true);
+        this.checkSelectionLimitReached();
     }
 
     deselect(item: I | I[], silent?: boolean): void {
@@ -205,6 +210,7 @@ export class SelectableListBoxWrapper<I>
 
         this.selectedItems.delete(id);
         this.toggleItemWrapperSelected(id, false);
+        this.checkSelectionLimitReached();
     }
 
     deselectAll(silent?: boolean): void {
@@ -221,6 +227,30 @@ export class SelectableListBoxWrapper<I>
 
     updateItem(item: I): void {
         this.listBox.replaceItem(item);
+    }
+
+    protected checkSelectionLimitReached(): void {
+        const isMaxOccurrencesReached = this.maximumOccurrencesReached();
+
+        if (this.selectionLimitReached && !isMaxOccurrencesReached) {
+            this.selectionLimitReached = false;
+            this.handleSelectionLimitIsNoLongerReached();
+        } else if (!this.selectionLimitReached && isMaxOccurrencesReached) {
+            this.selectionLimitReached = true;
+            this.handleSelectionLimitReached();
+        }
+    }
+
+    maximumOccurrencesReached(): boolean {
+        return this.options.maxSelected > 0 && this.selectedItems.size >= this.options.maxSelected;
+    }
+
+    protected handleSelectionLimitReached(): void {
+        this.toggleClass(SelectableListBoxWrapper.LIMIT_REACHED_CLASS, true);
+    }
+
+    protected handleSelectionLimitIsNoLongerReached(): void {
+        this.toggleClass(SelectableListBoxWrapper.LIMIT_REACHED_CLASS, false);
     }
 
     onSelectionChanged(listener: (selectionChange: SelectionChange<I>) => void): void {
