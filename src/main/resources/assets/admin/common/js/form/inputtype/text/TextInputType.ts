@@ -16,6 +16,8 @@ import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {ValueType} from '../../../data/ValueType';
 import {TextInput} from '../../../ui/text/TextInput';
 import {Locale} from '../../../locale/Locale';
+import {InputInteractionEvent} from '../../InputInteractionEvent';
+import {InputInteractionData, InputInteractionEventType} from '../../InputInteractionData';
 
 export abstract class TextInputType
     extends BaseInputTypeNotManagingAdd {
@@ -85,8 +87,32 @@ export abstract class TextInputType
 
         this.updateInputLangParams(inputEl);
         this.initOccurrenceListeners(inputEl);
+        this.handleOccurrenceEvents(inputEl);
 
         return inputEl;
+    }
+
+    protected handleOccurrenceEvents(inputEl: FormInputEl) {
+        inputEl.onFocus(() => {
+            new InputInteractionEvent(this.makeInputInteractionData(inputEl, 'focus')).fire();
+        });
+
+        inputEl.onBlur(() => {
+            new InputInteractionEvent(this.makeInputInteractionData(inputEl, 'blur')).fire();
+        });
+
+        inputEl.onValueChanged(() => {
+            new InputInteractionEvent(this.makeInputInteractionData(inputEl, 'change')).fire();
+        });
+    }
+
+    protected makeInputInteractionData(inputEl: FormInputEl, eventType: InputInteractionEventType): InputInteractionData {
+        return {
+            input: inputEl,
+            inputDataType: 'text',
+            eventType: eventType,
+            inputLabel: this.input.getLabel(),
+        };
     }
 
     protected updateInputLangParams(inputEl: FormInputEl): void {
