@@ -30,8 +30,6 @@ export class FilterableListBoxWrapper<I>
 
     protected filterContainer: Element;
 
-    protected filterAndListContainer: Element;
-
     protected selectionDelta = new Map<string, boolean>();
 
     protected applyButton: Button;
@@ -50,7 +48,6 @@ export class FilterableListBoxWrapper<I>
         super.initElements();
 
         this.filterContainer = new DivEl('filter-container');
-        this.filterAndListContainer = new DivEl('filter-and-list-container');
 
         this.dropdownVisibilityChangedListeners = [];
         this.optionFilterInput = new OptionFilterInput();
@@ -380,8 +377,8 @@ export class FilterableListBoxWrapper<I>
             this.addClass('filterable-listbox-wrapper');
             this.listBox.addClass('filterable-listbox');
             this.filterContainer.appendChildren(this.optionFilterInput, this.dropdownHandle as Element);
-            this.filterAndListContainer.appendChildren(this.filterContainer, this.listBox);
-            this.appendChild(this.filterAndListContainer);
+            const filterAndListContainer = new DivEl('filter-and-list-container').appendChildren(this.filterContainer, this.listBox);
+            this.appendChild(filterAndListContainer);
 
             this.applyButton.addClass('apply-selection-button');
             this.applyButton.insertAfterEl(this.optionFilterInput);
