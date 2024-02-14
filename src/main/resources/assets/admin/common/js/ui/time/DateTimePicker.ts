@@ -35,6 +35,13 @@ export class DateTimePickerBuilder
 
     defaultValue: Date;
 
+    defaultTime: TimeHM;
+
+    setDefaultTime(value: TimeHM): DateTimePickerBuilder {
+        this.defaultTime = value;
+        return this;
+    }
+
     setDefaultValue(value: Date): DateTimePickerBuilder {
         this.defaultValue = value;
         return this;
@@ -126,6 +133,9 @@ export class DateTimePicker
             .setManageDate(this.builder.manageDate)
             .setManageTime(this.builder.manageTime);
 
+        if (!this.selectedDateTime) {
+            popupBuilder.setDefaultTime(this.builder.defaultTime);
+        }
 
         if (this.builder.timezone) {
             popupBuilder.setTimezone(this.builder.timezone);
@@ -152,9 +162,14 @@ export class DateTimePicker
 
             const newDate: Date = new Date(e.getDate());
 
-            if (this.builder.manageTime && this.selectedDateTime) {
-                newDate.setHours(this.selectedDateTime.getHours());
-                newDate.setMinutes(this.selectedDateTime.getMinutes());
+            if (this.builder.manageTime) {
+                if (this.selectedDateTime) {
+                    newDate.setHours(this.selectedDateTime.getHours());
+                    newDate.setMinutes(this.selectedDateTime.getMinutes());
+                } else if (this.builder.defaultTime) {
+                    newDate.setHours(this.builder.defaultTime.hours);
+                    newDate.setMinutes(this.builder.defaultTime.minutes);
+                }
             }
 
             this.setDateTime(newDate);
@@ -180,6 +195,9 @@ export class DateTimePicker
         };
 
         const onThisDateTimePickerShown = () => {
+            if (!this.selectedDateTime) {
+                this.popup.resetCalendar();
+            }
             new DateTimePickerShownEvent(this).fire();
             DateTimePickerShownEvent.on(onAnyDateTimePickerShown);
         };

@@ -255,13 +255,15 @@ export class Calendar
     }
 
     private handleCalendarDayClicked(event: CalendarDayClickedEvent) {
-
-        this.calendarDays.forEach((calendarDay: CalendarDay) => {
-            calendarDay.setSelectedDay(event.getCalendarDay().equals(calendarDay));
-        });
+        this.resetSelectedDays();
+        this.calendarDays.find((calendarDay) => calendarDay.equals(event.getCalendarDay())).setSelectedDay(true);
 
         this.selectedDate = event.getCalendarDay().getDate();
         this.notifySelectedDateChanged(this.selectedDate);
+    }
+
+    resetSelectedDays() {
+        this.calendarDays.filter((calendarDay) => calendarDay.isSelected()).forEach((calendarDay) => calendarDay.resetSelected());
     }
 
     private notifySelectedDateChanged(date: Date) {

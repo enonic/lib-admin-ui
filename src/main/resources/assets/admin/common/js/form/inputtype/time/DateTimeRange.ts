@@ -15,6 +15,7 @@ import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {InputTypeName} from '../../InputTypeName';
+import {TimeHM} from '../../../util/TimeHM';
 
 declare const Date: DateConstructor;
 
@@ -24,6 +25,8 @@ export class DateTimeRange
     private useTimezone: boolean;
     private from: DateTime | LocalDateTime;
     private to: DateTime | LocalDateTime;
+    private defaultStartTime: TimeHM;
+    private defaultEndTime: TimeHM;
 
     private errors: {
         noStart: string
@@ -167,6 +170,18 @@ export class DateTimeRange
             startEqualsEnd: this.readConfigValue(inputConfig, 'errorStartEqualsEnd') ||
                             i18n('field.dateTimeRange.errors.startEqualsEnd', this.labels.start, this.labels.end)
         };
+
+        this.defaultStartTime = this.getDefaultTimeFromConfig(inputConfig, 'defaultStartTime');
+        this.defaultEndTime = this.getDefaultTimeFromConfig(inputConfig, 'defaultEndTime');
+    }
+
+    private getDefaultTimeFromConfig(inputConfig: Record<string, string>, name: string): TimeHM {
+        const time: string = this.readConfigValue(inputConfig, name);
+        if (!time) {
+            return null;
+        }
+        const timeArray: string[] = time.split(':');
+        return new TimeHM(parseInt(timeArray[0] || '0'), parseInt(timeArray[1] || '0'));
     }
 
     private readConfigValue(inputConfig: Record<string, any>, name: string): string {
@@ -176,7 +191,9 @@ export class DateTimeRange
     private createInputAsLocalDateTime(property: Property): DateTimeRangePicker {
         const rangeBuilder: DateTimeRangePickerBuilder = new DateTimeRangePickerBuilder()
             .setStartLabel(this.labels.start)
-            .setEndLabel(this.labels.end);
+            .setEndLabel(this.labels.end)
+            .setDefaultStartTime(this.defaultStartTime)
+            .setDefaultEndTime(this.defaultEndTime);
 
         this.setFromTo(rangeBuilder, property);
 

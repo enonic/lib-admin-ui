@@ -93,6 +93,10 @@ export class DatePickerPopup
         this.calendar.selectDate(date, silent);
     }
 
+    resetCalendar() {
+        this.calendar.resetSelectedDays();
+    }
+
     getSelectedDate(): Date {
         return this.calendar.getSelectedDate();
     }
