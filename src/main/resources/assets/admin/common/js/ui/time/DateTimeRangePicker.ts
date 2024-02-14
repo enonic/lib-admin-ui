@@ -2,18 +2,22 @@ import * as Q from 'q';
 import {Timezone} from '../../util/Timezone';
 import {DivEl} from '../../dom/DivEl';
 import {DateTimePicker, DateTimePickerBuilder} from './DateTimePicker';
-import {StringHelper} from '../../util/StringHelper';
 import {Element} from '../../dom/Element';
 import {LabelEl} from '../../dom/LabelEl';
 import {DayOfWeek} from './DayOfWeek';
 import {DaysOfWeek} from './DaysOfWeek';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
+import {TimeHM} from '../../util/TimeHM';
 
 export class DateTimeRangePickerBuilder {
 
     startDate: Date;
 
     endDate: Date;
+
+    defaultStartTime: TimeHM;
+
+    defaultEndTime: TimeHM;
 
     startLabel: string;
 
@@ -68,6 +72,16 @@ export class DateTimeRangePickerBuilder {
         return this;
     }
 
+    setDefaultStartTime(value: TimeHM): DateTimeRangePickerBuilder {
+        this.defaultStartTime = value;
+        return this;
+    }
+
+    setDefaultEndTime(value: TimeHM): DateTimeRangePickerBuilder {
+        this.defaultEndTime = value;
+        return this;
+    }
+
     build(): DateTimeRangePicker {
         return new DateTimeRangePicker(this);
     }
@@ -76,17 +90,17 @@ export class DateTimeRangePickerBuilder {
 
 export class DateTimeRangePicker
     extends DivEl {
-    private startLabel: string;
-    private startPicker: DateTimePicker;
-    private endLabel: string;
-    private endPicker: DateTimePicker;
+    private readonly startLabel: string;
+    private readonly startPicker: DateTimePicker;
+    private readonly endLabel: string;
+    private readonly endPicker: DateTimePicker;
 
     constructor(builder: DateTimeRangePickerBuilder) {
         super('date-time-range-picker');
         this.startLabel = builder.startLabel;
-        this.startPicker = this.createPicker(builder, 0);
+        this.startPicker = this.createPicker(builder, 0, builder.defaultStartTime);
         this.endLabel = builder.endLabel;
-        this.endPicker = this.createPicker(builder, 1);
+        this.endPicker = this.createPicker(builder, 1, builder.defaultEndTime);
     }
 
     doRender(): Q.Promise<boolean> {
@@ -166,7 +180,7 @@ export class DateTimeRangePicker
         this.endPicker.clear();
     }
 
-    private createPicker(builder: DateTimeRangePickerBuilder, index: number = 0): DateTimePicker {
+    private createPicker(builder: DateTimeRangePickerBuilder, index: number = 0, defaultTime: TimeHM): DateTimePicker {
         const b = new DateTimePickerBuilder()
             .setStartingDayOfWeek(builder.startingDayOfWeek)
             .setCloseOnSelect(builder.closeOnSelect)
@@ -177,12 +191,16 @@ export class DateTimeRangePicker
         case 1:
             if (builder.endDate) {
                 b.setDateTime(builder.endDate);
+            } else {
+                b.setDefaultTime(builder.defaultEndTime);
             }
             break;
         case 0:
         default:
             if (builder.startDate) {
                 b.setDateTime(builder.startDate);
+            } else {
+                b.setDefaultTime(builder.defaultStartTime);
             }
             break;
         }

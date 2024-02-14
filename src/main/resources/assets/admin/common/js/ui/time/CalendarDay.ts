@@ -103,6 +103,18 @@ export class CalendarDay
         this.refreshSelectedDay();
     }
 
+    isSelected(): boolean {
+        return this.selectedDay;
+    }
+
+    resetSelected() {
+        if (!this.selectedDay) {
+            return;
+        }
+        this.selectedDay = false;
+        this.removeClass('selected-day');
+    }
+
     refreshSelectedDay() {
         if (this.selectedDay && !this.hasClass('selected-day')) {
             this.addClass('selected-day');

@@ -19,6 +19,8 @@ export class TimePickerPopupBuilder {
     // use local timezone if timezone value is not initialized
     useLocalTimezoneIfNotPresent: boolean = false;
 
+    defaultTime: TimeHM;
+
     setHours(value: number): TimePickerPopupBuilder {
         this.hours = value;
         return this;
@@ -55,6 +57,15 @@ export class TimePickerPopupBuilder {
         return this.useLocalTimezoneIfNotPresent;
     }
 
+    setDefaultTime(value: TimeHM): TimePickerPopupBuilder {
+        this.defaultTime = value;
+        return this;
+    }
+
+    getDefaultTime(): TimeHM {
+        return this.defaultTime;
+    }
+
     build(): TimePickerPopup {
         return new TimePickerPopup(this);
     }
@@ -82,26 +93,26 @@ export class TimePickerPopup
     private useLocalTimezoneIfNotPresent: boolean = false;
 
     private timeChangedListeners: ((time: TimeHM) => void)[] = [];
+    private builder: TimePickerPopupBuilder;
 
     constructor(builder: TimePickerPopupBuilder) {
         super('time-picker-dialog');
 
-        this.initElements(builder);
+        this.builder = builder;
+        this.initElements();
         this.initListeners();
     }
 
-    protected initElements(builder: TimePickerPopupBuilder): void {
+    protected initElements(): void {
         this.nextHour = new AEl('next');
         this.hour = new SpanEl();
         this.prevHour = new AEl('prev');
         this.nextMinute = new AEl('next');
         this.minute = new SpanEl();
         this.prevMinute = new AEl('prev');
-        this.selectedHour = DateHelper.isHoursValid(builder.getHours()) ? builder.getHours() : null;
-        this.selectedMinute = DateHelper.isMinutesValid(builder.getMinutes()) ? builder.getMinutes() : null;
 
-        this.useLocalTimezoneIfNotPresent = builder.useLocalTimezoneIfNotPresent;
-        this.timezone = builder.timezone;
+        this.useLocalTimezoneIfNotPresent = this.builder.useLocalTimezoneIfNotPresent;
+        this.timezone = this.builder.timezone;
 
         if (!this.timezone && this.useLocalTimezoneIfNotPresent) {
             this.timezone = Timezone.getLocalTimezone();
@@ -112,6 +123,12 @@ export class TimePickerPopup
             this.timezoneOffset = new SpanEl('timezone-offset').setHtml(this.getUTCString(this.timezone.getOffset()));
         }
 
+        this.presetTime();
+    }
+
+    presetTime() {
+        this.selectedHour = this.getDefaultHours(this.builder);
+        this.selectedMinute = this.getDefaultMinutes(this.builder);
         this.hour.setHtml(DateHelper.padNumber(this.selectedHour));
         this.minute.setHtml(DateHelper.padNumber(this.selectedMinute));
     }
@@ -181,7 +198,7 @@ export class TimePickerPopup
     }
 
     setSelectedTime(time: TimeHM, silent?: boolean): void {
-        if (DateHelper.isHoursValid(time.hours) && DateHelper.isMinutesValid(time.minutes)) {
+        if (time && DateHelper.isHoursValid(time.hours) && DateHelper.isMinutesValid(time.minutes)) {
             this.selectedHour = time.hours;
             this.selectedMinute = time.minutes;
         } else {
@@ -257,6 +274,16 @@ export class TimePickerPopup
         this.timeChangedListeners.forEach((listener: (time: TimeHM) => void) => {
             listener(time);
         });
+    }
+
+    private getDefaultHours(builder: TimePickerPopupBuilder): number {
+        const hours = builder.getHours() || builder.getDefaultTime()?.hours || 0;
+        return DateHelper.isHoursValid(hours) ? hours : null;
+    }
+
+    private getDefaultMinutes(builder: TimePickerPopupBuilder): number {
+        const minutes = builder.getMinutes() || builder.getDefaultTime()?.minutes || 0;
+        return DateHelper.isMinutesValid(minutes) ? minutes : null;
     }
 
     doRender(): Q.Promise<boolean> {

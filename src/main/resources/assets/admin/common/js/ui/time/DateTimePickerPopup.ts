@@ -25,6 +25,8 @@ export class DateTimePickerPopupBuilder {
 
     timezone: Timezone;
 
+    defaultTime: TimeHM;
+
     // use local timezone if timezone value is not initialized
     useLocalTimezoneIfNotPresent: boolean = false;
 
@@ -66,6 +68,11 @@ export class DateTimePickerPopupBuilder {
         return this;
     }
 
+    setDefaultTime(value: TimeHM): DateTimePickerPopupBuilder {
+        this.defaultTime = value;
+        return this;
+    }
+
     isUseLocalTimezoneIfNotPresent(): boolean {
         return this.useLocalTimezoneIfNotPresent;
     }
@@ -87,7 +94,7 @@ export class DateTimePickerPopup
 
     private readonly timePickerPopup?: TimePickerPopup;
 
-    private defaultValueButton : Button;
+    private readonly defaultValueButton : Button;
 
     constructor(builder: DateTimePickerPopupBuilder) {
         super('date-time-dialog');
@@ -110,6 +117,7 @@ export class DateTimePickerPopup
                     .setTimezone(builder.timezone)
                     .setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent)
                     .setMinutes(builder.getMinutes())
+                    .setDefaultTime(builder.defaultTime)
                     .build();
         }
     }
@@ -183,5 +191,10 @@ export class DateTimePickerPopup
 
     setSelectedDate(date: Date, silent?: boolean) {
         this.datePickerPopup?.setSelectedDate(date, silent);
+    }
+
+    resetCalendar() {
+        this.datePickerPopup?.resetCalendar();
+        this.timePickerPopup?.presetTime();
     }
 }
