@@ -162,6 +162,10 @@ export class InputOccurrenceView
             }
         };
 
+        const updatePathCall = setInterval(() => {
+            this.updateInputElDataPath();
+        }, 1000);
+
         this.onRemoved(() => {
             if (this.property) {
                 this.property.unPropertyValueChanged(this.propertyValueChangedHandler);
@@ -170,6 +174,8 @@ export class InputOccurrenceView
             if (this.inputTypeView) {
                 this.inputTypeView.unOccurrenceValueChanged(this.occurrenceValueChangedHandler);
             }
+
+            clearInterval(updatePathCall);
         });
 
         this.removeButtonEl.onClicked((event: MouseEvent) => {
@@ -203,4 +209,9 @@ export class InputOccurrenceView
         this.validationErrorBlock.setHtml(errorMessage);
         this.toggleClass('invalid', !!errorMessage);
     }
+
+    private updateInputElDataPath(): void {
+        this.inputElement.getEl().setAttribute('data-path', this.getDataPath()?.toString().replace(/\./g, '/'));
+    }
+
 }
