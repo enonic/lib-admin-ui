@@ -7,14 +7,9 @@
     padding-top: 30px;
   }
 
-  .x-data-wizard-step-form + .panel-strip-panel-header.enabled {
-    padding-top: 10px;
-  }
-
   .panel-strip-panel-header {
     position: relative;
-    padding-left: 10px;
-    padding-top: 60px;
+    padding: 10px 10px 0 10px; // same as form-view in form-common
     font-size: 25px;
     line-height: 20px;
     max-width: 660px;
@@ -34,80 +29,6 @@
         font-size: 16px;
       }
     }
-
-    &:not(.disabled) + .x-data-wizard-step-form {
-      padding-bottom: 50px;
-    }
-
-    &.enabled {
-      + .x-data-wizard-step-form + .panel-strip-panel-header:not(.enabled):not(.disabled) {
-        padding-top: 10px;
-      }
-
-      .x-data-toggler {
-        float: right;
-
-        .icon-close();
-
-        padding: 0 7px 0 15px;
-      }
-
-      > .panel {
-        padding-bottom: 50px;
-      }
-
-      span::before {
-        content: '+';
-        margin-right: 10px;
-      }
-    }
-
-    .x-data-toggler {
-      display: inline-block;
-      overflow: hidden;
-      z-index: @z-index-mask - 2;
-      cursor: pointer;
-
-      &::before {
-        display: block;
-        content: "";
-      }
-
-      &:hover::after {
-        color: @admin-dark-gray;
-      }
-    }
-
-    &.disabled {
-      height: 53px;
-      margin-top: 10px;
-      background-color: @admin-bg-light-gray;
-      padding: 15px 15px 0 10px;
-      border-bottom: none;
-      cursor: pointer;
-
-      span {
-        padding-left: 10px;
-      }
-
-      + .x-data-wizard-step-form + .panel-strip-panel-header.enabled {
-        padding-top: 60px;
-      }
-
-      .x-data-toggler {
-        float: left;
-
-        &::before {
-          font-size: 26px;
-          font-weight: 900;
-          content: '+';
-        }
-      }
-    }
-
-    .wizard-step-form:not(.x-data-wizard-step-form) + .panel-strip-panel-header.disabled {
-      margin-top: 60px;
-    }
   }
 }
 
@@ -117,5 +38,17 @@
   .panel-strip {
     position: static;
     overflow-y: hidden;
+  }
+}
+
+.form-panel {
+  &._0-240,
+  &._240-360,
+  &._360-540 {
+    .panel-strip {
+      .panel-strip-panel-header {
+        padding: 10px 15px 0 15px; // same as form-view
+      }
+    }
   }
 }

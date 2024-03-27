@@ -59,14 +59,6 @@ export class Panel
         }
     }
 
-    isExpandable(): boolean {
-        return false;
-    }
-
-    setExpandState(_value: boolean) {
-        return;
-    }
-
     protected calculateOffset() {
         // calculates bottom of previous element in dom and set panel top to this value.
         let previous = this.getEl().getPrevious();
