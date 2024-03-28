@@ -1,7 +1,7 @@
-import {ValueChangedEvent} from '../ValueChangedEvent';
-import {StringHelper} from '../util/StringHelper';
 import {ClassHelper} from '../ClassHelper';
 import {ObjectHelper} from '../ObjectHelper';
+import {StringHelper} from '../util/StringHelper';
+import {ValueChangedEvent} from '../ValueChangedEvent';
 import {FormItemEl} from './FormItemEl';
 
 export class FormInputEl
@@ -11,14 +11,16 @@ export class FormInputEl
     private dirtyChangedListeners: ((dirty: boolean) => void)[] = [];
     private valueChangedListeners: ((event: ValueChangedEvent) => void)[] = [];
     private originalValue: string;
-    private oldValue: string = '';
-    private dirty: boolean = false;
+    private oldValue: string;
+    private dirty: boolean;
 
-    constructor(tagName: string, className?: string, prefix?: string, originalValue?: string) {
+    constructor(tagName: string, className?: string, prefix?: string, originalValue = '') {
         super(tagName, className, prefix);
         this.addClass('form-input');
 
         this.originalValue = originalValue;
+        this.oldValue = originalValue;
+        this.dirty = false;
 
         if (FormInputEl.debug) {
             console.groupCollapsed(this.toString() + '.constructor: setting originalValue = ' +
@@ -160,7 +162,7 @@ export class FormInputEl
     }
 
     protected getOriginalValue(): string {
-        return String(this.originalValue); // returns copy of original value to avoid possible changing
+        return this.originalValue;
     }
 
     /**
