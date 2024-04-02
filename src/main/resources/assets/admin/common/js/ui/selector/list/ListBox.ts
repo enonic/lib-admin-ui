@@ -3,7 +3,7 @@ import {Element} from '../../../dom/Element';
 import {DivEl} from '../../../dom/DivEl';
 import {H5El} from '../../../dom/H5El';
 
-export class ListBox<I>
+export abstract class ListBox<I>
     extends UlEl {
 
     private items: I[] = [];
@@ -201,17 +201,13 @@ export class ListBox<I>
         });
     }
 
-    protected createItemView(_item: I, _readOnly: boolean): Element {
-        throw new Error('You must override createListItem to create views for list items');
-    }
+    protected abstract createItemView(_item: I, _readOnly: boolean): Element;
 
     protected updateItemView(_itemView: Element, _item: I) {
         // override to update item view when data item has been changed
     }
 
-    protected getItemId(_item: I): string {
-        throw new Error('You must override getItemId to find item views by items');
-    }
+    protected abstract getItemId(_item: I): string;
 
     // public method to not break compatibility by removing 'protected' from getItemId()
     public getIdOfItem(item: I): string {
@@ -293,19 +289,19 @@ export class ListBox<I>
         }
     }
 
-    private notifyItemsAdded(items: I[]): void {
+    protected notifyItemsAdded(items: I[]): void {
         this.itemsAddedListeners.forEach((listener) => {
             listener(items);
         });
     }
 
-    private notifyItemsRemoved(items: I[]): void {
+    protected notifyItemsRemoved(items: I[]): void {
         this.itemsRemovedListeners.forEach((listener) => {
             listener(items);
         });
     }
 
-    private notifyItemsChanged(items: I[]): void {
+    protected notifyItemsChanged(items: I[]): void {
         this.itemsChangedListeners.forEach((listener) => {
             listener(items);
         });

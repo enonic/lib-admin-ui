@@ -1,7 +1,7 @@
 import {ListBox} from './ListBox';
 import {Element} from '../../../dom/Element';
 
-export class LazyListBox<T> extends ListBox<T> {
+export abstract class LazyListBox<T> extends ListBox<T> {
 
     private observer: IntersectionObserver;
 
