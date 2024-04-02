@@ -2,28 +2,28 @@ import * as Q from 'q';
 import {SpanEl} from '../../dom/SpanEl';
 import {DivEl} from '../../dom/DivEl';
 
-export interface PanelStripHeaderOptions {
+export interface PanelStripHeaderConfig {
     text: string;
 }
 
 export class PanelStripHeader
     extends DivEl {
 
-    protected readonly options: PanelStripHeaderOptions;
+    protected readonly config: PanelStripHeaderConfig;
 
     protected textEl: SpanEl;
 
-    constructor(options: PanelStripHeaderOptions) {
+    constructor(config: PanelStripHeaderConfig) {
         super();
 
-        this.options = options;
+        this.config = config;
 
         this.initElements();
         this.initListeners();
     }
 
     protected initElements(): void {
-        this.textEl = new SpanEl().setHtml(this.options.text);
+        this.textEl = new SpanEl().setHtml(this.config.text);
     }
 
     protected initListeners(): void {
