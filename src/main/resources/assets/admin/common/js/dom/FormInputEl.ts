@@ -19,7 +19,7 @@ export class FormInputEl
         this.addClass('form-input');
 
         this.originalValue = originalValue;
-        this.oldValue = originalValue;
+        this.oldValue = '';
         this.dirty = false;
 
         if (FormInputEl.debug) {
