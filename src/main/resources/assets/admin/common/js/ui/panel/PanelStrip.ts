@@ -38,19 +38,15 @@ export class PanelStrip
 
     insertPanel(panel: Panel, index: number, header?: string): number {
         panel.setDoOffset(false);
-        let previousChildrenIndex = this.countExistingChildren(index);
+        const previousChildrenIndex = this.countExistingChildren(index);
         let headerEl: PanelStripHeader;
+
         if (header) {
-            headerEl = new PanelStripHeader(header, panel.isExpandable());
-
-            headerEl.onEnableChanged((state) => {
-                panel.setExpandState(state);
-            });
-
+            headerEl = this.createHeader(header, panel);
             panel.setOuterHeader(headerEl);
-
             this.insertChild(headerEl, previousChildrenIndex);
         }
+
         this.panels.splice(index, 0, panel);
         this.headers.splice(index, 0, headerEl);
 
@@ -266,6 +262,10 @@ export class PanelStrip
         this.panelShownListeners.forEach((listener: (event: PanelShownEvent) => void) => {
             listener.call(this, new PanelShownEvent(panel, panelIndex, previousPanel));
         });
+    }
+
+    protected createHeader(header: string, panel: Panel): PanelStripHeader {
+        return new PanelStripHeader({text: header});
     }
 
 }

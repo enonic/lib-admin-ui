@@ -95,7 +95,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
         this.wizardHeader = this.createWizardHeader();
         this.stepNavigator = new WizardStepNavigator();
         this.stepNavigatorAndToolbarContainer = new WizardStepNavigatorAndToolbar(this.stepNavigator);
-        this.stepsPanel = new WizardStepsPanel(this.stepNavigator, this.formPanel);
+        this.stepsPanel = this.createWizardStepsPanel();
         this.leftPanelAndToolbar = new Panel();
     }
 
@@ -626,6 +626,10 @@ export class WizardPanel<EQUITABLE extends Equitable>
 
     protected createWizardHeader(): WizardHeader {
         return null;
+    }
+
+    protected createWizardStepsPanel(): WizardStepsPanel {
+        return new WizardStepsPanel(this.stepNavigator, this.formPanel);
     }
 
     protected createFormIcon(): Element {
