@@ -136,6 +136,10 @@ export class Application
         return this.state === Application.STATE_STARTED;
     }
 
+    isStopped(): boolean {
+        return this.state === Application.STATE_STOPPED;
+    }
+
     hasChildren(): boolean {
         return false;
     }
