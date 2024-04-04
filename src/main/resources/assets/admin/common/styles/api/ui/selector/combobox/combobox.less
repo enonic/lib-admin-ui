@@ -71,27 +71,37 @@
       &.selected {
         color: #d3d3d3;
       }
-    }
 
-    .slick-row .slick-cell-checkboxsel {
-      overflow: visible;
-
-      label {
-        display: block;
-        width: 100%;
-        height: 100%;
-        min-width: 16px;
-        min-height: 16px;
-        margin: 0;
-        background: url("../../../../../images/box-unchecked.gif") center no-repeat;
+      .slick-cell {
+        &.readonly {
+          pointer-events: none;
+        }
       }
 
-      input[type="checkbox"] {
-        display: none;
-      }
+      .slick-cell-checkboxsel {
+        overflow: visible;
 
-      &.selected label {
-        background: url("../../../../../images/box-checked.gif") center no-repeat;
+        label {
+          display: block;
+          width: 100%;
+          height: 100%;
+          min-width: 16px;
+          min-height: 16px;
+          margin: 0;
+          background: url("../../../../../images/box-unchecked.gif") center no-repeat;
+        }
+
+        input[type="checkbox"] {
+          display: none;
+        }
+
+        &.selected label {
+          background: url("../../../../../images/box-checked.gif") center no-repeat;
+        }
+
+        &.readonly label {
+          opacity: 0.5;
+        }
       }
     }
   }
