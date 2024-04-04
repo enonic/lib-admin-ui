@@ -20,28 +20,30 @@
       &:not(.placeholder) {
         height: auto;
 
-        &.invalid,
-        &.uninstalled {
+        .@{_COMMON_PREFIX}wrapper {
+          margin-right: 10px;
+        }
+
+        &.invalid {
           .highlight-option(@admin-input-red);
           margin-bottom: 5px;
         }
 
+        &.stopped,
         &.uninstalled {
           .@{_COMMON_PREFIX}wrapper {
             .icon-alert();
+
+            &:before {
+              position: relative;
+              top: auto;
+              left: auto;
+            }
 
             .font-icon-default {
               display: none;
             }
           }
-
-          a.edit {
-            display: none;
-          }
-        }
-
-        &.stopped {
-          opacity: 0.5;
 
           a.edit {
             display: none;
@@ -65,8 +67,4 @@
       }
     }
   }
-}
-
-.wizard-panel .wizard-steps-panel .wizard-step-form .application-configurator .form-view {
-  margin: 10px 0 0 0;
 }
