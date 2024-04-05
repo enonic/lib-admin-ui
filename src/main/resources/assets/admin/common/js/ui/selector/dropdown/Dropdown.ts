@@ -431,10 +431,6 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         return this.input.getValue() === '';
     }
 
-    markReadOnly(options: Option<OPTION_DISPLAY_VALUE>[]) {
-        this.dropdownList.getDropdownGrid().markReadOnly(options);
-    }
-
     private setupListeners() {
         AppHelper.focusInOut(this, () => {
             if (this.isVisible()) {

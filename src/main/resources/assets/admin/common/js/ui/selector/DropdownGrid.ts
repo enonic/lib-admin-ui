@@ -254,18 +254,6 @@ export abstract class DropdownGrid<OPTION_DISPLAY_VALUE> {
         }
     }
 
-    markReadOnly(selectedOptions: Option<OPTION_DISPLAY_VALUE>[]) {
-
-        let stylesHash: Slick.CellCssStylesHash = {};
-        selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-            if (selectedOption.isReadOnly()) {
-                let row = this.getRowByValue(selectedOption.getValue());
-                stylesHash[row] = {_checkbox_selector: 'readonly', option: 'readonly'};
-            }
-        });
-        this.getGrid().setCellCssStyles('readonly', stylesHash);
-    }
-
     hasActiveRow(): boolean {
         return !!this.getGrid().getActiveCell();
     }
