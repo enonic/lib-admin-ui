@@ -127,8 +127,6 @@ export class DropdownList<OPTION_DISPLAY_VALUE> {
             if (selectedOptions) {
                 this.dropdownGrid.markSelections(selectedOptions);
                 if (selectedOptions.length > 0) {
-                    this.dropdownGrid.markReadOnly(selectedOptions);
-
                     if (!isShown) {
                         this.navigateToRowIfNotActive(selectedOptions[0]);
                     }

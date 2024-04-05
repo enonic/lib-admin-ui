@@ -7,18 +7,6 @@ export class ComboBoxDropdown<OPTION_DISPLAY_VALUE>
 
     setOptions(options: Option<OPTION_DISPLAY_VALUE>[], noOptionsText: string, selectedOptions: Option<OPTION_DISPLAY_VALUE>[] = [],
                saveSelection?: boolean) {
-
-        selectedOptions.forEach((selectedOption: Option<OPTION_DISPLAY_VALUE>) => {
-            if (selectedOption.isReadOnly()) {
-                for (const option of options) {
-                    if (selectedOption.getValue() === option.getValue()) {
-                        option.setReadOnly(true);
-                        break;
-                    }
-                }
-            }
-        });
-
         // `from` is used to determine, from which point should selection be updated
         const from = this.getDropdownGrid().getOptionCount();
 
