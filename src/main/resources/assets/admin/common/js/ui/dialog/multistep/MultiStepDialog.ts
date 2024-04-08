@@ -132,9 +132,10 @@ export class MultiStepDialog
 
     protected showStep(step: DialogStep): void {
         this.unbindCurrentStepEvents();
-        this.displayStep(step);
-        this.updateButtonsState();
-        this.bindCurrentStepEvents();
+        this.displayStep(step).then(() => {
+            this.updateButtonsState();
+            this.bindCurrentStepEvents();
+        });
     }
 
     private unbindCurrentStepEvents(): void {
@@ -164,7 +165,7 @@ export class MultiStepDialog
         this.updateForwardButtonEnabledState();
     }
 
-    protected displayStep(step: DialogStep): void {
+    protected displayStep(step: DialogStep): Q.Promise<any> {
         this.currentStep?.getHtmlEl().hide();
         this.currentStep = step;
 
@@ -177,6 +178,8 @@ export class MultiStepDialog
         this.updateSubTitle();
 
         el.show();
+
+        return Q(null);
     }
 
     protected updateSubTitle(): void {
