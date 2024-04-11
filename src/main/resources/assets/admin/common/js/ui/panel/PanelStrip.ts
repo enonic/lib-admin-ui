@@ -239,7 +239,6 @@ export class PanelStrip
         if (!lastEl.getData('originalHeight')) {
             lastEl.setData('originalHeight', lastEl.getHTMLElement().style.height || 'auto');
         }
-        lastEl.setHeightPx(this.scrollable.getEl().getHeight());
     }
 
     private scrollToPanel(index: number, callback: () => void) {
