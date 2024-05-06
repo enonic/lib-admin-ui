@@ -134,10 +134,10 @@ export class BaseSelectedOptionView<T>
     }
 
     private createEditButton(): AEl {
-        let editButton = new AEl('edit');
-        editButton.onClicked((event: MouseEvent) => this.onEditButtonClicked(event));
+        this.editButton = new AEl('edit');
+        this.editButton.onClicked((event: MouseEvent) => this.onEditButtonClicked(event));
 
-        return editButton;
+        return this.editButton;
     }
 
     private createRemoveButton(): AEl {
