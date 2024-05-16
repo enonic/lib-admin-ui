@@ -69,7 +69,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: ${{ matrix.repo }}
+          repo: ${{ matrix.repo }}
           workflow: gradle.yml
 
   dispatch_contentstudio:
@@ -84,6 +84,6 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: ${{ matrix.repo }}
+          repo: ${{ matrix.repo }}
           workflow: gradle.yml
           ref: refs/heads/master
