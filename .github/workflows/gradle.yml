@@ -61,14 +61,29 @@ jobs:
     needs: [ publish_vars, build ]
     strategy:
       matrix:
-        repo: ["enonic/app-admin-home", "enonic/app-applications", "enonic/app-users", "enonic/app-contentstudio" ]
+        repo: ["enonic/app-admin-home", "enonic/app-applications", "enonic/app-users" ]
     runs-on: ubuntu-latest
     if: needs.publish_vars.outputs.publish == 'true'
     steps:
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v3
+      - name: Workflow Dispatch
+        uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: ${{ matrix.repo }}
-          event-type: lib-admin-ui
+          workflow: gradle.yml
 
+  dispatch_contentstudio:
+    needs: [ publish_vars, build ]
+    strategy:
+      matrix:
+        repo: [ "enonic/app-contentstudio" ]
+    runs-on: ubuntu-latest
+    if: needs.publish_vars.outputs.publish == 'true'
+    steps:
+      - name: Workflow Dispatch CS
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: ${{ matrix.repo }}
+          workflow: gradle.yml
+          ref: refs/heads/master
