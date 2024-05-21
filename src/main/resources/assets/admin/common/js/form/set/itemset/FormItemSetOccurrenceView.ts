@@ -2,12 +2,30 @@ import {FormItemSet} from './FormItemSet';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {FormItem} from '../../FormItem';
 import {PropertyArray} from '../../../data/PropertyArray';
+import {AiToolHelper} from '../../../ai/tool/AiToolHelper';
+import {AiToolType} from '../../../ai/tool/AiToolType';
+import {AiDialogIconTool} from '../../../ai/tool/AiDialogIconTool';
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
 
     constructor(config: FormSetOccurrenceViewConfig<FormItemSetOccurrenceView>) {
         super('form-item-set-', config);
+    }
+
+    protected initListeners(): void {
+        super.initListeners();
+
+        const isAiButtonAllowed = this.config.context.getAiTools().has(AiToolType.DIALOG);
+
+        if (isAiButtonAllowed) {
+            new AiDialogIconTool({
+                group: this.config.context.getName(),
+                pathElement: this,
+                getPath: () => this.getDataPath(),
+                aiButtonContainer: this.label,
+            });
+        }
     }
 
     protected getLabelText(): string {

@@ -15,10 +15,29 @@
     .input-glow();
   }
 
-  > .input-label {
+  > .input-label,
+  > label {
     display: inline-block;
-    max-width: calc(100% - 30px);
+    overflow-x: hidden;
+    white-space: pre;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 18px);
+  }
 
+  &.ai-editable {
+    > .input-label,
+    > label {
+      max-width: calc(100% - 30px);
+    }
+
+    .input-type-view.has-multiple-occurrence {
+      .ai-dialog-control {
+        right: 36px;
+      }
+    }
+  }
+
+  > .input-label {
     .@{_COMMON_PREFIX}wrapper {
       display: flex;
       white-space: nowrap;
@@ -38,10 +57,6 @@
   }
 
   > label {
-    display: inline-block;
-    max-width: calc(100% - 30px);
-    .ellipsis();
-
     &.required::after {
       content: '\00a0*';
       color: @input-red-text;
