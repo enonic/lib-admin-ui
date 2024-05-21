@@ -1,22 +1,44 @@
 import * as Q from 'q';
-import {DivEl} from '../dom/DivEl';
 import {PropertyPath} from '../data/PropertyPath';
-import {InputValidationRecording} from './inputtype/InputValidationRecording';
+import {DivEl} from '../dom/DivEl';
 import {FormItemOccurrence} from './FormItemOccurrence';
 import {HelpTextContainer} from './HelpTextContainer';
 import {RemoveButtonClickedEvent} from './RemoveButtonClickedEvent';
+
+export interface FormItemOccurrenceViewConfig {
+    className: string;
+    formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>
+}
 
 export abstract class FormItemOccurrenceView
     extends DivEl {
 
     protected formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>;
     protected helpText: HelpTextContainer;
+    protected readonly config: FormItemOccurrenceViewConfig;
     private removeButtonClickedListeners: ((event: RemoveButtonClickedEvent<FormItemOccurrenceView>) => void)[] = [];
     private occurrenceChangedListeners: ((view: FormItemOccurrenceView) => void)[] = [];
 
-    constructor(className: string, formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>) {
-        super(className);
-        this.formItemOccurrence = formItemOccurrence;
+    protected constructor(config: FormItemOccurrenceViewConfig) {
+        super(config.className);
+
+        this.config = config;
+
+        this.initElements();
+        this.postInitElements();
+        this.initListeners();
+    }
+
+    protected initElements(): void {
+        this.formItemOccurrence = this.config.formItemOccurrence;
+    }
+
+    protected initListeners(): void {
+      //
+    }
+
+    protected postInitElements() {
+        //
     }
 
     isExpandable(): boolean {
@@ -110,4 +132,5 @@ export abstract class FormItemOccurrenceView
     setEnabled(enable: boolean) {
         //
     }
+
 }

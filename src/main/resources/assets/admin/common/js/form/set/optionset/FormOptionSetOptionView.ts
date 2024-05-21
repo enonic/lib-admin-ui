@@ -1,24 +1,27 @@
 import * as $ from 'jquery';
 import * as Q from 'q';
 import {PropertySet} from '../../../data/PropertySet';
-import {Occurrences} from '../../Occurrences';
+import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
+import {DivEl} from '../../../dom/DivEl';
+import {Element} from '../../../dom/Element';
+import {FormEl} from '../../../dom/FormEl';
 import {Checkbox} from '../../../ui/Checkbox';
 import {NotificationDialog} from '../../../ui/dialog/NotificationDialog';
 import {i18n} from '../../../util/Messages';
-import {DivEl} from '../../../dom/DivEl';
-import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
-import {Element} from '../../../dom/Element';
-import {FormEl} from '../../../dom/FormEl';
-import {FormOptionSetOption} from './FormOptionSetOption';
-import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
-import {FormItemView, FormItemViewConfig} from '../../FormItemView';
-import {HelpTextContainer} from '../../HelpTextContainer';
 import {FormItemLayer} from '../../FormItemLayer';
-import {FormOptionSet} from './FormOptionSet';
-import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
-import {ValidationRecording} from '../../ValidationRecording';
 import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
 import {FormItemState} from '../../FormItemState';
+import {FormItemView, FormItemViewConfig} from '../../FormItemView';
+import {HelpTextContainer} from '../../HelpTextContainer';
+import {Occurrences} from '../../Occurrences';
+import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
+import {ValidationRecording} from '../../ValidationRecording';
+import {FormOptionSet} from './FormOptionSet';
+import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
+import {FormOptionSetOption} from './FormOptionSetOption';
+import {PropertyPath} from '../../../data/PropertyPath';
+import {AiToolType} from '../../../ai/tool/AiToolType';
+import {AiDialogIconTool} from '../../../ai/tool/AiDialogIconTool';
 
 export interface FormOptionSetOptionViewConfig
     extends CreatedFormItemLayerConfig {
@@ -41,7 +44,7 @@ export class FormOptionSetOptionView
     private formItemLayer: FormItemLayer;
     private selectionChangedListeners: ((isSelected: boolean) => void)[] = [];
     private checkbox: Checkbox;
-    private readonly isOptionSetExpandedByDefault: boolean;
+    private isOptionSetExpandedByDefault: boolean;
     private formItemState: FormItemState;
     private notificationDialog: NotificationDialog;
     private isSelectedInitially: boolean;
@@ -54,17 +57,30 @@ export class FormOptionSetOptionView
             parent: config.parent
         } as FormItemViewConfig);
 
+        this.initElements(config);
+        this.initListeners();
+    }
+
+    private initElements(config: FormOptionSetOptionViewConfig): void {
         this.formOptionSetOption = config.formOptionSetOption;
-
         this.isOptionSetExpandedByDefault = (config.formOptionSetOption.getParent() as FormOptionSet).isExpanded();
-
         this.formItemState = config.formItemState;
-
         this.addClass(this.formOptionSetOption.getPath().getElements().length % 2 ? 'even' : 'odd');
-
         this.formItemLayer = config.layerFactory.createLayer(config);
-
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
+    }
+
+    private initListeners(): void {
+        const isAiButtonAllowed = this.getContext().getAiTools().has(AiToolType.DIALOG);
+
+        if (isAiButtonAllowed) {
+            new AiDialogIconTool({
+                group: this.getContext().getName(),
+                pathElement: this,
+                getPath: () => PropertyPath.fromString(this.formOptionSetOption.getPath().toString()),
+                aiButtonContainer: this.parent.isSingleSelection() ? this.parent.getLabelEl() : this,
+            });
+        }
     }
 
     toggleHelpText(show?: boolean) {
@@ -95,9 +111,9 @@ export class FormOptionSetOptionView
 
         const optionItemsPropertySet: PropertySet = this.parent.getOrPopulateOptionItemsPropertySet(this.getName());
 
-         if (isDefaultAndNew) {
-             this.parent.handleOptionSelected(this);
-         }
+        if (isDefaultAndNew) {
+            this.parent.handleOptionSelected(this);
+        }
 
         this.optionItemsContainer = new DivEl('option-items-container');
         const isContainerVisibleByDefault = this.isOptionSetExpandedByDefault || isSingleSelection || this.isSelected();
