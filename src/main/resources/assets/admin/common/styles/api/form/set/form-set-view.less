@@ -70,8 +70,11 @@
 
       > .form-item-set-occurrence-view,
       > .form-option-set-occurrence-view {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr 26px 26px;
+        grid-template-areas:
+          'drag saga more'
+          'container container container';
         margin: 0;
         box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
         padding: 10px 10px 10px 13px;
@@ -87,6 +90,22 @@
           &:focus:not(:disabled) {
             border: none;
           }
+
+          grid-area: more;
+        }
+
+        .icon-saga {
+          width: 26px;
+          height: 26px;
+          padding: 0;
+          grid-area: saga;
+          background-color: @admin-white;
+          text-align: center;
+          font-size: 16px;
+
+          &:before {
+            color: @admin-dark-gray;
+          }
         }
 
         .form-occurrence-draggable-label {
@@ -95,6 +114,8 @@
           font-size: 16px;
           width: calc(100% - 55px);
           .ellipsis();
+
+          grid-area: drag;
 
           &.expandable {
             cursor: zoom-out;
@@ -135,6 +156,7 @@
         > .form-option-set-occurrences-container {
           flex-basis: 100%;
           min-width: 0;
+          grid-area: container;
         }
 
         > .form-item-set-occurrences-container {
@@ -155,6 +177,18 @@
               cursor: zoom-in;
             }
           }
+        }
+
+        .selection-message {
+          grid-area: container;
+        }
+      }
+
+      > .form-option-set-occurrence-view.single-selection {
+        grid-template-columns: 1fr;
+
+        .single-selection-header {
+          width: auto;
         }
       }
     }
