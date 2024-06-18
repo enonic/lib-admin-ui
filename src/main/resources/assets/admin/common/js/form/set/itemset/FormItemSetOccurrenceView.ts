@@ -2,12 +2,27 @@ import {FormItemSet} from './FormItemSet';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {FormItem} from '../../FormItem';
 import {PropertyArray} from '../../../data/PropertyArray';
+import {Button} from '../../../ui/button/Button';
+import {i18n} from '../../../util/Messages';
+import {EnonicAiSetScopeEvent} from '../../../saga/event/EnonicAiSetScopeEvent';
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
 
     constructor(config: FormSetOccurrenceViewConfig<FormItemSetOccurrenceView>) {
         super('form-item-set-', config);
+    }
+
+    protected initListeners(): void {
+        super.initListeners();
+
+        const updatePathCall = setInterval(() => {
+            this.updateInputElDataPath();
+        }, 1000);
+
+        this.onRemoved(() => {
+            clearInterval(updatePathCall);
+        });
     }
 
     protected getLabelText(): string {
@@ -45,5 +60,24 @@ export class FormItemSetOccurrenceView
 
     protected getFormItems(): FormItem[] {
         return this.getFormSet().getFormItems();
+    }
+
+    protected layoutElements(): void {
+        super.layoutElements();
+        this.addSagaIcon();
+    }
+
+    private addSagaIcon(): void {
+        const sagaIcon = new Button();
+        sagaIcon.setTitle(i18n('action.saga')).addClass('icon-saga icon-sparkling').insertBeforeEl(this.moreButton);
+
+        sagaIcon.onClicked(() => {
+            const dataPath = this.getEl().getAttribute('data-path');
+            new EnonicAiSetScopeEvent(dataPath).fire();
+        });
+    }
+
+    private updateInputElDataPath(): void {
+        this.getEl().setAttribute('data-path', this.getDataPath()?.toString().replace(/\./g, '/'));
     }
 }
