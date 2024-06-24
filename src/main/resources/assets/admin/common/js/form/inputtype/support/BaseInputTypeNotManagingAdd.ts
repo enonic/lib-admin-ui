@@ -397,4 +397,8 @@ export abstract class BaseInputTypeNotManagingAdd
             }
         });
     }
+
+    isSagaEditable(): boolean {
+        return false;
+    }
 }
