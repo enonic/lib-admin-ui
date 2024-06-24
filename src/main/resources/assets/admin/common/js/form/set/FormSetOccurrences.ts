@@ -69,7 +69,7 @@ export class FormSetOccurrences<V extends FormSetOccurrenceView>
         return {
             context: this.context,
             layer: layer,
-            formSetOccurrence: occurrence,
+            formItemOccurrence: occurrence,
             formSet: this.formSet,
             parent: this.parent,
             dataSet: dataSet

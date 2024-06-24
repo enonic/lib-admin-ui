@@ -19,6 +19,7 @@ import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent
 import {ValidationRecording} from '../../ValidationRecording';
 import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
 import {FormItemState} from '../../FormItemState';
+import {SagaHelper} from '../../../saga/SagaHelper';
 
 export interface FormOptionSetOptionViewConfig
     extends CreatedFormItemLayerConfig {
@@ -41,7 +42,7 @@ export class FormOptionSetOptionView
     private formItemLayer: FormItemLayer;
     private selectionChangedListeners: ((isSelected: boolean) => void)[] = [];
     private checkbox: Checkbox;
-    private readonly isOptionSetExpandedByDefault: boolean;
+    private isOptionSetExpandedByDefault: boolean;
     private formItemState: FormItemState;
     private notificationDialog: NotificationDialog;
     private isSelectedInitially: boolean;
@@ -54,17 +55,27 @@ export class FormOptionSetOptionView
             parent: config.parent
         } as FormItemViewConfig);
 
+        this.initElements(config);
+        this.initListeners();
+    }
+
+    private initElements(config: FormOptionSetOptionViewConfig): void {
         this.formOptionSetOption = config.formOptionSetOption;
-
         this.isOptionSetExpandedByDefault = (config.formOptionSetOption.getParent() as FormOptionSet).isExpanded();
-
         this.formItemState = config.formItemState;
-
         this.addClass(this.formOptionSetOption.getPath().getElements().length % 2 ? 'even' : 'odd');
-
         this.formItemLayer = config.layerFactory.createLayer(config);
-
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
+    }
+
+    private initListeners(): void {
+        const updatePathCall = setInterval(() => {
+            this.updateInputElDataPath();
+        }, 1000);
+
+        this.onRemoved(() => {
+            clearInterval(updatePathCall);
+        });
     }
 
     toggleHelpText(show?: boolean) {
@@ -488,5 +499,9 @@ export class FormOptionSetOptionView
         } else {
             this.checkbox.setEnabled(false);
         }
+    }
+
+    protected updateInputElDataPath(): void {
+        this.getEl().setAttribute(SagaHelper.DATA_ATTR, `${this.getParent().getDataPath()?.toString().replace(/\./g, '/')}/${this.getName()}`);
     }
 }
