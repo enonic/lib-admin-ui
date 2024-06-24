@@ -84,8 +84,6 @@ export class InputView
 
         if (this.input.getHelpText()) {
             this.helpText = new HelpTextContainer(this.input.getHelpText());
-
-            this.appendChild(this.helpText.getToggler());
         }
 
         if (this.input.isMaximizeUIInputWidth() === false) {
