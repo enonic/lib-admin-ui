@@ -26,7 +26,6 @@ export class FormSetHeader
         return super.doRender().then(rendered => {
             this.appendChild(this.title);
             if (this.helpTextContainer) {
-                this.prependChild(this.helpTextContainer.getToggler());
                 const helpTextDiv = this.helpTextContainer.getHelpText();
                 if (helpTextDiv) {
                     this.appendChild(helpTextDiv);
