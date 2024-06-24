@@ -161,4 +161,8 @@ export abstract class TextInputType
             return rendered;
         });
     }
+
+    isSagaEditable(): boolean {
+        return true;
+    }
 }
