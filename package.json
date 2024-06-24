@@ -57,7 +57,7 @@
     "enonic-admin-artifacts": "^1.10.0",
     "error-logger-webpack-plugin": "^1.1.1",
     "eslint": "^8.57.0",
-    "glob": "^10.4.1",
+    "glob": "^10.4.2",
     "less": "^4.2.0",
     "less-loader": "^12.2.0",
     "mini-css-extract-plugin": "^2.9.0",
