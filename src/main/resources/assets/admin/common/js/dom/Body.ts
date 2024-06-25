@@ -1,8 +1,8 @@
 import {Element, ElementFromHelperBuilder} from './Element';
 import {ResponsiveManager} from '../ui/responsive/ResponsiveManager';
 import {ElementHelper} from './ElementHelper';
-import {BrowserHelper} from '../BrowserHelper';
 import {Store} from '../store/Store';
+import {CONFIG} from '../util/Config';
 
 export const BODY_KEY: string = 'Body';
 
@@ -15,21 +15,15 @@ export class Body
         if (!body) {
             body = document.body;
         }
-        let html = Element.fromHtmlElement(body.parentElement);
 
-            if (BrowserHelper.isIE() && html.getEl().getChild(0) instanceof HTMLHeadElement) {
-                html.insertChild(Element.fromHtmlElement(html.getEl().getChild(1) as HTMLElement), 1);
-            }
+        const html = Element.fromHtmlElement(body.parentElement);
+        html.setLang(CONFIG.getLocale());
 
         super(new ElementFromHelperBuilder().setHelper(new ElementHelper(body)).setLoadExistingChildren(loadExistingChildren));
 
         html.appendChild(this);
 
-        if (BrowserHelper.isIE()) {
-            this.addClass('IE');
-        }
-
-        let visibilityHandler = () => {
+        const visibilityHandler = () => {
             this.init().then(() => {
                 this.childrenLoaded = loadExistingChildren;
             });
@@ -37,7 +31,7 @@ export class Body
         if (!document.hidden) {
             visibilityHandler();
         } else {
-            let visibilityListener = () => {
+            const visibilityListener = () => {
                 if (!document.hidden && !this.isRendered() && !this.isRendering()) {
                     visibilityHandler();
                     document.removeEventListener('visibilitychange', visibilityListener);
