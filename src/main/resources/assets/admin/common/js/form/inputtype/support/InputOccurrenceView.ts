@@ -10,8 +10,10 @@ import {InputOccurrence} from './InputOccurrence';
 import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
 import {ButtonEl} from '../../../dom/ButtonEl';
 import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
+import {SagaHelper} from '../../../saga/SagaHelper';
 
-export interface InputOccurrenceViewConfig extends FormItemOccurrenceViewConfig {
+export interface InputOccurrenceViewConfig
+    extends FormItemOccurrenceViewConfig {
     inputTypeView: BaseInputTypeNotManagingAdd;
     property: Property;
 }
@@ -24,6 +26,7 @@ export class InputOccurrenceView
     private property: Property;
     private inputTypeView: BaseInputTypeNotManagingAdd;
     private inputElement: Element;
+    private inputWrapper: DivEl;
     private removeButtonEl: ButtonEl;
     private dragControl: DivEl;
     private propertyValueChangedHandler: (event: PropertyValueChangedEvent) => void;
@@ -46,6 +49,7 @@ export class InputOccurrenceView
 
         this.inputTypeView = this.config.inputTypeView;
         this.property = this.config.property;
+        this.inputWrapper = new DivEl('input-wrapper');
 
         this.inputElement = this.inputTypeView.createInputOccurrenceElement(this.formItemOccurrence.getIndex(), this.property);
         this.dragControl = new DivEl('drag-control');
@@ -56,12 +60,11 @@ export class InputOccurrenceView
     layout(_validate: boolean = true): Q.Promise<void> {
         return super.layout(_validate).then(() => {
             const dataBlock: DivEl = new DivEl('data-block');
-            const inputWrapper: DivEl = new DivEl('input-wrapper');
 
             this.appendChild(dataBlock);
             dataBlock.appendChild(this.dragControl);
-            dataBlock.appendChild(inputWrapper);
-            inputWrapper.appendChild(this.inputElement);
+            dataBlock.appendChild(this.inputWrapper);
+            this.inputWrapper.appendChild(this.inputElement);
             dataBlock.appendChild(this.removeButtonEl);
             this.appendChild(this.validationErrorBlock);
 
@@ -190,6 +193,16 @@ export class InputOccurrenceView
         });
 
         this.property.onPropertyValueChanged(this.propertyValueChangedHandler);
+
+        if (this.inputTypeView.isSagaEditable()) {
+            new SagaHelper({
+                dataPathElement: this.inputElement,
+                getPathFunc: () => this.getDataPath(),
+                icon: {
+                    parent: this.inputWrapper,
+                }
+            });
+        }
     }
 
     private registerProperty(property: Property) {
@@ -212,13 +225,5 @@ export class InputOccurrenceView
         const errorMessage: string = occurrenceValidationRecord?.getAdditionalValidationRecords()[0]?.getMessage() || '';
         this.validationErrorBlock.setHtml(errorMessage);
         this.toggleClass('invalid', !!errorMessage);
-    }
-
-    protected isSagaEditableType(): boolean {
-        return this.inputTypeView.isSagaEditable();
-    }
-
-    protected getDataPathElement(): Element {
-        return this.inputElement;
     }
 }
