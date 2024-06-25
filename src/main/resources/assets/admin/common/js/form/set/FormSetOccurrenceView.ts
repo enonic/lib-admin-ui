@@ -16,7 +16,6 @@ import {ValidationRecordingPath} from '../ValidationRecordingPath';
 import {FormSet} from './FormSet';
 import {FormItem} from '../FormItem';
 import {FormContext} from '../FormContext';
-import {FormSetOccurrence} from './FormSetOccurrence';
 import {Action} from '../../ui/Action';
 import {MoreButton} from '../../ui/button/MoreButton';
 import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
@@ -34,8 +33,8 @@ import {FormItemSet} from './itemset/FormItemSet';
 import {Input} from '../Input';
 import {RadioButton} from '../inputtype/radiobutton/RadioButton';
 import {ObjectHelper} from '../../ObjectHelper';
-import {SagaHelper} from '../../saga/SagaHelper';
 import {FormItemOccurrence} from '../FormItemOccurrence';
+import {AIHelper} from '../../ai/AIHelper';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
@@ -235,6 +234,11 @@ export abstract class FormSetOccurrenceView
             if (this.propertySet) {
                 this.releasePropertySet(this.propertySet);
             }
+        });
+
+        new AIHelper({
+            dataPathElement: this,
+            getPathFunc: () => this.getDataPath(),
         });
     }
 

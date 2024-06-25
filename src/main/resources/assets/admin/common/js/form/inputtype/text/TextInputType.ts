@@ -162,7 +162,7 @@ export abstract class TextInputType
         });
     }
 
-    isSagaEditable(): boolean {
+    isEditableByAI(): boolean {
         return true;
     }
 }

@@ -4,7 +4,7 @@ import {PropertyPath} from '../data/PropertyPath';
 import {FormItemOccurrence} from './FormItemOccurrence';
 import {HelpTextContainer} from './HelpTextContainer';
 import {RemoveButtonClickedEvent} from './RemoveButtonClickedEvent';
-import {SagaHelper} from '../saga/SagaHelper';
+import {AIHelper} from '../ai/AIHelper';
 import {Element} from '../dom/Element';
 
 export interface FormItemOccurrenceViewConfig {
