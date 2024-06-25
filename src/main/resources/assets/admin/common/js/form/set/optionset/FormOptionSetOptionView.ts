@@ -19,7 +19,7 @@ import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent
 import {ValidationRecording} from '../../ValidationRecording';
 import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
 import {FormItemState} from '../../FormItemState';
-import {SagaHelper} from '../../../saga/SagaHelper';
+import {AIHelper} from '../../../ai/AIHelper';
 import {PropertyPath, PropertyPathElement} from '../../../data/PropertyPath';
 
 export interface FormOptionSetOptionViewConfig
@@ -67,7 +67,7 @@ export class FormOptionSetOptionView
         this.formItemLayer = config.layerFactory.createLayer(config);
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
 
-        new SagaHelper({
+        new AIHelper({
             dataPathElement: this,
             getPathFunc: () => PropertyPath.fromParent(this.getParent().getDataPath(), new PropertyPathElement(this.getName(), 0)),
         });
