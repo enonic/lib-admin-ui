@@ -6,8 +6,7 @@ export interface AIHelperConfig {
     dataPathElement: Element;
     getPathFunc: () => PropertyPath;
     icon?: {
-        parent: Element;
-        focusContainer?: Element;
+        container: Element;
     };
 }
 
@@ -30,21 +29,9 @@ export class AIHelper {
             clearInterval(updatePathCall);
         });
 
-        if (config.icon?.parent) {
+        if (config.icon?.container) {
             this.sagaIcon = new AIActionButton();
-            this.sagaIcon.hide();
-            this.config.icon.parent.appendChild(this.sagaIcon);
-
-            const focusContainer = config.icon.focusContainer || config.icon.parent;
-            focusContainer.onFocusIn((event: Event) => {
-               this.sagaIcon.show();
-            });
-
-            focusContainer.onFocusOut((event: MouseEvent) => {
-                if (event.relatedTarget !== this.sagaIcon.getHTMLElement()) {
-                    this.sagaIcon.hide();
-                }
-            });
+            this.config.icon.container.appendChild(this.sagaIcon);
         }
     }
 

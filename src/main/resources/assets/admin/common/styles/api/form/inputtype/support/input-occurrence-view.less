@@ -49,11 +49,18 @@
 
   .icon-ai {
     .button(@admin-font-gray3, transparent, @admin-font-gray2);
+    display: none;
     padding: 4px;
     position: absolute;
     z-index: 1;
     top: 0;
     right: 0;
+  }
+
+  &:focus-within, &:hover {
+    .icon-ai {
+      display: block;
+    }
   }
 
   &.single-occurrence {

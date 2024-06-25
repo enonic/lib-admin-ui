@@ -5,12 +5,14 @@ import {EnonicAiOpenDialogEvent} from '../event/EnonicAiOpenDialogEvent';
 export class AIActionButton
     extends Button {
 
+    public static iconClass = 'icon-ai';
+
     private dataPath?: string;
 
     constructor() {
         super();
 
-        this.setTitle(i18n('action.saga')).addClass('icon-ai icon-sparkling');
+        this.setTitle(i18n('action.saga')).addClass('icon-sparkling').addClass(AIActionButton.iconClass);
 
         this.initListeners();
     }
