@@ -11,6 +11,7 @@ export class ButtonEl
     setEnabled(value: boolean) {
         super.setEnabled(value);
         this.getEl().setDisabled(!value);
+        this.setAriaDisabled(!value);
         return this;
     }
 

@@ -139,7 +139,7 @@ export class ElementHelper {
     setData(name: string, value: string): ElementHelper {
         assert(!StringHelper.isEmpty(name), 'Name cannot be empty');
         assert(!StringHelper.isEmpty(value), 'Value cannot be empty');
-        this.el.setAttribute('data-' + name, value);
+        this.setAttribute('data-' + name, value);
         $(this.el).data(name, value);
         return this;
     }

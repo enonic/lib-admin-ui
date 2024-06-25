@@ -33,6 +33,8 @@ export class ElementBuilder {
 
     className: string;
 
+    role: string;
+
     parentElement: Element;
 
     setGenerateId(value: boolean): ElementBuilder {
@@ -54,6 +56,11 @@ export class ElementBuilder {
 
     setParentElement(element: Element): ElementBuilder {
         this.parentElement = element;
+        return this;
+    }
+
+    setRole(role: string): ElementBuilder {
+        this.role = role;
         return this;
     }
 
@@ -232,6 +239,10 @@ export class Element {
 
         if (builder.className) {
             this.setClass(builder.className);
+        }
+
+        if (builder.role) {
+            this.setRole(builder.role);
         }
     }
 
@@ -526,6 +537,21 @@ export class Element {
         return this.getEl().hasAttribute('spellcheck');
     }
 
+    makeTabbable(): Element {
+        this.getEl().setTabIndex(0);
+        return this;
+    }
+
+    removeTabbable(): Element {
+        this.getEl().setTabIndex(-1);
+        return this;
+    }
+
+    setTabIndex(tabIndex: number): Element {
+        this.getEl().setTabIndex(tabIndex);
+        return this;
+    }
+
     setLang(value: string): Element {
         this.getEl().setAttribute('lang', value);
         return this;
@@ -533,6 +559,40 @@ export class Element {
 
     getLang(): string {
         return this.getEl().getAttribute('lang');
+    }
+
+    private setAriaAttribute(name: string, value: string): Element {
+        this.getEl().setAttribute(`aria-${name}`, value);
+        return this;
+    }
+
+    private removeAriaAttribute(name: string): Element {
+        this.getEl().removeAttribute(`aria-${name}`);
+        return this;
+    }
+
+    setAriaLabel(label: string): Element {
+        return this.setAriaAttribute('label', label);
+    }
+
+    setAriaDisabled(disabled: boolean): Element {
+        if (disabled) {
+            return this.setAriaAttribute('disabled', 'true');
+        }
+        return this.removeAriaAttribute('disabled');
+    }
+
+    private isAriaRole(value: any): value is AriaRole {
+        return Object.keys(AriaRole).some(key => (AriaRole as any)[key] === value);
+    }
+
+    setRole(value: string | AriaRole): Element {
+        let role = AriaRole.NONE;
+        if (this.isAriaRole(value)) {
+            role = value;
+        }
+        this.getEl().setAttribute('role', role);
+        return this;
     }
 
     setDir(value: LangDirection): Element {
@@ -1556,4 +1616,10 @@ export class Element {
             child.notifyHidden(hiddenEvent.getTarget());
         });
     }
+}
+
+export enum AriaRole {
+    NONE = 'presentation',
+    BUTTON = 'button',
+    TOOLBAR = 'toolbar'
 }
