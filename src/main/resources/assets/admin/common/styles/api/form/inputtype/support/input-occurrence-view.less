@@ -47,13 +47,13 @@
     color: @input-red-text;
   }
 
-  .icon-saga {
-    .button(@admin-font-gray3, @admin-white);
+  .icon-ai {
+    .button(@admin-font-gray3, transparent, @admin-font-gray2);
     padding: 4px;
     position: absolute;
+    z-index: 1;
     top: 0;
     right: 0;
-    background-color: transparent;
   }
 
   &.single-occurrence {
@@ -64,7 +64,7 @@
       }
     }
 
-    .icon-saga {
+    .icon-ai {
       top: -21px;
     }
   }
@@ -87,7 +87,7 @@
       padding: 0 0 10px 17px;
     }
 
-    .icon-saga {
+    .icon-ai {
       top: 1px;
       right: 1px;
     }

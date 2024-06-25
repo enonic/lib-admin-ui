@@ -10,7 +10,7 @@ import {InputOccurrence} from './InputOccurrence';
 import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
 import {ButtonEl} from '../../../dom/ButtonEl';
 import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
-import {SagaHelper} from '../../../saga/SagaHelper';
+import {AIHelper} from '../../../ai/AIHelper';
 
 export interface InputOccurrenceViewConfig
     extends FormItemOccurrenceViewConfig {
@@ -64,7 +64,7 @@ export class InputOccurrenceView
             this.appendChild(dataBlock);
             dataBlock.appendChild(this.dragControl);
             dataBlock.appendChild(this.inputWrapper);
-            this.inputWrapper.appendChild(this.inputElement);
+            this.inputWrapper.prependChild(this.inputElement);
             dataBlock.appendChild(this.removeButtonEl);
             this.appendChild(this.validationErrorBlock);
 
@@ -194,8 +194,8 @@ export class InputOccurrenceView
 
         this.property.onPropertyValueChanged(this.propertyValueChangedHandler);
 
-        if (this.inputTypeView.isSagaEditable()) {
-            new SagaHelper({
+        if (this.inputTypeView.isEditableByAI()) {
+            new AIHelper({
                 dataPathElement: this.inputElement,
                 getPathFunc: () => this.getDataPath(),
                 icon: {
