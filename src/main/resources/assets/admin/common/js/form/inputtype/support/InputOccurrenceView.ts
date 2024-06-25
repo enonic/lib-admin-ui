@@ -199,7 +199,7 @@ export class InputOccurrenceView
                 dataPathElement: this.inputElement,
                 getPathFunc: () => this.getDataPath(),
                 icon: {
-                    parent: this.inputWrapper,
+                    container: this.inputWrapper,
                 }
             });
         }
