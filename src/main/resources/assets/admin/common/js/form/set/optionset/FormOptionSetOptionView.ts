@@ -20,6 +20,7 @@ import {ValidationRecording} from '../../ValidationRecording';
 import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
 import {FormItemState} from '../../FormItemState';
 import {SagaHelper} from '../../../saga/SagaHelper';
+import {PropertyPath, PropertyPathElement} from '../../../data/PropertyPath';
 
 export interface FormOptionSetOptionViewConfig
     extends CreatedFormItemLayerConfig {
@@ -56,7 +57,6 @@ export class FormOptionSetOptionView
         } as FormItemViewConfig);
 
         this.initElements(config);
-        this.initListeners();
     }
 
     private initElements(config: FormOptionSetOptionViewConfig): void {
@@ -66,15 +66,10 @@ export class FormOptionSetOptionView
         this.addClass(this.formOptionSetOption.getPath().getElements().length % 2 ? 'even' : 'odd');
         this.formItemLayer = config.layerFactory.createLayer(config);
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
-    }
 
-    private initListeners(): void {
-        const updatePathCall = setInterval(() => {
-            this.updateInputElDataPath();
-        }, 1000);
-
-        this.onRemoved(() => {
-            clearInterval(updatePathCall);
+        new SagaHelper({
+            dataPathElement: this,
+            getPathFunc: () => PropertyPath.fromParent(this.getParent().getDataPath(), new PropertyPathElement(this.getName(), 0)),
         });
     }
 
@@ -106,9 +101,9 @@ export class FormOptionSetOptionView
 
         const optionItemsPropertySet: PropertySet = this.parent.getOrPopulateOptionItemsPropertySet(this.getName());
 
-         if (isDefaultAndNew) {
-             this.parent.handleOptionSelected(this);
-         }
+        if (isDefaultAndNew) {
+            this.parent.handleOptionSelected(this);
+        }
 
         this.optionItemsContainer = new DivEl('option-items-container');
         const isContainerVisibleByDefault = this.isOptionSetExpandedByDefault || isSingleSelection || this.isSelected();
@@ -499,9 +494,5 @@ export class FormOptionSetOptionView
         } else {
             this.checkbox.setEnabled(false);
         }
-    }
-
-    protected updateInputElDataPath(): void {
-        this.getEl().setAttribute(SagaHelper.DATA_ATTR, `${this.getParent().getDataPath()?.toString().replace(/\./g, '/')}/${this.getName()}`);
     }
 }

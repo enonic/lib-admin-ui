@@ -1,6 +1,7 @@
 .input-occurrence-view {
   display: flex;
   flex-direction: column;
+  position: relative; // to absolutely position elements within
 
   .data-block {
     .clearfix();
@@ -46,12 +47,25 @@
     color: @input-red-text;
   }
 
+  .icon-saga {
+    .button(@admin-font-gray3, @admin-white);
+    padding: 4px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: transparent;
+  }
+
   &.single-occurrence {
     .data-block {
       > .drag-control,
       > .remove-button {
         display: none;
       }
+    }
+
+    .icon-saga {
+      top: -21px;
     }
   }
 
@@ -71,6 +85,11 @@
 
     .error-block {
       padding: 0 0 10px 17px;
+    }
+
+    .icon-saga {
+      top: 1px;
+      right: 1px;
     }
   }
 }

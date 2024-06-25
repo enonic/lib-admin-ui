@@ -713,11 +713,4 @@ export abstract class FormSetOccurrenceView
         return new MoreButton([addAboveAction, addBelowAction, removeAction]);
     }
 
-    protected getDataPathElement(): Element {
-        return this;
-    }
-
-    protected isSagaEditableType(): boolean {
-        return true;
-    }
 }

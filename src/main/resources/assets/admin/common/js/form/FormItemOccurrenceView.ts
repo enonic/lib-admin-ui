@@ -36,15 +36,7 @@ export abstract class FormItemOccurrenceView
     }
 
     protected initListeners(): void {
-        if (this.isSagaEditableType()) {
-            const updatePathCall = setInterval(() => {
-                this.updateInputElDataPath();
-            }, 1000);
-
-            this.onRemoved(() => {
-                clearInterval(updatePathCall);
-            });
-        }
+      //
     }
 
     protected postInitElements() {
@@ -143,13 +135,4 @@ export abstract class FormItemOccurrenceView
         //
     }
 
-    protected updateInputElDataPath(): void {
-        this.getDataPathElement().getEl().setAttribute(SagaHelper.DATA_ATTR, this.getDataPath()?.toString().replace(/\./g, '/'));
-    }
-
-    protected isSagaEditableType(): boolean {
-        return false;
-    }
-
-    protected abstract getDataPathElement(): Element;
 }
