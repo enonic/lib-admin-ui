@@ -398,7 +398,7 @@ export abstract class BaseInputTypeNotManagingAdd
         });
     }
 
-    isSagaEditable(): boolean {
+    isEditableByAI(): boolean {
         return false;
     }
 }
