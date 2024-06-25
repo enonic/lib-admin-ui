@@ -137,13 +137,16 @@
           min-width: 0;
         }
 
-        > .form-item-set-occurrences-container {
-          > .input-view:first-child {
-            margin-top: 10px;
-          }
+        > .form-item-set-occurrences-container,
+        > .form-option-set-occurrences-container > .form-option-set-option-view > .option-items-container {
+          > .input-view {
+            &:first-child {
+              margin-top: 10px;
+            }
 
-          > .input-view:last-child {
-            margin-bottom: 0;
+            &:last-child {
+              margin-bottom: 0;
+            }
           }
         }
 
@@ -167,6 +170,7 @@
     > .bottom-button-row {
       box-sizing: border-box;
       margin-top: 10px;
+      height: 28px;
 
       button {
         max-width: 300px;
