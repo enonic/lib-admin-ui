@@ -152,7 +152,7 @@ export class Grid<T extends Slick.SlickData>
         this.slickGrid.getOptions()[name] = value;
     }
 
-    getCheckboxSelectorPlugin(): Slick.CheckboxSelectColumn<T> {
+    getCheckboxSelectorPlugin(): Slick.Plugin<T> {
         return this.checkboxSelectorPlugin;
     }
 
