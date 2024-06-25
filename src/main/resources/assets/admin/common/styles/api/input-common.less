@@ -16,9 +16,6 @@
   }
 
   > .input-label {
-    display: inline-block;
-    max-width: calc(100% - 30px);
-
     .@{_COMMON_PREFIX}wrapper {
       display: flex;
       white-space: nowrap;
@@ -33,6 +30,16 @@
       &.required::after {
         content: '\00a0*';
         color: @input-red-text;
+      }
+    }
+
+    &:focus-within, &:hover {
+      + .input-type-view {
+        > .input-occurrence-view:first-child {
+          .icon-ai {
+            display: block; // showing AI icon for the first occurrence of the input on hover over label
+          }
+        }
       }
     }
   }
