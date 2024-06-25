@@ -1072,7 +1072,7 @@ export class TreeGrid<DATA extends IDentifiable>
     private initSelectorPlugin() {
         let selectorPlugin = this.grid.getCheckboxSelectorPlugin();
         if (selectorPlugin) {
-            this.grid.unregisterPlugin(this.grid.getCheckboxSelectorPlugin() as Slick.Plugin<TreeNode<DATA>>);
+            this.grid.unregisterPlugin(this.grid.getCheckboxSelectorPlugin());
         }
     }
 
