@@ -59,7 +59,7 @@
 
   &:focus-within, &:hover {
     .icon-ai {
-      display: block;
+      display: flex;
     }
   }
 
@@ -95,8 +95,13 @@
     }
 
     .icon-ai {
-      top: 1px;
-      right: 1px;
+      top: 4px;
+      right: 4px;
+      background-color: @admin-white;
+
+      &:hover {
+        background-color: @admin-white;
+      }
     }
   }
 }
