@@ -12,7 +12,7 @@ export class AIActionButton
     constructor() {
         super();
 
-        this.setTitle(i18n('action.saga')).addClass('icon-sparkling').addClass(AIActionButton.iconClass);
+        this.setTitle(i18n('action.saga')).addClass('icon-ai icon-small').addClass(AIActionButton.iconClass);
 
         this.initListeners();
     }
