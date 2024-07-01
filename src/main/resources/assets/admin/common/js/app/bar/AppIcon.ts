@@ -46,14 +46,14 @@ export class AppIcon
             this.initListeners(action);
         }
         this.addClass('clickable');
-        this.getEl().setTabIndex(0);
+        this.makeTabbable();
         this.onClicked(this.clickListener);
         this.onKeyDown(this.enterListener);
     }
 
     removeAction(): void {
         this.removeClass('clickable');
-        this.getEl().removeAttribute('tabindex');
+        this.removeTabbable();
         this.unClicked(this.clickListener);
         this.onKeyDown(this.enterListener);
     }
