@@ -14,11 +14,14 @@ export class FormContext {
 
     private validationErrors: ValidationError[];
 
+    private readonly aiEditable: boolean;
+
     constructor(builder: FormContextBuilder) {
         this.showEmptyFormItemSetOccurrences = builder.showEmptyFormItemSetOccurrences;
         this.formState = builder.formState;
         this.language = builder.language;
         this.validationErrors = builder.validationErrors || [];
+        this.aiEditable = builder.aiEditable ?? false;
     }
 
     static create(): FormContextBuilder {
@@ -71,6 +74,11 @@ export class FormContext {
     setLanguage(lang: string) {
         this.language = lang;
     }
+
+    isAiEditable(): boolean {
+        return this.aiEditable;
+    }
+
 }
 
 export class FormContextBuilder {
@@ -83,23 +91,30 @@ export class FormContextBuilder {
 
     validationErrors: ValidationError[];
 
-    public setShowEmptyFormItemSetOccurrences(value: boolean): FormContextBuilder {
+    aiEditable: boolean;
+
+    public setShowEmptyFormItemSetOccurrences(value: boolean): this {
         this.showEmptyFormItemSetOccurrences = value;
         return this;
     }
 
-    public setFormState(value: FormState): FormContextBuilder {
+    public setFormState(value: FormState): this {
         this.formState = value;
         return this;
     }
 
-    public setLanguage(lang: string): FormContextBuilder {
+    public setLanguage(lang: string): this {
         this.language = lang;
         return this;
     }
 
-    public setValidationErrors(value: ValidationError[]): FormContextBuilder {
+    public setValidationErrors(value: ValidationError[]): this {
         this.validationErrors = value;
+        return this;
+    }
+
+    public setAiEditable(value: boolean): this {
+        this.aiEditable = value;
         return this;
     }
 
