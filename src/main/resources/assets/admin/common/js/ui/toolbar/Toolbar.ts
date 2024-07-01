@@ -4,13 +4,14 @@ import {DivEl} from '../../dom/DivEl';
 import {ActionContainer} from '../ActionContainer';
 import {Action} from '../Action';
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
-import {Element} from '../../dom/Element';
+import {Element, AriaRole} from '../../dom/Element';
 import {ObjectHelper} from '../../ObjectHelper';
 import {FoldButton} from './FoldButton';
+import {WCAG} from '../WCAG';
 
 export class Toolbar
     extends DivEl
-    implements ActionContainer {
+    implements ActionContainer, WCAG {
 
     protected foldButton: FoldButton;
     protected actions: Action[] = [];
@@ -20,6 +21,8 @@ export class Toolbar
     constructor(className?: string) {
         super(!className ? 'toolbar' : className + ' toolbar');
 
+        this.applyWCAGAttributes();
+
         this.foldButton = new FoldButton();
         this.foldButton.hide();
         this.appendChild(this.foldButton);
@@ -28,6 +31,16 @@ export class Toolbar
         ResponsiveManager.onAvailableSizeChanged(this, () => window.setTimeout(this.foldOrExpand.bind(this)));
 
         this.onShown(() => this.foldOrExpand());
+    }
+
+    applyWCAGAttributes(): void {
+        this.setRole(AriaRole.TOOLBAR)
+            .makeTabbable()
+            .setAriaLabel(this.getAriaLabel());
+    }
+
+    protected getAriaLabel(): string {
+        return i18n('wcag.toolbar.label');
     }
 
     addAction(action: Action): ActionButton {
