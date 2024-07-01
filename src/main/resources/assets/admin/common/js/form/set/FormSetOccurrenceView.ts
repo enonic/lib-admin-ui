@@ -6,7 +6,7 @@ import {i18n} from '../../util/Messages';
 import {Value} from '../../data/Value';
 import {DivEl} from '../../dom/DivEl';
 import {PropertyPath} from '../../data/PropertyPath';
-import {FormItemOccurrenceView} from '../FormItemOccurrenceView';
+import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../FormItemOccurrenceView';
 import {FormItemView} from '../FormItemView';
 import {RecordingValidityChangedEvent} from '../RecordingValidityChangedEvent';
 import {FormOccurrenceDraggableLabel} from '../FormOccurrenceDraggableLabel';
@@ -34,13 +34,15 @@ import {FormItemSet} from './itemset/FormItemSet';
 import {Input} from '../Input';
 import {RadioButton} from '../inputtype/radiobutton/RadioButton';
 import {ObjectHelper} from '../../ObjectHelper';
+import {SagaHelper} from '../../saga/SagaHelper';
+import {FormItemOccurrence} from '../FormItemOccurrence';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
 
     layer: FormItemLayer;
 
-    formSetOccurrence: FormSetOccurrence<V>;
+    formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>;
 
     formSet: FormSet;
 
@@ -49,10 +51,14 @@ export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     dataSet: PropertySet;
 }
 
+export interface FormSetOccurrenceViewConfigExtended extends FormSetOccurrenceViewConfig<FormSetOccurrenceView>, FormItemOccurrenceViewConfig {
+    classPrefix: string;
+}
+
 export abstract class FormSetOccurrenceView
     extends FormItemOccurrenceView {
 
-    protected formItemViews: FormItemView[] = [];
+    protected formItemViews: FormItemView[];
 
     protected validityChangedListeners: ((event: RecordingValidityChangedEvent) => void)[] = [];
 
@@ -72,6 +78,8 @@ export abstract class FormSetOccurrenceView
 
     protected formSet: FormSet;
 
+    protected config: FormSetOccurrenceViewConfigExtended;
+
     private dirtyFormItemViewsMap: object = {};
 
     private deleteConfirmationMask: ConfirmationMask;
@@ -87,17 +95,12 @@ export abstract class FormSetOccurrenceView
     private expandRequestedListeners: ((view: FormSetOccurrenceView) => void)[] = [];
 
     protected constructor(classPrefix: string, config: FormSetOccurrenceViewConfig<FormSetOccurrenceView>) {
-        super(`${classPrefix}occurrence-view`, config.formSetOccurrence);
+        super({
+            ...config,
+            className: `${classPrefix}occurrence-view`,
+            classPrefix: classPrefix,
+        } as FormSetOccurrenceViewConfigExtended);
 
-        this.occurrenceContainerClassName = `${classPrefix}occurrences-container`;
-        this.formItemOccurrence = config.formSetOccurrence;
-        this.formSet = config.formSet;
-        this.propertySet = config.dataSet;
-        this.formItemLayer = config.layer;
-
-        this.initElements();
-        this.postInitElements();
-        this.initListeners();
         this.layoutElements();
     }
 
@@ -141,10 +144,17 @@ export abstract class FormSetOccurrenceView
         this.refresh();
     }
 
-    protected initElements() {
+    protected initElements(): void {
+        super.initElements();
+
+        this.formItemViews = [];
+        this.occurrenceContainerClassName = `${this.config.classPrefix}occurrences-container`;
+        this.formSetOccurrencesContainer = new DivEl(this.occurrenceContainerClassName);
+        this.formSet = this.config.formSet;
+        this.propertySet = this.config.dataSet;
+        this.formItemLayer = this.config.layer;
         this.moreButton = this.createMoreButton();
         this.label = new FormOccurrenceDraggableLabel();
-        this.formSetOccurrencesContainer = new DivEl(this.occurrenceContainerClassName);
         this.formSetOccurrencesContainer.setVisible(false);
         this.confirmDeleteAction = new Action(i18n('action.delete')).setClass('red large delete-button');
         this.noAction = new Action(i18n('action.cancel')).setClass('black large');
@@ -157,7 +167,9 @@ export abstract class FormSetOccurrenceView
             .build();
     }
 
-    protected postInitElements() {
+    protected postInitElements(): void {
+        super.postInitElements();
+
         this.label.setExpandable(this.isExpandable());
 
         if (!this.isExpandable()) {
@@ -166,6 +178,8 @@ export abstract class FormSetOccurrenceView
     }
 
     protected initListeners() {
+        super.initListeners();
+
         this.label.onClicked(() => this.setContainerVisible(!this.isContainerVisible()));
 
         this.confirmDeleteAction.onExecuted(() => {
@@ -697,5 +711,13 @@ export abstract class FormSetOccurrenceView
         });
 
         return new MoreButton([addAboveAction, addBelowAction, removeAction]);
+    }
+
+    protected getDataPathElement(): Element {
+        return this;
+    }
+
+    protected isSagaEditableType(): boolean {
+        return true;
     }
 }
