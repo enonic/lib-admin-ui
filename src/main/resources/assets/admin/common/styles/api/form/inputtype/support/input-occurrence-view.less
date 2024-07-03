@@ -47,19 +47,107 @@
     color: @input-red-text;
   }
 
-  .icon-ai {
-    .button(@admin-font-gray3, transparent, @admin-font-gray2);
+  .ai-button-container {
+    width: 24px;
+    height: 24px;
     display: none;
-    padding: 4px;
+    border: none;
     position: absolute;
     z-index: 1;
     top: 0;
     right: 0;
+
+    &-icon {
+      .button(@admin-font-gray3, transparent, @admin-font-gray2);
+      padding: 4px;
+      width: 100%;
+      height: 100%;
+      font-size: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &-loader {
+      box-sizing: border-box;
+      display: none;
+      position: absolute;
+      border: 2px solid @admin-white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      -webkit-animation: spin 2s linear infinite;
+      animation: spin 2s linear infinite;
+    }
+
+    &.processing, &.completed, &.failed {
+      display: block;
+
+      .ai-button-container-loader {
+        display: block;
+      }
+    }
+
+    &.processing {
+      .ai-button-container-loader {
+        border-top: 2px solid #2c76e9;
+        border-bottom: 2px solid #2c76e9;
+      }
+    }
+
+    &.fade {
+        display: block;
+        animation: fadingOpacity 2s ease-in-out infinite;
+
+      .ai-button-container-icon {
+        &:before {
+          color: @admin-blue;
+        }
+      }
+    }
+
+    &.completed {
+      .ai-button-container-loader {
+        border-top: 2px solid @admin-green;
+        border-bottom: 2px solid @admin-green;
+      }
+
+      .ai-button-container-icon {
+        &:before {
+          color: @admin-green;
+        }
+      }
+    }
+
+    &.failed {
+      .ai-button-container-loader {
+        border-top: 2px solid @admin-red;
+        border-bottom: 2px solid @admin-red;
+      }
+
+      .ai-button-container-icon {
+        &:before {
+          color: @admin-red;
+        }
+      }
+    }
+
+    @keyframes spin {
+      100% {
+        transform: rotateZ(360deg);
+      }
+    }
+
+    @keyframes fadingOpacity {
+      0% {opacity: 0.2;}
+      50% {opacity: 1;}
+      100% {opacity: 0.2;}
+    }
   }
 
   &:focus-within, &:hover {
-    .icon-ai {
-      display: flex;
+    .ai-button-container {
+      display: block;
     }
   }
 
@@ -71,7 +159,7 @@
       }
     }
 
-    .icon-ai {
+    .ai-button-container {
       top: -21px;
     }
   }
@@ -94,7 +182,7 @@
       padding: 0 0 10px 17px;
     }
 
-    .icon-ai {
+    .ai-button-container {
       top: 4px;
       right: 4px;
       background-color: @admin-white;
@@ -104,4 +192,9 @@
       }
     }
   }
+}
+
+.ai-helper-mask {
+  background-color: @admin-blue;
+  opacity: 0.2;
 }
