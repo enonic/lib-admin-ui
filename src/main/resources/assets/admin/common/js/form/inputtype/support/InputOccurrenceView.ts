@@ -200,7 +200,8 @@ export class InputOccurrenceView
                 getPathFunc: () => this.getDataPath(),
                 icon: {
                     container: this.inputWrapper,
-                }
+                },
+                label: this.inputTypeView.getInput().getLabel(),
             });
         }
     }
