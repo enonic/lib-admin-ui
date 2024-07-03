@@ -1,20 +1,39 @@
 import {Button} from '../../ui/button/Button';
 import {i18n} from '../../util/Messages';
 import {EnonicAiOpenDialogEvent} from '../event/EnonicAiOpenDialogEvent';
+import {DivEl} from '../../dom/DivEl';
+import * as Q from 'q';
+import {AI_HELPER_STATE} from '../AIHelperState';
 
 export class AIActionButton
-    extends Button {
+    extends DivEl {
 
-    public static iconClass = 'icon-ai';
+    private static baseClass = 'ai-button-container';
 
     private dataPath?: string;
+
+    private button: Button;
+
+    private loader: DivEl;
 
     constructor() {
         super();
 
-        this.setTitle(i18n('action.saga')).addClass('icon-ai icon-small').addClass(AIActionButton.iconClass);
-
+        this.initElements();
         this.initListeners();
+    }
+
+    protected initElements(): void {
+        this.button = new Button().addClass(`${AIActionButton.baseClass}-icon icon-ai`) as Button;
+        this.loader = new DivEl(`${AIActionButton.baseClass}-loader`);
+        this.setTitle(i18n('action.saga'));
+        this.setState(AI_HELPER_STATE.DEFAULT);
+    }
+
+    setState(state: AI_HELPER_STATE): this {
+        this.setClass(`${AIActionButton.baseClass} ${state}`);
+
+        return this;
     }
 
     setDataPath(dataPath: string): AIActionButton {
@@ -22,11 +41,23 @@ export class AIActionButton
         return this;
     }
 
+    getDataPath(): string {
+        return this.dataPath;
+    }
+
     protected initListeners(): void {
-        this.onClicked(() => {
+        this.button.onClicked(() => {
             if (this.dataPath) {
                 new EnonicAiOpenDialogEvent(this.dataPath).fire();
             }
+        });
+    }
+
+    doRender(): Q.Promise<boolean> {
+        return super.doRender().then((rendered: boolean) => {
+            this.appendChildren(this.loader, this.button);
+
+            return rendered;
         });
     }
 }
