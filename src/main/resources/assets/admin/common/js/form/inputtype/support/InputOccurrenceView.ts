@@ -202,6 +202,10 @@ export class InputOccurrenceView
                     container: this.inputWrapper,
                 },
                 label: this.inputTypeView.getInput().getLabel(),
+                setValueFunc: (val: string) => {
+                    this.property.setValue(this.inputTypeView.getValueType().newValue(val));
+                    this.inputTypeView.updateInputOccurrenceElement(this.inputElement, this.property);
+                }
             });
         }
     }

@@ -12,6 +12,7 @@ export interface AIHelperConfig {
         container: Element;
     };
     label?: string;
+    setValueFunc?: (value: string) => void;
 }
 
 export class AIHelper {
@@ -81,7 +82,7 @@ export class AIHelper {
     }
 
     setValue(value: string): this {
-        // set value
+        this.config.setValueFunc?.(value);
         return this;
     }
 
