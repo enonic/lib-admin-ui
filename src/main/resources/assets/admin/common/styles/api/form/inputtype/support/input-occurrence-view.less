@@ -48,8 +48,8 @@
   }
 
   .ai-button-container {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     display: none;
     border: none;
     position: absolute;
@@ -59,7 +59,7 @@
 
     &-icon {
       .button(@admin-font-gray3, transparent, @admin-font-gray2);
-      padding: 4px;
+      padding: 2px;
       width: 100%;
       height: 100%;
       font-size: 16px;
@@ -72,12 +72,11 @@
       box-sizing: border-box;
       display: none;
       position: absolute;
-      border: 2px solid @admin-white;
+      border: 2px dotted @admin-button-blue2;
       border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      -webkit-animation: spin 2s linear infinite;
-      animation: spin 2s linear infinite;
+      width: 20px;
+      height: 20px;
+      animation: spin 3s linear infinite;
     }
 
     &.processing, &.completed, &.failed {
@@ -90,16 +89,15 @@
 
     &.processing {
       .ai-button-container-loader {
-        border-top: 2px solid #2c76e9;
-        border-bottom: 2px solid #2c76e9;
+        border-color: @admin-button-blue2;
       }
     }
 
     &.fade {
         display: block;
-        animation: fadingOpacity 2s ease-in-out infinite;
 
       .ai-button-container-icon {
+        animation: fadingOpacity 2s ease-in-out infinite;
         &:before {
           color: @admin-blue;
         }
@@ -108,8 +106,7 @@
 
     &.completed {
       .ai-button-container-loader {
-        border-top: 2px solid @admin-green;
-        border-bottom: 2px solid @admin-green;
+        border-color: @admin-green;
       }
 
       .ai-button-container-icon {
@@ -121,8 +118,7 @@
 
     &.failed {
       .ai-button-container-loader {
-        border-top: 2px solid @admin-red;
-        border-bottom: 2px solid @admin-red;
+        border-color: @admin-red;
       }
 
       .ai-button-container-icon {
