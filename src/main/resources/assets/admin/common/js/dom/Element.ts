@@ -15,6 +15,7 @@ import {ElementRegistry} from './ElementRegistry';
 import {assert, assertNotNull, assertState} from '../util/Assert';
 import {ElementEvent} from './ElementEvent';
 import * as DOMPurify from 'dompurify';
+import {IWCAG as WCAG, AriaRole} from '../ui/WCAG';
 
 export interface PurifyConfig {
     addTags?: string[];
@@ -32,8 +33,6 @@ export class ElementBuilder {
     generateId: boolean;
 
     className: string;
-
-    role: string;
 
     parentElement: Element;
 
@@ -56,11 +55,6 @@ export class ElementBuilder {
 
     setParentElement(element: Element): ElementBuilder {
         this.parentElement = element;
-        return this;
-    }
-
-    setRole(role: string): ElementBuilder {
-        this.role = role;
         return this;
     }
 
@@ -240,10 +234,20 @@ export class Element {
         if (builder.className) {
             this.setClass(builder.className);
         }
+    }
 
-        if (builder.role) {
-            this.setRole(builder.role);
+    applyWCAGAttributes(): void {
+        if (!this.implementsWCAG()) {
+            return;
         }
+
+        this['tabbable'] && this.makeTabbable();
+        this['role'] && this.setRole(this['role']);
+        this['ariaLabel'] && this.setAriaLabel(this['ariaLabel']);
+    }
+
+    private implementsWCAG(): boolean {
+        return this[WCAG] === true;
     }
 
     static fromHtmlElement(element: HTMLElement, loadExistingChildren: boolean = false, parent?: Element): Element {
@@ -343,6 +347,7 @@ export class Element {
             console.log('Element.render started', ClassHelper.getClassName(this));
         }
         this.rendering = true;
+
         return this.doRender().then((rendered) => {
 
             let childPromises = [];
@@ -572,6 +577,9 @@ export class Element {
     }
 
     setAriaLabel(label: string): Element {
+        if (StringHelper.isBlank(label)) {
+            return this;
+        }
         return this.setAriaAttribute('label', label);
     }
 
@@ -1295,6 +1303,7 @@ export class Element {
         if (this.isRendered() || this.isRendering()) {
             renderPromise = Q(true);
         } else {
+            this.applyWCAGAttributes();
             renderPromise = this.doRender();
         }
         this.rendering = true;
@@ -1616,10 +1625,4 @@ export class Element {
             child.notifyHidden(hiddenEvent.getTarget());
         });
     }
-}
-
-export enum AriaRole {
-    NONE = 'presentation',
-    BUTTON = 'button',
-    TOOLBAR = 'toolbar'
 }
