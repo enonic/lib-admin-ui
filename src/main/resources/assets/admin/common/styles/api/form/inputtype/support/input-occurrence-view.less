@@ -94,10 +94,11 @@
     }
 
     &.fade {
-        display: block;
+      display: block;
 
       .ai-button-container-icon {
         animation: fadingOpacity 2s ease-in-out infinite;
+
         &:before {
           color: @admin-blue;
         }
@@ -135,9 +136,15 @@
     }
 
     @keyframes fadingOpacity {
-      0% {opacity: 0.2;}
-      50% {opacity: 1;}
-      100% {opacity: 0.2;}
+      0% {
+        opacity: 0.2;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.2;
+      }
     }
   }
 
@@ -181,16 +188,21 @@
     .ai-button-container {
       top: 4px;
       right: 4px;
-      background-color: @admin-white;
 
-      &:hover {
+      &:not(.processing) {
         background-color: @admin-white;
+
+        &:hover {
+          background-color: @admin-white;
+        }
       }
+
     }
   }
 }
 
 .ai-helper-mask {
-  background-color: @admin-blue;
-  opacity: 0.2;
+  background-color: @admin-bg-light-gray;
+  opacity: 0.75;
+  border-color: @admin-medium-gray-border !important;
 }
