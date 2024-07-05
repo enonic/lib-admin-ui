@@ -6,10 +6,16 @@ import {ShowAppLauncherAction} from './ShowAppLauncherAction';
 import {AppIcon} from './AppIcon';
 import {AppBarActions} from './AppBarActions';
 import {Application} from '../Application';
+import {IWCAG as WCAG, AriaRole} from '../../ui/WCAG';
+import {i18n} from '../../util/Messages';
 
 export class AppBar
     extends DivEl
-    implements ActionContainer {
+    implements ActionContainer, WCAG {
+
+    [WCAG]: boolean = true;
+    ariaLabel: string = i18n('wcag.appbar.label');
+    role: AriaRole = AriaRole.BANNER;
 
     protected application: Application;
 
