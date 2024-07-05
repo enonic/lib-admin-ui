@@ -3,7 +3,6 @@ import {Element} from '../dom/Element';
 import {AIActionButton} from './ui/AIActionButton';
 import {AI_HELPER_STATE} from './AIHelperState';
 import {i18n} from '../util/Messages';
-import {Mask} from '../ui/mask/Mask';
 
 export interface AIHelperConfig {
     dataPathElement: Element;
@@ -25,8 +24,6 @@ export class AIHelper {
 
     private state: AI_HELPER_STATE = AI_HELPER_STATE.DEFAULT;
 
-    private readonly mask: Mask;
-
     constructor(config: AIHelperConfig) {
         this.config = config;
 
@@ -45,9 +42,6 @@ export class AIHelper {
             this.sagaIcon = new AIActionButton();
             this.config.icon.container.appendChild(this.sagaIcon);
         }
-
-        const maskTitle = this.config.label ? i18n('ai.assistant.processing', this.config.label) : '';
-        this.mask = new Mask(this.config.dataPathElement).setTitle(maskTitle).addClass('ai-helper-mask') as Mask;
     }
 
     private updateInputElDataPath(): void {
@@ -71,11 +65,13 @@ export class AIHelper {
                 }
             }, 1000);
 
-            this.mask.hide();
             this.config.dataPathElement.getEl().setDisabled(false);
+            this.config.dataPathElement.removeClass('ai-helper-mask');
+            this.resetTitle();
         } else if (state === AI_HELPER_STATE.PROCESSING) {
             this.config.dataPathElement.getEl().setDisabled(true);
-            this.mask.show();
+            this.config.dataPathElement.addClass('ai-helper-mask');
+            this.updateTitle();
         }
 
         return this;
@@ -96,6 +92,25 @@ export class AIHelper {
 
     public static getAIHelperByPath(dataPath: string): AIHelper | undefined {
         return AI_HELPER_REGISTRY.get().find(dataPath);
+    }
+
+    private updateTitle(): void {
+        const parent = this.config.dataPathElement.getEl().getParent();
+
+        if (parent.hasAttribute('title') && !parent.hasAttribute('data-title')) {
+            parent.setAttribute('data-title', parent.getTitle());
+        }
+
+        parent.setTitle(i18n('ai.assistant.processing', this.config.label));
+    }
+
+    private resetTitle(): void {
+        const parent = this.config.dataPathElement.getEl().getParent();
+        parent.removeAttribute('title');
+
+        if (parent.hasAttribute('data-title')) {
+            parent.setTitle(parent.getAttribute('data-title'));
+        }
     }
 }
 
