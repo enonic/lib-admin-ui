@@ -2,9 +2,10 @@ export const IWCAG = Symbol('IWCAG');
 
 export interface IWCAG {
     [IWCAG]: boolean;
-    ariaLabel?: string;
-    role?: AriaRole;
     tabbable?: boolean;
+    role?: AriaRole;
+    ariaLabel?: string;
+    ariaHasPopup?: AriaHasPopup;
 }
 
 export enum AriaRole {
@@ -12,4 +13,13 @@ export enum AriaRole {
     BANNER = 'banner',
     BUTTON = 'button',
     TOOLBAR = 'toolbar'
+}
+
+export enum AriaHasPopup {
+    TRUE = 'true',
+    MENU = 'menu',
+    LISTBOX = 'listbox',
+    TREE = 'tree',
+    GRID = 'grid',
+    DIALOG = 'dialog'
 }
