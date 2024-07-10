@@ -15,7 +15,7 @@ import {ElementRegistry} from './ElementRegistry';
 import {assert, assertNotNull, assertState} from '../util/Assert';
 import {ElementEvent} from './ElementEvent';
 import * as DOMPurify from 'dompurify';
-import {IWCAG as WCAG, AriaRole} from '../ui/WCAG';
+import {IWCAG as WCAG, AriaRole, AriaHasPopup} from '../ui/WCAG';
 
 export interface PurifyConfig {
     addTags?: string[];
@@ -244,6 +244,7 @@ export class Element {
         this['tabbable'] && this.makeTabbable();
         this['role'] && this.setRole(this['role']);
         this['ariaLabel'] && this.setAriaLabel(this['ariaLabel']);
+        this['ariaHasPopup'] && this.setAriaHasPopup(this['ariaHasPopup']);
     }
 
     private implementsWCAG(): boolean {
@@ -590,8 +591,12 @@ export class Element {
         return this.removeAriaAttribute('disabled');
     }
 
-    private isAriaRole(value: any): value is AriaRole {
+    private isAriaRole(value: string | AriaRole): value is AriaRole {
         return Object.keys(AriaRole).some(key => (AriaRole as any)[key] === value);
+    }
+
+    private isAriaHasPopup(value: string | AriaHasPopup): value is AriaHasPopup {
+        return Object.keys(AriaHasPopup).some(key => (AriaHasPopup as any)[key] === value);
     }
 
     setRole(value: string | AriaRole): Element {
@@ -599,7 +604,16 @@ export class Element {
         if (this.isAriaRole(value)) {
             role = value;
         }
-        this.getEl().setAttribute('role', role);
+        this.getEl().setAttribute('role', role.toLowerCase());
+        return this;
+    }
+
+    setAriaHasPopup(value?: string | AriaHasPopup): Element {
+        let hasPopup = AriaHasPopup.TRUE;
+        if (this.isAriaHasPopup(value)) {
+            hasPopup = value;
+        }
+        this.setAriaAttribute('haspopup', hasPopup.toLowerCase());
         return this;
     }
 
