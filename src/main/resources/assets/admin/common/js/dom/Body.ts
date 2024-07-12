@@ -11,6 +11,8 @@ export class Body
 
     private childrenLoaded: boolean;
 
+    private focusedElement: Element;
+
     constructor(loadExistingChildren: boolean = false, body?: HTMLElement) {
         if (!body) {
             body = document.body;
@@ -39,6 +41,15 @@ export class Body
             };
             document.addEventListener('visibilitychange', visibilityListener);
         }
+    }
+
+    reapplyFocus() {
+        this.focusedElement?.giveFocus();
+        this.focusedElement = null;
+    }
+
+    setFocusedElement(element: Element) {
+        this.focusedElement = element;
     }
 
     static get(): Body {

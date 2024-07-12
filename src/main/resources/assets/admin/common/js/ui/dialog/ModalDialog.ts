@@ -382,6 +382,7 @@ export abstract class ModalDialog
         DialogManagerInner.get().handleClosedDialog(this);
 
         this.notifyClosed();
+        Body.get().reapplyFocus();
     }
 
     hide() {
