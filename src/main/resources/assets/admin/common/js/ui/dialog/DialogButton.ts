@@ -5,7 +5,7 @@ export class DialogButton
     extends ActionButton {
 
     constructor(action: Action) {
-        super(action, false);
+        super(action);
         this.addClass('dialog-button');
     }
 }

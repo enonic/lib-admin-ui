@@ -24,6 +24,8 @@ export class Action {
 
     private visible: boolean = true;
 
+    private foldable: boolean = true;
+
     private executionListeners: ExecutionListener[] = [];
 
     private propertyChangedListeners: ((action: Action) => void)[] = [];
@@ -195,6 +197,15 @@ export class Action {
 
     getMnemonic(): Mnemonic {
         return this.mnemonic;
+    }
+
+    isFoldable(): boolean {
+        return this.foldable;
+    }
+
+    setFoldable(value: boolean): Action {
+        this.foldable = value;
+        return this;
     }
 
     execute(forceExecute: boolean = false): void {

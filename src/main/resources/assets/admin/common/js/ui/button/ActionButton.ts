@@ -4,6 +4,9 @@ import {Action} from '../Action';
 import {Tooltip} from '../Tooltip';
 import {BrowserHelper} from '../../BrowserHelper';
 import {KeyBindingAction} from '../KeyBinding';
+import {IWCAG} from '../WCAG';
+import {KeyHelper} from '../KeyHelper';
+import {Body} from '../../dom/Body';
 
 export class ActionButton
     extends Button {
@@ -14,7 +17,7 @@ export class ActionButton
 
     private iconClass: string;
 
-    constructor(action: Action, showTooltip: boolean = true) {
+    constructor(action: Action, wcag?: IWCAG) {
         super();
 
         this.action = action;
@@ -24,12 +27,17 @@ export class ActionButton
             this.addClass(action.getClass());
         }
 
+        if (wcag) {
+            wcag.role && this.setRole(wcag.role);
+            wcag.ariaHasPopup && this.setAriaHasPopup(wcag.ariaHasPopup);
+        }
+
         this.setEnabled(this.action.isEnabled());
         this.setVisible(this.action.isVisible());
 
         this.updateIconClass(this.action.getIconClass());
 
-        if (this.action.hasShortcut() && showTooltip) {
+        if (this.action.hasShortcut()) {
             let combination = this.action.getShortcut().getCombination();
             if (combination) {
                 combination = combination.replace(/mod\+/i, BrowserHelper.isOSX() || BrowserHelper.isIOS() ? 'cmd+' : 'ctrl+');
@@ -46,16 +54,22 @@ export class ActionButton
             });
         }
 
+        this.onKeyDown((event: KeyboardEvent) => KeyHelper.isEnterKey(event) && this.action.execute());
         this.onClicked(() => this.action.execute());
+
+        this.action.onExecuted(() => {
+            Body.get().setFocusedElement(this);
+        });
 
         this.action.onPropertyChanged((changedAction: Action) => {
             const toggledEnabled = this.isEnabled() !== changedAction.isEnabled();
-            const becameHidden = !changedAction.isVisible() && this.isVisible();
+            const toggledVisible = this.isVisible() !== changedAction.isVisible();
+            const becameHidden = toggledVisible && !changedAction.isVisible();
             if (this.tooltip && (toggledEnabled || becameHidden)) {
                 this.tooltip.hide();
             }
-            this.setEnabled(changedAction.isEnabled());
-            this.setVisible(changedAction.isVisible());
+            toggledEnabled && this.setEnabled(changedAction.isEnabled());
+            toggledVisible && this.setVisible(changedAction.isVisible());
             this.setLabel(this.createLabel(changedAction), false);
             this.updateIconClass(changedAction.getIconClass());
         });

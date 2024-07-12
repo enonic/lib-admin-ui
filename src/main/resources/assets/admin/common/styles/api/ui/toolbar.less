@@ -1,21 +1,19 @@
-.toolbar-button() {
-  .menu-action-button();
+.toolbar-button(@height: @toolbar-height) {
+  .menu-action-button(7px 14px);
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  line-height: normal;
-  padding: 0 14px;
+  flex-shrink: 0;
 
-  &.pull-right {
-    float: right;
+  span {
+    line-height: @height - 22px;
   }
 }
 
 .toolbar {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  align-content: center;
   background-color: @admin-white;
   height: @toolbar-height;
   line-height: @toolbar-height;
@@ -25,30 +23,18 @@
   min-width: 200px;
 
   .fold-button {
-    border-right: 18px solid transparent;
-
     .@{_COMMON_PREFIX}dropdown {
       top: @toolbar-height + 1;
     }
   }
 
-  > .@{_COMMON_PREFIX}button {
+  > .@{_COMMON_PREFIX}button.icon-search {
+    padding: 8px 10px;
+    margin-left: 5px;
+  }
+
+  .@{_COMMON_PREFIX}button {
     .toolbar-button();
-  }
-
-  .toggle-slide {
-    margin: 11px 7px;
-  }
-
-  .menu-button {
-    height: 100%;
-  }
-
-  &.content-browse-toolbar,
-  &.user-browse-toolbar {
-    button {
-      vertical-align: top;
-    }
   }
 
   .progress-bar {

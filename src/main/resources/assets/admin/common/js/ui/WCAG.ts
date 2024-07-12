@@ -12,7 +12,8 @@ export enum AriaRole {
     NONE = 'presentation',
     BANNER = 'banner',
     BUTTON = 'button',
-    TOOLBAR = 'toolbar'
+    TOOLBAR = 'toolbar',
+    MENU = 'menu',
 }
 
 export enum AriaHasPopup {

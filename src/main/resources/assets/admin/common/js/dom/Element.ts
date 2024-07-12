@@ -718,8 +718,12 @@ export class Element {
         return this.insertChildElement(this, existing.getParentElement(), existingIndex);
     }
 
-    hasChild(child: Element) {
+    hasChild(child: Element): boolean {
         return this.children.indexOf(child) > -1;
+    }
+
+    hasParent(): boolean {
+        return !!this.parentElement;
     }
 
     removeChild(child: Element): Element {

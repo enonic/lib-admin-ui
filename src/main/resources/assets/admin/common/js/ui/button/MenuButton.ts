@@ -7,6 +7,7 @@ import {ActionButton} from './ActionButton';
 import {Body} from '../../dom/Body';
 import {Element} from '../../dom/Element';
 import * as Q from 'q';
+import {AriaRole, IWCAG as WCAG} from '../WCAG';
 
 export enum MenuButtonDropdownPos {
     LEFT, RIGHT
@@ -14,6 +15,10 @@ export enum MenuButtonDropdownPos {
 
 export class MenuButton
     extends DivEl {
+
+    [WCAG]: boolean = true;
+    role: AriaRole = AriaRole.NONE;
+    tabbable: boolean = true;
 
     protected readonly mainAction: Action;
 
@@ -52,6 +57,10 @@ export class MenuButton
         this.initDropdownHandle();
         this.initActionButton(this.mainAction);
         this.initActions(this.menuActions);
+    }
+
+    protected getActiveActionButton(): ActionButton {
+        return this.getActionButton();
     }
 
     getActionButton(): ActionButton {
@@ -113,6 +122,7 @@ export class MenuButton
     }
 
     setDropdownHandleEnabled(enabled: boolean = true): void {
+        //this.setRole(enabled ? AriaRole.MENU : AriaRole.BUTTON);
         this.dropdownHandle.setEnabled(enabled);
         if (!enabled) {
             this.collapseMenu();
@@ -180,6 +190,7 @@ export class MenuButton
 
     private initActionButton(action: Action): void {
         this.actionButton = new ActionButton(action);
+        this.actionButton.setAriaHasPopup();
     }
 
     private initActions(actions: Action[]): void {
@@ -235,6 +246,17 @@ export class MenuButton
         });
 
         this.menu.onClicked(() => this.dropdownHandle.giveFocus());
+
+        this.onFocus(() => {
+            const activeButton = this.getActiveActionButton();
+            if (activeButton) {
+                console.log('Giving focus to ' + activeButton);
+                console.log(activeButton.giveFocus());
+            } else {
+                this.dropdownHandle.isEnabled() && console.log('Giving focus to ' + this.dropdownHandle);
+                this.dropdownHandle.isEnabled() && this.dropdownHandle.giveFocus();
+            }
+        });
     }
 
     doRender(): Q.Promise<boolean> {

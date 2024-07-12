@@ -1,7 +1,9 @@
-.menu-action-button() {
-  .button(@admin-font-gray2, transparent, @admin-font-gray3, transparent, false);
+.menu-action-button(@padding: 5px 14px) {
+  .button(@admin-font-gray2, transparent, @admin-font-gray3, transparent, @padding);
 
-  height: 100%;
+  span {
+    .ellipsis();
+  }
 
   &.pull-right {
     float: right;

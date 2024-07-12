@@ -1,5 +1,5 @@
 import * as Q from 'q';
-import {Toolbar} from '../../ui/toolbar/Toolbar';
+import {Toolbar, ToolbarConfig} from '../../ui/toolbar/Toolbar';
 import {TabBarItem} from '../../ui/tab/TabBarItem';
 import {ActivatedEvent} from '../../ui/ActivatedEvent';
 import {DivEl} from '../../dom/DivEl';
@@ -15,13 +15,13 @@ export class WizardStepNavigatorAndToolbar
 
     private foldButton: FoldButton;
 
-    private stepToolbar: Toolbar;
+    private stepToolbar: Toolbar<ToolbarConfig>;
 
     private stepNavigator: WizardStepNavigator;
 
     private helpTextToggleButton: DivEl;
 
-    constructor(stepNavigator: WizardStepNavigator, stepToolbar?: Toolbar) {
+    constructor(stepNavigator: WizardStepNavigator, stepToolbar?: Toolbar<ToolbarConfig>) {
         super('wizard-step-navigator-and-toolbar');
         this.stepNavigator = stepNavigator;
         this.stepToolbar = stepToolbar;

@@ -16,14 +16,12 @@
   }
 }
 
-.picker-dialog-button(@margin, @display: block) {
-  .ok-button {
-    background: @admin-button-blue2;
-    padding: 4px 19px 4px 19px;
-    position: relative;
-    display: @display;
-    margin: @margin;
-  }
+.picker-dialog-button(@color: @admin-button-blue2, @margin-left: auto) {
+    background-color: @color;
+    //position: relative;
+    margin-left: @margin-left;
+    //display: @display;
+    //margin: @margin;
 }
 
 .date-picker-mixin(@width: 100%, @padding: 10px) {

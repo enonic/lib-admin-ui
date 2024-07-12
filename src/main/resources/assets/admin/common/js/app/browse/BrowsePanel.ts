@@ -6,7 +6,7 @@ import {ActionButton} from '../../ui/button/ActionButton';
 import {TreeGridActions} from '../../ui/treegrid/actions/TreeGridActions';
 import {SplitPanel, SplitPanelAlignment, SplitPanelBuilder} from '../../ui/panel/SplitPanel';
 import {Panel} from '../../ui/panel/Panel';
-import {Toolbar} from '../../ui/toolbar/Toolbar';
+import {Toolbar, ToolbarConfig} from '../../ui/toolbar/Toolbar';
 import {TreeGrid} from '../../ui/treegrid/TreeGrid';
 import {BrowseFilterPanel} from './filter/BrowseFilterPanel';
 import {Action} from '../../ui/Action';
@@ -23,7 +23,7 @@ import {SplitPanelSize} from '../../ui/panel/SplitPanelSize';
 export class BrowsePanel
     extends Panel {
 
-    protected browseToolbar: Toolbar;
+    protected browseToolbar: Toolbar<ToolbarConfig>;
 
     protected treeGrid: TreeGrid<ViewItem>;
 
@@ -223,7 +223,7 @@ export class BrowsePanel
         this.treeGrid.resetFilter();
     }
 
-    protected createToolbar(): Toolbar {
+    protected createToolbar(): Toolbar<ToolbarConfig> {
         throw Error('Must be implemented by inheritors');
     }
 
@@ -306,10 +306,9 @@ export class BrowsePanel
     }
 
     private addToggleFilterPanelButtonInToolbar() {
-        this.toggleFilterPanelAction = new ToggleFilterPanelAction(this);
-        this.toggleFilterPanelButton = new ActionButton(this.toggleFilterPanelAction);
+        this.toggleFilterPanelAction = new ToggleFilterPanelAction(this).setFoldable(false);
+        this.toggleFilterPanelButton = this.browseToolbar.prependAction(this.toggleFilterPanelAction);
         this.toggleFilterPanelButton.setTitle(i18n('tooltip.filterPanel.show'));
-        this.browseToolbar.prependChild(this.toggleFilterPanelButton);
         this.toggleFilterPanelAction.setVisible(false);
     }
 

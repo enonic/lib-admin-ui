@@ -5,9 +5,17 @@ import {Element} from '../../dom/Element';
 import {StyleHelper} from '../../StyleHelper';
 import {Body} from '../../dom/Body';
 import {BrowserHelper} from '../../BrowserHelper';
+import {AriaHasPopup, AriaRole, IWCAG as WCAG} from '../WCAG';
 
 export class FoldButton
-    extends DivEl {
+    extends DivEl
+    implements WCAG {
+
+    [WCAG]: boolean = true;
+    ariaLabel: string = i18n('wcag.toolbar.foldButton');
+    role: AriaRole = AriaRole.BUTTON;
+    ariaHasPopup: AriaHasPopup.MENU;
+    tabbable: boolean = true;
 
     private static expandedCls: string = 'expanded';
     private span: SpanEl;
