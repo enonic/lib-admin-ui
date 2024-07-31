@@ -15,17 +15,20 @@ import {ToggleFilterPanelAction} from './action/ToggleFilterPanelAction';
 import {BrowseItemPanel} from './BrowseItemPanel';
 import {i18n} from '../../util/Messages';
 import {IDentifiable} from '../../IDentifiable';
-import {DataChangedEvent, DataChangedType} from '../../ui/treegrid/DataChangedEvent';
+import {DataChangedEvent} from '../../ui/treegrid/DataChangedEvent';
 import {ViewItem} from '../view/ViewItem';
 import {AppHelper} from '../../util/AppHelper';
 import {SplitPanelSize} from '../../ui/panel/SplitPanelSize';
+import {SelectableListBoxPanel} from '../../ui/panel/SelectableListBoxPanel';
 
 export class BrowsePanel
     extends Panel {
 
     protected browseToolbar: Toolbar<ToolbarConfig>;
 
-    protected treeGrid: TreeGrid<ViewItem>;
+    protected treeGrid?: TreeGrid<ViewItem>;
+
+    protected selectableListBoxPanel?: SelectableListBoxPanel<IDentifiable>;
 
     protected filterPanel: BrowseFilterPanel<object>;
     protected filterPanelToBeShownFullScreen: boolean = false;
@@ -52,6 +55,7 @@ export class BrowsePanel
 
     protected initElements() {
         this.treeGrid = this.createTreeGrid();
+        this.selectableListBoxPanel = this.createListBoxPanel();
         this.filterPanel = this.createFilterPanel();
         this.browseToolbar = this.createToolbar();
 
@@ -59,7 +63,7 @@ export class BrowsePanel
             this.browseItemPanel = this.createBrowseItemPanel();
         }
 
-        this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.treeGrid, this.createBrowseWithItemsPanel())
+        this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.selectableListBoxPanel || this.treeGrid, this.createBrowseWithItemsPanel())
             .setAlignment(SplitPanelAlignment.VERTICAL)
             .setFirstPanelSize(SplitPanelSize.PERCENTS(this.getFirstPanelSize()))
             .build();
@@ -89,7 +93,7 @@ export class BrowsePanel
 
         if (this.filterPanel) {
             this.onShown(() => {
-                if (this.treeGrid.isFiltered()) {
+                if (this.selectableListBoxPanel?.isFiltered() || this.treeGrid.isFiltered()) {
                     this.filterPanel.refresh();
                 }
             });
@@ -101,9 +105,12 @@ export class BrowsePanel
     }
 
     private initTreeGridListeners() {
-        this.treeGrid.onDataChanged(this.handleDataChanged.bind(this));
-        this.treeGrid.onSelectionChanged(this.handleSelectionChanged.bind(this));
-        this.treeGrid.onHighlightingChanged(this.handleHighlightingChanged.bind(this));
+        this.treeGrid?.onDataChanged(this.handleDataChanged.bind(this));
+        this.selectableListBoxPanel?.onDataChanged(this.handleDataChanged.bind(this));
+        this.treeGrid?.onSelectionChanged(this.handleSelectionChanged.bind(this));
+        this.selectableListBoxPanel?.onSelectionChanged(this.handleSelectionChanged.bind(this));
+        this.treeGrid?.onHighlightingChanged(this.handleHighlightingChanged.bind(this));
+        this.selectableListBoxPanel?.onHighlightChanged(this.handleHighlightingChanged.bind(this));
 
         this.treeGrid.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
             this.treeGrid.toggleClass('selection-mode', isActive);
@@ -230,6 +237,10 @@ export class BrowsePanel
 
     protected createTreeGrid(): TreeGrid<ViewItem> {
         throw Error('Must be implemented by inheritors');
+    }
+
+    protected createListBoxPanel(): SelectableListBoxPanel<IDentifiable> {
+        return null;
     }
 
     protected createBrowseItemPanel(): BrowseItemPanel {
