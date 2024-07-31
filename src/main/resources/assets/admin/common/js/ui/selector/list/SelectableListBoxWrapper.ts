@@ -6,6 +6,7 @@ import {SelectionChange} from '../../../util/SelectionChange';
 import * as Q from 'q';
 import {LiEl} from '../../../dom/LiEl';
 import {TreeListBox} from './TreeListBox';
+import {DataChangedEvent, DataChangedType} from '../../treegrid/DataChangedEvent';
 
 export interface SelectableListBoxDropdownOptions<I> {
     className?: string;
@@ -41,7 +42,6 @@ export class SelectableListBoxWrapper<I>
 
     protected initElements(): void {
         this.selectionChangedListeners = [];
-        this.listBox.hide();
     }
 
     protected initListeners(): void {
@@ -55,6 +55,10 @@ export class SelectableListBoxWrapper<I>
 
         this.listBox.onItemsRemoved((items: I[]) => {
             items.forEach((item: I) => this.handleItemRemoved(item));
+        });
+
+        this.listBox.onItemsChanged((items: I[]) => {
+            //
         });
     }
 
@@ -160,6 +164,7 @@ export class SelectableListBoxWrapper<I>
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
             this.listBox.addClass('selectable-listbox');
+            this.appendChild(this.listBox);
 
             return rendered;
         });
@@ -268,5 +273,19 @@ export class SelectableListBoxWrapper<I>
 
     protected isMultiSelect(): boolean {
         return this.options.maxSelected === 0 || this.options.maxSelected > 1;
+    }
+
+    onDataChanged(handler: (event: DataChangedEvent<I>) => void): void {
+        this.listBox.onItemsAdded((items: I[]): void  => {
+            handler(new DataChangedEvent<I>(items, DataChangedType.ADDED));
+        });
+
+        this.listBox.onItemsRemoved((items: I[]): void  => {
+            handler(new DataChangedEvent<I>(items, DataChangedType.DELETED));
+        });
+
+        this.listBox.onItemsChanged((items: I[]): void  => {
+            handler(new DataChangedEvent<I>(items, DataChangedType.UPDATED));
+        });
     }
 }

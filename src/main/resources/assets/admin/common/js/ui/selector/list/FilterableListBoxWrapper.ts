@@ -47,6 +47,7 @@ export class FilterableListBoxWrapper<I>
     protected initElements(): void {
         super.initElements();
 
+        this.listBox.hide();
         this.filterContainer = new DivEl('filter-container');
 
         this.dropdownVisibilityChangedListeners = [];
