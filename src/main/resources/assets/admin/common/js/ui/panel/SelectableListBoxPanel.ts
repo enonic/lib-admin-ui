@@ -30,9 +30,17 @@ export class SelectableListBoxPanel<I> extends Panel {
         // this.listBoxWrapper.onHighlightChanged(listener);
     }
 
+    getSelectedItems(): I[] {
+        return this.listBoxWrapper.getSelectedItems();
+    }
+
     doRender(): Q.Promise<boolean> {
         this.appendChild(this.listBoxWrapper);
 
         return Q(true);
+    }
+
+    getItem(id: string): I {
+        return this.listBoxWrapper.getItem(id);
     }
 }
