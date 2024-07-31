@@ -8,10 +8,17 @@ import {LiEl} from '../../../dom/LiEl';
 import {TreeListBox} from './TreeListBox';
 import {DataChangedEvent, DataChangedType} from '../../treegrid/DataChangedEvent';
 
+export enum SelectionMode {
+    SELECT, // DEFAULT
+    HIGHLIGHT,
+}
+
+
 export interface SelectableListBoxDropdownOptions<I> {
     className?: string;
     maxSelected?: number;
     checkboxPosition?: 'left' | 'right';
+    highlightMode?: boolean;
 }
 
 export class SelectableListBoxWrapper<I>
@@ -24,6 +31,8 @@ export class SelectableListBoxWrapper<I>
     protected readonly options: SelectableListBoxDropdownOptions<I>;
 
     protected selectedItems = new Map<string, I>();
+
+    protected selectionMode: SelectionMode = SelectionMode.SELECT;
 
     protected itemsWrappers = new Map<string, Element>();
 
@@ -80,7 +89,17 @@ export class SelectableListBoxWrapper<I>
         }
 
         view.onClicked((event: MouseEvent) => {
+            if (event.detail === 2) { // double click, should be handled differently
+                event.stopPropagation();
+                event.preventDefault();
+                return;
+            }
+
             if (this.isIntractableViewElement(event.target as HTMLElement)) {
+                if (this.options.highlightMode) {
+                    this.selectionMode = SelectionMode.HIGHLIGHT;
+                }
+
                 this.handleUserToggleAction(item);
             }
         });
@@ -93,7 +112,7 @@ export class SelectableListBoxWrapper<I>
     }
 
     protected handleUserToggleAction(item: I): void {
-        if (!this.isMultiSelect()) { // unselect all other items
+        if (!this.isMultiSelect() || this.selectionMode === SelectionMode.HIGHLIGHT) { // unselect all other items
             this.getCurrentlySelectedItems().filter((selectedItem) => selectedItem !== item).forEach((selectedItem: I) => {
                 this.handleUserDeselected(selectedItem);
             });
@@ -112,6 +131,14 @@ export class SelectableListBoxWrapper<I>
 
     getSelectedItems(): I[] {
         return Array.from(this.selectedItems.values());
+    }
+
+    getSelectionMode(): SelectionMode {
+        return this.selectionMode;
+    }
+
+    getItem(id: string): I {
+        return this.listBox.getItem(id);
     }
 
     protected handleUserDeselected(item: I): void {
@@ -134,12 +161,20 @@ export class SelectableListBoxWrapper<I>
         itemWrapper?.toggleClass('selected', isSelected);
 
         if (this.isMultiSelect()) {
-            (itemWrapper?.getFirstChild() as Checkbox)?.setChecked(isSelected, true);
+            (itemWrapper?.getFirstChild() as Checkbox)?.setChecked(isSelected && this.selectionMode === SelectionMode.SELECT, true);
         }
     }
 
     private createCheckbox(item: I): Checkbox {
         const checkbox: Checkbox = Checkbox.create().build();
+
+        checkbox.onClicked(() => {
+            if (this.selectionMode == SelectionMode.HIGHLIGHT) {
+                this.deselectAll(true);
+            }
+
+            this.selectionMode = SelectionMode.SELECT;
+        });
 
         checkbox.onValueChanged(() => {
             this.handleUserToggleAction(item);
@@ -158,7 +193,7 @@ export class SelectableListBoxWrapper<I>
     }
 
     protected isIntractableViewElement(element: HTMLElement): boolean {
-        return !element?.classList.contains('toggle');
+        return !element?.classList.contains('icon-arrow_drop_up');
     }
 
     doRender(): Q.Promise<boolean> {
