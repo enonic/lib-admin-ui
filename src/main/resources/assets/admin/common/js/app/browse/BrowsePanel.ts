@@ -28,7 +28,7 @@ export class BrowsePanel
 
     protected treeGrid?: TreeGrid<ViewItem>;
 
-    protected selectableListBoxPanel?: SelectableListBoxPanel<IDentifiable>;
+    protected selectableListBoxPanel?: SelectableListBoxPanel<ViewItem>;
 
     protected filterPanel: BrowseFilterPanel<Object>;
     protected filterPanelToBeShownFullScreen: boolean = false;
@@ -238,7 +238,7 @@ export class BrowsePanel
         throw 'Must be implemented by inheritors';
     }
 
-    protected createListBoxPanel(): SelectableListBoxPanel<IDentifiable> {
+    protected createListBoxPanel(): SelectableListBoxPanel<ViewItem> {
         return null;
     }
 
@@ -370,14 +370,16 @@ export class BrowsePanel
         const actions: TreeGridActions<IDentifiable> = this.getBrowseActions();
 
         if (actions) {
-            return actions.updateActionsEnabledState(this.treeGrid.getSelectedDataList()).catch(DefaultErrorHandler.handle);
+            const selectedItems = this.selectableListBoxPanel?.getSelectedItems() ?? this.treeGrid.getSelectedDataList();
+            return actions.updateActionsEnabledState(selectedItems).catch(DefaultErrorHandler.handle);
         }
 
         return Q(null);
     }
 
     protected updatePreviewItem() {
-        this.getBrowseItemPanel().togglePreviewForItem(this.treeGrid.getLastSelectedOrHighlightedItem());
+        const item = this.selectableListBoxPanel?.getSelectedItems().pop() ?? this.treeGrid.getLastSelectedOrHighlightedItem();
+        this.getBrowseItemPanel().togglePreviewForItem(item);
     }
 
     protected createBrowseWithItemsPanel(): Panel {
