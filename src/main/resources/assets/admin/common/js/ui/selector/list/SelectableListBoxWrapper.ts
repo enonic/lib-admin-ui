@@ -88,6 +88,16 @@ export class SelectableListBoxWrapper<I>
             wrapper.getEl().setTabIndex(0);
         }
 
+        const clickHandler = (event: MouseEvent) => {
+            if (this.isIntractableViewElement(event.target as HTMLElement)) {
+                if (this.options.highlightMode) {
+                    this.selectionMode = SelectionMode.HIGHLIGHT;
+                }
+
+                this.handleUserToggleAction(item);
+            }
+        };
+
         view.onClicked((event: MouseEvent) => {
             if (event.detail === 2) { // double click, should be handled differently
                 event.stopPropagation();
@@ -95,12 +105,12 @@ export class SelectableListBoxWrapper<I>
                 return;
             }
 
-            if (this.isIntractableViewElement(event.target as HTMLElement)) {
-                if (this.options.highlightMode) {
-                    this.selectionMode = SelectionMode.HIGHLIGHT;
-                }
+            clickHandler(event);
+        });
 
-                this.handleUserToggleAction(item);
+        view.onContextMenu((event: MouseEvent) => {
+            if (!this.isItemSelected(item)) {
+                clickHandler(event); // right click must select item
             }
         });
 
