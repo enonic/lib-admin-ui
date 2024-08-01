@@ -258,7 +258,6 @@ export class TreeGrid<DATA extends IDentifiable>
         this.grid.subscribeOnContextMenu((event) => {
             event.preventDefault();
             this.setActive(false);
-            this.contextMenu.hide();
 
             let cell = this.grid.getCellFromEvent(event);
 
