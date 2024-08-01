@@ -3,15 +3,19 @@ import {SelectableListBoxWrapper} from '../selector/list/SelectableListBoxWrappe
 import {DataChangedEvent} from '../treegrid/DataChangedEvent';
 import {SelectionChange} from '../../util/SelectionChange';
 import * as Q from 'q';
+import {ListBoxToolbar} from '../selector/list/ListBoxToolbar';
 
 export class SelectableListBoxPanel<I> extends Panel {
 
-    protected listBoxWrapper: SelectableListBoxWrapper<I>;
+    protected readonly listBoxWrapper: SelectableListBoxWrapper<I>;
 
-    constructor(listBoxWrapper: SelectableListBoxWrapper<I>) {
+    protected readonly listToolbar: ListBoxToolbar<I>;
+
+    constructor(listBoxWrapper: SelectableListBoxWrapper<I>, toolbar: ListBoxToolbar<I>) {
         super();
 
         this.listBoxWrapper = listBoxWrapper;
+        this.listToolbar = toolbar;
     }
 
     isFiltered(): boolean {
@@ -26,21 +30,24 @@ export class SelectableListBoxPanel<I> extends Panel {
         this.listBoxWrapper.onSelectionChanged(listener);
     }
 
-    onHighlightChanged(listener: (highlightedItem: I) => void): void {
-        // this.listBoxWrapper.onHighlightChanged(listener);
-    }
-
     getSelectedItems(): I[] {
         return this.listBoxWrapper.getSelectedItems();
     }
 
     doRender(): Q.Promise<boolean> {
-        this.appendChild(this.listBoxWrapper);
+        this.addClass('selectable-list-box-panel');
+
+        this.appendChildren(this.listToolbar);
+        this.appendChildren(this.listBoxWrapper);
 
         return Q(true);
     }
 
     getItem(id: string): I {
         return this.listBoxWrapper.getItem(id);
+    }
+
+    getToolbar(): ListBoxToolbar<I> {
+        return this.listToolbar;
     }
 }

@@ -110,9 +110,13 @@ export class BrowsePanel
         this.treeGrid?.onSelectionChanged(this.handleSelectionChanged.bind(this));
         this.selectableListBoxPanel?.onSelectionChanged(this.handleSelectionChanged.bind(this));
         this.treeGrid?.onHighlightingChanged(this.handleHighlightingChanged.bind(this));
-        this.selectableListBoxPanel?.onHighlightChanged(this.handleHighlightingChanged.bind(this));
 
         this.treeGrid.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
+            this.treeGrid.toggleClass('selection-mode', isActive);
+            this.toggleSelectionMode(isActive);
+        });
+
+        this.selectableListBoxPanel?.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
             this.treeGrid.toggleClass('selection-mode', isActive);
             this.toggleSelectionMode(isActive);
         });
