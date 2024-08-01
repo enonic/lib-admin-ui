@@ -253,6 +253,10 @@ export class SelectableListBoxWrapper<I>
         }
     }
 
+    selectAll(silent?: boolean): void {
+        this.select(this.listBox instanceof TreeListBox ? this.listBox.getItems(true) : this.listBox.getItems(), silent);
+    }
+
     protected doDeselect(itemToDeselect: I): void {
         const id: string = this.listBox.getIdOfItem(itemToDeselect);
 
@@ -279,6 +283,10 @@ export class SelectableListBoxWrapper<I>
 
     updateItem(item: I): void {
         this.listBox.replaceItem(item);
+    }
+
+    getTotalItems(): number {
+        return this.listBox instanceof TreeListBox ? this.listBox.getItems(true).length : this.listBox.getItems().length;
     }
 
     protected checkSelectionLimitReached(): void {
