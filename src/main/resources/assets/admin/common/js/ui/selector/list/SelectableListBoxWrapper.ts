@@ -98,7 +98,7 @@ export class SelectableListBoxWrapper<I>
             }
         };
 
-        view.onClicked((event: MouseEvent) => {
+        wrapper.onClicked((event: MouseEvent) => {
             if (event.detail === 2) { // double click, should be handled differently
                 event.stopPropagation();
                 event.preventDefault();
@@ -108,7 +108,7 @@ export class SelectableListBoxWrapper<I>
             clickHandler(event);
         });
 
-        view.onContextMenu((event: MouseEvent) => {
+        wrapper.onContextMenu((event: MouseEvent) => {
             if (!this.isItemSelected(item)) {
                 clickHandler(event); // right click must select item
             }
@@ -178,12 +178,14 @@ export class SelectableListBoxWrapper<I>
     private createCheckbox(item: I): Checkbox {
         const checkbox: Checkbox = Checkbox.create().build();
 
-        checkbox.onClicked(() => {
+        checkbox.onClicked((event: MouseEvent) => {
             if (this.selectionMode == SelectionMode.HIGHLIGHT) {
                 this.deselectAll(true);
             }
 
             this.selectionMode = SelectionMode.SELECT;
+
+            event.stopPropagation(); // to not trigger click on wrapper
         });
 
         checkbox.onValueChanged(() => {
