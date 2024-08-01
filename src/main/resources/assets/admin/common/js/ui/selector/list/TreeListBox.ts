@@ -87,6 +87,20 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
         return result;
     }
 
+    getItems(deep?: boolean): I[] {
+        return deep ? this.getAllItems() : super.getItems();
+    }
+
+    private getAllItems(): I[] {
+        const items: I[] = super.getItems();
+
+        this.itemViews.forEach((itemView: TreeListElement<I>) => {
+            items.push(...itemView.getItems(true));
+        });
+
+        return items;
+    }
+
     getDataView(item: I): Element {
         return this.getItemView(item)?.getDataView();
     }
@@ -191,6 +205,10 @@ export abstract class TreeListElement<I>
 
     findItem(id: string): I {
         return this.childrenList.getItem(id);
+    }
+
+    getItems(deep?: boolean): I[] {
+        return this.childrenList.getItems(deep);
     }
 
     onItemsAdded(handler: (items: I[]) => void): void {
