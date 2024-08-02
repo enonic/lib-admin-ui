@@ -67,23 +67,13 @@ export abstract class ListBox<I>
         this.showEmptyView();
     }
 
-    addItem(item: I, silent: boolean = false): void {
-        this.doAddItem(false, [item], silent);
-    }
-
-    addItems(items: I[], silent: boolean = false): void {
+    addItems(toAdd: I | I[], silent: boolean = false): void {
+        const items = Array.isArray(toAdd) ? toAdd : [toAdd];
         this.doAddItem(false, items, silent);
     }
 
-    addItemReadOnly(...items: I[]): void {
-        this.doAddItem(true, items);
-    }
-
-    removeItem(item: I, silent?: boolean): void {
-        this.removeItems([item], silent);
-    }
-
-    removeItems(itemsToRemove: I[], silent?: boolean): void {
+    removeItems(toRemove: I | I[], silent?: boolean): I[] {
+        const itemsToRemove = Array.isArray(toRemove) ? toRemove : [toRemove];
         const itemsRemoved: I[] = this.doRemoveItems(itemsToRemove);
 
         if (itemsRemoved.length > 0) {
@@ -95,6 +85,8 @@ export abstract class ListBox<I>
                 this.showEmptyView();
             }
         }
+
+        return itemsRemoved;
     }
 
     private doRemoveItems(itemsToRemove: I[]): I[] {
@@ -117,11 +109,8 @@ export abstract class ListBox<I>
         return itemsRemoved;
     }
 
-    replaceItem(item: I, append: boolean = false, silent?: boolean): void {
-        this.replaceItems([item], append, silent);
-    }
-
-    replaceItems(items: I[], append: boolean = false, silent?: boolean): void {
+    replaceItems(toReplace: I | I[], append: boolean = false, silent?: boolean): void {
+        const items = Array.isArray(toReplace) ? toReplace : [toReplace];
         const indexes: string[] = this.items.map(value => this.getItemId(value));
 
         items.forEach((item: I) => {

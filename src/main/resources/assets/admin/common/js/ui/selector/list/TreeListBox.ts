@@ -3,6 +3,7 @@ import {Element} from '../../../dom/Element';
 import {LiEl} from '../../../dom/LiEl';
 import {ResponsiveManager} from '../../responsive/ResponsiveManager';
 import {DivEl} from '../../../dom/DivEl';
+import {ListBox} from './ListBox';
 
 export interface TreeListBoxParams<I> {
     scrollParent?: Element,
@@ -105,6 +106,52 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
         return this.getItemView(item)?.getDataView();
     }
 
+    addItems(toAdd: I[] | I, silent: boolean = false): void {
+        const items = Array.isArray(toAdd) ? toAdd : [toAdd];
+
+        items.forEach((item: I) => {
+            const parentList = this.getParentList(item);
+
+            if (parentList === this) {
+                super.addItems(item, silent);
+            } else {
+                this.getItemViews().forEach((listElement: TreeListElement<I>) => {
+                    listElement.addItems(item, silent);
+                });
+            }
+        });
+    }
+
+    replaceItems(toReplace: I | I[], append: boolean = false, silent?: boolean) {
+        const items = Array.isArray(toReplace) ? toReplace : [toReplace];
+
+        items.forEach((item: I) => {
+            const itemId = this.getIdOfItem(item);
+
+            if (this.getItems().some((i: I) => this.getIdOfItem(i) === itemId)) {
+                super.replaceItems(item, append, silent);
+            } else {
+                this.getItemViews().forEach((listElement: TreeListElement<I>) => {
+                    listElement.replaceItems(item, append, silent);
+                });
+            }
+        });
+    }
+
+    removeItems(toRemove: I | I[], silent?: boolean): I[] {
+        const removed = super.removeItems(toRemove, silent);
+
+        this.getItemViews().forEach((listElement: TreeListElement<I>) => {
+            const removedInChild = listElement.removeItems(toRemove, silent);
+
+            if (removedInChild.length > 0) {
+                removed.push(...removedInChild);
+            }
+        });
+
+        return removed;
+    }
+
     protected getScrollContainer(): Element {
         return this.scrollParent;
     }
@@ -117,6 +164,10 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
 
             return rendered;
         });
+    }
+
+    protected getParentList(item: I): TreeListBox<I> {
+        return this;
     }
 }
 
@@ -175,6 +226,14 @@ export abstract class TreeListElement<I>
         this.toggleElement.onClicked(() => {
             this.isExpanded ? this.collapse() : this.expand();
         });
+
+        this.childrenList.onItemsRemoved(() => {
+            this.updateExpandedState();
+        });
+
+        this.childrenList.onItemsAdded(() => {
+            this.updateExpandedState();
+        });
     }
 
     expand(): void {
@@ -195,6 +254,11 @@ export abstract class TreeListElement<I>
         }
     }
 
+    private updateExpandedState(): void {
+        this.setExpanded(this.hasChildren(this.item));
+        this.toggleElement.toggleClass('icon-arrow_drop_up', this.isExpanded);
+    }
+
     getDataView(): Element {
         return this.elementsWrapper;
     }
@@ -205,6 +269,18 @@ export abstract class TreeListElement<I>
 
     findItem(id: string): I {
         return this.childrenList.getItem(id);
+    }
+
+    removeItems(toRemove: I | I[], silent?: boolean): I[] {
+        return this.childrenList.removeItems(toRemove, silent);
+    }
+
+    replaceItems(items: I | I[], append: boolean = false, silent?: boolean): void {
+        this.childrenList.replaceItems(items, append, silent);
+    }
+
+    addItems(items: I[] | I, silent: boolean = false): void {
+        this.childrenList.addItems(items, silent);
     }
 
     getItems(deep?: boolean): I[] {
