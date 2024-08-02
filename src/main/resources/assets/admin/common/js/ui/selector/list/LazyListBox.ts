@@ -53,7 +53,8 @@ export abstract class LazyListBox<T> extends ListBox<T> {
         }
     }
 
-    addItems(items: T[], silent: boolean = false): void {
+    addItems(toAdd: T | T[], silent: boolean = false): void {
+        const items = Array.isArray(toAdd) ? toAdd : [toAdd];
         super.addItems(items, silent);
         if (items.length > 0) {
             this.addLazyLoad();
