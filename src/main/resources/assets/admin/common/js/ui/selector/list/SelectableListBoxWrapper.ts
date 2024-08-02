@@ -282,7 +282,7 @@ export class SelectableListBoxWrapper<I>
     }
 
     updateItem(item: I): void {
-        this.listBox.replaceItem(item);
+        this.listBox.replaceItems(item);
     }
 
     getTotalItems(): number {
