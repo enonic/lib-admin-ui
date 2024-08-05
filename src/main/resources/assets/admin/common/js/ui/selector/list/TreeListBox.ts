@@ -3,13 +3,13 @@ import {Element} from '../../../dom/Element';
 import {LiEl} from '../../../dom/LiEl';
 import {ResponsiveManager} from '../../responsive/ResponsiveManager';
 import {DivEl} from '../../../dom/DivEl';
-import {ListBox} from './ListBox';
 
 export interface TreeListBoxParams<I> {
     scrollParent?: Element,
     level?: number,
     className?: string,
     parentItem?: I,
+    parentList?: TreeListBox<I>,
 }
 
 export abstract class TreeListBox<I> extends LazyListBox<I> {
@@ -109,8 +109,8 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
     addItems(toAdd: I[] | I, silent: boolean = false): void {
         const items = Array.isArray(toAdd) ? toAdd : [toAdd];
 
-        items.forEach((item: I) => {
-            const parentList = this.getParentList(item);
+        items.forEach((item: I) => { // searching for the correct parent to add the item
+            const parentList = this.findParentList(item);
 
             if (parentList === this) {
                 super.addItems(item, silent);
@@ -152,6 +152,14 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
         return removed;
     }
 
+    getParentList(): TreeListBox<I> | undefined {
+        return this.options.parentList;
+    }
+
+    getParentItem(): I | undefined {
+        return this.options.parentItem;
+    }
+
     protected getScrollContainer(): Element {
         return this.scrollParent;
     }
@@ -166,7 +174,7 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
         });
     }
 
-    protected getParentList(item: I): TreeListBox<I> {
+    findParentList(item: I): TreeListBox<I> {
         return this;
     }
 }
@@ -175,6 +183,7 @@ export interface TreeListElementParams<I> {
     scrollParent: Element,
     level: number,
     parentItem?: I,
+    parentList?: TreeListBox<I>,
 }
 
 export abstract class TreeListElement<I>
@@ -188,7 +197,7 @@ export abstract class TreeListElement<I>
 
     protected childrenList: TreeListBox<I>;
 
-    protected isExpanded: boolean = false;
+    protected expanded: boolean = false;
 
     protected readonly item: I;
 
@@ -205,7 +214,7 @@ export abstract class TreeListElement<I>
 
     protected initElements(): void {
         this.elementsWrapper = new DivEl('toggle-and-item-wrapper');
-        this.toggleElement = new DivEl(`toggle ${this.hasChildren(this.item) ? 'icon-arrow_drop_up' : ''}`);
+        this.toggleElement = new DivEl(`toggle ${this.hasChildren() ? 'icon-arrow_drop_up' : ''}`);
         this.itemViewer = this.createItemViewer(this.item);
         this.childrenList = this.createChildrenList(this.createChildrenListParams());
 
@@ -213,18 +222,23 @@ export abstract class TreeListElement<I>
     }
 
     protected createChildrenListParams(): TreeListBoxParams<I> {
-        return {scrollParent: this.options.scrollParent, level: this.options.level + 1, parentItem: this.item};
+        return {
+            scrollParent: this.options.scrollParent,
+            level: this.options.level + 1,
+            parentItem: this.item,
+            parentList: this.options.parentList
+        };
     }
 
     protected abstract createChildrenList(params?: TreeListBoxParams<I>): TreeListBox<I>;
 
-    protected abstract hasChildren(item: I): boolean;
+    abstract hasChildren(): boolean;
 
     protected abstract createItemViewer(item: I): Element;
 
     protected initListeners(): void {
         this.toggleElement.onClicked(() => {
-            this.isExpanded ? this.collapse() : this.expand();
+            this.expanded ? this.collapse() : this.expand();
         });
 
         this.childrenList.onItemsRemoved(() => {
@@ -237,7 +251,7 @@ export abstract class TreeListElement<I>
     }
 
     expand(): void {
-        if (!this.isExpanded) {
+        if (!this.expanded) {
             this.setExpanded(true);
         }
     }
@@ -247,16 +261,20 @@ export abstract class TreeListElement<I>
     }
 
     setExpanded(expanded: boolean): void {
-        if (this.isExpanded !== expanded) {
-            this.isExpanded = expanded;
-            this.childrenList.setVisible(this.isExpanded);
-            this.toggleElement.toggleClass('expanded', this.isExpanded);
+        if (this.expanded !== expanded) {
+            this.expanded = expanded;
+            this.childrenList.setVisible(this.expanded);
+            this.toggleElement.toggleClass('expanded', this.expanded);
         }
     }
 
+    isExpanded(): boolean {
+        return this.expanded;
+    }
+
     private updateExpandedState(): void {
-        this.setExpanded(this.hasChildren(this.item));
-        this.toggleElement.toggleClass('icon-arrow_drop_up', this.isExpanded);
+        this.setExpanded(this.hasChildren());
+        this.toggleElement.toggleClass('icon-arrow_drop_up', this.expanded);
     }
 
     getDataView(): Element {
@@ -297,6 +315,10 @@ export abstract class TreeListElement<I>
 
     onItemsChanged(handler: (items: I[]) => void): void {
         this.childrenList.onItemsChanged(handler);
+    }
+
+    getList(): TreeListBox<I> {
+        return this.childrenList;
     }
 
     doRender(): Q.Promise<boolean> {

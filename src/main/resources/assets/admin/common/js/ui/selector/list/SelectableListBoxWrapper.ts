@@ -147,6 +147,10 @@ export class SelectableListBoxWrapper<I>
         return this.selectionMode;
     }
 
+    setSelectionMode(selectionMode: SelectionMode): void {
+        this.selectionMode = selectionMode;
+    }
+
     getItem(id: string): I {
         return this.listBox.getItem(id);
     }
@@ -185,6 +189,7 @@ export class SelectableListBoxWrapper<I>
 
             this.selectionMode = SelectionMode.SELECT;
 
+
             event.stopPropagation(); // to not trigger click on wrapper
         });
 
@@ -195,12 +200,12 @@ export class SelectableListBoxWrapper<I>
         return checkbox;
     }
 
-    protected isItemSelected(item: I): boolean {
+    isItemSelected(item: I): boolean {
         const id: string = this.listBox.getIdOfItem(item);
         return this.isSelected(id);
     }
 
-    protected isSelected(id: string): boolean {
+    isSelected(id: string): boolean {
         return this.selectedItems.has(id);
     }
 
@@ -326,7 +331,7 @@ export class SelectableListBoxWrapper<I>
         this.selectionChangedListeners.forEach((listener: (selectionChange: SelectionChange<I>) => void) => listener(selectionChange));
     }
 
-    protected isMultiSelect(): boolean {
+    isMultiSelect(): boolean {
         return this.options.maxSelected === 0 || this.options.maxSelected > 1;
     }
 
@@ -342,5 +347,9 @@ export class SelectableListBoxWrapper<I>
         this.listBox.onItemsChanged((items: I[]): void  => {
             handler(new DataChangedEvent<I>(items, DataChangedType.UPDATED));
         });
+    }
+
+    getList(): ListBox<I> {
+        return this.listBox;
     }
 }
