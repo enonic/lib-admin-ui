@@ -157,8 +157,10 @@ export class FilterableListBoxWrapper<I>
 
                     if (focusedItem) {
                         this.toggleSelection(focusedItem, this.isItemSelected(focusedItem));
+                        return false;
                     }
-                    return false;
+
+                    return true;
                 });
 
             navigationKeyBindings.push(spaceKeyBinding);
@@ -210,6 +212,8 @@ export class FilterableListBoxWrapper<I>
     }
 
     protected handleKeyDown(event: KeyboardEvent): void {
+        console.log(event);
+
         if (!this.listBox.isVisible() && KeyHelper.isArrowDownKey(event)) {
             this.listBox.setVisible(true);
         }
