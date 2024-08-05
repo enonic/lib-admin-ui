@@ -280,9 +280,9 @@ export class SelectableListBoxWrapper<I>
 
     toggleSelection(item: I, selected: boolean, silent?: boolean): void {
         if (selected) {
-            this.select(item, silent);
-        } else {
             this.deselect(item, silent);
+        } else {
+            this.select(item, silent);
         }
     }
 
