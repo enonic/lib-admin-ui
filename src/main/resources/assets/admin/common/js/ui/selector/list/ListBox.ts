@@ -160,6 +160,11 @@ export abstract class ListBox<I>
         this.layoutList();
     }
 
+    protected findItemIndex(item: I): number {
+        const itemId = this.getItemId(item);
+        return  this.items.findIndex((it) => this.getItemId(it) === itemId);
+    }
+
     public onItemsAdded(listener: (items: I[]) => void): void {
         this.itemsAddedListeners.push(listener);
     }
