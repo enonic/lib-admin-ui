@@ -268,7 +268,7 @@ export class FilterableListBoxWrapper<I>
         this.applyButton.setVisible(this.selectionDelta.size > 0);
     }
 
-    protected isSelected(id: string): boolean {
+    isSelected(id: string): boolean {
         return this.selectionDelta.has(id) ? this.selectionDelta.get(id) : super.isSelected(id);
     }
 
