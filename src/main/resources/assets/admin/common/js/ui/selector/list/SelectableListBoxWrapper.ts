@@ -67,7 +67,7 @@ export class SelectableListBoxWrapper<I>
         });
 
         this.listBox.onItemsChanged((items: I[]) => {
-            //
+            items.forEach((item: I) => this.handleItemUpdated(item));
         });
     }
 
@@ -109,12 +109,12 @@ export class SelectableListBoxWrapper<I>
         });
 
         wrapper.onContextMenu((event: MouseEvent) => {
-            if (!this.isItemSelected(item)) {
+            if (!this.isSelected(id)) {
                 clickHandler(event); // right click must select item
             }
         });
 
-        if (this.isItemSelected(item)) {
+        if (this.isSelected(id)) {
             this.toggleItemWrapperSelected(id, true);
         }
 
@@ -122,16 +122,20 @@ export class SelectableListBoxWrapper<I>
     }
 
     protected handleUserToggleAction(item: I): void {
+        const itemId = this.listBox.getIdOfItem(item);
+        const actualItem = this.listBox.getItem(itemId); // making sure we work with actual list item value
+
         if (!this.isMultiSelect() || this.selectionMode === SelectionMode.HIGHLIGHT) { // unselect all other items
-            this.getCurrentlySelectedItems().filter((selectedItem) => selectedItem !== item).forEach((selectedItem: I) => {
-                this.handleUserDeselected(selectedItem);
-            });
+            this.getCurrentlySelectedItems().filter((selectedItem) => this.listBox.getIdOfItem(selectedItem) !== itemId).forEach(
+                (selectedItem: I) => {
+                    this.handleUserDeselected(selectedItem);
+                });
         }
 
-        if (this.isItemSelected(item)) {
-            this.handleUserDeselected(item);
+        if (this.isSelected(itemId)) {
+            this.handleUserDeselected(actualItem);
         } else {
-            this.handleUserSelected(item);
+            this.handleUserSelected(actualItem);
         }
     }
 
@@ -352,5 +356,13 @@ export class SelectableListBoxWrapper<I>
 
     getList(): ListBox<I> {
         return this.listBox;
+    }
+
+    protected handleItemUpdated(item: I): void {
+        const itemId = this.listBox.getIdOfItem(item);
+
+        if (this.selectedItems.has(itemId)) {
+            this.selectedItems.set(itemId, item);
+        }
     }
 }
