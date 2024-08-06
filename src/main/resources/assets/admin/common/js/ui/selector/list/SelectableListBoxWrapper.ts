@@ -165,6 +165,7 @@ export class SelectableListBoxWrapper<I>
 
     protected handleItemRemoved(item: I): void {
         const id: string = this.listBox.getIdOfItem(item);
+        this.selectedItems.delete(id);
         const wrapper: Element = this.itemsWrappers.get(id);
         wrapper?.remove();
         this.itemsWrappers.delete(id);
