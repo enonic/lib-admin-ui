@@ -212,8 +212,6 @@ export class FilterableListBoxWrapper<I>
     }
 
     protected handleKeyDown(event: KeyboardEvent): void {
-        console.log(event);
-
         if (!this.listBox.isVisible() && KeyHelper.isArrowDownKey(event)) {
             this.listBox.setVisible(true);
         }
