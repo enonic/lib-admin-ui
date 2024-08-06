@@ -99,7 +99,6 @@ export class SelectableListBoxKeyNavigator<I> {
     }
 
     protected handleKeyUpWithShift(event: Mousetrap.ExtendedKeyboardEvent): void {
-        console.log('shift+up');
         const lastSelectedItem = this.selectableWrapper.getSelectedItems().pop();
 
         if (!lastSelectedItem) {
@@ -149,7 +148,6 @@ export class SelectableListBoxKeyNavigator<I> {
     }
 
     protected handleKeyDownWithShift(event: Mousetrap.ExtendedKeyboardEvent): void {
-        console.log('shift+down');
         const lastSelectedItem = this.selectableWrapper.getSelectedItems().pop();
 
         if (!lastSelectedItem) {
@@ -175,7 +173,6 @@ export class SelectableListBoxKeyNavigator<I> {
     }
 
     protected handleKeyDownWithoutShift(event: Mousetrap.ExtendedKeyboardEvent): void {
-        console.log('down');
         this.selectableWrapper.setSelectionMode(SelectionMode.HIGHLIGHT);
         const lastSelectedItem = this.selectableWrapper.getSelectedItems().pop();
         const itemToSelect = this.getNextItem(this.rootList, lastSelectedItem);
