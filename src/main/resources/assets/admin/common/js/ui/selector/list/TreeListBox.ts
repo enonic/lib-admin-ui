@@ -289,6 +289,10 @@ export abstract class TreeListElement<I>
         return this.childrenList.getItem(id);
     }
 
+    getItem(): I {
+        return this.item;
+    }
+
     removeItems(toRemove: I | I[], silent?: boolean): I[] {
         return this.childrenList.removeItems(toRemove, silent);
     }

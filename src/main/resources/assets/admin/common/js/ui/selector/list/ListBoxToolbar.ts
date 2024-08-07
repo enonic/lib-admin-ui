@@ -1,5 +1,4 @@
 import {DivEl} from '../../../dom/DivEl';
-import {SelectionPanelToggler} from '../../treegrid/actions/SelectionPanelToggler';
 import {Button} from '../../button/Button';
 import {StyleHelper} from '../../../StyleHelper';
 import {Element} from '../../../dom/Element';

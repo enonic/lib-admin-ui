@@ -17,8 +17,6 @@ export abstract class ListBox<I>
     private emptyText: string;
     private emptyView: DivEl;
 
-    private sortFunc: (a: I, b: I) => number;
-
     constructor(className?: string) {
         super(className);
     }
@@ -139,10 +137,6 @@ export abstract class ListBox<I>
         }
     }
 
-    setSortItemViewsFunc(sortFunc: (a: I, b: I) => number): void {
-        this.sortFunc = sortFunc;
-    }
-
     getItemCount(): number {
         return this.items.length;
     }
@@ -252,13 +246,7 @@ export abstract class ListBox<I>
     protected addItemView(item: I, readOnly: boolean = false): Element {
         const itemView: Element = this.createItemView(item, readOnly);
         this.itemViews.set(this.getItemId(item), itemView);
-
-        if (this.sortFunc) {
-            const pos: number = this.items.sort(this.sortFunc).indexOf(item);
-            this.insertChild(itemView, pos);
-        } else {
-            this.appendChild(itemView);
-        }
+        this.appendChild(itemView);
 
         return itemView;
     }
