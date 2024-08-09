@@ -233,7 +233,7 @@ export abstract class ListBox<I>
         }
     }
 
-    private removeItemView(item: I): void {
+    protected removeItemView(item: I): void {
         const id: string = this.getItemId(item);
         const itemView: Element = this.itemViews.get(id);
 
@@ -246,9 +246,13 @@ export abstract class ListBox<I>
     protected addItemView(item: I, readOnly: boolean = false): Element {
         const itemView: Element = this.createItemView(item, readOnly);
         this.itemViews.set(this.getItemId(item), itemView);
-        this.appendChild(itemView);
+        this.insertItemView(itemView);
 
         return itemView;
+    }
+
+    protected insertItemView(itemView: Element): void {
+        this.appendChild(itemView);
     }
 
     private showEmptyView(): void {
