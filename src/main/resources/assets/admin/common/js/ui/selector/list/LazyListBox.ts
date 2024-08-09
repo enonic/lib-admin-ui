@@ -79,6 +79,10 @@ export abstract class LazyListBox<T> extends ListBox<T> {
     }
 
     protected addLazyLoadWhenLastIsVisible(itemView: Element): void {
+        if (this.observedItem === itemView) {
+            return;
+        }
+
         if (this.observedItem) {
             this.observer.unobserve(this.observedItem.getHTMLElement());
         }
