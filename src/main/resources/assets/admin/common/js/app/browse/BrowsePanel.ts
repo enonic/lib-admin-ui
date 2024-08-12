@@ -201,7 +201,7 @@ export class BrowsePanel
     }
 
     refreshFilter() {
-        if (this.filterPanel && (this.filterPanel.isVisible() || this.treeGrid.isFiltered())) {
+        if (this.filterPanel && (this.filterPanel.isVisible() || this.selectableListBoxPanel?.isFiltered() || this.treeGrid.isFiltered())) {
             this.filterPanel.refresh();
         }
     }
