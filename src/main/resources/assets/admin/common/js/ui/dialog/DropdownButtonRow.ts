@@ -17,7 +17,7 @@ export class DropdownButtonRow
             this.actionMenu = new MenuButton(mainAction, menuActions);
 
             if (useDefault) {
-                this.setDefaultElement(this.actionMenu);
+                this.setDefaultElement(this.actionMenu.getActionButton());
             }
 
             this.actionMenu.addClass('dropdown-dialog-menu');

@@ -247,13 +247,11 @@ export class MenuButton
 
         this.menu.onClicked(() => this.dropdownHandle.giveFocus());
 
-        this.onFocus(() => {
+        this.onFocus((event) => {
             const activeButton = this.getActiveActionButton();
             if (activeButton) {
-                console.log('Giving focus to ' + activeButton);
-                console.log(activeButton.giveFocus());
+                activeButton.giveFocus();
             } else {
-                this.dropdownHandle.isEnabled() && console.log('Giving focus to ' + this.dropdownHandle);
                 this.dropdownHandle.isEnabled() && this.dropdownHandle.giveFocus();
             }
         });
