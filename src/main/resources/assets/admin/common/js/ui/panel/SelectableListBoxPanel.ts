@@ -54,4 +54,8 @@ export class SelectableListBoxPanel<I> extends Panel {
     getToolbar(): ListBoxToolbar<I> {
         return this.listToolbar;
     }
+
+    getTotalItems(): number {
+        return this.listBoxWrapper.getTotalItems();
+    }
 }
