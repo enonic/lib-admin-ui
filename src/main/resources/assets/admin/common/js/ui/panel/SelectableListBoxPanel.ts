@@ -34,6 +34,10 @@ export class SelectableListBoxPanel<I> extends Panel {
         return this.listBoxWrapper.getSelectedItems();
     }
 
+    getLastSelectedItem(): I | undefined {
+        return this.listBoxWrapper.getSelectedItems().pop();
+    }
+
     doRender(): Q.Promise<boolean> {
         this.addClass('selectable-list-box-panel');
 
