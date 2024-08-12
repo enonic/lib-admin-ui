@@ -107,8 +107,8 @@ export class BrowsePanel
     private initTreeGridListeners() {
         this.treeGrid?.onDataChanged(this.handleDataChanged.bind(this));
         this.selectableListBoxPanel?.onDataChanged(this.handleDataChanged.bind(this));
-        this.treeGrid?.onSelectionChanged(this.handleSelectionChanged.bind(this));
-        this.selectableListBoxPanel?.onSelectionChanged(this.handleSelectionChanged.bind(this));
+        this.treeGrid?.onSelectionChanged(this.handleTreeGridSelectionChanged.bind(this));
+        this.selectableListBoxPanel?.onSelectionChanged(this.handleTreeListSelectionChanged.bind(this));
         this.treeGrid?.onHighlightingChanged(this.handleHighlightingChanged.bind(this));
 
         this.treeGrid.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
@@ -117,16 +117,15 @@ export class BrowsePanel
         });
 
         this.selectableListBoxPanel?.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
-            this.treeGrid.toggleClass('selection-mode', isActive);
             this.toggleSelectionMode(isActive);
         });
     }
 
-    private handleSelectionChanged() {
+    private handleTreeGridSelectionChanged() {
         const totalFullSelected: number = this.treeGrid.getTotalSelected();
 
         if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
-            this.updateSelectionModeShownItems(totalFullSelected);
+            this.updateTreeGridSelectionModeShownItems(totalFullSelected);
         }
 
         if (totalFullSelected) {
@@ -137,6 +136,35 @@ export class BrowsePanel
 
         if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
             this.updateFilterPanelOnSelectionChange();
+        }
+    }
+
+    private handleTreeListSelectionChanged() {
+        const totalFullSelected: number = this.selectableListBoxPanel.getSelectedItems().length;
+
+        if (this.selectableListBoxPanel.getToolbar().getSelectionPanelToggler().isActive()) {
+            this.updateTreeListSelectionModeShownItems(totalFullSelected);
+        }
+
+        if (totalFullSelected) {
+            this.debouncedActionsAndPreviewUpdate();
+        } else {
+            this.updateActionsAndPreview();
+        }
+
+        if (this.selectableListBoxPanel.getToolbar().getSelectionPanelToggler().isActive()) {
+            this.updateFilterPanelOnSelectionChange();
+        }
+    }
+
+    protected updateTreeListSelectionModeShownItems(totalFullSelected: number) {
+        const totalCurrentSelected: number = this.selectableListBoxPanel.getSelectedItems().length;
+        const amountOfNodesShown: number = this.selectableListBoxPanel.getTotalItems();
+
+        if (totalCurrentSelected === 0 || amountOfNodesShown === 0) { // all items deselected
+            this.selectableListBoxPanel.getToolbar().getSelectionPanelToggler().setActive(false);
+        } else if (amountOfNodesShown > totalFullSelected) { // some item/items deselected
+            this.enableSelectionMode();
         }
     }
 
@@ -359,7 +387,7 @@ export class BrowsePanel
         }
     }
 
-    private updateSelectionModeShownItems(totalFullSelected: number) {
+    private updateTreeGridSelectionModeShownItems(totalFullSelected: number) {
         const totalCurrentSelected: number = this.treeGrid.getTotalCurrentSelected();
         const amountOfNodesShown: number = this.treeGrid.getCurrentTotal();
 
