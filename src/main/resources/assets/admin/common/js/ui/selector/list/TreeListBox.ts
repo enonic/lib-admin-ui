@@ -44,7 +44,7 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
     protected addItemView(item: I, readOnly: boolean = false): TreeListElement<I> {
         const itemView = super.addItemView(item, readOnly) as TreeListElement<I>;
 
-        itemView.onItemsAdded((items) => this.notifyItemsAdded(items));
+        itemView.onItemsAdded((items, itemViews) => this.notifyItemsAdded(items, itemViews));
         itemView.onItemsRemoved((items) => this.notifyItemsRemoved(items));
         itemView.onItemsChanged((items) => this.notifyItemsChanged(items));
 
@@ -261,7 +261,7 @@ export abstract class TreeListElement<I>
         return this.childrenList.getItems(deep);
     }
 
-    onItemsAdded(handler: (items: I[]) => void): void {
+    onItemsAdded(handler: (items: I[], itemViews: Element[]) => void): void {
         this.childrenList.onItemsAdded(handler);
     }
 

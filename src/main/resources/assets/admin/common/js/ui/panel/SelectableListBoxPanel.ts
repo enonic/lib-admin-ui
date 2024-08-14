@@ -1,5 +1,5 @@
 import {Panel} from './Panel';
-import {SelectableListBoxWrapper} from '../selector/list/SelectableListBoxWrapper';
+import {SelectableListBoxWrapper, SelectionMode} from '../selector/list/SelectableListBoxWrapper';
 import {DataChangedEvent} from '../treegrid/DataChangedEvent';
 import {SelectionChange} from '../../util/SelectionChange';
 import * as Q from 'q';
@@ -38,6 +38,10 @@ export class SelectableListBoxPanel<I> extends Panel {
         return this.listBoxWrapper.getSelectedItems().pop();
     }
 
+    getSelectionMode(): SelectionMode {
+        return this.listBoxWrapper.getSelectionMode();
+    }
+
     doRender(): Q.Promise<boolean> {
         this.addClass('selectable-list-box-panel');
 
@@ -48,7 +52,7 @@ export class SelectableListBoxPanel<I> extends Panel {
     }
 
     getItem(id: string): I {
-        return this.listBoxWrapper.getItem(id);
+        return this.listBoxWrapper.getList().getItem(id);
     }
 
     getToolbar(): ListBoxToolbar<I> {
