@@ -105,52 +105,6 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
         return this.getItemView(item)?.getDataView();
     }
 
-    addItems(toAdd: I[] | I, silent: boolean = false): void {
-        const items = Array.isArray(toAdd) ? toAdd : [toAdd];
-
-        items.forEach((item: I) => { // searching for the correct parent to add the item
-            const parentList = this.findParentList(item);
-
-            if (parentList === this) {
-                super.addItems(item, silent);
-            } else {
-                this.getItemViews().forEach((listElement: TreeListElement<I>) => {
-                    listElement.addItems(item, silent);
-                });
-            }
-        });
-    }
-
-    replaceItems(toReplace: I | I[], append: boolean = false, silent?: boolean) {
-        const items = Array.isArray(toReplace) ? toReplace : [toReplace];
-
-        items.forEach((item: I) => {
-            const itemId = this.getIdOfItem(item);
-
-            if (this.getItems().some((i: I) => this.getIdOfItem(i) === itemId)) {
-                super.replaceItems(item, append, silent);
-            } else {
-                this.getItemViews().forEach((listElement: TreeListElement<I>) => {
-                    listElement.replaceItems(item, append, silent);
-                });
-            }
-        });
-    }
-
-    removeItems(toRemove: I | I[], silent?: boolean): I[] {
-        const removed = super.removeItems(toRemove, silent);
-
-        this.getItemViews().forEach((listElement: TreeListElement<I>) => {
-            const removedInChild = listElement.removeItems(toRemove, silent);
-
-            if (removedInChild.length > 0) {
-                removed.push(...removedInChild);
-            }
-        });
-
-        return removed;
-    }
-
     getParentList(): TreeListBox<I> | undefined {
         return this.options.parentListElement?.getParentList();
     }

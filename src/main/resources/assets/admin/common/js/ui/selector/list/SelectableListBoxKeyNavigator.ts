@@ -90,7 +90,7 @@ export class SelectableListBoxKeyNavigator<I> {
 
         this.selectableWrapper.setSelectionMode(SelectionMode.HIGHLIGHT);
         const lastSelectedItem = this.selectableWrapper.getSelectedItems().pop();
-        const itemToSelect = this.getPreviousItem(this.rootList, lastSelectedItem);
+        const itemToSelect = lastSelectedItem ? this.getPreviousItem(lastSelectedItem) : this.rootList.getItems().pop();
 
         if (itemToSelect) {
             this.selectableWrapper.deselectAll();
@@ -111,10 +111,10 @@ export class SelectableListBoxKeyNavigator<I> {
         if (wasHighlightMode) { // first need to set checkbox to selected if it was not checked
             this.selectableWrapper.select(lastSelectedItem);
         } else { // looking  non-selected item to select in up direction
-            let itemToSelect = this.getPreviousItem(this.rootList, lastSelectedItem);
+            let itemToSelect = this.getPreviousItem(lastSelectedItem);
 
             while (itemToSelect && this.selectableWrapper.isItemSelected(itemToSelect)) {
-                itemToSelect = this.getPreviousItem(this.rootList, itemToSelect);
+                itemToSelect = this.getPreviousItem(itemToSelect);
             }
 
             if (itemToSelect) {
@@ -123,12 +123,12 @@ export class SelectableListBoxKeyNavigator<I> {
         }
     }
 
-    getNextItem(list: ListBox<I>, item?: I): I | undefined { // Used for keyboard navigation
-        if (!item) {
-            return list.getItems()[0];
-        }
-
+    protected getNextItem(item: I): I | undefined { // Used for keyboard navigation
         // using id to get the next item in case item is not fully equal to the item in the list
+        return this.getNextItemInTheList(this.rootList, item);
+    }
+
+    protected getNextItemInTheList(list: ListBox<I>, item: I): I | undefined {
         const itemIndex = this.findItemIndex(list, item);
         return itemIndex === -1 ? undefined : list.getItems()[itemIndex + 1];
     }
@@ -138,11 +138,11 @@ export class SelectableListBoxKeyNavigator<I> {
         return list.getItems().findIndex((it) => list.getIdOfItem(it) === itemId);
     }
 
-    getPreviousItem(list: ListBox<I>, item?: I): I | undefined {
-        if (!item) {
-            return list.getItems().pop();
-        }
+    protected getPreviousItem(item: I): I | undefined {
+        return this.getPreviousItemInTheList(this.rootList, item);
+    }
 
+    protected getPreviousItemInTheList(list: ListBox<I>, item: I): I | undefined {
         const itemIndex = this.findItemIndex(list, item);
         return itemIndex === -1 ? undefined : list.getItems()[itemIndex - 1];
     }
@@ -160,10 +160,10 @@ export class SelectableListBoxKeyNavigator<I> {
         if (wasHighlightMode) { // first need to set checkbox to selected if it was not checked
             this.selectableWrapper.select(lastSelectedItem);
         } else { // looking next non-selected item to select
-            let itemToSelect = this.getNextItem(this.rootList, lastSelectedItem);
+            let itemToSelect = this.getNextItem(lastSelectedItem);
 
             while (itemToSelect && this.selectableWrapper.isItemSelected(itemToSelect)) {
-                itemToSelect = this.getNextItem(this.rootList, itemToSelect);
+                itemToSelect = this.getNextItem(itemToSelect);
             }
 
             if (itemToSelect) {
@@ -175,7 +175,7 @@ export class SelectableListBoxKeyNavigator<I> {
     protected handleKeyDownWithoutShift(event: Mousetrap.ExtendedKeyboardEvent): void {
         this.selectableWrapper.setSelectionMode(SelectionMode.HIGHLIGHT);
         const lastSelectedItem = this.selectableWrapper.getSelectedItems().pop();
-        const itemToSelect = this.getNextItem(this.rootList, lastSelectedItem);
+        const itemToSelect = lastSelectedItem ? this.getNextItem(lastSelectedItem) : this.rootList.getItems()[0];
 
         if (itemToSelect) {
             this.selectableWrapper.deselectAll();
