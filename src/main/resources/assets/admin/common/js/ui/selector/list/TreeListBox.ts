@@ -126,10 +126,6 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
             return rendered;
         });
     }
-
-    findParentList(item: I): TreeListBox<I> {
-        return this;
-    }
 }
 
 export interface TreeListElementParams<I> {
