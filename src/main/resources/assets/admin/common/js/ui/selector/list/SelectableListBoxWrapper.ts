@@ -34,7 +34,7 @@ export class SelectableListBoxWrapper<I>
 
     protected selectionMode: SelectionMode = SelectionMode.SELECT;
 
-    protected itemsWrappers = new Map<string, Element>();
+    protected itemsWrappers = new Map<string, Element[]>();
 
     protected selectionChangedListeners: ((selectionChange: SelectionChange<I>) => void)[];
 
@@ -76,7 +76,7 @@ export class SelectableListBoxWrapper<I>
         const wrapper: Element = new LiEl('item-view-wrapper');
         const id: string = this.listBox.getIdOfItem(item);
 
-        this.itemsWrappers.set(id, wrapper);
+        this.addItemWrapper(id, wrapper);
 
         view.replaceWith(wrapper);
         view.addClass('item-view');
@@ -119,6 +119,12 @@ export class SelectableListBoxWrapper<I>
         }
 
         wrapper.appendChild(view);
+    }
+
+    private addItemWrapper(id: string, wrapper: Element): void {
+        const idWrappersList = this.itemsWrappers.get(id) || [];
+        idWrappersList.push(wrapper);
+        this.itemsWrappers.set(id, idWrappersList);
     }
 
     protected handleUserToggleAction(item: I): void {
@@ -166,20 +172,20 @@ export class SelectableListBoxWrapper<I>
     protected handleItemRemoved(item: I): void {
         const id: string = this.listBox.getIdOfItem(item);
         this.selectedItems.delete(id);
-        const wrapper: Element = this.itemsWrappers.get(id);
-        wrapper?.remove();
+        this.itemsWrappers.get(id)?.forEach((wrapper) => wrapper.remove());
         this.itemsWrappers.delete(id);
     }
 
     protected toggleItemWrapperSelected(itemId: string, isSelected: boolean): void {
-        const itemWrapper = this.itemsWrappers.get(itemId);
-        itemWrapper?.toggleClass('selected', isSelected);
+        this.itemsWrappers.get(itemId)?.forEach((itemWrapper) => {
+            itemWrapper?.toggleClass('selected', isSelected);
 
-        if (this.isMultiSelect()) {
-            const isToBeChecked = isSelected && this.selectionMode === SelectionMode.SELECT;
-            itemWrapper.toggleClass('checked', isToBeChecked);
-            (itemWrapper?.getFirstChild() as Checkbox)?.setChecked(isToBeChecked, true);
-        }
+            if (this.isMultiSelect()) {
+                const isToBeChecked = isSelected && this.selectionMode === SelectionMode.SELECT;
+                itemWrapper.toggleClass('checked', isToBeChecked);
+                (itemWrapper?.getFirstChild() as Checkbox)?.setChecked(isToBeChecked, true);
+            }
+        });
     }
 
     private createCheckbox(item: I): Checkbox {
