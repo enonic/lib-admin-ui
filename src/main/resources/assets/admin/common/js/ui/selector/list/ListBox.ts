@@ -10,7 +10,7 @@ export abstract class ListBox<I>
 
     protected itemViews: Map<string, Element> = new Map<string, Element>();
 
-    private itemsAddedListeners: ((items: I[]) => void)[] = [];
+    private itemsAddedListeners: ((items: I[], itemViews: Element[]) => void)[] = [];
     private itemsRemovedListeners: ((items: I[]) => void)[] = [];
     private itemsChangedListeners: ((items: I[]) => void)[] = [];
 
@@ -36,10 +36,10 @@ export abstract class ListBox<I>
     setItems(items: I[], silent?: boolean): void {
         this.clearItems(silent);
         this.items = items;
-        this.layoutList();
+        const itemViews = this.layoutList();
 
         if (items.length > 0 && !silent) {
-            this.notifyItemsAdded(items);
+            this.notifyItemsAdded(items, itemViews);
         }
     }
 
@@ -159,7 +159,7 @@ export abstract class ListBox<I>
         return  this.items.findIndex((it) => this.getItemId(it) === itemId);
     }
 
-    public onItemsAdded(listener: (items: I[]) => void): void {
+    public onItemsAdded(listener: (items: I[], itemViews?: Element[]) => void): void {
         this.itemsAddedListeners.push(listener);
     }
 
@@ -215,22 +215,21 @@ export abstract class ListBox<I>
 
         this.items = this.items.concat(items);
 
-        items.forEach((item: I) => {
-            this.addItemView(item, readOnly);
-        });
+        const itemViews = items.map((item: I) => this.addItemView(item, readOnly));
 
         if (items.length > 0 && !silent) {
-            this.notifyItemsAdded(items);
+            this.notifyItemsAdded(items, itemViews);
         }
     }
 
-    private layoutList(): void {
+    private layoutList(): Element[] {
         if (this.items.length > 0) {
             this.removeEmptyView();
-            this.items.forEach((item: I) => this.addItemView(item));
-        } else {
-            this.showEmptyView();
+            return this.items.map((item: I) => this.addItemView(item));
         }
+
+        this.showEmptyView();
+        return [];
     }
 
     protected removeItemView(item: I): void {
@@ -275,9 +274,9 @@ export abstract class ListBox<I>
         }
     }
 
-    protected notifyItemsAdded(items: I[]): void {
+    protected notifyItemsAdded(items: I[], itemViews: Element[]): void {
         this.itemsAddedListeners.forEach((listener) => {
-            listener(items);
+            listener(items, itemViews);
         });
     }
 
