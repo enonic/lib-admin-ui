@@ -5,7 +5,7 @@ import {Checkbox} from '../../Checkbox';
 import {SelectionChange} from '../../../util/SelectionChange';
 import * as Q from 'q';
 import {LiEl} from '../../../dom/LiEl';
-import {TreeListBox} from './TreeListBox';
+import {TreeListBox, TreeListElement} from './TreeListBox';
 import {DataChangedEvent, DataChangedType} from '../../treegrid/DataChangedEvent';
 
 export enum SelectionMode {
@@ -58,8 +58,8 @@ export class SelectableListBoxWrapper<I>
     }
 
     protected addListBoxListeners(): void {
-        this.listBox.onItemsAdded((items: I[]) => {
-            items.forEach((item: I) => this.handleItemAdded(item));
+        this.listBox.onItemsAdded((items: I[], itemViews: Element[]) => {
+            items.forEach((item: I, index) => this.handleItemAdded(item, itemViews[index]));
         });
 
         this.listBox.onItemsRemoved((items: I[]) => {
@@ -71,8 +71,9 @@ export class SelectableListBoxWrapper<I>
         });
     }
 
-    protected handleItemAdded(item: I): void {
-        const view: Element = this.listBox instanceof TreeListBox ? this.listBox.getDataView(item) : this.listBox.getItemView(item);
+    protected handleItemAdded(item: I, itemView: Element): void {
+        console.log(itemView);
+        const view: Element = this.listBox instanceof TreeListBox ? (itemView as TreeListElement<I>).getDataView() : itemView;
         const wrapper: Element = new LiEl('item-view-wrapper');
         const id: string = this.listBox.getIdOfItem(item);
 
@@ -153,10 +154,6 @@ export class SelectableListBoxWrapper<I>
 
     setSelectionMode(selectionMode: SelectionMode): void {
         this.selectionMode = selectionMode;
-    }
-
-    getItem(id: string): I {
-        return this.listBox.getItem(id);
     }
 
     protected handleUserDeselected(item: I): void {
