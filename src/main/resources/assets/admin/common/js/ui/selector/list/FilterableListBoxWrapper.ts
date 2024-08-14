@@ -208,7 +208,7 @@ export class FilterableListBoxWrapper<I>
     }
 
     protected filterItem(item: I, searchString: string): void {
-        this.itemsWrappers.get(this.listBox.getIdOfItem(item))?.setVisible(this.options.filter(item, searchString));
+        this.itemsWrappers.get(this.listBox.getIdOfItem(item))?.forEach(itemView => itemView.setVisible(this.options.filter(item, searchString)));
     }
 
     protected handleKeyDown(event: KeyboardEvent): void {
@@ -313,7 +313,8 @@ export class FilterableListBoxWrapper<I>
         this.listBox.hide();
         this.dropdownHandle.up();
 
-        Array.from(this.itemsWrappers.values()).forEach((itemWrapper: Element) => itemWrapper.setVisible(true));
+        Array.from(this.itemsWrappers.values()).forEach(
+            (itemWrappers: Element[]) => itemWrappers.forEach(itemWrapper => itemWrapper.setVisible(true)));
 
         if (selectionChange.selected.length > 0 || selectionChange.deselected.length > 0) {
             this.notifySelectionChanged(selectionChange);
@@ -363,13 +364,15 @@ export class FilterableListBoxWrapper<I>
     private getFocusedItem(): I {
         let focusedItem: I = null;
 
-        this.itemsWrappers.forEach((itemWrapper: Element, key: string) => {
-            const elemToCheck: HTMLElement =
-                this.isMultiSelect() ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() : itemWrapper.getHTMLElement();
+        this.itemsWrappers.forEach((itemWrappers: Element[], key: string) => {
+            itemWrappers.forEach((itemWrapper: Element) => {
+                const elemToCheck: HTMLElement =
+                    this.isMultiSelect() ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() : itemWrapper.getHTMLElement();
 
-            if (elemToCheck === document.activeElement) {
-                focusedItem = this.listBox.getItem(key);
-            }
+                if (elemToCheck === document.activeElement) {
+                    focusedItem = this.listBox.getItem(key);
+                }
+            });
         });
 
         return focusedItem;
