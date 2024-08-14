@@ -6,52 +6,36 @@ export class SelectableTreeListBoxKeyNavigator<I> extends SelectableListBoxKeyNa
 
     protected rootList: TreeListBox<I>;
 
-    getNextItem(list: TreeListBox<I>, item?: I, flat?: boolean): I | undefined {
-        if (!item) {
-            return list.getItems()[0];
+    getNextItem(item: I, flat?: boolean): I | undefined {
+        const treeListElement = this.rootList.getItemView(item);
+
+        // If the item is expanded and has children, return the first child
+        if (!flat && treeListElement?.hasChildren() && treeListElement.isExpanded()) {
+            return treeListElement.getItems()[0];
         }
 
-        const isItemInThisList = this.findItemIndex(list, item) !== -1;
+        const parentList = treeListElement?.getParentList();
 
-        if (isItemInThisList) {
-            const treeListElement = list.getItemView(item);
-
-            if (!flat && treeListElement?.hasChildren() && treeListElement.isExpanded()) {
-                return treeListElement.getItems()[0];
-            }
-
-            return super.getNextItem(list, item) || this.getNextItemInParentList(list);
-        }
-
-        const parentList = list.findParentList(item);
-
-        return parentList ? this.getNextItem(parentList, item) : undefined;
-    }
-
-    private getNextItemInParentList(list: TreeListBox<I>): I | undefined {
-        if (list.getParentList()) {
-            return this.getNextItem(list.getParentList(), list.getParentItem(), true);
+        // Return next item to this one in parent list, if the item is the last in the list, return the next item in the parent list etc.
+        if (parentList) {
+            return super.getNextItemInTheList(parentList, item) ||
+                   (parentList.getParentItem() ? this.getNextItem(parentList.getParentItem(), true) : undefined);
         }
 
         return undefined;
     }
 
+    getPreviousItem(item?: I): I | undefined {
+        const treeListElement = this.rootList.getItemView(item);
 
-    getPreviousItem(list: TreeListBox<I>, item?: I): I | undefined {
-        if (!item) {
-            return list.getItems()[0];
+        const parentList = treeListElement?.getParentList();
+
+        if (parentList) {
+            const previousItem = super.getPreviousItemInTheList(parentList, item);
+            return previousItem ? this.getLastAvailableItem(parentList, previousItem) : parentList.getParentItem();
         }
 
-        const isItemInThisList = this.findItemIndex(list, item) !== -1;
-
-        if (isItemInThisList) {
-            const previousItem = super.getPreviousItem(list, item);
-            return previousItem ? this.getLastAvailableItem(list, previousItem) : list.getParentItem();
-        }
-
-        const parentList = list.findParentList(item);
-
-        return parentList ? this.getPreviousItem(parentList, item) : undefined;
+        return undefined;
     }
 
     private getLastAvailableItem(list: TreeListBox<I>, item: I): I | undefined {
