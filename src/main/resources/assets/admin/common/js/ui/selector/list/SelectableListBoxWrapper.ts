@@ -72,7 +72,6 @@ export class SelectableListBoxWrapper<I>
     }
 
     protected handleItemAdded(item: I, itemView: Element): void {
-        console.log(itemView);
         const view: Element = this.listBox instanceof TreeListBox ? (itemView as TreeListElement<I>).getDataView() : itemView;
         const wrapper: Element = new LiEl('item-view-wrapper');
         const id: string = this.listBox.getIdOfItem(item);
@@ -177,7 +176,9 @@ export class SelectableListBoxWrapper<I>
         itemWrapper?.toggleClass('selected', isSelected);
 
         if (this.isMultiSelect()) {
-            (itemWrapper?.getFirstChild() as Checkbox)?.setChecked(isSelected && this.selectionMode === SelectionMode.SELECT, true);
+            const isToBeChecked = isSelected && this.selectionMode === SelectionMode.SELECT;
+            itemWrapper.toggleClass('checked', isToBeChecked);
+            (itemWrapper?.getFirstChild() as Checkbox)?.setChecked(isToBeChecked, true);
         }
     }
 
