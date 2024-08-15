@@ -129,6 +129,7 @@ export class FilterableListBoxWrapper<I>
 
     private addKeyboardNavigation(): void {
         let isShowListBoxEvent: boolean = false;
+        let keysBound = false;
 
         const navigationKeyBindings = [
             new KeyBinding('esc').setGlobal(true).setCallback(this.handleClickOutside.bind(this)),
@@ -169,8 +170,13 @@ export class FilterableListBoxWrapper<I>
         this.listBox.onShown(() => {
             this.selectionDelta = new Map();
             isShowListBoxEvent = true;
-            KeyBindings.get().shelveBindings();
-            KeyBindings.get().bindKeys(navigationKeyBindings);
+
+            if (!keysBound) {
+                KeyBindings.get().shelveBindings();
+                KeyBindings.get().bindKeys(navigationKeyBindings);
+            }
+
+            keysBound = true;
 
             setTimeout(() => { // if open by arrow key then wait for event to finish
                 isShowListBoxEvent = false;
@@ -180,8 +186,14 @@ export class FilterableListBoxWrapper<I>
         this.listBox.onHidden(() => {
             this.resetSelection();
             this.selectionDelta = new Map();
-            KeyBindings.get().unbindKeys(navigationKeyBindings);
-            KeyBindings.get().unshelveBindings();
+
+            if (keysBound) {
+                KeyBindings.get().unbindKeys(navigationKeyBindings);
+                KeyBindings.get().unshelveBindings();
+            }
+
+            keysBound = false;
+
         });
     }
 
