@@ -15,7 +15,8 @@ import {ElementRegistry} from './ElementRegistry';
 import {assert, assertNotNull, assertState} from '../util/Assert';
 import {ElementEvent} from './ElementEvent';
 import * as DOMPurify from 'dompurify';
-import {IWCAG as WCAG, AriaRole, AriaHasPopup} from '../ui/WCAG';
+import {IWCAG as WCAG, AriaRole, AriaHasPopup, IWCAG} from '../ui/WCAG';
+import {KeyHelper} from '../ui/KeyHelper';
 
 export interface PurifyConfig {
     addTags?: string[];
@@ -236,15 +237,31 @@ export class Element {
         }
     }
 
-    applyWCAGAttributes(): void {
-        if (!this.implementsWCAG()) {
+    applyWCAGAttributes(attr?: IWCAG): void {
+        if (!ObjectHelper.isDefined(attr) && !this.implementsWCAG()) {
             return;
         }
 
-        this['tabbable'] && this.makeTabbable();
-        this['role'] && this.setRole(this['role']);
-        this['ariaLabel'] && this.setAriaLabel(this['ariaLabel']);
-        this['ariaHasPopup'] && this.setAriaHasPopup(this['ariaHasPopup']);
+        if (ObjectHelper.isDefined(attr)) {
+            this[WCAG] = true;
+            if (ObjectHelper.isDefined(attr.tabbable)) {
+                this['tabbable'] = attr['tabbable'];
+            }
+            if (ObjectHelper.isDefined(attr.role)) {
+                this['role'] = attr['role'];
+            }
+            if (ObjectHelper.isDefined(attr.ariaLabel)) {
+                this['ariaLabel'] = attr['ariaLabel'];
+            }
+            if (ObjectHelper.isDefined(attr.ariaHasPopup)) {
+                this['ariaHasPopup'] = attr['ariaHasPopup'];
+            }
+        }
+
+        ObjectHelper.isDefined(this['tabbable']) && this['tabbable'] ? this.makeTabbable() : this.removeTabbable();
+        ObjectHelper.isDefined(this['role']) && this.setRole(this['role']);
+        ObjectHelper.isDefined(this['ariaLabel']) && this.setAriaLabel(this['ariaLabel']);
+        ObjectHelper.isDefined(this['ariaHasPopup']) && this.setAriaHasPopup(this['ariaHasPopup']);
     }
 
     private implementsWCAG(): boolean {
@@ -579,6 +596,7 @@ export class Element {
 
     setAriaLabel(label: string): Element {
         if (StringHelper.isBlank(label)) {
+            this.removeAriaAttribute('label');
             return this;
         }
         return this.setAriaAttribute('label', label);
@@ -604,16 +622,27 @@ export class Element {
         if (this.isAriaRole(value)) {
             role = value;
         }
-        this.getEl().setAttribute('role', role.toLowerCase());
+        StringHelper.isBlank(role.toLowerCase()) ?
+            this.getEl().removeAttribute('role') :
+            this.getEl().setAttribute('role', role.toLowerCase());
+
         return this;
     }
 
     setAriaHasPopup(value?: string | AriaHasPopup): Element {
-        let hasPopup = AriaHasPopup.TRUE;
+        let hasPopup = value ?? AriaHasPopup.TRUE;
         if (this.isAriaHasPopup(value)) {
             hasPopup = value;
         }
-        this.setAriaAttribute('haspopup', hasPopup.toLowerCase());
+        StringHelper.isBlank(hasPopup.toLowerCase()) ?
+            this.getEl().removeAttribute('haspopup') :
+            this.setAriaAttribute('haspopup', hasPopup.toLowerCase());
+
+        return this;
+    }
+
+    removeAriaHasPopup() {
+        this.removeAriaAttribute('haspopup');
         return this;
     }
 
@@ -1086,6 +1115,16 @@ export class Element {
         this.unMouseWheel(listener);
         // Firefox
         this.getEl().removeEventListener('DOMMouseScroll', listener);
+    }
+
+    onEnterPressed(callback: () => void) {
+        this.onKeyDown((event: KeyboardEvent) => {
+            if (KeyHelper.isEnterKey(event)) {
+                callback();
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        });
     }
 
     onClicked(listener: (event: MouseEvent) => void) {

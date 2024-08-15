@@ -1,11 +1,11 @@
 export const IWCAG = Symbol('IWCAG');
 
 export interface IWCAG {
-    [IWCAG]: boolean;
+    [IWCAG]?: boolean;
     tabbable?: boolean;
-    role?: AriaRole;
+    role?: AriaRole | '';
     ariaLabel?: string;
-    ariaHasPopup?: AriaHasPopup;
+    ariaHasPopup?: AriaHasPopup | '';
 }
 
 export enum AriaRole {

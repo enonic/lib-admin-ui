@@ -44,8 +44,10 @@ export class Body
     }
 
     reapplyFocus() {
-        this.focusedElement?.giveFocus();
-        this.focusedElement = null;
+        setTimeout(() => {
+            this.focusedElement?.giveFocus();
+            this.focusedElement = null;
+        }, 100);
     }
 
     setFocusedElement(element: Element) {

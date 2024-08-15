@@ -8,6 +8,8 @@ import {Body} from '../../dom/Body';
 import {Element} from '../../dom/Element';
 import * as Q from 'q';
 import {AriaRole, IWCAG as WCAG} from '../WCAG';
+import {KeyHelper} from '../KeyHelper';
+import * as $ from 'jquery';
 
 export enum MenuButtonDropdownPos {
     LEFT, RIGHT
@@ -247,6 +249,19 @@ export class MenuButton
 
         this.menu.onClicked(() => this.dropdownHandle.giveFocus());
 
+        this.onKeyDown((event) => {
+            const activeButton = this.getActiveActionButton();
+            if (KeyHelper.isEnterKey(event)) {
+                if (activeButton?.isEnabled()) {
+                    //activeButton.getAction().execute();
+                    $(activeButton.getHTMLElement()).simulate('click');
+                } else if (this.dropdownHandle.isEnabled()) {
+                    $(activeButton.getHTMLElement()).simulate('click');
+                    this.dropdownHandle.giveFocus();
+                }
+            }
+        });
+
         this.onFocus((event) => {
             const activeButton = this.getActiveActionButton();
             if (activeButton) {
@@ -254,6 +269,8 @@ export class MenuButton
             } else {
                 this.dropdownHandle.isEnabled() && this.dropdownHandle.giveFocus();
             }
+            event.stopImmediatePropagation();
+            event.preventDefault();
         });
     }
 

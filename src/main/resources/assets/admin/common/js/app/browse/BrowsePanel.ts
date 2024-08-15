@@ -244,6 +244,7 @@ export class BrowsePanel
     }
 
     protected showFilterPanel() {
+        this.browseToolbar.giveBlur();
         this.filterPanelForcedShown = true;
         this.filterPanelForcedHidden = false;
 
@@ -267,7 +268,7 @@ export class BrowsePanel
         if (this.filterPanel.hasFilterSet()) {
             this.toggleFilterPanelButton.addClass('filtered');
         }
-
+        this.browseToolbar.giveFocus();
     }
 
     private toggleSelectionMode(isActive: boolean) {
@@ -298,7 +299,9 @@ export class BrowsePanel
             .setAnimationDelay(100)     // filter panel animation time
             .build();
 
-        this.filterPanel.onHideFilterPanelButtonClicked(this.toggleFilterPanel.bind(this));
+        this.filterPanel.onHideFilterPanelButtonClicked(() => {
+            this.toggleFilterPanel();
+        });
         this.filterPanel.onShowResultsButtonClicked(this.toggleFilterPanel.bind(this));
 
         this.addToggleFilterPanelButtonInToolbar();
@@ -307,6 +310,9 @@ export class BrowsePanel
 
     private addToggleFilterPanelButtonInToolbar() {
         this.toggleFilterPanelAction = new ToggleFilterPanelAction(this).setFoldable(false);
+        this.toggleFilterPanelAction.setWcagAttributes({
+            ariaLabel: i18n('tooltip.filterPanel.show')
+        });
         this.toggleFilterPanelButton = this.browseToolbar.prependAction(this.toggleFilterPanelAction);
         this.toggleFilterPanelButton.setTitle(i18n('tooltip.filterPanel.show'));
         this.toggleFilterPanelAction.setVisible(false);

@@ -1,6 +1,8 @@
 import * as Q from 'q';
 import {KeyBinding} from './KeyBinding';
 import {Mnemonic} from './Mnemonic';
+import {IWCAG} from './WCAG';
+import {ObjectHelper} from '../ObjectHelper';
 
 type ExecutionListener = (action: Action) => Q.Promise<any> | void;
 
@@ -33,6 +35,8 @@ export class Action {
     private childActions: Action[] = [];
 
     private parentAction: Action;
+
+    private wcag?: IWCAG;
 
     private sortOrder: number = 10;
 
@@ -141,12 +145,29 @@ export class Action {
         return this.visible;
     }
 
+    isFocusable(): boolean {
+        return this.isVisible() && this.isEnabled();
+    }
+
     setVisible(value: boolean): Action {
         if (value !== this.visible) {
             this.visible = value;
             this.notifyPropertyChanged();
         }
         return this;
+    }
+
+    setWcagAttributes(wcag: IWCAG): Action {
+        this.wcag = wcag;
+        return this;
+    }
+
+    hasWcagAttributes(): boolean {
+        return ObjectHelper.isDefined(this.wcag);
+    }
+
+    getWcagAttributes(): IWCAG {
+        return this.wcag;
     }
 
     getIconClass(): string {

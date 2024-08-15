@@ -169,6 +169,8 @@ export abstract class ModalDialog
                         }
                     }
                     this.handleClickOutside();
+                    event.stopPropagation();
+                    event.preventDefault();
                 }
             };
 

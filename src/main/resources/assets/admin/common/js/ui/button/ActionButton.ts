@@ -27,9 +27,8 @@ export class ActionButton
             this.addClass(action.getClass());
         }
 
-        if (wcag) {
-            wcag.role && this.setRole(wcag.role);
-            wcag.ariaHasPopup && this.setAriaHasPopup(wcag.ariaHasPopup);
+        if (action.hasWcagAttributes()) {
+            this.applyWCAGAttributes(action.getWcagAttributes());
         }
 
         this.setEnabled(this.action.isEnabled());
@@ -54,8 +53,8 @@ export class ActionButton
             });
         }
 
-        this.onKeyDown((event: KeyboardEvent) => KeyHelper.isEnterKey(event) && this.action.execute());
         this.onClicked(() => this.action.execute());
+        this.onEnterPressed(() => this.action.execute());
 
         this.action.onExecuted(() => {
             Body.get().setFocusedElement(this);
