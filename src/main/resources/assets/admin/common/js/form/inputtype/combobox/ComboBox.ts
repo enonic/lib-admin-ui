@@ -16,7 +16,6 @@ import {ComboBoxDisplayValueViewer} from './ComboBoxDisplayValueViewer';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {ComboBoxListInput} from './ComboBoxListInput';
 import {StringHelper} from '../../../util/StringHelper';
-import {ValueChangedEvent} from '../ValueChangedEvent';
 import {SelectionChange} from '../../../util/SelectionChange';
 import {ComboBoxSelectedOptionsView} from './ComboBoxSelectedOptionsView';
 import {ObjectHelper} from '../../../ObjectHelper';
