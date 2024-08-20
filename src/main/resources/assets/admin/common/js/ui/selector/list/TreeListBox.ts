@@ -106,11 +106,15 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
     }
 
     getParentList(): TreeListBox<I> | undefined {
-        return this.options.parentListElement?.getParentList();
+        return this.getParentListElement()?.getParentList();
     }
 
     getParentItem(): I | undefined {
-        return this.options.parentListElement?.getItem();
+        return this.getParentListElement()?.getItem();
+    }
+
+    getParentListElement(): TreeListElement<I> | undefined {
+        return this.options.parentListElement;
     }
 
     protected getScrollContainer(): Element {

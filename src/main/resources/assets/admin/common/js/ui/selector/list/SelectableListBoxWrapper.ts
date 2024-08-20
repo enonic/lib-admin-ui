@@ -18,7 +18,7 @@ export interface SelectableListBoxDropdownOptions<I> {
     className?: string;
     maxSelected?: number;
     checkboxPosition?: 'left' | 'right';
-    highlightMode?: boolean;
+    highlightMode?: boolean; // only actual for multiselect
 }
 
 export class SelectableListBoxWrapper<I>

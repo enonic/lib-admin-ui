@@ -12,8 +12,6 @@ export class GridDragHandler<MODEL extends IDentifiable> {
 
     protected contentGrid: TreeGrid<MODEL>;
 
-    protected activeItem: MODEL;
-
     private positionChangedListeners: (() => void)[] = [];
 
     private draggableItem: Element;
@@ -49,7 +47,7 @@ export class GridDragHandler<MODEL extends IDentifiable> {
     }
 
     protected handleMouseOver(e: any) {
-       this.activeItem = this.contentGrid.getDataFromDomEvent(e);
+      //
     }
 
     protected handleDragInit(event: DragEvent) {
