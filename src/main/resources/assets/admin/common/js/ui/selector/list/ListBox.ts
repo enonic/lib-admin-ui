@@ -65,9 +65,9 @@ export abstract class ListBox<I>
         this.showEmptyView();
     }
 
-    addItems(toAdd: I | I[], silent: boolean = false): void {
+    addItems(toAdd: I | I[], silent: boolean = false, index: number = -1): void {
         const items = Array.isArray(toAdd) ? toAdd : [toAdd];
-        this.doAddItem(false, items, silent);
+        this.doAddItem(false, items, silent, index);
     }
 
     removeItems(toRemove: I | I[], silent?: boolean): I[] {
@@ -208,14 +208,18 @@ export abstract class ListBox<I>
         return view;
     }
 
-    private doAddItem(readOnly: boolean, items: I[], silent: boolean = false): void {
+    private doAddItem(readOnly: boolean, items: I[], silent: boolean = false, index: number = -1): void {
         if (this.getItemCount() === 0) {
             this.removeEmptyView();
         }
 
-        this.items = this.items.concat(items);
+        if (index > -1) {
+            this.items.splice(index, 0, ...items);
+        } else {
+            this.items = this.items.concat(items);
+        }
 
-        const itemViews = items.map((item: I) => this.addItemView(item, readOnly));
+        const itemViews = items.map((item: I) => this.addItemView(item, readOnly, index));
 
         if (items.length > 0 && !silent) {
             this.notifyItemsAdded(items, itemViews);
@@ -242,16 +246,20 @@ export abstract class ListBox<I>
         }
     }
 
-    protected addItemView(item: I, readOnly: boolean = false): Element {
+    protected addItemView(item: I, readOnly: boolean = false, index: number = -1): Element {
         const itemView: Element = this.createItemView(item, readOnly);
         this.itemViews.set(this.getItemId(item), itemView);
-        this.insertItemView(itemView);
+        this.insertItemView(itemView, index);
 
         return itemView;
     }
 
-    protected insertItemView(itemView: Element): void {
-        this.appendChild(itemView);
+    protected insertItemView(itemView: Element, index: number = -1): void {
+        if (index > -1) {
+            this.insertChild(itemView, index);
+        } else {
+            this.appendChild(itemView);
+        }
     }
 
     private showEmptyView(): void {
