@@ -1,4 +1,4 @@
-import {MenuButton} from '../button/MenuButton';
+import {MenuButton, MenuButtonConfig} from '../button/MenuButton';
 import {ButtonRow} from './ModalDialog';
 import {Action} from '../Action';
 
@@ -12,9 +12,9 @@ export class DropdownButtonRow
         this.addClass('dropdown-button-row');
     }
 
-    makeActionMenu(mainAction: Action, menuActions: Action[], useDefault: boolean = true): MenuButton {
+    makeActionMenu(menuButtonConfig: MenuButtonConfig, useDefault: boolean = true): MenuButton {
         if (!this.actionMenu) {
-            this.actionMenu = new MenuButton(mainAction, menuActions);
+            this.actionMenu = new MenuButton(menuButtonConfig);
 
             if (useDefault) {
                 this.setDefaultElement(this.actionMenu.getActionButton());

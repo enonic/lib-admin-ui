@@ -14,7 +14,7 @@ export class Action {
 
     private title: string;
 
-    private clazz: string;
+    private cls: string;
 
     private iconClass: string;
 
@@ -192,12 +192,16 @@ export class Action {
     }
 
     getClass(): string {
-        return this.clazz;
+        return this.cls;
     }
 
     setClass(value: string): Action {
-        this.clazz = value;
+        this.cls = `${value}-action`;
         return this;
+    }
+
+    hasClass(): boolean {
+        return this.cls != null;
     }
 
     hasShortcut(): boolean {
@@ -260,8 +264,8 @@ export class Action {
         this.propertyChangedListeners.push(listener);
     }
 
-    unPropertyChanged(listener: () => void) {
-        this.propertyChangedListeners = this.propertyChangedListeners.filter((currentListener: () => void) => {
+    unPropertyChanged(listener: (action: Action) => void) {
+        this.propertyChangedListeners = this.propertyChangedListeners.filter((currentListener: (action: Action) => void) => {
             return listener !== currentListener;
         });
     }

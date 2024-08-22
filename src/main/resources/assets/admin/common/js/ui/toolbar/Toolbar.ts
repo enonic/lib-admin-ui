@@ -59,9 +59,8 @@ export class Toolbar<C extends ToolbarConfig>
         const onToolbarFocused = () => {
             this.focusToolbar();
             this.focusActionElement();
-        };
+        };/*
         Body.get().onClicked((event) => {
-            console.log(this.getEl(), event);
             const clickInsideToolbar = this.getEl().getHTMLElement().contains(event.target as Node);
             if (clickInsideToolbar) {
                 if (this.isFocused()) {
@@ -70,15 +69,12 @@ export class Toolbar<C extends ToolbarConfig>
                 console.log('Toolbar.onClicked, focusing toolbar');
                 onToolbarFocused();
             }
-        });
+        });*/
 
         // Hack: Update after styles are applied to evaluate the sizes correctly
         ResponsiveManager.onAvailableSizeChanged(this, () => window.setTimeout(this.foldOrExpand.bind(this)));
 
-        this.onFocus(() => {
-            console.log('Toolbar.onFocus');
-            onToolbarFocused();
-        });
+        this.onFocus(() => onToolbarFocused());
     }
 
     private getFocusedActionElement(): Element {
@@ -95,6 +91,7 @@ export class Toolbar<C extends ToolbarConfig>
     }
 
     private focusToolbar() {
+        //console.log('Focusing toolbar');
         if (this.isFocused()) {
             return;
         }
@@ -201,7 +198,9 @@ export class Toolbar<C extends ToolbarConfig>
         });
 
         const onFocus = (event: FocusEvent) => {
+            //console.log('Focusing ', element, event);
             if (focusOnClick) {
+                //console.log('Focus on click, exiting');
                 focusOnClick = false;
 
                 event.stopImmediatePropagation();
@@ -216,11 +215,14 @@ export class Toolbar<C extends ToolbarConfig>
         };
 
         const onBlur = (event: FocusEvent) => {
+            focusOnClick = false;
             // If newly focused element is not a part of the toolbar, remove focus from the toolbar
+            //console.log('Blurring ', element, event);
             if (!this.getEl().getHTMLElement().contains(event.relatedTarget as Node)) {
                 element.getChildren().forEach((child: Element) => {
                     child.giveBlur();
                 });
+                //console.log('Removing focus from the toolbar');
                 this.removeFocus();
             }
         };
@@ -231,12 +233,12 @@ export class Toolbar<C extends ToolbarConfig>
             this.lastFocusedActionIndex = this.getActionIndexByElement(element);
         });
         element.onBlur((event: FocusEvent) => onBlur(event));
-
+/*
         element.whenRendered(() => {
             element.getChildren().forEach((child: Element) => {
                 child.onFocus((event: FocusEvent) => onFocus(event));
             });
-        });
+        });*/
     }
 
     private isFocused(): boolean {

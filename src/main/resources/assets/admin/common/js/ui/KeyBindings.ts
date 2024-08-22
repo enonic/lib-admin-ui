@@ -188,7 +188,7 @@ export class KeyBindings {
         this.helpKeyPressedListeners.push(listener);
     }
 
-    unHelpKeyPressed(listener: () => void) {
+    unHelpKeyPressed(listener: (event: Mousetrap.ExtendedKeyboardEvent) => void) {
         this.helpKeyPressedListeners =
             this.helpKeyPressedListeners.filter((currentListener: (event: Mousetrap.ExtendedKeyboardEvent) => void) => {
                 return listener !== currentListener;

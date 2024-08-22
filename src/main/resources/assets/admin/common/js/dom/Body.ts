@@ -54,6 +54,10 @@ export class Body
         this.focusedElement = element;
     }
 
+    getFocusedElement(): Element {
+        return this.focusedElement;
+    }
+
     static get(): Body {
         let instance: Body = Store.instance().get(BODY_KEY);
 

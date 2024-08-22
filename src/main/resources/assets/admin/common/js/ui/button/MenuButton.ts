@@ -15,6 +15,14 @@ export enum MenuButtonDropdownPos {
     LEFT, RIGHT
 }
 
+interface MenuButtonConfigObject {
+    defaultAction: Action;
+    menuActions?: Action[];
+    dropdownPosition?: MenuButtonDropdownPos
+}
+
+export type MenuButtonConfig = Action | MenuButtonConfigObject;
+
 export class MenuButton
     extends DivEl {
 
@@ -22,9 +30,11 @@ export class MenuButton
     role: AriaRole = AriaRole.NONE;
     tabbable: boolean = true;
 
-    protected readonly mainAction: Action;
+    protected readonly defaultAction: Action;
 
-    protected readonly menuActions: Action[];
+    protected menuActions: Action[] = [];
+
+    protected readonly dropdownPosition: MenuButtonDropdownPos;
 
     protected dropdownHandle: DropdownHandle;
 
@@ -38,11 +48,16 @@ export class MenuButton
 
     private actionPropertyListener: () => void;
 
-    constructor(mainAction: Action, menuActions: Action[] = []) {
+    constructor(config: Action | MenuButtonConfig) {
         super('menu-button');
 
-        this.mainAction = mainAction;
-        this.menuActions = menuActions;
+        if ('defaultAction' in config) {
+            this.defaultAction = config.defaultAction;
+            this.menuActions = config.menuActions || [];
+            this.dropdownPosition = config.dropdownPosition || MenuButtonDropdownPos.LEFT;
+        } else {
+            this.defaultAction = config;
+        }
 
         this.initElements();
         this.initListeners();
@@ -50,19 +65,20 @@ export class MenuButton
 
     protected initElements(): void {
         this.onBodyClicked = (e) => this.hideMenuOnOutsideClick(e);
-        // Body.get().onClicked(this.onBodyClicked);
         this.actionPropertyListener = this.updateActionEnabled.bind(this);
 
         this.menu = new Menu(this.menuActions);
         this.menu.hide();
 
         this.initDropdownHandle();
-        this.initActionButton(this.mainAction);
-        this.initActions(this.menuActions);
+        this.initActionButton();
+        if (this.menuActions?.length > 0) {
+            this.initActions(this.menuActions);
+        }
     }
 
-    protected getActiveActionButton(): ActionButton {
-        return this.getActionButton();
+    protected getDefaultAction(): Action {
+        return this.defaultAction;
     }
 
     getActionButton(): ActionButton {
@@ -84,11 +100,14 @@ export class MenuButton
     addMenuActions(actions: Action[]) {
         this.menu.addActions(actions);
         this.initActions(actions);
+        this.menuActions = this.menu.getMenuItems().map(item => item.getAction());
     }
 
     removeMenuActions(actions: Action[]) {
         this.menu.removeActions(actions);
         this.releaseActions(actions);
+
+        this.menuActions = this.menu.getMenuItems().map(item => item.getAction());
     }
 
     addMenuSeparator(): void {
@@ -169,10 +188,6 @@ export class MenuButton
         this.toggleMenuOnAction = value;
     }
 
-    protected getDropdownPosition(): MenuButtonDropdownPos {
-        return MenuButtonDropdownPos.LEFT;
-    }
-
     private hideMenuOnOutsideClick(e: Event): void {
         if (!this.dropdownHandle.hasClass('down')) {
             return;
@@ -190,9 +205,16 @@ export class MenuButton
         this.dropdownHandle = new DropdownHandle();
     }
 
-    private initActionButton(action: Action): void {
-        this.actionButton = new ActionButton(action);
-        this.actionButton.setAriaHasPopup();
+    private initActionButton(): void {
+        this.actionButton = new ActionButton(this.defaultAction);
+    }
+
+    protected setButtonAction(action: Action): void {
+        this.actionButton.setAction(action);
+    }
+
+    protected setDefaultButtonAction(): void {
+        this.setButtonAction(this.defaultAction);
     }
 
     private initActions(actions: Action[]): void {
@@ -200,9 +222,7 @@ export class MenuButton
 
         this.updateActionEnabled();
 
-        actions.forEach((action) => {
-            action.onPropertyChanged(this.actionPropertyListener);
-        });
+        actions.forEach((action) => action.onPropertyChanged(this.actionPropertyListener));
     }
 
     private releaseActions(actions: Action[]): void {
@@ -239,29 +259,23 @@ export class MenuButton
             }
         });
 
-        this.actionButton.onClicked((e) => {
-            if (this.toggleMenuOnAction) {
-                this.toggleMenu();
-            } else {
-                this.collapseMenu();
-            }
-        });
+        this.actionButton.onClicked(() =>  this.toggleMenuOnAction ? this.toggleMenu() : this.collapseMenu());
 
         this.menu.onClicked(() => this.dropdownHandle.giveFocus());
 
         this.onKeyDown((event) => {
-            const activeButton = this.getActiveActionButton();
             if (KeyHelper.isEnterKey(event)) {
-                if (activeButton?.isEnabled()) {
+                const actionButton = this.getActionButton();
+                if (actionButton?.isEnabled()) {
                     //activeButton.getAction().execute();
-                    $(activeButton.getHTMLElement()).simulate('click');
+                    $(actionButton.getHTMLElement()).simulate('click');
                 } else if (this.dropdownHandle.isEnabled()) {
-                    $(activeButton.getHTMLElement()).simulate('click');
+                    $(this.dropdownHandle.getHTMLElement()).simulate('click');
                     this.dropdownHandle.giveFocus();
                 }
             }
         });
-
+/*
         this.onFocus((event) => {
             const activeButton = this.getActiveActionButton();
             if (activeButton) {
@@ -271,14 +285,14 @@ export class MenuButton
             }
             event.stopImmediatePropagation();
             event.preventDefault();
-        });
+        });*/
     }
 
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
             const children: Element[] = [];
 
-            if (this.getDropdownPosition() === MenuButtonDropdownPos.RIGHT) {
+            if (this.dropdownPosition === MenuButtonDropdownPos.RIGHT) {
                 children.push(this.actionButton, this.dropdownHandle);
             } else {
                 children.push(this.dropdownHandle, this.actionButton);

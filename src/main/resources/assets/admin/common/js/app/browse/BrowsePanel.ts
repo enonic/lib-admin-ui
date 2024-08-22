@@ -208,6 +208,7 @@ export class BrowsePanel
             this.showFilterPanel();
         } else {
             this.hideFilterPanel();
+            this.browseToolbar.giveFocus();
         }
     }
 
@@ -268,7 +269,6 @@ export class BrowsePanel
         if (this.filterPanel.hasFilterSet()) {
             this.toggleFilterPanelButton.addClass('filtered');
         }
-        this.browseToolbar.giveFocus();
     }
 
     private toggleSelectionMode(isActive: boolean) {

@@ -20,58 +20,40 @@ export class ActionButton
     constructor(action: Action, wcag?: IWCAG) {
         super();
 
-        this.action = action;
-        this.setLabel(this.createLabel(action), false);
         this.addClass('action-button');
-        if (action.getClass()) {
-            this.addClass(action.getClass());
+        this.initListeners();
+
+        this.setAction(action);
+    }
+
+    private onHelpKeyPressed(e: KeyboardEvent) {
+        const action = this.getAction();
+        if (!action.hasShortcut()) {
+            return;
         }
-
-        if (action.hasWcagAttributes()) {
-            this.applyWCAGAttributes(action.getWcagAttributes());
-        }
-
-        this.setEnabled(this.action.isEnabled());
-        this.setVisible(this.action.isVisible());
-
-        this.updateIconClass(this.action.getIconClass());
-
-        if (this.action.hasShortcut()) {
-            let combination = this.action.getShortcut().getCombination();
-            if (combination) {
-                combination = combination.replace(/mod\+/i, BrowserHelper.isOSX() || BrowserHelper.isIOS() ? 'cmd+' : 'ctrl+');
+        const tooltip = this.getTooltip();
+        if (action.isEnabled() && KeyBindings.get().isActive(action.getShortcut())) {
+            if (KeyBindingAction[KeyBindingAction.KEYDOWN].toLowerCase() === e.type) {
+                tooltip.show();
+                return;
             }
-            this.tooltip = new Tooltip(this, combination, 1000);
-            KeyBindings.get().onHelpKeyPressed((e) => {
-                if (this.action.isEnabled() && KeyBindings.get().isActive(this.action.getShortcut())) {
-                    if (KeyBindingAction[KeyBindingAction.KEYDOWN].toLowerCase() === e.type) {
-                        this.tooltip.show();
-                        return;
-                    }
-                }
-                this.tooltip.hide();
-            });
         }
+        tooltip.hide();
+    }
 
-        this.onClicked(() => this.action.execute());
-        this.onEnterPressed(() => this.action.execute());
-
-        this.action.onExecuted(() => {
+    protected initListeners() {
+        const executeAction = () => {
             Body.get().setFocusedElement(this);
-        });
+            this.getAction().execute();
+        };
 
-        this.action.onPropertyChanged((changedAction: Action) => {
-            const toggledEnabled = this.isEnabled() !== changedAction.isEnabled();
-            const toggledVisible = this.isVisible() !== changedAction.isVisible();
-            const becameHidden = toggledVisible && !changedAction.isVisible();
-            if (this.tooltip && (toggledEnabled || becameHidden)) {
-                this.tooltip.hide();
-            }
-            toggledEnabled && this.setEnabled(changedAction.isEnabled());
-            toggledVisible && this.setVisible(changedAction.isVisible());
-            this.setLabel(this.createLabel(changedAction), false);
-            this.updateIconClass(changedAction.getIconClass());
-        });
+        this.onClicked(() => executeAction());
+        this.onEnterPressed(() => executeAction());
+
+        this.onHelpKeyPressed = this.onHelpKeyPressed.bind(this);
+        this.syncButtonWithAction = this.syncButtonWithAction.bind(this);
+
+        KeyBindings.get().onHelpKeyPressed(this.onHelpKeyPressed);
     }
 
     private updateIconClass(newIconClass: string) {
@@ -91,8 +73,58 @@ export class ActionButton
         return this.action;
     }
 
+    setAction(action: Action) {
+        if (this.action === action) {
+            return;
+        }
+
+        if (this.action) {
+            if (this.action.hasClass()) {
+                this.removeClass(this.action.getClass());
+            }
+            this.action.unPropertyChanged(this.syncButtonWithAction);
+            if (!action.hasShortcut()) {
+                KeyBindings.get().unHelpKeyPressed(this.onHelpKeyPressed);
+            }
+        }
+        this.doSetAction(action);
+    }
+
     getTooltip(): Tooltip {
         return this.tooltip;
+    }
+
+    private syncButtonWithAction() {
+        const action = this.getAction();
+
+        const toggledEnabled = this.isEnabled() !== action.isEnabled();
+        const toggledVisible = this.isVisible() !== action.isVisible();
+        const becameHidden = toggledVisible && !action.isVisible();
+        const tooltip = this.getTooltip();
+        if (tooltip && (toggledEnabled || becameHidden)) {
+            tooltip.hide();
+        }
+        toggledEnabled && this.setEnabled(action.isEnabled());
+        toggledVisible && this.setVisible(action.isVisible());
+        this.setLabel(this.createLabel(action), false);
+        this.updateIconClass(action.getIconClass());
+
+        const actionClass = action.getClass();
+        if (actionClass && !this.hasClass(actionClass)) {
+            this.addClass(actionClass);
+        }
+
+        if (action.hasWcagAttributes()) {
+            this.applyWCAGAttributes(action.getWcagAttributes());
+        }
+    }
+
+    private doSetAction(action: Action) {
+        action.onPropertyChanged(this.syncButtonWithAction);
+
+        this.action = action;
+
+        this.syncButtonWithAction();
     }
 
     protected createLabel(action: Action): string {

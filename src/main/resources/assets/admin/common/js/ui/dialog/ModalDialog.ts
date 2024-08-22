@@ -511,6 +511,7 @@ export abstract class ModalDialog
     }
 
     open() {
+        Body.get().getFocusedElement()?.giveBlur();
         BodyMask.get().show();
         KeyBindings.get().shelveBindings();
 
