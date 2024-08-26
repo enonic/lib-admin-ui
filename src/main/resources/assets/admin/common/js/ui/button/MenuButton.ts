@@ -15,13 +15,11 @@ export enum MenuButtonDropdownPos {
     LEFT, RIGHT
 }
 
-interface MenuButtonConfigObject {
+export interface MenuButtonConfig {
     defaultAction: Action;
     menuActions?: Action[];
     dropdownPosition?: MenuButtonDropdownPos
 }
-
-export type MenuButtonConfig = Action | MenuButtonConfigObject;
 
 export class MenuButton
     extends DivEl {
@@ -48,10 +46,13 @@ export class MenuButton
 
     private actionPropertyListener: () => void;
 
+    protected readonly config: MenuButtonConfig;
+
     constructor(config: Action | MenuButtonConfig) {
         super('menu-button');
 
         if ('defaultAction' in config) {
+            this.config = config;
             this.defaultAction = config.defaultAction;
             this.menuActions = config.menuActions || [];
             this.dropdownPosition = config.dropdownPosition || MenuButtonDropdownPos.LEFT;

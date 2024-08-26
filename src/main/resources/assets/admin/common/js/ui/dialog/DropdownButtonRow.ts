@@ -12,7 +12,7 @@ export class DropdownButtonRow
         this.addClass('dropdown-button-row');
     }
 
-    makeActionMenu(menuButtonConfig: MenuButtonConfig, useDefault: boolean = true): MenuButton {
+    makeActionMenu(menuButtonConfig: Action | MenuButtonConfig, useDefault: boolean = true): MenuButton {
         if (!this.actionMenu) {
             this.actionMenu = new MenuButton(menuButtonConfig);
 

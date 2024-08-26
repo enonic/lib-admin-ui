@@ -26,21 +26,6 @@ export class ActionButton
         this.setAction(action);
     }
 
-    private onHelpKeyPressed(e: KeyboardEvent) {
-        const action = this.getAction();
-        if (!action.hasShortcut()) {
-            return;
-        }
-        const tooltip = this.getTooltip();
-        if (action.isEnabled() && KeyBindings.get().isActive(action.getShortcut())) {
-            if (KeyBindingAction[KeyBindingAction.KEYDOWN].toLowerCase() === e.type) {
-                tooltip.show();
-                return;
-            }
-        }
-        tooltip.hide();
-    }
-
     protected initListeners() {
         const executeAction = () => {
             Body.get().setFocusedElement(this);
@@ -54,19 +39,6 @@ export class ActionButton
         this.syncButtonWithAction = this.syncButtonWithAction.bind(this);
 
         KeyBindings.get().onHelpKeyPressed(this.onHelpKeyPressed);
-    }
-
-    private updateIconClass(newIconClass: string) {
-        if (newIconClass === this.iconClass) {
-            return;
-        }
-        if (this.iconClass) {
-            this.removeClass(this.iconClass);
-        }
-        this.iconClass = newIconClass;
-        if (this.iconClass) {
-            this.addClass(this.iconClass);
-        }
     }
 
     getAction(): Action {
@@ -94,6 +66,16 @@ export class ActionButton
         return this.tooltip;
     }
 
+    protected createLabel(action: Action): string {
+        let label: string;
+        if (action.hasMnemonic()) {
+            label = action.getMnemonic().underlineMnemonic(action.getLabel());
+        } else {
+            label = action.getLabel();
+        }
+        return label;
+    }
+
     private syncButtonWithAction() {
         const action = this.getAction();
 
@@ -119,22 +101,52 @@ export class ActionButton
         }
     }
 
+    private createTooltip() {
+        if (!this.action.hasShortcut()) {
+            return;
+        }
+
+        let combination = this.action.getShortcut().getCombination();
+        if (combination) {
+            combination = combination.replace(/mod\+/i, BrowserHelper.isOSX() || BrowserHelper.isIOS() ? 'cmd+' : 'ctrl+');
+        }
+        this.tooltip = new Tooltip(this, combination, 1000);
+    }
+
     private doSetAction(action: Action) {
         action.onPropertyChanged(this.syncButtonWithAction);
 
         this.action = action;
 
+        this.createTooltip();
         this.syncButtonWithAction();
     }
 
-    protected createLabel(action: Action): string {
-        let label: string;
-        if (action.hasMnemonic()) {
-            label = action.getMnemonic().underlineMnemonic(action.getLabel());
-        } else {
-            label = action.getLabel();
+    private onHelpKeyPressed(e: KeyboardEvent) {
+        const action = this.getAction();
+        if (!action.hasShortcut()) {
+            return;
         }
-        return label;
+        const tooltip = this.getTooltip();
+        if (action.isEnabled() && KeyBindings.get().isActive(action.getShortcut())) {
+            if (KeyBindingAction[KeyBindingAction.KEYDOWN].toLowerCase() === e.type) {
+                tooltip.show();
+                return;
+            }
+        }
+        tooltip.hide();
     }
 
+    private updateIconClass(newIconClass: string) {
+        if (newIconClass === this.iconClass) {
+            return;
+        }
+        if (this.iconClass) {
+            this.removeClass(this.iconClass);
+        }
+        this.iconClass = newIconClass;
+        if (this.iconClass) {
+            this.addClass(this.iconClass);
+        }
+    }
 }
