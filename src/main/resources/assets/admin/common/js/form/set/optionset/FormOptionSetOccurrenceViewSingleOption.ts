@@ -11,13 +11,19 @@ import {Action} from '../../../ui/Action';
 import * as Q from 'q';
 import {Element} from '../../../dom/Element';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
+import {ListBox} from '../../../ui/selector/list/ListBox';
+import {SelectableListBoxWrapper} from '../../../ui/selector/list/SelectableListBoxWrapper';
+import {SelectionChange} from '../../../util/SelectionChange';
+import {FilterableListBoxWrapper} from '../../../ui/selector/list/FilterableListBoxWrapper';
 
 export class FormOptionSetOccurrenceViewSingleOption
     extends FormOptionSetOccurrenceView {
 
     private singleSelectionHeader: DivEl;
 
-    private singleSelectionDropdown: Dropdown<FormOptionSetOption>;
+    private selectionWrapper: FilterableListBoxWrapper<FormOptionSetOption>;
+
+    private singleSelectionDropdown: ListBox<FormOptionSetOption>;
 
     private resetAction: Action;
 
@@ -44,34 +50,33 @@ export class FormOptionSetOccurrenceViewSingleOption
 
         this.resetAction = new Action(i18n('action.reset')).setEnabled(false);
         this.singleSelectionHeader = new DivEl('single-selection-header');
-        this.singleSelectionDropdown = new Dropdown<FormOptionSetOption>(this.formSet.getName(), {
-            optionDisplayValueViewer: new FormOptionSetOptionViewer()
-        });
-
+        this.singleSelectionDropdown = new FormOptionSetOptionDropdown();
         this.selectionValidationMessage = new DivEl('selection-message');
+        this.selectionWrapper = new FilterableListBoxWrapper<FormOptionSetOption>(this.singleSelectionDropdown, {
+            className: 'single-selection-dropdown-wrapper',
+            filter: this.filter,
+        });
     }
 
-    protected postInitElements() {
+    protected postInitElements(): void {
         super.postInitElements();
 
-        this.singleSelectionDropdown.setOptions((this.formSet as FormOptionSet).getOptions()
-            .map(fop => new OptionBuilder<FormOptionSetOption>()
-                .setValue(fop.getName())    // this is the option ID !
-                .setDisplayValue(fop)
-                .build()));
+        this.singleSelectionDropdown.setItems((this.formSet as FormOptionSet).getOptions());
     }
 
     private layoutSingleSelection() {
-        const selectedValue: string = this.getSelectedOptionsArray()?.get(0)?.getString();
+        const selectedOptionName: string = this.getSelectedOptionsArray()?.get(0)?.getString();
+        const selectedOption = this.singleSelectionDropdown.getItems().find(
+            (option: FormOptionSetOption) => option.getName() === selectedOptionName);
 
-        if (selectedValue) {
+        if (selectedOption) {
             // doing this after parent layout to make sure all formItemViews are ready
-            this.singleSelectionDropdown.setValue(selectedValue, true);
+            this.selectionWrapper.select(selectedOption);
             this.expandSelectedOptionView();
         } else {
             // showing/hiding instead of css to trigger FormSetOccurrences onShow/onHide listeners
             this.formSetOccurrencesContainer.hide();
-            this.singleSelectionDropdown.deselectOptions();
+            this.selectionWrapper.deselectAll();
             this.resetAction.setEnabled(false);
         }
     }
@@ -84,40 +89,42 @@ export class FormOptionSetOccurrenceViewSingleOption
         super.initListeners();
 
         this.resetAction.onExecuted(() => {
-            this.singleSelectionDropdown.deselectOptions();
-            this.singleSelectionDropdown.resetActiveSelection();
+            this.selectionWrapper.deselectAll();
             this.singleSelectionDropdown.giveFocus();
         });
 
-        this.singleSelectionDropdown.onOptionSelected(() => {
-            this.expandSelectedOptionView();
-            this.notifyOccurrenceChanged();
-        });
-
-        this.singleSelectionDropdown.onOptionDeselected((option: Option<FormOptionSetOption>) => {
-            const idx: number = this.singleSelectionDropdown.getOptions().indexOf(option);
-            const optionView: FormOptionSetOptionView = this.getFormItemViews()[idx] as FormOptionSetOptionView;
-
-            if (optionView) {
-                optionView.disableAndCollapse();
+        this.selectionWrapper.onSelectionChanged((selectionChange: SelectionChange<FormOptionSetOption>) => {
+            if (selectionChange.selected?.length > 0) {
+                this.expandSelectedOptionView();
+                this.notifyOccurrenceChanged();
             }
 
-            this.singleSelectionHeader.removeClass('selected');
-            this.refresh();
-            this.handleSelectionChanged(optionView, false);
+            selectionChange.deselected?.forEach((option: FormOptionSetOption) => {
+                const idx = this.singleSelectionDropdown.findItemIndex(option);
+                const optionView: FormOptionSetOptionView = this.getFormItemViews()[idx] as FormOptionSetOptionView;
+
+                if (optionView) {
+                    optionView.disableAndCollapse();
+                }
+
+                this.singleSelectionHeader.removeClass('selected');
+                this.refresh();
+                this.handleSelectionChanged(optionView, false);
+            });
+
         });
     }
 
     setEnabled(enable: boolean) {
         super.setEnabled(enable);
 
-        this.singleSelectionDropdown.setEnabled(enable);
+        this.selectionWrapper.setEnabled(enable);
     }
 
     refresh() {
         super.refresh();
 
-        this.resetAction.setEnabled(this.singleSelectionDropdown.hasSelectedOption());
+        this.resetAction.setEnabled(this.selectionWrapper.getSelectedItems().length > 0);
     }
 
     protected handleSelectionChanged(optionView: FormOptionSetOptionView, isSelected: boolean): void {
@@ -127,26 +134,26 @@ export class FormOptionSetOccurrenceViewSingleOption
     }
 
     isExpandable(): boolean {
-        const option: Option<FormOptionSetOption> = this.singleSelectionDropdown?.getSelectedOption();
+        const selectedOption: FormOptionSetOption = this.selectionWrapper.getSelectedItems()[0];
 
-        if (!option) {
+        if (!selectedOption) {
             return false;
         }
 
-        const idx: number = this.singleSelectionDropdown.getOptions().indexOf(option);
+        const idx: number = this.singleSelectionDropdown.findItemIndex(selectedOption);
         const view: FormOptionSetOptionView = this.formItemViews[idx] as FormOptionSetOptionView;
         return view?.isExpandable();
     }
 
     protected layoutElements() {
         this.singleSelectionHeader.appendChildren<Element>(
-            new DivEl('drag-control'), this.singleSelectionDropdown, this.label, this.moreButton
+            new DivEl('drag-control'), this.selectionWrapper, this.label, this.moreButton
         );
         this.appendChildren(this.singleSelectionHeader, this.selectionValidationMessage, this.formSetOccurrencesContainer);
     }
 
     private getSelectedOptionView(): FormOptionSetOptionView {
-        const selectedOptionName: string = this.singleSelectionDropdown.getValue();
+        const selectedOptionName: string = this.selectionWrapper.getSelectedItems()[0]?.getName();
         return this.getFormItemViews()
             .find((view: FormOptionSetOptionView) => view.getFormItem().getName() === selectedOptionName) as FormOptionSetOptionView;
     }
@@ -163,7 +170,31 @@ export class FormOptionSetOccurrenceViewSingleOption
     }
 
     private isContainerExpansionRequired(optionView: FormOptionSetOptionView): boolean {
-        return this.singleSelectionDropdown.hasSelectedOption()
-            && optionView.getFormItemViews().length > 0;
+        return this.selectionWrapper.getSelectedItems().length > 0 && optionView.getFormItemViews().length > 0;
     }
+
+    private filter(item: FormOptionSetOption, searchString: string): boolean {
+        return item.getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1 ||
+               item.getLabel().toLowerCase().indexOf(searchString.toLowerCase()) > -1
+               || item.getHelpText().toLowerCase().indexOf(searchString.toLowerCase()) > -1;
+    }
+}
+
+class FormOptionSetOptionDropdown
+    extends ListBox<FormOptionSetOption> {
+
+    constructor() {
+        super('single-selection-dropdown');
+    }
+
+    protected createItemView(item: FormOptionSetOption, readOnly: boolean): FormOptionSetOptionViewer {
+        const viewer = new FormOptionSetOptionViewer();
+        viewer.setObject(item);
+        return viewer;
+    }
+
+    protected getItemId(item: FormOptionSetOption): string {
+        return item.getName();
+    }
+
 }
