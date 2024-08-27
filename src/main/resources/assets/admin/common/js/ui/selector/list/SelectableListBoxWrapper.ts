@@ -41,7 +41,7 @@ export class SelectableListBoxWrapper<I>
     protected selectionLimitReached: boolean = false;
 
     constructor(listBox: ListBox<I>, options?: SelectableListBoxDropdownOptions<I>) {
-        super('selectable-listbox-wrapper ' + (options.className || ''));
+        super('selectable-listbox-wrapper ' + (options?.className || ''));
 
         this.listBox = listBox;
         this.options = options || {};
