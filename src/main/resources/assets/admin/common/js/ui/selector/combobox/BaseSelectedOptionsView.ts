@@ -11,6 +11,7 @@ import {BaseSelectedOptionView, BaseSelectedOptionViewBuilder} from './BaseSelec
 import {assertNotNull} from '../../../util/Assert';
 import {PEl} from '../../../dom/PEl';
 import {i18n} from '../../../util/Messages';
+import {SelectedOptionView} from './SelectedOptionView';
 
 export class BaseSelectedOptionsView<T>
     extends DivEl
@@ -65,12 +66,18 @@ export class BaseSelectedOptionsView<T>
     }
 
     createSelectedOption(option: Option<T>): SelectedOption<T> {
-        const builder: BaseSelectedOptionViewBuilder<T> = new BaseSelectedOptionViewBuilder<T>()
+        return new SelectedOption<T>(this.createSelectedOptionView(option), this.count());
+    }
+
+    protected createSelectedOptionView(option: Option<T>): SelectedOptionView<T> {
+        return new BaseSelectedOptionView(this.createSelectedOptionViewBuilder(option));
+    }
+
+    protected createSelectedOptionViewBuilder(option: Option<T>): BaseSelectedOptionViewBuilder<T> {
+        return new BaseSelectedOptionViewBuilder<T>()
             .setOption(option)
             .setEditable(this.editable)
             .setRemovable(!this.readonly);
-
-        return new SelectedOption<T>(new BaseSelectedOptionView(builder), this.count());
     }
 
     /* Will mark all options as selected, but if there are more options than {MAX_TO_APPEND}

@@ -410,6 +410,10 @@ export class FilterableListBoxWrapper<I>
         this.dropdownHandle.setEnabled(enable);
     }
 
+    cleanInput(): void {
+        this.optionFilterInput.clear();
+    }
+
     onFocus(listener: (event: FocusEvent) => void) {
         this.optionFilterInput.onFocus(listener);
     }

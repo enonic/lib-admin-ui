@@ -1,6 +1,5 @@
 import {ListBox} from './ListBox';
 import {BaseSelectedOptionsView} from '../combobox/BaseSelectedOptionsView';
-import {SelectionChange} from '../../../util/SelectionChange';
 import {Option} from '../Option';
 import {SelectedOptionEvent} from '../combobox/SelectedOptionEvent';
 import {FilterableListBoxOptions, FilterableListBoxWrapper} from './FilterableListBoxWrapper';
@@ -24,7 +23,7 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
     protected initElements() {
         super.initElements();
 
-        this.selectedOptionsView = this.options.selectedOptionsView;
+        this.selectedOptionsView = this.options?.selectedOptionsView || new BaseSelectedOptionsView<I>();
         this.selectedOptionsView.setMaximumOccurrences(this.options.maxSelected);
     }
 
@@ -42,7 +41,11 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
         const optionToSelect = this.createSelectedOption(itemToSelect);
 
         if (!this.selectedOptionsView.isSelected(optionToSelect)) {
-            this.selectedOptionsView.addOption(optionToSelect, true, -1);
+            if (!this.isMultiSelect() && this.countSelected() > 0) {
+                this.selectedOptionsView.updateOption(this.selectedOptionsView.getByIndex(0).getOption(), optionToSelect);
+            } else {
+                this.selectedOptionsView.addOption(optionToSelect, true, -1);
+            }
         }
     }
 
@@ -84,5 +87,9 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
         super.setEnabled(enable);
 
         this.selectedOptionsView.setReadonly(!enable);
+    }
+
+    maximumOccurrencesReached(): boolean {
+        return super.maximumOccurrencesReached() || this.selectedOptionsView.count() >= this.options.maxSelected;
     }
 }
