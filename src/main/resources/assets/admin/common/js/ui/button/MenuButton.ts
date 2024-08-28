@@ -263,30 +263,6 @@ export class MenuButton
         this.actionButton.onClicked(() =>  this.toggleMenuOnAction ? this.toggleMenu() : this.collapseMenu());
 
         this.menu.onClicked(() => this.dropdownHandle.giveFocus());
-
-        this.onKeyDown((event) => {
-            if (KeyHelper.isEnterKey(event)) {
-                const actionButton = this.getActionButton();
-                if (actionButton?.isEnabled()) {
-                    //activeButton.getAction().execute();
-                    $(actionButton.getHTMLElement()).simulate('click');
-                } else if (this.dropdownHandle.isEnabled()) {
-                    $(this.dropdownHandle.getHTMLElement()).simulate('click');
-                    this.dropdownHandle.giveFocus();
-                }
-            }
-        });
-/*
-        this.onFocus((event) => {
-            const activeButton = this.getActiveActionButton();
-            if (activeButton) {
-                activeButton.giveFocus();
-            } else {
-                this.dropdownHandle.isEnabled() && this.dropdownHandle.giveFocus();
-            }
-            event.stopImmediatePropagation();
-            event.preventDefault();
-        });*/
     }
 
     doRender(): Q.Promise<boolean> {
