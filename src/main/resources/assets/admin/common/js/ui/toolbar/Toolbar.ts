@@ -35,7 +35,6 @@ export class Toolbar<C extends ToolbarConfig>
     private locked: boolean;
     private hasGreedySpacer: boolean;
     private lastFocusedElementIndex = -1;
-    private lastActionIndex= -1;
 
     private visibleButtonsWidth = 0;
 
@@ -285,6 +284,10 @@ export class Toolbar<C extends ToolbarConfig>
         return this.toolbarElements.findIndex((toolbarElement: ToolbarElement) => toolbarElement.el === element);
     }
 
+    private getFoldButtonIndex(): number {
+        return this.getIndexOfToolbarElement(this.foldButton);
+    }
+
     appendChild(element: Element | ActionButton): Element {
         if (this.hasGreedySpacer) {
             element.addClass('pull-right');
@@ -314,9 +317,7 @@ export class Toolbar<C extends ToolbarConfig>
 
         const actionButton = this.createActionButton(action);
 
-        this.lastActionIndex++;
-        this.addTabbable(actionButton, this.lastActionIndex);
-
+        this.addTabbable(actionButton, this.getFoldButtonIndex());
         this.appendChild(actionButton);
 
         return actionButton;
@@ -379,17 +380,18 @@ export class Toolbar<C extends ToolbarConfig>
         const toolbarWidth: number = this.getToolbarWidth();
         let nextFoldableButton: Element = this.getNextFoldableButton();
         let visibleButtonsWidth = this.visibleButtonsWidth;
+        let foldIndex = this.getFoldButtonIndex() - 1;
 
         while (nextFoldableButton && (force || toolbarWidth <= visibleButtonsWidth)) {
             const buttonWidth: number = nextFoldableButton.getEl().getWidthWithBorder();
 
             this.removeChild(nextFoldableButton);
             this.foldButton.push(nextFoldableButton, buttonWidth);
-            this.toolbarElements[this.lastActionIndex].folded = true;
+            this.toolbarElements[foldIndex].folded = true;
             visibleButtonsWidth -= buttonWidth;
 
             nextFoldableButton = this.getNextFoldableButton();
-            this.lastActionIndex--;
+            foldIndex--;
         }
 
         if (!this.foldButton.isEmpty() && !this.foldButton.isVisible()) {
@@ -403,6 +405,7 @@ export class Toolbar<C extends ToolbarConfig>
         const toolbarWidth: number = this.getToolbarWidth();
         const foldButtonWidth: number = this.foldButton.getButtonsCount() > 1 ? 0 : this.foldButton.getEl().getWidthWithBorder();
         let visibleButtonsWidth = this.visibleButtonsWidth;
+        let index = this.getFoldButtonIndex() + 1;
 
         // if fold has 1 child left then subtract fold button width because it will be hidden
         while (!this.foldButton.isEmpty() && visibleButtonsWidth + this.foldButton.getNextButtonWidth() < toolbarWidth) {
@@ -410,9 +413,9 @@ export class Toolbar<C extends ToolbarConfig>
             const buttonToShow = this.foldButton.pop();
             buttonToShow.insertBeforeEl(this.foldButton);
             visibleButtonsWidth += buttonToShow.getEl().getWidthWithBorder();
-            this.toolbarElements[this.lastActionIndex + 1].folded = false;
+            this.toolbarElements[index].folded = false;
 
-            this.lastActionIndex++;
+            index++;
             if (this.foldButton.getButtonsCount() === 1) {
                 visibleButtonsWidth -= foldButtonWidth;
             }
@@ -435,7 +438,7 @@ export class Toolbar<C extends ToolbarConfig>
     }
 
     private getNextFoldableButton(): Element {
-        let index = this.lastActionIndex;
+        let index = this.getFoldButtonIndex() - 1;
 
         while (index >= 0) {
             if (this.isActionButton(this.toolbarElements[index].el)) {

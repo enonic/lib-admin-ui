@@ -245,11 +245,14 @@ export class MenuButton
     protected initListeners(): void {
         this.onBodyClicked = (e) => this.hideMenuOnOutsideClick(e);
 
-        this.dropdownHandle.onClicked((e: MouseEvent) => {
+        const onDropdownHandleClicked = () => {
             if (this.dropdownHandle.isEnabled()) {
                 this.toggleMenu();
             }
-        });
+        };
+        this.dropdownHandle.onClicked(onDropdownHandleClicked);
+        this.dropdownHandle.onEnterPressed(onDropdownHandleClicked);
+        this.dropdownHandle.onEscPressed(() => this.collapseMenu());
 
         this.menu.onItemClicked((item: MenuItem) => {
             if (this.menu.isHideOnItemClick() && item.isEnabled()) {
@@ -257,7 +260,9 @@ export class MenuButton
             }
         });
 
-        this.actionButton.onClicked(() =>  this.toggleMenuOnAction ? this.toggleMenu() : this.collapseMenu());
+        const onActionButtonClicked = () => this.toggleMenuOnAction ? this.toggleMenu() : this.collapseMenu();
+        this.actionButton.onClicked(onActionButtonClicked);
+        this.actionButton.onEnterPressed(onActionButtonClicked);
 
         this.menu.onClicked(() => this.dropdownHandle.giveFocus());
     }
