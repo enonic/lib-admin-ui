@@ -441,6 +441,10 @@ export class Element {
         return this.el.isVisible();
     }
 
+    isFocusable(): boolean {
+        return this.isVisible() && !this.el.isDisabled();
+    }
+
     setTitle(title: string): Element {
         if (title.trim()) {
             this.el.setTitle(title.trim());
@@ -1120,6 +1124,16 @@ export class Element {
     onEnterPressed(callback: () => void) {
         this.onKeyDown((event: KeyboardEvent) => {
             if (KeyHelper.isEnterKey(event)) {
+                callback();
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        });
+    }
+
+    onEscPressed(callback: () => void) {
+        this.onKeyDown((event: KeyboardEvent) => {
+            if (KeyHelper.isEscKey(event)) {
                 callback();
                 event.stopPropagation();
                 event.preventDefault();

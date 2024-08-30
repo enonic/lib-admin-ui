@@ -204,6 +204,7 @@ export class MenuButton
 
     private initDropdownHandle(): void {
         this.dropdownHandle = new DropdownHandle();
+        this.dropdownHandle.onEnterPressed(() => this.toggleMenu());
     }
 
     private initActionButton(): void {
@@ -212,10 +213,6 @@ export class MenuButton
 
     protected setButtonAction(action: Action): void {
         this.actionButton.setAction(action);
-    }
-
-    protected setDefaultButtonAction(): void {
-        this.setButtonAction(this.defaultAction);
     }
 
     private initActions(actions: Action[]): void {

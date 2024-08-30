@@ -9,10 +9,10 @@ import {FoldButton} from './FoldButton';
 import {IWCAG as WCAG, AriaRole} from '../WCAG';
 import {KeyHelper} from '../KeyHelper';
 import {Body} from '../../dom/Body';
+import {ObjectHelper} from '../../ObjectHelper';
 
-interface ActionElement {
-    element: Element;
-    action?: Action;
+interface ToolbarElement {
+    el: Element | ActionButton;
     folded?: boolean;
 }
 
@@ -31,10 +31,10 @@ export class Toolbar<C extends ToolbarConfig>
 
     protected config: C;
     protected foldButton: FoldButton;
-    protected actionElements: ActionElement[] = [];
+    protected toolbarElements: ToolbarElement[] = [];
     private locked: boolean;
     private hasGreedySpacer: boolean;
-    private lastFocusedActionIndex = -1;
+    private lastFocusedElementIndex = -1;
     private lastActionIndex= -1;
 
     private visibleButtonsWidth = 0;
@@ -58,18 +58,8 @@ export class Toolbar<C extends ToolbarConfig>
     protected initListeners(): void {
         const onToolbarFocused = () => {
             this.focusToolbar();
-            this.focusActionElement();
-        };/*
-        Body.get().onClicked((event) => {
-            const clickInsideToolbar = this.getEl().getHTMLElement().contains(event.target as Node);
-            if (clickInsideToolbar) {
-                if (this.isFocused()) {
-                    return;
-                }
-                console.log('Toolbar.onClicked, focusing toolbar');
-                onToolbarFocused();
-            }
-        });*/
+            this.focusElement();
+        };
 
         // Hack: Update after styles are applied to evaluate the sizes correctly
         ResponsiveManager.onAvailableSizeChanged(this, () => window.setTimeout(this.foldOrExpand.bind(this)));
@@ -77,21 +67,20 @@ export class Toolbar<C extends ToolbarConfig>
         this.onFocus(() => onToolbarFocused());
     }
 
-    private getFocusedActionElement(): Element {
-        if (this.lastFocusedActionIndex === -1) {
+    private getFocusedElement(): Element {
+        if (this.lastFocusedElementIndex === -1) {
             return null;
         }
 
-        const lastFocusedActionElement = this.actionElements[this.lastFocusedActionIndex];
-        if (lastFocusedActionElement.folded) {
+        const lastFocusedElement = this.toolbarElements[this.lastFocusedElementIndex];
+        if (lastFocusedElement.folded || !lastFocusedElement.el.isFocusable()) {
             return null;
         }
 
-        return lastFocusedActionElement.element;
+        return lastFocusedElement.el;
     }
 
     private focusToolbar() {
-        //console.log('Focusing toolbar');
         if (this.isFocused()) {
             return;
         }
@@ -110,27 +99,37 @@ export class Toolbar<C extends ToolbarConfig>
         if (!this.isFocused()) {
             return;
         }
-        this.getFocusedActionElement()?.giveBlur();
+        if (this.getFocusedElement()) {
+            this.getFocusedElement()?.giveBlur();
+        }
         this.removeClassEx('focused');
         Body.get().onMouseUp(this.mouseClickListener);
         this.mouseClickListener = null;
     }
 
-    private isActionFocusable(actionElement: ActionElement): boolean {
-        return actionElement.action ? actionElement.action.isFocusable() && !actionElement.folded : actionElement.element.isVisible();
+    private isActionButton(el: Element | ActionButton): el is ActionButton {
+        return (el as ActionButton).getAction !== undefined;
     }
 
-    private getNextFocusableActionIndex(): number {
-        let focusIndex = this.lastFocusedActionIndex;
+    private isElementFocusable(element: ToolbarElement): boolean {
+         if (this.isActionButton(element.el)) {
+            return !element.folded && element.el.isFocusable();
+        }
+
+        return element.el.isVisible();
+    }
+
+    private getNextFocusableElementIndex(): number {
+        let focusIndex = this.lastFocusedElementIndex;
         const currentFocusIndex = focusIndex;
-        const limit = this.actionElements.length;
+        const limit = this.toolbarElements.length;
 
         do {
             focusIndex++;
             if (focusIndex === limit) {
                 focusIndex = 0;
             }
-        } while (focusIndex !== currentFocusIndex && !this.isActionFocusable(this.actionElements[focusIndex]));
+        } while (focusIndex !== currentFocusIndex && !this.isElementFocusable(this.toolbarElements[focusIndex]));
 
         if (focusIndex === currentFocusIndex) {
             return -1;
@@ -139,30 +138,30 @@ export class Toolbar<C extends ToolbarConfig>
         return focusIndex;
     }
 
-    private getPreviousFocusableActionIndex(): number {
-        let focusIndex = this.lastFocusedActionIndex;
+    private getPreviousFocusableElementIndex(): number {
+        let focusIndex = this.lastFocusedElementIndex;
         const currentFocusIndex = focusIndex;
-        const lastIndex = this.actionElements.length - 1;
+        const lastIndex = this.toolbarElements.length - 1;
 
         do {
             focusIndex--;
             if (focusIndex === -1) {
                 focusIndex = lastIndex;
             }
-        } while (focusIndex !== currentFocusIndex && !this.isActionFocusable(this.actionElements[focusIndex]));
+        } while (focusIndex !== currentFocusIndex && !this.isElementFocusable(this.toolbarElements[focusIndex]));
 
         return focusIndex;
     }
 
-    private focusActionElement(): void {
-        let lastFocusedActionElement = this.getFocusedActionElement();
-        if (!lastFocusedActionElement) {
-            const focusIndex = this.getNextFocusableActionIndex();
-            this.lastFocusedActionIndex = focusIndex;
-            lastFocusedActionElement = this.actionElements[focusIndex].element;
+    private focusElement(): void {
+        let lastFocusedElement = this.getFocusedElement();
+        if (!lastFocusedElement) {
+            const focusIndex = this.getNextFocusableElementIndex();
+            this.lastFocusedElementIndex = focusIndex;
+            lastFocusedElement = this.toolbarElements[focusIndex].el;
         }
 
-        lastFocusedActionElement.giveFocus();
+        lastFocusedElement.giveFocus();
     }
 
     private createActionButton(action: Action): ActionButton {
@@ -177,17 +176,13 @@ export class Toolbar<C extends ToolbarConfig>
             if (KeyHelper.isTabKey(event) && !KeyHelper.isShiftKey(event)) {
                 eventHandled = true;
                 element.giveBlur();
-
-                element.getChildren().forEach((child: Element) => {
-                    child.giveBlur();
-                });
                 this.removeFocus();
             } else if (KeyHelper.isArrowRightKey(event)) {
                 eventHandled = true;
-                this.focusNextAction();
+                this.focusNextElement();
             } else if (KeyHelper.isArrowLeftKey(event)) {
                 eventHandled = true;
-                this.focusPreviousAction();
+                this.focusPreviousElement();
             }
 
             if (eventHandled) {
@@ -198,9 +193,7 @@ export class Toolbar<C extends ToolbarConfig>
         });
 
         const onFocus = (event: FocusEvent) => {
-            //console.log('Focusing ', element, event);
             if (focusOnClick) {
-                //console.log('Focus on click, exiting');
                 focusOnClick = false;
 
                 event.stopImmediatePropagation();
@@ -210,19 +203,14 @@ export class Toolbar<C extends ToolbarConfig>
             this.focusToolbar();
             const focusFromOutsideToolbar = !this.getEl().getHTMLElement().contains(event.relatedTarget as Node);
             if (focusFromOutsideToolbar) {
-                this.focusActionElement();
+                this.focusElement();
             }
         };
 
         const onBlur = (event: FocusEvent) => {
             focusOnClick = false;
             // If newly focused element is not a part of the toolbar, remove focus from the toolbar
-            //console.log('Blurring ', element, event);
             if (!this.getEl().getHTMLElement().contains(event.relatedTarget as Node)) {
-                element.getChildren().forEach((child: Element) => {
-                    child.giveBlur();
-                });
-                //console.log('Removing focus from the toolbar');
                 this.removeFocus();
             }
         };
@@ -230,72 +218,61 @@ export class Toolbar<C extends ToolbarConfig>
         element.onFocus((event: FocusEvent) => onFocus(event));
         element.onMouseDown((event) => {
             focusOnClick = true;
-            this.lastFocusedActionIndex = this.getActionIndexByElement(element);
+            this.lastFocusedElementIndex = this.getIndexOfToolbarElement(element);
         });
         element.onBlur((event: FocusEvent) => onBlur(event));
-/*
-        element.whenRendered(() => {
-            element.getChildren().forEach((child: Element) => {
-                child.onFocus((event: FocusEvent) => onFocus(event));
-            });
-        });*/
     }
 
     private isFocused(): boolean {
         return this.hasClassEx('focused');
     }
 
-    private focusAction(getActionIndex: () => number) {
-        const focusIndex = getActionIndex();
+    private focusElementByIndex(getElementIndex: () => number) {
+        const focusIndex = getElementIndex();
         if (focusIndex !== -1) {
             if (!this.isFocused()) {
                 this.giveFocus();
             }
-            this.lastFocusedActionIndex = focusIndex;
-            this.actionElements[focusIndex].element.giveFocus();
+            this.lastFocusedElementIndex = focusIndex;
+            this.toolbarElements[focusIndex].el.giveFocus();
         }
     }
 
-    private focusNextAction() {
-        this.focusAction(() => this.getNextFocusableActionIndex());
+    private focusNextElement() {
+        this.focusElementByIndex(() => this.getNextFocusableElementIndex());
     }
 
-    private focusPreviousAction() {
-        this.focusAction(() => this.getPreviousFocusableActionIndex());
+    private focusPreviousElement() {
+        this.focusElementByIndex(() => this.getPreviousFocusableElementIndex());
     }
 
-    prependActionElement(element: Element, isTabbable: boolean = true): Element {
-        this.initElementListeners(element);
-        this.prependChild(element);
-
-        if (isTabbable) {
-            this.actionElements.splice(0, 0, {
-                element
-            });
-        }
-
-        return element;
-    }
-
-    addActionElement(element: Element, isTabbable: boolean = true): Element {
+    addContainer(container: Element, elements: Element[]): Element {
         if (this.foldButton) {
             this.addGreedySpacer();
         }
-        this.addElement(element);
-        if (isTabbable) {
-            this.actionElements.push({
-                element: element
-            });
+
+        elements.forEach(element => this.addTabbable(element));
+
+        return this.appendChild(container);
+    }
+
+    addElement(element: Element, tabbable: boolean = true): Element {
+        if (this.foldButton) {
+            this.addGreedySpacer();
         }
 
-        return element;
+        if (tabbable) {
+            this.addTabbable(element);
+        }
+
+        return this.appendChild(element);
     }
 
     private addFoldButton() {
         const foldButton = new FoldButton();
         foldButton.hide();
 
-        this.addActionElement(foldButton);
+        this.addElement(foldButton);
 
         this.foldButton = foldButton;
     }
@@ -304,44 +281,43 @@ export class Toolbar<C extends ToolbarConfig>
         this.hasGreedySpacer = true;
     }
 
-    private getActionIndexByElement(element: Element): number {
-        return this.actionElements.findIndex((actionElement: ActionElement) => actionElement.element === element);
+    private getIndexOfToolbarElement(element: Element): number {
+        return this.toolbarElements.findIndex((toolbarElement: ToolbarElement) => toolbarElement.el === element);
     }
 
-    protected addElement(element: Element): Element {
-        this.initElementListeners(element);
-
+    appendChild(element: Element | ActionButton): Element {
         if (this.hasGreedySpacer) {
             element.addClass('pull-right');
-            this.appendChild(element);
-        } else {
-            if (this.foldButton?.hasParent()) {
-                element.insertBeforeEl(this.foldButton);
-            } else {
-                this.appendChild(element);
-            }
+            return super.appendChild(element);
         }
 
-        return element;
+        if (this.isActionButton(element) && this.foldButton?.hasParent()) {
+            return element.insertBeforeEl(this.foldButton);
+        }
+
+        return super.appendChild(element);
     }
 
-    prependAction(action: Action): ActionButton {
-        return this.addAction(action, true);
+    protected addTabbable(element: Element, index?: number) {
+        this.initElementListeners(element);
+        if (ObjectHelper.isDefined(index)) {
+            this.toolbarElements.splice(index, 0, {el: element});
+        } else {
+            this.toolbarElements.push({el: element});
+        }
     }
 
-    addAction(action: Action, prepend: boolean = false): ActionButton {
+    addAction(action: Action): ActionButton {
         if (!this.foldButton) {
             this.addFoldButton();
         }
 
         const actionButton = this.createActionButton(action);
 
-        this.actionElements.splice(prepend ? 0 : this.lastActionIndex + 1, 0, {
-            element: actionButton,
-            action: action
-        });
-        this.addElement(actionButton);
         this.lastActionIndex++;
+        this.addTabbable(actionButton, this.lastActionIndex);
+
+        this.appendChild(actionButton);
 
         return actionButton;
     }
@@ -351,22 +327,22 @@ export class Toolbar<C extends ToolbarConfig>
     }
 
     removeActions() {
-        this.actionElements.forEach((actionElement: ActionElement) => !!actionElement.action && this.removeAction(actionElement.action));
+        this.toolbarElements.forEach((toolbarElement: ToolbarElement) => this.isActionButton(toolbarElement.el) && this.removeAction(toolbarElement.el.getAction()));
     }
 
-    removeAction(action: Action): void {
-        const indexToRemove = this.actionElements.findIndex((a: ActionElement) => a.action === action);
+    removeAction(targetAction: Action): void {
+        const indexToRemove = this.getActions().findIndex((action: Action) => action === targetAction);
         if (indexToRemove === -1) {
             return;
         }
-        this.actionElements[indexToRemove].element.remove();
-        this.actionElements.slice(indexToRemove, 1);
+        this.toolbarElements[indexToRemove].el.remove();
+        this.toolbarElements.slice(indexToRemove, 1);
     }
 
     getActions(): Action[] {
-        return this.actionElements
-            .filter((actionElement: ActionElement) => actionElement.action ?? false)
-            .map((actionElement: ActionElement) => actionElement.action);
+        return this.toolbarElements
+            .filter((element: ToolbarElement) => this.isActionButton(element.el))
+            .map((element: ToolbarElement) => (element.el as ActionButton).getAction());
     }
 
     removeGreedySpacer() {
@@ -409,7 +385,7 @@ export class Toolbar<C extends ToolbarConfig>
 
             this.removeChild(nextFoldableButton);
             this.foldButton.push(nextFoldableButton, buttonWidth);
-            this.actionElements[this.lastActionIndex].folded = true;
+            this.toolbarElements[this.lastActionIndex].folded = true;
             visibleButtonsWidth -= buttonWidth;
 
             nextFoldableButton = this.getNextFoldableButton();
@@ -434,7 +410,7 @@ export class Toolbar<C extends ToolbarConfig>
             const buttonToShow = this.foldButton.pop();
             buttonToShow.insertBeforeEl(this.foldButton);
             visibleButtonsWidth += buttonToShow.getEl().getWidthWithBorder();
-            this.actionElements[this.lastActionIndex + 1].folded = false;
+            this.toolbarElements[this.lastActionIndex + 1].folded = false;
 
             this.lastActionIndex++;
             if (this.foldButton.getButtonsCount() === 1) {
@@ -462,9 +438,12 @@ export class Toolbar<C extends ToolbarConfig>
         let index = this.lastActionIndex;
 
         while (index >= 0) {
-            const button: Element = this.actionElements[index].element;
-            if (this.actionElements[index].action?.isFoldable() && this.isItemAllowedToFold(button)) {
-                return button;
+            if (this.isActionButton(this.toolbarElements[index].el)) {
+                const button = this.toolbarElements[index].el as ActionButton;
+
+                if (button.getAction().isFoldable() && this.isItemAllowedToFold(button)) {
+                    return button;
+                }
             }
 
             index--;

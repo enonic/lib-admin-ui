@@ -313,7 +313,7 @@ export class BrowsePanel
         this.toggleFilterPanelAction.setWcagAttributes({
             ariaLabel: i18n('tooltip.filterPanel.show')
         });
-        this.toggleFilterPanelButton = this.browseToolbar.prependAction(this.toggleFilterPanelAction);
+        this.toggleFilterPanelButton = this.browseToolbar.addAction(this.toggleFilterPanelAction);
         this.toggleFilterPanelButton.setTitle(i18n('tooltip.filterPanel.show'));
         this.toggleFilterPanelAction.setVisible(false);
     }

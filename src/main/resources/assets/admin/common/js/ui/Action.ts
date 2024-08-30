@@ -145,10 +145,6 @@ export class Action {
         return this.visible;
     }
 
-    isFocusable(): boolean {
-        return this.isVisible() && this.isEnabled();
-    }
-
     setVisible(value: boolean): Action {
         if (value !== this.visible) {
             this.visible = value;
