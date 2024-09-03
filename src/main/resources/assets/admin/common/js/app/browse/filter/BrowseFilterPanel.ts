@@ -48,7 +48,7 @@ export class BrowseFilterPanel<T>
         });
         this.hideFilterPanelButton.setTitle(i18n('tooltip.filterPanel.hide'));
         this.hideFilterPanelButton.onClicked(() => this.notifyHidePanelButtonPressed());
-        this.hideFilterPanelButton.onEnterPressed(() => this.notifyHidePanelButtonPressed());
+        this.hideFilterPanelButton.onApplyKeyPressed(() => this.notifyHidePanelButtonPressed());
 
         let showResultsButtonWrapper = new DivEl('show-filter-results');
         this.showResultsButton = new SpanEl('show-filter-results-button');

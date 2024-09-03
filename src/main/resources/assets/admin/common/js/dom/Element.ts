@@ -1121,12 +1121,21 @@ export class Element {
         this.getEl().removeEventListener('DOMMouseScroll', listener);
     }
 
-    onEnterPressed(callback: () => void) {
+    onApplyKeyPressed(callback: () => void) {
+        const callbackWrapper = (event: KeyboardEvent) => {
+            callback();
+            event.stopPropagation();
+            event.preventDefault();
+        };
         this.onKeyDown((event: KeyboardEvent) => {
             if (KeyHelper.isEnterKey(event)) {
-                callback();
-                event.stopPropagation();
-                event.preventDefault();
+                callbackWrapper(event);
+            }
+        });
+
+        this.onKeyUp((event: KeyboardEvent) => {
+            if (KeyHelper.isSpace(event)) {
+                callbackWrapper(event);
             }
         });
     }

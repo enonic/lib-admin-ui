@@ -45,7 +45,7 @@ export class FoldButton
     private initListeners() {
         (this.hostElement || this).onClicked(this.toggleMenu.bind(this));
         this.dropdown.onClicked(this.onMenuClicked.bind(this));
-        this.onEnterPressed(this.toggleMenu.bind(this));
+        this.onApplyKeyPressed(this.toggleMenu.bind(this));
         this.onEscPressed(this.collapse.bind(this));
     }
 

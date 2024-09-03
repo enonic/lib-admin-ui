@@ -32,8 +32,7 @@ export class ActionButton
             this.getAction().execute();
         };
 
-        this.onClicked(() => executeAction());
-        this.onEnterPressed(() => executeAction());
+        this.onClicked(executeAction);
 
         this.onHelpKeyPressed = this.onHelpKeyPressed.bind(this);
         this.syncButtonWithAction = this.syncButtonWithAction.bind(this);

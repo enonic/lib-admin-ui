@@ -9,10 +9,11 @@ export class ButtonEl
     constructor(className?: string, stylePrefix: string = StyleHelper.COMMON_PREFIX) {
         super('button', className, stylePrefix);
 
-        this.onEnterPressed(() => {
+        const triggerAction = () => {
             Body.get().setFocusedElement(this);
             $(this.getHTMLElement()).simulate('click');
-        });
+        };
+        this.onApplyKeyPressed(triggerAction);
     }
 
     setEnabled(value: boolean) {

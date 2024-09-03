@@ -98,6 +98,10 @@ export class MenuButton
         return this.dropdownHandle;
     }
 
+    getChildControls(): Element[] {
+        return [this.actionButton, this.dropdownHandle];
+    }
+
     addMenuActions(actions: Action[]) {
         this.menu.addActions(actions);
         this.initActions(actions);
@@ -204,7 +208,6 @@ export class MenuButton
 
     private initDropdownHandle(): void {
         this.dropdownHandle = new DropdownHandle();
-        this.dropdownHandle.onEnterPressed(() => this.toggleMenu());
     }
 
     private initActionButton(): void {
@@ -251,7 +254,6 @@ export class MenuButton
             }
         };
         this.dropdownHandle.onClicked(onDropdownHandleClicked);
-        this.dropdownHandle.onEnterPressed(onDropdownHandleClicked);
         this.dropdownHandle.onEscPressed(() => this.collapseMenu());
 
         this.menu.onItemClicked((item: MenuItem) => {
@@ -262,7 +264,6 @@ export class MenuButton
 
         const onActionButtonClicked = () => this.toggleMenuOnAction ? this.toggleMenu() : this.collapseMenu();
         this.actionButton.onClicked(onActionButtonClicked);
-        this.actionButton.onEnterPressed(onActionButtonClicked);
 
         this.menu.onClicked(() => this.dropdownHandle.giveFocus());
     }
