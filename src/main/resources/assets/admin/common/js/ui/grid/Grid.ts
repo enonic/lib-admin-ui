@@ -123,7 +123,11 @@ export class Grid<T extends Slick.SlickData>
     setColumns(columns: GridColumn<T>[], toBegin: boolean = false) {
         if (this.checkboxSelectorPlugin) {
             let pluginColumn = this.checkboxSelectorPlugin.getColumnDefinition();
-            toBegin ? columns.push(pluginColumn as GridColumn<T>) : columns.unshift(pluginColumn as GridColumn<T>);
+            if (toBegin) {
+                columns.push(pluginColumn as GridColumn<T>);
+            } else {
+                columns.unshift(pluginColumn as GridColumn<T>);
+            }
         }
         this.slickGrid.setColumns(columns);
     }
@@ -512,7 +516,7 @@ export class Grid<T extends Slick.SlickData>
     }
 
     protected createColumns(): GridColumn<any>[] {
-        throw 'Must be implemented by inheritors';
+        throw Error('Must be implemented by inheritors');
     }
 
     private autoRenderGridOnDataChanges(dataView: DataView<T>) {

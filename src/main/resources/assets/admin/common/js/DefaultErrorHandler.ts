@@ -7,13 +7,8 @@ import {showError, showFeedback, showWarning} from './notify/MessageBus';
 
 export class DefaultErrorHandler {
 
-    static handle(error: any) {
-
-        if (ObjectHelper.iFrameSafeInstanceOf(error, Error)) {
-            // Rethrowing Error so that we will get a nice stack trace in the console.
-            console.error(error);
-            throw error;
-        } else if (ObjectHelper.iFrameSafeInstanceOf(error, AccessDeniedException)) {
+    static handle(error: any): void {
+        if (ObjectHelper.iFrameSafeInstanceOf(error, AccessDeniedException)) {
             let application: Application = Application.getApplication();
             let wnd = application.getWindow();
             new ShowAppLauncherEvent(application, true).fire(wnd.parent);
@@ -37,7 +32,7 @@ export class DefaultErrorHandler {
             }
         } else {
             console.error(error);
-            showError(error.toString());
+            showError(error.toString().replace(/^Error: /, ''));
             throw error;
         }
 

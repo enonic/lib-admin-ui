@@ -27,7 +27,7 @@ export class BrowsePanel
 
     protected treeGrid: TreeGrid<ViewItem>;
 
-    protected filterPanel: BrowseFilterPanel<Object>;
+    protected filterPanel: BrowseFilterPanel<object>;
     protected filterPanelToBeShownFullScreen: boolean = false;
     protected gridAndItemsSplitPanel: SplitPanel;
     private gridAndToolbarPanel: Panel;
@@ -224,15 +224,15 @@ export class BrowsePanel
     }
 
     protected createToolbar(): Toolbar {
-        throw 'Must be implemented by inheritors';
+        throw Error('Must be implemented by inheritors');
     }
 
     protected createTreeGrid(): TreeGrid<ViewItem> {
-        throw 'Must be implemented by inheritors';
+        throw Error('Must be implemented by inheritors');
     }
 
     protected createBrowseItemPanel(): BrowseItemPanel {
-        throw 'Must be implemented by inheritors';
+        throw Error('Must be implemented by inheritors');
     }
 
     protected getBrowseActions(): TreeGridActions<ViewItem> {

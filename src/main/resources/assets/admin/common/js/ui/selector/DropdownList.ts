@@ -42,7 +42,7 @@ export class DropdownList<OPTION_DISPLAY_VALUE> {
         return this.emptyDropdown.isVisible() || this.dropdownGrid.isVisible();
     }
 
-    sort(comparer: Function, asc?: boolean) {
+    sort(comparer: () => void, asc?: boolean) {
         this.dropdownGrid.sort(comparer, asc);
     }
 

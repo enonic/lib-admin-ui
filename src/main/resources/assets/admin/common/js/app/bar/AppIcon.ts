@@ -64,7 +64,11 @@ export class AppIcon
 
     private initListeners(action): void {
         this.clickListener = () => { action.execute(); };
-        this.enterListener = (e: KeyboardEvent) => { KeyHelper.isEnterKey(e) && action.execute(); };
+        this.enterListener = (e: KeyboardEvent) => {
+            if (KeyHelper.isEnterKey(e)) {
+                action.execute();
+            }
+        };
     }
 
     protected initElements(app: Application): void {

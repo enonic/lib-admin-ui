@@ -34,7 +34,7 @@ export class DataView<T extends Slick.SlickData> {
         this.slickDataView.setItems(items, objectIdProperty);
     }
 
-    sort(comparer: Function, asc?: boolean) {
+    sort(comparer: () => void, asc?: boolean) {
         this.slickDataView.sort(comparer, asc);
     }
 

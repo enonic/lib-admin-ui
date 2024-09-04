@@ -2,9 +2,9 @@ export class Class {
 
     private name: string;
 
-    private fn: Function;
+    private fn: () => void;
 
-    constructor(name: string, fn: Function) {
+    constructor(name: string, fn: any) {
         this.name = name;
         this.fn = fn;
     }

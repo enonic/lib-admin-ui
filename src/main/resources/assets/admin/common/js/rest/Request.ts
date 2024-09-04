@@ -12,7 +12,7 @@ export abstract class Request {
 
     protected method: HttpMethod = HttpMethod.GET;
 
-    protected params: Object;
+    protected params: object;
 
     protected timeoutMillis: number = 10000;
 
@@ -27,7 +27,7 @@ export abstract class Request {
         return this;
     }
 
-    setParams(params: Object): Request {
+    setParams(params: object): Request {
         this.params = params;
         return this;
     }

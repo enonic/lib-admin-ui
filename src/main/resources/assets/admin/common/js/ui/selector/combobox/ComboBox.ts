@@ -80,7 +80,7 @@ export interface ComboBoxConfig<T> {
 
     onDropdownShownCallback?: () => Q.Promise<void>;
 
-    requestMissingOptions?: (missingOptionIds: string[]) => Q.Promise<Object>;
+    requestMissingOptions?: (missingOptionIds: string[]) => Q.Promise<object>;
 
     createColumns?: GridColumn<T>[];
 }
@@ -126,7 +126,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
     private removeMissingSelectedOptions: boolean = false;
     private skipAutoDropShowOnValueChange: boolean = false;
     private onDropdownShownCallback: () => Q.Promise<void>;
-    private requestMissingOptions: (missingOptionIds: string[]) => Q.Promise<Object>;
+    private requestMissingOptions: (missingOptionIds: string[]) => Q.Promise<object>;
     private keyEventsHandler: KeyEventsHandler;
     private optionsToSelect: Map<string, Option<OPTION_DISPLAY_VALUE>> = new Map<string, Option<OPTION_DISPLAY_VALUE>>();
     private optionsToUnselect: Map<string, Option<OPTION_DISPLAY_VALUE>> = new Map<string, Option<OPTION_DISPLAY_VALUE>>();
@@ -828,7 +828,7 @@ export class ComboBox<OPTION_DISPLAY_VALUE>
         const nonExistingIds: string[] = [];
         const selectedOptions = [];
 
-        return this.requestMissingOptions(missingOptionIds).then((result: Object) => {
+        return this.requestMissingOptions(missingOptionIds).then((result: object) => {
             optionIds.forEach((val) => {
                 if (val.trim().length > 0) {
                     const option = this.getOptionByValue(val);

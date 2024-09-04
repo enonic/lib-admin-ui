@@ -12,5 +12,5 @@ export interface MarketApplicationJson {
 
     latestVersion: string;
 
-    versions: Object;
+    versions: object;
 }

@@ -92,7 +92,7 @@ export abstract class FormItemOccurrenceView
     }
 
     isEmpty(): boolean {
-        throw false;
+        throw Error('Must be implemented by inheritor');
     }
 
     clean(): void {

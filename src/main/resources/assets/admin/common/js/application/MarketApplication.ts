@@ -14,7 +14,7 @@ export class MarketApplication implements IDentifiable {
     private iconUrl: string;
     private url: string;
     private latestVersion: string;
-    private versions: Object;
+    private versions: object;
     private status: MarketAppStatus = MarketAppStatus.NOT_INSTALLED;
     private progress: number = 0;
 
@@ -33,7 +33,7 @@ export class MarketApplication implements IDentifiable {
         return new MarketApplicationBuilder().fromJson(appKey, json).build();
     }
 
-    static fromJsonArray(appsObj: Object): MarketApplication[] {
+    static fromJsonArray(appsObj: object): MarketApplication[] {
         const array: MarketApplication[] = [];
         for (const name in appsObj) {
             if (appsObj.hasOwnProperty(name)) {
@@ -87,7 +87,7 @@ export class MarketApplication implements IDentifiable {
         }
     }
 
-    public getVersions(): Object {
+    public getVersions(): object {
         return this.versions;
     }
 
@@ -190,7 +190,7 @@ export class MarketApplicationBuilder {
     iconUrl: string;
     url: string;
     latestVersion: string;
-    versions: Object;
+    versions: object;
     status: string;
     appKey: ApplicationKey;
 

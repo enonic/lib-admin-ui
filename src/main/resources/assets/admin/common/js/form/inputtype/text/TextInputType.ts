@@ -34,11 +34,11 @@ export abstract class TextInputType
     }
 
     protected readConfig(inputConfig: Record<string, Record<string, string>[]>): void {
-        const maxLengthConfig: Object = inputConfig['maxLength'] ? inputConfig['maxLength'][0] : {};
+        const maxLengthConfig: object = inputConfig['maxLength'] ? inputConfig['maxLength'][0] : {};
         const maxLength: number = NumberHelper.toNumber(maxLengthConfig['value']);
         this.maxLength = maxLength > 0 ? maxLength : -1;
 
-        const showCounterConfig: Object = inputConfig['showCounter'] ? inputConfig['showCounter'][0] : {};
+        const showCounterConfig: object = inputConfig['showCounter'] ? inputConfig['showCounter'][0] : {};
         const value: string = showCounterConfig['value'] || '';
         this.showTotalCounter = value.toLowerCase() === 'true';
     }

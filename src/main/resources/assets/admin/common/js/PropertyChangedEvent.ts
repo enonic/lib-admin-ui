@@ -1,3 +1,5 @@
+import {ValueData} from './data/Value';
+
 /**
  * An event representing that a property of an object have changed.
  */
@@ -5,13 +7,13 @@ export class PropertyChangedEvent {
 
     private readonly propertyName: string;
 
-    private readonly oldValue: Object;
+    private readonly oldValue: ValueData;
 
-    private readonly newValue: Object;
+    private readonly newValue: ValueData;
 
-    private readonly source: Object;
+    private readonly source: object;
 
-    constructor(propertyName: string, oldValue: Object, newValue: Object, source?: Object) {
+    constructor(propertyName: string, oldValue: ValueData, newValue: ValueData, source?: object) {
 
         this.propertyName = propertyName;
         this.oldValue = oldValue;

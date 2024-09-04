@@ -9,7 +9,7 @@ export abstract class DialogStep {
         return Q.resolve(true);
     }
 
-    getData(): Object {
+    getData(): object {
         return null;
     }
 

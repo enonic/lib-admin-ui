@@ -25,7 +25,7 @@ export class GetPrincipalsByKeysRequest
         return this;
     }
 
-    getParams(): Object {
+    getParams(): object {
         return {
             keys: this.principalKeys.map(key => key.toString()),
             memberships: this.includeMemberships

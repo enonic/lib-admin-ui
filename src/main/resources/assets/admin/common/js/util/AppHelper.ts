@@ -11,7 +11,7 @@ export class AppHelper {
     // be triggered. The function will be called after it stops being called for
     // N milliseconds. If `immediate` is passed, trigger the function on the
     // leading edge, instead of the trailing.
-    static debounce(func: Function, wait: number, immediate: boolean = false): (...args: any[]) => void {
+    static debounce(func: (...args: any[]) => any, wait: number, immediate: boolean = false): (...args: any[]) => void {
         let timeout;
         return function (..._anyArgs: any[]) {
             // @ts-ignore
@@ -32,7 +32,7 @@ export class AppHelper {
         };
     }
 
-    static debounceWithInterrupt(func: Function, wait: number, immediate: boolean = false): (args: any[], interrupt?: boolean) => void {
+    static debounceWithInterrupt(func: () => void, wait: number, immediate: boolean = false): (args: any[], interrupt?: boolean) => void {
         let timeout;
         return function (_anyArgs: any[], interrupt?: boolean) {
             // @ts-ignore
@@ -57,7 +57,7 @@ export class AppHelper {
     // as it continues to be invoked, will not be triggered. The function
     // will be called after it stops being called for N milliseconds and it
     // was invoked at least once during that interval.
-    static runOnceAndDebounce(func: Function, wait: number): (...args: any[]) => void {
+    static runOnceAndDebounce(func: () => void, wait: number): (...args: any[]) => void {
         let timeout;
         let trailing = false;
         return function (..._anyArgs: any[]) {
@@ -91,7 +91,7 @@ export class AppHelper {
         }
     }
 
-    static preventDragRedirect(message: String = '', element?: Element): void {
+    static preventDragRedirect(message: string = '', element?: Element): void {
         element = element || Body.get();
 
         let window = WindowDOM.get();

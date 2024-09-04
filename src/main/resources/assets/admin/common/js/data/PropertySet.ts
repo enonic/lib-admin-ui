@@ -415,7 +415,7 @@ export class PropertySet
     }
 
     public diff(other: PropertySet): PropertyTreeDiff {
-        let checkedProperties: String[] = [];
+        let checkedProperties: string[] = [];
         let diff = this.doDiff(other, checkedProperties);
         // run inverse diff to find properties, which were added to the original set
         let inverseDiff = other.doDiff(this, checkedProperties);
@@ -573,7 +573,7 @@ export class PropertySet
      */
     newSet(): PropertySet {
         if (!this.tree) {
-            // eslint-disable-next-line max-len
+             
             throw new Error(
                 `The PropertySet must be attached to a PropertyTree before this method can be invoked.
  Use PropertySet constructor with no arguments instead.`);
@@ -590,7 +590,7 @@ export class PropertySet
     addPropertySet(name: string, value?: PropertySet): PropertySet {
         if (!value) {
             if (!this.tree) {
-                // eslint-disable-next-line max-len
+                 
                 throw new Error(
                     `The PropertySet must be attached to a PropertyTree before this method can be invoked.
  Use PropertySet constructor with no arguments instead.`);
@@ -1129,7 +1129,7 @@ export class PropertySet
         }
     }
 
-    private doDiff(other: PropertySet, checkedProperties: String[] = []): PropertyTreeDiff {
+    private doDiff(other: PropertySet, checkedProperties: string[] = []): PropertyTreeDiff {
         let added = [];
         let removed = [];
         let modified = [];

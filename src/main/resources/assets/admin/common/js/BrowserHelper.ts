@@ -5,7 +5,7 @@ enum BrowserName {
 export class BrowserHelper {
 
     // Default Object type contains browser name property
-    private static AVAILABLE_VERSIONS: Object = {};
+    private static AVAILABLE_VERSIONS: object = {};
 
     private static BROWSER_NAME: BrowserName;
 
