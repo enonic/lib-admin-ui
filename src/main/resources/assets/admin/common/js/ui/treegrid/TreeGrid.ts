@@ -1029,7 +1029,7 @@ export class TreeGrid<DATA extends IDentifiable>
         this.highlightRowByNode(this.getHighlightedNode());
     }
 
-    protected handleError(reason: any, message?: String) {
+    protected handleError(reason: any, message?: string) {
         this.grid.show();
         if (this.quietErrorHandling) {
             this.errorPanel.setError(message || reason);

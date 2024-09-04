@@ -26,7 +26,7 @@ export class Action {
 
     private executionListeners: ExecutionListener[] = [];
 
-    private propertyChangedListeners: Function[] = [];
+    private propertyChangedListeners: ((action: Action) => void)[] = [];
 
     private childActions: Action[] = [];
 
@@ -276,7 +276,7 @@ export class Action {
     }
 
     private notifyPropertyChanged() {
-        this.propertyChangedListeners.forEach((listener: Function) => listener(this));
+        this.propertyChangedListeners.forEach((listener: (action: Action) => void) => listener(this));
     }
 
     private notifyBeforeExecute() {

@@ -6,7 +6,7 @@ export class Cache<T, KEY> {
 
     private loading: string[] = [];
 
-    private loadedListeners: Function[] = [];
+    private loadedListeners: ((keyStr: string, value: T) => void)[] = [];
 
     getAll(): T[] {
         let all: T[] = [];

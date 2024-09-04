@@ -15,7 +15,7 @@ export class ResponsiveItem {
 
     private oldRangeValue: number;         // Range (width) value of the previous state
 
-    private handler: Function;              // Additional handler on update
+    private handler: (item: ResponsiveItem) => void;              // Additional handler on update
 
     constructor(element: Element, handler?: (item: ResponsiveItem) => void) {
         this.element = element;

@@ -10,8 +10,8 @@ export class ClassHelper {
      * @returns function name as string.
      */
     // Compiler hack since target version is ES5
-    // but the Function.name was presented in ES2015
-    static getFunctionName(func: any/*Function*/): string {
+    // but the () => void.name was presented in ES2015
+    static getFunctionName(func: any/*() => void*/): string {
         if (func.name) {
             return func.name;
         } else {
@@ -41,7 +41,7 @@ export class ClassHelper {
      * @returns {function} class
      */
 
-    static getClass(instance: any): Function {
+    static getClass(instance: any): () => void {
         return instance['constructor'];
     }
 
@@ -78,8 +78,8 @@ export class ClassHelper {
      * @param nestLevel - current level of recursive calls.
      * @returns {string} full name included modules and class name.
      */
-
-    static findPath(obj: Object, constructor: Function, nestLevel: number = 1): string {
+    // eslint-disable-next-line complexity
+    static findPath(obj: object, constructor: () => void, nestLevel: number = 1): string {
         let value;
         let path: string;
 
@@ -118,7 +118,7 @@ export class ClassHelper {
     /**
      * Calculates the number of super classes between given instance and clazz.
      */
-    static distanceTo(instance: any, clazz: Function): number {
+    static distanceTo(instance: any, clazz: any): number {
 
         if (ClassHelper.getClassName(instance) === ClassHelper.getFunctionName(clazz)) {
             return 0;

@@ -198,7 +198,7 @@ export class SplitPanel
 
     private secondPanelShouldSlideRight: boolean;
 
-    private triggerResizeDebounced: Function;
+    private triggerResizeDebounced: () => void;
 
     private panelResizedListeners: (() => void)[] = [];
 

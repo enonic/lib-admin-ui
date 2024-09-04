@@ -17,11 +17,11 @@ export class NotifyManager {
 
     private slideDuration: number = 500;
 
-    private timers: Object = {};
+    private timers: object = {};
 
     private el: NotificationContainer;
 
-    private registry: Object = {};
+    private registry: object = {};
 
     constructor() {
 

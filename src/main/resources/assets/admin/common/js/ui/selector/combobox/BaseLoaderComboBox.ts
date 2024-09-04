@@ -62,46 +62,54 @@ export class BaseLoaderComboBox<OPTION_DISPLAY_VALUE, LOADER_DATA_TYPE>
         }
     }
 
-    private doWhenLoaded(callback: Function, value: string) {
-        if (this.loader.isLoaded() || this.loader.isPreLoaded()) {
-            const optionsMissing: boolean = this.splitValues(value).some((val) => {
-                return !this.getOptionByValue(val);
-            });
+    private handleLoadedData(callback: () => void, value: string) {
+        const optionsMissing: boolean = this.splitValues(value).some((val) => {
+            return !this.getOptionByValue(val);
+        });
 
-            if (optionsMissing) { // option needs loading
-                this.loader.preLoad(value).then(() => {
-                    callback();
-                });
-            } else { // empty option
+        if (optionsMissing) { // option needs loading
+            this.loader.preLoad(value).then(() => {
                 callback();
-            }
-        } else {
-            if (this.isVisible()) {
-                this.mask.show();
-            }
-            if (BaseLoaderComboBox.debug) {
-                console.debug(this.toString() + '.doWhenLoaded: waiting to be loaded');
-            }
-
-            const singleLoadListener = ((data) => {
-                if (BaseLoaderComboBox.debug) {
-                    console.debug(this.toString() + '.doWhenLoaded: on loaded');
-                }
-                callback(data);
-                this.loader.unLoadedData(singleLoadListener);
-
-                if (!this.loader.isNotStarted()) {
-                    this.mask.hide();
-                }
-
-                return Q(null);
             });
+        } else { // empty option
+            callback();
+        }
+    }
 
-            this.loader.onLoadedData(singleLoadListener);
+    private prepareForLoad(callback: () => void, value: string) {
+        if (this.isVisible()) {
+            this.mask.show();
+        }
+        if (BaseLoaderComboBox.debug) {
+            console.debug(this.toString() + '.doWhenLoaded: waiting to be loaded');
+        }
 
-            if (this.loader.isNotStarted()) {
-                this.loader.preLoad(value).catch(DefaultErrorHandler.handle).finally(() => this.mask.hide());
+        const singleLoadListener = () => {
+            if (BaseLoaderComboBox.debug) {
+                console.debug(this.toString() + '.doWhenLoaded: on loaded');
             }
+            callback();
+            this.loader.unLoadedData(singleLoadListener);
+
+            if (!this.loader.isNotStarted()) {
+                this.mask.hide();
+            }
+
+            return Q(null);
+        };
+
+        this.loader.onLoadedData(singleLoadListener);
+
+        if (this.loader.isNotStarted()) {
+            this.loader.preLoad(value).catch(DefaultErrorHandler.handle).finally(() => this.mask.hide());
+        }
+    }
+
+    private doWhenLoaded(callback: () => void, value: string) {
+        if (this.loader.isLoaded() || this.loader.isPreLoaded()) {
+            this.handleLoadedData(callback, value);
+        } else {
+            this.prepareForLoad(callback, value);
         }
     }
 }

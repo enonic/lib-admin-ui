@@ -10,26 +10,23 @@ export class ObjectHelper {
      * @param args arguments constructor arguments
      * @returns {Object}
      */
-    static create(constructor: Function, ..._args: any[]) {
+    static create(constructor: () => void, ..._args: any[]) {
         // eslint-disable-next-line prefer-spread, prefer-rest-params
         let factory = constructor.bind.apply(constructor, arguments);
         return new factory();
     }
 
-    static iFrameSafeInstanceOf(obj: any, fn: Function): boolean {
-        if (!fn) {
-            console.warn('Undefined fn passed to iFrameSafeInstanceOf, returning false', obj, fn);
-            return false;
-        }
-        if (!obj) {
+    static iFrameSafeInstanceOf(obj: any, objType: any): boolean {
+        if (!objType || !obj) {
+            console.warn('Undefined fn passed to iFrameSafeInstanceOf, returning false', obj, objType);
             return false;
         }
 
-        if (obj instanceof fn) {
+        if (obj instanceof objType) {
             return true;
         }
 
-        if (ClassHelper.getClassName(obj) === ClassHelper.getFunctionName(fn)) {
+        if (ClassHelper.getClassName(obj) === ClassHelper.getFunctionName(objType)) {
             return true;
         }
 
@@ -45,7 +42,7 @@ export class ObjectHelper {
                 return false;
             }
         }
-        while (ClassHelper.getClassName(prototype) !== ClassHelper.getFunctionName(fn));
+        while (ClassHelper.getClassName(prototype) !== ClassHelper.getFunctionName(objType));
 
         return true;
     }
@@ -177,7 +174,7 @@ export class ObjectHelper {
         return ObjectHelper.bothDefined(a, b) ? JSON.stringify(a) === JSON.stringify(b) : ObjectHelper.equallyDefined(a, b);
     }
 
-    static objectEquals(a: Object, b: Object): boolean {
+    static objectEquals(a: any, b: any): boolean {
         if (ObjectHelper.bothDefined(a, b)) {
 
             if (a === b) {
@@ -215,7 +212,7 @@ export class ObjectHelper {
         }
     }
 
-    static propertyExists(object: Object, key: string): boolean {
+    static propertyExists(object: object, key: string): boolean {
         return !!object && object.hasOwnProperty(key) && !!object[key];
     }
 }

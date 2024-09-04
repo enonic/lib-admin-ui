@@ -8,9 +8,9 @@ export abstract class ApplicationLoader
 
     protected request: ListApplicationsRequest;
 
-    private filterObject: Object;
+    private filterObject: object;
 
-    constructor(filterObject: Object) {
+    constructor(filterObject: object) {
         super();
 
         if (filterObject) {

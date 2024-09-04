@@ -229,7 +229,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
         this.dropdownList.setOptions(options, this.isInputEmpty() ? this.noOptionsText : null);
     }
 
-    sort(comparer: Function, asc?: boolean) {
+    sort(comparer: () => void, asc?: boolean) {
         this.dropdownList.sort(comparer, asc);
     }
 

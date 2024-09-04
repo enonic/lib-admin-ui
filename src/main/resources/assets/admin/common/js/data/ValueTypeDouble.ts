@@ -39,7 +39,7 @@ export class ValueTypeDouble
     }
 
     valueToString(value: Value): string {
-        return (value.getObject() as Number).toString();
+        return (value.getObject() as number).toString();
     }
 
     valueEquals(a: number, b: number): boolean {

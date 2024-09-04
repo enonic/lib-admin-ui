@@ -4,7 +4,7 @@ export class StringHelper {
 
     static EMPTY_STRING: string = '';
 
-    static SAVE_CHAR_CODES: Object = {
+    static SAVE_CHAR_CODES: object = {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',

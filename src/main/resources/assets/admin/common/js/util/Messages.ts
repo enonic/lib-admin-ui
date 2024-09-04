@@ -13,7 +13,7 @@ export class Messages {
         return messages;
     }
 
-    static setMessages(messages: Object) {
+    static setMessages(messages: object) {
         if (!messages) {
             return;
         }
@@ -22,7 +22,7 @@ export class Messages {
         Messages.addMessages(messages);
     }
 
-    static addMessages(messages: Object) {
+    static addMessages(messages: object) {
         if (!messages) {
             return;
         }

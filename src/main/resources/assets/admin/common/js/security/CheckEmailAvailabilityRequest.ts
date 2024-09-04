@@ -25,7 +25,7 @@ export class CheckEmailAvailabilityRequest
         this.email = email;
     }
 
-    getParams(): Object {
+    getParams(): object {
         return {
             email: this.email,
             idProviderKey: this.idProviderKey ? this.idProviderKey.toString() : undefined

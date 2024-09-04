@@ -535,7 +535,7 @@ export abstract class FormSetOccurrenceView
             return '';
         }
 
-        const selectedRadioButton: Object = radioButtons.find((option: Object) => option['@value'] === selectedValue);
+        const selectedRadioButton: object = radioButtons.find((option: object) => option['@value'] === selectedValue);
         return selectedRadioButton['value'];
     }
 

@@ -14,14 +14,16 @@ import {PropertySet} from './PropertySet';
 import {ValueType} from './ValueType';
 import {Typable} from './Typable';
 
+export type ValueData = string | number | boolean | PropertySet | Reference | BinaryReference | GeoPoint | Date | DateTime | LocalDate | LocalDateTime | LocalTime | Link;
+
 export class Value
     implements Equitable, Cloneable, Typable {
 
     private type: ValueType;
 
-    private value: Object = null;
+    private value: ValueData = null;
 
-    constructor(value: Object, type: ValueType) {
+    constructor(value: ValueData, type: ValueType) {
         this.value = value;
         this.type = type;
         if (value) {
@@ -47,7 +49,7 @@ export class Value
         return this.value == null;
     }
 
-    getObject(): Object {
+    getObject(): ValueData {
         return this.value;
     }
 

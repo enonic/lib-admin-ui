@@ -43,7 +43,7 @@ export class LocalDateTime
             return false;
         }
 
-        // eslint-disable-next-line max-len
+         
         const regex = /^(\d{2}|([12]\d{3}))(?:\-)?([0]{1}\d{1}|[1]{1}[0-2]{1})(?:\-)?([0-2]{1}\d{1}|[3]{1}[0-1]{1})(T)([0-1]{1}\d{1}|[2]{1}[0-3]{1})(?::)?([0-5]{1}\d{1})(?::)?([0-5]{1}\d{1})?(?:.)?(\d{3})?/;
         return regex.test(s);
     }
@@ -125,7 +125,7 @@ export class LocalDateTime
     }
 
     timeToString(): string {
-        // eslint-disable-next-line max-len
+         
         let fractions = this.fractions ? LocalDateTime.FRACTION_SEPARATOR + this.padNumber(this.fractions, 3) : StringHelper.EMPTY_STRING;
 
         return this.padNumber(this.hours) + LocalDateTime.TIME_SEPARATOR +

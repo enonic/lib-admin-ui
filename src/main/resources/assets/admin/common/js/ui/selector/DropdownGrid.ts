@@ -139,7 +139,7 @@ export abstract class DropdownGrid<OPTION_DISPLAY_VALUE> {
         this.getGridData().setItems(options, this.dataIdProperty);
     }
 
-    sort(comparer: Function, asc?: boolean) {
+    sort(comparer: () => void, asc?: boolean) {
         this.getGridData().sort(comparer, asc);
     }
 

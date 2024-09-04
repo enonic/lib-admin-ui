@@ -158,8 +158,8 @@ export class Element {
     /*
      *      Event listeners
      */
-    private mouseEnterByHandler: Object = {};
-    private mouseLeaveByHandler: Object = {};
+    private mouseEnterByHandler: object = {};
+    private mouseLeaveByHandler: object = {};
 
     constructor(builder: ElementBuilder) {
         this.children = [];
@@ -206,7 +206,7 @@ export class Element {
 
         if (this.parentElement && this.el.getHTMLElement().parentElement) {
             if (!(this.parentElement.getHTMLElement() === this.el.getHTMLElement().parentElement)) {
-                // eslint-disable-next-line max-len
+                 
                 throw new Error('Illegal state: HTMLElement in parent Element is not the as the HTMLElement parent to this HTMLElement');
             }
         }

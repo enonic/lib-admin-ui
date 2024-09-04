@@ -20,7 +20,7 @@ export class ValueExpr
         return new ValueExpr(new Value(value, ValueTypes.STRING));
     }
 
-    public static number(value: Number): ValueExpr {
+    public static number(value: number): ValueExpr {
         return new ValueExpr(new Value(value, ValueTypes.DOUBLE));
     }
 

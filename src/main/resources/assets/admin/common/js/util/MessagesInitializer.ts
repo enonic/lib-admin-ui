@@ -70,7 +70,7 @@ class GetMessagesRequest
         return Path.create().fromString(this.url).build();
     }
 
-    getParams(): Object {
+    getParams(): object {
         if (!this.bundles) {
             return {};
         }
