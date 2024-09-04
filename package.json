@@ -37,7 +37,7 @@
     "postcss": "^8.2.2"
   },
   "devDependencies": {
-    "@enonic/eslint-config": "^1.2.1",
+    "@enonic/eslint-config": "2.0.0-beta.1",
     "@swc/cli": "^0.4.0",
     "@swc/core": "1.7.22",
     "@types/jquery": "^3.5.30",
@@ -45,8 +45,8 @@
     "@types/q": "^1.5.8",
     "@types/semver": "^7.5.8",
     "@types/validator": "^13.12.1",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
+    "@typescript-eslint/eslint-plugin": "^8.4.0",
+    "@typescript-eslint/parser": "^8.4.0",
     "autoprefixer": "^10.4.20",
     "browserslist": "^4.23.2",
     "browserslist-config-enonic": "^1.0.8",
@@ -56,7 +56,7 @@
     "cssnano": "^7.0.5",
     "enonic-admin-artifacts": "^2.2.0",
     "error-logger-webpack-plugin": "^1.1.1",
-    "eslint": "^8.57.0",
+    "eslint": "^9.3.0",
     "glob": "^11.0.0",
     "less": "^4.2.0",
     "less-loader": "^12.2.0",
@@ -76,7 +76,7 @@
     "extends browserslist-config-enonic"
   ],
   "engines": {
-      "node": ">= 20.13.1",
-      "npm": ">= 10.5.2"
+    "node": ">= 20.13.1",
+    "npm": ">= 10.5.2"
   }
 }
