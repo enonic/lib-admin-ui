@@ -61,7 +61,7 @@ export class FindPrincipalsRequest
         return this.results;
     }
 
-    getParams(): Object {
+    getParams(): object {
         return {
             types: this.enumToStrings(this.allowedTypes).join(','),
             query: this.searchQuery || null,

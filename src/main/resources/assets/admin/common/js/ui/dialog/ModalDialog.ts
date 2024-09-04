@@ -549,7 +549,11 @@ export abstract class ModalDialog
 
         this.whenRendered(() => {
             this.updateTabbable();
-            this.elementToFocusOnShow?.giveFocus() || this.focusFirstTabbable() || this.buttonRow.focusDefaultAction();
+            if (!this.elementToFocusOnShow?.giveFocus()) {
+                if (!this.focusFirstTabbable()) {
+                    this.buttonRow.focusDefaultAction();
+                }
+            }
         });
 
         if (this.resizeObserver) {

@@ -1,4 +1,5 @@
 const baseConfig = require('@enonic/eslint-config');
+const { plugin: tsPlugin } = require('typescript-eslint');
 
 module.exports = [
     ...baseConfig, // This includes the extended configuration from @enonic/eslint-config
@@ -9,6 +10,9 @@ module.exports = [
                 project: './tsconfig.json',
                 tsconfigRootDir: __dirname,
             }
+        },
+        plugins: {
+            '@typescript-eslint': tsPlugin,
         },
         rules: {
             'no-control-regex': 'off',

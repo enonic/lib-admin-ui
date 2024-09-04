@@ -66,6 +66,6 @@ export class ValueTypes {
                 return valueType;
             }
         }
-        throw('Unknown ValueType: ' + name);
+        throw Error(`Unknown ValueType: ${name}`);
     }
 }

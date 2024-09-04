@@ -119,7 +119,7 @@ export class GridDragHandler<MODEL extends IDentifiable> {
             children.shift();
         }
 
-        const setMarginTop: Function = (element: Element, margin: string) => element.getEl().setMarginTop(margin);
+        const setMarginTop: (element: Element, margin: string) => void = (element, margin) => element.getEl().setMarginTop(margin);
 
         children.forEach((child: Element, index: number) => {
             if (data.rows[0] <= data.insertBefore) { //move item down

@@ -23,10 +23,14 @@ export class TabbedAppBar
         // Responsive events to update homeButton styles
         ResponsiveManager.onAvailableSizeChanged(this, () => {
             if (this.tabMenu.countVisible() > 0) {
-                managedHomeIconAction && super.setHomeIconAction();
+                if (managedHomeIconAction) {
+                    super.setHomeIconAction();
+                }
                 this.addClass('tabs-present');
             } else {
-                managedHomeIconAction && super.unsetHomeIconAction();
+                if (managedHomeIconAction) {
+                    super.unsetHomeIconAction();
+                }
                 this.removeClass('tabs-present');
             }
         });

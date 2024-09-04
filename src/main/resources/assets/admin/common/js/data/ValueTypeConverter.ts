@@ -46,7 +46,7 @@ export class ValueTypeConverter {
             return ValueTypeConverter.convertToBinaryReference(value);
         }
 
-        throw('Unknown ValueType: ' + toType);
+        throw Error(`Unknown ValueType: ${toType.toString()}`);
     }
 
     private static convertToString(value: Value): Value {

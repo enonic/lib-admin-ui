@@ -120,7 +120,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         this.comboBox.addOption(option);
     }
 
-    updateOption(option: Option<OPTION_DATA_TYPE>, displayValue: Object) {
+    updateOption(option: Option<OPTION_DATA_TYPE>, displayValue: OPTION_DATA_TYPE) {
         this.comboBox.updateOption(option, this.createOption(displayValue));
     }
 
@@ -306,7 +306,7 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         };
     }
 
-    protected getDisplayValueId(value: Object): string {
+    protected getDisplayValueId(value: OPTION_DATA_TYPE): string {
         let val = value[this.identifierMethod]();
         return typeof val === 'object' && val['toString'] ? val.toString() : val;
     }
@@ -319,10 +319,10 @@ export class BaseRichComboBox<OPTION_DATA_TYPE, LOADER_DATA_TYPE>
         return Q(options);
     }
 
-    protected createOption(value: Object, readOnly?: boolean): Option<OPTION_DATA_TYPE> {
+    protected createOption(value: OPTION_DATA_TYPE, readOnly?: boolean): Option<OPTION_DATA_TYPE> {
         return Option.create<OPTION_DATA_TYPE>()
             .setValue(this.getDisplayValueId(value))
-            .setDisplayValue(value as OPTION_DATA_TYPE)
+            .setDisplayValue(value)
             .setReadOnly(readOnly)
             .build();
     }
@@ -481,7 +481,7 @@ export class BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
 
     createColumns: GridColumn<OPTION_DATA_TYPE>[];
 
-    requestMissingOptions: (missingOptionIds: string[]) => Q.Promise<Object>;
+    requestMissingOptions: (missingOptionIds: string[]) => Q.Promise<object>;
 
     setComboBoxName(comboBoxName: string): BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
         this.comboBoxName = comboBoxName;
@@ -584,7 +584,7 @@ export class BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
     }
 
     setRequestMissingOptions(
-        requestMissingOptions: (missingOptionIds: string[]) => Q.Promise<Object>
+        requestMissingOptions: (missingOptionIds: string[]) => Q.Promise<object>
     ): BaseRichComboBoxBuilder<OPTION_DATA_TYPE, LOADER_DATA_TYPE> {
         this.requestMissingOptions = requestMissingOptions;
         return this;

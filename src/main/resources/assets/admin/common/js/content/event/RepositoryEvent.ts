@@ -12,6 +12,7 @@ export interface RepositoryEventJson
     data?: RepositoryEventDataJson;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface RepositoryEventDataJson {}
 
 export class RepositoryEvent

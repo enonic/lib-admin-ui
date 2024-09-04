@@ -14,7 +14,7 @@ export abstract class ListApplicationsRequest
         this.addRequestPathElements(apiName);
     }
 
-    getParams(): Object {
+    getParams(): object {
         return {
             query: this.searchQuery
         };

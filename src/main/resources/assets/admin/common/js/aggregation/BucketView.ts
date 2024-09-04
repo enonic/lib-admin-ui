@@ -13,7 +13,7 @@ export class BucketView
 
     private checkbox: Checkbox;
 
-    private selectionChangedListeners: Function[] = [];
+    private selectionChangedListeners: ((event: BucketViewSelectionChangedEvent) => void)[] = [];
 
     private displayName: string;
 

@@ -20,7 +20,7 @@ export abstract class GetApplicationRequest
         this.setHeavyOperation(true);
     }
 
-    getParams(): Object {
+    getParams(): object {
         return {
             applicationKey: this.applicationKey.toString()
         };

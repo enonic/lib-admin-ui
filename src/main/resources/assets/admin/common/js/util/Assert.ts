@@ -14,6 +14,6 @@ export function assertNotNull<T>(value: T, message?: string): T {
     return value;
 }
 
-export function assertNull(value: Object, message?: string) {
+export function assertNull(value: object, message?: string) {
     assert(value == null, message);
 }

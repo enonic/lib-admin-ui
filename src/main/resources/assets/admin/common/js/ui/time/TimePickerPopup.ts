@@ -214,11 +214,11 @@ export class TimePickerPopup
         }
     }
 
-    private startInterval(fn: Function, ...args: any[]) {
+    private startInterval(fn: (add: number, silent?: boolean) => void, ...args: any[]) {
         let times: number = 0;
         let delay: number = 400;
 
-        const intervalFn: Function = () => {
+        const intervalFn: () => void = () => {
             fn.apply(this, args);
             if (++times % 5 === 0 && delay > 50) {
                 // speed up after 5 occurrences but not faster than 50ms

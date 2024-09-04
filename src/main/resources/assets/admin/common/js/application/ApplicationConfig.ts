@@ -34,7 +34,7 @@ export class ApplicationConfig
         return this.config;
     }
 
-    toJson(): Object {
+    toJson(): object {
         return {
             applicationKey: this.applicationKey.toString(),
             config: this.config.toJson()

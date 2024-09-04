@@ -35,7 +35,7 @@ export class CONFIG {
     static getNumber(property: string): number {
         const propertyValue = CONFIG.get(property);
         if (isNaN(propertyValue as unknown as number)) {
-            throw `Property ${property} is not a number`;
+            throw Error(`Property ${property} is not a number`);
         }
         return parseInt(String(propertyValue));
     }
@@ -48,7 +48,9 @@ export class CONFIG {
         if (property.indexOf('.') > 0) {
             return CONFIG.getNested(property);
         }
-        if (!CONFIG.has(property)) throw `Config property ${property} not found`;
+        if (!CONFIG.has(property)) {
+            throw Error(`Config property ${property} not found`);
+        }
         return CONFIG.CACHE[property];
     }
 
@@ -66,13 +68,13 @@ export class CONFIG {
     private static getNested(property: string): JSONValue {
         const propertyPaths = property.split('.');
         if (!CONFIG.has(propertyPaths[0])) {
-            throw `Config property ${propertyPaths[0]} not found`;
+            throw Error(`Config property ${propertyPaths[0]} not found`);
         }
         let result: JSONValue = CONFIG.getPropertyValue(propertyPaths[0]);
         for (let i=1; i<propertyPaths.length; i++) {
             result = result[propertyPaths[i]];
             if (result === undefined) {
-                throw `Incorrect property path: ${property}`;
+                throw Error(`Incorrect property path: ${property}`);
             }
         }
         return result;
