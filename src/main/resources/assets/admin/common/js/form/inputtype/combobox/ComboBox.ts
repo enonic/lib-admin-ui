@@ -3,16 +3,12 @@ import {PropertyArray} from '../../../data/PropertyArray';
 import {Value} from '../../../data/Value';
 import {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {SelectedOptionEvent} from '../../../ui/selector/combobox/SelectedOptionEvent';
 import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Input} from '../../Input';
-import {ComboBox as ComboBoxEl} from '../../../ui/selector/combobox/ComboBox';
-import {Option} from '../../../ui/selector/Option';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ComboBoxOption} from './ComboBoxOption';
-import {ComboBoxDisplayValueViewer} from './ComboBoxDisplayValueViewer';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {ComboBoxListInput} from './ComboBoxListInput';
 import {StringHelper} from '../../../util/StringHelper';
@@ -127,46 +123,6 @@ export class ComboBox
         this.listInput.setEnabled(enable);
     }
 
-    createComboBox(input: Input, propertyArray: PropertyArray): ComboBoxEl<string> {
-        const name = input.getName();
-        let comboBox = new ComboBoxEl<string>(name, {
-            filter: null,
-            selectedOptionsView: null,
-            maximumOccurrences: input.getOccurrences().getMaximum(),
-            optionDisplayValueViewer: new ComboBoxDisplayValueViewer(),
-            rowHeight: 34,
-            hideComboBoxWhenMaxReached: true,
-            value: this.getValueFromPropertyArray(propertyArray)
-        });
-
-        comboBox.onOptionSelected((event: SelectedOptionEvent<string>) => {
-            this.ignorePropertyChange(true);
-
-            const option = event.getSelectedOption();
-            let value = new Value(option.getOption().getValue(), ValueTypes.STRING);
-            if (option.getIndex() >= 0) {
-                this.getPropertyArray().set(option.getIndex(), value);
-            } else {
-                this.getPropertyArray().add(value);
-            }
-
-            this.ignorePropertyChange(false);
-            this.handleValueChanged(false);
-
-            this.fireFocusSwitchEvent(event);
-        });
-        comboBox.onOptionDeselected((event: SelectedOptionEvent<string>) => {
-            this.ignorePropertyChange(true);
-
-            this.getPropertyArray().remove(event.getSelectedOption().getIndex());
-
-            this.ignorePropertyChange(false);
-            this.handleValueChanged(false);
-        });
-
-        return comboBox;
-    }
-
     giveFocus(): boolean {
         if (this.listInput.maximumOccurrencesReached()) {
             return false;
@@ -208,8 +164,8 @@ export class ComboBox
         this.comboBoxOptions = options;
     }
 
-    private comboBoxFilter(item: Option<ComboBoxOption>, searchString: string): boolean {
-        return StringHelper.isBlank(searchString) || item.getDisplayValue().value.indexOf(searchString) >= 0;
+    private comboBoxFilter(item: ComboBoxOption, searchString: string): boolean {
+        return StringHelper.isBlank(searchString) || item.value.indexOf(searchString) >= 0;
     }
 
     private getSelectedItems(): string[] {

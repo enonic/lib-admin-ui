@@ -5,14 +5,11 @@ import {FormOptionSet} from './FormOptionSet';
 import {FormOptionSetOptionView} from './FormOptionSetOptionView';
 import {FormOptionSetOption} from './FormOptionSetOption';
 import {FormOptionSetOptionViewer} from './FormOptionSetOptionViewer';
-import {Dropdown} from '../../../ui/selector/dropdown/Dropdown';
-import {Option, OptionBuilder} from '../../../ui/selector/Option';
 import {Action} from '../../../ui/Action';
 import * as Q from 'q';
 import {Element} from '../../../dom/Element';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
 import {ListBox} from '../../../ui/selector/list/ListBox';
-import {SelectableListBoxWrapper} from '../../../ui/selector/list/SelectableListBoxWrapper';
 import {SelectionChange} from '../../../util/SelectionChange';
 import {FilterableListBoxWrapper} from '../../../ui/selector/list/FilterableListBoxWrapper';
 

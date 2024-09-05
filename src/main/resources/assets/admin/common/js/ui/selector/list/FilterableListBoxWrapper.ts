@@ -65,13 +65,7 @@ export class FilterableListBoxWrapper<I>
         this.applyButton.onClicked(this.applySelection.bind(this));
 
         this.dropdownHandle.onClicked(() => {
-            this.dropdownHandle.toggle();
-
-            if (this.dropdownHandle.isDown()) {
-                this.showDropdown();
-            } else {
-                this.hideDropdown();
-            }
+            this.handleDropdownHandleClicked();
         });
 
         this.optionFilterInput.onValueChanged((event: ValueChangedEvent) => {
@@ -210,6 +204,16 @@ export class FilterableListBoxWrapper<I>
 
         if (this.options.filter) {
             this.filterItems(event.getNewValue());
+        }
+    }
+
+    protected handleDropdownHandleClicked(): void {
+        this.dropdownHandle.toggle();
+
+        if (this.dropdownHandle.isDown()) {
+            this.showDropdown();
+        } else {
+            this.hideDropdown();
         }
     }
 
