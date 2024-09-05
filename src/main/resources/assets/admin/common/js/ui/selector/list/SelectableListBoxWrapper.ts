@@ -316,6 +316,10 @@ export class SelectableListBoxWrapper<I>
     }
 
     maximumOccurrencesReached(): boolean {
+        if (this.options.maxSelected === 0) {
+            return false;
+        }
+
         return this.options.maxSelected > 0 && this.selectedItems.size >= this.options.maxSelected;
     }
 

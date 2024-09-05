@@ -90,6 +90,10 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
     }
 
     maximumOccurrencesReached(): boolean {
+        if (this.options.maxSelected === 0) {
+            return false;
+        }
+
         return super.maximumOccurrencesReached() || this.selectedOptionsView.count() >= this.options.maxSelected;
     }
 }
