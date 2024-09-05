@@ -23,6 +23,7 @@ export interface PrincipalComboBoxParams {
     allowedTypes?: PrincipalType[];
     skipPrincipals?: PrincipalKey[];
     postfixUri?: string;
+    selectedOptionsView?: PrincipalSelectedOptionsView;
 }
 
 interface PrincipalComboBoxOptions extends ListBoxInputOptions<Principal> {
@@ -48,16 +49,12 @@ export class PrincipalComboBox
 
         super(new PrincipalsListBox(loader), {
             maxSelected: options?.maxSelected ?? 0,
-            selectedOptionsView: new PrincipalSelectedOptionsView(),
+            selectedOptionsView: options?.selectedOptionsView || new PrincipalSelectedOptionsView(),
             className: 'principal-combobox',
             loader: loader
         } as PrincipalComboBoxOptions);
 
         this.postfixUri = options?.postfixUri;
-    }
-
-    protected initElements(): void {
-        super.initElements();
     }
 
     protected initListeners(): void {
@@ -182,7 +179,7 @@ export class PrincipalComboBoxWrapper extends FormInputEl {
     private readonly selector: PrincipalComboBox;
 
     constructor(selector: PrincipalComboBox) {
-        super('div', 'locale-selector-wrapper');
+        super('div', 'principal-selector-wrapper');
 
         this.selector = selector;
         this.appendChild(this.selector);
