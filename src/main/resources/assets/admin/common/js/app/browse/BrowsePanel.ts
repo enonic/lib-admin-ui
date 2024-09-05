@@ -26,11 +26,10 @@ export class BrowsePanel
 
     protected browseToolbar: Toolbar;
 
-    protected treeGrid?: TreeGrid<ViewItem>;
-
-    protected selectableListBoxPanel?: SelectableListBoxPanel<ViewItem>;
+    protected selectableListBoxPanel: SelectableListBoxPanel<ViewItem>;
 
     protected filterPanel: BrowseFilterPanel<Object>;
+    protected treeActions: TreeGridActions<ViewItem>;
     protected filterPanelToBeShownFullScreen: boolean = false;
     protected gridAndItemsSplitPanel: SplitPanel;
     private gridAndToolbarPanel: Panel;
@@ -54,7 +53,6 @@ export class BrowsePanel
     }
 
     protected initElements() {
-        this.treeGrid = this.createTreeGrid();
         this.selectableListBoxPanel = this.createListBoxPanel();
         this.filterPanel = this.createFilterPanel();
         this.browseToolbar = this.createToolbar();
@@ -63,7 +61,7 @@ export class BrowsePanel
             this.browseItemPanel = this.createBrowseItemPanel();
         }
 
-        this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.selectableListBoxPanel || this.treeGrid, this.createBrowseWithItemsPanel())
+        this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.selectableListBoxPanel, this.createBrowseWithItemsPanel())
             .setAlignment(SplitPanelAlignment.VERTICAL)
             .setFirstPanelSize(SplitPanelSize.PERCENTS(this.getFirstPanelSize()))
             .build();
@@ -93,7 +91,7 @@ export class BrowsePanel
 
         if (this.filterPanel) {
             this.onShown(() => {
-                if (this.selectableListBoxPanel?.isFiltered() || this.treeGrid.isFiltered()) {
+                if (this.selectableListBoxPanel.isFiltered()) {
                     this.filterPanel.refresh();
                 }
             });
@@ -105,38 +103,12 @@ export class BrowsePanel
     }
 
     private initTreeGridListeners() {
-        this.treeGrid?.onDataChanged(this.handleDataChanged.bind(this));
         this.selectableListBoxPanel?.onDataChanged(this.handleDataChanged.bind(this));
-        this.treeGrid?.onSelectionChanged(this.handleTreeGridSelectionChanged.bind(this));
         this.selectableListBoxPanel?.onSelectionChanged(this.handleTreeListSelectionChanged.bind(this));
-        this.treeGrid?.onHighlightingChanged(this.handleHighlightingChanged.bind(this));
-
-        this.treeGrid.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
-            this.treeGrid.toggleClass('selection-mode', isActive);
-            this.toggleSelectionMode(isActive);
-        });
 
         this.selectableListBoxPanel?.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
             this.toggleSelectionMode(isActive);
         });
-    }
-
-    private handleTreeGridSelectionChanged() {
-        const totalFullSelected: number = this.treeGrid.getTotalSelected();
-
-        if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
-            this.updateTreeGridSelectionModeShownItems(totalFullSelected);
-        }
-
-        if (totalFullSelected) {
-            this.debouncedActionsAndPreviewUpdate();
-        } else {
-            this.updateActionsAndPreview();
-        }
-
-        if (this.treeGrid.getToolbar().getSelectionPanelToggler().isActive()) {
-            this.updateFilterPanelOnSelectionChange();
-        }
     }
 
     private handleTreeListSelectionChanged() {
@@ -216,10 +188,6 @@ export class BrowsePanel
         return this.filterAndGridSplitPanel;
     }
 
-    getTreeGrid(): TreeGrid<ViewItem> {
-        return this.treeGrid;
-    }
-
     getBrowseItemPanel(): BrowseItemPanel {
         return this.browseItemPanel;
     }
@@ -229,7 +197,7 @@ export class BrowsePanel
     }
 
     refreshFilter() {
-        if (this.filterPanel && (this.filterPanel.isVisible() || this.selectableListBoxPanel?.isFiltered() || this.treeGrid.isFiltered())) {
+        if (this.filterPanel && (this.filterPanel.isVisible() || this.selectableListBoxPanel.isFiltered())) {
             this.filterPanel.refresh();
         }
     }
@@ -255,23 +223,19 @@ export class BrowsePanel
     }
 
     protected enableSelectionMode() {
-        this.treeGrid.filter(this.treeGrid.getSelectedDataList());
+        // implement in inheritors
     }
 
     protected disableSelectionMode() {
-        this.treeGrid.resetFilter();
+        // implement in inheritors
     }
 
     protected createToolbar(): Toolbar {
         throw 'Must be implemented by inheritors';
     }
 
-    protected createTreeGrid(): TreeGrid<ViewItem> {
-        throw 'Must be implemented by inheritors';
-    }
-
     protected createListBoxPanel(): SelectableListBoxPanel<ViewItem> {
-        return null;
+        throw 'Must be implemented by inheritors';
     }
 
     protected createBrowseItemPanel(): BrowseItemPanel {
@@ -279,7 +243,7 @@ export class BrowsePanel
     }
 
     protected getBrowseActions(): TreeGridActions<ViewItem> {
-        return this.treeGrid.getContextMenu().getActions();
+        return this.treeActions;
     }
 
     protected createFilterPanel(): BrowseFilterPanel<ViewItem> {
@@ -318,14 +282,6 @@ export class BrowsePanel
             this.enableSelectionMode();
         } else {
             this.disableSelectionMode();
-        }
-    }
-
-    private handleHighlightingChanged() {
-        if (this.treeGrid.hasHighlightedNode()) {
-            this.debouncedActionsAndPreviewUpdate();
-        } else {
-            this.updateActionsAndPreview();
         }
     }
 
@@ -382,17 +338,6 @@ export class BrowsePanel
         }
     }
 
-    private updateTreeGridSelectionModeShownItems(totalFullSelected: number) {
-        const totalCurrentSelected: number = this.treeGrid.getTotalCurrentSelected();
-        const amountOfNodesShown: number = this.treeGrid.getCurrentTotal();
-
-        if (totalCurrentSelected === 0 || amountOfNodesShown === 0) { // all items deselected
-            this.treeGrid.getToolbar().getSelectionPanelToggler().setActive(false);
-        } else if (amountOfNodesShown > totalFullSelected) { // some item/items deselected
-            this.treeGrid.filter(this.treeGrid.getSelectedDataList());
-        }
-    }
-
     protected updateActionsAndPreview() {
         this.updateBrowseActions();
         this.updatePreviewItem();
@@ -402,7 +347,7 @@ export class BrowsePanel
         const actions: TreeGridActions<IDentifiable> = this.getBrowseActions();
 
         if (actions) {
-            const selectedItems = this.selectableListBoxPanel?.getSelectedItems() ?? this.treeGrid.getSelectedDataList();
+            const selectedItems = this.selectableListBoxPanel?.getSelectedItems();
             return actions.updateActionsEnabledState(selectedItems).catch(DefaultErrorHandler.handle);
         }
 
@@ -410,7 +355,7 @@ export class BrowsePanel
     }
 
     protected updatePreviewItem() {
-        const item = this.selectableListBoxPanel?.getSelectedItems().pop() ?? this.treeGrid.getLastSelectedOrHighlightedItem();
+        const item = this.selectableListBoxPanel?.getSelectedItems().pop();
         this.getBrowseItemPanel().togglePreviewForItem(item);
     }
 
