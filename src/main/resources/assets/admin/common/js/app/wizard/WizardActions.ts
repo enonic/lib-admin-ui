@@ -18,7 +18,7 @@ export class WizardActions<T> {
         throw new Error('Must be overridden by inheritors');
     }
 
-    enableActionsForExisting(_existing: T) {
+    enableActionsForExisting(_existing: T): Q.Promise<void> {
         throw new Error('Must be overridden by inheritors');
     }
 
