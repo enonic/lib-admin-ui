@@ -18,7 +18,9 @@ export class ObjectHelper {
 
     static iFrameSafeInstanceOf(obj: any, objType: any): boolean {
         if (!objType || !obj) {
-            console.warn('Undefined fn passed to iFrameSafeInstanceOf, returning false', obj, objType);
+            if (!objType) {
+                console.warn('Undefined fn passed to iFrameSafeInstanceOf, returning false', obj, objType);
+            }
             return false;
         }
 

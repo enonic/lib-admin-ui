@@ -37,7 +37,7 @@
     "postcss": "^8.2.2"
   },
   "devDependencies": {
-    "@enonic/eslint-config": "2.0.0-beta.2",
+    "@enonic/eslint-config": "2.0.0",
     "@swc/cli": "^0.4.0",
     "@swc/core": "1.7.22",
     "@types/jquery": "^3.5.30",
