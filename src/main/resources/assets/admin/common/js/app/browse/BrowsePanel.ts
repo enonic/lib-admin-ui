@@ -7,7 +7,6 @@ import {TreeGridActions} from '../../ui/treegrid/actions/TreeGridActions';
 import {SplitPanel, SplitPanelAlignment, SplitPanelBuilder} from '../../ui/panel/SplitPanel';
 import {Panel} from '../../ui/panel/Panel';
 import {Toolbar} from '../../ui/toolbar/Toolbar';
-import {TreeGrid} from '../../ui/treegrid/TreeGrid';
 import {BrowseFilterPanel} from './filter/BrowseFilterPanel';
 import {Action} from '../../ui/Action';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
