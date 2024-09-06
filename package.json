@@ -22,7 +22,6 @@
   "dependencies": {
     "@types/dompurify": "^3.0.5",
     "@types/mousetrap": "^1.6.15",
-    "@types/slickgrid": "^2.1.36",
     "dompurify": "^3.1.6",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.7.1",
@@ -30,7 +29,6 @@
     "jquery-ui": "^1.14.0",
     "mousetrap": "^1.6.5",
     "q": "^1.5.1",
-    "slickgrid": "^4.0.1",
     "validator": "^13.12.0"
   },
   "peerDependencies": {
