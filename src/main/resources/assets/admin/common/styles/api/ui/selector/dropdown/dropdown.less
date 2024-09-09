@@ -29,16 +29,6 @@
     padding-left: 50px;
   }
 
-  .slick-viewport {
-    overflow-x: hidden !important;
-    height: 100% !important;
-  }
-
-  .grid {
-    width: 100% !important;
-    overflow-y: auto !important;
-  }
-
   .empty-options,
   .options-container {
     position: absolute;
@@ -56,26 +46,8 @@
       box-shadow: 2px 0 2px @admin-medium-gray-border;
     }
 
-    .slick-header {
-      height: 0;
-      display: none;
-    }
-
     .grid-canvas {
       width: 100% !important;
-    }
-
-    .slick-cell {
-      &:hover,
-      &.active {
-        background: @admin-bg-light-gray;
-        cursor: pointer;
-      }
-
-      &:not(.selected).readonly {
-        opacity: 0.5;
-        pointer-events: none;
-      }
     }
   }
 
