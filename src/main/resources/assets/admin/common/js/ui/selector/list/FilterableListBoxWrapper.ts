@@ -313,15 +313,26 @@ export class FilterableListBoxWrapper<I>
     protected applySelection(): void {
         const selectionChange: SelectionChange<I> = {selected: [], deselected: []};
 
+        // deselecting items first to free selection space for new items if limits are set
         this.selectionDelta.forEach((isSelected: boolean, id: string) => {
-            const item: I = this.getItemById(id);
-
-            if (isSelected) {
-                selectionChange.selected.push(item);
-                this.doSelect(item);
-            } else {
+            if (!isSelected) {
+                const item: I = this.getItemById(id);
                 selectionChange.deselected.push(item);
                 this.doDeselect(item);
+            }
+        });
+
+        // then selecting items until max limit is reached
+        this.selectionDelta.forEach((isSelected: boolean, id: string) => {
+            if (isSelected) {
+                if (this.selectionLimitReached) {
+                    this.toggleItemWrapperSelected(id, false);
+                } else {
+                    const item: I = this.getItemById(id);
+                    selectionChange.selected.push(item);
+                    this.doSelect(item);
+                }
+
             }
         });
 

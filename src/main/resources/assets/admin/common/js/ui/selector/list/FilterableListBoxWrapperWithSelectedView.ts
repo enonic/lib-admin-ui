@@ -50,14 +50,14 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
     }
 
     protected doDeselect(itemToDeselect: I): void {
-        super.doDeselect(itemToDeselect);
-
         const option = this.createSelectedOption(itemToDeselect);
         const existing = this.selectedOptionsView.getById(option.getId());
 
         if (existing) {
             this.selectedOptionsView.removeOption(this.createSelectedOption(itemToDeselect), true);
         }
+
+        super.doDeselect(itemToDeselect);
     }
 
     abstract createSelectedOption(item: I): Option<I>;
