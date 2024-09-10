@@ -129,7 +129,7 @@ export class SelectableListBoxWrapper<I>
 
     protected handleUserToggleAction(item: I): void {
         const itemId = this.listBox.getIdOfItem(item);
-        const actualItem = this.listBox.getItem(itemId); // making sure we work with actual list item value
+        const actualItem = this.listBox.getItem(itemId) || item; // making sure we work with actual list item value
 
         if (!this.isMultiSelect() || this.selectionMode === SelectionMode.HIGHLIGHT) { // unselect all other items
             this.getCurrentlySelectedItems().filter((selectedItem) => this.listBox.getIdOfItem(selectedItem) !== itemId).forEach(
