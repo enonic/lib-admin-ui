@@ -255,9 +255,7 @@ export class FilterableListBoxWrapper<I>
     }
 
     protected handleClickOutside(): void {
-        this.dropdownHandle.up();
-        this.applyButton.hide();
-        this.listBox.hide();
+        this.hideDropdown();
     }
 
     handleUserSelected(item: I): void {
