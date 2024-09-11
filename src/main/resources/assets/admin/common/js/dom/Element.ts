@@ -208,7 +208,7 @@ export class Element {
 
         if (this.parentElement && this.el.getHTMLElement().parentElement) {
             if (!(this.parentElement.getHTMLElement() === this.el.getHTMLElement().parentElement)) {
-                 
+
                 throw new Error('Illegal state: HTMLElement in parent Element is not the as the HTMLElement parent to this HTMLElement');
             }
         }
@@ -258,10 +258,20 @@ export class Element {
             }
         }
 
-        ObjectHelper.isDefined(this['tabbable']) && this['tabbable'] ? this.makeTabbable() : this.removeTabbable();
-        ObjectHelper.isDefined(this['role']) && this.setRole(this['role']);
-        ObjectHelper.isDefined(this['ariaLabel']) && this.setAriaLabel(this['ariaLabel']);
-        ObjectHelper.isDefined(this['ariaHasPopup']) && this.setAriaHasPopup(this['ariaHasPopup']);
+        if (ObjectHelper.isDefined(this['tabbable']) && this['tabbable']) {
+            this.makeTabbable()
+        } else {
+            this.removeTabbable();
+        }
+        if (ObjectHelper.isDefined(this['role'])) {
+            this.setRole(this['role']);
+        }
+        if (ObjectHelper.isDefined(this['ariaLabel'])) {
+            this.setAriaLabel(this['ariaLabel']);
+        }
+        if (ObjectHelper.isDefined(this['ariaHasPopup'])) {
+            this.setAriaHasPopup(this['ariaHasPopup']);
+        }
     }
 
     private implementsWCAG(): boolean {
@@ -626,9 +636,11 @@ export class Element {
         if (this.isAriaRole(value)) {
             role = value;
         }
-        StringHelper.isBlank(role.toLowerCase()) ?
-            this.getEl().removeAttribute('role') :
+        if (StringHelper.isBlank(role.toLowerCase())) {
+            this.getEl().removeAttribute('role');
+        } else {
             this.getEl().setAttribute('role', role.toLowerCase());
+        }
 
         return this;
     }
@@ -638,9 +650,11 @@ export class Element {
         if (this.isAriaHasPopup(value)) {
             hasPopup = value;
         }
-        StringHelper.isBlank(hasPopup.toLowerCase()) ?
-            this.getEl().removeAttribute('haspopup') :
+        if (StringHelper.isBlank(hasPopup.toLowerCase())) {
+            this.getEl().removeAttribute('haspopup');
+        } else {
             this.setAriaAttribute('haspopup', hasPopup.toLowerCase());
+        }
 
         return this;
     }

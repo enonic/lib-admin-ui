@@ -164,7 +164,9 @@ export class Toolbar<C extends ToolbarConfig>
     }
 
     private createActionButton(action: Action): ActionButton {
-        action.isFoldable() && action.onPropertyChanged(() => this.foldOrExpand());
+        if (action.isFoldable()) {
+            action.onPropertyChanged(() => this.foldOrExpand());
+        }
         return new ActionButton(action);
     }
 
@@ -373,7 +375,9 @@ export class Toolbar<C extends ToolbarConfig>
             foldChanged = true;
         }
 
-        foldChanged && this.updateFoldButtonLabel();
+        if (foldChanged) {
+            this.updateFoldButtonLabel();
+        }
     }
 
     fold(force: boolean = false): void {

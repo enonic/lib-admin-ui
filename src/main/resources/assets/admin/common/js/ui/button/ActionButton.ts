@@ -85,8 +85,12 @@ export class ActionButton
         if (tooltip && (toggledEnabled || becameHidden)) {
             tooltip.hide();
         }
-        toggledEnabled && this.setEnabled(action.isEnabled());
-        toggledVisible && this.setVisible(action.isVisible());
+        if (toggledEnabled) {
+            this.setEnabled(action.isEnabled());
+        }
+        if (toggledVisible) {
+            this.setVisible(action.isVisible());
+        }
         this.setLabel(this.createLabel(action), false);
         this.updateIconClass(action.getIconClass());
 
