@@ -43,7 +43,7 @@ export class ComboBoxListInput extends FilterableListBoxWrapperWithSelectedView<
         });
 
         // selecting items
-        this.selectItems(items);
+        this.selectItems(items, true);
     }
 
 }
