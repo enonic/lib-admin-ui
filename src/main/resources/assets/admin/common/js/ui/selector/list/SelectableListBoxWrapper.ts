@@ -63,7 +63,7 @@ export class SelectableListBoxWrapper<I>
         });
 
         this.listBox.onItemsRemoved((items: I[]) => {
-            items.forEach((item: I) => this.handleItemRemoved(item));
+            this.handleItemsRemoved(items);
         });
 
         this.listBox.onItemsChanged((items: I[]) => {
@@ -169,9 +169,18 @@ export class SelectableListBoxWrapper<I>
         this.select(item);
     }
 
+    protected handleItemsRemoved(items: I[]): void {
+        const selectedItems = items.filter((item: I) => this.isItemSelected(item));
+
+        if (selectedItems.length > 0) {
+            this.deselect(selectedItems);
+        }
+
+        items.forEach((item: I) => this.handleItemRemoved(item));
+    }
+
     protected handleItemRemoved(item: I): void {
         const id: string = this.listBox.getIdOfItem(item);
-        this.selectedItems.delete(id);
         this.itemsWrappers.get(id)?.forEach((wrapper) => wrapper.remove());
         this.itemsWrappers.delete(id);
     }
