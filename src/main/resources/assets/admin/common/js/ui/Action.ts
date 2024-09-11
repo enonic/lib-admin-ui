@@ -1,6 +1,8 @@
 import * as Q from 'q';
 import {KeyBinding} from './KeyBinding';
 import {Mnemonic} from './Mnemonic';
+import {IWCAG} from './WCAG';
+import {ObjectHelper} from '../ObjectHelper';
 
 type ExecutionListener = (action: Action) => Q.Promise<any> | void;
 
@@ -12,7 +14,7 @@ export class Action {
 
     private title: string;
 
-    private clazz: string;
+    private cls: string;
 
     private iconClass: string;
 
@@ -24,6 +26,8 @@ export class Action {
 
     private visible: boolean = true;
 
+    private foldable: boolean = true;
+
     private executionListeners: ExecutionListener[] = [];
 
     private propertyChangedListeners: ((action: Action) => void)[] = [];
@@ -31,6 +35,8 @@ export class Action {
     private childActions: Action[] = [];
 
     private parentAction: Action;
+
+    private wcag?: IWCAG;
 
     private sortOrder: number = 10;
 
@@ -147,6 +153,19 @@ export class Action {
         return this;
     }
 
+    setWcagAttributes(wcag: IWCAG): Action {
+        this.wcag = wcag;
+        return this;
+    }
+
+    hasWcagAttributes(): boolean {
+        return ObjectHelper.isDefined(this.wcag);
+    }
+
+    getWcagAttributes(): IWCAG {
+        return this.wcag;
+    }
+
     getIconClass(): string {
         return this.iconClass;
     }
@@ -169,12 +188,16 @@ export class Action {
     }
 
     getClass(): string {
-        return this.clazz;
+        return this.cls;
     }
 
     setClass(value: string): Action {
-        this.clazz = value;
+        this.cls = `${value}-action`;
         return this;
+    }
+
+    hasClass(): boolean {
+        return this.cls != null;
     }
 
     hasShortcut(): boolean {
@@ -195,6 +218,15 @@ export class Action {
 
     getMnemonic(): Mnemonic {
         return this.mnemonic;
+    }
+
+    isFoldable(): boolean {
+        return this.foldable;
+    }
+
+    setFoldable(value: boolean): Action {
+        this.foldable = value;
+        return this;
     }
 
     execute(forceExecute: boolean = false): void {
@@ -228,8 +260,8 @@ export class Action {
         this.propertyChangedListeners.push(listener);
     }
 
-    unPropertyChanged(listener: () => void) {
-        this.propertyChangedListeners = this.propertyChangedListeners.filter((currentListener: () => void) => {
+    unPropertyChanged(listener: (action: Action) => void) {
+        this.propertyChangedListeners = this.propertyChangedListeners.filter((currentListener: (action: Action) => void) => {
             return listener !== currentListener;
         });
     }

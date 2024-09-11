@@ -15,6 +15,8 @@ import {ElementRegistry} from './ElementRegistry';
 import {assert, assertNotNull, assertState} from '../util/Assert';
 import {ElementEvent} from './ElementEvent';
 import * as DOMPurify from 'dompurify';
+import {IWCAG as WCAG, AriaRole, AriaHasPopup, IWCAG} from '../ui/WCAG';
+import {KeyHelper} from '../ui/KeyHelper';
 
 export interface PurifyConfig {
     addTags?: string[];
@@ -206,7 +208,7 @@ export class Element {
 
         if (this.parentElement && this.el.getHTMLElement().parentElement) {
             if (!(this.parentElement.getHTMLElement() === this.el.getHTMLElement().parentElement)) {
-                 
+
                 throw new Error('Illegal state: HTMLElement in parent Element is not the as the HTMLElement parent to this HTMLElement');
             }
         }
@@ -233,6 +235,47 @@ export class Element {
         if (builder.className) {
             this.setClass(builder.className);
         }
+    }
+
+    applyWCAGAttributes(attr?: IWCAG): void {
+        if (!ObjectHelper.isDefined(attr) && !this.implementsWCAG()) {
+            return;
+        }
+
+        if (ObjectHelper.isDefined(attr)) {
+            this[WCAG] = true;
+            if (ObjectHelper.isDefined(attr.tabbable)) {
+                this['tabbable'] = attr['tabbable'];
+            }
+            if (ObjectHelper.isDefined(attr.role)) {
+                this['role'] = attr['role'];
+            }
+            if (ObjectHelper.isDefined(attr.ariaLabel)) {
+                this['ariaLabel'] = attr['ariaLabel'];
+            }
+            if (ObjectHelper.isDefined(attr.ariaHasPopup)) {
+                this['ariaHasPopup'] = attr['ariaHasPopup'];
+            }
+        }
+
+        if (ObjectHelper.isDefined(this['tabbable']) && this['tabbable']) {
+            this.makeTabbable()
+        } else {
+            this.removeTabbable();
+        }
+        if (ObjectHelper.isDefined(this['role'])) {
+            this.setRole(this['role']);
+        }
+        if (ObjectHelper.isDefined(this['ariaLabel'])) {
+            this.setAriaLabel(this['ariaLabel']);
+        }
+        if (ObjectHelper.isDefined(this['ariaHasPopup'])) {
+            this.setAriaHasPopup(this['ariaHasPopup']);
+        }
+    }
+
+    private implementsWCAG(): boolean {
+        return this[WCAG] === true;
     }
 
     static fromHtmlElement(element: HTMLElement, loadExistingChildren: boolean = false, parent?: Element): Element {
@@ -332,6 +375,7 @@ export class Element {
             console.log('Element.render started', ClassHelper.getClassName(this));
         }
         this.rendering = true;
+
         return this.doRender().then((rendered) => {
 
             let childPromises = [];
@@ -405,6 +449,10 @@ export class Element {
 
     isVisible() {
         return this.el.isVisible();
+    }
+
+    isFocusable(): boolean {
+        return this.isVisible() && !this.el.isDisabled();
     }
 
     setTitle(title: string): Element {
@@ -526,6 +574,21 @@ export class Element {
         return this.getEl().hasAttribute('spellcheck');
     }
 
+    makeTabbable(): Element {
+        this.getEl().setTabIndex(0);
+        return this;
+    }
+
+    removeTabbable(): Element {
+        this.getEl().setTabIndex(-1);
+        return this;
+    }
+
+    setTabIndex(tabIndex: number): Element {
+        this.getEl().setTabIndex(tabIndex);
+        return this;
+    }
+
     setLang(value: string): Element {
         this.getEl().setAttribute('lang', value);
         return this;
@@ -533,6 +596,72 @@ export class Element {
 
     getLang(): string {
         return this.getEl().getAttribute('lang');
+    }
+
+    private setAriaAttribute(name: string, value: string): Element {
+        this.getEl().setAttribute(`aria-${name}`, value);
+        return this;
+    }
+
+    private removeAriaAttribute(name: string): Element {
+        this.getEl().removeAttribute(`aria-${name}`);
+        return this;
+    }
+
+    setAriaLabel(label: string): Element {
+        if (StringHelper.isBlank(label)) {
+            this.removeAriaAttribute('label');
+            return this;
+        }
+        return this.setAriaAttribute('label', label);
+    }
+
+    setAriaDisabled(disabled: boolean): Element {
+        if (disabled) {
+            return this.setAriaAttribute('disabled', 'true');
+        }
+        return this.removeAriaAttribute('disabled');
+    }
+
+    private isAriaRole(value: string | AriaRole): value is AriaRole {
+        return Object.keys(AriaRole).some(key => (AriaRole as any)[key] === value);
+    }
+
+    private isAriaHasPopup(value: string | AriaHasPopup): value is AriaHasPopup {
+        return Object.keys(AriaHasPopup).some(key => (AriaHasPopup as any)[key] === value);
+    }
+
+    setRole(value: string | AriaRole): Element {
+        let role = AriaRole.NONE;
+        if (this.isAriaRole(value)) {
+            role = value;
+        }
+        if (StringHelper.isBlank(role.toLowerCase())) {
+            this.getEl().removeAttribute('role');
+        } else {
+            this.getEl().setAttribute('role', role.toLowerCase());
+        }
+
+        return this;
+    }
+
+    setAriaHasPopup(value?: string | AriaHasPopup): Element {
+        let hasPopup = value ?? AriaHasPopup.TRUE;
+        if (this.isAriaHasPopup(value)) {
+            hasPopup = value;
+        }
+        if (StringHelper.isBlank(hasPopup.toLowerCase())) {
+            this.getEl().removeAttribute('haspopup');
+        } else {
+            this.setAriaAttribute('haspopup', hasPopup.toLowerCase());
+        }
+
+        return this;
+    }
+
+    removeAriaHasPopup() {
+        this.removeAriaAttribute('haspopup');
+        return this;
     }
 
     setDir(value: LangDirection): Element {
@@ -636,8 +765,12 @@ export class Element {
         return this.insertChildElement(this, existing.getParentElement(), existingIndex);
     }
 
-    hasChild(child: Element) {
+    hasChild(child: Element): boolean {
         return this.children.indexOf(child) > -1;
+    }
+
+    hasParent(): boolean {
+        return !!this.parentElement;
     }
 
     removeChild(child: Element): Element {
@@ -1002,6 +1135,35 @@ export class Element {
         this.getEl().removeEventListener('DOMMouseScroll', listener);
     }
 
+    onApplyKeyPressed(callback: () => void) {
+        const callbackWrapper = (event: KeyboardEvent) => {
+            callback();
+            event.stopPropagation();
+            event.preventDefault();
+        };
+        this.onKeyDown((event: KeyboardEvent) => {
+            if (KeyHelper.isEnterKey(event)) {
+                callbackWrapper(event);
+            }
+        });
+
+        this.onKeyUp((event: KeyboardEvent) => {
+            if (KeyHelper.isSpace(event)) {
+                callbackWrapper(event);
+            }
+        });
+    }
+
+    onEscPressed(callback: () => void) {
+        this.onKeyDown((event: KeyboardEvent) => {
+            if (KeyHelper.isEscKey(event)) {
+                callback();
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        });
+    }
+
     onClicked(listener: (event: MouseEvent) => void) {
         this.getEl().addEventListener('click', listener);
     }
@@ -1235,6 +1397,7 @@ export class Element {
         if (this.isRendered() || this.isRendering()) {
             renderPromise = Q(true);
         } else {
+            this.applyWCAGAttributes();
             renderPromise = this.doRender();
         }
         this.rendering = true;

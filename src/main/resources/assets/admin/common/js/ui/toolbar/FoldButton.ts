@@ -5,9 +5,17 @@ import {Element} from '../../dom/Element';
 import {StyleHelper} from '../../StyleHelper';
 import {Body} from '../../dom/Body';
 import {BrowserHelper} from '../../BrowserHelper';
+import {AriaHasPopup, AriaRole, IWCAG as WCAG} from '../WCAG';
 
 export class FoldButton
-    extends DivEl {
+    extends DivEl
+    implements WCAG {
+
+    [WCAG]: boolean = true;
+    ariaLabel: string = i18n('wcag.toolbar.foldButton');
+    role: AriaRole = AriaRole.BUTTON;
+    ariaHasPopup: AriaHasPopup.MENU;
+    tabbable: boolean = true;
 
     private static expandedCls: string = 'expanded';
     private span: SpanEl;
@@ -31,8 +39,14 @@ export class FoldButton
             this.hostElement = hostElement;
         }
 
-        (hostElement || this).onClicked(this.onButtonClicked.bind(this));
+        this.initListeners();
+    }
+
+    private initListeners() {
+        (this.hostElement || this).onClicked(this.toggleMenu.bind(this));
         this.dropdown.onClicked(this.onMenuClicked.bind(this));
+        this.onApplyKeyPressed(this.toggleMenu.bind(this));
+        this.onEscPressed(this.collapse.bind(this));
     }
 
     public collapse() {
@@ -81,7 +95,7 @@ export class FoldButton
         }
     }
 
-    private onButtonClicked(e: MouseEvent) {
+    private toggleMenu(event?: MouseEvent) {
         this.toggle();
 
         if (this.hasClass(FoldButton.expandedCls)) {
@@ -96,17 +110,13 @@ export class FoldButton
             Body.get().onClicked(onBodyClicked);
         }
 
-        if (!BrowserHelper.isIE()) {
-            e.stopPropagation();
-        }
+        event?.stopPropagation();
     }
 
-    private onMenuClicked(e: MouseEvent) {
+    private onMenuClicked(event: MouseEvent) {
         this.collapse();
 
-        if (!BrowserHelper.isIE()) {
-            e.stopPropagation();
-        }
+        event.stopPropagation();
     }
 
 }

@@ -22,7 +22,7 @@
     .names-and-icon-view-styles(64px);
   }
 
-  .names-and-icon-view-styles(@size, @icon-names-gap: 15px) {
+  .names-and-icon-view-styles(@size, @icon-names-gap: 10px) {
     position: relative;
     overflow: hidden;
 
@@ -56,10 +56,12 @@
         margin: auto;
       }
 
-      img,
-      div.font-icon-default {
-        width: 100%;
-        height: 100%;
+      img, div {
+        &.font-icon-default {
+          width: 100%;
+          height: 100%;
+          display: flex;
+        }
       }
 
       img {

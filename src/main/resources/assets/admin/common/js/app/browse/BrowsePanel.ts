@@ -6,7 +6,7 @@ import {ActionButton} from '../../ui/button/ActionButton';
 import {TreeGridActions} from '../../ui/treegrid/actions/TreeGridActions';
 import {SplitPanel, SplitPanelAlignment, SplitPanelBuilder} from '../../ui/panel/SplitPanel';
 import {Panel} from '../../ui/panel/Panel';
-import {Toolbar} from '../../ui/toolbar/Toolbar';
+import {Toolbar, ToolbarConfig} from '../../ui/toolbar/Toolbar';
 import {TreeGrid} from '../../ui/treegrid/TreeGrid';
 import {BrowseFilterPanel} from './filter/BrowseFilterPanel';
 import {Action} from '../../ui/Action';
@@ -23,7 +23,7 @@ import {SplitPanelSize} from '../../ui/panel/SplitPanelSize';
 export class BrowsePanel
     extends Panel {
 
-    protected browseToolbar: Toolbar;
+    protected browseToolbar: Toolbar<ToolbarConfig>;
 
     protected treeGrid: TreeGrid<ViewItem>;
 
@@ -208,6 +208,7 @@ export class BrowsePanel
             this.showFilterPanel();
         } else {
             this.hideFilterPanel();
+            this.browseToolbar.giveFocus();
         }
     }
 
@@ -223,7 +224,7 @@ export class BrowsePanel
         this.treeGrid.resetFilter();
     }
 
-    protected createToolbar(): Toolbar {
+    protected createToolbar(): Toolbar<ToolbarConfig> {
         throw Error('Must be implemented by inheritors');
     }
 
@@ -244,6 +245,7 @@ export class BrowsePanel
     }
 
     protected showFilterPanel() {
+        this.browseToolbar.giveBlur();
         this.filterPanelForcedShown = true;
         this.filterPanelForcedHidden = false;
 
@@ -267,7 +269,6 @@ export class BrowsePanel
         if (this.filterPanel.hasFilterSet()) {
             this.toggleFilterPanelButton.addClass('filtered');
         }
-
     }
 
     private toggleSelectionMode(isActive: boolean) {
@@ -298,7 +299,9 @@ export class BrowsePanel
             .setAnimationDelay(100)     // filter panel animation time
             .build();
 
-        this.filterPanel.onHideFilterPanelButtonClicked(this.toggleFilterPanel.bind(this));
+        this.filterPanel.onHideFilterPanelButtonClicked(() => {
+            this.toggleFilterPanel();
+        });
         this.filterPanel.onShowResultsButtonClicked(this.toggleFilterPanel.bind(this));
 
         this.addToggleFilterPanelButtonInToolbar();
@@ -306,10 +309,12 @@ export class BrowsePanel
     }
 
     private addToggleFilterPanelButtonInToolbar() {
-        this.toggleFilterPanelAction = new ToggleFilterPanelAction(this);
-        this.toggleFilterPanelButton = new ActionButton(this.toggleFilterPanelAction);
+        this.toggleFilterPanelAction = new ToggleFilterPanelAction(this).setFoldable(false);
+        this.toggleFilterPanelAction.setWcagAttributes({
+            ariaLabel: i18n('tooltip.filterPanel.show')
+        });
+        this.toggleFilterPanelButton = this.browseToolbar.addAction(this.toggleFilterPanelAction);
         this.toggleFilterPanelButton.setTitle(i18n('tooltip.filterPanel.show'));
-        this.browseToolbar.prependChild(this.toggleFilterPanelButton);
         this.toggleFilterPanelAction.setVisible(false);
     }
 

@@ -1,8 +1,18 @@
+@import "../../../../variables";
+
 .@{_COMMON_PREFIX}combobox {
   .reset(true);
+  .input-border();
 
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; // to make sure dropdown is shown in the right place
+  height: @input-height-big; // 2px is the top+bottom border height
+
+  > input {
+    flex: 1;
+  }
 
   &.followed-by-options {
     margin-bottom: 10px;
@@ -50,10 +60,6 @@
   .slick-viewport {
     overflow-x: hidden !important;
     height: 100% !important;
-  }
-
-  .grid {
-    width: 100% !important;
   }
 
   .options-container {
