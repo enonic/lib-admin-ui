@@ -296,14 +296,6 @@ export class SelectableListBoxWrapper<I>
         this.deselect(this.getCurrentlySelectedItems(), silent);
     }
 
-    toggleSelection(item: I, selected: boolean, silent?: boolean): void {
-        if (selected) {
-            this.deselect(item, silent);
-        } else {
-            this.select(item, silent);
-        }
-    }
-
     updateItem(item: I): void {
         this.listBox.replaceItems(item);
     }

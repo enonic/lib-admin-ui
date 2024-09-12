@@ -151,7 +151,7 @@ export class FilterableListBoxWrapper<I>
                     const focusedItem: I = this.getFocusedItem();
 
                     if (focusedItem) {
-                        this.toggleSelection(focusedItem, this.isItemSelected(focusedItem));
+                        this.handleUserToggleAction(focusedItem);
                         return false;
                     }
 
@@ -243,11 +243,7 @@ export class FilterableListBoxWrapper<I>
 
         if (focusedItem) {
             if (this.selectionDelta.size === 0) {
-                if (this.isItemSelected(focusedItem)) {
-                    this.deselect(focusedItem);
-                } else {
-                    this.select(focusedItem);
-                }
+                this.handleUserToggleAction(focusedItem);
             }
 
             this.applySelection();
