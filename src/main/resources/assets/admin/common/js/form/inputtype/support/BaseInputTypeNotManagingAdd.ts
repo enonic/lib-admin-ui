@@ -1,28 +1,28 @@
 import * as $ from 'jquery';
 import * as Q from 'q';
+import {ClassHelper} from '../../../ClassHelper';
+import {ObjectHelper} from '../../../ObjectHelper';
+import {ValidationError} from '../../../ValidationError';
 import {Property} from '../../../data/Property';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Value} from '../../../data/Value';
-import {FormInputEl} from '../../../dom/FormInputEl';
-import {InputTypeViewContext} from '../InputTypeViewContext';
-import {Input} from '../../Input';
-import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
 import {Element} from '../../../dom/Element';
-import {InputValidationRecording} from '../InputValidationRecording';
+import {FormInputEl} from '../../../dom/FormInputEl';
+import {assertNotNull} from '../../../util/Assert';
+import {i18n} from '../../../util/Messages';
+import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
+import {Input} from '../../Input';
 import {OccurrenceAddedEvent} from '../../OccurrenceAddedEvent';
-import {OccurrenceRenderedEvent} from '../../OccurrenceRenderedEvent';
 import {OccurrenceRemovedEvent} from '../../OccurrenceRemovedEvent';
+import {OccurrenceRenderedEvent} from '../../OccurrenceRenderedEvent';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {InputValidationRecording} from '../InputValidationRecording';
+import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
 import {ValueChangedEvent} from '../ValueChangedEvent';
-import {ClassHelper} from '../../../ClassHelper';
-import {ObjectHelper} from '../../../ObjectHelper';
+import {BaseInputType} from './BaseInputType';
 import {InputOccurrenceView} from './InputOccurrenceView';
 import {InputOccurrences} from './InputOccurrences';
-import {assertNotNull} from '../../../util/Assert';
 import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
-import {BaseInputType} from './BaseInputType';
-import {ValidationError} from '../../../ValidationError';
-import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
-import {i18n} from '../../../util/Messages';
 
 export abstract class BaseInputTypeNotManagingAdd
     extends BaseInputType {
@@ -398,7 +398,7 @@ export abstract class BaseInputTypeNotManagingAdd
         });
     }
 
-    isSagaEditable(): boolean {
+    isManaged(): boolean {
         return false;
     }
 }

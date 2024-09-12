@@ -1,15 +1,15 @@
 import * as Q from 'q';
-import {Property} from '../../../data/Property';
-import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
-import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../../FormItemOccurrenceView';
-import {Element} from '../../../dom/Element';
-import {DivEl} from '../../../dom/DivEl';
-import {Value} from '../../../data/Value';
-import {PropertyPath} from '../../../data/PropertyPath';
-import {InputOccurrence} from './InputOccurrence';
-import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
-import {ButtonEl} from '../../../dom/ButtonEl';
-import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
+import { Property } from '../../../data/Property';
+import { PropertyPath } from '../../../data/PropertyPath';
+import { PropertyValueChangedEvent } from '../../../data/PropertyValueChangedEvent';
+import { Value } from '../../../data/Value';
+import { ButtonEl } from '../../../dom/ButtonEl';
+import { DivEl } from '../../../dom/DivEl';
+import { Element } from '../../../dom/Element';
+import { FormItemOccurrenceView, FormItemOccurrenceViewConfig } from '../../FormItemOccurrenceView';
+import { BaseInputTypeNotManagingAdd } from './BaseInputTypeNotManagingAdd';
+import { InputOccurrence } from './InputOccurrence';
+import { OccurrenceValidationRecord } from './OccurrenceValidationRecord';
 
 export interface InputOccurrenceViewConfig extends FormItemOccurrenceViewConfig {
     inputTypeView: BaseInputTypeNotManagingAdd;
@@ -214,8 +214,8 @@ export class InputOccurrenceView
         this.toggleClass('invalid', !!errorMessage);
     }
 
-    protected isSagaEditableType(): boolean {
-        return this.inputTypeView.isSagaEditable();
+    protected isManagedType(): boolean {
+        return this.inputTypeView.isManaged();
     }
 
     protected getDataPathElement(): Element {

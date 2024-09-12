@@ -1,11 +1,11 @@
 import * as Q from 'q';
-import {DivEl} from '../dom/DivEl';
 import {PropertyPath} from '../data/PropertyPath';
+import {DivEl} from '../dom/DivEl';
+import {Element} from '../dom/Element';
+import {JukeAiHelper} from '../juke/JukeAiHelper';
 import {FormItemOccurrence} from './FormItemOccurrence';
 import {HelpTextContainer} from './HelpTextContainer';
 import {RemoveButtonClickedEvent} from './RemoveButtonClickedEvent';
-import {SagaHelper} from '../saga/SagaHelper';
-import {Element} from '../dom/Element';
 
 export interface FormItemOccurrenceViewConfig {
     className: string;
@@ -36,7 +36,7 @@ export abstract class FormItemOccurrenceView
     }
 
     protected initListeners(): void {
-        if (this.isSagaEditableType()) {
+        if (this.isManagedType()) {
             const updatePathCall = setInterval(() => {
                 this.updateInputElDataPath();
             }, 1000);
@@ -144,10 +144,10 @@ export abstract class FormItemOccurrenceView
     }
 
     protected updateInputElDataPath(): void {
-        this.getDataPathElement().getEl().setAttribute(SagaHelper.DATA_ATTR, this.getDataPath()?.toString().replace(/\./g, '/'));
+        this.getDataPathElement().getEl().setAttribute(JukeAiHelper.DATA_ATTR, this.getDataPath()?.toString().replace(/\./g, '/'));
     }
 
-    protected isSagaEditableType(): boolean {
+    protected isManagedType(): boolean {
         return false;
     }
 
