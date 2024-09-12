@@ -169,6 +169,8 @@ export abstract class ModalDialog
                         }
                     }
                     this.handleClickOutside();
+                    event.stopPropagation();
+                    event.preventDefault();
                 }
             };
 
@@ -382,6 +384,7 @@ export abstract class ModalDialog
         DialogManagerInner.get().handleClosedDialog(this);
 
         this.notifyClosed();
+        Body.get().reapplyFocus();
     }
 
     hide() {
@@ -508,6 +511,7 @@ export abstract class ModalDialog
     }
 
     open() {
+        Body.get().getFocusedElement()?.giveBlur();
         BodyMask.get().show();
         KeyBindings.get().shelveBindings();
 

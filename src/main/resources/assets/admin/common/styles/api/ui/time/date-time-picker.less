@@ -11,15 +11,21 @@
       text-align: center;
 
       .picker-buttons {
+        padding: 0 20px;
         display: flex;
-        justify-content: space-between;
-
-        .picker-dialog-button(10px 20px 9px auto);
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: end;
 
         .ok-button {
-          display: inline-block;
+          .picker-dialog-button();
         }
 
+        .default-button {
+          .picker-dialog-button(@form-button-bg, 0);
+        }
+
+        /*
         .default-button {
           background-color: @form-button-bg;
           padding: 4px 19px 4px 19px;
@@ -27,6 +33,7 @@
           display: inline-block;
           margin: 10px 10px 9px 20px;
         }
+         */
       }
 
       .notSelectable();

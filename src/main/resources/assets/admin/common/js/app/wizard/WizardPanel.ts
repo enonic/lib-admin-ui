@@ -1,5 +1,5 @@
 import * as Q from 'q';
-import {Toolbar} from '../../ui/toolbar/Toolbar';
+import {Toolbar, ToolbarConfig} from '../../ui/toolbar/Toolbar';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 import {ResponsiveItem} from '../../ui/responsive/ResponsiveItem';
 import {Panel} from '../../ui/panel/Panel';
@@ -47,7 +47,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
     protected params: WizardPanelParams<EQUITABLE>;
     protected wizardActions: WizardActions<EQUITABLE>;
     protected wizardHeader: WizardHeader;
-    protected mainToolbar: Toolbar;
+    protected mainToolbar: Toolbar<ToolbarConfig>;
     protected formIcon: Element;
     protected formMask: LoadMask;
     protected liveMask: LoadMask;
@@ -249,7 +249,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
         });
     }
 
-    public getMainToolbar(): Toolbar {
+    public getMainToolbar(): Toolbar<ToolbarConfig> {
         return this.mainToolbar;
     }
 
@@ -620,7 +620,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
         return this.dataLoaded;
     }
 
-    protected createMainToolbar(): Toolbar {
+    protected createMainToolbar(): Toolbar<ToolbarConfig> {
         return null;
     }
 

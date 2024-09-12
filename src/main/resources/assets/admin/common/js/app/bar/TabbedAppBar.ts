@@ -1,5 +1,4 @@
 import {ActionContainer} from '../../ui/ActionContainer';
-import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 import {AppBar} from './AppBar';
 import {AppBarTabMenu} from './AppBarTabMenu';
 import {Application} from '../Application';
@@ -17,23 +16,13 @@ export class TabbedAppBar
 
         this.appendChild(this.tabMenu);
 
-        this.tabMenu.onNavigationItemAdded(() => this.updateAppOpenTabs());
-        this.tabMenu.onNavigationItemRemoved(() => this.updateAppOpenTabs());
+        const onNavigationItemAddedOrRemoved = () => {
+            this.updateAppOpenTabs();
+            this.toggleClass('tabs-present', this.tabMenu.countVisible() > 0);
+        };
 
-        // Responsive events to update homeButton styles
-        ResponsiveManager.onAvailableSizeChanged(this, () => {
-            if (this.tabMenu.countVisible() > 0) {
-                if (managedHomeIconAction) {
-                    super.setHomeIconAction();
-                }
-                this.addClass('tabs-present');
-            } else {
-                if (managedHomeIconAction) {
-                    super.unsetHomeIconAction();
-                }
-                this.removeClass('tabs-present');
-            }
-        });
+        this.tabMenu.onNavigationItemAdded(onNavigationItemAddedOrRemoved);
+        this.tabMenu.onNavigationItemRemoved(onNavigationItemAddedOrRemoved);
     }
 
     getTabMenu(): AppBarTabMenu {

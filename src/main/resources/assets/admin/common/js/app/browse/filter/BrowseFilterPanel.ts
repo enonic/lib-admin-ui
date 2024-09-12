@@ -17,6 +17,7 @@ import {LabelEl} from '../../../dom/LabelEl';
 import {ActionButton} from '../../../ui/button/ActionButton';
 import {Action} from '../../../ui/Action';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
+import {AriaRole} from '../../../ui/WCAG';
 
 export class BrowseFilterPanel<T>
     extends Panel {
@@ -40,8 +41,14 @@ export class BrowseFilterPanel<T>
         this.addClass('filter-panel');
 
         this.hideFilterPanelButton = new SpanEl('hide-filter-panel-button icon-search');
+        this.hideFilterPanelButton.applyWCAGAttributes({
+            ariaLabel: i18n('tooltip.filterPanel.hide'),
+            role: AriaRole.BUTTON,
+            tabbable: true
+        });
         this.hideFilterPanelButton.setTitle(i18n('tooltip.filterPanel.hide'));
         this.hideFilterPanelButton.onClicked(() => this.notifyHidePanelButtonPressed());
+        this.hideFilterPanelButton.onApplyKeyPressed(() => this.notifyHidePanelButtonPressed());
 
         let showResultsButtonWrapper = new DivEl('show-filter-results');
         this.showResultsButton = new SpanEl('show-filter-results-button');

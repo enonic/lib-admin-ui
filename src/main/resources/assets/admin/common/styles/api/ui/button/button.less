@@ -1,7 +1,9 @@
-.menu-action-button() {
-  .button(@admin-font-gray2, transparent, @admin-font-gray3, transparent, false);
+.menu-action-button(@padding: 5px 14px) {
+  .button(@admin-font-gray2, transparent, @admin-font-gray3, transparent, @padding);
 
-  height: 100%;
+  span {
+    .ellipsis();
+  }
 
   &.pull-right {
     float: right;
@@ -21,7 +23,7 @@
   .button(@form-button-font, @form-button-bg);
 
   &.small {
-    padding: 0 15px 0 15px;
+    padding: 3px 15px;
 
     .label {
       font-size: 12px;
@@ -29,7 +31,7 @@
   }
 
   &.large {
-    padding: 5px 19px 5px 19px;
+    padding: 8px 19px;
 
     .label {
       font-size: 16px;

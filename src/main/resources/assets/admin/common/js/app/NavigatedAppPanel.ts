@@ -47,7 +47,10 @@ export class NavigatedAppPanel
 
     addNavigablePanel(item: AppBarTabMenuItem, panel: Panel, select?: boolean) {
         this.appBarTabMenu.addNavigationItem(item);
-        let index = this.addPanel(panel);
+        const index = this.addPanel(panel);
+        if (index === 1) {
+            this.appBar.setHomeIconAction();
+        }
         if (select) {
             this.selectPanelByIndex(index);
         }
@@ -59,6 +62,10 @@ export class NavigatedAppPanel
         if (index > -1) {
             let navigationItem: AppBarTabMenuItem = this.appBarTabMenu.getNavigationItem(index) as AppBarTabMenuItem;
             this.appBarTabMenu.removeNavigationItem(navigationItem);
+        }
+
+        if (this.appBarTabMenu.countVisible() === 0) {
+            this.appBar.unsetHomeIconAction();
         }
 
         this.checkBrowsePanelNeedsToBeShown(index, panel);

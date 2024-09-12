@@ -1,6 +1,6 @@
 import {Panel} from '../../ui/panel/Panel';
 import {Closeable} from '../../ui/Closeable';
-import {Toolbar} from '../../ui/toolbar/Toolbar';
+import {Toolbar, ToolbarConfig} from '../../ui/toolbar/Toolbar';
 import {Action} from '../../ui/Action';
 import {ItemViewClosedEvent} from './ItemViewClosedEvent';
 import {ViewItem} from './ViewItem';
@@ -9,7 +9,7 @@ export class ItemViewPanel
     extends Panel
     implements Closeable {
 
-    private toolbar: Toolbar;
+    private toolbar: Toolbar<ToolbarConfig>;
 
     private panel: Panel;
 
@@ -21,7 +21,7 @@ export class ItemViewPanel
         super('item-view-panel');
     }
 
-    setToolbar(toolbar: Toolbar) {
+    setToolbar(toolbar: Toolbar<ToolbarConfig>) {
         this.toolbar = toolbar;
         this.appendChild(this.toolbar);
     }
