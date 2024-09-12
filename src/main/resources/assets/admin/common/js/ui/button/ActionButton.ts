@@ -1,12 +1,11 @@
-import {Button} from './Button';
-import {KeyBindings} from '../KeyBindings';
-import {Action} from '../Action';
-import {Tooltip} from '../Tooltip';
 import {BrowserHelper} from '../../BrowserHelper';
-import {KeyBindingAction} from '../KeyBinding';
-import {IWCAG} from '../WCAG';
-import {KeyHelper} from '../KeyHelper';
 import {Body} from '../../dom/Body';
+import {Action} from '../Action';
+import {KeyBindingAction} from '../KeyBinding';
+import {KeyBindings} from '../KeyBindings';
+import {Tooltip} from '../Tooltip';
+import {WCAG} from '../WCAG';
+import {Button} from './Button';
 
 export class ActionButton
     extends Button {
@@ -17,7 +16,7 @@ export class ActionButton
 
     private iconClass: string;
 
-    constructor(action: Action, wcag?: IWCAG) {
+    constructor(action: Action, wcag?: WCAG) {
         super();
 
         this.addClass('action-button');

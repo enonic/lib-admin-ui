@@ -1,8 +1,8 @@
 import * as Q from 'q';
+import {ObjectHelper} from '../ObjectHelper';
 import {KeyBinding} from './KeyBinding';
 import {Mnemonic} from './Mnemonic';
-import {IWCAG} from './WCAG';
-import {ObjectHelper} from '../ObjectHelper';
+import {WCAG} from './WCAG';
 
 type ExecutionListener = (action: Action) => Q.Promise<any> | void;
 
@@ -36,7 +36,7 @@ export class Action {
 
     private parentAction: Action;
 
-    private wcag?: IWCAG;
+    private wcag?: WCAG;
 
     private sortOrder: number = 10;
 
@@ -153,7 +153,7 @@ export class Action {
         return this;
     }
 
-    setWcagAttributes(wcag: IWCAG): Action {
+    setWcagAttributes(wcag: WCAG): Action {
         this.wcag = wcag;
         return this;
     }
@@ -162,7 +162,7 @@ export class Action {
         return ObjectHelper.isDefined(this.wcag);
     }
 
-    getWcagAttributes(): IWCAG {
+    getWcagAttributes(): WCAG {
         return this.wcag;
     }
 

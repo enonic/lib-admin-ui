@@ -1,22 +1,22 @@
+import * as DOMPurify from 'dompurify';
 import * as $ from 'jquery';
 import 'jquery-ui/ui/tabbable';
 import * as Q from 'q';
-import {StyleHelper} from '../StyleHelper';
-import {StringHelper} from '../util/StringHelper';
-import {ObjectHelper} from '../ObjectHelper';
 import {ClassHelper} from '../ClassHelper';
-import {ElementHelper} from './ElementHelper';
+import {ObjectHelper} from '../ObjectHelper';
+import {StyleHelper} from '../StyleHelper';
+import {KeyHelper} from '../ui/KeyHelper';
+import {AriaHasPopup, AriaRole, WCAG} from '../ui/WCAG';
+import {assert, assertNotNull, assertState} from '../util/Assert';
+import {StringHelper} from '../util/StringHelper';
 import {ElementAddedEvent} from './ElementAddedEvent';
+import {ElementEvent} from './ElementEvent';
+import {ElementHelper} from './ElementHelper';
+import {ElementHiddenEvent} from './ElementHiddenEvent';
+import {ElementRegistry} from './ElementRegistry';
 import {ElementRemovedEvent} from './ElementRemovedEvent';
 import {ElementRenderedEvent} from './ElementRenderedEvent';
 import {ElementShownEvent} from './ElementShownEvent';
-import {ElementHiddenEvent} from './ElementHiddenEvent';
-import {ElementRegistry} from './ElementRegistry';
-import {assert, assertNotNull, assertState} from '../util/Assert';
-import {ElementEvent} from './ElementEvent';
-import * as DOMPurify from 'dompurify';
-import {IWCAG as WCAG, AriaRole, AriaHasPopup, IWCAG} from '../ui/WCAG';
-import {KeyHelper} from '../ui/KeyHelper';
 
 export interface PurifyConfig {
     addTags?: string[];
@@ -237,7 +237,7 @@ export class Element {
         }
     }
 
-    applyWCAGAttributes(attr?: IWCAG): void {
+    applyWCAGAttributes(attr?: WCAG): void {
         if (!ObjectHelper.isDefined(attr) && !this.implementsWCAG()) {
             return;
         }

@@ -1,15 +1,15 @@
-import {ActionButton} from '../button/ActionButton';
-import {i18n} from '../../util/Messages';
-import {DivEl} from '../../dom/DivEl';
-import {ActionContainer} from '../ActionContainer';
-import {Action} from '../Action';
-import {ResponsiveManager} from '../responsive/ResponsiveManager';
-import {Element} from '../../dom/Element';
-import {FoldButton} from './FoldButton';
-import {IWCAG as WCAG, AriaRole} from '../WCAG';
-import {KeyHelper} from '../KeyHelper';
 import {Body} from '../../dom/Body';
+import {DivEl} from '../../dom/DivEl';
+import {Element} from '../../dom/Element';
 import {ObjectHelper} from '../../ObjectHelper';
+import {i18n} from '../../util/Messages';
+import {Action} from '../Action';
+import {ActionContainer} from '../ActionContainer';
+import {ActionButton} from '../button/ActionButton';
+import {KeyHelper} from '../KeyHelper';
+import {ResponsiveManager} from '../responsive/ResponsiveManager';
+import {AriaRole, WCAG} from '../WCAG';
+import {FoldButton} from './FoldButton';
 
 interface ToolbarElement {
     el: Element | ActionButton;

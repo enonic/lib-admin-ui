@@ -1,13 +1,13 @@
 import {DivEl} from '../../dom/DivEl';
+import {Action} from '../../ui/Action';
 import {ActionContainer} from '../../ui/ActionContainer';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
-import {Action} from '../../ui/Action';
-import {ShowAppLauncherAction} from './ShowAppLauncherAction';
-import {AppIcon} from './AppIcon';
-import {AppBarActions} from './AppBarActions';
-import {Application} from '../Application';
-import {IWCAG as WCAG, AriaRole} from '../../ui/WCAG';
+import {AriaRole, WCAG} from '../../ui/WCAG';
 import {i18n} from '../../util/Messages';
+import {Application} from '../Application';
+import {AppBarActions} from './AppBarActions';
+import {AppIcon} from './AppIcon';
+import {ShowAppLauncherAction} from './ShowAppLauncherAction';
 
 export class AppBar
     extends DivEl

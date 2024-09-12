@@ -1,5 +1,5 @@
 import {ButtonEl} from '../../dom/ButtonEl';
-import {AriaRole, IWCAG as WCAG} from '../WCAG';
+import {AriaRole, WCAG} from '../WCAG';
 
 export class DropdownHandle
     extends ButtonEl {

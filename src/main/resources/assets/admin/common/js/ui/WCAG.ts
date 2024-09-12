@@ -1,7 +1,7 @@
-export const IWCAG = Symbol('IWCAG');
+export const WCAG = Symbol('WCAG');
 
-export interface IWCAG {
-    [IWCAG]?: boolean;
+export interface WCAG {
+    [WCAG]?: boolean;
     tabbable?: boolean;
     role?: AriaRole | '';
     ariaLabel?: string;

@@ -1,11 +1,10 @@
-import {i18n} from '../../util/Messages';
-import {DivEl} from '../../dom/DivEl';
-import {SpanEl} from '../../dom/SpanEl';
-import {Element} from '../../dom/Element';
-import {StyleHelper} from '../../StyleHelper';
 import {Body} from '../../dom/Body';
-import {BrowserHelper} from '../../BrowserHelper';
-import {AriaHasPopup, AriaRole, IWCAG as WCAG} from '../WCAG';
+import {DivEl} from '../../dom/DivEl';
+import {Element} from '../../dom/Element';
+import {SpanEl} from '../../dom/SpanEl';
+import {StyleHelper} from '../../StyleHelper';
+import {i18n} from '../../util/Messages';
+import {AriaHasPopup, AriaRole, WCAG} from '../WCAG';
 
 export class FoldButton
     extends DivEl

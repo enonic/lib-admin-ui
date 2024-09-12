@@ -1,15 +1,13 @@
+import * as Q from 'q';
+import {Body} from '../../dom/Body';
+import {DivEl} from '../../dom/DivEl';
+import {Element} from '../../dom/Element';
+import {Action} from '../Action';
 import {Menu} from '../menu/Menu';
 import {MenuItem} from '../menu/MenuItem';
-import {DivEl} from '../../dom/DivEl';
-import {Action} from '../Action';
-import {DropdownHandle} from './DropdownHandle';
+import {AriaRole, WCAG} from '../WCAG';
 import {ActionButton} from './ActionButton';
-import {Body} from '../../dom/Body';
-import {Element} from '../../dom/Element';
-import * as Q from 'q';
-import {AriaRole, IWCAG as WCAG} from '../WCAG';
-import {KeyHelper} from '../KeyHelper';
-import * as $ from 'jquery';
+import {DropdownHandle} from './DropdownHandle';
 
 export enum MenuButtonDropdownPos {
     LEFT, RIGHT
