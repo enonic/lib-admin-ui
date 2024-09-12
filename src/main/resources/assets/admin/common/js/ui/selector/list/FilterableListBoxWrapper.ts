@@ -246,7 +246,9 @@ export class FilterableListBoxWrapper<I>
                 this.handleUserToggleAction(focusedItem);
             }
 
-            this.applySelection();
+            if (this.selectionDelta.size !== 0) {
+                this.applySelection();
+            }
         }
     }
 
