@@ -1,23 +1,36 @@
+import * as Q from 'q';
+import {Body} from '../../dom/Body';
+import {DivEl} from '../../dom/DivEl';
+import {Element} from '../../dom/Element';
+import {Action} from '../Action';
 import {Menu} from '../menu/Menu';
 import {MenuItem} from '../menu/MenuItem';
-import {DivEl} from '../../dom/DivEl';
-import {Action} from '../Action';
-import {DropdownHandle} from './DropdownHandle';
+import {AriaRole, WCAG} from '../WCAG';
 import {ActionButton} from './ActionButton';
-import {Body} from '../../dom/Body';
-import {Element} from '../../dom/Element';
-import * as Q from 'q';
+import {DropdownHandle} from './DropdownHandle';
 
 export enum MenuButtonDropdownPos {
     LEFT, RIGHT
 }
 
+export interface MenuButtonConfig {
+    defaultAction: Action;
+    menuActions?: Action[];
+    dropdownPosition?: MenuButtonDropdownPos
+}
+
 export class MenuButton
     extends DivEl {
 
-    protected readonly mainAction: Action;
+    [WCAG]: boolean = true;
+    role: AriaRole = AriaRole.NONE;
+    tabbable: boolean = true;
 
-    protected readonly menuActions: Action[];
+    protected readonly defaultAction: Action;
+
+    protected menuActions: Action[] = [];
+
+    protected readonly dropdownPosition: MenuButtonDropdownPos;
 
     protected dropdownHandle: DropdownHandle;
 
@@ -31,11 +44,19 @@ export class MenuButton
 
     private actionPropertyListener: () => void;
 
-    constructor(mainAction: Action, menuActions: Action[] = []) {
+    protected readonly config: MenuButtonConfig;
+
+    constructor(config: Action | MenuButtonConfig) {
         super('menu-button');
 
-        this.mainAction = mainAction;
-        this.menuActions = menuActions;
+        if ('defaultAction' in config) {
+            this.config = config;
+            this.defaultAction = config.defaultAction;
+            this.menuActions = config.menuActions || [];
+            this.dropdownPosition = config.dropdownPosition || MenuButtonDropdownPos.LEFT;
+        } else {
+            this.defaultAction = config;
+        }
 
         this.initElements();
         this.initListeners();
@@ -43,15 +64,20 @@ export class MenuButton
 
     protected initElements(): void {
         this.onBodyClicked = (e) => this.hideMenuOnOutsideClick(e);
-        // Body.get().onClicked(this.onBodyClicked);
         this.actionPropertyListener = this.updateActionEnabled.bind(this);
 
         this.menu = new Menu(this.menuActions);
         this.menu.hide();
 
         this.initDropdownHandle();
-        this.initActionButton(this.mainAction);
-        this.initActions(this.menuActions);
+        this.initActionButton();
+        if (this.menuActions?.length > 0) {
+            this.initActions(this.menuActions);
+        }
+    }
+
+    protected getDefaultAction(): Action {
+        return this.defaultAction;
     }
 
     getActionButton(): ActionButton {
@@ -70,14 +96,21 @@ export class MenuButton
         return this.dropdownHandle;
     }
 
+    getChildControls(): Element[] {
+        return [this.actionButton, this.dropdownHandle];
+    }
+
     addMenuActions(actions: Action[]) {
         this.menu.addActions(actions);
         this.initActions(actions);
+        this.menuActions = this.menu.getMenuItems().map(item => item.getAction());
     }
 
     removeMenuActions(actions: Action[]) {
         this.menu.removeActions(actions);
         this.releaseActions(actions);
+
+        this.menuActions = this.menu.getMenuItems().map(item => item.getAction());
     }
 
     addMenuSeparator(): void {
@@ -113,6 +146,7 @@ export class MenuButton
     }
 
     setDropdownHandleEnabled(enabled: boolean = true): void {
+        //this.setRole(enabled ? AriaRole.MENU : AriaRole.BUTTON);
         this.dropdownHandle.setEnabled(enabled);
         if (!enabled) {
             this.collapseMenu();
@@ -157,10 +191,6 @@ export class MenuButton
         this.toggleMenuOnAction = value;
     }
 
-    protected getDropdownPosition(): MenuButtonDropdownPos {
-        return MenuButtonDropdownPos.LEFT;
-    }
-
     private hideMenuOnOutsideClick(e: Event): void {
         if (!this.dropdownHandle.hasClass('down')) {
             return;
@@ -178,8 +208,12 @@ export class MenuButton
         this.dropdownHandle = new DropdownHandle();
     }
 
-    private initActionButton(action: Action): void {
-        this.actionButton = new ActionButton(action);
+    private initActionButton(): void {
+        this.actionButton = new ActionButton(this.defaultAction);
+    }
+
+    protected setButtonAction(action: Action): void {
+        this.actionButton.setAction(action);
     }
 
     private initActions(actions: Action[]): void {
@@ -187,9 +221,7 @@ export class MenuButton
 
         this.updateActionEnabled();
 
-        actions.forEach((action) => {
-            action.onPropertyChanged(this.actionPropertyListener);
-        });
+        actions.forEach((action) => action.onPropertyChanged(this.actionPropertyListener));
     }
 
     private releaseActions(actions: Action[]): void {
@@ -214,11 +246,13 @@ export class MenuButton
     protected initListeners(): void {
         this.onBodyClicked = (e) => this.hideMenuOnOutsideClick(e);
 
-        this.dropdownHandle.onClicked((e: MouseEvent) => {
+        const onDropdownHandleClicked = () => {
             if (this.dropdownHandle.isEnabled()) {
                 this.toggleMenu();
             }
-        });
+        };
+        this.dropdownHandle.onClicked(onDropdownHandleClicked);
+        this.dropdownHandle.onEscPressed(() => this.collapseMenu());
 
         this.menu.onItemClicked((item: MenuItem) => {
             if (this.menu.isHideOnItemClick() && item.isEnabled()) {
@@ -226,13 +260,8 @@ export class MenuButton
             }
         });
 
-        this.actionButton.onClicked((e) => {
-            if (this.toggleMenuOnAction) {
-                this.toggleMenu();
-            } else {
-                this.collapseMenu();
-            }
-        });
+        const onActionButtonClicked = () => this.toggleMenuOnAction ? this.toggleMenu() : this.collapseMenu();
+        this.actionButton.onClicked(onActionButtonClicked);
 
         this.menu.onClicked(() => this.dropdownHandle.giveFocus());
     }
@@ -241,7 +270,7 @@ export class MenuButton
         return super.doRender().then((rendered: boolean) => {
             const children: Element[] = [];
 
-            if (this.getDropdownPosition() === MenuButtonDropdownPos.RIGHT) {
+            if (this.dropdownPosition === MenuButtonDropdownPos.RIGHT) {
                 children.push(this.actionButton, this.dropdownHandle);
             } else {
                 children.push(this.dropdownHandle, this.actionButton);

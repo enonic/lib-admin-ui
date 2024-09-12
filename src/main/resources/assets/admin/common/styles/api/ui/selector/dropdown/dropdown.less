@@ -1,14 +1,19 @@
 .@{_COMMON_PREFIX}dropdown {
   .reset(true);
+  .input-border();
 
   position: relative;
-  display: inline-block;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
   width: 100%;
   max-width: 540px;
   text-align: left;
 
-  input {
+  > input {
     .input-glow();
+    flex: 1;
   }
 
   .input-icon {
@@ -75,15 +80,14 @@
   }
 
   .selected-option {
-    position: relative;
-    .input-border();
-    .input-glow();
+    //.input-border();
+    //.input-glow();
 
+    flex: 1;
+    position: relative;
     width: 100%;
-    min-height: 35px;
     padding: 0;
     margin: 0;
-    text-align: left;
     background: white;
     box-sizing: border-box;
 

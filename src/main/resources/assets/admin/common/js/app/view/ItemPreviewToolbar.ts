@@ -1,13 +1,15 @@
 import {Equitable} from '../../Equitable';
-import {Toolbar} from '../../ui/toolbar/Toolbar';
+import {Toolbar, ToolbarConfig} from '../../ui/toolbar/Toolbar';
 
-export class ItemPreviewToolbar<M extends Equitable>
-    extends Toolbar {
+export class ItemPreviewToolbar<M extends Equitable, C extends ToolbarConfig = ToolbarConfig>
+    extends Toolbar<C> {
 
     private item: M;
 
-    constructor(className?: string) {
-        super('item-preview-toolbar' + (className ? ' ' + className : ''));
+    constructor(config?: C) {
+        super(config);
+
+        this.addClass('item-preview-toolbar');
     }
 
     setItem(item: M) {

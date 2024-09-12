@@ -1,15 +1,21 @@
 import {DivEl} from '../../dom/DivEl';
+import {Action} from '../../ui/Action';
 import {ActionContainer} from '../../ui/ActionContainer';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
-import {Action} from '../../ui/Action';
-import {ShowAppLauncherAction} from './ShowAppLauncherAction';
-import {AppIcon} from './AppIcon';
-import {AppBarActions} from './AppBarActions';
+import {AriaRole, WCAG} from '../../ui/WCAG';
+import {i18n} from '../../util/Messages';
 import {Application} from '../Application';
+import {AppBarActions} from './AppBarActions';
+import {AppIcon} from './AppIcon';
+import {ShowAppLauncherAction} from './ShowAppLauncherAction';
 
 export class AppBar
     extends DivEl
-    implements ActionContainer {
+    implements ActionContainer, WCAG {
+
+    [WCAG]: boolean = true;
+    ariaLabel: string = i18n('wcag.appbar.label');
+    role: AriaRole = AriaRole.BANNER;
 
     protected application: Application;
 

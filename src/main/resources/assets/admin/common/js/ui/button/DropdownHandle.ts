@@ -1,7 +1,11 @@
 import {ButtonEl} from '../../dom/ButtonEl';
+import {AriaRole, WCAG} from '../WCAG';
 
 export class DropdownHandle
     extends ButtonEl {
+    [WCAG]: boolean = true;
+    role: AriaRole = AriaRole.BUTTON;
+    tabbable: boolean = true;
 
     constructor() {
         super('dropdown-handle');

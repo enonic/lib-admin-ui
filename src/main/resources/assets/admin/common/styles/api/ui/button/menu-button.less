@@ -1,7 +1,6 @@
 .menu-button {
   display: flex;
   position: relative;
-  height: 40px;
 
   &.hidden-dropdown {
     .@{_COMMON_PREFIX}dropdown-handle, .menu {
@@ -55,16 +54,6 @@
     }
   }
 
-  .@{_COMMON_PREFIX}dropdown-handle {
-    position: relative;
-  }
-
-  .action-button {
-    position: relative;
-    min-width: 126px;
-    text-align: center;
-  }
-
   &.transparent {
     .@{_COMMON_PREFIX}dropdown-handle {
       &::after {
@@ -113,38 +102,4 @@
     }
   }
 
-  &:not(.transparent) {
-    .@{_COMMON_PREFIX}dropdown-handle {
-      &::after {
-        border-top: 10px solid @admin-white;
-      }
-
-      &:hover {
-        span {
-          color: @admin-white;
-        }
-      }
-
-      &[disabled],
-      &[disabled]:hover {
-        background-color: @form-button-bg-disabled;
-      }
-    }
-
-    .action-button {
-      span {
-        color: @admin-white;
-      }
-
-      &[disabled] {
-        background-color: @form-button-bg-disabled;
-      }
-
-      &:not([disabled]):hover {
-        span {
-          color: @admin-white;
-        }
-      }
-    }
-  }
 }

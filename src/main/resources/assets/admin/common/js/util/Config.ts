@@ -25,7 +25,7 @@ export class CONFIG {
     }
 
     static has(property: string): boolean {
-        return CONFIG.CACHE[property] !== undefined;
+        return CONFIG.CACHE?.[property] !== undefined;
     }
 
     static getString(property: string): string {
@@ -38,6 +38,14 @@ export class CONFIG {
             throw Error(`Property ${property} is not a number`);
         }
         return parseInt(String(propertyValue));
+    }
+
+    static getLocale(): string {
+        if (!CONFIG.has('locale')) {
+            return 'en';
+        }
+
+        return CONFIG.getString('locale');
     }
 
     static get(property: string): JSONValue {
