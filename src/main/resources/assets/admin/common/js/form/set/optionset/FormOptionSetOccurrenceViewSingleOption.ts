@@ -171,9 +171,9 @@ export class FormOptionSetOccurrenceViewSingleOption
     }
 
     private filter(item: FormOptionSetOption, searchString: string): boolean {
-        return item.getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1 ||
-               item.getLabel().toLowerCase().indexOf(searchString.toLowerCase()) > -1
-               || item.getHelpText().toLowerCase().indexOf(searchString.toLowerCase()) > -1;
+        return item.getName()?.toLowerCase().indexOf(searchString.toLowerCase()) > -1 ||
+               item.getLabel()?.toLowerCase().indexOf(searchString.toLowerCase()) > -1
+               || item.getHelpText()?.toLowerCase().indexOf(searchString.toLowerCase()) > -1;
     }
 }
 
