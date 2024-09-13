@@ -47,6 +47,7 @@ export class ListSelectionController<I>
         if (this.isChecked() || this.isPartial()) {
             this.selectableListBox.deselectAll();
         } else {
+            this.selectableListBox.setSelectionMode(SelectionMode.SELECT);
             this.selectableListBox.selectAll();
         }
     }
