@@ -190,6 +190,6 @@ export class PrincipalComboBoxWrapper extends FormInputEl {
     }
 
     getValue(): string {
-        return this.selector.getSelectedOptions().length > 0 ? 'mock' : '';
+        return this.selector.getSelectedOptions().map((option) => option.getOption().getValue()).join(';');
     }
 }
