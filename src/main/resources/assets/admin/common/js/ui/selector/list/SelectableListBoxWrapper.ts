@@ -174,12 +174,6 @@ export class SelectableListBoxWrapper<I>
     }
 
     protected handleItemsRemoved(items: I[]): void {
-        const selectedItems = items.filter((item: I) => this.isItemSelected(item));
-
-        if (selectedItems.length > 0) {
-            this.deselect(selectedItems);
-        }
-
         items.forEach((item: I) => this.handleItemRemoved(item));
     }
 
