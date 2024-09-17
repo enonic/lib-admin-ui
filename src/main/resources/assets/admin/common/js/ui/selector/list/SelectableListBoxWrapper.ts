@@ -263,6 +263,10 @@ export class SelectableListBoxWrapper<I>
     }
 
     deselect(item: I | I[], silent?: boolean): void {
+        if (!item || (Array.isArray(item) && item.length === 0)) {
+            return;
+        }
+
         const items: I[] = Array.isArray(item) ? item : [item];
 
         items.forEach((itemToDeselect: I) => {
