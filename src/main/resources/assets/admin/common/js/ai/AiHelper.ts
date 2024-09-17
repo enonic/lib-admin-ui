@@ -20,7 +20,7 @@ export class AiHelper {
 
     private readonly config: AiHelperConfig;
 
-    private readonly sagaIcon?: AiActionButton;
+    private readonly aiIcon?: AiActionButton;
 
     private state: AiHelperState = AiHelperState.DEFAULT;
 
@@ -41,15 +41,15 @@ export class AiHelper {
         AiHelper.instances.push(this);
 
         if (config.icon?.container) {
-            this.sagaIcon = new AiActionButton();
-            this.config.icon.container.appendChild(this.sagaIcon);
+            this.aiIcon = new AiActionButton();
+            this.config.icon.container.appendChild(this.aiIcon);
         }
     }
 
     private updateInputElDataPath(): void {
         const dataPath = AiHelper.convertToPath(this.config.getPathFunc());
         this.config.dataPathElement.getEl().setAttribute(AiHelper.DATA_ATTR, dataPath);
-        this.sagaIcon?.setDataPath(dataPath);
+        this.aiIcon?.setDataPath(dataPath);
     }
 
     setState(state: AiHelperState): this {
@@ -58,7 +58,7 @@ export class AiHelper {
         }
 
         this.state = state;
-        this.sagaIcon?.setState(state);
+        this.aiIcon?.setState(state);
 
         if (state === AiHelperState.COMPLETED || state === AiHelperState.FAILED) {
             setTimeout(() => {
@@ -103,7 +103,7 @@ export class AiHelper {
             parent.setAttribute('data-title', parent.getTitle());
         }
 
-        parent.setTitle(i18n('ai.assistant.processing', this.config.label));
+        parent.setTitle(i18n('ai.field.processing', this.config.label));
     }
 
     private resetTitle(): void {
