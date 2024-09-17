@@ -1,11 +1,11 @@
+import * as Q from 'q';
+import {DivEl} from '../../dom/DivEl';
 import {Button} from '../../ui/button/Button';
 import {i18n} from '../../util/Messages';
+import {AiHelperState} from '../AiHelperState';
 import {EnonicAiOpenDialogEvent} from '../event/EnonicAiOpenDialogEvent';
-import {DivEl} from '../../dom/DivEl';
-import * as Q from 'q';
-import {AI_HELPER_STATE} from '../AIHelperState';
 
-export class AIActionButton
+export class AiActionButton
     extends DivEl {
 
     private static baseClass = 'ai-button-container';
@@ -24,19 +24,19 @@ export class AIActionButton
     }
 
     protected initElements(): void {
-        this.button = new Button().addClass(`${AIActionButton.baseClass}-icon icon-ai`) as Button;
-        this.loader = new DivEl(`${AIActionButton.baseClass}-loader`);
+        this.button = new Button().addClass(`${AiActionButton.baseClass}-icon icon-ai`) as Button;
+        this.loader = new DivEl(`${AiActionButton.baseClass}-loader`);
         this.setTitle(i18n('action.saga'));
-        this.setState(AI_HELPER_STATE.DEFAULT);
+        this.setState(AiHelperState.DEFAULT);
     }
 
-    setState(state: AI_HELPER_STATE): this {
-        this.setClass(`${AIActionButton.baseClass} ${state}`);
+    setState(state: AiHelperState): this {
+        this.setClass(`${AiActionButton.baseClass} ${state}`);
 
         return this;
     }
 
-    setDataPath(dataPath: string): AIActionButton {
+    setDataPath(dataPath: string): AiActionButton {
         this.dataPath = dataPath;
         return this;
     }

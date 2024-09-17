@@ -1,4 +1,4 @@
-export enum AI_HELPER_STATE {
+export enum AiHelperState {
     DEFAULT = 'default',
     PROCESSING = 'processing',
     COMPLETED = 'completed',

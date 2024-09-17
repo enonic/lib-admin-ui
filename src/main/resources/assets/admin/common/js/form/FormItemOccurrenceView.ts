@@ -1,11 +1,9 @@
 import * as Q from 'q';
-import {DivEl} from '../dom/DivEl';
 import {PropertyPath} from '../data/PropertyPath';
+import {DivEl} from '../dom/DivEl';
 import {FormItemOccurrence} from './FormItemOccurrence';
 import {HelpTextContainer} from './HelpTextContainer';
 import {RemoveButtonClickedEvent} from './RemoveButtonClickedEvent';
-import {AIHelper} from '../ai/AIHelper';
-import {Element} from '../dom/Element';
 
 export interface FormItemOccurrenceViewConfig {
     className: string;
