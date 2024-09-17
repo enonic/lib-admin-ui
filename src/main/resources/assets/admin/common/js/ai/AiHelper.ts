@@ -1,5 +1,6 @@
 import {PropertyPath} from '../data/PropertyPath';
 import {Element} from '../dom/Element';
+import {Store} from '../store/Store';
 import {i18n} from '../util/Messages';
 import {AiHelperState} from './AiHelperState';
 import {AiActionButton} from './ui/AiActionButton';
@@ -14,6 +15,9 @@ export interface AiHelperConfig {
     setValueFunc?: (value: string) => void;
 }
 
+const AI_HELPERS_KEY = 'AiHelpers';
+Store.instance().set(AI_HELPERS_KEY, []);
+
 export class AiHelper {
 
     public static DATA_ATTR = 'data-path';
@@ -24,8 +28,6 @@ export class AiHelper {
 
     private state: AiHelperState = AiHelperState.DEFAULT;
 
-    private static instances: AiHelper[] = [];
-
     constructor(config: AiHelperConfig) {
         this.config = config;
 
@@ -35,10 +37,11 @@ export class AiHelper {
 
         this.config.dataPathElement.onRemoved(() => {
             clearInterval(updatePathCall);
-            AiHelper.instances = AiHelper.instances.filter(h => h !== this);
+            const helper: AiHelper[] = Store.instance().get(AI_HELPERS_KEY) ?? [];
+            Store.instance().set(AI_HELPERS_KEY, helper.filter(h => h !== this));
         });
 
-        AiHelper.instances.push(this);
+        Store.instance().get(AI_HELPERS_KEY).push(this);
 
         if (config.icon?.container) {
             this.aiIcon = new AiActionButton();
@@ -93,7 +96,7 @@ export class AiHelper {
     }
 
     public static getAiHelperByPath(dataPath: string): AiHelper | undefined {
-        return AiHelper.instances.find(helper => helper.getDataPath() === dataPath);
+        return Store.instance().get(AI_HELPERS_KEY).find(helper => helper.getDataPath() === dataPath);
     }
 
     private updateTitle(): void {
