@@ -370,6 +370,10 @@ export class SelectableListBoxWrapper<I>
     }
 
     protected handleItemUpdated(item: I): void {
+        this.updateItemIfSelected(item);
+    }
+
+    updateItemIfSelected(item: I): void {
         const itemId = this.listBox.getIdOfItem(item);
 
         if (this.selectedItems.has(itemId)) {
