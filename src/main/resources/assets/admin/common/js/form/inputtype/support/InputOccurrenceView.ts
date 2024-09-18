@@ -1,16 +1,16 @@
 import * as Q from 'q';
+import {AiHelper} from '../../../ai/AiHelper';
 import {Property} from '../../../data/Property';
-import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
-import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../../FormItemOccurrenceView';
-import {Element} from '../../../dom/Element';
-import {DivEl} from '../../../dom/DivEl';
-import {Value} from '../../../data/Value';
 import {PropertyPath} from '../../../data/PropertyPath';
-import {InputOccurrence} from './InputOccurrence';
-import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
+import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
+import {Value} from '../../../data/Value';
 import {ButtonEl} from '../../../dom/ButtonEl';
+import {DivEl} from '../../../dom/DivEl';
+import {Element} from '../../../dom/Element';
+import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../../FormItemOccurrenceView';
+import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
+import {InputOccurrence} from './InputOccurrence';
 import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
-import {AIHelper} from '../../../ai/AIHelper';
 
 export interface InputOccurrenceViewConfig
     extends FormItemOccurrenceViewConfig {
@@ -195,7 +195,7 @@ export class InputOccurrenceView
         this.property.onPropertyValueChanged(this.propertyValueChangedHandler);
 
         if (this.inputTypeView.getContext()?.formContext?.isAiEditable() && this.inputTypeView.isEditableByAI()) {
-            new AIHelper({
+            new AiHelper({
                 dataPathElement: this.inputElement,
                 getPathFunc: () => this.getDataPath(),
                 icon: {
