@@ -1,10 +1,11 @@
 import {PropertyPath} from '../data/PropertyPath';
 import {Element} from '../dom/Element';
-import {AIActionButton} from './ui/AIActionButton';
-import {AI_HELPER_STATE} from './AIHelperState';
+import {Store} from '../store/Store';
 import {i18n} from '../util/Messages';
+import {AiHelperState} from './AiHelperState';
+import {AiActionButton} from './ui/AiActionButton';
 
-export interface AIHelperConfig {
+export interface AiHelperConfig {
     dataPathElement: Element;
     getPathFunc: () => PropertyPath;
     icon?: {
@@ -14,17 +15,20 @@ export interface AIHelperConfig {
     setValueFunc?: (value: string) => void;
 }
 
-export class AIHelper {
+const AI_HELPERS_KEY = 'AiHelpers';
+Store.instance().set(AI_HELPERS_KEY, []);
+
+export class AiHelper {
 
     public static DATA_ATTR = 'data-path';
 
-    private readonly config: AIHelperConfig;
+    private readonly config: AiHelperConfig;
 
-    private readonly sagaIcon?: AIActionButton;
+    private readonly aiIcon?: AiActionButton;
 
-    private state: AI_HELPER_STATE = AI_HELPER_STATE.DEFAULT;
+    private state: AiHelperState = AiHelperState.DEFAULT;
 
-    constructor(config: AIHelperConfig) {
+    constructor(config: AiHelperConfig) {
         this.config = config;
 
         const updatePathCall = setInterval(() => {
@@ -33,42 +37,43 @@ export class AIHelper {
 
         this.config.dataPathElement.onRemoved(() => {
             clearInterval(updatePathCall);
-            AI_HELPER_REGISTRY.get().remove(this);
+            const helper: AiHelper[] = Store.instance().get(AI_HELPERS_KEY) ?? [];
+            Store.instance().set(AI_HELPERS_KEY, helper.filter(h => h !== this));
         });
 
-        AI_HELPER_REGISTRY.get().add(this);
+        Store.instance().get(AI_HELPERS_KEY).push(this);
 
         if (config.icon?.container) {
-            this.sagaIcon = new AIActionButton();
-            this.config.icon.container.appendChild(this.sagaIcon);
+            this.aiIcon = new AiActionButton();
+            this.config.icon.container.appendChild(this.aiIcon);
         }
     }
 
     private updateInputElDataPath(): void {
-        const dataPath = AIHelper.convertToPath(this.config.getPathFunc());
-        this.config.dataPathElement.getEl().setAttribute(AIHelper.DATA_ATTR, dataPath);
-        this.sagaIcon?.setDataPath(dataPath);
+        const dataPath = AiHelper.convertToPath(this.config.getPathFunc());
+        this.config.dataPathElement.getEl().setAttribute(AiHelper.DATA_ATTR, dataPath);
+        this.aiIcon?.setDataPath(dataPath);
     }
 
-    setState(state: AI_HELPER_STATE): this {
+    setState(state: AiHelperState): this {
         if (state === this.state) {
             return this;
         }
 
         this.state = state;
-        this.sagaIcon?.setState(state);
+        this.aiIcon?.setState(state);
 
-        if (state === AI_HELPER_STATE.COMPLETED || state === AI_HELPER_STATE.FAILED) {
+        if (state === AiHelperState.COMPLETED || state === AiHelperState.FAILED) {
             setTimeout(() => {
-                if (this.state === AI_HELPER_STATE.COMPLETED || this.state === AI_HELPER_STATE.FAILED) {
-                    this.setState(AI_HELPER_STATE.DEFAULT);
+                if (this.state === AiHelperState.COMPLETED || this.state === AiHelperState.FAILED) {
+                    this.setState(AiHelperState.DEFAULT);
                 }
             }, 1000);
 
             this.config.dataPathElement.getEl().setDisabled(false);
             this.config.dataPathElement.removeClass('ai-helper-mask');
             this.resetTitle();
-        } else if (state === AI_HELPER_STATE.PROCESSING) {
+        } else if (state === AiHelperState.PROCESSING) {
             this.config.dataPathElement.getEl().setDisabled(true);
             this.config.dataPathElement.addClass('ai-helper-mask');
             this.updateTitle();
@@ -83,15 +88,15 @@ export class AIHelper {
     }
 
     getDataPath(): string {
-        return this.config.dataPathElement.getEl().getAttribute(AIHelper.DATA_ATTR);
+        return this.config.dataPathElement.getEl().getAttribute(AiHelper.DATA_ATTR);
     }
 
     public static convertToPath(path: PropertyPath): string {
         return path?.toString().replace(/\./g, '/') || '';
     }
 
-    public static getAIHelperByPath(dataPath: string): AIHelper | undefined {
-        return AI_HELPER_REGISTRY.get().find(dataPath);
+    public static getAiHelperByPath(dataPath: string): AiHelper | undefined {
+        return Store.instance().get(AI_HELPERS_KEY).find(helper => helper.getDataPath() === dataPath);
     }
 
     private updateTitle(): void {
@@ -101,7 +106,7 @@ export class AIHelper {
             parent.setAttribute('data-title', parent.getTitle());
         }
 
-        parent.setTitle(i18n('ai.assistant.processing', this.config.label));
+        parent.setTitle(i18n('ai.field.processing', this.config.label));
     }
 
     private resetTitle(): void {
@@ -111,30 +116,5 @@ export class AIHelper {
         if (parent.hasAttribute('data-title')) {
             parent.setTitle(parent.getAttribute('data-title'));
         }
-    }
-}
-
-class AI_HELPER_REGISTRY {
-
-    private registry: AIHelper[];
-
-    private constructor() {
-        this.registry = [];
-    }
-
-    static get(): AI_HELPER_REGISTRY {
-        return window['AI_HELPER_REGISTRY'] ?? (window['AI_HELPER_REGISTRY'] = new AI_HELPER_REGISTRY());
-    }
-
-    add(helper: AIHelper): void {
-        this.registry.push(helper);
-    }
-
-    remove(helper: AIHelper): void {
-        this.registry = this.registry.filter(h => h !== helper);
-    }
-
-    find(dataPath: string): AIHelper | undefined {
-        return this.registry.find(helper => helper.getDataPath() === dataPath);
     }
 }
