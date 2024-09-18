@@ -1,26 +1,26 @@
 import * as $ from 'jquery';
 import * as Q from 'q';
+import {AiHelper} from '../../../ai/AiHelper';
+import {PropertyPath, PropertyPathElement} from '../../../data/PropertyPath';
 import {PropertySet} from '../../../data/PropertySet';
-import {Occurrences} from '../../Occurrences';
+import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
+import {DivEl} from '../../../dom/DivEl';
+import {Element} from '../../../dom/Element';
+import {FormEl} from '../../../dom/FormEl';
 import {Checkbox} from '../../../ui/Checkbox';
 import {NotificationDialog} from '../../../ui/dialog/NotificationDialog';
 import {i18n} from '../../../util/Messages';
-import {DivEl} from '../../../dom/DivEl';
-import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
-import {Element} from '../../../dom/Element';
-import {FormEl} from '../../../dom/FormEl';
-import {FormOptionSetOption} from './FormOptionSetOption';
-import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
-import {FormItemView, FormItemViewConfig} from '../../FormItemView';
-import {HelpTextContainer} from '../../HelpTextContainer';
 import {FormItemLayer} from '../../FormItemLayer';
-import {FormOptionSet} from './FormOptionSet';
-import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
-import {ValidationRecording} from '../../ValidationRecording';
 import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
 import {FormItemState} from '../../FormItemState';
-import {AIHelper} from '../../../ai/AIHelper';
-import {PropertyPath, PropertyPathElement} from '../../../data/PropertyPath';
+import {FormItemView, FormItemViewConfig} from '../../FormItemView';
+import {HelpTextContainer} from '../../HelpTextContainer';
+import {Occurrences} from '../../Occurrences';
+import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
+import {ValidationRecording} from '../../ValidationRecording';
+import {FormOptionSet} from './FormOptionSet';
+import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
+import {FormOptionSetOption} from './FormOptionSetOption';
 
 export interface FormOptionSetOptionViewConfig
     extends CreatedFormItemLayerConfig {
@@ -67,7 +67,7 @@ export class FormOptionSetOptionView
         this.formItemLayer = config.layerFactory.createLayer(config);
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
 
-        new AIHelper({
+        new AiHelper({
             dataPathElement: this,
             getPathFunc: () => PropertyPath.fromParent(this.getParent().getDataPath(), new PropertyPathElement(this.getName(), 0)),
         });
