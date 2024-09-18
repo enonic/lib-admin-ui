@@ -1,40 +1,40 @@
 import * as Q from 'q';
-import {PropertySet} from '../../data/PropertySet';
-import {PropertyArray} from '../../data/PropertyArray';
-import {PropertyValueChangedEvent} from '../../data/PropertyValueChangedEvent';
-import {i18n} from '../../util/Messages';
-import {Value} from '../../data/Value';
-import {DivEl} from '../../dom/DivEl';
-import {PropertyPath} from '../../data/PropertyPath';
-import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../FormItemOccurrenceView';
-import {FormItemView} from '../FormItemView';
-import {RecordingValidityChangedEvent} from '../RecordingValidityChangedEvent';
-import {FormOccurrenceDraggableLabel} from '../FormOccurrenceDraggableLabel';
-import {ValidationRecording} from '../ValidationRecording';
-import {FormItemLayer} from '../FormItemLayer';
-import {ValidationRecordingPath} from '../ValidationRecordingPath';
-import {FormSet} from './FormSet';
-import {FormItem} from '../FormItem';
-import {FormContext} from '../FormContext';
-import {Action} from '../../ui/Action';
-import {MoreButton} from '../../ui/button/MoreButton';
-import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
-import {Element} from '../../dom/Element';
-import {KeyBindings} from '../../ui/KeyBindings';
-import {KeyBinding} from '../../ui/KeyBinding';
+import {AiHelper} from '../../ai/AiHelper';
 import {Property} from '../../data/Property';
+import {PropertyAddedEvent} from '../../data/PropertyAddedEvent';
+import {PropertyArray} from '../../data/PropertyArray';
+import {PropertyPath} from '../../data/PropertyPath';
+import {PropertyRemovedEvent} from '../../data/PropertyRemovedEvent';
+import {PropertySet} from '../../data/PropertySet';
+import {PropertyValueChangedEvent} from '../../data/PropertyValueChangedEvent';
+import {Value} from '../../data/Value';
 import {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
-import {PropertyAddedEvent} from '../../data/PropertyAddedEvent';
-import {PropertyRemovedEvent} from '../../data/PropertyRemovedEvent';
-import {FormOptionSet} from './optionset/FormOptionSet';
-import {FormOptionSetOption} from './optionset/FormOptionSetOption';
-import {FormItemSet} from './itemset/FormItemSet';
+import {DivEl} from '../../dom/DivEl';
+import {Element} from '../../dom/Element';
+import {ObjectHelper} from '../../ObjectHelper';
+import {Action} from '../../ui/Action';
+import {MoreButton} from '../../ui/button/MoreButton';
+import {KeyBinding} from '../../ui/KeyBinding';
+import {KeyBindings} from '../../ui/KeyBindings';
+import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
+import {i18n} from '../../util/Messages';
+import {FormContext} from '../FormContext';
+import {FormItem} from '../FormItem';
+import {FormItemLayer} from '../FormItemLayer';
+import {FormItemOccurrence} from '../FormItemOccurrence';
+import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../FormItemOccurrenceView';
+import {FormItemView} from '../FormItemView';
+import {FormOccurrenceDraggableLabel} from '../FormOccurrenceDraggableLabel';
 import {Input} from '../Input';
 import {RadioButton} from '../inputtype/radiobutton/RadioButton';
-import {ObjectHelper} from '../../ObjectHelper';
-import {FormItemOccurrence} from '../FormItemOccurrence';
-import {AIHelper} from '../../ai/AIHelper';
+import {RecordingValidityChangedEvent} from '../RecordingValidityChangedEvent';
+import {ValidationRecording} from '../ValidationRecording';
+import {ValidationRecordingPath} from '../ValidationRecordingPath';
+import {FormSet} from './FormSet';
+import {FormItemSet} from './itemset/FormItemSet';
+import {FormOptionSet} from './optionset/FormOptionSet';
+import {FormOptionSetOption} from './optionset/FormOptionSetOption';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
@@ -236,7 +236,7 @@ export abstract class FormSetOccurrenceView
             }
         });
 
-        new AIHelper({
+        new AiHelper({
             dataPathElement: this,
             getPathFunc: () => this.getDataPath(),
         });

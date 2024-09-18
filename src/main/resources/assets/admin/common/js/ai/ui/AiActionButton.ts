@@ -1,14 +1,14 @@
+import * as Q from 'q';
+import {DivEl} from '../../dom/DivEl';
 import {Button} from '../../ui/button/Button';
 import {i18n} from '../../util/Messages';
-import {EnonicAiOpenDialogEvent} from '../event/EnonicAiOpenDialogEvent';
-import {DivEl} from '../../dom/DivEl';
-import * as Q from 'q';
-import {AI_HELPER_STATE} from '../AIHelperState';
+import {AiHelperState} from '../AiHelperState';
+import {EnonicAiContentOperatorOpenDialogEvent} from '../event/EnonicAiContentOperatorOpenDialogEvent';
 
-export class AIActionButton
+export class AiActionButton
     extends DivEl {
 
-    private static baseClass = 'ai-button-container';
+    private static readonly BASE_CLASS = 'ai-button-container';
 
     private dataPath?: string;
 
@@ -24,19 +24,19 @@ export class AIActionButton
     }
 
     protected initElements(): void {
-        this.button = new Button().addClass(`${AIActionButton.baseClass}-icon icon-ai`) as Button;
-        this.loader = new DivEl(`${AIActionButton.baseClass}-loader`);
-        this.setTitle(i18n('action.saga'));
-        this.setState(AI_HELPER_STATE.DEFAULT);
+        this.button = new Button().addClass(`${AiActionButton.BASE_CLASS}-icon icon-ai`) as Button;
+        this.loader = new DivEl(`${AiActionButton.BASE_CLASS}-loader`);
+        this.setTitle(i18n('ai.action.contentOperator.use'));
+        this.setState(AiHelperState.DEFAULT);
     }
 
-    setState(state: AI_HELPER_STATE): this {
-        this.setClass(`${AIActionButton.baseClass} ${state}`);
+    setState(state: AiHelperState): this {
+        this.setClass(`${AiActionButton.BASE_CLASS} ${state}`);
 
         return this;
     }
 
-    setDataPath(dataPath: string): AIActionButton {
+    setDataPath(dataPath: string): AiActionButton {
         this.dataPath = dataPath;
         return this;
     }
@@ -48,7 +48,7 @@ export class AIActionButton
     protected initListeners(): void {
         this.button.onClicked(() => {
             if (this.dataPath) {
-                new EnonicAiOpenDialogEvent(this.dataPath).fire();
+                new EnonicAiContentOperatorOpenDialogEvent(this.dataPath).fire();
             }
         });
     }
