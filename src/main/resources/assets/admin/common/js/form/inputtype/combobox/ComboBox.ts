@@ -165,7 +165,8 @@ export class ComboBox
     }
 
     private comboBoxFilter(item: ComboBoxOption, searchString: string): boolean {
-        return StringHelper.isBlank(searchString) || item.value.indexOf(searchString) >= 0;
+        return StringHelper.isBlank(searchString) || item.value.toLowerCase().indexOf(searchString.toLowerCase()) >= 0
+               || item.label?.toLowerCase().indexOf(searchString.toLowerCase()) >= 0;
     }
 
     private getSelectedItems(): string[] {
