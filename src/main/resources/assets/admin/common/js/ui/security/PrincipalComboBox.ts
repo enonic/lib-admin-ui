@@ -1,6 +1,6 @@
 import * as Q from 'q';
 import {Option} from '../selector/Option';
-import {Principal} from '../../security/Principal';
+import {Principal, PrincipalBuilder} from '../../security/Principal';
 import {PrincipalLoader} from '../../security/PrincipalLoader';
 import {SelectedOption} from '../selector/combobox/SelectedOption';
 import {BaseSelectedOptionsView} from '../selector/combobox/BaseSelectedOptionsView';
@@ -105,9 +105,22 @@ export class PrincipalComboBox
 
     setSelectedItems(items: PrincipalKey[]): void {
         this.preSelectedItems = items || [];
+        this.deselectAll();
+
+        if (items.length === 0) {
+            return;
+        }
 
         new GetPrincipalsByKeysRequest(items).setPostfixUri(this.postfixUri).sendAndParse().then((principals: Principal[]) => {
-            this.select(principals, true);
+            const itemsToSelect = [];
+
+            items.forEach((item: PrincipalKey) => {
+                const principal = principals.find((p) => p.getKey().equals(item));
+
+                itemsToSelect.push(principal || new MissingPrincipal(item));
+            });
+
+            this.select(itemsToSelect);
         }).catch(DefaultErrorHandler.handle);
     }
 }
@@ -143,7 +156,8 @@ export class PrincipalSelectedOptionsView
     }
 
     createSelectedOption(option: Option<Principal>): SelectedOption<Principal> {
-        let optionView = !option.isEmpty() ? new PrincipalSelectedOptionView(option) : new RemovedPrincipalSelectedOptionView(option);
+        let optionView = option.getDisplayValue() instanceof MissingPrincipal ? new RemovedPrincipalSelectedOptionView(option) : new PrincipalSelectedOptionView(option);
+
         if (this.readonly) {
             optionView.setReadonly(true);
         }
@@ -191,5 +205,11 @@ export class PrincipalComboBoxWrapper extends FormInputEl {
 
     getValue(): string {
         return this.selector.getSelectedOptions().map((option) => option.getOption().getValue()).join(';');
+    }
+}
+
+class MissingPrincipal extends Principal {
+    constructor(key: PrincipalKey) {
+        super(new PrincipalBuilder().setKey(key).setDisplayName(key.toString()));
     }
 }
