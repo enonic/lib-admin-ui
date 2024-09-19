@@ -289,14 +289,14 @@ export class FilterableListBoxWrapper<I>
     protected getCurrentlySelectedItems(): I[] {
         return super.getCurrentlySelectedItems()
             .filter((savedItem: I) => this.isItemSelected(savedItem))
-            .concat(this.getSelectedDeltaItems());
+            .concat(this.getSelectedDeltaItems()) || [];
     }
 
     private getSelectedDeltaItems(): I[] {
         const result: I[] = [];
 
         this.selectionDelta.forEach((isSelected: boolean, id: string) => {
-            const item: I = this.listBox.getItem(id);
+            const item: I = this.getItemById(id);
 
             if (isSelected) {
                 result.push(item);
