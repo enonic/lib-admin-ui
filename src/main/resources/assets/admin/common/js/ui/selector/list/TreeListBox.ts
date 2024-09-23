@@ -195,7 +195,11 @@ export abstract class TreeListElement<I>
 
     protected initListeners(): void {
         this.toggleElement.onClicked(() => {
-            this.expanded ? this.collapse() : this.expand();
+            if (this.expanded) {
+                this.collapse();
+            } else {
+                this.expand();
+            }
         });
 
         this.childrenList.onItemsRemoved(() => {
