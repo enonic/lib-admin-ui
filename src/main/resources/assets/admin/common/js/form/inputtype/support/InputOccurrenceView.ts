@@ -194,7 +194,7 @@ export class InputOccurrenceView
 
         this.property.onPropertyValueChanged(this.propertyValueChangedHandler);
 
-        if (this.inputTypeView.getContext()?.formContext?.isAiEditable() && this.inputTypeView.isEditableByAI()) {
+        if (this.inputTypeView.isAiEditable()) {
             new AiHelper({
                 dataPathElement: this.inputElement,
                 getPathFunc: () => this.getDataPath(),
