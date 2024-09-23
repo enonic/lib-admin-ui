@@ -15,6 +15,21 @@
     .input-glow();
   }
 
+  &:not(.ai-editable) {
+    > .input-label,
+    > label {
+      display: inline-block;
+      max-width: calc(100% - 18px);
+      .ellipsis();
+    }
+  }
+
+  &.ai-editable {
+    .help-text-toggler {
+      display: none;
+    }
+  }
+
   > .input-label {
     .@{_COMMON_PREFIX}wrapper {
       display: flex;
@@ -45,10 +60,6 @@
   }
 
   > label {
-    display: inline-block;
-    max-width: calc(100% - 30px);
-    .ellipsis();
-
     &.required::after {
       content: '\00a0*';
       color: @input-red-text;

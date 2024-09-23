@@ -1,35 +1,34 @@
 import * as $ from 'jquery';
 import * as Q from 'q';
+import {ClassHelper} from '../../../ClassHelper';
 import {Property} from '../../../data/Property';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Value} from '../../../data/Value';
-import {FormInputEl} from '../../../dom/FormInputEl';
-import {InputTypeViewContext} from '../InputTypeViewContext';
-import {Input} from '../../Input';
-import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
 import {Element} from '../../../dom/Element';
-import {InputValidationRecording} from '../InputValidationRecording';
-import {OccurrenceAddedEvent} from '../../OccurrenceAddedEvent';
-import {OccurrenceRenderedEvent} from '../../OccurrenceRenderedEvent';
-import {OccurrenceRemovedEvent} from '../../OccurrenceRemovedEvent';
-import {ValueChangedEvent} from '../ValueChangedEvent';
-import {ClassHelper} from '../../../ClassHelper';
+import {FormInputEl} from '../../../dom/FormInputEl';
 import {ObjectHelper} from '../../../ObjectHelper';
-import {InputOccurrenceView} from './InputOccurrenceView';
-import {InputOccurrences} from './InputOccurrences';
 import {assertNotNull} from '../../../util/Assert';
-import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
-import {BaseInputType} from './BaseInputType';
+import {i18n} from '../../../util/Messages';
 import {ValidationError} from '../../../ValidationError';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
-import {i18n} from '../../../util/Messages';
+import {Input} from '../../Input';
+import {OccurrenceAddedEvent} from '../../OccurrenceAddedEvent';
+import {OccurrenceRemovedEvent} from '../../OccurrenceRemovedEvent';
+import {OccurrenceRenderedEvent} from '../../OccurrenceRenderedEvent';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {InputValidationRecording} from '../InputValidationRecording';
+import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
+import {ValueChangedEvent} from '../ValueChangedEvent';
+import {BaseInputType} from './BaseInputType';
+import {InputOccurrences} from './InputOccurrences';
+import {InputOccurrenceView} from './InputOccurrenceView';
+import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
 
 export abstract class BaseInputTypeNotManagingAdd
     extends BaseInputType {
 
     public static debug: boolean = false;
     protected propertyArray: PropertyArray;
-    protected ignorePropertyChange: boolean;
     protected occurrenceValidationState: Map<string, OccurrenceValidationRecord> = new Map<string, OccurrenceValidationRecord>();
     private inputOccurrences: InputOccurrences;
     private occurrenceValueChangedListeners: ((occurrence: Element, value: Value) => void)[] = [];
@@ -396,9 +395,5 @@ export abstract class BaseInputTypeNotManagingAdd
                     AdditionalValidationRecord.create().setMessage(error.getMessage()).setCustom(true).build());
             }
         });
-    }
-
-    isEditableByAI(): boolean {
-        return false;
     }
 }

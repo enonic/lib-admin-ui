@@ -1,31 +1,32 @@
 import * as Q from 'q';
+import {Property} from '../data/Property';
 import {PropertyArray} from '../data/PropertyArray';
 import {PropertySet} from '../data/PropertySet';
-import {Property} from '../data/Property';
-import {BaseInputTypeNotManagingAdd} from './inputtype/support/BaseInputTypeNotManagingAdd';
+import {DivEl} from '../dom/DivEl';
+import {ObjectHelper} from '../ObjectHelper';
+import {Button} from '../ui/button/Button';
+import {TogglerButton} from '../ui/button/TogglerButton';
+import {assertNotNull} from '../util/Assert';
 import {i18n} from '../util/Messages';
 import {StringHelper} from '../util/StringHelper';
-import {FormItemView, FormItemViewConfig} from './FormItemView';
-import {InputTypeView} from './inputtype/InputTypeView';
-import {DivEl} from '../dom/DivEl';
-import {Button} from '../ui/button/Button';
-import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
-import {InputValidityChangedEvent} from './inputtype/InputValidityChangedEvent';
-import {InputTypeName} from './InputTypeName';
-import {InputValidationRecording} from './inputtype/InputValidationRecording';
 import {FormContext} from './FormContext';
-import {Input} from './Input';
 import {FormItemOccurrenceView} from './FormItemOccurrenceView';
-import {ValidationRecording} from './ValidationRecording';
-import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
+import {FormItemView, FormItemViewConfig} from './FormItemView';
 import {HelpTextContainer} from './HelpTextContainer';
-import {assertNotNull} from '../util/Assert';
+import {Input} from './Input';
 import {InputLabel} from './InputLabel';
 import {InputTypeManager} from './inputtype/InputTypeManager';
-import {ValidationRecordingPath} from './ValidationRecordingPath';
-import {InputViewValidationViewer} from './InputViewValidationViewer';
-import {TogglerButton} from '../ui/button/TogglerButton';
+import {InputTypeView} from './inputtype/InputTypeView';
+import {InputValidationRecording} from './inputtype/InputValidationRecording';
+import {InputValidityChangedEvent} from './inputtype/InputValidityChangedEvent';
 import {BaseInputType} from './inputtype/support/BaseInputType';
+import {BaseInputTypeNotManagingAdd} from './inputtype/support/BaseInputTypeNotManagingAdd';
+import {InputTypeName} from './InputTypeName';
+import {InputViewValidationViewer} from './InputViewValidationViewer';
+import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
+import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
+import {ValidationRecording} from './ValidationRecording';
+import {ValidationRecordingPath} from './ValidationRecordingPath';
 
 export interface InputViewConfig {
 
@@ -44,7 +45,7 @@ export class InputView
     public static debug: boolean = false;
     private static ERROR_DETAILS_HIDDEN_CLS: string = 'error-details-hidden';
 
-    private input: Input;
+    private readonly input: Input;
     private parentPropertySet: PropertySet;
     private propertyArray: PropertyArray;
     private inputTypeView: InputTypeView;
@@ -82,22 +83,27 @@ export class InputView
             }
         }
 
-        if (this.input.getHelpText()) {
+        this.inputTypeView = this.createInputTypeView();
+        const isAiEditable = ObjectHelper.iFrameSafeInstanceOf(this.inputTypeView, BaseInputType) &&
+                             (this.inputTypeView as BaseInputType).isAiEditable();
+
+        this.toggleClass('ai-editable', isAiEditable);
+
+        if (this.input.getHelpText() && !isAiEditable) {
             this.helpText = new HelpTextContainer(this.input.getHelpText());
+            this.appendChild(this.helpText.getToggler());
         }
 
         if (this.input.isMaximizeUIInputWidth() === false) {
             this.addClass('label-inline');
         }
 
-        this.inputTypeView = this.createInputTypeView();
-
         this.propertyArray = this.getPropertyArray(this.parentPropertySet);
 
         return this.inputTypeView.layout(this.input, this.propertyArray).then(() => {
             this.appendChild(this.inputTypeView.getElement());
 
-            if (!!this.helpText) {
+            if (this.helpText) {
                 this.appendChild(this.helpText.getHelpText());
             }
 
@@ -279,9 +285,7 @@ export class InputView
     }
 
     toggleHelpText(show?: boolean) {
-        if (!!this.helpText) {
-            this.helpText.toggleHelpText(show);
-        }
+        this.helpText?.toggleHelpText(show);
     }
 
     hasHelpText(): boolean {
