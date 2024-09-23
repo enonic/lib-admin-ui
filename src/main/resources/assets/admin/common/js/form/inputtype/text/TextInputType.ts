@@ -1,21 +1,21 @@
-import {NumberHelper} from '../../../util/NumberHelper';
-import {FormInputEl} from '../../../dom/FormInputEl';
-import {ValueTypes} from '../../../data/ValueTypes';
-import {i18n} from '../../../util/Messages';
-import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
-import {InputTypeViewContext} from '../InputTypeViewContext';
-import {Property} from '../../../data/Property';
-import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
-import {InputValueLengthCounterEl} from './InputValueLengthCounterEl';
 import * as Q from 'q';
+import {Property} from '../../../data/Property';
 import {Value} from '../../../data/Value';
-import {StringHelper} from '../../../util/StringHelper';
-import {Element, LangDirection} from '../../../dom/Element';
-import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
-import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {ValueType} from '../../../data/ValueType';
-import {TextInput} from '../../../ui/text/TextInput';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
+import {ValueTypes} from '../../../data/ValueTypes';
+import {Element, LangDirection} from '../../../dom/Element';
+import {FormInputEl} from '../../../dom/FormInputEl';
 import {Locale} from '../../../locale/Locale';
+import {TextInput} from '../../../ui/text/TextInput';
+import {i18n} from '../../../util/Messages';
+import {NumberHelper} from '../../../util/NumberHelper';
+import {StringHelper} from '../../../util/StringHelper';
+import {ValueChangedEvent} from '../../../ValueChangedEvent';
+import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
+import {InputValueLengthCounterEl} from './InputValueLengthCounterEl';
 
 export abstract class TextInputType
     extends BaseInputTypeNotManagingAdd {
@@ -162,7 +162,7 @@ export abstract class TextInputType
         });
     }
 
-    isEditableByAI(): boolean {
-        return true;
+    isAiEditable(): boolean {
+        return this.getContext().formContext?.isAiEditable() === true;
     }
 }
