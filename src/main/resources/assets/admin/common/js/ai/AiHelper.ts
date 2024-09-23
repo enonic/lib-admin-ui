@@ -43,7 +43,7 @@ export class AiHelper {
 
         Store.instance().get(AI_HELPERS_KEY).push(this);
 
-        if (config.icon?.container) {
+        if (this.config.icon) {
             this.aiIcon = new AiActionButton();
             this.config.icon.container.appendChild(this.aiIcon);
         }
