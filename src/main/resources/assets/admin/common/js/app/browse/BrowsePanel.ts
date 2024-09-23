@@ -7,7 +7,6 @@ import {TreeGridActions} from '../../ui/treegrid/actions/TreeGridActions';
 import {SplitPanel, SplitPanelAlignment, SplitPanelBuilder} from '../../ui/panel/SplitPanel';
 import {Panel} from '../../ui/panel/Panel';
 import {Toolbar, ToolbarConfig} from '../../ui/toolbar/Toolbar';
-import {TreeGrid} from '../../ui/treegrid/TreeGrid';
 import {BrowseFilterPanel} from './filter/BrowseFilterPanel';
 import {Action} from '../../ui/Action';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
@@ -236,7 +235,7 @@ export class BrowsePanel
     }
 
     protected createListBoxPanel(): SelectableListBoxPanel<ViewItem> {
-        throw 'Must be implemented by inheritors';
+        throw Error('Must be implemented by inheritors');
     }
 
     protected createBrowseItemPanel(): BrowseItemPanel {
