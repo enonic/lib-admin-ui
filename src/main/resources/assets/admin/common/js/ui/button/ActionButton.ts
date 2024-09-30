@@ -121,7 +121,7 @@ export class ActionButton
         this.action = action;
 
         this.createTooltip();
-        this.syncButtonWithAction();
+        this.whenRendered(this.syncButtonWithAction);
     }
 
     private onHelpKeyPressed(e: KeyboardEvent) {
