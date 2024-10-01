@@ -262,7 +262,7 @@ export abstract class ListBox<I>
         }
     }
 
-    private showEmptyView(): void {
+    showEmptyView(): void {
         if (!this.emptyText) {
             return;
         }
@@ -276,7 +276,7 @@ export abstract class ListBox<I>
         }
     }
 
-    private removeEmptyView(): void {
+    removeEmptyView(): void {
         if (this.emptyView) {
             this.removeChild(this.emptyView);
         }

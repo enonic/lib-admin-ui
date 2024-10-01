@@ -57,6 +57,11 @@ export class FilterableListBoxWrapper<I>
         this.dropdownHandle = new DropdownHandle();
         this.applyButton = new Button(i18n('action.ok'));
         this.applyButton.hide();
+        this.handleEmptyList();
+    }
+
+    protected handleEmptyList(): void {
+        this.listBox.setEmptyText(i18n('field.option.noitems'));
     }
 
     protected initListeners(): void {
@@ -206,6 +211,7 @@ export class FilterableListBoxWrapper<I>
 
         if (this.options.filter) {
             this.filterItems(event.getNewValue());
+
         }
     }
 
@@ -223,6 +229,19 @@ export class FilterableListBoxWrapper<I>
         this.listBox.getItems().forEach((item: I) => {
             this.filterItem(item, searchString);
         });
+
+        let visible = 0;
+        this.itemsWrappers.forEach((itemWrappers: Element[]) => {
+            if (itemWrappers.some((itemWrapper: Element) => itemWrapper.isVisible())) {
+                visible++;
+            }
+        });
+
+        if (visible > 0) {
+            this.listBox.removeEmptyView();
+        } else {
+            this.listBox.showEmptyView();
+        }
     }
 
     protected filterItem(item: I, searchString: string): void {
