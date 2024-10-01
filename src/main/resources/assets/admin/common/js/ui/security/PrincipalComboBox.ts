@@ -60,12 +60,22 @@ export class PrincipalComboBox
     protected initListeners(): void {
         super.initListeners();
 
+        this.options.loader.onLoadingData(() => {
+            this.loadMask.show();
+        });
+
+        this.options.loader.onErrorOccurred(() => {
+            this.loadMask.hide();
+        });
+
         this.options.loader.onLoadedData((event: LoadedDataEvent<Principal>) => {
             if (event.isPostLoad()) {
                 this.listBox.addItems(event.getData());
             } else {
                 this.listBox.setItems(event.getData());
             }
+
+            this.loadMask.hide();
             return Q.resolve(null);
         });
 

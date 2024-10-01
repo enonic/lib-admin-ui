@@ -13,6 +13,7 @@ import {KeyBinding} from '../../KeyBinding';
 import {ExtendedKeyboardEvent} from 'mousetrap';
 import {KeyBindings} from '../../KeyBindings';
 import {SelectionChange} from '../../../util/SelectionChange';
+import {LoadMask} from '../../mask/LoadMask';
 
 export interface FilterableListBoxOptions<I>
     extends SelectableListBoxDropdownOptions<I> {
@@ -21,8 +22,6 @@ export interface FilterableListBoxOptions<I>
 
 export class FilterableListBoxWrapper<I>
     extends SelectableListBoxWrapper<I> {
-
-    protected readonly listBox: ListBox<I>;
 
     protected options: FilterableListBoxOptions<I>;
 
@@ -40,6 +39,8 @@ export class FilterableListBoxWrapper<I>
 
     protected dropdownShown: boolean = false;
 
+    protected loadMask: LoadMask;
+
     constructor(listBox: ListBox<I>, options?: FilterableListBoxOptions<I>) {
         super(listBox, options);
     }
@@ -47,6 +48,7 @@ export class FilterableListBoxWrapper<I>
     protected initElements(): void {
         super.initElements();
 
+        this.loadMask = new LoadMask(this);
         this.listBox.hide();
         this.filterContainer = new DivEl('filter-container');
 
