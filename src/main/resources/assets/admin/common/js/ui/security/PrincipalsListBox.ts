@@ -2,6 +2,7 @@ import {LazyListBox} from '../selector/list/LazyListBox';
 import {Principal} from '../../security/Principal';
 import {PrincipalViewer} from './PrincipalViewer';
 import {PrincipalLoader} from '../../security/PrincipalLoader';
+import {Element} from '../../dom/Element';
 
 export class PrincipalsListBox
     extends LazyListBox<Principal> {
@@ -30,5 +31,9 @@ export class PrincipalsListBox
         if (this.loader.isPartiallyLoaded()) {
             this.loader.load(true);
         }
+    }
+
+    protected getScrollContainer(): Element {
+        return this;
     }
 }
