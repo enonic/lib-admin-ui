@@ -24,7 +24,7 @@ export class AiActionButton
     }
 
     protected initElements(): void {
-        this.button = new Button().addClass(`${AiActionButton.BASE_CLASS}-icon icon-ai`) as Button;
+        this.button = new Button().addClass(`${AiActionButton.BASE_CLASS}-icon ai-icon`) as Button;
         this.loader = new DivEl(`${AiActionButton.BASE_CLASS}-loader`);
         this.setTitle(i18n('ai.action.contentOperator.use'));
         this.setState(AiHelperState.DEFAULT);

@@ -50,7 +50,6 @@
   .ai-button-container {
     width: 20px;
     height: 20px;
-    display: none;
     border: none;
     position: absolute;
     z-index: 1;
@@ -70,38 +69,58 @@
 
     &-loader {
       box-sizing: border-box;
-      display: none;
       position: absolute;
-      border: 2px dotted @admin-button-blue2;
+      border: 2px dotted @admin-dark-gray-border;
       border-radius: 50%;
       width: 20px;
       height: 20px;
       animation: spin 3s linear infinite;
     }
 
-    &.processing, &.completed, &.failed {
-      display: block;
+    @keyframes spin {
+      100% {
+        transform: rotateZ(360deg);
+      }
+    }
 
+    &:not(:hover):not(:focus):not(:focus-within).default {
+      display: none;
+    }
+
+    &.default,
+    &.processing {
+      .ai-icon::before {
+        content: '';
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+      }
+    }
+
+    &.completed,
+    &.failed {
       .ai-button-container-loader {
-        display: block;
+        animation-play-state: paused;
+      }
+    }
+
+    &.default {
+      .ai-button-container-loader {
+        display: none;
+      }
+
+      .ai-icon::before {
+        background: url("../../../../../images/juke-eye-centered.svg") center / contain no-repeat;
       }
     }
 
     &.processing {
       .ai-button-container-loader {
-        border-color: @admin-button-blue2;
+        border-color: #550072;
       }
-    }
 
-    &.fade {
-      display: block;
-
-      .ai-button-container-icon {
-        animation: fadingOpacity 2s ease-in-out infinite;
-
-        &:before {
-          color: @admin-blue;
-        }
+      .ai-icon::before {
+        background: url("../../../../../images/juke-eye-centered-animated.svg") center / contain no-repeat;
       }
     }
 
@@ -110,9 +129,12 @@
         border-color: @admin-green;
       }
 
-      .ai-button-container-icon {
-        &:before {
+      .ai-icon {
+        .icon-checkmark();
+
+        &::before {
           color: @admin-green;
+          transform: scale(0.8);
         }
       }
     }
@@ -122,35 +144,14 @@
         border-color: @admin-red;
       }
 
-      .ai-button-container-icon {
-        &:before {
+      .ai-icon {
+        .icon-close();
+
+        &::before {
           color: @admin-red;
+          transform: scale(0.9);
         }
       }
-    }
-
-    @keyframes spin {
-      100% {
-        transform: rotateZ(360deg);
-      }
-    }
-
-    @keyframes fadingOpacity {
-      0% {
-        opacity: 0.2;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0.2;
-      }
-    }
-  }
-
-  &:focus-within, &:hover {
-    .ai-button-container {
-      display: block;
     }
   }
 
