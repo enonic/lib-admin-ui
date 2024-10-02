@@ -103,7 +103,9 @@ export class BrowsePanel
 
     private initTreeGridListeners() {
         this.selectableListBoxPanel?.onDataChanged(this.handleDataChanged.bind(this));
-        this.selectableListBoxPanel?.onSelectionChanged(this.handleTreeListSelectionChanged.bind(this));
+
+        const selectionChangedListener = AppHelper.debounce(this.handleTreeListSelectionChanged.bind(this), 250);
+        this.selectableListBoxPanel?.onSelectionChanged(selectionChangedListener);
 
         this.selectableListBoxPanel?.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
             this.toggleSelectionMode(isActive);
