@@ -245,6 +245,15 @@ export class ElementHelper {
         return this;
     }
 
+    dispatchEvent(eventName: string) {
+        const event = new Event(eventName, {
+            bubbles: true, // Event will bubble up through the DOM
+            cancelable: true // Event can be canceled
+        });
+
+        this.el.dispatchEvent(event);
+    }
+
     appendChild(child: Node): ElementHelper {
         return this.insertChild(child, this.countChildren());
     }
