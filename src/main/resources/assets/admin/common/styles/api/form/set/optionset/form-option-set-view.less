@@ -77,11 +77,12 @@
         max-width: initial;
 
         > input {
-          height: 47px; // match the option to prevent height bounce
+          height: 37px; // match the option to prevent height bounce
         }
 
         > .@{_COMMON_PREFIX}dropdown-handle {
-          padding: 9px 9px 10px 9px;
+          height: 45px;
+          width: 45px;
         }
       }
 
@@ -193,7 +194,7 @@
 
           > label {
             position: relative;
-            padding-left: 31px;
+            padding-left: 10px;
             font-size: 14px;
             line-height: 18px;
             color: @admin-dark-gray;
@@ -239,11 +240,7 @@
           }
 
           > .form-input {
-            padding: 0 6px;
-
             > label {
-              padding-left: 25px;
-
               &::before {
                 left: 4px;
               }

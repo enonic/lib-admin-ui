@@ -357,7 +357,7 @@ export class Toolbar<C extends ToolbarConfig>
     }
 
     protected foldOrExpand() {
-        if (!this.isRendered() || !this.isVisible() || this.locked) {
+        if (!this.foldButton || !this.isRendered() || !this.isVisible() || this.locked) {
             return;
         }
 

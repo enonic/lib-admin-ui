@@ -423,7 +423,7 @@ export class Dropdown<OPTION_DISPLAY_VALUE>
 
     private doUpdateDropdownTopPositionAndWidth() {
         let inputEl = this.input.getEl();
-        this.dropdownList.setTopPx(inputEl.getHeightWithBorder() - inputEl.getBorderBottomWidth());
+        this.dropdownList.setTopPx(this.getEl().getHeight());
         this.dropdownList.setWidth(inputEl.getWidthWithBorder());
     }
 

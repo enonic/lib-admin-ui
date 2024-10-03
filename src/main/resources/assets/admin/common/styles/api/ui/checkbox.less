@@ -1,22 +1,13 @@
 .checkbox {
   .reset(true);
-
-  position: relative;
+  display: flex;
 
   label {
-    display: inline-block;
-    padding: 0 5px 0 23px;
+    display: flex;
+    flex-direction: row;
     cursor: pointer;
-  }
-
-  &.top label {
-    padding-left: 0;
-    margin-top: 19px;
-
-    &::after {
-      position: absolute;
-      top: 0;
-    }
+    align-items: center;
+    justify-content: left;
   }
 
   input[disabled] + label {
@@ -25,28 +16,29 @@
   }
 
   &.left label::before {
-    position: absolute;
-    left: 0;
-    margin-top: 2px;
+    margin-right: 5px;
   }
 
   &.right label {
-    padding-left: 0;
-    display: inline-block;
-    max-width: none;
-
+    flex-direction: row-reverse;
     &::before {
-      float: right;
-      margin-left: 10px;
-      margin-top: 3px;
+      margin-left: 5px;
+    }
+  }
+
+  &.top label {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    &::after {
+      margin-bottom: 5px;
     }
   }
 
   &.bottom label {
-    padding-left: 0;
-
+    flex-direction: column;
+    align-items: flex-start;
     &::after {
-      margin-top: 7px;
+      margin-top: 5px;
     }
   }
 

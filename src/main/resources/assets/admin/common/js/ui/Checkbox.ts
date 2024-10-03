@@ -18,6 +18,11 @@ export class Checkbox
         this.initCheckbox(inputAlignment);
         this.initLabel(text, tooltip);
 
+        this.onApplyKeyPressed(() => {
+            this.toggleChecked();
+            this.getEl().dispatchEvent('change');
+        });
+
         if (name) {
             this.setName(name);
         }

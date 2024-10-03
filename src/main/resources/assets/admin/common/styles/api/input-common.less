@@ -63,15 +63,16 @@
   .input-wrapper {
     position: relative;
 
-    .form-input {
+    > .form-input:first-child {
       width: 100%;
+      box-sizing: border-box;
     }
   }
 
   .form-input {
-
     + .uploader-el .upload-button {
       border-left: none;
+      flex: 0 0 auto;
     }
   }
 
@@ -149,10 +150,6 @@
   }
 
   .input-type-view {
-    .image-uploader-el {
-      width: 100%;
-    }
-
     &.text-input-type {
       .separator {
         display: none;
