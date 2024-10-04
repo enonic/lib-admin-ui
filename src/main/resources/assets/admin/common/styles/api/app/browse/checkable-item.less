@@ -5,14 +5,12 @@
 
 .checkable-item-checkbox {
   display: flex;
-  height: 24px;
 
   label {
     .icon();
     display: flex;
     justify-items: center;
     align-items: center;
-    width: 24px;
     padding: 0;
   }
 
@@ -21,10 +19,12 @@
     background-image: none;
   }
 
-  input[disabled]:checked + label::before {
-    content: "\e370";
-    font-size: 10px;
-    line-height: 14px;
-    margin-left: 1px;
+  input[disabled]:checked + label {
+    text-align: center;
+    &::before {
+      content: "\e370";
+      font-size: 10px;
+      line-height: 14px;
+    }
   }
 }

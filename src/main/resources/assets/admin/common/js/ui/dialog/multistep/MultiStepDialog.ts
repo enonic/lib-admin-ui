@@ -34,9 +34,9 @@ export class MultiStepDialog
 
     protected headerContent: NamesAndIconView;
 
-    private forwardButton: ActionButton;
+    private forwardAction: Action;
 
-    private backButton: ActionButton;
+    private backAction: Action;
 
     private noStepsBlock?: Element;
 
@@ -47,8 +47,8 @@ export class MultiStepDialog
 
         this.steps = this.config.steps;
         this.stepsContainer = this.createStepsContainer();
-        this.backButton = this.addAction(new Action(this.getBackButtonLabel()));
-        this.forwardButton = this.addAction(new Action(this.getForwardButtonLabel()));
+        this.addAction(this.backAction = new Action(this.getBackButtonLabel()));
+        this.addAction(this.forwardAction = new Action(this.getForwardButtonLabel()));
         this.headerContent = this.createHeaderContent();
     }
 
@@ -79,13 +79,13 @@ export class MultiStepDialog
             this.handleHidden();
         });
 
-        this.forwardButton.getAction().onExecuted(() => {
-            if (this.forwardButton.isEnabled()) {
+        this.forwardAction.onExecuted(() => {
+            if (this.forwardAction.isEnabled()) {
                 this.forwardOrSubmit();
             }
         });
 
-        this.backButton.getAction().onExecuted(() => {
+        this.backAction.onExecuted(() => {
             this.showPreviousStep();
         });
 
@@ -209,7 +209,7 @@ export class MultiStepDialog
     }
 
     private updateForwardButtonLabel(): void {
-        this.forwardButton.setLabel(this.getForwardButtonLabelDependingOnState());
+        this.forwardAction.setLabel(this.getForwardButtonLabelDependingOnState());
     }
 
     private getForwardButtonLabelDependingOnState(): string {
@@ -230,13 +230,13 @@ export class MultiStepDialog
 
     private updateForwardButtonEnabledState(): void {
         if (this.currentStep.isOptional()) {
-            this.forwardButton.setEnabled(true);
+            this.forwardAction.setEnabled(true);
         } else {
-            this.forwardButton.setEnabled(false);
+            this.forwardAction.setEnabled(false);
             this.lock();
 
             this.currentStep.isValid().then((isValid: boolean) => {
-                this.forwardButton.setEnabled(isValid);
+                this.forwardAction.setEnabled(isValid);
             })
                 .catch(DefaultErrorHandler.handle)
                 .finally(() => this.unlock());
@@ -272,8 +272,8 @@ export class MultiStepDialog
             this.noStepsBlock = new DivEl('no-steps-block').setHtml(i18n('dialog.multistep.no.steps'));
         }
 
-        this.backButton.hide();
-        this.forwardButton.hide();
+        this.backAction.setVisible(false);
+        this.forwardAction.setVisible(false);
         this.appendChildToContentPanel(this.noStepsBlock);
     }
 
@@ -291,8 +291,8 @@ export class MultiStepDialog
             this.appendChildToHeader(this.headerContent);
             this.stepsContainer.addClass('steps-container');
             this.appendChildToContentPanel(this.stepsContainer);
-            this.backButton.addClass('back');
-            this.forwardButton.addClass('forward');
+            this.backAction.setClass('back');
+            this.forwardAction.setClass('forward');
 
             return rendered;
         });
