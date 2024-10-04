@@ -7,6 +7,7 @@ import * as Q from 'q';
 import {LiEl} from '../../../dom/LiEl';
 import {TreeListBox, TreeListElement} from './TreeListBox';
 import {DataChangedEvent, DataChangedType} from '../../treegrid/DataChangedEvent';
+import {SelectableListBoxNavigator} from './SelectableListBoxNavigator';
 
 export enum SelectionMode {
     SELECT, // DEFAULT
@@ -39,6 +40,8 @@ export class SelectableListBoxWrapper<I>
     protected selectionChangedListeners: ((selectionChange: SelectionChange<I>) => void)[];
 
     protected selectionLimitReached: boolean = false;
+
+    protected selectionNavigator?: SelectableListBoxNavigator<I>;
 
     constructor(listBox: ListBox<I>, options?: SelectableListBoxDropdownOptions<I>) {
         super('selectable-listbox-wrapper ' + (options?.className || ''));
@@ -73,7 +76,7 @@ export class SelectableListBoxWrapper<I>
 
     protected handleItemAdded(item: I, itemView: Element): void {
         const view: Element = this.listBox instanceof TreeListBox ? (itemView as TreeListElement<I>).getDataView() : itemView;
-        const wrapper: Element = new LiEl('item-view-wrapper');
+        const wrapper: Element = this.listBox instanceof TreeListBox ? new DivEl('item-view-wrapper') : new LiEl('item-view-wrapper');
         const id: string = this.listBox.getIdOfItem(item);
 
         this.addItemWrapper(id, wrapper);
@@ -84,8 +87,6 @@ export class SelectableListBoxWrapper<I>
         if (this.isMultiSelect()) {
             wrapper.appendChild(this.createCheckbox(item));
             wrapper.addClass(this.options.checkboxPosition === 'left' ? 'checkbox-left' : 'checkbox-right');
-        } else {
-            wrapper.getEl().setTabIndex(0);
         }
 
         const clickHandler = (event: MouseEvent) => {
@@ -125,6 +126,9 @@ export class SelectableListBoxWrapper<I>
         const idWrappersList = this.itemsWrappers.get(id) || [];
         idWrappersList.push(wrapper);
         this.itemsWrappers.set(id, idWrappersList);
+
+        // if list is already shown and new item added to it then add tabindex manually
+        this.selectionNavigator?.notifyItemWrapperAdded(wrapper);
     }
 
     protected handleUserToggleAction(item: I): void {
@@ -383,5 +387,25 @@ export class SelectableListBoxWrapper<I>
         if (this.selectedItems.has(itemId)) {
             this.selectedItems.set(itemId, item);
         }
+    }
+
+    protected addKeyNavigation(): void {
+        this.selectionNavigator = this.createSelectionNavigator();
+    }
+
+    protected createSelectionNavigator(): SelectableListBoxNavigator<I> {
+        return new SelectableListBoxNavigator(this.listBox, this.itemsWrappers)
+            .setSpaceHandler(this.handleSpacePressed.bind(this))
+    }
+
+    protected handleSpacePressed(): boolean {
+        const focusedItem: I = this.selectionNavigator.getFocusedItem();
+
+        if (focusedItem) {
+            this.handleUserToggleAction(focusedItem);
+            return false;
+        }
+
+        return true;
     }
 }

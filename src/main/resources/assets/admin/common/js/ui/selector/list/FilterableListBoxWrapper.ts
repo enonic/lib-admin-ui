@@ -5,15 +5,13 @@ import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {KeyHelper} from '../../KeyHelper';
-import {SelectableListBoxWrapper, SelectableListBoxDropdownOptions} from './SelectableListBoxWrapper';
+import {SelectableListBoxDropdownOptions, SelectableListBoxWrapper} from './SelectableListBoxWrapper';
 import {Button} from '../../button/Button';
 import {i18n} from '../../../util/Messages';
 import {Body} from '../../../dom/Body';
-import {KeyBinding} from '../../KeyBinding';
-import {ExtendedKeyboardEvent} from 'mousetrap';
-import {KeyBindings} from '../../KeyBindings';
 import {SelectionChange} from '../../../util/SelectionChange';
 import {LoadMask} from '../../mask/LoadMask';
+import {SelectableListBoxNavigator} from './SelectableListBoxNavigator';
 
 export interface FilterableListBoxOptions<I>
     extends SelectableListBoxDropdownOptions<I> {
@@ -67,7 +65,14 @@ export class FilterableListBoxWrapper<I>
     protected initListeners(): void {
         super.initListeners();
 
-        this.addKeyboardNavigation();
+        this.listBox.onShown(() => {
+            this.selectionDelta = new Map();
+        });
+
+        this.listBox.onHidden(() => {
+            this.resetSelection();
+            this.selectionDelta = new Map();
+        });
 
         this.applyButton.onClicked(this.applySelection.bind(this));
 
@@ -84,6 +89,8 @@ export class FilterableListBoxWrapper<I>
         });
 
         this.listenClickOutside();
+
+        this.addKeyNavigation();
     }
 
     protected showDropdown(): void {
@@ -125,76 +132,6 @@ export class FilterableListBoxWrapper<I>
             } else {
                 Body.get().unMouseDown(mouseClickListener);
             }
-        });
-    }
-
-    private addKeyboardNavigation(): void {
-        let isShowListBoxEvent: boolean = false;
-        let keysBound = false;
-
-        const navigationKeyBindings = [
-            new KeyBinding('esc').setGlobal(true).setCallback(this.handleClickOutside.bind(this)),
-            new KeyBinding('up').setGlobal(true).setCallback((e: ExtendedKeyboardEvent) => {
-                e.stopPropagation();
-                this.focusPrevious();
-                return false;
-            }),
-            new KeyBinding('down').setGlobal(true).setCallback(() => {
-                if (!isShowListBoxEvent) {
-                    this.focusNext();
-                }
-                return false;
-            }),
-            new KeyBinding('enter').setGlobal(true).setCallback(() => {
-                this.handlerEnterPressed();
-                return false;
-            }),
-        ];
-
-        if (!this.isMultiSelect()) { // when multiple is on then space works for checkboxes automatically
-            const spaceKeyBinding: KeyBinding = new KeyBinding('space')
-                .setGlobal(true)
-                .setCallback(() => {
-                    const focusedItem: I = this.getFocusedItem();
-
-                    if (focusedItem) {
-                        this.handleUserToggleAction(focusedItem);
-                        return false;
-                    }
-
-                    return true;
-                });
-
-            navigationKeyBindings.push(spaceKeyBinding);
-        }
-
-        this.listBox.onShown(() => {
-            this.selectionDelta = new Map();
-            isShowListBoxEvent = true;
-
-            if (!keysBound) {
-                KeyBindings.get().shelveBindings();
-                KeyBindings.get().bindKeys(navigationKeyBindings);
-            }
-
-            keysBound = true;
-
-            setTimeout(() => { // if open by arrow key then wait for event to finish
-                isShowListBoxEvent = false;
-            }, 1);
-        });
-
-        this.listBox.onHidden(() => {
-            this.resetSelection();
-            this.selectionDelta = new Map();
-
-            if (keysBound) {
-                KeyBindings.get().unbindKeys(navigationKeyBindings);
-                KeyBindings.get().unshelveBindings();
-            }
-
-            keysBound = false;
-
         });
     }
 
@@ -254,13 +191,13 @@ export class FilterableListBoxWrapper<I>
         }
     }
 
-    protected handlerEnterPressed(): void {
+    protected handlerEnterPressed(): boolean {
         if (this.applyButton.hasFocus()) {
             this.applySelection();
-            return;
+            return true;
         }
 
-        const focusedItem: I = this.getFocusedItem();
+        const focusedItem: I = this.selectionNavigator?.getFocusedItem();
 
         if (focusedItem) {
             if (this.selectionDelta.size === 0) {
@@ -271,10 +208,13 @@ export class FilterableListBoxWrapper<I>
                 this.applySelection();
             }
         }
+
+        return true;
     }
 
-    protected handleClickOutside(): void {
+    protected handleClickOutside(): boolean {
         this.hideDropdown();
+        return true;
     }
 
     handleUserSelected(item: I): void {
@@ -309,8 +249,8 @@ export class FilterableListBoxWrapper<I>
 
     protected getCurrentlySelectedItems(): I[] {
         return super.getCurrentlySelectedItems()
-            .filter((savedItem: I) => this.isItemSelected(savedItem))
-            .concat(this.getSelectedDeltaItems()) || [];
+                   .filter((savedItem: I) => this.isItemSelected(savedItem))
+                   .concat(this.getSelectedDeltaItems()) || [];
     }
 
     private getSelectedDeltaItems(): I[] {
@@ -405,23 +345,6 @@ export class FilterableListBoxWrapper<I>
         return focusedItemIndex;
     }
 
-    private getFocusedItem(): I {
-        let focusedItem: I = null;
-
-        this.itemsWrappers.forEach((itemWrappers: Element[], key: string) => {
-            itemWrappers.forEach((itemWrapper: Element) => {
-                const elemToCheck: HTMLElement =
-                    this.isMultiSelect() ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() : itemWrapper.getHTMLElement();
-
-                if (elemToCheck === document.activeElement) {
-                    focusedItem = this.listBox.getItem(key);
-                }
-            });
-        });
-
-        return focusedItem;
-    }
-
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
             this.addClass('filterable-listbox-wrapper');
@@ -483,5 +406,11 @@ export class FilterableListBoxWrapper<I>
 
     isDropdownShown(): boolean {
         return this.dropdownShown;
+    }
+
+    protected createSelectionNavigator(): SelectableListBoxNavigator<I> {
+        return super.createSelectionNavigator()
+            .setClickOutsideHandler(this.handleClickOutside.bind(this))
+            .setEnterKeyHandler(this.handlerEnterPressed.bind(this))
     }
 }
