@@ -152,21 +152,16 @@ export class PrincipalSelector
             .filter((val) => val !== null);
     }
 
-    protected createLoader(): PrincipalLoader {
-        return new PrincipalLoader();
+    protected getPostfixUri(): string {
+        return null;
     }
 
     private createComboBox(input: Input): PrincipalComboBox {
-        const value: string = this.getValueFromPropertyArray(this.getPropertyArray());
-        const principalLoader: PrincipalLoader =
-            this.createLoader()
-            .setAllowedTypes(this.principalTypes)
-            .skipPrincipals(this.skipPrincipals);
-
         const comboBox: PrincipalComboBox = new PrincipalComboBox({
             skipPrincipals: this.skipPrincipals.slice(),
             allowedTypes: this.principalTypes.slice(),
             maxSelected: input.getOccurrences().getMaximum(),
+            postfixUri: this.getPostfixUri(),
         });
 
 
