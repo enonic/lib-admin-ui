@@ -192,7 +192,10 @@ export class Action {
     }
 
     setClass(value: string): Action {
-        this.cls = `${value}-action`;
+        if (value !== `${this.cls}-action`) {
+            this.cls = `${value}-action`;
+            this.notifyPropertyChanged();
+        }
         return this;
     }
 
