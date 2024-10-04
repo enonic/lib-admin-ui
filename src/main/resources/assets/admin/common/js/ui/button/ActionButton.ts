@@ -26,7 +26,10 @@ export class ActionButton
     }
 
     protected initListeners() {
-        const executeAction = () => {
+        const executeAction = (event: MouseEvent) => {
+            event.preventDefault();
+            event.stopPropagation();
+
             Body.get().setFocusedElement(this);
             this.getAction().execute();
         };
