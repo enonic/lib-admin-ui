@@ -298,7 +298,7 @@ export abstract class TreeListElement<I>
             this.childrenList.hide();
 
             this.elementsWrapper.appendChildren(this.toggleElement, this.itemViewer);
-            this.elementsWrapper.getEl().setPaddingLeft(`${this.options.level * 24}px`);
+            this.elementsWrapper.getEl().setPaddingLeft(`${this.options.level * 16}px`);
             this.appendChild(this.childrenList);
 
             return rendered;

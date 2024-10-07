@@ -7,7 +7,8 @@
 
   .tree-list-element {
     .toggle-and-item-wrapper {
-      display: flex;
+      display: grid;
+      grid-template-columns: 32px 1fr;
       cursor: pointer;
 
       * {
@@ -15,10 +16,10 @@
       }
 
       .toggle {
-        min-width: 40px;
         display: flex;
         justify-content: center;
         align-items: center;
+        justify-self: start;
 
         &::before {
           font-size: 24px;

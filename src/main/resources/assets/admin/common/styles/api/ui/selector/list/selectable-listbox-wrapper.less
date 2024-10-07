@@ -2,8 +2,8 @@
 
   .item-view-wrapper {
     display: flex;
-    padding: 3px;
     cursor: pointer;
+    height: 44px;
 
     .checkbox {
       grid-area: checkbox;
@@ -26,14 +26,14 @@
 
     &.checkbox-right {
       display: grid;
-      grid-template-columns: 1fr 30px;
+      grid-template-columns: 1fr 44px;
       grid-template-areas:
         "data checkbox"
     }
 
     &.checkbox-left {
       display: grid;
-      grid-template-columns: 30px 1fr;
+      grid-template-columns: 44px 1fr;
       grid-template-areas:
         "checkbox data"
     }
