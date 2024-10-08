@@ -1,48 +1,137 @@
+import * as Q from 'q';
 import {Option} from '../selector/Option';
-import {Principal} from '../../security/Principal';
+import {Principal, PrincipalBuilder} from '../../security/Principal';
 import {PrincipalLoader} from '../../security/PrincipalLoader';
 import {SelectedOption} from '../selector/combobox/SelectedOption';
 import {BaseSelectedOptionsView} from '../selector/combobox/BaseSelectedOptionsView';
 import {PrincipalKey} from '../../security/PrincipalKey';
 import {SelectedOptionView} from '../selector/combobox/SelectedOptionView';
-import {RichComboBox, RichComboBoxBuilder} from '../selector/combobox/RichComboBox';
 import {PrincipalViewer} from './PrincipalViewer';
-import {Viewer} from '../Viewer';
-import {SelectedOptionsView} from '../selector/combobox/SelectedOptionsView';
+import {FilterableListBoxWrapperWithSelectedView, ListBoxInputOptions} from '../selector/list/FilterableListBoxWrapperWithSelectedView';
+import {PrincipalType} from '../../security/PrincipalType';
+import {PrincipalsListBox} from './PrincipalsListBox';
+import {FormInputEl} from '../../dom/FormInputEl';
+import {LoadedDataEvent} from '../../util/loader/event/LoadedDataEvent';
+import {AppHelper} from '../../util/AppHelper';
+import {ValueChangedEvent} from '../../ValueChangedEvent';
+import {DefaultErrorHandler} from '../../DefaultErrorHandler';
+import {StringHelper} from '../../util/StringHelper';
+import {GetPrincipalsByKeysRequest} from '../../security/GetPrincipalsByKeysRequest';
 
-export class PrincipalComboBox
-    extends RichComboBox<Principal> {
-    constructor(builder: PrincipalComboBoxBuilder = new PrincipalComboBoxBuilder()) {
-        super(builder);
-        this.addClass('principal-combobox');
-    }
-
-    static create(): PrincipalComboBoxBuilder {
-        return new PrincipalComboBoxBuilder();
-    }
+export interface PrincipalComboBoxParams {
+    maxSelected?: number;
+    allowedTypes?: PrincipalType[];
+    skipPrincipals?: PrincipalKey[];
+    postfixUri?: string;
+    selectedOptionsView?: PrincipalSelectedOptionsView;
 }
 
-export class PrincipalComboBoxBuilder
-    extends RichComboBoxBuilder<Principal> {
+interface PrincipalComboBoxOptions extends ListBoxInputOptions<Principal> {
+    loader: PrincipalLoader;
+}
 
-    loader: PrincipalLoader = new PrincipalLoader();
+export class PrincipalComboBox
+    extends FilterableListBoxWrapperWithSelectedView<Principal> {
 
-    maximumOccurrences: number = 0;
+    private preSelectedItems: PrincipalKey[] = [];
 
-    value: string;
+    private postfixUri: string;
 
-    identifierMethod: string = 'getKey';
+    protected readonly options: PrincipalComboBoxOptions;
 
-    comboBoxName: string = 'principalSelector';
+    constructor(options?: PrincipalComboBoxParams) {
+        const loader = new PrincipalLoader(options.postfixUri);
+        loader.setAllowedTypes(options?.allowedTypes);
 
-    delayedInputValueChangedHandling: number = 500;
+        if (options.skipPrincipals?.length > 0) {
+            loader.skipPrincipals(options?.skipPrincipals);
+        }
 
-    optionDisplayValueViewer: Viewer<Principal> = new PrincipalViewer();
+        super(new PrincipalsListBox(loader), {
+            maxSelected: options?.maxSelected ?? 0,
+            selectedOptionsView: options?.selectedOptionsView || new PrincipalSelectedOptionsView(),
+            className: 'principal-combobox',
+            loader: loader
+        } as PrincipalComboBoxOptions);
 
-    selectedOptionsView: SelectedOptionsView<Principal> = new PrincipalSelectedOptionsView();
+        this.postfixUri = options?.postfixUri;
+    }
 
-    build(): PrincipalComboBox {
-        return new PrincipalComboBox(this);
+    protected initListeners(): void {
+        super.initListeners();
+
+        this.options.loader.onLoadingData(() => {
+            this.loadMask.show();
+        });
+
+        this.options.loader.onErrorOccurred(() => {
+            this.loadMask.hide();
+        });
+
+        this.options.loader.onLoadedData((event: LoadedDataEvent<Principal>) => {
+            if (event.isPostLoad()) {
+                this.listBox.addItems(event.getData());
+            } else {
+                this.listBox.setItems(event.getData());
+            }
+
+            this.loadMask.hide();
+            return Q.resolve(null);
+        });
+
+        this.listBox.whenShown(() => {
+            // if not empty then search will be performed after finished typing
+            if (StringHelper.isBlank(this.optionFilterInput.getValue())) {
+                this.search(this.optionFilterInput.getValue());
+            }
+        });
+
+        let searchValue = '';
+
+        const debouncedSearch = AppHelper.debounce(() => {
+            this.search(searchValue);
+        }, 300);
+
+        this.optionFilterInput.onValueChanged((event: ValueChangedEvent) => {
+            searchValue = event.getNewValue();
+            debouncedSearch();
+        });
+    }
+
+    protected search(value?: string): void {
+        this.options.loader.search(value).catch(DefaultErrorHandler.handle);
+    }
+
+    createSelectedOption(item: Principal): Option<Principal> {
+        return Option.create<Principal>()
+            .setValue(item.getKey().toString())
+            .setDisplayValue(item)
+            .build();
+    }
+
+    getLoader(): PrincipalLoader {
+        return this.options.loader;
+    }
+
+    setSelectedItems(items: PrincipalKey[]): void {
+        this.preSelectedItems = items || [];
+        this.deselectAll();
+
+        if (items.length === 0) {
+            return;
+        }
+
+        new GetPrincipalsByKeysRequest(items).setPostfixUri(this.postfixUri).sendAndParse().then((principals: Principal[]) => {
+            const itemsToSelect = [];
+
+            items.forEach((item: PrincipalKey) => {
+                const principal = principals.find((p) => p.getKey().equals(item));
+
+                itemsToSelect.push(principal || new MissingPrincipal(item));
+            });
+
+            this.select(itemsToSelect);
+        }).catch(DefaultErrorHandler.handle);
     }
 }
 
@@ -77,7 +166,8 @@ export class PrincipalSelectedOptionsView
     }
 
     createSelectedOption(option: Option<Principal>): SelectedOption<Principal> {
-        let optionView = !option.isEmpty() ? new PrincipalSelectedOptionView(option) : new RemovedPrincipalSelectedOptionView(option);
+        let optionView = option.getDisplayValue() instanceof MissingPrincipal ? new RemovedPrincipalSelectedOptionView(option) : new PrincipalSelectedOptionView(option);
+
         if (this.readonly) {
             optionView.setReadonly(true);
         }
@@ -105,5 +195,31 @@ export class RemovedPrincipalSelectedOptionView
 
     resolveSubName(): string {
         return 'This user is deleted';
+    }
+}
+
+export class PrincipalComboBoxWrapper extends FormInputEl {
+
+    private readonly selector: PrincipalComboBox;
+
+    constructor(selector: PrincipalComboBox) {
+        super('div', 'principal-selector-wrapper');
+
+        this.selector = selector;
+        this.appendChild(this.selector);
+    }
+
+    getComboBox(): PrincipalComboBox {
+        return this.selector;
+    }
+
+    getValue(): string {
+        return this.selector.getSelectedOptions().map((option) => option.getOption().getValue()).join(';');
+    }
+}
+
+class MissingPrincipal extends Principal {
+    constructor(key: PrincipalKey) {
+        super(new PrincipalBuilder().setKey(key).setDisplayName(key.toString()));
     }
 }

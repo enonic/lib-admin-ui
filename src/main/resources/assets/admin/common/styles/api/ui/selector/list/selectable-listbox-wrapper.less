@@ -1,0 +1,69 @@
+.selectable-listbox-wrapper {
+
+  .item-view-wrapper {
+    display: flex;
+    cursor: pointer;
+    height: 44px;
+
+    .checkbox {
+      grid-area: checkbox;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      input {
+        display: none;
+      }
+
+      label::before {
+        position: static;
+      }
+    }
+
+    .item-view {
+      grid-area: data;
+    }
+
+    &.checkbox-right {
+      display: grid;
+      grid-template-columns: 1fr 44px;
+      grid-template-areas:
+        "data checkbox"
+    }
+
+    &.checkbox-left {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      grid-template-areas:
+        "checkbox data"
+    }
+
+    &:hover {
+      background-color: @admin-bg-light-gray;
+    }
+
+    .item-view {
+      flex-grow: 1;
+      padding-left: 7px;
+      .ellipsis();
+
+      * {
+        cursor: pointer;
+      }
+    }
+
+    .checkbox {
+      flex-shrink: 0;
+    }
+
+    &.selected {
+      color: @admin-white;
+      background-color: @admin-blue;
+    }
+
+    &:focus-visible {
+      outline: none;
+      background-color: @admin-bg-light-gray;
+    }
+  }
+}

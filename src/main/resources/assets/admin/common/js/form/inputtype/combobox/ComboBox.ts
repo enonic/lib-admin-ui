@@ -1,40 +1,32 @@
 import * as Q from 'q';
-import {Element} from '../../../dom/Element';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Value} from '../../../data/Value';
 import {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {SelectedOptionEvent} from '../../../ui/selector/combobox/SelectedOptionEvent';
 import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';
-import {SelectedOptionsView} from '../../../ui/selector/combobox/SelectedOptionsView';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Input} from '../../Input';
-import {BaseSelectedOptionsView} from '../../../ui/selector/combobox/BaseSelectedOptionsView';
-import {ComboBox as ComboBoxEl} from '../../../ui/selector/combobox/ComboBox';
-import {OptionFilterInputValueChangedEvent} from '../../../ui/selector/OptionFilterInputValueChangedEvent';
-import {Option} from '../../../ui/selector/Option';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {ComboBoxOption} from './ComboBoxOption';
-import {ComboBoxDisplayValueViewer} from './ComboBoxDisplayValueViewer';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
-import {InputValidationRecording} from '../InputValidationRecording';
+import {ComboBoxListInput} from './ComboBoxListInput';
+import {StringHelper} from '../../../util/StringHelper';
+import {SelectionChange} from '../../../util/SelectionChange';
+import {ComboBoxSelectedOptionsView} from './ComboBoxSelectedOptionsView';
+import {ObjectHelper} from '../../../ObjectHelper';
 
 export class ComboBox
     extends BaseInputTypeManagingAdd {
 
     private comboBoxOptions: ComboBoxOption[];
 
-    private comboBox: ComboBoxEl<string>;
+    private listInput: ComboBoxListInput;
 
-    private selectedOptionsView: SelectedOptionsView<string>;
+    private initiallySelectedItems: string[];
 
     constructor(context: InputTypeViewContext) {
         super(context, 'combobox-input-type-view');
-    }
-
-    getComboBox(): ComboBoxEl<string> {
-        return this.comboBox;
     }
 
     getValueType(): ValueType {
@@ -51,118 +43,107 @@ export class ComboBox
         }
 
         return super.layout(input, propertyArray).then(() => {
-            this.selectedOptionsView = new BaseSelectedOptionsView<string>();
-            this.selectedOptionsView.setEditable(false);
-            this.comboBox = this.createComboBox(input, propertyArray);
-
-            this.comboBoxOptions.forEach((option: ComboBoxOption) => {
-                this.comboBox.addOption(Option.create<string>().setValue(option.value).setDisplayValue(option.label).build());
-            });
-
-            this.appendChild(this.comboBox);
-            this.appendChild(this.selectedOptionsView as Element);
-
+            this.initiallySelectedItems = this.getSelectedItems();
+            this.listInput = this.createListInput();
+            this.appendChild(this.listInput);
             this.setLayoutInProgress(false);
 
             return Q<void>(null);
         });
     }
 
-    update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
-        const superPromise = super.update(propertyArray, unchangedOnly);
+    private createListInput(): ComboBoxListInput {
+        const listInput = new ComboBoxListInput({
+            selectedOptionsView: new ComboBoxSelectedOptionsView(),
+            maxSelected: this.getInput().getOccurrences().getMaximum(),
+            checkboxPosition: 'right',
+            filter: this.comboBoxFilter.bind(this),
+            items: this.comboBoxOptions,
+            className: 'combobox-list-input',
+        });
 
-        if (!unchangedOnly || !this.comboBox.isDirty()) {
-            return superPromise.then(() => {
-                this.comboBox.setValue(this.getValueFromPropertyArray(propertyArray));
+        // setting saved options
+        listInput.selectItems(this.getSelectedItems());
+
+        listInput.onSelectionChanged((selectionChange: SelectionChange<ComboBoxOption>) => {
+            selectionChange.selected?.forEach((item: ComboBoxOption) => {
+                this.handleOptionSelected(item);
             });
-        } else if (this.comboBox.isDirty()) {
-            this.comboBox.forceChangedEvent();
-        }
-        return superPromise;
+
+            selectionChange.deselected?.forEach((item: ComboBoxOption) => {
+                this.handleOptionDeselected(item);
+            });
+        });
+
+        return listInput;
+    }
+
+    update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
+        const isDirty = this.isDirty();
+
+        return super.update(propertyArray, unchangedOnly).then(() => {
+            this.initiallySelectedItems = this.getSelectedItems();
+
+            if (!unchangedOnly || !isDirty) {
+                this.listInput.updateSelectedItems(this.initiallySelectedItems.slice());
+            } else if (isDirty) {
+                this.updateDirty();
+            }
+        });
+    }
+
+    private isDirty(): boolean {
+        return !ObjectHelper.stringArrayEquals(this.initiallySelectedItems, this.getSelectedItems());
+    }
+
+    private updateDirty(): void {
+        this.ignorePropertyChange(true);
+
+        this.getPropertyArray().removeAll(true);
+
+        this.listInput.getSelectedOptions().filter((option) => {
+            const value = new Value(option.getOption().getDisplayValue().value, ValueTypes.STRING);
+            this.getPropertyArray().add(value);
+        });
+
+        this.ignorePropertyChange(false);
     }
 
     reset() {
-        this.comboBox.resetBaseValues();
+        this.listInput.updateSelectedItems(this.getSelectedItems());
     }
 
     clear(): void {
         super.clear();
-        this.comboBox.clear();
+        this.listInput.clear();
     }
 
     setEnabled(enable: boolean) {
         super.setEnabled(enable);
-        this.comboBox.setEnabled(enable);
-    }
-
-    createComboBox(input: Input, propertyArray: PropertyArray): ComboBoxEl<string> {
-        const name = input.getName();
-        let comboBox = new ComboBoxEl<string>(name, {
-            filter: this.comboBoxFilter,
-            selectedOptionsView: this.selectedOptionsView,
-            maximumOccurrences: input.getOccurrences().getMaximum(),
-            optionDisplayValueViewer: new ComboBoxDisplayValueViewer(),
-            rowHeight: 34,
-            hideComboBoxWhenMaxReached: true,
-            value: this.getValueFromPropertyArray(propertyArray)
-        });
-
-        comboBox.onOptionFilterInputValueChanged((event: OptionFilterInputValueChangedEvent) => {
-            this.comboBox.setFilterArgs({searchString: event.getNewValue()});
-        });
-        comboBox.onOptionSelected((event: SelectedOptionEvent<string>) => {
-            this.ignorePropertyChange(true);
-
-            const option = event.getSelectedOption();
-            let value = new Value(option.getOption().getValue(), ValueTypes.STRING);
-            if (option.getIndex() >= 0) {
-                this.getPropertyArray().set(option.getIndex(), value);
-            } else {
-                this.getPropertyArray().add(value);
-            }
-
-            this.ignorePropertyChange(false);
-            this.handleValueChanged(false);
-
-            this.fireFocusSwitchEvent(event);
-        });
-        comboBox.onOptionDeselected((event: SelectedOptionEvent<string>) => {
-            this.ignorePropertyChange(true);
-
-            this.getPropertyArray().remove(event.getSelectedOption().getIndex());
-
-            this.ignorePropertyChange(false);
-            this.handleValueChanged(false);
-        });
-
-        return comboBox;
+        this.listInput.setEnabled(enable);
     }
 
     giveFocus(): boolean {
-        if (this.comboBox.maximumOccurrencesReached()) {
+        if (this.listInput.maximumOccurrencesReached()) {
             return false;
         }
-        return this.comboBox.giveFocus();
-    }
-
-    valueBreaksRequiredContract(value: Value): boolean {
-        return value.isNull() || !value.getType().equals(ValueTypes.STRING) || !this.isExistingValue(value.getString());
+        return this.listInput.giveFocus();
     }
 
     onFocus(listener: (event: FocusEvent) => void) {
-        this.comboBox.onFocus(listener);
+        this.listInput.onFocus(listener);
     }
 
     unFocus(listener: (event: FocusEvent) => void) {
-        this.comboBox.unFocus(listener);
+        this.listInput.unFocus(listener);
     }
 
     onBlur(listener: (event: FocusEvent) => void) {
-        this.comboBox.onBlur(listener);
+        this.listInput.onBlur(listener);
     }
 
     unBlur(listener: (event: FocusEvent) => void) {
-        this.comboBox.unBlur(listener);
+        this.listInput.unBlur(listener);
     }
 
     protected getNumberOfValids(): number {
@@ -183,16 +164,43 @@ export class ComboBox
         this.comboBoxOptions = options;
     }
 
-    private isExistingValue(value: string): boolean {
-        return this.comboBoxOptions.some((option: ComboBoxOption) => {
-            return option.value === value;
-        });
+    private comboBoxFilter(item: ComboBoxOption, searchString: string): boolean {
+        return StringHelper.isBlank(searchString) || item.value.toLowerCase().indexOf(searchString.toLowerCase()) >= 0
+               || item.label?.toLowerCase().indexOf(searchString.toLowerCase()) >= 0;
     }
 
-    private comboBoxFilter(item: Option<string>, args: any) {
-        // Do not change to one-liner `return !(...);`. Bugs expected with UglifyJs + SlickGrid filter compilation.
-        const isEmptyInput = args == null || args.searchString == null;
-        return isEmptyInput || item.getDisplayValue().toUpperCase().indexOf(args.searchString.toUpperCase()) !== -1;
+    private getSelectedItems(): string[] {
+        return this.getValueFromPropertyArray(this.getPropertyArray()).split(';');
+    }
+
+    private handleOptionSelected(item: ComboBoxOption): void {
+        this.ignorePropertyChange(true);
+
+        let value = new Value(item.value, ValueTypes.STRING);
+        if (this.listInput.countSelected() === 1) {
+            this.getPropertyArray().set(0, value);
+        } else {
+            this.getPropertyArray().add(value);
+        }
+
+        this.ignorePropertyChange(false);
+        this.handleValueChanged(false);
+
+        // this.fireFocusSwitchEvent(event);
+    }
+
+    private handleOptionDeselected(item: ComboBoxOption): void {
+        const property = this.getPropertyArray().getProperties().find((property) => {
+            const propertyValue = property.hasNonNullValue() ? property.getString() : null;
+            return propertyValue === item.value;
+        });
+
+        if (property) {
+            this.ignorePropertyChange(true);
+            this.getPropertyArray().remove(property.getIndex());
+            this.ignorePropertyChange(false);
+            this.handleValueChanged(false);
+        }
     }
 
 }
