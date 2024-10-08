@@ -21,6 +21,9 @@ export class ContextMenu
     show() {
         super.show();
 
+        Body.get().unClicked(this.onBodyClicked);
+        Body.get().unContextMenu(this.onBodyClicked);
+
         setTimeout(() => {
             Body.get().onClicked(this.onBodyClicked);
             Body.get().onContextMenu(this.onBodyClicked);

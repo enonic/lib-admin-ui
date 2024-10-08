@@ -56,7 +56,8 @@ export class FindPrincipalsRequest
         this.setFrom(this.getFrom() + result.getHits());
         this.loaded = this.getFrom() >= result.getTotalHits();
 
-        this.results = this.results.concat(result.getPrincipals());
+        // this.results = this.results.concat(result.getPrincipals()); // can break the code
+        this.results = result.getPrincipals();
 
         return this.results;
     }

@@ -3,7 +3,7 @@ import {Equitable} from '../../Equitable';
 import {ObjectHelper} from '../../ObjectHelper';
 
 export class Option<T>
-    implements Slick.SlickData, IDentifiable {
+    implements IDentifiable {
 
     private value: string;
 

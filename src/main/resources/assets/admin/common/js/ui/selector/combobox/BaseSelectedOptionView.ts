@@ -9,9 +9,9 @@ export class BaseSelectedOptionView<T>
     extends DivEl
     implements SelectedOptionView<T> {
 
-    private option: Option<T>;
+    protected option: Option<T>;
 
-    private optionValueEl: DivEl;
+    protected optionValueEl: DivEl;
 
     private removeClickedListeners: (() => void)[] = [];
 
