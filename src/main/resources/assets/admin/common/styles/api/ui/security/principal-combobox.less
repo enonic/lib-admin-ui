@@ -1,7 +1,30 @@
 .principal-combobox {
+  .principals-list-box {
+
+    .item-view-wrapper.selected {
+      .viewer {
+        .names-and-icon-view {
+          .@{_COMMON_PREFIX}names-view {
+            .@{_COMMON_PREFIX}main-name {
+              color: @admin-white;
+            }
+
+            .@{_COMMON_PREFIX}sub-name {
+              color: @admin-white;
+            }
+          }
+        }
+      }
+    }
+  }
+
   .principal-selected-option-view {
-    position: relative;
-    .clearfix();
+    height: 40px;
+    margin-top: 4px;
+
+    &:not(:last-child) {
+      margin-bottom: 4px;
+    }
 
     .names-and-icon-view {
       float: left;

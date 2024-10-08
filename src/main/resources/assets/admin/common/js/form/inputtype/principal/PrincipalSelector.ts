@@ -16,6 +16,8 @@ import {Principal} from '../../../security/Principal';
 import {SelectedOption} from '../../../ui/selector/combobox/SelectedOption';
 import {Option} from '../../../ui/selector/Option';
 import {InputTypeName} from '../../InputTypeName';
+import {SelectionChange} from '../../../util/SelectionChange';
+import {Reference} from '../../../util/Reference';
 
 export class PrincipalSelector
     extends BaseInputTypeManagingAdd {
@@ -25,6 +27,8 @@ export class PrincipalSelector
     private skipPrincipals: PrincipalKey[];
 
     private comboBox: PrincipalComboBox;
+
+    protected initiallySelectedItems: string[];
 
     constructor(context: InputTypeViewContext) {
         super(context, 'principal-selector');
@@ -48,6 +52,7 @@ export class PrincipalSelector
 
     layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {
         return super.layout(input, propertyArray).then(() => {
+            this.initiallySelectedItems = this.getSelectedItemsIds();
             this.comboBox = this.createComboBox(input);
             this.appendChild(this.comboBox);
 
@@ -60,22 +65,27 @@ export class PrincipalSelector
     update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
         let superPromise = super.update(propertyArray, unchangedOnly);
 
-        if (!unchangedOnly || !this.comboBox.isDirty()) {
+        if (!unchangedOnly || !this.isDirty()) {
             return superPromise.then(() => {
-                this.comboBox.setValue(this.getValueFromPropertyArray(propertyArray));
+                this.initiallySelectedItems = this.getSelectedItemsIds();
+             //   this.comboBox.setValue(this.getValueFromPropertyArray(propertyArray));
             });
         } else {
             return superPromise;
         }
     }
 
+    private isDirty(): boolean {
+        return !ObjectHelper.stringArrayEquals(this.initiallySelectedItems, this.getSelectedItemsIds());
+    }
+
     reset() {
-        this.comboBox.resetBaseValues();
+        //
     }
 
     clear(): void {
         super.clear();
-        this.comboBox.clearCombobox();
+        // this.comboBox.clearCombobox();
     }
 
     setEnabled(enable: boolean) {
@@ -142,51 +152,72 @@ export class PrincipalSelector
             .filter((val) => val !== null);
     }
 
-    protected createLoader(): PrincipalLoader {
-        return new PrincipalLoader();
+    protected getPostfixUri(): string {
+        return null;
     }
 
     private createComboBox(input: Input): PrincipalComboBox {
-        const value: string = this.getValueFromPropertyArray(this.getPropertyArray());
-        const principalLoader: PrincipalLoader =
-            this.createLoader()
-            .setAllowedTypes(this.principalTypes)
-            .skipPrincipals(this.skipPrincipals);
-
-        const comboBox: PrincipalComboBox = PrincipalComboBox.create()
-            .setLoader(principalLoader)
-            .setMaximumOccurrences(input.getOccurrences().getMaximum())
-            .setValue(value)
-            .build() as PrincipalComboBox;
-
-        comboBox.onOptionDeselected((event: SelectedOptionEvent<Principal>) => {
-            this.getPropertyArray().remove(event.getSelectedOption().getIndex());
-            this.handleValueChanged(false);
+        const comboBox: PrincipalComboBox = new PrincipalComboBox({
+            skipPrincipals: this.skipPrincipals.slice(),
+            allowedTypes: this.principalTypes.slice(),
+            maxSelected: input.getOccurrences().getMaximum(),
+            postfixUri: this.getPostfixUri(),
         });
 
-        comboBox.onOptionSelected((event: SelectedOptionEvent<Principal>) => {
-            this.fireFocusSwitchEvent(event);
 
-            const selectedOption = event.getSelectedOption();
-            let key = selectedOption.getOption().getDisplayValue().getKey();
-            if (!key) {
-                return;
-            }
-            let selectedOptionView: PrincipalSelectedOptionView = selectedOption.getOptionView() as PrincipalSelectedOptionView;
-            this.saveToSet(selectedOptionView.getOption(), selectedOption.getIndex());
-            this.handleValueChanged(false);
+        comboBox.onSelectionChanged((selectionChange: SelectionChange<Principal>) => {
+            selectionChange.selected?.forEach((item: Principal) => {
+                const key = item.getKey();
+
+                if (!key) {
+                    return;
+                }
+
+                this.saveToSet(key.toString());
+                this.handleValueChanged(false);
+            });
+
+            selectionChange.deselected?.forEach((item: Principal) => {
+                const property = this.getPropertyArray().getProperties().find((property) => {
+                    const propertyValue = property.hasNonNullValue() ? property.getString() : '';
+                    return propertyValue === item.getKey().toString();
+                });
+
+                if (property) {
+                    this.getPropertyArray().remove(property.getIndex());
+                    this.handleValueChanged(false);
+                }
+            });
         });
 
-        comboBox.onOptionMoved((selectedOption: SelectedOption<Principal>, fromIndex: number) => {
-            this.getPropertyArray().move(fromIndex, selectedOption.getIndex());
-            this.validate(false);
+        comboBox.getSelectedOptionsView().onOptionMoved((selectedOption: SelectedOption<Principal>, fromIndex: number) => {
+            this.handleMoved(selectedOption, fromIndex);
         });
 
         return comboBox;
     }
 
-    private saveToSet(principalOption: Option<Principal>, index: number) {
-        this.getPropertyArray().set(index, ValueTypes.REFERENCE.newValue(principalOption.getValue()));
+    private saveToSet(key: string): void {
+        const value: Value = ValueTypes.REFERENCE.newValue(key);
+
+        if (!this.getPropertyArray().containsValue(value)) {
+            this.ignorePropertyChange(true);
+            if (this.comboBox.countSelected() === 1) { // overwrite initial value
+                this.getPropertyArray().set(0, value);
+            } else {
+                this.getPropertyArray().add(value);
+            }
+            this.ignorePropertyChange(false);
+        }
     }
 
+    protected getSelectedItemsIds(): string[] {
+        return this.getValueFromPropertyArray(this.getPropertyArray()).split(';');
+    }
+
+    protected handleMoved(moved: SelectedOption<Principal>, fromIndex: number) {
+        this.ignorePropertyChange(true);
+        this.getPropertyArray().move(fromIndex, moved.getIndex());
+        this.ignorePropertyChange(false);
+    }
 }
