@@ -3,52 +3,50 @@ import {Element} from '../dom/Element';
 import {Body} from '../dom/Body';
 import {WindowDOM} from '../dom/WindowDOM';
 
-/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-this-alias, prefer-rest-params */
-
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// We need to use @ts-ignore instead of @ts-expect-error, because it will show "unused" error in out apps, that are transpiled with strict: false
 export class AppHelper {
 
     // Returns a function, that, as long as it continues to be invoked, will not
     // be triggered. The function will be called after it stops being called for
     // N milliseconds. If `immediate` is passed, trigger the function on the
     // leading edge, instead of the trailing.
-    static debounce(func: (...args: any[]) => any, wait: number, immediate: boolean = false): (...args: any[]) => void {
+    static debounce(func: (...args: any[]) => unknown, wait: number, immediate: boolean = false): (...args: any[]) => void {
         let timeout;
-        return function (..._anyArgs: any[]) {
-            // @ts-ignore
-            const context = this;
-            const args = arguments;
-            const later = function () {
+        return function (..._anyArgs: any[]): void {
+            // @ts-ignore this shadowing is expected
+            const context = this satisfies unknown;
+            const later = (): void => {
                 timeout = null;
                 if (!immediate) {
-                    func.apply(context, args);
+                    func.apply(context, _anyArgs);
                 }
             };
             const callNow = immediate && !timeout;
             clearTimeout(timeout);
             timeout = window.setTimeout(later, wait);
             if (callNow) {
-                func.apply(context, args);
+                func.apply(context, _anyArgs);
             }
         };
     }
 
-    static debounceWithInterrupt(func: () => void, wait: number, immediate: boolean = false): (args: any[], interrupt?: boolean) => void {
+    static debounceWithInterrupt(func: (...args: any[]) => unknown, wait: number, immediate: boolean = false): (args: any[], interrupt?: boolean) => void {
         let timeout;
-        return function (_anyArgs: any[], interrupt?: boolean) {
-            // @ts-ignore
-            const context = this;
-            const args = _anyArgs;
-            const later = function () {
+        return function (_anyArgs: any[], interrupt?: boolean): void {
+            // @ts-ignore this shadowing is expected
+            const context = this satisfies unknown;
+            const later = (): void => {
                 timeout = null;
                 if (!immediate) {
-                    func.apply(context, args);
+                    func.apply(context, _anyArgs);
                 }
             };
             const callNow = (immediate && !timeout) || interrupt;
             clearTimeout(timeout);
             timeout = window.setTimeout(later, wait);
             if (callNow) {
-                func.apply(context, args);
+                func.apply(context, _anyArgs);
             }
         };
     }
@@ -57,17 +55,16 @@ export class AppHelper {
     // as it continues to be invoked, will not be triggered. The function
     // will be called after it stops being called for N milliseconds and it
     // was invoked at least once during that interval.
-    static runOnceAndDebounce(func: () => void, wait: number): (...args: any[]) => void {
+    static runOnceAndDebounce(func: (...args: any[]) => unknown, wait: number): (...args: any[]) => void {
         let timeout;
         let trailing = false;
-        return function (..._anyArgs: any[]) {
-            // @ts-ignore
-            const context = this;
-            const args = arguments;
-            const later = function () {
+        return function (..._anyArgs: any[]): void {
+            // @ts-ignore this shadowing is expected
+            const context = this satisfies unknown;
+            const later = (): void => {
                 timeout = null;
                 if (trailing) {
-                    func.apply(context, args);
+                    func.apply(context, _anyArgs);
                 }
                 trailing = false;
             };
@@ -75,7 +72,7 @@ export class AppHelper {
             clearTimeout(timeout);
             timeout = window.setTimeout(later, wait);
             if (callNow) {
-                func.apply(context, args);
+                func.apply(context, _anyArgs);
             } else {
                 trailing = true;
             }
@@ -155,15 +152,11 @@ export class AppHelper {
 
     static isDirty(element: Element): boolean {
 
-        const checkDirty = (el: Element) => {
-            // Check isDirty() on element, except root element to prevent recursion
-            const canCheckForDirty = (el !== element && typeof el['isDirty'] === 'function');
-            if (canCheckForDirty) {
-                return el['isDirty']();
-            } else if (el.getChildren().length > 0) {
-                return el.getChildren().some(checkDirty);
+        const checkDirty = (el: Element): boolean => {
+            if (el !== element && 'isDirty' in el && typeof el.isDirty === 'function') {
+                return el.isDirty();
             }
-            return false;
+            return el.getChildren().some(checkDirty);
         };
 
         return checkDirty(element);

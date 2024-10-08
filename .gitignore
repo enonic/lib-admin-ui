@@ -25,3 +25,4 @@ src/main/resources/assets/spec/coverage/
 
 # Visual Studio Code
 /bin/
+.vscode/
