@@ -41,10 +41,6 @@ Licenses used by Enonic Admin UI library (full license texts are provided after 
     MIT License
     https://github.com/millermedeiros/js-signals
 
-    SlickGrid
-    MIT License
-    https://github.com/mleibman/SlickGrid/blob/master/MIT-LICENSE.txt
-
 ---------------------------------------------------------------------------
 
 LICENSE TEXTS
