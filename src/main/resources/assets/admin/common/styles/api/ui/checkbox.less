@@ -15,13 +15,13 @@
     opacity: 0.8;
   }
 
-  &.left label::before {
+  &.left label:not(:empty)::before {
     margin-right: 5px;
   }
 
   &.right label {
     flex-direction: row-reverse;
-    &::before {
+    &:not(:empty)::before {
       margin-left: 5px;
     }
   }

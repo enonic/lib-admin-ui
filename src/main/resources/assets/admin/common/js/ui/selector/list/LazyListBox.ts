@@ -1,7 +1,7 @@
 import {ListBox} from './ListBox';
 import {Element} from '../../../dom/Element';
 
-export class LazyListBox<T> extends ListBox<T> {
+export abstract class LazyListBox<T> extends ListBox<T> {
 
     private observer: IntersectionObserver;
 
@@ -53,10 +53,16 @@ export class LazyListBox<T> extends ListBox<T> {
         }
     }
 
-    addItems(items: T[], silent: boolean = false): void {
-        super.addItems(items, silent);
+    addItems(toAdd: T | T[], silent: boolean = false, index: number = -1): void {
+        const items = Array.isArray(toAdd) ? toAdd : [toAdd];
+
         if (items.length > 0) {
-            this.addLazyLoad();
+            const isInsert = index > -1 && index < this.getItemCount();
+            super.addItems(items, silent, index);
+
+            if (!isInsert) {
+                this.addLazyLoad();
+            }
         }
     }
 
@@ -78,6 +84,10 @@ export class LazyListBox<T> extends ListBox<T> {
     }
 
     protected addLazyLoadWhenLastIsVisible(itemView: Element): void {
+        if (this.observedItem === itemView) {
+            return;
+        }
+
         if (this.observedItem) {
             this.observer.unobserve(this.observedItem.getHTMLElement());
         }

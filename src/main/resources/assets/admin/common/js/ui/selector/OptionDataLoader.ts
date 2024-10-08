@@ -1,14 +1,8 @@
 import * as Q from 'q';
-import {TreeNode} from '../treegrid/TreeNode';
 import {PostLoader} from '../../util/loader/PostLoader';
-import {Option} from './Option';
 
 export abstract class OptionDataLoader<DATA>
     extends PostLoader<DATA> {
-
-    abstract fetch(node: TreeNode<Option<DATA>>): Q.Promise<DATA>;
-
-    abstract fetchChildren(parentNode: TreeNode<Option<DATA>>, from?: number, size?: number): Q.Promise<OptionDataLoaderData<DATA>>;
 
     abstract checkReadonly(options: DATA[]): Q.Promise<string[]>;
 
