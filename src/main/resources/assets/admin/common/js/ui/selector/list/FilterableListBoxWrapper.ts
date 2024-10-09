@@ -53,7 +53,7 @@ export class FilterableListBoxWrapper<I>
         this.dropdownVisibilityChangedListeners = [];
         this.optionFilterInput = new OptionFilterInput();
         this.dropdownHandle = new DropdownHandle();
-        this.applyButton = new Button(i18n('action.ok'));
+        this.applyButton = new Button(i18n('action.apply'));
         this.applyButton.hide();
         this.handleEmptyList();
     }
@@ -227,7 +227,11 @@ export class FilterableListBoxWrapper<I>
             this.selectionDelta.set(id, true);
         }
 
-        this.applyButton.setVisible(this.selectionDelta.size > 0);
+        if (this.isMultiSelect()) {
+            this.applyButton.setVisible(this.selectionDelta.size > 0);
+        } else {
+            this.applySelection();
+        }
     }
 
     handleUserDeselected(item: I): void {
