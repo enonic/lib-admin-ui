@@ -91,7 +91,7 @@
           display: none;
         }
 
-        > .@{_COMMON_PREFIX}dropdown {
+        .filterable-listbox-wrapper {
           display: none;
         }
 
@@ -263,6 +263,28 @@
     }
 
     &.single-selection {
+      .filterable-listbox-wrapper {
+        width: 100%;
+
+        .single-selection-dropdown {
+          .item-view-wrapper {
+            &.selected {
+              .names-and-icon-viewer {
+                .xp-admin-common-names-view * {
+                  color: @admin-white;
+                }
+
+                .content-tree-grid-status {
+                  span {
+                    color: @admin-white;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
       .form-option-set-occurrences-container {
         .form-option-set-option-view {
           margin: 0;

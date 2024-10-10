@@ -1,15 +1,5 @@
 import * as $ from 'jquery';
 
-import '../lib/slickgrid/lib/jquery.event.drag-2.3.js';
-import '../lib/slickgrid/lib/jquery.event.drop-2.3.js';
-import '../lib/slickgrid/slick.core.js';
-import '../lib/slickgrid/slick.grid.js';
-import '../lib/slickgrid/slick.dataview.js';
-import '../lib/slickgrid/slick.remotemodel.js';
-import '../lib/slickgrid/slick.rowselectionmodel.js';
-import '../lib/slickgrid/slick.checkboxselectcolumn.js';
-import '../lib/slickgrid/slick.rowmovemanager.js';
-
 import {Store} from './store/Store';
 import {StyleHelper} from './StyleHelper';
 

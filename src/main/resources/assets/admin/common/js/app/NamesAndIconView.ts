@@ -102,7 +102,7 @@ export class NamesAndIconView
             this.iconDivEl
                 .setClass(`font-icon-default ${cls}`)
                 .removeChildren()
-                .getEl().setDisplay('inline-block');
+                .show();
 
             this.iconImageEl.hide();
         } else {

@@ -21,7 +21,6 @@
             "jqueryui",
             "mousetrap",
             "q",
-            "slickgrid",
             "validator",
             "dompurify"
         ]

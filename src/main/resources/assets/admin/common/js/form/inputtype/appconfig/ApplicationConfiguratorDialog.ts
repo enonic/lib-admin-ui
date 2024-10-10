@@ -1,15 +1,12 @@
 import * as $ from 'jquery';
 import * as Q from 'q';
 import {FormView} from '../../FormView';
-import {ComboBox} from '../../../ui/selector/combobox/ComboBox';
 import {Application} from '../../../application/Application';
 import {ResponsiveManager} from '../../../ui/responsive/ResponsiveManager';
 import {AppHelper} from '../../../util/AppHelper';
 import {Action} from '../../../ui/Action';
 import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
 import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';
-import {Element} from '../../../dom/Element';
-import {ArrayHelper} from '../../../util/ArrayHelper';
 import {ModalDialogWithConfirmation, ModalDialogWithConfirmationConfig} from '../../../ui/dialog/ModalDialogWithConfirmation';
 import {FormValidityChangedEvent} from '../../FormValidityChangedEvent';
 
@@ -128,7 +125,6 @@ export class ApplicationConfiguratorDialog
 
                 setTimeout(() => {
                     ResponsiveManager.fireResizeEvent();
-                    this.handleSelectorsDropdowns(this.formView);
                 }, 100);
 
                 return rendered;
@@ -164,25 +160,5 @@ export class ApplicationConfiguratorDialog
         }
 
         return namesAndIconView;
-    }
-
-    private handleSelectorsDropdowns(formView: FormView) {
-        const comboBoxes = this.findComboboxes(formView);
-
-        const debouncedHideDropdowns = AppHelper.debounce(() => {
-            comboBoxes.forEach((comboBox: ComboBox<any>) => {
-                comboBox.hideDropdown();
-            });
-        }, 100, true);
-
-        this.getContentPanel().onScrolled(debouncedHideDropdowns);
-    }
-
-    private findComboboxes(element: Element): ComboBox<any>[] {
-        if (element instanceof ComboBox) {
-            return [element];
-        }
-
-        return ArrayHelper.flatten(element.getChildren().map(child => this.findComboboxes(child)));
     }
 }

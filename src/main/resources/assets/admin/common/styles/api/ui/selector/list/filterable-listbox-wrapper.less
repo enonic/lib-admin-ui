@@ -1,0 +1,51 @@
+.filterable-listbox-wrapper {
+  position: relative;
+
+  .filter-container {
+    position: relative;
+
+    .apply-selection-button {
+      position: absolute;
+      margin-top: 4px;
+      display: flex;
+      justify-content: center;
+      top: 0;
+      right: 36px;
+      width: 64px;
+      height: 28px;
+      text-align: center;
+      padding: 0;
+      background-color: @form-button-bg;
+      z-index: 1;
+    }
+
+    .@{_COMMON_PREFIX}dropdown-handle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  }
+
+  .filterable-listbox {
+    position: absolute;
+    width: 100%;
+    background-color: @admin-white;
+    z-index: 1;
+    border: 1px solid @admin-medium-gray-border;
+    border-top: none;
+    box-shadow: 2px 2px 2px @admin-medium-gray-border;
+    box-sizing: border-box;
+    max-height: 370px;
+    overflow: auto;
+
+    .aggregation-bucket-view {
+      padding: 2px 4px;
+    }
+
+    .empty-list-item {
+      font-size: 12px;
+      padding: 0 8px;
+    }
+  }
+}

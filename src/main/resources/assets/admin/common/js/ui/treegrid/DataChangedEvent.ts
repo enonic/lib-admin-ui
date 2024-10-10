@@ -6,7 +6,7 @@ export enum DataChangedType {
     DELETED
 }
 
-export class DataChangedEvent<DATA extends IDentifiable> {
+export class DataChangedEvent<DATA> {
 
     private readonly items: DATA[];
 
