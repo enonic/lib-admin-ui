@@ -63,7 +63,10 @@
 
     &:focus-visible {
       outline: none;
-      background-color: @admin-bg-light-gray;
+
+      &:not(.selected) {
+        background-color: @admin-bg-light-gray;
+      }
     }
   }
 }
