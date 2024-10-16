@@ -126,6 +126,9 @@ export class Toolbar<C extends ToolbarConfig>
         do {
             focusIndex++;
             if (focusIndex === limit) {
+                if (currentFocusIndex === -1) {
+                    return -1;
+                }
                 focusIndex = 0;
             }
         } while (focusIndex !== currentFocusIndex && !this.isElementFocusable(this.toolbarElements[focusIndex]));
