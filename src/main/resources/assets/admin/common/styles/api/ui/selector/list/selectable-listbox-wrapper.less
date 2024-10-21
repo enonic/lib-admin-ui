@@ -57,8 +57,11 @@
     }
 
     &.selected {
-      color: @admin-white;
       background-color: @admin-blue;
+
+      .item-view * {
+        color: @admin-white;
+      }
     }
 
     &:focus-visible {

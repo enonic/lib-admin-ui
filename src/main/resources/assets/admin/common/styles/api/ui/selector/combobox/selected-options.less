@@ -99,7 +99,7 @@
 }
 
 .option-cell() {
-  .default-slick-cell-styling(1px 10px);
+  .default-slick-cell-styling(6px 8px);
 
   &:hover,
   &.active {
@@ -119,6 +119,14 @@
     .remove,
     .edit {
       display: none;
+    }
+  }
+}
+
+.filterable-listbox-wrapper-with-selected-view:not(.selection-limit-reached) {
+  .filter-and-list-container {
+    + .selected-options:not(:empty) {
+      margin-top: 10px;
     }
   }
 }

@@ -108,11 +108,13 @@ input,
 textarea,
 select,
 button {
-  &:focus {
-    outline-width: 2px;
-    outline-style: auto;
-    outline-offset: -1px;
-    -moz-outline-radius: 3px;
+  &:not([tabindex="-1"]) {
+    &:focus {
+      outline-width: 2px;
+      outline-style: auto;
+      outline-offset: -1px;
+      -moz-outline-radius: 3px;
+    }
   }
 }
 
