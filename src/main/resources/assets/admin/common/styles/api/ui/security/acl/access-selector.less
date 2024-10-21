@@ -1,12 +1,50 @@
 .access-selector {
+  min-width: 100px;
+  width: 120px;
+
   &.disabled {
     .tab-menu-button {
       cursor: default;
     }
   }
 
+  .tab-menu-button {
+    text-align: left;
+    margin: 2px 0 0;
+    padding: 4px 5px;
+    color: @admin-font-gray3;
+    background-color: transparent;
+    width: 100%;
+
+    .ellipsis();
+
+    &::before {
+      display: none;
+    }
+
+    .label {
+      margin: 0;
+      color: @admin-blue;
+    }
+  }
+
+  &.expanded {
+    .tab-menu-button {
+      background-color: @admin-blue;
+
+      .label {
+        color: @admin-white;
+      }
+    }
+  }
+
   .menu {
-    padding: 38px 4px 4px;
+    padding: 36px 4px 4px;
+
+
+    &.upward {
+      padding: 4px 4px 36px;
+    }
 
     .tab-menu-item {
       padding: 0;

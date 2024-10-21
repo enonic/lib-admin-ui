@@ -14,46 +14,8 @@
     }
 
     .names-and-icon-view {
-      float: left;
       margin: 0 10px 0 0;
-      min-width: 200px;
       flex: 1 auto;
-    }
-
-    .access-selector {
-      float: left;
-      min-width: 100px;
-      width: 120px;
-      margin: 0 10px 0 0;
-
-      .tab-menu-button {
-        text-align: left;
-        margin: 2px 0 0;
-        padding: 4px 5px;
-        color: @admin-font-gray3;
-        background-color: transparent;
-
-        .ellipsis();
-
-        &::before {
-          display: none;
-        }
-
-        .label {
-          margin: 0;
-          color: @admin-blue;
-        }
-      }
-
-      &.expanded {
-        .tab-menu-button {
-          background-color: @admin-blue;
-
-          .label {
-            color: @admin-white;
-          }
-        }
-      }
     }
 
     .permission-selector {

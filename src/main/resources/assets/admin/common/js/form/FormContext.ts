@@ -83,22 +83,22 @@ export class FormContextBuilder {
 
     validationErrors: ValidationError[];
 
-    public setShowEmptyFormItemSetOccurrences(value: boolean): FormContextBuilder {
+    public setShowEmptyFormItemSetOccurrences(value: boolean): this {
         this.showEmptyFormItemSetOccurrences = value;
         return this;
     }
 
-    public setFormState(value: FormState): FormContextBuilder {
+    public setFormState(value: FormState): this {
         this.formState = value;
         return this;
     }
 
-    public setLanguage(lang: string): FormContextBuilder {
+    public setLanguage(lang: string): this {
         this.language = lang;
         return this;
     }
 
-    public setValidationErrors(value: ValidationError[]): FormContextBuilder {
+    public setValidationErrors(value: ValidationError[]): this {
         this.validationErrors = value;
         return this;
     }
