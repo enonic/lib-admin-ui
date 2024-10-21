@@ -70,11 +70,11 @@
     &-loader {
       box-sizing: border-box;
       position: absolute;
-      border: 2px dotted @admin-dark-gray-border;
+      border: 2px solid #966eb9;
       border-radius: 50%;
       width: 20px;
       height: 20px;
-      animation: spin 3s linear infinite;
+      animation: spin 1.2s linear infinite;
     }
 
     @keyframes spin {
@@ -116,7 +116,7 @@
 
     &.processing {
       .ai-button-container-loader {
-        border-color: #550072;
+        border-top-color: #550072;
       }
 
       .ai-icon::before {

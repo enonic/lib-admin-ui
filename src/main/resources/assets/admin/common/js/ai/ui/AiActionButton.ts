@@ -3,7 +3,7 @@ import {DivEl} from '../../dom/DivEl';
 import {Button} from '../../ui/button/Button';
 import {i18n} from '../../util/Messages';
 import {AiHelperState} from '../AiHelperState';
-import {EnonicAiContentOperatorOpenDialogEvent} from '../event/EnonicAiContentOperatorOpenDialogEvent';
+import {AiContentOperatorOpenDialogEvent} from '../event/AiContentOperatorOpenDialogEvent';
 
 export class AiActionButton
     extends DivEl {
@@ -48,7 +48,7 @@ export class AiActionButton
     protected initListeners(): void {
         this.button.onClicked(() => {
             if (this.dataPath) {
-                new EnonicAiContentOperatorOpenDialogEvent(this.dataPath).fire();
+                new AiContentOperatorOpenDialogEvent(this.dataPath).fire();
             }
         });
     }
