@@ -37,7 +37,7 @@
   "devDependencies": {
     "@enonic/eslint-config": "2.0.0",
     "@swc/cli": "^0.4.0",
-    "@swc/core": "1.7.26",
+    "@swc/core": "1.7.36",
     "@types/jquery": "^3.5.31",
     "@types/jqueryui": "^1.12.23",
     "@types/q": "^1.5.8",
@@ -73,7 +73,7 @@
     "extends browserslist-config-enonic"
   ],
   "engines": {
-    "node": ">= 20.13.1",
-    "npm": ">= 10.5.2"
+    "node": ">= 20.18.0",
+    "npm": ">= 10.8.2"
   }
 }
