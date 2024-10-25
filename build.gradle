@@ -25,6 +25,12 @@ repositories {
 group = 'com.enonic.lib'
 archivesBaseName = 'lib-admin-ui'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of( 17 )
+    }
+}
+
 node {
     download = true
     version = '20.18.0'
