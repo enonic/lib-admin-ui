@@ -13,10 +13,10 @@ import {QueryFields} from './QueryFields';
 export class PathMatchExpression
     extends FulltextSearchExpression {
 
+    static readonly MAX_PATH_LENGTH: number = 80;
+
     static createWithPath(searchString: string, queryFields: QueryFields, path: string): Expression {
         const fulltextExpr = FulltextSearchExpression.create(searchString, queryFields);
-        const pathExpr = this.createPathMatchExpression(searchString);
-        const nameOrPathExpr: LogicalExpr = new LogicalExpr(fulltextExpr, LogicalOperator.OR, pathExpr);
         const args: ValueExpr[] = [];
 
         args.push(ValueExpr.stringValue('_path'));
@@ -24,9 +24,15 @@ export class PathMatchExpression
 
         const matchedExpr: FunctionExpr = new FunctionExpr('pathMatch', args);
         const matchedDynamicExpr: DynamicConstraintExpr = new DynamicConstraintExpr(matchedExpr);
-        const booleanExpr: LogicalExpr = new LogicalExpr(nameOrPathExpr, LogicalOperator.AND, matchedDynamicExpr);
 
-        return booleanExpr;
+        if (searchString.length > PathMatchExpression.MAX_PATH_LENGTH) {
+            return new LogicalExpr(fulltextExpr, LogicalOperator.AND, matchedDynamicExpr);
+        }
+
+        const pathExpr = this.createPathMatchExpression(searchString);
+        const nameOrPathExpr: LogicalExpr = new LogicalExpr(fulltextExpr, LogicalOperator.OR, pathExpr);
+
+        return new LogicalExpr(nameOrPathExpr, LogicalOperator.AND, matchedDynamicExpr);
     }
 
     private static createPathMatchExpression(searchString: string): Expression {
