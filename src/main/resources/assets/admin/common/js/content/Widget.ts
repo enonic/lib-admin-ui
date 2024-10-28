@@ -11,6 +11,7 @@ export class Widget {
     private readonly description: string;
     private readonly interfaces: string[];
     private readonly widgetDescriptorKey: WidgetDescriptorKey;
+    private readonly context: string;
     protected readonly config: WidgetConfig;
 
     constructor(builder: WidgetBuilder) {
@@ -21,6 +22,7 @@ export class Widget {
         this.interfaces = builder.interfaces;
         this.widgetDescriptorKey = builder.widgetDescriptorKey;
         this.config = builder.config;
+        this.context = builder.context;
     }
 
     static create(): WidgetBuilder {
@@ -60,7 +62,7 @@ export class Widget {
     }
 
     getContext(): string {
-        return this.config.getContext();
+        return this.context;
     }
 }
 
@@ -78,6 +80,8 @@ export class WidgetBuilder {
 
     widgetDescriptorKey: WidgetDescriptorKey;
 
+    context: string;
+
     config: WidgetConfig;
 
     constructor(source?: Widget) {
@@ -89,6 +93,7 @@ export class WidgetBuilder {
             this.interfaces = source.getInterfaces();
             this.widgetDescriptorKey = source.getWidgetDescriptorKey();
             this.config = source.getConfig();
+            this.context = source.getContext();
         }
     }
 
@@ -137,6 +142,11 @@ export class WidgetBuilder {
 
     setConfig(config: WidgetConfig): WidgetBuilder {
         this.config = config;
+        return this;
+    }
+
+    setContext(context: string): WidgetBuilder {
+        this.context = context;
         return this;
     }
 
@@ -203,20 +213,26 @@ export class WidgetDescriptorKey
 }
 
 export class WidgetConfig {
-    private context: string;
+    private map: Map<string, string>;
+
+    constructor() {
+        this.map = new Map<string, any>();
+    }
 
     fromJson(json: Record<string, string>): WidgetConfig {
-        this.context = json.context;
+        Object.keys(json).forEach((key) => {
+            this.map.set(key, json[key]);
+        });
 
         return this;
     }
 
-    setContext(context: string): WidgetConfig {
-        this.context = context;
+    setProperty(name: string, value: string): WidgetConfig {
+        this.map.set(name, value);
         return this;
     }
 
-    getContext(): string {
-        return this.context;
+    getProperty(name: string): string {
+        return this.map.get(name);
     }
 }
