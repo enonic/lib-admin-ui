@@ -96,7 +96,11 @@ export class AiHelper {
     }
 
     public static getAiHelperByPath(dataPath: string): AiHelper | undefined {
-        return Store.instance().get(AI_HELPERS_KEY).find(helper => helper.getDataPath() === dataPath);
+        return Store.instance().get(AI_HELPERS_KEY).find((helper: AiHelper) => helper.getDataPath() === dataPath);
+    }
+
+    public static getAiHelpersByParent(element: Element): AiHelper[] {
+        return Store.instance().get(AI_HELPERS_KEY).filter((helper: AiHelper) => element.contains(helper.config.dataPathElement));
     }
 
     private updateTitle(): void {
