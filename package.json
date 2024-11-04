@@ -52,7 +52,7 @@
     "cssnano": "^7.0.5",
     "enonic-admin-artifacts": "^2.2.0",
     "error-logger-webpack-plugin": "^1.1.1",
-    "eslint": "^9.13.0",
+    "eslint": "^9.14.0",
     "glob": "^11.0.0",
     "less": "^4.2.0",
     "less-loader": "^12.2.0",
