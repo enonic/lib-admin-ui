@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@enonic/eslint-config": "2.0.0",
-    "@swc/cli": "^0.4.0",
+    "@swc/cli": "^0.5.0",
     "@swc/core": "1.8.0",
     "@types/jquery": "^3.5.31",
     "@types/jqueryui": "^1.12.23",
