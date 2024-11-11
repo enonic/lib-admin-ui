@@ -27,7 +27,7 @@ export class ServerEventsConnection extends WebSocketConnection {
 
         if (instance == null) {
             const builder: WebSocketConnectionBuilder = WebSocketConnection.create()
-                .setUrl(UriHelper.joinPath(this.getWebSocketUriPrefix(), UriHelper.getAdminUriPrefix(), 'event'))
+                .setUrl(UriHelper.joinPath(this.getWebSocketUriPrefix(), UriHelper.getAdminUri(UriHelper.joinPath('_', 'admin:event'))))
                 .addProtocol('text')
                 .setReconnectIntervalSeconds(5)
                 .setKeepAliveTimeSeconds(30);
