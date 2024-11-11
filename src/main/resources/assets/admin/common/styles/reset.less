@@ -112,8 +112,15 @@ button {
     &:focus {
       outline-width: 2px;
       outline-style: auto;
-      outline-offset: -1px;
       -moz-outline-radius: 3px;
+    }
+  }
+}
+
+div {
+  &:not([tabindex="-1"]) {
+    &:focus {
+      outline-offset: -1px;
     }
   }
 }
