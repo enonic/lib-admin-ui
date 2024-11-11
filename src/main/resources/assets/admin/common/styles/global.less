@@ -41,13 +41,9 @@ select {
 }
 
 &.@{_CLS_PREFIX}focused,
-:focus-visible {
+:focus-visible,
+:focus {
   outline: -webkit-focus-ring-color auto 1px;
   outline: focus-ring auto 1px;
   outline-offset: -1px;
-}
-
-:focus {
-  outline-color: -webkit-focus-ring-color;
-  outline-color: focus-ring;
 }
