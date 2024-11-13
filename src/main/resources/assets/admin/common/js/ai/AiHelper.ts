@@ -2,17 +2,18 @@ import {PropertyPath} from '../data/PropertyPath';
 import {Element} from '../dom/Element';
 import {Store} from '../store/Store';
 import {i18n} from '../util/Messages';
+import {AiControls} from './AiControls';
 import {AiHelperState} from './AiHelperState';
-import {AiActionButton} from './ui/AiActionButton';
 
 export interface AiHelperConfig {
     dataPathElement: Element;
-    getPathFunc: () => PropertyPath;
-    icon?: {
+    getPath: () => PropertyPath;
+    setValue?: (value: string) => void;
+    controls?: {
         container: Element;
+        label: string;
+        showAiButton?: boolean;
     };
-    label?: string;
-    setValueFunc?: (value: string) => void;
 }
 
 const AI_HELPERS_KEY = 'AiHelpers';
@@ -20,15 +21,15 @@ Store.instance().set(AI_HELPERS_KEY, []);
 
 export class AiHelper {
 
-    public static DATA_ATTR = 'data-path';
+    private static readonly DATA_ATTR = 'data-path';
 
     private readonly config: AiHelperConfig;
 
-    private readonly aiIcon?: AiActionButton;
+    private readonly aiControls?: AiControls;
 
     private state: AiHelperState = AiHelperState.DEFAULT;
 
-    constructor(config: AiHelperConfig) {
+    protected constructor(config: AiHelperConfig) {
         this.config = config;
 
         const updatePathCall = setInterval(() => {
@@ -43,16 +44,33 @@ export class AiHelper {
 
         Store.instance().get(AI_HELPERS_KEY).push(this);
 
-        if (this.config.icon) {
-            this.aiIcon = new AiActionButton();
-            this.config.icon.container.appendChild(this.aiIcon);
+        const {controls} = this.config;
+        if (controls) {
+            this.aiControls = new AiControls({showAiButton: controls.showAiButton});
+            controls.container.appendChild(this.aiControls);
         }
     }
 
+    static attach(config: AiHelperConfig): AiHelper {
+        return new AiHelper(config);
+    }
+
+    static convertToPath(path: PropertyPath): string {
+        return path?.toString().replace(/\./g, '/') ?? '';
+    }
+
+    static getAiHelperByPath(dataPath: string): AiHelper | undefined {
+        return Store.instance().get(AI_HELPERS_KEY).find((helper: AiHelper) => helper.getDataPath() === dataPath);
+    }
+
+    static getAiHelpersByParent(element: Element): AiHelper[] {
+        return Store.instance().get(AI_HELPERS_KEY).filter((helper: AiHelper) => element.contains(helper.config.dataPathElement));
+    }
+
     private updateInputElDataPath(): void {
-        const dataPath = AiHelper.convertToPath(this.config.getPathFunc());
+        const dataPath = AiHelper.convertToPath(this.config.getPath());
         this.config.dataPathElement.getEl().setAttribute(AiHelper.DATA_ATTR, dataPath);
-        this.aiIcon?.setDataPath(dataPath);
+        this.aiControls?.setDataPath(dataPath);
     }
 
     setState(state: AiHelperState): this {
@@ -61,7 +79,7 @@ export class AiHelper {
         }
 
         this.state = state;
-        this.aiIcon?.setState(state);
+        this.aiControls?.setState(state);
 
         if (state === AiHelperState.COMPLETED || state === AiHelperState.FAILED) {
             setTimeout(() => {
@@ -83,24 +101,12 @@ export class AiHelper {
     }
 
     setValue(value: string): this {
-        this.config.setValueFunc?.(value);
+        this.config.setValue?.(value);
         return this;
     }
 
     getDataPath(): string {
         return this.config.dataPathElement.getEl().getAttribute(AiHelper.DATA_ATTR);
-    }
-
-    public static convertToPath(path: PropertyPath): string {
-        return path?.toString().replace(/\./g, '/') || '';
-    }
-
-    public static getAiHelperByPath(dataPath: string): AiHelper | undefined {
-        return Store.instance().get(AI_HELPERS_KEY).find((helper: AiHelper) => helper.getDataPath() === dataPath);
-    }
-
-    public static getAiHelpersByParent(element: Element): AiHelper[] {
-        return Store.instance().get(AI_HELPERS_KEY).filter((helper: AiHelper) => element.contains(helper.config.dataPathElement));
     }
 
     private updateTitle(): void {
@@ -110,7 +116,7 @@ export class AiHelper {
             parent.setAttribute('data-title', parent.getTitle());
         }
 
-        parent.setTitle(i18n('ai.field.processing', this.config.label));
+        parent.setTitle(i18n('ai.field.processing', this.config.controls?.label));
     }
 
     private resetTitle(): void {
