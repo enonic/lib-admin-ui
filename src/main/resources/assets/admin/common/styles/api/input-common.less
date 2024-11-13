@@ -28,6 +28,16 @@
     .help-text-toggler {
       display: none;
     }
+
+    &:focus-within, &:hover {
+      > .input-type-view {
+        > .input-occurrence-view {
+          .ai-controls-button:not(:disabled) {
+            display: flex;
+          }
+        }
+      }
+    }
   }
 
   > .input-label {
@@ -45,16 +55,6 @@
       &.required::after {
         content: '\00a0*';
         color: @input-red-text;
-      }
-    }
-
-    &:focus-within, &:hover {
-      + .input-type-view {
-        > .input-occurrence-view:first-child {
-          .ai-button-container {
-            display: block; // showing AI icon for the first occurrence of the input on hover over label
-          }
-        }
       }
     }
   }

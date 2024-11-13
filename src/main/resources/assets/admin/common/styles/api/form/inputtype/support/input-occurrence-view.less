@@ -47,124 +47,12 @@
     color: @input-red-text;
   }
 
-  .ai-button-container {
-    width: 20px;
-    height: 20px;
-    border: none;
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    right: 0;
-
-    &-icon {
-      .button(@admin-font-gray3, transparent, @admin-font-gray2);
-      padding: 2px;
-      width: 100%;
-      height: 100%;
-      font-size: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    &-loader {
-      box-sizing: border-box;
-      position: absolute;
-      border: 2px solid #966eb9;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      animation: spin 1.2s linear infinite;
-    }
-
-    @keyframes spin {
-      100% {
-        transform: rotateZ(360deg);
-      }
-    }
-
-    &:not(:hover):not(:focus):not(:focus-within).default {
-      display: none;
-    }
-
-    &.default,
-    &.processing {
-      .ai-icon::before {
-        content: '';
-        display: inline-block;
-        width: 1em;
-        height: 1em;
-      }
-    }
-
-    &.completed,
-    &.failed {
-      .ai-button-container-loader {
-        animation-play-state: paused;
-      }
-    }
-
-    &.default {
-      .ai-button-container-loader {
-        display: none;
-      }
-
-      .ai-icon::before {
-        background: url("../../../../../images/juke-eye-centered.svg") center / contain no-repeat;
-      }
-    }
-
-    &.processing {
-      .ai-button-container-loader {
-        border-top-color: #550072;
-      }
-
-      .ai-icon::before {
-        background: url("../../../../../images/juke-eye-centered-animated.svg") center / contain no-repeat;
-      }
-    }
-
-    &.completed {
-      .ai-button-container-loader {
-        border-color: @admin-green;
-      }
-
-      .ai-icon {
-        .icon-checkmark();
-
-        &::before {
-          color: @admin-green;
-          transform: scale(0.8);
-        }
-      }
-    }
-
-    &.failed {
-      .ai-button-container-loader {
-        border-color: @admin-red;
-      }
-
-      .ai-icon {
-        .icon-close();
-
-        &::before {
-          color: @admin-red;
-          transform: scale(0.9);
-        }
-      }
-    }
-  }
-
   &.single-occurrence {
     .data-block {
       > .drag-control,
       > .remove-button {
         display: none;
       }
-    }
-
-    .ai-button-container {
-      top: -21px;
     }
   }
 
@@ -185,19 +73,28 @@
     .error-block {
       padding: 0 0 10px 17px;
     }
+  }
 
-    .ai-button-container {
-      top: 4px;
-      right: 4px;
+  &.single-occurrence {
+    .ai-controls-button {
+      top: -22px;
+      right: -2px;
+    }
+  }
+  &.multiple-occurrence {
+    .ai-controls-button {
+      top: 5px;
+    }
 
-      &:not(.processing) {
-        background-color: @admin-white;
-
-        &:hover {
-          background-color: @admin-white;
-        }
+    .ai-controls {
+      &.default .ai-controls-button {
+        right: 4px;
       }
-
+      &.processing .ai-controls-button,
+      &.completed .ai-controls-button,
+      &.failed .ai-controls-button {
+        right: 26px;
+      }
     }
   }
 }

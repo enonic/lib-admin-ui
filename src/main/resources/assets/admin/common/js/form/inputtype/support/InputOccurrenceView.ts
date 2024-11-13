@@ -195,14 +195,15 @@ export class InputOccurrenceView
         this.property.onPropertyValueChanged(this.propertyValueChangedHandler);
 
         if (this.inputTypeView.isAiEditable()) {
-            new AiHelper({
+            AiHelper.attach({
                 dataPathElement: this.inputElement,
-                getPathFunc: () => this.getDataPath(),
-                icon: {
+                getPath: () => this.getDataPath(),
+                controls: {
                     container: this.inputWrapper,
+                    label: this.inputTypeView.getInput().getLabel(),
+                    showAiButton: true,
                 },
-                label: this.inputTypeView.getInput().getLabel(),
-                setValueFunc: (val: string) => {
+                setValue: (val: string) => {
                     this.property.setValue(this.inputTypeView.getValueType().newValue(val));
                     this.inputTypeView.updateInputOccurrenceElement(this.inputElement, this.property);
                 }
