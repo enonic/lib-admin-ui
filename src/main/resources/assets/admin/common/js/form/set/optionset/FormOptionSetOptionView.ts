@@ -67,9 +67,9 @@ export class FormOptionSetOptionView
         this.formItemLayer = config.layerFactory.createLayer(config);
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
 
-        new AiHelper({
+        AiHelper.attach({
             dataPathElement: this,
-            getPathFunc: () => PropertyPath.fromParent(this.getParent().getDataPath(), new PropertyPathElement(this.getName(), 0)),
+            getPath: () => PropertyPath.fromParent(this.getParent().getDataPath(), new PropertyPathElement(this.getName(), 0)),
         });
     }
 
