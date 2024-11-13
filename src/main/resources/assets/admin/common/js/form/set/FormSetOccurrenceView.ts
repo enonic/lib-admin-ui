@@ -27,7 +27,6 @@ import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../FormItemO
 import {FormItemView} from '../FormItemView';
 import {FormOccurrenceDraggableLabel} from '../FormOccurrenceDraggableLabel';
 import {Input} from '../Input';
-import {RadioButton} from '../inputtype/radiobutton/RadioButton';
 import {RecordingValidityChangedEvent} from '../RecordingValidityChangedEvent';
 import {ValidationRecording} from '../ValidationRecording';
 import {ValidationRecordingPath} from '../ValidationRecordingPath';
@@ -236,9 +235,9 @@ export abstract class FormSetOccurrenceView
             }
         });
 
-        new AiHelper({
+        AiHelper.attach({
             dataPathElement: this,
-            getPathFunc: () => this.getDataPath(),
+            getPath: () => this.getDataPath(),
         });
     }
 

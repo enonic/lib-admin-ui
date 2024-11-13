@@ -1,0 +1,105 @@
+.ai-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  z-index: 1;
+  overflow: visible;
+
+  &.default .ai-controls-loader {
+    display: none;
+  }
+
+  &.processing .ai-controls-loader {
+    border-top-color: @admin-blue;
+    border-width: 3px;
+    animation: spin 1.2s linear infinite;
+
+    @keyframes spin {
+      100% {
+        transform: rotateZ(360deg);
+      }
+    }
+  }
+
+  &.completed .ai-controls-loader {
+    border-color: @admin-green;
+
+    .icon-checkmark();
+
+    &::before {
+      color: @admin-green;
+      font-size: 0.8em;
+    }
+  }
+
+  &.failed .ai-controls-loader {
+    border-color: @admin-red;
+
+    .icon-close();
+
+    &::before {
+      color: @admin-red;
+      font-size: 0.875em;
+    }
+  }
+
+  &.completed .ai-controls-loader,
+  &.failed .ai-controls-loader {
+    animation: rotate 250ms ease-in-out;
+
+    @keyframes rotate {
+      0% {
+        opacity: 0.3;
+        transform: rotateY(90deg);
+      }
+      100% {
+        opacity: 1;
+        transform: rotateY(0deg);
+      }
+    }
+  }
+}
+
+button.ai-controls-button {
+  padding: 0;
+  background: transparent;
+
+  &:hover:not(:disabled) {
+    background: transparent;
+  }
+}
+
+.ai-controls-button {
+  &:not(:focus) {
+    display: none;
+  }
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background: url("../../../images/juke-eye-centered.svg") center / contain no-repeat;
+  }
+}
+
+.ai-controls-loader {
+  top: 5px;
+  right: 4px;
+  border: 2px solid @admin-medium-gray-border;
+  border-radius: 50%;
+}
+
+button.ai-controls-button,
+.ai-controls-loader {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
