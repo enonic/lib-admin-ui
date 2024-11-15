@@ -29,13 +29,9 @@
       display: none;
     }
 
-    &:focus-within, &:hover {
-      > .input-type-view {
-        > .input-occurrence-view {
-          .ai-controls-button:not(:disabled) {
-            display: flex;
-          }
-        }
+    .input-type-view.has-multiple-occurrence {
+      .ai-dialog-control {
+        right: 36px;
       }
     }
   }

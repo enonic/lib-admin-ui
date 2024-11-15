@@ -99,8 +99,10 @@ export class InputOccurrenceView
     refresh() {
         if (this.formItemOccurrence.oneAndOnly()) {
             this.addClass('single-occurrence').removeClass('multiple-occurrence');
+            this.inputTypeView.removeClass('has-multiple-occurrence');
         } else {
             this.addClass('multiple-occurrence').removeClass('single-occurrence');
+            this.inputTypeView.addClass('has-multiple-occurrence');
         }
 
         this.removeButtonEl.setVisible(this.formItemOccurrence.isRemoveButtonRequiredStrict());
@@ -198,11 +200,11 @@ export class InputOccurrenceView
             AiHelper.attach({
                 dataPathElement: this.inputElement,
                 getPath: () => this.getDataPath(),
-                controls: {
-                    container: this.inputWrapper,
+                stateControl: {
+                    stateContainer: this.inputWrapper,
                     label: this.inputTypeView.getInput().getLabel(),
-                    showAiButton: true,
                 },
+                aiButtonContainer: this.inputTypeView,
                 setValue: (val: string) => {
                     this.property.setValue(this.inputTypeView.getValueType().newValue(val));
                     this.inputTypeView.updateInputOccurrenceElement(this.inputElement, this.property);
