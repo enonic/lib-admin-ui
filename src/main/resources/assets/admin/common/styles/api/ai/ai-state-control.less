@@ -1,0 +1,75 @@
+.ai-state-control {
+  position: absolute;
+  top: 5px;
+  right: 4px;
+  border: 2px solid @admin-medium-gray-border;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  font-size: 16px;
+  z-index: 1;
+
+  &.default {
+    display: none;
+  }
+
+  &.processing {
+    border-top-color: @admin-blue;
+    border-width: 3px;
+    animation: spin 1.2s linear infinite;
+
+    @keyframes spin {
+      100% {
+        transform: rotateZ(360deg);
+      }
+    }
+  }
+
+  &.completed {
+    border-color: @admin-green;
+
+    .icon-checkmark();
+
+    &::before {
+      color: @admin-green;
+      font-size: 0.8em;
+    }
+  }
+
+  &.failed {
+    border-color: @admin-red;
+
+    .icon-close();
+
+    &::before {
+      color: @admin-red;
+      font-size: 0.875em;
+    }
+  }
+
+  &.completed ,
+  &.failed {
+    animation: rotate 250ms ease-in-out;
+
+    @keyframes rotate {
+      0% {
+        opacity: 0.3;
+        transform: rotateY(90deg);
+      }
+      100% {
+        opacity: 1;
+        transform: rotateY(0deg);
+      }
+    }
+  }
+}
+
+.ai-helper-mask {
+  background-color: @admin-bg-light-gray;
+  opacity: 0.75;
+  border-color: @admin-medium-gray-border !important;
+}

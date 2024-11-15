@@ -2,18 +2,19 @@ import {PropertyPath} from '../data/PropertyPath';
 import {Element} from '../dom/Element';
 import {Store} from '../store/Store';
 import {i18n} from '../util/Messages';
-import {AiControls} from './AiControls';
+import {AiStateControl} from './AiStateControl';
 import {AiHelperState} from './AiHelperState';
+import {AiDialogControl} from './AiDialogControl';
 
 export interface AiHelperConfig {
     dataPathElement: Element;
     getPath: () => PropertyPath;
     setValue?: (value: string) => void;
-    controls?: {
-        container: Element;
+    stateControl?: {
+        stateContainer: Element;
         label: string;
-        showAiButton?: boolean;
     };
+    aiButtonContainer?: Element;
 }
 
 const AI_HELPERS_KEY = 'AiHelpers';
@@ -23,9 +24,13 @@ export class AiHelper {
 
     private static readonly DATA_ATTR = 'data-path';
 
+    private static DIALOG_CONTROL_REGISTRY = new Map<Element, AiDialogControl>();
+
     private readonly config: AiHelperConfig;
 
-    private readonly aiControls?: AiControls;
+    private readonly aiStateControl?: AiStateControl;
+
+    private readonly aiDialogControl?: AiDialogControl;
 
     private state: AiHelperState = AiHelperState.DEFAULT;
 
@@ -44,10 +49,13 @@ export class AiHelper {
 
         Store.instance().get(AI_HELPERS_KEY).push(this);
 
-        const {controls} = this.config;
-        if (controls) {
-            this.aiControls = new AiControls({showAiButton: controls.showAiButton});
-            controls.container.appendChild(this.aiControls);
+        if (this.config.stateControl) {
+            this.aiStateControl = new AiStateControl();
+            this.config.stateControl.stateContainer.appendChild(this.aiStateControl);
+        }
+
+        if (this.config.aiButtonContainer) {
+            this.aiDialogControl = this.setupAiIcon();
         }
     }
 
@@ -70,7 +78,34 @@ export class AiHelper {
     private updateInputElDataPath(): void {
         const dataPath = AiHelper.convertToPath(this.config.getPath());
         this.config.dataPathElement.getEl().setAttribute(AiHelper.DATA_ATTR, dataPath);
-        this.aiControls?.setDataPath(dataPath);
+
+        if (this.config.dataPathElement.hasFocus()) {
+            this.aiDialogControl?.setDataPath(dataPath);
+        }
+    }
+
+    private setupAiIcon(): AiDialogControl {
+        const aiIcon = this.getOrCreateAiIcon();
+
+        this.config.dataPathElement.onFocus(() => {
+            aiIcon.setDataPath(this.getDataPath()).addClass('input-focused');
+        });
+
+        this.config.dataPathElement.onBlur(() => aiIcon.removeClass('input-focused'));
+
+        return aiIcon;
+    }
+
+    private getOrCreateAiIcon(): AiDialogControl {
+        if (AiHelper.DIALOG_CONTROL_REGISTRY.has(this.config.aiButtonContainer)) {
+            return AiHelper.DIALOG_CONTROL_REGISTRY.get(this.config.aiButtonContainer);
+        }
+
+        const aiIcon = new AiDialogControl();
+        this.config.aiButtonContainer.appendChild(aiIcon);
+        AiHelper.DIALOG_CONTROL_REGISTRY.set(this.config.aiButtonContainer, aiIcon);
+
+        return aiIcon;
     }
 
     setState(state: AiHelperState): this {
@@ -79,7 +114,7 @@ export class AiHelper {
         }
 
         this.state = state;
-        this.aiControls?.setState(state);
+        this.aiStateControl?.setState(state);
 
         if (state === AiHelperState.COMPLETED || state === AiHelperState.FAILED) {
             setTimeout(() => {
@@ -116,7 +151,7 @@ export class AiHelper {
             parent.setAttribute('data-title', parent.getTitle());
         }
 
-        parent.setTitle(i18n('ai.field.processing', this.config.controls?.label));
+        parent.setTitle(i18n('ai.field.processing', this.config.stateControl?.label));
     }
 
     private resetTitle(): void {
