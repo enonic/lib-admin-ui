@@ -28,6 +28,8 @@ export class ConnectionDetector {
 
     private readonlyStatusChangedListeners: ((readonly: boolean) => void)[] = [];
 
+    private statusUrl: string;
+
     constructor(pollIntervalMs: number = 15000) {
         this.pollIntervalMs = pollIntervalMs;
     }
@@ -87,6 +89,12 @@ export class ConnectionDetector {
 
     setAuthenticated(isAuthenticated: boolean): ConnectionDetector {
         this.authenticated = isAuthenticated;
+
+        return this;
+    }
+
+    setStatusUrl(url: string): ConnectionDetector {
+        this.statusUrl = url;
 
         return this;
     }
@@ -152,6 +160,7 @@ export class ConnectionDetector {
 
     private doPoll() {
         const request: StatusRequest = new StatusRequest();
+        request.setUrl(this.statusUrl);
         request.setTimeout(this.pollIntervalMs);
 
         request.sendAndParse().then((status: StatusResult) => {
