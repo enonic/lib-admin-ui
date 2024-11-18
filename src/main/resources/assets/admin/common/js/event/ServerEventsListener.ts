@@ -10,9 +10,9 @@ export class ServerEventsListener {
 
     private applications: Application[];
 
-    constructor(applications: Application[]) {
+    constructor(applications: Application[], eventApiUrl: string) {
         this.applications = applications;
-        this.serverEventsConnection = ServerEventsConnection.get();
+        this.serverEventsConnection = ServerEventsConnection.get(eventApiUrl);
         this.serverEventsConnection.onServerEvent((event: Event) => this.onServerEvent(event));
         this.serverEventsConnection.onUnknownServerEvent((eventJson: EventJson) => this.onUnknownServerEvent(eventJson));
     }

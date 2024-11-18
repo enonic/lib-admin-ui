@@ -28,15 +28,18 @@ export class ConnectionDetector {
 
     private readonlyStatusChangedListeners: ((readonly: boolean) => void)[] = [];
 
-    constructor(pollIntervalMs: number = 15000) {
+    private statusApiUrl: string;
+
+    constructor(statusApiUrl: string, pollIntervalMs: number = 15000) {
+        this.statusApiUrl = statusApiUrl;
         this.pollIntervalMs = pollIntervalMs;
     }
 
-    static get(): ConnectionDetector {
+    static get(statusApiUrl: string): ConnectionDetector {
         let instance: ConnectionDetector = Store.instance().get(CONNECTION_DETECTOR_KEY);
 
         if (instance == null) {
-            instance = new ConnectionDetector();
+            instance = new ConnectionDetector(statusApiUrl);
             Store.instance().set(CONNECTION_DETECTOR_KEY, instance);
         }
 
@@ -151,7 +154,7 @@ export class ConnectionDetector {
     }
 
     private doPoll() {
-        const request: StatusRequest = new StatusRequest();
+        const request: StatusRequest = new StatusRequest(this.statusApiUrl);
         request.setTimeout(this.pollIntervalMs);
 
         request.sendAndParse().then((status: StatusResult) => {

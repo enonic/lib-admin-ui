@@ -6,9 +6,15 @@ import {StatusResult} from './StatusResult';
 export class StatusRequest
     extends ResourceRequest<StatusResult> {
 
-    constructor() {
+    private url: string;
+
+    constructor(url: string) {
         super();
-        this.addRequestPathElements('status');
+        this.url = url;
+    }
+
+    protected getPostfixUri(): string {
+        return this.url;
     }
 
     protected parseResponse(response: JsonResponse<StatusJson>): StatusResult {
