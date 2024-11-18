@@ -8,13 +8,9 @@ export class StatusRequest
 
     private url: string;
 
-    constructor() {
+    constructor(url: string) {
         super();
-    }
-
-    setUrl(value: string): this {
-        this.url = value;
-        return this;
+        this.url = url;
     }
 
     protected getPostfixUri(): string {
