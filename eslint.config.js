@@ -42,6 +42,7 @@ module.exports = [
             'spaced-comment': 'off',
             '@typescript-eslint/no-use-before-define': 'off',
             '@typescript-eslint/unbound-method': 'off',
+            '@typescript-eslint/no-base-to-string': 'off',
         },
     },
     {
