@@ -23,7 +23,7 @@
   "dependencies": {
     "@types/dompurify": "^3.0.5",
     "@types/mousetrap": "^1.6.15",
-    "dompurify": "^3.1.7",
+    "dompurify": "3.1.7",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.7.1",
     "jquery-simulate": "^1.0.2",
@@ -36,7 +36,7 @@
     "postcss": "^8.2.2"
   },
   "devDependencies": {
-    "@enonic/eslint-config": "2.0.0",
+    "@enonic/eslint-config": "^2.0.1",
     "@swc/cli": "^0.5.0",
     "@swc/core": "1.9.2",
     "@types/jquery": "^3.5.31",
