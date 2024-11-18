@@ -108,7 +108,7 @@ export class AiHelper {
         return aiIcon;
     }
 
-    setState(state: AiHelperState): this {
+    setState(state: AiHelperState, data?: {text: string}): this {
         if (state === this.state) {
             return this;
         }
@@ -116,23 +116,47 @@ export class AiHelper {
         this.state = state;
         this.aiStateControl?.setState(state);
 
-        if (state === AiHelperState.COMPLETED || state === AiHelperState.FAILED) {
-            setTimeout(() => {
-                if (this.state === AiHelperState.COMPLETED || this.state === AiHelperState.FAILED) {
-                    this.setState(AiHelperState.DEFAULT);
-                }
-            }, 1000);
-
-            this.config.dataPathElement.getEl().setDisabled(false);
-            this.config.dataPathElement.removeClass('ai-helper-mask');
-            this.resetTitle();
+        if (state === AiHelperState.COMPLETED) {
+            this.resetToDefaultAfterDelay(1000);
+            this.toggleProcessing(false);
         } else if (state === AiHelperState.PROCESSING) {
-            this.config.dataPathElement.getEl().setDisabled(true);
-            this.config.dataPathElement.addClass('ai-helper-mask');
-            this.updateTitle();
+            this.toggleProcessing(true);
+        } else if (state === AiHelperState.FAILED) {
+            this.toggleProcessing(false);
+            this.handleStateClick();
+            this.aiStateControl?.setTitle(data?.text || '');
         }
 
         return this;
+    }
+
+    private resetToDefaultAfterDelay(delay: number): void {
+        setTimeout(() => {
+            if (this.state === AiHelperState.COMPLETED) {
+                this.setState(AiHelperState.DEFAULT);
+            }
+        }, delay);
+    }
+
+    private toggleProcessing(isProcessing: boolean): void {
+        this.config.dataPathElement.getEl().setDisabled(isProcessing);
+        this.config.dataPathElement.toggleClass('ai-helper-mask', isProcessing);
+        this.aiStateControl?.getEl().removeAttribute('title');
+
+        if (isProcessing) {
+            this.updateTitle();
+        } else {
+            this.resetTitle();
+        }
+    }
+
+    private handleStateClick(): void {
+        const clickHandler = () => {
+            this.aiStateControl?.unClicked(clickHandler);
+            this.setState(AiHelperState.DEFAULT);
+        };
+
+        this.aiStateControl?.onClicked(clickHandler);
     }
 
     setValue(value: string): this {
