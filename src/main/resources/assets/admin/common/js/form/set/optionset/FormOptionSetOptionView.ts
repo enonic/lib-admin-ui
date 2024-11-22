@@ -1,7 +1,5 @@
 import * as $ from 'jquery';
 import * as Q from 'q';
-import {AiHelper} from '../../../ai/AiHelper';
-import {PropertyPath, PropertyPathElement} from '../../../data/PropertyPath';
 import {PropertySet} from '../../../data/PropertySet';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {DivEl} from '../../../dom/DivEl';
@@ -66,11 +64,6 @@ export class FormOptionSetOptionView
         this.addClass(this.formOptionSetOption.getPath().getElements().length % 2 ? 'even' : 'odd');
         this.formItemLayer = config.layerFactory.createLayer(config);
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
-
-        AiHelper.attach({
-            dataPathElement: this,
-            getPath: () => PropertyPath.fromParent(this.getParent().getDataPath(), new PropertyPathElement(this.getName(), 0)),
-        });
     }
 
     toggleHelpText(show?: boolean) {

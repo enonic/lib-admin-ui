@@ -205,10 +205,6 @@ export class InputOccurrenceView
                     label: this.inputTypeView.getInput().getLabel(),
                 },
                 aiButtonContainer: this.inputTypeView,
-                setValue: (val: string) => {
-                    this.property.setValue(this.inputTypeView.getValueType().newValue(val));
-                    this.inputTypeView.updateInputOccurrenceElement(this.inputElement, this.property);
-                }
             });
         }
     }
