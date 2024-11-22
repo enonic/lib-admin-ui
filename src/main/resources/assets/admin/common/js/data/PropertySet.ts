@@ -573,7 +573,7 @@ export class PropertySet
      */
     newSet(): PropertySet {
         if (!this.tree) {
-             
+
             throw new Error(
                 `The PropertySet must be attached to a PropertyTree before this method can be invoked.
  Use PropertySet constructor with no arguments instead.`);
@@ -590,7 +590,7 @@ export class PropertySet
     addPropertySet(name: string, value?: PropertySet): PropertySet {
         if (!value) {
             if (!this.tree) {
-                 
+
                 throw new Error(
                     `The PropertySet must be attached to a PropertyTree before this method can be invoked.
  Use PropertySet constructor with no arguments instead.`);
@@ -1105,8 +1105,7 @@ export class PropertySet
         });
     }
 
-    private getPropertyByPath(path: any): Property {
-
+    getPropertyByPath(path: any): Property {
         if (ObjectHelper.iFrameSafeInstanceOf(path, PropertyPath)) {
             return this.doGetPropertyByPath(path as PropertyPath);
         } else {

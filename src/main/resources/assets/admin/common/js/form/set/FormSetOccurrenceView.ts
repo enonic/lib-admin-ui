@@ -1,5 +1,4 @@
 import * as Q from 'q';
-import {AiHelper} from '../../ai/AiHelper';
 import {Property} from '../../data/Property';
 import {PropertyAddedEvent} from '../../data/PropertyAddedEvent';
 import {PropertyArray} from '../../data/PropertyArray';
@@ -233,11 +232,6 @@ export abstract class FormSetOccurrenceView
             if (this.propertySet) {
                 this.releasePropertySet(this.propertySet);
             }
-        });
-
-        AiHelper.attach({
-            dataPathElement: this,
-            getPath: () => this.getDataPath(),
         });
     }
 
