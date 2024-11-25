@@ -15,16 +15,21 @@
     .input-glow();
   }
 
-  &:not(.ai-editable) {
-    > .input-label,
-    > label {
-      display: inline-block;
-      max-width: calc(100% - 18px);
-      .ellipsis();
-    }
+  > .input-label,
+  > label {
+    display: inline-block;
+    overflow-x: hidden;
+    white-space: pre;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 18px);
   }
 
   &.ai-editable {
+    > .input-label,
+    > label {
+      max-width: calc(100% - 30px);
+    }
+
     .help-text-toggler {
       display: none;
     }
