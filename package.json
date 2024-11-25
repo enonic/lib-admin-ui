@@ -56,7 +56,7 @@
     "error-logger-webpack-plugin": "^1.1.1",
     "eslint": "^9.15.0",
     "glob": "^11.0.0",
-    "less": "^4.2.0",
+    "less": "^4.2.1",
     "less-loader": "^12.2.0",
     "mini-css-extract-plugin": "^2.9.2",
     "postcss-loader": "^8.1.1",
