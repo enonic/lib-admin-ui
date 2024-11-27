@@ -10,8 +10,15 @@ button.ai-dialog-control {
   box-sizing: border-box;
   font-size: 16px;
   padding: 0;
+  filter: grayscale(0.50);
+  opacity: 0.5;
 
-  &:not(:hover):not(:focus):not(:focus-within):not(.input-focused) {
+  &:hover, &.active {
+    filter: none;
+    opacity: 1;
+  }
+
+  &:not(:hover):not(:focus-within):not(.input-focused):not(.active) {
     display: none;
   }
 
@@ -27,6 +34,10 @@ button.ai-dialog-control {
     width: 1.3em;
     height: 1.3em;
     background: url("../../../images/juke-eye-centered.svg") center / contain no-repeat;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 
