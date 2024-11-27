@@ -2,6 +2,7 @@ import * as Q from 'q';
 import {Button} from '../ui/button/Button';
 import {i18n} from '../util/Messages';
 import {AiContentOperatorOpenDialogEvent} from './event/AiContentOperatorOpenDialogEvent';
+import {AIContextUpdatedEvent} from './event/internal/AIContextUpdatedEvent';
 
 export class AiDialogControl
     extends Button {
@@ -19,6 +20,11 @@ export class AiDialogControl
         return this;
     }
 
+    setActive(active: boolean): AiDialogControl {
+        this.toggleClass('active', active);
+        return this;
+    }
+
     getDataPath(): string {
         return this.dataPath;
     }
@@ -28,6 +34,10 @@ export class AiDialogControl
             if (this.dataPath) {
                 new AiContentOperatorOpenDialogEvent(this.dataPath).fire();
             }
+        });
+
+        AIContextUpdatedEvent.on((event) => {
+            this.setActive(!!event.context && !!this.dataPath && this.dataPath === event.context);
         });
     }
 
