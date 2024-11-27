@@ -5,6 +5,7 @@ import {i18n} from '../util/Messages';
 import {AiStateControl} from './AiStateControl';
 import {AiHelperState} from './AiHelperState';
 import {AiDialogControl} from './AiDialogControl';
+import {AIContextUpdatedEvent} from './event/internal/AIContextUpdatedEvent';
 
 export interface AiHelperConfig {
     dataPathElement: Element;
@@ -18,10 +19,9 @@ export interface AiHelperConfig {
 
 const AI_HELPERS_KEY = 'AiHelpers';
 Store.instance().set(AI_HELPERS_KEY, []);
+const AI_ICONS_REGISTRY_KEY = 'AiIcons';
 
 export class AiHelper {
-
-    private static DIALOG_CONTROL_REGISTRY = new Map<Element, AiDialogControl>();
 
     private readonly config: AiHelperConfig;
 
@@ -61,6 +61,10 @@ export class AiHelper {
         return Store.instance().get(AI_HELPERS_KEY);
     }
 
+    static setActiveContext(context: string): void {
+        new AIContextUpdatedEvent(context).fire();
+    }
+
     private setupAiIcon(): AiDialogControl {
         const aiIcon = this.getOrCreateAiIcon();
 
@@ -74,15 +78,24 @@ export class AiHelper {
     }
 
     private getOrCreateAiIcon(): AiDialogControl {
-        if (AiHelper.DIALOG_CONTROL_REGISTRY.has(this.config.aiButtonContainer)) {
-            return AiHelper.DIALOG_CONTROL_REGISTRY.get(this.config.aiButtonContainer);
+        if (AiHelper.getOrCreateIconsRegistry().has(this.config.aiButtonContainer)) {
+            return AiHelper.getOrCreateIconsRegistry().get(this.config.aiButtonContainer);
         }
 
         const aiIcon = new AiDialogControl();
         this.config.aiButtonContainer.appendChild(aiIcon);
-        AiHelper.DIALOG_CONTROL_REGISTRY.set(this.config.aiButtonContainer, aiIcon);
+        AiHelper.getOrCreateIconsRegistry().set(this.config.aiButtonContainer, aiIcon);
 
         return aiIcon;
+    }
+
+    private static getOrCreateIconsRegistry(): WeakMap<Element, AiDialogControl> {
+        if (!Store.instance().has(AI_ICONS_REGISTRY_KEY)) {
+            console.log('Creating new AI icons registry');
+            Store.instance().set(AI_ICONS_REGISTRY_KEY, new WeakMap());
+        }
+
+        return Store.instance().get(AI_ICONS_REGISTRY_KEY);
     }
 
     setState(state: AiHelperState, data?: {text: string}): this {
