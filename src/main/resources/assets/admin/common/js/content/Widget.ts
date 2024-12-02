@@ -221,7 +221,7 @@ export class WidgetConfig {
 
     fromJson(json: Record<string, string>): WidgetConfig {
         Object.keys(json).forEach((key) => {
-            this.map.set(key, json[key]);
+            this.setProperty(key, json[key]);
         });
 
         return this;
