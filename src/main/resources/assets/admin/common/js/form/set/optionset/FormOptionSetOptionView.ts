@@ -19,6 +19,8 @@ import {ValidationRecording} from '../../ValidationRecording';
 import {FormOptionSet} from './FormOptionSet';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
 import {FormOptionSetOption} from './FormOptionSetOption';
+import {AiHelper} from '../../../ai/AiHelper';
+import {PropertyPath} from '../../../data/PropertyPath';
 
 export interface FormOptionSetOptionViewConfig
     extends CreatedFormItemLayerConfig {
@@ -55,6 +57,7 @@ export class FormOptionSetOptionView
         } as FormItemViewConfig);
 
         this.initElements(config);
+        this.initListeners();
     }
 
     private initElements(config: FormOptionSetOptionViewConfig): void {
@@ -64,6 +67,14 @@ export class FormOptionSetOptionView
         this.addClass(this.formOptionSetOption.getPath().getElements().length % 2 ? 'even' : 'odd');
         this.formItemLayer = config.layerFactory.createLayer(config);
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
+    }
+
+    private initListeners(): void {
+        AiHelper.attach({
+            dataPathElement: this,
+            getPath: () => PropertyPath.fromString(this.formOptionSetOption.getPath().toString()),
+            aiButtonContainer: this.parent.isSingleSelection() ? this.parent.getLabelEl() : this,
+        });
     }
 
     toggleHelpText(show?: boolean) {

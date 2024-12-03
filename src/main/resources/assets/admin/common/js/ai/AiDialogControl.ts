@@ -2,16 +2,16 @@ import * as Q from 'q';
 import {Button} from '../ui/button/Button';
 import {i18n} from '../util/Messages';
 import {AiContentOperatorOpenDialogEvent} from './event/AiContentOperatorOpenDialogEvent';
-import {AIContextUpdatedEvent} from './event/internal/AIContextUpdatedEvent';
 
 export class AiDialogControl
     extends Button {
 
     private dataPath?: string;
 
-    constructor() {
+    constructor(dataPath?: string) {
         super();
 
+        this.dataPath = dataPath;
         this.initListeners();
     }
 
@@ -21,7 +21,12 @@ export class AiDialogControl
     }
 
     setActive(active: boolean): AiDialogControl {
-        this.toggleClass('active', active);
+        this.toggleClass('active', !!active);
+        return this;
+    }
+
+    setHasActiveDescendant(hasActiveDescendant: boolean): AiDialogControl {
+        this.toggleClass('has-active-descendant', !!hasActiveDescendant);
         return this;
     }
 
@@ -30,14 +35,11 @@ export class AiDialogControl
     }
 
     protected initListeners(): void {
-        this.onClicked(() => {
+        this.onClicked((event: MouseEvent) => {
             if (this.dataPath) {
+                event.stopPropagation();
                 new AiContentOperatorOpenDialogEvent(this.dataPath).fire();
             }
-        });
-
-        AIContextUpdatedEvent.on((event) => {
-            this.setActive(!!event.context && !!this.dataPath && this.dataPath === event.context);
         });
     }
 

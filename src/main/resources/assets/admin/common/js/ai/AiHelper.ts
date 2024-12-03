@@ -46,15 +46,12 @@ export class AiHelper {
 
         if (this.config.aiButtonContainer) {
             this.setupAiIcon();
+            this.setupAiContextChangedListener();
         }
     }
 
     static attach(config: AiHelperConfig): AiHelper {
         return new AiHelper(config);
-    }
-
-    static convertToPath(path: PropertyPath): string {
-        return path?.toString().replace(/\./g, '/') ?? '';
     }
 
     static getAiHelpers(): AiHelper[] {
@@ -68,11 +65,11 @@ export class AiHelper {
     private setupAiIcon(): AiDialogControl {
         const aiIcon = this.getOrCreateAiIcon();
 
-        this.config.dataPathElement.onFocus(() => {
-            aiIcon.setDataPath(AiHelper.convertToPath(this.getDataPath())).addClass('input-focused');
+        this.config.dataPathElement.onFocusIn(() => {
+            aiIcon.setDataPath(this.getDataPath()).addClass('input-focused');
         });
 
-        this.config.dataPathElement.onBlur(() => aiIcon.removeClass('input-focused'));
+        this.config.dataPathElement.onFocusOut(() => aiIcon.removeClass('input-focused'));
 
         return aiIcon;
     }
@@ -82,7 +79,7 @@ export class AiHelper {
             return AiHelper.getOrCreateIconsRegistry().get(this.config.aiButtonContainer);
         }
 
-        const aiIcon = new AiDialogControl();
+        const aiIcon = new AiDialogControl(this.getDataPath());
         this.config.aiButtonContainer.appendChild(aiIcon);
         AiHelper.getOrCreateIconsRegistry().set(this.config.aiButtonContainer, aiIcon);
 
@@ -96,6 +93,16 @@ export class AiHelper {
         }
 
         return Store.instance().get(AI_ICONS_REGISTRY_KEY);
+    }
+
+    private setupAiContextChangedListener(): void {
+        AIContextUpdatedEvent.on((event) => {
+            const icon = AiHelper.getOrCreateIconsRegistry().get(this.config.aiButtonContainer);
+            const thisPath = this.getDataPath();
+
+            icon?.setActive(!!event.context && (icon.getDataPath() === event.context || thisPath === event.context));
+            icon?.setHasActiveDescendant(event.context?.startsWith(icon.getDataPath()) && thisPath !== event.context);
+        });
     }
 
     setState(state: AiHelperState, data?: {text: string}): this {
@@ -149,8 +156,12 @@ export class AiHelper {
         this.aiStateControl?.onClicked(clickHandler);
     }
 
-    getDataPath(): PropertyPath {
+    getPropertyPath(): PropertyPath {
         return this.config.getPath();
+    }
+
+    getDataPath(): string {
+        return this.getPropertyPath()?.toString().replace(/\./g, '/') ?? '';
     }
 
     getDataPathElement(): Element {
