@@ -13,6 +13,11 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "@types/dompurify"
+        versions: [ ">3.0.5" ]
+      - dependency-name: "dompurify"
+        versions: [ ">3.1.7" ]
     open-pull-requests-limit: 10
     assignees:
       - "alansemenov"
