@@ -22,6 +22,9 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    ignore:
+      - dependency-name: "@types/dompurify"
+      - dependency-name: "dompurify"
     open-pull-requests-limit: 10
     assignees:
       - "rymsha"
