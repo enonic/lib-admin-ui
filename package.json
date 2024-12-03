@@ -21,9 +21,9 @@
     "fix": "eslint --fix **/*.ts --cache"
   },
   "dependencies": {
-    "@types/dompurify": "=3.0.5",
+    "@types/dompurify": "=3.2.0",
     "@types/mousetrap": "^1.6.15",
-    "dompurify": "=3.1.7",
+    "dompurify": "=3.2.2",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.7.1",
     "jquery-simulate": "^1.0.2",
