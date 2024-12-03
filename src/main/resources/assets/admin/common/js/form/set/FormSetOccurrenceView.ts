@@ -710,4 +710,8 @@ export abstract class FormSetOccurrenceView
         return new MoreButton([addAboveAction, addBelowAction, removeAction]);
     }
 
+    getLabelEl(): FormOccurrenceDraggableLabel {
+        return this.label;
+    }
+
 }

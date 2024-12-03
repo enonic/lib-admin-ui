@@ -2,12 +2,23 @@ import {FormItemSet} from './FormItemSet';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {FormItem} from '../../FormItem';
 import {PropertyArray} from '../../../data/PropertyArray';
+import {AiHelper} from '../../../ai/AiHelper';
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
 
     constructor(config: FormSetOccurrenceViewConfig<FormItemSetOccurrenceView>) {
         super('form-item-set-', config);
+    }
+
+    protected initListeners(): void {
+        super.initListeners();
+
+        AiHelper.attach({
+            dataPathElement: this,
+            getPath: () => this.getDataPath(),
+            aiButtonContainer: this.label,
+        });
     }
 
     protected getLabelText(): string {
