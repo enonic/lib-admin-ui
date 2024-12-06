@@ -7,6 +7,7 @@ import {Input} from '../Input';
 import {InputValidationRecording} from './InputValidationRecording';
 import {InputValidityChangedEvent} from './InputValidityChangedEvent';
 import {ValueChangedEvent} from './ValueChangedEvent';
+import {AiConfig} from '../../ai/AiTool';
 
 export interface InputTypeView {
 
@@ -50,6 +51,8 @@ export interface InputTypeView {
     hideValidationDetailsByDefault(): boolean;
 
     isValidationErrorToBeRendered(): boolean;
+
+    getAiConfig(): AiConfig;
 
     onValidityChanged(listener: (event: InputValidityChangedEvent) => void);
 

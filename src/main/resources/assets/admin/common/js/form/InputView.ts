@@ -3,7 +3,6 @@ import {Property} from '../data/Property';
 import {PropertyArray} from '../data/PropertyArray';
 import {PropertySet} from '../data/PropertySet';
 import {DivEl} from '../dom/DivEl';
-import {ObjectHelper} from '../ObjectHelper';
 import {Button} from '../ui/button/Button';
 import {TogglerButton} from '../ui/button/TogglerButton';
 import {assertNotNull} from '../util/Assert';
@@ -27,6 +26,7 @@ import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
 import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
 import {ValidationRecording} from './ValidationRecording';
 import {ValidationRecordingPath} from './ValidationRecordingPath';
+import {AiTool} from '../ai/AiTool';
 
 export interface InputViewConfig {
 
@@ -84,14 +84,15 @@ export class InputView
         }
 
         this.inputTypeView = this.createInputTypeView();
-        const isAiEditable = ObjectHelper.iFrameSafeInstanceOf(this.inputTypeView, BaseInputType) &&
-                             (this.inputTypeView as BaseInputType).isAiEditable();
+        const hasAiIcon = this.inputTypeView.getAiConfig()?.aiTools.has(AiTool.OPEN_AI_DIALOG);
+        this.toggleClass('ai-editable', hasAiIcon);
 
-        this.toggleClass('ai-editable', isAiEditable);
-
-        if (this.input.getHelpText() && !isAiEditable) {
+        if (this.input.getHelpText()) {
             this.helpText = new HelpTextContainer(this.input.getHelpText());
-            this.appendChild(this.helpText.getToggler());
+
+            if (!hasAiIcon) {
+                this.appendChild(this.helpText.getToggler());
+            }
         }
 
         if (this.input.isMaximizeUIInputWidth() === false) {
