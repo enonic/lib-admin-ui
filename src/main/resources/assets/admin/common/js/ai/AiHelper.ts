@@ -8,6 +8,7 @@ import {AiDialogControl} from './AiDialogControl';
 import {AIContextUpdatedEvent} from './event/internal/AIContextUpdatedEvent';
 
 export interface AiHelperConfig {
+    group?: string;
     dataPathElement: Element;
     getPath: () => PropertyPath;
     stateControl?: {
@@ -56,6 +57,10 @@ export class AiHelper {
 
     static getAiHelpers(): AiHelper[] {
         return Store.instance().get(AI_HELPERS_KEY);
+    }
+
+    static getAiHelpersByGroup(group: string): AiHelper[] {
+        return AiHelper.getAiHelpers().filter(helper => helper.getGroup() === group);
     }
 
     static setActiveContext(context: string): void {
@@ -166,6 +171,10 @@ export class AiHelper {
 
     getDataPathElement(): Element {
         return this.config.dataPathElement;
+    }
+
+    getGroup(): string | undefined {
+        return this.config.group;
     }
 
     private updateTitle(): void {

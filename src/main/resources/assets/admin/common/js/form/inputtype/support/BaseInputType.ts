@@ -11,6 +11,7 @@ import {InputTypeViewContext} from '../InputTypeViewContext';
 import {InputValidationRecording} from '../InputValidationRecording';
 import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
 import {ValueChangedEvent} from '../ValueChangedEvent';
+import {AiConfig, AiTool} from '../../../ai/AiTool';
 
 export abstract class BaseInputType extends DivEl
     implements InputTypeView {
@@ -124,7 +125,9 @@ export abstract class BaseInputType extends DivEl
     //
     }
 
-    isAiEditable(): boolean {
-        return false;
+    getAiConfig(): AiConfig {
+        return {
+            aiTools: new Set<AiTool>(),
+        }
     }
 }
