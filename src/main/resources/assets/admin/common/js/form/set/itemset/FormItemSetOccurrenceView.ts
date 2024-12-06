@@ -3,6 +3,7 @@ import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccu
 import {FormItem} from '../../FormItem';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {AiHelper} from '../../../ai/AiHelper';
+import {AiTool} from '../../../ai/AiTool';
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
@@ -14,11 +15,16 @@ export class FormItemSetOccurrenceView
     protected initListeners(): void {
         super.initListeners();
 
-        AiHelper.attach({
-            dataPathElement: this,
-            getPath: () => this.getDataPath(),
-            aiButtonContainer: this.label,
-        });
+        const isAiButtonAllowed = this.config.context.getAiTools().has(AiTool.OPEN_AI_DIALOG);
+
+        if (isAiButtonAllowed) {
+            AiHelper.attach({
+                group: this.config.context.getName(),
+                dataPathElement: this,
+                getPath: () => this.getDataPath(),
+                aiButtonContainer: this.label,
+            });
+        }
     }
 
     protected getLabelText(): string {

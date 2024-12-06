@@ -16,6 +16,7 @@ import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
 import {InputValueLengthCounterEl} from './InputValueLengthCounterEl';
+import {AiConfig, AiTool} from '../../../ai/AiTool';
 
 export abstract class TextInputType
     extends BaseInputTypeNotManagingAdd {
@@ -162,7 +163,12 @@ export abstract class TextInputType
         });
     }
 
-    isAiEditable(): boolean {
-        return this.getContext().formContext?.isAiEditable() === true;
+    getAiConfig(): AiConfig {
+        const formContext = this.getContext().formContext;
+
+        return formContext ? {
+            group: formContext.getName(),
+            aiTools: formContext.getAiTools(),
+        } : super.getAiConfig();
     }
 }
