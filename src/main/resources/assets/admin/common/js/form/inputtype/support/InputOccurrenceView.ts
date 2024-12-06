@@ -1,5 +1,5 @@
 import * as Q from 'q';
-import {AiHelper} from '../../../ai/AiHelper';
+import {AiHelper, AiHelperConfig} from '../../../ai/AiHelper';
 import {Property} from '../../../data/Property';
 import {PropertyPath} from '../../../data/PropertyPath';
 import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
@@ -11,6 +11,7 @@ import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../../FormIt
 import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
 import {InputOccurrence} from './InputOccurrence';
 import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
+import {AiTool} from '../../../ai/AiTool';
 
 export interface InputOccurrenceViewConfig
     extends FormItemOccurrenceViewConfig {
@@ -196,16 +197,31 @@ export class InputOccurrenceView
 
         this.property.onPropertyValueChanged(this.propertyValueChangedHandler);
 
-        if (this.inputTypeView.isAiEditable()) {
-            AiHelper.attach({
+        this.initAiFunctionality();
+    }
+
+    private initAiFunctionality(): void {
+        const aiTools = this.inputTypeView.getAiConfig().aiTools;
+
+        if (aiTools.size > 0) {
+            const aiHelperConfig: AiHelperConfig =  {
+                group: this.inputTypeView.getAiConfig().group,
                 dataPathElement: this.inputElement,
                 getPath: () => this.getDataPath(),
-                stateControl: {
-                    stateContainer: this.inputWrapper,
-                    label: this.inputTypeView.getInput().getLabel(),
-                },
-                aiButtonContainer: this.inputTypeView,
+            };
+
+            aiTools.forEach((aiTool) => {
+               if (aiTool === AiTool.AI_STATE) {
+                   aiHelperConfig.stateControl = {
+                       stateContainer: this.inputWrapper,
+                       label: this.inputTypeView.getInput().getLabel(),
+                   }
+               } else if (aiTool === AiTool.OPEN_AI_DIALOG) {
+                     aiHelperConfig.aiButtonContainer = this.inputTypeView;
+               }
             });
+
+            AiHelper.attach(aiHelperConfig);
         }
     }
 

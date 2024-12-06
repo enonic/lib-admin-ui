@@ -21,6 +21,7 @@ import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
 import {FormOptionSetOption} from './FormOptionSetOption';
 import {AiHelper} from '../../../ai/AiHelper';
 import {PropertyPath} from '../../../data/PropertyPath';
+import {AiTool} from '../../../ai/AiTool';
 
 export interface FormOptionSetOptionViewConfig
     extends CreatedFormItemLayerConfig {
@@ -70,11 +71,16 @@ export class FormOptionSetOptionView
     }
 
     private initListeners(): void {
-        AiHelper.attach({
-            dataPathElement: this,
-            getPath: () => PropertyPath.fromString(this.formOptionSetOption.getPath().toString()),
-            aiButtonContainer: this.parent.isSingleSelection() ? this.parent.getLabelEl() : this,
-        });
+        const isAiButtonAllowed = this.getContext().getAiTools().has(AiTool.OPEN_AI_DIALOG);
+
+        if (isAiButtonAllowed) {
+            AiHelper.attach({
+                group: this.getContext().getName(),
+                dataPathElement: this,
+                getPath: () => PropertyPath.fromString(this.formOptionSetOption.getPath().toString()),
+                aiButtonContainer: this.parent.isSingleSelection() ? this.parent.getLabelEl() : this,
+            });
+        }
     }
 
     toggleHelpText(show?: boolean) {
