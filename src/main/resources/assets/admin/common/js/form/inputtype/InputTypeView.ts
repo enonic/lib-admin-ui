@@ -7,7 +7,8 @@ import {Input} from '../Input';
 import {InputValidationRecording} from './InputValidationRecording';
 import {InputValidityChangedEvent} from './InputValidityChangedEvent';
 import {ValueChangedEvent} from './ValueChangedEvent';
-import {AiConfig} from '../../ai/AiTool';
+import {AiConfig} from './InputAiConfig';
+
 
 export interface InputTypeView {
 

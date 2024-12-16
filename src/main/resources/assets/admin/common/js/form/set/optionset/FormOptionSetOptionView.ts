@@ -19,9 +19,9 @@ import {ValidationRecording} from '../../ValidationRecording';
 import {FormOptionSet} from './FormOptionSet';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
 import {FormOptionSetOption} from './FormOptionSetOption';
-import {AiHelper} from '../../../ai/AiHelper';
 import {PropertyPath} from '../../../data/PropertyPath';
-import {AiTool} from '../../../ai/AiTool';
+import {AiToolType} from '../../../ai/tool/AiToolType';
+import {AiDialogIconTool} from '../../../ai/tool/AiDialogIconTool';
 
 export interface FormOptionSetOptionViewConfig
     extends CreatedFormItemLayerConfig {
@@ -71,12 +71,12 @@ export class FormOptionSetOptionView
     }
 
     private initListeners(): void {
-        const isAiButtonAllowed = this.getContext().getAiTools().has(AiTool.OPEN_AI_DIALOG);
+        const isAiButtonAllowed = this.getContext().getAiTools().has(AiToolType.DIALOG);
 
         if (isAiButtonAllowed) {
-            AiHelper.attach({
+            new AiDialogIconTool({
                 group: this.getContext().getName(),
-                dataPathElement: this,
+                pathElement: this,
                 getPath: () => PropertyPath.fromString(this.formOptionSetOption.getPath().toString()),
                 aiButtonContainer: this.parent.isSingleSelection() ? this.parent.getLabelEl() : this,
             });

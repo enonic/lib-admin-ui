@@ -1,5 +1,4 @@
 import * as Q from 'q';
-import {AiHelper, AiHelperConfig} from '../../../ai/AiHelper';
 import {Property} from '../../../data/Property';
 import {PropertyPath} from '../../../data/PropertyPath';
 import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
@@ -11,7 +10,10 @@ import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../../FormIt
 import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
 import {InputOccurrence} from './InputOccurrence';
 import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
-import {AiTool} from '../../../ai/AiTool';
+import {AiToolType} from '../../../ai/tool/AiToolType';
+import {AiStateTool} from '../../../ai/tool/AiStateTool';
+import {AiDialogIconTool} from '../../../ai/tool/AiDialogIconTool';
+import {AiAnimationTool} from '../../../ai/tool/AiAnimationTool';
 
 export interface InputOccurrenceViewConfig
     extends FormItemOccurrenceViewConfig {
@@ -202,27 +204,43 @@ export class InputOccurrenceView
 
     private initAiFunctionality(): void {
         const aiTools = this.inputTypeView.getAiConfig().aiTools;
+        aiTools.forEach((aiTool) => this.addAiTool(aiTool));
+    }
 
-        if (aiTools.size > 0) {
-            const aiHelperConfig: AiHelperConfig =  {
-                group: this.inputTypeView.getAiConfig().group,
-                dataPathElement: this.inputElement,
+    private addAiTool(aiTool: AiToolType): void {
+        if (aiTool === AiToolType.STATE) {
+            new AiStateTool({
+                stateContainer: this.inputWrapper,
+                label: this.inputTypeView.getInput().getLabel(),
+                pathElement: this.inputElement,
                 getPath: () => this.getDataPath(),
-            };
-
-            aiTools.forEach((aiTool) => {
-               if (aiTool === AiTool.AI_STATE) {
-                   aiHelperConfig.stateControl = {
-                       stateContainer: this.inputWrapper,
-                       label: this.inputTypeView.getInput().getLabel(),
-                   }
-               } else if (aiTool === AiTool.OPEN_AI_DIALOG) {
-                     aiHelperConfig.aiButtonContainer = this.inputTypeView;
-               }
+                group: this.inputTypeView.getAiConfig().group,
             });
 
-            AiHelper.attach(aiHelperConfig);
+            return;
         }
+
+        if (aiTool === AiToolType.DIALOG) {
+            new AiDialogIconTool({
+                group: this.inputTypeView.getAiConfig().group,
+                getPath: () => this.getDataPath(),
+                pathElement: this.inputElement,
+                aiButtonContainer: this.inputTypeView,
+            });
+            return;
+        }
+
+        if (aiTool === AiToolType.ANIMATE) {
+            new AiAnimationTool({
+                group: this.inputTypeView.getAiConfig().group,
+                getPath: () => this.getDataPath(),
+                pathElement: this.inputElement,
+            });
+
+            return;
+        }
+
+        console.warn('Unknown AI tool: ', aiTool);
     }
 
     private registerProperty(property: Property) {

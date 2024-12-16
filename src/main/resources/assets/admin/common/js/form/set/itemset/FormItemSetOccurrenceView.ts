@@ -2,8 +2,9 @@ import {FormItemSet} from './FormItemSet';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
 import {FormItem} from '../../FormItem';
 import {PropertyArray} from '../../../data/PropertyArray';
-import {AiHelper} from '../../../ai/AiHelper';
-import {AiTool} from '../../../ai/AiTool';
+import {AiToolHelper} from '../../../ai/tool/AiToolHelper';
+import {AiToolType} from '../../../ai/tool/AiToolType';
+import {AiDialogIconTool} from '../../../ai/tool/AiDialogIconTool';
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {
@@ -15,12 +16,12 @@ export class FormItemSetOccurrenceView
     protected initListeners(): void {
         super.initListeners();
 
-        const isAiButtonAllowed = this.config.context.getAiTools().has(AiTool.OPEN_AI_DIALOG);
+        const isAiButtonAllowed = this.config.context.getAiTools().has(AiToolType.DIALOG);
 
         if (isAiButtonAllowed) {
-            AiHelper.attach({
+            new AiDialogIconTool({
                 group: this.config.context.getName(),
-                dataPathElement: this,
+                pathElement: this,
                 getPath: () => this.getDataPath(),
                 aiButtonContainer: this.label,
             });

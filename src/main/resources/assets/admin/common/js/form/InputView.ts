@@ -26,7 +26,7 @@ import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
 import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
 import {ValidationRecording} from './ValidationRecording';
 import {ValidationRecordingPath} from './ValidationRecordingPath';
-import {AiTool} from '../ai/AiTool';
+import {AiToolType} from '../ai/tool/AiToolType';
 
 export interface InputViewConfig {
 
@@ -84,7 +84,7 @@ export class InputView
         }
 
         this.inputTypeView = this.createInputTypeView();
-        const hasAiIcon = this.inputTypeView.getAiConfig()?.aiTools.has(AiTool.OPEN_AI_DIALOG);
+        const hasAiIcon = this.inputTypeView.getAiConfig()?.aiTools.has(AiToolType.DIALOG);
         this.toggleClass('ai-editable', hasAiIcon);
 
         if (this.input.getHelpText()) {
