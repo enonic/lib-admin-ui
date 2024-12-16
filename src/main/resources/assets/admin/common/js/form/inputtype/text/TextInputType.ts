@@ -16,7 +16,7 @@ import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
 import {InputValueLengthCounterEl} from './InputValueLengthCounterEl';
-import {AiConfig, AiTool} from '../../../ai/AiTool';
+import {AiConfig} from '../InputAiConfig';
 
 export abstract class TextInputType
     extends BaseInputTypeNotManagingAdd {
