@@ -3,7 +3,7 @@ import {InputTypeViewContext} from './inputtype/InputTypeViewContext';
 import {Input} from './Input';
 import {FormState} from '../app/wizard/WizardPanel';
 import {ValidationError} from '../ValidationError';
-import {AiTool} from '../ai/AiTool';
+import {AiToolType} from '../ai/tool/AiToolType';
 
 export class FormContext {
 
@@ -17,7 +17,7 @@ export class FormContext {
 
     private validationErrors: ValidationError[];
 
-    private readonly aiTools: Set<AiTool>;
+    private readonly aiTools: Set<AiToolType>;
 
     constructor(builder: FormContextBuilder) {
         this.name = builder.name;
@@ -83,7 +83,7 @@ export class FormContext {
         return this.name;
     }
 
-    getAiTools(): Set<AiTool> {
+    getAiTools(): Set<AiToolType> {
         return this.aiTools;
     }
 
@@ -101,7 +101,7 @@ export class FormContextBuilder {
 
     validationErrors: ValidationError[];
 
-    readonly aiTools: Set<AiTool> = new Set<AiTool>();
+    readonly aiTools: Set<AiToolType> = new Set<AiToolType>();
 
     public setShowEmptyFormItemSetOccurrences(value: boolean): this {
         this.showEmptyFormItemSetOccurrences = value;
@@ -128,7 +128,7 @@ export class FormContextBuilder {
         return this;
     }
 
-    public addAiTools(value: AiTool | AiTool[]): this {
+    public addAiTools(value: AiToolType | AiToolType[]): this {
         const values = Array.isArray(value) ? value : [value];
         values.forEach(v => this.aiTools.add(v));
         return this;
