@@ -1,5 +1,6 @@
 import {EventJson} from './EventJson';
 import {Event} from './Event';
+import {UriHelper} from '../util/UriHelper';
 import {NodeEventJson} from './NodeServerEvent';
 import {Store} from '../store/Store';
 import {ServerEventsTranslator} from './ServerEventsTranslator';
@@ -21,12 +22,12 @@ export class ServerEventsConnection extends WebSocketConnection {
         this.serverEventsTranslator = new ServerEventsTranslator();
     }
 
-    static get(eventApiUrl: string): ServerEventsConnection {
+    static get(): ServerEventsConnection {
         let instance: ServerEventsConnection = Store.parentInstance().get(SERVER_EVENTS_CONNECTION_KEY);
 
         if (instance == null) {
             const builder: WebSocketConnectionBuilder = WebSocketConnection.create()
-                .setUrl(eventApiUrl)
+                .setUrl(UriHelper.joinPath(this.getWebSocketUriPrefix(), UriHelper.getAdminUriPrefix(), 'event'))
                 .addProtocol('text')
                 .setReconnectIntervalSeconds(5)
                 .setKeepAliveTimeSeconds(30);
