@@ -18,15 +18,15 @@ button.ai-dialog-control {
     opacity: 1;
   }
 
+  &:hover:not(:disabled) {
+    background: transparent;
+  }
+
   &:not(:hover):not(:focus-within):not(.input-focused):not(.has-active-descendant):not(.active) {
     display: none;
   }
 
   background: transparent;
-
-  &:hover:not(:disabled) {
-    background: transparent;
-  }
 
   &::before {
     content: '';
