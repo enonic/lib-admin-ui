@@ -1,46 +1,45 @@
 import * as Q from 'q';
-import {PropertySet} from '../../data/PropertySet';
-import {PropertyArray} from '../../data/PropertyArray';
-import {PropertyValueChangedEvent} from '../../data/PropertyValueChangedEvent';
-import {i18n} from '../../util/Messages';
-import {Value} from '../../data/Value';
-import {DivEl} from '../../dom/DivEl';
-import {PropertyPath} from '../../data/PropertyPath';
-import {FormItemOccurrenceView} from '../FormItemOccurrenceView';
-import {FormItemView} from '../FormItemView';
-import {RecordingValidityChangedEvent} from '../RecordingValidityChangedEvent';
-import {FormOccurrenceDraggableLabel} from '../FormOccurrenceDraggableLabel';
-import {ValidationRecording} from '../ValidationRecording';
-import {FormItemLayer} from '../FormItemLayer';
-import {ValidationRecordingPath} from '../ValidationRecordingPath';
-import {FormSet} from './FormSet';
-import {FormItem} from '../FormItem';
-import {FormContext} from '../FormContext';
-import {FormSetOccurrence} from './FormSetOccurrence';
-import {Action} from '../../ui/Action';
-import {MoreButton} from '../../ui/button/MoreButton';
-import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
-import {Element} from '../../dom/Element';
-import {KeyBindings} from '../../ui/KeyBindings';
-import {KeyBinding} from '../../ui/KeyBinding';
 import {Property} from '../../data/Property';
+import {PropertyAddedEvent} from '../../data/PropertyAddedEvent';
+import {PropertyArray} from '../../data/PropertyArray';
+import {PropertyPath} from '../../data/PropertyPath';
+import {PropertyRemovedEvent} from '../../data/PropertyRemovedEvent';
+import {PropertySet} from '../../data/PropertySet';
+import {PropertyValueChangedEvent} from '../../data/PropertyValueChangedEvent';
+import {Value} from '../../data/Value';
 import {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
-import {PropertyAddedEvent} from '../../data/PropertyAddedEvent';
-import {PropertyRemovedEvent} from '../../data/PropertyRemovedEvent';
+import {DivEl} from '../../dom/DivEl';
+import {Element} from '../../dom/Element';
+import {ObjectHelper} from '../../ObjectHelper';
+import {Action} from '../../ui/Action';
+import {MoreButton} from '../../ui/button/MoreButton';
+import {KeyBinding} from '../../ui/KeyBinding';
+import {KeyBindings} from '../../ui/KeyBindings';
+import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
+import {i18n} from '../../util/Messages';
+import {FormContext} from '../FormContext';
+import {FormItem} from '../FormItem';
+import {FormItemLayer} from '../FormItemLayer';
+import {FormItemOccurrence} from '../FormItemOccurrence';
+import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../FormItemOccurrenceView';
+import {FormItemView} from '../FormItemView';
+import {FormOccurrenceDraggableLabel} from '../FormOccurrenceDraggableLabel';
+import {Input} from '../Input';
+import {RecordingValidityChangedEvent} from '../RecordingValidityChangedEvent';
+import {ValidationRecording} from '../ValidationRecording';
+import {ValidationRecordingPath} from '../ValidationRecordingPath';
+import {FormSet} from './FormSet';
+import {FormItemSet} from './itemset/FormItemSet';
 import {FormOptionSet} from './optionset/FormOptionSet';
 import {FormOptionSetOption} from './optionset/FormOptionSetOption';
-import {FormItemSet} from './itemset/FormItemSet';
-import {Input} from '../Input';
-import {RadioButton} from '../inputtype/radiobutton/RadioButton';
-import {ObjectHelper} from '../../ObjectHelper';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;
 
     layer: FormItemLayer;
 
-    formSetOccurrence: FormSetOccurrence<V>;
+    formItemOccurrence: FormItemOccurrence<FormItemOccurrenceView>;
 
     formSet: FormSet;
 
@@ -49,10 +48,14 @@ export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     dataSet: PropertySet;
 }
 
+export interface FormSetOccurrenceViewConfigExtended extends FormSetOccurrenceViewConfig<FormSetOccurrenceView>, FormItemOccurrenceViewConfig {
+    classPrefix: string;
+}
+
 export abstract class FormSetOccurrenceView
     extends FormItemOccurrenceView {
 
-    protected formItemViews: FormItemView[] = [];
+    protected formItemViews: FormItemView[];
 
     protected validityChangedListeners: ((event: RecordingValidityChangedEvent) => void)[] = [];
 
@@ -72,6 +75,8 @@ export abstract class FormSetOccurrenceView
 
     protected formSet: FormSet;
 
+    protected config: FormSetOccurrenceViewConfigExtended;
+
     private dirtyFormItemViewsMap: object = {};
 
     private deleteConfirmationMask: ConfirmationMask;
@@ -87,17 +92,12 @@ export abstract class FormSetOccurrenceView
     private expandRequestedListeners: ((view: FormSetOccurrenceView) => void)[] = [];
 
     protected constructor(classPrefix: string, config: FormSetOccurrenceViewConfig<FormSetOccurrenceView>) {
-        super(`${classPrefix}occurrence-view`, config.formSetOccurrence);
+        super({
+            ...config,
+            className: `${classPrefix}occurrence-view`,
+            classPrefix: classPrefix,
+        } as FormSetOccurrenceViewConfigExtended);
 
-        this.occurrenceContainerClassName = `${classPrefix}occurrences-container`;
-        this.formItemOccurrence = config.formSetOccurrence;
-        this.formSet = config.formSet;
-        this.propertySet = config.dataSet;
-        this.formItemLayer = config.layer;
-
-        this.initElements();
-        this.postInitElements();
-        this.initListeners();
         this.layoutElements();
     }
 
@@ -141,10 +141,17 @@ export abstract class FormSetOccurrenceView
         this.refresh();
     }
 
-    protected initElements() {
+    protected initElements(): void {
+        super.initElements();
+
+        this.formItemViews = [];
+        this.occurrenceContainerClassName = `${this.config.classPrefix}occurrences-container`;
+        this.formSetOccurrencesContainer = new DivEl(this.occurrenceContainerClassName);
+        this.formSet = this.config.formSet;
+        this.propertySet = this.config.dataSet;
+        this.formItemLayer = this.config.layer;
         this.moreButton = this.createMoreButton();
         this.label = new FormOccurrenceDraggableLabel();
-        this.formSetOccurrencesContainer = new DivEl(this.occurrenceContainerClassName);
         this.formSetOccurrencesContainer.setVisible(false);
         this.confirmDeleteAction = new Action(i18n('action.delete')).setClass('red large delete-button');
         this.noAction = new Action(i18n('action.cancel')).setClass('black large');
@@ -157,7 +164,9 @@ export abstract class FormSetOccurrenceView
             .build();
     }
 
-    protected postInitElements() {
+    protected postInitElements(): void {
+        super.postInitElements();
+
         this.label.setExpandable(this.isExpandable());
 
         if (!this.isExpandable()) {
@@ -166,6 +175,8 @@ export abstract class FormSetOccurrenceView
     }
 
     protected initListeners() {
+        super.initListeners();
+
         this.label.onClicked(() => this.setContainerVisible(!this.isContainerVisible()));
 
         this.confirmDeleteAction.onExecuted(() => {
@@ -698,4 +709,9 @@ export abstract class FormSetOccurrenceView
 
         return new MoreButton([addAboveAction, addBelowAction, removeAction]);
     }
+
+    getLabelEl(): FormOccurrenceDraggableLabel {
+        return this.label;
+    }
+
 }

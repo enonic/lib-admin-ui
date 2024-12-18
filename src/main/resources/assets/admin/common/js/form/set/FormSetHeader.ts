@@ -1,7 +1,7 @@
-import {H5El} from '../../dom/H5El';
-import {HelpTextContainer} from '../HelpTextContainer';
 import {DivEl} from '../../dom/DivEl';
+import {H5El} from '../../dom/H5El';
 import {SpanEl} from '../../dom/SpanEl';
+import {HelpTextContainer} from '../HelpTextContainer';
 import {FormSet} from './FormSet';
 
 export class FormSetHeader
@@ -26,8 +26,8 @@ export class FormSetHeader
         return super.doRender().then(rendered => {
             this.appendChild(this.title);
             if (this.helpTextContainer) {
-                this.prependChild(this.helpTextContainer.getToggler());
                 const helpTextDiv = this.helpTextContainer.getHelpText();
+                this.prependChild(this.helpTextContainer.getToggler());
                 if (helpTextDiv) {
                     this.appendChild(helpTextDiv);
                 }

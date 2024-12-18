@@ -1,16 +1,18 @@
-import {DivEl} from '../../../dom/DivEl';
-import {InputTypeView} from '../InputTypeView';
-import {Input} from '../../Input';
-import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
-import {Element} from '../../../dom/Element';
-import {PropertyArray} from '../../../data/PropertyArray';
 import * as Q from 'q';
-import {Value} from '../../../data/Value';
 import {ClassHelper} from '../../../ClassHelper';
+import {PropertyArray} from '../../../data/PropertyArray';
+import {Value} from '../../../data/Value';
 import {ValueType} from '../../../data/ValueType';
-import {InputValidationRecording} from '../InputValidationRecording';
-import {ValueChangedEvent} from '../ValueChangedEvent';
+import {DivEl} from '../../../dom/DivEl';
+import {Element} from '../../../dom/Element';
+import {Input} from '../../Input';
+import {InputTypeView} from '../InputTypeView';
 import {InputTypeViewContext} from '../InputTypeViewContext';
+import {InputValidationRecording} from '../InputValidationRecording';
+import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
+import {ValueChangedEvent} from '../ValueChangedEvent';
+import {AiConfig} from '../InputAiConfig';
+import {AiToolType} from '../../../ai/tool/AiToolType';
 
 export abstract class BaseInputType extends DivEl
     implements InputTypeView {
@@ -124,4 +126,9 @@ export abstract class BaseInputType extends DivEl
     //
     }
 
+    getAiConfig(): AiConfig {
+        return {
+            aiTools: new Set<AiToolType>(),
+        }
+    }
 }

@@ -1,0 +1,43 @@
+button.ai-dialog-control {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 22px;
+  height: 22px;
+  box-sizing: border-box;
+  font-size: 16px;
+  padding: 0;
+  filter: grayscale(0.50);
+  opacity: 0.5;
+
+  &:hover, &.active {
+    filter: none;
+    opacity: 1;
+  }
+
+  &:hover:not(:disabled) {
+    background: transparent;
+  }
+
+  &:not(:hover):not(:focus-within):not(.input-focused):not(.has-active-descendant):not(.active) {
+    display: none;
+  }
+
+  background: transparent;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 1.3em;
+    height: 1.3em;
+    background: url("../../../images/juke-eye-centered.svg") center / contain no-repeat;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+

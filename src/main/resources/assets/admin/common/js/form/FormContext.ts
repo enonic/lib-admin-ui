@@ -3,8 +3,11 @@ import {InputTypeViewContext} from './inputtype/InputTypeViewContext';
 import {Input} from './Input';
 import {FormState} from '../app/wizard/WizardPanel';
 import {ValidationError} from '../ValidationError';
+import {AiToolType} from '../ai/tool/AiToolType';
 
 export class FormContext {
+
+    private readonly name?: string;
 
     private showEmptyFormItemSetOccurrences: boolean;
 
@@ -14,11 +17,15 @@ export class FormContext {
 
     private validationErrors: ValidationError[];
 
+    private readonly aiTools: Set<AiToolType>;
+
     constructor(builder: FormContextBuilder) {
+        this.name = builder.name;
         this.showEmptyFormItemSetOccurrences = builder.showEmptyFormItemSetOccurrences;
         this.formState = builder.formState;
         this.language = builder.language;
         this.validationErrors = builder.validationErrors || [];
+        this.aiTools = builder.aiTools;
     }
 
     static create(): FormContextBuilder {
@@ -71,9 +78,20 @@ export class FormContext {
     setLanguage(lang: string) {
         this.language = lang;
     }
+
+    getName(): string {
+        return this.name;
+    }
+
+    getAiTools(): Set<AiToolType> {
+        return this.aiTools;
+    }
+
 }
 
 export class FormContextBuilder {
+
+    name: string;
 
     showEmptyFormItemSetOccurrences: boolean;
 
@@ -83,8 +101,15 @@ export class FormContextBuilder {
 
     validationErrors: ValidationError[];
 
+    readonly aiTools: Set<AiToolType> = new Set<AiToolType>();
+
     public setShowEmptyFormItemSetOccurrences(value: boolean): this {
         this.showEmptyFormItemSetOccurrences = value;
+        return this;
+    }
+
+    public setName(value: string): this {
+        this.name = value;
         return this;
     }
 
@@ -100,6 +125,12 @@ export class FormContextBuilder {
 
     public setValidationErrors(value: ValidationError[]): this {
         this.validationErrors = value;
+        return this;
+    }
+
+    public addAiTools(value: AiToolType | AiToolType[]): this {
+        const values = Array.isArray(value) ? value : [value];
+        values.forEach(v => this.aiTools.add(v));
         return this;
     }
 

@@ -64,6 +64,10 @@
 
       > .form-occurrence-draggable-label {
         display: none;
+
+        .ai-dialog-control {
+          top: 4px;
+        }
       }
 
       > .drag-control {
@@ -117,6 +121,7 @@
     .form-option-set-occurrences-container {
 
       .form-option-set-option-view {
+        position: relative;
         border: 1px solid transparent;
         margin: 5px 0;
 
@@ -296,6 +301,15 @@
           &.selected {
             border: 0 none;
           }
+        }
+      }
+    }
+
+    &.multi-selection {
+      .form-option-set-option-view {
+        > .ai-dialog-control {
+            top: 4px;
+            right: 24px;
         }
       }
     }

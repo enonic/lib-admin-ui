@@ -1,24 +1,35 @@
 import * as Q from 'q';
 import {Property} from '../../../data/Property';
-import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
-import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
-import {Element} from '../../../dom/Element';
-import {DivEl} from '../../../dom/DivEl';
-import {Value} from '../../../data/Value';
 import {PropertyPath} from '../../../data/PropertyPath';
-import {InputOccurrence} from './InputOccurrence';
-import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
+import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
+import {Value} from '../../../data/Value';
 import {ButtonEl} from '../../../dom/ButtonEl';
+import {DivEl} from '../../../dom/DivEl';
+import {Element} from '../../../dom/Element';
+import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../../FormItemOccurrenceView';
+import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
+import {InputOccurrence} from './InputOccurrence';
 import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
+import {AiToolType} from '../../../ai/tool/AiToolType';
+import {AiStateTool} from '../../../ai/tool/AiStateTool';
+import {AiDialogIconTool} from '../../../ai/tool/AiDialogIconTool';
+import {AiAnimationTool} from '../../../ai/tool/AiAnimationTool';
+
+export interface InputOccurrenceViewConfig
+    extends FormItemOccurrenceViewConfig {
+    inputTypeView: BaseInputTypeNotManagingAdd;
+    property: Property;
+}
 
 export class InputOccurrenceView
     extends FormItemOccurrenceView {
 
     public static debug: boolean = false;
-    private inputOccurrence: InputOccurrence;
+    protected config: InputOccurrenceViewConfig;
     private property: Property;
     private inputTypeView: BaseInputTypeNotManagingAdd;
     private inputElement: Element;
+    private inputWrapper: DivEl;
     private removeButtonEl: ButtonEl;
     private dragControl: DivEl;
     private propertyValueChangedHandler: (event: PropertyValueChangedEvent) => void;
@@ -26,20 +37,24 @@ export class InputOccurrenceView
     private validationErrorBlock: DivEl;
 
     constructor(inputOccurrence: InputOccurrence, baseInputTypeView: BaseInputTypeNotManagingAdd, property: Property) {
-        super('input-occurrence-view', inputOccurrence);
-
-        this.inputTypeView = baseInputTypeView;
-        this.inputOccurrence = inputOccurrence;
-        this.property = property;
-
-        this.initElements();
-        this.initListeners();
+        super({
+            className: 'input-occurrence-view',
+            formItemOccurrence: inputOccurrence,
+            inputTypeView: baseInputTypeView,
+            property: property,
+        } as InputOccurrenceViewConfig);
 
         this.refresh();
     }
 
-    private initElements() {
-        this.inputElement = this.inputTypeView.createInputOccurrenceElement(this.inputOccurrence.getIndex(), this.property);
+    protected initElements(): void {
+        super.initElements();
+
+        this.inputTypeView = this.config.inputTypeView;
+        this.property = this.config.property;
+        this.inputWrapper = new DivEl('input-wrapper');
+
+        this.inputElement = this.inputTypeView.createInputOccurrenceElement(this.formItemOccurrence.getIndex(), this.property);
         this.dragControl = new DivEl('drag-control');
         this.validationErrorBlock = new DivEl('error-block');
         this.removeButtonEl = new ButtonEl();
@@ -48,12 +63,11 @@ export class InputOccurrenceView
     layout(_validate: boolean = true): Q.Promise<void> {
         return super.layout(_validate).then(() => {
             const dataBlock: DivEl = new DivEl('data-block');
-            const inputWrapper: DivEl = new DivEl('input-wrapper');
 
             this.appendChild(dataBlock);
             dataBlock.appendChild(this.dragControl);
-            dataBlock.appendChild(inputWrapper);
-            inputWrapper.appendChild(this.inputElement);
+            dataBlock.appendChild(this.inputWrapper);
+            this.inputWrapper.prependChild(this.inputElement);
             dataBlock.appendChild(this.removeButtonEl);
             this.appendChild(this.validationErrorBlock);
 
@@ -86,13 +100,15 @@ export class InputOccurrenceView
     }
 
     refresh() {
-        if (this.inputOccurrence.oneAndOnly()) {
+        if (this.formItemOccurrence.oneAndOnly()) {
             this.addClass('single-occurrence').removeClass('multiple-occurrence');
+            this.inputTypeView.removeClass('has-multiple-occurrence');
         } else {
             this.addClass('multiple-occurrence').removeClass('single-occurrence');
+            this.inputTypeView.addClass('has-multiple-occurrence');
         }
 
-        this.removeButtonEl.setVisible(this.inputOccurrence.isRemoveButtonRequiredStrict());
+        this.removeButtonEl.setVisible(this.formItemOccurrence.isRemoveButtonRequiredStrict());
     }
 
     getDataPath(): PropertyPath {
@@ -100,7 +116,7 @@ export class InputOccurrenceView
     }
 
     getIndex(): number {
-        return this.inputOccurrence.getIndex();
+        return this.formItemOccurrence.getIndex();
     }
 
     getInputElement(): Element {
@@ -131,7 +147,9 @@ export class InputOccurrenceView
         this.inputElement.unBlur(listener);
     }
 
-    private initListeners() {
+    protected initListeners(): void {
+        super.initListeners();
+
         let ignorePropertyChange: boolean = false;
 
         this.occurrenceValueChangedHandler = (occurrence: Element, value: Value) => {
@@ -180,6 +198,49 @@ export class InputOccurrenceView
         });
 
         this.property.onPropertyValueChanged(this.propertyValueChangedHandler);
+
+        this.initAiFunctionality();
+    }
+
+    private initAiFunctionality(): void {
+        const aiTools = this.inputTypeView.getAiConfig().aiTools;
+        aiTools.forEach((aiTool) => this.addAiTool(aiTool));
+    }
+
+    private addAiTool(aiTool: AiToolType): void {
+        if (aiTool === AiToolType.STATE) {
+            new AiStateTool({
+                stateContainer: this.inputWrapper,
+                label: this.inputTypeView.getInput().getLabel(),
+                pathElement: this.inputElement,
+                getPath: () => this.getDataPath(),
+                group: this.inputTypeView.getAiConfig().group,
+            });
+
+            return;
+        }
+
+        if (aiTool === AiToolType.DIALOG) {
+            new AiDialogIconTool({
+                group: this.inputTypeView.getAiConfig().group,
+                getPath: () => this.getDataPath(),
+                pathElement: this.inputElement,
+                aiButtonContainer: this.inputTypeView,
+            });
+            return;
+        }
+
+        if (aiTool === AiToolType.ANIMATE) {
+            new AiAnimationTool({
+                group: this.inputTypeView.getAiConfig().group,
+                getPath: () => this.getDataPath(),
+                pathElement: this.inputElement,
+            });
+
+            return;
+        }
+
+        console.warn('Unknown AI tool: ', aiTool);
     }
 
     private registerProperty(property: Property) {
