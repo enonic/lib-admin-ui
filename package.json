@@ -64,7 +64,7 @@
     "postcss-sort-media-queries": "^5.2.0",
     "swc-loader": "^0.2.6",
     "terser-webpack-plugin": "^5.3.11",
-    "ts-loader": "^9.5.1",
+    "ts-loader": "^9.5.2",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.19.1",
     "webpack": "^5.97.1",
