@@ -54,6 +54,7 @@ module.exports = [
             "**/*.js",
             "**/*.d.ts",
             "**/spec/**/*",
+            "**/bin/"
         ]
     }
 ];
