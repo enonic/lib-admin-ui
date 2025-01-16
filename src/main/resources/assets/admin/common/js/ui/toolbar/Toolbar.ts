@@ -160,10 +160,10 @@ export class Toolbar<C extends ToolbarConfig>
         if (!lastFocusedElement) {
             const focusIndex = this.getNextFocusableElementIndex();
             this.lastFocusedElementIndex = focusIndex;
-            lastFocusedElement = this.toolbarElements[focusIndex].el;
+            lastFocusedElement = this.toolbarElements[focusIndex]?.el;
         }
 
-        lastFocusedElement.giveFocus();
+        lastFocusedElement?.giveFocus();
     }
 
     private createActionButton(action: Action): ActionButton {

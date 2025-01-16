@@ -80,6 +80,10 @@ export class FormItem
 
     setValidator(value: (input: FormItemEl) => string) {
         this.validator = value;
+
+        if (Validators.required === value) {
+            this.label.addClass('required');
+        }
     }
 
     validate(validationResult: ValidationResult, markInvalid?: boolean) {
