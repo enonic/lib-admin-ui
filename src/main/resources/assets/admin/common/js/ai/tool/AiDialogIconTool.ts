@@ -50,7 +50,6 @@ export class AiDialogIconTool extends AiTool {
 
     private static getOrCreateIconsRegistry(): WeakMap<Element, AiDialogControl> {
         if (!Store.instance().has(AI_ICONS_REGISTRY_KEY)) {
-            console.log('Creating new AI icons registry');
             Store.instance().set(AI_ICONS_REGISTRY_KEY, new WeakMap());
         }
 
