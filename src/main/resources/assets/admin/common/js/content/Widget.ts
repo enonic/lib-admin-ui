@@ -11,8 +11,7 @@ export class Widget {
     private readonly description: string;
     private readonly interfaces: string[];
     private readonly widgetDescriptorKey: WidgetDescriptorKey;
-    private readonly context: string;
-    protected readonly config: WidgetConfig;
+    private readonly config: WidgetConfig;
 
     constructor(builder: WidgetBuilder) {
         this.url = builder.url;
@@ -21,8 +20,7 @@ export class Widget {
         this.description = builder.description;
         this.interfaces = builder.interfaces;
         this.widgetDescriptorKey = builder.widgetDescriptorKey;
-        this.config = builder.config;
-        this.context = builder.context;
+        this.config = builder.config || new WidgetConfig();
     }
 
     static create(): WidgetBuilder {
@@ -60,10 +58,6 @@ export class Widget {
     public getConfig(): WidgetConfig {
         return this.config;
     }
-
-    getContext(): string {
-        return this.context;
-    }
 }
 
 export class WidgetBuilder {
@@ -80,8 +74,6 @@ export class WidgetBuilder {
 
     widgetDescriptorKey: WidgetDescriptorKey;
 
-    context: string;
-
     config: WidgetConfig;
 
     constructor(source?: Widget) {
@@ -93,7 +85,6 @@ export class WidgetBuilder {
             this.interfaces = source.getInterfaces();
             this.widgetDescriptorKey = source.getWidgetDescriptorKey();
             this.config = source.getConfig();
-            this.context = source.getContext();
         }
     }
 
@@ -111,7 +102,6 @@ export class WidgetBuilder {
         this.interfaces = json.interfaces;
         this.widgetDescriptorKey = WidgetBuilder.makeWidgetDescriptorKey(json.key);
         this.config = new WidgetConfig().fromJson(json.config);
-
         return this;
     }
 
@@ -142,11 +132,6 @@ export class WidgetBuilder {
 
     setConfig(config: WidgetConfig): WidgetBuilder {
         this.config = config;
-        return this;
-    }
-
-    setContext(context: string): WidgetBuilder {
-        this.context = context;
         return this;
     }
 
