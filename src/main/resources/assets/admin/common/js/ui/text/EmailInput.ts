@@ -4,6 +4,7 @@ import {StringHelper} from '../../util/StringHelper';
 import {CheckEmailAvailabilityRequest} from '../../security/CheckEmailAvailabilityRequest';
 import {i18n} from '../../util/Messages';
 import {CompositeFormInputEl} from '../../dom/CompositeFormInputEl';
+import {Validators} from '../form/Validators';
 
 export class EmailInput
     extends CompositeFormInputEl {
@@ -39,7 +40,7 @@ export class EmailInput
     createInput(): InputEl {
         let input = new InputEl(undefined, 'email');
 
-        input.setPattern(String.raw`[\-a-zA-Z0-9~!$%^&*_=+\}\{'?]+(\.[\-a-zA-Z0-9~!$%^&*_=+\}\{'?]+)*@[a-zA-Z0-9_][\-a-zA-Z0-9_]*(\.[\-a-zA-Z0-9_]+)*\.[cC][oO][mM](:[0-9]{1,5})?`);
+        input.setPattern(Validators.emailRegex.source);
 
         input.onFocus((event: FocusEvent) => {
             this.notifyFocused(event);
