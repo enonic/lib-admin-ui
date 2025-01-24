@@ -4,13 +4,14 @@ import {StringHelper} from '../../util/StringHelper';
 
 export class Validators {
 
+    static emailRegex: RegExp = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+
     public static required(input: FormInputEl): string | undefined {
         return StringHelper.isBlank(input.getValue()) ? i18n('field.value.required') : undefined;
     }
 
     public static validEmail(input: FormInputEl): string | undefined {
-        const regex: RegExp = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
-        return !regex.test(input.getValue()) ? i18n('field.value.invalid') : undefined;
+        return !Validators.emailRegex.test(input.getValue()) ? i18n('field.value.invalid') : undefined;
     }
 
     public static validTel(input: FormInputEl): string | undefined {
