@@ -253,16 +253,21 @@ export class BrowseFilterPanel<T>
     }
 
     updateHitsCounter(hits: number, emptyFilterValue: boolean = false) {
-        let unfilteredSelection = (this.hasConstraint() && hits === this.getSelectionItems().length);
-        if (emptyFilterValue || unfilteredSelection) {
-            this.hitsCounterEl.setHtml(i18n('panel.filter.totalhits', hits));
-        } else {
-            if (hits !== 1) {
-                this.hitsCounterEl.setHtml(i18n('panel.filter.hits', hits));
-            } else {
-                this.hitsCounterEl.setHtml(i18n('panel.filter.hit', hits));
-            }
+        if (!this.hitsCounterEl) {
+            return;
         }
+        this.hitsCounterEl.whenRendered(() => {
+            const unfilteredSelection = (this.hasConstraint() && hits === this.getSelectionItems().length);
+            if (emptyFilterValue || unfilteredSelection) {
+                this.hitsCounterEl.setHtml(i18n('panel.filter.totalhits', hits));
+            } else {
+                if (hits !== 1) {
+                    this.hitsCounterEl.setHtml(i18n('panel.filter.hits', hits));
+                } else {
+                    this.hitsCounterEl.setHtml(i18n('panel.filter.hit', hits));
+                }
+            }
+        });
 
         if (hits !== 0) {
             this.showResultsButton.show();
