@@ -1,9 +1,9 @@
 import {ApplicationKey} from '../application/ApplicationKey';
-import {WidgetDescriptorJson} from './json/WidgetDescriptorJson';
 import {Equitable} from '../Equitable';
 import {ObjectHelper} from '../ObjectHelper';
+import {WidgetDescriptorJson} from './json/WidgetDescriptorJson';
 
-export class Widget {
+export class Widget<B extends WidgetBuilder = WidgetBuilder, C extends WidgetConfig = WidgetConfig> {
 
     private readonly url: string;
     private readonly iconUrl: string;
@@ -11,24 +11,28 @@ export class Widget {
     private readonly description: string;
     private readonly interfaces: string[];
     private readonly widgetDescriptorKey: WidgetDescriptorKey;
-    private readonly config: WidgetConfig;
+    private readonly config: C;
 
-    constructor(builder: WidgetBuilder) {
+    constructor(builder: B) {
         this.url = builder.url;
         this.iconUrl = builder.iconUrl;
         this.displayName = builder.displayName;
         this.description = builder.description;
         this.interfaces = builder.interfaces;
         this.widgetDescriptorKey = builder.widgetDescriptorKey;
-        this.config = builder.config || new WidgetConfig();
+        this.config = (builder.config || this.createConfig()) as C;
     }
 
-    static create(): WidgetBuilder {
-        return new WidgetBuilder();
+    protected createConfig(): C {
+        return new WidgetConfig() as C;
     }
 
-    static fromJson(json: WidgetDescriptorJson): Widget {
-        return new WidgetBuilder().fromJson(json).build();
+    static create<C extends WidgetConfig>(): WidgetBuilder<C> {
+        return new WidgetBuilder<C>();
+    }
+
+    static fromJson<C extends WidgetConfig>(json: WidgetDescriptorJson): Widget {
+        return new WidgetBuilder<C>().fromJson(json).build();
     }
 
     public getUrl(): string {
@@ -55,12 +59,12 @@ export class Widget {
         return this.widgetDescriptorKey;
     }
 
-    public getConfig(): WidgetConfig {
+    public getConfig(): C {
         return this.config;
     }
 }
 
-export class WidgetBuilder {
+export class WidgetBuilder<C extends WidgetConfig = WidgetConfig> {
 
     url: string;
 
@@ -74,7 +78,7 @@ export class WidgetBuilder {
 
     widgetDescriptorKey: WidgetDescriptorKey;
 
-    config: WidgetConfig;
+    config: C;
 
     constructor(source?: Widget) {
         if (source) {
@@ -84,7 +88,7 @@ export class WidgetBuilder {
             this.description = source.getDescription();
             this.interfaces = source.getInterfaces();
             this.widgetDescriptorKey = source.getWidgetDescriptorKey();
-            this.config = source.getConfig();
+            this.config = source.getConfig() as C;
         }
     }
 
@@ -101,8 +105,12 @@ export class WidgetBuilder {
         this.description = json.description;
         this.interfaces = json.interfaces;
         this.widgetDescriptorKey = WidgetBuilder.makeWidgetDescriptorKey(json.key);
-        this.config = new WidgetConfig().fromJson(json.config);
+        this.config = this.createConfig(json.config);
         return this;
+    }
+
+    protected createConfig(json: Record<string, string>): C {
+        return new WidgetConfig().fromJson(json) as C;
     }
 
     setUrl(url: string): WidgetBuilder {
@@ -130,7 +138,7 @@ export class WidgetBuilder {
         return this;
     }
 
-    setConfig(config: WidgetConfig): WidgetBuilder {
+    setConfig(config: C): WidgetBuilder {
         this.config = config;
         return this;
     }
