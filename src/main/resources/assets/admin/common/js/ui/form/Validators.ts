@@ -4,7 +4,7 @@ import {StringHelper} from '../../util/StringHelper';
 
 export class Validators {
 
-    static emailRegex: RegExp = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+    static emailRegex: RegExp = /[A-Za-z0-9]+([\-+.'][A-Za-z0-9]+)*@[A-Za-z0-9]+([\-\.][A-Za-z0-9]+)*\.[A-Za-z]{2,}/;
 
     public static required(input: FormInputEl): string | undefined {
         return StringHelper.isBlank(input.getValue()) ? i18n('field.value.required') : undefined;
