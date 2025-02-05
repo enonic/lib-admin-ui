@@ -10,6 +10,8 @@ export class ButtonEl
     constructor(className?: string, stylePrefix: string = StyleHelper.COMMON_PREFIX) {
         super('button', className, stylePrefix);
 
+        this.getEl().setAttribute('type', 'button');
+
         const triggerAction = () => {
             Body.get().setFocusedElement(this);
             $(this.getHTMLElement()).simulate('click');
