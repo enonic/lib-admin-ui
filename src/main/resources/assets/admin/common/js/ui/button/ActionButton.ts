@@ -81,18 +81,18 @@ export class ActionButton
         const action = this.getAction();
 
         const toggledEnabled = this.isEnabled() !== action.isEnabled();
-        const toggledVisible = this.isVisible() !== action.isVisible();
-        const becameHidden = toggledVisible && !action.isVisible();
+        const becameHidden = this.isVisible() && !action.isVisible();
         const tooltip = this.getTooltip();
+        
         if (tooltip && (toggledEnabled || becameHidden)) {
             tooltip.hide();
         }
+
         if (toggledEnabled) {
             this.setEnabled(action.isEnabled());
         }
-        if (toggledVisible) {
-            this.setVisible(action.isVisible());
-        }
+
+        this.setVisible(action.isVisible());
         this.setLabel(this.createLabel(action), false);
         this.updateIconClass(action.getIconClass());
 
