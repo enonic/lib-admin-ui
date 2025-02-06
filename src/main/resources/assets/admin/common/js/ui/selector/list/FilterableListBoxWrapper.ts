@@ -18,6 +18,11 @@ export interface FilterableListBoxOptions<I>
     filter?: (item: I, searchString: string) => boolean;
 }
 
+export interface SelectionDeltaItem<I> {
+    item: I,
+    selected: boolean
+}
+
 export class FilterableListBoxWrapper<I>
     extends SelectableListBoxWrapper<I> {
 
@@ -27,7 +32,7 @@ export class FilterableListBoxWrapper<I>
 
     protected filterContainer: Element;
 
-    protected selectionDelta = new Map<string, boolean>();
+    protected selectionDelta = new Map<string, SelectionDeltaItem<I>>();
 
     protected applyButton: Button;
 
@@ -136,8 +141,8 @@ export class FilterableListBoxWrapper<I>
     }
 
     protected resetSelection(): void {
-        this.selectionDelta.forEach((value: boolean, id: string) => {
-            this.toggleItemWrapperSelected(id, !value);
+        this.selectionDelta.forEach((value: SelectionDeltaItem<I>, id: string) => {
+            this.toggleItemWrapperSelected(id, !value.selected);
         });
 
         this.selectionDelta = new Map();
@@ -224,7 +229,7 @@ export class FilterableListBoxWrapper<I>
         if (super.isSelected(id)) {
             this.selectionDelta.delete(id);
         } else {
-            this.selectionDelta.set(id, true);
+            this.selectionDelta.set(id, {item, selected: true});
         }
 
         if (this.isMultiSelect()) {
@@ -239,7 +244,7 @@ export class FilterableListBoxWrapper<I>
         this.toggleItemWrapperSelected(id, false);
 
         if (super.isSelected(id)) {
-            this.selectionDelta.set(id, false);
+            this.selectionDelta.set(id, {item, selected: false});
         } else {
             this.selectionDelta.delete(id);
         }
@@ -248,7 +253,7 @@ export class FilterableListBoxWrapper<I>
     }
 
     isSelected(id: string): boolean {
-        return this.selectionDelta.has(id) ? this.selectionDelta.get(id) : super.isSelected(id);
+        return this.selectionDelta.has(id) ? this.selectionDelta.get(id).selected : super.isSelected(id);
     }
 
     protected getCurrentlySelectedItems(): I[] {
@@ -260,11 +265,9 @@ export class FilterableListBoxWrapper<I>
     private getSelectedDeltaItems(): I[] {
         const result: I[] = [];
 
-        this.selectionDelta.forEach((isSelected: boolean, id: string) => {
-            const item: I = this.getItemById(id);
-
-            if (isSelected) {
-                result.push(item);
+        this.selectionDelta.forEach((value: SelectionDeltaItem<I>) => {
+            if (value.selected) {
+                result.push(value.item);
             }
         });
 
@@ -275,25 +278,22 @@ export class FilterableListBoxWrapper<I>
         const selectionChange: SelectionChange<I> = {selected: [], deselected: []};
 
         // deselecting items first to free selection space for new items if limits are set
-        this.selectionDelta.forEach((isSelected: boolean, id: string) => {
-            if (!isSelected) {
-                const item: I = this.getItemById(id);
-                selectionChange.deselected.push(item);
-                this.doDeselect(item);
+        this.selectionDelta.forEach((value: SelectionDeltaItem<I>) => {
+            if (!value.selected) {
+                selectionChange.deselected.push(value.item);
+                this.doDeselect(value.item);
             }
         });
 
         // then selecting items until max limit is reached
-        this.selectionDelta.forEach((isSelected: boolean, id: string) => {
-            if (isSelected) {
+        this.selectionDelta.forEach((value: SelectionDeltaItem<I>, id: string) => {
+            if (value.selected) {
                 if (this.selectionLimitReached) {
                     this.toggleItemWrapperSelected(id, false);
                 } else {
-                    const item: I = this.getItemById(id);
-                    selectionChange.selected.push(item);
-                    this.doSelect(item);
+                    selectionChange.selected.push(value.item);
+                    this.doSelect(value.item);
                 }
-
             }
         });
 
