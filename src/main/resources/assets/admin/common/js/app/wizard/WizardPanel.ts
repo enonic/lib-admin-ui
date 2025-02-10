@@ -393,15 +393,16 @@ export class WizardPanel<EQUITABLE extends Equitable>
     }
 
     addStep(step: WizardStep, select: boolean) {
+        this.steps.push(step);
         this.stepsPanel.addNavigablePanel(step.getTabBarItem(), step.getStepForm(), step.getTabBarItem().getLabel(), select);
         this.validityManager.addItem(step);
     }
 
-    insertStepBefore(stepToInsert: WizardStep, beforeStep: WizardStep) {
+    insertStepBefore(stepToInsert: WizardStep, beforeStep: WizardStep, select?: boolean): void {
         let indexOfBeforeStep = this.steps.indexOf(beforeStep);
         this.steps.splice(indexOfBeforeStep, 0, stepToInsert);
         this.stepsPanel.insertNavigablePanel(stepToInsert.getTabBarItem(), stepToInsert.getStepForm(),
-            stepToInsert.getTabBarItem().getLabel(), indexOfBeforeStep);
+            stepToInsert.getTabBarItem().getLabel(), indexOfBeforeStep, select);
         this.validityManager.addItem(stepToInsert);
     }
 
