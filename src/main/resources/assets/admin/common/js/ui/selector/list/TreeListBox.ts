@@ -34,9 +34,7 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
     }
 
     protected initListeners(): void {
-        this.whenShown(() => {
-            this.handleLazyLoad();
-        });
+        //
     }
 
     protected abstract createItemView(item: I, readOnly: boolean): TreeListElement<I>;
@@ -75,6 +73,10 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
 
     getItem(id: string): I {
         return super.getItem(id) || this.findItem(id);
+    }
+
+    load(): void {
+        this.handleLazyLoad();
     }
 
     protected findItem(id: string): I {
@@ -154,7 +156,9 @@ export abstract class TreeListElement<I>
 
     protected childrenList: TreeListBox<I>;
 
-    protected expanded: boolean = false;
+    protected expanded: boolean;
+
+    protected wasExpanded: boolean;
 
     protected item: I;
 
@@ -165,6 +169,8 @@ export abstract class TreeListElement<I>
 
         this.item = content;
         this.options = options;
+        this.expanded = false;
+        this.wasExpanded = false;
         this.initElements();
         this.initListeners();
     }
@@ -212,25 +218,32 @@ export abstract class TreeListElement<I>
     }
 
     expand(): void {
-        if (!this.expanded) {
-            this.setExpanded(true);
-        }
+        this.setExpanded(true);
     }
 
     collapse(): void {
         this.setExpanded(false);
     }
 
-    setExpanded(expanded: boolean): void {
+    protected setExpanded(expanded: boolean): void {
         if (this.expanded !== expanded) {
             this.expanded = expanded;
             this.childrenList.setVisible(this.expanded);
             this.toggleElement.toggleClass('expanded', this.expanded);
+
+            if (expanded && !this.wasExpanded) {
+                this.wasExpanded = true;
+                this.childrenList.load();
+            }
         }
     }
 
     isExpanded(): boolean {
         return this.expanded;
+    }
+
+    isExpandedAtLeastOnce(): boolean {
+        return this.wasExpanded;
     }
 
     updateExpandableState(): void {
