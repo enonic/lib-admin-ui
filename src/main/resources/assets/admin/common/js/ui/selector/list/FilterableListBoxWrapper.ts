@@ -16,6 +16,7 @@ import {SelectableListBoxNavigator} from './SelectableListBoxNavigator';
 export interface FilterableListBoxOptions<I>
     extends SelectableListBoxDropdownOptions<I> {
     filter?: (item: I, searchString: string) => boolean;
+    loadWhenListShown?: boolean;
 }
 
 export interface SelectionDeltaItem<I> {
@@ -44,6 +45,8 @@ export class FilterableListBoxWrapper<I>
 
     protected loadMask: LoadMask;
 
+    protected loadWhenListShown: boolean;
+
     constructor(listBox: ListBox<I>, options?: FilterableListBoxOptions<I>) {
         super(listBox, options);
     }
@@ -51,6 +54,7 @@ export class FilterableListBoxWrapper<I>
     protected initElements(): void {
         super.initElements();
 
+        this.loadWhenListShown = this.options.loadWhenListShown ?? true;
         this.loadMask = new LoadMask(this);
         this.listBox.hide();
         this.filterContainer = new DivEl('filter-container');
@@ -107,6 +111,15 @@ export class FilterableListBoxWrapper<I>
 
     protected doShowDropdown(): void {
         this.listBox.show();
+
+        if (this.loadWhenListShown) {
+            this.loadListOnShown();
+            this.loadWhenListShown = false;
+        }
+    }
+
+    protected loadListOnShown(): void {
+        //
     }
 
     protected hideDropdown(): void {
@@ -347,6 +360,14 @@ export class FilterableListBoxWrapper<I>
         });
 
         return focusedItemIndex;
+    }
+
+    setLoadWhenListShown(): void {
+        if (this.dropdownShown) {
+            this.loadListOnShown();
+        } else {
+            this.loadWhenListShown = true;
+        }
     }
 
     doRender(): Q.Promise<boolean> {
