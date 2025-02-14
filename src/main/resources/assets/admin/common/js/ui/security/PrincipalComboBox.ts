@@ -79,13 +79,6 @@ export class PrincipalComboBox
             return Q.resolve(null);
         });
 
-        this.listBox.whenShown(() => {
-            // if not empty then search will be performed after finished typing
-            if (StringHelper.isBlank(this.optionFilterInput.getValue())) {
-                this.search(this.optionFilterInput.getValue());
-            }
-        });
-
         let searchValue = '';
 
         const debouncedSearch = AppHelper.debounce(() => {
@@ -100,6 +93,13 @@ export class PrincipalComboBox
 
     protected search(value?: string): void {
         this.options.loader.search(value).catch(DefaultErrorHandler.handle);
+    }
+
+    protected loadListOnShown(): void {
+        // if not empty then search will be performed after finished typing
+        if (StringHelper.isBlank(this.optionFilterInput.getValue())) {
+            this.search(this.optionFilterInput.getValue());
+        }
     }
 
     createSelectedOption(item: Principal): Option<Principal> {
