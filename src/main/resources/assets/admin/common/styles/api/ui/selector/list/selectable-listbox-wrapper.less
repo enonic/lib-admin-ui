@@ -25,17 +25,11 @@
     }
 
     &.checkbox-right {
-      display: grid;
-      grid-template-columns: 1fr 44px;
-      grid-template-areas:
-        "data checkbox"
+      .checkbox-right();
     }
 
     &.checkbox-left {
-      display: grid;
-      grid-template-columns: 44px 1fr;
-      grid-template-areas:
-        "checkbox data"
+      .checkbox-left();
     }
 
     &:hover {
