@@ -1,68 +1,77 @@
 .selectable-listbox-wrapper {
-
-  .item-view-wrapper {
-    display: flex;
-    cursor: pointer;
-    height: 44px;
-
-    .checkbox {
-      grid-area: checkbox;
+  .selectable-listbox {
+    .item-view-wrapper {
       display: flex;
-      justify-content: center;
-      align-items: center;
+      cursor: pointer;
+      height: 44px;
 
-      input {
-        display: none;
+      .checkbox {
+        grid-area: checkbox;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        input {
+          display: none;
+        }
+
+        label::before {
+          position: static;
+        }
       }
 
-      label::before {
-        position: static;
+      .item-view {
+        grid-area: data;
       }
-    }
 
-    .item-view {
-      grid-area: data;
-    }
-
-    &.checkbox-right {
-      .checkbox-right();
-    }
-
-    &.checkbox-left {
-      .checkbox-left();
-    }
-
-    &:hover {
-      background-color: @admin-bg-light-gray;
-    }
-
-    .item-view {
-      flex-grow: 1;
-      padding-left: 10px;
-      .ellipsis();
-
-      * {
-        cursor: pointer;
+      &.checkbox-right {
+        .checkbox-right();
       }
-    }
 
-    .checkbox {
-      flex-shrink: 0;
-    }
-
-    &.selected {
-      background-color: @admin-blue;
-
-      .item-view * {
-        color: @admin-white;
+      &.checkbox-left {
+        .checkbox-left();
       }
-    }
 
-    &:focus-visible {
-      outline: none;
-
-      &:not(.selected) {
+      &:hover {
         background-color: @admin-bg-light-gray;
+
+        .checkbox {
+          background-color: @admin-bg-light-gray;
+        }
+      }
+
+      .item-view {
+        flex-grow: 1;
+        padding-left: 10px;
+        .ellipsis();
+
+        * {
+          cursor: pointer;
+        }
+      }
+
+      .checkbox {
+        flex-shrink: 0;
+      }
+
+      &.selected {
+        background-color: @admin-blue;
+
+        .checkbox {
+          background-color: @admin-blue;
+        }
+
+        .item-view * {
+          color: @admin-white;
+        }
+      }
+
+      &:focus-visible {
+        outline: none;
+
+        &:not(.selected) {
+          background-color: @admin-bg-light-gray;
+        }
       }
     }
   }
