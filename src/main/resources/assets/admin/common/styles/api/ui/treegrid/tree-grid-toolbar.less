@@ -122,9 +122,7 @@
 
   .selection-controller {
     display: inline-block;
-    width: 13px;
-    line-height: 40px;
-    padding: 0 5px 0 11px;
+    padding: 5px;
     align-self: center;
 
     label {
@@ -164,10 +162,15 @@
 
   .left-wrapper {
     justify-content: flex-start;
+    padding: 0 0 0 6px;
   }
 
   .center-wrapper {
     flex: 0 0 auto;
+
+    &:empty {
+      display: none;
+    }
   }
 
   .right-wrapper {
@@ -186,19 +189,21 @@ body {
         flex: 0 0 auto;
         min-width: 0;
         flex-direction: row-reverse;
+        padding: 0 6px 0 0;
       }
 
       .center-wrapper {
         padding-left: 17px;
       }
 
+      .right-wrapper {
+        order: 1;
+        justify-content: flex-start;
+      }
+
       .@{_COMMON_PREFIX}button.@{_CLS_PREFIX}icon-loop {
         float: left;
         padding: 0 0 0 16px;
-      }
-
-      .selection-controller {
-        padding: 0 17px 0 5px;
       }
     }
   }
