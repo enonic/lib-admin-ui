@@ -9,6 +9,7 @@ export interface TreeListBoxParams<I> {
     level?: number,
     className?: string,
     parentListElement?: TreeListElement<I>,
+    expandedContext?: TreeListBoxExpandedHolder,
 }
 
 export abstract class TreeListBox<I> extends LazyListBox<I> {
@@ -143,6 +144,7 @@ export interface TreeListElementParams<I> {
     level: number,
     parentItem?: I,
     parentList?: TreeListBox<I>,
+    expandedContext?: TreeListBoxExpandedHolder,
 }
 
 export abstract class TreeListElement<I>
@@ -190,6 +192,7 @@ export abstract class TreeListElement<I>
             scrollParent: this.options.scrollParent,
             level: this.options.level + 1,
             parentListElement: this,
+            expandedContext: this.options.expandedContext,
         };
     }
 
@@ -227,9 +230,18 @@ export abstract class TreeListElement<I>
 
     protected setExpanded(expanded: boolean): void {
         if (this.expanded !== expanded) {
+            const itemId = this.getParentList()?.getIdOfItem(this.item);
+
+            if (expanded) {
+                this.options.expandedContext?.add(itemId);
+            } else  {
+                this.options.expandedContext?.remove(itemId);
+            }
+
             this.expanded = expanded;
             this.childrenList.setVisible(this.expanded);
             this.toggleElement.toggleClass('expanded', this.expanded);
+
 
             if (expanded && !this.wasExpanded) {
                 this.wasExpanded = true;
@@ -317,4 +329,32 @@ export abstract class TreeListElement<I>
             return rendered;
         });
     }
+}
+
+export class TreeListBoxExpandedHolder {
+
+    protected expandedIds: Set<string>;
+
+    constructor() {
+        this.expandedIds = new Set<string>();
+    }
+
+    add(ids: string | string[]): void {
+        const items = Array.isArray(ids) ? ids : [ids];
+        items.filter(id => !!id).forEach((id: string) => this.expandedIds.add(id));
+    }
+
+    remove(ids: string | string[]): void {
+        const items = Array.isArray(ids) ? ids : [ids];
+        items.filter(id => !!id).forEach((id: string) => this.expandedIds.delete(id));
+    }
+
+    isExpanded(id: string): boolean {
+        return this.expandedIds.has(id);
+    }
+
+    reset(): void {
+        this.expandedIds.clear();
+    }
+
 }
