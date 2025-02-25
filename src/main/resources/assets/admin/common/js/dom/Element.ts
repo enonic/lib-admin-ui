@@ -1,4 +1,4 @@
-import * as DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
 import * as $ from 'jquery';
 import 'jquery-ui/ui/tabbable';
 import * as Q from 'q';
@@ -298,14 +298,14 @@ export class Element {
     }
 
     private static createDOMPurifyConfig(purifyConfig?: PurifyConfig): DOMPurifyConfig  {
-        const config: DOMPurifyConfig = {};
+        const config = {};
 
         if (purifyConfig.addTags) {
-            config.ADD_TAGS = purifyConfig.addTags.slice();
+            config['ADD_TAGS'] = purifyConfig.addTags.slice();
         }
 
         if (purifyConfig.addAttributes) {
-            config.ADD_ATTR = purifyConfig.addAttributes.slice();
+            config['ADD_ATTR'] = purifyConfig.addAttributes.slice();
         }
 
         return config;
