@@ -23,7 +23,7 @@
   "dependencies": {
     "@types/dompurify": "=3.0.5",
     "@types/mousetrap": "^1.6.15",
-    "dompurify": "=3.1.7",
+    "dompurify": "^3.2.4",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.7.1",
     "jquery-simulate": "^1.0.2",
@@ -52,7 +52,7 @@
     "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^7.1.2",
     "cssnano": "^7.0.5",
-    "enonic-admin-artifacts": "^2.3.0",
+    "enonic-admin-artifacts": "^2.3.1",
     "error-logger-webpack-plugin": "^1.1.1",
     "eslint": "^9.16.0",
     "glob": "^11.0.0",
