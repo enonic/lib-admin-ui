@@ -2,6 +2,7 @@ import {SelectableListBoxWrapper, SelectionMode} from './SelectableListBoxWrappe
 import {KeyBinding} from '../../KeyBinding';
 import {KeyBindings} from '../../KeyBindings';
 import {ListBox} from './ListBox';
+import {TreeListBox} from './TreeListBox';
 
 export class SelectableListBoxKeyNavigator<I> {
 
@@ -84,10 +85,6 @@ export class SelectableListBoxKeyNavigator<I> {
     }
 
     protected handleKeyUpWithoutShift(event: Mousetrap.ExtendedKeyboardEvent): void {
-        //if (!this.list.isActive()) {
-        //  return;
-        //  }
-
         this.selectableWrapper.setSelectionMode(SelectionMode.HIGHLIGHT);
         const lastSelectedItem = this.selectableWrapper.getSelectedItems().pop();
         const itemToSelect = lastSelectedItem ? this.getPreviousItem(lastSelectedItem) : this.rootList.getItems().pop();
@@ -95,6 +92,8 @@ export class SelectableListBoxKeyNavigator<I> {
         if (itemToSelect) {
             this.selectableWrapper.deselectAll();
             this.selectableWrapper.select(itemToSelect);
+            event.preventDefault();
+            this.scrollIfCloseToTop(itemToSelect);
         }
     }
 
@@ -110,6 +109,7 @@ export class SelectableListBoxKeyNavigator<I> {
 
         if (wasHighlightMode) { // first need to set checkbox to selected if it was not checked
             this.selectableWrapper.select(lastSelectedItem);
+            this.scrollIfCloseToTop(lastSelectedItem);
         } else { // looking  non-selected item to select in up direction
             let itemToSelect = this.getPreviousItem(lastSelectedItem);
 
@@ -119,6 +119,7 @@ export class SelectableListBoxKeyNavigator<I> {
 
             if (itemToSelect) {
                 this.selectableWrapper.select(itemToSelect);
+                this.scrollIfCloseToTop(itemToSelect);
             }
         }
     }
@@ -159,6 +160,7 @@ export class SelectableListBoxKeyNavigator<I> {
 
         if (wasHighlightMode) { // first need to set checkbox to selected if it was not checked
             this.selectableWrapper.select(lastSelectedItem);
+            this.scrollIfCloseToBottom(lastSelectedItem);
         } else { // looking next non-selected item to select
             let itemToSelect = this.getNextItem(lastSelectedItem);
 
@@ -168,6 +170,7 @@ export class SelectableListBoxKeyNavigator<I> {
 
             if (itemToSelect) {
                 this.selectableWrapper.select(itemToSelect);
+                this.scrollIfCloseToBottom(itemToSelect);
             }
         }
     }
@@ -180,6 +183,8 @@ export class SelectableListBoxKeyNavigator<I> {
         if (itemToSelect) {
             this.selectableWrapper.deselectAll();
             this.selectableWrapper.select(itemToSelect);
+            event.preventDefault();
+            this.scrollIfCloseToBottom(itemToSelect);
         }
     }
 
@@ -195,5 +200,30 @@ export class SelectableListBoxKeyNavigator<I> {
         //
     }
 
+    protected scrollIfCloseToBottom(item: I): void {
+        const element = this.rootList instanceof TreeListBox ? this.rootList.getDataView(item) : this.rootList.getItemView(item);
+
+        if (element) {
+            const distToBottom = element.getEl().getBoundingClientRect().bottom;
+            const parentDistToBottom = this.selectableWrapper.getEl().getBoundingClientRect().bottom;
+
+            if (parentDistToBottom - distToBottom < 40) {
+                element.getHTMLElement().scrollIntoView({block: 'end'});
+            }
+        }
+    }
+
+    protected scrollIfCloseToTop(item: I): void {
+        const element = this.rootList.getItemView(item);
+
+        if (element) {
+            const parentDistToTop = this.selectableWrapper.getEl().getBoundingClientRect().top;
+            const distToTop = element.getEl().getBoundingClientRect().top;
+
+            if (distToTop - parentDistToTop < 40) {
+                element.getHTMLElement().scrollIntoView({block: 'start'});
+            }
+        }
+    }
 
 }
