@@ -224,13 +224,13 @@ export abstract class ModalDialog
         const focusOutTimeout: number = 10;
 
         AppHelper.focusInOut(this, (lastFocused: HTMLElement) => {
-            if (this.isFocusOutEventToBeProcessed()) {
+            if (this.isFocusOutEventToBeProcessed(lastFocused)) {
                 this.bringFocusBackToDialog(lastFocused);
             }
         }, focusOutTimeout, false);
     }
 
-    private isFocusOutEventToBeProcessed(): boolean {
+    protected isFocusOutEventToBeProcessed(lastFocused: HTMLElement): boolean {
         return this.isOpen() &&
             this.hasTabbable() &&
             !this.hasSubDialog() &&
