@@ -767,7 +767,7 @@ export class ElementHelper {
     }
 
     isVisible(): boolean {
-        return $(this.el).is(':visible');
+        return $(this.el).is(':visible') && $(this.el).css('visibility') !== 'hidden';
     }
 
     countChildren(): number {
