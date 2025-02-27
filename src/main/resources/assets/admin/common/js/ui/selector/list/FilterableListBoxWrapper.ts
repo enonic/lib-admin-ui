@@ -110,12 +110,20 @@ export class FilterableListBoxWrapper<I>
     }
 
     protected doShowDropdown(): void {
+        if (!this.hasChild(this.listBox)) {
+            this.attachListBoxOnShown();
+        }
+
         this.listBox.show();
 
         if (this.loadWhenListShown) {
             this.loadListOnShown();
             this.loadWhenListShown = false;
         }
+    }
+
+    protected attachListBoxOnShown(): void {
+        this.appendChild(this.listBox);
     }
 
     protected loadListOnShown(): void {
@@ -132,6 +140,7 @@ export class FilterableListBoxWrapper<I>
 
     protected doHideDropdown(): void {
         this.listBox.hide();
+        this.listBox.remove();
     }
 
     protected listenClickOutside(): void {
@@ -311,7 +320,7 @@ export class FilterableListBoxWrapper<I>
         });
 
         this.selectionDelta = new Map();
-        this.listBox.hide();
+        this.doHideDropdown();
         this.dropdownHandle.up();
 
         Array.from(this.itemsWrappers.values()).forEach(
