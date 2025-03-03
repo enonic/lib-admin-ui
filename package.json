@@ -40,7 +40,7 @@
     "@swc/cli": "^0.6.0",
     "@swc/core": "1.11.5",
     "@types/jquery": "^3.5.31",
-    "@types/jqueryui": "^1.12.23",
+    "@types/jqueryui": "^1.12.24",
     "@types/q": "^1.5.8",
     "@types/semver": "^7.5.8",
     "@types/validator": "^13.12.2",
