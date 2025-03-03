@@ -6,14 +6,17 @@ import {PropertyEventType} from './PropertyEventType';
 export class PropertyValueChangedEvent
     extends PropertyEvent {
 
-    private previousValue: Value;
+    private readonly previousValue: Value;
 
-    private newValue: Value;
+    private readonly newValue: Value;
 
-    constructor(property: Property, previousValue: Value, newValue: Value) {
+    private readonly force: boolean;
+
+    constructor(property: Property, previousValue: Value, newValue: Value, force: boolean = false) {
         super(PropertyEventType.VALUE_CHANGED, property);
         this.previousValue = previousValue;
         this.newValue = newValue;
+        this.force = force;
     }
 
     getPreviousValue(): Value {
@@ -22,6 +25,10 @@ export class PropertyValueChangedEvent
 
     getNewValue(): Value {
         return this.newValue;
+    }
+
+    isForce(): boolean {
+        return this.force;
     }
 
     toString(): string {
