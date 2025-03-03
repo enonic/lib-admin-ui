@@ -95,7 +95,7 @@ export class Property
      * A [[PropertyValueChangedEvent]] will be notified to listeners if the value really changed.
      * @param value
      */
-    setValue(value: Value) {
+    setValue(value: Value, force: boolean = false) {
         assertNotNull(value, 'value of a Property cannot be null');
         let oldValue = this.value;
         this.value = value;
@@ -115,7 +115,7 @@ export class Property
         }
 
         if (!value.equals(oldValue)) {
-            this.notifyPropertyValueChangedEvent(oldValue, value);
+            this.notifyPropertyValueChangedEvent(oldValue, value, force);
         }
     }
 
@@ -286,8 +286,8 @@ export class Property
             this.propertyValueChangedListeners.filter((curr) => (curr !== listener));
     }
 
-    private notifyPropertyValueChangedEvent(previousValue: Value, newValue: Value) {
-        let event = new PropertyValueChangedEvent(this, previousValue, newValue);
+    private notifyPropertyValueChangedEvent(previousValue: Value, newValue: Value, force: boolean = false): void {
+        let event = new PropertyValueChangedEvent(this, previousValue, newValue, force);
         if (Property.debug) {
             console.debug('Property[' + this.getPath().toString() + '].notifyPropertyValueChangedEvent: ' + event.toString());
         }
