@@ -176,7 +176,7 @@ export class InputOccurrenceView
                 if (InputOccurrenceView.debug) {
                     console.debug('InputOccurrenceView: propertyValueChanged', changedProperty);
                 }
-                this.inputTypeView.updateInputOccurrenceElement(this.inputElement, changedProperty, true);
+                this.inputTypeView.updateInputOccurrenceElement(this.inputElement, changedProperty, !event.isForce());
             }
         };
 
