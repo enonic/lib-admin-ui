@@ -5,17 +5,9 @@ Licenses used by Enonic Admin UI library (full license texts are provided after 
     MIT License
     https://github.com/codemirror/CodeMirror/blob/master/LICENSE
 
-    Crossroads.js
-    MIT License
-    https://github.com/millermedeiros/crossroads.js
-
     Fine Uploader
     MIT License
     https://github.com/FineUploader/fine-uploader/blob/master/LICENSE
-
-    Hasher
-    MIT License
-    http://github.com/millermedeiros/hasher
 
     IcoMoon icons (Ultimate Pack)
     Friendly license (Need seperate development licenses for developing software using the icons.)
