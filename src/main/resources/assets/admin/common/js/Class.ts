@@ -2,7 +2,7 @@ export class Class {
 
     private name: string;
 
-    private fn: () => void;
+    private fn: (...args: any[]) => void;
 
     constructor(name: string, fn: any) {
         this.name = name;
@@ -14,9 +14,12 @@ export class Class {
     }
 
     newInstance(constructorParams?: any): any {
-
-        let newInstance = Object.create(this.fn.prototype);
-        newInstance.constructor.call(newInstance, constructorParams);
-        return newInstance;
+        try {
+            return new this.fn(constructorParams);
+        } catch (e) {
+            const newInstance = Object.create(this.fn.prototype);
+            newInstance.constructor.call(newInstance, constructorParams);
+            return newInstance;
+        }
     }
 }

@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es5",
+        "target": "ES2020",
         "lib": [
-            "es2015",
-            "dom"
+            "ES2020",
+            "DOM"
         ],
         "outDir": "build/resources/main/dev/lib-admin-ui/",
         "moduleResolution": "node",
