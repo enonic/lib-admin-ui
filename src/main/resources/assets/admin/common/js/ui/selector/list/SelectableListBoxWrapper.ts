@@ -8,6 +8,7 @@ import {LiEl} from '../../../dom/LiEl';
 import {TreeListBox, TreeListElement} from './TreeListBox';
 import {DataChangedEvent, DataChangedType} from '../../treegrid/DataChangedEvent';
 import {SelectableListBoxNavigator} from './SelectableListBoxNavigator';
+import {AriaHasPopup, AriaRole} from '../../WCAG';
 
 export enum SelectionMode {
     SELECT, // DEFAULT
@@ -123,6 +124,7 @@ export class SelectableListBoxWrapper<I>
     }
 
     private addItemWrapper(id: string, wrapper: Element): void {
+        wrapper.setRole(AriaRole.OPTION);
         const idWrappersList = this.itemsWrappers.get(id) || [];
         idWrappersList.push(wrapper);
         this.itemsWrappers.set(id, idWrappersList);
@@ -190,6 +192,11 @@ export class SelectableListBoxWrapper<I>
     protected toggleItemWrapperSelected(itemId: string, isSelected: boolean): void {
         this.itemsWrappers.get(itemId)?.forEach((itemWrapper) => {
             itemWrapper?.toggleClass('selected', isSelected);
+            if (isSelected) {
+                itemWrapper?.setAriaSelected();
+            } else {
+                itemWrapper?.removeAriaSelected();
+            }
 
             if (this.isMultiSelect()) {
                 const isToBeChecked = isSelected && this.selectionMode === SelectionMode.SELECT;
