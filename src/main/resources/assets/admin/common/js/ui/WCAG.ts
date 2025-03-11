@@ -6,6 +6,8 @@ export interface WCAG {
     role?: AriaRole | '';
     ariaLabel?: string;
     ariaHasPopup?: AriaHasPopup | '';
+    ariaExpanded?: boolean;
+    ariaHidden?: boolean;
 }
 
 export enum AriaRole {
@@ -14,6 +16,9 @@ export enum AriaRole {
     BUTTON = 'button',
     TOOLBAR = 'toolbar',
     MENU = 'menu',
+    COMBOBOX = 'combobox',
+    LISTBOX = 'listbox',
+    OPTION = 'option'
 }
 
 export enum AriaHasPopup {

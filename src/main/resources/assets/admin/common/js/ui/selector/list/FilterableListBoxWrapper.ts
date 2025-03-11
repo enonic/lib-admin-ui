@@ -12,6 +12,7 @@ import {Body} from '../../../dom/Body';
 import {SelectionChange} from '../../../util/SelectionChange';
 import {LoadMask} from '../../mask/LoadMask';
 import {SelectableListBoxNavigator} from './SelectableListBoxNavigator';
+import {AriaHasPopup, AriaRole} from '../../WCAG';
 
 export interface FilterableListBoxOptions<I>
     extends SelectableListBoxDropdownOptions<I> {
@@ -49,6 +50,12 @@ export class FilterableListBoxWrapper<I>
 
     constructor(listBox: ListBox<I>, options?: FilterableListBoxOptions<I>) {
         super(listBox, options);
+
+        this.applyWCAGAttributes({
+            role: AriaRole.COMBOBOX,
+            ariaHasPopup: AriaHasPopup.LISTBOX,
+            ariaExpanded: false
+        });
     }
 
     protected initElements(): void {
@@ -56,7 +63,14 @@ export class FilterableListBoxWrapper<I>
 
         this.loadWhenListShown = this.options.loadWhenListShown ?? true;
         this.loadMask = new LoadMask(this);
+
+        this.listBox.applyWCAGAttributes({
+            role: AriaRole.LISTBOX,
+            ariaHidden: true
+        });
+
         this.listBox.hide();
+
         this.filterContainer = new DivEl('filter-container');
 
         this.dropdownVisibilityChangedListeners = [];
@@ -76,11 +90,15 @@ export class FilterableListBoxWrapper<I>
 
         this.listBox.onShown(() => {
             this.selectionDelta = new Map();
+            this.setAriaExpanded(true);
+            this.listBox.setAriaHidden(false);
         });
 
         this.listBox.onHidden(() => {
             this.resetSelection();
             this.selectionDelta = new Map();
+            this.setAriaExpanded(false);
+            this.listBox.setAriaHidden(true);
         });
 
         this.applyButton.onClicked(this.applySelection.bind(this));

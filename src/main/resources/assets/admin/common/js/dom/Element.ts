@@ -256,6 +256,12 @@ export class Element {
             if (ObjectHelper.isDefined(attr.ariaHasPopup)) {
                 this['ariaHasPopup'] = attr['ariaHasPopup'];
             }
+            if (ObjectHelper.isDefined(attr.ariaExpanded)) {
+                this['ariaExpanded'] = attr['ariaExpanded'];
+            }
+            if (ObjectHelper.isDefined(attr.ariaHidden)) {
+                this['ariaHidden'] = attr['ariaHidden'];
+            }
         }
 
         if (ObjectHelper.isDefined(this['tabbable']) && this['tabbable']) {
@@ -271,6 +277,12 @@ export class Element {
         }
         if (ObjectHelper.isDefined(this['ariaHasPopup'])) {
             this.setAriaHasPopup(this['ariaHasPopup']);
+        }
+        if (ObjectHelper.isDefined(this['ariaExpanded'])) {
+            this.setAriaExpanded(this['ariaExpanded']);
+        }
+        if (ObjectHelper.isDefined(this['ariaHidden'])) {
+            this.setAriaHidden(this['ariaHidden']);
         }
     }
 
@@ -456,10 +468,13 @@ export class Element {
     }
 
     setTitle(title: string): Element {
-        if (title.trim()) {
-            this.el.setTitle(title.trim());
+        const trimmedTitle = title.trim();
+        if (trimmedTitle) {
+            this.el.setTitle(trimmedTitle);
+            this.setAriaLabel(trimmedTitle);
         } else {
             this.el.removeAttribute('title');
+            this.setAriaLabel('');
         }
         return this;
     }
@@ -651,7 +666,7 @@ export class Element {
             hasPopup = value;
         }
         if (StringHelper.isBlank(hasPopup.toLowerCase())) {
-            this.getEl().removeAttribute('haspopup');
+            this.removeAriaAttribute('haspopup');
         } else {
             this.setAriaAttribute('haspopup', hasPopup.toLowerCase());
         }
@@ -659,8 +674,35 @@ export class Element {
         return this;
     }
 
-    removeAriaHasPopup() {
-        this.removeAriaAttribute('haspopup');
+    setAriaExpanded(value?: boolean): Element {
+        if (!ObjectHelper.isDefined(value)) {
+            this.removeAriaAttribute('expanded');
+        }
+
+        this.setAriaAttribute('expanded', String(value));
+
+        return this;
+    }
+
+    setAriaHidden(value?: boolean): Element {
+        if (!ObjectHelper.isDefined(value)) {
+            this.removeAriaAttribute('hidden');
+        }
+
+        this.setAriaAttribute('hidden', String(value));
+
+        return this;
+    }
+
+    setAriaSelected(): Element {
+        this.setAriaAttribute('selected', 'true');
+
+        return this;
+    }
+
+    removeAriaSelected(): Element {
+        this.removeAriaAttribute('selected');
+
         return this;
     }
 
