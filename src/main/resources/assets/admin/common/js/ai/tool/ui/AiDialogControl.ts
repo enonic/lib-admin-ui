@@ -45,7 +45,8 @@ export class AiDialogControl
 
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
-            this.addClass('ai-dialog-control').setTitle(i18n('ai.action.contentOperator.use'));
+            (this.addClass('ai-dialog-control') as Button)
+                .setTitle(i18n('ai.action.contentOperator.use'), false);
 
             return rendered;
         });
