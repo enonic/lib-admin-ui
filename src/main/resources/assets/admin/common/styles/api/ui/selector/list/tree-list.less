@@ -5,6 +5,31 @@
     box-sizing: border-box;
   }
 
+
+  &[data-level] {
+    --default-levelPadding: 16px;
+    --level: attr(data-level type(<number>)); // not all browsers support attr() properly
+    --levelPadding: calc(var(--level) * var(--default-levelPadding));
+
+    > .tree-list-element > .item-view-wrapper > .toggle-and-item-wrapper {
+      padding-left: var(--levelPadding);
+    }
+  }
+
+  @supports not (x: attr(x type(*))) { // remove when browsers support attr() properly
+    /* Browser does not have modern attr() support */
+    @iterations: 24; // not expected to have more than 24 levels
+
+    .mixin-loop (@i) when (@i > -1) {
+      &[data-level="@{i}"] {
+        --level: ~"@{i}";
+      }
+      .mixin-loop(@i - 1);
+    }
+
+    .mixin-loop(@iterations);
+  }
+
   .tree-list-element {
     .toggle-and-item-wrapper {
       display: grid;

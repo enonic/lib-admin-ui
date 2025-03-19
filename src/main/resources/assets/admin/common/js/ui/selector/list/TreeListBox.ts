@@ -6,7 +6,6 @@ import {DivEl} from '../../../dom/DivEl';
 
 export interface TreeListBoxParams<I> {
     scrollParent?: Element,
-    level?: number,
     className?: string,
     parentListElement?: TreeListElement<I>,
     expandedContext?: TreeListBoxExpandedHolder,
@@ -15,8 +14,6 @@ export interface TreeListBoxParams<I> {
 export abstract class TreeListBox<I> extends LazyListBox<I> {
 
     protected scrollParent: Element;
-
-    protected level: number;
 
     protected readonly options: TreeListBoxParams<I>;
 
@@ -31,7 +28,6 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
 
     protected initElements(): void {
         this.scrollParent = this.options?.scrollParent || this;
-        this.level = this.options?.level ?? 0;
     }
 
     protected initListeners(): void {
@@ -128,11 +124,27 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
         return this.scrollParent;
     }
 
+    getLevel(): number {
+        let parentCounter = 0;
+        let parent = this.getParentList();
+
+        while (parent) {
+            parentCounter++;
+            parent = parent.getParentList();
+        }
+
+        return parentCounter;
+    }
+
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
-            if (this.level === 0) {
+            const level = this.getLevel();
+
+            if (level === 0) {
                 ResponsiveManager.onAvailableSizeChanged(this);
             }
+
+            this.getEl().setData('level', level.toString());
 
             return rendered;
         });
@@ -141,7 +153,6 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
 
 export interface TreeListElementParams<I> {
     scrollParent: Element,
-    level: number,
     parentItem?: I,
     parentList?: TreeListBox<I>,
     expandedContext?: TreeListBoxExpandedHolder,
@@ -190,7 +201,6 @@ export abstract class TreeListElement<I>
     protected createChildrenListParams(): TreeListBoxParams<I> {
         return {
             scrollParent: this.options.scrollParent,
-            level: this.options.level + 1,
             parentListElement: this,
             expandedContext: this.options.expandedContext,
         };
@@ -318,12 +328,15 @@ export abstract class TreeListElement<I>
         return this.options.parentList;
     }
 
+    getLevel(): number {
+        return this.getParentList()?.getLevel() ?? 0;
+    }
+
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
             this.childrenList.hide();
 
             this.elementsWrapper.appendChildren(this.toggleElement, this.itemViewer);
-            this.elementsWrapper.getEl().setPaddingLeft(`${this.options.level * 16}px`);
             this.appendChild(this.childrenList);
 
             return rendered;
