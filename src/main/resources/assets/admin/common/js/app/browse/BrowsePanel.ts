@@ -141,7 +141,7 @@ export class BrowsePanel
         }
     }
 
-    private handleDataChanged(event: DataChangedEvent<ViewItem>) {
+    protected handleDataChanged(event: DataChangedEvent<ViewItem>) {
         this.updateActionsAndPreview();
     }
 
