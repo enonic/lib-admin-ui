@@ -19,9 +19,6 @@ import {ValidationRecording} from '../../ValidationRecording';
 import {FormOptionSet} from './FormOptionSet';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
 import {FormOptionSetOption} from './FormOptionSetOption';
-import {PropertyPath} from '../../../data/PropertyPath';
-import {AiToolType} from '../../../ai/tool/AiToolType';
-import {AiDialogIconTool} from '../../../ai/tool/AiDialogIconTool';
 
 export interface FormOptionSetOptionViewConfig
     extends CreatedFormItemLayerConfig {
@@ -58,7 +55,6 @@ export class FormOptionSetOptionView
         } as FormItemViewConfig);
 
         this.initElements(config);
-        this.initListeners();
     }
 
     private initElements(config: FormOptionSetOptionViewConfig): void {
@@ -68,19 +64,6 @@ export class FormOptionSetOptionView
         this.addClass(this.formOptionSetOption.getPath().getElements().length % 2 ? 'even' : 'odd');
         this.formItemLayer = config.layerFactory.createLayer(config);
         this.notificationDialog = new NotificationDialog(i18n('notify.optionset.notempty'));
-    }
-
-    private initListeners(): void {
-        const isAiButtonAllowed = this.getContext().getAiTools().has(AiToolType.DIALOG);
-
-        if (isAiButtonAllowed) {
-            new AiDialogIconTool({
-                group: this.getContext().getName(),
-                pathElement: this,
-                getPath: () => PropertyPath.fromString(this.formOptionSetOption.getPath().toString()),
-                aiButtonContainer: this.parent.isSingleSelection() ? this.parent.getLabelEl() : this,
-            });
-        }
     }
 
     toggleHelpText(show?: boolean) {
