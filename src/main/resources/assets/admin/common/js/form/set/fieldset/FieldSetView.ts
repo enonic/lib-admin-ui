@@ -142,6 +142,10 @@ export class FieldSetView
         this.formItemLayer.toggleHelpText(show);
     }
 
+    hasHelpText(): boolean {
+        return this.formItemViews.some((formItemView: FormItemView) => formItemView.hasHelpText());
+    }
+
     onValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
 
         this.formItemViews.forEach((formItemView: FormItemView) => {
