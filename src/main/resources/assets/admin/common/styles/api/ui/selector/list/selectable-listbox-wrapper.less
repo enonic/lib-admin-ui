@@ -1,4 +1,10 @@
 .selectable-listbox-wrapper {
+  .tree-list {
+    &[data-level] > .tree-list-element > .item-view-wrapper > .toggle-and-item-wrapper {
+      padding-left: var(--levelPadding);
+    }
+  }
+
   .selectable-listbox {
     .item-view-wrapper {
       display: flex;
