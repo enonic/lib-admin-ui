@@ -3,11 +3,14 @@ import {Element} from '../../dom/Element';
 import {Store} from '../../store/Store';
 import {AiTool, AiToolConfig} from './AiTool';
 import {AiToolType} from './AiToolType';
+import {AiContentOperatorOpenDialogEvent} from '../event/AiContentOperatorOpenDialogEvent';
+import {AiContentOperatorSetContextEvent} from '../event/AiContentOperatorSetContextEvent';
 
 const AI_ICONS_REGISTRY_KEY = 'AiIcons';
 
 export interface AiDialogIconToolConfig extends AiToolConfig {
     aiButtonContainer: Element;
+    setContextOnFocus?: boolean;
 }
 
 export class AiDialogIconTool extends AiTool {
@@ -26,9 +29,15 @@ export class AiDialogIconTool extends AiTool {
 
     private setupAiIcon(): AiDialogControl {
         const aiIcon = this.getOrCreateAiIcon();
+        const isContextToBeSetOnFocus = !!this.config.setContextOnFocus;
 
         this.config.pathElement.onFocusIn(() => {
+            const dataPath = this.getDataPath();
             aiIcon.setDataPath(this.getDataPath()).addClass('input-focused');
+
+            if (isContextToBeSetOnFocus) {
+                new AiContentOperatorSetContextEvent(dataPath).fire();
+            }
         });
 
         this.config.pathElement.onFocusOut(() => aiIcon.removeClass('input-focused'));
