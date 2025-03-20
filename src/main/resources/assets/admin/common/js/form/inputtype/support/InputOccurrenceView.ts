@@ -226,6 +226,7 @@ export class InputOccurrenceView
                 getPath: () => this.getDataPath(),
                 pathElement: this.inputElement,
                 aiButtonContainer: this.inputTypeView,
+                setContextOnFocus: true,
             });
             return;
         }
