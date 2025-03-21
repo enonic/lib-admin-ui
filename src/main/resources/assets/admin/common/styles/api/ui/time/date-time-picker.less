@@ -7,10 +7,13 @@
     .date-time-dialog {
       .picker-dialog(100%, 10px 0);
 
-      box-sizing: border-box;
-      text-align: center;
+      width: 100%;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
 
       .picker-buttons {
+        width: 100%;
         padding: 0 20px;
         display: flex;
         flex-direction: row;
@@ -25,15 +28,9 @@
           .picker-dialog-button(@form-button-bg, 0);
         }
 
-        /*
-        .default-button {
-          background-color: @form-button-bg;
-          padding: 4px 19px 4px 19px;
-          position: relative;
-          display: inline-block;
-          margin: 10px 10px 9px 20px;
+        &:empty {
+          display: none;
         }
-         */
       }
 
       .notSelectable();
@@ -42,17 +39,21 @@
 
       .date-picker-dialog,
       .time-picker-dialog {
-        display: inline-block;
         position: static;
-        vertical-align: middle;
+        display: flex;
+        align-items: center;
         box-shadow: none;
+      }
+
+      .date-picker-dialog {
+        flex-direction: column;
       }
     }
   }
 
-  &.hide-ok-button {
-    .ok-button {
-      display: none !important;
+  &.expanded {
+    .date-time-dialog {
+      display: flex !important;
     }
   }
 

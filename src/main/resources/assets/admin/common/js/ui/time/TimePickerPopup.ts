@@ -291,24 +291,19 @@ export class TimePickerPopup
             const hourContainer: LiEl = new LiEl();
             this.appendChild(hourContainer);
 
-            this.nextHour.appendChild(new SpanEl());
-            hourContainer.appendChild(this.nextHour);
-            hourContainer.appendChild(this.hour);
-
             this.prevHour.appendChild(new SpanEl());
-            hourContainer.appendChild(this.prevHour);
+            this.nextHour.appendChild(new SpanEl());
 
-            this.appendChild(new LiEl('colon'));
+            hourContainer.appendChildren(this.prevHour, this.hour, this.nextHour);
 
             const minuteContainer: LiEl = new LiEl();
             this.appendChild(minuteContainer);
 
-            this.nextMinute.appendChild(new SpanEl());
-            minuteContainer.appendChild(this.nextMinute);
-            minuteContainer.appendChild(this.minute);
-
             this.prevMinute.appendChild(new SpanEl());
-            minuteContainer.appendChild(this.prevMinute);
+            this.nextMinute.appendChild(new SpanEl());
+
+            minuteContainer.appendChildren(this.prevMinute, this.minute, this.nextMinute);
+
             if (this.timezone) {
                 const timezoneContainer: LiEl = new LiEl('timezone');
                 timezoneContainer.appendChild(this.timezoneLocation);

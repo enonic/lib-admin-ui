@@ -15,6 +15,8 @@ export class DateTimePickerPopupBuilder {
 
     manageTime: boolean;
 
+    closeOnSelect: boolean;
+
     defaultValue: Date;
 
     hours: number;
@@ -43,6 +45,11 @@ export class DateTimePickerPopupBuilder {
     setDefaultValue(value: Date): DateTimePickerPopupBuilder {
          this.defaultValue = value;
          return this;
+    }
+
+    setCloseOnSelect(value: boolean): DateTimePickerPopupBuilder {
+        this.closeOnSelect = value;
+        return this;
     }
 
     setDate(date: Date): DateTimePickerPopupBuilder {
@@ -96,8 +103,12 @@ export class DateTimePickerPopup
 
     private readonly defaultValueButton : Button;
 
+    private readonly builder: DateTimePickerPopupBuilder
+
     constructor(builder: DateTimePickerPopupBuilder) {
         super('date-time-dialog');
+
+        this.builder = builder;
 
         if (builder.defaultValue) {
             this.defaultValueButton = this.createDefaultValueButton(builder.defaultValue);
@@ -148,6 +159,7 @@ export class DateTimePickerPopup
     }
 
     protected getChildElements(): Element[] {
+        let inheritedChildElements = super.getChildElements();
         const popupElements: Element[] = [];
 
         if (this.datePickerPopup) {
@@ -163,7 +175,11 @@ export class DateTimePickerPopup
             wrapper.appendChild(this.defaultValueButton);
         }
 
-        wrapper.appendChildren(...super.getChildElements());
+        if (this.builder.closeOnSelect) {
+            inheritedChildElements = inheritedChildElements.filter((element) => element !== this.getSubmitButton());
+        }
+
+        wrapper.appendChildren(...inheritedChildElements);
         popupElements.push(wrapper);
 
         return popupElements.concat(popupElements);
