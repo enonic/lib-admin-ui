@@ -90,10 +90,6 @@ export class DateTimePicker
     constructor(builder: DateTimePickerBuilder, cls: string = '') {
         super(builder, `date-time-picker ${cls}`);
 
-        if (this.builder.closeOnSelect) {
-            this.addClass('hide-ok-button');
-        }
-
         this.initData();
     }
 
@@ -131,7 +127,8 @@ export class DateTimePicker
         const popupBuilder: DateTimePickerPopupBuilder = new DateTimePickerPopupBuilder()
             .setDate(this.selectedDateTime)
             .setManageDate(this.builder.manageDate)
-            .setManageTime(this.builder.manageTime);
+            .setManageTime(this.builder.manageTime)
+            .setCloseOnSelect(this.builder.closeOnSelect);
 
         if (!this.selectedDateTime) {
             popupBuilder.setDefaultTime(this.builder.defaultTime);
