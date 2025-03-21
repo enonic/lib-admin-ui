@@ -14,13 +14,14 @@
     }
 
     .hide-validation-errors {
-      &.invalid {
+      &.invalid,
+      .input-view.invalid,
+      .form-item-set-occurrence-view.invalid {
         border: 0 none !important;
       }
 
       .input-view {
         &.invalid {
-          border: 0 none !important;
           padding: 0;
         }
 
