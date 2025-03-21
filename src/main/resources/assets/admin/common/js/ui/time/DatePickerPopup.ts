@@ -12,8 +12,15 @@ export class DatePickerPopupBuilder {
 
     date: Date;
 
+    closeOnSelect: boolean;
+
     setDate(date: Date): DatePickerPopupBuilder {
         this.date = date;
+        return this;
+    }
+
+    setCloseOnSelect(value: boolean): DatePickerPopupBuilder {
+        this.closeOnSelect = value;
         return this;
     }
 
