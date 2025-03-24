@@ -37,6 +37,8 @@ export class SelectableListBoxKeyNavigator<I> {
                 new KeyBinding('shift+up', this.handleKeyUpWithShift.bind(this)),
                 new KeyBinding('shift+down', this.handleKeyDownWithShift.bind(this)),
             ];
+
+            this.selectableWrapper.setSelectAllItemsBetweenHandler(this.selectItemsBetween.bind(this));
         }
 
         this.keyBindings = this.keyBindings.concat(this.createKeyBindings());
@@ -98,6 +100,10 @@ export class SelectableListBoxKeyNavigator<I> {
     }
 
     protected handleKeyUpWithShift(event: Mousetrap.ExtendedKeyboardEvent): void {
+        this.handleUpOrDownWithShift(event, 'up');
+    }
+
+    protected handleUpOrDownWithShift(event: Mousetrap.ExtendedKeyboardEvent, direction: 'up' | 'down'): void {
         const lastSelectedItem = this.selectableWrapper.getSelectedItems().pop();
 
         if (!lastSelectedItem) {
@@ -110,16 +116,23 @@ export class SelectableListBoxKeyNavigator<I> {
         if (wasHighlightMode) { // first need to set checkbox to selected if it was not checked
             this.selectableWrapper.select(lastSelectedItem);
             this.scrollIfCloseToTop(lastSelectedItem);
-        } else { // looking  non-selected item to select in up direction
-            let itemToSelect = this.getPreviousItem(lastSelectedItem);
-
-            while (itemToSelect && this.selectableWrapper.isItemSelected(itemToSelect)) {
-                itemToSelect = this.getPreviousItem(itemToSelect);
-            }
+        } else { // looking non-selected item to select in specified direction
+            let itemToSelect = this.getNextItemFrom(lastSelectedItem, direction);
 
             if (itemToSelect) {
-                this.selectableWrapper.select(itemToSelect);
-                this.scrollIfCloseToTop(itemToSelect);
+                if (this.selectableWrapper.isItemSelected(itemToSelect)) {
+                    const itemFromTheOtherEnd = direction === 'up' ? this.getNextItem(lastSelectedItem) : this.getPreviousItem(
+                        lastSelectedItem);
+
+                    if (itemFromTheOtherEnd && this.selectableWrapper.isItemSelected(itemFromTheOtherEnd)) {
+                        this.selectableWrapper.select(this.findFirstNonSelectedItemFrom(itemToSelect, direction));
+                    } else {
+                        this.selectableWrapper.deselect(lastSelectedItem);
+                    }
+                } else {
+                    this.selectableWrapper.select(itemToSelect);
+                    this.scrollIfCloseToBottom(itemToSelect);
+                }
             }
         }
     }
@@ -149,30 +162,7 @@ export class SelectableListBoxKeyNavigator<I> {
     }
 
     protected handleKeyDownWithShift(event: Mousetrap.ExtendedKeyboardEvent): void {
-        const lastSelectedItem = this.selectableWrapper.getSelectedItems().pop();
-
-        if (!lastSelectedItem) {
-            return;
-        }
-
-        const wasHighlightMode = this.selectableWrapper.getSelectionMode() === SelectionMode.HIGHLIGHT;
-        this.selectableWrapper.setSelectionMode(SelectionMode.SELECT);
-
-        if (wasHighlightMode) { // first need to set checkbox to selected if it was not checked
-            this.selectableWrapper.select(lastSelectedItem);
-            this.scrollIfCloseToBottom(lastSelectedItem);
-        } else { // looking next non-selected item to select
-            let itemToSelect = this.getNextItem(lastSelectedItem);
-
-            while (itemToSelect && this.selectableWrapper.isItemSelected(itemToSelect)) {
-                itemToSelect = this.getNextItem(itemToSelect);
-            }
-
-            if (itemToSelect) {
-                this.selectableWrapper.select(itemToSelect);
-                this.scrollIfCloseToBottom(itemToSelect);
-            }
-        }
+        this.handleUpOrDownWithShift(event, 'down');
     }
 
     protected handleKeyDownWithoutShift(event: Mousetrap.ExtendedKeyboardEvent): void {
@@ -226,4 +216,57 @@ export class SelectableListBoxKeyNavigator<I> {
         }
     }
 
+    protected selectItemsBetween(item1: I, item2: I, silent?: boolean): void { // selects including item1 and item2
+        const itemView1 = this.rootList.getItemView(item1);
+        const itemView2 = this.rootList.getItemView(item2);
+
+        if (!itemView1 || !itemView2) {
+            return;
+        }
+
+        const [fromItem, toItem] = itemView1.getEl().getBoundingClientRect().top < itemView2.getEl().getBoundingClientRect().top
+                                      ? [item1, item2]
+                                      : [item2, item1];
+
+        const toItemId = this.rootList.getIdOfItem(toItem);
+        const itemsToSelect = [];
+
+        let nextItem = fromItem;
+        let reachedToItem = false;
+
+        while (nextItem && !reachedToItem) {
+            const nextItemId = this.rootList.getIdOfItem(nextItem);
+
+            if (nextItemId === toItemId) {
+                reachedToItem = true;
+            }
+
+            itemsToSelect.push(nextItem);
+
+            nextItem = this.getNextItem(nextItem);
+        }
+
+        if (reachedToItem) {
+            this.selectableWrapper.select(itemsToSelect, silent);
+        }
+
+    }
+
+    protected findFirstNonSelectedItemFrom(item: I, direction: 'up' | 'down'): I | undefined {
+        let itemToCheck = this.getNextItemFrom(item, direction);
+
+        while (itemToCheck) {
+            if (!this.selectableWrapper.isItemSelected(itemToCheck)) {
+                return itemToCheck;
+            }
+
+            itemToCheck = this.getNextItemFrom(itemToCheck, direction);
+        }
+
+        return undefined;
+    }
+
+    protected getNextItemFrom(item: I, direction: 'up' | 'down') {
+        return direction === 'up' ? this.getPreviousItem(item) : this.getNextItem(item);
+    }
 }

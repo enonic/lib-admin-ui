@@ -44,6 +44,8 @@ export class SelectableListBoxWrapper<I>
 
     protected selectionNavigator?: SelectableListBoxNavigator<I>;
 
+    protected selectItemsBetweenHandler?: (item1: I, item2: I) => void;
+
     constructor(listBox: ListBox<I>, options?: SelectableListBoxDropdownOptions<I>) {
         super('selectable-listbox-wrapper ' + (options?.className || ''));
 
@@ -92,8 +94,30 @@ export class SelectableListBoxWrapper<I>
 
         const clickHandler = (event: MouseEvent) => {
             if (this.isIntractableViewElement(event.target as HTMLElement)) {
-                if (this.options.highlightMode) {
-                    this.selectionMode = SelectionMode.HIGHLIGHT;
+                if (this.options.highlightMode) { // for multiselect
+                    if (event.ctrlKey || event.metaKey) { // handle click with ctrl as click on selection checkbox, but unselect highlighted item if present
+                        if (this.selectionMode === SelectionMode.HIGHLIGHT) { // if switching mode
+                            this.deselectAll();
+                        }
+
+                        this.selectionMode = SelectionMode.SELECT;
+                    } else if (event.shiftKey) { // click with shift
+                        if (this.selectedItems.size === 0) { // do nothing, the item gets selected
+                            this.selectionMode = SelectionMode.SELECT;
+                        } else if (this.selectedItems.size === 1 && this.isSelected(id)) { // this item is the only selected
+                            // do nothing, it gets deselected
+                        } else { // select all items between last selected
+                            this.selectionMode = SelectionMode.SELECT;
+                            this.selectItemsBetweenHandler?.(this.getSelectedItems().pop(), item);
+                            this.deselect(item, true); // deselect last clicked item so it gets selected further
+                        }
+                    } else { // normal click
+                        if (this.selectionMode === SelectionMode.SELECT) { // if switching mode
+                            this.deselectAll();
+                        }
+
+                        this.selectionMode = SelectionMode.HIGHLIGHT;
+                    }
                 }
 
                 this.handleUserToggleAction(item);
@@ -113,6 +137,12 @@ export class SelectableListBoxWrapper<I>
         wrapper.onContextMenu((event: MouseEvent) => {
             if (!this.isSelected(id)) {
                 clickHandler(event); // right click must select item
+            }
+        });
+
+        wrapper.onMouseDown((event: MouseEvent) => {
+            if (event.shiftKey) { // if shift-selecting items then don't select text in-between
+                event.preventDefault();
             }
         });
 
@@ -414,5 +444,9 @@ export class SelectableListBoxWrapper<I>
         }
 
         return true;
+    }
+
+    setSelectAllItemsBetweenHandler(handler: (item1: I, item2: I) => void): void {
+        this.selectItemsBetweenHandler = handler;
     }
 }
