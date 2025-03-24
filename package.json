@@ -30,7 +30,7 @@
     "jquery-ui": "^1.14.1",
     "mousetrap": "^1.6.5",
     "q": "^1.5.1",
-    "validator": "^13.12.0"
+    "validator": "^13.15.0"
   },
   "peerDependencies": {
     "postcss": "^8.2.2"
