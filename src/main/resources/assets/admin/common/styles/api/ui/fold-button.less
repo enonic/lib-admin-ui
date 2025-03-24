@@ -1,11 +1,12 @@
 .fold-button {
-  .button(@admin-font-gray2, transparent, @admin-font-gray3, transparent, 7px 25px 7px 14px);
+  .button(@admin-dark-gray, transparent, @admin-black, transparent, 7px 14px);
 
   height: 100%;
   text-align: center;
   overflow: visible;
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   position: relative; // for the dropdown to position itself
 
   .fold-label{
@@ -14,13 +15,16 @@
 
   &::after {
     content: "";
-    position: absolute;
-    right: 5px;
+    margin-left: 10px;
     width: 0;
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 7px solid @admin-font-gray2;
+    border-top: 7px solid @admin-dark-gray;
+  }
+
+  &:hover::after {
+    border-top-color: @admin-black;
   }
 
   .@{_COMMON_PREFIX}dropdown {
