@@ -11,7 +11,11 @@ export class SelectableTreeListBoxKeyNavigator<I> extends SelectableListBoxKeyNa
 
         // If the item is expanded and has children, return the first child
         if (!flat && treeListElement?.hasChildren() && treeListElement.isExpanded()) {
-            return treeListElement.getItems()[0];
+            const nextItem = treeListElement.getItems()[0];
+
+            if (nextItem) {
+                return nextItem;
+            }
         }
 
         const parentList = treeListElement?.getParentList();
@@ -43,7 +47,10 @@ export class SelectableTreeListBoxKeyNavigator<I> extends SelectableListBoxKeyNa
 
         if (listElement.isExpanded() && listElement.hasChildren()) {
             const lastChild = listElement.getItems().pop();
-            return this.getLastAvailableItem(listElement.getList(), lastChild);
+
+            if (lastChild) {
+                return this.getLastAvailableItem(listElement.getList(), lastChild);
+            }
         }
 
         return item;
