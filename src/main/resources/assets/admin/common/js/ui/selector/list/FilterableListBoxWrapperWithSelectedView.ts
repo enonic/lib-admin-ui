@@ -39,12 +39,14 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
         super.handleSelectionLimitReached();
 
         this.filterContainer.hide();
+        this.optionFilterInput.clear();
     }
 
     protected handleSelectionLimitIsNoLongerReached(): void {
         super.handleSelectionLimitIsNoLongerReached();
 
         this.filterContainer.show();
+        this.optionFilterInput.giveFocus();
     }
 
     protected doSelect(itemToSelect: I): void {

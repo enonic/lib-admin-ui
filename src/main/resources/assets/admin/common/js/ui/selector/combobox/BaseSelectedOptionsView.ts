@@ -117,7 +117,7 @@ export class BaseSelectedOptionsView<T>
         let selectedOption: SelectedOption<T> = this.createSelectedOption(option);
 
         let optionView = selectedOption.getOptionView();
-        optionView.onRemoveClicked(() => this.removeOption(option));
+        optionView.onRemoveClicked(() => this.removeOption(optionView.getOption()));
 
         this.getSelectedOptions().push(selectedOption);
 
