@@ -186,6 +186,7 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         return this.layoutOccurrence(occurrence, occurrenceView, validate).then(() => {
             // hiding validation error on adding new items until validate() is invoked
             occurrenceView.addClass('hide-validation-errors');
+            occurrenceView.giveFocus();
             return occurrenceView;
         });
     }
@@ -327,7 +328,6 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         return occurrenceView.layout(validate).then(() => {
             this.resetOccurrenceIndexes();
             this.refreshOccurrenceViews();
-            occurrenceView.giveFocus();
             this.notifyOccurrenceRendered(occurrence, occurrenceView, validate);
             return Q.resolve();
         }).catch((reason) => {
