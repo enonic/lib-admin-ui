@@ -144,6 +144,7 @@ export abstract class FormSetOccurrenceView
     protected initElements(): void {
         super.initElements();
 
+        this.addClass('collapsed');
         this.formItemViews = [];
         this.occurrenceContainerClassName = `${this.config.classPrefix}occurrences-container`;
         this.formSetOccurrencesContainer = new DivEl(this.occurrenceContainerClassName);
