@@ -118,7 +118,6 @@ export class InputView
                 });
 
                 this.addButton = new Button(i18n('action.add'));
-                this.addButton.addClass('small');
                 this.addButton.onClicked(() => inputTypeViewNotManagingAdd.createAndAddOccurrence());
 
                 this.bottomButtonRow = new DivEl('bottom-button-row');
