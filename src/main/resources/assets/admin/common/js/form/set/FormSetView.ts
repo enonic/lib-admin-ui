@@ -576,7 +576,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         const addButton: Button = new Button(i18n('action.add'));
         addButton
             .setTitle(i18n('button.add', this.formSet.getLabel()))
-            .addClass('small')
             .onClicked(() => {
                 this.formItemOccurrences
                     .addNewOccurrence(this.formItemOccurrences.countOccurrences())

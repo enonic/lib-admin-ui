@@ -75,7 +75,7 @@
         flex-wrap: wrap;
         margin: 0;
         box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
-        padding: 10px 10px 10px 13px;
+        padding: 10px 10px 15px 13px;
 
         .more-button {
           width: 23px;
@@ -153,6 +153,12 @@
         }
 
         &.collapsed {
+          padding-bottom: 10px;
+
+          .single-selection-header {
+            margin-bottom: 0;
+          }
+
           .form-occurrence-draggable-label {
             padding-bottom: 0;
 
@@ -171,15 +177,13 @@
 
     > .bottom-button-row {
       box-sizing: border-box;
-      margin-top: 10px;
-      height: 28px;
+      margin-top: 15px;
 
       button {
         max-width: 300px;
 
         span {
           display: block;
-          line-height: 28px;
           .ellipsis();
         }
       }
@@ -232,7 +236,7 @@
         > .form-item-set-occurrence-view,
         .form-option-set-occurrence-view {
           &:not(:last-child) {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
           }
 
           .form-occurrence-draggable-label {
