@@ -52,24 +52,25 @@
       flex-grow: 1;
     }
 
+    .remove,
+    .edit {
+      .focusable();
+
+      font-size: 14px;
+      text-decoration: none;
+      cursor: pointer;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+      width: 24px;
+    }
+
     .edit {
       .icon-pencil;
 
       order: 1;
-      margin-right: 10px;
-      position: relative;
-      top: 1px;
-    }
-
-    .remove,
-    .edit {
-      .icon;
-      .focusable();
-
-      border: 1px solid transparent;
-      font-size: 12px;
-      text-decoration: none;
-      cursor: pointer;
     }
 
     .remove {
@@ -90,6 +91,14 @@
   &.sortable:not(.readonly) {
     .selected-option {
       cursor: move;
+
+      .names-and-icon-view {
+        cursor: move;
+
+        .@{_COMMON_PREFIX}names-view > * {
+          cursor: move;
+        }
+      }
     }
   }
 }
