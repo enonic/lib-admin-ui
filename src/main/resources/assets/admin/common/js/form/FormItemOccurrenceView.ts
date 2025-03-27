@@ -113,6 +113,10 @@ export abstract class FormItemOccurrenceView
         return false;
     }
 
+    hasNonDefaultNumberOfOccurrences(): boolean {
+        return false;
+    }
+
     isEmpty(): boolean {
         throw Error('Must be implemented by inheritor');
     }
