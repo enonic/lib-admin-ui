@@ -35,7 +35,14 @@ select {
 &.@{_CLS_PREFIX}focused,
 :focus-visible,
 :focus {
-  outline: -webkit-focus-ring-color auto 1px;
-  outline: focus-ring auto 1px;
+  outline: rgb(0, 95, 204) auto 1px;
   outline-offset: -1px;
+}
+
+@-moz-document url-prefix() {
+  &.@{_CLS_PREFIX}focused,
+  :focus-visible,
+  :focus {
+    outline-offset: -2px;
+  }
 }
