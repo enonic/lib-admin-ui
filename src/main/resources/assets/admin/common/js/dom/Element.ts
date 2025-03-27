@@ -265,7 +265,9 @@ export class Element {
         }
 
         if (ObjectHelper.isDefined(this['tabbable']) && this['tabbable']) {
-            this.makeTabbable()
+            if (this.getEl().getTabIndex() !== -1) {
+                this.makeTabbable();
+            }
         } else {
             this.removeTabbable();
         }
@@ -590,12 +592,12 @@ export class Element {
     }
 
     makeTabbable(): Element {
-        this.getEl().setTabIndex(0);
+        this.setTabIndex(0);
         return this;
     }
 
     removeTabbable(): Element {
-        this.getEl().setTabIndex(-1);
+        this.setTabIndex(-1);
         return this;
     }
 
