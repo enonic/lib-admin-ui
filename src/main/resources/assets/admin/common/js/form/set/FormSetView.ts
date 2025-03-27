@@ -242,6 +242,10 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         return this.formItemOccurrences.hasNonDefaultValues();
     }
 
+    hasNonDefaultNumberOfOccurrences(): boolean {
+        return this.formItemOccurrences.hasNonDefaultNumberOfOccurrences();
+    }
+
     isEmpty(): boolean {
         return this.formItemOccurrences.isEmpty();
     }

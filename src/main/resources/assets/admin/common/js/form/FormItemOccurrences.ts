@@ -227,6 +227,11 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         return this.occurrenceViews.some((currOccurrenceView: V) => currOccurrenceView.hasNonDefaultValues());
     }
 
+    hasNonDefaultNumberOfOccurrences(): boolean {
+        return (this.allowedOccurrences.required() && this.allowedOccurrences.getMinimum() !== this.occurrenceViews.length) ||
+               this.occurrenceViews.some((currOccurrenceView: V) => currOccurrenceView.hasNonDefaultNumberOfOccurrences());
+    }
+
     isEmpty(): boolean {
         return this.occurrenceViews.every((currOccurrenceView: V) => currOccurrenceView.isEmpty());
     }

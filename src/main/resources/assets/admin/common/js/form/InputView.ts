@@ -218,6 +218,10 @@ export class InputView
         });
     }
 
+    hasNonDefaultNumberOfOccurrences(): boolean {
+        return this.input.getOccurrences().required() && this.propertyArray.getSize() !== this.input.getOccurrences().getMinimum();
+    }
+
     isEmpty(): boolean {
         return !this.propertyArray.some((property: Property) => {
             return !StringHelper.isEmpty(property.getValue().getString());
