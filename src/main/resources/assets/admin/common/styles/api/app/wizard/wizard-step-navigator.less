@@ -9,12 +9,6 @@
     cursor: pointer;
 
     &.step-icon {
-      &.active::before {
-        line-height: 0;
-        padding-left: 15px;
-        padding-right: 18px;
-      }
-
       &::before {
         font-size: 18px;
       }
@@ -24,46 +18,48 @@
       color: darken(@admin-font-gray1, 10%);
     }
 
-    &:focus {
-      &::before,
-      &::after {
-        border: none !important;
-      }
-    }
-
     &.active {
       background-color: white;
       color: @admin-font-gray3;
       padding-bottom: 0;
+      z-index: 0;
 
-      &::before {
-        display: block;
-        float: left;
-        height: 0;
-        width: 0;
-        margin-top: -10px;
-        border-top: 20px solid transparent;
-        border-bottom: 20px solid transparent;
-        border-left: 10px solid @admin-bg-light-gray;
-        margin-left: -25px;
+      .label {
+        position: relative;
+
+        &::before,
+        &::after {
+          content: " ";
+          display: block;
+          position: absolute;
+          top: 0;
+          z-index: -1;
+          margin-top: -10px;
+          border-top: 20px solid transparent;
+          border-bottom: 20px solid transparent;
+          border-left: 10px solid;
+        }
+
+        &::before {
+          border-left-color: @admin-bg-light-gray;
+          margin-left: -25px;
+          left: 0;
+        }
+
+        &::after {
+          border-left-color: @admin-white;
+          margin-left: 10px;
+          margin-right: -25px;
+          right: 0;
+        }
       }
 
-      &:not(.step-icon)::before {
-        content: " ";
-      }
-
-      &::after {
-        content: " ";
-        display: block;
-        float: right;
-        height: 0;
-        width: 0;
-        margin-top: -10px;
-        border-top: 20px solid transparent;
-        border-bottom: 20px solid transparent;
-        border-left: 10px solid white;
-        margin-left: 10px;
-        margin-right: -25px;
+      &.step-icon {
+        .label::before {
+          line-height: 0;
+          padding-left: 15px;
+          padding-right: 18px;
+        }
       }
     }
 
