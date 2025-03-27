@@ -80,6 +80,10 @@ export class FormItemView
         return false; //to be implemented on demand in inheritors
     }
 
+    hasNonDefaultNumberOfOccurrences(): boolean {
+        return false; //to be implemented on demand in inheritors
+    }
+
     isEmpty(): boolean {
         throw new Error('Must be implemented by inheritor');
     }

@@ -247,6 +247,10 @@ export abstract class FormSetOccurrenceView
         return this.formItemViews.some(formItemView => formItemView.hasNonDefaultValues());
     }
 
+    hasNonDefaultNumberOfOccurrences(): boolean {
+        return this.formItemViews.some(formItemView => formItemView.hasNonDefaultNumberOfOccurrences());
+    }
+
     isEmpty(): boolean {
         return this.formItemViews.every((formItemView: FormItemView) => formItemView.isEmpty());
     }

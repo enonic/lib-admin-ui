@@ -398,6 +398,10 @@ export class FormOptionSetOptionView
         return this.formItemViews.some(v => v.hasNonDefaultValues());
     }
 
+    hasNonDefaultNumberOfOccurrences(): boolean {
+        return this.formItemViews.some(v => v.hasNonDefaultNumberOfOccurrences());
+    }
+
     private cleanValidationForThisOption() {
         const regExp = /-view(\s|$)/;
 
