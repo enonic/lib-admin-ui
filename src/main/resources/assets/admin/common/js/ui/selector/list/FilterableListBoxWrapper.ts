@@ -222,8 +222,8 @@ export class FilterableListBoxWrapper<I>
     }
 
     protected handleKeyDown(event: KeyboardEvent): void {
-        if (!this.listBox.isVisible() && KeyHelper.isArrowDownKey(event)) {
-            this.listBox.setVisible(true);
+        if (!this.dropdownShown && KeyHelper.isArrowDownKey(event)) {
+            this.showDropdown();
         }
     }
 
