@@ -86,9 +86,13 @@ export class SelectableTreeListBoxKeyNavigator<I> extends SelectableListBoxKeyNa
         if (lastSelectedItem) {
             event.preventDefault();
 
-            this.selectableWrapper.setSelectionMode(
-                this.selectableWrapper.getSelectionMode() === SelectionMode.HIGHLIGHT ? SelectionMode.SELECT : SelectionMode.HIGHLIGHT);
-            this.selectableWrapper.select(lastSelectedItem);
+            if (this.selectableWrapper.hasHighlightMode()) {
+                this.selectableWrapper.setSelectionMode(
+                    this.selectableWrapper.getSelectionMode() === SelectionMode.HIGHLIGHT ? SelectionMode.SELECT : SelectionMode.HIGHLIGHT);
+                this.selectableWrapper.select(lastSelectedItem);
+            } else {
+                this.selectableWrapper.deselect(lastSelectedItem);
+            }
         }
     }
 }
