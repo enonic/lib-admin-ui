@@ -449,4 +449,8 @@ export class SelectableListBoxWrapper<I>
     setSelectAllItemsBetweenHandler(handler: (item1: I, item2: I) => void): void {
         this.selectItemsBetweenHandler = handler;
     }
+
+    hasHighlightMode(): boolean {
+        return this.options.highlightMode;
+    }
 }
