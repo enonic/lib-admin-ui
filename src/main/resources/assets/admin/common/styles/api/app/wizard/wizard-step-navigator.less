@@ -4,9 +4,9 @@
   overflow: hidden;
 
   .tab-bar-item {
-    float: left;
     padding: 10px 15px 11px 25px;
     cursor: pointer;
+    z-index: 0;
 
     &.step-icon {
       &::before {
@@ -22,7 +22,6 @@
       background-color: white;
       color: @admin-font-gray3;
       padding-bottom: 0;
-      z-index: 0;
 
       .label {
         position: relative;
