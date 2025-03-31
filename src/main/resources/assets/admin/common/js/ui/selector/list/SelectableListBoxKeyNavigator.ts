@@ -16,6 +16,10 @@ export class SelectableListBoxKeyNavigator<I> {
 
     protected hotkeysEnabled: boolean = true;
 
+    protected upKeyListeners: ((event: Mousetrap.ExtendedKeyboardEvent) => void)[] = [];
+
+    protected downKeyListeners: ((event: Mousetrap.ExtendedKeyboardEvent) => void)[] = [];
+
     constructor(selectableListBoxWrapper: SelectableListBoxWrapper<I>) {
         this.selectableWrapper = selectableListBoxWrapper;
         this.rootList = selectableListBoxWrapper.getList();
@@ -86,7 +90,18 @@ export class SelectableListBoxKeyNavigator<I> {
         KeyBindings.get().unshelveBindings(this.keyBindings);
     }
 
+    private notifyUpKeyListeners(event: Mousetrap.ExtendedKeyboardEvent): void {
+        this.upKeyListeners.some((listener) => listener(event));
+    }
+
+    private notifyDownKeyListeners(event: Mousetrap.ExtendedKeyboardEvent): void {
+        this.downKeyListeners.some((listener) => listener(event));
+    }
+
     protected handleKeyUpWithoutShift(event: Mousetrap.ExtendedKeyboardEvent): void {
+
+        this.notifyUpKeyListeners(event);
+
         this.selectableWrapper.setSelectionMode(SelectionMode.HIGHLIGHT);
         const lastSelectedItem = this.selectableWrapper.getSelectedItems().pop();
         const itemToSelect = lastSelectedItem ? this.getPreviousItem(lastSelectedItem) : this.rootList.getItems().pop();
@@ -108,6 +123,12 @@ export class SelectableListBoxKeyNavigator<I> {
 
         if (!lastSelectedItem) {
             return;
+        }
+
+        if (direction === 'up') {
+            this.notifyUpKeyListeners(event);
+        } else {
+            this.notifyDownKeyListeners(event);
         }
 
         const wasHighlightMode = this.selectableWrapper.getSelectionMode() === SelectionMode.HIGHLIGHT;
@@ -166,6 +187,9 @@ export class SelectableListBoxKeyNavigator<I> {
     }
 
     protected handleKeyDownWithoutShift(event: Mousetrap.ExtendedKeyboardEvent): void {
+
+        this.notifyDownKeyListeners(event);
+
         this.selectableWrapper.setSelectionMode(SelectionMode.HIGHLIGHT);
         const lastSelectedItem = this.selectableWrapper.getSelectedItems().pop();
         const itemToSelect = lastSelectedItem ? this.getNextItem(lastSelectedItem) : this.rootList.getItems()[0];
@@ -176,6 +200,14 @@ export class SelectableListBoxKeyNavigator<I> {
             event.preventDefault();
             this.scrollIfCloseToBottom(itemToSelect);
         }
+    }
+
+    public onKeyUp(listener: (event: Mousetrap.ExtendedKeyboardEvent) => void): void {
+        this.upKeyListeners.push(listener);
+    }
+
+    public onKeyDown(listener: (event: Mousetrap.ExtendedKeyboardEvent) => void): void {
+        this.downKeyListeners.push(listener);
     }
 
     protected onLeftKeyPress() {
@@ -225,8 +257,8 @@ export class SelectableListBoxKeyNavigator<I> {
         }
 
         const [fromItem, toItem] = itemView1.getEl().getBoundingClientRect().top < itemView2.getEl().getBoundingClientRect().top
-                                      ? [item1, item2]
-                                      : [item2, item1];
+                                   ? [item1, item2]
+                                   : [item2, item1];
 
         const toItemId = this.rootList.getIdOfItem(toItem);
         const itemsToSelect = [];
