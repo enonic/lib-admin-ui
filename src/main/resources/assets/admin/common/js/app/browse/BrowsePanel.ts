@@ -19,6 +19,8 @@ import {ViewItem} from '../view/ViewItem';
 import {AppHelper} from '../../util/AppHelper';
 import {SplitPanelSize} from '../../ui/panel/SplitPanelSize';
 import {SelectableListBoxPanel} from '../../ui/panel/SelectableListBoxPanel';
+import {SelectionChange} from '../../util/SelectionChange';
+import {SelectableListBoxKeyNavigator} from '../../ui/selector/list/SelectableListBoxKeyNavigator';
 
 export class BrowsePanel
     extends Panel {
@@ -42,7 +44,7 @@ export class BrowsePanel
 
     protected toggleFilterPanelButton: ActionButton;
 
-    private debouncedActionsAndPreviewUpdate: () => void;
+    protected keyNavigator: SelectableListBoxKeyNavigator<ViewItem>;
 
     constructor() {
         super();
@@ -53,6 +55,7 @@ export class BrowsePanel
 
     protected initElements() {
         this.selectableListBoxPanel = this.createListBoxPanel();
+        this.keyNavigator = this.createKeyNavigator();
         this.filterPanel = this.createFilterPanel();
         this.browseToolbar = this.createToolbar();
 
@@ -69,8 +72,6 @@ export class BrowsePanel
             this.gridAndToolbarPanel = new Panel();
             this.filterAndGridSplitPanel = this.setupFilterPanel();
         }
-
-        this.debouncedActionsAndPreviewUpdate = AppHelper.debounce(this.updateActionsAndPreview.bind(this), 250);
     }
 
     protected initListeners() {
@@ -104,26 +105,61 @@ export class BrowsePanel
     private initTreeGridListeners() {
         this.selectableListBoxPanel?.onDataChanged(this.handleDataChanged.bind(this));
 
-        const selectionChangedListener = AppHelper.debounce(this.handleTreeListSelectionChanged.bind(this), 250);
+        let recentlySelected = false;
+        let recentlySelectedTimeout = 0;
+        // Every selection change fires deselect and select events
+        // Use 50ms debounce to prevent handling deselect event
+        // Keep debounce time minimal as it affects user perception after selecting single content
+        const selectionChangedListener = AppHelper.debounce((selection) => {
+            let delayedHandler = true;
+            if (!recentlySelected) {
+                this.handleTreeListSelectionChanged(selection);
+                delayedHandler = false;
+            }
+
+            recentlySelected = true;
+
+            if (recentlySelectedTimeout) {
+                clearTimeout(recentlySelectedTimeout);
+            }
+            recentlySelectedTimeout = window.setTimeout(() => {
+                recentlySelected = false;
+                if (delayedHandler) {
+                    this.handleTreeListSelectionChanged(selection);
+                }
+            }, 250);
+
+        }, 50);
+
         this.selectableListBoxPanel?.onSelectionChanged(selectionChangedListener);
+
+        if (this.keyNavigator) {
+            const upDownHandler = function () {
+                // mark recently selected content before selectionChangedListener reads it
+                // to prevent loading content when scrolling with keyboard
+                if (!recentlySelected) {
+                    recentlySelected = true;
+                }
+                return false;
+            }
+            this.keyNavigator.onKeyDown(upDownHandler);
+            this.keyNavigator.onKeyUp(upDownHandler);
+        }
 
         this.selectableListBoxPanel?.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
             this.toggleSelectionMode(isActive);
         });
     }
 
-    private handleTreeListSelectionChanged() {
-        const totalFullSelected: number = this.selectableListBoxPanel.getSelectedItems().length;
+    private handleTreeListSelectionChanged(selection: SelectionChange<any>) {
+
+        const totalSelected: number = this.selectableListBoxPanel.getSelectedItems().length;
 
         if (this.selectableListBoxPanel.getToolbar().getSelectionPanelToggler().isActive()) {
-            this.updateTreeListSelectionModeShownItems(totalFullSelected);
+            this.updateTreeListSelectionModeShownItems(totalSelected);
         }
 
-        if (totalFullSelected) {
-            this.debouncedActionsAndPreviewUpdate();
-        } else {
-            this.updateActionsAndPreview();
-        }
+        this.updateActionsAndPreview();
 
         if (this.selectableListBoxPanel.getToolbar().getSelectionPanelToggler().isActive()) {
             this.updateFilterPanelOnSelectionChange();
@@ -250,6 +286,10 @@ export class BrowsePanel
 
     protected createFilterPanel(): BrowseFilterPanel<ViewItem> {
         return null;
+    }
+
+    protected createKeyNavigator() {
+        return new SelectableListBoxKeyNavigator(this.selectableListBoxPanel.getWrapper());
     }
 
     protected showFilterPanel() {

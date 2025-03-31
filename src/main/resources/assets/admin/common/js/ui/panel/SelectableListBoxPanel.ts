@@ -55,6 +55,10 @@ export class SelectableListBoxPanel<I> extends Panel {
         return this.listBoxWrapper.getList().getItem(id);
     }
 
+    getWrapper(): SelectableListBoxWrapper<I> {
+        return this.listBoxWrapper;
+    }
+
     getToolbar(): ListBoxToolbar<I> {
         return this.listToolbar;
     }
