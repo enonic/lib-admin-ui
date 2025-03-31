@@ -19,6 +19,7 @@ import {ViewItem} from '../view/ViewItem';
 import {AppHelper} from '../../util/AppHelper';
 import {SplitPanelSize} from '../../ui/panel/SplitPanelSize';
 import {SelectableListBoxPanel} from '../../ui/panel/SelectableListBoxPanel';
+import {SelectionChange} from '../../util/SelectionChange';
 
 export class BrowsePanel
     extends Panel {
@@ -41,8 +42,6 @@ export class BrowsePanel
     protected toggleFilterPanelAction: Action;
 
     protected toggleFilterPanelButton: ActionButton;
-
-    private debouncedActionsAndPreviewUpdate: () => void;
 
     constructor() {
         super();
@@ -69,8 +68,6 @@ export class BrowsePanel
             this.gridAndToolbarPanel = new Panel();
             this.filterAndGridSplitPanel = this.setupFilterPanel();
         }
-
-        this.debouncedActionsAndPreviewUpdate = AppHelper.debounce(this.updateActionsAndPreview.bind(this), 250);
     }
 
     protected initListeners() {
@@ -104,7 +101,28 @@ export class BrowsePanel
     private initTreeGridListeners() {
         this.selectableListBoxPanel?.onDataChanged(this.handleDataChanged.bind(this));
 
-        const selectionChangedListener = AppHelper.debounce(this.handleTreeListSelectionChanged.bind(this), 250);
+
+        let recentlySelectedCount = 0;
+        let recentlySelectedTimeout = 0;
+        // When selection changes it fires deselect and select after each other
+        // But need to keep it down as it affects user perception after selecting single content
+        const selectionChangedListener = AppHelper.debounce((selection) => {
+            if (!recentlySelectedCount) {
+                this.handleTreeListSelectionChanged(selection);
+            }
+
+            recentlySelectedCount += 1;
+
+            if (recentlySelectedTimeout) {
+                clearTimeout(recentlySelectedTimeout);
+            }
+            recentlySelectedTimeout = window.setTimeout(() => {
+                recentlySelectedCount = 0;
+                this.handleTreeListSelectionChanged(selection);
+            }, 250);
+
+        }, 50);
+
         this.selectableListBoxPanel?.onSelectionChanged(selectionChangedListener);
 
         this.selectableListBoxPanel?.getToolbar().getSelectionPanelToggler().onActiveChanged(isActive => {
@@ -112,18 +130,15 @@ export class BrowsePanel
         });
     }
 
-    private handleTreeListSelectionChanged() {
-        const totalFullSelected: number = this.selectableListBoxPanel.getSelectedItems().length;
+    private handleTreeListSelectionChanged(selection: SelectionChange<any>) {
+
+        const totalSelected: number = this.selectableListBoxPanel.getSelectedItems().length;
 
         if (this.selectableListBoxPanel.getToolbar().getSelectionPanelToggler().isActive()) {
-            this.updateTreeListSelectionModeShownItems(totalFullSelected);
+            this.updateTreeListSelectionModeShownItems(totalSelected);
         }
 
-        if (totalFullSelected) {
-            this.debouncedActionsAndPreviewUpdate();
-        } else {
-            this.updateActionsAndPreview();
-        }
+        this.updateActionsAndPreview();
 
         if (this.selectableListBoxPanel.getToolbar().getSelectionPanelToggler().isActive()) {
             this.updateFilterPanelOnSelectionChange();
