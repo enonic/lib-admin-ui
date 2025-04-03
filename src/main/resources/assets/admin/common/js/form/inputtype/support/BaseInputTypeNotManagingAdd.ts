@@ -164,7 +164,7 @@ export abstract class BaseInputTypeNotManagingAdd
     update(propertyArray: PropertyArray, unchangedOnly?: boolean): Q.Promise<void> {
         this.propertyArray = propertyArray;
 
-        return this.inputOccurrences.update(propertyArray, unchangedOnly);
+        return this.inputOccurrences?.update(propertyArray, unchangedOnly);
     }
 
     reset(): void {
