@@ -125,15 +125,8 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
     }
 
     getLevel(): number {
-        let parentCounter = 0;
-        let parent = this.getParentList();
-
-        while (parent) {
-            parentCounter++;
-            parent = parent.getParentList();
-        }
-
-        return parentCounter;
+        const parent = this.getParentList();
+        return parent ? parent.getLevel() + 1 : 0;
     }
 
     doRender(): Q.Promise<boolean> {
@@ -154,7 +147,7 @@ export abstract class TreeListBox<I> extends LazyListBox<I> {
 export interface TreeListElementParams<I> {
     scrollParent: Element,
     parentItem?: I,
-    parentList?: TreeListBox<I>,
+    parentList: TreeListBox<I>,
     expandedContext?: TreeListBoxExpandedHolder,
 }
 
