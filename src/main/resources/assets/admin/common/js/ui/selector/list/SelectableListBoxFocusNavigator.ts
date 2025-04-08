@@ -4,7 +4,7 @@ import {ExtendedKeyboardEvent} from 'mousetrap';
 import {KeyBindings} from '../../KeyBindings';
 import {ListBox} from './ListBox';
 
-export class SelectableListBoxNavigator<I> {
+export class SelectableListBoxFocusNavigator<I> {
     protected readonly itemsWrappers = new Map<string, Element[]>();
     protected readonly listBox: ListBox<I>;
     protected keysBound: boolean;

@@ -11,7 +11,7 @@ import {i18n} from '../../../util/Messages';
 import {Body} from '../../../dom/Body';
 import {SelectionChange} from '../../../util/SelectionChange';
 import {LoadMask} from '../../mask/LoadMask';
-import {SelectableListBoxNavigator} from './SelectableListBoxNavigator';
+import {SelectableListBoxFocusNavigator} from './SelectableListBoxFocusNavigator';
 import {AriaHasPopup, AriaRole} from '../../WCAG';
 
 export interface FilterableListBoxOptions<I>
@@ -33,6 +33,8 @@ export class FilterableListBoxWrapper<I>
     protected optionFilterInput: OptionFilterInput;
 
     protected filterContainer: Element;
+
+    protected focusNavigator?: SelectableListBoxFocusNavigator<I>;
 
     protected selectionDelta = new Map<string, SelectionDeltaItem<I>>();
 
@@ -233,7 +235,7 @@ export class FilterableListBoxWrapper<I>
             return true;
         }
 
-        const focusedItem: I = this.selectionNavigator?.getFocusedItem();
+        const focusedItem: I = this.focusNavigator?.getFocusedItem();
 
         if (focusedItem) {
             if (this.selectionDelta.size === 0) {
@@ -246,6 +248,35 @@ export class FilterableListBoxWrapper<I>
         }
 
         return true;
+    }
+
+    protected addKeyNavigation(): void {
+        this.focusNavigator = this.createSelectionNavigator();
+    }
+
+    protected createSelectionNavigator(): SelectableListBoxFocusNavigator<I> {
+        return new SelectableListBoxFocusNavigator(this.listBox, this.itemsWrappers)
+            .setClickOutsideHandler(this.handleClickOutside.bind(this))
+            .setEnterKeyHandler(this.handlerEnterPressed.bind(this))
+            .setSpaceHandler(this.handleSpacePressed.bind(this))
+    }
+
+    protected handleSpacePressed(): boolean {
+        const focusedItem: I = this.focusNavigator.getFocusedItem();
+
+        if (focusedItem) {
+            this.handleUserToggleAction(focusedItem);
+            return false;
+        }
+
+        return true;
+    }
+
+    protected addItemWrapper(id: string, wrapper: Element): void {
+        super.addItemWrapper(id, wrapper);
+
+        // if list is already shown and new item added to it then add tabindex manually
+        this.focusNavigator?.notifyItemWrapperAdded(wrapper);
     }
 
     protected handleClickOutside(): boolean {
@@ -449,11 +480,5 @@ export class FilterableListBoxWrapper<I>
 
     isDropdownShown(): boolean {
         return this.dropdownShown;
-    }
-
-    protected createSelectionNavigator(): SelectableListBoxNavigator<I> {
-        return super.createSelectionNavigator()
-            .setClickOutsideHandler(this.handleClickOutside.bind(this))
-            .setEnterKeyHandler(this.handlerEnterPressed.bind(this))
     }
 }
