@@ -2,6 +2,7 @@ import {ApplicationKey} from '../application/ApplicationKey';
 import {Equitable} from '../Equitable';
 import {ObjectHelper} from '../ObjectHelper';
 import {WidgetDescriptorJson} from './json/WidgetDescriptorJson';
+import {CONFIG} from '../util/Config';
 
 export class Widget<B extends WidgetBuilder = WidgetBuilder, C extends WidgetConfig = WidgetConfig> {
 
@@ -41,6 +42,18 @@ export class Widget<B extends WidgetBuilder = WidgetBuilder, C extends WidgetCon
 
     public getIconUrl(): string {
         return this.iconUrl;
+    }
+
+    public getFullUrl(): string {
+        return `${this.getBaseUrl()}/${this.url}`;
+    }
+
+    public getFullIconUrl(): string {
+        return `${this.getBaseUrl()}${this.iconUrl}`;
+    }
+
+    private getBaseUrl(): string {
+        return (CONFIG.getString('widgetApiUrl') || '').replace(/\/+$/, '');
     }
 
     public getDisplayName(): string {
