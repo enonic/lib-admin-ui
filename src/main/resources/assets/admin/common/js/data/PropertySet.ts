@@ -23,6 +23,7 @@ import {ValueType} from './ValueType';
 import {ValueTypePropertySet} from './ValueTypePropertySet';
 import {Typable} from './Typable';
 import {PropertyMovedEvent} from './PropertyMovedEvent';
+import {StringHelper} from '../util/StringHelper';
 
 /**
  * A PropertySet manages a set of properties. The properties are grouped in arrays by name ([[Property.name]]).
@@ -65,6 +66,8 @@ export class PropertySet
     public static debug: boolean = false;
 
     private tree: PropertyTree = null;
+
+    private hashCode: number = 0;
 
     /**
      * The property that this PropertySet is the value of.
@@ -112,6 +115,12 @@ export class PropertySet
         this.propertyValueChangedEventHandler = (event) => {
             this.forwardPropertyValueChangedEvent(event);
         };
+
+        this.hashCode = StringHelper.hashCode(String(Date.now()));
+    }
+
+    toString(): string {
+        return `PropertySet[${this.hashCode}][${this.getPropertyPath().toString()}]`;
     }
 
     /**
@@ -1170,7 +1179,7 @@ export class PropertySet
 
     private registerPropertyArrayListeners(array: PropertyArray) {
         if (PropertySet.debug) {
-            console.debug('PropertySet[' + this.getPropertyPath().toString() + '].registerPropertyArrayListeners: ' + array.getName());
+            console.debug(`${this.toString()}.registerPropertyArrayListeners: ${array.getName()}`);
         }
 
         array.onPropertyAdded(this.propertyAddedEventHandler);
@@ -1181,8 +1190,7 @@ export class PropertySet
 
     private notifyChangedListeners(event: PropertyEvent) {
         if (PropertySet.debug) {
-            console.debug('PropertySet[' + this.getPropertyPath().toString() + '].notifyChangedListeners: ' +
-                          event.toString());
+            console.debug(`${this.toString()}.notifyChangedListeners: ${event.toString()}`);
         }
         this.changedListeners.forEach((listener) => listener(event));
     }
@@ -1190,16 +1198,14 @@ export class PropertySet
     private forwardPropertyAddedEvent(event: PropertyAddedEvent) {
         this.propertyAddedListeners.forEach((listener) => listener(event));
         if (PropertySet.debug) {
-            console.debug('PropertySet[' + this.getPropertyPath().toString() + '].forwardPropertyAddedEvent: ' +
-                          event.toString());
+            console.debug(`${this.toString()}.forwardPropertyAddedEvent: ${event.toString()}`);
         }
         this.notifyChangedListeners(event);
     }
 
     private forwardPropertyRemovedEvent(event: PropertyRemovedEvent) {
         if (PropertySet.debug) {
-            console.debug('PropertySet[' + this.getPropertyPath().toString() + '].forwardPropertyRemovedEvent: ' +
-                          event.toString());
+            console.debug(`${this.toString()}.forwardPropertyRemovedEvent: ${event.toString()}`);
         }
         this.propertyRemovedListeners.forEach((listener) => listener(event));
         this.notifyChangedListeners(event);
@@ -1207,8 +1213,7 @@ export class PropertySet
 
     private forwardPropertyMovedEvent(event: PropertyMovedEvent) {
         if (PropertySet.debug) {
-            console.debug('PropertySet[' + this.getPropertyPath().toString() + '].forwardPropertyMovedEvent: ' +
-                          event.toString());
+            console.debug(`${this.toString()}.forwardPropertyMovedEvent: ${event.toString()}`);
         }
         this.propertyMovedListeners.forEach((listener) => listener(event));
         this.notifyChangedListeners(event);
@@ -1216,8 +1221,7 @@ export class PropertySet
 
     private forwardPropertyValueChangedEvent(event: PropertyValueChangedEvent) {
         if (PropertySet.debug) {
-            console.debug('PropertySet[' + this.getPropertyPath().toString() + '].forwardPropertyValueChangedEvent: ' +
-                          event.toString());
+            console.debug(`${this.toString()}.forwardPropertyValueChangedEvent: ${event.toString()}`);
         }
         this.propertyValueChangedListeners.forEach((listener) => listener(event));
         this.notifyChangedListeners(event);

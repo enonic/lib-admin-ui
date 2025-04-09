@@ -60,6 +60,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
     protected stepNavigator: WizardStepNavigator;
     protected helpTextToggleButton: DivEl;
     private persistedItem: EQUITABLE;
+    private currentItem: EQUITABLE;
     private steps: WizardStep[] = [];
     private dataLoaded: boolean = false;
     private closedListeners: ((event: WizardClosedEvent) => void)[] = [];
@@ -424,12 +425,31 @@ export class WizardPanel<EQUITABLE extends Equitable>
         return Q<void>(null);
     }
 
+    /*
+    *   Item that is persisted in the backend.
+    *   Should not be modified on the client.
+    * */
     getPersistedItem(): EQUITABLE {
         return this.persistedItem;
     }
 
     isItemPersisted(): boolean {
         return this.persistedItem != null;
+    }
+
+    /*
+    *   Item being edited on the client.
+    *   This item is not persisted in the backend and is created from the persisted item in setPersistedItem.
+    * */
+    getCurrentItem(): EQUITABLE {
+        return this.currentItem;
+    }
+
+    /*
+    *   Method to create the currently edited item from the persisted item. ( e.g. to clone or remove some fields)
+    * */
+    protected convertToCurrentItem(persistedItem: EQUITABLE): EQUITABLE {
+        return Object.create(persistedItem);
     }
 
     /*
@@ -708,6 +728,7 @@ export class WizardPanel<EQUITABLE extends Equitable>
             console.debug('WizardPanel.setPersistedItem', newPersistedItem);
         }
         this.persistedItem = newPersistedItem;
+        this.currentItem = this.convertToCurrentItem(newPersistedItem);
     }
 
     private notifyDataLoaded(item: EQUITABLE) {
