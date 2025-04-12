@@ -1,10 +1,10 @@
 .picker-icon(@picker-type: "date", @font-size: 18px, @top: 9px, @right: 7px, @pointer-events: none) {
   & when (@picker-type = "date") {
-    .icon-calendar;
+    .icon-calendar();
   }
 
   & when (@picker-type = "time") {
-    .icon-clock;
+    .icon-clock();
   }
 
   &::before {
