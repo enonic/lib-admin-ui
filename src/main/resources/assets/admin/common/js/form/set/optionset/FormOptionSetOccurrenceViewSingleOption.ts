@@ -126,6 +126,7 @@ export class FormOptionSetOccurrenceViewSingleOption
 
     protected handleSelectionChanged(optionView: FormOptionSetOptionView, isSelected: boolean): void {
         optionView.setVisible(isSelected);
+        optionView.setHideErrorsUntilValidityChange(true);
         this.setContainerVisible(this.isContainerExpansionRequired(optionView));
         super.handleSelectionChanged(optionView, isSelected);
     }

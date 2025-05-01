@@ -26,9 +26,15 @@ export class FormItemView
 
     private formItem: FormItem;
 
-    protected parent: FormItemOccurrenceView;
+    protected validityChangedListeners: ((event: RecordingValidityChangedEvent) => void)[] = [];
 
-    private highlightOnValidityChanged: boolean;
+    private hideErrorsUntilValidityChange: boolean = false;
+
+    private originalValidityChanged: boolean = false;
+
+    protected previousValidationRecording: ValidationRecording;
+
+    protected parent: FormItemOccurrenceView;
 
     constructor(config: FormItemViewConfig) {
         super(config.className);
@@ -37,11 +43,20 @@ export class FormItemView
         this.context = config.context;
         this.formItem = config.formItem;
         this.parent = config.parent;
-        this.highlightOnValidityChanged = false;
     }
 
-    public setHighlightOnValidityChange(highlight: boolean) {
-        this.highlightOnValidityChanged = highlight;
+    public setHideErrorsUntilValidityChange(flag: boolean) {
+        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
+
+        this.hideErrorsUntilValidityChange = flag;
+    }
+
+    public isHideErrorsUntilValidityChange(): boolean {
+        return this.hideErrorsUntilValidityChange;
+    }
+
+    protected isHideValidationErrors(): boolean {
+        return !this.originalValidityChanged && this.isHideErrorsUntilValidityChange();
     }
 
     broadcastFormSizeChanged() {
@@ -52,12 +67,29 @@ export class FormItemView
         throw new Error('Must be implemented by inheritors');
     }
 
+    postLayout(validate: boolean = true): Q.Promise<void> {
+        this.onValidityChanged((event) => {
+
+            if (this.previousValidationRecording) {
+                if (this.previousValidationRecording.isValid() != event.isValid()) {
+                    this.originalValidityChanged = true;
+                }
+            }
+
+            this.previousValidationRecording = event.getRecording();
+
+            this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
+        });
+
+        return Q();
+    }
+
     update(_propertyArray: PropertySet, _unchangedOnly?: boolean): Q.Promise<void> {
         throw new Error('Must be implemented by inheritors');
     }
 
     reset() {
-        throw new Error('Must be implemented by inheritors');
+        this.originalValidityChanged = false;
     }
 
     clean(): void {
@@ -68,7 +100,7 @@ export class FormItemView
         //to be implemented on demand in inheritors
     }
 
-    refresh() {
+    refresh(): void {
         //to be implemented on demand in inheritors
     }
 
@@ -118,16 +150,20 @@ export class FormItemView
         return false;
     }
 
-    highlightOnValidityChange(): boolean {
-        return this.highlightOnValidityChanged;
+    onValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
+        this.validityChangedListeners.push(listener);
     }
 
-    onValidityChanged(_listener: (event: RecordingValidityChangedEvent) => void) {
-        //Should be implemented in child classes
+    unValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
+        this.validityChangedListeners.filter((currentListener: (event: RecordingValidityChangedEvent) => void) => {
+            return listener === currentListener;
+        });
     }
 
-    unValidityChanged(_listener: (event: RecordingValidityChangedEvent) => void) {
-        //Should be implemented in child classes
+    protected notifyValidityChanged(event: RecordingValidityChangedEvent) {
+        this.validityChangedListeners.forEach((listener: (event: RecordingValidityChangedEvent) => void) => {
+            listener(event);
+        });
     }
 
     toggleHelpText(_show?: boolean) {

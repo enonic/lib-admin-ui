@@ -1,5 +1,5 @@
 import {ValidationRecordingPath} from './ValidationRecordingPath';
-import {Equitable} from '../Equitable';
+import {StringHelper} from '../util/StringHelper';
 
 export class ValidationRecording {
 
@@ -9,11 +9,17 @@ export class ValidationRecording {
 
     private validationErrors: Map<string, string> = new Map<string, string>();
 
-    private hideValidationErrors: boolean = false;
+    private hashCode: number;
 
-    setHideValidationErrors(value: boolean): ValidationRecording {
-        this.hideValidationErrors = value;
-        return this;
+    constructor(validationRecording?: ValidationRecording) {
+        if (validationRecording) {
+            this.flatten(validationRecording);
+        }
+        this.hashCode = StringHelper.hashCode(String(Date.now()));
+    }
+
+    toString(): string {
+        return `ValidationRecording [${this.hashCode.toString()}]: valid=${this.isValid()}`;
     }
 
     breaksMinimumOccurrences(path: ValidationRecordingPath) {
@@ -50,10 +56,6 @@ export class ValidationRecording {
 
     isMaximumOccurrencesValid(): boolean {
         return this.breaksMaximumOccurrencesArray.length === 0;
-    }
-
-    isValidationErrorsHidden(): boolean {
-        return this.hideValidationErrors;
     }
 
     getBreakMinimumOccurrences(): ValidationRecordingPath[] {
@@ -123,6 +125,9 @@ export class ValidationRecording {
     }
 
     equals(other: ValidationRecording): boolean {
+        if (!other) {
+            return false;
+        }
 
         if (this.breaksMinimumOccurrencesArray.length !== other.breaksMinimumOccurrencesArray.length) {
             return false;
@@ -146,7 +151,7 @@ export class ValidationRecording {
     }
 
     validityChanged(previous: ValidationRecording): boolean {
-        return !!previous && !previous.equals(this);
+        return !previous ? !this.isValid() : !this.equals(previous);
     }
 
     containsPathInBreaksMin(path: ValidationRecordingPath) {

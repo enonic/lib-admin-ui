@@ -26,12 +26,15 @@ export class FormView
 
     public static debug: boolean = false;
     public static VALIDATION_CLASS: string = 'display-validation-errors';
+    public static HIDE_ERRORS_CLASS: string = 'hide-validation-errors';
     private form: Form;
     private data: PropertySet;
     protected formItemViews: FormItemView[] = [];
     private formItemLayer: FormItemLayer;
     private formValidityChangedListeners: ((event: FormValidityChangedEvent) => void)[] = [];
     private previousValidationRecording: ValidationRecording;
+    private originalValidityChanged: boolean = false;
+    private hideErrorsUntilValidityChange: boolean = false;
     private width: number;
     private layoutFinished: boolean;
     private focusListeners: ((event: FocusEvent) => void)[] = [];
@@ -103,14 +106,26 @@ export class FormView
         });
 
         formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
+            let wasValid: boolean = undefined;
+
             if (!this.previousValidationRecording) {
-                this.previousValidationRecording = event.getRecording();
-                this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
+
+                this.previousValidationRecording = this.validate(true);
+
             } else {
+
+                wasValid = this.previousValidationRecording.isValid();
                 if (event.isValid()) {
                     this.previousValidationRecording.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
                 } else {
                     this.previousValidationRecording.flatten(event.getRecording());
+                }
+            }
+
+            if (wasValid !== this.previousValidationRecording.isValid()) {
+
+                if (wasValid !== undefined) {
+                    this.originalValidityChanged = true;
                 }
 
                 this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
@@ -128,18 +143,15 @@ export class FormView
         }
 
         this.data = propertySet;
+        this.originalValidityChanged = false;
 
         return this.formItemLayer.update(propertySet, unchangedOnly);
     }
 
     public reset() {
-        return this.formItemLayer.reset();
-    }
+        this.originalValidityChanged = false;
 
-    public highlightInputsOnValidityChange(highlight: boolean) {
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            formItemView.setHighlightOnValidityChange(highlight);
-        });
+        return this.formItemLayer.reset();
     }
 
     public hasValidUserInput(): boolean {
@@ -155,7 +167,7 @@ export class FormView
     }
 
     public validate(silent?: boolean, forceNotify: boolean = false): ValidationRecording {
-
+        console.info('FormView.validate', this, silent, forceNotify);
         let recording: ValidationRecording = new ValidationRecording();
         this.formItemViews.forEach((formItemView: FormItemView) => {
             recording.flatten(formItemView.validate(silent));
@@ -165,13 +177,16 @@ export class FormView
             this.notifyValidityChanged(new FormValidityChangedEvent(recording));
         }
 
-        this.previousValidationRecording = recording;
         return recording;
+    }
+
+    isHideValidationErrors(): boolean {
+        return !this.originalValidityChanged && this.hideErrorsUntilValidityChange;
     }
 
     public isValid(): boolean {
         if (!this.previousValidationRecording) {
-            this.previousValidationRecording = this.validate(true);
+            return this.validate(true).isValid();
         }
         return this.previousValidationRecording.isValid();
     }
@@ -275,6 +290,13 @@ export class FormView
 
     setLazyRender(value: boolean) {
         this.formItemLayer.setLazyRender(value);
+    }
+
+    setHideErrorsUntilValidityChange(flag: boolean) {
+        this.hideErrorsUntilValidityChange = flag;
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.setHideErrorsUntilValidityChange(flag);
+        });
     }
 
     private checkSizeChanges() {

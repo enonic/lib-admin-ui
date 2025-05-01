@@ -48,7 +48,8 @@ export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     dataSet: PropertySet;
 }
 
-export interface FormSetOccurrenceViewConfigExtended extends FormSetOccurrenceViewConfig<FormSetOccurrenceView>, FormItemOccurrenceViewConfig {
+export interface FormSetOccurrenceViewConfigExtended
+    extends FormSetOccurrenceViewConfig<FormSetOccurrenceView>, FormItemOccurrenceViewConfig {
     classPrefix: string;
 }
 
@@ -128,9 +129,9 @@ export abstract class FormSetOccurrenceView
     }
 
     protected postLayout(validate: boolean = true) {
-        if (validate) {
-            this.validate(true);
-        }
+        /*        if (validate) {
+                    this.validate(true);
+                }*/
 
         this.bindPropertySet(this.propertySet);
 
@@ -262,27 +263,21 @@ export abstract class FormSetOccurrenceView
 
     validate(silent: boolean = true): ValidationRecording {
         const allRecordings: ValidationRecording = new ValidationRecording();
-        let hideValidationErrors: boolean = true;
 
         this.formItemViews.forEach((formItemView: FormItemView) => {
-            const currRecording: ValidationRecording = formItemView.validate(silent);
-            hideValidationErrors = hideValidationErrors && (currRecording.isValid() || currRecording.isValidationErrorsHidden());
-            allRecordings.flatten(currRecording);
+            allRecordings.flatten(formItemView.validate(silent));
         });
-
-        hideValidationErrors = allRecordings.isInvalid() && hideValidationErrors;
 
         this.extraValidation(allRecordings);
 
-        if (!silent) {
-            if (allRecordings.validityChanged(this.currentValidationState)) {
-                this.notifyValidityChanged(new RecordingValidityChangedEvent(allRecordings, this.resolveValidationRecordingPath()));
-            }
+        if (!silent && allRecordings.validityChanged(this.currentValidationState)) {
+            this.notifyValidityChanged(new RecordingValidityChangedEvent(allRecordings, this.resolveValidationRecordingPath()));
         }
 
         this.currentValidationState = allRecordings;
         this.toggleClass('invalid', !this.isValid());
-        this.toggleClass('hide-validation-errors', hideValidationErrors);
+        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
+
         return allRecordings;
     }
 
@@ -408,9 +403,11 @@ export abstract class FormSetOccurrenceView
         });
     }
 
-    public setHighlightOnValidityChange(highlight: boolean) {
+    public setHideErrorsUntilValidityChange(flag: boolean) {
+        super.setHideErrorsUntilValidityChange(flag);
+
         this.formItemViews.forEach((view: FormItemView) => {
-            view.setHighlightOnValidityChange(highlight);
+            view.setHideErrorsUntilValidityChange(flag);
         });
     }
 
@@ -487,21 +484,35 @@ export abstract class FormSetOccurrenceView
         this.formItemViews.forEach((formItemView: FormItemView) => {
             formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
 
+                let wasValid: boolean = undefined;
+
                 if (!this.currentValidationState) {
-                    return; // currentValidationState is initialized on validate() call which may not be triggered in some cases
-                }
 
-                let previousValidState = this.currentValidationState.isValid();
-                if (event.isValid()) {
-                    this.currentValidationState.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
+                    this.validate(true); // currentValidationState is initialized on validate() call which may not be triggered in some cases
+
                 } else {
-                    this.currentValidationState.flatten(event.getRecording());
+
+                    wasValid = this.currentValidationState.isValid();
+                    if (event.isValid()) {
+                        this.currentValidationState.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
+                    } else {
+                        this.currentValidationState.flatten(event.getRecording());
+                    }
                 }
 
-                if (previousValidState !== this.currentValidationState.isValid()) {
+                const isValid = this.currentValidationState.isValid();
+                if (wasValid != isValid) {
+
+                    if (wasValid != undefined) {
+                        this.originalValidityChanged = true;
+                    }
+
                     this.notifyValidityChanged(new RecordingValidityChangedEvent(this.currentValidationState,
                         this.resolveValidationRecordingPath()).setIncludeChildren(true));
                 }
+
+                this.toggleClass('invalid', !this.isValid());
+                this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
             });
         });
     }
@@ -535,12 +546,12 @@ export abstract class FormSetOccurrenceView
         }
 
         const isAllowedType = [
-                ValueTypes.STRING,
-                ValueTypes.DOUBLE,
-                ValueTypes.LONG,
-                ValueTypes.LOCAL_DATE,
-                ValueTypes.LOCAL_TIME
-            ].some(valueType => valueType.equals(propertyType));
+            ValueTypes.STRING,
+            ValueTypes.DOUBLE,
+            ValueTypes.LONG,
+            ValueTypes.LOCAL_DATE,
+            ValueTypes.LOCAL_TIME
+        ].some(valueType => valueType.equals(propertyType));
 
         return isAllowedType && property.getString().length > 0;
     }

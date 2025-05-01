@@ -16,6 +16,6 @@ export class FormValidityChangedEvent {
     }
 
     getRecording(): ValidationRecording {
-        return this.recording;
+        return new ValidationRecording(this.recording);
     }
 }

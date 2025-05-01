@@ -58,10 +58,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     protected collapseButtons: AEl[] = [];
 
-    protected validityChangedListeners: ((event: RecordingValidityChangedEvent) => void)[] = [];
-
-    protected previousValidationRecording: ValidationRecording;
-
     protected formItemOccurrences: FormSetOccurrences<V>;
 
     protected classPrefix: string = '';
@@ -274,9 +270,10 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         });
     }
 
-    public setHighlightOnValidityChange(highlight: boolean) {
+    public setHideErrorsUntilValidityChange(flag: boolean) {
+        super.setHideErrorsUntilValidityChange(flag);
         this.formItemOccurrences.getOccurrenceViews().forEach((view: FormSetOccurrenceView) => {
-            view.setHighlightOnValidityChange(highlight);
+            view.setHideErrorsUntilValidityChange(flag);
         });
     }
 
@@ -290,16 +287,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         });
 
         return result;
-    }
-
-    onValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
-        this.validityChangedListeners.push(listener);
-    }
-
-    unValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
-        this.validityChangedListeners.filter((currentListener: (event: RecordingValidityChangedEvent) => void) => {
-            return listener === currentListener;
-        });
     }
 
     toggleHelpText(show?: boolean) {
@@ -337,6 +324,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     reset() {
+        super.reset();
         this.formItemOccurrences.reset();
     }
 
@@ -426,20 +414,11 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         return propertyArray;
     }
 
-    protected notifyValidityChanged(event: RecordingValidityChangedEvent) {
-        this.validityChangedListeners.forEach((listener: (event: RecordingValidityChangedEvent) => void) => {
-            listener(event);
-        });
-    }
-
     protected renderValidationErrors(recording: ValidationRecording) {
-        if (recording.isValid()) {
-            this.removeClass('invalid');
-            this.addClass('valid');
-        } else {
-            this.removeClass('valid');
-            this.addClass('invalid');
-        }
+        const isValid = recording.isValid();
+        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
+        this.toggleClass('invalid', !isValid);
+        this.toggleClass('valid', isValid);
     }
 
     protected handleDnDStart(ui: JQueryUI.SortableUIParams): void {
@@ -496,7 +475,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         this.formItemOccurrences.onOccurrenceRendered((event: OccurrenceRenderedEvent) => {
             const occurrenceView = event.getOccurrenceView();
 
-            this.validate(false, event.validateViewOnRender() ? null : occurrenceView);
+            // this.validate(false, event.validateViewOnRender() ? null : occurrenceView);
 
             if (ObjectHelper.iFrameSafeInstanceOf(occurrenceView, FormSetOccurrenceView)) {
                 this.onFormSetOccurrenceContainerVisibilityToggle((occurrenceView as FormSetOccurrenceView).getContainer());
@@ -582,10 +561,14 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             .setTitle(i18n('button.add', this.formSet.getLabel()))
             .onClicked(() => {
                 this.formItemOccurrences
-                    .addNewOccurrence(this.formItemOccurrences.countOccurrences())
-                    .then((item: V) => this.expandOccurrenceView(item)
-                );
-        });
+                    .addNewOccurrence(this.formItemOccurrences.countOccurrences(), false)
+                    .then((item: V) => {
+                            item.setHideErrorsUntilValidityChange(true);
+                            this.validate(false);
+                            this.expandOccurrenceView(item);
+                        }
+                    );
+            });
         return addButton;
     }
 

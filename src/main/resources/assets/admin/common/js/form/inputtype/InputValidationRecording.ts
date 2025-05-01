@@ -46,10 +46,14 @@ export class InputValidationRecording
     }
 
     equals(that: InputValidationRecording): boolean {
+        if (!that) {
+            return false;
+        }
+
         return this.isValid() === that.isValid() && this.errorMessage == that.errorMessage;
     }
 
     validityChanged(other: InputValidationRecording) {
-        return other == null || other == null || !other.equals(this);
+        return !other ? !this.isValid() : !this.equals(other);
     }
 }

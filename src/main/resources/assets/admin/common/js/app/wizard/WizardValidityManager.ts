@@ -29,7 +29,10 @@ export class WizardValidityManager {
     addItem(step: WizardStep) {
         this.steps.push(step);
         step.getStepForm().onValidityChanged((event: WizardStepValidityChangedEvent) => {
-            this.notifyValidityChanged(event.isValid());
+            const allValid = this.isAllValid();
+            if (this.prevValue !== allValid) {
+                this.notifyValidityChanged(allValid);
+            }
         });
     }
 
@@ -38,10 +41,9 @@ export class WizardValidityManager {
         if (index >= 0) {
             this.steps.splice(index, 1);
 
-            if (!this.prevValue) {
-                if (this.isAllValid()) {
-                    this.notifyValidityChanged(true);
-                }
+            const allValid = this.isAllValid();
+            if (this.prevValue !== allValid) {
+                this.notifyValidityChanged(allValid);
             }
         }
     }
@@ -52,7 +54,10 @@ export class WizardValidityManager {
             if (!this.header.isRendered()) {
                 return;
             }
-            this.notifyValidityChanged(this.header.isValid());
+            const allValid = this.isAllValid();
+            if (this.prevValue !== allValid) {
+                this.notifyValidityChanged(allValid);
+            }
         });
     }
 

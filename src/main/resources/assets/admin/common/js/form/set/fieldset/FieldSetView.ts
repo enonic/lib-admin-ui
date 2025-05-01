@@ -73,6 +73,7 @@ export class FieldSetView
     }
 
     public reset(): void {
+        super.reset();
         this.formItemLayer.reset();
     }
 
@@ -106,9 +107,10 @@ export class FieldSetView
         });
     }
 
-    public setHighlightOnValidityChange(highlight: boolean) {
+    public setHideErrorsUntilValidityChange(flag: boolean) {
+        super.setHideErrorsUntilValidityChange(flag);
         this.formItemViews.forEach((view: FormItemView) => {
-            view.setHighlightOnValidityChange(highlight);
+            view.setHideErrorsUntilValidityChange(flag);
         });
     }
 

@@ -18,6 +18,8 @@ export abstract class FormItemOccurrenceView
     protected readonly config: FormItemOccurrenceViewConfig;
     private removeButtonClickedListeners: ((event: RemoveButtonClickedEvent<FormItemOccurrenceView>) => void)[] = [];
     private occurrenceChangedListeners: ((view: FormItemOccurrenceView) => void)[] = [];
+    private hideErrorsUntilValidityChange: boolean = false;
+    protected originalValidityChanged: boolean = false;
 
     protected constructor(config: FormItemOccurrenceViewConfig) {
         super(config.className);
@@ -27,6 +29,20 @@ export abstract class FormItemOccurrenceView
         this.initElements();
         this.postInitElements();
         this.initListeners();
+    }
+
+    isHideValidationErrors(): boolean {
+        return !this.originalValidityChanged && this.isHideErrorsUntilValidityChange();
+    }
+
+    setHideErrorsUntilValidityChange(flag: boolean) {
+        this.hideErrorsUntilValidityChange = flag;
+
+        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
+    }
+
+    isHideErrorsUntilValidityChange(): boolean {
+        return this.hideErrorsUntilValidityChange;
     }
 
     protected initElements(): void {

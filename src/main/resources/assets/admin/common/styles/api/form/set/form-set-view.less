@@ -1,35 +1,45 @@
 @occurrence-label-margin-left: 10px;
 
 .form-view {
+
   &.display-validation-errors {
-    .form-item-view.invalid {
-      .form-item-set-occurrence-view,
-      .form-option-set-occurrence-view {
-        &:not(.hide-validation-errors).invalid {
-          border: 3px solid @admin-red;
-          box-shadow: none;
-          padding: 7px 7px 7px 10px;
-        }
+
+    .invalid:not(.hide-validation-errors) {
+
+      &.form-item-view,
+      &.form-item-set-occurrence-view,
+      &.form-option-set-occurrence-view {
+        border: 3px solid @admin-red;
+        box-shadow: none;
+        padding: 7px 7px 7px 10px;
       }
+
     }
 
     .hide-validation-errors {
-      &.invalid,
-      .input-view.invalid,
-      .form-item-set-occurrence-view.invalid {
-        border: 0 none !important;
-      }
 
-      .input-view {
-        &.invalid {
+      &.invalid {
+
+        &.input-view,
+        &.form-option-set-occurrence-view,
+        &.form-item-set-occurrence-view {
+          border: 0 none !important;
+        }
+
+        &.input-view {
           padding: 0;
         }
 
+      }
+
+      &.input-view {
         .validation-viewer {
           display: none;
         }
       }
+
     }
+
   }
 
   .form-item-set-view,

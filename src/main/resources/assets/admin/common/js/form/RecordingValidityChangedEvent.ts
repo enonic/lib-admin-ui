@@ -23,7 +23,7 @@ export class RecordingValidityChangedEvent {
     }
 
     getRecording(): ValidationRecording {
-        return this.recording;
+        return new ValidationRecording(this.recording);
     }
 
     setIncludeChildren(include: boolean): RecordingValidityChangedEvent {

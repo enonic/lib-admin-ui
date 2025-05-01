@@ -229,7 +229,8 @@ export class FormItemLayer {
 
             this.formItemViews.push(formItemView);
 
-            return formItemView.layout(validate);
+            return formItemView.layout(validate)
+                .then(() => formItemView.postLayout(validate));
         });
 
         // Bind next focus targets

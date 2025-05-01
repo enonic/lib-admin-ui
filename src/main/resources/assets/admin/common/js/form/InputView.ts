@@ -53,8 +53,6 @@ export class InputView
     private addButton?: Button;
     private validationViewer: InputViewValidationViewer;
     private validationDetailsToggler: TogglerButton;
-    private previousValidityRecording: ValidationRecording;
-    private validityChangedListeners: ((event: RecordingValidityChangedEvent) => void)[] = [];
     private helpText?: HelpTextContainer;
 
     constructor(config: InputViewConfig) {
@@ -197,13 +195,14 @@ export class InputView
     }
 
     public reset(): void {
+        super.reset();
         this.inputTypeView.reset();
     }
 
     clear(): void {
         super.clear();
 
-        this.previousValidityRecording = null;
+        this.previousValidationRecording = null;
         this.inputTypeView.clear();
     }
 
@@ -260,16 +259,6 @@ export class InputView
 
     giveFocus(): boolean {
         return this.inputTypeView.giveFocus();
-    }
-
-    onValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
-        this.validityChangedListeners.push(listener);
-    }
-
-    unValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
-        this.validityChangedListeners.filter((currentListener: (event: RecordingValidityChangedEvent) => void) => {
-            return listener === currentListener;
-        });
     }
 
     onFocus(listener: (event: FocusEvent) => void) {
@@ -362,14 +351,13 @@ export class InputView
             recording.addValidationError(validationRecordingPath.toString(), inputRecording.getErrorMessage());
         }
 
-        if (recording.validityChanged(this.previousValidityRecording)) {
+        if (recording.validityChanged(this.previousValidationRecording)) {
             if (!silent) {
                 this.notifyValidityChanged(new RecordingValidityChangedEvent(recording, validationRecordingPath));
             }
-            this.toggleClass('highlight-validity-change', this.highlightOnValidityChange());
         }
 
-        this.previousValidityRecording = recording;
+        this.previousValidationRecording = recording;
 
         if (inputRecording && this.inputTypeView.isValidationErrorToBeRendered() && !this.isFormStateNew()) {
             this.renderValidationErrors(inputRecording);
@@ -378,15 +366,11 @@ export class InputView
         return recording;
     }
 
-    private notifyValidityChanged(event: RecordingValidityChangedEvent) {
-        this.validityChangedListeners.forEach((listener: (event: RecordingValidityChangedEvent) => void) => {
-            listener(event);
-        });
-    }
-
     private renderValidationErrors(recording: InputValidationRecording) {
-        this.toggleClass('valid', recording.isValid());
-        this.toggleClass('invalid', !recording.isValid());
+        const isValid = recording.isValid();
+        this.toggleClass('valid', isValid);
+        this.toggleClass('invalid', !isValid);
+        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
 
         this.validationViewer.setObject(recording);
     }

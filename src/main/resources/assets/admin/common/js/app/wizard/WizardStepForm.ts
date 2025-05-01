@@ -5,7 +5,6 @@ import {WizardStepValidityChangedEvent} from './WizardStepValidityChangedEvent';
 export class WizardStepForm
     extends Panel {
 
-    previousValidation: ValidationRecording;
     private validityChangedListeners: ((event: WizardStepValidityChangedEvent) => void)[] = [];
     private focusListeners: ((event: FocusEvent) => void)[] = [];
 
@@ -24,10 +23,7 @@ export class WizardStepForm
     }
 
     public isValid(): boolean {
-        if (!this.previousValidation) {
-            this.previousValidation = this.validate();
-        }
-        return this.previousValidation.isValid();
+        return true;
     }
 
     onValidityChanged(listener: (event: WizardStepValidityChangedEvent) => void) {
