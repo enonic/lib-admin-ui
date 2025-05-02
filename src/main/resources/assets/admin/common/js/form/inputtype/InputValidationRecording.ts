@@ -54,6 +54,6 @@ export class InputValidationRecording
     }
 
     validityChanged(other: InputValidationRecording) {
-        return !other ? !this.isValid() : !this.equals(other);
+        return !other ? true : !this.equals(other);
     }
 }

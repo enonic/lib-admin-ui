@@ -163,6 +163,11 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
             this.refreshButtonsState();
 
+            if (this.formItemOccurrences.getOccurrences().length === 0) {
+                // don't show errors on an empty set
+                this.setHideErrorsUntilValidityChange(!this.formItemOccurrences.getOccurrences().length);
+            }
+
             if (validate) {
                 this.validate(true);
             }
@@ -221,9 +226,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
             this.notifyValidityChanged(event);
         }
-
-        // display only errors related to occurrences
-        this.renderValidationErrors(wholeRecording);
 
         this.previousValidationRecording = wholeRecording;
 
@@ -356,10 +358,12 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
         const previousValidState: boolean = this.previousValidationRecording.isValid();
 
+        const wholeRecording: ValidationRecording = new ValidationRecording(this.previousValidationRecording);
+
         if (event.isValid()) {
-            this.previousValidationRecording.removeByPath(event.getOrigin(), true, event.isIncludeChildren());
+            wholeRecording.removeByPath(event.getOrigin(), true, event.isIncludeChildren());
         } else {
-            this.previousValidationRecording.flatten(event.getRecording());
+            wholeRecording.flatten(event.getRecording());
         }
 
         const validationRecordingPath: ValidationRecordingPath = this.resolveValidationRecordingPath();
@@ -385,23 +389,23 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         // or number of occurrences breaks contract.
 
         if (numberOfValids < this.getOccurrences().getMinimum()) {
-            this.previousValidationRecording.breaksMinimumOccurrences(validationRecordingPath);
+            wholeRecording.breaksMinimumOccurrences(validationRecordingPath);
         } else if (!occurrenceRecording.containsPathInBreaksMin(validationRecordingPath)) {
-            this.previousValidationRecording.removeUnreachedMinimumOccurrencesByPath(validationRecordingPath, false);
+            wholeRecording.removeUnreachedMinimumOccurrencesByPath(validationRecordingPath, false);
         }
 
         if (this.getOccurrences().maximumBreached(numberOfValids)) {
-            this.previousValidationRecording.breaksMaximumOccurrences(validationRecordingPath);
+            wholeRecording.breaksMaximumOccurrences(validationRecordingPath);
         } else if (!occurrenceRecording.containsPathInBreaksMax(validationRecordingPath)) {
-            this.previousValidationRecording.removeBreachedMaximumOccurrencesByPath(validationRecordingPath, false);
+            wholeRecording.removeBreachedMaximumOccurrencesByPath(validationRecordingPath, false);
         }
 
-        this.renderValidationErrors(this.previousValidationRecording);
-
-        if (previousValidState !== this.previousValidationRecording.isValid()) {
-            this.notifyValidityChanged(new RecordingValidityChangedEvent(this.previousValidationRecording,
+        if (previousValidState !== wholeRecording.isValid()) {
+            this.notifyValidityChanged(new RecordingValidityChangedEvent(wholeRecording,
                 validationRecordingPath).setIncludeChildren(true));
         }
+
+        this.previousValidationRecording = wholeRecording;
     }
 
     protected getPropertyArray(propertySet: PropertySet): PropertyArray {
@@ -412,13 +416,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             propertySet.addPropertyArray(propertyArray);
         }
         return propertyArray;
-    }
-
-    protected renderValidationErrors(recording: ValidationRecording) {
-        const isValid = recording.isValid();
-        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
-        this.toggleClass('invalid', !isValid);
-        this.toggleClass('valid', isValid);
     }
 
     protected handleDnDStart(ui: JQueryUI.SortableUIParams): void {
@@ -474,8 +471,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
         this.formItemOccurrences.onOccurrenceRendered((event: OccurrenceRenderedEvent) => {
             const occurrenceView = event.getOccurrenceView();
-
-            // this.validate(false, event.validateViewOnRender() ? null : occurrenceView);
 
             if (ObjectHelper.iFrameSafeInstanceOf(occurrenceView, FormSetOccurrenceView)) {
                 this.onFormSetOccurrenceContainerVisibilityToggle((occurrenceView as FormSetOccurrenceView).getContainer());

@@ -357,22 +357,14 @@ export class InputView
             }
         }
 
+        // needs to happen after notifyValidityChanged to make sure everyone get old previousValidationRecording
         this.previousValidationRecording = recording;
 
         if (inputRecording && this.inputTypeView.isValidationErrorToBeRendered() && !this.isFormStateNew()) {
-            this.renderValidationErrors(inputRecording);
+            this.validationViewer.setObject(inputRecording);
         }
 
         return recording;
-    }
-
-    private renderValidationErrors(recording: InputValidationRecording) {
-        const isValid = recording.isValid();
-        this.toggleClass('valid', isValid);
-        this.toggleClass('invalid', !isValid);
-        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
-
-        this.validationViewer.setObject(recording);
     }
 
     private isFormStateNew(): boolean {

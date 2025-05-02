@@ -406,9 +406,7 @@ export abstract class FormSetOccurrenceView
     public setHideErrorsUntilValidityChange(flag: boolean) {
         super.setHideErrorsUntilValidityChange(flag);
 
-        this.formItemViews.forEach((view: FormItemView) => {
-            view.setHideErrorsUntilValidityChange(flag);
-        });
+        this.formItemLayer.setHideErrorsUntilValidityChange(flag);
     }
 
     onValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {

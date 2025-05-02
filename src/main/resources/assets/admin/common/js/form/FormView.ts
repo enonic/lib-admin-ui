@@ -294,9 +294,7 @@ export class FormView
 
     setHideErrorsUntilValidityChange(flag: boolean) {
         this.hideErrorsUntilValidityChange = flag;
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            formItemView.setHideErrorsUntilValidityChange(flag);
-        });
+        this.formItemLayer.setHideErrorsUntilValidityChange(flag);
     }
 
     private checkSizeChanges() {

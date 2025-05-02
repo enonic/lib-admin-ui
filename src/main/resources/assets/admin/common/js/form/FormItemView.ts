@@ -30,7 +30,7 @@ export class FormItemView
 
     private hideErrorsUntilValidityChange: boolean = false;
 
-    private originalValidityChanged: boolean = false;
+    protected originalValidityChanged: boolean = false;
 
     protected previousValidationRecording: ValidationRecording;
 
@@ -46,9 +46,9 @@ export class FormItemView
     }
 
     public setHideErrorsUntilValidityChange(flag: boolean) {
-        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
-
         this.hideErrorsUntilValidityChange = flag;
+
+        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
     }
 
     public isHideErrorsUntilValidityChange(): boolean {
@@ -68,8 +68,7 @@ export class FormItemView
     }
 
     postLayout(validate: boolean = true): Q.Promise<void> {
-        this.onValidityChanged((event) => {
-
+        this.onValidityChanged((event: RecordingValidityChangedEvent) => {
             if (this.previousValidationRecording) {
                 if (this.previousValidationRecording.isValid() != event.isValid()) {
                     this.originalValidityChanged = true;
@@ -77,11 +76,21 @@ export class FormItemView
             }
 
             this.previousValidationRecording = event.getRecording();
-
+            const isValid = event.isValid();
+            this.toggleClass('invalid', !isValid);
+            this.toggleClass('valid', isValid);
             this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
         });
 
         return Q();
+    }
+
+    isValid(): boolean {
+        if (!this.previousValidationRecording) {
+            return true;
+        }
+
+        return this.previousValidationRecording.isValid();
     }
 
     update(_propertyArray: PropertySet, _unchangedOnly?: boolean): Q.Promise<void> {
@@ -175,7 +184,7 @@ export class FormItemView
     }
 
     setEnabled(enable: boolean) {
-    //
+        //
     }
 
     doRender(): Q.Promise<boolean> {

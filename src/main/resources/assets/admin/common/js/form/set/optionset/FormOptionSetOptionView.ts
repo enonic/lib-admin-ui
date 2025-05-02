@@ -19,6 +19,7 @@ import {ValidationRecording} from '../../ValidationRecording';
 import {FormOptionSet} from './FormOptionSet';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
 import {FormOptionSetOption} from './FormOptionSetOption';
+import {ValidationRecordingPath} from '../../ValidationRecordingPath';
 
 export interface FormOptionSetOptionViewConfig
     extends CreatedFormItemLayerConfig {
@@ -122,11 +123,9 @@ export class FormOptionSetOptionView
                 this.prependChild(this.makeSelectionCheckbox());
             }
 
-            this.formItemViews = formItemViews;
+            this.setHideErrorsUntilValidityChange(!this.isSelected());
 
-            this.onValidityChanged((event: RecordingValidityChangedEvent) => {
-                this.toggleClass('invalid', !event.isValid());
-            });
+            this.formItemViews = formItemViews;
 
             if (validate) {
                 this.validate(true);
@@ -138,6 +137,55 @@ export class FormOptionSetOptionView
         }).done();
 
         return deferred.promise;
+    }
+
+    postLayout(validate: boolean = true): Q.Promise<void> {
+
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
+
+                let prevRecording: ValidationRecording;
+
+                let wasValid: boolean = undefined;
+
+                if (!this.previousValidationRecording) {
+
+                    prevRecording = this.validate(true); // currentValidationState is initialized on validate() call which may not be triggered in some cases
+
+                } else {
+
+                    prevRecording = new ValidationRecording(this.previousValidationRecording);
+
+                    wasValid = prevRecording.isValid();
+                    if (event.isValid()) {
+                        prevRecording.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
+                    } else {
+                        prevRecording.flatten(event.getRecording());
+                    }
+                }
+
+                const isValid = prevRecording.isValid();
+                if (wasValid != isValid) {
+
+                    if (wasValid != undefined) {
+                        this.originalValidityChanged = true;
+                    }
+
+                    this.notifyValidityChanged(new RecordingValidityChangedEvent(prevRecording,
+                        this.resolveValidationRecordingPath()).setIncludeChildren(true));
+                }
+
+                // needs to happen after notifyValidityChanged to make sure everyone get old previousValidationRecording
+                this.previousValidationRecording = prevRecording;
+            });
+        });
+
+        return Q();
+    }
+
+    protected resolveValidationRecordingPath(): ValidationRecordingPath {
+        const propertySet = this.parent.getOrPopulateOptionItemsPropertySet(this.getName());
+        return new ValidationRecordingPath(propertySet.getProperty().getPath(), null);
     }
 
     clean(): void {
@@ -189,9 +237,8 @@ export class FormOptionSetOptionView
 
     public setHideErrorsUntilValidityChange(flag: boolean) {
         super.setHideErrorsUntilValidityChange(flag);
-        this.formItemViews.forEach((view: FormItemView) => {
-            view.setHideErrorsUntilValidityChange(flag);
-        });
+
+        this.formItemLayer.setHideErrorsUntilValidityChange(flag);
     }
 
     hasValidUserInput(): boolean {
@@ -216,6 +263,8 @@ export class FormOptionSetOptionView
             recording.flatten(formItemView.validate(silent));
         });
 
+        this.previousValidationRecording = recording;
+
         return recording;
     }
 
@@ -233,18 +282,6 @@ export class FormOptionSetOptionView
 
     getFormItemViews(): FormItemView[] {
         return this.formItemViews;
-    }
-
-    onValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            formItemView.onValidityChanged(listener);
-        });
-    }
-
-    unValidityChanged(listener: (event: RecordingValidityChangedEvent) => void) {
-        this.formItemViews.forEach((formItemView: FormItemView) => {
-            formItemView.unValidityChanged(listener);
-        });
     }
 
     onSelectionChanged(listener: (isSelected: boolean) => void): void {

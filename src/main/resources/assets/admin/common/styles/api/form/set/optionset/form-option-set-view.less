@@ -22,22 +22,33 @@
   }
 
   &.display-validation-errors {
+
     .form-option-set-occurrence-view {
-      &.invalid > .selection-message {
-        display: block;
-        color: @input-red-text;
-        font-size: 14px;
-        padding: 0 0 5px 13px;
-        margin-top: -5px;
 
-        &.empty {
-          display: none;
-        }
-      }
+      .form-option-set-option-view {
 
-      .form-option-set-option-view.invalid {
-        > .help-text {
-          padding-left: 10px;
+        &:not(.selected) {
+          .input-view .validation-block {
+            display: none;
+          }
+
+          &.invalid {
+            > .help-text {
+              padding-left: 10px;
+            }
+
+            .selection-message {
+              display: block;
+              color: @input-red-text;
+              font-size: 14px;
+              padding: 0 0 5px 13px;
+              margin-top: -5px;
+
+              &.empty {
+                display: none;
+              }
+            }
+          }
         }
       }
     }
@@ -303,8 +314,8 @@
     &.multi-selection {
       .form-option-set-option-view {
         > .ai-dialog-control {
-            top: 4px;
-            right: 24px;
+          top: 4px;
+          right: 24px;
         }
       }
     }

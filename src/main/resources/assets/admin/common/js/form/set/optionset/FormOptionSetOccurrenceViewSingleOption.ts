@@ -126,7 +126,6 @@ export class FormOptionSetOccurrenceViewSingleOption
 
     protected handleSelectionChanged(optionView: FormOptionSetOptionView, isSelected: boolean): void {
         optionView.setVisible(isSelected);
-        optionView.setHideErrorsUntilValidityChange(true);
         this.setContainerVisible(this.isContainerExpansionRequired(optionView));
         super.handleSelectionChanged(optionView, isSelected);
     }
@@ -161,6 +160,7 @@ export class FormOptionSetOccurrenceViewSingleOption
 
         const selectedOptionView: FormOptionSetOptionView = this.getSelectedOptionView();
 
+        selectedOptionView?.setHideErrorsUntilValidityChange(true);
         selectedOptionView?.enableAndExpand();
         this.singleSelectionHeader.addClass('selected');
         this.refresh();

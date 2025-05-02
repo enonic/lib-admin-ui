@@ -137,6 +137,12 @@ export class FormItemLayer {
         this.lazyRender = value;
     }
 
+    setHideErrorsUntilValidityChange(flag: boolean) {
+        this.formItemViews.forEach((formItemView: FormItemView) => {
+            formItemView.setHideErrorsUntilValidityChange(flag);
+        });
+    }
+
     private setShowEmptyFormItemSetOccurrences(propertySet: PropertySet, name: string) {
         const propertyArray: PropertyArray = propertySet.getPropertyArray(name);
 
