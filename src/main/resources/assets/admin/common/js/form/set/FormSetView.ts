@@ -163,11 +163,6 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
             this.refreshButtonsState();
 
-            if (this.formItemOccurrences.getOccurrences().length === 0) {
-                // don't show errors on an empty set
-                this.setHideErrorsUntilValidityChange(!this.formItemOccurrences.getOccurrences().length);
-            }
-
             if (validate) {
                 this.validate(true);
             }
@@ -227,6 +222,8 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             this.notifyValidityChanged(event);
         }
 
+        this.renderValidationClasses(wholeRecording);
+
         this.previousValidationRecording = wholeRecording;
 
         return wholeRecording;
@@ -274,6 +271,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     public setHideErrorsUntilValidityChange(flag: boolean) {
         super.setHideErrorsUntilValidityChange(flag);
+
         this.formItemOccurrences.getOccurrenceViews().forEach((view: FormSetOccurrenceView) => {
             view.setHideErrorsUntilValidityChange(flag);
         });
@@ -351,14 +349,20 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
         this.formItemOccurrences.unBlur(listener);
     }
 
+    protected isHideValidationErrors(): boolean {
+        return super.isHideValidationErrors();
+    }
+
     protected handleFormSetOccurrenceViewValidityChanged(event: RecordingValidityChangedEvent): void {
+
+        let wholeRecording: ValidationRecording;
+        let wasValid: boolean;
         if (!this.previousValidationRecording) {
-            return; // skip handling if not previousValidationRecording is not set
+            wholeRecording = this.validate(true);
+        } else {
+            wholeRecording = new ValidationRecording(this.previousValidationRecording);
+            wasValid = wholeRecording.isValid();
         }
-
-        const previousValidState: boolean = this.previousValidationRecording.isValid();
-
-        const wholeRecording: ValidationRecording = new ValidationRecording(this.previousValidationRecording);
 
         if (event.isValid()) {
             wholeRecording.removeByPath(event.getOrigin(), true, event.isIncludeChildren());
@@ -400,7 +404,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
             wholeRecording.removeBreachedMaximumOccurrencesByPath(validationRecordingPath, false);
         }
 
-        if (previousValidState !== wholeRecording.isValid()) {
+        if (wasValid !== wholeRecording.isValid()) {
             this.notifyValidityChanged(new RecordingValidityChangedEvent(wholeRecording,
                 validationRecordingPath).setIncludeChildren(true));
         }
@@ -559,7 +563,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
                     .addNewOccurrence(this.formItemOccurrences.countOccurrences(), false)
                     .then((item: V) => {
                             item.setHideErrorsUntilValidityChange(true);
-                            this.validate(false);
+                        // this.validate(false);
                             this.expandOccurrenceView(item);
                         }
                     );

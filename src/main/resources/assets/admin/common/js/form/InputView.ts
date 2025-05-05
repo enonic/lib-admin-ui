@@ -220,6 +220,10 @@ export class InputView
         return this.input.getOccurrences().required() && this.propertyArray.getSize() !== this.input.getOccurrences().getMinimum();
     }
 
+    isDirty(): boolean {
+        return this.inputTypeView.isDirty();
+    }
+
     isEmpty(): boolean {
         return !this.propertyArray.some((property: Property) => {
             return !StringHelper.isEmpty(property.getValue().getString());
@@ -356,6 +360,8 @@ export class InputView
                 this.notifyValidityChanged(new RecordingValidityChangedEvent(recording, validationRecordingPath));
             }
         }
+
+        this.renderValidationClasses(recording);
 
         // needs to happen after notifyValidityChanged to make sure everyone get old previousValidationRecording
         this.previousValidationRecording = recording;

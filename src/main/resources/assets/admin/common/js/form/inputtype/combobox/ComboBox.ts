@@ -92,7 +92,7 @@ export class ComboBox
         });
     }
 
-    private isDirty(): boolean {
+    public isDirty(): boolean {
         return !ObjectHelper.stringArrayEquals(this.initiallySelectedItems, this.getSelectedItems());
     }
 

@@ -108,27 +108,37 @@ export class FormView
         formItemView.onValidityChanged((event: RecordingValidityChangedEvent) => {
             let wasValid: boolean = undefined;
 
+            let validationRecording: ValidationRecording;
+
             if (!this.previousValidationRecording) {
 
-                this.previousValidationRecording = this.validate(true);
+                validationRecording = this.validate(true);
 
             } else {
+                validationRecording = new ValidationRecording(this.previousValidationRecording);
 
-                wasValid = this.previousValidationRecording.isValid();
+                wasValid = validationRecording.isValid();
                 if (event.isValid()) {
-                    this.previousValidationRecording.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
+                    validationRecording.removeByPath(event.getOrigin(), false, event.isIncludeChildren());
                 } else {
-                    this.previousValidationRecording.flatten(event.getRecording());
+                    validationRecording.flatten(event.getRecording());
                 }
             }
 
-            if (wasValid !== this.previousValidationRecording.isValid()) {
+            this.previousValidationRecording = validationRecording;
+
+            if (wasValid !== validationRecording.isValid()) {
 
                 if (wasValid !== undefined) {
                     this.originalValidityChanged = true;
                 }
 
-                this.notifyValidityChanged(new FormValidityChangedEvent(this.previousValidationRecording));
+                this.notifyValidityChanged(new FormValidityChangedEvent(validationRecording));
+            }
+
+            // turn on validation errors if the form is not valid
+            if (!this.isHideValidationErrors() && !validationRecording.isValid()) {
+                this.displayValidationErrors(true);
             }
         });
     }

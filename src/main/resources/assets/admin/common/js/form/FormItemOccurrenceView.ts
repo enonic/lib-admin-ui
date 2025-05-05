@@ -4,6 +4,7 @@ import {DivEl} from '../dom/DivEl';
 import {FormItemOccurrence} from './FormItemOccurrence';
 import {HelpTextContainer} from './HelpTextContainer';
 import {RemoveButtonClickedEvent} from './RemoveButtonClickedEvent';
+import {ValidationRecording} from './ValidationRecording';
 
 export interface FormItemOccurrenceViewConfig {
     className: string;
@@ -43,6 +44,10 @@ export abstract class FormItemOccurrenceView
 
     isHideErrorsUntilValidityChange(): boolean {
         return this.hideErrorsUntilValidityChange;
+    }
+
+    isDirty(): boolean {
+        throw new Error('Must be implemented by inheritor');
     }
 
     protected initElements(): void {
@@ -85,6 +90,11 @@ export abstract class FormItemOccurrenceView
 
     hasValidUserInput(): boolean {
         throw new Error('Must be implemented by inheritor');
+    }
+
+    protected renderValidationClasses(recording: ValidationRecording) {
+        this.toggleClass('invalid', !recording.isValid());
+        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
     }
 
     onRemoveButtonClicked(listener: (event: RemoveButtonClickedEvent<FormItemOccurrenceView>) => void) {

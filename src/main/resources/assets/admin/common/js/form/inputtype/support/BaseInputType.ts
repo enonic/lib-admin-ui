@@ -109,6 +109,10 @@ export abstract class BaseInputType extends DivEl
         throw Error('Must be implemented in inheritors');
     }
 
+    isDirty(): boolean {
+        throw new Error('Must be overridden by inheritors');
+    }
+
     clear(): void {
         this.previousValidationRecording = null;
         //to be implemented on demand in inheritors

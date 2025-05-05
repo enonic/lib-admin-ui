@@ -66,6 +66,10 @@ export class RadioButton
         this.selector.resetBaseValues();
     }
 
+    isDirty(): boolean {
+        return this.selector.isDirty();
+    }
+
     clear(): void {
         super.clear();
         this.selector.clear();

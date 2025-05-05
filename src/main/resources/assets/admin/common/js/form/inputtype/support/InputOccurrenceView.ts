@@ -85,6 +85,10 @@ export class InputOccurrenceView
         return Q<void>(null);
     }
 
+    isDirty(): boolean {
+        return this.inputTypeView.isDirty();
+    }
+
     reset(): void {
         this.inputTypeView.resetInputOccurrenceElement(this.inputElement);
     }

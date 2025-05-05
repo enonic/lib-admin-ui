@@ -171,6 +171,10 @@ export abstract class BaseInputTypeNotManagingAdd
         this.inputOccurrences.reset();
     }
 
+    isDirty(): boolean {
+        return this.inputOccurrences.isDirty();
+    }
+
     clear(): void {
         super.clear();
         this.inputOccurrences.clear();

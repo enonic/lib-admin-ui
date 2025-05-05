@@ -274,9 +274,9 @@ export abstract class FormSetOccurrenceView
             this.notifyValidityChanged(new RecordingValidityChangedEvent(allRecordings, this.resolveValidationRecordingPath()));
         }
 
+        this.renderValidationClasses(allRecordings);
+
         this.currentValidationState = allRecordings;
-        this.toggleClass('invalid', !this.isValid());
-        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
 
         return allRecordings;
     }
@@ -690,7 +690,7 @@ export abstract class FormSetOccurrenceView
         set.onPropertyRemoved(this.formDataAddedOrRemovedListener);
     }
 
-    private isDirty(): boolean {
+    isDirty(): boolean {
         return Object.keys(this.dirtyFormItemViewsMap).length > 0;
     }
 

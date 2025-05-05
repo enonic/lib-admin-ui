@@ -164,12 +164,7 @@ export class FormOptionSetOptionView
                     }
                 }
 
-                const isValid = prevRecording.isValid();
-                if (wasValid != isValid) {
-
-                    if (wasValid != undefined) {
-                        this.originalValidityChanged = true;
-                    }
+                if (wasValid != prevRecording.isValid()) {
 
                     this.notifyValidityChanged(new RecordingValidityChangedEvent(prevRecording,
                         this.resolveValidationRecordingPath()).setIncludeChildren(true));
@@ -180,7 +175,7 @@ export class FormOptionSetOptionView
             });
         });
 
-        return Q();
+        return super.postLayout(validate);
     }
 
     protected resolveValidationRecordingPath(): ValidationRecordingPath {
@@ -252,6 +247,10 @@ export class FormOptionSetOptionView
         return result;
     }
 
+    protected isHideValidationErrors(): boolean {
+        return !this.isSelected() || super.isHideValidationErrors();
+    }
+
     validate(silent: boolean = true): ValidationRecording {
         if (!this.isSelected()) {
             return new ValidationRecording();
@@ -262,6 +261,13 @@ export class FormOptionSetOptionView
         this.formItemViews.forEach((formItemView: FormItemView) => {
             recording.flatten(formItemView.validate(silent));
         });
+
+        if (!silent && recording.validityChanged(this.previousValidationRecording)) {
+            const origin = this.resolveValidationRecordingPath();
+            this.notifyValidityChanged(new RecordingValidityChangedEvent(recording, origin));
+        }
+
+        this.renderValidationClasses(recording);
 
         this.previousValidationRecording = recording;
 

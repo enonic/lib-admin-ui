@@ -11,6 +11,7 @@ import {ValidationRecording} from '../../ValidationRecording';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
 import {FieldSetLabel} from './FieldSetLabel';
 import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
+import {ValidationRecordingPath} from '../../ValidationRecordingPath';
 
 export interface FieldSetViewConfig extends CreatedFormItemLayerConfig {
 
@@ -128,11 +129,25 @@ export class FieldSetView
     validate(silent: boolean = true): ValidationRecording {
 
         let recording = new ValidationRecording();
+
         this.formItemViews.forEach((formItemView: FormItemView) => {
             recording.flatten(formItemView.validate(silent));
         });
 
+        if (!silent && recording.validityChanged(this.previousValidationRecording)) {
+            const origin = this.resolveValidationRecordingPath();
+            this.notifyValidityChanged(new RecordingValidityChangedEvent(recording, origin));
+        }
+
+        this.renderValidationClasses(recording);
+
+        this.previousValidationRecording = recording;
+
         return recording;
+    }
+
+    protected resolveValidationRecordingPath(): ValidationRecordingPath {
+        return new ValidationRecordingPath(this.propertySet.getPropertyPath(), this.fieldSet.getName());
     }
 
     isEmpty(): boolean {

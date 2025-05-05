@@ -24,6 +24,8 @@ export interface InputTypeView {
 
     clear(): void;
 
+    isDirty(): boolean;
+
     refresh();
 
     setEnabled(enable: boolean);

@@ -30,7 +30,7 @@ export class FormItemView
 
     private hideErrorsUntilValidityChange: boolean = false;
 
-    protected originalValidityChanged: boolean = false;
+    private originalValidityChanged: boolean = false;
 
     protected previousValidationRecording: ValidationRecording;
 
@@ -69,20 +69,24 @@ export class FormItemView
 
     postLayout(validate: boolean = true): Q.Promise<void> {
         this.onValidityChanged((event: RecordingValidityChangedEvent) => {
-            if (this.previousValidationRecording) {
-                if (this.previousValidationRecording.isValid() != event.isValid()) {
-                    this.originalValidityChanged = true;
-                }
-            }
-
-            this.previousValidationRecording = event.getRecording();
-            const isValid = event.isValid();
-            this.toggleClass('invalid', !isValid);
-            this.toggleClass('valid', isValid);
-            this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
+            this.renderValidationClasses(event.getRecording());
         });
 
         return Q();
+    }
+
+    protected renderValidationClasses(recording: ValidationRecording) {
+        if (this.previousValidationRecording) {
+            if (this.previousValidationRecording.isValid() != recording.isValid()) {
+                this.originalValidityChanged = true;
+            }
+        }
+
+        // this.previousValidationRecording = recording;
+        const isValid = recording.isValid();
+        this.toggleClass('invalid', !isValid);
+        this.toggleClass('valid', isValid);
+        this.toggleClass('hide-validation-errors', this.isHideValidationErrors());
     }
 
     isValid(): boolean {
@@ -95,6 +99,10 @@ export class FormItemView
 
     update(_propertyArray: PropertySet, _unchangedOnly?: boolean): Q.Promise<void> {
         throw new Error('Must be implemented by inheritors');
+    }
+
+    isDirty(): boolean {
+        throw new Error('Must be implemented by inheritor');
     }
 
     reset() {

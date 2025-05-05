@@ -236,6 +236,10 @@ export class FormItemOccurrences<V extends FormItemOccurrenceView> {
         return this.occurrenceViews.every((currOccurrenceView: V) => currOccurrenceView.isEmpty());
     }
 
+    isDirty(): boolean {
+        return this.occurrenceViews.some((currOccurrenceView: V) => currOccurrenceView.isDirty());
+    }
+
     isExpandable(): boolean {
         return this.occurrenceViews.some((view: V) => view.isExpandable());
     }

@@ -25,32 +25,44 @@
 
     .form-option-set-occurrence-view {
 
-      .form-option-set-option-view {
+      &.invalid {
+        > .help-text {
+          padding-left: 10px;
+        }
 
-        &:not(.selected) {
-          .input-view .validation-block {
+        > .selection-message {
+          display: block;
+          color: @input-red-text;
+          font-size: 14px;
+          padding: 0 0 5px 13px;
+          margin-top: -5px;
+
+          &.empty {
             display: none;
-          }
-
-          &.invalid {
-            > .help-text {
-              padding-left: 10px;
-            }
-
-            .selection-message {
-              display: block;
-              color: @input-red-text;
-              font-size: 14px;
-              padding: 0 0 5px 13px;
-              margin-top: -5px;
-
-              &.empty {
-                display: none;
-              }
-            }
           }
         }
       }
+
+      .form-option-set-occurrences-container {
+
+        .form-option-set-option-view {
+          padding: 0;
+
+          &.invalid.selected {
+            border: 3px solid @admin-red;
+            box-shadow: none;
+          }
+
+          &:not(.selected) {
+
+            .input-view .validation-block {
+              display: none;
+            }
+          }
+        }
+
+      }
+
     }
   }
 

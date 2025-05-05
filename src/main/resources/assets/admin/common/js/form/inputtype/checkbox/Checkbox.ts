@@ -89,6 +89,10 @@ export class Checkbox
         return this.input.getOccurrences().getMinimum() > 0;
     }
 
+    isDirty(): boolean {
+        return this.checkbox.isDirty();
+    }
+
     reset() {
         this.checkbox.resetBaseValues();
     }

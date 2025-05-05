@@ -312,12 +312,14 @@ export abstract class FormOptionSetOccurrenceView
 
         this.renderSelectionValidationMessage(multiSelectionState);
 
+        // this changes currentValidationState so should come before notifyValidityChanged
+        this.validate(false);
+
         if (this.currentValidationState.isValid() !== previousValidationValid) {
             this.notifyValidityChanged(new RecordingValidityChangedEvent(this.currentValidationState,
                 this.resolveValidationRecordingPath()).setIncludeChildren(true));
         }
 
-        this.validate(false);
     }
 
     protected layoutElements() {
