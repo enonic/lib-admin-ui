@@ -1,0 +1,37 @@
+.help-text {
+  font-size: 11px;
+  padding-top: 5px;
+
+  &:not(.visible) {
+    display: none;
+  }
+
+  p {
+    color: @admin-font-gray2;
+    font-style: italic;
+    text-align: justify;
+  }
+}
+
+.help-text-toggler {
+  float: right;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  width: 17px;
+  height: 17px;
+  line-height: 17px;
+  text-align: center;
+  font-size: 12px;
+  color: white;
+  background: @form-button-bg-hover;
+  border-radius: 50%;
+
+  &:hover:not(.on) {
+    color: @admin-dark-gray;
+  }
+
+  &.on {
+    background: @admin-button-blue1;
+  }
+}
