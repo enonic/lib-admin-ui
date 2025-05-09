@@ -28,11 +28,17 @@ export class SelectableListBoxKeyNavigator<I> {
     }
 
     protected initKeyListeners(): void {
-        this.selectableWrapper.onShown(() => {
+        const currentSelectableWrapperTabIndex = this.selectableWrapper.getEl().getTabIndex() ?? -1;
+
+        if (currentSelectableWrapperTabIndex < 0) {
+            this.selectableWrapper.setTabIndex(0);
+        }
+
+        this.selectableWrapper.onFocusIn(() => {
             this.enableKeys();
         });
 
-        this.selectableWrapper.onHidden(() => {
+        this.selectableWrapper.onFocusOut(() => {
             this.disableKeys();
         });
 
@@ -40,6 +46,7 @@ export class SelectableListBoxKeyNavigator<I> {
             this.keyBindings = [
                 new KeyBinding('shift+up', this.handleKeyUpWithShift.bind(this)),
                 new KeyBinding('shift+down', this.handleKeyDownWithShift.bind(this)),
+                new KeyBinding('space', this.onSpaceKeyPress.bind(this)),
             ];
 
             this.selectableWrapper.setSelectAllItemsBetweenHandler(this.selectItemsBetween.bind(this));
@@ -54,7 +61,6 @@ export class SelectableListBoxKeyNavigator<I> {
             new KeyBinding('down', this.handleKeyDownWithoutShift.bind(this)),
             new KeyBinding('left', this.onLeftKeyPress.bind(this)),
             new KeyBinding('right', this.onRightKeyPress.bind(this)),
-            new KeyBinding('space', this.onSpaceKeyPress.bind(this)),
         ];
     }
 
