@@ -46,6 +46,10 @@ export class SelectableListBoxWrapper<I>
 
     protected selectItemsBetweenHandler?: (item1: I, item2: I) => void;
 
+    private skipNextClick: boolean = false;
+
+    private isSkipNextClickEnabled: boolean = false;
+
     constructor(listBox: ListBox<I>, options?: SelectableListBoxDropdownOptions<I>) {
         super('selectable-listbox-wrapper ' + (options?.className || ''));
 
@@ -61,6 +65,13 @@ export class SelectableListBoxWrapper<I>
 
     protected initListeners(): void {
         this.addListBoxListeners();
+
+        // preserving selection if the list was not focused and clicked on selected element
+        this.onMouseDown(() => {
+           if (this.isSkipNextClickEnabled && !this.getHTMLElement().contains(document.activeElement)) {
+                this.skipNextClick = true;
+           }
+        });
     }
 
     protected addListBoxListeners(): void {
@@ -128,7 +139,16 @@ export class SelectableListBoxWrapper<I>
             if (event.detail === 2) { // double click, should be handled differently
                 event.stopPropagation();
                 event.preventDefault();
+                this.skipNextClick = false;
                 return;
+            }
+
+            if (this.skipNextClick) { // preserving selection if the list was not focused and clicked on selected element
+                this.skipNextClick = false;
+
+                if (this.isSelected(id)) {
+                   return;
+                }
             }
 
             clickHandler(event);
@@ -325,6 +345,10 @@ export class SelectableListBoxWrapper<I>
 
     selectAll(silent?: boolean): void {
         this.select(this.listBox instanceof TreeListBox ? this.listBox.getItems(true) : this.listBox.getItems(), silent);
+    }
+
+    setSkipFirstClickOnFocus(enabled: boolean): void {
+        this.isSkipNextClickEnabled = enabled;
     }
 
     protected doDeselect(itemToDeselect: I): void {

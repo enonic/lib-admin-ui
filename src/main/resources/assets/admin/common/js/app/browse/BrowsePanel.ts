@@ -72,6 +72,8 @@ export class BrowsePanel
             this.gridAndToolbarPanel = new Panel();
             this.filterAndGridSplitPanel = this.setupFilterPanel();
         }
+
+        this.selectableListBoxPanel.getWrapper().setSkipFirstClickOnFocus(true);
     }
 
     protected initListeners() {

@@ -5,6 +5,20 @@
     }
   }
 
+  &:focus-within {
+    .selectable-listbox {
+      .item-view-wrapper {
+        &.selected {
+          background-color: @admin-blue;
+
+          .checkbox {
+            background-color: @admin-blue;
+          }
+        }
+      }
+    }
+  }
+
   .selectable-listbox {
     .item-view-wrapper {
       display: flex;
@@ -61,10 +75,10 @@
       }
 
       &.selected {
-        background-color: @admin-blue;
+        background-color: lighten(@admin-blue, 10%);
 
         .checkbox {
-          background-color: @admin-blue;
+          background-color: lighten(@admin-blue, 10%);
         }
 
         .item-view,
