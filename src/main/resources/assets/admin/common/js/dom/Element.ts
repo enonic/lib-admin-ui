@@ -469,6 +469,17 @@ export class Element {
         return this.isVisible() && !this.el.isDisabled();
     }
 
+    getNextFocusable(): HTMLElement | undefined {
+        const focusableElements = $(':focusable'); // Get all focusable elements
+        const lastIndex = focusableElements.toArray().indexOf(this.getHTMLElement());
+
+        if (lastIndex !== -1) {
+            return focusableElements.get((lastIndex + 1) % focusableElements.length);
+        }
+
+        return undefined;
+    }
+
     setTitle(title: string): Element {
         const trimmedTitle = title.trim();
         if (trimmedTitle) {

@@ -179,6 +179,7 @@ export class Toolbar<C extends ToolbarConfig>
                 eventHandled = true;
                 element.giveBlur();
                 this.removeFocus();
+                this.getLastElement().getNextFocusable()?.focus();
             } else if (KeyHelper.isArrowRightKey(event)) {
                 eventHandled = true;
                 this.focusNextElement();
@@ -246,6 +247,14 @@ export class Toolbar<C extends ToolbarConfig>
 
     private focusPreviousElement() {
         this.focusElementByIndex(() => this.getPreviousFocusableElementIndex());
+    }
+
+    private getLastElement(): Element | undefined {
+        if (!this.toolbarElements.length) {
+            return undefined;
+        }
+
+        return this.toolbarElements[this.toolbarElements.length - 1].el;
     }
 
     addContainer(container: Element, elements: Element[]): Element {

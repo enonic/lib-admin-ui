@@ -34,9 +34,24 @@ select {
 
 &.@{_CLS_PREFIX}focused,
 :focus-visible,
-:focus {
+:focus,
+input[type="checkbox"]:focus + label::before,
+input[type="checkbox"]:focus + label::after {
   outline: rgb(0, 95, 204) auto 1px;
+}
+
+&.@{_CLS_PREFIX}focused,
+:focus-visible,
+:focus {
   outline-offset: -1px;
+}
+
+input[type="checkbox"]:focus + label {
+  &::before,
+  &::after {
+    outline-offset: 2px;
+    background-size: 17px;
+  }
 }
 
 @-moz-document url-prefix() {
