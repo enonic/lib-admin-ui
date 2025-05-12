@@ -13,12 +13,12 @@ export interface ListBoxToolbarParams {
 export class ListBoxToolbar<I>
     extends DivEl {
 
-    private selectionPanelToggler: ListSelectionPanelToggler<I>;
-    private selectionController: ListSelectionController<I>;
-    private centerWrapper: DivEl;
-    private leftWrapper: DivEl;
-    private rightWrapper: DivEl;
-    private refreshButton: Button;
+    private readonly selectionPanelToggler: ListSelectionPanelToggler<I>;
+    private readonly selectionController: ListSelectionController<I>;
+    private readonly centerWrapper: DivEl;
+    private readonly leftWrapper: DivEl;
+    private readonly rightWrapper: DivEl;
+    private readonly refreshButton: Button;
 
     constructor(listBoxWrapper: SelectableListBoxWrapper<I>, params: ListBoxToolbarParams) {
         super('tree-grid-toolbar toolbar');
@@ -40,6 +40,19 @@ export class ListBoxToolbar<I>
         this.rightWrapper.appendChild(this.refreshButton);
 
         this.appendChildren(this.leftWrapper, this.centerWrapper, this.rightWrapper);
+
+        this.initListeners();
+    }
+
+    private initListeners(): void {
+        const onElementFocus = (event: FocusEvent) => this.addClassEx('focused');
+        const onElementBlur = (event: FocusEvent) => this.removeClassEx('focused');
+
+        this.refreshButton.onFocus(onElementFocus);
+        this.selectionController.onFocus(onElementFocus);
+
+        this.refreshButton.onBlur(onElementBlur);
+        this.selectionController.onBlur(onElementBlur);
     }
 
     disable() {
