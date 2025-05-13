@@ -48,6 +48,8 @@ export class FilterableListBoxWrapper<I>
 
     protected loadWhenListShown: boolean;
 
+    private filterAndListContainer: DivEl;
+
     constructor(listBox: ListBox<I>, options?: FilterableListBoxOptions<I>) {
         super(listBox, options);
 
@@ -68,8 +70,6 @@ export class FilterableListBoxWrapper<I>
             role: AriaRole.LISTBOX,
             ariaHidden: true
         });
-
-        this.listBox.hide();
 
         this.filterContainer = new DivEl('filter-container');
 
@@ -128,11 +128,9 @@ export class FilterableListBoxWrapper<I>
     }
 
     protected doShowDropdown(): void {
-        if (!this.hasChild(this.listBox)) {
+        if (!this.filterAndListContainer.hasChild(this.listBox)) {
             this.attachListBoxOnShown();
         }
-
-        this.listBox.show();
 
         if (this.loadWhenListShown) {
             this.loadListOnShown();
@@ -141,7 +139,7 @@ export class FilterableListBoxWrapper<I>
     }
 
     protected attachListBoxOnShown(): void {
-        this.appendChild(this.listBox);
+        this.filterAndListContainer.appendChild(this.listBox);
     }
 
     protected loadListOnShown(): void {
@@ -157,7 +155,6 @@ export class FilterableListBoxWrapper<I>
     }
 
     protected doHideDropdown(): void {
-        this.listBox.hide();
         this.listBox.remove();
     }
 
@@ -400,10 +397,11 @@ export class FilterableListBoxWrapper<I>
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
             this.addClass('filterable-listbox-wrapper');
+            this.listBox.remove();
             this.listBox.addClass('filterable-listbox');
             this.filterContainer.appendChildren(this.optionFilterInput, this.dropdownHandle as Element);
-            const filterAndListContainer = new DivEl('filter-and-list-container').appendChildren(this.filterContainer, this.listBox);
-            this.appendChild(filterAndListContainer);
+            this.filterAndListContainer = new DivEl('filter-and-list-container').appendChildren(this.filterContainer);
+            this.appendChild(this.filterAndListContainer);
 
             this.applyButton.addClass('apply-selection-button');
             this.applyButton.insertAfterEl(this.optionFilterInput);
