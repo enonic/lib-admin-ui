@@ -340,7 +340,7 @@ export class Toolbar<C extends ToolbarConfig>
             return;
         }
         this.toolbarElements[indexToRemove].el.remove();
-        this.toolbarElements.slice(indexToRemove, 1);
+        this.toolbarElements.splice(indexToRemove, 1);
     }
 
     getActions(): Action[] {
