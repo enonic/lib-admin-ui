@@ -151,11 +151,11 @@ export class FilterableListBoxWrapper<I>
         this.applyButton.hide();
         this.dropdownShown = false;
         this.doHideDropdown();
-        this.notifyDropdownVisibilityChanged(false);
     }
 
     protected doHideDropdown(): void {
         this.listBox.remove();
+        this.notifyDropdownVisibilityChanged(false);
     }
 
     protected listenClickOutside(): void {
