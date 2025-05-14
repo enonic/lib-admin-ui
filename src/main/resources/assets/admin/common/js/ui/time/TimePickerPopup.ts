@@ -294,7 +294,7 @@ export class TimePickerPopup
             this.prevHour.appendChild(new SpanEl());
             this.nextHour.appendChild(new SpanEl());
 
-            hourContainer.appendChildren(this.prevHour, this.hour, this.nextHour);
+            hourContainer.appendChildren(this.nextHour, this.hour, this.prevHour);
 
             const minuteContainer: LiEl = new LiEl();
             this.appendChild(minuteContainer);
@@ -302,7 +302,7 @@ export class TimePickerPopup
             this.prevMinute.appendChild(new SpanEl());
             this.nextMinute.appendChild(new SpanEl());
 
-            minuteContainer.appendChildren(this.prevMinute, this.minute, this.nextMinute);
+            minuteContainer.appendChildren(this.nextMinute, this.minute, this.prevMinute);
 
             if (this.timezone) {
                 const timezoneContainer: LiEl = new LiEl('timezone');
