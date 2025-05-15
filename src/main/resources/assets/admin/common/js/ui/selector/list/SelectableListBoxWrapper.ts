@@ -42,8 +42,6 @@ export class SelectableListBoxWrapper<I>
 
     protected selectionLimitReached: boolean = false;
 
-    protected selectionNavigator?: SelectableListBoxNavigator<I>;
-
     protected selectItemsBetweenHandler?: (item1: I, item2: I) => void;
 
     private skipNextClick: boolean = false;
@@ -173,14 +171,11 @@ export class SelectableListBoxWrapper<I>
         wrapper.appendChild(view);
     }
 
-    private addItemWrapper(id: string, wrapper: Element): void {
+    protected addItemWrapper(id: string, wrapper: Element): void {
         wrapper.setRole(AriaRole.OPTION);
         const idWrappersList = this.itemsWrappers.get(id) || [];
         idWrappersList.push(wrapper);
         this.itemsWrappers.set(id, idWrappersList);
-
-        // if list is already shown and new item added to it then add tabindex manually
-        this.selectionNavigator?.notifyItemWrapperAdded(wrapper);
     }
 
     protected handleUserToggleAction(item: I): void {
@@ -448,26 +443,6 @@ export class SelectableListBoxWrapper<I>
         if (this.selectedItems.has(itemId)) {
             this.selectedItems.set(itemId, item);
         }
-    }
-
-    protected addKeyNavigation(): void {
-        this.selectionNavigator = this.createSelectionNavigator();
-    }
-
-    protected createSelectionNavigator(): SelectableListBoxNavigator<I> {
-        return new SelectableListBoxNavigator(this.listBox, this.itemsWrappers)
-            .setSpaceHandler(this.handleSpacePressed.bind(this))
-    }
-
-    protected handleSpacePressed(): boolean {
-        const focusedItem: I = this.selectionNavigator.getFocusedItem();
-
-        if (focusedItem) {
-            this.handleUserToggleAction(focusedItem);
-            return false;
-        }
-
-        return true;
     }
 
     setSelectAllItemsBetweenHandler(handler: (item1: I, item2: I) => void): void {

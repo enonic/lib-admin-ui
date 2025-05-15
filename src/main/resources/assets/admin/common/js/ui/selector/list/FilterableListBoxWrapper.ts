@@ -48,6 +48,8 @@ export class FilterableListBoxWrapper<I>
 
     protected loadWhenListShown: boolean;
 
+    protected selectionNavigator?: SelectableListBoxNavigator<I>;
+
     constructor(listBox: ListBox<I>, options?: FilterableListBoxOptions<I>) {
         super(listBox, options);
 
@@ -346,40 +348,6 @@ export class FilterableListBoxWrapper<I>
         return this.listBox.getItem(id);
     }
 
-    private focusNext(): void {
-        const focusedItemIndex: number = this.getFocusedItemIndex();
-        const arrayAfterFocusedItem: Element[] = focusedItemIndex > -1 ? this.listBox.getChildren().slice(focusedItemIndex + 1) : [];
-        const arrayToLookForItemToFocus: Element[] = arrayAfterFocusedItem.concat(this.listBox.getChildren());
-        this.focusFirstAvailableItem(arrayToLookForItemToFocus);
-    }
-
-    private focusFirstAvailableItem(items: Element[]): void {
-        items.filter((el: Element) => el.isVisible()).some((itemWrapper: Element) => {
-            return this.isMultiSelect() ? itemWrapper.getFirstChild().giveFocus() : itemWrapper.giveFocus();
-        });
-    }
-
-    private focusPrevious(): void {
-        const focusedItemIndex: number = this.getFocusedItemIndex();
-        const arrayBeforeFocusedItem: Element[] = focusedItemIndex > -1 ? this.listBox.getChildren().slice(0, focusedItemIndex) : [];
-        const arrayToLookForItemToFocus: Element[] =
-            arrayBeforeFocusedItem.reverse().concat(this.listBox.getChildren().slice().reverse());
-        this.focusFirstAvailableItem(arrayToLookForItemToFocus);
-    }
-
-    private getFocusedItemIndex(): number {
-        let focusedItemIndex: number = -1;
-
-        this.listBox.getChildren().find((itemWrapper: Element, index: number) => {
-            focusedItemIndex = index;
-            const elemToCheck: HTMLElement = this.isMultiSelect() ? itemWrapper.getFirstChild()?.getFirstChild()?.getHTMLElement() :
-                                             itemWrapper.getHTMLElement();
-            return elemToCheck === document.activeElement;
-        });
-
-        return focusedItemIndex;
-    }
-
     setLoadWhenListShown(): void {
         if (this.dropdownShown) {
             this.loadListOnShown();
@@ -452,8 +420,31 @@ export class FilterableListBoxWrapper<I>
     }
 
     protected createSelectionNavigator(): SelectableListBoxNavigator<I> {
-        return super.createSelectionNavigator()
+        return new SelectableListBoxNavigator(this.listBox, this.itemsWrappers)
             .setClickOutsideHandler(this.handleClickOutside.bind(this))
             .setEnterKeyHandler(this.handlerEnterPressed.bind(this))
+            .setSpaceHandler(this.handleSpacePressed.bind(this))
+    }
+
+    protected addKeyNavigation(): void {
+        this.selectionNavigator = this.createSelectionNavigator();
+    }
+
+    protected addItemWrapper(id: string, wrapper: Element): void {
+        super.addItemWrapper(id, wrapper);
+
+        // if list is already shown and new item added to it then add tabindex manually
+        this.selectionNavigator?.notifyItemWrapperAdded(wrapper);
+    }
+
+    protected handleSpacePressed(): boolean {
+        const focusedItem: I = this.selectionNavigator.getFocusedItem();
+
+        if (focusedItem) {
+            this.handleUserToggleAction(focusedItem);
+            return false;
+        }
+
+        return true;
     }
 }
