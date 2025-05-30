@@ -152,4 +152,13 @@ export class UriHelper {
 
         return url + (hasParams ? '&' : '?') + UriHelper.encodeUrlParams(params, '', encode);
     }
+
+    static isNavigatingWithinSamePage(url: string, contentWindow: Window): boolean {
+        const href = contentWindow.location.href;
+        return url === UriHelper.trimAnchor(UriHelper.trimWindowProtocolAndPortFromHref(href, contentWindow));
+    }
+
+    static isDownloadLink(url: string): boolean {
+        return url.indexOf('attachment/download') > 0;
+    }
 }
