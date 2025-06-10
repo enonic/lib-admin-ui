@@ -44,6 +44,19 @@ export class ApplicationConfigProvider {
         return match;
     }
 
+    removeConfig(applicationKey: ApplicationKey): void {
+        const configProp = this.propertyArray.getProperties().find((property: Property) => {
+            const applicationConfigAsSet: PropertySet = property.getPropertySet();
+            const applicationConfig: ApplicationConfig = ApplicationConfig.create().fromData(applicationConfigAsSet).build();
+
+            return applicationConfig.getApplicationKey().equals(applicationKey);
+        });
+
+        if (configProp) {
+            this.propertyArray.remove(configProp.getIndex());
+        }
+    }
+
     addConfig(applicationKey: ApplicationKey): ApplicationConfig {
         this.notifyBeforePropertyChanged();
 
