@@ -1,20 +1,20 @@
 import Q from 'q';
-import {DivEl} from '../../dom/DivEl';
-import {Action} from '../Action';
-import {Element} from '../../dom/Element';
-import {ResponsiveManager} from '../responsive/ResponsiveManager';
 import {Body} from '../../dom/Body';
-import {ResponsiveItem} from '../responsive/ResponsiveItem';
-import {i18n} from '../../util/Messages';
-import {LoadMask} from '../mask/LoadMask';
-import {StyleHelper} from '../../StyleHelper';
-import {AppHelper} from '../../util/AppHelper';
-import {BodyMask} from '../mask/BodyMask';
-import {KeyBindings} from '../KeyBindings';
+import {DivEl} from '../../dom/DivEl';
+import {Element} from '../../dom/Element';
 import {H2El} from '../../dom/H2El';
-import {DialogButton} from './DialogButton';
-import {KeyBinding} from '../KeyBinding';
 import {Store} from '../../store/Store';
+import {StyleHelper} from '../../StyleHelper';
+import {ActionButton} from '../../ui2/ActionButton';
+import {AppHelper} from '../../util/AppHelper';
+import {i18n} from '../../util/Messages';
+import {Action} from '../Action';
+import {KeyBinding} from '../KeyBinding';
+import {KeyBindings} from '../KeyBindings';
+import {BodyMask} from '../mask/BodyMask';
+import {LoadMask} from '../mask/LoadMask';
+import {ResponsiveItem} from '../responsive/ResponsiveItem';
+import {ResponsiveManager} from '../responsive/ResponsiveManager';
 
 export interface ModalDialogConfig {
     title?: string;
@@ -64,7 +64,7 @@ export abstract class ModalDialog
 
     private elementToFocusOnShow: Element;
 
-    private cancelButton: DialogButton;
+    private cancelButton: ActionButton;
 
     private tabbable: Element[];
 
@@ -453,11 +453,11 @@ export abstract class ModalDialog
         return this.cancelAction;
     }
 
-    getCancelButton(): DialogButton {
+    getCancelButton(): ActionButton {
         return this.cancelButton;
     }
 
-    addCancelButtonToBottom(buttonLabel?: string, useDefault?: boolean): DialogButton {
+    addCancelButtonToBottom(buttonLabel?: string, useDefault?: boolean): ActionButton {
         const cancelAction = new Action(buttonLabel || i18n('action.cancel'));
         cancelAction.setIconClass('cancel-button-bottom force-enabled');
         cancelAction.onExecuted(() => this.cancelAction.execute());
@@ -499,11 +499,11 @@ export abstract class ModalDialog
         this.contentPanel.removeChild(child);
     }
 
-    addAction(action: Action, useDefault?: boolean, prepend?: boolean): DialogButton {
+    addAction(action: Action, useDefault?: boolean, prepend?: boolean): ActionButton {
         return this.buttonRow.addAction(action, useDefault, prepend);
     }
 
-    removeAction(actionButton: DialogButton) {
+    removeAction(actionButton: ActionButton) {
         if (!actionButton) {
             return;
         }
@@ -752,22 +752,21 @@ export class ButtonRow
         this.actions.push(action);
     }
 
-    addAction(action: Action, useDefault?: boolean, prepend?: boolean): DialogButton {
-        const button = new DialogButton(action);
+    addActionButton(button: ActionButton, useDefault?: boolean, prepend?: boolean): ActionButton {
         if (useDefault) {
             this.setDefaultElement(button);
         }
 
         this.addElement(button, prepend);
 
-        action.onPropertyChanged(() => {
-            button.setLabel(action.getLabel());
-            button.setEnabled(action.isEnabled());
-        });
-
-        this.actions.push(action);
+        this.actions.push(button.getAction());
 
         return button;
+    }
+
+    addAction(action: Action, useDefault?: boolean, prepend?: boolean): ActionButton {
+        const button = new ActionButton({action});
+        return this.addActionButton(button, useDefault, prepend);
     }
 
     removeAction(action: Action) {
@@ -777,8 +776,8 @@ export class ButtonRow
         }
 
         this.buttonContainer.getChildren()
-            .filter((button: DialogButton) => button.getAction() === action)
-            .forEach((button: DialogButton) => {
+            .filter((button: ActionButton) => button.getAction() === action)
+            .forEach((button: ActionButton) => {
                 if (this.defaultElement === button) {
                     this.resetDefaultElement();
                 }
