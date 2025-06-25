@@ -21,13 +21,23 @@
     "fix": "eslint . --fix --cache"
   },
   "dependencies": {
+    "@enonic/ui": "~0.20.3",
     "dompurify": "~3.3.0",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.7.1",
     "jquery-simulate": "^1.0.2",
     "jquery-ui": "^1.14.1",
+    "lucide-react": "^0.540.0",
     "mousetrap": "^1.6.5",
+    "nanoid": "~5.1.5",
+    "nanostores": "~1.0.1",
+    "preact": "^10.27.2",
     "q": "^1.5.1"
+  },
+  "peerDependencies": {
+    "@radix-ui/react-slot": "^1.2.0",
+    "focus-trap-react": "^11.0.0",
+    "lucide-react": ">=0.500.0"
   },
   "devDependencies": {
     "@enonic/eslint-config": "^2.1.0",
