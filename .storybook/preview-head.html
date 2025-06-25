@@ -1,0 +1,11 @@
+<script>
+  (function () {
+    var mql = window.matchMedia('(prefers-color-scheme: dark)');
+    function apply(dark) {
+      document.documentElement.classList.toggle('dark', dark);
+      document.documentElement.classList.toggle('light', !dark);
+    }
+    apply(mql.matches);
+    mql.addEventListener('change', function (e) { apply(e.matches); });
+  })();
+</script>

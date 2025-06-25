@@ -1,0 +1,17 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "strict": true,
+        "isolatedModules": true
+    },
+    "include": [
+        "src/**/*.stories.tsx",
+        ".storybook/*.ts",
+        ".storybook/*.tsx"
+    ],
+    "references": [
+        { "path": "./tsconfig.legacy.json" },
+        { "path": "./tsconfig.modern.json" }
+    ]
+}

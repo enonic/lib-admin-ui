@@ -1,0 +1,68 @@
+// These tests verify registry API consistency (every component has a descriptor, etc.)
+// using a mocked Store. They do NOT validate cross-bundle state sharing — that requires
+// integration testing in CS where lib.js (IIFE) and the Vite bundle coexist on the same page.
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
+
+vi.mock('@enonic/ui', () => ({Input: () => null, TextArea: () => null}));
+vi.mock('../../util/Messages', () => ({
+    i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
+}));
+vi.mock('../../store/Store', () => {
+    const storeMap = new Map<string, unknown>();
+    return {
+        Store: {
+            instance: () => ({
+                get: (key: string) => storeMap.get(key),
+                set: (key: string, value: unknown) => {
+                    storeMap.set(key, value);
+                },
+                has: (key: string) => storeMap.has(key),
+                delete: (key: string) => storeMap.delete(key),
+            }),
+        },
+    };
+});
+
+import {DescriptorRegistry} from '../descriptor/DescriptorRegistry';
+import {initBuiltInTypes} from '../initBuiltInTypes';
+import {ComponentRegistry} from './ComponentRegistry';
+
+describe('Registry consistency', () => {
+    beforeEach(() => {
+        initBuiltInTypes();
+    });
+
+    afterEach(() => {
+        for (const [name] of ComponentRegistry.getAll()) {
+            ComponentRegistry.unregister(name);
+        }
+        for (const [name] of DescriptorRegistry.getAll()) {
+            DescriptorRegistry.unregister(name);
+        }
+    });
+
+    it('should have a matching DescriptorRegistry entry for every ComponentRegistry entry', () => {
+        // Arrange
+        const components = ComponentRegistry.getAll();
+
+        // Assert
+        expect(components.size).toBeGreaterThan(0);
+        for (const [name] of components) {
+            expect(
+                DescriptorRegistry.has(name),
+                `ComponentRegistry has "${name}" but DescriptorRegistry does not`,
+            ).toBe(true);
+        }
+    });
+
+    it('should have ComponentRegistry entries as a subset of DescriptorRegistry', () => {
+        // Arrange
+        const components = ComponentRegistry.getAll();
+        const descriptors = DescriptorRegistry.getAll();
+
+        // Assert
+        expect(components.size).toBeGreaterThan(0);
+        // Every component must have a descriptor, but not every descriptor needs a component yet
+        expect(components.size).toBeLessThanOrEqual(descriptors.size);
+    });
+});

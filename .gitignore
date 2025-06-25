@@ -15,7 +15,6 @@ build/
 target/
 
 # Development files
-.storybook/
 storybook-static/
 docs/
 *storybook.log
@@ -50,4 +49,4 @@ pnpm-debug.log*
 .tmp/
 generated-java/
 .tsbuildinfo
-.eslintcache
+*.tsbuildinfo
