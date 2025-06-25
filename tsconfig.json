@@ -1,13 +1,13 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
+        "module": "es2015",
+        "target": "es2015",
         "lib": [
             "es2015",
             "dom"
         ],
         "outDir": "build/resources/main/dev/lib-admin-ui/",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "declaration": true,
         "declarationDir": "build/resources/main/dev/lib-admin-ui/",
         "allowSyntheticDefaultImports": true,
