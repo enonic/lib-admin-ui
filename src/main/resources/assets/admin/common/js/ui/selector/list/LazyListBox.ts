@@ -1,5 +1,5 @@
-import {ListBox} from './ListBox';
 import {Element} from '../../../dom/Element';
+import {ListBox} from './ListBox';
 
 export abstract class LazyListBox<T> extends ListBox<T> {
 
@@ -38,7 +38,7 @@ export abstract class LazyListBox<T> extends ListBox<T> {
     }
 
     protected handleLastItemIsVisible(): void {
-        this.observer.unobserve(this.observedItem.getHTMLElement());
+        this.observer.disconnect();
         this.handleLazyLoad();
     }
 
@@ -89,10 +89,20 @@ export abstract class LazyListBox<T> extends ListBox<T> {
         }
 
         if (this.observedItem) {
-            this.observer.unobserve(this.observedItem.getHTMLElement());
+            this.observer.disconnect();
         }
 
         this.observedItem = itemView;
-        this.observer.observe(itemView.getHTMLElement());
+        this.observer.observe(LazyListBox.getObservedHTMLElement(itemView));
+    }
+
+    protected static getObservedHTMLElement(el: Element): HTMLElement {
+        const element = el.getHTMLElement();
+        const style = getComputedStyle(element);
+        if (style.display === 'contents') {
+            const children = Array.from(element.children);
+            return children.find(child => child instanceof HTMLElement) ?? element;
+        }
+        return element;
     }
 }
