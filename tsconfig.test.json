@@ -1,0 +1,26 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "incremental": true,
+        "tsBuildInfoFile": "build/tsconfig.test.tsbuildinfo",
+        "allowSyntheticDefaultImports": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "types": [
+            "dompurify",
+            "jquery",
+            "jqueryui",
+            "mousetrap",
+            "q",
+            "vitest/globals"
+        ]
+    },
+    "include": [
+        "src/main/resources/assets/admin/common/js/form2/**/*.test.ts"
+    ],
+    "references": [
+        { "path": "./tsconfig.legacy.json" },
+        { "path": "./tsconfig.modern.json" }
+    ]
+}
