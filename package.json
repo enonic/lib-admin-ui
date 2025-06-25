@@ -21,6 +21,7 @@
     "fix": "eslint --fix **/*.ts --cache"
   },
   "dependencies": {
+    "@enonic/ui": "file:../enonic-ui",
     "@types/dompurify": "=3.0.5",
     "@types/mousetrap": "^1.6.15",
     "dompurify": "=3.1.7",
@@ -29,11 +30,13 @@
     "jquery-simulate": "^1.0.2",
     "jquery-ui": "^1.14.1",
     "mousetrap": "^1.6.5",
+    "nanostores": "^1.0.1",
     "q": "^1.5.1",
     "validator": "^13.15.15"
   },
   "peerDependencies": {
-    "postcss": "^8.2.2"
+    "postcss": "^8.2.2",
+    "preact": ">=10.26.9"
   },
   "devDependencies": {
     "@enonic/eslint-config": "^2.0.1",
@@ -62,6 +65,7 @@
     "postcss-loader": "^8.1.1",
     "postcss-normalize": "^13.0.1",
     "postcss-sort-media-queries": "^5.2.0",
+    "preact": "^10.26.9",
     "swc-loader": "^0.2.6",
     "terser-webpack-plugin": "^5.3.14",
     "ts-loader": "^9.5.2",

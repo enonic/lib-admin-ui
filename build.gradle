@@ -30,6 +30,12 @@ node {
     version = '22.16.0'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 publishing {
     publications {
         mavenJava( MavenPublication ) {
