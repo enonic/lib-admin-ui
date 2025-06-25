@@ -7,7 +7,8 @@
             "DOM"
         ],
         "outDir": "build/resources/main/dev/lib-admin-ui/",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
+        "baseUrl": ".",
         "declaration": true,
         "declarationDir": "build/resources/main/dev/lib-admin-ui/",
         "allowSyntheticDefaultImports": true,
@@ -23,8 +24,12 @@
             "jquery",
             "jqueryui",
             "mousetrap",
-            "q",
-        ]
+            "q"
+        ],
+        "paths": {
+            "react": ["node_modules/preact/compat"],
+            "react-dom": ["node_modules/preact/compat"]
+        }
     },
     "include": [
         "src/main/resources/assets/admin/common/js/**/*.ts"
