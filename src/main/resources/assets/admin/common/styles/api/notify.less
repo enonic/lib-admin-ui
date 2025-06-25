@@ -1,70 +1,52 @@
-.notification-container {
-  font-size: 0.75rem;
-  position: fixed;
-  z-index: @z-index-shader + 1; /* should be above the shader of modal dialogs */
-
-  @media screen and (max-width: 799px) {
+@layer overrides {
+  .notification-container {
+    position: fixed;
     width: 100%;
-  }
-
-  @media screen and (min-width: 800px) {
-    left: 50%;
-    margin-left: -400px;
+    max-width: 460px;
+    z-index: 2004;
   }
 
   .notification-wrapper {
-    margin: auto;
-    opacity: 0.8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
 
-    @media screen and (min-width: 800px) {
-      width: 800px;
+  @media screen and (width < 40rem) {
+    .notification-container {
+      right: 0;
+      bottom: 0;
+      max-width: initial;
+      padding: 0 8px 8px;
     }
+  }
 
-    .notification {
-      overflow: hidden;
-      color: white;
-      font-size: 1.2em;
-      padding: 10px 10px 10px 20px;
-      display: flex;
-      align-items: center;
-      background-color: @admin-blue;
+  @media screen and (width >= 40rem) {
+    .notification-container {
+      right: 36px;
+      bottom: 24px;
+    }
+  }
 
-      &.error {
-        background-color: red;
-      }
+  @media screen and (width >= 48rem) {
+    .notification-container {
+      right: 46px;
+      bottom: 30px;
+    }
+  }
 
-      &.warning {
-        background-color: orange;
-      }
+  @media screen and (width >= 64rem) {
+    .notification-container {
+      right: 60px;
+      bottom: 40px;
+    }
+  }
 
-      &.action,
-      &.success {
-        background-color: @admin-green;
-      }
-
-      .notification-inner {
-        flex: 1;
-
-        .notification-text,
-        .notification-actions {
-          display: inline;
-        }
-
-        .notification-actions {
-          a {
-            color: white;
-            margin-left: 10px;
-          }
-        }
-      }
-
-      .notification-remove {
-        cursor: pointer;
-        color: white;
-        height: 18px;
-        width: 18px;
-      }
+  @media screen and (width >= 96rem) {
+    .notification-container {
+      right: 92px;
+      bottom: 60px;
     }
   }
 }
-

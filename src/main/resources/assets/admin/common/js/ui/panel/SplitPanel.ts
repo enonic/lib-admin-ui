@@ -226,7 +226,7 @@ export class SplitPanel
         this.alignment = builder.getAlignment();
         this.alignmentTreshold = builder.getAlignmentTreshold();
         this.splitterThickness = builder.getSplitterThickness();
-        this.splitter = new DivEl('splitter');
+        this.splitter = new DivEl('splitter splitter-bg-standard');
 
         this.firstPanel.setDoOffset(false);
         this.secondPanel.setDoOffset(false);
@@ -541,6 +541,14 @@ export class SplitPanel
 
     setSplitterIsHidden(value: boolean) {
         this.splitterIsHidden = value;
+    }
+
+    addSplitterClass(className: string): void {
+        this.splitter.addClass(className);
+    }
+
+    removeSplitterClass(className: string): void {
+        this.splitter.removeClass(className);
     }
 
     toString(): string {
