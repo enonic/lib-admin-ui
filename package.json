@@ -22,13 +22,23 @@
   },
   "dependencies": {
     "dompurify": "~3.3.1",
+    "@enonic/ui": "~0.26.0",
     "fine-uploader": "^5.16.2",
     "jquery": "~3.7.1",
     "jquery-simulate": "^1.0.2",
     "jquery-ui": "^1.14.2",
+    "lucide-react": "^0.540.0",
     "mousetrap": "^1.6.5",
+    "nanoid": "~5.1.5",
+    "nanostores": "~1.0.1",
+    "preact": "^10.27.2",
     "q": "^1.5.1",
     "dayjs": "^1.11.19"
+  },
+  "peerDependencies": {
+    "@radix-ui/react-slot": "^1.2.0",
+    "focus-trap-react": "^11.0.0",
+    "lucide-react": ">=0.500.0"
   },
   "devDependencies": {
     "@enonic/eslint-config": "^2.2.1",
@@ -54,9 +64,9 @@
   "browserslist": [
     "extends browserslist-config-enonic"
   ],
+  "packageManager": "pnpm@10.26.1",
   "engines": {
     "node": ">= 24.13.0",
-    "pnpm": ">= 10.16.0",
-    "npm": ">= 11.6.2"
+    "pnpm": ">= 10.26.1"
   }
 }

@@ -2,11 +2,11 @@ import Q from 'q';
 import {Body} from '../../dom/Body';
 import {DivEl} from '../../dom/DivEl';
 import {Element} from '../../dom/Element';
+import {ActionButton} from '../../ui2/ActionButton';
 import {Action} from '../Action';
 import {Menu} from '../menu/Menu';
 import {MenuItem} from '../menu/MenuItem';
 import {AriaRole, WCAG} from '../WCAG';
-import {ActionButton} from './ActionButton';
 import {DropdownHandle} from './DropdownHandle';
 
 export enum MenuButtonDropdownPos {
@@ -16,7 +16,7 @@ export enum MenuButtonDropdownPos {
 export interface MenuButtonConfig {
     defaultAction: Action;
     menuActions?: Action[];
-    dropdownPosition?: MenuButtonDropdownPos
+    dropdownPosition?: MenuButtonDropdownPos;
 }
 
 export class MenuButton
@@ -209,7 +209,7 @@ export class MenuButton
     }
 
     private initActionButton(): void {
-        this.actionButton = new ActionButton(this.defaultAction);
+        this.actionButton = new ActionButton({action: this.defaultAction});
     }
 
     protected setButtonAction(action: Action): void {

@@ -1,7 +1,6 @@
-import $ from 'jquery';
 import {Body} from '../dom/Body';
 import {Store} from '../store/Store';
-import {Message, MessageAction} from './Message';
+import {Message} from './Message';
 import {NotificationContainer} from './NotificationContainer';
 import {NotificationMessage} from './NotificationMessage';
 
@@ -19,20 +18,19 @@ export class NotifyManager {
 
     private queue: NotificationMessage[] = [];
 
-    private slideDuration: number = 500;
-
     private timers: Map<string, Timer> = new Map<string, Timer>();
 
     private el: NotificationContainer;
 
-    private registry: Map<string, { opts: Message, el: NotificationMessage }> = new Map<string, { opts: Message, el: NotificationMessage }>();
+    private registry: Map<string, { opts: Message; el: NotificationMessage }> = new Map<string, {
+        opts: Message;
+        el: NotificationMessage
+    }>();
 
     constructor() {
 
         this.el = new NotificationContainer();
         Body.get().appendChild(this.el);
-
-        this.el.getEl().setBottomPx(0);
     }
 
     static get(): NotifyManager {
@@ -47,22 +45,22 @@ export class NotifyManager {
     }
 
     showFeedback(message: string, autoHide: boolean = true): string {
-        let feedback = Message.newInfo(message, autoHide);
+        const feedback = Message.newInfo(message, autoHide);
         return this.notify(feedback);
     }
 
     showSuccess(message: string, autoHide: boolean = true): string {
-        let feedback = Message.newSuccess(message, autoHide);
+        const feedback = Message.newSuccess(message, autoHide);
         return this.notify(feedback);
     }
 
     showError(message: string, autoHide: boolean = true): string {
-        let error = Message.newError(message, autoHide);
+        const error = Message.newError(message, autoHide);
         return this.notify(error);
     }
 
     showWarning(message: string, autoHide: boolean = true): string {
-        let warning = Message.newWarning(message, autoHide);
+        const warning = Message.newWarning(message, autoHide);
         return this.notify(warning);
     }
 
@@ -95,7 +93,7 @@ export class NotifyManager {
 
     hide(messageId: string) {
         if (messageId && this.registry.has(messageId)) {
-            this.remove(this.registry.get(messageId).el);
+            this.handleOpenChange(this.registry.get(messageId).el, false);
         }
     }
 
@@ -111,98 +109,111 @@ export class NotifyManager {
     }
 
     private createNotification(message: Message): NotificationMessage {
-        const notificationEl = new NotificationMessage(message);
+        const notification = new NotificationMessage(message, open => this.handleOpenChange(notification, open));
 
-        this.registry.set(notificationEl.getEl().getId(), {
+        this.registry.set(notification.getEl().getId(), {
             opts: message,
-            el: notificationEl
+            el: notification
         });
 
-        this.setListeners(notificationEl);
-        this.setActions(notificationEl, message.getActions());
-
-        return notificationEl;
-    }
-
-    private renderNotification(notification: NotificationMessage): NotificationMessage {
-        this.el.getWrapper().appendChild(notification);
-        notification.hide();
-
-        $(notification.getHTMLElement()).animate({
-                height: 'toggle'
-            },
-            this.slideDuration,
-            () => {
-                if (notification.isAutoHide()) {
-                    this.timers.set(notification.getEl().getId(), {
-                        remainingTime: notification.getMessage().getLifeTime()
-                    });
-
-                    this.startTimer(notification);
-                }
-            });
+        this.setListeners(notification);
 
         return notification;
     }
 
-    private setListeners(notificationMessage: NotificationMessage) {
-        notificationMessage.getRemoveEl().onClicked(() => this.remove(notificationMessage));
-        notificationMessage.onMouseEnter(() => this.stopTimer(notificationMessage));
-        notificationMessage.onMouseLeave(() => this.startTimer(notificationMessage));
-        notificationMessage.onRemoved(() => this.handleNotificationRemoved());
+    private renderNotification(notification: NotificationMessage): NotificationMessage {
+        this.el.getWrapper().appendChild(notification);
+
+        const message = this.registry.get(notification.getEl().getId())?.opts;
+
+        if (message?.getAutoHide()) {
+            const lifeTime = message.getLifeTime() ?? Message.shortLifeTime;
+            this.timers.set(notification.getEl().getId(), {
+                remainingTime: lifeTime
+            });
+
+            this.startTimer(notification);
+        }
+
+        return notification;
     }
 
-    private setActions(notificationEl: NotificationMessage, actions: MessageAction[]) {
-        actions.forEach(action => notificationEl.addAction(action));
+    private setListeners(notification: NotificationMessage) {
+        notification.onMouseEnter(() => this.stopTimer(notification));
+        notification.onMouseLeave(() => this.startTimer(notification));
     }
 
     private handleNotificationRemoved() {
         if (this.queue.length > 0) {
             const notification = this.queue.shift();
-            this.renderNotification(notification);
+            if (notification) {
+                this.renderNotification(notification);
+            }
         }
     }
 
-    private remove(el: NotificationMessage) {
-        if (!el) {
+    private handleOpenChange(notification: NotificationMessage, open: boolean) {
+        notification.setOpen(open);
+
+        if (open) {
             return;
         }
 
-        $(el.getHTMLElement()).animate({
-                height: 'hide'
-            }, this.slideDuration, 'linear',
-            () => {
-                if (this.el.getWrapper().hasChild(el)) {
-                    this.el.getWrapper().removeChild(el);
-                } else {
-                    this.queue = this.queue.filter(q => q !== el);
-                }
-            });
+        const id = notification.getEl().getId();
 
-        this.registry.delete(el.getEl().getId());
-        this.timers.delete(el.getEl().getId());
+        if (!this.registry.has(id)) {
+            return;
+        }
+
+        this.clearTimer(id);
+
+        if (this.el.getWrapper().hasChild(notification)) {
+            this.el.getWrapper().removeChild(notification);
+        } else {
+            this.queue = this.queue.filter(q => q !== notification);
+        }
+
+        this.registry.delete(id);
+        this.handleNotificationRemoved();
     }
 
     private startTimer(el: NotificationMessage) {
         const timer: Timer = this.timers.get(el.getEl().getId());
 
-        if (!timer) {
+        if (!timer || timer.id) {
             return;
         }
 
-        timer.id = setTimeout(() => this.remove(el), timer.remainingTime);
+        if (timer.remainingTime <= 0) {
+            this.handleOpenChange(el, false);
+            return;
+        }
+
+        timer.id = window.setTimeout(() => this.handleOpenChange(el, false), timer.remainingTime);
         timer.startTime = Date.now();
     }
 
     private stopTimer(el: NotificationMessage) {
         const timer: Timer = this.timers.get(el.getEl().getId());
 
-        if (!timer || !timer.id) {
+        if (!timer?.id || timer.startTime == null) {
             return;
         }
 
         clearTimeout(timer.id);
-        timer.id = null;
-        timer.remainingTime -= Date.now() - timer.startTime;
+        timer.remainingTime = Math.max(0, timer.remainingTime - (Date.now() - timer.startTime));
+        timer.id = undefined;
+        timer.startTime = undefined;
     }
+
+    private clearTimer(id: string) {
+        const timer = this.timers.get(id);
+
+        if (timer?.id) {
+            clearTimeout(timer.id);
+        }
+
+        this.timers.delete(id);
+    }
+
 }
