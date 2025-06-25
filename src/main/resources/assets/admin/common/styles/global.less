@@ -8,44 +8,48 @@ body {
   font-size: @admin-font-size;
 }
 
-.headers-mixin();
-
-a {
-  color: #0070de;
-}
-
-input,
-textarea,
-select {
-  border-radius: 0;
-}
-
-&.@{_CLS_PREFIX}focused,
-:focus-visible,
-:focus,
-input[type="checkbox"]:focus + label::before,
-input[type="checkbox"]:focus + label::after {
-  outline: rgb(0, 95, 204) auto 1px;
-}
-
-&.@{_CLS_PREFIX}focused,
-:focus-visible,
-:focus {
-  outline-offset: -1px;
-}
-
-input[type="checkbox"]:focus + label {
-  &::before,
-  &::after {
-    outline-offset: 2px;
-    background-size: 17px;
+@layer legacy {
+  a {
+    color: #0070de;
   }
-}
 
-@-moz-document url-prefix() {
+  input,
+  textarea,
+  select {
+    border-radius: 0;
+  }
+
+  &.@{_CLS_PREFIX}focused,
+  :focus-visible,
+  :focus,
+  input[type="checkbox"]:focus + label::before,
+  input[type="checkbox"]:focus + label::after {
+    outline: rgb(0, 95, 204) auto 1px;
+  }
+
   &.@{_CLS_PREFIX}focused,
   :focus-visible,
   :focus {
-    outline-offset: -2px;
+    outline-offset: -1px;
+  }
+
+  input[type="checkbox"]:focus + label {
+    &::before,
+    &::after {
+      outline-offset: 2px;
+      background-size: 17px;
+    }
+  }
+
+  @-moz-document url-prefix() {
+    &.@{_CLS_PREFIX}focused,
+    :focus-visible,
+    :focus {
+      outline-offset: -2px;
+    }
+  }
+
+  .contents {
+    display: contents;
   }
 }
