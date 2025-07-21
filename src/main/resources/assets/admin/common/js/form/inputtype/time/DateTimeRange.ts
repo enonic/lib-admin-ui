@@ -16,6 +16,8 @@ import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {InputTypeName} from '../../InputTypeName';
 import {TimeHM} from '../../../util/TimeHM';
+import {ObjectHelper} from '../../../ObjectHelper';
+import {ArrayHelper} from '../../../util/ArrayHelper';
 
 declare const Date: DateConstructor;
 
@@ -25,19 +27,22 @@ export class DateTimeRange
     private useTimezone: boolean;
     private from: DateTime | LocalDateTime;
     private to: DateTime | LocalDateTime;
-    private defaultStartTime: TimeHM;
-    private defaultEndTime: TimeHM;
+    private defaultFromTime: TimeHM;
+    private defaultToTime: TimeHM;
+    private fromPlaceholder: string;
+    private toPlaceholder: string;
+    private optionalFrom: boolean = false;
 
     private errors: {
-        noStart: string
-        endBeforeStart: string
-        endInPast: string
-        startEqualsEnd: string
+        noFrom: string
+        toBeforeFrom: string
+        toInPast: string
+        fromEqualsTo: string
     };
 
     private labels: {
-        start?: string
-        end?: string
+        from?: string
+        to?: string
     };
 
     constructor(config: InputTypeViewContext) {
@@ -114,24 +119,28 @@ export class DateTimeRange
             return null;
         }
 
-        if (!this.from) {
-            return this.errors.noStart;
+        if (!this.from && !this.optionalFrom) {
+            return this.errors.noFrom;
         }
 
         return this.getToError();
     }
 
     private getToError(): string {
+        let from = this.from;
+        if (!from && this.optionalFrom) {
+            from = LocalDateTime.fromDate(new Date());
+        }
         if (this.to.toDate() < new Date()) {
-            return this.errors.endInPast;
+            return this.errors.toInPast;
         }
 
-        if (this.to.toDate() < this.from.toDate()) {
-            return  this.errors.endBeforeStart;
+        if (this.to.toDate() < from.toDate()) {
+            return this.errors.toBeforeFrom;
         }
 
-        if (this.to.equals(this.from)) {
-            return this.errors.startEqualsEnd;
+        if (this.to.equals(from)) {
+            return this.errors.fromEqualsTo;
         }
 
         return null;
@@ -146,8 +155,8 @@ export class DateTimeRange
         const from: Property = pSet.getProperty('from');
         const to: Property = pSet.getProperty('to');
 
-        return from && from.getType() !== ValueTypes.DATE_TIME && from.getType() !== ValueTypes.LOCAL_DATE_TIME
-               || to && to.getType() !== ValueTypes.DATE_TIME && to.getType() !== ValueTypes.LOCAL_DATE_TIME;
+        return ObjectHelper.isDefined(from) && ['DateTime', 'LocalDateTime'].indexOf(from.getType().toString()) === -1
+            || ObjectHelper.isDefined(to) && ['DateTime', 'LocalDateTime'].indexOf(to.getType().toString()) === -1;
     }
 
     private readConfig(inputConfig: Record<string, any>): void {
@@ -156,23 +165,26 @@ export class DateTimeRange
         }
 
         this.labels = {
-            start: this.readConfigValue(inputConfig, 'labelStart') || i18n('field.dateTimeRange.label.dateFrom'),
-            end: this.readConfigValue(inputConfig, 'labelEnd') || i18n('field.dateTimeRange.label.dateTo')
+            from: this.readConfigValue(inputConfig, 'fromLabel') || i18n('field.dateTimeRange.label.dateFrom'),
+            to: this.readConfigValue(inputConfig, 'toLabel') || i18n('field.dateTimeRange.label.dateTo')
         };
 
         this.errors = {
-            noStart: this.readConfigValue(inputConfig, 'errorNoStart') ||
-                     i18n('field.dateTimeRange.errors.noStart', this.labels.start, this.labels.end),
-            endInPast: this.readConfigValue(inputConfig, 'errorEndInPast') ||
-                       i18n('field.dateTimeRange.errors.endInPast', this.labels.end),
-            endBeforeStart: this.readConfigValue(inputConfig, 'errorEndBeforeStart') ||
-                            i18n('field.dateTimeRange.errors.endBeforeStart', this.labels.start, this.labels.end),
-            startEqualsEnd: this.readConfigValue(inputConfig, 'errorStartEqualsEnd') ||
-                            i18n('field.dateTimeRange.errors.startEqualsEnd', this.labels.start, this.labels.end)
+            noFrom: this.readConfigValue(inputConfig, 'errorNoStart') ||
+                     i18n('field.dateTimeRange.errors.noStart', this.labels.from, this.labels.to),
+            toInPast: this.readConfigValue(inputConfig, 'errorEndInPast') ||
+                       i18n('field.dateTimeRange.errors.endInPast', this.labels.to),
+            toBeforeFrom: this.readConfigValue(inputConfig, 'errorEndBeforeStart') ||
+                            i18n('field.dateTimeRange.errors.endBeforeStart', this.labels.from, this.labels.to),
+            fromEqualsTo: this.readConfigValue(inputConfig, 'errorStartEqualsEnd') ||
+                            i18n('field.dateTimeRange.errors.startEqualsEnd', this.labels.from, this.labels.to)
         };
 
-        this.defaultStartTime = this.getDefaultTimeFromConfig(inputConfig, 'defaultStartTime');
-        this.defaultEndTime = this.getDefaultTimeFromConfig(inputConfig, 'defaultEndTime');
+        this.defaultFromTime = this.getDefaultTimeFromConfig(inputConfig, 'defaultFromTime');
+        this.defaultToTime = this.getDefaultTimeFromConfig(inputConfig, 'defaultToTime');
+        this.fromPlaceholder = this.readConfigValue(inputConfig, 'fromPlaceholder');
+        this.toPlaceholder = this.readConfigValue(inputConfig, 'toPlaceholder');
+        this.optionalFrom = Boolean(this.readConfigValue(inputConfig, 'optionalFrom'));
     }
 
     private getDefaultTimeFromConfig(inputConfig: Record<string, string>, name: string): TimeHM {
@@ -190,10 +202,12 @@ export class DateTimeRange
 
     private createInputAsLocalDateTime(property: Property): DateTimeRangePicker {
         const rangeBuilder: DateTimeRangePickerBuilder = new DateTimeRangePickerBuilder()
-            .setStartLabel(this.labels.start)
-            .setEndLabel(this.labels.end)
-            .setDefaultStartTime(this.defaultStartTime)
-            .setDefaultEndTime(this.defaultEndTime);
+            .setFromLabel(this.labels.from)
+            .setToLabel(this.labels.to)
+            .setDefaultFromTime(this.defaultFromTime)
+            .setDefaultToTime(this.defaultToTime)
+            .setFromPlaceholder(this.fromPlaceholder)
+            .setToPlaceholder(this.toPlaceholder);
 
         this.setFromTo(rangeBuilder, property);
 
@@ -236,8 +250,8 @@ export class DateTimeRange
 
     private createInputAsDateTime(property: Property): DateTimeRangePicker {
         const rangeBuilder: DateTimeRangePickerBuilder = new DateTimeRangePickerBuilder()
-            .setStartLabel(this.labels.start)
-            .setEndLabel(this.labels.end)
+            .setFromLabel(this.labels.from)
+            .setToLabel(this.labels.to)
             .setUseLocalTimezoneIfNotPresent(true);
 
         this.setFromTo(rangeBuilder, property);
