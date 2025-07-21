@@ -1,7 +1,7 @@
 import {map, MapStore} from 'nanostores';
 import type {JSX} from 'preact';
 import {h, render} from 'preact';
-import Q from 'q';
+import * as Q from 'q';
 
 import {Element, NewElementBuilder} from '../dom/Element';
 
