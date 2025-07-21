@@ -37,6 +37,11 @@ export class DateTimePickerBuilder
 
     defaultTime: TimeHM;
 
+    setPlaceholder(value: string): DateTimePickerBuilder {
+        this.inputPlaceholder = value;
+        return this;
+    }
+
     setDefaultTime(value: TimeHM): DateTimePickerBuilder {
         this.defaultTime = value;
         return this;

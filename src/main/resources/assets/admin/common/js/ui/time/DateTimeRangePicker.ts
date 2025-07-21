@@ -15,13 +15,17 @@ export class DateTimeRangePickerBuilder {
 
     endDate: Date;
 
-    defaultStartTime: TimeHM;
+    defaultFromTime: TimeHM;
 
-    defaultEndTime: TimeHM;
+    defaultToTime: TimeHM;
 
     startLabel: string;
 
     endLabel: string;
+
+    fromPlaceholder: string;
+
+    endPlaceholder: string;
 
     startingDayOfWeek: DayOfWeek = DaysOfWeek.MONDAY;
 
@@ -42,12 +46,12 @@ export class DateTimeRangePickerBuilder {
         return this;
     }
 
-    setStartLabel(value: string): DateTimeRangePickerBuilder {
+    setFromLabel(value: string): DateTimeRangePickerBuilder {
         this.startLabel = value;
         return this;
     }
 
-    setEndLabel(value: string): DateTimeRangePickerBuilder {
+    setToLabel(value: string): DateTimeRangePickerBuilder {
         this.endLabel = value;
         return this;
     }
@@ -72,13 +76,23 @@ export class DateTimeRangePickerBuilder {
         return this;
     }
 
-    setDefaultStartTime(value: TimeHM): DateTimeRangePickerBuilder {
-        this.defaultStartTime = value;
+    setDefaultFromTime(value: TimeHM): DateTimeRangePickerBuilder {
+        this.defaultFromTime = value;
         return this;
     }
 
-    setDefaultEndTime(value: TimeHM): DateTimeRangePickerBuilder {
-        this.defaultEndTime = value;
+    setDefaultToTime(value: TimeHM): DateTimeRangePickerBuilder {
+        this.defaultToTime = value;
+        return this;
+    }
+
+    setFromPlaceholder(value: string): DateTimeRangePickerBuilder {
+        this.fromPlaceholder = value;
+        return this;
+    }
+
+    setToPlaceholder(value: string): DateTimeRangePickerBuilder {
+        this.endPlaceholder = value;
         return this;
     }
 
@@ -88,51 +102,77 @@ export class DateTimeRangePickerBuilder {
 
 }
 
+interface DateTimeConfig {
+    value?: Date;
+
+    defaultTime?: TimeHM;
+
+    placeholder?: string;
+
+    startingDayOfWeek: DayOfWeek;
+
+    closeOnSelect: boolean;
+
+    timezone: Timezone;
+
+    useLocalTimezoneIfNotPresent: boolean;
+
+}
+
 export class DateTimeRangePicker
     extends DivEl {
-    private readonly startLabel: string;
-    private readonly startPicker: DateTimePicker;
-    private readonly endLabel: string;
-    private readonly endPicker: DateTimePicker;
+    private startPicker: DateTimePicker;
+    private endPicker: DateTimePicker;
+    private startPickerEl: Element;
+    private endPickerEl: Element;
 
     constructor(builder: DateTimeRangePickerBuilder) {
         super('date-time-range-picker');
-        this.startLabel = builder.startLabel;
-        this.startPicker = this.createPicker(builder, 0, builder.defaultStartTime);
-        this.endLabel = builder.endLabel;
-        this.endPicker = this.createPicker(builder, 1, builder.defaultEndTime);
+
+        this.createElements(builder);
+    }
+
+    createElements(builder: DateTimeRangePickerBuilder): void {
+        const basePickerConfig: DateTimeConfig = {
+            startingDayOfWeek: builder.startingDayOfWeek,
+            closeOnSelect: builder.closeOnSelect,
+            timezone: builder.timezone,
+            useLocalTimezoneIfNotPresent: builder.useLocalTimezoneIfNotPresent
+        }
+
+        const startPickerConfig: DateTimeConfig = {
+            ...basePickerConfig,
+            value: builder.startDate,
+            defaultTime: builder.defaultFromTime,
+            placeholder: builder.fromPlaceholder
+        };
+
+        const endPickerConfig: DateTimeConfig = {
+            ...basePickerConfig,
+            value: builder.endDate,
+            defaultTime: builder.defaultToTime,
+            placeholder: builder.endPlaceholder
+        };
+
+        this.startPicker = this.createPicker(startPickerConfig);
+        this.endPicker = this.createPicker(endPickerConfig);
+        this.startPickerEl = this.createPickerEl(this.startPicker, builder.startLabel, 'start-label');
+        this.endPickerEl = this.createPickerEl(this.endPicker, builder.endLabel, 'end-label');
     }
 
     doRender(): Q.Promise<boolean> {
         return super.doRender().then((rendered: boolean) => {
-            let startEl: Element;
-            let endEl: Element;
-            if (this.startLabel) {
-                startEl = new DivEl();
-                startEl.appendChildren<Element>(new LabelEl(this.startLabel, this.startPicker, 'start-label'),
-                    this.startPicker);
-            } else {
-                startEl = this.startPicker;
-            }
-
-            if (this.endLabel) {
-                endEl = new DivEl();
-                endEl.appendChildren<Element>(new LabelEl(this.endLabel, this.endPicker, 'end-label'), this.endPicker);
-            } else {
-                endEl = this.endPicker;
-            }
-
-            this.appendChildren(startEl, endEl);
+            this.appendChildren(this.startPickerEl, this.endPickerEl);
 
             return rendered;
         });
     }
 
-    public setStartDateTime(date: Date, userInput: boolean = true) {
+    setStartDateTime(date: Date, userInput: boolean = true) {
         this.startPicker.setDateTime(date, userInput);
     }
 
-    public setEndDateTime(date: Date, userInput: boolean = true) {
+    setEndDateTime(date: Date, userInput: boolean = true) {
         this.endPicker.setDateTime(date, userInput);
     }
 
@@ -170,7 +210,7 @@ export class DateTimeRangePicker
         this.endPicker.setEnabled(enable);
     }
 
-    public reset() {
+    reset() {
         this.startPicker.resetBase();
         this.endPicker.resetBase();
     }
@@ -180,32 +220,39 @@ export class DateTimeRangePicker
         this.endPicker.clear();
     }
 
-    private createPicker(builder: DateTimeRangePickerBuilder, index: number = 0, defaultTime: TimeHM): DateTimePicker {
-        const b = new DateTimePickerBuilder()
-            .setStartingDayOfWeek(builder.startingDayOfWeek)
-            .setCloseOnSelect(builder.closeOnSelect)
-            .setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent)
-            .setTimezone(builder.timezone);
+    private createPickerBuilder(config: DateTimeConfig): DateTimePickerBuilder {
+        return new DateTimePickerBuilder()
+            .setStartingDayOfWeek(config.startingDayOfWeek)
+            .setCloseOnSelect(config.closeOnSelect)
+            .setUseLocalTimezoneIfNotPresent(config.useLocalTimezoneIfNotPresent)
+            .setTimezone(config.timezone);
+    }
 
-        switch (index) {
-        case 1:
-            if (builder.endDate) {
-                b.setDateTime(builder.endDate);
-            } else {
-                b.setDefaultTime(builder.defaultEndTime);
-            }
-            break;
-        case 0:
-        default:
-            if (builder.startDate) {
-                b.setDateTime(builder.startDate);
-            } else {
-                b.setDefaultTime(builder.defaultStartTime);
-            }
-            break;
+    private createPicker(config: DateTimeConfig): DateTimePicker {
+        const pickerBuilder = this.createPickerBuilder(config);
+
+        if (config.value) {
+            pickerBuilder.setDateTime(config.value);
+        } else {
+            pickerBuilder.setDefaultTime(config.defaultTime);
         }
 
-        return b.build();
+        if (config.placeholder) {
+            pickerBuilder.setPlaceholder(config.placeholder);
+        }
+
+        return pickerBuilder.build();
+    }
+
+    private createPickerEl(picker: DateTimePicker, label: string, className: string): Element {
+        if (!label) {
+            return picker;
+        }
+
+        const wrapper = new DivEl();
+        wrapper.appendChildren<Element>(new LabelEl(label, picker, className), picker);
+
+        return wrapper;
     }
 
 }
