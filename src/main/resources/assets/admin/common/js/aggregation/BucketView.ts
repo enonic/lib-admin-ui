@@ -62,16 +62,15 @@ export class BucketView
     }
 
     isSelected(): boolean {
-        //return this.checkbox.isChecked();
-        return true;
+        return this.checkbox.isChecked();
     }
 
     deselect(supressEvent?: boolean): void {
-        // this.checkbox.setChecked(false, supressEvent);
+        this.checkbox.setChecked(false, supressEvent);
     }
 
     select(suppressEvent?: boolean): void {
-        //this.checkbox.setChecked(true, suppressEvent);
+        this.checkbox.setChecked(true, suppressEvent);
     }
 
 
@@ -104,7 +103,7 @@ export class BucketView
     }
 
     private updateLabel(): void {
-        //    this.checkbox.setLabel(this.resolveLabelValue());
+        this.checkbox.setLabel(this.resolveLabelValue());
     }
 
     private updateUI(): void {
