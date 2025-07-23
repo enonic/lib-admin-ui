@@ -7,8 +7,8 @@ export interface CheckboxProps {
     label: string;
     checked?: boolean;
     onChange?: (checked: boolean) => void;
-    disabled?: boolean;
     size?: 'sm' | 'md' | 'lg';
+    state?: 'default' | 'error' | 'readOnly' | 'disabled';
 }
 
 export class Checkbox
@@ -26,6 +26,7 @@ export class Checkbox
                 ...props,
                 // ensure controlled update of checked
                 checked: !!props.checked,
+                state: props.state ?? 'default',
                 onChange: (checked: boolean) => {
                     this.internalChecked = checked;
                     // update underlying UI.Checkbox
@@ -64,10 +65,11 @@ export class Checkbox
     }
 
     setEnabled(enable: boolean): void {
-        this.setProps({disabled: !enable});
+        this.setProps({state: enable ? 'default' : 'disabled'});
     }
 
     isDisabled(): boolean {
-        return (this.getProps() as CheckboxProps).disabled ?? false;
+        const {state} = this.getProps() as CheckboxProps;
+        return state === 'disabled' || state === 'readOnly';
     }
 }
