@@ -7,11 +7,11 @@ import {AEl} from '../dom/AEl';
 export class NotificationMessage
     extends DivEl {
 
-    private autoHide: boolean;
+    private readonly notificationText: DivEl;
 
-    private notificationText: DivEl;
+    private readonly actionList: UlEl;
 
-    private actionList: UlEl;
+    private readonly message: Message;
 
     constructor(message: Message) {
         super('notification');
@@ -20,7 +20,7 @@ export class NotificationMessage
             this.addClass(MessageType[message.getType()].toLowerCase());
         }
 
-        this.autoHide = message.getAutoHide();
+        this.message = message;
         const notificationInner = new DivEl('notification-inner');
         const notificationRemove = new SpanEl('notification-remove icon-close');
         this.notificationText = new DivEl('notification-text');
@@ -30,8 +30,12 @@ export class NotificationMessage
         this.appendChildren(notificationInner, notificationRemove);
     }
 
+    getMessage(): Message {
+        return this.message;
+    }
+
     isAutoHide(): boolean {
-        return this.autoHide;
+        return this.message.getAutoHide();
     }
 
     setText(text: string): NotificationMessage {
