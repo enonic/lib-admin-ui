@@ -7,8 +7,8 @@ export enum MessageType {
 }
 
 export class MessageAction {
-    private name: string;
-    private handler: (e: MouseEvent) => void;
+    private readonly name: string;
+    private readonly handler: (e: MouseEvent) => void;
 
     constructor(name: string, handler: (e: MouseEvent) => void) {
         this.name = name;
@@ -25,10 +25,10 @@ export class MessageAction {
 }
 
 export class Message {
-    private type: MessageType;
-    private text: string;
-    private actions: MessageAction[];
-    private autoHide: boolean;
+    private readonly type: MessageType;
+    private readonly text: string;
+    private readonly actions: MessageAction[];
+    private readonly autoHide: boolean;
 
     constructor(type: MessageType, text: string, autoHide: boolean = true) {
         this.type = type;
@@ -59,6 +59,14 @@ export class Message {
 
     getType(): MessageType {
         return this.type;
+    }
+
+    isError(): boolean {
+        return this.type === MessageType.ERROR;
+    }
+
+    isWarning(): boolean {
+        return this.type === MessageType.WARNING;
     }
 
     getText(): string {

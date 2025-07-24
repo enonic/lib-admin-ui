@@ -7,21 +7,29 @@ import {Store} from '../store/Store';
 
 export const NOTIFY_MANAGER_KEY: string = 'NotifyManager';
 
+interface Timer {
+    id?: number;
+    startTime?: number;
+    remainingTime: number;
+}
+
 export class NotifyManager {
 
     private notificationLimit: number = 3;
 
     private queue: NotificationMessage[] = [];
 
-    private lifetime: number = 5000;
+    private shortLifeTime: number = 5000;
+
+    private longLifeTime: number = 30000;
 
     private slideDuration: number = 500;
 
-    private timers: object = {};
+    private timers: Map<string, Timer> = new Map<string, Timer>();
 
     private el: NotificationContainer;
 
-    private registry: object = {};
+    private registry: Map<string, { opts: Message, el: NotificationMessage }> = new Map<string, { opts: Message, el: NotificationMessage }>();
 
     constructor() {
 
@@ -83,36 +91,36 @@ export class NotifyManager {
     }
 
     getNotification(messageId: string): NotificationMessage {
-        if (messageId && this.registry[messageId]) {
-            return this.registry[messageId].el;
+        if (messageId && this.registry.has(messageId)) {
+            return this.registry.get(messageId).el;
         }
         return null;
     }
 
     hide(messageId: string) {
-        if (messageId && this.registry[messageId]) {
-            this.remove(this.registry[messageId].el);
+        if (messageId && this.registry.has(messageId)) {
+            this.remove(this.registry.get(messageId).el);
         }
     }
 
     private messageExistsInRegistry(message: Message) {
-        if (Object.keys(this.registry).length === 0) {
+        if (this.registry.size === 0) {
             return false;
         }
 
-        const registryArray = Object.keys(this.registry).map((key) => this.registry[key].opts);
+        const registryArray: Message[] = Array.from(this.registry.values()).map(entry => entry.opts);
 
-        return registryArray.some((registryEntry) =>
-            registryEntry.message === message && registryEntry.type === message.getType());
+        return registryArray.some((registryEntry: Message) =>
+            registryEntry.getText() === message.getText() && registryEntry.getType() === message.getType());
     }
 
     private createNotification(message: Message): NotificationMessage {
         const notificationEl = new NotificationMessage(message);
 
-        this.registry[notificationEl.getEl().getId()] = {
+        this.registry.set(notificationEl.getEl().getId(), {
             opts: message,
             el: notificationEl
-        };
+        });
 
         this.setListeners(notificationEl);
         this.setActions(notificationEl, message.getActions());
@@ -130,15 +138,23 @@ export class NotifyManager {
             this.slideDuration,
             () => {
                 if (notification.isAutoHide()) {
-                    this.timers[notification.getEl().getId()] = {
-                        remainingTime: this.lifetime
-                    };
+                    this.timers.set(notification.getEl().getId(), {
+                        remainingTime: this.getNotificationLifeTime(notification.getMessage())
+                    });
 
                     this.startTimer(notification);
                 }
             });
 
         return notification;
+    }
+
+    private getNotificationLifeTime(message: Message): number {
+        if (message.isError() || message.isWarning()) {
+            return this.longLifeTime;
+        }
+
+        return this.shortLifeTime;
     }
 
     private setListeners(el: NotificationMessage) {
@@ -182,28 +198,23 @@ export class NotifyManager {
                 }
             });
 
-        delete this.registry[el.getEl().getId()];
-        delete this.timers[el.getEl().getId()];
+        this.registry.delete(el.getEl().getId());
+        this.timers.delete(el.getEl().getId());
     }
 
     private startTimer(el: NotificationMessage) {
-        let timer = this.timers[el.getEl().getId()];
+        const timer: Timer = this.timers.get(el.getEl().getId());
 
         if (!timer) {
             return;
         }
 
-        timer.id = setTimeout(() => {
-                this.remove(el);
-            },
-            timer.remainingTime
-        );
-
+        timer.id = setTimeout(() => this.remove(el), timer.remainingTime);
         timer.startTime = Date.now();
     }
 
     private stopTimer(el: NotificationMessage) {
-        let timer = this.timers[el.getEl().getId()];
+        const timer: Timer = this.timers.get(el.getEl().getId());
 
         if (!timer || !timer.id) {
             return;
