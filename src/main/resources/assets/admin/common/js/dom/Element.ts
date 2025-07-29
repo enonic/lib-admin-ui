@@ -568,9 +568,11 @@ export class Element {
         });
     }
 
-    setDraggable(value: boolean) {
-        if (value) {
-            this.getEl().setAttribute('draggable', value.toString());
+    setDraggable(value: boolean | string) {
+        if (typeof value === 'string') {
+            this.getEl().setAttribute('draggable', value);
+        } else if (value === true) {
+            this.getEl().setAttribute('draggable', 'true');
         } else {
             this.getEl().removeAttribute('draggable');
         }
