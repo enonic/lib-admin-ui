@@ -1,40 +1,23 @@
-import * as UI from '@enonic/ui';
-import {InputEl} from '../dom/InputEl';
-import {LegacyElement} from './LegacyElement';
+import * as UI from "@enonic/ui";
+import {LegacyElement} from "./LegacyElement";
 
-export interface CheckboxProps {
-    className?: string;
-    label: string;
-    checked?: boolean;
-    onChange?: (checked: boolean) => void;
-    size?: 'sm' | 'md' | 'lg';
-    state?: 'default' | 'error' | 'readOnly' | 'disabled';
-    id?: string;
-    name?: string;
-}
+export type CheckboxProps = Pick<
+    UI.CheckboxProps,
+    'checked' | 'size' | 'state' | 'id' | 'name' | 'label' | 'onChange' | 'onFocus' | 'onBlur' | 'alignment' | 'partial'
+>;
 
 export class Checkbox
     extends LegacyElement<typeof UI.Checkbox> {
     private internalChecked: boolean;
     private suppressChange: boolean = false;
-    private name: string;
-    private inputEl: InputEl;
 
-    private getProps(): CheckboxProps {
-        return this.props.get() as CheckboxProps;
-    }
+    private readonly focusListeners: (() => void)[] = [];
 
     constructor(props: CheckboxProps) {
-
-        const inputEl = new InputEl('', 'checkbox');
-        const generatedId = props.id || inputEl.getId();
-
+        console.log('wrapper got alignment=', props.alignment);
         super(
             {
                 ...props,
-                id: generatedId,
-                checked: !!props.checked,
-                state: props.state ?? 'default',
                 onChange: (checked: boolean) => {
                     this.internalChecked = checked;
                     this.setProps({checked});
@@ -42,12 +25,14 @@ export class Checkbox
                         props.onChange?.(checked);
                     }
                 },
+                partial: props.partial,
+                onFocus: () => this.focusListeners.forEach((l) => l()),
+                onBlur: () => console.log('blur, final props →', this.props.get())
             },
             UI.Checkbox,
         );
 
         // initialize internal state and sync prop
-        this.inputEl = inputEl;
         this.internalChecked = !!props.checked;
         this.setProps({checked: this.internalChecked});
 
@@ -57,11 +42,10 @@ export class Checkbox
     }
 
     getName(): string {
-        return this.name || '';
+        return this.props.get().name;
     }
 
     setName(name: string): this {
-        this.name = name;
         this.setProps({name});
         return this;
     }
@@ -83,16 +67,16 @@ export class Checkbox
     }
 
     getLabel(): string {
-        return (this.getProps() as CheckboxProps).label ?? '';
+        return this.props.get().label ?? "";
     }
 
     setEnabled(enable: boolean): void {
-        this.setProps({state: enable ? 'default' : 'disabled'});
+        this.setProps({state: enable ? "default" : "disabled"});
     }
 
     isDisabled(): boolean {
-        const {state} = this.getProps() as CheckboxProps;
-        return state === 'disabled' || state === 'readOnly';
+        const {state} = this.props.get();
+        return state === "disabled" || state === "readOnly";
     }
 
     toggleChecked(): void {
@@ -105,23 +89,29 @@ export class Checkbox
 
     setValue(value: string): Checkbox {
         // Match original behavior with warning
-        if (UI.Checkbox['debug']) {
-            console.warn('Checkbox.setValue sets the value attribute, you may have wanted to use setChecked instead');
+        if (UI.Checkbox["debug"]) {
+            console.warn(
+                "Checkbox.setValue sets the value attribute, you may have wanted to use setChecked instead",
+            );
         }
-        this.setChecked(value === 'true');
+        this.setChecked(value === "true");
         return this;
     }
 
     getValue(): string {
         // Match original behavior with warning
-        if (UI.Checkbox['debug']) {
-            console.warn('Checkbox.getValue gets the value attribute, you may have wanted to use getChecked instead');
+        if (UI.Checkbox["debug"]) {
+            console.warn(
+                "Checkbox.getValue gets the value attribute, you may have wanted to use getChecked instead",
+            );
         }
         return String(this.isChecked());
     }
 
     giveFocus(): boolean {
-        const input = this.getHTMLElement().querySelector('input[type="checkbox"]');
+        const input = this.getHTMLElement().querySelector(
+            'input[type="checkbox"]',
+        );
         if (input instanceof HTMLElement) {
             input.focus();
             return true;
@@ -130,7 +120,9 @@ export class Checkbox
     }
 
     giveBlur(): boolean {
-        const input = this.getHTMLElement().querySelector('input[type="checkbox"]');
+        const input = this.getHTMLElement().querySelector(
+            'input[type="checkbox"]',
+        );
         if (input instanceof HTMLElement) {
             input.blur();
             return true;
@@ -140,50 +132,29 @@ export class Checkbox
 
     setPartial(value: boolean): void {
         // Add a class to handle partial state
-        this.toggleClass('partial', value);
+        this.toggleClass("partial", value);
     }
 
     isPartial(): boolean {
-        return this.hasClass('partial');
+        return this.hasClass("partial");
     }
 
-    setPlaceholder(value: string): Checkbox {
-        // UI.Checkbox might not support placeholder directly
-        // But we'll add it for API compatibility
-        this.setProps({placeholder: value} as any);
-        return this;
-    }
 
-    getPlaceholder(): string {
-        return (this.getProps() as any).placeholder || '';
-    }
-
-    // Event handlers for focus/blur
     onFocus(listener: (event: FocusEvent) => void): void {
-        const input = this.getHTMLElement().querySelector('input[type="checkbox"]');
+        const input = this.getHTMLElement().querySelector(
+            'input[type="checkbox"]',
+        );
         if (input) {
-            input.addEventListener('focus', listener);
-        }
-    }
-
-    unFocus(listener: (event: FocusEvent) => void): void {
-        const input = this.getHTMLElement().querySelector('input[type="checkbox"]');
-        if (input) {
-            input.removeEventListener('focus', listener);
+            input.addEventListener("focus", listener);
         }
     }
 
     onBlur(listener: (event: FocusEvent) => void): void {
-        const input = this.getHTMLElement().querySelector('input[type="checkbox"]');
+        const input = this.getHTMLElement().querySelector(
+            'input[type="checkbox"]',
+        );
         if (input) {
-            input.addEventListener('blur', listener);
-        }
-    }
-
-    unBlur(listener: (event: FocusEvent) => void): void {
-        const input = this.getHTMLElement().querySelector('input[type="checkbox"]');
-        if (input) {
-            input.removeEventListener('blur', listener);
+            input.addEventListener("blur", listener);
         }
     }
 }
