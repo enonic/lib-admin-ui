@@ -1,5 +1,10 @@
 apply plugin: 'com.github.node-gradle.node'
 
+node {
+    version = '22.17.1'
+    download = true
+}
+
 tasks.register('npmInstallForce', NpmTask) {
     description = 'Update all project node dependencies'
     args = ['install', '--force']
