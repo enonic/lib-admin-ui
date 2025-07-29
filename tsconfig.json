@@ -16,6 +16,7 @@
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "strictNullChecks": false,
+        "skipLibCheck": true,
         "types": [
             "jquery",
             "jqueryui",
