@@ -8,7 +8,7 @@ export interface ButtonProps {
     onClick?: () => void;
 }
 
-export class Button extends LegacyElement<typeof UI.Button> {
+export class Button extends LegacyElement<typeof UI.Button, ButtonProps> {
 
     constructor(props: ButtonProps) {
         super(props, UI.Button);

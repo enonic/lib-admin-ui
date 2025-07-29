@@ -1,17 +1,17 @@
 import {map, MapStore} from 'nanostores';
-import type {JSX} from 'preact';
+import type {ComponentProps, ComponentType} from 'preact';
 import {h, render} from 'preact';
 import * as Q from 'q';
 
-import {Element, NewElementBuilder} from '../dom/Element';
+import {Element as BaseElement, NewElementBuilder} from '../dom/Element';
 
-export type Component<P extends Record<string, unknown>> = (props: P) => JSX.Element;
+export type Component<P> = ComponentType<P>;
 
-export class LegacyElement<C extends Component<P>, P extends Record<string, unknown> = Parameters<C>[0]> extends Element {
+export class LegacyElement<C extends ComponentType<object>, P extends ComponentProps<C> = ComponentProps<C>> extends BaseElement {
 
     protected props: MapStore<P>;
 
-    protected component: Component<P>;
+    protected component: C;
 
     constructor(props: P, component: C) {
         super(new NewElementBuilder().setTagName('div').setClassName('contents'));
