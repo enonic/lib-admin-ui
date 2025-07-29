@@ -29,6 +29,8 @@ export class BaseSelectedOptionsView<T>
 
     constructor(className?: string) {
         super('selected-options' + (className ? ' ' + className : ''));
+
+        this.setTabIndex(-1);
     }
 
     setReadonly(readonly: boolean) {
@@ -52,7 +54,7 @@ export class BaseSelectedOptionsView<T>
     }
 
     refreshSortable() {
-        if (this.hasClass('sortable')) {
+        if (this.isSortable()) {
             $(this.getHTMLElement()).sortable('refresh');
         }
     }
@@ -127,6 +129,8 @@ export class BaseSelectedOptionsView<T>
             this.notifyOptionSelected(new SelectedOptionEvent(selectedOption, keyCode));
         }
 
+        this.setOccurrencesSortable(this.count() > 1);
+
         return true;
     }
 
@@ -161,6 +165,8 @@ export class BaseSelectedOptionsView<T>
         if (!silent) {
             this.notifyOptionDeselected(selectedOption);
         }
+
+        this.setOccurrencesSortable(this.count() > 1);
     }
 
     count(): number {
@@ -248,6 +254,9 @@ export class BaseSelectedOptionsView<T>
     }
 
     protected handleDnDStart(ui: JQueryUI.SortableUIParams): void {
+        if (!this.isSortable()) {
+            return;
+        }
         let draggedElement = Element.fromHtmlElement(ui.item[0]);
         this.draggingIndex = draggedElement.getSiblingIndex();
     }
@@ -285,8 +294,14 @@ export class BaseSelectedOptionsView<T>
         });
     }
 
-    private setSortable(sortable: boolean) {
-        if (sortable) {
+    private isSortable(): boolean {
+        return this.hasClass('sortable');
+    }
+
+    private setSortable(makeSortable: boolean) {
+        if (this.isSortable() && !makeSortable) {
+            $(this.getHTMLElement()).sortable('destroy');
+        } else if (makeSortable) {
             $(this.getHTMLElement()).sortable({
                 cursor: 'move',
                 tolerance: 'pointer',
@@ -295,10 +310,9 @@ export class BaseSelectedOptionsView<T>
                 update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui),
                 stop: () => this.handleDnDStop()
             });
-        } else {
-            $(this.getHTMLElement()).sortable('destroy');
         }
-        this.toggleClass('sortable', sortable);
+
+        this.toggleClass('sortable', makeSortable);
     }
 
     private handleMovedOccurrence(fromIndex: number, toIndex: number) {
