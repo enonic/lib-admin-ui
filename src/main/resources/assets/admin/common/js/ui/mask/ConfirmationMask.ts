@@ -1,11 +1,11 @@
+import {Body} from '../../dom/Body';
+import {DivEl} from '../../dom/DivEl';
 import {Element} from '../../dom/Element';
+import {PEl} from '../../dom/PEl';
+import {ActionButton} from '../../ui2/ActionButton';
+import {assertState} from '../../util/Assert';
 import {Action} from '../Action';
 import {SplashMask} from './SplashMask';
-import {assertState} from '../../util/Assert';
-import {PEl} from '../../dom/PEl';
-import {DivEl} from '../../dom/DivEl';
-import {ActionButton} from '../button/ActionButton';
-import {Body} from '../../dom/Body';
 
 export class ConfirmationMask
     extends SplashMask {
@@ -28,7 +28,7 @@ export class ConfirmationMask
         }
 
         this.actionsEl = new DivEl('mask-actions');
-        builder.getActions().forEach(action => this.actionsEl.appendChild(new ActionButton(action)));
+        builder.getActions().forEach(action => this.actionsEl.appendChild(new ActionButton({action})));
         elements.push(this.actionsEl);
 
         this.setContents(...elements);
