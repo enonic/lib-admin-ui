@@ -1,4 +1,4 @@
-import {map, MapStore} from 'nanostores';
+import {map, type MapStore} from 'nanostores';
 import type {ComponentProps, ComponentType} from 'preact';
 import {h, render} from 'preact';
 import * as Q from 'q';
@@ -40,4 +40,27 @@ export class LegacyElement<C extends ComponentType<object>, P extends ComponentP
         }
         return false;
     }
+
+    addClass(className: string): this {
+        if (hasClassName(this.props)) {
+            this.props.setKey('className', `${this.props.value.className} ${className}`);
+        } else {
+            console.warn(`[${this.component.name}]: className is not allowed as a property`);
+        }
+        return this;
+    }
+
+    removeClass(className: string): this {
+        if (hasClassName(this.props)) {
+            const newClassName = this.props.value.className.split(' ').filter(c => c !== className).join(' ');
+            this.props.setKey('className', newClassName);
+        } else {
+            console.warn(`[${this.component.name}]: className is not allowed as a property`);
+        }
+        return this;
+    }
+}
+
+function hasClassName(props: MapStore): props is MapStore<{className: string}> {
+    return 'className' in props.value && typeof props.value.className === 'string';
 }

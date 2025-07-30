@@ -6,7 +6,7 @@ import {Action} from '../Action';
 import {Menu} from '../menu/Menu';
 import {MenuItem} from '../menu/MenuItem';
 import {AriaRole, WCAG} from '../WCAG';
-import {ActionButton} from './ActionButton';
+import {ActionButton} from '../../ui2/ActionButton';
 import {DropdownHandle} from './DropdownHandle';
 
 export enum MenuButtonDropdownPos {
@@ -209,7 +209,7 @@ export class MenuButton
     }
 
     private initActionButton(): void {
-        this.actionButton = new ActionButton(this.defaultAction);
+        this.actionButton = new ActionButton({action: this.defaultAction});
     }
 
     protected setButtonAction(action: Action): void {
