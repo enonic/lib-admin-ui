@@ -3,8 +3,8 @@ import {LegacyElement} from "./LegacyElement";
 
 export type CheckboxProps = Pick<
     UI.CheckboxProps,
-    'checked' | 'size' | 'state' | 'id' | 'name' | 'label' | 'onChange' | 'onFocus' | 'onBlur' | 'alignment' | 'partial'
->;
+        'checked' | 'state' | 'label' | 'onChange' | 'alignment' | 'partial'>
+    & Partial<Pick<UI.CheckboxProps, 'name' | 'onFocus' | 'onBlur'>>;
 
 export class Checkbox
     extends LegacyElement<typeof UI.Checkbox> {
@@ -14,7 +14,6 @@ export class Checkbox
     private readonly focusListeners: (() => void)[] = [];
 
     constructor(props: CheckboxProps) {
-        console.log('wrapper got alignment=', props.alignment);
         super(
             {
                 ...props,
