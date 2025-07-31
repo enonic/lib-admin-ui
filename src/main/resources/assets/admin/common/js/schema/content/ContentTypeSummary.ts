@@ -1,9 +1,8 @@
-import {MixinNames} from '../mixin/MixinNames';
-import {Schema, SchemaBuilder} from '../Schema';
 import {Equitable} from '../../Equitable';
-import {ContentTypeName} from './ContentTypeName';
-import {StringHelper} from '../../util/StringHelper';
 import {ObjectHelper} from '../../ObjectHelper';
+import {StringHelper} from '../../util/StringHelper';
+import {Schema, SchemaBuilder} from '../Schema';
+import {ContentTypeName} from './ContentTypeName';
 import {ContentTypeSummaryJson} from './ContentTypeSummaryJson';
 
 export class ContentTypeSummary
@@ -26,8 +25,6 @@ export class ContentTypeSummary
 
     private readonly owner: string;
 
-    private readonly metadata: MixinNames;
-
     private readonly allowedChildContentTypes: string[];
 
     constructor(builder: ContentTypeSummaryBuilder) {
@@ -40,7 +37,6 @@ export class ContentTypeSummary
         this.displayNameExpression = builder.displayNameExpression;
         this.owner = builder.owner;
         this.modifier = builder.modifier;
-        this.metadata = builder.metadata;
         this.displayNameLabel = builder.displayNameLabel;
         this.allowedChildContentTypes = builder.allowedChildContentTypes;
     }
@@ -118,10 +114,6 @@ export class ContentTypeSummary
         return this.modifier;
     }
 
-    getMetadata(): MixinNames {
-        return this.metadata;
-    }
-
     getAllowedChildContentTypes(): string[] {
         return this.allowedChildContentTypes;
     }
@@ -166,10 +158,6 @@ export class ContentTypeSummary
             return false;
         }
 
-        if (!ObjectHelper.equals(this.metadata, other.metadata)) {
-            return false;
-        }
-
         return true;
     }
 
@@ -194,8 +182,6 @@ export class ContentTypeSummaryBuilder
 
     owner: string;
 
-    metadata: MixinNames;
-
     allowedChildContentTypes: string[];
 
     constructor(source?: ContentTypeSummary) {
@@ -210,7 +196,6 @@ export class ContentTypeSummaryBuilder
             this.displayNameLabel = source.getDisplayNameLabel();
             this.modifier = source.getModifier();
             this.owner = source.getOwner();
-            this.metadata = source.getMetadata();
             this.allowedChildContentTypes = source.getAllowedChildContentTypes();
         }
     }
@@ -226,7 +211,6 @@ export class ContentTypeSummaryBuilder
         this.displayNameLabel = json.displayNameLabel;
         this.owner = json.owner;
         this.modifier = json.modifier;
-        this.metadata = MixinNames.create().fromStrings(json.metadata).build();
         this.allowedChildContentTypes = json.allowChildContentType;
         return this;
     }
