@@ -1,7 +1,8 @@
 import {map, type MapStore} from 'nanostores';
-import type {ComponentProps, ComponentType} from 'preact';
-import {h, render} from 'preact';
 import * as Q from 'q';
+import type {ComponentProps, ComponentType} from 'react';
+import {createElement} from 'react';
+import {render} from 'react-dom';
 
 import {Element as BaseElement, NewElementBuilder} from '../dom/Element';
 
@@ -26,7 +27,7 @@ export class LegacyElement<C extends ComponentType<object>, P extends ComponentP
     }
 
     doRender(): Q.Promise<boolean> {
-        render(h(this.component, this.props.get()), this.getHTMLElement());
+        render(createElement(this.component, this.props.get()), this.getHTMLElement());
         return super.doRender();
     }
 
