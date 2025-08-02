@@ -21,7 +21,7 @@
     "fix": "eslint --fix **/*.ts --cache"
   },
   "dependencies": {
-    "@enonic/ui": "^0.2.0",
+    "@enonic/ui": "^0.3.1",
     "@types/dompurify": "=3.0.5",
     "@types/mousetrap": "^1.6.15",
     "dompurify": "=3.1.7",

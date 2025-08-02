@@ -1,7 +1,8 @@
 import * as UI from '@enonic/ui';
-
 import {unwrap} from '@enonic/ui';
-import {h, render} from 'preact';
+import {createElement} from 'react';
+import {render} from 'react-dom';
+
 import {BrowserHelper} from '../BrowserHelper';
 import {Action} from '../ui/Action';
 import {LegacyElement} from './LegacyElement';
@@ -55,8 +56,8 @@ export class ActionButton<T extends Action = Action> extends LegacyElement<typeo
     }
 
     doRender(): Q.Promise<boolean> {
-        const actionButton = h(this.component, this.props.get());
-        const tooltip = h(UI.Tooltip, {
+        const actionButton = createElement(this.component, this.props.get());
+        const tooltip = createElement(UI.Tooltip, {
             value: unwrap(this.props.get().title),
             children: actionButton,
         } satisfies UI.TooltipProps);

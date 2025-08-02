@@ -24,7 +24,11 @@ module.exports = {
         assetModuleFilename: './[file]'
     },
     resolve: {
-        extensions: ['.ts', '.js', '.less', '.css']
+        extensions: ['.ts', '.js', '.less', '.css'],
+        alias: {
+            'react': 'preact/compat',
+            'react-dom': 'preact/compat'
+        }
     },
     module: {
         rules: [
