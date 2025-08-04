@@ -1,9 +1,8 @@
-import {Tooltip} from '../ui/Tooltip';
 import {DivEl} from '../dom/DivEl';
-import {Bucket} from './Bucket';
-import {Checkbox} from '../ui/Checkbox';
-import {ValueChangedEvent} from '../ValueChangedEvent';
+import {Tooltip} from '../ui/Tooltip';
+import {Checkbox} from '../ui2/Checkbox';
 import {StringHelper} from '../util/StringHelper';
+import {Bucket} from './Bucket';
 import {BucketViewSelectionChangedEvent} from './BucketViewSelectionChangedEvent';
 
 export class BucketView
@@ -24,15 +23,26 @@ export class BucketView
         this.bucket = bucket;
 
         this.displayName = bucket.getDisplayName();
-        this.checkbox = Checkbox.create().setLabelText(this.resolveLabelValue()).build();
+        this.checkbox = new Checkbox({
+            label: this.resolveLabelValue(),
+            onCheckedChange: (raw) => {
+                const isChecked = raw === true;
+
+                this.selectionChangedListeners.forEach(listener => {
+                    listener(
+                        new BucketViewSelectionChangedEvent(
+                            /* oldSelected = */ !isChecked,
+                            /* newSelected = */  isChecked,
+                            this
+                        )
+                    );
+                });
+            }
+        });
+
         this.tooltip = new Tooltip(this.checkbox, bucket.getKey(), 1000);
         this.tooltip.setActive(false);
 
-        this.checkbox.onValueChanged((event: ValueChangedEvent) => {
-            const oldValue = event.getOldValue() === 'true';
-            const newValue = event.getNewValue() === 'true';
-            this.notifySelectionChanged(oldValue, newValue);
-        });
         this.appendChild(this.checkbox);
 
         this.updateUI();
@@ -72,11 +82,6 @@ export class BucketView
         this.checkbox.setChecked(true, suppressEvent);
     }
 
-    notifySelectionChanged(oldValue: boolean, newValue: boolean): void {
-        this.selectionChangedListeners.forEach((listener: (event: BucketViewSelectionChangedEvent) => void) => {
-            listener(new BucketViewSelectionChangedEvent(oldValue, newValue, this));
-        });
-    }
 
     unSelectionChanged(listener: (event: BucketViewSelectionChangedEvent) => void): void {
         this.selectionChangedListeners = this.selectionChangedListeners
