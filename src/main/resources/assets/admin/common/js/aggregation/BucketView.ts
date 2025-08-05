@@ -25,18 +25,10 @@ export class BucketView
         this.displayName = bucket.getDisplayName();
         this.checkbox = new Checkbox({
             label: this.resolveLabelValue(),
-            onCheckedChange: (raw) => {
-                const isChecked = raw === true;
-
-                this.selectionChangedListeners.forEach(listener => {
-                    listener(
-                        new BucketViewSelectionChangedEvent(
-                            /* oldSelected = */ !isChecked,
-                            /* newSelected = */  isChecked,
-                            this
-                        )
-                    );
-                });
+            onCheckedChange: (checked) => {
+                const isChecked = checked === true;
+                const event = new BucketViewSelectionChangedEvent(!isChecked, isChecked, this);
+                this.selectionChangedListeners.forEach(l => l(event));
             }
         });
 
@@ -74,8 +66,8 @@ export class BucketView
         return this.checkbox.isChecked();
     }
 
-    deselect(supressEvent?: boolean): void {
-        this.checkbox.setChecked(false, supressEvent);
+    deselect(suppressEvent?: boolean): void {
+        this.checkbox.setChecked(false, suppressEvent);
     }
 
     select(suppressEvent?: boolean): void {
