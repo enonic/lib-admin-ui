@@ -15,7 +15,7 @@ export interface AiDialogIconToolConfig extends AiToolConfig {
 
 export class AiDialogIconTool extends AiTool {
 
-    protected readonly config: AiDialogIconToolConfig;
+    declare protected readonly config: AiDialogIconToolConfig;
 
     constructor(config: AiDialogIconToolConfig) {
         super(AiToolType.DIALOG, config);

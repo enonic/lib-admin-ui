@@ -1,15 +1,14 @@
-import {DialogStep} from './DialogStep';
-import {Element} from '../../../dom/Element';
-import * as Q from 'q';
-import {ActionButton} from '../../button/ActionButton';
-import {DivEl} from '../../../dom/DivEl';
-import {i18n} from '../../../util/Messages';
-import {Action} from '../../Action';
-import {AppHelper} from '../../../util/AppHelper';
+import Q from 'q';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
 import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';
+import {DivEl} from '../../../dom/DivEl';
+import {Element} from '../../../dom/Element';
+import {AppHelper} from '../../../util/AppHelper';
+import {i18n} from '../../../util/Messages';
+import {Action} from '../../Action';
 import {ModalDialogWithConfirmation, ModalDialogWithConfirmationConfig} from '../ModalDialogWithConfirmation';
+import {DialogStep} from './DialogStep';
 
 export interface MultiStepDialogConfig
     extends ModalDialogWithConfirmationConfig {
@@ -26,7 +25,7 @@ export class MultiStepDialog
 
     protected steps: DialogStep[];
 
-    protected config: MultiStepDialogConfig;
+    declare protected config: MultiStepDialogConfig;
 
     protected currentStep: DialogStep;
 

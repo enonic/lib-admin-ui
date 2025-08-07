@@ -1,13 +1,13 @@
-import {Element} from '../../dom/Element';
-import {Button} from '../button/Button';
-import {i18n} from '../../util/Messages';
+import Q from 'q';
 import {DivEl} from '../../dom/DivEl';
-import {TextInput} from '../text/TextInput';
-import {KeyHelper} from '../KeyHelper';
-import {AppHelper} from '../../util/AppHelper';
+import {Element} from '../../dom/Element';
 import {FormEl} from '../../dom/FormEl';
 import {StyleHelper} from '../../StyleHelper';
-import * as Q from 'q';
+import {AppHelper} from '../../util/AppHelper';
+import {i18n} from '../../util/Messages';
+import {Button} from '../button/Button';
+import {KeyHelper} from '../KeyHelper';
+import {TextInput} from '../text/TextInput';
 
 export class PickerBuilder {
     inputPlaceholder: string = '';

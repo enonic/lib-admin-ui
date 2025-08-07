@@ -1,16 +1,18 @@
-import * as $ from 'jquery';
+import $ from 'jquery';
+import 'jquery-ui/ui/widget';
+import 'jquery-ui/ui/widgets/mouse';
 import 'jquery-ui/ui/widgets/sortable';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
-import {Option} from '../Option';
+import {PEl} from '../../../dom/PEl';
 import {ArrayHelper} from '../../../util/ArrayHelper';
-import {SelectedOptionsView} from './SelectedOptionsView';
+import {assertNotNull} from '../../../util/Assert';
+import {i18n} from '../../../util/Messages';
+import {Option} from '../Option';
+import {BaseSelectedOptionView, BaseSelectedOptionViewBuilder} from './BaseSelectedOptionView';
 import {SelectedOption} from './SelectedOption';
 import {SelectedOptionEvent} from './SelectedOptionEvent';
-import {BaseSelectedOptionView, BaseSelectedOptionViewBuilder} from './BaseSelectedOptionView';
-import {assertNotNull} from '../../../util/Assert';
-import {PEl} from '../../../dom/PEl';
-import {i18n} from '../../../util/Messages';
+import {SelectedOptionsView} from './SelectedOptionsView';
 import {SelectedOptionView} from './SelectedOptionView';
 
 export class BaseSelectedOptionsView<T>

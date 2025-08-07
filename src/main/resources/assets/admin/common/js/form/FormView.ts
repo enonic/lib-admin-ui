@@ -1,18 +1,18 @@
-import * as Q from 'q';
+import Q from 'q';
 import {PropertySet} from '../data/PropertySet';
+import {DefaultErrorHandler} from '../DefaultErrorHandler';
 import {DivEl} from '../dom/DivEl';
 import {WindowDOM} from '../dom/WindowDOM';
-import {DefaultErrorHandler} from '../DefaultErrorHandler';
-import {Form} from './Form';
-import {FormItemView} from './FormItemView';
-import {FormItemLayer} from './FormItemLayer';
-import {FormValidityChangedEvent} from './FormValidityChangedEvent';
-import {ValidationRecording} from './ValidationRecording';
-import {FormContext} from './FormContext';
 import {assert} from '../util/Assert';
-import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
-import {FormItemLayerFactoryImpl} from './FormItemLayerFactory';
+import {Form} from './Form';
+import {FormContext} from './FormContext';
 import {FormItem} from './FormItem';
+import {FormItemLayer} from './FormItemLayer';
+import {FormItemLayerFactoryImpl} from './FormItemLayerFactory';
+import {FormItemView} from './FormItemView';
+import {FormValidityChangedEvent} from './FormValidityChangedEvent';
+import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
+import {ValidationRecording} from './ValidationRecording';
 
 /**
  * Creates a UI component representing the given [[Form]] backed by given [[PropertySet]].

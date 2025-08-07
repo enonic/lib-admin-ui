@@ -1,7 +1,7 @@
-import * as Q from 'q';
-import {i18n} from '../../util/Messages';
-import {Action} from '../../ui/Action';
+import Q from 'q';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
+import {Action} from '../../ui/Action';
+import {i18n} from '../../util/Messages';
 import {WizardPanel} from './WizardPanel';
 
 export class SaveAction

@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {DivEl} from '../../dom/DivEl';
 import {Action} from '../Action';
 import {ActionContainer} from '../ActionContainer';

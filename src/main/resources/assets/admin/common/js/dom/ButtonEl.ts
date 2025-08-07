@@ -1,8 +1,8 @@
-import {StyleHelper} from '../StyleHelper';
-import {FormItemEl} from './FormItemEl';
-import * as $ from 'jquery';
-import {Body} from './Body';
+import $ from 'jquery';
 import 'jquery-simulate/jquery.simulate.js';
+import {StyleHelper} from '../StyleHelper';
+import {Body} from './Body';
+import {FormItemEl} from './FormItemEl';
 
 export class ButtonEl
     extends FormItemEl {

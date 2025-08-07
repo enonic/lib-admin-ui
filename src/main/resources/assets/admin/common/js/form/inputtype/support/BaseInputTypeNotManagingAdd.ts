@@ -1,5 +1,5 @@
-import * as $ from 'jquery';
-import * as Q from 'q';
+import $ from 'jquery';
+import Q from 'q';
 import {ClassHelper} from '../../../ClassHelper';
 import {Property} from '../../../data/Property';
 import {PropertyArray} from '../../../data/PropertyArray';

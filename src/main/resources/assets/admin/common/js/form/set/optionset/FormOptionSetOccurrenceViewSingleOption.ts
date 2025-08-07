@@ -1,17 +1,17 @@
+import Q from 'q';
 import {PropertySet} from '../../../data/PropertySet';
-import {i18n} from '../../../util/Messages';
 import {DivEl} from '../../../dom/DivEl';
-import {FormOptionSet} from './FormOptionSet';
-import {FormOptionSetOptionView} from './FormOptionSetOptionView';
-import {FormOptionSetOption} from './FormOptionSetOption';
-import {FormOptionSetOptionViewer} from './FormOptionSetOptionViewer';
-import {Action} from '../../../ui/Action';
-import * as Q from 'q';
 import {Element} from '../../../dom/Element';
-import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
-import {ListBox} from '../../../ui/selector/list/ListBox';
-import {SelectionChange} from '../../../util/SelectionChange';
+import {Action} from '../../../ui/Action';
 import {FilterableListBoxWrapper} from '../../../ui/selector/list/FilterableListBoxWrapper';
+import {ListBox} from '../../../ui/selector/list/ListBox';
+import {i18n} from '../../../util/Messages';
+import {SelectionChange} from '../../../util/SelectionChange';
+import {FormOptionSet} from './FormOptionSet';
+import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
+import {FormOptionSetOption} from './FormOptionSetOption';
+import {FormOptionSetOptionView} from './FormOptionSetOptionView';
+import {FormOptionSetOptionViewer} from './FormOptionSetOptionViewer';
 
 export class FormOptionSetOccurrenceViewSingleOption
     extends FormOptionSetOccurrenceView {

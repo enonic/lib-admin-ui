@@ -1,14 +1,14 @@
-import * as Q from 'q';
-import {HttpRequest} from './HttpRequest';
+import Q from 'q';
 import {UriHelper} from '../util/UriHelper';
-import {Path} from './Path';
-import {JsonResponse} from './JsonResponse';
-import {Request} from './Request';
-import {HttpMethod} from './HttpMethod';
 import {GetRequest} from './GetRequest';
-import {PostRequest} from './PostRequest';
-import {Response} from './Response';
 import {HeadRequest} from './HeadRequest';
+import {HttpMethod} from './HttpMethod';
+import {HttpRequest} from './HttpRequest';
+import {JsonResponse} from './JsonResponse';
+import {Path} from './Path';
+import {PostRequest} from './PostRequest';
+import {Request} from './Request';
+import {Response} from './Response';
 
 export abstract class ResourceRequest<PARSED_TYPE>
     implements HttpRequest<PARSED_TYPE> {

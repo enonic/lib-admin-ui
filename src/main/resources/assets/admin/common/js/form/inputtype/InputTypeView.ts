@@ -1,13 +1,13 @@
-import * as Q from 'q';
+import Q from 'q';
 import {PropertyArray} from '../../data/PropertyArray';
 import {Value} from '../../data/Value';
 import {ValueType} from '../../data/ValueType';
 import {Element} from '../../dom/Element';
 import {Input} from '../Input';
+import {AiConfig} from './InputAiConfig';
 import {InputValidationRecording} from './InputValidationRecording';
 import {InputValidityChangedEvent} from './InputValidityChangedEvent';
 import {ValueChangedEvent} from './ValueChangedEvent';
-import {AiConfig} from './InputAiConfig';
 
 
 export interface InputTypeView {

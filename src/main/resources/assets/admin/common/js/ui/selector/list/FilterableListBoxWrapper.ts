@@ -28,7 +28,7 @@ export interface SelectionDeltaItem<I> {
 export class FilterableListBoxWrapper<I>
     extends SelectableListBoxWrapper<I> {
 
-    protected options: FilterableListBoxOptions<I>;
+    declare protected options: FilterableListBoxOptions<I>;
 
     protected optionFilterInput: OptionFilterInput;
 

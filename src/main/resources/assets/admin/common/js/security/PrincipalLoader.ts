@@ -1,16 +1,16 @@
-import * as Q from 'q';
+import Q from 'q';
 import {PostLoader} from '../util/loader/PostLoader';
 import {FindPrincipalsRequest} from './FindPrincipalsRequest';
-import {PrincipalType} from './PrincipalType';
+import {GetPrincipalsByKeysRequest} from './GetPrincipalsByKeysRequest';
 import {IdProviderKey} from './IdProviderKey';
 import {Principal} from './Principal';
 import {PrincipalKey} from './PrincipalKey';
-import {GetPrincipalsByKeysRequest} from './GetPrincipalsByKeysRequest';
+import {PrincipalType} from './PrincipalType';
 
 export class PrincipalLoader
     extends PostLoader<Principal> {
 
-    protected request: FindPrincipalsRequest;
+    declare protected request: FindPrincipalsRequest;
 
     private skipPrincipalKeys: Record<string, PrincipalKey>;
 

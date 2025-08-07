@@ -1,4 +1,5 @@
-import * as Q from 'q';
+import Q from 'q';
+import {AiToolType} from '../ai/tool/AiToolType';
 import {Property} from '../data/Property';
 import {PropertyArray} from '../data/PropertyArray';
 import {PropertySet} from '../data/PropertySet';
@@ -26,7 +27,6 @@ import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
 import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
 import {ValidationRecording} from './ValidationRecording';
 import {ValidationRecordingPath} from './ValidationRecordingPath';
-import {AiToolType} from '../ai/tool/AiToolType';
 
 export interface InputViewConfig {
 

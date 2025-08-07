@@ -1,17 +1,17 @@
-import * as Q from 'q';
-import {PropertyArray} from '../data/PropertyArray';
-import {Element} from '../dom/Element';
+import Q from 'q';
 import {Property} from '../data/Property';
+import {PropertyArray} from '../data/PropertyArray';
 import {DefaultErrorHandler} from '../DefaultErrorHandler';
+import {Element} from '../dom/Element';
 import {ArrayHelper} from '../util/ArrayHelper';
 import {FormItem} from './FormItem';
-import {Occurrences} from './Occurrences';
-import {FormItemOccurrenceView} from './FormItemOccurrenceView';
 import {FormItemOccurrence} from './FormItemOccurrence';
-import {OccurrenceAddedEvent} from './OccurrenceAddedEvent';
-import {OccurrenceRenderedEvent} from './OccurrenceRenderedEvent';
-import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
+import {FormItemOccurrenceView} from './FormItemOccurrenceView';
 import {FormItemState} from './FormItemState';
+import {OccurrenceAddedEvent} from './OccurrenceAddedEvent';
+import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
+import {OccurrenceRenderedEvent} from './OccurrenceRenderedEvent';
+import {Occurrences} from './Occurrences';
 
 export interface FormItemOccurrencesConfig {
 

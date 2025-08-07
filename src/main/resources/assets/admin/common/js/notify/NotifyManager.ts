@@ -1,9 +1,9 @@
-import * as $ from 'jquery';
+import $ from 'jquery';
 import {Body} from '../dom/Body';
-import {NotificationMessage} from './NotificationMessage';
-import {NotificationContainer} from './NotificationContainer';
-import {Message, MessageAction} from './Message';
 import {Store} from '../store/Store';
+import {Message, MessageAction} from './Message';
+import {NotificationContainer} from './NotificationContainer';
+import {NotificationMessage} from './NotificationMessage';
 
 export const NOTIFY_MANAGER_KEY: string = 'NotifyManager';
 

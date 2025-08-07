@@ -1,6 +1,6 @@
-import * as $ from 'jquery';
-import {Element} from '../dom/Element';
+import $ from 'jquery';
 import {Body} from '../dom/Body';
+import {Element} from '../dom/Element';
 import {WindowDOM} from '../dom/WindowDOM';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */

@@ -1,9 +1,9 @@
-import * as Q from 'q';
+import Q from 'q';
+import {CompositeFormInputEl} from '../../dom/CompositeFormInputEl';
 import {InputEl} from '../../dom/InputEl';
-import {StringHelper} from '../../util/StringHelper';
 import {CheckEmailAvailabilityRequest} from '../../security/CheckEmailAvailabilityRequest';
 import {i18n} from '../../util/Messages';
-import {CompositeFormInputEl} from '../../dom/CompositeFormInputEl';
+import {StringHelper} from '../../util/StringHelper';
 import {Validators} from '../form/Validators';
 
 export class EmailInput

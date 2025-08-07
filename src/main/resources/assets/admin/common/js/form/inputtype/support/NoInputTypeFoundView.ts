@@ -1,18 +1,18 @@
-import * as Q from 'q';
+import Q from 'q';
+import {Class} from '../../../Class';
 import {Property} from '../../../data/Property';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Value} from '../../../data/Value';
 import {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {Input} from '../../Input';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
-import {TextInput} from '../../../ui/text/TextInput';
-import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {FormInputEl} from '../../../dom/FormInputEl';
+import {TextInput} from '../../../ui/text/TextInput';
 import {StringHelper} from '../../../util/StringHelper';
+import {ValueChangedEvent} from '../../../ValueChangedEvent';
+import {Input} from '../../Input';
 import {InputTypeManager} from '../InputTypeManager';
-import {Class} from '../../../Class';
 import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
 
 export class NoInputTypeFoundView
