@@ -12,7 +12,7 @@ apply from: "$rootDir/gradle/node.gradle"
 configurations {
     devResources {
         attributes {
-            attribute( LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named( LibraryElements, 'dev-resources' ) )
+            attribute LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named( LibraryElements, 'dev-resources' )
         }
     }
 }
@@ -23,11 +23,15 @@ repositories {
 }
 
 group = 'com.enonic.lib'
-archivesBaseName = 'lib-admin-ui'
 
-node {
-    download = true
-    version = '22.16.0'
+base {
+    archivesName = 'lib-admin-ui'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of( 11 )
+    }
 }
 
 publishing {
@@ -60,116 +64,74 @@ publishing {
     }
 }
 
-loadConfiguration()
-
-tasks.register( 'lint', NpmTask ) {
-    dependsOn npmInstall
-    args = ['run', 'lint']
-    outputs.upToDateWhen { false }
+tasks.register( 'pnpmCheck', PnpmTask ) {
+    dependsOn tasks.named( 'pnpmInstall' )
+    args = ['run', 'check']
+    outputs.cacheIf { false }
 }
 
-check.dependsOn( lint )
+tasks.named( 'check' ) {
+    dependsOn tasks.named( 'pnpmCheck' )
+}
 
-tasks.register( 'typescript', NpmTask ) {
-    dependsOn npmInstall
-    description = 'Build JS and DTS'
-    def buildEnv = isProd() ? 'prod' : 'dev'
-    environment = ['NODE_ENV': nodeEnvironment()]
-    args = ['run', "build:$buildEnv"]
+tasks.register( 'pnpmBuild', PnpmTask ) {
+    dependsOn tasks.named( 'pnpmInstall' )
+    description = 'Build JavaScript for .xp, and Lib script and styles'
+    args = ['run', "build:${environmentShort()}"]
     inputs.dir 'src/main/resources/assets/admin/common'
-    outputs.dirs( "$buildDir/tmp/src/main/resources/assets/admin/common/js",
-                  "$buildDir/resources/main/dev/lib-admin-ui",
-                  "$buildDir/resources/main/assets/admin/common" )
-}
-
-tasks.register( 'copyJS', Copy ) {
-    dependsOn typescript
-    if ( !isProd() )
-    {
-        from "$buildDir/tmp/src/main/resources/assets/admin/common/js"
-        into "$buildDir/resources/main/dev/lib-admin-ui"
-        includeEmptyDirs false
-    }
-    inputs.dir "$buildDir/tmp/src/main/resources/assets/admin/common/js"
-    outputs.dir "$buildDir/resources/main/dev/lib-admin-ui"
+    outputs.dirs layout.buildDirectory.dir('resources/main/dev/lib-admin-ui'),
+                 layout.buildDirectory.dir('resources/main/assets/admin/common')
 }
 
 tasks.register( 'copyPackage', Copy ) {
-    dependsOn typescript
-    from( './' ) {
-        include 'package.json'
-    }
-    into "$buildDir/resources/main/dev/lib-admin-ui"
-    includeEmptyDirs false
-    inputs.file "./package.json"
-    outputs.file "$buildDir/resources/main/dev/lib-admin-ui/package.json"
+    dependsOn tasks.named( 'pnpmBuild' )
+    from 'package.json'
+    into layout.buildDirectory.dir('resources/main/dev/lib-admin-ui')
+}
+
+processResources {
+    // Handled by the Vite
+    exclude 'assets/admin/common/fonts/**'
+    // Icons (icomoon) are bundled with the fonts
+    exclude 'assets/admin/common/icons/**'
+    // Images are inlined to the CSS
+    exclude 'assets/admin/common/images/**'
+    // Bundled into lib.js
+    exclude 'assets/admin/common/lib/**'
+    // Don't need to copy CSS files
+    exclude 'assets/admin/common/styles/**'
 }
 
 jar {
     exclude 'dev/**'
     exclude 'assets/spec/**'
     exclude 'assets/**/*.ts'
-    exclude 'assets/**/*.less'
-    exclude 'assets/**/styles/*.js'
-    exclude 'assets/**/icons/*.txt'
-
-    // COMMON/LIB excludes
-    // Exclude complex files, that only present after the first build and must be evaluated dynamically
-    def whitelist = [
-        /.*lib\.js$/,
-        /.*\.css$/,
-    ] as List
-
-    if (isProd()) {
-        exclude '**/*.map'
-    }
-    else
-    {
-        whitelist.add( /.*\.map$/ )
-    }
-
-    exclude { FileTreeElement el ->
-        !el.directory && el.relativePath.contains( 'common/lib' ) && ( !whitelist.any { re -> el.relativePath.toString().matches( re ) } )
-    }
 
     includeEmptyDirs = false
-    dependsOn copyJS
-    dependsOn copyPackage
+
+    dependsOn tasks.named( 'copyPackage' )
 }
 
 tasks.register( 'devJar', Jar ) {
     archiveClassifier = 'dev-resources'
     from sourceSets.main.output
+
     include 'dev/**'
     exclude 'dev/lib-admin-ui/lib.js'
+    exclude 'dev/lib-admin-ui/lib.d.ts'
+
     includeEmptyDirs = false
-    dependsOn copyJS
-    dependsOn copyPackage
+
+    dependsOn tasks.named( 'copyPackage' )
 }
 
-tasks.assemble.dependsOn devJar
+tasks.named( 'assemble' ) {
+    dependsOn tasks.named( 'devJar' )
+}
 
 artifacts {
     devResources devJar
 }
 
 components.java.addVariantsFromConfiguration( configurations.devResources ) {
-}
-
-tasks.register( 'flush', Delete ) {
-    dependsOn clean
-    description = 'Clean the project from built sources and dependencies'
-    delete '.xp'
-}
-
-def loadConfiguration() {
-    def envList = [ 'dev', 'prod' ]
-    def environment = hasEnvironment() ? env : 'prod'
-
-    if ( !envList.contains( environment ) ) {
-        def message = "Target environment '$environment' is not allowed. Please use one of the following: ${envList.join(", ")}"
-        throw new ResourceException( message )
-    }
-
-    println "Environment is set to $nodeEnvironment"
 }

@@ -1,10 +1,11 @@
-const baseConfig = require('@enonic/eslint-config');
-const { plugin: tsPlugin } = require('typescript-eslint');
+import baseConfig from '@enonic/eslint-config';
+import {plugin as tsPlugin} from 'typescript-eslint';
 
-module.exports = [
-    ...baseConfig, // This includes the extended configuration from @enonic/eslint-config
+export default [
+    // This includes the extended configuration from @enonic/eslint-config
+    ...baseConfig,
     {
-        files: ["**/*.ts", "**/*.tsx"], // Apply rules to TypeScript files
+        files: ["**/*.ts", "**/*.tsx"],
         languageOptions: {
             parserOptions: {
                 project: './tsconfig.json',
@@ -15,6 +16,7 @@ module.exports = [
             '@typescript-eslint': tsPlugin,
         },
         rules: {
+            // TODO: Fix these rules
             'no-control-regex': 'off',
             'constructor-super': 'error',
             'prefer-const': 'off',
@@ -43,18 +45,20 @@ module.exports = [
             '@typescript-eslint/no-use-before-define': 'off',
             '@typescript-eslint/unbound-method': 'off',
             '@typescript-eslint/no-base-to-string': 'off',
+            '@typescript-eslint/no-unused-vars': 'off',
         },
     },
     {
         ignores: [
-            "**/node_modules/",
-            "**/build/",
-            "**/dist/",
-            "**/.xp/",
+            "vite.config.ts",
+            "eslint.config.ts",
+            "build/**/*",
+            "dist/**/*",
+            "node_modules/**/*",
+            "**/.xp/**/*",
             "**/*.js",
             "**/*.d.ts",
             "**/spec/**/*",
-            "**/bin/"
         ]
     }
 ];
