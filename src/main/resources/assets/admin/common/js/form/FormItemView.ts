@@ -1,12 +1,12 @@
-import * as Q from 'q';
+import Q from 'q';
 import {PropertySet} from '../data/PropertySet';
 import {DivEl} from '../dom/DivEl';
+import {assertNotNull} from '../util/Assert';
 import {FormContext} from './FormContext';
 import {FormItem} from './FormItem';
 import {FormItemOccurrenceView} from './FormItemOccurrenceView';
-import {assertNotNull} from '../util/Assert';
-import {ValidationRecording} from './ValidationRecording';
 import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
+import {ValidationRecording} from './ValidationRecording';
 
 export interface FormItemViewConfig {
 

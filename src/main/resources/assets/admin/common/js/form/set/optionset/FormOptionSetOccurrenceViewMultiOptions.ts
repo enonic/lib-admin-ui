@@ -1,5 +1,5 @@
+import Q from 'q';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
-import * as Q from 'q';
 
 export class FormOptionSetOccurrenceViewMultiOptions
     extends FormOptionSetOccurrenceView {

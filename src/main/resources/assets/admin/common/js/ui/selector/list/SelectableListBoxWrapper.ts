@@ -1,14 +1,13 @@
-import {ListBox} from './ListBox';
-import {Element} from '../../../dom/Element';
+import Q from 'q';
 import {DivEl} from '../../../dom/DivEl';
-import {Checkbox} from '../../Checkbox';
-import {SelectionChange} from '../../../util/SelectionChange';
-import * as Q from 'q';
+import {Element} from '../../../dom/Element';
 import {LiEl} from '../../../dom/LiEl';
-import {TreeListBox, TreeListElement} from './TreeListBox';
+import {SelectionChange} from '../../../util/SelectionChange';
+import {Checkbox} from '../../Checkbox';
 import {DataChangedEvent, DataChangedType} from '../../treegrid/DataChangedEvent';
-import {SelectableListBoxNavigator} from './SelectableListBoxNavigator';
-import {AriaHasPopup, AriaRole} from '../../WCAG';
+import {AriaRole} from '../../WCAG';
+import {ListBox} from './ListBox';
+import {TreeListBox, TreeListElement} from './TreeListBox';
 
 export enum SelectionMode {
     SELECT, // DEFAULT

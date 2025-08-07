@@ -1,9 +1,9 @@
-import * as Q from 'q';
-import {Toolbar, ToolbarConfig} from '../../ui/toolbar/Toolbar';
-import {TabBarItem} from '../../ui/tab/TabBarItem';
-import {ActivatedEvent} from '../../ui/ActivatedEvent';
+import Q from 'q';
 import {DivEl} from '../../dom/DivEl';
+import {ActivatedEvent} from '../../ui/ActivatedEvent';
+import {TabBarItem} from '../../ui/tab/TabBarItem';
 import {FoldButton} from '../../ui/toolbar/FoldButton';
+import {Toolbar, ToolbarConfig} from '../../ui/toolbar/Toolbar';
 import {WizardStepNavigator} from './WizardStepNavigator';
 
 export class WizardStepNavigatorAndToolbar

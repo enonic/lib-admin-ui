@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
+        "module": "ES2022",
+        "target": "ES2023",
         "lib": [
-            "es2015",
-            "dom"
+            "ES2023",
+            "DOM",
         ],
         "outDir": "build/resources/main/dev/lib-admin-ui/",
         "moduleResolution": "node",
@@ -15,14 +15,15 @@
         "allowJs": false,
         "noImplicitReturns": true,
         "noImplicitThis": true,
-        "strictNullChecks": false,
+        "skipLibCheck": true,
+        "removeComments": true,
+        "useDefineForClassFields": false,
         "types": [
+            "dompurify",
             "jquery",
             "jqueryui",
             "mousetrap",
             "q",
-            "validator",
-            "dompurify"
         ]
     },
     "include": [

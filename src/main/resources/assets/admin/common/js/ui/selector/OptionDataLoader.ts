@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {PostLoader} from '../../util/loader/PostLoader';
 
 export abstract class OptionDataLoader<DATA>

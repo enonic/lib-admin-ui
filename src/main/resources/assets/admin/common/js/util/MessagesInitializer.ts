@@ -1,9 +1,9 @@
-import * as Q from 'q';
+import Q from 'q';
+import {HttpMethod} from '../rest/HttpMethod';
 import {JsonResponse} from '../rest/JsonResponse';
 import {Path} from '../rest/Path';
-import {Messages} from './Messages';
 import {ResourceRequest} from '../rest/ResourceRequest';
-import {HttpMethod} from '../rest/HttpMethod';
+import {Messages} from './Messages';
 
 function getMessages(url: string, bundles?: string[]): Q.Promise<KeysJson> {
     const request: GetMessagesRequest = new GetMessagesRequest(url, bundles);

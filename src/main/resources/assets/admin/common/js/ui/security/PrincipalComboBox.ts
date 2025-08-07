@@ -1,22 +1,22 @@
-import * as Q from 'q';
-import {Option} from '../selector/Option';
-import {Principal, PrincipalBuilder} from '../../security/Principal';
-import {PrincipalLoader} from '../../security/PrincipalLoader';
-import {SelectedOption} from '../selector/combobox/SelectedOption';
-import {BaseSelectedOptionsView} from '../selector/combobox/BaseSelectedOptionsView';
-import {PrincipalKey} from '../../security/PrincipalKey';
-import {SelectedOptionView} from '../selector/combobox/SelectedOptionView';
-import {PrincipalViewer} from './PrincipalViewer';
-import {FilterableListBoxWrapperWithSelectedView, ListBoxInputOptions} from '../selector/list/FilterableListBoxWrapperWithSelectedView';
-import {PrincipalType} from '../../security/PrincipalType';
-import {PrincipalsListBox} from './PrincipalsListBox';
-import {FormInputEl} from '../../dom/FormInputEl';
-import {LoadedDataEvent} from '../../util/loader/event/LoadedDataEvent';
-import {AppHelper} from '../../util/AppHelper';
-import {ValueChangedEvent} from '../../ValueChangedEvent';
+import Q from 'q';
 import {DefaultErrorHandler} from '../../DefaultErrorHandler';
-import {StringHelper} from '../../util/StringHelper';
+import {FormInputEl} from '../../dom/FormInputEl';
 import {GetPrincipalsByKeysRequest} from '../../security/GetPrincipalsByKeysRequest';
+import {Principal, PrincipalBuilder} from '../../security/Principal';
+import {PrincipalKey} from '../../security/PrincipalKey';
+import {PrincipalLoader} from '../../security/PrincipalLoader';
+import {PrincipalType} from '../../security/PrincipalType';
+import {AppHelper} from '../../util/AppHelper';
+import {LoadedDataEvent} from '../../util/loader/event/LoadedDataEvent';
+import {StringHelper} from '../../util/StringHelper';
+import {ValueChangedEvent} from '../../ValueChangedEvent';
+import {BaseSelectedOptionsView} from '../selector/combobox/BaseSelectedOptionsView';
+import {SelectedOption} from '../selector/combobox/SelectedOption';
+import {SelectedOptionView} from '../selector/combobox/SelectedOptionView';
+import {FilterableListBoxWrapperWithSelectedView, ListBoxInputOptions} from '../selector/list/FilterableListBoxWrapperWithSelectedView';
+import {Option} from '../selector/Option';
+import {PrincipalsListBox} from './PrincipalsListBox';
+import {PrincipalViewer} from './PrincipalViewer';
 
 export interface PrincipalComboBoxParams {
     maxSelected?: number;
@@ -37,7 +37,7 @@ export class PrincipalComboBox
 
     private postfixUri: string;
 
-    protected readonly options: PrincipalComboBoxOptions;
+    declare protected readonly options: PrincipalComboBoxOptions;
 
     constructor(options?: PrincipalComboBoxParams) {
         const loader = new PrincipalLoader(options.postfixUri);

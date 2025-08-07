@@ -86,7 +86,7 @@ export class DateTimePickerBuilder
 export class DateTimePicker
     extends Picker<DateTimePickerPopup> {
 
-    protected builder: DateTimePickerBuilder;
+    declare protected builder: DateTimePickerBuilder;
 
     protected selectedDateTime: Date;
 

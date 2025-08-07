@@ -1,10 +1,10 @@
-import * as Q from 'q';
+import Q from 'q';
+import {Element} from '../../dom/Element';
 import {TabBar} from '../tab/TabBar';
 import {TabBarItem, TabBarItemBuilder} from '../tab/TabBarItem';
-import {Element} from '../../dom/Element';
-import {Panel} from './Panel';
-import {NavigatedDeckPanel} from './NavigatedDeckPanel';
 import {DeckPanel} from './DeckPanel';
+import {NavigatedDeckPanel} from './NavigatedDeckPanel';
+import {Panel} from './Panel';
 
 export class DockedPanel
     extends Panel {

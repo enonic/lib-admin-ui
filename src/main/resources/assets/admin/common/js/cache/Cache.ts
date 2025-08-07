@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 
 export class Cache<T, KEY> {
 

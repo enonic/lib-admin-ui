@@ -1,8 +1,7 @@
-import * as Q from 'q';
+import Q from 'q';
+import {AEl} from '../../../dom/AEl';
 import {DivEl} from '../../../dom/DivEl';
 import {Option} from '../Option';
-import {Element} from '../../../dom/Element';
-import {AEl} from '../../../dom/AEl';
 import {SelectedOptionView} from './SelectedOptionView';
 
 export class BaseSelectedOptionView<T>

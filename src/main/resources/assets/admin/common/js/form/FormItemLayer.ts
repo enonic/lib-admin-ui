@@ -1,27 +1,27 @@
-import * as Q from 'q';
-import {PropertySet} from '../data/PropertySet';
+import Q from 'q';
 import {PropertyArray} from '../data/PropertyArray';
-import {FocusSwitchEvent} from '../ui/FocusSwitchEvent';
+import {PropertySet} from '../data/PropertySet';
+import {DefaultErrorHandler} from '../DefaultErrorHandler';
 import {Element} from '../dom/Element';
 import {ObjectHelper} from '../ObjectHelper';
-import {FormOptionSetView} from './set/optionset/FormOptionSetView';
-import {FormOptionSetOptionView, FormOptionSetOptionViewConfig} from './set/optionset/FormOptionSetOptionView';
-import {DefaultErrorHandler} from '../DefaultErrorHandler';
+import {FocusSwitchEvent} from '../ui/FocusSwitchEvent';
 import {FormContext} from './FormContext';
 import {FormItem} from './FormItem';
-import {FormItemView} from './FormItemView';
+import {FormItemLayerFactory} from './FormItemLayerFactory';
 import {FormItemOccurrenceView} from './FormItemOccurrenceView';
+import {FormItemState} from './FormItemState';
+import {FormItemView} from './FormItemView';
+import {Input} from './Input';
 import {InputView, InputViewConfig} from './InputView';
-import {FormItemSet} from './set/itemset/FormItemSet';
-import {FormItemSetView} from './set/itemset/FormItemSetView';
 import {FieldSet} from './set/fieldset/FieldSet';
 import {FieldSetView, FieldSetViewConfig} from './set/fieldset/FieldSetView';
-import {Input} from './Input';
+import {FormSetOccurrenceView} from './set/FormSetOccurrenceView';
+import {FormItemSet} from './set/itemset/FormItemSet';
+import {FormItemSetView} from './set/itemset/FormItemSetView';
 import {FormOptionSet} from './set/optionset/FormOptionSet';
 import {FormOptionSetOption} from './set/optionset/FormOptionSetOption';
-import {FormItemLayerFactory} from './FormItemLayerFactory';
-import {FormSetOccurrenceView} from './set/FormSetOccurrenceView';
-import {FormItemState} from './FormItemState';
+import {FormOptionSetOptionView, FormOptionSetOptionViewConfig} from './set/optionset/FormOptionSetOptionView';
+import {FormOptionSetView} from './set/optionset/FormOptionSetView';
 
 export class FormItemLayer {
 

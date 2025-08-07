@@ -1,15 +1,15 @@
-import * as Q from 'q';
+import Q from 'q';
+import {ClassHelper} from '../../../ClassHelper';
 import {Property} from '../../../data/Property';
 import {PropertyArray} from '../../../data/PropertyArray';
-import {Value} from '../../../data/Value';
-import {InputTypeViewContext} from '../InputTypeViewContext';
-import {Input} from '../../Input';
 import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
-import {ValueChangedEvent} from '../ValueChangedEvent';
-import {ClassHelper} from '../../../ClassHelper';
+import {Value} from '../../../data/Value';
 import {assertNotNull} from '../../../util/Assert';
-import {BaseInputType} from './BaseInputType';
+import {Input} from '../../Input';
+import {InputTypeViewContext} from '../InputTypeViewContext';
 import {InputValidationRecording} from '../InputValidationRecording';
+import {ValueChangedEvent} from '../ValueChangedEvent';
+import {BaseInputType} from './BaseInputType';
 
 export abstract class BaseInputTypeSingleOccurrence
     extends BaseInputType {

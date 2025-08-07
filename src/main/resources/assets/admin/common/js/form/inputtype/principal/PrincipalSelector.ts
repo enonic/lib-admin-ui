@@ -1,23 +1,19 @@
-import * as Q from 'q';
+import Q from 'q';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Value} from '../../../data/Value';
 import {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {SelectedOptionEvent} from '../../../ui/selector/combobox/SelectedOptionEvent';
-import {PrincipalComboBox, PrincipalSelectedOptionView} from '../../../ui/security/PrincipalComboBox';
-import {InputTypeViewContext} from '../InputTypeViewContext';
-import {PrincipalType} from '../../../security/PrincipalType';
-import {PrincipalKey} from '../../../security/PrincipalKey';
-import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';
 import {ObjectHelper} from '../../../ObjectHelper';
-import {Input} from '../../Input';
-import {PrincipalLoader} from '../../../security/PrincipalLoader';
 import {Principal} from '../../../security/Principal';
+import {PrincipalKey} from '../../../security/PrincipalKey';
+import {PrincipalType} from '../../../security/PrincipalType';
+import {PrincipalComboBox} from '../../../ui/security/PrincipalComboBox';
 import {SelectedOption} from '../../../ui/selector/combobox/SelectedOption';
-import {Option} from '../../../ui/selector/Option';
-import {InputTypeName} from '../../InputTypeName';
 import {SelectionChange} from '../../../util/SelectionChange';
-import {Reference} from '../../../util/Reference';
+import {Input} from '../../Input';
+import {InputTypeName} from '../../InputTypeName';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';
 
 export class PrincipalSelector
     extends BaseInputTypeManagingAdd {

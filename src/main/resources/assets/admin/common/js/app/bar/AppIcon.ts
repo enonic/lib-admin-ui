@@ -1,10 +1,10 @@
-import * as Q from 'q';
+import Q from 'q';
 import {DivEl} from '../../dom/DivEl';
-import {Action} from '../../ui/Action';
 import {ImgEl} from '../../dom/ImgEl';
 import {SpanEl} from '../../dom/SpanEl';
-import {Application} from '../Application';
+import {Action} from '../../ui/Action';
 import {KeyHelper} from '../../ui/KeyHelper';
+import {Application} from '../Application';
 
 export class AppIcon
     extends DivEl {

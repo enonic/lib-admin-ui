@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {BaseLoader} from '../util/loader/BaseLoader';
 import {Application} from './Application';
 import {ListApplicationsRequest} from './ListApplicationsRequest';
@@ -6,7 +6,7 @@ import {ListApplicationsRequest} from './ListApplicationsRequest';
 export abstract class ApplicationLoader
     extends BaseLoader<Application> {
 
-    protected request: ListApplicationsRequest;
+    declare protected request: ListApplicationsRequest;
 
     private filterObject: object;
 

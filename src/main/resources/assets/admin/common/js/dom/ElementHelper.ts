@@ -1,7 +1,7 @@
-import * as $ from 'jquery';
-import {Element} from './Element';
-import {StringHelper} from '../util/StringHelper';
+import $ from 'jquery';
 import {assert, assertNotNull} from '../util/Assert';
+import {StringHelper} from '../util/StringHelper';
+import {Element} from './Element';
 
 export interface ElementDimensions {
     top: number;

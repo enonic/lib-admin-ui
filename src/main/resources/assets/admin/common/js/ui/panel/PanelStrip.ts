@@ -1,7 +1,7 @@
-import * as $ from 'jquery';
-import * as Q from 'q';
-import {H2El} from '../../dom/H2El';
+import $ from 'jquery';
+import Q from 'q';
 import {Element} from '../../dom/Element';
+import {H2El} from '../../dom/H2El';
 import {LoadMask} from '../mask/LoadMask';
 import {Panel} from './Panel';
 import {PanelShownEvent} from './PanelShownEvent';

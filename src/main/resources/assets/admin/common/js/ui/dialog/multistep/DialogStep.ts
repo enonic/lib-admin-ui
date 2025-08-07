@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {Element} from '../../../dom/Element';
 
 export abstract class DialogStep {

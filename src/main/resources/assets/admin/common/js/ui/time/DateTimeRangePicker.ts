@@ -1,13 +1,13 @@
-import * as Q from 'q';
-import {Timezone} from '../../util/Timezone';
+import Q from 'q';
 import {DivEl} from '../../dom/DivEl';
-import {DateTimePicker, DateTimePickerBuilder} from './DateTimePicker';
 import {Element} from '../../dom/Element';
 import {LabelEl} from '../../dom/LabelEl';
+import {TimeHM} from '../../util/TimeHM';
+import {Timezone} from '../../util/Timezone';
+import {DateTimePicker, DateTimePickerBuilder} from './DateTimePicker';
 import {DayOfWeek} from './DayOfWeek';
 import {DaysOfWeek} from './DaysOfWeek';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
-import {TimeHM} from '../../util/TimeHM';
 
 export class DateTimeRangePickerBuilder {
 

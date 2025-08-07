@@ -1,18 +1,17 @@
-import * as Q from 'q';
+import Q from 'q';
 import {Property} from '../../../data/Property';
 import {PropertyArray} from '../../../data/PropertyArray';
-import {Input} from '../../Input';
-import {FormItemOccurrences, FormItemOccurrencesConfig} from '../../FormItemOccurrences';
-import {InputValidationRecording} from '../InputValidationRecording';
-import {Occurrences} from '../../Occurrences';
+import {Value} from '../../../data/Value';
+import {assertNotNull} from '../../../util/Assert';
 import {FormItemOccurrence} from '../../FormItemOccurrence';
+import {FormItemOccurrences, FormItemOccurrencesConfig} from '../../FormItemOccurrences';
+import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
+import {Input} from '../../Input';
+import {Occurrences} from '../../Occurrences';
 import {RemoveButtonClickedEvent} from '../../RemoveButtonClickedEvent';
 import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
-import {InputOccurrenceView} from './InputOccurrenceView';
-import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
 import {InputOccurrence} from './InputOccurrence';
-import {assertNotNull} from '../../../util/Assert';
-import {Value} from '../../../data/Value';
+import {InputOccurrenceView} from './InputOccurrenceView';
 
 export class InputOccurrencesBuilder {
 

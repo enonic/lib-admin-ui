@@ -1,11 +1,11 @@
-import * as Q from 'q';
-import {LoadedDataEvent} from './event/LoadedDataEvent';
-import {LoadingDataEvent} from './event/LoadingDataEvent';
-import {LoaderErrorEvent} from './event/LoaderErrorEvent';
-import {HttpRequest} from '../../rest/HttpRequest';
+import Q from 'q';
 import {ClassHelper} from '../../ClassHelper';
 import {Comparator} from '../../Comparator';
 import {ObjectHelper} from '../../ObjectHelper';
+import {HttpRequest} from '../../rest/HttpRequest';
+import {LoadedDataEvent} from './event/LoadedDataEvent';
+import {LoaderErrorEvent} from './event/LoaderErrorEvent';
+import {LoadingDataEvent} from './event/LoadingDataEvent';
 
 enum LoaderStatus {
     NOT_STARTED,

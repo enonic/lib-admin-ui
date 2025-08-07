@@ -1,6 +1,6 @@
-import * as Q from 'q';
-import {SpanEl} from '../../dom/SpanEl';
+import Q from 'q';
 import {DivEl} from '../../dom/DivEl';
+import {SpanEl} from '../../dom/SpanEl';
 
 export interface PanelStripHeaderConfig {
     text: string;

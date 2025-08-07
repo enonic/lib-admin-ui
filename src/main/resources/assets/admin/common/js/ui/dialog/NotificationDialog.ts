@@ -1,7 +1,7 @@
-import * as Q from 'q';
+import Q from 'q';
+import {H6El} from '../../dom/H6El';
 import {i18n} from '../../util/Messages';
 import {ModalDialog} from './ModalDialog';
-import {H6El} from '../../dom/H6El';
 
 export class NotificationDialog
     extends ModalDialog {

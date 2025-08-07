@@ -1,9 +1,9 @@
-import * as Q from 'q';
-import {i18n} from '../../util/Messages';
+import Q from 'q';
+import {Body} from '../../dom/Body';
 import {H6El} from '../../dom/H6El';
+import {i18n} from '../../util/Messages';
 import {Action} from '../Action';
 import {BodyMask} from '../mask/BodyMask';
-import {Body} from '../../dom/Body';
 import {ModalDialog, ModalDialogConfig} from './ModalDialog';
 
 export class ConfirmationDialog

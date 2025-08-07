@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 import {ResponsiveRanges} from '../../ui/responsive/ResponsiveRanges';
 import {ResponsiveItem} from '../../ui/responsive/ResponsiveItem';

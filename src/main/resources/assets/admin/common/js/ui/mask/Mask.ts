@@ -1,10 +1,10 @@
-import * as $ from 'jquery';
-import {ResponsiveManager} from '../responsive/ResponsiveManager';
+import $ from 'jquery';
+import {Body} from '../../dom/Body';
 import {DivEl} from '../../dom/DivEl';
 import {Element} from '../../dom/Element';
-import {StyleHelper} from '../../StyleHelper';
 import {ElementHiddenEvent} from '../../dom/ElementHiddenEvent';
-import {Body} from '../../dom/Body';
+import {StyleHelper} from '../../StyleHelper';
+import {ResponsiveManager} from '../responsive/ResponsiveManager';
 
 export class Mask
     extends DivEl {

@@ -1,20 +1,20 @@
-import {PropertySet} from '../../../data/PropertySet';
+import Q from 'q';
+import {Property} from '../../../data/Property';
 import {PropertyArray} from '../../../data/PropertyArray';
+import {PropertySet} from '../../../data/PropertySet';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {i18n} from '../../../util/Messages';
 import {DivEl} from '../../../dom/DivEl';
-import {FormOptionSet} from './FormOptionSet';
-import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
-import {FormOptionSetOptionView} from './FormOptionSetOptionView';
-import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
-import {ValidationRecordingPath} from '../../ValidationRecordingPath';
-import {ValidationRecording} from '../../ValidationRecording';
+import {i18n} from '../../../util/Messages';
 import {FormItem} from '../../FormItem';
 import {Occurrences} from '../../Occurrences';
+import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
+import {ValidationRecording} from '../../ValidationRecording';
+import {ValidationRecordingPath} from '../../ValidationRecordingPath';
+import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
+import {FormOptionSet} from './FormOptionSet';
 import {FormOptionSetOption} from './FormOptionSetOption';
-import {Property} from '../../../data/Property';
+import {FormOptionSetOptionView} from './FormOptionSetOptionView';
 import {OptionSetArrayHelper} from './OptionSetArrayHelper';
-import * as Q from 'q';
 
 export abstract class FormOptionSetOccurrenceView
     extends FormSetOccurrenceView {
