@@ -4,7 +4,7 @@
         "target": "ES2023",
         "lib": [
             "ES2023",
-            "DOM",
+            "DOM"
         ],
         "outDir": "build/resources/main/dev/lib-admin-ui/",
         "moduleResolution": "node",
