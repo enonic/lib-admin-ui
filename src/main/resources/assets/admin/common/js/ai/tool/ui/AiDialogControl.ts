@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {Button} from '../../../ui/button/Button';
 import {i18n} from '../../../util/Messages';
 import {AiContentOperatorOpenDialogEvent} from '../../event/AiContentOperatorOpenDialogEvent';

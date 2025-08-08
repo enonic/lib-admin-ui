@@ -1,6 +1,6 @@
-import * as Q from 'q';
-import {Element, NewElementBuilder} from '../dom/Element';
+import Q from 'q';
 import {AEl} from '../dom/AEl';
+import {Element, NewElementBuilder} from '../dom/Element';
 
 /**
  * An abstract class capable of viewing a given object.

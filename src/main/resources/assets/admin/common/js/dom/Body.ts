@@ -1,8 +1,8 @@
-import {Element, ElementFromHelperBuilder} from './Element';
-import {ResponsiveManager} from '../ui/responsive/ResponsiveManager';
-import {ElementHelper} from './ElementHelper';
 import {Store} from '../store/Store';
+import {ResponsiveManager} from '../ui/responsive/ResponsiveManager';
 import {CONFIG} from '../util/Config';
+import {Element, ElementFromHelperBuilder} from './Element';
+import {ElementHelper} from './ElementHelper';
 
 export const BODY_KEY: string = 'Body';
 

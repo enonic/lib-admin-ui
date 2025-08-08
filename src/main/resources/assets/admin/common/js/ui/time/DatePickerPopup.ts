@@ -1,12 +1,12 @@
-import {DivEl} from '../../dom/DivEl';
+import Q from 'q';
 import {AEl} from '../../dom/AEl';
-import {SpanEl} from '../../dom/SpanEl';
+import {DivEl} from '../../dom/DivEl';
 import {H2El} from '../../dom/H2El';
 import {H5El} from '../../dom/H5El';
+import {SpanEl} from '../../dom/SpanEl';
 import {Calendar, CalendarBuilder} from './Calendar';
-import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 import {MonthsOfYear} from './MonthsOfYear';
-import * as Q from 'q';
+import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
 
 export class DatePickerPopupBuilder {
 

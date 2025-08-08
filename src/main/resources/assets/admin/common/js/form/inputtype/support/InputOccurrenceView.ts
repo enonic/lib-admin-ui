@@ -1,4 +1,8 @@
-import * as Q from 'q';
+import Q from 'q';
+import {AiAnimationTool} from '../../../ai/tool/AiAnimationTool';
+import {AiDialogIconTool} from '../../../ai/tool/AiDialogIconTool';
+import {AiStateTool} from '../../../ai/tool/AiStateTool';
+import {AiToolType} from '../../../ai/tool/AiToolType';
 import {Property} from '../../../data/Property';
 import {PropertyPath} from '../../../data/PropertyPath';
 import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
@@ -10,10 +14,6 @@ import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../../FormIt
 import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
 import {InputOccurrence} from './InputOccurrence';
 import {OccurrenceValidationRecord} from './OccurrenceValidationRecord';
-import {AiToolType} from '../../../ai/tool/AiToolType';
-import {AiStateTool} from '../../../ai/tool/AiStateTool';
-import {AiDialogIconTool} from '../../../ai/tool/AiDialogIconTool';
-import {AiAnimationTool} from '../../../ai/tool/AiAnimationTool';
 
 export interface InputOccurrenceViewConfig
     extends FormItemOccurrenceViewConfig {
@@ -25,7 +25,7 @@ export class InputOccurrenceView
     extends FormItemOccurrenceView {
 
     public static debug: boolean = false;
-    protected config: InputOccurrenceViewConfig;
+    declare protected config: InputOccurrenceViewConfig;
     private property: Property;
     private inputTypeView: BaseInputTypeNotManagingAdd;
     private inputElement: Element;

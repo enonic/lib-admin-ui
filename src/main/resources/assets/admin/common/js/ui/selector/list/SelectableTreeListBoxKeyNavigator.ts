@@ -4,7 +4,7 @@ import {SelectionMode} from './SelectableListBoxWrapper';
 
 export class SelectableTreeListBoxKeyNavigator<I> extends SelectableListBoxKeyNavigator<I> {
 
-    protected rootList: TreeListBox<I>;
+    declare protected rootList: TreeListBox<I>;
 
     getNextItem(item: I, flat?: boolean): I | undefined {
         const treeListElement = this.rootList.getItemView(item);

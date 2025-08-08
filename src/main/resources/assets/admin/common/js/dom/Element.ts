@@ -1,7 +1,7 @@
-import * as DOMPurify from 'dompurify';
-import * as $ from 'jquery';
+import DOMPurify, {Config as DOMPurifyConfig} from 'dompurify';
+import $ from 'jquery';
 import 'jquery-ui/ui/tabbable';
-import * as Q from 'q';
+import Q from 'q';
 import {ClassHelper} from '../ClassHelper';
 import {ObjectHelper} from '../ObjectHelper';
 import {StyleHelper} from '../StyleHelper';
@@ -24,7 +24,7 @@ export interface PurifyConfig {
 }
 
 // wrapper interface for a DOMPurify interface to make a sanitize function return expected string output
-interface DOMPurifyConfig extends DOMPurify.Config {
+interface ExtendedDOMPurifyConfig extends DOMPurifyConfig {
     RETURN_DOM_FRAGMENT?: false | undefined;
     RETURN_DOM?: false | undefined
 }
@@ -311,8 +311,8 @@ export class Element {
         return Element.fromHtml(sanitizedHtml, loadExistingChildren);
     }
 
-    private static createDOMPurifyConfig(purifyConfig?: PurifyConfig): DOMPurifyConfig  {
-        const config: DOMPurifyConfig = {};
+    private static createDOMPurifyConfig(purifyConfig?: PurifyConfig): ExtendedDOMPurifyConfig  {
+        const config: ExtendedDOMPurifyConfig = {};
 
         if (purifyConfig.addTags) {
             config.ADD_TAGS = purifyConfig.addTags.slice();

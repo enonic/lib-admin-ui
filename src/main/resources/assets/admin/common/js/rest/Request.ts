@@ -1,8 +1,8 @@
-import * as Q from 'q';
+import Q from 'q';
 import {AccessDeniedException} from '../AccessDeniedException';
+import {HttpMethod} from './HttpMethod';
 import {Path} from './Path';
 import {RequestError} from './RequestError';
-import {HttpMethod} from './HttpMethod';
 import {Response} from './Response';
 import {StatusCode} from './StatusCode';
 

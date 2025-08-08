@@ -14,7 +14,7 @@ export abstract class FilterableListBoxWrapperWithSelectedView<I>
 
     protected selectedOptionsView: BaseSelectedOptionsView<I>;
 
-    protected options: ListBoxInputOptions<I>;
+    declare protected options: ListBoxInputOptions<I>;
 
     protected constructor(listBox: ListBox<I>, options?: ListBoxInputOptions<I>) {
         super(listBox, options);

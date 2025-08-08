@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {Body} from '../../dom/Body';
 import {DivEl} from '../../dom/DivEl';
 import {Element} from '../../dom/Element';

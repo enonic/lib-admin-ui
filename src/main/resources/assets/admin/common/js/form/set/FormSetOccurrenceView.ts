@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {Property} from '../../data/Property';
 import {PropertyAddedEvent} from '../../data/PropertyAddedEvent';
 import {PropertyArray} from '../../data/PropertyArray';
@@ -75,7 +75,7 @@ export abstract class FormSetOccurrenceView
 
     protected formSet: FormSet;
 
-    protected config: FormSetOccurrenceViewConfigExtended;
+    declare protected config: FormSetOccurrenceViewConfigExtended;
 
     private dirtyFormItemViewsMap: object = {};
 

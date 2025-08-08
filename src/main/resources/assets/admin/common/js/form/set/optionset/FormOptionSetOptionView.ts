@@ -1,5 +1,5 @@
-import * as $ from 'jquery';
-import * as Q from 'q';
+import $ from 'jquery';
+import Q from 'q';
 import {PropertySet} from '../../../data/PropertySet';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {DivEl} from '../../../dom/DivEl';
@@ -34,7 +34,7 @@ export class FormOptionSetOptionView
     extends FormItemView {
 
     protected helpText: HelpTextContainer;
-    protected parent: FormOptionSetOccurrenceView;
+    declare protected parent: FormOptionSetOccurrenceView;
     private formOptionSetOption: FormOptionSetOption;
     private optionItemsContainer: DivEl;
     private formItemViews: FormItemView[] = [];

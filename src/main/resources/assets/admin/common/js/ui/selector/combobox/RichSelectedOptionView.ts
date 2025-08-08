@@ -1,11 +1,11 @@
-import * as Q from 'q';
+import Q from 'q';
 import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
-import {BaseSelectedOptionView, BaseSelectedOptionViewBuilder} from './BaseSelectedOptionView';
 import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
-import {Option} from '../Option';
 import {StringHelper} from '../../../util/StringHelper';
+import {Option} from '../Option';
+import {BaseSelectedOptionView, BaseSelectedOptionViewBuilder} from './BaseSelectedOptionView';
 
 export class RichSelectedOptionView<T>
     extends BaseSelectedOptionView<T> {

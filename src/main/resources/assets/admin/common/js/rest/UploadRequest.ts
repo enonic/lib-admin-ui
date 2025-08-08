@@ -1,6 +1,6 @@
-import * as Q from 'q';
-import {Response} from './Response';
+import Q from 'q';
 import {PostRequest} from './PostRequest';
+import {Response} from './Response';
 
 export interface UploadProgressResponse {
     loaded: number;

@@ -1,13 +1,13 @@
+import Q from 'q';
 import {DivEl} from '../../dom/DivEl';
 import {Element, NewElementBuilder} from '../../dom/Element';
 import {H1El} from '../../dom/H1El';
 import {H4El} from '../../dom/H4El';
-import {ImageLoader} from '../../util/loader/ImageLoader';
 import {ImgEl} from '../../dom/ImgEl';
 import {ImgHelper} from '../../dom/ImgElHelper';
 import {SpanEl} from '../../dom/SpanEl';
+import {ImageLoader} from '../../util/loader/ImageLoader';
 import {ViewItem} from './ViewItem';
-import * as Q from 'q';
 
 export class ItemStatisticsHeader
     extends DivEl {

@@ -1,28 +1,55 @@
-.DS_Store
-build/
-temp/
-temp/*.*
-target/
-.gradle/
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
 *.iws
 *.ids
 *.iml
 *.ipr
-.idea
-.sass-cache
-npm-debug.log
-.tscache
-.eslintcache
-.tab
-.tmp
-generated-java
+*~
+
+# Build files
+dist/
+build/
+target/
+
+# Development files
+.storybook/
+storybook-static/
+docs/
+*storybook.log
+*.local
+
+# Coverage
+**/spec/coverage
+
+# Build tools
 node_modules/
-src/main/resources/spec/coverage
-src/main/resources/assets/spec/coverage/
+.pnpm-store/
+pnpm-lock.yaml
+pnpm-workspace.yaml
+.gradle/
+
+# OS files
+.DS_Store
+Thumbs.db
 
 # Enonic
-/.enonic
+.enonic/
 
-# Visual Studio Code
-/bin/
-.vscode/
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Misc
+.cache/
+.temp/
+.tmp/
+generated-java/
+.tsbuildinfo
+.eslintcache

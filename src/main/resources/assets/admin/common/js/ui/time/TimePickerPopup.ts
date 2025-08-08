@@ -1,12 +1,12 @@
-import {Timezone} from '../../util/Timezone';
-import {DateHelper} from '../../util/DateHelper';
-import {UlEl} from '../../dom/UlEl';
+import Q from 'q';
 import {AEl} from '../../dom/AEl';
-import {SpanEl} from '../../dom/SpanEl';
-import {LiEl} from '../../dom/LiEl';
 import {Body} from '../../dom/Body';
+import {LiEl} from '../../dom/LiEl';
+import {SpanEl} from '../../dom/SpanEl';
+import {UlEl} from '../../dom/UlEl';
+import {DateHelper} from '../../util/DateHelper';
 import {TimeHM} from '../../util/TimeHM';
-import * as Q from 'q';
+import {Timezone} from '../../util/Timezone';
 
 export class TimePickerPopupBuilder {
 

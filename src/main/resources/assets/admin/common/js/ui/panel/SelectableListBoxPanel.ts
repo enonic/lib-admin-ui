@@ -1,9 +1,9 @@
-import {Panel} from './Panel';
+import Q from 'q';
+import {SelectionChange} from '../../util/SelectionChange';
+import {ListBoxToolbar} from '../selector/list/ListBoxToolbar';
 import {SelectableListBoxWrapper, SelectionMode} from '../selector/list/SelectableListBoxWrapper';
 import {DataChangedEvent} from '../treegrid/DataChangedEvent';
-import {SelectionChange} from '../../util/SelectionChange';
-import * as Q from 'q';
-import {ListBoxToolbar} from '../selector/list/ListBoxToolbar';
+import {Panel} from './Panel';
 
 export class SelectableListBoxPanel<I> extends Panel {
 

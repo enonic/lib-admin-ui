@@ -1,16 +1,16 @@
-import * as Q from 'q';
-import {PropertyArray} from '../../../data/PropertyArray';
-import {SelectedOptionEvent} from '../../../ui/selector/combobox/SelectedOptionEvent';
-import {FocusSwitchEvent} from '../../../ui/FocusSwitchEvent';
-import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
-import {ValueChangedEvent} from '../ValueChangedEvent';
-import {Input} from '../../Input';
-import {InputValidationRecording} from '../InputValidationRecording';
+import Q from 'q';
 import {ClassHelper} from '../../../ClassHelper';
-import {BaseInputType} from './BaseInputType';
-import {InputTypeViewContext} from '../InputTypeViewContext';
+import {PropertyArray} from '../../../data/PropertyArray';
+import {FocusSwitchEvent} from '../../../ui/FocusSwitchEvent';
+import {SelectedOptionEvent} from '../../../ui/selector/combobox/SelectedOptionEvent';
 import {ValidationError} from '../../../ValidationError';
 import {FormItemPath} from '../../FormItemPath';
+import {Input} from '../../Input';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {InputValidationRecording} from '../InputValidationRecording';
+import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
+import {ValueChangedEvent} from '../ValueChangedEvent';
+import {BaseInputType} from './BaseInputType';
 
 export abstract class BaseInputTypeManagingAdd
     extends BaseInputType {
