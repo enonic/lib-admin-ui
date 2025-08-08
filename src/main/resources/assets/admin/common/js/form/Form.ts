@@ -7,6 +7,7 @@ import {FormItemContainer} from './FormItemContainer';
 import {Input} from './Input';
 import {FormItemTypeWrapperJson} from './json/FormItemTypeWrapperJson';
 import {ApplicationKey} from '../application/ApplicationKey';
+import {FieldSet} from './set/fieldset/FieldSet';
 
 export class FormBuilder {
 
@@ -72,7 +73,7 @@ export class Form
 
     addFormItem(formItem: FormItem): void {
         const name: string = formItem.getName();
-        if (this.formItemByName[name]) {
+        if (this.formItemByName[name] && !(formItem instanceof FieldSet)) {
             throw new Error('FormItem already added: ' + name);
         }
         this.formItemByName[formItem.getName()] = formItem;
