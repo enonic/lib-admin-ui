@@ -1,13 +1,14 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
+        "module": "es2015",
+        "target": "es2015",
         "lib": [
             "es2015",
             "dom"
         ],
         "outDir": "build/resources/main/dev/lib-admin-ui/",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
+        "baseUrl": ".",
         "declaration": true,
         "declarationDir": "build/resources/main/dev/lib-admin-ui/",
         "allowSyntheticDefaultImports": true,
@@ -16,6 +17,7 @@
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "strictNullChecks": false,
+        "skipLibCheck": true,
         "types": [
             "jquery",
             "jqueryui",
@@ -23,7 +25,11 @@
             "q",
             "validator",
             "dompurify"
-        ]
+        ],
+        "paths": {
+            "react": ["node_modules/preact/compat"],
+            "react-dom": ["node_modules/preact/compat"]
+        }
     },
     "include": [
         "src/main/resources/assets/admin/common/js/**/*.ts"
