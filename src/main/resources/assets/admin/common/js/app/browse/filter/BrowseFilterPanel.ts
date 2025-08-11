@@ -1,23 +1,21 @@
 import * as Q from 'q';
-import {i18n} from '../../../util/Messages';
-import {Panel} from '../../../ui/panel/Panel';
-import {AggregationContainer} from '../../../aggregation/AggregationContainer';
-import {TextSearchField} from './TextSearchField';
-import {ClearFilterButton} from './ClearFilterButton';
-import {SpanEl} from '../../../dom/SpanEl';
-import {DivEl} from '../../../dom/DivEl';
-import {Element} from '../../../dom/Element';
-import {AggregationGroupView} from '../../../aggregation/AggregationGroupView';
-import {KeyBindings} from '../../../ui/KeyBindings';
-import {KeyBinding} from '../../../ui/KeyBinding';
+import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {ObjectHelper} from '../../../ObjectHelper';
 import {Aggregation} from '../../../aggregation/Aggregation';
-import {SearchInputValues} from '../../../query/SearchInputValues';
+import {AggregationContainer} from '../../../aggregation/AggregationContainer';
+import {AggregationGroupView} from '../../../aggregation/AggregationGroupView';
+import {DivEl} from '../../../dom/DivEl';
+import {Element} from '../../../dom/Element';
 import {LabelEl} from '../../../dom/LabelEl';
-import {ActionButton} from '../../../ui/button/ActionButton';
-import {Action} from '../../../ui/Action';
-import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
+import {SpanEl} from '../../../dom/SpanEl';
+import {SearchInputValues} from '../../../query/SearchInputValues';
+import {KeyBinding} from '../../../ui/KeyBinding';
+import {KeyBindings} from '../../../ui/KeyBindings';
 import {AriaRole} from '../../../ui/WCAG';
+import {Panel} from '../../../ui/panel/Panel';
+import {i18n} from '../../../util/Messages';
+import {ClearFilterButton} from './ClearFilterButton';
+import {TextSearchField} from './TextSearchField';
 
 export class BrowseFilterPanel<T>
     extends Panel {
@@ -300,11 +298,7 @@ export class BrowseFilterPanel<T>
 
     protected createConstraintSection(): ConstraintSection {
         return new ConstraintSection(i18n(
-            'panel.filter.selecteditems'), () => this.onCloseFilterInConstrainedMode());
-    }
-
-    protected onCloseFilterInConstrainedMode() {
-        this.notifyHidePanelButtonPressed();
+            'panel.filter.selecteditems'));
     }
 
     protected isFilteredOrConstrained(): boolean {
@@ -350,17 +344,13 @@ export class ConstraintSection
     protected itemsIds: string[];
     private readonly label: LabelEl;
 
-    constructor(label: string, closeCallback?: () => void) {
+    constructor(label: string) {
         super('constraint-section');
 
         this.checkVisibilityState();
 
         this.label = new LabelEl(label);
         this.appendChildren(this.label);
-
-        if (!!closeCallback) {
-            this.appendCloseButton(closeCallback);
-        }
     }
 
     public reset() {
@@ -383,16 +373,6 @@ export class ConstraintSection
 
     protected setLabel(text: string) {
         this.label.setValue(text);
-    }
-
-    private appendCloseButton(closeCallback: () => void): ActionButton {
-        let action = new Action('').onExecuted(() => closeCallback());
-        let button = new ActionButton(action);
-
-        button.addClass('btn-close');
-        this.appendChild(button);
-
-        return button;
     }
 
     private checkVisibilityState() {
