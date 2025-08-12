@@ -1,16 +1,16 @@
-import * as Q from 'q';
+import Q from 'q';
 import {PropertySet} from '../../../data/PropertySet';
-import {DivEl} from '../../../dom/DivEl';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
-import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
-import {FieldSet} from './FieldSet';
-import {FormItemView, FormItemViewConfig} from '../../FormItemView';
+import {DivEl} from '../../../dom/DivEl';
 import {FormItemLayer} from '../../FormItemLayer';
-import {InputView} from '../../InputView';
-import {ValidationRecording} from '../../ValidationRecording';
-import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
-import {FieldSetLabel} from './FieldSetLabel';
 import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLayerFactory';
+import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
+import {FormItemView, FormItemViewConfig} from '../../FormItemView';
+import {InputView} from '../../InputView';
+import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
+import {ValidationRecording} from '../../ValidationRecording';
+import {FieldSet} from './FieldSet';
+import {FieldSetLabel} from './FieldSetLabel';
 
 export interface FieldSetViewConfig extends CreatedFormItemLayerConfig {
 

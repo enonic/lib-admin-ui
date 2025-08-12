@@ -1,8 +1,8 @@
-import * as Q from 'q';
+import Q from 'q';
 import {Equitable} from '../../Equitable';
 import {DivEl} from '../../dom/DivEl';
-import {Viewer} from '../../ui/Viewer';
 import {Element} from '../../dom/Element';
+import {Viewer} from '../../ui/Viewer';
 import {ViewItem} from '../view/ViewItem';
 
 export class SelectionItem<M extends Equitable>

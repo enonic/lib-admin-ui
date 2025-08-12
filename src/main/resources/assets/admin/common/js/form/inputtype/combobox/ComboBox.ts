@@ -1,20 +1,20 @@
-import * as Q from 'q';
+import Q from 'q';
+import {Class} from '../../../Class';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Value} from '../../../data/Value';
 import {ValueType} from '../../../data/ValueType';
+import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';
-import {InputTypeViewContext} from '../InputTypeViewContext';
+import {ObjectHelper} from '../../../ObjectHelper';
+import {SelectionChange} from '../../../util/SelectionChange';
+import {StringHelper} from '../../../util/StringHelper';
 import {Input} from '../../Input';
 import {InputTypeManager} from '../InputTypeManager';
-import {Class} from '../../../Class';
-import {ComboBoxOption} from './ComboBoxOption';
-import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';
 import {ComboBoxListInput} from './ComboBoxListInput';
-import {StringHelper} from '../../../util/StringHelper';
-import {SelectionChange} from '../../../util/SelectionChange';
+import {ComboBoxOption} from './ComboBoxOption';
 import {ComboBoxSelectedOptionsView} from './ComboBoxSelectedOptionsView';
-import {ObjectHelper} from '../../../ObjectHelper';
 
 export class ComboBox
     extends BaseInputTypeManagingAdd {

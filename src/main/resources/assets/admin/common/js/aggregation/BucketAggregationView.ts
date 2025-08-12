@@ -10,7 +10,7 @@ import {BucketsContainer} from './BucketsContainer';
 export class BucketAggregationView
     extends AggregationView {
 
-    protected aggregation: BucketAggregation;
+    declare protected aggregation: BucketAggregation;
 
     protected bucketViews: BucketView[] = [];
 

@@ -1,6 +1,6 @@
-import * as $ from 'jquery';
-import {Element} from './Element';
+import $ from 'jquery';
 import {GLOBAL, GlobalLibAdmin, Store} from '../store/Store';
+import {Element} from './Element';
 
 export const WINDOW_KEY: string = 'WindowDOM';
 

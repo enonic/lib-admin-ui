@@ -1,7 +1,7 @@
-import * as $ from 'jquery';
+import $ from 'jquery';
+import {BrowserHelper} from '../../BrowserHelper';
 import {ButtonEl} from '../../dom/ButtonEl';
 import {SpanEl} from '../../dom/SpanEl';
-import {BrowserHelper} from '../../BrowserHelper';
 
 export class Button
     extends ButtonEl {

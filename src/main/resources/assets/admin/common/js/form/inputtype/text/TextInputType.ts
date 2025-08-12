@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {Property} from '../../../data/Property';
 import {Value} from '../../../data/Value';
 import {ValueType} from '../../../data/ValueType';
@@ -13,10 +13,10 @@ import {NumberHelper} from '../../../util/NumberHelper';
 import {StringHelper} from '../../../util/StringHelper';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
+import {AiConfig} from '../InputAiConfig';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
 import {InputValueLengthCounterEl} from './InputValueLengthCounterEl';
-import {AiConfig} from '../InputAiConfig';
 
 export abstract class TextInputType
     extends BaseInputTypeNotManagingAdd {

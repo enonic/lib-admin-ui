@@ -1,14 +1,14 @@
-import * as $ from 'jquery';
-import * as Q from 'q';
-import {FormView} from '../../FormView';
-import {Application} from '../../../application/Application';
-import {ResponsiveManager} from '../../../ui/responsive/ResponsiveManager';
-import {AppHelper} from '../../../util/AppHelper';
-import {Action} from '../../../ui/Action';
+import $ from 'jquery';
+import Q from 'q';
 import {NamesAndIconView, NamesAndIconViewBuilder} from '../../../app/NamesAndIconView';
 import {NamesAndIconViewSize} from '../../../app/NamesAndIconViewSize';
+import {Application} from '../../../application/Application';
+import {Action} from '../../../ui/Action';
 import {ModalDialogWithConfirmation, ModalDialogWithConfirmationConfig} from '../../../ui/dialog/ModalDialogWithConfirmation';
+import {ResponsiveManager} from '../../../ui/responsive/ResponsiveManager';
+import {AppHelper} from '../../../util/AppHelper';
 import {FormValidityChangedEvent} from '../../FormValidityChangedEvent';
+import {FormView} from '../../FormView';
 
 export interface ApplicationConfiguratorDialogConfig
     extends ModalDialogWithConfirmationConfig, ApplicationConfiguratorDialogParams {
@@ -25,7 +25,7 @@ export class ApplicationConfiguratorDialog
     extends ModalDialogWithConfirmation {
 
     public static debug: boolean = false;
-    protected config: ApplicationConfiguratorDialogConfig;
+    declare protected config: ApplicationConfiguratorDialogConfig;
     private formView: FormView;
     private okAction: Action;
 

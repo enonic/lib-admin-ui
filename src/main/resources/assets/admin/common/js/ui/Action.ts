@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {ObjectHelper} from '../ObjectHelper';
 import {KeyBinding} from './KeyBinding';
 import {Mnemonic} from './Mnemonic';

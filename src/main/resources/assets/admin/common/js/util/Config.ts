@@ -1,14 +1,16 @@
-import * as Q from 'q';
+import Q from 'q';
 import {JsonResponse} from '../rest/JsonResponse';
 import {Path} from '../rest/Path';
 import {ResourceRequest} from '../rest/ResourceRequest';
-import {JSONObject, JSONValue} from '../types';
 import {UriHelper} from './UriHelper';
 
-export class CONFIG {
-    private static CACHE: JSONObject;
+export type ConfigValue = string | number | boolean | object;
+export type ConfigObject = Record<string, ConfigValue>;
 
-    static init(url: string): Q.Promise<JSONObject> {
+export class CONFIG {
+    private static CACHE: ConfigObject;
+
+    static init(url: string): Q.Promise<ConfigObject> {
         return CONFIG.loadAndCache(url);
     }
 
@@ -20,7 +22,7 @@ export class CONFIG {
         return CONFIG.getString(property) === 'true';
     }
 
-    static getConfig(): JSONObject {
+    static getConfig(): ConfigObject {
         return CONFIG.CACHE;
     }
 
@@ -48,11 +50,11 @@ export class CONFIG {
         return CONFIG.getString('locale');
     }
 
-    static get(property: string): JSONValue {
+    static get(property: string): ConfigValue {
         return CONFIG.getPropertyValue(property);
     }
 
-    private static getPropertyValue(property: string): JSONValue {
+    private static getPropertyValue(property: string): ConfigValue {
         if (property.indexOf('.') > 0) {
             return CONFIG.getNested(property);
         }
@@ -62,7 +64,7 @@ export class CONFIG {
         return CONFIG.CACHE[property];
     }
 
-    static setConfig(config: JSONObject): void {
+    static setConfig(config: ConfigObject): void {
         CONFIG.CACHE = Object.freeze(Object.assign({}, config));
         try {
             const adminUrl = CONFIG.getString('adminUrl');
@@ -73,12 +75,12 @@ export class CONFIG {
     }
 
     // For getting nested value, like 'services.i18nUrl'
-    private static getNested(property: string): JSONValue {
+    private static getNested(property: string): ConfigValue {
         const propertyPaths = property.split('.');
         if (!CONFIG.has(propertyPaths[0])) {
             throw Error(`Config property ${propertyPaths[0]} not found`);
         }
-        let result: JSONValue = CONFIG.getPropertyValue(propertyPaths[0]);
+        let result: ConfigValue = CONFIG.getPropertyValue(propertyPaths[0]);
         for (let i=1; i<propertyPaths.length; i++) {
             result = result[propertyPaths[i]];
             if (result === undefined) {
@@ -88,14 +90,14 @@ export class CONFIG {
         return result;
     }
 
-    private static load(url: string): Q.Promise<JSONObject> {
+    private static load(url: string): Q.Promise<ConfigObject> {
         const request: GetConfigRequest = new GetConfigRequest(url);
 
-        return request.send().then((response: JsonResponse<JSONObject>) => response.getResult());
+        return request.send().then((response: JsonResponse<ConfigObject>) => response.getResult());
     }
 
-    private static loadAndCache(url: string): Q.Promise<JSONObject> {
-        return CONFIG.load(url).then((configJson: JSONObject) => {
+    private static loadAndCache(url: string): Q.Promise<ConfigObject> {
+        return CONFIG.load(url).then((configJson: ConfigObject) => {
             CONFIG.setConfig(configJson);
 
             return Q(configJson);

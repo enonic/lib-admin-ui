@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {BaseLoader} from './BaseLoader';
 
 export class PostLoader<OBJECT>

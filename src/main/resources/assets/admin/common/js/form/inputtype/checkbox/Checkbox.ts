@@ -1,18 +1,18 @@
-import * as Q from 'q';
+import Q from 'q';
+import {Class} from '../../../Class';
 import {Property} from '../../../data/Property';
 import {Value} from '../../../data/Value';
 import {ValueType} from '../../../data/ValueType';
-import {ValueTypes} from '../../../data/ValueTypes';
-import {BaseInputTypeSingleOccurrence} from '../support/BaseInputTypeSingleOccurrence';
-import {Checkbox as CheckboxEl, InputAlignment} from '../../../ui/Checkbox';
-import {InputTypeViewContext} from '../InputTypeViewContext';
-import {Input} from '../../Input';
-import {InputTypeManager} from '../InputTypeManager';
-import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
-import {InputValidationRecording} from '../InputValidationRecording';
+import {ValueTypes} from '../../../data/ValueTypes';
+import {Checkbox as CheckboxEl, InputAlignment} from '../../../ui/Checkbox';
+import {Input} from '../../Input';
 import {Occurrences} from '../../Occurrences';
+import {InputTypeManager} from '../InputTypeManager';
+import {InputTypeViewContext} from '../InputTypeViewContext';
+import {InputValidationRecording} from '../InputValidationRecording';
 import {InputValidityChangedEvent} from '../InputValidityChangedEvent';
+import {BaseInputTypeSingleOccurrence} from '../support/BaseInputTypeSingleOccurrence';
 
 export class Checkbox
     extends BaseInputTypeSingleOccurrence {

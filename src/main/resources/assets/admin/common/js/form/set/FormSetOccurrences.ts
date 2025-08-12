@@ -1,18 +1,18 @@
-import * as Q from 'q';
-import {PropertySet} from '../../data/PropertySet';
+import Q from 'q';
 import {PropertyArray} from '../../data/PropertyArray';
-import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from './FormSetOccurrenceView';
-import {FormItemOccurrences} from '../FormItemOccurrences';
-import {FormContext} from '../FormContext';
-import {FormSet} from './FormSet';
-import {Occurrences} from '../Occurrences';
-import {FormItemOccurrence} from '../FormItemOccurrence';
-import {FormSetOccurrence} from './FormSetOccurrence';
-import {FormItemLayerFactory} from '../FormItemLayerFactory';
+import {PropertySet} from '../../data/PropertySet';
 import {Element} from '../../dom/Element';
-import {RemoveButtonClickedEvent} from '../RemoveButtonClickedEvent';
+import {FormContext} from '../FormContext';
 import {FormItemLayer} from '../FormItemLayer';
+import {FormItemLayerFactory} from '../FormItemLayerFactory';
+import {FormItemOccurrence} from '../FormItemOccurrence';
+import {FormItemOccurrences} from '../FormItemOccurrences';
 import {FormItemState} from '../FormItemState';
+import {Occurrences} from '../Occurrences';
+import {RemoveButtonClickedEvent} from '../RemoveButtonClickedEvent';
+import {FormSet} from './FormSet';
+import {FormSetOccurrence} from './FormSetOccurrence';
+import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from './FormSetOccurrenceView';
 
 export interface FormSetOccurrencesConfig<V extends FormSetOccurrenceView> {
 

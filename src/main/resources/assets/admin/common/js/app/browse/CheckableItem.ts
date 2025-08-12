@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {DivEl} from '../../dom/DivEl';
 import {Checkbox} from '../../ui/Checkbox';
 import {Viewer} from '../../ui/Viewer';

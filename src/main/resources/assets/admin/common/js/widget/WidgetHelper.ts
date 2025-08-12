@@ -1,7 +1,7 @@
-import {Element} from '../dom/Element';
-import * as Q from 'q';
+import Q from 'q';
 import {DefaultErrorHandler} from '../DefaultErrorHandler';
 import {Body} from '../dom/Body';
+import {Element} from '../dom/Element';
 
 export interface WidgetElement {
     el: Element

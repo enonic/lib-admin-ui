@@ -1,10 +1,7 @@
 apply plugin: 'com.github.node-gradle.node'
 
-tasks.register('npmInstallForce', NpmTask) {
-    description = 'Update all project node dependencies'
-    args = ['install', '--force']
-}
-
-tasks.register('cleanNode', Delete) {
-    delete 'node_modules'
+node {
+    version = '22.18.0'
+    pnpmVersion = '10.14.0'
+    download = true
 }

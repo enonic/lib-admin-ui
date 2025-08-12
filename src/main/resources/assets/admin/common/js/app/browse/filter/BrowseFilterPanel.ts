@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {i18n} from '../../../util/Messages';
 import {Panel} from '../../../ui/panel/Panel';
 import {AggregationContainer} from '../../../aggregation/AggregationContainer';

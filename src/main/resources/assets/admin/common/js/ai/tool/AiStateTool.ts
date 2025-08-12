@@ -12,7 +12,7 @@ export interface AiStateToolConfig extends AiToolConfig {
 
 export class AiStateTool extends AiTool {
 
-    protected readonly config: AiStateToolConfig;
+    declare protected readonly config: AiStateToolConfig;
 
     private state: AiHelperState = AiHelperState.DEFAULT;
 

@@ -1,4 +1,4 @@
-import * as Q from 'q';
+import Q from 'q';
 import {PropertyPath} from '../data/PropertyPath';
 import {DivEl} from '../dom/DivEl';
 import {FormItemOccurrence} from './FormItemOccurrence';

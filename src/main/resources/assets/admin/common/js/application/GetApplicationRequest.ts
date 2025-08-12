@@ -1,10 +1,10 @@
-import * as Q from 'q';
-import {ApplicationJson} from './json/ApplicationJson';
+import Q from 'q';
 import {JsonResponse} from '../rest/JsonResponse';
-import {ApplicationResourceRequest} from './ApplicationResourceRequest';
-import {ApplicationKey} from './ApplicationKey';
 import {Application} from './Application';
 import {ApplicationCache} from './ApplicationCache';
+import {ApplicationKey} from './ApplicationKey';
+import {ApplicationResourceRequest} from './ApplicationResourceRequest';
+import {ApplicationJson} from './json/ApplicationJson';
 
 export abstract class GetApplicationRequest
     extends ApplicationResourceRequest<Application> {

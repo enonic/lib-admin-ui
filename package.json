@@ -1,80 +1,63 @@
 {
   "name": "@enonic/lib-admin-ui",
-  "version": "5.1.0",
+  "version": "6.0.0",
   "description": "Admin UI Library",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/enonic/lib-admin-ui"
   },
-  "main": "entry.js",
   "scripts": {
-    "build:prod": "concurrently -c auto -g --timings npm:build:prod:*",
-    "build:prod:js": "tsc",
-    "build:prod:lib": "webpack --color",
-    "build:dev": "concurrently -c auto -g --timings npm:build:dev:*",
-    "build:dev:js": "swc src --out-dir build/tmp/",
-    "build:dev:types": "tsc --skipLibCheck --emitDeclarationOnly --declaration",
-    "build:dev:lib": "webpack --color",
-    "typecheck": "tsc --pretty --skipLibCheck --noEmit",
-    "lint": "eslint **/*.ts --quiet --cache",
-    "fix": "eslint --fix **/*.ts --cache"
+    "build": "pnpm build:dev",
+    "build:prod": "pnpm --color /^build:prod:.*$/",
+    "build:prod:js": "tsc --pretty",
+    "build:prod:lib": "cross-env BUILD_TARGET=js vite build --mode production",
+    "build:prod:css": "cross-env BUILD_TARGET=css vite build --mode production",
+    "build:dev": "pnpm --color /^build:dev:.*$/",
+    "build:dev:lib": "cross-env BUILD_TARGET=js vite build --mode development",
+    "build:dev:css": "cross-env BUILD_TARGET=css vite build --mode development",
+    "build:dev:js": "tsc --pretty --inlineSourceMap --inlineSources",
+    "check": "eslint . --quiet --cache",
+    "fix": "eslint . --fix --cache"
   },
   "dependencies": {
-    "@types/dompurify": "=3.0.5",
-    "@types/mousetrap": "^1.6.15",
-    "dompurify": "=3.1.7",
+    "dompurify": "~3.2.6",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.7.1",
     "jquery-simulate": "^1.0.2",
     "jquery-ui": "^1.14.1",
     "mousetrap": "^1.6.5",
-    "q": "^1.5.1",
-    "validator": "^13.15.15"
-  },
-  "peerDependencies": {
-    "postcss": "^8.2.2"
+    "nanoid": "^5.1.5",
+    "nanostores": "^1.0.1",
+    "q": "^1.5.1"
   },
   "devDependencies": {
     "@enonic/eslint-config": "^2.1.0",
-    "@swc/cli": "^0.7.8",
-    "@swc/core": "1.13.3",
+    "@rollup/plugin-inject": "^5.0.5",
     "@types/jquery": "^3.5.31",
     "@types/jqueryui": "^1.12.24",
+    "@types/mousetrap": "^1.6.15",
     "@types/q": "^1.5.8",
-    "@types/semver": "^7.7.0",
-    "@types/validator": "^13.15.2",
     "autoprefixer": "^10.4.21",
-    "browserslist": "^4.25.2",
     "browserslist-config-enonic": "^1.0.8",
-    "circular-dependency-plugin": "^5.2.2",
-    "concurrently": "^9.2.0",
-    "copy-webpack-plugin": "^13.0.0",
-    "css-loader": "^7.1.2",
+    "cross-env": "^10.0.0",
     "cssnano": "^7.1.0",
     "enonic-admin-artifacts": "^2.3.2",
-    "error-logger-webpack-plugin": "^1.1.1",
     "eslint": "^9.33.0",
-    "glob": "^11.0.3",
+    "jiti": "~2.5.1",
     "less": "^4.4.0",
-    "less-loader": "^12.3.0",
-    "mini-css-extract-plugin": "^2.9.4",
-    "postcss-loader": "^8.1.1",
     "postcss-normalize": "^13.0.1",
     "postcss-sort-media-queries": "^5.2.0",
-    "swc-loader": "^0.2.6",
-    "terser-webpack-plugin": "^5.3.14",
-    "ts-loader": "^9.5.2",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.38.0",
-    "webpack": "^5.101.0",
-    "webpack-cli": "^6.0.1"
+    "vite": "^7.0.6"
   },
   "browserslist": [
     "extends browserslist-config-enonic"
   ],
   "engines": {
-    "node": ">= 22.16.0",
-    "npm": ">= 10.9.2"
+    "node": ">= 22.18.0",
+    "pnpm": ">= 10.14.0",
+    "npm": ">= 10.9.3"
   }
 }
