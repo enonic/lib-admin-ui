@@ -27,7 +27,6 @@ docs/
 # Build tools
 node_modules/
 .pnpm-store/
-pnpm-lock.yaml
 pnpm-workspace.yaml
 .gradle/
 
