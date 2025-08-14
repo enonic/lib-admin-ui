@@ -141,6 +141,9 @@ tasks.register( 'yolo' ) {
 
     dependsOn tasks.named( 'build' )
 
+    nodeSetup.enabled = false
+    npmSetup.enabled = false
+    pnpmSetup.enabled = false
     pnpmInstall.enabled = false
     pnpmCheck.enabled = false
     check.enabled = false
