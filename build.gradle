@@ -70,7 +70,7 @@ tasks.register( 'pnpmCheck', PnpmTask ) {
     outputs.cacheIf { false }
 }
 
-tasks.named( 'check' ) {
+tasks.named( 'check' ).configure {
     dependsOn tasks.named( 'pnpmCheck' )
 }
 
@@ -89,7 +89,7 @@ tasks.register( 'copyPackage', Copy ) {
     into layout.buildDirectory.dir('resources/main/dev/lib-admin-ui')
 }
 
-processResources {
+tasks.named( 'processResources' ).configure {
     // Handled by the Vite
     exclude 'assets/admin/common/fonts/**'
     // Icons (icomoon) are bundled with the fonts
@@ -102,7 +102,7 @@ processResources {
     exclude 'assets/admin/common/styles/**'
 }
 
-jar {
+tasks.named( 'jar' ).configure {
     exclude 'dev/**'
     exclude 'assets/spec/**'
     exclude 'assets/**/*.ts'
@@ -134,4 +134,15 @@ artifacts {
 }
 
 components.java.addVariantsFromConfiguration( configurations.devResources ) {
+}
+
+tasks.register( 'yolo' ) {
+    description = 'Build without running install, check, or test tasks'
+
+    dependsOn tasks.named( 'build' )
+
+    pnpmInstall.enabled = false
+    pnpmCheck.enabled = false
+    check.enabled = false
+    test.enabled = false
 }

@@ -125,20 +125,21 @@ export default defineConfig(({mode}) => {
         extensions: ['.less', '.css']
       },
       css: {
-        preprocessorOptions: {
-          less: {
-            javascriptEnabled: true
-          }
+          preprocessorOptions: {
+              less: {
+                  javascriptEnabled: true
+                }
+            },
+            postcss: {
+                plugins: [
+                    postcssNormalize(),
+                    autoprefixer(),
+                    postcssSortMediaQueries({sort: 'desktop-first'}),
+                    ...(isProduction ? [cssnano()] : [])
+                ]
+            },
+            devSourcemap: isDevelopment,
         },
-        postcss: {
-          plugins: [
-            postcssNormalize(),
-            autoprefixer(),
-            postcssSortMediaQueries({sort: 'desktop-first'}),
-            ...(isProduction ? [cssnano()] : [])
-          ]
-        }
-      }
     }
   };
 
