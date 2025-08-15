@@ -1,5 +1,7 @@
 import DOMPurify, {Config as DOMPurifyConfig} from 'dompurify';
 import $ from 'jquery';
+import 'jquery-ui/ui/version';
+import 'jquery-ui/ui/focusable';
 import 'jquery-ui/ui/tabbable';
 import Q from 'q';
 import {ClassHelper} from '../ClassHelper';
