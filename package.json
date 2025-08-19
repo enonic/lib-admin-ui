@@ -27,8 +27,6 @@
     "jquery-simulate": "^1.0.2",
     "jquery-ui": "^1.14.1",
     "mousetrap": "^1.6.5",
-    "nanoid": "^5.1.5",
-    "nanostores": "^1.0.1",
     "q": "^1.5.1"
   },
   "devDependencies": {
