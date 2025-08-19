@@ -52,18 +52,17 @@ export class ActionIcon extends LegacyElement<typeof UI.IconButton> {
         this.updateProps();
     }
 
-    doRender(): Q.Promise<boolean> {
-        const ActionIcon = h(this.component, this.props.get());
-        const tooltip = h(UI.Tooltip, {
-            value: unwrap(this.props.get().title),
-            children: ActionIcon,
-        } satisfies UI.TooltipProps);
-        render(tooltip, this.getHTMLElement());
-        return super.doRender();
-    }
-
     setEnabled(enabled: boolean): void {
         this.actionProps.action.setEnabled(enabled);
+    }
+
+    protected renderJsx(): void {
+        const actionIcon = h(this.component, this.props.get());
+        const tooltip = h(UI.Tooltip, {
+            value: unwrap(this.props.get().title),
+            children: actionIcon,
+        } satisfies UI.TooltipProps);
+        render(tooltip, this.getHTMLElement());
     }
 }
 

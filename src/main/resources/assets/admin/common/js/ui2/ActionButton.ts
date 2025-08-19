@@ -55,18 +55,17 @@ export class ActionButton<T extends Action = Action> extends LegacyElement<typeo
         this.updateProps();
     }
 
-    doRender(): Q.Promise<boolean> {
+    setEnabled(enabled: boolean): void {
+        this.actionProps.action.setEnabled(enabled);
+    }
+
+    protected renderJsx(): void {
         const actionButton = createElement(this.component, this.props.get());
         const tooltip = createElement(UI.Tooltip, {
             value: unwrap(this.props.get().title),
             children: actionButton,
         } satisfies UI.TooltipProps);
         render(tooltip, this.getHTMLElement());
-        return super.doRender();
-    }
-
-    setEnabled(enabled: boolean): void {
-        this.actionProps.action.setEnabled(enabled);
     }
 }
 

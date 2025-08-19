@@ -26,8 +26,12 @@ export class LegacyElement<C extends ComponentType<object>, P extends ComponentP
         this.props.set({...this.props.get(), ...props});
     }
 
-    doRender(): Q.Promise<boolean> {
+    protected renderJsx(): void {
         render(createElement(this.component, this.props.get()), this.getHTMLElement());
+    }
+
+    doRender(): Q.Promise<boolean> {
+        this.renderJsx();
         return super.doRender();
     }
 
