@@ -6,6 +6,8 @@
             "ES2023",
             "DOM"
         ],
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact",
         "outDir": "build/resources/main/dev/lib-admin-ui/",
         "moduleResolution": "bundler",
         "baseUrl": ".",
@@ -32,7 +34,8 @@
         }
     },
     "include": [
-        "src/main/resources/assets/admin/common/js/**/*.ts"
+        "src/main/resources/assets/admin/common/js/**/*.ts",
+        "src/main/resources/assets/admin/common/js/**/*.tsx"
     ],
     "exclude": [
         ".vscode",
