@@ -1,26 +1,26 @@
 import Q from 'q';
+import {DefaultErrorHandler} from '../../DefaultErrorHandler';
+import {IDentifiable} from '../../IDentifiable';
+import {Action} from '../../ui/Action';
+import {Panel} from '../../ui/panel/Panel';
+import {SelectableListBoxPanel} from '../../ui/panel/SelectableListBoxPanel';
+import {SplitPanel, SplitPanelAlignment, SplitPanelBuilder} from '../../ui/panel/SplitPanel';
+import {SplitPanelSize} from '../../ui/panel/SplitPanelSize';
+import {ResponsiveItem} from '../../ui/responsive/ResponsiveItem';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 import {ResponsiveRanges} from '../../ui/responsive/ResponsiveRanges';
-import {ResponsiveItem} from '../../ui/responsive/ResponsiveItem';
-import {ActionButton} from '../../ui/button/ActionButton';
-import {TreeGridActions} from '../../ui/treegrid/actions/TreeGridActions';
-import {SplitPanel, SplitPanelAlignment, SplitPanelBuilder} from '../../ui/panel/SplitPanel';
-import {Panel} from '../../ui/panel/Panel';
+import {SelectableListBoxKeyNavigator} from '../../ui/selector/list/SelectableListBoxKeyNavigator';
 import {Toolbar, ToolbarConfig} from '../../ui/toolbar/Toolbar';
-import {BrowseFilterPanel} from './filter/BrowseFilterPanel';
-import {Action} from '../../ui/Action';
-import {DefaultErrorHandler} from '../../DefaultErrorHandler';
+import {TreeGridActions} from '../../ui/treegrid/actions/TreeGridActions';
+import {DataChangedEvent} from '../../ui/treegrid/DataChangedEvent';
+import {ActionButton} from '../../ui2/ActionButton';
+import {AppHelper} from '../../util/AppHelper';
+import {i18n} from '../../util/Messages';
+import {SelectionChange} from '../../util/SelectionChange';
+import {ViewItem} from '../view/ViewItem';
 import {ToggleFilterPanelAction} from './action/ToggleFilterPanelAction';
 import {BrowseItemPanel} from './BrowseItemPanel';
-import {i18n} from '../../util/Messages';
-import {IDentifiable} from '../../IDentifiable';
-import {DataChangedEvent} from '../../ui/treegrid/DataChangedEvent';
-import {ViewItem} from '../view/ViewItem';
-import {AppHelper} from '../../util/AppHelper';
-import {SplitPanelSize} from '../../ui/panel/SplitPanelSize';
-import {SelectableListBoxPanel} from '../../ui/panel/SelectableListBoxPanel';
-import {SelectionChange} from '../../util/SelectionChange';
-import {SelectableListBoxKeyNavigator} from '../../ui/selector/list/SelectableListBoxKeyNavigator';
+import {BrowseFilterPanel} from './filter/BrowseFilterPanel';
 
 export class BrowsePanel
     extends Panel {
