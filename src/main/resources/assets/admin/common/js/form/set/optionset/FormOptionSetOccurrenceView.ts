@@ -126,7 +126,7 @@ export abstract class FormOptionSetOccurrenceView
     }
 
     protected getSelectedOptionsArray(): PropertyArray {
-        return this.propertySet.getPropertyArray(FormOptionSetOccurrenceView.SELECTED_NAME);
+        return this.propertySet?.getPropertyArray(FormOptionSetOccurrenceView.SELECTED_NAME);
     }
 
     protected extraValidation(validationRecording: ValidationRecording) {
@@ -157,7 +157,7 @@ export abstract class FormOptionSetOccurrenceView
 
         this.getSortedSelectedOptionsArrayProperties()
             .some(selectedProp => {
-                const selectedOptionArray = this.propertySet.getPropertyArray(selectedProp.getString());
+                const selectedOptionArray = this.propertySet?.getPropertyArray(selectedProp.getString());
                 if (selectedOptionArray && !selectedOptionArray.isEmpty()) {
                     this.fetchPropertyValues(selectedOptionArray, selectedLabels, true);
                 }
@@ -330,7 +330,7 @@ export abstract class FormOptionSetOccurrenceView
     }
 
     private getPropertySetByName(name: string): PropertySet {
-        return this.propertySet.getPropertyArray(name)?.getSet(0);
+        return this.propertySet?.getPropertyArray(name)?.getSet(0);
     }
 
     private populateOptionItemsPropertySet(name: string): PropertySet {
