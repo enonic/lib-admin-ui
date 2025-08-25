@@ -525,20 +525,7 @@ export abstract class ModalDialog
     }
 
     protected addKeyBindings(): KeyBinding[] {
-        return [
-            new KeyBinding('right', (event) => {
-                this.focusNextTabbable();
-
-                event.stopPropagation();
-                event.preventDefault();
-            }),
-            new KeyBinding('left', (event) => {
-                this.focusPreviousTabbable();
-
-                event.stopPropagation();
-                event.preventDefault();
-            })
-        ];
+        return []; // Can be overridden in subclasses
     }
 
     show() {
