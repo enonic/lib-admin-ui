@@ -24,14 +24,16 @@ export class LegacyElement<C extends ComponentType<any>, P extends ComponentProp
         this.props.set({...this.props.get(), ...props});
     }
 
+    protected getPrefix(): string {
+        return `${this.component.displayName ?? this.constructor.name}-${nanoid(8)}`;
+    }
+
     protected renderJsx(): void {
-        const prefix = `${this.component.displayName ?? this.constructor.name}-${nanoid(8)}`;
-        const props = this.props.get();
         const Component = this.component;
 
         render(
-            <IdProvider prefix={prefix}>
-                <Component {...props} />
+            <IdProvider prefix={this.getPrefix()}>
+                <Component {...this.props.get()} />
             </IdProvider>,
             this.getHTMLElement()
         );
