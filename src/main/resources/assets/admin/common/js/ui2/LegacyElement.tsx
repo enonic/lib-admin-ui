@@ -1,25 +1,23 @@
+import {IdProvider} from '@enonic/ui';
+import {nanoid} from 'nanoid';
 import {map, type MapStore} from 'nanostores';
-import * as Q from 'q';
 import type {ComponentProps, ComponentType} from 'react';
-import {createElement} from 'react';
 import {render} from 'react-dom';
-
 import {Element as BaseElement, NewElementBuilder} from '../dom/Element';
 
-export type Component<P> = ComponentType<P>;
+export class LegacyElement<C extends ComponentType<any>, P extends ComponentProps<C> = ComponentProps<C>> extends BaseElement {
 
-export class LegacyElement<C extends ComponentType<object>, P extends ComponentProps<C> = ComponentProps<C>> extends BaseElement {
+    protected readonly props: MapStore<P>;
 
-    protected props: MapStore<P>;
+    protected readonly component: C;
 
-    protected component: C;
-
-    constructor(props: P, component: C) {
+    constructor(props: ComponentProps<C>, component: C) {
         super(new NewElementBuilder().setTagName('div').setClassName('contents'));
-
         this.component = component;
         this.props = map({...props});
-        this.props.subscribe(() => void this.render());
+        this.props.subscribe(() => {
+            void this.render();
+        });
     }
 
     setProps(props: Partial<P>): void {
@@ -27,17 +25,26 @@ export class LegacyElement<C extends ComponentType<object>, P extends ComponentP
     }
 
     protected renderJsx(): void {
-        render(createElement(this.component, this.props.get()), this.getHTMLElement());
-    }
+        const prefix = `${this.component.displayName ?? this.constructor.name}-${nanoid(8)}`;
+        const props = this.props.get();
+        const Component = this.component;
 
-    doRender(): Q.Promise<boolean> {
-        this.renderJsx();
-        return super.doRender();
+        render(
+            <IdProvider prefix={prefix}>
+                <Component {...props} />
+            </IdProvider>,
+            this.getHTMLElement()
+        );
     }
 
     //! Overrides
 
-    giveFocus(): boolean {
+    override doRender(): Q.Promise<boolean> {
+        this.renderJsx();
+        return super.doRender();
+    }
+
+    override giveFocus(): boolean {
         const focusableElements = this.getHTMLElement().querySelectorAll('& > button, & > input');
         if (focusableElements.length > 0 && focusableElements[0] instanceof HTMLElement) {
             focusableElements[0].focus();
@@ -46,7 +53,7 @@ export class LegacyElement<C extends ComponentType<object>, P extends ComponentP
         return false;
     }
 
-    addClass(className: string): this {
+    override addClass(className: string): this {
         if (hasClassName(this.props)) {
             this.props.setKey('className', `${this.props.value.className} ${className}`);
         } else {
@@ -55,7 +62,7 @@ export class LegacyElement<C extends ComponentType<object>, P extends ComponentP
         return this;
     }
 
-    removeClass(className: string): this {
+    override removeClass(className: string): this {
         if (hasClassName(this.props)) {
             const newClassName = this.props.value.className.split(' ').filter(c => c !== className).join(' ');
             this.props.setKey('className', newClassName);

@@ -1,5 +1,4 @@
 import * as UI from '@enonic/ui';
-import {nanoid} from 'nanoid';
 import {LegacyElement} from './LegacyElement';
 
 export type CheckboxControllerProps = Pick<UI.CheckboxProps, 'checked' | 'label' | 'align'>
@@ -14,7 +13,6 @@ export class Checkbox
     constructor(props: CheckboxControllerProps) {
         super(
             {
-                id: nanoid(8),
                 ...props,
                 checked: props.checked ?? false,
                 onCheckedChange: (newValue) => {
