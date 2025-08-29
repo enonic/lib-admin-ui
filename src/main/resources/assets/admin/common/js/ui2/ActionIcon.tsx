@@ -1,35 +1,32 @@
 import * as UI from '@enonic/ui';
 import {unwrap} from '@enonic/ui';
-import {createElement} from 'react';
+import {nanoid} from 'nanoid';
 import {render} from 'react-dom';
-
 import {BrowserHelper} from '../BrowserHelper';
 import {Action} from '../ui/Action';
 import {LegacyElement} from './LegacyElement';
 
-export type ActionButtonProps<T extends Action> = {
-    action: T;
+export interface ActionIconProps {
+    action: Action;
+    icon: UI.LucideIcon;
     className?: string;
-    startIcon?: UI.LucideIcon;
-    endIcon?: UI.LucideIcon;
-} & Omit<UI.ButtonProps, 'label' | 'title' | 'disabled'>;
+}
 
 export type ActionProps = Pick<UI.ButtonProps, 'className' |'label' | 'title' | 'disabled' >;
 
-export class ActionButton<T extends Action = Action> extends LegacyElement<typeof UI.Button> {
+export class ActionIcon extends LegacyElement<typeof UI.IconButton> {
 
-    private actionProps: ActionButtonProps<T>;
+    private actionProps: ActionIconProps;
 
-    constructor(props: ActionButtonProps<T>) {
+    constructor(props: ActionIconProps) {
         super({
             onClick: () => {
                 this.giveFocus();
                 this.actionProps.action.execute();
             },
-            startIcon: props.startIcon,
-            endIcon: props.endIcon,
+            icon: props.icon,
             ...createPropsFromAction(props),
-        }, UI.Button);
+        }, UI.IconButton);
 
         this.actionProps = props;
 
@@ -42,11 +39,11 @@ export class ActionButton<T extends Action = Action> extends LegacyElement<typeo
 
     // * Backward compatibility methods
 
-    getAction(): T {
+    getAction(): Action {
         return this.actionProps.action;
     }
 
-    setAction(action: T): void {
+    setAction(action: Action): void {
         if (this.actionProps.action === action) return;
 
         this.actionProps.action?.unPropertyChanged(this.updateProps);
@@ -59,13 +56,19 @@ export class ActionButton<T extends Action = Action> extends LegacyElement<typeo
         this.actionProps.action.setEnabled(enabled);
     }
 
-    protected renderJsx(): void {
-        const actionButton = createElement(this.component, this.props.get());
-        const tooltip = createElement(UI.Tooltip, {
-            value: unwrap(this.props.get().title),
-            children: actionButton,
-        } satisfies UI.TooltipProps);
-        render(tooltip, this.getHTMLElement());
+    protected override renderJsx(): void {
+        const prefix = `${this.component.displayName ?? this.constructor.name}-${nanoid(8)}`;
+        const props = this.props.get();
+        const ActionIconComponent = this.component;
+
+        render(
+            <UI.IdProvider prefix={prefix}>
+                <UI.Tooltip value={unwrap(props.title)}>
+                    <ActionIconComponent {...props} />
+                </UI.Tooltip>
+            </UI.IdProvider>,
+            this.getHTMLElement()
+        );
     }
 }
 
@@ -73,7 +76,7 @@ export class ActionButton<T extends Action = Action> extends LegacyElement<typeo
 // Utils
 //
 
-function createPropsFromAction<T extends Action>({action, className}: ActionButtonProps<T>): ActionProps {
+function createPropsFromAction({action, className}: ActionIconProps): ActionProps {
     return {
         className: UI.cn('action-button', action.getClass(), action.getIconClass(), className),
         label: createLabel(action),
