@@ -1,6 +1,5 @@
 import * as UI from '@enonic/ui';
 import {unwrap} from '@enonic/ui';
-import {nanoid} from 'nanoid';
 import {render} from 'react-dom';
 import {BrowserHelper} from '../BrowserHelper';
 import {Action} from '../ui/Action';
@@ -57,12 +56,11 @@ export class ActionIcon extends LegacyElement<typeof UI.IconButton> {
     }
 
     protected override renderJsx(): void {
-        const prefix = `${this.component.displayName ?? this.constructor.name}-${nanoid(8)}`;
-        const props = this.props.get();
         const ActionIconComponent = this.component;
+        const props = this.props.get();
 
         render(
-            <UI.IdProvider prefix={prefix}>
+            <UI.IdProvider prefix={this.getPrefix()}>
                 <UI.Tooltip value={unwrap(props.title)}>
                     <ActionIconComponent {...props} />
                 </UI.Tooltip>
