@@ -73,8 +73,22 @@ export class LegacyElement<C extends ComponentType<any>, P extends ComponentProp
         }
         return this;
     }
+
+    override isVisible(): boolean {
+        return Array.from(this.getHTMLElement().children).some(child => isVisible(child));
+    }
 }
 
 function hasClassName(props: MapStore): props is MapStore<{className: string}> {
     return 'className' in props.value && typeof props.value.className === 'string';
+}
+
+function isVisible(child: Element): boolean {
+    if (!(child instanceof HTMLElement) || child.offsetParent === null) {
+        return false;
+    }
+
+    const style = getComputedStyle(child);
+
+    return !(style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0');
 }
