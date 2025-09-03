@@ -39,8 +39,4 @@ export class Bucket {
         this.displayName = displayName;
     }
 
-    public getSelectionValue(): any {
-        return 'test';
-    }
-
 }
