@@ -1,4 +1,3 @@
-import {Timezone} from '../../util/Timezone';
 import {TextInput} from '../text/TextInput';
 import {KeyHelper} from '../KeyHelper';
 import {StringHelper} from '../../util/StringHelper';
@@ -18,14 +17,11 @@ export class DateTimePickerBuilder
 
     dateTime: Date;
 
-    timezone: Timezone;
-
     startingDayOfWeek: DayOfWeek = DaysOfWeek.MONDAY;
 
     closeOnSelect: boolean = false;
 
-    // use local timezone if timezone value is not initialized
-    useLocalTimezoneIfNotPresent: boolean = false;
+    useLocalTimezone: boolean = false;
 
     inputPlaceholder: string = 'YYYY-MM-DD hh:mm';
 
@@ -62,18 +58,13 @@ export class DateTimePickerBuilder
         return this;
     }
 
-    setTimezone(value: Timezone): DateTimePickerBuilder {
-        this.timezone = value;
-        return this;
-    }
-
     setCloseOnSelect(value: boolean): DateTimePickerBuilder {
         this.closeOnSelect = value;
         return this;
     }
 
-    setUseLocalTimezoneIfNotPresent(value: boolean): DateTimePickerBuilder {
-        this.useLocalTimezoneIfNotPresent = value;
+    setUseLocalTimezone(value: boolean): DateTimePickerBuilder {
+        this.useLocalTimezone = value;
         return this;
     }
 
@@ -139,12 +130,8 @@ export class DateTimePicker
             popupBuilder.setDefaultTime(this.builder.defaultTime);
         }
 
-        if (this.builder.timezone) {
-            popupBuilder.setTimezone(this.builder.timezone);
-        }
-
-        if (this.builder.useLocalTimezoneIfNotPresent) {
-            popupBuilder.setUseLocalTimezoneIfNotPresent(true);
+        if (this.builder.useLocalTimezone) {
+            popupBuilder.setUseLocalTimezone(true);
         }
 
         if (this.builder.defaultValue) {

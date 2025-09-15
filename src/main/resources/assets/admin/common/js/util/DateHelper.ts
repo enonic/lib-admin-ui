@@ -10,7 +10,11 @@ export class DateHelper {
     }
 
     public static getTZOffset(): number {
-        return new Date().getTimezoneOffset() / -60;
+        return DateHelper.getTZOffsetForDate(new Date());
+    }
+
+    public static getTZOffsetForDate(date: Date): number {
+        return date.getTimezoneOffset() / -60;
     }
 
     // returns true if passed date uses daylight savings time

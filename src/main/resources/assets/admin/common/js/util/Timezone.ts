@@ -45,6 +45,10 @@ export class Timezone
         return Timezone.fromOffset(DateHelper.getTZOffset());
     }
 
+    static getDateTimezone(date: Date): Timezone {
+        return Timezone.fromOffset(DateHelper.getTZOffsetForDate(date));
+    }
+
     static getZeroOffsetTimezone(): Timezone {
         return Timezone.create().setOffset(0).build();
     }

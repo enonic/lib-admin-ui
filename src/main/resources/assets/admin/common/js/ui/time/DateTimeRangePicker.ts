@@ -3,7 +3,6 @@ import {DivEl} from '../../dom/DivEl';
 import {Element} from '../../dom/Element';
 import {LabelEl} from '../../dom/LabelEl';
 import {TimeHM} from '../../util/TimeHM';
-import {Timezone} from '../../util/Timezone';
 import {DateTimePicker, DateTimePickerBuilder} from './DateTimePicker';
 import {DayOfWeek} from './DayOfWeek';
 import {DaysOfWeek} from './DaysOfWeek';
@@ -31,10 +30,7 @@ export class DateTimeRangePickerBuilder {
 
     closeOnSelect: boolean = false;
 
-    timezone: Timezone;
-
-    // use local timezone if timezone value is not initialized
-    useLocalTimezoneIfNotPresent: boolean = false;
+    useLocalTimezone: boolean = false;
 
     setStartDate(value: Date): DateTimeRangePickerBuilder {
         this.startDate = value;
@@ -61,18 +57,13 @@ export class DateTimeRangePickerBuilder {
         return this;
     }
 
-    setTimezone(value: Timezone): DateTimeRangePickerBuilder {
-        this.timezone = value;
-        return this;
-    }
-
     setCloseOnSelect(value: boolean): DateTimeRangePickerBuilder {
         this.closeOnSelect = value;
         return this;
     }
 
-    setUseLocalTimezoneIfNotPresent(value: boolean): DateTimeRangePickerBuilder {
-        this.useLocalTimezoneIfNotPresent = value;
+    setUseLocalTimezone(value: boolean): DateTimeRangePickerBuilder {
+        this.useLocalTimezone = value;
         return this;
     }
 
@@ -113,9 +104,7 @@ interface DateTimeConfig {
 
     closeOnSelect: boolean;
 
-    timezone: Timezone;
-
-    useLocalTimezoneIfNotPresent: boolean;
+    useLocalTimezone: boolean;
 
 }
 
@@ -136,8 +125,7 @@ export class DateTimeRangePicker
         const basePickerConfig: DateTimeConfig = {
             startingDayOfWeek: builder.startingDayOfWeek,
             closeOnSelect: builder.closeOnSelect,
-            timezone: builder.timezone,
-            useLocalTimezoneIfNotPresent: builder.useLocalTimezoneIfNotPresent
+            useLocalTimezone: builder.useLocalTimezone
         }
 
         const startPickerConfig: DateTimeConfig = {
@@ -224,8 +212,7 @@ export class DateTimeRangePicker
         return new DateTimePickerBuilder()
             .setStartingDayOfWeek(config.startingDayOfWeek)
             .setCloseOnSelect(config.closeOnSelect)
-            .setUseLocalTimezoneIfNotPresent(config.useLocalTimezoneIfNotPresent)
-            .setTimezone(config.timezone);
+            .setUseLocalTimezone(config.useLocalTimezone)
     }
 
     private createPicker(config: DateTimeConfig): DateTimePicker {

@@ -19,18 +19,11 @@ export class DateTimePickerPopupBuilder {
 
     defaultValue: Date;
 
-    hours: number;
-
-    minutes: number;
-
     date: Date;
-
-    timezone: Timezone;
 
     defaultTime: TimeHM;
 
-    // use local timezone if timezone value is not initialized
-    useLocalTimezoneIfNotPresent: boolean = false;
+    useLocalTimezone: boolean = false;
 
     setManageDate(value: boolean): DateTimePickerPopupBuilder {
         this.manageDate = value;
@@ -65,13 +58,8 @@ export class DateTimePickerPopupBuilder {
         return this.date?.getMinutes();
     }
 
-    setTimezone(value: Timezone): DateTimePickerPopupBuilder {
-        this.timezone = value;
-        return this;
-    }
-
-    setUseLocalTimezoneIfNotPresent(value: boolean): DateTimePickerPopupBuilder {
-        this.useLocalTimezoneIfNotPresent = value;
+    setUseLocalTimezone(value: boolean): DateTimePickerPopupBuilder {
+        this.useLocalTimezone = value;
         return this;
     }
 
@@ -80,12 +68,8 @@ export class DateTimePickerPopupBuilder {
         return this;
     }
 
-    isUseLocalTimezoneIfNotPresent(): boolean {
-        return this.useLocalTimezoneIfNotPresent;
-    }
-
-    getTimezone(): Timezone {
-        return this.timezone;
+    isUseLocalTimezone(): boolean {
+        return this.useLocalTimezone;
     }
 
     build(): DateTimePickerPopup {
@@ -125,11 +109,18 @@ export class DateTimePickerPopup
             this.timePickerPopup =
                 new TimePickerPopupBuilder()
                     .setHours(builder.getHours())
-                    .setTimezone(builder.timezone)
-                    .setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent)
+                    .setUseLocalTimezone(builder.useLocalTimezone)
                     .setMinutes(builder.getMinutes())
                     .setDefaultTime(builder.defaultTime)
                     .build();
+        }
+
+        if (builder.manageDate && builder.manageTime && builder.useLocalTimezone) {
+            this.timePickerPopup.updateLocalTimezoneByDate(this.getSelectedDateTime());
+
+            this.onSelectedDateChanged((event) => {
+                this.timePickerPopup.updateLocalTimezoneByDate(event.getDate());
+            });
         }
     }
 
