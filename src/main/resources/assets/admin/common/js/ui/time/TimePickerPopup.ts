@@ -14,10 +14,7 @@ export class TimePickerPopupBuilder {
 
     minutes: number;
 
-    timezone: Timezone;
-
-    // use local timezone if timezone value is not initialized
-    useLocalTimezoneIfNotPresent: boolean = false;
+    useLocalTimezone: boolean = false;
 
     defaultTime: TimeHM;
 
@@ -39,22 +36,13 @@ export class TimePickerPopupBuilder {
         return this.minutes;
     }
 
-    setTimezone(value: Timezone): TimePickerPopupBuilder {
-        this.timezone = value;
+    setUseLocalTimezone(value: boolean): TimePickerPopupBuilder {
+        this.useLocalTimezone = value;
         return this;
     }
 
-    getTimezone(): Timezone {
-        return this.timezone;
-    }
-
-    setUseLocalTimezoneIfNotPresent(value: boolean): TimePickerPopupBuilder {
-        this.useLocalTimezoneIfNotPresent = value;
-        return this;
-    }
-
-    isUseLocalTimezoneIfNotPresent(): boolean {
-        return this.useLocalTimezoneIfNotPresent;
+    isUseLocalTimezone(): boolean {
+        return this.useLocalTimezone;
     }
 
     setDefaultTime(value: TimeHM): TimePickerPopupBuilder {
@@ -89,8 +77,7 @@ export class TimePickerPopup
     private selectedMinute: number;
     private interval: number;
 
-    private timezone?: Timezone;
-    private useLocalTimezoneIfNotPresent: boolean = false;
+    private useLocalTimezone: boolean = false;
 
     private timeChangedListeners: ((time: TimeHM) => void)[] = [];
     private builder: TimePickerPopupBuilder;
@@ -111,16 +98,11 @@ export class TimePickerPopup
         this.minute = new SpanEl();
         this.prevMinute = new AEl('prev');
 
-        this.useLocalTimezoneIfNotPresent = this.builder.useLocalTimezoneIfNotPresent;
-        this.timezone = this.builder.timezone;
+        this.useLocalTimezone = this.builder.isUseLocalTimezone();
 
-        if (!this.timezone && this.useLocalTimezoneIfNotPresent) {
-            this.timezone = Timezone.getLocalTimezone();
-        }
-
-        if (this.timezone) {
-            this.timezoneLocation = new SpanEl('timezone-location').setHtml(this.timezone.getLocation());
-            this.timezoneOffset = new SpanEl('timezone-offset').setHtml(this.getUTCString(this.timezone.getOffset()));
+        if (this.useLocalTimezone) {
+            this.timezoneLocation = new SpanEl('timezone-location');
+            this.timezoneOffset = new SpanEl('timezone-offset'); // .setHtml(this.getUTCString(this.timezone.getOffset()))
         }
 
         this.presetTime();
@@ -214,6 +196,13 @@ export class TimePickerPopup
         }
     }
 
+    updateLocalTimezoneByDate(date: Date): void {
+        if (this.useLocalTimezone) {
+            const timezone = Timezone.getDateTimezone(date);
+            this.timezoneOffset.setHtml(this.getUTCString(timezone.getOffset()));
+        }
+    }
+
     private startInterval(fn: (add: number, silent?: boolean) => void, ...args: any[]) {
         let times: number = 0;
         let delay: number = 400;
@@ -304,7 +293,7 @@ export class TimePickerPopup
 
             minuteContainer.appendChildren(this.nextMinute, this.minute, this.prevMinute);
 
-            if (this.timezone) {
+            if (this.useLocalTimezone) {
                 const timezoneContainer: LiEl = new LiEl('timezone');
                 timezoneContainer.appendChild(this.timezoneLocation);
                 timezoneContainer.appendChild(this.timezoneOffset);
