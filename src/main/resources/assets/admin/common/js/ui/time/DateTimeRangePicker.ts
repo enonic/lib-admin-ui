@@ -1,5 +1,4 @@
 import * as Q from 'q';
-import {Timezone} from '../../util/Timezone';
 import {DivEl} from '../../dom/DivEl';
 import {DateTimePicker, DateTimePickerBuilder} from './DateTimePicker';
 import {Element} from '../../dom/Element';
