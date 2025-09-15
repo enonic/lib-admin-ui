@@ -16,7 +16,6 @@ import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
 import {ValueTypeDateTime} from '../../../data/ValueTypeDateTime';
 import {ObjectHelper} from '../../../ObjectHelper';
-import {FormInputEl} from '../../../dom/FormInputEl';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDateTime]].
@@ -44,7 +43,7 @@ export class DateTime
         const useLocalTimeZone: boolean = ObjectHelper.iFrameSafeInstanceOf(valueType, ValueTypeDateTime);
 
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
-        dateTimeBuilder.setUseLocalTimezoneIfNotPresent(useLocalTimeZone);
+        dateTimeBuilder.setUseLocalTimezone(useLocalTimeZone);
 
         const defaultDate: Date = this.getDefaultValue();
         if (defaultDate) {
@@ -58,9 +57,6 @@ export class DateTime
         if (property.hasNonNullValue()) {
             const date: DateTimeUtil | LocalDateTime = useLocalTimeZone ? property.getDateTime() : property.getLocalDateTime();
             dateTimeBuilder.setDateTime(date.toDate());
-            if (useLocalTimeZone) {
-                dateTimeBuilder.setTimezone((date as DateTimeUtil).getTimezone());
-            }
         }
 
         const dateTimePicker: DateTimePicker = dateTimeBuilder.build();
