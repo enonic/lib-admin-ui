@@ -15,23 +15,21 @@ export class DateTime
 
     private static FRACTION_SEPARATOR: string = '.';
 
-    private static DEFAULT_TIMEZONE: string = '+00:00';
+    private readonly year: number;
 
-    private year: number;
+    private readonly month: number; // 0-11
 
-    private month: number; // 0-11
+    private readonly day: number;
 
-    private day: number;
+    private readonly hours: number;
 
-    private hours: number;
+    private readonly minutes: number;
 
-    private minutes: number;
+    private readonly seconds: number;
 
-    private seconds: number;
+    private readonly fractions: number;
 
-    private fractions: number;
-
-    private timezone: Timezone;
+    private readonly timezone: Timezone;
 
     constructor(builder: DateTimeBuilder) {
         this.year = builder.year;
@@ -41,7 +39,7 @@ export class DateTime
         this.minutes = builder.minutes;
         this.seconds = builder.seconds;
         this.fractions = builder.fractions;
-        this.timezone = builder.timezone;
+        this.timezone = builder.timezone || Timezone.getZeroOffsetTimezone();
     }
 
     static isValidDateTime(s: string): boolean {
@@ -56,7 +54,7 @@ export class DateTime
         2015-02-29T12:05:59+01:00
         2015-02-29T12:05:59.001+01:00
         */
-         
+
         const regex = /^(\d{2}|\d{4})(?:\-)?([0]{1}\d{1}|[1]{1}[0-2]{1})(?:\-)?([0-2]{1}\d{1}|[3]{1}[0-1]{1})(T)([0-1]{1}\d{1}|[2]{1}[0-3]{1})(?::)?([0-5]{1}\d{1})((:[0-5]{1}\d{1})(\.\d{3})?)?((\+|\-)([0-1]{1}\d{1}|[2]{1}[0-3]{1})(:)([0-5]{1}\d{1})|(z|Z)|$)$/;
         return regex.test(s);
     }
@@ -76,7 +74,7 @@ export class DateTime
 
         if (DateHelper.isUTCdate(s)) {
             date = DateHelper.makeDateFromUTCString(s);
-            timezone = Timezone.getLocalTimezone();
+            timezone = Timezone.getDateTimezone(date);
             if (DateHelper.isDST(date)) { // when converting from UTC date, Date object may have an extra hour added due to DST
                 date.setHours(date.getHours() - 1);
             }
@@ -123,7 +121,7 @@ export class DateTime
             .setMinutes(s.getMinutes())
             .setSeconds(s.getSeconds())
             .setFractions(s.getMilliseconds())
-            .setTimezone(Timezone.getLocalTimezone())// replace with timezone picker value if implemented tz selection
+            .setTimezone(Timezone.getDateTimezone(s))// replace with timezone picker value if implemented tz selection
             .build();
     }
 
@@ -232,8 +230,7 @@ export class DateTime
 
     /** Returns date in ISO format. Month value is incremented because ISO month range is 1-12, whereas JS Date month range is 0-11 */
     toString(): string {
-        return this.dateToString() + DateTime.DATE_TIME_SEPARATOR + this.timeToString() +
-               (this.timezone ? this.timezone.toString() : DateTime.DEFAULT_TIMEZONE);
+        return this.dateToString() + DateTime.DATE_TIME_SEPARATOR + this.timeToString() + this.timezone.toString();
     }
 
     equals(o: Equitable): boolean {

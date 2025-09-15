@@ -238,7 +238,7 @@ export class DateTimeRange
         const rangeBuilder: DateTimeRangePickerBuilder = new DateTimeRangePickerBuilder()
             .setStartLabel(this.labels.start)
             .setEndLabel(this.labels.end)
-            .setUseLocalTimezoneIfNotPresent(true);
+            .setUseLocalTimezone(true);
 
         this.setFromTo(rangeBuilder, property);
 
@@ -275,7 +275,7 @@ export class DateTimeRange
                     builder.setEndDate((to as DateTime).toDate());
                 }
                 if (this.useTimezone) {
-                    builder.setTimezone(((from || to) as DateTime).getTimezone());
+                    builder.setUseLocalTimezone(true);
                 }
             }
         }

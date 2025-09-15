@@ -1,13 +1,12 @@
 import * as Q from 'q';
-import {Timezone} from '../../util/Timezone';
 import {DivEl} from '../../dom/DivEl';
 import {DateTimePicker, DateTimePickerBuilder} from './DateTimePicker';
 import {Element} from '../../dom/Element';
 import {LabelEl} from '../../dom/LabelEl';
+import {TimeHM} from '../../util/TimeHM';
 import {DayOfWeek} from './DayOfWeek';
 import {DaysOfWeek} from './DaysOfWeek';
 import {SelectedDateChangedEvent} from './SelectedDateChangedEvent';
-import {TimeHM} from '../../util/TimeHM';
 
 export class DateTimeRangePickerBuilder {
 
@@ -27,10 +26,7 @@ export class DateTimeRangePickerBuilder {
 
     closeOnSelect: boolean = false;
 
-    timezone: Timezone;
-
-    // use local timezone if timezone value is not initialized
-    useLocalTimezoneIfNotPresent: boolean = false;
+    useLocalTimezone: boolean = false;
 
     setStartDate(value: Date): DateTimeRangePickerBuilder {
         this.startDate = value;
@@ -57,18 +53,13 @@ export class DateTimeRangePickerBuilder {
         return this;
     }
 
-    setTimezone(value: Timezone): DateTimeRangePickerBuilder {
-        this.timezone = value;
-        return this;
-    }
-
     setCloseOnSelect(value: boolean): DateTimeRangePickerBuilder {
         this.closeOnSelect = value;
         return this;
     }
 
-    setUseLocalTimezoneIfNotPresent(value: boolean): DateTimeRangePickerBuilder {
-        this.useLocalTimezoneIfNotPresent = value;
+    setUseLocalTimezone(value: boolean): DateTimeRangePickerBuilder {
+        this.useLocalTimezone = value;
         return this;
     }
 
@@ -184,8 +175,7 @@ export class DateTimeRangePicker
         const b = new DateTimePickerBuilder()
             .setStartingDayOfWeek(builder.startingDayOfWeek)
             .setCloseOnSelect(builder.closeOnSelect)
-            .setUseLocalTimezoneIfNotPresent(builder.useLocalTimezoneIfNotPresent)
-            .setTimezone(builder.timezone);
+            .setUseLocalTimezone(builder.useLocalTimezone);
 
         switch (index) {
         case 1:
