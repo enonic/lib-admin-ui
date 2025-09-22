@@ -164,7 +164,10 @@ export abstract class ModalDialog
             const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
                 if (this.canHandleOutsideClick()) {
                     for (let element = event.target; element; element = (element as any).parentNode) {
-                        if (element === this.getHTMLElement() || this.isIgnoredElementClicked(element as any)) {
+                        if (element === this.getHTMLElement()) {
+                            return;
+                        }
+                        if (element instanceof HTMLElement && this.isIgnoredElementClicked(element)) {
                             return;
                         }
                     }
