@@ -11,10 +11,9 @@ export class Checkbox
     private suppressEvent = false;
 
     constructor(props: CheckboxControllerProps) {
+        const {checked = false, onCheckedChange, ...rest} = props;
         super(
             {
-                ...props,
-                checked: props.checked ?? false,
                 onCheckedChange: (newValue) => {
                     this.currentChecked = newValue;
                     this.setProps({checked: newValue});
@@ -22,6 +21,7 @@ export class Checkbox
                         props.onCheckedChange?.(newValue);
                     }
                 },
+                ...rest,
 
             },
             UI.Checkbox,

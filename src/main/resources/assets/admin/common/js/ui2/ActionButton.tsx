@@ -19,13 +19,13 @@ export class ActionButton<T extends Action = Action> extends LegacyElement<typeo
     private actionProps: ActionButtonProps<T>;
 
     constructor(props: ActionButtonProps<T>) {
+        const {className, action, ...rest} = props;
         super({
             onClick: () => {
                 this.giveFocus();
                 this.actionProps.action.execute();
             },
-            startIcon: props.startIcon,
-            endIcon: props.endIcon,
+            ...rest,
             ...createPropsFromAction(props),
         }, UI.Button);
 
