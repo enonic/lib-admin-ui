@@ -752,17 +752,21 @@ export class ButtonRow
         this.actions.push(action);
     }
 
-    addAction(action: Action, useDefault?: boolean, prepend?: boolean): ActionButton {
-        const button = new ActionButton({action});
+    addActionButton(button: ActionButton, useDefault?: boolean, prepend?: boolean): ActionButton {
         if (useDefault) {
             this.setDefaultElement(button);
         }
 
         this.addElement(button, prepend);
 
-        this.actions.push(action);
+        this.actions.push(button.getAction());
 
         return button;
+    }
+
+    addAction(action: Action, useDefault?: boolean, prepend?: boolean): ActionButton {
+        const button = new ActionButton({action});
+        return this.addActionButton(button, useDefault, prepend);
     }
 
     removeAction(action: Action) {
