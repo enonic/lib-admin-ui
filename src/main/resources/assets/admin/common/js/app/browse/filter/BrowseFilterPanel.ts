@@ -1,21 +1,19 @@
 import Q from 'q';
-import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
-import {ObjectHelper} from '../../../ObjectHelper';
 import {Aggregation} from '../../../aggregation/Aggregation';
 import {AggregationContainer} from '../../../aggregation/AggregationContainer';
 import {AggregationGroupView} from '../../../aggregation/AggregationGroupView';
+import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {DivEl} from '../../../dom/DivEl';
-import {Element} from '../../../dom/Element';
 import {LabelEl} from '../../../dom/LabelEl';
 import {SpanEl} from '../../../dom/SpanEl';
+import {ObjectHelper} from '../../../ObjectHelper';
 import {SearchInputValues} from '../../../query/SearchInputValues';
 import {KeyBinding} from '../../../ui/KeyBinding';
 import {KeyBindings} from '../../../ui/KeyBindings';
-import {AriaRole} from '../../../ui/WCAG';
 import {Panel} from '../../../ui/panel/Panel';
+import {SearchInput} from '../../../ui2/SearchInput';
 import {i18n} from '../../../util/Messages';
-import {ClearFilterButton} from './ClearFilterButton';
-import {TextSearchField} from './TextSearchField';
+import {StringHelper} from '../../../util/StringHelper';
 
 export class BrowseFilterPanel<T>
     extends Panel {
@@ -26,10 +24,8 @@ export class BrowseFilterPanel<T>
     private hideFilterPanelButtonClickedListeners: (() => void)[] = [];
     private showResultsButtonClickedListeners: (() => void)[] = [];
     private aggregationContainer: AggregationContainer;
-    private searchField: TextSearchField;
-    private clearFilter: ClearFilterButton;
+    private newSearchField: SearchInput;
     private hitsCounterEl: SpanEl;
-    private hideFilterPanelButton: SpanEl;
     private showResultsButton: SpanEl;
     private searchContainer: DivEl;
     private refreshStartedListeners: (() => void)[] = [];
@@ -38,29 +34,18 @@ export class BrowseFilterPanel<T>
         super();
         this.addClass('filter-panel');
 
-        this.hideFilterPanelButton = new SpanEl('hide-filter-panel-button icon-search');
-        this.hideFilterPanelButton.applyWCAGAttributes({
-            ariaLabel: i18n('tooltip.filterPanel.hide'),
-            role: AriaRole.BUTTON,
-            tabbable: true
-        });
-        this.hideFilterPanelButton.setTitle(i18n('tooltip.filterPanel.hide'));
-        this.hideFilterPanelButton.onClicked(() => this.notifyHidePanelButtonPressed());
-        this.hideFilterPanelButton.onApplyKeyPressed(() => this.notifyHidePanelButtonPressed());
-
         let showResultsButtonWrapper = new DivEl('show-filter-results');
         this.showResultsButton = new SpanEl('show-filter-results-button');
         this.updateResultsTitle(true);
         this.showResultsButton.onClicked(() => this.notifyShowResultsButtonPressed());
         showResultsButtonWrapper.appendChild(this.showResultsButton);
 
-        this.searchField = new TextSearchField(i18n('panel.filter.search'));
-        this.searchField.onValueChanged(() => {
-            this.search();
+        this.newSearchField = new SearchInput({
+            onChange: (value) => {
+                this.search();
+            },
+            placeholder: i18n('panel.filter.search'),
         });
-
-        this.clearFilter = new ClearFilterButton();
-        this.clearFilter.onClicked(() => void this.reset());
 
         this.aggregationContainer = new AggregationContainer();
         this.aggregationContainer.hide();
@@ -76,7 +61,6 @@ export class BrowseFilterPanel<T>
         );
 
         this.onRendered(() => {
-            this.appendChild(this.hideFilterPanelButton);
             this.appendExtraSections();
             this.appendChildren(
                 this.createSearchContainer(),
@@ -103,16 +87,8 @@ export class BrowseFilterPanel<T>
     }
 
     protected createSearchContainer(): DivEl {
-        this.searchField = new TextSearchField(i18n('panel.filter.search'));
-        this.searchField.onValueChanged(() => {
-            this.search();
-        });
-
-        this.clearFilter = new ClearFilterButton();
-        this.clearFilter.onClicked(() => void this.reset());
-
         this.searchContainer = new DivEl('search-container');
-        this.searchContainer.appendChildren(this.searchField, this.clearFilter as Element);
+        this.searchContainer.appendChild(this.newSearchField);
 
         return this.searchContainer;
     }
@@ -152,7 +128,7 @@ export class BrowseFilterPanel<T>
     }
 
     giveFocusToSearch() {
-        this.searchField.giveFocus();
+        this.newSearchField.giveFocus();
     }
 
     updateAggregations(aggregations: Aggregation[]): void {
@@ -163,7 +139,7 @@ export class BrowseFilterPanel<T>
         const searchInputValues: SearchInputValues = new SearchInputValues();
 
         searchInputValues.setAggregationSelections(this.aggregationContainer.getSelectedValuesByAggregationName());
-        searchInputValues.setTextSearchFieldValue(this.searchField.getEl().getValue());
+        searchInputValues.setTextSearchFieldValue(this.newSearchField.getValue());
 
         return searchInputValues;
     }
@@ -173,13 +149,12 @@ export class BrowseFilterPanel<T>
     }
 
     hasSearchStringSet(): boolean {
-        return this.searchField.getHTMLElement()['value'].trim() !== '';
+        return !StringHelper.isBlank(this.newSearchField.getValue());
     }
 
     search(lastChangedAggregation?: string): Q.Promise<void> {
         const hasFilterSet = this.hasFilterSet();
 
-        this.clearFilter.setVisible(hasFilterSet);
         this.searchContainer.toggleClass('has-filter-set', hasFilterSet);
         this.updateResultsTitle(!hasFilterSet);
 
@@ -211,9 +186,8 @@ export class BrowseFilterPanel<T>
     }
 
     resetControls() {
-        this.searchField.clear();
+        this.newSearchField.clear();
         this.aggregationContainer.deselectAll(true);
-        this.clearFilter.hide();
         this.searchContainer.removeClass('has-filter-set');
         this.updateResultsTitle(true);
     }
