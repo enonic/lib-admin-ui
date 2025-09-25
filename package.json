@@ -21,7 +21,7 @@
     "fix": "eslint . --fix --cache"
   },
   "dependencies": {
-    "@enonic/ui": "~0.8.1",
+    "@enonic/ui": "~0.10.1",
     "dompurify": "~3.2.6",
     "fine-uploader": "^5.16.2",
     "jquery": "^3.7.1",
