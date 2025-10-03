@@ -51,7 +51,7 @@ export class AppHelper {
         };
     }
 
-    // Returns a function, that, will be invoked immediately. Then, as long
+    // Returns a function, that will be invoked immediately. Then, as long
     // as it continues to be invoked, will not be triggered. The function
     // will be called after it stops being called for N milliseconds and it
     // was invoked at least once during that interval.
@@ -77,6 +77,73 @@ export class AppHelper {
                 trailing = true;
             }
         };
+    }
+
+    // Repeatedly executes {func} until {stopCondition} returns true.
+    // Will pause for {intervalMs} milliseconds between attempts and will stop after {maxAttempts} attempts.
+    static executeWithRetry<T>(
+        func: () => Promise<T>,
+        intervalMs: number = 1000,
+        maxAttempts: number = 5,
+        stopCondition: (result: T) => boolean
+    ): Promise<T> {
+        return new Promise((resolve, reject) => {
+            let attempts = 0;
+            let hasStopped = false;
+
+            const cleanupAndStop = (interval?: number, reason?: Error) => {
+                if (hasStopped) {
+                    return;
+                }
+                hasStopped = true;
+                if (interval) {
+                    clearInterval(interval);
+                }
+                if (reason) {
+                    reject(reason);
+                }
+            };
+
+            const executeFunc = async () => {
+                if (hasStopped) {
+                    return false;
+                }
+                attempts++;
+                if (attempts > maxAttempts) {
+                    cleanupAndStop(undefined, new Error(`Max attempts (${maxAttempts}) reached without success.`));
+                    return false;
+                }
+
+                try {
+                    const result = await func();
+                    if (stopCondition(result)) {
+                        cleanupAndStop();
+                        resolve(result);
+                        return true;
+                    }
+                } catch (error) {
+                    console.error(`Error on attempt ${attempts}:`, error);
+                }
+                return false;
+            };
+
+            executeFunc().then((shouldStop: boolean) => {
+                if (shouldStop) {
+                    return;
+                }
+
+                // Set up periodic retries
+                const interval = setInterval(async () => {
+                    const shouldStopFurther = await executeFunc();
+                    if (shouldStopFurther) {
+                        cleanupAndStop(interval);
+                    }
+                    if (attempts >= maxAttempts) {
+                        cleanupAndStop(interval, new Error(`Max attempts (${maxAttempts}) reached without success.`));
+                    }
+                }, intervalMs);
+            });
+        });
     }
 
     // Handles the result of the initialization, while the result is truthy
