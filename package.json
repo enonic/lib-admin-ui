@@ -41,7 +41,7 @@
     "browserslist-config-enonic": "^1.0.8",
     "cross-env": "^10.0.0",
     "cssnano": "^7.1.0",
-    "enonic-admin-artifacts": "^2.3.2",
+    "enonic-admin-artifacts": "^2.4.0",
     "eslint": "^9.33.0",
     "jiti": "~2.5.1",
     "less": "^4.4.0",
