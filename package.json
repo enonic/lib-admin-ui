@@ -43,7 +43,7 @@
     "cssnano": "^7.1.0",
     "enonic-admin-artifacts": "^2.4.0",
     "eslint": "^9.33.0",
-    "jiti": "~2.5.1",
+    "jiti": "~2.6.1",
     "less": "^4.4.1",
     "postcss-normalize": "^13.0.1",
     "postcss-sort-media-queries": "^5.2.0",
