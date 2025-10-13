@@ -13,6 +13,8 @@ export class NotificationMessage
 
     private readonly message: Message;
 
+    private readonly removeEl: SpanEl
+
     constructor(message: Message) {
         super('notification');
 
@@ -22,12 +24,13 @@ export class NotificationMessage
 
         this.message = message;
         const notificationInner = new DivEl('notification-inner');
-        const notificationRemove = new SpanEl('notification-remove icon-close');
+        this.removeEl = new SpanEl('notification-remove icon-close');
+
         this.notificationText = new DivEl('notification-text');
         this.actionList = new DivEl('notification-actions');
         this.notificationText.setHtml(message.getText());
         notificationInner.appendChildren(this.notificationText, this.actionList);
-        this.appendChildren(notificationInner, notificationRemove);
+        this.appendChildren(notificationInner, this.removeEl);
     }
 
     getMessage(): Message {
@@ -46,6 +49,10 @@ export class NotificationMessage
     addAction(action: MessageAction): NotificationMessage {
         this.actionList.appendChild(NotificationMessage.createAction(action));
         return this;
+    }
+
+    getRemoveEl(): SpanEl {
+        return this.removeEl;
     }
 
     private static createAction(action: MessageAction): AEl {

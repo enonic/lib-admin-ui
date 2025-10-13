@@ -157,18 +157,11 @@ export class NotifyManager {
         return this.shortLifeTime;
     }
 
-    private setListeners(el: NotificationMessage) {
-        el.onClicked(() => {
-            this.remove(el);
-            return false;
-        });
-        el.onMouseEnter(() => {
-            this.stopTimer(el);
-        });
-        el.onMouseLeave(() => {
-            this.startTimer(el);
-        });
-        el.onRemoved(() => this.handleNotificationRemoved());
+    private setListeners(notificationMessage: NotificationMessage) {
+        notificationMessage.getRemoveEl().onClicked(() => this.remove(notificationMessage));
+        notificationMessage.onMouseEnter(() => this.stopTimer(notificationMessage));
+        notificationMessage.onMouseLeave(() => this.startTimer(notificationMessage));
+        notificationMessage.onRemoved(() => this.handleNotificationRemoved());
     }
 
     private setActions(notificationEl: NotificationMessage, actions: MessageAction[]) {
