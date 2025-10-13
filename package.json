@@ -40,7 +40,7 @@
     "autoprefixer": "^10.4.21",
     "browserslist-config-enonic": "^1.0.8",
     "cross-env": "^10.1.0",
-    "cssnano": "^7.1.0",
+    "cssnano": "^7.1.1",
     "enonic-admin-artifacts": "^2.4.0",
     "eslint": "^9.37.0",
     "jiti": "~2.6.1",
