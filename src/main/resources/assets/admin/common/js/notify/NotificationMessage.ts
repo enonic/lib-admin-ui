@@ -23,6 +23,8 @@ export class NotificationMessage
         this.message = message;
         const notificationInner = new DivEl('notification-inner');
         const notificationRemove = new SpanEl('notification-remove icon-close');
+        notificationRemove.onClicked(() => this.remove());
+
         this.notificationText = new DivEl('notification-text');
         this.actionList = new DivEl('notification-actions');
         this.notificationText.setHtml(message.getText());
