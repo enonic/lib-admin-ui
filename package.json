@@ -42,7 +42,7 @@
     "cross-env": "^10.1.0",
     "cssnano": "^7.1.1",
     "enonic-admin-artifacts": "^2.4.0",
-    "eslint": "^9.37.0",
+    "eslint": "^9.38.0",
     "jiti": "~2.6.1",
     "less": "^4.4.2",
     "postcss-normalize": "^13.0.1",
