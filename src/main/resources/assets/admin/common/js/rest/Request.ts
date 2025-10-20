@@ -1,5 +1,4 @@
 import Q from 'q';
-import {AccessDeniedException} from '../AccessDeniedException';
 import {HttpMethod} from './HttpMethod';
 import {Path} from './Path';
 import {RequestError} from './RequestError';
@@ -49,7 +48,7 @@ export abstract class Request {
                 } else if (this.request.status >= StatusCode.OK && this.request.status < StatusCode.MULTIPLE_OPTIONS) {
                     deferred.resolve(this.request.response);
                 } else if (this.request.status === StatusCode.FORBIDDEN) {
-                    deferred.reject(new AccessDeniedException('Access denied'));
+                    deferred.reject(new RequestError(StatusCode.FORBIDDEN, 'Access denied'));
                 } else {
                     try {
                         errorJson = this.request.response ? JSON.parse(this.request.response) : null;
