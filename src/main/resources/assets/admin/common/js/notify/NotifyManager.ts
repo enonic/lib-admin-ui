@@ -158,12 +158,9 @@ export class NotifyManager {
     }
 
     private setListeners(notificationMessage: NotificationMessage) {
-        notificationMessage.onMouseEnter(() => {
-            this.stopTimer(notificationMessage);
-        });
-        notificationMessage.onMouseLeave(() => {
-            this.startTimer(notificationMessage);
-        });
+        notificationMessage.getRemoveEl().onClicked(() => this.remove(notificationMessage));
+        notificationMessage.onMouseEnter(() => this.stopTimer(notificationMessage));
+        notificationMessage.onMouseLeave(() => this.startTimer(notificationMessage));
         notificationMessage.onRemoved(() => this.handleNotificationRemoved());
     }
 
