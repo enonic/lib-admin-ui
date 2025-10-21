@@ -60,8 +60,7 @@ export class ResponsiveManager {
 
     // Manual event triggering
     static fireResizeEvent() {
-        let customEvent = document.createEvent('Event');
-        customEvent.initEvent('availablesizechange', false, true); // No bubbling
+        const customEvent = new Event('availablesizechange', {bubbles: false, cancelable: true});
         ResponsiveManager.window.getHTMLElement().dispatchEvent(customEvent);
     }
 

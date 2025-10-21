@@ -1,27 +1,14 @@
-import {ClassHelper} from '../ClassHelper';
 import {EventBus} from './EventBus';
+import {AbstractEvent} from './AbstractEvent';
 
-export class Event {
-
-    private name: string;
-
-    constructor(name?: string) {
-        this.name = name || ClassHelper.getFullName(this);
-    }
-
-    static bind(name: string, handler: (event: Event) => void, contextWindow: Window = window) {
-        EventBus.onEvent(name, handler, contextWindow);
-    }
-
-    static unbind(name: string, handler?: (event: Event) => void, contextWindow: Window = window) {
-        EventBus.unEvent(name, handler, contextWindow);
-    }
-
-    getName(): string {
-        return this.name;
-    }
+export class Event
+    extends AbstractEvent {
 
     fire(contextWindow: Window = window) {
-        EventBus.fireEvent(this, contextWindow);
+        EventBus.get(contextWindow).fireEvent(this);
+    }
+
+    static getEventBus(contextWindow: Window): EventBus {
+        return EventBus.get(contextWindow);
     }
 }
