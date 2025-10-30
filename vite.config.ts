@@ -4,6 +4,7 @@ import cssnano from 'cssnano';
 import path from 'path';
 import postcssNormalize from 'postcss-normalize';
 import postcssSortMediaQueries from 'postcss-sort-media-queries';
+import tailwindcss from '@tailwindcss/vite';
 import {fileURLToPath} from 'url';
 import {defineConfig, type UserConfig} from 'vite';
 
@@ -30,7 +31,6 @@ export default defineConfig(({mode}) => {
     js: {
       root: IN_PATH,
       base: './',
-
       build: {
         outDir: OUT_PATH,
         emptyOutDir: false,
@@ -95,6 +95,7 @@ export default defineConfig(({mode}) => {
     css: {
       root: IN_PATH,
       base: './',
+      plugins: [tailwindcss()],
       build: {
         outDir: OUT_PATH,
         emptyOutDir: false,
@@ -102,6 +103,7 @@ export default defineConfig(({mode}) => {
         sourcemap: isDevelopment,
         rollupOptions: {
           input: {
+            'styles/tailwind': path.join(IN_PATH, 'styles/tailwind.css'),
             'styles/lib': path.join(IN_PATH, 'styles/main.less'),
             'styles/lib-lite': path.join(IN_PATH, 'styles/main.lite.less'),
           },
