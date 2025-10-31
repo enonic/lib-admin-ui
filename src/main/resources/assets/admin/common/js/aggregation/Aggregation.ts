@@ -1,13 +1,20 @@
 export class Aggregation {
 
-    private name: string;
+    private readonly name: string;
 
-    constructor(name: string) {
+    private readonly displayName: string;
+
+    constructor(name: string, displayName?: string) {
         this.name = name;
+        this.displayName = displayName ?? name;
     }
 
-    public getName(): string {
+    getName(): string {
         return this.name;
+    }
+
+    getDisplayName(): string {
+        return this.displayName;
     }
 
 }

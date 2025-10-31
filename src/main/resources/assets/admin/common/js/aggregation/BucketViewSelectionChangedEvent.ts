@@ -1,4 +1,4 @@
-import {BucketView} from './BucketView';
+import {Bucket} from './Bucket';
 
 export class BucketViewSelectionChangedEvent {
 
@@ -6,12 +6,12 @@ export class BucketViewSelectionChangedEvent {
 
     private newValue: boolean;
 
-    private bucketView: BucketView;
+    private bucket: Bucket;
 
-    constructor(oldValue: boolean, newValue: boolean, bucketView: BucketView) {
+    constructor(oldValue: boolean, newValue: boolean, bucket: Bucket) {
         this.oldValue = oldValue;
         this.newValue = newValue;
-        this.bucketView = bucketView;
+        this.bucket = bucket;
     }
 
     getOldValue(): boolean {
@@ -22,7 +22,7 @@ export class BucketViewSelectionChangedEvent {
         return this.newValue;
     }
 
-    getBucketView(): BucketView {
-        return this.bucketView;
+    getBucket(): Bucket {
+        return this.bucket;
     }
 }

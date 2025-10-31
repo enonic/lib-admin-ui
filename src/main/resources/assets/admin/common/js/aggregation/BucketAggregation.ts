@@ -1,3 +1,4 @@
+import {i18n} from '../util/Messages';
 import {Bucket} from './Bucket';
 import {BucketAggregationJson} from './BucketAggregationJson';
 import {BucketWrapperJson} from './BucketWrapperJson';
@@ -32,7 +33,7 @@ export class BucketAggregation
 
     public static fromJson(json: BucketAggregationJson): BucketAggregation {
 
-        let bucketAggregation: BucketAggregation = new BucketAggregation(json.name);
+        let bucketAggregation: BucketAggregation = new BucketAggregation(json.name, i18n(`field.${json.name}`));
 
         json.buckets.forEach((bucketWrapper: BucketWrapperJson) => {
             bucketAggregation.addBucket(BucketFactory.createFromJson(bucketWrapper));

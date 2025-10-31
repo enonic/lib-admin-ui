@@ -27,7 +27,7 @@ export class BucketView
             label: this.resolveLabelValue(),
             onCheckedChange: (checked) => {
                 const isChecked = checked === true;
-                const event = new BucketViewSelectionChangedEvent(!isChecked, isChecked, this);
+                const event = new BucketViewSelectionChangedEvent(!isChecked, isChecked, this.getBucket());
                 this.selectionChangedListeners.forEach(l => l(event));
             }
         });

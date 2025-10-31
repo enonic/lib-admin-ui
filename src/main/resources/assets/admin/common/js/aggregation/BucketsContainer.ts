@@ -1,6 +1,6 @@
 import {DivEl} from '../dom/DivEl';
-import {BucketView} from './BucketView';
 import {Button} from '../ui/button/Button';
+import {BucketView} from '../ui2/BucketView';
 import {i18n} from '../util/Messages';
 
 export class BucketsContainer

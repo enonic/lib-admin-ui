@@ -2,14 +2,11 @@ import {Bucket} from './Bucket';
 
 export class AggregationSelection {
 
-    name: string;
-    selectedBuckets: Bucket[];
+    private readonly name: string;
+    private readonly selectedBuckets: Bucket[];
 
-    constructor(name: string) {
+    constructor(name: string, selectedBuckets: Bucket[]) {
         this.name = name;
-    }
-
-    public setValues(selectedBuckets: Bucket[]) {
         this.selectedBuckets = selectedBuckets;
     }
 

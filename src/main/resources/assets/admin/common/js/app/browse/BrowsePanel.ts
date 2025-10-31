@@ -335,8 +335,8 @@ export class BrowsePanel
 
     private setupFilterPanel() {
         let splitPanel = new SplitPanelBuilder(this.filterPanel, this.gridAndToolbarPanel)
-            .setFirstPanelMinSize(SplitPanelSize.PIXELS(215))
-            .setFirstPanelSize(SplitPanelSize.PIXELS(215))
+            .setFirstPanelMinSize(SplitPanelSize.PIXELS(300))
+            .setFirstPanelSize(SplitPanelSize.PIXELS(300))
             .setAlignment(SplitPanelAlignment.VERTICAL)
             .setAnimationDelay(100)     // filter panel animation time
             .build();

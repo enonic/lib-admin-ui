@@ -1,7 +1,6 @@
-import {BucketAggregationView} from './BucketAggregationView';
+import {BucketAggregationView} from '../ui2/BucketAggregationView';
 import {AggregationSelection} from './AggregationSelection';
 import {DivEl} from '../dom/DivEl';
-import {AggregationView} from './AggregationView';
 import {H2El} from '../dom/H2El';
 import {Aggregation} from './Aggregation';
 import {Bucket} from './Bucket';
@@ -15,7 +14,7 @@ export class AggregationGroupView
 
     private readonly displayName: string;
 
-    protected aggregationViews: AggregationView[] = [];
+    protected aggregationViews: BucketAggregationView[] = [];
 
     private titleEl: H2El = new H2El();
 
@@ -39,7 +38,7 @@ export class AggregationGroupView
         // must be implemented by children
     }
 
-    getAggregationViews(): AggregationView[] {
+    getAggregationViews(): BucketAggregationView[] {
         return this.aggregationViews;
     }
 
@@ -61,8 +60,7 @@ export class AggregationGroupView
             const selectedBuckets: Bucket[] = bucketAggregationView.getSelectedValues();
 
             if (selectedBuckets != null) {
-                const aggregationSelection: AggregationSelection = new AggregationSelection(bucketAggregationView.getName());
-                aggregationSelection.setValues(selectedBuckets);
+                const aggregationSelection: AggregationSelection = new AggregationSelection(bucketAggregationView.getName(), selectedBuckets);
 
                 aggregationSelections.push(aggregationSelection);
             }
@@ -83,7 +81,7 @@ export class AggregationGroupView
     }
 
     deselectGroup(supressEvent?: boolean) {
-        this.aggregationViews.forEach((aggregationView: AggregationView) => {
+        this.aggregationViews.forEach((aggregationView: BucketAggregationView) => {
             aggregationView.deselectFacet(supressEvent);
         });
     }
@@ -104,16 +102,16 @@ export class AggregationGroupView
     }
 
     update(aggregations: Aggregation[]) {
-        aggregations.forEach((aggregation: Aggregation) => {
-            const aggregationView: AggregationView =
+        aggregations.forEach((aggregation: BucketAggregation) => {
+            const aggregationView =
                 this.getAggregationView(aggregation.getName()) || this.addAggregationView(aggregation);
 
             aggregationView.update(aggregation);
         });
     }
 
-    private addAggregationView(aggregation: Aggregation): AggregationView {
-        const aggregationView: AggregationView = this.createAggregationView(aggregation);
+    private addAggregationView(aggregation: Aggregation): BucketAggregationView {
+        const aggregationView = this.createAggregationView(aggregation);
 
         this.appendChild(aggregationView);
         this.aggregationViews.push(aggregationView);
@@ -121,7 +119,7 @@ export class AggregationGroupView
         return aggregationView;
     }
 
-    protected createAggregationView(aggregation: Aggregation): AggregationView {
+    protected createAggregationView(aggregation: Aggregation): BucketAggregationView {
         if (aggregation instanceof BucketAggregation) {
             const bucketAggregationView: BucketAggregationView = new BucketAggregationView(aggregation);
 
@@ -135,7 +133,7 @@ export class AggregationGroupView
         }
     }
 
-    private getAggregationView(name: string): AggregationView {
-        return this.aggregationViews.find((aggregationView: AggregationView) => aggregationView.getName() === name);
+    private getAggregationView(name: string): BucketAggregationView {
+        return this.aggregationViews.find((aggregationView) => aggregationView.getName() === name);
     }
 }

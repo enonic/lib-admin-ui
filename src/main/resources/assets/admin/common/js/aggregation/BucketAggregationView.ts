@@ -106,7 +106,7 @@ export class BucketAggregationView
     protected addBucketView(bucketView: BucketView): void {
         bucketView.onSelectionChanged((event: BucketViewSelectionChangedEvent) => {
             const bucketSelection: SelectionChange<Bucket> = {selected: [], deselected: []};
-            const bucket: Bucket = event.getBucketView().getBucket();
+            const bucket: Bucket = event.getBucket();
 
             if (event.getNewValue()) {
                 bucketSelection.selected.push(bucket);
