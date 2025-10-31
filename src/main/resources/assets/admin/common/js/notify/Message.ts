@@ -29,32 +29,40 @@ export class Message {
     private readonly text: string;
     private readonly actions: MessageAction[];
     private readonly autoHide: boolean;
+    private readonly lifeTime: number;
+    static shortLifeTime: number = 5000;
+    static longLifeTime: number = 30000;
 
-    constructor(type: MessageType, text: string, autoHide: boolean = true) {
+    constructor(type: MessageType, text: string, autoHide: boolean = true, lifeTime?: number) {
         this.type = type;
         this.text = text;
         this.actions = [];
         this.autoHide = autoHide;
+        this.lifeTime = lifeTime;
     }
 
-    static newSuccess(text: string, autoHide: boolean = true): Message {
-        return new Message(MessageType.SUCCESS, text, autoHide);
+    getLifeTime(): number {
+        return this.lifeTime;
     }
 
-    static newInfo(text: string, autoHide: boolean = true): Message {
-        return new Message(MessageType.INFO, text, autoHide);
+    static newSuccess(text: string, autoHide: boolean = true, lifeTime: number = Message.shortLifeTime): Message {
+        return new Message(MessageType.SUCCESS, text, autoHide, autoHide ? lifeTime : 0);
     }
 
-    static newError(text: string, autoHide: boolean = true): Message {
-        return new Message(MessageType.ERROR, text, autoHide);
+    static newInfo(text: string, autoHide: boolean = true, lifeTime: number = Message.shortLifeTime): Message {
+        return new Message(MessageType.INFO, text, autoHide, autoHide ? lifeTime : 0);
     }
 
-    static newWarning(text: string, autoHide: boolean = true): Message {
-        return new Message(MessageType.WARNING, text, autoHide);
+    static newError(text: string, autoHide: boolean = true, lifeTime: number = Message.longLifeTime): Message {
+        return new Message(MessageType.ERROR, text, autoHide, autoHide ? lifeTime : 0);
     }
 
-    static newAction(text: string, autoHide: boolean = true): Message {
-        return new Message(MessageType.ACTION, text, autoHide);
+    static newWarning(text: string, autoHide: boolean = true, lifeTime: number = Message.longLifeTime): Message {
+        return new Message(MessageType.WARNING, text, autoHide, autoHide ? lifeTime : 0);
+    }
+
+    static newAction(text: string, autoHide: boolean = true, lifeTime?: number): Message {
+        return new Message(MessageType.ACTION, text, autoHide, autoHide ? lifeTime : 0);
     }
 
     getType(): MessageType {

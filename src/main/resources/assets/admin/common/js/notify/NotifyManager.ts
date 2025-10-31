@@ -19,10 +19,6 @@ export class NotifyManager {
 
     private queue: NotificationMessage[] = [];
 
-    private shortLifeTime: number = 5000;
-
-    private longLifeTime: number = 30000;
-
     private slideDuration: number = 500;
 
     private timers: Map<string, Timer> = new Map<string, Timer>();
@@ -139,7 +135,7 @@ export class NotifyManager {
             () => {
                 if (notification.isAutoHide()) {
                     this.timers.set(notification.getEl().getId(), {
-                        remainingTime: this.getNotificationLifeTime(notification.getMessage())
+                        remainingTime: notification.getMessage().getLifeTime()
                     });
 
                     this.startTimer(notification);
@@ -147,14 +143,6 @@ export class NotifyManager {
             });
 
         return notification;
-    }
-
-    private getNotificationLifeTime(message: Message): number {
-        if (message.isError() || message.isWarning()) {
-            return this.longLifeTime;
-        }
-
-        return this.shortLifeTime;
     }
 
     private setListeners(notificationMessage: NotificationMessage) {
