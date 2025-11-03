@@ -33,7 +33,6 @@ export class BrowsePanel
     protected treeActions: TreeGridActions<ViewItem>;
     protected filterPanelToBeShownFullScreen: boolean = false;
     protected gridAndItemsSplitPanel: SplitPanel;
-    private gridAndToolbarPanel: Panel;
     private browseItemPanel: BrowseItemPanel;
     private filterAndGridSplitPanel: SplitPanel;
     private filterPanelForcedShown: boolean = false;
@@ -63,17 +62,18 @@ export class BrowsePanel
             this.browseItemPanel = this.createBrowseItemPanel();
         }
 
-        this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.selectableListBoxPanel, this.createBrowseWithItemsPanel())
-            .setAlignment(SplitPanelAlignment.VERTICAL)
-            .setFirstPanelSize(SplitPanelSize.PERCENTS(this.getFirstPanelSize()))
-            .build();
-
         if (this.filterPanel) {
-            this.gridAndToolbarPanel = new Panel();
             this.filterAndGridSplitPanel = this.setupFilterPanel();
         }
 
+        this.gridAndItemsSplitPanel =
+            new SplitPanelBuilder(this.filterAndGridSplitPanel ?? this.selectableListBoxPanel, this.createBrowseWithItemsPanel())
+                .setAlignment(SplitPanelAlignment.VERTICAL)
+                .setFirstPanelSize(SplitPanelSize.PERCENTS(this.getFirstPanelSize()))
+                .build();
+
         this.selectableListBoxPanel.getWrapper().setSkipFirstClickOnFocus(true);
+        this.hideFilterPanel();
     }
 
     protected initListeners() {
@@ -189,36 +189,13 @@ export class BrowsePanel
             this.browseToolbar.addClass('browse-toolbar');
             this.gridAndItemsSplitPanel.addClass('content-grid-and-browse-split-panel');
 
-            if (this.filterPanel) {
-                this.gridAndToolbarPanel.onAdded(() => {
-                    this.gridAndItemsSplitPanel.setDoOffset(true);
-                });
-
-                if (this.filterPanelIsHiddenByDefault) {
-                    this.hideFilterPanel();
-                }
-                this.appendChild(this.filterAndGridSplitPanel);
-
-                // Hack: Places the append calls farther in the engine call stack.
-                // Prevent toolbar and gridPanel not being visible when the width/height
-                // is requested and elements resize/change position/etc.
+            this.appendChild(this.browseToolbar);
+            this.browseToolbar.onRendered(() => {
                 setTimeout(() => {
-                    this.gridAndToolbarPanel.appendChild(this.browseToolbar);
+                    this.appendChild(this.gridAndItemsSplitPanel);
                 });
-                this.browseToolbar.onRendered(() => {
-                    setTimeout(() => {
-                        this.gridAndToolbarPanel.appendChild(this.gridAndItemsSplitPanel);
-                    });
-                });
-            } else {
-                this.appendChild(this.browseToolbar);
-                // Hack: Same hack.
-                this.browseToolbar.onRendered(() => {
-                    setTimeout(() => {
-                        this.appendChild(this.gridAndItemsSplitPanel);
-                    });
-                });
-            }
+            });
+
             return rendered;
         });
     }
@@ -334,9 +311,9 @@ export class BrowsePanel
     }
 
     private setupFilterPanel() {
-        let splitPanel = new SplitPanelBuilder(this.filterPanel, this.gridAndToolbarPanel)
-            .setFirstPanelMinSize(SplitPanelSize.PIXELS(215))
-            .setFirstPanelSize(SplitPanelSize.PIXELS(215))
+        const splitPanel = new SplitPanelBuilder(this.filterPanel, this.selectableListBoxPanel)
+            .setFirstPanelMinSize(SplitPanelSize.PIXELS(300))
+            .setFirstPanelSize(SplitPanelSize.PIXELS(300))
             .setAlignment(SplitPanelAlignment.VERTICAL)
             .setAnimationDelay(100)     // filter panel animation time
             .build();
