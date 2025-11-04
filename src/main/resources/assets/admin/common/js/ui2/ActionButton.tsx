@@ -1,5 +1,4 @@
 import * as UI from '@enonic/ui';
-import {unwrap} from '@enonic/ui';
 import {render} from 'react-dom';
 import {BrowserHelper} from '../BrowserHelper';
 import {Action} from '../ui/Action';
@@ -63,9 +62,9 @@ export class ActionButton<T extends Action = Action> extends LegacyElement<typeo
 
         render(
             <UI.IdProvider prefix={this.getPrefix()}>
-                <UI.Tooltip value={unwrap(props.title)}>
+                {/* <UI.Tooltip value={unwrap(props.title)}> */}
                     <ActionButtonComponent {...props} />
-                </UI.Tooltip>
+                {/* </UI.Tooltip> */}
             </UI.IdProvider>,
             this.getHTMLElement()
         );
