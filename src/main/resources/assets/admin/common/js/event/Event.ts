@@ -4,11 +4,11 @@ import {AbstractEvent} from './AbstractEvent';
 export class Event
     extends AbstractEvent {
 
-    fire(contextWindow: Window = window) {
+    fire(contextWindow?: Window) {
         EventBus.get(contextWindow).fireEvent(this);
     }
 
-    static getEventBus(contextWindow: Window): EventBus {
+    static getEventBus(contextWindow?: Window): EventBus {
         return EventBus.get(contextWindow);
     }
 }

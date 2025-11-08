@@ -4,11 +4,19 @@ import {AbstractEvent} from './AbstractEvent';
 export class IframeEvent
     extends AbstractEvent {
 
-    fire(contextWindow: Window = window) {
-        IframeEventBus.get(contextWindow).fireEvent(this);
+    fire() {
+        IframeEventBus.get().fireEvent(this);
     }
 
-    static getEventBus(contextWindow: Window): IframeEventBus {
-        return IframeEventBus.get(contextWindow);
+    toMessage(): string {
+        return '';
+    }
+
+    static fromMessage(name: string, data: string): IframeEvent {
+        return new IframeEvent(name);
+    }
+
+    static getEventBus(): IframeEventBus {
+        return IframeEventBus.get();
     }
 }

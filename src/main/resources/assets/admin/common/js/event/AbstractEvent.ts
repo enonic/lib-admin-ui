@@ -21,9 +21,9 @@ export abstract class AbstractEvent {
         return this.name;
     }
 
-    abstract fire(contextWindow: Window);
+    abstract fire(contextWindow?: Window);
 
-    static getEventBus(contextWindow: Window): AbstractEventBus<AbstractEvent> {
+    static getEventBus(contextWindow?: Window): AbstractEventBus<AbstractEvent> {
         throw new Error('Method not implemented.');
     };
 }
