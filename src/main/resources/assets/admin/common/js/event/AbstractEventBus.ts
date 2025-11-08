@@ -1,19 +1,19 @@
 import {AbstractEvent} from './AbstractEvent';
 
-export interface HandlersMapEntry {
-    handler: (event: AbstractEvent) => void;
+export interface HandlersMapEntry<E extends AbstractEvent> {
+    handler: (event: E) => void;
     customHandler?: (e: CustomEvent) => void;
 }
 
 export abstract class AbstractEventBus<E extends AbstractEvent> {
-    protected handlersMap: Record<string, HandlersMapEntry[]> = {};
+    protected handlersMap: Record<string, HandlersMapEntry<E>[]> = {};
     protected contextWindow: Window;
 
     protected constructor(contextWindow: Window = window) {
         this.contextWindow = contextWindow;
     }
 
-    onEvent(eventName: string, handler: (event: E) => void): HandlersMapEntry {
+    onEvent(eventName: string, handler: (event: E) => void): HandlersMapEntry<E> {
         if (!this.handlersMap[eventName]) {
             this.handlersMap[eventName] = [];
         }
@@ -22,8 +22,8 @@ export abstract class AbstractEventBus<E extends AbstractEvent> {
         return entry;
     }
 
-    unEvent(eventName: string, handler?: (event: E) => void): HandlersMapEntry[] {
-        const removedEntries: HandlersMapEntry[] = [];
+    unEvent(eventName: string, handler?: (event: E) => void): HandlersMapEntry<E>[] {
+        const removedEntries: HandlersMapEntry<E>[] = [];
         if (handler) {
             this.handlersMap[eventName] = (this.handlersMap[eventName] || []).filter(
                 entry => {
