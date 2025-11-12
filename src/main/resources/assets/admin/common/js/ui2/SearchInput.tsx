@@ -1,11 +1,21 @@
-import * as UI from '@enonic/ui';
+import {SearchField, SearchFieldRootProps} from '@enonic/ui';
 import {LegacyElement} from './LegacyElement';
 
-export class SearchInput extends LegacyElement<typeof UI.SearchInput> {
+const SearchInput = (props: SearchFieldRootProps) => {
+    return (
+        <SearchField.Root {...props}>
+            <SearchField.Icon />
+            <SearchField.Input />
+            <SearchField.Clear />
+        </SearchField.Root>
+    );
+};
+
+export class SearchInputComponent extends LegacyElement<typeof SearchInput> {
 
     private currentValue: string;
 
-    constructor(props: UI.SearchInputProps) {
+    constructor(props: SearchFieldRootProps) {
         const {onChange, ...rest} = props;
 
         super({
@@ -14,7 +24,7 @@ export class SearchInput extends LegacyElement<typeof UI.SearchInput> {
                 props.onChange?.(value);
             },
             ...rest,
-        }, UI.SearchInput);
+        }, SearchInput);
 
         this.currentValue = props.value ?? '';
     }

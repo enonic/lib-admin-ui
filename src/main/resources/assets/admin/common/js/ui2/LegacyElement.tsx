@@ -25,7 +25,8 @@ export class LegacyElement<C extends ComponentType<any>, P extends ComponentProp
     }
 
     protected getPrefix(): string {
-        return `${this.component.displayName ?? this.constructor.name}-${nanoid(8)}`;
+        const {name, displayName} = this.component;
+        return `${displayName ?? name ?? this.constructor.name}-${nanoid(8)}`;
     }
 
     protected renderJsx(): void {

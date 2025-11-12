@@ -11,7 +11,7 @@ import {SearchInputValues} from '../../../query/SearchInputValues';
 import {KeyBinding} from '../../../ui/KeyBinding';
 import {KeyBindings} from '../../../ui/KeyBindings';
 import {Panel} from '../../../ui/panel/Panel';
-import {SearchInput} from '../../../ui2/SearchInput';
+import {SearchInputComponent} from '../../../ui2/SearchInput';
 import {i18n} from '../../../util/Messages';
 import {StringHelper} from '../../../util/StringHelper';
 
@@ -24,7 +24,7 @@ export class BrowseFilterPanel<T>
     private hideFilterPanelButtonClickedListeners: (() => void)[] = [];
     private showResultsButtonClickedListeners: (() => void)[] = [];
     private aggregationContainer: AggregationContainer;
-    private newSearchField: SearchInput;
+    private newSearchField: SearchInputComponent;
     private hitsCounterEl: SpanEl;
     private showResultsButton: SpanEl;
     private searchContainer: DivEl;
@@ -40,7 +40,7 @@ export class BrowseFilterPanel<T>
         this.showResultsButton.onClicked(() => this.notifyShowResultsButtonPressed());
         showResultsButtonWrapper.appendChild(this.showResultsButton);
 
-        this.newSearchField = new SearchInput({
+        this.newSearchField = new SearchInputComponent({
             onChange: (value) => {
                 this.search();
             },
