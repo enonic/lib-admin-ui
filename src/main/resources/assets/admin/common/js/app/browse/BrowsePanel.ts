@@ -287,6 +287,10 @@ export class BrowsePanel
     }
 
     protected hideFilterPanel() {
+        if (!this.filterAndGridSplitPanel) {
+            return;
+        }
+
         this.filterPanelForcedShown = false;
         this.filterPanelForcedHidden = true;
         this.filterAndGridSplitPanel.showSecondPanel();
