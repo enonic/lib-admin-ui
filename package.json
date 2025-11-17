@@ -37,7 +37,7 @@
     "@types/mousetrap": "^1.6.15",
     "@types/postcss-normalize": "~9.0.4",
     "@types/q": "^1.5.8",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.22",
     "browserslist-config-enonic": "^1.0.8",
     "cross-env": "^10.1.0",
     "cssnano": "^7.1.2",
