@@ -68,13 +68,18 @@ export default defineConfig(({mode}) => {
       esbuild: {
         minifyIdentifiers: false,
         keepNames: true,
+        jsx: 'automatic',
+        jsxImportSource: 'preact',
+        jsxDev: isDevelopment
       },
       resolve: {
         alias: {
           'react': 'preact/compat',
-          'react-dom': 'preact/compat'
+          'react-dom': 'preact/compat',
+          'react/jsx-runtime': 'preact/jsx-runtime',
+          'react/jsx-dev-runtime': 'preact/jsx-dev-runtime'
         },
-        extensions: ['.ts', '.js']
+        extensions: ['.tsx', '.ts', '.jsx', '.js']
       },
       ...(isDevelopment && {
         server: {

@@ -1,26 +1,26 @@
 import Q from 'q';
+import {DefaultErrorHandler} from '../../DefaultErrorHandler';
+import {IDentifiable} from '../../IDentifiable';
+import {Action} from '../../ui/Action';
+import {Panel} from '../../ui/panel/Panel';
+import {SelectableListBoxPanel} from '../../ui/panel/SelectableListBoxPanel';
+import {SplitPanel, SplitPanelAlignment, SplitPanelBuilder} from '../../ui/panel/SplitPanel';
+import {SplitPanelSize} from '../../ui/panel/SplitPanelSize';
+import {ResponsiveItem} from '../../ui/responsive/ResponsiveItem';
 import {ResponsiveManager} from '../../ui/responsive/ResponsiveManager';
 import {ResponsiveRanges} from '../../ui/responsive/ResponsiveRanges';
-import {ResponsiveItem} from '../../ui/responsive/ResponsiveItem';
-import {ActionButton} from '../../ui/button/ActionButton';
-import {TreeGridActions} from '../../ui/treegrid/actions/TreeGridActions';
-import {SplitPanel, SplitPanelAlignment, SplitPanelBuilder} from '../../ui/panel/SplitPanel';
-import {Panel} from '../../ui/panel/Panel';
+import {SelectableListBoxKeyNavigator} from '../../ui/selector/list/SelectableListBoxKeyNavigator';
 import {Toolbar, ToolbarConfig} from '../../ui/toolbar/Toolbar';
-import {BrowseFilterPanel} from './filter/BrowseFilterPanel';
-import {Action} from '../../ui/Action';
-import {DefaultErrorHandler} from '../../DefaultErrorHandler';
+import {TreeGridActions} from '../../ui/treegrid/actions/TreeGridActions';
+import {DataChangedEvent} from '../../ui/treegrid/DataChangedEvent';
+import {ActionButton} from '../../ui2/ActionButton';
+import {AppHelper} from '../../util/AppHelper';
+import {i18n} from '../../util/Messages';
+import {SelectionChange} from '../../util/SelectionChange';
+import {ViewItem} from '../view/ViewItem';
 import {ToggleFilterPanelAction} from './action/ToggleFilterPanelAction';
 import {BrowseItemPanel} from './BrowseItemPanel';
-import {i18n} from '../../util/Messages';
-import {IDentifiable} from '../../IDentifiable';
-import {DataChangedEvent} from '../../ui/treegrid/DataChangedEvent';
-import {ViewItem} from '../view/ViewItem';
-import {AppHelper} from '../../util/AppHelper';
-import {SplitPanelSize} from '../../ui/panel/SplitPanelSize';
-import {SelectableListBoxPanel} from '../../ui/panel/SelectableListBoxPanel';
-import {SelectionChange} from '../../util/SelectionChange';
-import {SelectableListBoxKeyNavigator} from '../../ui/selector/list/SelectableListBoxKeyNavigator';
+import {BrowseFilterPanel} from './filter/BrowseFilterPanel';
 
 export class BrowsePanel
     extends Panel {
@@ -33,7 +33,6 @@ export class BrowsePanel
     protected treeActions: TreeGridActions<ViewItem>;
     protected filterPanelToBeShownFullScreen: boolean = false;
     protected gridAndItemsSplitPanel: SplitPanel;
-    private gridAndToolbarPanel: Panel;
     private browseItemPanel: BrowseItemPanel;
     private filterAndGridSplitPanel: SplitPanel;
     private filterPanelForcedShown: boolean = false;
@@ -63,17 +62,18 @@ export class BrowsePanel
             this.browseItemPanel = this.createBrowseItemPanel();
         }
 
-        this.gridAndItemsSplitPanel = new SplitPanelBuilder(this.selectableListBoxPanel, this.createBrowseWithItemsPanel())
-            .setAlignment(SplitPanelAlignment.VERTICAL)
-            .setFirstPanelSize(SplitPanelSize.PERCENTS(this.getFirstPanelSize()))
-            .build();
-
         if (this.filterPanel) {
-            this.gridAndToolbarPanel = new Panel();
             this.filterAndGridSplitPanel = this.setupFilterPanel();
         }
 
+        this.gridAndItemsSplitPanel =
+            new SplitPanelBuilder(this.filterAndGridSplitPanel ?? this.selectableListBoxPanel, this.createBrowseWithItemsPanel())
+                .setAlignment(SplitPanelAlignment.VERTICAL)
+                .setFirstPanelSize(SplitPanelSize.PERCENTS(this.getFirstPanelSize()))
+                .build();
+
         this.selectableListBoxPanel.getWrapper().setSkipFirstClickOnFocus(true);
+        this.hideFilterPanel();
     }
 
     protected initListeners() {
@@ -189,36 +189,13 @@ export class BrowsePanel
             this.browseToolbar.addClass('browse-toolbar');
             this.gridAndItemsSplitPanel.addClass('content-grid-and-browse-split-panel');
 
-            if (this.filterPanel) {
-                this.gridAndToolbarPanel.onAdded(() => {
-                    this.gridAndItemsSplitPanel.setDoOffset(true);
-                });
-
-                if (this.filterPanelIsHiddenByDefault) {
-                    this.hideFilterPanel();
-                }
-                this.appendChild(this.filterAndGridSplitPanel);
-
-                // Hack: Places the append calls farther in the engine call stack.
-                // Prevent toolbar and gridPanel not being visible when the width/height
-                // is requested and elements resize/change position/etc.
+            this.appendChild(this.browseToolbar);
+            this.browseToolbar.onRendered(() => {
                 setTimeout(() => {
-                    this.gridAndToolbarPanel.appendChild(this.browseToolbar);
+                    this.appendChild(this.gridAndItemsSplitPanel);
                 });
-                this.browseToolbar.onRendered(() => {
-                    setTimeout(() => {
-                        this.gridAndToolbarPanel.appendChild(this.gridAndItemsSplitPanel);
-                    });
-                });
-            } else {
-                this.appendChild(this.browseToolbar);
-                // Hack: Same hack.
-                this.browseToolbar.onRendered(() => {
-                    setTimeout(() => {
-                        this.appendChild(this.gridAndItemsSplitPanel);
-                    });
-                });
-            }
+            });
+
             return rendered;
         });
     }
@@ -310,6 +287,10 @@ export class BrowsePanel
     }
 
     protected hideFilterPanel() {
+        if (!this.filterAndGridSplitPanel) {
+            return;
+        }
+
         this.filterPanelForcedShown = false;
         this.filterPanelForcedHidden = true;
         this.filterAndGridSplitPanel.showSecondPanel();
@@ -329,14 +310,14 @@ export class BrowsePanel
         }
     }
 
-    private filterPanelIsHidden(): boolean {
+    protected filterPanelIsHidden(): boolean {
         return this.filterAndGridSplitPanel.isFirstPanelHidden();
     }
 
     private setupFilterPanel() {
-        let splitPanel = new SplitPanelBuilder(this.filterPanel, this.gridAndToolbarPanel)
-            .setFirstPanelMinSize(SplitPanelSize.PIXELS(215))
-            .setFirstPanelSize(SplitPanelSize.PIXELS(215))
+        const splitPanel = new SplitPanelBuilder(this.filterPanel, this.selectableListBoxPanel)
+            .setFirstPanelMinSize(SplitPanelSize.PIXELS(300))
+            .setFirstPanelSize(SplitPanelSize.PIXELS(300))
             .setAlignment(SplitPanelAlignment.VERTICAL)
             .setAnimationDelay(100)     // filter panel animation time
             .build();
