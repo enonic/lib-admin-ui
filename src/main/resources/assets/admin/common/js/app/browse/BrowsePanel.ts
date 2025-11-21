@@ -33,8 +33,8 @@ export class BrowsePanel
     protected treeActions: TreeGridActions<ViewItem>;
     protected filterPanelToBeShownFullScreen: boolean = false;
     protected gridAndItemsSplitPanel: SplitPanel;
-    private browseItemPanel: BrowseItemPanel;
-    private filterAndGridSplitPanel: SplitPanel;
+    protected browseItemPanel: BrowseItemPanel;
+    protected filterAndGridSplitPanel: SplitPanel;
     private filterPanelForcedShown: boolean = false;
     private filterPanelForcedHidden: boolean = false;
     private filterPanelIsHiddenByDefault: boolean = true;
@@ -70,6 +70,7 @@ export class BrowsePanel
             new SplitPanelBuilder(this.filterAndGridSplitPanel ?? this.selectableListBoxPanel, this.createBrowseWithItemsPanel())
                 .setAlignment(SplitPanelAlignment.VERTICAL)
                 .setFirstPanelSize(SplitPanelSize.PERCENTS(this.getFirstPanelSize()))
+                .setSplitterThickness(this.getSplitterThickness())
                 .build();
 
         this.selectableListBoxPanel.getWrapper().setSkipFirstClickOnFocus(true);
@@ -98,6 +99,10 @@ export class BrowsePanel
                 }
             });
         }
+    }
+
+    protected getSplitterThickness(): number {
+        return 5;
     }
 
     protected getFirstPanelSize(): number {
@@ -320,6 +325,7 @@ export class BrowsePanel
             .setFirstPanelSize(SplitPanelSize.PIXELS(300))
             .setAlignment(SplitPanelAlignment.VERTICAL)
             .setAnimationDelay(100)     // filter panel animation time
+            .setSplitterThickness(this.getSplitterThickness())
             .build();
 
         this.filterPanel.onHideFilterPanelButtonClicked(() => {

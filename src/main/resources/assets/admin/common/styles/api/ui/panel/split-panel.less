@@ -10,9 +10,12 @@
   }
 
   > .splitter {
-    background-color: @admin-bg-light-gray;
     cursor: ns-resize;
     .notSelectable();
+
+    &.splitter-bg-standard {
+      background-color: @admin-bg-light-gray;
+    }
   }
 
   > .ghost-dragger {
