@@ -48,6 +48,13 @@ export default defineConfig(({mode}) => {
           formats: ['iife']
         },
         rollupOptions: {
+          onwarn(warning, warn) {
+            // Suppress INVALID_ANNOTATION warnings from @enonic/ui
+            if (warning.code === 'INVALID_ANNOTATION' && warning.id?.includes('@enonic/ui')) {
+              return;
+            }
+            warn(warning);
+          },
           plugins: [
             inject({
               $: 'jquery',
