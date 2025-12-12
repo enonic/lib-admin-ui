@@ -113,7 +113,7 @@ export class DateTime
         }
     }
 
-    private readConfig(inputConfig: Record<string, Record<string, string>[]>): void {
+    private readConfig(inputConfig: Record<string, Record<string, unknown>[]>): void {
         const timeZoneConfig = inputConfig['timezone'] && inputConfig['timezone'][0];
         const timeZone = timeZoneConfig && timeZoneConfig['value'];
 
