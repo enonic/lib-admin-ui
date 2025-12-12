@@ -52,13 +52,12 @@ export class TextLine
         input.setEnabled(enable);
     }
 
-    protected readConfig(inputConfig: Record<string, Record<string, string>[]>): void {
+    protected readConfig(inputConfig: Record<string, Record<string, unknown>[]>): void {
         super.readConfig(inputConfig);
 
         const regexpConfig = inputConfig['regexp'] ? inputConfig['regexp'][0] : {};
-        const regexp = regexpConfig ? regexpConfig['value'] : '';
+        const regexp = regexpConfig ? regexpConfig['value'] as string : '';
         this.regexp = !StringHelper.isBlank(regexp) ? new RegExp(regexp) : null;
-
     }
 
     protected updateValidationStatusOnUserInput(inputEl: TextInput, isValid: boolean) {
