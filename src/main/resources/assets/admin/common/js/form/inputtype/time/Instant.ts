@@ -20,8 +20,7 @@ import {i18n} from '../../../util/Messages';
 export class Instant
     extends BaseInputTypeNotManagingAdd {
 
-    // private valueType: ValueType = ValueTypes.INSTANT;
-    private valueType: ValueType = ValueTypes.DATE_TIME;
+    private valueType: ValueType = ValueTypes.INSTANT;
 
     constructor(config: InputTypeViewContext) {
         super(config);
@@ -115,4 +114,4 @@ export class Instant
     }
 }
 
-InputTypeManager.register(new Class('DateTime', Instant), true);
+InputTypeManager.register(new Class('Instant', Instant), true);

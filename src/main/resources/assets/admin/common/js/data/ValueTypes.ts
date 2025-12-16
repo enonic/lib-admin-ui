@@ -45,7 +45,7 @@ export class ValueTypes {
 
     static BINARY_REFERENCE: ValueTypeBinaryReference = new ValueTypeBinaryReference();
 
-    // static INSTANT: ValueTypeInstant = new ValueTypeInstant();
+    static INSTANT: ValueTypeInstant = new ValueTypeInstant();
 
     static ALL: ValueType[] = [
         ValueTypes.DATA,
@@ -61,7 +61,7 @@ export class ValueTypes {
         ValueTypes.GEO_POINT,
         ValueTypes.REFERENCE,
         ValueTypes.BINARY_REFERENCE,
-        // ValueTypes.INSTANT,
+        ValueTypes.INSTANT,
     ];
 
     public static fromName(name: string): ValueType {
