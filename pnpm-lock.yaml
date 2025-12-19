@@ -31,8 +31,8 @@ importers:
         version: 1.5.1
     devDependencies:
       '@enonic/eslint-config':
-        specifier: ^2.1.0
-        version: 2.1.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(typescript-eslint@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(typescript@5.9.3)
+        specifier: ^2.2.1
+        version: 2.2.1(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(typescript-eslint@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(typescript@5.9.3)
       '@rollup/plugin-inject':
         specifier: ^5.0.5
         version: 5.0.5(rollup@4.53.3)
@@ -93,8 +93,8 @@ packages:
   '@csstools/normalize.css@12.1.1':
     resolution: {integrity: sha512-YAYeJ+Xqh7fUou1d1j9XHl44BmsuThiTr4iNrgCQ3J27IbhXsxXDGZ1cXv8Qvs99d4rBbLiSKy3+WZiet32PcQ==}
 
-  '@enonic/eslint-config@2.1.0':
-    resolution: {integrity: sha512-K/Qygr9fxiDa0wCp+HXtbJLNmaQHTPeFfaNlXjUWT7a2smLZw9a24i8+xKW8YhEjqfBUzXc6AoObcRVxFNz2Qg==}
+  '@enonic/eslint-config@2.2.1':
+    resolution: {integrity: sha512-5fOFJkQc6H2XUsgw3whRvbu451byuVAKGjF831Qgkk5cZGykvHFog3PV3qWYD6F0bNWhFSFNBlolrBwJxPZowg==}
     peerDependencies:
       '@typescript-eslint/parser': ^8.39.0
       typescript: ^5.8.3
@@ -875,6 +875,10 @@ packages:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
+  globals@16.5.0:
+    resolution: {integrity: sha512-c/c15i26VrJ4IRt5Z89DnIzCGDn9EcebibhAOjw5ibqEHsE1wLUgkPn9RDmNcUKyU87GeaL633nyJ+pplFR2ZQ==}
+    engines: {node: '>=18'}
+
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
@@ -1489,9 +1493,10 @@ snapshots:
 
   '@csstools/normalize.css@12.1.1': {}
 
-  '@enonic/eslint-config@2.1.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(typescript-eslint@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(typescript@5.9.3)':
+  '@enonic/eslint-config@2.2.1(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(typescript-eslint@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/parser': 8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+      globals: 16.5.0
       typescript: 5.9.3
       typescript-eslint: 8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
 
@@ -2249,6 +2254,8 @@ snapshots:
       is-glob: 4.0.3
 
   globals@14.0.0: {}
+
+  globals@16.5.0: {}
 
   graceful-fs@4.2.11:
     optional: true
