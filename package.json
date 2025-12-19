@@ -43,7 +43,7 @@
     "enonic-admin-artifacts": "^2.4.0",
     "eslint": "^9.39.2",
     "jiti": "~2.6.1",
-    "less": "^4.4.2",
+    "less": "^4.5.1",
     "postcss-normalize": "^13.0.1",
     "postcss-sort-media-queries": "^5.2.0",
     "typescript": "^5.9.3",
