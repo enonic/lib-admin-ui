@@ -139,4 +139,12 @@ export class ContentTypeName
             return contentTypeName.equals(this);
         });
     }
+
+    public static fromObject(o: object): ContentTypeName {
+        if (o instanceof ContentTypeName) {
+            return o;
+        } else {
+            return new ContentTypeName(o['refString']);
+        }
+    }
 }

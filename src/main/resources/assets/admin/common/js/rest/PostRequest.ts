@@ -24,7 +24,7 @@ export class PostRequest
     }
 
     protected createRequestURI(): string {
-        return UriHelper.getUri(this.path.toString());
+        return UriHelper.getUri(this.path.toString(), true);
     }
 
     protected createRequestData(): any {
