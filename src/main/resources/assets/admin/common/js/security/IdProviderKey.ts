@@ -26,4 +26,12 @@ export class IdProviderKey
 
         return super.equals(o);
     }
+
+    public static fromObject(o: object): IdProviderKey {
+        if (o instanceof IdProviderKey) {
+            return o;
+        } else {
+            return new IdProviderKey(o['id']);
+        }
+    }
 }

@@ -160,4 +160,12 @@ export class PrincipalKey
 
         return path;
     }
+
+    public static fromObject(o: object): PrincipalKey {
+        if (o instanceof PrincipalKey) {
+            return o;
+        } else {
+            return PrincipalKey.fromString(o['refString']);
+        }
+    }
 }
