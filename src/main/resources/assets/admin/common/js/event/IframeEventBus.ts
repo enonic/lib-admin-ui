@@ -110,11 +110,11 @@ export class IframeEventBus
                 // but Object.assign is more robust.
 
                 if (typeof ClassConstructor.fromObject === 'function') {
-                    console.info(`[${this.id}] invoking ${typeName}.fromObject`, value);
+                    console.debug(`[${this.id}] invoking ${typeName}.fromObject`, value);
                     return ClassConstructor.fromObject(value);
                 } else {
                     const newInstance = new ClassConstructor();
-                    console.info(`[${this.id}] using constructor for ${typeName}`, value);
+                    console.debug(`[${this.id}] using constructor for ${typeName}`, value);
                     Object.assign(newInstance, value);
                     return newInstance;
                 }

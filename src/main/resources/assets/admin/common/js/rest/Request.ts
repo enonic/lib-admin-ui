@@ -17,8 +17,14 @@ export abstract class Request {
 
     protected request: XMLHttpRequest = new XMLHttpRequest();
 
+    private static headers = {};
+
     constructor(method: HttpMethod) {
         this.method = method;
+    }
+
+    static setHeader(header: string, value: string): void {
+        Request.headers[header] = value;
     }
 
     setPath(value: Path): Request {
@@ -87,6 +93,9 @@ export abstract class Request {
 
     protected prepareRequest(): void {
         this.request.open(this.method, this.createRequestURI(), true);
+        for (const header in Request.headers) {
+            this.request.setRequestHeader(header, Request.headers[header]);
+        }
         this.request.timeout = this.timeoutMillis;
     }
 
