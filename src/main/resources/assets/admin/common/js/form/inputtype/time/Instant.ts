@@ -39,6 +39,7 @@ export class Instant
         const valueType: ValueType = this.getValueType();
 
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
+        dateTimeBuilder.setUseLocalTimezone(true);
 
         const defaultDate: Date = this.getDefaultValue();
         if (defaultDate) {

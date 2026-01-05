@@ -44,9 +44,9 @@ export class ValueTypeConverter {
             return ValueTypeConverter.convertToReference(value);
         } else if (toType === ValueTypes.BINARY_REFERENCE) {
             return ValueTypeConverter.convertToBinaryReference(value);
-        } /*else if (toType === ValueTypes.INSTANT) {
+        } else if (toType === ValueTypes.INSTANT) {
             return ValueTypeConverter.convertToInstant(value);
-        }*/
+        }
 
         throw Error(`Unknown ValueType: ${toType.toString()}`);
     }
@@ -155,34 +155,25 @@ export class ValueTypeConverter {
         if (value.getType() === ValueTypes.STRING && ValueTypes.DATE_TIME.isConvertible(value.getString())) { // from string
             return ValueTypes.DATE_TIME.newValue(value.getString());
         } else if (value.getType() === ValueTypes.LOCAL_DATE && value.isNotNull()) { // from LocalDate
-            return ValueTypes.DATE_TIME.newValue(`${value.getString()}T00:00:00Z`);
+            return ValueTypes.DATE_TIME.newValue(`${value.getString()}T00:00:00`);
         } else if (value.getType() === ValueTypes.LOCAL_DATE_TIME && value.isNotNull()) { // from LocalDateTime
-            return ValueTypes.DATE_TIME.newValue(`${value.getString()}Z`);
-        } else {
-            return ValueTypes.DATE_TIME.newNullValue();
+            let dateTime = value.getString();
+            return ValueTypes.DATE_TIME.newValue(dateTime);
         }
-        // if (value.getType() === ValueTypes.STRING && ValueTypes.DATE_TIME.isConvertible(value.getString())) { // from string
-        //     return ValueTypes.DATE_TIME.newValue(value.getString());
-        // } else if (value.getType() === ValueTypes.LOCAL_DATE && value.isNotNull()) { // from LocalDate
-        //     return ValueTypes.DATE_TIME.newValue(value.getString() + 'T00:00:00+00:00');
-        // } else if (value.getType() === ValueTypes.LOCAL_DATE_TIME && value.isNotNull()) { // from LocalDateTime
-        //     let dateTime = value.getString();
-        //     return ValueTypes.DATE_TIME.newValue(dateTime);
-        // }
-        // return ValueTypes.DATE_TIME.newNullValue();
+        return ValueTypes.DATE_TIME.newNullValue();
     }
 
-    // private static convertToInstant(value: Value): Value {
-    //     if (value.getType() === ValueTypes.STRING && ValueTypes.INSTANT.isConvertible(value.getString())) { // from string
-    //         return ValueTypes.INSTANT.newValue(value.getString());
-    //     } else if (value.getType() === ValueTypes.LOCAL_DATE && value.isNotNull()) { // from LocalDate
-    //         return ValueTypes.INSTANT.newValue(`${value.getString()}T00:00:00Z`);
-    //     } else if (value.getType() === ValueTypes.LOCAL_DATE_TIME && value.isNotNull()) { // from LocalDateTime
-    //         return ValueTypes.INSTANT.newValue(`${value.getString()}Z`);
-    //     } else {
-    //         return ValueTypes.INSTANT.newNullValue();
-    //     }
-    // }
+    private static convertToInstant(value: Value): Value {
+        if (value.getType() === ValueTypes.STRING && ValueTypes.INSTANT.isConvertible(value.getString())) { // from string
+            return ValueTypes.INSTANT.newValue(value.getString());
+        } else if (value.getType() === ValueTypes.LOCAL_DATE && value.isNotNull()) { // from LocalDate
+            return ValueTypes.INSTANT.newValue(`${value.getString()}T00:00:00Z`);
+        } else if (value.getType() === ValueTypes.LOCAL_DATE_TIME && value.isNotNull()) { // from LocalDateTime
+            return ValueTypes.INSTANT.newValue(`${value.getString()}Z`);
+        } else {
+            return ValueTypes.INSTANT.newNullValue();
+        }
+    }
 
     private static convertToLocalTime(value: Value): Value {
         if (value.getType() === ValueTypes.STRING && ValueTypes.LOCAL_TIME.isConvertible(value.getString())) { // from string
