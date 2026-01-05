@@ -13,6 +13,7 @@ import {Instant as InstantUtil} from '../../../util/Instant';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
+import dayjs from 'dayjs';
 
 /**
  * Uses [[ValueType]] [[ValueTypeInstant]].
@@ -28,7 +29,20 @@ export class Instant
     }
 
     getDefaultValue(): Date {
-        return this.getContext().input.getDefaultValue()?.getInstant()?.toDate();
+        const inputConfig = this.getContext().inputConfig;
+        const defaultValueConfig = inputConfig['default'] && inputConfig['default'][0];
+        const defaultValue = defaultValueConfig && defaultValueConfig['value'] as string;
+
+        if (!defaultValue) {
+            return null;
+        }
+
+        const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
+        if (isoRegex.test(defaultValue)) {
+            return InstantUtil.fromString(defaultValue).toDate();
+        } else {
+            return this.parseRelative(defaultValue);
+        }
     }
 
     getValueType(): ValueType {
@@ -52,6 +66,8 @@ export class Instant
 
         if (property.hasNonNullValue()) {
             dateTimeBuilder.setDateTime(property.getInstant().toDate());
+        } else if (defaultDate) {
+            dateTimeBuilder.setDateTime(defaultDate);
         }
 
         const dateTimePicker: DateTimePicker = dateTimeBuilder.build();
@@ -112,6 +128,28 @@ export class Instant
 
     protected getValue(inputEl: Element, event: SelectedDateChangedEvent): Value {
         return new Value(event.getDate() != null ? InstantUtil.fromDate(event.getDate()) : null, this.getValueType());
+    }
+
+    private parseRelative(expr: any): Date {
+        const base = dayjs();
+        if (!expr || expr.trim() === 'now') {
+            return InstantUtil.fromString(base.toISOString()).toDate();
+        }
+
+        const result = expr.trim().split(/\s+/).reduce((date, token) => {
+            const match = token.match(/^([+-])(\d+)([a-zA-Z]+)$/);
+            if (!match) {
+                return date;
+            }
+
+            const [, sign, value, unit] = match;
+
+            return sign === '+'
+                   ? date.add(Number(value), unit)
+                   : date.subtract(Number(value), unit);
+        }, base);
+
+        return InstantUtil.fromString(result.toISOString()).toDate();
     }
 }
 
