@@ -29,8 +29,6 @@ export class DateTime
 
     private readonly fractions: number;
 
-    private readonly timezone: Timezone;
-
     constructor(builder: DateTimeBuilder) {
         this.year = builder.year;
         this.month = builder.month;
@@ -39,7 +37,6 @@ export class DateTime
         this.minutes = builder.minutes;
         this.seconds = builder.seconds;
         this.fractions = builder.fractions;
-        this.timezone = builder.timezone || Timezone.getZeroOffsetTimezone();
     }
 
     static isValidDateTime(s: string): boolean {
@@ -70,11 +67,9 @@ export class DateTime
         }
 
         let date;
-        let timezone;
 
         if (DateHelper.isUTCdate(s)) {
             date = DateHelper.makeDateFromUTCString(s);
-            timezone = Timezone.getDateTimezone(date);
             if (DateHelper.isDST(date)) { // when converting from UTC date, Date object may have an extra hour added due to DST
                 date.setHours(date.getHours() - 1);
             }
@@ -86,14 +81,6 @@ export class DateTime
                 DateTime.TIME_SEPARATOR,
                 DateTime.FRACTION_SEPARATOR
             );
-            let offset = DateTime.parseOffset(s);
-            if (offset != null) {
-                timezone = Timezone.fromOffset(offset);
-            } else {
-                // assume that if passed date string is not in UTC format and does not contain explicit offset,
-                // like '2015-02-29T12:05:59' - use zero offset timezone
-                timezone = Timezone.getZeroOffsetTimezone();
-            }
         }
 
         if (!date) {
@@ -108,7 +95,6 @@ export class DateTime
             .setMinutes(date.getMinutes())
             .setSeconds(date.getSeconds())
             .setFractions(date.getMilliseconds())
-            .setTimezone(timezone)
             .build();
     }
 
@@ -121,7 +107,6 @@ export class DateTime
             .setMinutes(s.getMinutes())
             .setSeconds(s.getSeconds())
             .setFractions(s.getMilliseconds())
-            .setTimezone(Timezone.getDateTimezone(s))// replace with timezone picker value if implemented tz selection
             .build();
     }
 
@@ -210,10 +195,6 @@ export class DateTime
         return this.fractions || 0;
     }
 
-    getTimezone(): Timezone {
-        return this.timezone;
-    }
-
     dateToString(): string {
         return this.year +
                DateTime.DATE_SEPARATOR + this.padNumber(this.month + 1) +
@@ -230,7 +211,7 @@ export class DateTime
 
     /** Returns date in ISO format. Month value is incremented because ISO month range is 1-12, whereas JS Date month range is 0-11 */
     toString(): string {
-        return this.dateToString() + DateTime.DATE_TIME_SEPARATOR + this.timeToString() + this.timezone.toString();
+        return this.dateToString() + DateTime.DATE_TIME_SEPARATOR + this.timeToString();
     }
 
     equals(o: Equitable): boolean {
@@ -320,11 +301,6 @@ export class DateTimeBuilder {
         if (this.seconds && value > 0) {
             this.fractions = value;
         }
-        return this;
-    }
-
-    public setTimezone(value: Timezone): DateTimeBuilder {
-        this.timezone = value;
         return this;
     }
 

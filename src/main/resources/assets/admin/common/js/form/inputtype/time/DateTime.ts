@@ -13,6 +13,8 @@ import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
+import {DateTime as DateTimeUtil} from '../../../util/DateTime';
+import dayjs from 'dayjs';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDateTime]].
@@ -28,7 +30,20 @@ export class DateTime
     }
 
     getDefaultValue(): Date {
-        return this.getContext().input.getDefaultValue()?.getDateTime()?.toDate();
+        const inputConfig = this.getContext().inputConfig;
+        const defaultValueConfig = inputConfig['default'] && inputConfig['default'][0];
+        const defaultValue = defaultValueConfig && defaultValueConfig['value'] as string;
+
+        if (!defaultValue) {
+            return null;
+        }
+
+        const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?$/;
+        if (isoRegex.test(defaultValue)) {
+            return DateTimeUtil.fromString(defaultValue).toDate();
+        } else {
+            return this.parseRelative(defaultValue);
+        }
     }
 
     getValueType(): ValueType {
@@ -53,6 +68,8 @@ export class DateTime
         if (property.hasNonNullValue()) {
             const date: LocalDateTime = property.getLocalDateTime();
             dateTimeBuilder.setDateTime(date.toDate());
+        } else {
+            dateTimeBuilder.setDateTime(defaultDate);
         }
 
         const dateTimePicker: DateTimePicker = dateTimeBuilder.build();
@@ -113,6 +130,28 @@ export class DateTime
 
     protected getValue(inputEl: Element, event: SelectedDateChangedEvent): Value {
         return new Value(event.getDate() != null ? LocalDateTime.fromDate(event.getDate()) : null, this.getValueType());
+    }
+
+    private parseRelative(expr: any): Date {
+        const base = dayjs();
+        if (!expr || expr.trim() === 'now') {
+            return DateTimeUtil.fromString(base.toISOString()).toDate();
+        }
+
+        const result = expr.trim().split(/\s+/).reduce((date, token) => {
+            const match = token.match(/^([+-])(\d+)([a-zA-Z]+)$/);
+            if (!match) {
+                return date;
+            }
+
+            const [, sign, value, unit] = match;
+
+            return sign === '+'
+                   ? date.add(Number(value), unit)
+                   : date.subtract(Number(value), unit);
+        }, base);
+
+        return DateTimeUtil.fromString(result.toISOString()).toDate();
     }
 }
 

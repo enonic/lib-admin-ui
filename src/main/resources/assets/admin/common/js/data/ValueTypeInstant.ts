@@ -11,7 +11,7 @@ export class ValueTypeInstant
         super('Instant');
     }
 
-    isValid(value: string): boolean {
+    isValid(value: any): boolean {
         if (ObjectHelper.iFrameSafeInstanceOf(value, Instant)) {
             return true;
         }

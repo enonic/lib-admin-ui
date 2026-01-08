@@ -37,7 +37,7 @@ export class Instant
         this.fractions = builder.fractions;
     }
 
-    static isValidInstant(s: any): boolean {
+    static isValidInstant(s: string): boolean {
         if (StringHelper.isBlank(s)) {
             return false;
         }

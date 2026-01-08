@@ -14,6 +14,11 @@ import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import {Timezone} from '../../../util/Timezone';
+import {ValueTypeInstant} from '../../../data/ValueTypeInstant';
+
+dayjs.extend(utc);
 
 /**
  * Uses [[ValueType]] [[ValueTypeInstant]].
@@ -127,7 +132,21 @@ export class Instant
     }
 
     protected getValue(inputEl: Element, event: SelectedDateChangedEvent): Value {
-        return new Value(event.getDate() != null ? InstantUtil.fromDate(event.getDate()) : null, this.getValueType());
+        if (event.getDate() != null) {
+            const timezone = Timezone.getDateTimezone(event.getDate());
+            const timezoneOffset = timezone.getOffset();
+            let date: Date = null;
+            if (timezoneOffset > 0) {
+                date = dayjs(event.getDate()).subtract(timezoneOffset, 'hours').toDate();
+            }
+            if (timezoneOffset < 0) {
+                date = dayjs(event.getDate()).add(timezoneOffset, 'hours').toDate();
+            }
+
+            return new Value(InstantUtil.fromDate(date), this.getValueType());
+        } else {
+            return new Value(null, this.getValueType());
+        }
     }
 
     private parseRelative(expr: any): Date {
