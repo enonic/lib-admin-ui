@@ -31,7 +31,7 @@ export class Store {
     private static instanceInWindow(windowObject?: Window): Store {
         const libAdmin: GlobalLibAdmin = Store.getGlobal(windowObject);
 
-        if (libAdmin.store == null) {
+        if (!libAdmin.store) {
             libAdmin.store = new Store();
         }
 
@@ -43,9 +43,10 @@ export class Store {
     }
 
     static parentInstance(): Store {
-        if (window !== window.parent) {
-            return Store.instanceInWindow(window.parent);
-        }
+        //TODO: can't do that in cross-origin iframes!
+        // if (window !== window.parent) {
+        //     return Store.instanceInWindow(window.parent);
+        // }
         return Store.instance();
     }
 

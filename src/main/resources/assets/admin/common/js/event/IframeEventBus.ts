@@ -24,7 +24,7 @@ export class IframeEventBus
     }
 
     setReceiver(receiver: Window) {
-        console.info(`[${this.id}] Setting receiver window to`, receiver);
+        console.debug(`[${this.id}] Setting receiver window to`, receiver);
         this.contextWindow = receiver;
     }
 
@@ -38,7 +38,7 @@ export class IframeEventBus
 
     public fireEvent(event: IframeEvent) {
         const detail = JSON.stringify(event, this.replacer.bind(this));
-        console.info(`[${this.id}] Firing event: ${event.getName()}`, event);
+        console.debug(`[${this.id}] Firing event: ${event.getName()}`, event);
         // post messages are allowed on other windows (parent, child) so we post messages there
         if (!this.contextWindow) {
             throw new Error(`[${this.id}] No receiver window set for IframeEventBus, use setReceiver(window) to set one.`);
@@ -51,7 +51,7 @@ export class IframeEventBus
 
     public registerClass(fullName: string, instance: any) {
         const constructor = (typeof instance === 'function') ? instance : instance['constructor'];
-        console.info(`[${this.id}] Registering class: ${fullName}`);
+        console.debug(`[${this.id}] Registering class: ${fullName}`);
         this.classRegistry[fullName] = constructor as ClassConstructor;
     }
 
@@ -71,7 +71,7 @@ export class IframeEventBus
         }
 
         const data = JSON.parse(detail, this.reviver.bind(this));
-        console.info(`[${this.id}] Got event: ${eventName}`, data);
+        console.debug(`[${this.id}] Got event: ${eventName}`, data);
 
         (this.handlersMap[eventName] || []).forEach(entry => entry.handler(data));
     };
@@ -89,9 +89,20 @@ export class IframeEventBus
         }
 
         this.registerClass(fullName, value);
+
+        let str;
+        if (typeof value.toString === 'function') {
+            str = value.toString();
+            // make sure it's not the default toString output
+            if (str === '[object Object]' || str === '[object Array]') {
+                str = undefined;
+            }
+        }
+
         // Add a custom property to identify the class later
         return {
             __typename: fullName,
+            __stringvalue: str,
             ...value
         };
     }
@@ -109,7 +120,14 @@ export class IframeEventBus
                 // This simple version assumes properties match constructor args,
                 // but Object.assign is more robust.
 
-                if (typeof ClassConstructor.fromObject === 'function') {
+                if (typeof ClassConstructor.fromString === 'function') {
+                    const stringValue = value.__stringvalue;
+                    if (stringValue !== undefined) {
+                        delete value.__stringvalue;
+                        console.debug(`[${this.id}] invoking ${typeName}.fromString`, stringValue);
+                        return ClassConstructor.fromString(stringValue);
+                    }
+                } else if (typeof ClassConstructor.fromObject === 'function') {
                     console.debug(`[${this.id}] invoking ${typeName}.fromObject`, value);
                     return ClassConstructor.fromObject(value);
                 } else {
