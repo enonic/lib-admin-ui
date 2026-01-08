@@ -6,6 +6,8 @@ export interface ClassConstructor {
     new(...args: any[]): any;
 
     fromObject?(obj: object): any;
+
+    fromString?(str: string): any;
 }
 
 export class IframeEvent
