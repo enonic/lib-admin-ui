@@ -40,7 +40,7 @@ export class ValueTypeDateTime
         return new Value(date, this);
     }
 
-    // 2010-01-01T10:55:00+01:00
+    // 2010-01-01T10:55:00
     toJsonValue(value: Value): string {
         return value.isNull() ? null : value.getDateTime().toString();
     }

@@ -170,7 +170,7 @@ export class ValueTypeConverter {
             return ValueTypes.INSTANT.newValue(`${value.getString()}T00:00:00Z`);
         } else if (value.getType() === ValueTypes.LOCAL_DATE_TIME && value.isNotNull()) { // from LocalDateTime
             return ValueTypes.INSTANT.newValue(`${value.getString()}Z`);
-        } else if (value.getType().toString() === 'DateTime' && value.isNotNull()) {
+        } else if (value.getType() === ValueTypes.DATE_TIME && value.isNotNull()) {
             return ValueTypes.INSTANT.newValue(`${value.getString()}Z`);
         } else {
             return ValueTypes.INSTANT.newNullValue();

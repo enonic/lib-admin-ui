@@ -14,11 +14,7 @@ import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import {Timezone} from '../../../util/Timezone';
-import {ValueTypeInstant} from '../../../data/ValueTypeInstant';
-
-dayjs.extend(utc);
 
 /**
  * Uses [[ValueType]] [[ValueTypeInstant]].
