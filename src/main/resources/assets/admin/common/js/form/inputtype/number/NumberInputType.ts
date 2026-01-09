@@ -116,7 +116,7 @@ export abstract class NumberInputType
 
     private getConfigProperty(config: InputTypeViewContext, propertyName: string) {
         const configProperty = config.inputConfig[propertyName] ? config.inputConfig[propertyName][0] : {};
-        return NumberHelper.toNumber(configProperty['value']);
+        return NumberHelper.toNumber(configProperty['value'] as string);
     }
 
     private isValidMin(value: number) {

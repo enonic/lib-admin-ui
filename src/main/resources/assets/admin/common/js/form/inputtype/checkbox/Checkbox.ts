@@ -122,7 +122,7 @@ export class Checkbox
         this.checkbox.unBlur(listener);
     }
 
-    private readConfig(inputConfig: Record<string, Record<string, string>[]>): void {
+    private readConfig(inputConfig: Record<string, Record<string, unknown>[]>): void {
         if (inputConfig) {
             this.setInputAlignment(inputConfig['alignment']);
         }

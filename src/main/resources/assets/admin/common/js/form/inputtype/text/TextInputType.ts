@@ -34,9 +34,9 @@ export abstract class TextInputType
         return ValueTypes.STRING;
     }
 
-    protected readConfig(inputConfig: Record<string, Record<string, string>[]>): void {
+    protected readConfig(inputConfig: Record<string, Record<string, unknown>[]>): void {
         const maxLengthConfig: object = inputConfig['maxLength'] ? inputConfig['maxLength'][0] : {};
-        const maxLength: number = NumberHelper.toNumber(maxLengthConfig['value']);
+        const maxLength: number = maxLengthConfig['value'];
         this.maxLength = maxLength > 0 ? maxLength : -1;
 
         const showCounterConfig: object = inputConfig['showCounter'] ? inputConfig['showCounter'][0] : {};

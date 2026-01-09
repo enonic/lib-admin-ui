@@ -7,22 +7,22 @@ import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAd
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Element} from '../../../dom/Element';
 import {SelectedDateChangedEvent} from '../../../ui/time/SelectedDateChangedEvent';
-import {LocalDateTime} from '../../../util/LocalDateTime';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
+import {Instant as InstantUtil} from '../../../util/Instant';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
-import {DateTime as DateTimeUtil} from '../../../util/DateTime';
 import dayjs from 'dayjs';
+import {Timezone} from '../../../util/Timezone';
 
 /**
- * Uses [[ValueType]] [[ValueTypeLocalDateTime]].
+ * Uses [[ValueType]] [[ValueTypeInstant]].
  */
-export class DateTime
+export class Instant
     extends BaseInputTypeNotManagingAdd {
 
-    private valueType: ValueType = ValueTypes.LOCAL_DATE_TIME;
+    private valueType: ValueType = ValueTypes.INSTANT;
 
     constructor(config: InputTypeViewContext) {
         super(config);
@@ -38,9 +38,9 @@ export class DateTime
             return null;
         }
 
-        const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?$/;
+        const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
         if (isoRegex.test(defaultValue)) {
-            return DateTimeUtil.fromString(defaultValue).toDate();
+            return InstantUtil.fromString(defaultValue).toDate();
         } else {
             return this.parseRelative(defaultValue);
         }
@@ -54,7 +54,7 @@ export class DateTime
         const valueType: ValueType = this.getValueType();
 
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
-        dateTimeBuilder.setUseLocalTimezone(false);
+        dateTimeBuilder.setUseLocalTimezone(true);
 
         const defaultDate: Date = this.getDefaultValue();
         if (defaultDate) {
@@ -66,9 +66,8 @@ export class DateTime
         }
 
         if (property.hasNonNullValue()) {
-            const date: LocalDateTime = property.getLocalDateTime();
-            dateTimeBuilder.setDateTime(date.toDate());
-        } else {
+            dateTimeBuilder.setDateTime(property.getInstant().toDate());
+        } else if (defaultDate) {
             dateTimeBuilder.setDateTime(defaultDate);
         }
 
@@ -87,7 +86,7 @@ export class DateTime
         if (!unchangedOnly || !dateTimePicker.isDirty()) {
 
             const date = property.hasNonNullValue()
-                         ? property.getLocalDateTime().toDate()
+                         ? property.getInstant().toDate()
                          : null;
             dateTimePicker.setDateTime(date);
         } else if (dateTimePicker.isDirty()) {
@@ -129,13 +128,27 @@ export class DateTime
     }
 
     protected getValue(inputEl: Element, event: SelectedDateChangedEvent): Value {
-        return new Value(event.getDate() != null ? LocalDateTime.fromDate(event.getDate()) : null, this.getValueType());
+        if (event.getDate() != null) {
+            const timezone = Timezone.getDateTimezone(event.getDate());
+            const timezoneOffset = timezone.getOffset();
+            let date: Date = null;
+            if (timezoneOffset > 0) {
+                date = dayjs(event.getDate()).subtract(timezoneOffset, 'hours').toDate();
+            }
+            if (timezoneOffset < 0) {
+                date = dayjs(event.getDate()).add(timezoneOffset, 'hours').toDate();
+            }
+
+            return new Value(InstantUtil.fromDate(date), this.getValueType());
+        } else {
+            return new Value(null, this.getValueType());
+        }
     }
 
     private parseRelative(expr: any): Date {
         const base = dayjs();
         if (!expr || expr.trim() === 'now') {
-            return DateTimeUtil.fromString(base.toISOString()).toDate();
+            return InstantUtil.fromString(base.toISOString()).toDate();
         }
 
         const result = expr.trim().split(/\s+/).reduce((date, token) => {
@@ -151,8 +164,8 @@ export class DateTime
                    : date.subtract(Number(value), unit);
         }, base);
 
-        return DateTimeUtil.fromString(result.toISOString()).toDate();
+        return InstantUtil.fromString(result.toISOString()).toDate();
     }
 }
 
-InputTypeManager.register(new Class('DateTime', DateTime), true);
+InputTypeManager.register(new Class('Instant', Instant), true);

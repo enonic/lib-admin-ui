@@ -1,8 +1,8 @@
-import {DateTime} from '../util/DateTime';
 import {ObjectHelper} from '../ObjectHelper';
 import {StringHelper} from '../util/StringHelper';
 import {ValueType} from './ValueType';
 import {Value} from './Value';
+import {DateTime} from '../util/DateTime';
 
 export class ValueTypeDateTime
     extends ValueType {
@@ -40,7 +40,7 @@ export class ValueTypeDateTime
         return new Value(date, this);
     }
 
-    // 2010-01-01T10:55:00+01:00
+    // 2010-01-01T10:55:00
     toJsonValue(value: Value): string {
         return value.isNull() ? null : value.getDateTime().toString();
     }
@@ -52,5 +52,4 @@ export class ValueTypeDateTime
     valueEquals(a: DateTime, b: DateTime): boolean {
         return ObjectHelper.equals(a, b);
     }
-
 }

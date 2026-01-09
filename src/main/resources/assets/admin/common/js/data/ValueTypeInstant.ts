@@ -1,29 +1,31 @@
-import {LocalDateTime} from '../util/LocalDateTime';
+import {Instant} from '../util/Instant';
 import {ObjectHelper} from '../ObjectHelper';
 import {StringHelper} from '../util/StringHelper';
 import {ValueType} from './ValueType';
 import {Value} from './Value';
 
-export class ValueTypeLocalDateTime
+export class ValueTypeInstant
     extends ValueType {
 
     constructor() {
-        super('LocalDateTime');
+        super('Instant');
     }
 
-    isValid(value: string): boolean {
-        if (ObjectHelper.iFrameSafeInstanceOf(value, LocalDateTime)) {
+    isValid(value: any): boolean {
+        if (ObjectHelper.iFrameSafeInstanceOf(value, Instant)) {
             return true;
         }
 
-        return LocalDateTime.isValidDateTime(value);
+        return Instant.isValidInstant(value);
     }
 
     isConvertible(value: string): boolean {
         if (StringHelper.isBlank(value)) {
             return false;
         }
-
+        if (value.length < 20) {
+            return false;
+        }
         return this.isValid(value);
     }
 
@@ -31,19 +33,19 @@ export class ValueTypeLocalDateTime
         if (!value || !this.isConvertible(value)) {
             return this.newNullValue();
         }
-        let date: LocalDateTime = LocalDateTime.fromString(value);
+        let date: Instant = Instant.fromString(value);
         return new Value(date, this);
     }
 
     toJsonValue(value: Value): string {
-        return value.isNull() ? null : value.getLocalDateTime().toString();
+        return value.isNull() ? null : value.getInstant().toString();
     }
 
     valueToString(value: Value): string {
-        return value.getLocalDateTime().toString();
+        return value.getInstant().toString();
     }
 
-    valueEquals(a: LocalDateTime, b: LocalDateTime): boolean {
+    valueEquals(a: Instant, b: Instant): boolean {
         return ObjectHelper.equals(a, b);
     }
 }
