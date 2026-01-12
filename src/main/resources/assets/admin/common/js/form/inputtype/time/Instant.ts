@@ -15,12 +15,15 @@ import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
 import dayjs from 'dayjs';
 import {Timezone} from '../../../util/Timezone';
+import {RelativeTimeParser} from './RelativeTimeParser';
 
 /**
  * Uses [[ValueType]] [[ValueTypeInstant]].
  */
 export class Instant
     extends BaseInputTypeNotManagingAdd {
+
+    private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?Z$/;
 
     private valueType: ValueType = ValueTypes.INSTANT;
 
@@ -38,11 +41,10 @@ export class Instant
             return null;
         }
 
-        const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
-        if (isoRegex.test(defaultValue)) {
+        if (Instant.PATTERN.test(defaultValue)) {
             return InstantUtil.fromString(defaultValue).toDate();
         } else {
-            return this.parseRelative(defaultValue);
+            return RelativeTimeParser.parseToInstant(defaultValue);
         }
     }
 
@@ -128,43 +130,18 @@ export class Instant
     }
 
     protected getValue(inputEl: Element, event: SelectedDateChangedEvent): Value {
-        if (event.getDate() != null) {
-            const timezone = Timezone.getDateTimezone(event.getDate());
-            const timezoneOffset = timezone.getOffset();
-            let date: Date = null;
-            if (timezoneOffset > 0) {
-                date = dayjs(event.getDate()).subtract(timezoneOffset, 'hours').toDate();
-            }
-            if (timezoneOffset < 0) {
-                date = dayjs(event.getDate()).add(timezoneOffset, 'hours').toDate();
-            }
-
-            return new Value(InstantUtil.fromDate(date), this.getValueType());
-        } else {
+        const date = event.getDate();
+        if (!date) {
             return new Value(null, this.getValueType());
         }
-    }
 
-    private parseRelative(expr: any): Date {
-        const base = dayjs();
-        if (!expr || expr.trim() === 'now') {
-            return InstantUtil.fromString(base.toISOString()).toDate();
-        }
+        const timezoneOffset = Timezone.getDateTimezone(date).getOffset();
 
-        const result = expr.trim().split(/\s+/).reduce((date, token) => {
-            const match = token.match(/^([+-])(\d+)([a-zA-Z]+)$/);
-            if (!match) {
-                return date;
-            }
+        const adjustedDate = dayjs(date)
+            .subtract(timezoneOffset, 'hours')
+            .toDate();
 
-            const [, sign, value, unit] = match;
-
-            return sign === '+'
-                   ? date.add(Number(value), unit)
-                   : date.subtract(Number(value), unit);
-        }, base);
-
-        return InstantUtil.fromString(result.toISOString()).toDate();
+        return new Value(InstantUtil.fromDate(adjustedDate), this.getValueType());
     }
 }
 

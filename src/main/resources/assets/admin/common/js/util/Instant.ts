@@ -5,6 +5,8 @@ import {ObjectHelper} from '../ObjectHelper';
 export class Instant
     implements Equitable {
 
+    private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?Z$/;
+
     private static DATE_TIME_SEPARATOR: string = 'T';
 
     private static DATE_SEPARATOR: string = '-';
@@ -41,9 +43,8 @@ export class Instant
         if (StringHelper.isBlank(s)) {
             return false;
         }
-        // Accepts ISO 8601 instant format (UTC only, with 'Z')
-        const regex = /^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{3})?Z$/;
-        return regex.test(s);
+
+        return this.PATTERN.test(s);
     }
 
     /**

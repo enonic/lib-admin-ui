@@ -23,9 +23,7 @@ export class ValueTypeInstant
         if (StringHelper.isBlank(value)) {
             return false;
         }
-        if (value.length < 20) {
-            return false;
-        }
+
         return this.isValid(value);
     }
 

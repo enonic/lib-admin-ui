@@ -7,6 +7,8 @@ import {DateHelper} from './DateHelper';
 export class DateTime
     implements Equitable {
 
+    private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
+
     private static DATE_TIME_SEPARATOR: string = 'T';
 
     private static DATE_SEPARATOR: string = '-';
@@ -43,17 +45,8 @@ export class DateTime
         if (StringHelper.isBlank(s)) {
             return false;
         }
-        /*
-        matches:
-        2015-02-29T12:05
-        2015-02-29T12:05:59
-        2015-02-29T12:05:59Z
-        2015-02-29T12:05:59+01:00
-        2015-02-29T12:05:59.001+01:00
-        */
 
-        const regex = /^(\d{2}|\d{4})(?:\-)?([0]{1}\d{1}|[1]{1}[0-2]{1})(?:\-)?([0-2]{1}\d{1}|[3]{1}[0-1]{1})(T)([0-1]{1}\d{1}|[2]{1}[0-3]{1})(?::)?([0-5]{1}\d{1})((:[0-5]{1}\d{1})(\.\d{3})?)?((\+|\-)([0-1]{1}\d{1}|[2]{1}[0-3]{1})(:)([0-5]{1}\d{1})|(z|Z)|$)$/;
-        return regex.test(s);
+        return this.PATTERN.test(s);
     }
 
     /**
@@ -112,42 +105,6 @@ export class DateTime
 
     public static create(): DateTimeBuilder {
         return new DateTimeBuilder();
-    }
-
-    private static parseOffset(value: string): number {
-        if (DateHelper.isUTCdate(value)) {
-            return 0;
-        } else {
-            const dateStr = (value || '').trim();
-
-            if (dateStr.indexOf('+') > 0) { // case with positive offset
-                const parts = dateStr.split('+');
-                if (parts.length === 2) {
-                    const offsetPart = parts[1];
-
-                    const offset = parseFloat(offsetPart);
-                    if (isNaN(offset)) {
-                        return 0;
-                    }
-
-                    return offset;
-                } else {
-                    return 0;
-                }
-            } else if (dateStr.split('-').length === 4) { // case with negative offset ('2015-02-29T12:05:59-01:00')
-                const parts = dateStr.split('-');
-                const offsetPart = parts[3];
-
-                const offset = parseFloat(offsetPart);
-                if (isNaN(offset)) {
-                    return 0;
-                }
-
-                return -offset;
-            } else {
-                return 0;
-            }
-        }
     }
 
     private static trimTZ(dateString: string): string {
