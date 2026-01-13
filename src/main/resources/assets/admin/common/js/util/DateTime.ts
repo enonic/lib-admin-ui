@@ -7,6 +7,8 @@ import {DateHelper} from './DateHelper';
 export class DateTime
     implements Equitable {
 
+    private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
+
     private static DATE_TIME_SEPARATOR: string = 'T';
 
     private static DATE_SEPARATOR: string = '-';
@@ -29,8 +31,6 @@ export class DateTime
 
     private readonly fractions: number;
 
-    private readonly timezone: Timezone;
-
     constructor(builder: DateTimeBuilder) {
         this.year = builder.year;
         this.month = builder.month;
@@ -39,24 +39,14 @@ export class DateTime
         this.minutes = builder.minutes;
         this.seconds = builder.seconds;
         this.fractions = builder.fractions;
-        this.timezone = builder.timezone || Timezone.getZeroOffsetTimezone();
     }
 
     static isValidDateTime(s: string): boolean {
         if (StringHelper.isBlank(s)) {
             return false;
         }
-        /*
-        matches:
-        2015-02-29T12:05
-        2015-02-29T12:05:59
-        2015-02-29T12:05:59Z
-        2015-02-29T12:05:59+01:00
-        2015-02-29T12:05:59.001+01:00
-        */
 
-        const regex = /^(\d{2}|\d{4})(?:\-)?([0]{1}\d{1}|[1]{1}[0-2]{1})(?:\-)?([0-2]{1}\d{1}|[3]{1}[0-1]{1})(T)([0-1]{1}\d{1}|[2]{1}[0-3]{1})(?::)?([0-5]{1}\d{1})((:[0-5]{1}\d{1})(\.\d{3})?)?((\+|\-)([0-1]{1}\d{1}|[2]{1}[0-3]{1})(:)([0-5]{1}\d{1})|(z|Z)|$)$/;
-        return regex.test(s);
+        return this.PATTERN.test(s);
     }
 
     /**
@@ -70,11 +60,9 @@ export class DateTime
         }
 
         let date;
-        let timezone;
 
         if (DateHelper.isUTCdate(s)) {
             date = DateHelper.makeDateFromUTCString(s);
-            timezone = Timezone.getDateTimezone(date);
             if (DateHelper.isDST(date)) { // when converting from UTC date, Date object may have an extra hour added due to DST
                 date.setHours(date.getHours() - 1);
             }
@@ -86,14 +74,6 @@ export class DateTime
                 DateTime.TIME_SEPARATOR,
                 DateTime.FRACTION_SEPARATOR
             );
-            let offset = DateTime.parseOffset(s);
-            if (offset != null) {
-                timezone = Timezone.fromOffset(offset);
-            } else {
-                // assume that if passed date string is not in UTC format and does not contain explicit offset,
-                // like '2015-02-29T12:05:59' - use zero offset timezone
-                timezone = Timezone.getZeroOffsetTimezone();
-            }
         }
 
         if (!date) {
@@ -108,7 +88,6 @@ export class DateTime
             .setMinutes(date.getMinutes())
             .setSeconds(date.getSeconds())
             .setFractions(date.getMilliseconds())
-            .setTimezone(timezone)
             .build();
     }
 
@@ -121,48 +100,11 @@ export class DateTime
             .setMinutes(s.getMinutes())
             .setSeconds(s.getSeconds())
             .setFractions(s.getMilliseconds())
-            .setTimezone(Timezone.getDateTimezone(s))// replace with timezone picker value if implemented tz selection
             .build();
     }
 
     public static create(): DateTimeBuilder {
         return new DateTimeBuilder();
-    }
-
-    private static parseOffset(value: string): number {
-        if (DateHelper.isUTCdate(value)) {
-            return 0;
-        } else {
-            const dateStr = (value || '').trim();
-
-            if (dateStr.indexOf('+') > 0) { // case with positive offset
-                const parts = dateStr.split('+');
-                if (parts.length === 2) {
-                    const offsetPart = parts[1];
-
-                    const offset = parseFloat(offsetPart);
-                    if (isNaN(offset)) {
-                        return 0;
-                    }
-
-                    return offset;
-                } else {
-                    return 0;
-                }
-            } else if (dateStr.split('-').length === 4) { // case with negative offset ('2015-02-29T12:05:59-01:00')
-                const parts = dateStr.split('-');
-                const offsetPart = parts[3];
-
-                const offset = parseFloat(offsetPart);
-                if (isNaN(offset)) {
-                    return 0;
-                }
-
-                return -offset;
-            } else {
-                return 0;
-            }
-        }
     }
 
     private static trimTZ(dateString: string): string {
@@ -210,10 +152,6 @@ export class DateTime
         return this.fractions || 0;
     }
 
-    getTimezone(): Timezone {
-        return this.timezone;
-    }
-
     dateToString(): string {
         return this.year +
                DateTime.DATE_SEPARATOR + this.padNumber(this.month + 1) +
@@ -230,7 +168,7 @@ export class DateTime
 
     /** Returns date in ISO format. Month value is incremented because ISO month range is 1-12, whereas JS Date month range is 0-11 */
     toString(): string {
-        return this.dateToString() + DateTime.DATE_TIME_SEPARATOR + this.timeToString() + this.timezone.toString();
+        return this.dateToString() + DateTime.DATE_TIME_SEPARATOR + this.timeToString();
     }
 
     equals(o: Equitable): boolean {
@@ -320,11 +258,6 @@ export class DateTimeBuilder {
         if (this.seconds && value > 0) {
             this.fractions = value;
         }
-        return this;
-    }
-
-    public setTimezone(value: Timezone): DateTimeBuilder {
-        this.timezone = value;
         return this;
     }
 
