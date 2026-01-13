@@ -31,12 +31,12 @@ export class ValueTypeInstant
         if (!value || !this.isConvertible(value)) {
             return this.newNullValue();
         }
-        let date: Instant = Instant.fromString(value);
+        const date: Instant = Instant.fromString(value);
         return new Value(date, this);
     }
 
     toJsonValue(value: Value): string {
-        return value.isNull() ? null : value.getInstant().toString();
+        return value.isNull() ? null : this.valueToString(value);
     }
 
     valueToString(value: Value): string {

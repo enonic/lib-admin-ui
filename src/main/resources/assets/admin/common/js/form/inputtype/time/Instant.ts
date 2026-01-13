@@ -13,8 +13,6 @@ import {Instant as InstantUtil} from '../../../util/Instant';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
-import dayjs from 'dayjs';
-import {Timezone} from '../../../util/Timezone';
 import {RelativeTimeParser} from './RelativeTimeParser';
 
 /**
@@ -34,8 +32,8 @@ export class Instant
 
     getDefaultValue(): Date {
         const inputConfig = this.getContext().inputConfig;
-        const defaultValueConfig = inputConfig['default'] && inputConfig['default'][0];
-        const defaultValue = defaultValueConfig && defaultValueConfig['value'] as string;
+        const defaultValueConfig = inputConfig['default']?.[0];
+        const defaultValue = defaultValueConfig?.['value'] as string;
 
         if (!defaultValue) {
             return null;
@@ -43,9 +41,9 @@ export class Instant
 
         if (Instant.PATTERN.test(defaultValue)) {
             return InstantUtil.fromString(defaultValue).toDate();
-        } else {
-            return RelativeTimeParser.parseToInstant(defaultValue);
         }
+
+        return RelativeTimeParser.parseToInstant(defaultValue);
     }
 
     getValueType(): ValueType {
@@ -71,6 +69,8 @@ export class Instant
             dateTimeBuilder.setDateTime(property.getInstant().toDate());
         } else if (defaultDate) {
             dateTimeBuilder.setDateTime(defaultDate);
+            const value = InstantUtil.fromDate(defaultDate);
+            property.setValue(new Value(value, ValueTypes.INSTANT));
         }
 
         const dateTimePicker: DateTimePicker = dateTimeBuilder.build();
@@ -135,13 +135,7 @@ export class Instant
             return new Value(null, this.getValueType());
         }
 
-        const timezoneOffset = Timezone.getDateTimezone(date).getOffset();
-
-        const adjustedDate = dayjs(date)
-            .subtract(timezoneOffset, 'hours')
-            .toDate();
-
-        return new Value(InstantUtil.fromDate(adjustedDate), this.getValueType());
+        return new Value(InstantUtil.fromDate(date), this.getValueType());
     }
 }
 

@@ -13,7 +13,6 @@ import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
-import {DateTime as DateTimeUtil} from '../../../util/DateTime';
 import {RelativeTimeParser} from './RelativeTimeParser';
 
 /**
@@ -33,18 +32,18 @@ export class DateTime
 
     getDefaultValue(): Date {
         const inputConfig = this.getContext().inputConfig;
-        const defaultValueConfig = inputConfig['default'] && inputConfig['default'][0];
-        const defaultValue = defaultValueConfig && defaultValueConfig['value'] as string;
+        const defaultValueConfig = inputConfig['default']?.[0];
+        const defaultValue = defaultValueConfig?.['value'] as string;
 
         if (!defaultValue) {
             return null;
         }
 
         if (DateTime.PATTERN.test(defaultValue)) {
-            return DateTimeUtil.fromString(defaultValue).toDate();
-        } else {
-            return RelativeTimeParser.parseToDateTime(defaultValue);
+            return LocalDateTime.fromString(defaultValue).toDate();
         }
+
+        return RelativeTimeParser.parseToDateTime(defaultValue);
     }
 
     getValueType(): ValueType {
@@ -71,6 +70,8 @@ export class DateTime
             dateTimeBuilder.setDateTime(date.toDate());
         } else {
             dateTimeBuilder.setDateTime(defaultDate);
+            const value = LocalDateTime.fromDate(defaultDate);
+            property.setValue(new Value(value, ValueTypes.LOCAL_DATE_TIME));
         }
 
         const dateTimePicker: DateTimePicker = dateTimeBuilder.build();

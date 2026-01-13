@@ -75,13 +75,13 @@ export class Instant
 
     static fromDate(s: Date): Instant {
         return Instant.create()
-            .setYear(s.getFullYear())
-            .setMonth(s.getMonth())
-            .setDay(s.getDate())
-            .setHours(s.getHours())
-            .setMinutes(s.getMinutes())
-            .setSeconds(s.getSeconds())
-            .setFractions(s.getMilliseconds())
+            .setYear(s.getUTCFullYear())
+            .setMonth(s.getUTCMonth())
+            .setDay(s.getUTCDate())
+            .setHours(s.getUTCHours())
+            .setMinutes(s.getUTCMinutes())
+            .setSeconds(s.getUTCSeconds())
+            .setFractions(s.getUTCMilliseconds())
             .build();
     }
 
@@ -211,7 +211,7 @@ export class InstantBuilder {
     }
 
     public setFractions(value: number): InstantBuilder {
-        if (this.seconds && value > 0) {
+        if (value > 0) {
             this.fractions = value;
         }
         return this;
