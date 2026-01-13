@@ -5,7 +5,7 @@ import {ClassHelper} from '../ClassHelper';
 export class IframeEventBus
     extends AbstractEventBus<IframeEvent> {
 
-    private readonly id = new Date().getTime();
+    private id: string | number = new Date().getTime();
 
     private isListening = false;
 
@@ -23,9 +23,15 @@ export class IframeEventBus
         }
     }
 
-    setReceiver(receiver: Window) {
+    setReceiver(receiver: Window): IframeEventBus {
         console.debug(`[${this.id}] Setting receiver window to`, receiver);
         this.contextWindow = receiver;
+        return this;
+    }
+
+    setId(id: number | string): IframeEventBus {
+        this.id = id;
+        return this;
     }
 
     static get(): IframeEventBus {
@@ -38,7 +44,7 @@ export class IframeEventBus
 
     public fireEvent(event: IframeEvent) {
         const detail = JSON.stringify(event, this.replacer.bind(this));
-        console.debug(`[${this.id}] Firing event: ${event.getName()}`, event);
+        console.log(`[${this.id}] Fire event: ${event.getName()}`, event);
         // post messages are allowed on other windows (parent, child) so we post messages there
         if (!this.contextWindow) {
             throw new Error(`[${this.id}] No receiver window set for IframeEventBus, use setReceiver(window) to set one.`);
@@ -71,7 +77,7 @@ export class IframeEventBus
         }
 
         const data = JSON.parse(detail, this.reviver.bind(this));
-        console.debug(`[${this.id}] Got event: ${eventName}`, data);
+        console.log(`[${this.id}] Got event: ${eventName}`, data);
 
         (this.handlersMap[eventName] || []).forEach(entry => entry.handler(data));
     };
@@ -88,9 +94,12 @@ export class IframeEventBus
             return value; // Skip plain objects and arrays
         }
 
-        this.registerClass(fullName, value);
+        if (!this.classRegistry[fullName]) {
+            // Register the class if not already registered for revival
+            this.registerClass(fullName, value);
+        }
 
-        let str;
+        let str: string | undefined;
         if (typeof value.toString === 'function') {
             str = value.toString();
             // make sure it's not the default toString output
@@ -136,6 +145,8 @@ export class IframeEventBus
                     Object.assign(newInstance, value);
                     return newInstance;
                 }
+            } else {
+                console.warn(`[${this.id}] Constructor for [${typeName}] not found`);
             }
         }
         return value;

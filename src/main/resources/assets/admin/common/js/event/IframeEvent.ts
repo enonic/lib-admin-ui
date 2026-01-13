@@ -17,14 +17,6 @@ export class IframeEvent
         IframeEventBus.get().fireEvent(this);
     }
 
-    toMessage(): string {
-        return '';
-    }
-
-    static fromMessage(name: string, data: string): IframeEvent {
-        return new IframeEvent(name);
-    }
-
     static getEventBus(): IframeEventBus {
         return IframeEventBus.get();
     }
