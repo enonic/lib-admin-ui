@@ -16,6 +16,7 @@ import {PropertyValueChangedEvent} from './PropertyValueChangedEvent';
 import {assertNotNull} from '../util/Assert';
 import {ValueTypes} from './ValueTypes';
 import {ValueType} from './ValueType';
+import {Instant} from '../util/Instant';
 
 /**
  * A Property has a [[name]] and a [[value]],
@@ -237,6 +238,10 @@ export class Property
 
     getBinaryReference(): BinaryReference {
         return this.value.getBinaryReference();
+    }
+
+    getInstant(): Instant {
+        return this.value.getInstant();
     }
 
     equals(o: Equitable): boolean {
