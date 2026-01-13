@@ -1,21 +1,22 @@
+import {Instant} from '../util/Instant';
 import {ObjectHelper} from '../ObjectHelper';
 import {StringHelper} from '../util/StringHelper';
 import {ValueType} from './ValueType';
 import {Value} from './Value';
-import {DateTime} from '../util/DateTime';
 
-export class ValueTypeDateTime
+export class ValueTypeInstant
     extends ValueType {
 
     constructor() {
-        super('DateTime');
+        super('Instant');
     }
 
     isValid(value: any): boolean {
-        if (ObjectHelper.iFrameSafeInstanceOf(value, DateTime)) {
+        if (ObjectHelper.iFrameSafeInstanceOf(value, Instant)) {
             return true;
         }
-        return DateTime.isValidDateTime(value);
+
+        return Instant.isValidInstant(value);
     }
 
     isConvertible(value: string): boolean {
@@ -27,26 +28,22 @@ export class ValueTypeDateTime
     }
 
     newValue(value: string): Value {
-        if (!value) {
+        if (!value || !this.isConvertible(value)) {
             return this.newNullValue();
         }
-        if (!this.isConvertible(value)) {
-            return this.newNullValue();
-        }
-        let date = DateTime.fromString(value);
+        const date: Instant = Instant.fromString(value);
         return new Value(date, this);
     }
 
-    // 2010-01-01T10:55:00
     toJsonValue(value: Value): string {
-        return value.isNull() ? null : value.getDateTime().toString();
+        return value.isNull() ? null : this.valueToString(value);
     }
 
     valueToString(value: Value): string {
-        return value.getDateTime().toString();
+        return value.getInstant().toString();
     }
 
-    valueEquals(a: DateTime, b: DateTime): boolean {
+    valueEquals(a: Instant, b: Instant): boolean {
         return ObjectHelper.equals(a, b);
     }
 }
