@@ -19,7 +19,7 @@ export class RelativeTimeParser {
         const result: Dayjs = expr
             .trim()
             .split(/\s+/)
-            .reduce((date: Dayjs, token: any) => {
+            .reduce((date: Dayjs, token: string) => {
                 const match = token.match(/^([+-])(\d+)([a-zA-Z]+)$/);
                 if (!match) {
                     return date;
@@ -28,8 +28,8 @@ export class RelativeTimeParser {
                 const [, sign, value, unit] = match;
 
                 return sign === '+'
-                       ? date.add(Number(value), unit)
-                       : date.subtract(Number(value), unit);
+                       ? date.add(Number(value), unit as dayjs.ManipulateType)
+                       : date.subtract(Number(value), unit as dayjs.ManipulateType);
             }, base);
 
         return DateHelper.isoValueToDate(result, factory, omitTimezone);

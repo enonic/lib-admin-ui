@@ -124,7 +124,9 @@ export class Instant
     }
 
     timeToString(): string {
-        let fractions = this.fractions ? Instant.FRACTION_SEPARATOR + this.padNumber(this.fractions, 3) : StringHelper.EMPTY_STRING;
+        let fractions = this.fractions
+                        ? Instant.FRACTION_SEPARATOR + this.fractions.toString().padStart(3, '0')
+                        : StringHelper.EMPTY_STRING;
 
         return this.padNumber(this.hours) + Instant.TIME_SEPARATOR +
                this.padNumber(this.minutes) + Instant.TIME_SEPARATOR +

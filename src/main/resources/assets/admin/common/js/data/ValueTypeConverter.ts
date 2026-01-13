@@ -169,9 +169,11 @@ export class ValueTypeConverter {
         } else if (value.getType() === ValueTypes.LOCAL_DATE && value.isNotNull()) { // from LocalDate
             return ValueTypes.INSTANT.newValue(`${value.getString()}T00:00:00Z`);
         } else if (value.getType() === ValueTypes.LOCAL_DATE_TIME && value.isNotNull()) { // from LocalDateTime
-            return ValueTypes.INSTANT.newValue(`${value.getString()}Z`);
+            const localDateTime = new Date(value.getString());
+            return ValueTypes.INSTANT.newValue(localDateTime.toISOString());
         } else if (value.getType() === ValueTypes.DATE_TIME && value.isNotNull()) {
-            return ValueTypes.INSTANT.newValue(`${value.getString()}Z`);
+            const dateTime = new Date(value.getString());
+            return ValueTypes.INSTANT.newValue(dateTime.toISOString());
         } else {
             return ValueTypes.INSTANT.newNullValue();
         }
