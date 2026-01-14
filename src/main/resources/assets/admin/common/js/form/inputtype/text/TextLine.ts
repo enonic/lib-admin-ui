@@ -30,6 +30,8 @@ export class TextLine
         inputEl.setName(this.getInput().getName() + '-' + index);
         inputEl.setAutocomplete(true);
 
+        this.getContext().labelEl?.setForElement(inputEl);
+
         return inputEl;
     }
 

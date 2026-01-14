@@ -484,7 +484,9 @@ export class Element {
         const trimmedTitle = title.trim();
         if (trimmedTitle) {
             this.el.setTitle(trimmedTitle);
-            this.setAriaLabel(trimmedTitle);
+            if (this.el.getTagName().toUpperCase() !== 'DIV') {
+                this.setAriaLabel(trimmedTitle);
+            }
         } else {
             this.el.removeAttribute('title');
             this.setAriaLabel('');
@@ -644,6 +646,14 @@ export class Element {
             return this;
         }
         return this.setAriaAttribute('label', label);
+    }
+
+    setAriaLabelledBy(el: Element) {
+        if (!el) {
+            return;
+        }
+
+        this.setAriaAttribute('labelledby', el.getId());
     }
 
     setAriaDisabled(disabled: boolean): Element {

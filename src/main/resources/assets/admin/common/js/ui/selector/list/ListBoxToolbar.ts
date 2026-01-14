@@ -5,6 +5,7 @@ import {Element} from '../../../dom/Element';
 import {ListSelectionController} from './ListSelectionController';
 import {SelectableListBoxWrapper} from './SelectableListBoxWrapper';
 import {ListSelectionPanelToggler} from './ListSelectionPanelToggler';
+import {i18n} from '../../../util/Messages';
 
 export interface ListBoxToolbarParams {
     refreshAction: () => void;
@@ -29,6 +30,8 @@ export class ListBoxToolbar<I>
         this.refreshButton = new Button();
         this.refreshButton
             .addClass(StyleHelper.getCommonIconCls('loop'))
+            .setTitle(i18n('action.refresh'))
+            .setAriaLabel(i18n('action.refresh'))
             .onClicked(() => params.refreshAction());
 
         this.leftWrapper = new DivEl('left-wrapper');

@@ -1,6 +1,7 @@
 import {FormContext} from '../FormContext';
 import {Input} from '../Input';
 import {PropertyPath} from '../../data/PropertyPath';
+import {LabelEl} from '../../dom/LabelEl';
 
 export interface InputTypeViewContext {
 
@@ -11,4 +12,6 @@ export interface InputTypeViewContext {
     inputConfig: Record<string, Record<string, string>[]>;
 
     parentDataPath: PropertyPath;
+
+    labelEl?: LabelEl;
 }

@@ -135,6 +135,8 @@ export class RadioButton
             this.saveToProperty(ValueTypes.STRING.newValue(event.getNewValue()));
         });
 
+        radioGroup.setAriaLabelledBy(this.getContext().labelEl);
+
         return radioGroup;
     }
 

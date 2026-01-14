@@ -4,6 +4,7 @@ import {Input} from './Input';
 import {FormState} from '../app/wizard/WizardPanel';
 import {ValidationError} from '../ValidationError';
 import {AiToolType} from '../ai/tool/AiToolType';
+import {LabelEl} from '../dom/LabelEl';
 
 export class FormContext {
 
@@ -41,7 +42,7 @@ export class FormContext {
     }
 
     createInputTypeViewContext(inputTypeConfig: any, parentPropertyPath: PropertyPath,
-                               input: Input): InputTypeViewContext {
+                               input: Input, _labelEl?: LabelEl): InputTypeViewContext {
 
         return {
             formContext: this,

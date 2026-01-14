@@ -73,6 +73,7 @@ export class ListSelectionController<I>
 
         const tooltipText: string = this.isChecked() ? i18n('field.selection.clear') : i18n('field.selection.selectAll');
         this.tooltip.setText(tooltipText);
+        this.setAriaLabel(tooltipText);
     }
 
     private isAnySelected(): boolean {

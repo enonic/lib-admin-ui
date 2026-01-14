@@ -59,6 +59,8 @@ export class Time
             this.handleOccurrenceInputValueChanged(timePicker, event);
         });
 
+        timePicker.setAriaLabelledBy(this.getContext().labelEl);
+
         return timePicker;
     }
 

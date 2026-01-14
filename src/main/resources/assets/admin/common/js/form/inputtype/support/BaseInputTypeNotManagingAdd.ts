@@ -75,10 +75,6 @@ export abstract class BaseInputTypeNotManagingAdd
         this.draggingIndex = -1;
     }
 
-    public getContext(): InputTypeViewContext {
-        return this.context;
-    }
-
     isManagingAdd(): boolean {
         return false;
     }

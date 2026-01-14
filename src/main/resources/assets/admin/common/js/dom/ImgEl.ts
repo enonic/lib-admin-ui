@@ -50,6 +50,15 @@ export class ImgEl
         this.getEl().setSrc(source);
     }
 
+    setDecorative() {
+        this.setAltText('');
+        return this;
+    }
+
+    setAltText(text: string) {
+        this.getEl().setAttribute('alt', text);
+    }
+
     getEl(): ImgHelper {
         return super.getEl() as ImgHelper;
     }

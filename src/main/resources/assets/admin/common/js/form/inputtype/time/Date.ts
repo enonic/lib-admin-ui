@@ -50,6 +50,8 @@ export class DateType
             this.handleOccurrenceInputValueChanged(datePicker, event);
         });
 
+        datePicker.setAriaLabelledBy(this.getContext().labelEl);
+
         return datePicker;
     }
 

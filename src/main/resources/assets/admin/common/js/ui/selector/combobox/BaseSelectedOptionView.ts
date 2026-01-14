@@ -1,9 +1,10 @@
 import * as Q from 'q';
 import {DivEl} from '../../../dom/DivEl';
 import {Option} from '../Option';
-import {Element} from '../../../dom/Element';
 import {AEl} from '../../../dom/AEl';
 import {SelectedOptionView} from './SelectedOptionView';
+import {AriaRole} from '../../WCAG';
+import {i18n} from '../../../util/Messages';
 
 export class BaseSelectedOptionView<T>
     extends DivEl
@@ -135,13 +136,15 @@ export class BaseSelectedOptionView<T>
 
     private createEditButton(): AEl {
         this.editButton = new AEl('edit');
+        this.editButton.setRole(AriaRole.BUTTON).setTitle(i18n('action.edit'));
         this.editButton.onClicked((event: MouseEvent) => this.onEditButtonClicked(event));
 
         return this.editButton;
     }
 
     private createRemoveButton(): AEl {
-        let removeButton = new AEl('remove');
+        const removeButton = new AEl('remove');
+        removeButton.setRole(AriaRole.BUTTON).setTitle(i18n('action.removeSelected'));
         removeButton.onClicked((event: MouseEvent) => this.onRemoveButtonClicked(event));
 
         return removeButton;
