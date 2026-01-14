@@ -25,6 +25,8 @@ export class TextArea
         const inputEl: TextAreaEl = new TextAreaEl(this.getInput().getName() + '-' + index, value);
         inputEl.setSpellcheck(true);
 
+        this.getContext().labelEl?.setForElement(inputEl);
+
         return inputEl;
     }
 

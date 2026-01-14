@@ -128,7 +128,10 @@ export class RadioButton
 
         for (let i = 0; i < l; i++) {
             const option: RadioButtonOption = options[i];
-            radioGroup.addOption(option.value, option.label);
+            const radioButton = radioGroup.addOption(option.value, option.label);
+            if (i === 0) {
+                this.getContext().labelEl?.setForElement(radioButton.getInput());
+            }
         }
 
         radioGroup.onValueChanged((event: ValueChangedEvent) => {

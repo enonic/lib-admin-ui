@@ -65,6 +65,8 @@ export class DateTime
             this.handleOccurrenceInputValueChanged(dateTimePicker, event)
         );
 
+        this.getContext().labelEl?.setForElement(dateTimePicker.getTextInput());
+
         return dateTimePicker;
     }
 

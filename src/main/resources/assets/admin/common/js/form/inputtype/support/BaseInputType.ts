@@ -131,4 +131,8 @@ export abstract class BaseInputType extends DivEl
             aiTools: new Set<AiToolType>(),
         }
     }
+
+    getContext(): InputTypeViewContext {
+        return this.context;
+    }
 }

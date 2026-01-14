@@ -71,11 +71,13 @@
 
       > .form-item-set-occurrence-view,
       > .form-option-set-occurrence-view {
+        position: relative;
         display: flex;
         flex-wrap: wrap;
+        align-items: center;
         margin: 0;
         box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
-        padding: 10px 10px 15px 13px;
+        padding: 10px 10px 10px 13px;
 
         .more-button {
           width: 23px;
@@ -90,7 +92,10 @@
           }
         }
 
-        .form-occurrence-draggable-label {
+        .form-occurrence-draggable-label,
+        .single-selection-header {
+          display: flex;
+          flex-direction: column;
           position: relative;
           line-height: 30px;
           flex: 1 auto;

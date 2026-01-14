@@ -1,5 +1,6 @@
 import {ButtonEl} from '../../dom/ButtonEl';
 import {AriaRole, WCAG} from '../WCAG';
+import {i18n} from '../../util/Messages';
 
 export class DropdownHandle
     extends ButtonEl {
@@ -19,10 +20,14 @@ export class DropdownHandle
 
     down() {
         this.addClass(DropdownHandle.CLASS_DOWN);
+        this.setAriaExpanded(true);
+        this.setAriaLabel(i18n('action.hideOptions'));
     }
 
     up() {
         this.removeClass(DropdownHandle.CLASS_DOWN);
+        this.setAriaExpanded(false);
+        this.setAriaLabel(i18n('action.showOptions'));
     }
 
     isDown(): boolean {

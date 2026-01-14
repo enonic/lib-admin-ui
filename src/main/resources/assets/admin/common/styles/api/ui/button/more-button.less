@@ -10,14 +10,14 @@
     display: block; // for transformation
   }
 
-  .menu {
+  + .menu {
     display: none;
     position: absolute;
     z-index: @z-index-context-menu;
     box-sizing: border-box;
     padding-right: 40px;
-    top: 0;
-    right: 0;
+    top: 5px;
+    right: 5px;
 
     .menu-item {
       .ellipsis();
@@ -46,13 +46,13 @@
       z-index: @z-index-context-menu + 1;
     }
 
-    .menu {
+    + .menu {
       display: block;
     }
   }
 
   &.menu-right {
-    .menu {
+    + .menu {
       padding-left: 30px;
       padding-right: 4px;
       top: -4px;

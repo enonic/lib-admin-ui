@@ -144,9 +144,9 @@ export class FormOptionSetOccurrenceViewSingleOption
 
     protected layoutElements() {
         this.singleSelectionHeader.appendChildren<Element>(
-            new DivEl('drag-control'), this.selectionWrapper, this.label, this.moreButton
+            new DivEl('drag-control'), this.selectionWrapper, this.label
         );
-        this.appendChildren(this.singleSelectionHeader, this.selectionValidationMessage, this.formSetOccurrencesContainer);
+        this.appendChildren(this.singleSelectionHeader, this.moreButton, this.selectionValidationMessage, this.formSetOccurrencesContainer);
     }
 
     private getSelectedOptionView(): FormOptionSetOptionView {

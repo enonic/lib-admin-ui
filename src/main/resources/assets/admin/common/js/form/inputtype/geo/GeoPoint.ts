@@ -32,6 +32,8 @@ export class GeoPoint
             this.handleOccurrenceInputValueChanged(inputEl, event);
         });
 
+        this.getContext().labelEl?.setForElement(inputEl);
+
         return inputEl;
     }
 

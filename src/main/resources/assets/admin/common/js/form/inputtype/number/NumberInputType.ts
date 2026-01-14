@@ -55,6 +55,8 @@ export abstract class NumberInputType
             this.handleOccurrenceInputValueChanged(inputEl);
         });
 
+        this.getContext().labelEl?.setForElement(inputEl);
+
         return inputEl;
     }
 

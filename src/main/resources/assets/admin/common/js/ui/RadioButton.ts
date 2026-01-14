@@ -86,6 +86,10 @@ export class RadioButton
         return this.label.getValue();
     }
 
+    getInput(): InputEl {
+        return this.radio;
+    }
+
     getName(): string {
         return this.radio.getName();
     }

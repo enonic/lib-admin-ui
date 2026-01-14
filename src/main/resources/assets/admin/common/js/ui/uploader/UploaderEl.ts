@@ -26,6 +26,7 @@ import {KeyBindings} from '../KeyBindings';
 import {KeyBinding} from '../KeyBinding';
 import {KeyHelper} from '../KeyHelper';
 import {StatusCode} from '../../rest/StatusCode';
+import {AriaRole} from '../WCAG';
 
 export interface FineUploaderFile {
     name: string;
@@ -649,6 +650,7 @@ export class UploaderEl<MODEL extends Equitable>
         }
         this.uploadButton = new Button();
         this.uploadButton.addClass('upload-button');
+        this.uploadButton.setTitle(i18n('drop.clickable'));
         this.uploadButton.setId('upload-button-' + new Date().getTime());
         this.uploadButton.onClicked(() => this.showFileSelectionDialog());
         this.uploadButton.onKeyPressed((event: KeyboardEvent) => {
@@ -1056,7 +1058,9 @@ export class DropZone
         this.getEl().setAttribute('data-drop', i18n('drop.file.normal'));
         this.getEl().setAttribute('data-drop-default', i18n('drop.clickable'));
         // for mac default settings
-        this.getEl().setTabIndex(-1);
+        //this.getEl().setTabIndex(-1);
+        this.setRole(AriaRole.BUTTON);
+        this.setAriaLabel(i18n('drop.clickable'));
     }
 
     setEnable(enabled: boolean = true) {

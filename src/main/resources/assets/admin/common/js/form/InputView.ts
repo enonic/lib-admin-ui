@@ -27,6 +27,7 @@ import {RecordingValidityChangedEvent} from './RecordingValidityChangedEvent';
 import {ValidationRecording} from './ValidationRecording';
 import {ValidationRecordingPath} from './ValidationRecordingPath';
 import {AiToolType} from '../ai/tool/AiToolType';
+import {LabelEl} from '../dom/LabelEl';
 
 export interface InputViewConfig {
 
@@ -49,6 +50,7 @@ export class InputView
     private parentPropertySet: PropertySet;
     private propertyArray: PropertyArray;
     private inputTypeView: InputTypeView;
+    private inputLabelView: InputLabel;
     private bottomButtonRow?: DivEl;
     private addButton?: Button;
     private validationViewer: InputViewValidationViewer;
@@ -76,14 +78,14 @@ export class InputView
 
         if (this.input.getInputType().getName().toLowerCase() !== 'checkbox') { //checkbox input type generates clickable label itself
             if (this.input.getLabel()) {
-                let label = new InputLabel(this.input);
-                this.appendChild(label);
+                this.inputLabelView = new InputLabel(this.input);
+                this.appendChild(this.inputLabelView);
             } else {
                 this.addClass('no-label');
             }
         }
 
-        this.inputTypeView = this.createInputTypeView();
+        this.inputTypeView = this.createInputTypeView(this.inputLabelView?.getLabelEl());
         const hasAiIcon = this.inputTypeView.getAiConfig()?.aiTools.has(AiToolType.DIALOG);
         this.toggleClass('ai-editable', hasAiIcon);
 
@@ -315,12 +317,13 @@ export class InputView
         return array;
     }
 
-    protected createInputTypeView(): InputTypeView {
+    protected createInputTypeView(labelEl?: LabelEl): InputTypeView {
         let inputType: InputTypeName = this.input.getInputType();
         let inputTypeViewContext = this.getContext().createInputTypeViewContext(
             this.input.getInputTypeConfig() || {},
             this.parentPropertySet.getPropertyPath(),
-            this.input
+            this.input,
+            labelEl
         );
 
         if (InputTypeManager.isRegistered(inputType.getName())) {

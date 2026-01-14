@@ -120,16 +120,20 @@ export class WizardHeaderWithDisplayNameAndName
     }
 
     setPath(value: string) {
-        if (value) {
-            this.pathEl.getEl().setText(value.replace(/\/$/, ''));
-            this.pathEl.setTitle(value);
+        const sanitisedValue = value.replace(/\/$/, '');
+        const isEmptyValue = StringHelper.isEmpty(sanitisedValue);
+
+        this.pathEl.getEl().setText(sanitisedValue);
+
+        if (!isEmptyValue) {
+            this.pathEl.setTitle(sanitisedValue);
+            this.pathEl.setAriaLabel(i18n('field.path'));
             this.pathEl.show();
         } else {
             this.pathEl.hide();
-            this.pathEl.getEl().setText('');
         }
 
-        this.pathEl.toggleClass('empty', StringHelper.isEmpty(this.pathEl.getEl().getText()));
+        this.pathEl.toggleClass('empty', isEmptyValue);
     }
 
     setSimplifiedNameGeneration(value: boolean) {

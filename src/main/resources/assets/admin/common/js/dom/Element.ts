@@ -484,7 +484,9 @@ export class Element {
         const trimmedTitle = title.trim();
         if (trimmedTitle) {
             this.el.setTitle(trimmedTitle);
-            this.setAriaLabel(trimmedTitle);
+            if (this.el.getTagName().toUpperCase() !== 'DIV') {
+                this.setAriaLabel(trimmedTitle);
+            }
         } else {
             this.el.removeAttribute('title');
             this.setAriaLabel('');
@@ -711,6 +713,12 @@ export class Element {
 
     setAriaSelected(): Element {
         this.setAriaAttribute('selected', 'true');
+
+        return this;
+    }
+
+    setAriaControls(value: string): Element {
+        this.setAriaAttribute('controls', value);
 
         return this;
     }

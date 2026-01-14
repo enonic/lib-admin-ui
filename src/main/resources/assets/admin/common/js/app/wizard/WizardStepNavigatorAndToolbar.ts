@@ -5,6 +5,7 @@ import {ActivatedEvent} from '../../ui/ActivatedEvent';
 import {DivEl} from '../../dom/DivEl';
 import {FoldButton} from '../../ui/toolbar/FoldButton';
 import {WizardStepNavigator} from './WizardStepNavigator';
+import {AriaRole} from '../../ui/WCAG';
 
 export class WizardStepNavigatorAndToolbar
     extends DivEl {
@@ -52,7 +53,7 @@ export class WizardStepNavigatorAndToolbar
     }
 
     setupHelpTextToggleButton(): DivEl {
-        this.helpTextToggleButton = new DivEl('help-text-button');
+        this.helpTextToggleButton = new DivEl('help-text-button').setRole(AriaRole.BUTTON);
 
         this.appendChild(this.helpTextToggleButton).addClass('has-help-text-button');
         this.checkAndMinimize();

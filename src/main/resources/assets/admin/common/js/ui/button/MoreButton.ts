@@ -3,6 +3,8 @@ import {Action} from '../Action';
 import {Button} from './Button';
 import {IEl} from '../../dom/IEl';
 import {Body} from '../../dom/Body';
+import {i18n} from '../../util/Messages';
+import {AriaHasPopup} from '../WCAG';
 
 export enum MenuPosition {
     LEFT, RIGHT
@@ -40,9 +42,15 @@ export class MoreButton
         this.menu.setHideOnItemClick(false);
         this.addMenuActions(actions);
 
+        this.setAriaLabel(i18n('action.showMenu'))
+            .setAriaHasPopup(AriaHasPopup.TRUE)
+            .setAriaExpanded(false)
+            .setAriaControls(this.menu.getId());
+
         this.initListeners();
 
-        this.appendChildren(this.icon, this.menu);
+        this.appendChild(this.icon);
+        this.whenRendered(() => this.menu.insertAfterEl(this));
     }
 
     setMenuPosition(position: MenuPosition): void {
@@ -84,8 +92,10 @@ export class MoreButton
     toggleMenu(expand?: boolean) {
         if (expand || expand === undefined && !this.isMenuExpanded()) {
             this.expandMenu();
+            this.setAriaExpanded(true);
         } else {
             this.collapseMenu();
+            this.setAriaExpanded(false);
         }
     }
 

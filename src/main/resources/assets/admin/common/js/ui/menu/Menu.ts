@@ -12,6 +12,7 @@ export class Menu
     constructor(actions: Action[] = []) {
         super('menu');
 
+        this.setRole('menu');
         actions.forEach((action) => this.addAction(action));
     }
 

@@ -62,7 +62,7 @@ export class NamesAndIconView
             this.appendChild(this.wrapperDivEl);
 
             this.iconImageEl = new ImgEl(null, 'font-icon-default');
-            this.iconImageEl.setDraggable('false');
+            this.iconImageEl.setDecorative().setDraggable('false');
             this.wrapperDivEl.appendChild(this.iconImageEl);
 
             this.iconDivEl = new DivEl('font-icon-default');

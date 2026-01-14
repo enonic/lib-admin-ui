@@ -102,6 +102,10 @@ export class Checkbox
         return this.label.getValue();
     }
 
+    setAriaLabel(value: string) {
+        return this.label.setAriaLabel(value)
+    }
+
     setPlaceholder(value: string): Checkbox {
         this.checkbox.setPlaceholder(value);
         return this;

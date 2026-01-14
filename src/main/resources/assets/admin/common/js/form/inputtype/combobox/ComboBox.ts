@@ -45,6 +45,8 @@ export class ComboBox
         return super.layout(input, propertyArray).then(() => {
             this.initiallySelectedItems = this.getSelectedItems();
             this.listInput = this.createListInput();
+            this.getContext().labelEl?.setForElement(this.listInput.getOptionFilterInput());
+
             this.appendChild(this.listInput);
             this.setLayoutInProgress(false);
 

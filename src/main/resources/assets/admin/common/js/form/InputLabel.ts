@@ -1,22 +1,32 @@
 import {DivEl} from '../dom/DivEl';
 import {StyleHelper} from '../StyleHelper';
 import {Input} from './Input';
+import {LabelEl} from '../dom/LabelEl';
+import {ElementRegistry} from '../dom/ElementRegistry';
+import {NewElementBuilder} from '../dom/Element';
 
 export class InputLabel
     extends DivEl {
 
+    private readonly labelEl: LabelEl;
+
     constructor(input: Input) {
         super('input-label');
 
-        let wrapper = new DivEl('wrapper', StyleHelper.COMMON_PREFIX);
-        let label = new DivEl('label');
-        label.getEl().setInnerHtml(input.getLabel());
-        wrapper.getEl().appendChild(label.getHTMLElement());
+        const wrapper = new DivEl('wrapper', StyleHelper.COMMON_PREFIX);
+        this.labelEl = new LabelEl('label');
+        this.labelEl.getEl().setInnerHtml(input.getLabel());
+
+        wrapper.getEl().appendChild(this.labelEl.getHTMLElement());
 
         if (input.getOccurrences().required()) {
             wrapper.addClass('required');
         }
 
         this.getEl().appendChild(wrapper.getHTMLElement());
+    }
+
+    getLabelEl(): LabelEl {
+        return this.labelEl;
     }
 }
