@@ -18,9 +18,12 @@ import {i18n} from '../../../util/Messages';
  */
 export class DateType
     extends BaseInputTypeNotManagingAdd {
+    createDefaultValue(raw: unknown): Value {
+        throw new Error('Method not implemented.');
+    }
 
     getDefaultValue(): Date {
-        return this.getContext().input.getDefaultValue()?.getDateTime()?.toDate();
+        return this.getDefaultValueFromConfig()?.getDateTime()?.toDate();
     }
 
     getValueType(): ValueType {

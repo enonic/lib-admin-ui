@@ -40,6 +40,13 @@ export class GeoPoint
         return  isValid ? this.getValueType().newValue(event.getNewValue()) : this.getValueType().newNullValue();
     }
 
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+        return this.getValueType().newValue(rawValue);
+    }
+
     resetInputOccurrenceElement(occurrence: Element): void {
         super.resetInputOccurrenceElement(occurrence);
 

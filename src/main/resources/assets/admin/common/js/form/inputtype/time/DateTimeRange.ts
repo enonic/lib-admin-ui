@@ -23,6 +23,9 @@ declare const Date: DateConstructor;
 
 export class DateTimeRange
     extends BaseInputTypeNotManagingAdd {
+    createDefaultValue(raw: unknown): Value {
+        throw new Error('Method not implemented.');
+    }
 
     private useTimezone: boolean;
     private from: DateTime | LocalDateTime;

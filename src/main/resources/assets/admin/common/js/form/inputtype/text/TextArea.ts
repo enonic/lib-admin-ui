@@ -7,9 +7,13 @@ import {InputTypeName} from '../../InputTypeName';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {TextInputType} from './TextInputType';
+import {Value} from '../../../data/Value';
 
 export class TextArea
     extends TextInputType {
+    createDefaultValue(raw: unknown): Value {
+        throw new Error('Method not implemented.');
+    }
 
     constructor(config: InputTypeViewContext) {
         super(config);

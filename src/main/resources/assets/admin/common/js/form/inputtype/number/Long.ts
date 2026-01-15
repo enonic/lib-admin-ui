@@ -14,6 +14,9 @@ import {i18n} from '../../../util/Messages';
 
 export class Long
     extends NumberInputType {
+    createDefaultValue(raw: unknown): Value {
+        throw new Error('Method not implemented.');
+    }
 
     constructor(config: InputTypeViewContext) {
         super(config);

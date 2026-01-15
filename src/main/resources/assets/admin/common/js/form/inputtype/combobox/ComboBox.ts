@@ -18,6 +18,9 @@ import {ComboBoxSelectedOptionsView} from './ComboBoxSelectedOptionsView';
 
 export class ComboBox
     extends BaseInputTypeManagingAdd {
+    createDefaultValue(raw: unknown): Value {
+        throw new Error('Method not implemented.');
+    }
 
     private comboBoxOptions: ComboBoxOption[];
 

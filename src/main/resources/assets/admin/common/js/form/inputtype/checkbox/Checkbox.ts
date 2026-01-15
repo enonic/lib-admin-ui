@@ -16,6 +16,9 @@ import {BaseInputTypeSingleOccurrence} from '../support/BaseInputTypeSingleOccur
 
 export class Checkbox
     extends BaseInputTypeSingleOccurrence {
+    createDefaultValue(raw: unknown): Value {
+        throw new Error('Method not implemented.');
+    }
 
     public static debug: boolean = false;
     private checkbox: CheckboxEl;

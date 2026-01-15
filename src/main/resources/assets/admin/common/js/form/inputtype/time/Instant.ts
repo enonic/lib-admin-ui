@@ -30,20 +30,27 @@ export class Instant
         this.readConfig(config.inputConfig);
     }
 
-    getDefaultValue(): Date {
-        const inputConfig = this.getContext().inputConfig;
-        const defaultValueConfig = inputConfig['default']?.[0];
-        const defaultValue = defaultValueConfig?.['value'] as string;
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
 
-        if (!defaultValue) {
+        if (Instant.PATTERN.test(rawValue)) {
+            return this.getValueType().newValue(rawValue);
+        } else {
+            const value = InstantUtil.fromDate(RelativeTimeParser.parseToInstant(rawValue));
+            return new Value(value, ValueTypes.INSTANT);
+        }
+    }
+
+    getDefaultValue(): Date {
+        const defaultValue = this.getDefaultValueFromConfig();
+
+        if (defaultValue?.isNull()) {
             return null;
         }
 
-        if (Instant.PATTERN.test(defaultValue)) {
-            return InstantUtil.fromString(defaultValue).toDate();
-        }
-
-        return RelativeTimeParser.parseToInstant(defaultValue);
+        return defaultValue.getInstant().toDate();
     }
 
     getValueType(): ValueType {

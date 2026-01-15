@@ -120,6 +120,13 @@ export class RadioButton
         this.radioButtonOptions = options;
     }
 
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+        return this.getValueType().newValue(rawValue);
+    }
+
     private createRadioElement(name: string, property: Property): RadioGroup {
         const value: string = property?.hasNonNullValue ? property.getString() : undefined;
         const radioGroup = new RadioGroup(name, value);

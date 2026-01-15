@@ -20,9 +20,12 @@ import {TimeHM} from '../../../util/TimeHM';
  */
 export class Time
     extends BaseInputTypeNotManagingAdd {
+    createDefaultValue(raw: unknown): Value {
+        throw new Error('Method not implemented.');
+    }
 
     getDefaultValue(): Date {
-        const defaultTime: LocalTime = this.getContext().input.getDefaultValue()?.getLocalTime();
+        const defaultTime: LocalTime = this.getDefaultValueFromConfig()?.getLocalTime();
         if (!defaultTime) {
             return null;
         }

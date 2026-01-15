@@ -10,6 +10,7 @@ import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {TextInputType} from './TextInputType';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
+import {Value} from '../../../data/Value';
 
 export class TextLine
     extends TextInputType {
@@ -31,6 +32,13 @@ export class TextLine
         inputEl.setAutocomplete(true);
 
         return inputEl;
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+        return this.getValueType().newValue(rawValue);
     }
 
     private validateRegex(inputEl: FormInputEl) {
