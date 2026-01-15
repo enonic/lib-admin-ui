@@ -6,11 +6,40 @@ export interface HandlersMapEntry<E extends AbstractEvent> {
 }
 
 export abstract class AbstractEventBus<E extends AbstractEvent> {
+
     protected handlersMap: Record<string, HandlersMapEntry<E>[]> = {};
-    protected contextWindow: Window;
+
+    protected receivers: Window[] = [];
+
+    protected id: string | number = new Date().getTime();
 
     protected constructor(contextWindow: Window = window) {
-        this.contextWindow = contextWindow;
+        if (contextWindow) {
+            this.addReceiver(contextWindow);
+        }
+    }
+
+    setId(id: number | string) {
+        this.id = id;
+        return this;
+    }
+
+    addReceiver(receiver: Window) {
+        if (!this.hasReceiver(receiver)) {
+            console.debug(`[${this.id}] Adding receiver window`, receiver);
+            this.receivers.push(receiver);
+        }
+        return this;
+    }
+
+    removeReceiver(receiver: Window) {
+        console.debug(`[${this.id}] Removing receiver window`, receiver);
+        this.receivers = this.receivers.filter(r => r !== receiver);
+        return this;
+    }
+
+    hasReceiver(receiver: Window): boolean {
+        return this.receivers.includes(receiver);
     }
 
     onEvent(eventName: string, handler: (event: E) => void): HandlersMapEntry<E> {

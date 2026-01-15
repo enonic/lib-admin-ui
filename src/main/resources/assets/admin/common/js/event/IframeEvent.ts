@@ -13,6 +13,17 @@ export interface ClassConstructor {
 export class IframeEvent
     extends AbstractEvent {
 
+    private data: object | undefined;
+
+    setData(data: object) {
+        this.data = data;
+        return this;
+    }
+
+    getData(): object | undefined {
+        return this.data;
+    }
+
     fire() {
         IframeEventBus.get().fireEvent(this);
     }

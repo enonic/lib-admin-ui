@@ -5,15 +5,13 @@ import {ClassHelper} from '../ClassHelper';
 export class IframeEventBus
     extends AbstractEventBus<IframeEvent> {
 
-    private id: string | number = new Date().getTime();
-
     private isListening = false;
 
     private static instance: IframeEventBus;
 
     private classRegistry: Record<string, ClassConstructor> = {};
 
-    private constructor(contextWindow: Window) {
+    private constructor(contextWindow: Window = window) {
         super(contextWindow);
 
         if (!this.isListening) {
@@ -23,36 +21,29 @@ export class IframeEventBus
         }
     }
 
-    setReceiver(receiver: Window): IframeEventBus {
-        console.debug(`[${this.id}] Setting receiver window to`, receiver);
-        this.contextWindow = receiver;
-        return this;
-    }
-
-    setId(id: number | string): IframeEventBus {
-        this.id = id;
-        return this;
-    }
-
-    static get(): IframeEventBus {
+    static get(receiver?: Window): IframeEventBus {
         if (!IframeEventBus.instance) {
             // initialize with null receiver
-            IframeEventBus.instance = new IframeEventBus(null);
+            IframeEventBus.instance = new IframeEventBus(receiver);
+        } else if (receiver && !IframeEventBus.instance.hasReceiver(receiver)) {
+            console.warn('IframeEventBus instance already exists with different receiver, use addReceiver(window) to add a new one.');
         }
         return IframeEventBus.instance;
     }
 
     public fireEvent(event: IframeEvent) {
-        const detail = JSON.stringify(event, this.replacer.bind(this));
         console.log(`[${this.id}] Fire event: ${event.getName()}`, event);
         // post messages are allowed on other windows (parent, child) so we post messages there
-        if (!this.contextWindow) {
-            throw new Error(`[${this.id}] No receiver window set for IframeEventBus, use setReceiver(window) to set one.`);
+        if (!this.receivers.length) {
+            throw new Error(`[${this.id}] No receivers set for IframeEventBus, use addReceiver(window) to set one.`);
         }
-        this.contextWindow.postMessage({
-            eventName: event.getName(),
-            detail: detail
-        }, '*');
+        this.receivers.forEach(receiver => {
+            const detail = JSON.stringify(event, this.replacer.bind(this, receiver));
+            receiver.postMessage({
+                eventName: event.getName(),
+                detail: detail
+            }, '*');
+        });
     }
 
     public registerClass(fullName: string, instance: any) {
@@ -83,13 +74,13 @@ export class IframeEventBus
     };
 
     // Function to add type info during serialization
-    private replacer(key, value) {
+    private replacer(receiver: Window, key, value) {
 
         if (value === null || typeof value !== 'object') {
             return value; // Only process objects
         }
 
-        let fullName = this.getFullName(value);
+        let fullName = this.getFullName(value, receiver);
         if (fullName === 'Object' || fullName === 'Array') {
             return value; // Skip plain objects and arrays
         }
@@ -152,10 +143,10 @@ export class IframeEventBus
         return value;
     }
 
-    private getFullName(instance: object): string {
+    private getFullName(instance: object, receiver: Window): string {
         let constructor = (typeof instance === 'function') ? instance : instance['constructor'] as any;
         //last one expression for IE
-        return ClassHelper.findPath(this.contextWindow, constructor) || constructor['name'] ||
+        return ClassHelper.findPath(receiver, constructor) || constructor['name'] ||
                constructor.toString().match(/^function\s*([^\s(]+)/)[1];
     }
 

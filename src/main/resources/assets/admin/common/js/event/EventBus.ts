@@ -6,12 +6,11 @@ export class EventBus
 
     private static instance: EventBus;
 
-    static get(contextWindow: Window = window): EventBus {
+    static get(receiver?: Window): EventBus {
         if (!EventBus.instance) {
-            console.info(`Creating new EventBus instance by ${window.location.pathname} on ${contextWindow.location.pathname}`);
-            EventBus.instance = new EventBus(contextWindow);
-        } else if (EventBus.instance.contextWindow !== contextWindow) {
-            throw new Error('EventBus instance already created with a different contextWindow');
+            EventBus.instance = new EventBus(receiver);
+        } else if (receiver && !EventBus.instance.hasReceiver(receiver)) {
+            console.warn('EventBus instance already exists with different receiver, use addReceiver(window) to add a new one.');
         }
         return EventBus.instance;
     }
@@ -19,14 +18,14 @@ export class EventBus
     onEvent(eventName: string, handler: (event: Event) => void): HandlersMapEntry<Event> {
         const entry = super.onEvent(eventName, handler);
         entry.customHandler = (e: CustomEvent) => handler(e.detail);
-        this.contextWindow.addEventListener(eventName, entry.customHandler);
+        this.receivers[0].addEventListener(eventName, entry.customHandler);
         return entry;
     }
 
     unEvent(eventName: string, handler?: (event: Event) => void) {
         const entries = super.unEvent(eventName, handler);
         entries.forEach((entry: HandlersMapEntry<Event>) => {
-            this.contextWindow.removeEventListener(eventName, entry.customHandler);
+            this.receivers[0].removeEventListener(eventName, entry.customHandler);
         });
         return entries;
     }
@@ -38,7 +37,11 @@ export class EventBus
             detail: event
         });
 
-        this.contextWindow.dispatchEvent(customEvent);
+        if (!this.receivers.length) {
+            throw new Error(`No receivers set for EventBus, use addReceiver(window) to set one.`);
+        }
+
+        this.receivers.forEach((receiver) => receiver.dispatchEvent(customEvent));
     }
 
 }
