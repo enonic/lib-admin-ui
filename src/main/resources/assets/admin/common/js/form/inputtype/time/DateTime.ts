@@ -75,10 +75,6 @@ export class DateTime
         if (property.hasNonNullValue()) {
             const date: LocalDateTime = property.getLocalDateTime();
             dateTimeBuilder.setDateTime(date.toDate());
-        } else {
-            dateTimeBuilder.setDateTime(defaultDate);
-            const value = LocalDateTime.fromDate(defaultDate);
-            property.setValue(new Value(value, ValueTypes.LOCAL_DATE_TIME));
         }
 
         const dateTimePicker: DateTimePicker = dateTimeBuilder.build();

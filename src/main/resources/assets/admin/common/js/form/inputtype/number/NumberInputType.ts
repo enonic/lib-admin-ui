@@ -4,7 +4,6 @@ import {i18n} from '../../../util/Messages';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {Property} from '../../../data/Property';
-import {StringHelper} from '../../../util/StringHelper';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {Element} from '../../../dom/Element';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
@@ -114,9 +113,8 @@ export abstract class NumberInputType
         }
     }
 
-    private getConfigProperty(config: InputTypeViewContext, propertyName: string) {
-        const configProperty = config.inputConfig[propertyName] ? config.inputConfig[propertyName][0] : {};
-        return NumberHelper.toNumber(configProperty['value'] as string);
+    private getConfigProperty(config: InputTypeViewContext, propertyName: string): number {
+        return config.inputConfig[propertyName]?.[0]?.value as number ?? null;
     }
 
     private isValidMin(value: number) {

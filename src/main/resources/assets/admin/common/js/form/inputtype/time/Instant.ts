@@ -74,10 +74,6 @@ export class Instant
 
         if (property.hasNonNullValue()) {
             dateTimeBuilder.setDateTime(property.getInstant().toDate());
-        } else if (defaultDate) {
-            dateTimeBuilder.setDateTime(defaultDate);
-            const value = InstantUtil.fromDate(defaultDate);
-            property.setValue(new Value(value, ValueTypes.INSTANT));
         }
 
         const dateTimePicker: DateTimePicker = dateTimeBuilder.build();

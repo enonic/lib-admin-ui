@@ -8,8 +8,13 @@ import {Value} from '../../../data/Value';
 
 export class Double
     extends NumberInputType {
-    createDefaultValue(raw: unknown): Value {
-        throw new Error('Method not implemented.');
+
+    createDefaultValue(rawValue: unknown): Value {
+        const valueType = this.getValueType();
+        if (typeof rawValue !== 'number') {
+            return valueType.newNullValue();
+        }
+        return valueType.fromJsonValue(rawValue);
     }
 
     constructor(config: InputTypeViewContext) {

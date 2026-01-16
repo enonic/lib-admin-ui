@@ -2,10 +2,8 @@ import {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {Value} from '../../../data/Value';
 import {InputTypeViewContext} from '../InputTypeViewContext';
-import {Element} from '../../../dom/Element';
 import {TextInput} from '../../../ui/text/TextInput';
 import {NumberHelper} from '../../../util/NumberHelper';
-import {FormInputEl} from '../../../dom/FormInputEl';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {NumberInputType} from './NumberInputType';
@@ -14,12 +12,17 @@ import {i18n} from '../../../util/Messages';
 
 export class Long
     extends NumberInputType {
-    createDefaultValue(raw: unknown): Value {
-        throw new Error('Method not implemented.');
-    }
 
     constructor(config: InputTypeViewContext) {
         super(config);
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        const valueType = this.getValueType();
+        if (typeof rawValue !== 'number') {
+            return valueType.newNullValue();
+        }
+        return valueType.fromJsonValue(rawValue);
     }
 
     getValueType(): ValueType {

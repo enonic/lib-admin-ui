@@ -12,18 +12,31 @@ import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
+import {RelativeTimeParser} from './RelativeTimeParser';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDate]].
  */
 export class DateType
     extends BaseInputTypeNotManagingAdd {
-    createDefaultValue(raw: unknown): Value {
-        throw new Error('Method not implemented.');
-    }
+
+    private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
     getDefaultValue(): Date {
         return this.getDefaultValueFromConfig()?.getDateTime()?.toDate();
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+
+        if (DateType.PATTERN.test(rawValue)) {
+            return this.getValueType().newValue(rawValue);
+        } else {
+            const value = LocalDate.fromDate(RelativeTimeParser.parseToDate(rawValue));
+            return new Value(value, ValueTypes.LOCAL_DATE);
+        }
     }
 
     getValueType(): ValueType {

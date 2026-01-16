@@ -14,26 +14,40 @@ import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
 import {TimeHMS} from '../../../util/TimeHMS';
 import {TimeHM} from '../../../util/TimeHM';
+import {RelativeTimeParser} from './RelativeTimeParser';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalTime]].
  */
 export class Time
     extends BaseInputTypeNotManagingAdd {
-    createDefaultValue(raw: unknown): Value {
-        throw new Error('Method not implemented.');
-    }
+
+    private static readonly PATTERN = /^\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 
     getDefaultValue(): Date {
         const defaultTime: LocalTime = this.getDefaultValueFromConfig()?.getLocalTime();
         if (!defaultTime) {
             return null;
         }
+
         const result: Date = new Date();
         result.setHours(defaultTime.getHours());
         result.setMinutes(defaultTime.getMinutes());
 
         return result;
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+
+        if (Time.PATTERN.test(rawValue)) {
+            return this.getValueType().newValue(rawValue);
+        } else {
+            const value = LocalTime.fromDate(RelativeTimeParser.parseToTime(rawValue));
+            return new Value(value, ValueTypes.LOCAL_TIME);
+        }
     }
 
     getValueType(): ValueType {
