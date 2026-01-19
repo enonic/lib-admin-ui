@@ -22,8 +22,8 @@ export class DateType
 
     private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
-    getDefaultValue(): Date {
-        return this.getDefaultValueFromConfig()?.getDateTime()?.toDate();
+    resolveDefaultValue(): Date {
+        return this.getDefaultValue()?.getDateTime()?.toDate();
     }
 
     createDefaultValue(rawValue: unknown): Value {
@@ -55,7 +55,7 @@ export class DateType
             datePickerBuilder.setDateTime(date.toDate());
         }
 
-        const defaultDate: Date = this.getDefaultValue();
+        const defaultDate: Date = this.resolveDefaultValue();
         if (defaultDate) {
             datePickerBuilder.setDefaultValue(defaultDate);
         }

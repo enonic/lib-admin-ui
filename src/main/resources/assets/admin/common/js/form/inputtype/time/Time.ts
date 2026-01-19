@@ -24,8 +24,8 @@ export class Time
 
     private static readonly PATTERN = /^\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 
-    getDefaultValue(): Date {
-        const defaultTime: LocalTime = this.getDefaultValueFromConfig()?.getLocalTime();
+    resolveDefaultValue(): Date {
+        const defaultTime: LocalTime = this.getDefaultValue()?.getLocalTime();
         if (!defaultTime) {
             return null;
         }
@@ -65,7 +65,7 @@ export class Time
             timePickerBuilder.setHours(value.hours).setMinutes(value.minutes);
         }
 
-        const defaultDate: Date = this.getDefaultValue();
+        const defaultDate: Date = this.resolveDefaultValue();
         if (defaultDate) {
             timePickerBuilder.setDefaultValue(defaultDate);
         }

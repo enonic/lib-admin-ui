@@ -210,7 +210,7 @@ export class InputView
     hasNonDefaultValues(): boolean {
         return this.propertyArray.some((property: Property) => {
             return !StringHelper.isEmpty(property.getValue().getString()) &&
-                   !property.getValue().equals(this.inputTypeView.getDefaultValueFromConfig());
+                   !property.getValue().equals(this.inputTypeView.getDefaultValue());
         });
     }
 
@@ -301,7 +301,7 @@ export class InputView
 
             propertySet.addPropertyArray(array);
 
-            const rawDefaultValue = this.inputTypeView.getRawDefaultFromConfig();
+            const rawDefaultValue = this.inputTypeView.getRawDefaultValue();
             const initialValue = rawDefaultValue
                                  ? this.inputTypeView.createDefaultValue(rawDefaultValue)
                                  : this.inputTypeView.newInitialValue();

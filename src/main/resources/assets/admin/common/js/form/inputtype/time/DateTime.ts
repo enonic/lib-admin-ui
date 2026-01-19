@@ -43,8 +43,8 @@ export class DateTime
         return new Value(value, ValueTypes.LOCAL_DATE_TIME);
     }
 
-    getDefaultValue(): Date {
-        const defaultValue = this.getDefaultValueFromConfig();
+    resolveDefaultValue(): Date {
+        const defaultValue = this.getDefaultValue();
 
         if (defaultValue?.isNull()) {
             return null;
@@ -63,7 +63,7 @@ export class DateTime
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
         dateTimeBuilder.setUseLocalTimezone(false);
 
-        const defaultDate: Date = this.getDefaultValue();
+        const defaultDate: Date = this.resolveDefaultValue();
         if (defaultDate) {
             dateTimeBuilder.setDefaultValue(defaultDate);
         }

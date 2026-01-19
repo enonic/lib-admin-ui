@@ -329,7 +329,7 @@ export abstract class BaseInputTypeNotManagingAdd
     abstract setEnabledInputOccurrenceElement(_occurrence: Element, enable: boolean);
 
     newInitialValue(): Value {
-        return this.getDefaultValueFromConfig() || this.newValueTypeInitialValue();
+        return this.getDefaultValue() || this.newValueTypeInitialValue();
     }
 
     protected newValueTypeInitialValue(): Value {

@@ -30,9 +30,9 @@ export interface InputTypeView {
 
     newInitialValue(): Value;
 
-    getDefaultValueFromConfig(): Value;
+    getDefaultValue(): Value;
 
-    getRawDefaultFromConfig(): unknown;
+    getRawDefaultValue(): unknown;
 
     createDefaultValue(raw: unknown): Value;
 

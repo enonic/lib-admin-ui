@@ -43,8 +43,8 @@ export class Instant
         }
     }
 
-    getDefaultValue(): Date {
-        const defaultValue = this.getDefaultValueFromConfig();
+    resolveDefaultValue(): Date {
+        const defaultValue = this.getDefaultValue();
 
         if (defaultValue?.isNull()) {
             return null;
@@ -63,7 +63,7 @@ export class Instant
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
         dateTimeBuilder.setUseLocalTimezone(true);
 
-        const defaultDate: Date = this.getDefaultValue();
+        const defaultDate: Date = this.resolveDefaultValue();
         if (defaultDate) {
             dateTimeBuilder.setDefaultValue(defaultDate);
         }

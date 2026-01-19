@@ -62,12 +62,12 @@ export abstract class BaseInputType extends DivEl
 
     abstract getValueType(): ValueType;
 
-    getRawDefaultFromConfig(): unknown {
+    getRawDefaultValue(): unknown {
         return this.context.inputConfig['default']?.[0]?.value ?? null;
     }
 
-    getDefaultValueFromConfig(): Value {
-        const raw = this.getRawDefaultFromConfig();
+    getDefaultValue(): Value {
+        const raw = this.getRawDefaultValue();
 
         if (raw == null) {
             return this.getValueType().newNullValue();
