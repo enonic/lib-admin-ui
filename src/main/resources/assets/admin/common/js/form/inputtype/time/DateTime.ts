@@ -30,20 +30,27 @@ export class DateTime
         this.readConfig(config.inputConfig);
     }
 
-    getDefaultValue(): Date {
-        const inputConfig = this.getContext().inputConfig;
-        const defaultValueConfig = inputConfig['default']?.[0];
-        const defaultValue = defaultValueConfig?.['value'] as string;
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
 
-        if (!defaultValue) {
+        if (DateTime.PATTERN.test(rawValue)) {
+            return this.getValueType().newValue(rawValue);
+        }
+
+        const value = LocalDateTime.fromDate(RelativeTimeParser.parseToDateTime(rawValue));
+        return new Value(value, ValueTypes.LOCAL_DATE_TIME);
+    }
+
+    resolveDefaultValue(): Date {
+        const defaultValue = this.getDefaultValue();
+
+        if (defaultValue?.isNull()) {
             return null;
         }
 
-        if (DateTime.PATTERN.test(defaultValue)) {
-            return LocalDateTime.fromString(defaultValue).toDate();
-        }
-
-        return RelativeTimeParser.parseToDateTime(defaultValue);
+        return defaultValue.getDateTime().toDate();
     }
 
     getValueType(): ValueType {
@@ -56,7 +63,7 @@ export class DateTime
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
         dateTimeBuilder.setUseLocalTimezone(false);
 
-        const defaultDate: Date = this.getDefaultValue();
+        const defaultDate: Date = this.resolveDefaultValue();
         if (defaultDate) {
             dateTimeBuilder.setDefaultValue(defaultDate);
         }
@@ -68,10 +75,6 @@ export class DateTime
         if (property.hasNonNullValue()) {
             const date: LocalDateTime = property.getLocalDateTime();
             dateTimeBuilder.setDateTime(date.toDate());
-        } else {
-            dateTimeBuilder.setDateTime(defaultDate);
-            const value = LocalDateTime.fromDate(defaultDate);
-            property.setValue(new Value(value, ValueTypes.LOCAL_DATE_TIME));
         }
 
         const dateTimePicker: DateTimePicker = dateTimeBuilder.build();

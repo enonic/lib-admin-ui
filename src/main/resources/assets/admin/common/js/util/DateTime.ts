@@ -80,15 +80,7 @@ export class DateTime
             throw new Error('Cannot parse DateTime from string: ' + s);
         }
 
-        return DateTime.create()
-            .setYear(date.getFullYear())
-            .setMonth(date.getMonth())
-            .setDay(date.getDate())
-            .setHours(date.getHours())
-            .setMinutes(date.getMinutes())
-            .setSeconds(date.getSeconds())
-            .setFractions(date.getMilliseconds())
-            .build();
+        return DateTime.fromDate(date);
     }
 
     static fromDate(s: Date): DateTime {

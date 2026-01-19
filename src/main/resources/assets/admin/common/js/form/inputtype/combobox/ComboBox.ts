@@ -37,6 +37,14 @@ export class ComboBox
         return null;
     }
 
+    createDefaultValue(rawValue: unknown): Value {
+        const valueType = this.getValueType();
+        if (typeof rawValue !== 'string') {
+            return valueType.newNullValue();
+        }
+        return valueType.newValue(rawValue);
+    }
+
     layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {
         if (!ValueTypes.STRING.equals(propertyArray.getType())) {
             ValueTypeConverter.convertArrayValues(propertyArray, ValueTypes.STRING);
