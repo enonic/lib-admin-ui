@@ -62,15 +62,8 @@ export class Instant
         if (isNaN(date.getTime())) {
             throw new Error('Invalid date string for Instant: ' + s);
         }
-        return Instant.create()
-            .setYear(date.getUTCFullYear())
-            .setMonth(date.getUTCMonth())
-            .setDay(date.getUTCDate())
-            .setHours(date.getUTCHours())
-            .setMinutes(date.getUTCMinutes())
-            .setSeconds(date.getUTCSeconds())
-            .setFractions(date.getUTCMilliseconds())
-            .build();
+
+        return Instant.fromDate(date);
     }
 
     static fromDate(s: Date): Instant {

@@ -367,7 +367,8 @@ export class DateHelper {
             millisecond: () => number
         },
         factory: (iso: string) => { toDate(): Date },
-        omitTimezone = false
+        omitTimezone = false,
+        mode: 'datetime' | 'date' | 'time' = 'datetime'
     ): Date {
         let isoString: string;
 
@@ -380,7 +381,13 @@ export class DateHelper {
             const s = value.second().toString().padStart(2, '0');
             const ms = value.millisecond() ? `.${value.millisecond().toString().padStart(3, '0')}` : '';
 
-            isoString = `${y}-${m}-${d}T${h}:${min}:${s}${ms}`;
+            if (mode === 'date') {
+                isoString = `${y}-${m}-${d}`;
+            } else if (mode === 'time') {
+                isoString = `${h}:${min}`;
+            } else {
+                isoString = `${y}-${m}-${d}T${h}:${min}:${s}${ms}`;
+            }
         } else {
             isoString = (value as Dayjs).toISOString();
         }

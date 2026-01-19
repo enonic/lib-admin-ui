@@ -1,19 +1,21 @@
 import dayjs, {Dayjs} from 'dayjs';
-import {Instant as InstantUtil} from '../../../util/Instant';
-import {DateTime as DateTimeUtil} from '../../../util/DateTime';
+import {Instant} from '../../../util/Instant';
+import {DateTime} from '../../../util/DateTime';
 import {DateHelper} from '../../../util/DateHelper';
+import {LocalDate} from '../../../util/LocalDate';
 
 export class RelativeTimeParser {
 
     private static parseRelative(
         expr: string,
         factory: (iso: string) => { toDate(): Date },
-        omitTimezone = false
+        omitTimezone = true,
+        mode: 'datetime' | 'date' | 'time' = 'datetime'
     ): Date {
         const base = dayjs();
 
         if (!expr || expr.trim() === 'now') {
-            return DateHelper.isoValueToDate(base, factory, omitTimezone);
+            return DateHelper.isoValueToDate(base, factory, omitTimezone, mode);
         }
 
         const result: Dayjs = expr
@@ -32,14 +34,27 @@ export class RelativeTimeParser {
                        : date.subtract(Number(value), unit as dayjs.ManipulateType);
             }, base);
 
-        return DateHelper.isoValueToDate(result, factory, omitTimezone);
+        return DateHelper.isoValueToDate(result, factory, omitTimezone, mode);
     }
 
     static parseToDateTime(expr?: string): Date {
-        return this.parseRelative(expr, DateTimeUtil.fromString, true);
+        return this.parseRelative(expr, DateTime.fromString, true);
     }
 
     static parseToInstant(expr?: string): Date {
-        return this.parseRelative(expr, InstantUtil.fromString);
+        return this.parseRelative(expr, Instant.fromString, false);
+    }
+
+    static parseToDate(expr?: string): Date {
+        return this.parseRelative(expr, LocalDate.fromISOString, true, 'date');
+    }
+
+    static parseToTime(expr?: string): Date {
+        return this.parseRelative(expr, (iso: string) => ({
+            toDate: () => {
+                const time = DateHelper.parseTime(iso);
+                return DateHelper.dateFromTime(time.hours, time.minutes);
+            }
+        }), true, 'time');
     }
 }

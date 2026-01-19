@@ -46,6 +46,10 @@ export class PrincipalSelector
         return null;
     }
 
+    createDefaultValue(rawValue: unknown): Value {
+        return this.getValueType().newNullValue();
+    }
+
     layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {
         return super.layout(input, propertyArray).then(() => {
             this.initiallySelectedItems = this.getSelectedItemsIds();

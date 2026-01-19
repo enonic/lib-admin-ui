@@ -22,6 +22,13 @@ export class NoInputTypeFoundView
         return ValueTypes.STRING;
     }
 
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+        return this.getValueType().newValue(rawValue);
+    }
+
     layout(input: Input, property?: PropertyArray): Q.Promise<void> {
         const divEl: DivEl = new DivEl();
         divEl.getEl().setInnerHtml('Warning: no input type found: ' + input.getInputType().toString());
