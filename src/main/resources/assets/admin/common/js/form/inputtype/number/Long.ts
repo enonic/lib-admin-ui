@@ -1,6 +1,5 @@
 import {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {Value} from '../../../data/Value';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {TextInput} from '../../../ui/text/TextInput';
 import {NumberHelper} from '../../../util/NumberHelper';
@@ -15,14 +14,6 @@ export class Long
 
     constructor(config: InputTypeViewContext) {
         super(config);
-    }
-
-    createDefaultValue(rawValue: unknown): Value {
-        const valueType = this.getValueType();
-        if (typeof rawValue !== 'number') {
-            return valueType.newNullValue();
-        }
-        return valueType.fromJsonValue(rawValue);
     }
 
     getValueType(): ValueType {

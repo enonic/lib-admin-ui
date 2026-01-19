@@ -31,6 +31,14 @@ export abstract class NumberInputType
         occurrence.setValue(this.getPropertyValue(property));
     }
 
+    createDefaultValue(rawValue: unknown): Value {
+        const valueType = this.getValueType();
+        if (typeof rawValue !== 'number') {
+            return valueType.newNullValue();
+        }
+        return valueType.fromJsonValue(rawValue);
+    }
+
     resetInputOccurrenceElement(occurrence: Element): void {
         super.resetInputOccurrenceElement(occurrence);
 

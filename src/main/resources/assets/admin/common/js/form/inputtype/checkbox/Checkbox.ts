@@ -16,10 +16,6 @@ import {BaseInputTypeSingleOccurrence} from '../support/BaseInputTypeSingleOccur
 
 export class Checkbox
     extends BaseInputTypeSingleOccurrence {
-    createDefaultValue(raw: unknown): Value {
-        throw new Error('Method not implemented.');
-    }
-
     public static debug: boolean = false;
     private checkbox: CheckboxEl;
     private inputAlignment: InputAlignment = InputAlignment.LEFT;
@@ -31,6 +27,10 @@ export class Checkbox
 
     getValueType(): ValueType {
         return ValueTypes.BOOLEAN;
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        return this.getValueType().fromJsonValue(rawValue === 'checked');
     }
 
     newInitialValue(): Value {

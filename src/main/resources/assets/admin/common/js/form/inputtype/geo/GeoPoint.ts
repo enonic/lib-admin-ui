@@ -5,7 +5,6 @@ import {Property} from '../../../data/Property';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
 import {Element} from '../../../dom/Element';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
-import {GeoPoint as GeoPointUtil} from '../../../util/GeoPoint';
 import {GeoPoint as GeoPointEl} from '../../../ui/geo/GeoPoint';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {InputTypeManager} from '../InputTypeManager';

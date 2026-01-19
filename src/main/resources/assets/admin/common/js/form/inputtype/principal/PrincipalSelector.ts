@@ -17,9 +17,6 @@ import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';
 
 export class PrincipalSelector
     extends BaseInputTypeManagingAdd {
-    createDefaultValue(raw: unknown): Value {
-        throw new Error('Method not implemented.');
-    }
 
     private principalTypes: PrincipalType[];
 
@@ -47,6 +44,10 @@ export class PrincipalSelector
 
     newInitialValue(): Value {
         return null;
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        return this.getValueType().newNullValue();
     }
 
     layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {

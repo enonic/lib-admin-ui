@@ -17,12 +17,16 @@ import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
 
 export class NoInputTypeFoundView
     extends BaseInputTypeNotManagingAdd {
-    createDefaultValue(raw: unknown): Value {
-        throw new Error('Method not implemented.');
-    }
 
     getValueType(): ValueType {
         return ValueTypes.STRING;
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+        return this.getValueType().newValue(rawValue);
     }
 
     layout(input: Input, property?: PropertyArray): Q.Promise<void> {

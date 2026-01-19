@@ -18,9 +18,6 @@ import {ComboBoxSelectedOptionsView} from './ComboBoxSelectedOptionsView';
 
 export class ComboBox
     extends BaseInputTypeManagingAdd {
-    createDefaultValue(raw: unknown): Value {
-        throw new Error('Method not implemented.');
-    }
 
     private comboBoxOptions: ComboBoxOption[];
 
@@ -38,6 +35,14 @@ export class ComboBox
 
     newInitialValue(): Value {
         return null;
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        const valueType = this.getValueType();
+        if (typeof rawValue !== 'string') {
+            return valueType.newNullValue();
+        }
+        return valueType.newValue(rawValue);
     }
 
     layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {
