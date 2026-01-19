@@ -11,6 +11,8 @@ export class IframeEventBus
 
     private classRegistry: Record<string, ClassConstructor> = {};
 
+    public static debug = false;
+
     private constructor(contextWindow: Window = window) {
         super(contextWindow);
 
@@ -32,7 +34,9 @@ export class IframeEventBus
     }
 
     public fireEvent(event: IframeEvent) {
-        console.log(`[${this.id}] Fire event: ${event.getName()}`, event);
+        if (IframeEventBus.debug) {
+            console.log(`[${this.id}] Fire event: ${event.getName()}`, event);
+        }
         // post messages are allowed on other windows (parent, child) so we post messages there
         if (!this.receivers.length) {
             throw new Error(`[${this.id}] No receivers set for IframeEventBus, use addReceiver(window) to set one.`);
@@ -48,7 +52,9 @@ export class IframeEventBus
 
     public registerClass(fullName: string, instance: any) {
         const constructor = (typeof instance === 'function') ? instance : instance['constructor'];
-        console.debug(`[${this.id}] Registering class: ${fullName}`);
+        if (IframeEventBus.debug) {
+            console.debug(`[${this.id}] Registering class: ${fullName}`);
+        }
         this.classRegistry[fullName] = constructor as ClassConstructor;
     }
 
@@ -68,7 +74,9 @@ export class IframeEventBus
         }
 
         const data = JSON.parse(detail, this.reviver.bind(this));
-        console.log(`[${this.id}] Got event: ${eventName}`, data);
+        if (IframeEventBus.debug) {
+            console.log(`[${this.id}] Got event: ${eventName}`, data);
+        }
 
         (this.handlersMap[eventName] || []).forEach(entry => entry.handler(data));
     };
@@ -124,20 +132,28 @@ export class IframeEventBus
                     const stringValue = value.__stringvalue;
                     if (stringValue !== undefined) {
                         delete value.__stringvalue;
-                        console.debug(`[${this.id}] invoking ${typeName}.fromString`, stringValue);
+                        if (IframeEventBus.debug) {
+                            console.debug(`[${this.id}] invoking ${typeName}.fromString`, stringValue);
+                        }
                         return ClassConstructor.fromString(stringValue);
                     }
                 } else if (typeof ClassConstructor.fromObject === 'function') {
-                    console.debug(`[${this.id}] invoking ${typeName}.fromObject`, value);
+                    if (IframeEventBus.debug) {
+                        console.debug(`[${this.id}] invoking ${typeName}.fromObject`, value);
+                    }
                     return ClassConstructor.fromObject(value);
                 } else {
                     const newInstance = new ClassConstructor();
-                    console.debug(`[${this.id}] using constructor for ${typeName}`, value);
+                    if (IframeEventBus.debug) {
+                        console.debug(`[${this.id}] using constructor for ${typeName}`, value);
+                    }
                     Object.assign(newInstance, value);
                     return newInstance;
                 }
             } else {
-                console.warn(`[${this.id}] Constructor for [${typeName}] not found`);
+                if (IframeEventBus.debug) {
+                    console.warn(`[${this.id}] Constructor for [${typeName}] not found`);
+                }
             }
         }
         return value;
