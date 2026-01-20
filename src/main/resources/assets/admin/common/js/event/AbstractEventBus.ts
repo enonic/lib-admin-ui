@@ -11,6 +11,8 @@ export abstract class AbstractEventBus<E extends AbstractEvent> {
 
     protected receivers: Window[] = [];
 
+    public static debug = false;
+
     protected id: string | number = new Date().getTime();
 
     protected constructor(contextWindow: Window = window) {
@@ -26,14 +28,18 @@ export abstract class AbstractEventBus<E extends AbstractEvent> {
 
     addReceiver(receiver: Window) {
         if (!this.hasReceiver(receiver)) {
-            console.debug(`[${this.id}] Adding receiver window`, receiver);
+            if (AbstractEventBus.debug) {
+                console.debug(`[${this.id}] Adding receiver window`, receiver);
+            }
             this.receivers.push(receiver);
         }
         return this;
     }
 
     removeReceiver(receiver: Window) {
-        console.debug(`[${this.id}] Removing receiver window`, receiver);
+        if (AbstractEventBus.debug) {
+            console.debug(`[${this.id}] Removing receiver window`, receiver);
+        }
         this.receivers = this.receivers.filter(r => r !== receiver);
         return this;
     }
