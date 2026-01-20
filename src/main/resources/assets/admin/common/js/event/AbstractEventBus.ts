@@ -62,7 +62,11 @@ export abstract class AbstractEventBus<E extends AbstractEvent> {
         if (handler) {
             this.handlersMap[eventName] = (this.handlersMap[eventName] || []).filter(
                 entry => {
-                    return entry.handler !== handler ? !!removedEntries.push(entry) : false;
+                    if (entry.handler === handler) {
+                        removedEntries.push(entry);
+                        return false;
+                    }
+                    return true;
                 }
             );
         } else {
