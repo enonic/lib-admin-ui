@@ -17,7 +17,7 @@ export abstract class Request {
 
     protected request: XMLHttpRequest = new XMLHttpRequest();
 
-    private static headers = {};
+    private static headers: Record<string, string> = {};
 
     constructor(method: HttpMethod) {
         this.method = method;

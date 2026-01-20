@@ -27,7 +27,7 @@ export class UriHelper {
     static getUri(path: string, absolute?: boolean): string {
         let uri = UriHelper.joinPath(UriHelper.DEFAULT_URI, UriHelper.relativePath(path));
         if (absolute && UriHelper.domain) {
-            uri = UriHelper.joinPath(UriHelper.domain, uri)
+            uri = UriHelper.joinPath(UriHelper.domain, uri);
         }
         return uri;
     }
