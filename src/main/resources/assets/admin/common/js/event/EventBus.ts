@@ -1,72 +1,47 @@
 import {Event} from './Event';
+import {AbstractEventBus, HandlersMapEntry} from './AbstractEventBus';
 
-interface HandlersMapEntry {
-    customEventHandler: (customEvent: any) => void;
-    apiEventHandler: (apiEventObj: Event) => void;
-}
+export class EventBus
+    extends AbstractEventBus<Event> {
 
-export class EventBus {
+    private static instance: EventBus;
 
-    private static handlersMap: Record<string, HandlersMapEntry[]> = {};
-
-    static onEvent(eventName: string, handler: (apiEventObj: Event) => void, contextWindow: Window = window) {
-        let customEventHandler = (customEvent: any) => handler(customEvent.detail);
-        if (!EventBus.handlersMap[eventName]) {
-            EventBus.handlersMap[eventName] = [];
+    static get(receiver?: Window): EventBus {
+        if (!EventBus.instance) {
+            EventBus.instance = new EventBus(receiver);
+        } else if (receiver && !EventBus.instance.hasReceiver(receiver)) {
+            console.warn('EventBus instance already exists with different receiver, use addReceiver(window) to add a new one.');
         }
-        EventBus.handlersMap[eventName].push({
-            customEventHandler: customEventHandler,
-            apiEventHandler: handler
+        return EventBus.instance;
+    }
+
+    onEvent(eventName: string, handler: (event: Event) => void): HandlersMapEntry<Event> {
+        const entry = super.onEvent(eventName, handler);
+        entry.customHandler = (e: CustomEvent) => handler(e.detail);
+        this.receivers[0].addEventListener(eventName, entry.customHandler);
+        return entry;
+    }
+
+    unEvent(eventName: string, handler?: (event: Event) => void) {
+        const entries = super.unEvent(eventName, handler);
+        entries.forEach((entry: HandlersMapEntry<Event>) => {
+            this.receivers[0].removeEventListener(eventName, entry.customHandler);
         });
-        contextWindow.addEventListener(eventName, customEventHandler);
+        return entries;
     }
 
-    static unEvent(eventName: string, handler?: (event: Event) => void, contextWindow: Window = window) {
-        if (handler) {
-            let customEventHandler: (customEvent: any) => void;
-            EventBus.handlersMap[eventName] = (EventBus.handlersMap[eventName] || []).filter((entry: HandlersMapEntry) => {
-                if (entry.apiEventHandler === handler) {
-                    customEventHandler = entry.customEventHandler;
-                }
-                return entry.apiEventHandler !== handler;
-            });
-            contextWindow.removeEventListener(eventName, customEventHandler);
-        } else {
-            (EventBus.handlersMap[eventName] || []).forEach((entry: HandlersMapEntry) => {
-                contextWindow.removeEventListener(eventName, entry.customEventHandler);
-            });
-            EventBus.handlersMap[eventName] = [];
-        }
-    }
+    public fireEvent(event: Event) {
 
-    static createEvent(eventName: string, params?: any): CustomEvent {
-        return new CustomEvent(eventName, params);
-    }
-
-    static polyfillCustomEvent(contextWindow: Window) {
-        const customEventFn = (event: string, params: any) => {
-            params = params || {bubbles: false, cancelable: false, detail: undefined};
-            const evt = document.createEvent('CustomEvent');
-            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-            return evt;
-        };
-
-        customEventFn.prototype = window['Event'].prototype;
-
-        contextWindow['CustomEvent'] = customEventFn;
-    }
-
-    static fireEvent(apiEventObj: Event, contextWindow: Window = window) {
-
-        if (typeof contextWindow['CustomEvent'] !== 'function') {
-            EventBus.polyfillCustomEvent(contextWindow);
-        }
-
-        const event = EventBus.createEvent(apiEventObj.getName(), {
+        const customEvent = new CustomEvent(event.getName(), {
             bubbles: true,
-            detail: apiEventObj
+            detail: event
         });
-        contextWindow.dispatchEvent(event);
+
+        if (!this.receivers.length) {
+            throw new Error(`No receivers set for EventBus, use addReceiver(window) to set one.`);
+        }
+
+        this.receivers.forEach((receiver) => receiver.dispatchEvent(customEvent));
     }
 
 }

@@ -21,7 +21,7 @@ export class HeadRequest
 
     protected createRequestURI(): string {
         const uriString: string = UriHelper.appendUrlParams(this.path.toString(), this.params);
-        return UriHelper.getUri(uriString);
+        return UriHelper.getUri(uriString, true);
     }
 
 }

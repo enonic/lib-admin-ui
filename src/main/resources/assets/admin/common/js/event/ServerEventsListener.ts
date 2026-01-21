@@ -4,6 +4,10 @@ import {Event} from './Event';
 import {EventJson} from './EventJson';
 import {ServerEventsTranslator} from './ServerEventsTranslator';
 
+/*
+* DO NOT DELETE:
+* Used in app-application, app-users, app-admin-home
+* */
 export class ServerEventsListener {
 
     private serverEventsConnection: ServerEventsConnection;

@@ -5,15 +5,31 @@ export class UriHelper {
     private static DEFAULT_URI: string = '/';
     private static DEFAULT_ADMIN_URI: string = '/admin';
     private static ADMIN_URI: string;
+    private static domain: string;
+
+    /**
+     * Sets the domain to be used for URI creation.
+     * Useful when creating URIs inside iframe that need to point to the parent domain.
+     *
+     * @param domain the domain to set.
+     */
+    static setDomain(domain: string): void {
+        UriHelper.domain = domain?.replace(/\/+$/, '') || undefined;
+    }
 
     /**
      * Creates an URI from supplied path.
      *
      * @param path path to append to base URI.
+     * @param absolute if true, the domain will be prepended to the URI.
      * @returns {string} the URI (base + path).
      */
-    static getUri(path: string): string {
-        return UriHelper.joinPath(UriHelper.DEFAULT_URI, UriHelper.relativePath(path));
+    static getUri(path: string, absolute?: boolean): string {
+        let uri = UriHelper.joinPath(UriHelper.DEFAULT_URI, UriHelper.relativePath(path));
+        if (absolute && UriHelper.domain) {
+            uri = UriHelper.joinPath(UriHelper.domain, uri);
+        }
+        return uri;
     }
 
     /**
