@@ -15,6 +15,7 @@ import {ValueTypeGeoPoint} from './ValueTypeGeoPoint';
 import {ValueTypeReference} from './ValueTypeReference';
 import {ValueTypeBinaryReference} from './ValueTypeBinaryReference';
 import {ValueType} from './ValueType';
+import {ValueTypeInstant} from './ValueTypeInstant';
 
 export class ValueTypes {
 
@@ -44,6 +45,8 @@ export class ValueTypes {
 
     static BINARY_REFERENCE: ValueTypeBinaryReference = new ValueTypeBinaryReference();
 
+    static INSTANT: ValueTypeInstant = new ValueTypeInstant();
+
     static ALL: ValueType[] = [
         ValueTypes.DATA,
         ValueTypes.STRING,
@@ -58,6 +61,7 @@ export class ValueTypes {
         ValueTypes.GEO_POINT,
         ValueTypes.REFERENCE,
         ValueTypes.BINARY_REFERENCE,
+        ValueTypes.INSTANT,
     ];
 
     public static fromName(name: string): ValueType {

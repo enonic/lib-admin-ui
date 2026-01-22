@@ -37,6 +37,14 @@ export class ComboBox
         return null;
     }
 
+    createDefaultValue(rawValue: unknown): Value {
+        const valueType = this.getValueType();
+        if (typeof rawValue !== 'string') {
+            return valueType.newNullValue();
+        }
+        return valueType.newValue(rawValue);
+    }
+
     layout(input: Input, propertyArray: PropertyArray): Q.Promise<void> {
         if (!ValueTypes.STRING.equals(propertyArray.getType())) {
             ValueTypeConverter.convertArrayValues(propertyArray, ValueTypes.STRING);
@@ -152,13 +160,13 @@ export class ComboBox
 
     protected readInputConfig(): void {
         const options: ComboBoxOption[] = [];
-        const optionValues: Record<string, string>[] = this.context.inputConfig['option'] || [];
+        const optionValues: Record<string, unknown>[] = this.context.inputConfig['options'] || [];
         const l: number = optionValues.length;
-        let optionValue: Record<string, string>;
+        let optionValue: Record<string, unknown>;
 
         for (let i = 0; i < l; i++) {
             optionValue = optionValues[i];
-            options.push({label: optionValue['value'], value: optionValue['@value']});
+            options.push({label: optionValue['value'] as string, value: optionValue['@value'] as string});
         }
 
         this.comboBoxOptions = options;
