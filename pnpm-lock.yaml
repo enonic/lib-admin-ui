@@ -61,8 +61,8 @@ importers:
         specifier: ^7.1.2
         version: 7.1.2(postcss@8.5.6)
       enonic-admin-artifacts:
-        specifier: ^2.4.0
-        version: 2.4.0
+        specifier: ^2.5.0
+        version: 2.5.0
       eslint:
         specifier: ^9.39.2
         version: 9.39.2(jiti@2.6.1)
@@ -756,8 +756,8 @@ packages:
   electron-to-chromium@1.5.267:
     resolution: {integrity: sha512-0Drusm6MVRXSOJpGbaSVgcQsuB4hEkMpHXaVstcPmhu5LIedxs1xNK/nIxmQIU/RPC0+1/o0AVZfBTkTNJOdUw==}
 
-  enonic-admin-artifacts@2.4.0:
-    resolution: {integrity: sha512-3nS9r7zj5tv6Una5v9Cz1I83Kk7TcxGkf4nFBX2WxdwZBxmFwlBju4OBy4hK4sPYHk6i2RLW5ehF2quHRgJcLA==}
+  enonic-admin-artifacts@2.5.0:
+    resolution: {integrity: sha512-fptk5ZgtZlQ/C9A5D4NTSuJhy54U27j/1v2l8Hfhk/t8zLxGEDiSPUVRbECgwssIcTO00iSvXjyMvMgHRsB9Gg==}
 
   entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
@@ -2062,7 +2062,7 @@ snapshots:
 
   electron-to-chromium@1.5.267: {}
 
-  enonic-admin-artifacts@2.4.0: {}
+  enonic-admin-artifacts@2.5.0: {}
 
   entities@4.5.0: {}
 
