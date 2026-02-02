@@ -6,18 +6,6 @@ body {
 body {
   font-family: @admin-font-family;
   font-size: @admin-font-size;
-
-  &.blurred {
-    > .panel,
-    > .appbar {
-      filter: blur(2px);
-    }
-
-    .launcher-button {
-      z-index: @z-index-mask - 1;
-      filter: blur(2px);
-    }
-  }
 }
 
 .headers-mixin();
