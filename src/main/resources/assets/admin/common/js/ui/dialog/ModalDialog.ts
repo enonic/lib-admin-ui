@@ -9,7 +9,6 @@ import {i18n} from '../../util/Messages';
 import {LoadMask} from '../mask/LoadMask';
 import {StyleHelper} from '../../StyleHelper';
 import {AppHelper} from '../../util/AppHelper';
-import {BodyMask} from '../mask/BodyMask';
 import {KeyBindings} from '../KeyBindings';
 import {H2El} from '../../dom/H2El';
 import {DialogButton} from './DialogButton';
@@ -25,6 +24,7 @@ export interface ModalDialogConfig {
     keepOpenOnClickOutside?: boolean;
     alwaysFullscreen?: boolean;
     allowFullscreen?: boolean;
+    container?: Element;
 }
 
 export enum DialogState {
@@ -159,12 +159,25 @@ export abstract class ModalDialog
         this.initClickOutsideListeners();
     }
 
+    private getClickTarget(event: MouseEvent): EventTarget {
+        const path = event.composedPath(); // works in Shadow DOM
+        if (!path) {
+            return event.target;
+        }
+
+        return path[0];
+    }
+
     private initClickOutsideListeners() {
         if (!this.getConfig().keepOpenOnClickOutside) {
             const mouseClickListener: (event: MouseEvent) => void = (event: MouseEvent) => {
                 if (this.canHandleOutsideClick()) {
-                    for (let element = event.target; element; element = (element as any).parentNode) {
-                        if (element === this.getHTMLElement() || this.isIgnoredElementClicked(element as any)) {
+                    const clickTarget = this.getClickTarget(event);
+                    for (let element = clickTarget; element; element = (element as any).parentNode) {
+                        if (element === this.getHTMLElement()) {
+                            return;
+                        }
+                        if (element instanceof HTMLElement && this.isIgnoredElementClicked(element)) {
                             return;
                         }
                     }
@@ -332,7 +345,7 @@ export abstract class ModalDialog
 
     private adjustHeight() {
         const dialogHeight = this.getEl().getHeightWithBorder();
-        const containerHeight = BodyMask.get().getEl().getHeight() || Body.get().getEl().getHeight();
+        const containerHeight = Body.get().getEl().getHeight();
         if (containerHeight === 0 || dialogHeight === 0) {
             return;
         }
@@ -373,10 +386,6 @@ export abstract class ModalDialog
     }
 
     close() {
-        if (this.isSingleDialogGroup()) {
-            BodyMask.get().hide();
-        }
-
         this.hide();
 
         KeyBindings.get().unshelveBindings();
@@ -387,17 +396,18 @@ export abstract class ModalDialog
         Body.get().reapplyFocus();
     }
 
+    private getContainer(): Element {
+        return this.config.container || Body.get();
+    }
+
     hide() {
         this.unResize(this.handleResize);
 
-        if (this.isSingleDialogGroup()) {
-            this.unBlurBackground();
-        }
         super.hide(true);
 
         this.toggleFullscreen(false);
         if (this.dialogContainer.getParentElement()) {
-            Body.get().removeChild(this.dialogContainer);
+            this.getContainer().removeChild(this.dialogContainer);
         }
     }
 
@@ -512,7 +522,6 @@ export abstract class ModalDialog
 
     open() {
         Body.get().getFocusedElement()?.giveBlur();
-        BodyMask.get().show();
         KeyBindings.get().shelveBindings();
 
         this.show();
@@ -532,9 +541,7 @@ export abstract class ModalDialog
         if (!this.dialogContainer.hasChild(this)) {
             this.dialogContainer.appendChild(this);
         }
-        Body.get().appendChild(this.dialogContainer);
-
-        this.blurBackground();
+        this.getContainer().appendChild(this.dialogContainer);
 
         super.show();
 
@@ -634,46 +641,6 @@ export abstract class ModalDialog
         this.onClosedListeners.forEach((listener) => {
             listener();
         });
-    }
-
-    private unBlurBackground() {
-        Body.get().getHTMLElement().classList.remove('blurred');
-    }
-
-    private blurBackground() {
-        if (this.isBlurredBackgroundNeeded()) {
-            Body.get().getHTMLElement().classList.add('blurred');
-        }
-    }
-
-    private focusNextTabbable() {
-        if (this.hasTabbable()) {
-            let tabbedIndex = this.getTabbedIndex();
-            tabbedIndex = tabbedIndex + 1 >= this.tabbable.length ? 0 : tabbedIndex + 1;
-            this.tabbable[tabbedIndex].giveFocus();
-        }
-    }
-
-    private focusPreviousTabbable() {
-        if (this.hasTabbable()) {
-            let tabbedIndex = this.getTabbedIndex();
-            tabbedIndex = tabbedIndex - 1 < 0 ? this.tabbable.length - 1 : tabbedIndex - 1;
-            this.tabbable[tabbedIndex].giveFocus();
-        }
-    }
-
-    private getTabbedIndex(): number {
-        let activeElement = document.activeElement;
-        let tabbedIndex = 0;
-        if (this.hasTabbable()) {
-            for (let i = 0; i < this.tabbable.length; i++) {
-                if (activeElement === this.tabbable[i].getHTMLElement()) {
-                    tabbedIndex = i;
-                    break;
-                }
-            }
-        }
-        return tabbedIndex;
     }
 }
 
