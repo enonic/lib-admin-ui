@@ -1,7 +1,7 @@
 .notification-container {
   font-size: 0.75rem;
   position: fixed;
-  z-index: @z-index-notification + 3;
+  z-index: @z-index-shader + 1; /* should be above the shader of modal dialogs */
 
   @media screen and (max-width: 799px) {
     width: 100%;

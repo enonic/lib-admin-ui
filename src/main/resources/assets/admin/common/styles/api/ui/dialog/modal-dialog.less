@@ -9,10 +9,12 @@
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  z-index: @z-index-modal-dialog;
+  z-index: @z-index-shader;
   display: flex;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .@{_COMMON_PREFIX}modal-dialog {
@@ -24,17 +26,16 @@
   width: 85.185%;
   min-width: @min-dialog-width;
   max-width: @max-dialog-width;
-  background-color: transparent;
   background-clip: padding-box;
   box-sizing: content-box;
   max-height: @max-dialog-height;
+  background-color: @admin-white;
 
   &.masked {
     opacity: 0;
   }
 
   &.fullscreen {
-    background-color: @admin-white;
     position: fixed;
     top: 20px;
     bottom: 20px;
@@ -66,19 +67,6 @@
     }
   }
 
-  &:not(.fullscreen) {
-    .modal-dialog-wrapper {
-      padding: 40px 40px 0 0;
-      margin: -40px -40px 0 0;
-
-      .modal-dialog-header,
-      .modal-dialog-body,
-      .modal-dialog-footer {
-        background-color: @admin-white;
-      }
-    }
-  }
-
   .modal-dialog-wrapper {
     display: flex;
     flex-direction: column;
@@ -87,8 +75,8 @@
 
     .cancel-button-top {
       position: absolute;
-      top: 0;
-      right: 0;
+      top: -40px;
+      right: -40px;
       z-index: @z-index-modal-dialog;
       width: 36px;
       height: 36px;
