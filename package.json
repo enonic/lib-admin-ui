@@ -36,7 +36,7 @@
     "@types/jqueryui": "^1.12.24",
     "@types/mousetrap": "^1.6.15",
     "@types/q": "^1.5.8",
-    "autoprefixer": "^10.4.23",
+    "autoprefixer": "^10.4.24",
     "browserslist-config-enonic": "^1.0.8",
     "cross-env": "^10.1.0",
     "cssnano": "^7.1.2",
