@@ -25,7 +25,7 @@
     "fine-uploader": "^5.16.2",
     "jquery": "~3.7.1",
     "jquery-simulate": "^1.0.2",
-    "jquery-ui": "^1.14.1",
+    "jquery-ui": "^1.14.2",
     "mousetrap": "^1.6.5",
     "q": "^1.5.1"
   },

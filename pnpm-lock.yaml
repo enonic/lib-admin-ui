@@ -21,8 +21,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       jquery-ui:
-        specifier: ^1.14.1
-        version: 1.14.1
+        specifier: ^1.14.2
+        version: 1.14.2
       mousetrap:
         specifier: ^1.6.5
         version: 1.6.5
@@ -934,8 +934,8 @@ packages:
   jquery-simulate@1.0.2:
     resolution: {integrity: sha512-Bq610fSrwTwvH5d06z5oskYaX/79s0BNrKiJZjZOiXRib3iL4ZkSn/wvLwzhf3P9KeXCEpk9wlIaGui/1arOpQ==}
 
-  jquery-ui@1.14.1:
-    resolution: {integrity: sha512-DhzsYH8VeIvOaxwi+B/2BCsFFT5EGjShdzOcm5DssWjtcpGWIMsn66rJciDA6jBruzNiLf1q0KvwMoX1uGNvnQ==}
+  jquery-ui@1.14.2:
+    resolution: {integrity: sha512-1gSl7PUjyipa2adSr780Ujk16faicrV7PjPPzPtvWk7tTqBnsqp67NNV9jZK2+BIxUPXWSnIUU/LBCgwgGZE+Q==}
 
   jquery@3.7.1:
     resolution: {integrity: sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==}
@@ -2253,7 +2253,7 @@ snapshots:
 
   jquery-simulate@1.0.2: {}
 
-  jquery-ui@1.14.1:
+  jquery-ui@1.14.2:
     dependencies:
       jquery: 3.7.1
 
