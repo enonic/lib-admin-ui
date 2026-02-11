@@ -306,7 +306,7 @@ export class InputView
                                  ? this.inputTypeView.createDefaultValue(rawDefaultValue)
                                  : this.inputTypeView.newInitialValue();
 
-            if (initialValue?.isNotNull()) {
+            if (initialValue) {
                 array.add(initialValue);
             }
         }
