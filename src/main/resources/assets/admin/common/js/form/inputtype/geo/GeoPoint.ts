@@ -5,7 +5,6 @@ import {Property} from '../../../data/Property';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
 import {Element} from '../../../dom/Element';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
-import {GeoPoint as GeoPointUtil} from '../../../util/GeoPoint';
 import {GeoPoint as GeoPointEl} from '../../../ui/geo/GeoPoint';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {InputTypeManager} from '../InputTypeManager';
@@ -38,6 +37,13 @@ export class GeoPoint
     protected getValue(inputEl: GeoPointEl, event: ValueChangedEvent): Value {
         const isValid: boolean = this.isUserInputValid(inputEl);
         return  isValid ? this.getValueType().newValue(event.getNewValue()) : this.getValueType().newNullValue();
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+        return this.getValueType().newValue(rawValue);
     }
 
     resetInputOccurrenceElement(occurrence: Element): void {

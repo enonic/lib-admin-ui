@@ -23,10 +23,6 @@ export class ValueTypeLocalDateTime
         if (StringHelper.isBlank(value)) {
             return false;
         }
-        // 2010-01-01T10:55:00
-        if (value.length !== 19) {
-            return false;
-        }
 
         return this.isValid(value);
     }

@@ -12,6 +12,7 @@ import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
+import {RelativeTimeParser} from './RelativeTimeParser';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalDate]].
@@ -19,8 +20,23 @@ import {i18n} from '../../../util/Messages';
 export class DateType
     extends BaseInputTypeNotManagingAdd {
 
-    getDefaultValue(): Date {
-        return this.getContext().input.getDefaultValue()?.getDateTime()?.toDate();
+    private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+    resolveDefaultValue(): Date {
+        return this.getDefaultValue()?.getDateTime()?.toDate();
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+
+        if (DateType.PATTERN.test(rawValue)) {
+            return this.getValueType().newValue(rawValue);
+        } else {
+            const value = LocalDate.fromDate(RelativeTimeParser.parseToDate(rawValue));
+            return new Value(value, ValueTypes.LOCAL_DATE);
+        }
     }
 
     getValueType(): ValueType {
@@ -39,7 +55,7 @@ export class DateType
             datePickerBuilder.setDateTime(date.toDate());
         }
 
-        const defaultDate: Date = this.getDefaultValue();
+        const defaultDate: Date = this.resolveDefaultValue();
         if (defaultDate) {
             datePickerBuilder.setDefaultValue(defaultDate);
         }

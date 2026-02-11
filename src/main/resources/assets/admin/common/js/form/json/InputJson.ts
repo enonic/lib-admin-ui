@@ -6,25 +6,11 @@ export interface InputJson
 
     helpText?: string;
 
-    immutable?: boolean;
-
-    indexed?: boolean;
-
     label: string;
 
     occurrences: OccurrencesJson;
 
-    validationRegexp?: string;
-
     inputType: string;
 
     config?: any;
-
-    maximizeUIInputWidth?: boolean;
-
-    defaultValue?: {
-        type: string;
-        value: any;
-    };
-
 }

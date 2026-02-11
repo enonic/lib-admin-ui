@@ -67,7 +67,7 @@ publishing {
 tasks.register( 'pnpmCheck', PnpmTask ) {
     dependsOn tasks.named( 'pnpmInstall' )
     args = ['run', 'check']
-    outputs.cacheIf { false }
+    outputs.upToDateWhen { false }
 }
 
 tasks.named( 'check' ).configure {
