@@ -37,15 +37,6 @@ export class ApplicationConfiguratorDialog
             class: 'application-configurator-dialog',
             confirmation: {
                 yesCallback: () => {
-                    if (params.okCallback) {
-                        params.okCallback();
-                    }
-                    this.close();
-                },
-                noCallback: () => {
-                    if (params.cancelCallback) {
-                        params.cancelCallback();
-                    }
                     this.close();
                 }
             }
@@ -72,9 +63,8 @@ export class ApplicationConfiguratorDialog
             $(this.getHTMLElement()).find('input[type=text],input[type=radio],textarea,select').first().trigger('focus');
         });
 
+        this.okAction.onExecuted(this.config.okCallback);
         this.getCancelAction().onExecuted(this.config.cancelCallback);
-
-        this.okAction.onExecuted(this.config.confirmation.yesCallback);
 
         this.formView.onValidityChanged((event: FormValidityChangedEvent) => {
             const isValid: boolean = event.isValid();
