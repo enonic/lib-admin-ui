@@ -198,8 +198,8 @@ export abstract class ModalDialog
     }
 
     protected isIgnoredElementClicked(element: HTMLElement): boolean {
-        let ignoredElementClicked = false;
-        if (element && element.className && element.className.indexOf) {
+        let ignoredElementClicked = element?.parentElement?.classList?.contains('notification');
+        if (!ignoredElementClicked && element?.className?.indexOf) {
             ignoredElementClicked =
                 element.className.indexOf('mce-') > -1 ||
                 element.className.indexOf('html-area-modal-dialog') > -1 ||
