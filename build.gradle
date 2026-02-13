@@ -92,14 +92,10 @@ tasks.register( 'copyPackage', Copy ) {
 tasks.named( 'processResources' ).configure {
     // Handled by the Vite
     exclude 'assets/admin/common/fonts/**'
-    // Icons (icomoon) are bundled with the fonts
-    exclude 'assets/admin/common/icons/**'
     // Images are inlined to the CSS
     exclude 'assets/admin/common/images/**'
     // Bundled into lib.js
     exclude 'assets/admin/common/lib/**'
-    // Don't need to copy CSS files
-    exclude 'assets/admin/common/styles/**'
 }
 
 tasks.named( 'jar' ).configure {
@@ -115,10 +111,18 @@ tasks.named( 'jar' ).configure {
 tasks.register( 'devJar', Jar ) {
     archiveClassifier = 'dev-resources'
     from sourceSets.main.output
-
     include 'dev/**'
-    exclude 'dev/lib-admin-ui/lib.js'
-    exclude 'dev/lib-admin-ui/lib.d.ts'
+    exclude 'dev/lib-admin-ui/lib.js', 'dev/lib-admin-ui/lib.d.ts'
+
+    into( "dev/${base.archivesName.get()}/fonts" ) {
+        from layout.buildDirectory.dir( 'resources/main/assets/admin/common/fonts' )
+        include '**/*.*'
+    }
+
+    into( "dev/${base.archivesName.get()}/styles" ) {
+        from layout.buildDirectory.dir( 'resources/main/assets/admin/common/styles' )
+        include '**/*.less'
+    }
 
     includeEmptyDirs = false
 
