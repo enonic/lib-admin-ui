@@ -25,8 +25,7 @@ export class FormOccurrenceDraggableLabel
             this.setSubTitle(subTitle);
         }
 
-        this.getEl().appendChildren([this.title, this.subTitle.getHTMLElement()]);
-        this.whenRendered(() => dragHandle.insertBeforeEl(this));
+        this.getEl().appendChildren([dragHandle.getHTMLElement(), this.title, this.subTitle.getHTMLElement()]);
     }
 
     setText(value: string) {
