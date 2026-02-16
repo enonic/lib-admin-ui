@@ -220,6 +220,12 @@
       > .occurrence-views-container {
         > .form-option-set-occurrence-view {
           margin-bottom: 0;
+
+          >.single-selection-header.selected {
+            > .form-occurrence-draggable-label {
+              display: inline-block;
+            }
+          }
         }
 
         &:empty + .bottom-button-row {
@@ -237,6 +243,13 @@
     &.multiple-occurrence {
       > .occurrence-views-container {
         .clearfix();
+
+        > .form-item-set-occurrence-view,
+        > .form-option-set-occurrence-view >.single-selection-header.selected {
+          > .form-occurrence-draggable-label {
+            display: inline-block;
+          }
+        }
 
         > .form-item-set-occurrence-view,
         .form-option-set-occurrence-view {
